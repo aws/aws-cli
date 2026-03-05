@@ -12010,9 +12010,37 @@
           "shape":"Integer",
           "documentation":"<p>The amount of instance capacity associated with the usage. For example a value of <code>4</code> indicates that instance capacity for 4 instances is currently in use.</p>",
           "locationName":"count"
+        },
+        "AllocationMetadata":{
+          "shape":"CapacityAllocationMetadataList",
+          "documentation":"<p>Additional metadata associated with the capacity allocation. Each entry contains a key-value pair providing context about the allocation.</p>",
+          "locationName":"allocationMetadataList"
         }
       },
       "documentation":"<p>Information about instance capacity usage for a Capacity Reservation.</p>"
+    },
+    "CapacityAllocationMetadataEntry":{
+      "type":"structure",
+      "members":{
+        "Key":{
+          "shape":"String",
+          "documentation":"<p>The key of the metadata entry.</p>",
+          "locationName":"key"
+        },
+        "Value":{
+          "shape":"String",
+          "documentation":"<p>The value of the metadata entry.</p>",
+          "locationName":"value"
+        }
+      },
+      "documentation":"<p>A key-value pair that provides additional metadata about a capacity allocation.</p>"
+    },
+    "CapacityAllocationMetadataList":{
+      "type":"list",
+      "member":{
+        "shape":"CapacityAllocationMetadataEntry",
+        "locationName":"item"
+      }
     },
     "CapacityAllocations":{
       "type":"list",

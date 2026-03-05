@@ -355,6 +355,24 @@
       "documentation":"<p>Starts the deletion process for an active approval team.</p> <note> <p> <b>Deletions require team approval</b> </p> <p>Requests to delete an active team must be approved by the team.</p> </note>",
       "idempotent":true
     },
+    "StartApprovalTeamBaseline":{
+      "name":"StartApprovalTeamBaseline",
+      "http":{
+        "method":"POST",
+        "requestUri":"/approval-teams/{Arn}/baseline",
+        "responseCode":200
+      },
+      "input":{"shape":"StartApprovalTeamBaselineRequest"},
+      "output":{"shape":"StartApprovalTeamBaselineResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Starts a baseline session for specified approvers on an <code>ACTIVE</code> approval team.</p>"
+    },
     "TagResource":{
       "name":"TagResource",
       "http":{
@@ -541,6 +559,14 @@
         "DELETE_PENDING_APPROVAL",
         "DELETE_FAILED_APPROVAL",
         "DELETE_FAILED_VALIDATION"
+      ]
+    },
+    "ApproverLastActivity":{
+      "type":"string",
+      "enum":[
+        "VOTED",
+        "BASELINED",
+        "RESPONDED_TO_INVITATION"
       ]
     },
     "Boolean":{
@@ -854,6 +880,18 @@
         "PrimaryIdentityStatus":{
           "shape":"IdentityStatus",
           "documentation":"<p>Status for the identity source. For example, if an approver has accepted a team invitation with a user authentication method managed by the identity source.</p>"
+        },
+        "LastActivity":{
+          "shape":"ApproverLastActivity",
+          "documentation":"<p>Last Activity performed by the approver.</p>"
+        },
+        "LastActivityTime":{
+          "shape":"IsoTimestamp",
+          "documentation":"<p>Timestamp when the approver last responded to an operation or invitation request.</p>"
+        },
+        "PendingBaselineSessionArn":{
+          "shape":"SessionArn",
+          "documentation":"<p>Amazon Resource Name (ARN) for the pending baseline session.</p>"
         },
         "MfaMethods":{
           "shape":"MfaMethods",
@@ -2145,7 +2183,8 @@
       "enum":[
         "REJECTED",
         "EXPIRED",
-        "CONFIGURATION_CHANGED"
+        "CONFIGURATION_CHANGED",
+        "ALL_APPROVERS_IN_SESSION"
       ]
     },
     "SessionValue":{
@@ -2181,6 +2220,37 @@
         "DeletionStartTime":{
           "shape":"IsoTimestamp",
           "documentation":"<p>Timestamp when the deletion process was initiated.</p>"
+        }
+      }
+    },
+    "StartApprovalTeamBaselineApproverIds":{
+      "type":"list",
+      "member":{"shape":"ParticipantId"},
+      "max":20,
+      "min":0
+    },
+    "StartApprovalTeamBaselineRequest":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"ApprovalTeamArn",
+          "documentation":"<p>Amazon Resource Name (ARN) for the approval team.</p>",
+          "location":"uri",
+          "locationName":"Arn"
+        },
+        "ApproverIds":{
+          "shape":"StartApprovalTeamBaselineApproverIds",
+          "documentation":"<p>Array of approver IDs.</p>"
+        }
+      }
+    },
+    "StartApprovalTeamBaselineResponse":{
+      "type":"structure",
+      "members":{
+        "BaselineSessionArn":{
+          "shape":"SessionArn",
+          "documentation":"<p>Amazon Resource Name (ARN) for the session.</p>"
         }
       }
     },

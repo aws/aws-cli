@@ -68,6 +68,10 @@ def register_removals(event_handler):
                         remove_commands=['invoke-assistant'])
     cmd_remover.remove(on_event='building-command-table.logs',
                         remove_commands=['get-log-object'])
+    cmd_remover.remove(
+        on_event='building-command-table.connecthealth',
+        remove_commands=['start-medical-scribe-listening-session'],
+    )
 
 
 class CommandRemover(object):

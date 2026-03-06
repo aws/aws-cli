@@ -567,6 +567,7 @@
         {"shape":"ValidationException"},
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"},
+        {"shape":"ResourceInUseException"},
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Deletes a guardrail.</p> <ul> <li> <p>To delete a guardrail, only specify the ARN of the guardrail in the <code>guardrailIdentifier</code> field. If you delete a guardrail, all of its versions will be deleted.</p> </li> <li> <p>To delete a version of a guardrail, specify the ARN of the guardrail in the <code>guardrailIdentifier</code> field and the version in the <code>guardrailVersion</code> field.</p> </li> </ul>",
@@ -1953,6 +1954,10 @@
         "inputTags":{
           "shape":"InputTags",
           "documentation":"<p>Whether to honor or ignore input tags at runtime.</p>"
+        },
+        "modelEnforcement":{
+          "shape":"ModelEnforcement",
+          "documentation":"<p>Model-specific information for the enforced guardrail configuration. If not present, the configuration is enforced on all models</p>"
         }
       },
       "documentation":"<p>Account-level enforced guardrail input configuration.</p>"
@@ -1999,6 +2004,10 @@
         "owner":{
           "shape":"ConfigurationOwner",
           "documentation":"<p>Configuration owner type.</p>"
+        },
+        "modelEnforcement":{
+          "shape":"ModelEnforcement",
+          "documentation":"<p>Model-specific information for the enforced guardrail configuration.</p>"
         }
       },
       "documentation":"<p>Account enforced guardrail output configuration.</p>"
@@ -2007,7 +2016,7 @@
       "type":"list",
       "member":{"shape":"AccountEnforcedGuardrailOutputConfiguration"},
       "max":1,
-      "min":1
+      "min":0
     },
     "AccountId":{
       "type":"string",
@@ -6606,6 +6615,15 @@
       "max":1,
       "min":0
     },
+    "ExcludedModelId":{
+      "type":"string",
+      "pattern":"([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2}(/[a-z0-9]{12}){0,1}"
+    },
+    "ExcludedModelsList":{
+      "type":"list",
+      "member":{"shape":"ExcludedModelId"},
+      "min":0
+    },
     "ExportAutomatedReasoningPolicyVersionRequest":{
       "type":"structure",
       "required":["policyArn"],
@@ -9753,6 +9771,15 @@
       "type":"list",
       "member":{"shape":"ImportedModelSummary"}
     },
+    "IncludedModelId":{
+      "type":"string",
+      "pattern":"(ALL|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2}(/[a-z0-9]{12}){0,1})"
+    },
+    "IncludedModelsList":{
+      "type":"list",
+      "member":{"shape":"IncludedModelId"},
+      "min":1
+    },
     "InferenceProfileArn":{
       "type":"string",
       "max":2048,
@@ -11597,6 +11624,24 @@
       "max":63,
       "min":1,
       "pattern":"([0-9a-zA-Z][_-]?){1,63}"
+    },
+    "ModelEnforcement":{
+      "type":"structure",
+      "required":[
+        "includedModels",
+        "excludedModels"
+      ],
+      "members":{
+        "includedModels":{
+          "shape":"IncludedModelsList",
+          "documentation":"<p>Models to enforce the guardrail on.</p>"
+        },
+        "excludedModels":{
+          "shape":"ExcludedModelsList",
+          "documentation":"<p>Models to exclude from enforcement of the guardrail.</p>"
+        }
+      },
+      "documentation":"<p>Model-specific information for the enforced guardrail configuration.</p>"
     },
     "ModelId":{
       "type":"string",

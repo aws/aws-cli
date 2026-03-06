@@ -2741,6 +2741,32 @@
       "documentation":"<p>Represents content input for policy generation operations. This structure encapsulates the natural language descriptions or other content formats that are used as input for AI-powered policy generation.</p>",
       "union":true
     },
+    "ContentConfiguration":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "type":{
+          "shape":"ContentType",
+          "documentation":"<p>Type of content to stream.</p>"
+        },
+        "level":{
+          "shape":"ContentLevel",
+          "documentation":"<p>Level of detail for streamed content.</p>"
+        }
+      },
+      "documentation":"<p>Defines what content to stream and at what level of detail.</p>"
+    },
+    "ContentLevel":{
+      "type":"string",
+      "enum":[
+        "METADATA_ONLY",
+        "FULL_CONTENT"
+      ]
+    },
+    "ContentType":{
+      "type":"string",
+      "enum":["MEMORY_RECORDS"]
+    },
     "CreateAgentRuntimeEndpointRequest":{
       "type":"structure",
       "required":[
@@ -3489,6 +3515,10 @@
         "memoryStrategies":{
           "shape":"MemoryStrategyInputList",
           "documentation":"<p>The memory strategies to use for this memory. Strategies define how information is extracted, processed, and consolidated.</p>"
+        },
+        "streamDeliveryResources":{
+          "shape":"StreamDeliveryResources",
+          "documentation":"<p>Configuration for streaming memory record data to external resources.</p>"
         },
         "tags":{
           "shape":"TagsMap",
@@ -7022,6 +7052,30 @@
         "ServiceManagedKey"
       ]
     },
+    "KinesisResource":{
+      "type":"structure",
+      "required":[
+        "dataStreamArn",
+        "contentConfigurations"
+      ],
+      "members":{
+        "dataStreamArn":{
+          "shape":"Arn",
+          "documentation":"<p>ARN of the Kinesis Data Stream.</p>"
+        },
+        "contentConfigurations":{
+          "shape":"KinesisResourceContentConfigurationsList",
+          "documentation":"<p>Content configurations for stream delivery.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for Kinesis Data Stream delivery.</p>"
+    },
+    "KinesisResourceContentConfigurationsList":{
+      "type":"list",
+      "member":{"shape":"ContentConfiguration"},
+      "max":1,
+      "min":1
+    },
     "KmsConfiguration":{
       "type":"structure",
       "required":["keyType"],
@@ -7970,6 +8024,10 @@
         "strategies":{
           "shape":"MemoryStrategyList",
           "documentation":"<p>The list of memory strategies associated with this memory.</p>"
+        },
+        "streamDeliveryResources":{
+          "shape":"StreamDeliveryResources",
+          "documentation":"<p>Configuration for streaming memory record data to external resources.</p>"
         }
       },
       "documentation":"<p>Contains information about a memory resource.</p>"
@@ -9963,6 +10021,34 @@
       },
       "documentation":"<p>Contains configuration information for a memory strategy.</p>"
     },
+    "StreamDeliveryResource":{
+      "type":"structure",
+      "members":{
+        "kinesis":{
+          "shape":"KinesisResource",
+          "documentation":"<p>Kinesis Data Stream configuration.</p>"
+        }
+      },
+      "documentation":"<p>Supported stream delivery resource types.</p>",
+      "union":true
+    },
+    "StreamDeliveryResources":{
+      "type":"structure",
+      "required":["resources"],
+      "members":{
+        "resources":{
+          "shape":"StreamDeliveryResourcesList",
+          "documentation":"<p>List of stream delivery resource configurations.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for streaming memory record data to external resources.</p>"
+    },
+    "StreamDeliveryResourcesList":{
+      "type":"list",
+      "member":{"shape":"StreamDeliveryResource"},
+      "max":1,
+      "min":0
+    },
     "String":{"type":"string"},
     "SubnetId":{
       "type":"string",
@@ -11006,6 +11092,10 @@
         "memoryStrategies":{
           "shape":"ModifyMemoryStrategies",
           "documentation":"<p>The memory strategies to add, modify, or delete.</p>"
+        },
+        "streamDeliveryResources":{
+          "shape":"StreamDeliveryResources",
+          "documentation":"<p>Configuration for streaming memory record data to external resources.</p>"
         }
       }
     },

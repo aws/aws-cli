@@ -3370,6 +3370,13 @@
         }
       }
     },
+    "CostScaleFactor":{
+      "type":"float",
+      "documentation":"<p>A multiplier applied to calculated costs. Valid range is 0 to 100. Values less than 1.0 represent discounts, values greater than 1.0 represent markups, and a value of 1.0 represents no adjustment.</p>",
+      "box":true,
+      "max":100,
+      "min":0
+    },
     "CpuArchitectureType":{
       "type":"string",
       "enum":[
@@ -3463,6 +3470,10 @@
         "kmsKeyArn":{
           "shape":"KmsKeyArn",
           "documentation":"<p>The ARN of the KMS key to use on the farm.</p>"
+        },
+        "costScaleFactor":{
+          "shape":"CostScaleFactor",
+          "documentation":"<p>The cost scale factor to apply on the farm.</p>"
         },
         "tags":{
           "shape":"Tags",
@@ -5428,6 +5439,7 @@
       "required":[
         "farmId",
         "displayName",
+        "costScaleFactor",
         "createdAt",
         "createdBy"
       ],
@@ -5447,6 +5459,10 @@
         "kmsKeyArn":{
           "shape":"KmsKeyArn",
           "documentation":"<p>The ARN of the KMS key used on the farm.</p>"
+        },
+        "costScaleFactor":{
+          "shape":"CostScaleFactor",
+          "documentation":"<p>The cost scale factor applied on the farm.</p>"
         },
         "createdAt":{
           "shape":"CreatedAt",
@@ -12094,6 +12110,10 @@
         "description":{
           "shape":"Description",
           "documentation":"<p>The description of the farm to update.</p> <important> <p>This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.</p> </important>"
+        },
+        "costScaleFactor":{
+          "shape":"CostScaleFactor",
+          "documentation":"<p>The cost scale factor of the farm to update.</p>"
         }
       }
     },

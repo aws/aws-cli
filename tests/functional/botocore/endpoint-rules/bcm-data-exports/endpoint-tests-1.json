@@ -1,30 +1,39 @@
 {
     "testCases": [
         {
-            "documentation": "For region aws-global with FIPS disabled and DualStack enabled",
+            "documentation": "For custom endpoint with region not set and fips disabled",
             "expect": {
                 "endpoint": {
-                    "properties": {
-                        "authSchemes": [
-                            {
-                                "name": "sigv4",
-                                "signingName": "bcm-data-exports",
-                                "signingRegion": "us-east-1"
-                            }
-                        ]
-                    },
-                    "url": "https://bcm-data-exports.us-east-1.api.aws"
+                    "url": "https://example.com"
                 }
             },
             "params": {
-                "Region": "aws-global",
+                "Endpoint": "https://example.com",
                 "UseFIPS": false
+            }
+        },
+        {
+            "documentation": "For custom endpoint with fips enabled",
+            "expect": {
+                "error": "Invalid Configuration: FIPS and custom endpoint are not supported"
+            },
+            "params": {
+                "Endpoint": "https://example.com",
+                "UseFIPS": true
             }
         },
         {
             "documentation": "For region us-east-1 with FIPS enabled and DualStack enabled",
             "expect": {
                 "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "us-east-1"
+                            }
+                        ]
+                    },
                     "url": "https://bcm-data-exports-fips.us-east-1.api.aws"
                 }
             },
@@ -41,7 +50,6 @@
                         "authSchemes": [
                             {
                                 "name": "sigv4",
-                                "signingName": "bcm-data-exports",
                                 "signingRegion": "us-east-1"
                             }
                         ]
@@ -55,87 +63,83 @@
             }
         },
         {
-            "documentation": "For region cn-north-1 with FIPS enabled and DualStack enabled",
+            "documentation": "For region cn-northwest-1 with FIPS enabled and DualStack enabled",
             "expect": {
                 "endpoint": {
-                    "url": "https://bcm-data-exports-fips.cn-north-1.api.amazonwebservices.com.cn"
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "cn-northwest-1"
+                            }
+                        ]
+                    },
+                    "url": "https://bcm-data-exports-fips.cn-northwest-1.api.amazonwebservices.com.cn"
                 }
             },
             "params": {
-                "Region": "cn-north-1",
+                "Region": "cn-northwest-1",
                 "UseFIPS": true
             }
         },
         {
-            "documentation": "For region cn-north-1 with FIPS disabled and DualStack enabled",
+            "documentation": "For region cn-northwest-1 with FIPS disabled and DualStack enabled",
             "expect": {
                 "endpoint": {
-                    "url": "https://bcm-data-exports.cn-north-1.api.amazonwebservices.com.cn"
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "cn-northwest-1"
+                            }
+                        ]
+                    },
+                    "url": "https://bcm-data-exports.cn-northwest-1.api.amazonwebservices.com.cn"
                 }
             },
             "params": {
-                "Region": "cn-north-1",
+                "Region": "cn-northwest-1",
                 "UseFIPS": false
             }
         },
         {
-            "documentation": "For region us-gov-east-1 with FIPS enabled and DualStack enabled",
+            "documentation": "For region us-gov-west-1 with FIPS enabled and DualStack enabled",
             "expect": {
                 "endpoint": {
-                    "url": "https://bcm-data-exports-fips.us-gov-east-1.api.aws"
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "us-gov-west-1"
+                            }
+                        ]
+                    },
+                    "url": "https://bcm-data-exports-fips.us-gov-west-1.api.aws"
                 }
             },
             "params": {
-                "Region": "us-gov-east-1",
+                "Region": "us-gov-west-1",
                 "UseFIPS": true
             }
         },
         {
-            "documentation": "For region us-gov-east-1 with FIPS disabled and DualStack enabled",
+            "documentation": "For region us-gov-west-1 with FIPS disabled and DualStack enabled",
             "expect": {
                 "endpoint": {
-                    "url": "https://bcm-data-exports.us-gov-east-1.api.aws"
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "us-gov-west-1"
+                            }
+                        ]
+                    },
+                    "url": "https://bcm-data-exports.us-gov-west-1.api.aws"
                 }
             },
             "params": {
-                "Region": "us-gov-east-1",
+                "Region": "us-gov-west-1",
                 "UseFIPS": false
-            }
-        },
-        {
-            "documentation": "For custom endpoint with region set and fips disabled and dualstack disabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://example.com"
-                }
-            },
-            "params": {
-                "Region": "us-east-1",
-                "UseFIPS": false,
-                "Endpoint": "https://example.com"
-            }
-        },
-        {
-            "documentation": "For custom endpoint with region not set and fips disabled and dualstack disabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://example.com"
-                }
-            },
-            "params": {
-                "UseFIPS": false,
-                "Endpoint": "https://example.com"
-            }
-        },
-        {
-            "documentation": "For custom endpoint with fips enabled and dualstack disabled",
-            "expect": {
-                "error": "Invalid Configuration: FIPS and custom endpoint are not supported"
-            },
-            "params": {
-                "Region": "us-east-1",
-                "UseFIPS": true,
-                "Endpoint": "https://example.com"
             }
         },
         {

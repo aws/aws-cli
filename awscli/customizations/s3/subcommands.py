@@ -1240,16 +1240,17 @@ class MbCommand(S3Command):
                 "Cannot use mb command with a directory bucket."
             )
 
-        bucket_config = {
-            'LocationConstraint': self.client.meta.region_name
-        }
-
         params = {'Bucket': bucket}
+        bucket_config = {}
         bucket_tags = self._create_bucket_tags(parsed_args)
 
+        # Only set LocationConstraint when  the region name is not us-east-1.
+        # Sending LocationConstraint with value us-east-1 results in an error.
+        if self.client.meta.region_name != 'us-east-1':
+            bucket_config['LocationConstraint'] = self.client.meta.region_name
         if bucket_tags:
             bucket_config['Tags'] = bucket_tags
-        if self.client.meta.region_name != 'us-east-1':
+        if bucket_config:
             params['CreateBucketConfiguration'] = bucket_config
 
         # TODO: Consolidate how we handle return codes and errors

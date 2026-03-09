@@ -675,10 +675,13 @@ NO_OVERWRITE = {
 
 TAGS = {
     'name': 'tags',
+    'synopsis': '--tags <key> <value>',
     'action': 'append',
     'nargs': 2,
     'help_text': (
-        "This flag specifies tags to be added to the bucket."
+        'This flag specifies tags to be added to the bucket in the format of '
+        '``--tags key value``. You can specify this flag multiple times, '
+        'once for each tag.'
     ),
 }
 

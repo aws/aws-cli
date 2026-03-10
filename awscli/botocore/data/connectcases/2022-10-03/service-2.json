@@ -1167,6 +1167,14 @@
         "notEqualTo":{
           "shape":"BooleanOperands",
           "documentation":"<p>Tests that operandOne is not equal to operandTwo.</p>"
+        },
+        "andAll":{
+          "shape":"CompoundCondition",
+          "documentation":"<p>Combines multiple conditions with AND operator. All conditions must be true for the compound condition to be true.</p>"
+        },
+        "orAll":{
+          "shape":"CompoundCondition",
+          "documentation":"<p>Combines multiple conditions with OR operator. At least one condition must be true for the compound condition to be true.</p>"
         }
       },
       "documentation":"<p>Boolean condition for a rule. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
@@ -1429,6 +1437,17 @@
       "type":"structure",
       "members":{},
       "documentation":"<p>A filter for related items of type <code>Comment</code>.</p>"
+    },
+    "CompoundCondition":{
+      "type":"structure",
+      "required":["conditions"],
+      "members":{
+        "conditions":{
+          "shape":"BooleanConditionList",
+          "documentation":"<p>The list of conditions to combine using the logical operator.</p>"
+        }
+      },
+      "documentation":"<p>A compound condition that combines multiple boolean conditions using logical operators. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
     },
     "ConflictException":{
       "type":"structure",

@@ -21,7 +21,6 @@ Output::
 
     make_bucket: s3://amzn-s3-demo-bucket
 
-
 **Example 3: Create a bucket with specified tags**
 
 The following ``mb`` command creates a bucket with specified tags using the ``--tags`` parameter. In this example, the

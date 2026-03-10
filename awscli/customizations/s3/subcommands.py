@@ -1247,7 +1247,7 @@ class MbCommand(S3Command):
         bucket_config = {}
         bucket_tags = self._create_bucket_tags(parsed_args)
 
-        # Only set LocationConstraint when  the region name is not us-east-1.
+        # Only set LocationConstraint when the region name is not us-east-1.
         # Sending LocationConstraint with value us-east-1 results in an error.
         if self.client.meta.region_name != 'us-east-1':
             bucket_config['LocationConstraint'] = self.client.meta.region_name

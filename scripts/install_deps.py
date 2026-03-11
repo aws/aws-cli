@@ -1,12 +1,11 @@
 import os
-from pathlib import Path
 
 from utils import bin_path, cd, run, virtualenv_enabled
 
 INSTALL_ARGS = (
     "--no-build-isolation --no-cache-dir --no-index --prefer-binary "
 )
-PINNED_PIP_VERSION = '26.0.1'
+PINNED_PIP_VERSION = '24.0'
 SETUP_DEPS = ("setuptools-", "setuptools_scm", "wheel", "hatchling")
 
 
@@ -28,11 +27,10 @@ def get_package_tarball(package_dir, package_prefix):
 
 
 def install_local_package(package_dir, package, pip_script="pip"):
-    url = Path(package_dir).as_uri()
     with cd(package_dir):
         run(
-            f"{pip_script} install {INSTALL_ARGS} "
-            f"--find-links {url} {package}"
+            "%s install %s --find-links file://%s %s"
+            % (pip_script, INSTALL_ARGS, package_dir, package)
         )
 
 

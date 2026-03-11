@@ -22,6 +22,13 @@
         "Name": "Queues[].Name",
         "Status": "Queues[].Status"
       }
+    },
+    "JobTemplate": {
+      "operation": "ListJobTemplates",
+      "resourceIdentifier": {
+        "Arn": "JobTemplates[].Arn",
+        "JobTemplatesName": "JobTemplates[].Name"
+      }
     }
   },
   "operations": {
@@ -280,6 +287,59 @@
             "parameters": {},
             "resourceName": "Queue",
             "resourceIdentifier": "Status"
+          }
+        ]
+      }
+    },
+    "CreateJob": {
+      "JobTemplate": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "JobTemplate",
+            "resourceIdentifier": "JobTemplatesName"
+          }
+        ]
+      },
+      "Queue": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Queue",
+            "resourceIdentifier": "Name"
+          }
+        ]
+      }
+    },
+    "CreateJobTemplate": {
+      "Queue": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Queue",
+            "resourceIdentifier": "Name"
+          }
+        ]
+      }
+    },
+    "CreateResourceShare": {
+      "JobId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Job",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "SearchJobs": {
+      "Queue": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Queue",
+            "resourceIdentifier": "Name"
           }
         ]
       }

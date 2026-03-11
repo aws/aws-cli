@@ -2548,6 +2548,19 @@
       ],
       "documentation":"<p>Retrieves detailed information about a specific training plan.</p>"
     },
+    "DescribeTrainingPlanExtensionHistory":{
+      "name":"DescribeTrainingPlanExtensionHistory",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeTrainingPlanExtensionHistoryRequest"},
+      "output":{"shape":"DescribeTrainingPlanExtensionHistoryResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Retrieves the extension history for a specified training plan. The response includes details about each extension, such as the offering ID, start and end dates, status, payment status, and cost information.</p>"
+    },
     "DescribeTransformJob":{
       "name":"DescribeTransformJob",
       "http":{
@@ -2666,6 +2679,19 @@
       "input":{"shape":"EnableSagemakerServicecatalogPortfolioInput"},
       "output":{"shape":"EnableSagemakerServicecatalogPortfolioOutput"},
       "documentation":"<p>Enables using Service Catalog in SageMaker. Service Catalog is used to create SageMaker projects.</p>"
+    },
+    "ExtendTrainingPlan":{
+      "name":"ExtendTrainingPlan",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ExtendTrainingPlanRequest"},
+      "output":{"shape":"ExtendTrainingPlanResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Extends an existing training plan by purchasing an extension offering. This allows you to add additional compute capacity time to your training plan without creating a new plan or reconfiguring your workloads.</p> <p>To find available extension offerings, use the <code> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_SearchTrainingPlanOfferings.html\">SearchTrainingPlanOfferings</a> </code> API with the <code>TrainingPlanArn</code> parameter.</p> <p>To view the history of extensions for a training plan, use the <code> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeTrainingPlanExtensionHistory.html\">DescribeTrainingPlanExtensionHistory</a> </code> API.</p>"
     },
     "GetDeviceFleetReport":{
       "name":"GetDeviceFleetReport",
@@ -6987,6 +7013,10 @@
       "max":32,
       "min":1,
       "pattern":"[a-z]+\\-[0-9a-z\\-]+"
+    },
+    "AvailabilityZoneId":{
+      "type":"string",
+      "pattern":"[a-z]{3}\\d-az\\d"
     },
     "AvailableInstanceCount":{
       "type":"integer",
@@ -20663,6 +20693,38 @@
         }
       }
     },
+    "DescribeTrainingPlanExtensionHistoryRequest":{
+      "type":"structure",
+      "required":["TrainingPlanArn"],
+      "members":{
+        "TrainingPlanArn":{
+          "shape":"TrainingPlanArn",
+          "documentation":"<p>The Amazon Resource Name (ARN); of the training plan to retrieve extension history for.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to continue pagination if more results are available.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of extensions to return in the response.</p>"
+        }
+      }
+    },
+    "DescribeTrainingPlanExtensionHistoryResponse":{
+      "type":"structure",
+      "required":["TrainingPlanExtensions"],
+      "members":{
+        "TrainingPlanExtensions":{
+          "shape":"TrainingPlanExtensions",
+          "documentation":"<p>A list of extensions for the specified training plan.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to continue pagination if more results are available.</p>"
+        }
+      }
+    },
     "DescribeTrainingPlanRequest":{
       "type":"structure",
       "required":["TrainingPlanName"],
@@ -23153,6 +23215,26 @@
         }
       },
       "documentation":"<p>A parameter to activate explainers.</p>"
+    },
+    "ExtendTrainingPlanRequest":{
+      "type":"structure",
+      "required":["TrainingPlanExtensionOfferingId"],
+      "members":{
+        "TrainingPlanExtensionOfferingId":{
+          "shape":"TrainingPlanExtensionOfferingId",
+          "documentation":"<p>The unique identifier of the extension offering to purchase. You can retrieve this ID from the <code>TrainingPlanExtensionOfferings</code> in the response of the <code>SearchTrainingPlanOfferings</code> API.</p>"
+        }
+      }
+    },
+    "ExtendTrainingPlanResponse":{
+      "type":"structure",
+      "required":["TrainingPlanExtensions"],
+      "members":{
+        "TrainingPlanExtensions":{
+          "shape":"TrainingPlanExtensions",
+          "documentation":"<p>The list of extensions for the training plan, including the newly created extension.</p>"
+        }
+      }
     },
     "FSxLustreConfig":{
       "type":"structure",
@@ -40024,6 +40106,14 @@
         "EndTime":{
           "shape":"Timestamp",
           "documentation":"<p>The end time of the reserved capacity offering.</p>"
+        },
+        "ExtensionStartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start time of the extension for the reserved capacity offering.</p>"
+        },
+        "ExtensionEndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end time of the extension for the reserved capacity offering.</p>"
         }
       },
       "documentation":"<p>Details about a reserved capacity offering for a training plan offering.</p> <p>For more information about how to reserve GPU capacity for your SageMaker HyperPod clusters using Amazon SageMaker Training Plan, see <code> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingPlan.html\">CreateTrainingPlan</a> </code>.</p>"
@@ -41127,6 +41217,10 @@
         "TargetResources":{
           "shape":"SageMakerResourceNames",
           "documentation":"<p>The target resources (e.g., SageMaker Training Jobs, SageMaker HyperPod, SageMaker Endpoints) to search for in the offerings.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> <li> <p>A training plan for SageMaker endpoints can be used exclusively to provide compute resources to SageMaker endpoints for model deployment.</p> </li> </ul>"
+        },
+        "TrainingPlanArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN); of an existing training plan to search for extension offerings. When specified, the API returns extension offerings that can be used to extend the specified training plan.</p>"
         }
       }
     },
@@ -41137,6 +41231,10 @@
         "TrainingPlanOfferings":{
           "shape":"TrainingPlanOfferings",
           "documentation":"<p>A list of training plan offerings that match the search criteria.</p>"
+        },
+        "TrainingPlanExtensionOfferings":{
+          "shape":"TrainingPlanExtensionOfferings",
+          "documentation":"<p>A list of extension offerings available for the specified training plan. These offerings can be used with the <code> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ExtendTrainingPlan.html\">ExtendTrainingPlan</a> </code> API to extend an existing training plan.</p>"
         }
       }
     },
@@ -44049,6 +44147,109 @@
       "type":"long",
       "box":true,
       "max":59,
+      "min":0
+    },
+    "TrainingPlanExtension":{
+      "type":"structure",
+      "required":["TrainingPlanExtensionOfferingId"],
+      "members":{
+        "TrainingPlanExtensionOfferingId":{
+          "shape":"TrainingPlanExtensionOfferingId",
+          "documentation":"<p>The unique identifier of the extension offering that was used to create this extension.</p>"
+        },
+        "ExtendedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the extension was created.</p>"
+        },
+        "StartDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start date of the extension period.</p>"
+        },
+        "EndDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end date of the extension period.</p>"
+        },
+        "Status":{
+          "shape":"String256",
+          "documentation":"<p>The current status of the extension (e.g., Pending, Active, Scheduled, Failed, Expired).</p>"
+        },
+        "PaymentStatus":{
+          "shape":"String256",
+          "documentation":"<p>The payment processing status of the extension.</p>"
+        },
+        "AvailabilityZone":{
+          "shape":"String256",
+          "documentation":"<p>The Availability Zone of the extension.</p>"
+        },
+        "AvailabilityZoneId":{
+          "shape":"AvailabilityZoneId",
+          "documentation":"<p>The Availability Zone ID of the extension.</p>"
+        },
+        "DurationHours":{
+          "shape":"TrainingPlanExtensionDurationHours",
+          "documentation":"<p>The duration of the extension in hours.</p>"
+        },
+        "UpfrontFee":{
+          "shape":"String256",
+          "documentation":"<p>The upfront fee for the extension.</p>"
+        },
+        "CurrencyCode":{
+          "shape":"CurrencyCode",
+          "documentation":"<p>The currency code for the upfront fee (e.g., USD).</p>"
+        }
+      },
+      "documentation":"<p>Details about an extension to a training plan, including the offering ID, dates, status, and cost information.</p>"
+    },
+    "TrainingPlanExtensionDurationHours":{
+      "type":"integer",
+      "box":true,
+      "max":4368,
+      "min":0
+    },
+    "TrainingPlanExtensionOffering":{
+      "type":"structure",
+      "required":["TrainingPlanExtensionOfferingId"],
+      "members":{
+        "TrainingPlanExtensionOfferingId":{
+          "shape":"TrainingPlanExtensionOfferingId",
+          "documentation":"<p>The unique identifier for this extension offering.</p>"
+        },
+        "AvailabilityZone":{
+          "shape":"String256",
+          "documentation":"<p>The Availability Zone for this extension offering.</p>"
+        },
+        "StartDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start date of this extension offering.</p>"
+        },
+        "EndDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end date of this extension offering.</p>"
+        },
+        "DurationHours":{
+          "shape":"TrainingPlanExtensionDurationHours",
+          "documentation":"<p>The duration of this extension offering in hours.</p>"
+        },
+        "UpfrontFee":{
+          "shape":"String256",
+          "documentation":"<p>The upfront fee for this extension offering.</p>"
+        },
+        "CurrencyCode":{
+          "shape":"CurrencyCode",
+          "documentation":"<p>The currency code for the upfront fee (e.g., USD).</p>"
+        }
+      },
+      "documentation":"<p>Details about an available extension offering for a training plan. Use the offering ID with the <code> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ExtendTrainingPlan.html\">ExtendTrainingPlan</a> </code> API to extend a training plan.</p>"
+    },
+    "TrainingPlanExtensionOfferingId":{"type":"string"},
+    "TrainingPlanExtensionOfferings":{
+      "type":"list",
+      "member":{"shape":"TrainingPlanExtensionOffering"},
+      "min":0
+    },
+    "TrainingPlanExtensions":{
+      "type":"list",
+      "member":{"shape":"TrainingPlanExtension"},
       "min":0
     },
     "TrainingPlanFilter":{

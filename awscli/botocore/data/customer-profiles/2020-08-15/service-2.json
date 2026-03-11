@@ -203,6 +203,24 @@
       ],
       "documentation":"<p>Creates a recommender</p>"
     },
+    "CreateRecommenderFilter":{
+      "name":"CreateRecommenderFilter",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domains/{DomainName}/recommender-filters/{RecommenderFilterName}",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateRecommenderFilterRequest"},
+      "output":{"shape":"CreateRecommenderFilterResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates a recommender filter. A recommender filter specifies which items to include or exclude from recommendations.</p>"
+    },
     "CreateSegmentDefinition":{
       "name":"CreateSegmentDefinition",
       "http":{
@@ -479,6 +497,24 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Deletes a recommender.</p>"
+    },
+    "DeleteRecommenderFilter":{
+      "name":"DeleteRecommenderFilter",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/domains/{DomainName}/recommender-filters/{RecommenderFilterName}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteRecommenderFilterRequest"},
+      "output":{"shape":"DeleteRecommenderFilterResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes a recommender filter from a domain.</p>"
     },
     "DeleteSegmentDefinition":{
       "name":"DeleteSegmentDefinition",
@@ -822,6 +858,25 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Retrieves a recommender.</p>",
+      "readonly":true
+    },
+    "GetRecommenderFilter":{
+      "name":"GetRecommenderFilter",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/recommender-filters/{RecommenderFilterName}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetRecommenderFilterRequest"},
+      "output":{"shape":"GetRecommenderFilterResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves information about a specific recommender filter in a domain.</p>",
       "readonly":true
     },
     "GetSegmentDefinition":{
@@ -1273,6 +1328,25 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Returns a list of objects associated with a profile of a given ProfileObjectType.</p>"
+    },
+    "ListRecommenderFilters":{
+      "name":"ListRecommenderFilters",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/recommender-filters",
+        "responseCode":200
+      },
+      "input":{"shape":"ListRecommenderFiltersRequest"},
+      "output":{"shape":"ListRecommenderFiltersResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns a list of recommender filters in the specified domain.</p>",
+      "readonly":true
     },
     "ListRecommenderRecipes":{
       "name":"ListRecommenderRecipes",
@@ -2412,6 +2486,11 @@
       "key":{"shape":"typeName"},
       "value":{"shape":"CalculatedAttributeDimension"}
     },
+    "CandidateIdList":{
+      "type":"list",
+      "member":{"shape":"string1To255"},
+      "max":50
+    },
     "CatalogItem":{
       "type":"structure",
       "members":{
@@ -3249,6 +3328,54 @@
         }
       }
     },
+    "CreateRecommenderFilterRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "RecommenderFilterName",
+        "RecommenderFilterExpression"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "RecommenderFilterName":{
+          "shape":"RecommenderFilterName",
+          "documentation":"<p>The name of the recommender filter. The name must be unique within the domain.</p>",
+          "location":"uri",
+          "locationName":"RecommenderFilterName"
+        },
+        "RecommenderFilterExpression":{
+          "shape":"RecommenderFilterExpression",
+          "documentation":"<p>The filter expression that defines which items to include or exclude from recommendations.</p>"
+        },
+        "Description":{
+          "shape":"sensitiveText",
+          "documentation":"<p>A description of the recommender filter.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      }
+    },
+    "CreateRecommenderFilterResponse":{
+      "type":"structure",
+      "required":["RecommenderFilterArn"],
+      "members":{
+        "RecommenderFilterArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the recommender filter.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      }
+    },
     "CreateRecommenderRequest":{
       "type":"structure",
       "required":[
@@ -3915,6 +4042,37 @@
         }
       }
     },
+    "DeleteRecommenderFilterRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "RecommenderFilterName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "RecommenderFilterName":{
+          "shape":"RecommenderFilterName",
+          "documentation":"<p>The name of the recommender filter to delete.</p>",
+          "location":"uri",
+          "locationName":"RecommenderFilterName"
+        }
+      }
+    },
+    "DeleteRecommenderFilterResponse":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A message that indicates the delete request is done.</p>"
+        }
+      }
+    },
     "DeleteRecommenderRequest":{
       "type":"structure",
       "required":[
@@ -4240,6 +4398,10 @@
         "EventValueThreshold":{
           "shape":"Double",
           "documentation":"<p>The minimum value threshold that an event must meet to be considered valid.</p>"
+        },
+        "EventWeight":{
+          "shape":"EventParametersEventWeightDouble",
+          "documentation":"<p>The weight of the event type. A higher weight means higher importance of the event type for the created solution.</p>"
         }
       },
       "documentation":"<p>Configuration parameters for events in the personalization system.</p>"
@@ -4248,6 +4410,12 @@
       "type":"string",
       "max":256,
       "min":0
+    },
+    "EventParametersEventWeightDouble":{
+      "type":"double",
+      "box":true,
+      "max":1.0,
+      "min":0.0
     },
     "EventParametersList":{
       "type":"list",
@@ -5838,9 +6006,25 @@
           "shape":"RecommenderContext",
           "documentation":"<p>The contextual metadata used to provide dynamic runtime information to tailor recommendations.</p>"
         },
+        "RecommenderFilters":{
+          "shape":"RecommenderFilters",
+          "documentation":"<p>A list of filters to apply to the returned recommendations. Filters define criteria for including or excluding items from the recommendation results.</p>"
+        },
+        "RecommenderPromotionalFilters":{
+          "shape":"RecommenderPromotionalFilters",
+          "documentation":"<p>A list of promotional filters to apply to the recommendations. Promotional filters allow you to promote specific items within a configurable subset of recommendation results.</p>"
+        },
+        "CandidateIds":{
+          "shape":"CandidateIdList",
+          "documentation":"<p>A list of item IDs to rank for the user. Use this when you want to re-rank a specific set of items rather than getting recommendations from the full item catalog. Required for personalized-ranking use cases.</p>"
+        },
         "MaxResults":{
-          "shape":"MaxSize10",
+          "shape":"maxSize500",
           "documentation":"<p>The maximum number of recommendations to return. The default value is 10.</p>"
+        },
+        "MetadataConfig":{
+          "shape":"MetadataConfig",
+          "documentation":"<p>Configuration for including item metadata in the recommendation response. Use this to specify which metadata columns to return alongside recommended items.</p>"
         }
       }
     },
@@ -5850,6 +6034,67 @@
         "Recommendations":{
           "shape":"Recommendations",
           "documentation":"<p>List of recommendations generated by the recommender.</p>"
+        }
+      }
+    },
+    "GetRecommenderFilterRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "RecommenderFilterName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "RecommenderFilterName":{
+          "shape":"RecommenderFilterName",
+          "documentation":"<p>The name of the recommender filter to retrieve.</p>",
+          "location":"uri",
+          "locationName":"RecommenderFilterName"
+        }
+      }
+    },
+    "GetRecommenderFilterResponse":{
+      "type":"structure",
+      "required":[
+        "RecommenderFilterName",
+        "RecommenderFilterExpression",
+        "CreatedAt",
+        "Status",
+        "Tags"
+      ],
+      "members":{
+        "RecommenderFilterName":{
+          "shape":"RecommenderFilterName",
+          "documentation":"<p>The name of the recommender filter.</p>"
+        },
+        "RecommenderFilterExpression":{
+          "shape":"RecommenderFilterExpression",
+          "documentation":"<p>The filter expression that defines which items to include or exclude from recommendations.</p>"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the recommender filter was created.</p>"
+        },
+        "Status":{
+          "shape":"RecommenderFilterStatus",
+          "documentation":"<p>The status of the recommender filter.</p>"
+        },
+        "Description":{
+          "shape":"sensitiveText",
+          "documentation":"<p>The description of the recommender filter.</p>"
+        },
+        "FailureReason":{
+          "shape":"String",
+          "documentation":"<p>If the recommender filter failed, provides the reason for the failure.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
         }
       }
     },
@@ -6596,6 +6841,22 @@
         }
       },
       "documentation":"<p>Specifies the configuration used when importing incremental records from the source.</p>"
+    },
+    "InferenceConfig":{
+      "type":"structure",
+      "members":{
+        "MinProvisionedTPS":{
+          "shape":"InferenceConfigMinProvisionedTPSInteger",
+          "documentation":"<p>The minimum provisioned transactions per second (TPS) that the recommender supports. The default value is 1. A high MinProvisionedTPS will increase your cost.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for inference behavior of the recommender.</p>"
+    },
+    "InferenceConfigMinProvisionedTPSInteger":{
+      "type":"integer",
+      "box":true,
+      "max":500,
+      "min":1
     },
     "IntegrationConfig":{
       "type":"structure",
@@ -7671,6 +7932,43 @@
         }
       }
     },
+    "ListRecommenderFiltersRequest":{
+      "type":"structure",
+      "required":["DomainName"],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "MaxResults":{
+          "shape":"maxSize100",
+          "documentation":"<p>The maximum number of recommender filters to return in the response. The default value is 100.</p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        },
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>A token received from a previous ListRecommenderFilters call to retrieve the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        }
+      }
+    },
+    "ListRecommenderFiltersResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>A token to retrieve the next page of results. Null if there are no more results to retrieve.</p>"
+        },
+        "RecommenderFilters":{
+          "shape":"RecommenderFilterSummaryList",
+          "documentation":"<p>A list of recommender filters and their properties in the specified domain.</p>"
+        }
+      }
+    },
     "ListRecommenderRecipesRequest":{
       "type":"structure",
       "members":{
@@ -8132,11 +8430,6 @@
       "max":15,
       "min":1
     },
-    "MaxSize10":{
-      "type":"integer",
-      "max":10,
-      "min":1
-    },
     "MaxSize500":{
       "type":"integer",
       "box":true,
@@ -8179,6 +8472,27 @@
           "documentation":"<p>A message that indicates the merge request is complete.</p>"
         }
       }
+    },
+    "MetadataColumnName":{
+      "type":"string",
+      "max":150,
+      "min":1
+    },
+    "MetadataColumnsList":{
+      "type":"list",
+      "member":{"shape":"MetadataColumnName"},
+      "max":10,
+      "min":1
+    },
+    "MetadataConfig":{
+      "type":"structure",
+      "members":{
+        "MetadataColumns":{
+          "shape":"MetadataColumnsList",
+          "documentation":"<p>A list of metadata column names from your Items dataset to include in the recommendation response.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for metadata to include in recommendation responses.</p>"
     },
     "Metrics":{
       "type":"map",
@@ -8329,6 +8643,11 @@
         "OTHER"
       ],
       "sensitive":true
+    },
+    "PercentPromotedItems":{
+      "type":"integer",
+      "max":100,
+      "min":1
     },
     "Period":{
       "type":"structure",
@@ -9297,7 +9616,6 @@
     },
     "RecommenderConfig":{
       "type":"structure",
-      "required":["EventsConfig"],
       "members":{
         "EventsConfig":{
           "shape":"EventsConfig",
@@ -9306,6 +9624,10 @@
         "TrainingFrequency":{
           "shape":"RecommenderConfigTrainingFrequencyInteger",
           "documentation":"<p>How often the recommender should retrain its model with new data.</p>"
+        },
+        "InferenceConfig":{
+          "shape":"InferenceConfig",
+          "documentation":"<p>Configuration settings for how the recommender handles inference requests.</p>"
         }
       },
       "documentation":"<p>Configuration settings that define the behavior and parameters of a recommender.</p>"
@@ -9313,14 +9635,136 @@
     "RecommenderConfigTrainingFrequencyInteger":{
       "type":"integer",
       "box":true,
-      "max":7,
-      "min":7
+      "max":30,
+      "min":1
     },
     "RecommenderContext":{
       "type":"map",
       "key":{"shape":"ContextKey"},
       "value":{"shape":"string1To255"},
       "sensitive":true
+    },
+    "RecommenderFilter":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"name",
+          "documentation":"<p>The name of the recommender filter to apply.</p>"
+        },
+        "Values":{
+          "shape":"RecommenderFilterValues",
+          "documentation":"<p>The values to use when filtering recommendations. For each placeholder parameter in your filter expression, provide the parameter name (in matching case) as a key and the filter value(s) as the corresponding value. Separate multiple values for one parameter with a comma.</p>"
+        }
+      },
+      "documentation":"<p>A filter that specifies criteria for including or excluding items from recommendations.</p>"
+    },
+    "RecommenderFilterAttributeName":{
+      "type":"string",
+      "max":50,
+      "pattern":"[A-Za-z0-9_]+"
+    },
+    "RecommenderFilterAttributeValue":{
+      "type":"string",
+      "max":1000,
+      "sensitive":true
+    },
+    "RecommenderFilterExpression":{
+      "type":"string",
+      "max":2500,
+      "min":1,
+      "sensitive":true
+    },
+    "RecommenderFilterName":{
+      "type":"string",
+      "max":63,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "RecommenderFilterStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "PENDING",
+        "IN_PROGRESS",
+        "FAILED",
+        "DELETING"
+      ]
+    },
+    "RecommenderFilterSummary":{
+      "type":"structure",
+      "members":{
+        "RecommenderFilterName":{
+          "shape":"RecommenderFilterName",
+          "documentation":"<p>The name of the recommender filter.</p>"
+        },
+        "RecommenderFilterExpression":{
+          "shape":"RecommenderFilterExpression",
+          "documentation":"<p>The filter expression that defines which items to include or exclude from recommendations.</p>"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp when the recommender filter was created.</p>"
+        },
+        "Description":{
+          "shape":"sensitiveText",
+          "documentation":"<p>A description of the recommender filter's purpose and characteristics.</p>"
+        },
+        "Status":{
+          "shape":"RecommenderFilterStatus",
+          "documentation":"<p>The current operational status of the recommender filter.</p>"
+        },
+        "FailureReason":{
+          "shape":"String",
+          "documentation":"<p>If the recommender filter is in a failed state, provides the reason for the failure.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      },
+      "documentation":"<p>Provides a summary of a recommender filter's configuration and current state.</p>"
+    },
+    "RecommenderFilterSummaryList":{
+      "type":"list",
+      "member":{"shape":"RecommenderFilterSummary"}
+    },
+    "RecommenderFilterValues":{
+      "type":"map",
+      "key":{"shape":"RecommenderFilterAttributeName"},
+      "value":{"shape":"RecommenderFilterAttributeValue"},
+      "max":25
+    },
+    "RecommenderFilters":{
+      "type":"list",
+      "member":{"shape":"RecommenderFilter"},
+      "max":1
+    },
+    "RecommenderPromotionalFilter":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"name",
+          "documentation":"<p>The name of the recommender filter to use for the promotion.</p>"
+        },
+        "Values":{
+          "shape":"RecommenderFilterValues",
+          "documentation":"<p>The values to use when promoting items. For each placeholder parameter in your promotion's filter expression, provide the parameter name (in matching case) as a key and the filter value(s) as the corresponding value. Separate multiple values for one parameter with a comma.</p>"
+        },
+        "PromotionName":{
+          "shape":"name",
+          "documentation":"<p>The name of the promotion.</p>"
+        },
+        "PercentPromotedItems":{
+          "shape":"PercentPromotedItems",
+          "documentation":"<p>The percentage of recommended items to apply the promotion to.</p>"
+        }
+      },
+      "documentation":"<p>Contains information on a promotion. A promotion defines additional business rules that apply to a configurable subset of recommended items.</p>"
+    },
+    "RecommenderPromotionalFilters":{
+      "type":"list",
+      "member":{"shape":"RecommenderPromotionalFilter"},
+      "max":1
     },
     "RecommenderRecipe":{
       "type":"structure",
@@ -9343,7 +9787,8 @@
         "similar-items",
         "frequently-paired-items",
         "popular-items",
-        "trending-now"
+        "trending-now",
+        "personalized-ranking"
       ]
     },
     "RecommenderRecipesList":{
@@ -11194,6 +11639,11 @@
     "maxSize24":{
       "type":"integer",
       "max":24,
+      "min":1
+    },
+    "maxSize500":{
+      "type":"integer",
+      "max":500,
       "min":1
     },
     "message":{"type":"string"},

@@ -50,3 +50,50 @@ class TestMBCommand(BaseAWSCommandParamsTest):
         command = self.prefix + 's3://bucket--usw2-az1--x-s3/'
         stderr = self.run_cmd(command, expected_rc=255)[1]
         self.assertIn('Cannot use mb command with a directory bucket.', stderr)
+
+    def test_make_bucket_with_single_tag(self):
+        command = self.prefix + 's3://bucket --tags Key1 Value1 --region us-west-2'
+        expected_params = {
+            'Bucket': 'bucket',
+            'CreateBucketConfiguration': {
+                'LocationConstraint': 'us-west-2',
+                'Tags': [
+                    {'Key': 'Key1', 'Value': 'Value1'}
+                ]
+            }
+        }
+        self.assert_params_for_cmd(command, expected_params)
+
+    def test_make_bucket_with_single_tag_us_east_1(self):
+        command = self.prefix + 's3://bucket --tags Key1 Value1 --region us-east-1'
+        expected_params = {
+            'Bucket': 'bucket',
+            'CreateBucketConfiguration': {
+                'Tags': [
+                    {'Key': 'Key1', 'Value': 'Value1'}
+                ]
+            }
+        }
+        self.assert_params_for_cmd(command, expected_params)
+
+    def test_make_bucket_with_multiple_tags(self):
+        command = self.prefix + 's3://bucket --tags Key1 Value1 --tags Key2 Value2 --region us-west-2'
+        expected_params = {
+            'Bucket': 'bucket',
+            'CreateBucketConfiguration': {
+                'LocationConstraint': 'us-west-2',
+                'Tags': [
+                    {'Key': 'Key1', 'Value': 'Value1'},
+                    {'Key': 'Key2', 'Value': 'Value2'}
+                ]
+            }
+        }
+        self.assert_params_for_cmd(command, expected_params)
+
+    def test_tags_with_three_arguments_fails(self):
+        command = self.prefix + 's3://bucket --tags Key1 Value1 ExtraArg'
+        self.assert_params_for_cmd(
+            command,
+            expected_rc=255,
+            stderr_contains='Unknown options: ExtraArg'
+        )

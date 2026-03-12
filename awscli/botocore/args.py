@@ -116,6 +116,9 @@ class ClientArgsCreator:
         signing_region = endpoint_config['signing_region']
         endpoint_region_name = endpoint_config['region_name']
         account_id_endpoint_mode = config_kwargs['account_id_endpoint_mode']
+        s3_disable_express_session_auth = config_kwargs[
+            's3_disable_express_session_auth'
+        ]
 
         event_emitter = copy.copy(self._event_emitter)
         signer = RequestSigner(
@@ -165,6 +168,7 @@ class ClientArgsCreator:
             event_emitter,
             credentials,
             account_id_endpoint_mode,
+            s3_disable_express_session_auth,
         )
 
         # Copy the session's user agent factory and adds client configuration.
@@ -280,6 +284,11 @@ class ClientArgsCreator:
                 ),
                 account_id_endpoint_mode=client_config.account_id_endpoint_mode,
                 auth_scheme_preference=client_config.auth_scheme_preference,
+                s3_disable_express_session_auth=(
+                    s3_config.get('disable_s3_express_session_auth')
+                    if s3_config is not None
+                    else None
+                ),
             )
         self._compute_retry_config(config_kwargs)
         self._compute_request_compression_config(config_kwargs)
@@ -292,6 +301,7 @@ class ClientArgsCreator:
             client_config, config_kwargs
         )
         self._compute_signature_version_config(client_config, config_kwargs)
+        self._compute_s3_disable_express_session_auth(config_kwargs)
         s3_config = self.compute_s3_config(client_config)
 
         is_s3_service = self._is_s3_service(service_name)
@@ -412,6 +422,19 @@ class ClientArgsCreator:
         )
         return endpoint_config
 
+    def _validate_s3_disable_express_session_auth(self, config_val):
+        string_bool = isinstance(config_val, str) and config_val.lower() in [
+            'true',
+            'false',
+        ]
+        if not isinstance(config_val, bool) and not string_bool:
+            raise botocore.exceptions.InvalidConfigError(
+                error_msg=(
+                    f'Invalid value "{config_val}" for '
+                    's3_disable_express_session_auth. Value must be a boolean'
+                )
+            )
+
     def _set_region_if_custom_s3_endpoint(
         self, endpoint_config, endpoint_bridge
     ):
@@ -506,6 +529,20 @@ class ClientArgsCreator:
             disabled = ensure_boolean(disabled)
         config_kwargs['disable_request_compression'] = disabled
 
+    def _compute_s3_disable_express_session_auth(self, config_kwargs):
+        disable_express = config_kwargs.get('s3_disable_express_session_auth')
+        if disable_express is None:
+            disable_express = self._config_store.get_config_variable(
+                's3_disable_express_session_auth'
+            )
+
+        # Raise an error if the value does not represent a boolean.
+        if disable_express is not None:
+            self._validate_s3_disable_express_session_auth(disable_express)
+        config_kwargs['s3_disable_express_session_auth'] = ensure_boolean(
+            disable_express
+        )
+
     def _validate_min_compression_size(self, min_size):
         min_allowed_min_size = 1
         max_allowed_min_size = 1048576
@@ -551,6 +588,7 @@ class ClientArgsCreator:
         event_emitter,
         credentials,
         account_id_endpoint_mode,
+        s3_disable_express_session_auth,
     ):
         if endpoints_ruleset_data is None:
             return None
@@ -577,6 +615,7 @@ class ClientArgsCreator:
             legacy_endpoint_url=endpoint.host,
             credentials=credentials,
             account_id_endpoint_mode=account_id_endpoint_mode,
+            s3_disable_express_session_auth=s3_disable_express_session_auth,
         )
         # Client context params for s3 conflict with the available settings
         # in the `s3` parameter on the `Config` object. If the same parameter

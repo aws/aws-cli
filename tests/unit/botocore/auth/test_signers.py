@@ -239,7 +239,12 @@ class TestS3SigV4Auth(BaseTestWithFixedDate):
         )
         auth = self.AuthClass(credentials, 's3', 'us-east-1')
         auth.add_auth(request)
-        self.assertNotIn(header, request.headers['Authorization'])
+        signed_headers = (
+            request.headers['Authorization']
+            .split('SignedHeaders=', 1)[1]
+            .split(',', 1)[0]
+        )
+        self.assertNotIn(header.lower(), signed_headers.split(';'))
 
     def test_blocklist_expect_headers(self):
         self._test_blocklist_header('expect', '100-continue')
@@ -254,6 +259,31 @@ class TestS3SigV4Auth(BaseTestWithFixedDate):
 
     def test_blocklist_transfer_encoding_header(self):
         self._test_blocklist_header('transfer-encoding', 'chunked')
+
+    def test_blocklist_connection_header(self):
+        self._test_blocklist_header('connection', 'keep-alive')
+
+    def test_blocklist_keep_alive_header(self):
+        self._test_blocklist_header('keep-alive', 'timeout=5')
+
+    def test_blocklist_proxy_authenticate_header(self):
+        self._test_blocklist_header(
+            'proxy-authenticate', 'Basic realm="proxy.example.com"'
+        )
+
+    def test_blocklist_proxy_authorization_header(self):
+        self._test_blocklist_header(
+            'proxy-authorization', 'Basic YWxhZGRpbjpvcGVuc2VzYW1l'
+        )
+
+    def test_blocklist_te_header(self):
+        self._test_blocklist_header('te', 'trailers')
+
+    def test_blocklist_trailer_header(self):
+        self._test_blocklist_header('trailer', 'x-amz-checksum-sha256')
+
+    def test_blocklist_upgrade_header(self):
+        self._test_blocklist_header('upgrade', 'websocket')
 
     def test_uses_sha256_if_config_value_is_true(self):
         self.client_config.s3['payload_signing_enabled'] = True

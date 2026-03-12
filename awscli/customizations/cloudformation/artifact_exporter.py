@@ -186,7 +186,8 @@ def make_zip(filename, source_root):
         zip_file = zipfile.ZipFile(f, 'w', zipfile.ZIP_DEFLATED)
         with contextlib.closing(zip_file) as zf:
             for root, dirs, files in os.walk(source_root, followlinks=True):
-                for filename in files:
+                dirs.sort()
+                for filename in sorted(files):
                     full_path = os.path.join(root, filename)
                     relative_path = os.path.relpath(
                         full_path, source_root)

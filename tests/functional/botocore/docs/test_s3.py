@@ -10,6 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from botocore import xform_name
+from botocore.docs.client import ClientContextParamsDocumenter
 from botocore.docs.service import ServiceDocumenter
 
 from tests.functional.botocore.docs import BaseDocsFunctionalTest
@@ -74,3 +76,23 @@ class TestS3Docs(BaseDocsFunctionalTest):
         self.assert_contains_line(
             "You can also provide this value as a dictionary", param_docs
         )
+
+    def test_s3_context_params_omitted(self):
+        omitted_params = ClientContextParamsDocumenter.OMITTED_CONTEXT_PARAMS
+        s3_omitted_params = omitted_params['s3']
+        content = ServiceDocumenter(
+            's3', self._session, self.root_services_path
+        ).document_service()
+        for param in s3_omitted_params:
+            param_name = f'``{xform_name(param)}``'
+            self.assert_not_contains_line(param_name, content)
+
+    def test_s3control_context_params_omitted(self):
+        omitted_params = ClientContextParamsDocumenter.OMITTED_CONTEXT_PARAMS
+        s3control_omitted_params = omitted_params['s3control']
+        content = ServiceDocumenter(
+            's3control', self._session, self.root_services_path
+        ).document_service()
+        for param in s3control_omitted_params:
+            param_name = f'``{xform_name(param)}``'
+            self.assert_not_contains_line(param_name, content)

@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+2.34.8
+======
+
+* enhancement:``s3``: Add support for specifying tags on buckets during bucket creation using the ``aws s3 mb`` command via a new ``--tags`` flag.
+* api-change:``ecr``: Add Chainguard to PTC upstreamRegistry enum
+* api-change:``s3``: Adds support for account regional namespaces for general purpose buckets. The account regional namespace is a reserved subdivision of the global bucket namespace where only your account can create general purpose buckets.
+* api-change:``datasync``: DataSync's 3 location types, Hadoop Distributed File System (HDFS), FSx for Windows File Server (FSx Windows), and FSx for NetApp ONTAP (FSx ONTAP) now have credentials managed via Secrets Manager, which may be encrypted with service keys or be configured to use customer-managed keys or secret.
+
+
 2.34.7
 ======
 

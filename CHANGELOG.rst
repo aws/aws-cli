@@ -2,6 +2,22 @@
 CHANGELOG
 =========
 
+2.34.9
+======
+
+* api-change:``mgn``: Network Migration APIs are now publicly available for direct programmatic access. Customers can now call Network Migration APIs directly without going through AWS Transform (ATX), enabling automation, integration with existing tools, and self-service migration workflows.
+* api-change:``ivs-realtime``: Updates maximum reconnect window seconds from 60 to 300 for participant replication
+* api-change:``mediaconvert``: This update adds support for Dolby AC-4 audio output, frame rate conversion between non-Dolby Vision inputs to Dolby Vision outputs, and clear lead CMAF HLS output.
+* api-change:``quicksight``: The change adds a new capability named ManageSharedFolders in Custom Permissions
+* api-change:``gameliftstreams``: Feature launch that enables customers to connect streaming sessions to their own VPCs running in AWS.
+* api-change:``apigateway``: API Gateway now supports an additional security policy "SecurityPolicy-TLS13-1-2-FIPS-PFS-PQ-2025-09" for REST APIs and custom domain names. The new policy is compliant with TLS 1.3, Federal Information Processing Standards (FIPS), Perfect Forward Secrecy (PFS), and post-quantum (PQ) cryptography
+* api-change:``config``: Fix pagination support for DescribeConformancePackCompliance, and update OrganizationConfigRule InputParameters max length to match ConfigRule.
+* api-change:``medialive``: Documents the VideoDescription.ScalingBehavior.SMART(underscore)CROP enum value.
+* api-change:``connect``: Deprecating PredefinedNotificationID field
+* api-change:``glue``: Add QuerySessionContext to BatchGetPartitionRequest
+* enhancement:auth: Exclude additional hop-by-hop headers from SigV4 signing to prevent signature mismatches when intermediaries mutate transport headers (connection, keep-alive, proxy-authenticate, proxy-authorization, TE, trailer, upgrade).
+
+
 2.34.8
 ======
 

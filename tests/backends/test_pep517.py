@@ -246,8 +246,8 @@ def test_get_requires_for_build_wheel(config_settings, repo_root):
     expected_requirements = [
         "colorama",
         "docutils",
-        "ruamel.yaml",
-        "ruamel.yaml.clib",
+        "ruamel_yaml",
+        "ruamel_yaml_clib",
         "prompt-toolkit",
         "distro",
         "awscrt",

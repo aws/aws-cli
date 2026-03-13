@@ -89,7 +89,7 @@ class TestCRTProcessLock:
         mock_crt_process_lock.return_value.acquire.assert_called_once_with()
 
 
-@requires_crt
+@requires_crt()
 class TestBotocoreCRTRequestSerializer(unittest.TestCase):
     def setUp(self):
         self.region = 'us-west-2'
@@ -291,7 +291,7 @@ class TestBotocoreCRTCredentialsWrapper:
         self.assert_crt_credentials(crt_credentials)
 
 
-@requires_crt
+@requires_crt()
 class TestCRTTransferFuture(unittest.TestCase):
     def setUp(self):
         self.mock_s3_request = mock.Mock(awscrt.s3.S3RequestType)
@@ -320,7 +320,7 @@ class TestCRTTransferFuture(unittest.TestCase):
             self.future.result()
 
 
-@requires_crt
+@requires_crt()
 class TestOnBodyFileObjWriter(unittest.TestCase):
     def test_call(self):
         fileobj = io.BytesIO()

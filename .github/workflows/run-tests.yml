@@ -31,8 +31,12 @@ jobs:
     - name: Run tests
       run: python scripts/ci/run-tests --with-cov
     - name: Run checks
-      run: python scripts/ci/run-check
+      run: python scripts/ci/run-tests --with-cov --junitxml=test-results.xml
     - name: codecov
       uses: codecov/codecov-action@v5
       with:
         directory: tests
+    - name: Upload test results to Codecov
+      uses: codecov/test-results-action@v1
+      with:
+        files: test-results.xml

@@ -99,6 +99,11 @@ def skip_if_windows(reason):
             self.assertEqual(...)
 
     """
+    if callable(reason):
+        raise TypeError(
+            "Use @skip_if_windows('reason') with parentheses, "
+            "not bare @skip_if_windows"
+        )
 
     def decorator(func):
         return unittest.skipIf(
@@ -110,6 +115,11 @@ def skip_if_windows(reason):
 
 def skip_if_using_serial_implementation(reason):
     """Decorator to skip tests when running as the serial implementation"""
+    if callable(reason):
+        raise TypeError(
+            "Use @skip_if_using_serial_implementation('reason') with parentheses, "
+            "not bare @skip_if_using_serial_implementation"
+        )
 
     def decorator(func):
         return unittest.skipIf(is_serial_implementation(), reason)(func)
@@ -117,10 +127,18 @@ def skip_if_using_serial_implementation(reason):
     return decorator
 
 
-def requires_crt(cls, reason=None):
+def requires_crt(reason=None):
+    if callable(reason):
+        raise TypeError(
+            "Use @requires_crt() with parentheses, not bare @requires_crt"
+        )
     if reason is None:
         reason = "Test requires awscrt to be installed."
-    return unittest.skipIf(not HAS_CRT, reason)(cls)
+
+    def decorator(func):
+        return unittest.skipIf(not HAS_CRT, reason)(func)
+
+    return decorator
 
 
 class StreamWithError:

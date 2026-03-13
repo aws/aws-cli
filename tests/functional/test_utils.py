@@ -1,4 +1,3 @@
-import codecs
 import os
 import shutil
 import tempfile
@@ -18,7 +17,7 @@ class TestWriteException(unittest.TestCase):
     def test_write_exception(self):
         error_message = "Some error message."
         ex = Exception(error_message)
-        with codecs.open(self.outfile, 'w+', encoding='utf-8') as outfile:
+        with open(self.outfile, 'w+', encoding='utf-8') as outfile:
             write_exception(ex, outfile)
             outfile.seek(0)
 

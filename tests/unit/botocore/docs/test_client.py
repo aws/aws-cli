@@ -10,7 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore.docs.client import ClientDocumenter, ClientExceptionsDocumenter
+from botocore.docs.client import (
+    ClientContextParamsDocumenter,
+    ClientDocumenter,
+    ClientExceptionsDocumenter,
+)
 
 from tests.unit.botocore.docs import BaseDocsTest
 
@@ -129,5 +133,41 @@ class TestClientExceptionsDocumenter(BaseDocsTest):
                 '- **Error** *(dict) --* ',
                 '- **Code** *(string) --* ',
                 '- **Message** *(string) --* ',
+            ]
+        )
+
+
+class TestClientContextParamsDocumenter(BaseDocsTest):
+    def setUp(self):
+        super().setUp()
+        self.json_model['clientContextParams'] = {
+            'ClientContextParam1': {
+                'type': 'string',
+                'documentation': 'A client context param',
+            },
+            'ClientContextParam2': {
+                'type': 'boolean',
+                'documentation': 'A second client context param',
+            },
+        }
+        self.setup_client()
+        service_model = self.client.meta.service_model
+        self.context_params_documenter = ClientContextParamsDocumenter(
+            service_model.service_name, service_model.client_context_parameters
+        )
+
+    def test_client_context_params(self):
+        self.context_params_documenter.document_context_params(
+            self.doc_structure
+        )
+        self.assert_contains_lines_in_order(
+            [
+                '========================',
+                'Client Context Parameters',
+                '========================',
+                'Client context parameters are configurable',
+                'The available ``myservice`` client context params are:',
+                '* ``client_context_param1`` (string) - A client context param',
+                '* ``client_context_param2`` (boolean) - A second client context param',
             ]
         )

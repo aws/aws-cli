@@ -22,6 +22,9 @@ from tests.unit.botocore.docs import BaseDocsTest
 class TestServiceDocumenter(BaseDocsTest):
     def setUp(self):
         super().setUp()
+        self.setup_documenter()
+
+    def setup_documenter(self):
         self.add_shape_to_params('Biz', 'String')
         self.setup_client()
         with mock.patch(
@@ -81,3 +84,22 @@ class TestServiceDocumenter(BaseDocsTest):
         os.remove(self.waiter_model_file)
         contents = self.service_documenter.document_service().decode('utf-8')
         self.assertNotIn('Waiters', contents)
+
+    def test_document_service_no_context_params(self):
+        contents = self.service_documenter.document_service().decode('utf-8')
+        self.assertNotIn('Client Context Parameters', contents)
+
+    def test_document_service_context_params(self):
+        self.json_model['clientContextParams'] = {
+            'ClientContextParam1': {
+                'type': 'string',
+                'documentation': 'A client context param',
+            },
+            'ClientContextParam2': {
+                'type': 'boolean',
+                'documentation': 'A second client context param',
+            },
+        }
+        self.setup_documenter()
+        contents = self.service_documenter.document_service().decode('utf-8')
+        self.assertIn('Client Context Parameters', contents)

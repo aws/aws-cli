@@ -370,7 +370,7 @@ class TestMvCommandWithValidateSameS3Paths(BaseS3TransferCommandTest):
         self.assertEqual(self.operations_called[2][0].name, 'CopyObject')
         self.assertEqual(self.operations_called[3][0].name, 'DeleteObject')
 
-    @requires_crt
+    @requires_crt()
     def test_mv_works_if_mrap_arn_resolves_to_different_bucket(self):
         cmdline = (f"{self.prefix} s3://bucket/key "
                    "s3://arn:aws:s3::123456789012:accesspoint/foobar.mrap/key "
@@ -429,7 +429,7 @@ class TestMvCommandWithValidateSameS3Paths(BaseS3TransferCommandTest):
                    "--validate-same-s3-paths")
         self.assert_runs_mv_without_validation(cmdline)
 
-    @requires_crt
+    @requires_crt()
     def test_skips_validation_if_keys_are_different_mrap_arn(self):
         cmdline = (f"{self.prefix} s3://bucket/key "
                    "s3://arn:aws:s3::123456789012:accesspoint/foobar.mrap/key2 "

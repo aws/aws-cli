@@ -26,7 +26,9 @@ class TestPaginatorDocumenter(BaseDocsTest):
         self.setup_client()
         paginator_model = PaginatorModel(self.paginator_json_model)
         self.paginator_documenter = PaginatorDocumenter(
-            client=self.client, service_paginator_model=paginator_model
+            client=self.client,
+            service_paginator_model=paginator_model,
+            root_docs_path=self.root_services_path,
         )
 
     def test_document_paginators(self):
@@ -37,7 +39,11 @@ class TestPaginatorDocumenter(BaseDocsTest):
                 'Paginators',
                 '==========',
                 'The available paginators are:',
-                '* :py:class:`MyService.Paginator.SampleOperation`',
+                'paginator/SampleOperation',
+            ]
+        )
+        self.assert_contains_lines_in_order(
+            [
                 '.. py:class:: MyService.Paginator.SampleOperation',
                 '  ::',
                 '    paginator = client.get_paginator(\'sample_operation\')',
@@ -79,7 +85,10 @@ class TestPaginatorDocumenter(BaseDocsTest):
                 '      - *(dict) --*',
                 '        - **Biz** *(string) --*',
                 '        - **NextToken** *(string) --*',
-            ]
+            ],
+            self.get_nested_service_contents(
+                'myservice', 'paginator', 'SampleOperation'
+            ),
         )
 
     def test_no_page_size_if_no_limit_key(self):

@@ -10,8 +10,8 @@ Output::
            {
               "Status": {
                   "Timeline": {
-                      "ReadyDateTime": 1433200400.03,
-                      "CreationDateTime": 1433199960.152
+                      "ReadyDateTime": "2015-06-01T23:13:20.030+00:00",
+                      "CreationDateTime": "2015-06-01T23:06:00.152+00:00"
                   },
                   "State": "RUNNING",
                   "StateChangeReason": {}
@@ -26,8 +26,8 @@ Output::
           {
               "Status": {
                   "Timeline": {
-                      "ReadyDateTime": 1433200400.031,
-                      "CreationDateTime": 1433199949.102
+                      "ReadyDateTime": "2015-06-01T23:13:20.031+00:00",
+                      "CreationDateTime": "2015-06-01T23:05:49.102+00:00"
                   },
                   "State": "RUNNING",
                   "StateChangeReason": {}
@@ -42,8 +42,8 @@ Output::
           {
               "Status": {
                   "Timeline": {
-                      "ReadyDateTime": 1433200400.031,
-                      "CreationDateTime": 1433199949.102
+                      "ReadyDateTime": "2015-06-01T23:13:20.031+00:00",
+                      "CreationDateTime": "2015-06-01T23:05:49.102+00:00"
                   },
                   "State": "RUNNING",
                   "StateChangeReason": {}
@@ -65,9 +65,9 @@ Output::
             {
                 "Status": {
                     "Timeline": {
-                        "ReadyDateTime": 1487810810.878,
-                        "CreationDateTime": 1487810588.367,
-                        "EndDateTime": 1488022990.924
+                        "ReadyDateTime": "2017-02-23T00:46:50.878+00:00",
+                        "CreationDateTime": "2017-02-23T00:43:08.367+00:00",
+                        "EndDateTime": "2017-02-25T11:43:10.924+00:00"
                     },
                     "State": "TERMINATED",
                     "StateChangeReason": {

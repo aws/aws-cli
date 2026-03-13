@@ -27,7 +27,7 @@
 - Output::
 
     {
-    "CreationDateTime": 1474070889.129,
+    "CreationDateTime": "2016-09-17T00:08:09.129+00:00",
     "Name": "MySecurityConfig"
     }
 
@@ -62,7 +62,7 @@
 - Output::
 
     {
-    "CreationDateTime": 1474070889.129,
+    "CreationDateTime": "2016-09-17T00:08:09.129+00:00",
     "Name": "MySecurityConfig"
     }
 
@@ -90,7 +90,7 @@
 - Output::
 
     {
-    "CreationDateTime": 1490225558.982,
+    "CreationDateTime": "2017-03-22T23:32:38.982+00:00",
     "Name": "MySecurityConfig"
     }
 
@@ -120,6 +120,6 @@
 - Output::
 
     {
-    "CreationDateTime": 1490225558.982,
+    "CreationDateTime": "2017-03-22T23:32:38.982+00:00",
     "Name": "MySecurityConfig"
     }

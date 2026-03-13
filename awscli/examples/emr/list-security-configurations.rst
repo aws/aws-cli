@@ -9,11 +9,11 @@ Output::
     {
         "SecurityConfigurations": [
             {
-                "CreationDateTime": 1473889697.417,
+                "CreationDateTime": "2016-09-14T21:48:17.417+00:00",
                 "Name": "MySecurityConfig-1"
             },
             {
-                "CreationDateTime": 1473889697.417,
+                "CreationDateTime": "2016-09-14T21:48:17.417+00:00",
                 "Name": "MySecurityConfig-2"
             }
         ]

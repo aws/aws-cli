@@ -43,6 +43,10 @@ class BaseDocsTest(unittest.TestCase):
         self.example_model_file = os.path.join(
             self.version_dirs, 'examples-1.json'
         )
+        self.docs_root_dir = tempfile.mkdtemp()
+        self.root_services_path = os.path.join(
+            self.docs_root_dir, 'reference', 'services'
+        )
 
         self.json_model = {}
         self.nested_json_model = {}
@@ -55,6 +59,7 @@ class BaseDocsTest(unittest.TestCase):
 
     def tearDown(self):
         shutil.rmtree(self.root_dir)
+        shutil.rmtree(self.docs_root_dir)
 
     def setup_client(self):
         with open(self.example_model_file, 'w') as f:
@@ -237,8 +242,16 @@ class BaseDocsTest(unittest.TestCase):
         contents = self.doc_structure.flush_structure().decode('utf-8')
         self.assertIn(line, contents)
 
-    def assert_contains_lines_in_order(self, lines):
-        contents = self.doc_structure.flush_structure().decode('utf-8')
+    def get_nested_service_contents(self, service, type, name):
+        service_file_path = os.path.join(
+            self.root_services_path, service, type, f'{name}.rst'
+        )
+        with open(service_file_path, 'rb') as f:
+            return f.read().decode('utf-8')
+
+    def assert_contains_lines_in_order(self, lines, contents=None):
+        if contents is None:
+            contents = self.doc_structure.flush_structure().decode('utf-8')
         for line in lines:
             self.assertIn(line, contents)
             beginning = contents.find(line)

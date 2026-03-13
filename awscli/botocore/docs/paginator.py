@@ -10,18 +10,27 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
+
 from botocore import xform_name
 from botocore.compat import OrderedDict
+from botocore.docs.bcdoc.restdoc import DocumentStructure
 from botocore.docs.method import document_model_driven_method
 from botocore.docs.utils import DocumentedShape
 from botocore.utils import get_service_module_name
 
 
 class PaginatorDocumenter:
-    def __init__(self, client, service_paginator_model):
+    def __init__(self, client, service_paginator_model, root_docs_path):
         self._client = client
+        self._client_class_name = self._client.__class__.__name__
         self._service_name = self._client.meta.service_model.service_name
         self._service_paginator_model = service_paginator_model
+        self._root_docs_path = root_docs_path
+        self._USER_GUIDE_LINK = (
+            'https://boto3.amazonaws.com/'
+            'v1/documentation/api/latest/guide/paginators.html'
+        )
 
     def document_paginators(self, section):
         """Documents the various paginators for a service
@@ -29,8 +38,10 @@ class PaginatorDocumenter:
         param section: The section to write to.
         """
         section.style.h2('Paginators')
+        self._add_overview(section)
         section.style.new_line()
         section.writeln('The available paginators are:')
+        section.style.toctree()
 
         paginator_names = sorted(
             self._service_paginator_model._paginator_config
@@ -38,38 +49,66 @@ class PaginatorDocumenter:
 
         # List the available paginators and then document each paginator.
         for paginator_name in paginator_names:
-            section.style.li(
-                f':py:class:`{self._client.__class__.__name__}.Paginator.{paginator_name}`'
+            section.style.tocitem(
+                f'{self._service_name}/paginator/{paginator_name}'
             )
-            self._add_paginator(section, paginator_name)
+            # Create a new DocumentStructure for each paginator and add contents.
+            paginator_doc_structure = DocumentStructure(
+                paginator_name, target='html'
+            )
+            self._add_paginator(paginator_doc_structure, paginator_name)
+            # Write paginators in individual/nested files.
+            # Path: <root>/reference/services/<service>/paginator/<paginator_name>.rst
+            paginator_dir_path = os.path.join(
+                self._root_docs_path, self._service_name, 'paginator'
+            )
+            paginator_doc_structure.write_to_file(
+                paginator_dir_path, paginator_name
+            )
 
     def _add_paginator(self, section, paginator_name):
-        section = section.add_new_section(paginator_name)
+        section.add_title_section(paginator_name)
 
         # Docment the paginator class
-        section.style.start_sphinx_py_class(
-            class_name=f'{self._client.__class__.__name__}.Paginator.{paginator_name}'
+        paginator_section = section.add_new_section(paginator_name)
+        paginator_section.style.start_sphinx_py_class(
+            class_name=f'{self._client_class_name}.Paginator.{paginator_name}'
         )
-        section.style.start_codeblock()
-        section.style.new_line()
+        paginator_section.style.start_codeblock()
+        paginator_section.style.new_line()
 
         # Document how to instantiate the paginator.
-        section.write(
+        paginator_section.write(
             f'paginator = client.get_paginator(\'{xform_name(paginator_name)}\')'
         )
-        section.style.end_codeblock()
-        section.style.new_line()
+        paginator_section.style.end_codeblock()
+        paginator_section.style.new_line()
         # Get the pagination model for the particular paginator.
         paginator_config = self._service_paginator_model.get_paginator(
             paginator_name
         )
         document_paginate_method(
-            section=section,
+            section=paginator_section,
             paginator_name=paginator_name,
             event_emitter=self._client.meta.events,
             service_model=self._client.meta.service_model,
             paginator_config=paginator_config,
         )
+
+    def _add_overview(self, section):
+        section.style.new_line()
+        section.write(
+            'Paginators are available on a client instance '
+            'via the ``get_paginator`` method. For more detailed instructions '
+            'and examples on the usage of paginators, see the '
+            'paginators '
+        )
+        section.style.external_link(
+            title='user guide',
+            link=self._USER_GUIDE_LINK,
+        )
+        section.write('.')
+        section.style.new_line()
 
 
 def document_paginate_method(

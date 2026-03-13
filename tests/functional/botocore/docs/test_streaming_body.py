@@ -34,8 +34,9 @@ class TestStreamingBodyDocumentation(BaseDocsFunctionalTest):
                     )
 
     def assert_streaming_body_is_properly_documented(self, service, operation):
-        service_docs = ServiceDocumenter(
-            service, self._session
+        ServiceDocumenter(
+            service, self._session, self.root_services_path
         ).document_service()
-        method_docs = self.get_method_document_block(operation, service_docs)
+        contents = self.get_client_method_contents(service, operation)
+        method_docs = self.get_method_document_block(operation, contents)
         self.assert_contains_line('StreamingBody', method_docs)

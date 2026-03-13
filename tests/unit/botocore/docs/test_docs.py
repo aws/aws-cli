@@ -11,8 +11,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
-import shutil
-import tempfile
 
 from botocore.docs import generate_docs
 from botocore.session import get_session
@@ -24,7 +22,6 @@ from tests.unit.botocore.docs import BaseDocsTest
 class TestGenerateDocs(BaseDocsTest):
     def setUp(self):
         super().setUp()
-        self.docs_root = tempfile.mkdtemp()
         self.loader_patch = mock.patch(
             'botocore.session.create_loader', return_value=self.loader
         )
@@ -37,20 +34,16 @@ class TestGenerateDocs(BaseDocsTest):
 
     def tearDown(self):
         super().tearDown()
-        shutil.rmtree(self.docs_root)
         self.loader_patch.stop()
         self.available_service_patch.stop()
 
     def test_generate_docs(self):
         session = get_session()
         # Have the rst files get written to the temporary directory
-        generate_docs(self.docs_root, session)
+        generate_docs(self.docs_root_dir, session)
 
-        reference_services_path = os.path.join(
-            self.docs_root, 'reference', 'services'
-        )
         reference_service_path = os.path.join(
-            reference_services_path, 'myservice.rst'
+            self.root_services_path, 'myservice.rst'
         )
         self.assertTrue(os.path.exists(reference_service_path))
 

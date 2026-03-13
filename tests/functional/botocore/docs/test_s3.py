@@ -46,16 +46,21 @@ class TestS3Docs(BaseDocsFunctionalTest):
             'put_object_acl',
             'put_bucket_versioning',
         ]
-        service_contents = ServiceDocumenter(
-            's3', self._session
+        ServiceDocumenter(
+            's3', self._session, self.root_services_path
         ).document_service()
         for method_name in modified_methods:
+            contents = self.get_client_method_contents('s3', method_name)
             method_contents = self.get_method_document_block(
-                method_name, service_contents
+                method_name, contents
             )
             self.assertNotIn(
                 'ContentMD5=\'string\'', method_contents.decode('utf-8')
             )
+
+    def test_generate_presigned_url_documented(self):
+        content = self.get_docstring_for_method('s3', 'generate_presigned_url')
+        self.assert_contains_line('generate_presigned_url', content)
 
     def test_copy_source_documented_as_union_type(self):
         content = self.get_docstring_for_method('s3', 'copy_object')

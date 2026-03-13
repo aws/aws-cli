@@ -228,6 +228,7 @@ class ClientExceptionsDocumenter:
     def __init__(self, client, root_docs_path):
         self._client = client
         self._client_class_name = self._client.__class__.__name__
+        self._service_name = self._client.meta.service_model.service_name
         self._service_id = self._client.meta.service_model.service_id
         self._root_docs_path = root_docs_path
 

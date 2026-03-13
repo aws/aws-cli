@@ -194,11 +194,17 @@ class TestCPCommand(BaseCPCommandTest):
         self.assertEqual(self.operations_called[1][0].name, 'GetObject')
 
     def test_operations_used_in_recursive_download(self):
+        self._test_operations_used_in_recursive_download(arg='--recursive')
+
+    def test_operations_used_in_recursive_download_short_option(self):
+        self._test_operations_used_in_recursive_download(arg='-r')
+
+    def _test_operations_used_in_recursive_download(self, arg):
         self.parsed_responses = [
             {'ETag': '"foo-1"', 'Contents': [], 'CommonPrefixes': []},
         ]
-        cmdline = '%s s3://bucket/key.txt %s --recursive' % (
-            self.prefix, self.files.rootdir)
+        cmdline = '%s s3://bucket/key.txt %s %s' % (
+            self.prefix, self.files.rootdir, arg)
         self.run_cmd(cmdline, expected_rc=0)
         # We called ListObjectsV2 but had no objects to download, so
         # we only have a single ListObjectsV2 operation being called.

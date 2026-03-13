@@ -261,49 +261,93 @@ class CommandValidator:
         )
 
     def validate_cli_command(self, command, filename):
-        # The plan is to expand this to use the proper CLI parser and
-        # parse arguments and verify them with the service model, but
-        # as a first pass, we're going to verify that the service name
-        # and operation match what we expect.  We can do this without
-        # having to use a parser.
-        self._parse_service_operation(command, filename)
-
-    def _parse_service_operation(self, command, filename):
+        """
+        Validates the syntax of a CLI command by actually parsing it, which catches:
+        - Invalid service names
+        - Invalid operation names
+        - Missing required arguments
+        - Invalid argument names
+        - Malformed argument syntax
+        """
         try:
             command_parts = shlex.split(command)[1:]
+            # Strip newlines from arguments that may have been included due to
+            # backslash line continuations in the RST examples
+            command_parts = [part.lstrip('\n') for part in command_parts]
         except Exception as e:
             raise AssertionError(
                 "Failed to parse this example as shell command: %s\n\n"
                 "Error:\n%s\n" % (command, e)
             )
-        # Strip off the 'aws ' part and break it out into a list.
-        parsed_args, remaining = self._parse_next_command(
-            filename, command, command_parts, self._main_parser
-        )
-        # We know the service is good.  Parse the operation.
-        cmd = self._service_command_table[parsed_args.command]
-        cmd_table = cmd.create_help_command().command_table
-        service_parser = ServiceArgParser(
-            operations_table=cmd_table, service_name=parsed_args.command
-        )
-        self._parse_next_command(filename, command, remaining, service_parser)
 
-    def _parse_next_command(self, filename, original_cmd, args_list, parser):
-        # Strip off the 'aws ' part and break it out into a list.
-        errors = []
-        parser._print_message = lambda message, file: errors.append(message)
+        # TODO - for now skip validation if command uses
+        # --cli-input-json, --cli-input-yaml, or --generate-cli-skeleton
+        if any(
+            arg.startswith('--cli-input-json')
+            or arg.startswith('--cli-input-yaml')
+            or arg == '--generate-cli-skeleton'
+            for arg in command_parts
+        ):
+            return
+
         try:
-            parsed_args, remaining = parser.parse_known_args(args_list)
-            return parsed_args, remaining
-        except SystemExit:
-            # Yes...we have to catch SystemExit. argparse raises this
-            # when you have an invalid command.
-            error_msg = [
-                'Invalid CLI command: %s\n\n' % original_cmd,
-            ]
-            if errors:
-                error_msg.extend(errors)
-            raise AssertionError(''.join(error_msg))
+            # Parse global args
+            parsed_args, remaining = self._main_parser.parse_known_args(
+                command_parts
+            )
+            service_name = parsed_args.command
+
+            # Get the service command
+            service_cmd = self._service_command_table[service_name]
+
+            # Create the service parser
+            cmd_table = service_cmd.create_help_command().command_table
+            service_parser = ServiceArgParser(
+                operations_table=cmd_table, service_name=service_name
+            )
+
+            # Parse the operation
+            parsed_operation, remaining_args = service_parser.parse_known_args(
+                remaining
+            )
+
+            if not hasattr(parsed_operation, 'operation'):
+                # Not a standard operation (might be help, wait, etc.)
+                return
+
+            operation_name = parsed_operation.operation
+            operation_cmd = cmd_table[operation_name]
+
+            # Validate all arguments using the operation's argument parser
+            from awscli.argparser import ArgTableArgParser
+
+            arg_table = operation_cmd.arg_table
+            operation_parser = ArgTableArgParser(arg_table)
+
+            errors = []
+            operation_parser._print_message = (
+                lambda message, file: errors.append(message)
+            )
+
+            try:
+                operation_parser.parse_known_args(remaining_args)
+            except (SystemExit, Exception) as e:
+                error_msg = [
+                    f'Invalid CLI command: {command}\n\n',
+                    f'File: {filename}\n\n',
+                ]
+                if errors:
+                    error_msg.extend(errors)
+                else:
+                    error_msg.append(f'Error: {e}\n')
+                raise AssertionError(''.join(error_msg))
+
+        except Exception as e:
+            raise AssertionError(
+                f"Failed to validate command: {command}\n"
+                f"File: {filename}\n"
+                f"Error: {e}"
+            )
 
 
 class CollectCLICommands(docutils.nodes.GenericNodeVisitor):

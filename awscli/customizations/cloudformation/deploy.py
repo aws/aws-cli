@@ -51,14 +51,6 @@ class DeployCommand(BasicCommand):
 
     ARG_TABLE = [
         {
-            'name': 'template-file',
-            'required': True,
-            'help_text': (
-                'The path where your AWS CloudFormation'
-                ' template is located.'
-            )
-        },
-        {
             'name': 'stack-name',
             'action': 'store',
             'required': True,
@@ -66,6 +58,15 @@ class DeployCommand(BasicCommand):
                 'The name of the AWS CloudFormation stack you\'re deploying to.'
                 ' If you specify an existing stack, the command updates the'
                 ' stack. If you specify a new stack, the command creates it.'
+            )
+        },
+        {
+            'name': 'template-file',
+            'required': False,
+            'default': 'packaged-template.yaml',
+            'help_text': (
+                'The path where your AWS CloudFormation template is located.'
+                ' Defaults to packaged-template.yaml.'
             )
         },
         {

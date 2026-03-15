@@ -61,6 +61,23 @@ LOGIN_ARGS = [
             'instead of the Authorization Code flow.'
         ),
     },
+    {
+        'name': 'redirect-host',
+        'action': 'store',
+        'default': '0.0.0.0',
+        'help_text': (
+            'Overrides OAuth callback address host instead of binding on all available local interfaces'
+        ),
+    },
+    {
+        'name': 'redirect-port',
+        'action': 'store',
+        'cli_type_name': 'integer',
+        'default': 0,
+        'help_text': (
+            'Overrides OAuth callback address port instead of arbitrary unused port'
+        ),
+    },
 ]
 
 
@@ -85,6 +102,7 @@ def do_sso_login(
     registration_scopes=None,
     session_name=None,
     use_device_code=False,
+    redirect_address=None,
 ):
     if token_cache is None:
         token_cache = JSONFileCache(SSO_TOKEN_DIR, dumps_func=_sso_json_dumps)
@@ -100,7 +118,7 @@ def do_sso_login(
             sso_region=sso_region,
             client_creator=session.create_client,
             parsed_globals=parsed_globals,
-            auth_code_fetcher=AuthCodeFetcher(),
+            auth_code_fetcher=AuthCodeFetcher(server_address=redirect_address),
             cache=token_cache,
             on_pending_authorization=on_pending_authorization,
         )
@@ -217,7 +235,7 @@ class AuthCodeFetcher:
     # How long we wait overall for the callback
     _OVERALL_TIMEOUT = 60 * 10
 
-    def __init__(self):
+    def __init__(self, server_address=('0.0.0.0', 0)):
         self._auth_code = None
         self._state = None
         self._is_done = False
@@ -226,7 +244,7 @@ class AuthCodeFetcher:
         # AuthCodeFetcher so that it can pass back the state and auth code
         try:
             handler = partial(OAuthCallbackHandler, self)
-            self.http_server = HTTPServer(('', 0), handler)
+            self.http_server = HTTPServer(server_address, handler)
             self.http_server.timeout = self._REQUEST_TIMEOUT
         except OSError as e:
             raise AuthCodeFetcherError(error_msg=e)

@@ -226,7 +226,8 @@ class AuthCodeFetcher:
         # AuthCodeFetcher so that it can pass back the state and auth code
         try:
             handler = partial(OAuthCallbackHandler, self)
-            self.http_server = HTTPServer(('', 0), handler)
+            server_port = os.environ.get('AWS_OAUTH_CALLBACK_SERVER_PORT', 0)
+            self.http_server = HTTPServer(('', server_port), handler)
             self.http_server.timeout = self._REQUEST_TIMEOUT
         except OSError as e:
             raise AuthCodeFetcherError(error_msg=e)

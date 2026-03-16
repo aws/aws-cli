@@ -313,12 +313,12 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
             )
         self.assertIn("Invalid value for --sso-session", stderr)
 
-    def test_set_deeply_nested_property_in_subsection_does_nothing(self):
+    def test_set_deeply_nested_property_in_subsection_results_in_error(self):
         self.set_config_file_contents(
             "[services my-services]\n" "ec2 =\n" "    endpoint_url = localhost\n"
         )
 
-        self.run_cmd(
+        _, stderr, _ = self.run_cmd(
             [
                 "configure",
                 "set",
@@ -327,11 +327,11 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
                 "s3.express.endpoint_url",
                 "localhost",
             ],
-            expected_rc=0
+            expected_rc=252
         )
-        self.assertEqual(
-            "[services my-services]\n" "ec2 =\n" "    endpoint_url = localhost\n",
-            self.get_config_file_contents(),
+        self.assertIn(
+            "Found more than two parts in the property to set.", 
+            stderr
         )
 
     def test_set_with_two_subsections_specified_results_in_error(self):

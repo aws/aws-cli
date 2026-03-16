@@ -111,9 +111,13 @@ class ConfigureSetCommand(BasicCommand):
     def _set_subsection_property(self, section_type, section_name, varname, value):
         if '.' in varname:
             parts = varname.split('.')
+            # Check if there are more than two parts to the property name to set (e.g., aaa.bbb.ccc)
+            # This would result in a deeply nested property, which is not supported. 
             if len(parts) > 2:
-                return 0
-
+                raise ParamValidationError(
+                    "Found more than two parts in the property to set. "
+                    "Deep nesting of properties is not supported."
+                )
             varname = parts[0]
             value = {parts[1]: value}
         

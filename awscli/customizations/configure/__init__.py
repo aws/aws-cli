@@ -15,15 +15,13 @@ from awscli.compat import shlex
 
 NOT_SET = '<not set>'
 PREDEFINED_SECTION_NAMES = 'plugins'
-# A map between the command line parameter name and the Python object name
-# For allowed sub-section types
+# A map between the command line parameter name and the name used
+# in the full config object.
 SUBSECTION_TYPE_ALLOWLIST = {
     'sso-session': {
-        "param_name" :'sso_session',
         "full_config_name": "sso_sessions"
     },
     'services': {
-        'param_name': 'services',
         "full_config_name": "services"
     },
 }

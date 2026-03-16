@@ -82,23 +82,26 @@ class ConfigureSetCommand(BasicCommand):
         config_path = self._session.get_config_variable(path)
         return os.path.expanduser(config_path)
 
+    def _subsection_parameter_to_argument_name(self, parameter_name):
+        return parameter_name.replace("-", "_")
+
     def _get_subsection_from_args(self, args):
         # Validate mutual exclusivity of sub-section type parameters
-        groups = [[value['param_name']] for value in SUBSECTION_TYPE_ALLOWLIST.values()]
+        groups = [[self._subsection_parameter_to_argument_name(key)] for key in SUBSECTION_TYPE_ALLOWLIST.keys()]
         validate_mutually_exclusive(args, *groups)
 
         subsection_name = None
         subsection_type = None
 
-        for section_type, section_properties in SUBSECTION_TYPE_ALLOWLIST.items():
-            if hasattr(args, section_properties['param_name']):
-                param_value = getattr(args, section_properties['param_name'])
-                if param_value is not None:
-                    if not re.match(r"[\w\d_\-/.%@:\+]+", param_value):
+        for section_type in SUBSECTION_TYPE_ALLOWLIST.keys():
+            cli_parameter_name = self._subsection_parameter_to_argument_name(section_type)
+            if hasattr(args, cli_parameter_name):
+                subsection_name = getattr(args, cli_parameter_name)
+                if subsection_name is not None:
+                    if not re.match(r"[\w\d_\-/.%@:\+]+", subsection_name):
                         raise ParamValidationError(
                             f"aws: [ERROR]: Invalid value for --{section_type}."
                         )
-                    subsection_name = param_value
                     subsection_type = section_type
                     break
 

@@ -88,8 +88,13 @@ def register_removals(event_handler):
             'retrieve-and-generate-stream',
         ],
     )
-    cmd_remover.remove(on_event='building-command-table.bedrock-agentcore',
-                         remove_commands=['invoke-code-interpreter'])
+    cmd_remover.remove(
+        on_event='building-command-table.bedrock-agentcore',
+        remove_commands=[
+            'invoke-code-interpreter',
+            'invoke-agent-runtime-command',
+        ],
+    )
     cmd_remover.remove(
         on_event='building-command-table.qbusiness', remove_commands=['chat']
     )

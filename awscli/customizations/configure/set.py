@@ -51,14 +51,14 @@ class ConfigureSetCommand(BasicCommand):
         },
         {
             'name': 'sso-session',
-            'help_text': 'The name of the SSO session sub-section to configure.',
+            'help_text': 'The name of the sub-section to configure.',
             'action': 'store',
             'cli_type_name': 'string',
             'group_name': 'subsection',
         },
         {
             'name': 'services',
-            'help_text': 'The name of the services sub-section to configure.',
+            'help_text': 'The name of the sub-section to configure.',
             'action': 'store',
             'cli_type_name': 'string',
             'group_name': 'subsection',

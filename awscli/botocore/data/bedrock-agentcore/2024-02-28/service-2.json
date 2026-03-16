@@ -389,7 +389,27 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Sends a request to an agent or tool hosted in an Amazon Bedrock AgentCore Runtime and receives responses in real-time. </p> <p>To invoke an agent you must specify the AgentCore Runtime ARN and provide a payload containing your request. You can optionally specify a qualifier to target a specific version or endpoint of the agent.</p> <p>This operation supports streaming responses, allowing you to receive partial responses as they become available. We recommend using pagination to ensure that the operation returns quickly and successfully when processing large responses.</p> <p>For example code, see <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-invoke-agent.html\">Invoke an AgentCore Runtime agent</a>. </p> <p>If you're integrating your agent with OAuth, you can't use the Amazon Web Services SDK to call <code>InvokeAgentRuntime</code>. Instead, make a HTTPS request to <code>InvokeAgentRuntime</code>. For an example, see <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-oauth.html\">Authenticate and authorize with Inbound Auth and Outbound Auth</a>.</p> <p>To use this operation, you must have the <code>bedrock-agentcore:InvokeAgentRuntime</code> permission. If you are making a call to <code>InvokeAgentRuntime</code> on behalf of a user ID with the <code>X-Amzn-Bedrock-AgentCore-Runtime-User-Id</code> header, You require permissions to both actions (<code>bedrock-agentcore:InvokeAgentRuntime</code> and <code>bedrock-agentcore:InvokeAgentRuntimeForUser</code>). </p>"
+      "documentation":"<p>Sends a request to an agent or tool hosted in an Amazon Bedrock AgentCore Runtime and receives responses in real-time. </p> <p>To invoke an agent, you can specify either the AgentCore Runtime ARN or the agent ID with an account ID, and provide a payload containing your request. When you use the agent ID instead of the full ARN, you don't need to URL-encode the identifier. You can optionally specify a qualifier to target a specific endpoint of the agent.</p> <p>This operation supports streaming responses, allowing you to receive partial responses as they become available. We recommend using pagination to ensure that the operation returns quickly and successfully when processing large responses.</p> <p>For example code, see <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-invoke-agent.html\">Invoke an AgentCore Runtime agent</a>. </p> <p>If you're integrating your agent with OAuth, you can't use the Amazon Web Services SDK to call <code>InvokeAgentRuntime</code>. Instead, make a HTTPS request to <code>InvokeAgentRuntime</code>. For an example, see <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-oauth.html\">Authenticate and authorize with Inbound Auth and Outbound Auth</a>.</p> <p>To use this operation, you must have the <code>bedrock-agentcore:InvokeAgentRuntime</code> permission. If you are making a call to <code>InvokeAgentRuntime</code> on behalf of a user ID with the <code>X-Amzn-Bedrock-AgentCore-Runtime-User-Id</code> header, You require permissions to both actions (<code>bedrock-agentcore:InvokeAgentRuntime</code> and <code>bedrock-agentcore:InvokeAgentRuntimeForUser</code>). </p>"
+    },
+    "InvokeAgentRuntimeCommand":{
+      "name":"InvokeAgentRuntimeCommand",
+      "http":{
+        "method":"POST",
+        "requestUri":"/runtimes/{agentRuntimeArn}/commands",
+        "responseCode":200
+      },
+      "input":{"shape":"InvokeAgentRuntimeCommandRequest"},
+      "output":{"shape":"InvokeAgentRuntimeCommandResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RuntimeClientError"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Executes a command in a runtime session container. Returns streaming output with contentStart, contentDelta, and contentStop events.</p>"
     },
     "InvokeCodeInterpreter":{
       "name":"InvokeCodeInterpreter",
@@ -1210,6 +1230,13 @@
       "documentation":"<p>Contains output from a code interpreter stream.</p>",
       "eventstream":true
     },
+    "CommandExecutionStatus":{
+      "type":"string",
+      "enum":[
+        "COMPLETED",
+        "TIMED_OUT"
+      ]
+    },
     "CompleteResourceTokenAuthRequest":{
       "type":"structure",
       "required":[
@@ -1309,6 +1336,43 @@
         "resource",
         "resource_link"
       ]
+    },
+    "ContentDeltaEvent":{
+      "type":"structure",
+      "members":{
+        "stdout":{
+          "shape":"String",
+          "documentation":"<p>Standard output content</p>"
+        },
+        "stderr":{
+          "shape":"String",
+          "documentation":"<p>Standard error content</p>"
+        }
+      },
+      "documentation":"<p>Content event containing stdout or stderr output</p>"
+    },
+    "ContentStartEvent":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>First event indicating command execution has started</p>"
+    },
+    "ContentStopEvent":{
+      "type":"structure",
+      "required":[
+        "exitCode",
+        "status"
+      ],
+      "members":{
+        "exitCode":{
+          "shape":"Integer",
+          "documentation":"<p>Exit code: 0 = success, -1 = platform error, &gt;0 = command error</p>"
+        },
+        "status":{
+          "shape":"CommandExecutionStatus",
+          "documentation":"<p>Execution status</p>"
+        }
+      },
+      "documentation":"<p>Final event indicating command execution has completed</p>"
     },
     "ContentTextString":{
       "type":"string",
@@ -2386,6 +2450,203 @@
       },
       "exception":true
     },
+    "InvokeAgentRuntimeCommandRequest":{
+      "type":"structure",
+      "required":[
+        "agentRuntimeArn",
+        "body"
+      ],
+      "members":{
+        "contentType":{
+          "shape":"MimeType",
+          "documentation":"<p>The MIME type of the input data in the request payload. This tells the agent runtime how to interpret the payload data. Common values include application/json for JSON data.</p>",
+          "location":"header",
+          "locationName":"Content-Type"
+        },
+        "accept":{
+          "shape":"MimeType",
+          "documentation":"<p>The desired MIME type for the response from the agent runtime command. This tells the agent runtime what format to use for the response data. Common values include application/json for JSON data.</p>",
+          "location":"header",
+          "locationName":"Accept"
+        },
+        "runtimeSessionId":{
+          "shape":"SessionType",
+          "documentation":"<p>Runtime session identifier</p>",
+          "idempotencyToken":true,
+          "location":"header",
+          "locationName":"X-Amzn-Bedrock-AgentCore-Runtime-Session-Id"
+        },
+        "traceId":{
+          "shape":"InvokeAgentRuntimeCommandRequestTraceIdString",
+          "documentation":"<p>The trace identifier for request tracking.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-Trace-Id"
+        },
+        "traceParent":{
+          "shape":"InvokeAgentRuntimeCommandRequestTraceParentString",
+          "documentation":"<p>The parent trace information for distributed tracing.</p>",
+          "location":"header",
+          "locationName":"traceparent"
+        },
+        "traceState":{
+          "shape":"InvokeAgentRuntimeCommandRequestTraceStateString",
+          "documentation":"<p>The trace state information for distributed tracing.</p>",
+          "location":"header",
+          "locationName":"tracestate"
+        },
+        "baggage":{
+          "shape":"InvokeAgentRuntimeCommandRequestBaggageString",
+          "documentation":"<p>Additional context information for distributed tracing.</p>",
+          "location":"header",
+          "locationName":"baggage"
+        },
+        "agentRuntimeArn":{
+          "shape":"String",
+          "documentation":"<p>ARN of the agent runtime</p>",
+          "location":"uri",
+          "locationName":"agentRuntimeArn"
+        },
+        "qualifier":{
+          "shape":"String",
+          "documentation":"<p>Version or alias qualifier</p>",
+          "location":"querystring",
+          "locationName":"qualifier"
+        },
+        "accountId":{
+          "shape":"InvokeAgentRuntimeCommandRequestAccountIdString",
+          "documentation":"<p>Account ID (12 digits)</p>",
+          "location":"querystring",
+          "locationName":"accountId"
+        },
+        "body":{
+          "shape":"InvokeAgentRuntimeCommandRequestBody",
+          "documentation":"<p>Request body containing command and timeout</p>"
+        }
+      },
+      "documentation":"<p>Request for InvokeAgentRuntimeCommand operation</p>",
+      "payload":"body"
+    },
+    "InvokeAgentRuntimeCommandRequestAccountIdString":{
+      "type":"string",
+      "pattern":"[0-9]{12}"
+    },
+    "InvokeAgentRuntimeCommandRequestBaggageString":{
+      "type":"string",
+      "max":8192,
+      "min":0
+    },
+    "InvokeAgentRuntimeCommandRequestBody":{
+      "type":"structure",
+      "required":["command"],
+      "members":{
+        "command":{
+          "shape":"InvokeAgentRuntimeCommandRequestBodyCommandString",
+          "documentation":"<p>The command to execute in the runtime container</p>"
+        },
+        "timeout":{
+          "shape":"Integer",
+          "documentation":"<p>Command timeout in seconds (default: 300, min:1, max: 3600)</p>"
+        }
+      },
+      "documentation":"<p>Request body for InvokeAgentRuntimeCommand</p>"
+    },
+    "InvokeAgentRuntimeCommandRequestBodyCommandString":{
+      "type":"string",
+      "max":65536,
+      "min":1
+    },
+    "InvokeAgentRuntimeCommandRequestTraceIdString":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "InvokeAgentRuntimeCommandRequestTraceParentString":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "InvokeAgentRuntimeCommandRequestTraceStateString":{
+      "type":"string",
+      "max":512,
+      "min":0
+    },
+    "InvokeAgentRuntimeCommandResponse":{
+      "type":"structure",
+      "required":[
+        "contentType",
+        "stream"
+      ],
+      "members":{
+        "runtimeSessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>Runtime session identifier</p>",
+          "location":"header",
+          "locationName":"X-Amzn-Bedrock-AgentCore-Runtime-Session-Id"
+        },
+        "traceId":{
+          "shape":"String",
+          "documentation":"<p>The trace identifier for request tracking.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-Trace-Id"
+        },
+        "traceParent":{
+          "shape":"String",
+          "documentation":"<p>The parent trace information for distributed tracing.</p>",
+          "location":"header",
+          "locationName":"traceparent"
+        },
+        "traceState":{
+          "shape":"String",
+          "documentation":"<p>The trace state information for distributed tracing.</p>",
+          "location":"header",
+          "locationName":"tracestate"
+        },
+        "baggage":{
+          "shape":"String",
+          "documentation":"<p>Additional context information for distributed tracing.</p>",
+          "location":"header",
+          "locationName":"baggage"
+        },
+        "contentType":{
+          "shape":"String",
+          "documentation":"<p>The MIME type of the response data. This indicates how to interpret the response data. Common values include application/json for JSON data.</p>",
+          "location":"header",
+          "locationName":"Content-Type"
+        },
+        "statusCode":{
+          "shape":"HttpResponseCode",
+          "documentation":"<p>The HTTP status code of the response. A status code of 200 indicates a successful operation. Other status codes indicate various error conditions.</p>",
+          "location":"statusCode"
+        },
+        "stream":{
+          "shape":"InvokeAgentRuntimeCommandStreamOutput",
+          "documentation":"<p>Streaming output containing command execution events</p>"
+        }
+      },
+      "documentation":"<p>Response for InvokeAgentRuntimeCommand operation</p>",
+      "payload":"stream"
+    },
+    "InvokeAgentRuntimeCommandStreamOutput":{
+      "type":"structure",
+      "members":{
+        "chunk":{
+          "shape":"ResponseChunk",
+          "documentation":"<p>Response chunk containing command execution events</p>"
+        },
+        "accessDeniedException":{
+          "shape":"AccessDeniedException",
+          "documentation":"<p>Exception events for error streaming</p>"
+        },
+        "internalServerException":{"shape":"InternalServerException"},
+        "resourceNotFoundException":{"shape":"ResourceNotFoundException"},
+        "serviceQuotaExceededException":{"shape":"ServiceQuotaExceededException"},
+        "throttlingException":{"shape":"ThrottlingException"},
+        "validationException":{"shape":"ValidationException"},
+        "runtimeClientError":{"shape":"RuntimeClientError"}
+      },
+      "documentation":"<p>Streaming output for InvokeAgentRuntimeCommand operation Delivers typed events: contentStart (first), contentDelta (middle), contentStop (last)</p>",
+      "eventstream":true
+    },
     "InvokeAgentRuntimeRequest":{
       "type":"structure",
       "required":[
@@ -2456,19 +2717,19 @@
         },
         "agentRuntimeArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Web Services Resource Name (ARN) of the agent runtime to invoke. The ARN uniquely identifies the agent runtime resource in Amazon Bedrock AgentCore.</p>",
+          "documentation":"<p>The identifier of the agent runtime to invoke. You can specify either the full Amazon Web Services Resource Name (ARN) or the agent ID. If you use the agent ID, you must also provide the <code>accountId</code> query parameter.</p>",
           "location":"uri",
           "locationName":"agentRuntimeArn"
         },
         "qualifier":{
           "shape":"String",
-          "documentation":"<p>The qualifier to use for the agent runtime. This can be a version number or an endpoint name that points to a specific version. If not specified, Amazon Bedrock AgentCore uses the default version of the agent runtime.</p>",
+          "documentation":"<p>The qualifier to use for the agent runtime. This is an endpoint name that points to a specific version. If not specified, Amazon Bedrock AgentCore uses the default endpoint of the agent runtime.</p>",
           "location":"querystring",
           "locationName":"qualifier"
         },
         "accountId":{
           "shape":"InvokeAgentRuntimeRequestAccountIdString",
-          "documentation":"<p>The identifier of the Amazon Web Services account for the agent runtime resource.</p>",
+          "documentation":"<p>The identifier of the Amazon Web Services account for the agent runtime resource. This parameter is required when you specify an agent ID instead of the full ARN for <code>agentRuntimeArn</code>.</p>",
           "location":"querystring",
           "locationName":"accountId"
         },
@@ -3498,6 +3759,25 @@
       "min":1,
       "pattern":"\\w+:(\\/?\\/?)[^\\s]+"
     },
+    "ResponseChunk":{
+      "type":"structure",
+      "members":{
+        "contentStart":{
+          "shape":"ContentStartEvent",
+          "documentation":"<p>First chunk - indicates command execution has started</p>"
+        },
+        "contentDelta":{
+          "shape":"ContentDeltaEvent",
+          "documentation":"<p>Middle chunks - stdout/stderr output</p>"
+        },
+        "contentStop":{
+          "shape":"ContentStopEvent",
+          "documentation":"<p>Last chunk - indicates command execution has completed</p>"
+        }
+      },
+      "documentation":"<p>Response chunk containing exactly one of: contentStart, contentDelta, or contentStop</p>",
+      "event":true
+    },
     "ResponseStream":{
       "type":"blob",
       "sensitive":true,
@@ -3897,7 +4177,7 @@
         },
         "sessionTimeoutSeconds":{
           "shape":"BrowserSessionTimeout",
-          "documentation":"<p>The time in seconds after which the session automatically terminates if there is no activity. The default value is 3600 seconds (1 hour). The minimum allowed value is 60 seconds, and the maximum allowed value is 28800 seconds (8 hours).</p>"
+          "documentation":"<p>The duration in seconds (time-to-live) after which the session automatically terminates, regardless of ongoing activity. Defaults to 3600 seconds (1 hour). Recommended minimum: 60 seconds. Maximum allowed: 28,800 seconds (8 hours).</p>"
         },
         "viewPort":{
           "shape":"ViewPort",
@@ -3986,7 +4266,7 @@
         },
         "sessionTimeoutSeconds":{
           "shape":"CodeInterpreterSessionTimeout",
-          "documentation":"<p>The time in seconds after which the session automatically terminates if there is no activity. The default value is 900 seconds (15 minutes). The minimum allowed value is 60 seconds, and the maximum allowed value is 28800 seconds (8 hours).</p>"
+          "documentation":"<p>The duration in seconds (time-to-live) after which the session automatically terminates, regardless of ongoing activity. Defaults to 900 seconds (15 minutes). Recommended minimum: 60 seconds. Maximum allowed: 28,800 seconds (8 hours).</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -4504,7 +4784,7 @@
       "members":{
         "userToken":{
           "shape":"UserTokenType",
-          "documentation":"<p>The OAuth2.0 token issued by the user’s identity provider</p>"
+          "documentation":"<p>The OAuth2.0 token issued by the user’s identity provider that was used to generate the workload access token</p>"
         },
         "userId":{
           "shape":"UserIdType",

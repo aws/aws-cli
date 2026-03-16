@@ -4595,6 +4595,10 @@
           "shape":"CapacityOptionType",
           "documentation":"<p>The capacity option type. This determines whether Amazon ECS launches On-Demand, Spot or Capacity Reservation Instances for your managed instance capacity provider.</p> <p>Valid values are:</p> <ul> <li> <p> <code>ON_DEMAND</code> - Launches standard On-Demand Instances. On-Demand Instances provide predictable pricing and availability.</p> </li> <li> <p> <code>SPOT</code> - Launches Spot Instances that use spare Amazon EC2 capacity at reduced cost. Spot Instances can be interrupted by Amazon EC2 with a two-minute notification when the capacity is needed back.</p> </li> <li> <p> <code>RESERVED</code> - Launches Instances using Amazon EC2 Capacity Reservations. Capacity Reservations allow you to reserve compute capacity for Amazon EC2 instances in a specific Availability Zone.</p> </li> </ul> <p>The default is On-Demand</p> <p>For more information about Amazon EC2 capacity options, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-purchasing-options.html\">Instance purchasing options</a> in the <i>Amazon EC2 User Guide</i>.</p>"
         },
+        "instanceMetadataTagsPropagation":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Determines whether tags are propagated to the instance metadata service (IMDS) for Amazon EC2 instances launched by the Managed Instances capacity provider. When enabled, all tags associated with the instance are available through the instance metadata service. When disabled, tags are not propagated to IMDS.</p> <p>Disable this setting if your tags contain characters that are not compatible with IMDS, such as <code>/</code>. IMDS requires tag keys to match the pattern <code>[0-9a-zA-Z\\-_+=,.@:]{1,255}</code>.</p> <p>The default value is <code>true</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#work-with-tags-in-IMDS\">Work with instance tags in instance metadata</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+        },
         "instanceRequirements":{
           "shape":"InstanceRequirementsRequest",
           "documentation":"<p>The instance requirements. You can specify:</p> <ul> <li> <p>The instance types</p> </li> <li> <p>Instance requirements such as vCPU count, memory, network performance, and accelerator specifications</p> </li> </ul> <p>Amazon ECS automatically selects the instances that match the specified criteria.</p>"
@@ -4624,6 +4628,10 @@
         "storageConfiguration":{
           "shape":"ManagedInstancesStorageConfiguration",
           "documentation":"<p>The updated storage configuration for Amazon ECS Managed Instances. Changes to storage settings apply to new instances launched after the update.</p>"
+        },
+        "instanceMetadataTagsPropagation":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Determines whether tags are propagated to the instance metadata service (IMDS) for Amazon EC2 instances launched by the Managed Instances capacity provider. When enabled, all tags associated with the instance are available through the instance metadata service. When disabled, tags are not propagated to IMDS.</p> <p>Disable this setting if your tags contain characters that are not compatible with IMDS, such as <code>/</code>. IMDS requires tag keys to match the pattern <code>[0-9a-zA-Z\\-_+=,.@:]{1,255}</code>.</p> <p>The default value is <code>true</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#work-with-tags-in-IMDS\">Work with instance tags in instance metadata</a> in the <i>Amazon EC2 User Guide</i>.</p>"
         },
         "monitoring":{
           "shape":"ManagedInstancesMonitoringOptions",

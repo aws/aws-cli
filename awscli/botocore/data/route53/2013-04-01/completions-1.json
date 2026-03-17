@@ -12,7 +12,8 @@
     "TrafficPolicy": {
       "operation": "ListTrafficPolicies",
       "resourceIdentifier": {
-        "Type": "TrafficPolicySummaries[].Type"
+        "Type": "TrafficPolicySummaries[].Type",
+        "Id": "TrafficPolicySummaries[].Id"
       }
     },
     "TrafficPolicyInstance": {
@@ -20,7 +21,33 @@
       "resourceIdentifier": {
         "Id": "TrafficPolicyInstances[].Id",
         "HostedZoneId": "TrafficPolicyInstances[].HostedZoneId",
-        "TrafficPolicyId": "TrafficPolicyInstances[].TrafficPolicyId"
+        "TrafficPolicyId": "TrafficPolicyInstances[].TrafficPolicyId",
+        "Name": "TrafficPolicyInstances[].Name"
+      }
+    },
+    "HostedZone": {
+      "operation": "ListHostedZones",
+      "resourceIdentifier": {
+        "Id": "HostedZones[].Id",
+        "Name": "HostedZones[].Name"
+      }
+    },
+    "CidrCollection": {
+      "operation": "ListCidrCollections",
+      "resourceIdentifier": {
+        "Id": "CidrCollections[].Id"
+      }
+    },
+    "ReusableDelegationSet": {
+      "operation": "ListReusableDelegationSets",
+      "resourceIdentifier": {
+        "Id": "DelegationSets[].Id"
+      }
+    },
+    "HealthCheck": {
+      "operation": "ListHealthChecks",
+      "resourceIdentifier": {
+        "Id": "HealthChecks[].Id"
       }
     }
   },
@@ -52,7 +79,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "TrafficPolicyInstance",
+            "resourceName": "HostedZone",
             "resourceIdentifier": "Id"
           }
         ]
@@ -74,7 +101,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "TrafficPolicyInstance",
+            "resourceName": "ReusableDelegationSet",
             "resourceIdentifier": "Id"
           }
         ]
@@ -85,7 +112,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "TrafficPolicyInstance",
+            "resourceName": "TrafficPolicy",
             "resourceIdentifier": "Id"
           }
         ]
@@ -180,7 +207,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "TrafficPolicyInstance",
+            "resourceName": "HostedZone",
             "resourceIdentifier": "Id"
           }
         ]
@@ -222,7 +249,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "TrafficPolicyInstance",
+            "resourceName": "ReusableDelegationSet",
             "resourceIdentifier": "Id"
           }
         ]
@@ -237,6 +264,15 @@
             "resourceIdentifier": "Type"
           }
         ]
+      },
+      "DelegationSetId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReusableDelegationSet",
+            "resourceIdentifier": "Id"
+          }
+        ]
       }
     },
     "GetTrafficPolicy": {
@@ -244,7 +280,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "TrafficPolicyInstance",
+            "resourceName": "TrafficPolicy",
             "resourceIdentifier": "Id"
           }
         ]
@@ -268,6 +304,15 @@
             "parameters": {},
             "resourceName": "TrafficPolicyInstance",
             "resourceIdentifier": "HostedZoneId"
+          }
+        ]
+      },
+      "DNSName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HostedZone",
+            "resourceIdentifier": "Name"
           }
         ]
       }
@@ -303,6 +348,15 @@
             "resourceIdentifier": "HostedZoneId"
           }
         ]
+      },
+      "TrafficPolicyInstanceNameMarker": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "Name"
+          }
+        ]
       }
     },
     "ListTrafficPolicyInstancesByPolicy": {
@@ -314,6 +368,24 @@
             "resourceIdentifier": "TrafficPolicyId"
           }
         ]
+      },
+      "HostedZoneIdMarker": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HostedZone",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      },
+      "TrafficPolicyInstanceNameMarker": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "Name"
+          }
+        ]
       }
     },
     "ListTrafficPolicyVersions": {
@@ -321,7 +393,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "TrafficPolicyInstance",
+            "resourceName": "TrafficPolicy",
             "resourceIdentifier": "Id"
           }
         ]
@@ -387,6 +459,319 @@
             "parameters": {},
             "resourceName": "TrafficPolicyInstance",
             "resourceIdentifier": "TrafficPolicyId"
+          }
+        ]
+      }
+    },
+    "ActivateKeySigningKey": {
+      "HostedZoneId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HostedZone",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "ChangeCidrCollection": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CidrCollection",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "CreateHostedZone": {
+      "DelegationSetId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReusableDelegationSet",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "CreateKeySigningKey": {
+      "HostedZoneId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HostedZone",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "CreateQueryLoggingConfig": {
+      "HostedZoneId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HostedZone",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "CreateReusableDelegationSet": {
+      "HostedZoneId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HostedZone",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "CreateTrafficPolicyInstance": {
+      "HostedZoneId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HostedZone",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      },
+      "TrafficPolicyId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicy",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "CreateTrafficPolicyVersion": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicy",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "CreateVPCAssociationAuthorization": {
+      "HostedZoneId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HostedZone",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "DeactivateKeySigningKey": {
+      "HostedZoneId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HostedZone",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "DeleteCidrCollection": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CidrCollection",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "DeleteHealthCheck": {
+      "HealthCheckId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HealthCheck",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "DeleteKeySigningKey": {
+      "HostedZoneId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HostedZone",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "DisableHostedZoneDNSSEC": {
+      "HostedZoneId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HostedZone",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "EnableHostedZoneDNSSEC": {
+      "HostedZoneId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HostedZone",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "GetDNSSEC": {
+      "HostedZoneId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HostedZone",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "GetHealthCheck": {
+      "HealthCheckId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HealthCheck",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "GetHealthCheckLastFailureReason": {
+      "HealthCheckId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HealthCheck",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "GetHealthCheckStatus": {
+      "HealthCheckId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HealthCheck",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "ListCidrBlocks": {
+      "CollectionId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CidrCollection",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "ListCidrLocations": {
+      "CollectionId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CidrCollection",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "ListHostedZones": {
+      "DelegationSetId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReusableDelegationSet",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "ListTrafficPolicies": {
+      "TrafficPolicyIdMarker": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicy",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "ListTrafficPolicyInstances": {
+      "HostedZoneIdMarker": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HostedZone",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      },
+      "TrafficPolicyInstanceNameMarker": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "Name"
+          }
+        ]
+      }
+    },
+    "UpdateHealthCheck": {
+      "HealthCheckId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HealthCheck",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      },
+      "ChildHealthChecks": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HealthCheck",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "UpdateHostedZoneFeatures": {
+      "HostedZoneId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HostedZone",
+            "resourceIdentifier": "Id"
           }
         ]
       }

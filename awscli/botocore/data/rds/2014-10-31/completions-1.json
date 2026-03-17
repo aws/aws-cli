@@ -23,7 +23,10 @@
       "operation": "DescribeDBClusters",
       "resourceIdentifier": {
         "DatabaseName": "DBClusters[].DatabaseName",
-        "EngineMode": "DBClusters[].EngineMode"
+        "EngineMode": "DBClusters[].EngineMode",
+        "DBClustersDBClusterIdentifier": "DBClusters[].DBClusterIdentifier",
+        "DbClusterResourceId": "DBClusters[].DbClusterResourceId",
+        "DBClusterArn": "DBClusters[].DBClusterArn"
       }
     },
     "DBInstance": {
@@ -36,7 +39,10 @@
         "DBClusterIdentifier": "DBInstances[].DBClusterIdentifier",
         "CACertificateIdentifier": "DBInstances[].CACertificateIdentifier",
         "MonitoringRoleArn": "DBInstances[].MonitoringRoleArn",
-        "PerformanceInsightsKMSKeyId": "DBInstances[].PerformanceInsightsKMSKeyId"
+        "PerformanceInsightsKMSKeyId": "DBInstances[].PerformanceInsightsKMSKeyId",
+        "DBInstancesDBInstanceIdentifier": "DBInstances[].DBInstanceIdentifier",
+        "DbiResourceId": "DBInstances[].DbiResourceId",
+        "DBInstanceArn": "DBInstances[].DBInstanceArn"
       }
     },
     "DBParameterGroup": {
@@ -80,7 +86,8 @@
     "EventSubscription": {
       "operation": "DescribeEventSubscriptions",
       "resourceIdentifier": {
-        "SnsTopicArn": "EventSubscriptionsList[].SnsTopicArn"
+        "SnsTopicArn": "EventSubscriptionsList[].SnsTopicArn",
+        "CustSubscriptionId": "EventSubscriptionsList[].CustSubscriptionId"
       }
     },
     "Event": {
@@ -124,6 +131,75 @@
       "resourceIdentifier": {
         "RegionName": "SourceRegions[].RegionName"
       }
+    },
+    "ExportTask": {
+      "operation": "DescribeExportTasks",
+      "resourceIdentifier": {
+        "ExportTaskIdentifier": "ExportTasks[].ExportTaskIdentifier"
+      }
+    },
+    "GlobalCluster": {
+      "operation": "DescribeGlobalClusters",
+      "resourceIdentifier": {
+        "GlobalClusterIdentifier": "GlobalClusters[].GlobalClusterIdentifier"
+      }
+    },
+    "DBProxy": {
+      "operation": "DescribeDBProxies",
+      "resourceIdentifier": {
+        "DBProxyName": "DBProxies[].DBProxyName"
+      }
+    },
+    "BlueGreenDeployment": {
+      "operation": "DescribeBlueGreenDeployments",
+      "resourceIdentifier": {
+        "BlueGreenDeploymentIdentifier": "BlueGreenDeployments[].BlueGreenDeploymentIdentifier"
+      }
+    },
+    "DBClusterAutomatedBackup": {
+      "operation": "DescribeDBClusterAutomatedBackups",
+      "resourceIdentifier": {
+        "DBClusterIdentifier": "DBClusterAutomatedBackups[].DBClusterIdentifier",
+        "DbClusterResourceId": "DBClusterAutomatedBackups[].DbClusterResourceId"
+      }
+    },
+    "DBClusterEndpoint": {
+      "operation": "DescribeDBClusterEndpoints",
+      "resourceIdentifier": {
+        "DBClusterEndpointIdentifier": "DBClusterEndpoints[].DBClusterEndpointIdentifier"
+      }
+    },
+    "DBInstanceAutomatedBackup": {
+      "operation": "DescribeDBInstanceAutomatedBackups",
+      "resourceIdentifier": {
+        "DbiResourceId": "DBInstanceAutomatedBackups[].DbiResourceId",
+        "DBInstanceIdentifier": "DBInstanceAutomatedBackups[].DBInstanceIdentifier",
+        "DBInstanceAutomatedBackupsDBInstanceAutomatedBackupsArn": "DBInstanceAutomatedBackups[].DBInstanceAutomatedBackupsArn"
+      }
+    },
+    "DBProxyEndpoint": {
+      "operation": "DescribeDBProxyEndpoints",
+      "resourceIdentifier": {
+        "DBProxyEndpointName": "DBProxyEndpoints[].DBProxyEndpointName"
+      }
+    },
+    "DBShardGroup": {
+      "operation": "DescribeDBShardGroups",
+      "resourceIdentifier": {
+        "DBShardGroupIdentifier": "DBShardGroups[].DBShardGroupIdentifier"
+      }
+    },
+    "TenantDatabase": {
+      "operation": "DescribeTenantDatabases",
+      "resourceIdentifier": {
+        "TenantDatabasesTenantDBName": "TenantDatabases[].TenantDBName"
+      }
+    },
+    "Integration": {
+      "operation": "DescribeIntegrations",
+      "resourceIdentifier": {
+        "IntegrationName": "Integrations[].IntegrationName"
+      }
     }
   },
   "operations": {
@@ -145,6 +221,15 @@
             "parameters": {},
             "resourceName": "Event",
             "resourceIdentifier": "SourceIdentifier"
+          }
+        ]
+      },
+      "SubscriptionName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "EventSubscription",
+            "resourceIdentifier": "CustSubscriptionId"
           }
         ]
       }
@@ -198,6 +283,15 @@
             "parameters": {},
             "resourceName": "DBSnapshot",
             "resourceIdentifier": "SourceRegion"
+          }
+        ]
+      },
+      "SourceDBClusterSnapshotIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBClusterSnapshot",
+            "resourceIdentifier": "DBClusterSnapshotIdentifier"
           }
         ]
       }
@@ -421,6 +515,15 @@
             "resourceIdentifier": "SnapshotType"
           }
         ]
+      },
+      "DbClusterResourceId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DbClusterResourceId"
+          }
+        ]
       }
     },
     "DescribeDBClusters": {
@@ -554,6 +657,15 @@
             "parameters": {},
             "resourceName": "DBSnapshot",
             "resourceIdentifier": "SnapshotType"
+          }
+        ]
+      },
+      "DbiResourceId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBInstance",
+            "resourceIdentifier": "DbiResourceId"
           }
         ]
       }
@@ -847,6 +959,15 @@
             "resourceIdentifier": "DBClusterIdentifier"
           }
         ]
+      },
+      "TargetDBInstanceIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBInstance",
+            "resourceIdentifier": "DBInstancesDBInstanceIdentifier"
+          }
+        ]
       }
     },
     "ModifyCurrentDBClusterCapacity": {
@@ -921,6 +1042,24 @@
             "parameters": {},
             "resourceName": "DBSnapshot",
             "resourceIdentifier": "EngineVersion"
+          }
+        ]
+      },
+      "DBInstanceParameterGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBParameterGroup",
+            "resourceIdentifier": "DBParameterGroupName"
+          }
+        ]
+      },
+      "CACertificateIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Certificate",
+            "resourceIdentifier": "CertificateIdentifier"
           }
         ]
       }
@@ -1173,6 +1312,15 @@
             "resourceIdentifier": "SourceType"
           }
         ]
+      },
+      "SubscriptionName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "EventSubscription",
+            "resourceIdentifier": "CustSubscriptionId"
+          }
+        ]
       }
     },
     "ModifyOptionGroup": {
@@ -1266,6 +1414,15 @@
             "parameters": {},
             "resourceName": "Event",
             "resourceIdentifier": "SourceIdentifier"
+          }
+        ]
+      },
+      "SubscriptionName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "EventSubscription",
+            "resourceIdentifier": "CustSubscriptionId"
           }
         ]
       }
@@ -1483,6 +1640,15 @@
             "resourceIdentifier": "EngineMode"
           }
         ]
+      },
+      "DBClusterParameterGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBClusterParameterGroup",
+            "resourceIdentifier": "DBClusterParameterGroupName"
+          }
+        ]
       }
     },
     "RestoreDBClusterToPointInTime": {
@@ -1519,6 +1685,33 @@
             "parameters": {},
             "resourceName": "DBSnapshot",
             "resourceIdentifier": "KmsKeyId"
+          }
+        ]
+      },
+      "SourceDBClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DBClustersDBClusterIdentifier"
+          }
+        ]
+      },
+      "DBClusterParameterGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBClusterParameterGroup",
+            "resourceIdentifier": "DBClusterParameterGroupName"
+          }
+        ]
+      },
+      "SourceDbClusterResourceId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DbClusterResourceId"
           }
         ]
       }
@@ -1620,6 +1813,33 @@
             "parameters": {},
             "resourceName": "DBSnapshot",
             "resourceIdentifier": "TdeCredentialArn"
+          }
+        ]
+      },
+      "DBParameterGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBParameterGroup",
+            "resourceIdentifier": "DBParameterGroupName"
+          }
+        ]
+      },
+      "DBClusterSnapshotIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBClusterSnapshot",
+            "resourceIdentifier": "DBClusterSnapshotIdentifier"
+          }
+        ]
+      },
+      "CACertificateIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Certificate",
+            "resourceIdentifier": "CertificateIdentifier"
           }
         ]
       }
@@ -1777,6 +1997,24 @@
             "resourceIdentifier": "PerformanceInsightsKMSKeyId"
           }
         ]
+      },
+      "DBSecurityGroups": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBSecurityGroup",
+            "resourceIdentifier": "DBSecurityGroupName"
+          }
+        ]
+      },
+      "CACertificateIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Certificate",
+            "resourceIdentifier": "CertificateIdentifier"
+          }
+        ]
       }
     },
     "RestoreDBInstanceToPointInTime": {
@@ -1860,6 +2098,51 @@
             "resourceIdentifier": "TdeCredentialArn"
           }
         ]
+      },
+      "SourceDBInstanceIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBInstance",
+            "resourceIdentifier": "DBInstancesDBInstanceIdentifier"
+          }
+        ]
+      },
+      "DBParameterGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBParameterGroup",
+            "resourceIdentifier": "DBParameterGroupName"
+          }
+        ]
+      },
+      "SourceDbiResourceId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBInstance",
+            "resourceIdentifier": "DbiResourceId"
+          }
+        ]
+      },
+      "SourceDBInstanceAutomatedBackupsArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBInstanceAutomatedBackup",
+            "resourceIdentifier": "DBInstanceAutomatedBackupsDBInstanceAutomatedBackupsArn"
+          }
+        ]
+      },
+      "CACertificateIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Certificate",
+            "resourceIdentifier": "CertificateIdentifier"
+          }
+        ]
       }
     },
     "RevokeDBSecurityGroupIngress": {
@@ -1922,6 +2205,1011 @@
             "parameters": {},
             "resourceName": "DBSnapshot",
             "resourceIdentifier": "DBSnapshotIdentifier"
+          }
+        ]
+      }
+    },
+    "AddRoleToDBInstance": {
+      "DBInstanceIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBInstance",
+            "resourceIdentifier": "DBInstancesDBInstanceIdentifier"
+          }
+        ]
+      }
+    },
+    "CancelExportTask": {
+      "ExportTaskIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ExportTask",
+            "resourceIdentifier": "ExportTaskIdentifier"
+          }
+        ]
+      }
+    },
+    "CopyDBClusterParameterGroup": {
+      "SourceDBClusterParameterGroupIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBClusterParameterGroup",
+            "resourceIdentifier": "DBClusterParameterGroupName"
+          }
+        ]
+      }
+    },
+    "CopyDBParameterGroup": {
+      "SourceDBParameterGroupIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBParameterGroup",
+            "resourceIdentifier": "DBParameterGroupName"
+          }
+        ]
+      }
+    },
+    "CopyOptionGroup": {
+      "SourceOptionGroupIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "OptionGroup",
+            "resourceIdentifier": "OptionGroupName"
+          }
+        ]
+      }
+    },
+    "CreateDBCluster": {
+      "DBClusterParameterGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBClusterParameterGroup",
+            "resourceIdentifier": "DBClusterParameterGroupName"
+          }
+        ]
+      },
+      "DBSubnetGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBSubnetGroup",
+            "resourceIdentifier": "DBSubnetGroupName"
+          }
+        ]
+      },
+      "ReplicationSourceIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DBClustersDBClusterIdentifier"
+          }
+        ]
+      },
+      "OptionGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "OptionGroup",
+            "resourceIdentifier": "OptionGroupName"
+          }
+        ]
+      },
+      "GlobalClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "GlobalCluster",
+            "resourceIdentifier": "GlobalClusterIdentifier"
+          }
+        ]
+      },
+      "CACertificateIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Certificate",
+            "resourceIdentifier": "CertificateIdentifier"
+          }
+        ]
+      }
+    },
+    "CreateDBClusterEndpoint": {
+      "DBClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DBClustersDBClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "CreateDBClusterSnapshot": {
+      "DBClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DBClustersDBClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "CreateDBInstance": {
+      "DBSecurityGroups": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBSecurityGroup",
+            "resourceIdentifier": "DBSecurityGroupName"
+          }
+        ]
+      },
+      "DBSubnetGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBSubnetGroup",
+            "resourceIdentifier": "DBSubnetGroupName"
+          }
+        ]
+      },
+      "DBParameterGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBParameterGroup",
+            "resourceIdentifier": "DBParameterGroupName"
+          }
+        ]
+      },
+      "OptionGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "OptionGroup",
+            "resourceIdentifier": "OptionGroupName"
+          }
+        ]
+      },
+      "DBClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DBClustersDBClusterIdentifier"
+          }
+        ]
+      },
+      "CACertificateIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Certificate",
+            "resourceIdentifier": "CertificateIdentifier"
+          }
+        ]
+      }
+    },
+    "CreateDBInstanceReadReplica": {
+      "SourceDBInstanceIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBInstance",
+            "resourceIdentifier": "DBInstancesDBInstanceIdentifier"
+          }
+        ]
+      },
+      "OptionGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "OptionGroup",
+            "resourceIdentifier": "OptionGroupName"
+          }
+        ]
+      },
+      "DBParameterGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBParameterGroup",
+            "resourceIdentifier": "DBParameterGroupName"
+          }
+        ]
+      },
+      "DBSubnetGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBSubnetGroup",
+            "resourceIdentifier": "DBSubnetGroupName"
+          }
+        ]
+      },
+      "SourceDBClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DBClustersDBClusterIdentifier"
+          }
+        ]
+      },
+      "CACertificateIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Certificate",
+            "resourceIdentifier": "CertificateIdentifier"
+          }
+        ]
+      }
+    },
+    "CreateDBProxyEndpoint": {
+      "DBProxyName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBProxy",
+            "resourceIdentifier": "DBProxyName"
+          }
+        ]
+      }
+    },
+    "CreateDBShardGroup": {
+      "DBClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DBClustersDBClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "CreateDBSnapshot": {
+      "DBInstanceIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBInstance",
+            "resourceIdentifier": "DBInstancesDBInstanceIdentifier"
+          }
+        ]
+      }
+    },
+    "CreateGlobalCluster": {
+      "SourceDBClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DBClustersDBClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "CreateTenantDatabase": {
+      "DBInstanceIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBInstance",
+            "resourceIdentifier": "DBInstancesDBInstanceIdentifier"
+          }
+        ]
+      }
+    },
+    "DeleteBlueGreenDeployment": {
+      "BlueGreenDeploymentIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "BlueGreenDeployment",
+            "resourceIdentifier": "BlueGreenDeploymentIdentifier"
+          }
+        ]
+      }
+    },
+    "DeleteDBClusterAutomatedBackup": {
+      "DbClusterResourceId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBClusterAutomatedBackup",
+            "resourceIdentifier": "DbClusterResourceId"
+          }
+        ]
+      }
+    },
+    "DeleteDBClusterEndpoint": {
+      "DBClusterEndpointIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBClusterEndpoint",
+            "resourceIdentifier": "DBClusterEndpointIdentifier"
+          }
+        ]
+      }
+    },
+    "DeleteDBInstanceAutomatedBackup": {
+      "DbiResourceId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBInstanceAutomatedBackup",
+            "resourceIdentifier": "DbiResourceId"
+          }
+        ]
+      },
+      "DBInstanceAutomatedBackupsArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBInstanceAutomatedBackup",
+            "resourceIdentifier": "DBInstanceAutomatedBackupsDBInstanceAutomatedBackupsArn"
+          }
+        ]
+      }
+    },
+    "DeleteDBProxy": {
+      "DBProxyName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBProxy",
+            "resourceIdentifier": "DBProxyName"
+          }
+        ]
+      }
+    },
+    "DeleteDBProxyEndpoint": {
+      "DBProxyEndpointName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBProxyEndpoint",
+            "resourceIdentifier": "DBProxyEndpointName"
+          }
+        ]
+      }
+    },
+    "DeleteDBShardGroup": {
+      "DBShardGroupIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBShardGroup",
+            "resourceIdentifier": "DBShardGroupIdentifier"
+          }
+        ]
+      }
+    },
+    "DeleteEventSubscription": {
+      "SubscriptionName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "EventSubscription",
+            "resourceIdentifier": "CustSubscriptionId"
+          }
+        ]
+      }
+    },
+    "DeleteGlobalCluster": {
+      "GlobalClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "GlobalCluster",
+            "resourceIdentifier": "GlobalClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "DeleteTenantDatabase": {
+      "DBInstanceIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBInstance",
+            "resourceIdentifier": "DBInstancesDBInstanceIdentifier"
+          }
+        ]
+      },
+      "TenantDBName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TenantDatabase",
+            "resourceIdentifier": "TenantDatabasesTenantDBName"
+          }
+        ]
+      }
+    },
+    "DeregisterDBProxyTargets": {
+      "DBProxyName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBProxy",
+            "resourceIdentifier": "DBProxyName"
+          }
+        ]
+      },
+      "DBInstanceIdentifiers": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBInstance",
+            "resourceIdentifier": "DBInstancesDBInstanceIdentifier"
+          }
+        ]
+      },
+      "DBClusterIdentifiers": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DBClustersDBClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "DescribeBlueGreenDeployments": {
+      "BlueGreenDeploymentIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "BlueGreenDeployment",
+            "resourceIdentifier": "BlueGreenDeploymentIdentifier"
+          }
+        ]
+      }
+    },
+    "DescribeDBClusterAutomatedBackups": {
+      "DbClusterResourceId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBClusterAutomatedBackup",
+            "resourceIdentifier": "DbClusterResourceId"
+          }
+        ]
+      },
+      "DBClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBClusterAutomatedBackup",
+            "resourceIdentifier": "DBClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "DescribeDBClusterEndpoints": {
+      "DBClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DBClustersDBClusterIdentifier"
+          }
+        ]
+      },
+      "DBClusterEndpointIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBClusterEndpoint",
+            "resourceIdentifier": "DBClusterEndpointIdentifier"
+          }
+        ]
+      }
+    },
+    "DescribeDBInstanceAutomatedBackups": {
+      "DbiResourceId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBInstanceAutomatedBackup",
+            "resourceIdentifier": "DbiResourceId"
+          }
+        ]
+      },
+      "DBInstanceIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBInstanceAutomatedBackup",
+            "resourceIdentifier": "DBInstanceIdentifier"
+          }
+        ]
+      },
+      "DBInstanceAutomatedBackupsArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBInstanceAutomatedBackup",
+            "resourceIdentifier": "DBInstanceAutomatedBackupsDBInstanceAutomatedBackupsArn"
+          }
+        ]
+      }
+    },
+    "DescribeDBProxies": {
+      "DBProxyName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBProxy",
+            "resourceIdentifier": "DBProxyName"
+          }
+        ]
+      }
+    },
+    "DescribeDBProxyEndpoints": {
+      "DBProxyName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBProxy",
+            "resourceIdentifier": "DBProxyName"
+          }
+        ]
+      },
+      "DBProxyEndpointName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBProxyEndpoint",
+            "resourceIdentifier": "DBProxyEndpointName"
+          }
+        ]
+      }
+    },
+    "DescribeDBProxyTargetGroups": {
+      "DBProxyName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBProxy",
+            "resourceIdentifier": "DBProxyName"
+          }
+        ]
+      }
+    },
+    "DescribeDBProxyTargets": {
+      "DBProxyName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBProxy",
+            "resourceIdentifier": "DBProxyName"
+          }
+        ]
+      }
+    },
+    "DescribeDBShardGroups": {
+      "DBShardGroupIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBShardGroup",
+            "resourceIdentifier": "DBShardGroupIdentifier"
+          }
+        ]
+      }
+    },
+    "DescribeDBSnapshotTenantDatabases": {
+      "DBInstanceIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBInstance",
+            "resourceIdentifier": "DBInstancesDBInstanceIdentifier"
+          }
+        ]
+      },
+      "DBSnapshotIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBSnapshot",
+            "resourceIdentifier": "DBSnapshotIdentifier"
+          }
+        ]
+      },
+      "DbiResourceId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBInstance",
+            "resourceIdentifier": "DbiResourceId"
+          }
+        ]
+      }
+    },
+    "DescribeEventSubscriptions": {
+      "SubscriptionName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "EventSubscription",
+            "resourceIdentifier": "CustSubscriptionId"
+          }
+        ]
+      }
+    },
+    "DescribeExportTasks": {
+      "ExportTaskIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ExportTask",
+            "resourceIdentifier": "ExportTaskIdentifier"
+          }
+        ]
+      }
+    },
+    "DescribeGlobalClusters": {
+      "GlobalClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "GlobalCluster",
+            "resourceIdentifier": "GlobalClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "DescribeTenantDatabases": {
+      "DBInstanceIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBInstance",
+            "resourceIdentifier": "DBInstancesDBInstanceIdentifier"
+          }
+        ]
+      },
+      "TenantDBName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TenantDatabase",
+            "resourceIdentifier": "TenantDatabasesTenantDBName"
+          }
+        ]
+      }
+    },
+    "DisableHttpEndpoint": {
+      "ResourceArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DBClusterArn"
+          }
+        ]
+      }
+    },
+    "EnableHttpEndpoint": {
+      "ResourceArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DBClusterArn"
+          }
+        ]
+      }
+    },
+    "FailoverGlobalCluster": {
+      "GlobalClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "GlobalCluster",
+            "resourceIdentifier": "GlobalClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "ModifyActivityStream": {
+      "ResourceArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBInstance",
+            "resourceIdentifier": "DBInstanceArn"
+          }
+        ]
+      }
+    },
+    "ModifyCertificates": {
+      "CertificateIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Certificate",
+            "resourceIdentifier": "CertificateIdentifier"
+          }
+        ]
+      }
+    },
+    "ModifyDBClusterEndpoint": {
+      "DBClusterEndpointIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBClusterEndpoint",
+            "resourceIdentifier": "DBClusterEndpointIdentifier"
+          }
+        ]
+      }
+    },
+    "ModifyDBProxy": {
+      "DBProxyName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBProxy",
+            "resourceIdentifier": "DBProxyName"
+          }
+        ]
+      }
+    },
+    "ModifyDBProxyEndpoint": {
+      "DBProxyEndpointName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBProxyEndpoint",
+            "resourceIdentifier": "DBProxyEndpointName"
+          }
+        ]
+      }
+    },
+    "ModifyDBProxyTargetGroup": {
+      "DBProxyName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBProxy",
+            "resourceIdentifier": "DBProxyName"
+          }
+        ]
+      }
+    },
+    "ModifyDBShardGroup": {
+      "DBShardGroupIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBShardGroup",
+            "resourceIdentifier": "DBShardGroupIdentifier"
+          }
+        ]
+      }
+    },
+    "ModifyGlobalCluster": {
+      "GlobalClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "GlobalCluster",
+            "resourceIdentifier": "GlobalClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "ModifyIntegration": {
+      "IntegrationName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Integration",
+            "resourceIdentifier": "IntegrationName"
+          }
+        ]
+      }
+    },
+    "ModifyTenantDatabase": {
+      "DBInstanceIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBInstance",
+            "resourceIdentifier": "DBInstancesDBInstanceIdentifier"
+          }
+        ]
+      },
+      "TenantDBName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TenantDatabase",
+            "resourceIdentifier": "TenantDatabasesTenantDBName"
+          }
+        ]
+      }
+    },
+    "RebootDBCluster": {
+      "DBClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DBClustersDBClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "RebootDBShardGroup": {
+      "DBShardGroupIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBShardGroup",
+            "resourceIdentifier": "DBShardGroupIdentifier"
+          }
+        ]
+      }
+    },
+    "RegisterDBProxyTargets": {
+      "DBProxyName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBProxy",
+            "resourceIdentifier": "DBProxyName"
+          }
+        ]
+      },
+      "DBInstanceIdentifiers": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBInstance",
+            "resourceIdentifier": "DBInstancesDBInstanceIdentifier"
+          }
+        ]
+      },
+      "DBClusterIdentifiers": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DBClustersDBClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "RemoveFromGlobalCluster": {
+      "GlobalClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "GlobalCluster",
+            "resourceIdentifier": "GlobalClusterIdentifier"
+          }
+        ]
+      },
+      "DbClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DBClustersDBClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "RemoveRoleFromDBInstance": {
+      "DBInstanceIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBInstance",
+            "resourceIdentifier": "DBInstancesDBInstanceIdentifier"
+          }
+        ]
+      }
+    },
+    "StartActivityStream": {
+      "ResourceArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DBClusterArn"
+          }
+        ]
+      }
+    },
+    "StartDBInstanceAutomatedBackupsReplication": {
+      "SourceDBInstanceArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBInstance",
+            "resourceIdentifier": "DBInstanceArn"
+          }
+        ]
+      }
+    },
+    "StartExportTask": {
+      "SourceArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DBClusterArn"
+          }
+        ]
+      }
+    },
+    "StopActivityStream": {
+      "ResourceArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DBClusterArn"
+          }
+        ]
+      }
+    },
+    "StopDBInstanceAutomatedBackupsReplication": {
+      "SourceDBInstanceArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBInstance",
+            "resourceIdentifier": "DBInstanceArn"
+          }
+        ]
+      }
+    },
+    "SwitchoverBlueGreenDeployment": {
+      "BlueGreenDeploymentIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "BlueGreenDeployment",
+            "resourceIdentifier": "BlueGreenDeploymentIdentifier"
+          }
+        ]
+      }
+    },
+    "SwitchoverGlobalCluster": {
+      "GlobalClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "GlobalCluster",
+            "resourceIdentifier": "GlobalClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "SwitchoverReadReplica": {
+      "DBInstanceIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBInstance",
+            "resourceIdentifier": "DBInstancesDBInstanceIdentifier"
           }
         ]
       }

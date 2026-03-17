@@ -40,13 +40,13 @@ class ConfigureGetCommand(BasicCommand):
         },
         {
             'name': 'sso-session',
-            'help_text': 'The name of the SSO session sub-section to retrieve from.',
+            'help_text': 'The name of the sub-section to configure.',
             'action': 'store',
             'cli_type_name': 'string',
         },
         {
             'name': 'services',
-            'help_text': 'The name of the services sub-section to retrieve from.',
+            'help_text': 'The name of the sub-section to configure.',
             'action': 'store',
             'cli_type_name': 'string',
         },
@@ -61,20 +61,35 @@ class ConfigureGetCommand(BasicCommand):
         self._stream = stream
         self._error_stream = error_stream
 
+    def _subsection_parameter_to_argument_name(self, parameter_name):
+        return parameter_name.replace("-", "_")
+
     def _get_subsection_config_name_from_args(self, args):
         # Validate mutual exclusivity of sub-section type parameters
-        groups = [[v['param_name']] for v in SUBSECTION_TYPE_ALLOWLIST.values()]
+        groups = [
+            [self._subsection_parameter_to_argument_name(key)]
+            for key in SUBSECTION_TYPE_ALLOWLIST.keys()
+        ]
         validate_mutually_exclusive(args, *groups)
 
         subsection_name = None
         subsection_config_name = None
 
-        for section_properties in SUBSECTION_TYPE_ALLOWLIST.values():
-            param_value = getattr(args, section_properties['param_name'])
-            if param_value is not None:
-                subsection_name = param_value
-                subsection_config_name = section_properties['full_config_name']
-                break
+        for (
+            section_type,
+            section_properties,
+        ) in SUBSECTION_TYPE_ALLOWLIST.items():
+            cli_parameter_name = self._subsection_parameter_to_argument_name(
+                section_type
+            )
+
+            if hasattr(args, cli_parameter_name):
+                subsection_name = getattr(args, cli_parameter_name)
+                if subsection_name is not None:
+                    subsection_config_name = section_properties[
+                        'full_config_name'
+                    ]
+                    break
 
         return (subsection_config_name, subsection_name)
 
@@ -163,10 +178,10 @@ class ConfigureGetCommand(BasicCommand):
 
     def _get_subsection_property(self, section_type, section_name, varname):
         full_config = self._session.full_config
-        
+
         if section_type not in full_config:
             return None
-        
+
         section_type_config = full_config[section_type]
         section_config = section_type_config.get(section_name, None)
 

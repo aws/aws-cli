@@ -13,6 +13,7 @@
 import unittest
 from io import BytesIO
 
+import pytest
 from botocore.awsrequest import AWSResponse
 from botocore.config import Config
 from botocore.exceptions import AwsChunkedWrapperError, FlexibleChecksumError
@@ -22,8 +23,12 @@ from botocore.httpchecksum import (
     CrtCrc32cChecksum,
     CrtCrc32Checksum,
     CrtCrc64NvmeChecksum,
+    CrtXxhash3Checksum,
+    CrtXxhash64Checksum,
+    CrtXxhash128Checksum,
     Sha1Checksum,
     Sha256Checksum,
+    Sha512Checksum,
     StreamingChecksumBody,
     apply_request_checksum,
     handle_checksum_body,
@@ -439,7 +444,16 @@ class TestHttpChecksumHandlers(unittest.TestCase):
         request = self._build_request(b"")
         operation_model = self._make_operation_model(
             http_checksum={
-                "responseAlgorithms": ["crc32", "sha1", "sha256"],
+                "responseAlgorithms": [
+                    "crc32",
+                    "sha1",
+                    "sha256",
+                    "sha512",
+                    "md5",
+                    "xxhash64",
+                    "xxhash3",
+                    "xxhash128",
+                ],
                 "requestValidationModeMember": "ChecksumMode",
             }
         )
@@ -739,33 +753,30 @@ class TestAwsChunkedWrapper(unittest.TestCase):
             wrapper.seek(1, whence=2)
 
 
-class TestChecksumImplementations(unittest.TestCase):
-    def assert_base64_checksum(self, checksum_cls, expected_digest):
-        checksum = checksum_cls()
-        checksum.update(b"hello world")
-        actual_digest = checksum.b64digest()
-        self.assertEqual(actual_digest, expected_digest)
+_CHECKSUM_DIGEST_CASES = [
+    (Crc32Checksum, "DUoRhQ=="),
+    (Sha1Checksum, "Kq5sNclPz7QV2+lfQIuc6R7oRu0="),
+    (Sha256Checksum, "uU0nuZNNPgilLlLX2n2r+sSE7+N6U4DukIj3rOLvzek="),
+    (
+        Sha512Checksum,
+        "MJ7MSJwS1utMxA9QyQLytNDtd+5RGnx6m808qG1M2G+YndNbxf9JlnDaNCVbRbDP2DDoH2Bdz33FVC6TrpzXbw==",
+    ),
+    (CrtCrc32Checksum, "DUoRhQ=="),
+    (CrtCrc32cChecksum, "yZRlqg=="),
+    (CrtCrc64NvmeChecksum, "jSnVw/bqjr4="),
+    (CrtXxhash64Checksum, "RatnNLIeaWg="),
+    (CrtXxhash3Checksum, "1Eex6kDmmIs="),
+    (CrtXxhash128Checksum, "340J6T+HSQCpm4d1zBW2xw=="),
+]
 
-    def test_crc32(self):
-        self.assert_base64_checksum(CrtCrc32Checksum, "DUoRhQ==")
 
-    def test_sha1(self):
-        self.assert_base64_checksum(
-            Sha1Checksum,
-            "Kq5sNclPz7QV2+lfQIuc6R7oRu0=",
-        )
-
-    def test_sha256(self):
-        self.assert_base64_checksum(
-            Sha256Checksum,
-            "uU0nuZNNPgilLlLX2n2r+sSE7+N6U4DukIj3rOLvzek=",
-        )
-
-    def test_crt_crc32c(self):
-        self.assert_base64_checksum(CrtCrc32cChecksum, "yZRlqg==")
-
-    def test_crt_crc64nvme(self):
-        self.assert_base64_checksum(CrtCrc64NvmeChecksum, "jSnVw/bqjr4=")
+@pytest.mark.parametrize(
+    "checksum_cls,expected_digest", _CHECKSUM_DIGEST_CASES
+)
+def test_checksum_digest(checksum_cls, expected_digest):
+    checksum = checksum_cls()
+    checksum.update(b"hello world")
+    assert checksum.b64digest() == expected_digest
 
 
 class TestStreamingChecksumBody(unittest.TestCase):

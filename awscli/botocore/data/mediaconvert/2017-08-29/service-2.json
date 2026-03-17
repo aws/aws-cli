@@ -1817,6 +1817,116 @@
       },
       "documentation": "Required when you set Codec to the value AC3."
     },
+    "Ac4BitstreamMode": {
+      "type": "string",
+      "documentation": "Specify the bitstream mode for the AC-4 stream that the encoder emits. For more information about the AC-4 bitstream mode, see ETSI TS 103 190. Maps to dlb_paec_ac4_bed_classifier in the encoder implementation. - COMPLETE_MAIN: Complete Main (standard mix) - EMERGENCY: Stereo Emergency content",
+      "enum": [
+        "COMPLETE_MAIN",
+        "EMERGENCY"
+      ]
+    },
+    "Ac4CodingMode": {
+      "type": "string",
+      "documentation": "Dolby AC-4 coding mode. Determines number of channels. Maps to dlb_paec_ac4_bed_channel_config in the encoder implementation. - CODING_MODE_2_0: 2.0 (stereo) - maps to DLB_PAEC_AC4_BED_CHANNEL_CONFIG_20   - CODING_MODE_3_2_LFE: 5.1 surround - maps to DLB_PAEC_AC4_BED_CHANNEL_CONFIG_51 - CODING_MODE_5_1_4: 5.1.4 immersive - maps to DLB_PAEC_AC4_BED_CHANNEL_CONFIG_514",
+      "enum": [
+        "CODING_MODE_2_0",
+        "CODING_MODE_3_2_LFE",
+        "CODING_MODE_5_1_4"
+      ]
+    },
+    "Ac4DynamicRangeCompressionDrcProfile": {
+      "type": "string",
+      "documentation": "Choose the Dolby AC-4 dynamic range control (DRC) profile that MediaConvert uses when encoding the metadata in the Dolby AC-4 stream for the specified decoder mode. For information about the Dolby AC-4 DRC profiles, see the Dolby AC-4 specification.",
+      "enum": [
+        "NONE",
+        "FILM_STANDARD",
+        "FILM_LIGHT",
+        "MUSIC_STANDARD",
+        "MUSIC_LIGHT",
+        "SPEECH"
+      ]
+    },
+    "Ac4Settings": {
+      "type": "structure",
+      "members": {
+        "Bitrate": {
+          "shape": "__integerMin192000Max1024000",
+          "locationName": "bitrate",
+          "documentation": "Specify the average bitrate in bits per second. Leave blank to use the default bitrate for the coding mode you select according to ETSI TS 103 190. Valid bitrates for coding mode 2.0 (stereo): 192000, 256000, or 320000. Valid bitrates for coding mode 5.1 (3/2 with LFE): 512000. Valid bitrates for coding mode 5.1.4 (immersive): 512000, 768000, or 1024000."
+        },
+        "BitstreamMode": {
+          "shape": "Ac4BitstreamMode",
+          "locationName": "bitstreamMode",
+          "documentation": "Specify the bitstream mode for the AC-4 stream that the encoder emits. For more information about the AC-4 bitstream mode, see ETSI TS 103 190. Maps to dlb_paec_ac4_bed_classifier in the encoder implementation. - COMPLETE_MAIN: Complete Main (standard mix) - EMERGENCY: Stereo Emergency content"
+        },
+        "CodingMode": {
+          "shape": "Ac4CodingMode",
+          "locationName": "codingMode",
+          "documentation": "Dolby AC-4 coding mode. Determines number of channels. Maps to dlb_paec_ac4_bed_channel_config in the encoder implementation. - CODING_MODE_2_0: 2.0 (stereo) - maps to DLB_PAEC_AC4_BED_CHANNEL_CONFIG_20   - CODING_MODE_3_2_LFE: 5.1 surround - maps to DLB_PAEC_AC4_BED_CHANNEL_CONFIG_51 - CODING_MODE_5_1_4: 5.1.4 immersive - maps to DLB_PAEC_AC4_BED_CHANNEL_CONFIG_514"
+        },
+        "DynamicRangeCompressionFlatPanelTv": {
+          "shape": "Ac4DynamicRangeCompressionDrcProfile",
+          "locationName": "dynamicRangeCompressionFlatPanelTv",
+          "documentation": "Choose the Dolby AC-4 dynamic range control (DRC) profile that MediaConvert uses when encoding the metadata in the Dolby AC-4 stream for the specified decoder mode. For information about the Dolby AC-4 DRC profiles, see the Dolby AC-4 specification."
+        },
+        "DynamicRangeCompressionHomeTheater": {
+          "shape": "Ac4DynamicRangeCompressionDrcProfile",
+          "locationName": "dynamicRangeCompressionHomeTheater",
+          "documentation": "Choose the Dolby AC-4 dynamic range control (DRC) profile that MediaConvert uses when encoding the metadata in the Dolby AC-4 stream for the specified decoder mode. For information about the Dolby AC-4 DRC profiles, see the Dolby AC-4 specification."
+        },
+        "DynamicRangeCompressionPortableHeadphones": {
+          "shape": "Ac4DynamicRangeCompressionDrcProfile",
+          "locationName": "dynamicRangeCompressionPortableHeadphones",
+          "documentation": "Choose the Dolby AC-4 dynamic range control (DRC) profile that MediaConvert uses when encoding the metadata in the Dolby AC-4 stream for the specified decoder mode. For information about the Dolby AC-4 DRC profiles, see the Dolby AC-4 specification."
+        },
+        "DynamicRangeCompressionPortableSpeakers": {
+          "shape": "Ac4DynamicRangeCompressionDrcProfile",
+          "locationName": "dynamicRangeCompressionPortableSpeakers",
+          "documentation": "Choose the Dolby AC-4 dynamic range control (DRC) profile that MediaConvert uses when encoding the metadata in the Dolby AC-4 stream for the specified decoder mode. For information about the Dolby AC-4 DRC profiles, see the Dolby AC-4 specification."
+        },
+        "LoRoCenterMixLevel": {
+          "shape": "__doubleMinNegative1000Max3",
+          "locationName": "loRoCenterMixLevel",
+          "documentation": "Specify a value for the following Dolby AC-4 setting: Left only/Right only center mix. MediaConvert uses this value for downmixing. How the service uses this value depends on the value that you choose for Stereo downmix. Valid values: 3.0, 1.5, 0.0, -1.5, -3.0, -4.5, -6.0, and -infinity. The value -infinity mutes the channel. This setting applies only if you keep the default value of 3/2 - L, R, C, Ls, Rs for the setting Coding mode. If you choose a different value for Coding mode, the service ignores Left only/Right only center."
+        },
+        "LoRoSurroundMixLevel": {
+          "shape": "__doubleMinNegative1000MaxNegative1",
+          "locationName": "loRoSurroundMixLevel",
+          "documentation": "Specify a value for the following Dolby AC-4 setting: Left only/Right only surround mix. MediaConvert uses this value for downmixing. How the service uses this value depends on the value that you choose for Stereo downmix. Valid values: -1.5, -3.0, -4.5, -6.0, and -infinity. The value -infinity mutes the channel. This setting applies only if you keep the default value of 3/2 - L, R, C, Ls, Rs for the setting Coding mode. If you choose a different value for Coding mode, the service ignores Left only/Right only surround."
+        },
+        "LtRtCenterMixLevel": {
+          "shape": "__doubleMinNegative1000Max3",
+          "locationName": "ltRtCenterMixLevel",
+          "documentation": "Specify a value for the following Dolby AC-4 setting: Left total/Right total center mix. MediaConvert uses this value for downmixing. How the service uses this value depends on the value that you choose for Stereo downmix. Valid values: 3.0, 1.5, 0.0, -1.5, -3.0, -4.5, -6.0, and -infinity. The value -infinity mutes the channel. This setting applies only if you keep the default value of 3/2 - L, R, C, Ls, Rs for the setting Coding mode. If you choose a different value for Coding mode, the service ignores Left total/Right total center."
+        },
+        "LtRtSurroundMixLevel": {
+          "shape": "__doubleMinNegative1000MaxNegative1",
+          "locationName": "ltRtSurroundMixLevel",
+          "documentation": "Specify a value for the following Dolby AC-4 setting: Left total/Right total surround mix. MediaConvert uses this value for downmixing. How the service uses this value depends on the value that you choose for Stereo downmix. Valid values: -1.5, -3.0, -4.5, -6.0, and -infinity. The value -infinity mutes the channel. This setting applies only if you keep the default value of 3/2 - L, R, C, Ls, Rs for the setting Coding mode. If you choose a different value for Coding mode, the service ignores Left total/Right total surround."
+        },
+        "SampleRate": {
+          "shape": "__integerMin48000Max48000",
+          "locationName": "sampleRate",
+          "documentation": "This value is always 48000. It represents the sample rate in Hz."
+        },
+        "StereoDownmix": {
+          "shape": "Ac4StereoDownmix",
+          "locationName": "stereoDownmix",
+          "documentation": "Choose the preferred stereo downmix method. This setting tells the decoder how to downmix multi-channel audio to stereo during playback."
+        }
+      },
+      "documentation": "Required when you set Codec to the value AC4."
+    },
+    "Ac4StereoDownmix": {
+      "type": "string",
+      "documentation": "Choose the preferred stereo downmix method. This setting tells the decoder how to downmix multi-channel audio to stereo during playback.",
+      "enum": [
+        "NOT_INDICATED",
+        "LO_RO",
+        "LT_RT",
+        "DPL2"
+      ]
+    },
     "AccelerationMode": {
       "type": "string",
       "documentation": "Specify whether the service runs your job with accelerated transcoding. Choose DISABLED if you don't want accelerated transcoding. Choose ENABLED if you want your job to run with accelerated transcoding and to fail if your input files or your job settings aren't compatible with accelerated transcoding. Choose PREFERRED if you want your job to run with accelerated transcoding if the job is compatible with the feature and to run at standard speed if it's not.",
@@ -2072,6 +2182,7 @@
         "WAV",
         "AIFF",
         "AC3",
+        "AC4",
         "EAC3",
         "EAC3_ATMOS",
         "VORBIS",
@@ -2092,6 +2203,11 @@
           "shape": "Ac3Settings",
           "locationName": "ac3Settings",
           "documentation": "Required when you set Codec to the value AC3."
+        },
+        "Ac4Settings": {
+          "shape": "Ac4Settings",
+          "locationName": "ac4Settings",
+          "documentation": "Required when you set Codec to the value AC4."
         },
         "AiffSettings": {
           "shape": "AiffSettings",
@@ -3495,6 +3611,11 @@
     "CmafEncryptionSettings": {
       "type": "structure",
       "members": {
+        "ClearLead": {
+          "shape": "HlsClearLead",
+          "locationName": "clearLead",
+          "documentation": "Enable Clear Lead DRM to reduce video startup latency by leaving the first segment unencrypted while DRM license retrieval occurs in parallel. This optimization allows immediate playback startup while maintaining content protection for the remainder of the stream. When enabled, the first output segment remains fully unencrypted, and encryption begins at the start of the second segment. The HLS manifest will omit #EXT-X-KEY tags during the clear segment and insert the first #EXT-X-KEY immediately before the first encrypted fragment. This feature is supported exclusively for CMAF HLS (fMP4) outputs and is compatible with all existing key provider integrations (SPEKE v1, SPEKE v2, and Static Key encryption). Supported codecs: H.264 and H.265 video codecs, and AAC audio codec. Choose Enabled to activate Clear Lead DRM optimization. Choose Disabled to use standard encryption where all segments are encrypted from the beginning."
+        },
         "ConstantInitializationVector": {
           "shape": "__stringMin32Max32Pattern09aFAF32",
           "locationName": "constantInitializationVector",
@@ -3698,7 +3819,7 @@
         "IntervalCadence": {
           "shape": "CmafIntervalCadence",
           "locationName": "intervalCadence",
-          "documentation": "The cadence MediaConvert follows for generating thumbnails. If set to FOLLOW_IFRAME, MediaConvert generates thumbnails for each IDR frame in the output (matching the GOP cadence). If set to FOLLOW_CUSTOM, MediaConvert generates thumbnails according to the interval you specify in thumbnailInterval."
+          "documentation": "The cadence MediaConvert follows for generating thumbnails. If set to FOLLOW_IFRAME, MediaConvert generates thumbnails for each IDR frame in the output (matching the GOP cadence). If set to FOLLOW_CUSTOM, MediaConvert generates thumbnails according to the interval you specify in thumbnailInterval. If set to FOLLOW_SEGMENTATION, MediaConvert generates thumbnail playlist entries that align exactly with video segment boundaries. FOLLOW_SEGMENTATION requires 1x1 tiling."
         },
         "ThumbnailHeight": {
           "shape": "__integerMin2Max4096",
@@ -3738,10 +3859,11 @@
     },
     "CmafIntervalCadence": {
       "type": "string",
-      "documentation": "The cadence MediaConvert follows for generating thumbnails. If set to FOLLOW_IFRAME, MediaConvert generates thumbnails for each IDR frame in the output (matching the GOP cadence). If set to FOLLOW_CUSTOM, MediaConvert generates thumbnails according to the interval you specify in thumbnailInterval.",
+      "documentation": "The cadence MediaConvert follows for generating thumbnails. If set to FOLLOW_IFRAME, MediaConvert generates thumbnails for each IDR frame in the output (matching the GOP cadence). If set to FOLLOW_CUSTOM, MediaConvert generates thumbnails according to the interval you specify in thumbnailInterval. If set to FOLLOW_SEGMENTATION, MediaConvert generates thumbnail playlist entries that align exactly with video segment boundaries. FOLLOW_SEGMENTATION requires 1x1 tiling.",
       "enum": [
         "FOLLOW_IFRAME",
-        "FOLLOW_CUSTOM"
+        "FOLLOW_CUSTOM",
+        "FOLLOW_SEGMENTATION"
       ]
     },
     "CmafKeyProviderType": {
@@ -4059,11 +4181,12 @@
         "MP4V",
         "MPEG2",
         "PRORES",
+        "QTRLE",
         "THEORA",
+        "UNCOMPRESSED",
         "VFW",
         "VP8",
         "VP9",
-        "QTRLE",
         "C608",
         "C708",
         "WEBVTT"
@@ -4320,7 +4443,7 @@
         "Format": {
           "shape": "Format",
           "locationName": "format",
-          "documentation": "The format of your media file. For example: MP4, QuickTime (MOV), Matroska (MKV), WebM, MXF or Wave. Note that this will be blank if your media file has a format that the MediaConvert Probe operation does not recognize."
+          "documentation": "The format of your media file. For example: MP4, QuickTime (MOV), Matroska (MKV), WebM, MXF, Wave, or AVI. Note that this will be blank if your media file has a format that the MediaConvert Probe operation does not recognize."
         },
         "Tracks": {
           "shape": "__listOfTrack",
@@ -4868,7 +4991,7 @@
         "IntervalCadence": {
           "shape": "DashIsoIntervalCadence",
           "locationName": "intervalCadence",
-          "documentation": "The cadence MediaConvert follows for generating thumbnails. If set to FOLLOW_IFRAME, MediaConvert generates thumbnails for each IDR frame in the output (matching the GOP cadence). If set to FOLLOW_CUSTOM, MediaConvert generates thumbnails according to the interval you specify in thumbnailInterval."
+          "documentation": "The cadence MediaConvert follows for generating thumbnails. If set to FOLLOW_IFRAME, MediaConvert generates thumbnails for each IDR frame in the output (matching the GOP cadence). If set to FOLLOW_CUSTOM, MediaConvert generates thumbnails according to the interval you specify in thumbnailInterval. If set to FOLLOW_SEGMENTATION, MediaConvert generates thumbnail playlist entries that align exactly with video segment boundaries. FOLLOW_SEGMENTATION requires 1x1 tiling."
         },
         "ThumbnailHeight": {
           "shape": "__integerMin1Max4096",
@@ -4900,10 +5023,11 @@
     },
     "DashIsoIntervalCadence": {
       "type": "string",
-      "documentation": "The cadence MediaConvert follows for generating thumbnails. If set to FOLLOW_IFRAME, MediaConvert generates thumbnails for each IDR frame in the output (matching the GOP cadence). If set to FOLLOW_CUSTOM, MediaConvert generates thumbnails according to the interval you specify in thumbnailInterval.",
+      "documentation": "The cadence MediaConvert follows for generating thumbnails. If set to FOLLOW_IFRAME, MediaConvert generates thumbnails for each IDR frame in the output (matching the GOP cadence). If set to FOLLOW_CUSTOM, MediaConvert generates thumbnails according to the interval you specify in thumbnailInterval. If set to FOLLOW_SEGMENTATION, MediaConvert generates thumbnail playlist entries that align exactly with video segment boundaries. FOLLOW_SEGMENTATION requires 1x1 tiling.",
       "enum": [
         "FOLLOW_IFRAME",
-        "FOLLOW_CUSTOM"
+        "FOLLOW_CUSTOM",
+        "FOLLOW_SEGMENTATION"
       ]
     },
     "DashIsoMpdManifestBandwidthType": {
@@ -6409,7 +6533,8 @@
         "matroska",
         "webm",
         "mxf",
-        "wave"
+        "wave",
+        "avi"
       ]
     },
     "FrameCaptureSettings": {
@@ -7916,6 +8041,14 @@
         "MATCH_VIDEO"
       ]
     },
+    "HlsClearLead": {
+      "type": "string",
+      "documentation": "Enable Clear Lead DRM to reduce video startup latency by leaving the first segment unencrypted while DRM license retrieval occurs in parallel. This optimization allows immediate playback startup while maintaining content protection for the remainder of the stream. When enabled, the first output segment remains fully unencrypted, and encryption begins at the start of the second segment. The HLS manifest will omit #EXT-X-KEY tags during the clear segment and insert the first #EXT-X-KEY immediately before the first encrypted fragment. This feature is supported exclusively for CMAF HLS (fMP4) outputs and is compatible with all existing key provider integrations (SPEKE v1, SPEKE v2, and Static Key encryption). Supported codecs: H.264 and H.265 video codecs, and AAC audio codec. Choose Enabled to activate Clear Lead DRM optimization. Choose Disabled to use standard encryption where all segments are encrypted from the beginning.",
+      "enum": [
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "HlsClientCache": {
       "type": "string",
       "documentation": "Disable this setting only when your workflow requires the #EXT-X-ALLOW-CACHE:no tag. Otherwise, keep the default value Enabled and control caching in your video distribution set up. For example, use the Cache-Control http header.",
@@ -8188,7 +8321,7 @@
         "IntervalCadence": {
           "shape": "HlsIntervalCadence",
           "locationName": "intervalCadence",
-          "documentation": "The cadence MediaConvert follows for generating thumbnails. If set to FOLLOW_IFRAME, MediaConvert generates thumbnails for each IDR frame in the output (matching the GOP cadence). If set to FOLLOW_CUSTOM, MediaConvert generates thumbnails according to the interval you specify in thumbnailInterval."
+          "documentation": "The cadence MediaConvert follows for generating thumbnails. If set to FOLLOW_IFRAME, MediaConvert generates thumbnails for each IDR frame in the output (matching the GOP cadence). If set to FOLLOW_CUSTOM, MediaConvert generates thumbnails according to the interval you specify in thumbnailInterval. If set to FOLLOW_SEGMENTATION, MediaConvert generates thumbnail playlist entries that align exactly with video segment boundaries. FOLLOW_SEGMENTATION requires 1x1 tiling."
         },
         "ThumbnailHeight": {
           "shape": "__integerMin2Max4096",
@@ -8228,10 +8361,11 @@
     },
     "HlsIntervalCadence": {
       "type": "string",
-      "documentation": "The cadence MediaConvert follows for generating thumbnails. If set to FOLLOW_IFRAME, MediaConvert generates thumbnails for each IDR frame in the output (matching the GOP cadence). If set to FOLLOW_CUSTOM, MediaConvert generates thumbnails according to the interval you specify in thumbnailInterval.",
+      "documentation": "The cadence MediaConvert follows for generating thumbnails. If set to FOLLOW_IFRAME, MediaConvert generates thumbnails for each IDR frame in the output (matching the GOP cadence). If set to FOLLOW_CUSTOM, MediaConvert generates thumbnails according to the interval you specify in thumbnailInterval. If set to FOLLOW_SEGMENTATION, MediaConvert generates thumbnail playlist entries that align exactly with video segment boundaries. FOLLOW_SEGMENTATION requires 1x1 tiling.",
       "enum": [
         "FOLLOW_IFRAME",
-        "FOLLOW_CUSTOM"
+        "FOLLOW_CUSTOM",
+        "FOLLOW_SEGMENTATION"
       ]
     },
     "HlsKeyProviderType": {
@@ -9240,7 +9374,7 @@
         "FollowSource": {
           "shape": "__integerMin1Max150",
           "locationName": "followSource",
-          "documentation": "Specify the input that MediaConvert references for your default output settings.  MediaConvert uses this input's Resolution, Frame rate, and Pixel aspect ratio for all  outputs that you don't manually specify different output settings for. Enabling this setting will disable \"Follow source\" for all other inputs.  If MediaConvert cannot follow your source, for example if you specify an audio-only input,  MediaConvert uses the first followable input instead. In your JSON job specification, enter an integer from 1 to 150 corresponding  to the order of your inputs."
+          "documentation": "Specify the input that MediaConvert references for your default output settings. MediaConvert uses this input's Resolution, Frame rate, and Pixel aspect ratio for all outputs that you don't manually specify different output settings for. Enabling this setting will disable \"Follow source\" for all other inputs.  If MediaConvert cannot follow your source, for example if you specify an audio-only input,  MediaConvert uses the first followable input instead. In your JSON job specification, enter an integer from 1 to 150 corresponding  to the order of your inputs."
         },
         "Inputs": {
           "shape": "__listOfInput",
@@ -9411,7 +9545,7 @@
         "FollowSource": {
           "shape": "__integerMin1Max150",
           "locationName": "followSource",
-          "documentation": "Specify the input that MediaConvert references for your default output settings.  MediaConvert uses this input's Resolution, Frame rate, and Pixel aspect ratio for all  outputs that you don't manually specify different output settings for. Enabling this setting will disable \"Follow source\" for all other inputs.  If MediaConvert cannot follow your source, for example if you specify an audio-only input,  MediaConvert uses the first followable input instead. In your JSON job specification, enter an integer from 1 to 150 corresponding  to the order of your inputs."
+          "documentation": "Specify the input that MediaConvert references for your default output settings. MediaConvert uses this input's Resolution, Frame rate, and Pixel aspect ratio for all outputs that you don't manually specify different output settings for. Enabling this setting will disable \"Follow source\" for all other inputs.  If MediaConvert cannot follow your source, for example if you specify an audio-only input,  MediaConvert uses the first followable input instead. In your JSON job specification, enter an integer from 1 to 150 corresponding  to the order of your inputs."
         },
         "Inputs": {
           "shape": "__listOfInputTemplate",
@@ -15338,6 +15472,12 @@
     "__doubleMin1Max10": {
       "type": "double"
     },
+    "__doubleMinNegative1000Max3": {
+      "type": "double"
+    },
+    "__doubleMinNegative1000MaxNegative1": {
+      "type": "double"
+    },
     "__doubleMinNegative59Max0": {
       "type": "double"
     },
@@ -15583,6 +15723,11 @@
       "type": "integer",
       "min": 16,
       "max": 24
+    },
+    "__integerMin192000Max1024000": {
+      "type": "integer",
+      "min": 192000,
+      "max": 1024000
     },
     "__integerMin1Max1": {
       "type": "integer",

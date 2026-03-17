@@ -2694,6 +2694,10 @@
           "shape":"PeeredCidrList",
           "documentation":"<p>A list of CIDR blocks to add to the peering connection. These CIDR blocks define the IP address ranges that can communicate through the peering connection.</p>"
         },
+        "peerNetworkRouteTableIds":{
+          "shape":"PeerNetworkRouteTableIdList",
+          "documentation":"<p>The unique identifier of the VPC route table for which a route to the ODB network is automatically created during peering connection establishment.</p>"
+        },
         "clientToken":{
           "shape":"CreateOdbPeeringConnectionInputClientTokenString",
           "documentation":"<p>The client token for the ODB peering connection request.</p> <p>Constraints:</p> <ul> <li> <p>Must be unique for each request.</p> </li> </ul>",
@@ -4990,6 +4994,16 @@
         "ROLLING",
         "NONROLLING"
       ]
+    },
+    "PeerNetworkRouteTableId":{
+      "type":"string",
+      "pattern":"rtb-[a-z0-9]{8,17}"
+    },
+    "PeerNetworkRouteTableIdList":{
+      "type":"list",
+      "member":{"shape":"PeerNetworkRouteTableId"},
+      "max":1,
+      "min":1
     },
     "PeeredCidr":{
       "type":"string",

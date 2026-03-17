@@ -347,7 +347,12 @@ class ResponseParser:
         parsed = []
         member_shape = shape.member
         for item in node:
-            parsed.append(self._parse_shape(member_shape, item))
+            # Treat all lists as sparse during parsing to safely handle null
+            # elements that may be present in service responses.
+            if item is None:
+                parsed.append(None)
+            else:
+                parsed.append(self._parse_shape(member_shape, item))
         return parsed
 
     def _default_handle(self, shape, value):

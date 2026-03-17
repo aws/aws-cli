@@ -13,7 +13,7 @@
 
 """Color utilities for ECS Express Gateway Service monitoring."""
 
-from colorama import Fore, Style, init
+from colorama import Fore, Style, init  # noqa
 
 # Status symbols
 CHECK_MARK = '✓'

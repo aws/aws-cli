@@ -469,6 +469,27 @@
       "documentation":"<p>Retrieves the OpenID Connect (OIDC) configuration for a Wickr network, including SSO settings and optional token information if access token parameters are provided.</p>",
       "readonly":true
     },
+    "GetOpentdfConfig":{
+      "name":"GetOpentdfConfig",
+      "http":{
+        "method":"GET",
+        "requestUri":"/networks/{networkId}/tdf",
+        "responseCode":200
+      },
+      "input":{"shape":"GetOpentdfConfigRequest"},
+      "output":{"shape":"GetOpentdfConfigResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Retrieves the OpenTDF integration configuration for a Wickr network.</p>",
+      "readonly":true
+    },
     "GetSecurityGroup":{
       "name":"GetSecurityGroup",
       "http":{
@@ -738,6 +759,26 @@
         {"shape":"RateLimitError"}
       ],
       "documentation":"<p>Tests an OpenID Connect (OIDC) configuration for a Wickr network by validating the connection to the identity provider and retrieving its supported capabilities.</p>"
+    },
+    "RegisterOpentdfConfig":{
+      "name":"RegisterOpentdfConfig",
+      "http":{
+        "method":"POST",
+        "requestUri":"/networks/{networkId}/tdf",
+        "responseCode":200
+      },
+      "input":{"shape":"RegisterOpentdfConfigRequest"},
+      "output":{"shape":"RegisterOpentdfConfigResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Registers and saves OpenTDF configuration for a Wickr network, enabling attribute-based access control for Wickr through an OpenTDF provider.</p>"
     },
     "UpdateBot":{
       "name":"UpdateBot",
@@ -2171,6 +2212,45 @@
         }
       }
     },
+    "GetOpentdfConfigRequest":{
+      "type":"structure",
+      "required":["networkId"],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network for which OpenTDF integration will be retrieved.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        }
+      }
+    },
+    "GetOpentdfConfigResponse":{
+      "type":"structure",
+      "required":[
+        "clientId",
+        "domain",
+        "clientSecret",
+        "provider"
+      ],
+      "members":{
+        "clientId":{
+          "shape":"GenericString",
+          "documentation":"<p>The OIDC client ID used for authenticating with the OpenTDF provider.</p>"
+        },
+        "domain":{
+          "shape":"GenericString",
+          "documentation":"<p>The domain of the OpenTDF server.</p>"
+        },
+        "clientSecret":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The OIDC client secret used for authenticating with the OpenTDF provider.</p>"
+        },
+        "provider":{
+          "shape":"GenericString",
+          "documentation":"<p>The provider of the OpenTDF platform.</p>"
+        }
+      }
+    },
     "GetSecurityGroupRequest":{
       "type":"structure",
       "required":[
@@ -2956,6 +3036,10 @@
         "dataRetention":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the data retention feature is enabled for the network. When true, messages are captured by the data retention bot for compliance and archiving purposes.</p>"
+        },
+        "enableTrustedDataFormat":{
+          "shape":"Boolean",
+          "documentation":"<p>Configuration for OpenTDF integration at the network level, enforcing ABAC decision making when operating in TDF enabled rooms.</p>"
         }
       },
       "documentation":"<p>Contains network-level configuration settings that apply to all users and security groups within a Wickr network.</p>"
@@ -3347,6 +3431,73 @@
         "microsoftMultiRefreshToken":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the provider supports Microsoft multi-refresh tokens.</p>"
+        }
+      }
+    },
+    "RegisterOpentdfConfigRequest":{
+      "type":"structure",
+      "required":[
+        "networkId",
+        "clientId",
+        "clientSecret",
+        "domain",
+        "provider"
+      ],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network for which OpenTDF integration will be configured.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        },
+        "clientId":{
+          "shape":"GenericString",
+          "documentation":"<p>The OIDC client ID used for authenticating with the OpenTDF provider.</p>"
+        },
+        "clientSecret":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The OIDC client secret used for authenticating with the OpenTDF provider</p>"
+        },
+        "domain":{
+          "shape":"GenericString",
+          "documentation":"<p>The domain of the OpenTDF server.</p>"
+        },
+        "provider":{
+          "shape":"GenericString",
+          "documentation":"<p>The provider of the OpenTDF platform.</p> <note> <p>Currently only Virtru is supported as the OpenTDF provider.</p> </note>"
+        },
+        "dryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Perform dry-run test connection of OpenTDF configuration (optional).</p>",
+          "location":"querystring",
+          "locationName":"dryRun"
+        }
+      }
+    },
+    "RegisterOpentdfConfigResponse":{
+      "type":"structure",
+      "required":[
+        "clientId",
+        "domain",
+        "clientSecret",
+        "provider"
+      ],
+      "members":{
+        "clientId":{
+          "shape":"GenericString",
+          "documentation":"<p>The OIDC client ID used for authenticating with the OpenTDF provider.</p>"
+        },
+        "domain":{
+          "shape":"GenericString",
+          "documentation":"<p>The domain of the OpenTDF server.</p>"
+        },
+        "clientSecret":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The OIDC client secret used for authenticating with the OpenTDF provider.</p>"
+        },
+        "provider":{
+          "shape":"GenericString",
+          "documentation":"<p>The provider of the OpenTDF platform.</p>"
         }
       }
     },
@@ -4138,6 +4289,10 @@
         "reasons":{
           "shape":"ErrorDetailList",
           "documentation":"<p>A list of validation error details, where each item identifies a specific field that failed validation and explains the reason for the failure.</p>"
+        },
+        "message":{
+          "shape":"GenericString",
+          "documentation":"<p>A message describing the validation error error that occurred.</p>"
         }
       },
       "documentation":"<p>One or more fields in the request failed validation. This error provides detailed information about which fields were invalid and why, allowing you to correct the request and retry.</p>",

@@ -246,6 +246,24 @@
       ],
       "documentation":"<p>Associates a flow with a phone number claimed to your Amazon Connect instance.</p> <important> <p>If the number is claimed to a traffic distribution group, and you are calling this API using an instance in the Amazon Web Services Region where the traffic distribution group was created, you can use either a full phone number ARN or UUID value for the <code>PhoneNumberId</code> URI request parameter. However, if the number is claimed to a traffic distribution group and you are calling this API using an instance in the alternate Amazon Web Services Region associated with the traffic distribution group, you must provide a full phone number ARN. If a UUID is provided in this scenario, you will receive a <code>ResourceNotFoundException</code>.</p> </important>"
     },
+    "AssociateQueueEmailAddresses":{
+      "name":"AssociateQueueEmailAddresses",
+      "http":{
+        "method":"POST",
+        "requestUri":"/queues/{InstanceId}/{QueueId}/associate-email-addresses"
+      },
+      "input":{"shape":"AssociateQueueEmailAddressesRequest"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Associates a set of email addresses with a queue to enable agents to select different \"From\" (system) email addresses when replying to inbound email contacts or initiating outbound email contacts. This allows agents to handle email contacts across different brands and business units within the same queue.</p> <p> <b>Important things to know</b> </p> <ul> <li> <p>You can associate up to 49 additional email addresses with a single queue, plus 1 default outbound email address, for a total of 50.</p> </li> <li> <p>The email addresses must already exist in the Amazon Connect instance before they can be associated with a queue.</p> </li> <li> <p>Agents will be able to select from these associated email addresses when handling email contacts in the queue.</p> </li> <li> <p>For inbound email contacts, agents can select from email addresses associated with the queue where the contact was accepted.</p> </li> <li> <p>For outbound email contacts, agents can select from email addresses associated with their default outbound queue configured in their routing profile.</p> </li> </ul>"
+    },
     "AssociateQueueQuickConnects":{
       "name":"AssociateQueueQuickConnects",
       "http":{
@@ -866,6 +884,25 @@
       ],
       "documentation":"<p>Creates an Amazon Web Services resource association with an Amazon Connect instance.</p>"
     },
+    "CreateNotification":{
+      "name":"CreateNotification",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/notifications/{InstanceId}"
+      },
+      "input":{"shape":"CreateNotificationRequest"},
+      "output":{"shape":"CreateNotificationResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"DuplicateResourceException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Creates a new notification to be delivered to specified recipients. Notifications can include localized content with links, and an optional expiration time. Recipients can be specified as individual user ARNs or instance ARNs to target all users in an instance.</p>"
+    },
     "CreateParticipant":{
       "name":"CreateParticipant",
       "http":{
@@ -1146,7 +1183,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Creates a user account for the specified Amazon Connect instance.</p> <important> <p>Certain <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_UserIdentityInfo.html\">UserIdentityInfo</a> parameters are required in some situations. For example, <code>Email</code>, <code>FirstName</code> and <code>LastName</code> are required if you are using Amazon Connect or SAML for identity management.</p> </important> <p>For information about how to create users using the Amazon Connect admin website, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/user-management.html\">Add Users</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
+      "documentation":"<p>Creates a user account for the specified Amazon Connect instance.</p> <important> <p>Certain <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_UserIdentityInfo.html\">UserIdentityInfo</a> parameters are required in some situations. For example, <code>Email</code>, <code>FirstName</code> and <code>LastName</code> are required if you are using Amazon Connect or SAML for identity management.</p> </important> <note> <p>Fields in <code>PhoneConfig</code> cannot be set simultaneously with their corresponding channel-specific configuration parameters. Specifically:</p> <ul> <li> <p> <code>PhoneConfig.AutoAccept</code> conflicts with <code>AutoAcceptConfigs</code> </p> </li> <li> <p> <code>PhoneConfig.AfterContactWorkTimeLimit</code> conflicts with <code>AfterContactWorkConfigs</code> </p> </li> <li> <p> <code>PhoneConfig.PhoneType</code> and <code>PhoneConfig.PhoneNumber</code> conflict with <code>PhoneNumberConfigs</code> </p> </li> <li> <p> <code>PhoneConfig.PersistentConnection</code> conflicts with <code>PersistentConnectionConfigs</code> </p> </li> </ul> <p>We recommend using channel-specific parameters such as <code>AutoAcceptConfigs</code>, <code>AfterContactWorkConfigs</code>, <code>PhoneNumberConfigs</code>, <code>PersistentConnectionConfigs</code>, and <code>VoiceEnhancementConfigs</code> for per-channel configuration.</p> </note> <p>For information about how to create users using the Amazon Connect admin website, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/user-management.html\">Add Users</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
     },
     "CreateUserHierarchyGroup":{
       "name":"CreateUserHierarchyGroup",
@@ -1547,6 +1584,24 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Deletes an Amazon Web Services resource association from an Amazon Connect instance. The association must not have any use cases associated with it.</p>"
+    },
+    "DeleteNotification":{
+      "name":"DeleteNotification",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/notifications/{InstanceId}/{NotificationId}"
+      },
+      "input":{"shape":"DeleteNotificationRequest"},
+      "output":{"shape":"DeleteNotificationResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Deletes a notification. Once deleted, the notification is no longer visible to all users and cannot be managed through the Admin Website or APIs.</p>"
     },
     "DeletePredefinedAttribute":{
       "name":"DeletePredefinedAttribute",
@@ -2167,6 +2222,24 @@
       ],
       "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Retrieves the current storage configurations for the specified resource type, association ID, and instance ID.</p>"
     },
+    "DescribeNotification":{
+      "name":"DescribeNotification",
+      "http":{
+        "method":"GET",
+        "requestUri":"/notifications/{InstanceId}/{NotificationId}"
+      },
+      "input":{"shape":"DescribeNotificationRequest"},
+      "output":{"shape":"DescribeNotificationResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Retrieves detailed information about a specific notification, including its content, priority, recipients, and metadata.</p>"
+    },
     "DescribePhoneNumber":{
       "name":"DescribePhoneNumber",
       "http":{
@@ -2606,6 +2679,23 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Removes the flow association from a phone number claimed to your Amazon Connect instance.</p> <important> <p>If the number is claimed to a traffic distribution group, and you are calling this API using an instance in the Amazon Web Services Region where the traffic distribution group was created, you can use either a full phone number ARN or UUID value for the <code>PhoneNumberId</code> URI request parameter. However, if the number is claimed to a traffic distribution group and you are calling this API using an instance in the alternate Amazon Web Services Region associated with the traffic distribution group, you must provide a full phone number ARN. If a UUID is provided in this scenario, you will receive a <code>ResourceNotFoundException</code>.</p> </important>"
+    },
+    "DisassociateQueueEmailAddresses":{
+      "name":"DisassociateQueueEmailAddresses",
+      "http":{
+        "method":"POST",
+        "requestUri":"/queues/{InstanceId}/{QueueId}/disassociate-email-addresses"
+      },
+      "input":{"shape":"DisassociateQueueEmailAddressesRequest"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Removes the association between a set of email addresses and a queue. After disassociation, agents will no longer be able to select these email addresses as \"From\" addresses when replying to inbound email contacts or initiating outbound email contacts in this queue.</p> <p> <b>Important things to know</b> </p> <ul> <li> <p>Agents will no longer see these email addresses in their \"From\" address selection options for this queue.</p> </li> <li> <p>The email addresses themselves are not deleted from the instance, only their availability for agent selection in this queue is removed.</p> </li> <li> <p>Changes take effect immediately and will affect the agent experience in the Contact Control Panel (CCP).</p> </li> </ul>"
     },
     "DisassociateQueueQuickConnects":{
       "name":"DisassociateQueueQuickConnects",
@@ -3581,6 +3671,24 @@
       ],
       "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Returns a paginated list of all the Amazon Lex V1 bots currently associated with the instance. To return both Amazon Lex V1 and V2 bots, use the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_ListBots.html\">ListBots</a> API. </p>"
     },
+    "ListNotifications":{
+      "name":"ListNotifications",
+      "http":{
+        "method":"GET",
+        "requestUri":"/notifications/{InstanceId}"
+      },
+      "input":{"shape":"ListNotificationsRequest"},
+      "output":{"shape":"ListNotificationsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Retrieves a paginated list of all notifications in the Amazon Connect instance.</p>"
+    },
     "ListPhoneNumbers":{
       "name":"ListPhoneNumbers",
       "http":{
@@ -3648,6 +3756,24 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Provides information about the prompts for the specified Amazon Connect instance.</p>"
+    },
+    "ListQueueEmailAddresses":{
+      "name":"ListQueueEmailAddresses",
+      "http":{
+        "method":"GET",
+        "requestUri":"/queues/{InstanceId}/{QueueId}/email-addresses"
+      },
+      "input":{"shape":"ListQueueEmailAddressesRequest"},
+      "output":{"shape":"ListQueueEmailAddressesResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists all email addresses that are currently associated with a specific queue, providing details about which \"From\" email addresses agents can select when handling email contacts. This helps administrators manage agent email address options and understand the available choices for different brands and business units.</p> <p> <b>Important things to know</b> </p> <ul> <li> <p>The response includes metadata about each email address available for agent selection, including whether it's configured as the default outbound email.</p> </li> <li> <p>Agents can select from these email addresses when replying to inbound contacts or initiating outbound contacts in this queue.</p> </li> <li> <p>The list includes both explicitly associated email addresses and any default outbound email address configured for the queue.</p> </li> <li> <p>Results are paginated to handle queues with many associated email addresses (up to 50 per queue).</p> </li> </ul>"
     },
     "ListQueueQuickConnects":{
       "name":"ListQueueQuickConnects",
@@ -4025,6 +4151,24 @@
       ],
       "documentation":"<p>Provides summary information about the hierarchy groups for the specified Amazon Connect instance.</p> <p>For more information about agent hierarchies, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/agent-hierarchy.html\">Set Up Agent Hierarchies</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
     },
+    "ListUserNotifications":{
+      "name":"ListUserNotifications",
+      "http":{
+        "method":"GET",
+        "requestUri":"/users/{InstanceId}/{UserId}/notifications"
+      },
+      "input":{"shape":"ListUserNotificationsRequest"},
+      "output":{"shape":"ListUserNotificationsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Retrieves a paginated list of notifications for a specific user, including the notification status for that user.</p>"
+    },
     "ListUserProficiencies":{
       "name":"ListUserProficiencies",
       "http":{
@@ -4327,7 +4471,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Searches contact evaluations in an Amazon Connect instance, with optional filtering. </p> <p> <b>Use cases</b> </p> <p>Following are common uses cases for this API:</p> <ul> <li> <p>Find contact evaluations by using specific search criteria.</p> </li> <li> <p>Find contact evaluations that are tagged with a specific set of tags.</p> </li> </ul> <p> <b>Important things to know</b> </p> <ul> <li> <p>A Search operation, unlike a List operation, takes time to index changes to resource (create, update or delete). If you don't see updated information for recently changed contact evaluations, try calling the API again in a few seconds. Contact Evaluations may not be fully backfilled with historical data in all regions yet, however all recently created Contact Evaluations should be available for search.</p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Amazon Connect endpoints and quotas</a>.</p>"
+      "documentation":"<p>Searches contact evaluations in an Amazon Connect instance, with optional filtering. </p> <p> <b>Use cases</b> </p> <p>Following are common uses cases for this API:</p> <ul> <li> <p>Find contact evaluations by using specific search criteria.</p> </li> <li> <p>Find contact evaluations that are tagged with a specific set of tags.</p> </li> </ul> <p> <b>Important things to know</b> </p> <ul> <li> <p>A Search operation, unlike a List operation, takes time to index changes to resource (create, update or delete). If you don't see updated information for recently changed contact evaluations, try calling the API again in a few seconds.</p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Amazon Connect endpoints and quotas</a>.</p>"
     },
     "SearchContactFlowModules":{
       "name":"SearchContactFlowModules",
@@ -4465,6 +4609,24 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Searches the hours of operation in an Amazon Connect instance, with optional filtering.</p>"
+    },
+    "SearchNotifications":{
+      "name":"SearchNotifications",
+      "http":{
+        "method":"POST",
+        "requestUri":"/search-notifications"
+      },
+      "input":{"shape":"SearchNotificationsRequest"},
+      "output":{"shape":"SearchNotificationsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Searches for notifications based on specified criteria and filters. Returns a paginated list of notifications matching the search parameters, ordered by descending creation time. Supports filtering by content and tags.</p>"
     },
     "SearchPredefinedAttributes":{
       "name":"SearchPredefinedAttributes",
@@ -5608,6 +5770,24 @@
       ],
       "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Updates an existing configuration for a resource type. This API is idempotent.</p>"
     },
+    "UpdateNotificationContent":{
+      "name":"UpdateNotificationContent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/notifications/{InstanceId}/{NotificationId}"
+      },
+      "input":{"shape":"UpdateNotificationContentRequest"},
+      "output":{"shape":"UpdateNotificationContentResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Updates the localized content of an existing notification. This operation applies to all users for whom the notification was sent.</p>"
+    },
     "UpdateParticipantAuthentication":{
       "name":"UpdateParticipantAuthentication",
       "http":{
@@ -6016,6 +6196,23 @@
       ],
       "documentation":"<p>Updates the traffic distribution for a given traffic distribution group. </p> <important> <p>When you shift telephony traffic, also shift agents and/or agent sign-ins to ensure they can handle the calls in the other Region. If you don't shift the agents, voice calls will go to the shifted Region but there won't be any agents available to receive the calls.</p> </important> <note> <p>The <code>SignInConfig</code> distribution is available only on a default <code>TrafficDistributionGroup</code> (see the <code>IsDefault</code> parameter in the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_TrafficDistributionGroup.html\">TrafficDistributionGroup</a> data type). If you call <code>UpdateTrafficDistribution</code> with a modified <code>SignInConfig</code> and a non-default <code>TrafficDistributionGroup</code>, an <code>InvalidRequestException</code> is returned.</p> </note> <p>For more information about updating a traffic distribution group, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/update-telephony-traffic-distribution.html\">Update telephony traffic distribution across Amazon Web Services Regions </a> in the <i>Amazon Connect Administrator Guide</i>. </p>"
     },
+    "UpdateUserConfig":{
+      "name":"UpdateUserConfig",
+      "http":{
+        "method":"POST",
+        "requestUri":"/users/{InstanceId}/{UserId}/config"
+      },
+      "input":{"shape":"UpdateUserConfigRequest"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ConditionalOperationFailedException"}
+      ],
+      "documentation":"<p>Updates the configuration settings for the specified user, including per-channel auto-accept and after contact work (ACW) timeout settings.</p> <note> <p>This operation replaces the UpdateUserPhoneConfig API. While UpdateUserPhoneConfig applies the same ACW timeout to all channels, UpdateUserConfig allows you to set different auto-accept and ACW timeout values for each channel type.</p> </note>"
+    },
     "UpdateUserHierarchy":{
       "name":"UpdateUserHierarchy",
       "http":{
@@ -6082,6 +6279,24 @@
       ],
       "documentation":"<p>Updates the identity information for the specified user.</p> <important> <p>We strongly recommend limiting who has the ability to invoke <code>UpdateUserIdentityInfo</code>. Someone with that ability can change the login credentials of other users by changing their email address. This poses a security risk to your organization. They can change the email address of a user to the attacker's email address, and then reset the password through email. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security-profile-best-practices.html\">Best Practices for Security Profiles</a> in the <i>Amazon Connect Administrator Guide</i>.</p> </important>"
     },
+    "UpdateUserNotificationStatus":{
+      "name":"UpdateUserNotificationStatus",
+      "http":{
+        "method":"POST",
+        "requestUri":"/users/{InstanceId}/{UserId}/notifications/{NotificationId}"
+      },
+      "input":{"shape":"UpdateUserNotificationStatusRequest"},
+      "output":{"shape":"UpdateUserNotificationStatusResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Updates the status of a notification for a specific user, such as marking it as read or hidden. Users can only update notification status for notifications that have been sent to them. READ status deprioritizes the notification and greys it out, while HIDDEN status removes it from the notification widget.</p>"
+    },
     "UpdateUserPhoneConfig":{
       "name":"UpdateUserPhoneConfig",
       "http":{
@@ -6096,7 +6311,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Updates the phone configuration settings for the specified user.</p>"
+      "documentation":"<p>Updates the phone configuration settings for the specified user.</p> <note> <p>We recommend using the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_UpdateUserConfig.html\">UpdateUserConfig</a> API, which supports additional functionality that is not available in the UpdateUserPhoneConfig API, such as voice enhancement settings and per-channel configuration for auto-accept and After Contact Work (ACW) timeouts. In comparison, the UpdateUserPhoneConfig API will always set the same ACW timeouts to all channels the user handles.</p> </note>"
     },
     "UpdateUserProficiencies":{
       "name":"UpdateUserProficiencies",
@@ -6383,6 +6598,43 @@
       },
       "documentation":"<p>List of additional email addresses for an email contact.</p>"
     },
+    "AfterContactWorkConfig":{
+      "type":"structure",
+      "members":{
+        "AfterContactWorkTimeLimit":{
+          "shape":"AfterContactWorkTimeLimit",
+          "documentation":"<p>The ACW timeout duration in seconds. Minimum: 1 second. Maximum: 2,000,000 seconds (24 days). Enter 0 for indefinite ACW time.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for after contact work (ACW) timeout.</p>"
+    },
+    "AfterContactWorkConfigPerChannel":{
+      "type":"structure",
+      "required":[
+        "Channel",
+        "AfterContactWorkConfig"
+      ],
+      "members":{
+        "Channel":{
+          "shape":"Channel",
+          "documentation":"<p>The channel for this ACW timeout configuration. Valid values: VOICE, CHAT, TASK, EMAIL.</p>"
+        },
+        "AfterContactWorkConfig":{
+          "shape":"AfterContactWorkConfig",
+          "documentation":"<p>The ACW timeout settings for this channel.</p>"
+        },
+        "AgentFirstCallbackAfterContactWorkConfig":{
+          "shape":"AfterContactWorkConfig",
+          "documentation":"<p>The ACW timeout settings for agent-first callbacks. This setting only applies to the VOICE channel.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for after contact work (ACW) timeout for a specific channel.</p>"
+    },
+    "AfterContactWorkConfigs":{
+      "type":"list",
+      "member":{"shape":"AfterContactWorkConfigPerChannel"},
+      "documentation":"<p>A list of after contact work (ACW) timeout configuration settings for each channel.</p>"
+    },
     "AfterContactWorkTimeLimit":{
       "type":"integer",
       "min":0
@@ -6450,6 +6702,7 @@
       },
       "documentation":"<p>Information about agent-first outbound strategy configuration.</p>"
     },
+    "AgentFirstCallbackAutoAccept":{"type":"boolean"},
     "AgentFirstName":{
       "type":"string",
       "max":255,
@@ -7395,6 +7648,37 @@
         }
       }
     },
+    "AssociateQueueEmailAddressesRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "QueueId",
+        "EmailAddressesConfig"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "QueueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The identifier for the queue.</p>",
+          "location":"uri",
+          "locationName":"QueueId"
+        },
+        "EmailAddressesConfig":{
+          "shape":"EmailAddressConfigList",
+          "documentation":"<p>Configuration list containing the email addresses to associate with the queue. Each configuration specifies an email address ID that should be linked to this queue for routing purposes.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
     "AssociateQueueQuickConnectsRequest":{
       "type":"structure",
       "required":[
@@ -8050,6 +8334,33 @@
       "sensitive":true
     },
     "AutoAccept":{"type":"boolean"},
+    "AutoAcceptConfig":{
+      "type":"structure",
+      "required":[
+        "Channel",
+        "AutoAccept"
+      ],
+      "members":{
+        "Channel":{
+          "shape":"Channel",
+          "documentation":"<p>The channel for this auto-accept configuration. Valid values: VOICE, CHAT, TASK, EMAIL.</p>"
+        },
+        "AutoAccept":{
+          "shape":"AutoAccept",
+          "documentation":"<p>Indicates whether auto-accept is enabled for this channel. When enabled, available agents are automatically connected to contacts from this channel.</p>"
+        },
+        "AgentFirstCallbackAutoAccept":{
+          "shape":"AgentFirstCallbackAutoAccept",
+          "documentation":"<p>Indicates whether auto-accept is enabled for agent-first callbacks. This setting only applies to the VOICE channel.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for auto-accept for a specific channel.</p>"
+    },
+    "AutoAcceptConfigs":{
+      "type":"list",
+      "member":{"shape":"AutoAcceptConfig"},
+      "documentation":"<p>A list of auto-accept configuration settings for each channel.</p>"
+    },
     "AutoEvaluationConfiguration":{
       "type":"structure",
       "required":["Enabled"],
@@ -8884,6 +9195,16 @@
       "max":10080,
       "min":60
     },
+    "ChatEntryPointParameters":{
+      "type":"structure",
+      "members":{
+        "FlowId":{
+          "shape":"ContactFlowId",
+          "documentation":"<p>The flow identifier for the test.</p>"
+        }
+      },
+      "documentation":"<p>Parameters for initiating a chat test.</p>"
+    },
     "ChatEvent":{
       "type":"structure",
       "required":["Type"],
@@ -9177,6 +9498,14 @@
     "Conditions":{
       "type":"list",
       "member":{"shape":"Condition"}
+    },
+    "ConfigurableNotificationPriority":{
+      "type":"string",
+      "documentation":"<p>The priority level that can be set when creating a customer notification. Valid values are HIGH and LOW. URGENT priority is reserved for system-generated notifications.</p>",
+      "enum":[
+        "HIGH",
+        "LOW"
+      ]
     },
     "ConflictException":{
       "type":"structure",
@@ -11289,6 +11618,70 @@
         }
       }
     },
+    "CreateNotificationRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "Recipients",
+        "Content"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ExpiresAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the notification should expire and no longer be displayed to users. If not specified, defaults to one week from creation.</p>"
+        },
+        "Recipients":{
+          "shape":"RecipientList",
+          "documentation":"<p>A list of Amazon Resource Names (ARNs) identifying the recipients of the notification. Can include user ARNs or instance ARNs to target all users in an instance. Maximum of 200 recipients.</p>"
+        },
+        "Priority":{
+          "shape":"ConfigurableNotificationPriority",
+          "documentation":"<p>The priority level of the notification. Valid values are HIGH and LOW. High priority notifications are displayed above low priority notifications.</p>"
+        },
+        "Content":{
+          "shape":"NotificationContent",
+          "documentation":"<p>The localized content of the notification. A map where keys are locale codes and values are the notification text in that locale. Content supports links. Maximum 250 characters per locale.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, <code>{ \"Tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }</code>.</p>"
+        },
+        "PredefinedNotificationId":{
+          "shape":"NotificationId",
+          "deprecated":true,
+          "deprecatedMessage":"PredefinedNotificationId is deprecated. Use ClientToken for idempotency.",
+          "deprecatedSince":"3/13/2026"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateNotificationResponse":{
+      "type":"structure",
+      "required":[
+        "NotificationId",
+        "NotificationArn"
+      ],
+      "members":{
+        "NotificationId":{
+          "shape":"NotificationId",
+          "documentation":"<p>The unique identifier assigned to the created notification.</p>"
+        },
+        "NotificationArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created notification.</p>"
+        }
+      }
+    },
     "CreateParticipantRequest":{
       "type":"structure",
       "required":[
@@ -11540,6 +11933,10 @@
         "QuickConnectIds":{
           "shape":"QuickConnectsList",
           "documentation":"<p>The quick connects available to agents who are working the queue.</p>"
+        },
+        "EmailAddressesConfig":{
+          "shape":"EmailAddressConfigList",
+          "documentation":"<p>Configuration list containing the email addresses to associate with the queue during creation. Each configuration specifies an email address ID that agents can select when handling email contacts in this queue.</p>"
         },
         "Tags":{
           "shape":"TagMap",
@@ -12082,7 +12479,6 @@
       "type":"structure",
       "required":[
         "Username",
-        "PhoneConfig",
         "SecurityProfileIds",
         "RoutingProfileId",
         "InstanceId"
@@ -12102,7 +12498,7 @@
         },
         "PhoneConfig":{
           "shape":"UserPhoneConfig",
-          "documentation":"<p>The phone settings for the user.</p>"
+          "documentation":"<p>The phone settings for the user. This parameter is optional. If not provided, the user can be configured using channel-specific parameters such as <code>AutoAcceptConfigs</code>, <code>AfterContactWorkConfigs</code>, <code>PhoneNumberConfigs</code>, <code>PersistentConnectionConfigs</code>, and <code>VoiceEnhancementConfigs</code>.</p>"
         },
         "DirectoryUserId":{
           "shape":"DirectoryUserId",
@@ -12125,6 +12521,26 @@
           "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
           "location":"uri",
           "locationName":"InstanceId"
+        },
+        "AutoAcceptConfigs":{
+          "shape":"AutoAcceptConfigs",
+          "documentation":"<p>The list of auto-accept configuration settings for each channel.</p>"
+        },
+        "AfterContactWorkConfigs":{
+          "shape":"AfterContactWorkConfigs",
+          "documentation":"<p>The list of after contact work (ACW) timeout configuration settings for each channel.</p>"
+        },
+        "PhoneNumberConfigs":{
+          "shape":"PhoneNumberConfigs",
+          "documentation":"<p>The list of phone number configuration settings for each channel.</p>"
+        },
+        "PersistentConnectionConfigs":{
+          "shape":"PersistentConnectionConfigs",
+          "documentation":"<p>The list of persistent connection configuration settings for each channel.</p>"
+        },
+        "VoiceEnhancementConfigs":{
+          "shape":"VoiceEnhancementConfigs",
+          "documentation":"<p>The list of voice enhancement configuration settings for each channel.</p>"
         },
         "Tags":{
           "shape":"TagMap",
@@ -13668,6 +14084,32 @@
         }
       }
     },
+    "DeleteNotificationRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "NotificationId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "NotificationId":{
+          "shape":"NotificationId",
+          "documentation":"<p>The unique identifier for the notification to delete.</p>",
+          "location":"uri",
+          "locationName":"NotificationId"
+        }
+      }
+    },
+    "DeleteNotificationResponse":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The response from deleting a notification.</p>"
+    },
     "DeletePredefinedAttributeRequest":{
       "type":"structure",
       "required":[
@@ -14726,6 +15168,37 @@
         }
       }
     },
+    "DescribeNotificationRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "NotificationId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "NotificationId":{
+          "shape":"NotificationId",
+          "documentation":"<p>The unique identifier for the notification.</p>",
+          "location":"uri",
+          "locationName":"NotificationId"
+        }
+      }
+    },
+    "DescribeNotificationResponse":{
+      "type":"structure",
+      "required":["Notification"],
+      "members":{
+        "Notification":{
+          "shape":"Notification",
+          "documentation":"<p>The complete notification information including content, priority, recipients, and metadata.</p>"
+        }
+      }
+    },
     "DescribePhoneNumberRequest":{
       "type":"structure",
       "required":["PhoneNumberId"],
@@ -15593,6 +16066,37 @@
         }
       }
     },
+    "DisassociateQueueEmailAddressesRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "QueueId",
+        "EmailAddressesId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "QueueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The identifier for the queue.</p>",
+          "location":"uri",
+          "locationName":"QueueId"
+        },
+        "EmailAddressesId":{
+          "shape":"EmailAddressIdList",
+          "documentation":"<p>List of email address identifiers to disassociate from the queue. These are the unique identifiers of email addresses that should no longer be routed to this queue.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
     "DisassociateQueueQuickConnectsRequest":{
       "type":"structure",
       "required":[
@@ -15975,6 +16479,23 @@
       "max":500,
       "min":1
     },
+    "EmailAddressConfig":{
+      "type":"structure",
+      "required":["EmailAddressId"],
+      "members":{
+        "EmailAddressId":{
+          "shape":"EmailAddressId",
+          "documentation":"<p>The identifier of the email address that should be associated with the queue. This email address must already exist in the Amazon Connect instance and will be used to route incoming email contacts to the specified queue.</p>"
+        }
+      },
+      "documentation":"<p>Configuration object that specifies an email address to be associated with a queue. This configuration contains the identifier of the email address that should be linked to the queue for routing email contacts.</p>"
+    },
+    "EmailAddressConfigList":{
+      "type":"list",
+      "member":{"shape":"EmailAddressConfig"},
+      "max":50,
+      "min":1
+    },
     "EmailAddressDisplayName":{
       "type":"string",
       "max":256,
@@ -15984,6 +16505,12 @@
     "EmailAddressId":{
       "type":"string",
       "max":500,
+      "min":1
+    },
+    "EmailAddressIdList":{
+      "type":"list",
+      "member":{"shape":"EmailAddressId"},
+      "max":50,
       "min":1
     },
     "EmailAddressInfo":{
@@ -16035,6 +16562,10 @@
       },
       "documentation":"<p>Contains information about an email address for a contact center.</p>"
     },
+    "EmailAddressMetadataList":{
+      "type":"list",
+      "member":{"shape":"EmailAddressSummary"}
+    },
     "EmailAddressRecipientList":{
       "type":"list",
       "member":{"shape":"EmailAddressInfo"},
@@ -16066,6 +16597,24 @@
         "TagFilter":{"shape":"ControlPlaneTagFilter"}
       },
       "documentation":"<p>Filters to be applied to search results.</p>"
+    },
+    "EmailAddressSummary":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"EmailAddressId",
+          "documentation":"<p>The unique identifier of the email address associated with the queue.</p>"
+        },
+        "Arn":{
+          "shape":"EmailAddressArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the email address associated with the queue.</p>"
+        },
+        "IsDefaultOutboundEmail":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether this email address is configured as the default outbound email address for the queue. When set to true, this email address is used as the default sender for outbound email contacts from this queue.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about an email address associated with a queue. Contains the essential details needed to identify and manage the email address routing configuration.</p>"
     },
     "EmailAttachment":{
       "type":"structure",
@@ -17755,23 +18304,33 @@
     },
     "EvaluationReviewMetadata":{
       "type":"structure",
-      "required":[
-        "CreatedTime",
-        "CreatedBy",
-        "ReviewRequestComments"
-      ],
+      "required":["ReviewRequestComments"],
       "members":{
         "ReviewId":{
           "shape":"ResourceId",
           "documentation":"<p>The unique identifier for the evaluation review.</p>"
         },
+        "RequestedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the evaluation review was requested.</p>"
+        },
+        "RequestedBy":{
+          "shape":"ARN",
+          "documentation":"<p>The user who requested the evaluation review.</p>"
+        },
         "CreatedTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The timestamp when the evaluation review was created.</p>"
+          "documentation":"<p>The timestamp when the evaluation review was created.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"CreatedTime is deprecated.",
+          "deprecatedSince":"02/17/2026"
         },
         "CreatedBy":{
           "shape":"ARN",
-          "documentation":"<p>The user who created the evaluation review.</p>"
+          "documentation":"<p>The user who created the evaluation review.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"CreatedBy is deprecated.",
+          "deprecatedSince":"02/17/2026"
         },
         "ReviewRequestComments":{
           "shape":"EvaluationReviewRequestCommentList",
@@ -17826,11 +18385,11 @@
         },
         "CreatedTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The timestamp when the review request comment was created.</p>"
+          "documentation":"<p>The timestamp when the evaluation review request comment was created.</p>"
         },
         "CreatedBy":{
           "shape":"ARN",
-          "documentation":"<p>The user who created the review request comment.</p>"
+          "documentation":"<p>The user who created the evaluation review request comment.</p>"
         }
       },
       "documentation":"<p>A comment provided when requesting an evaluation review.</p>"
@@ -22417,6 +22976,45 @@
         }
       }
     },
+    "ListNotificationsRequest":{
+      "type":"structure",
+      "required":["InstanceId"],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response to retrieve the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page. Valid range is 1-100.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListNotificationsResponse":{
+      "type":"structure",
+      "required":["NotificationSummaryList"],
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. If present, there are more results available.</p>"
+        },
+        "NotificationSummaryList":{
+          "shape":"NotificationSummaryList",
+          "documentation":"<p>A list of notification summaries.</p>"
+        }
+      }
+    },
     "ListPhoneNumbersRequest":{
       "type":"structure",
       "required":["InstanceId"],
@@ -22632,6 +23230,61 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        }
+      }
+    },
+    "ListQueueEmailAddressesRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "QueueId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "QueueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The identifier for the queue.</p>",
+          "location":"uri",
+          "locationName":"QueueId"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListQueueEmailAddressesResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        },
+        "EmailAddressMetadataList":{
+          "shape":"EmailAddressMetadataList",
+          "documentation":"<p>List of email address summary information for all email addresses associated with the queue. Each item contains the email address identifier, ARN, and configuration details.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when this resource was last modified.</p>"
+        },
+        "LastModifiedRegion":{
+          "shape":"RegionName",
+          "documentation":"<p>The Amazon Web Services Region where this resource was last modified.</p>"
         }
       }
     },
@@ -23677,6 +24330,53 @@
         }
       }
     },
+    "ListUserNotificationsRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "UserId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response to retrieve the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResult1000",
+          "documentation":"<p>The maximum number of results to return per page. Valid range is 1-1000.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "UserId":{
+          "shape":"UserId",
+          "documentation":"<p>The identifier of the user.</p>",
+          "location":"uri",
+          "locationName":"UserId"
+        }
+      }
+    },
+    "ListUserNotificationsResponse":{
+      "type":"structure",
+      "members":{
+        "UserNotifications":{
+          "shape":"UserNotificationSummaryList",
+          "documentation":"<p>A list of notifications sent to the specified user.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. If present, there are more results available.</p>"
+        }
+      }
+    },
     "ListUserProficienciesRequest":{
       "type":"structure",
       "required":[
@@ -23976,6 +24676,29 @@
           "documentation":"<p>A summary list of workspaces.</p>"
         }
       }
+    },
+    "LocaleCode":{
+      "type":"string",
+      "documentation":"<p>The locale code for localized content. Supported values include en_US, de_DE, es_ES, fr_FR, id_ID, it_IT, ja_JP, ko_KR, pt_BR, zh_CN, and zh_TW.</p>",
+      "enum":[
+        "en_US",
+        "de_DE",
+        "es_ES",
+        "fr_FR",
+        "id_ID",
+        "it_IT",
+        "ja_JP",
+        "ko_KR",
+        "pt_BR",
+        "zh_CN",
+        "zh_TW"
+      ]
+    },
+    "LocalizedString":{
+      "type":"string",
+      "documentation":"<p>A localized string value. Maximum length is 500 characters.</p>",
+      "max":500,
+      "min":0
     },
     "Long":{"type":"long"},
     "MatchCriteria":{
@@ -24515,6 +25238,63 @@
       "max":2500,
       "min":1
     },
+    "Notification":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Arn",
+        "LastModifiedTime"
+      ],
+      "members":{
+        "Content":{
+          "shape":"NotificationContent",
+          "documentation":"<p>The localized content of the notification. A map where keys are locale codes and values are the notification text in that locale.</p>"
+        },
+        "Id":{
+          "shape":"NotificationId",
+          "documentation":"<p>The unique identifier for the notification.</p>"
+        },
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the notification.</p>"
+        },
+        "Priority":{
+          "shape":"NotificationPriority",
+          "documentation":"<p>The priority level of the notification. Valid values are URGENT, HIGH, and LOW.</p>"
+        },
+        "Recipients":{
+          "shape":"RecipientList",
+          "documentation":"<p>A list of Amazon Resource Names (ARNs) identifying the recipients of the notification. Maximum of 200 recipients.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the notification was last modified.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the notification was created.</p>"
+        },
+        "ExpiresAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the notification expires and is no longer displayed to users.</p>"
+        },
+        "LastModifiedRegion":{
+          "shape":"RegionName",
+          "documentation":"<p>The AWS Region where the notification was last modified.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, <code>{ \"Tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }</code>.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a notification, including its content, priority, recipients, and metadata.</p>"
+    },
+    "NotificationContent":{
+      "type":"map",
+      "key":{"shape":"LocaleCode"},
+      "value":{"shape":"LocalizedString"},
+      "documentation":"<p>A map of localized notification content where keys are locale codes and values are the notification text in that locale. Each localized string can be 0-500 characters.</p>"
+    },
     "NotificationContentType":{
       "type":"string",
       "enum":["PLAIN_TEXT"]
@@ -24522,6 +25302,21 @@
     "NotificationDeliveryType":{
       "type":"string",
       "enum":["EMAIL"]
+    },
+    "NotificationId":{
+      "type":"string",
+      "documentation":"<p>The unique identifier for a notification.</p>",
+      "max":256,
+      "min":1
+    },
+    "NotificationPriority":{
+      "type":"string",
+      "documentation":"<p>The priority level of a notification. Valid values are URGENT (reserved for system-generated notifications during availability or security events), HIGH, and LOW. High priority notifications are displayed above low priority notifications in the notification widget.</p>",
+      "enum":[
+        "URGENT",
+        "HIGH",
+        "LOW"
+      ]
     },
     "NotificationRecipientType":{
       "type":"structure",
@@ -24536,6 +25331,113 @@
         }
       },
       "documentation":"<p>The type of notification recipient.</p>"
+    },
+    "NotificationSearchConditionList":{
+      "type":"list",
+      "member":{"shape":"NotificationSearchCriteria"}
+    },
+    "NotificationSearchCriteria":{
+      "type":"structure",
+      "members":{
+        "OrConditions":{
+          "shape":"NotificationSearchConditionList",
+          "documentation":"<p>A list of conditions to be met, where at least one condition must be satisfied.</p>"
+        },
+        "AndConditions":{
+          "shape":"NotificationSearchConditionList",
+          "documentation":"<p>A list of conditions that must all be satisfied.</p>"
+        },
+        "StringCondition":{"shape":"StringCondition"}
+      },
+      "documentation":"<p>The search criteria to be used to return notifications.</p>"
+    },
+    "NotificationSearchFilter":{
+      "type":"structure",
+      "members":{
+        "AttributeFilter":{
+          "shape":"ControlPlaneAttributeFilter",
+          "documentation":"<p>Attribute-based filters to apply to the search results.</p>"
+        }
+      },
+      "documentation":"<p>Filters to apply when searching for notifications.</p>"
+    },
+    "NotificationSearchSummary":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"NotificationId",
+          "documentation":"<p>The unique identifier for the notification.</p>"
+        },
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the notification.</p>"
+        },
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance.</p>"
+        },
+        "Content":{
+          "shape":"NotificationContent",
+          "documentation":"<p>The localized content of the notification.</p>"
+        },
+        "Priority":{
+          "shape":"NotificationPriority",
+          "documentation":"<p>The priority level of the notification.</p>"
+        },
+        "Recipients":{
+          "shape":"RecipientList",
+          "documentation":"<p>A list of recipient Amazon Resource Names (ARNs).</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the notification was created.</p>"
+        },
+        "ExpiresAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the notification expires.</p>"
+        },
+        "LastModifiedRegion":{
+          "shape":"RegionName",
+          "documentation":"<p>The AWS Region where the notification was last modified.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the notification was last modified.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags associated with the notification.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a notification returned from a search operation.</p>"
+    },
+    "NotificationSearchSummaryList":{
+      "type":"list",
+      "member":{"shape":"NotificationSearchSummary"},
+      "documentation":"<p>A list of notification search summaries.</p>"
+    },
+    "NotificationSource":{
+      "type":"string",
+      "documentation":"<p>The source that created the notification. Possible values include CUSTOMER (user-created), RULES (rule-generated), and SYSTEM (system-generated).</p>",
+      "enum":[
+        "CUSTOMER",
+        "RULES",
+        "SYSTEM"
+      ]
+    },
+    "NotificationStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a notification for a specific user. Valid values are READ, UNREAD, and HIDDEN (removes the notification from the widget).</p>",
+      "enum":[
+        "READ",
+        "UNREAD",
+        "HIDDEN"
+      ]
+    },
+    "NotificationSummaryList":{
+      "type":"list",
+      "member":{"shape":"Notification"},
+      "documentation":"<p>A list of notification summaries.</p>"
     },
     "NullableBoolean":{"type":"boolean"},
     "NullableDouble":{"type":"double"},
@@ -25291,9 +26193,60 @@
       "documentation":"<p>Enable persistent chats. For more information about enabling persistent chat, and for example use cases and how to configure for them, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/chat-persistence.html\">Enable persistent chat</a>.</p>"
     },
     "PersistentConnection":{"type":"boolean"},
+    "PersistentConnectionConfig":{
+      "type":"structure",
+      "required":[
+        "Channel",
+        "PersistentConnection"
+      ],
+      "members":{
+        "Channel":{
+          "shape":"Channel",
+          "documentation":"<p>Configuration settings for persistent connection. <b>Only <code>VOICE</code> is supported for this data type.</b> </p>"
+        },
+        "PersistentConnection":{
+          "shape":"PersistentConnection",
+          "documentation":"<p>Indicates whether persistent connection is enabled. When enabled, the agent's connection is maintained after a call ends, enabling subsequent calls to connect faster.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>Configuration settings for persistent connection for a specific channel.</p>"
+    },
+    "PersistentConnectionConfigs":{
+      "type":"list",
+      "member":{"shape":"PersistentConnectionConfig"},
+      "documentation":"<p>The list of persistent connection configuration settings for each channel.</p>"
+    },
     "PhoneNumber":{
       "type":"string",
       "pattern":"\\\\+[1-9]\\\\d{1,14}$"
+    },
+    "PhoneNumberConfig":{
+      "type":"structure",
+      "required":[
+        "Channel",
+        "PhoneType"
+      ],
+      "members":{
+        "Channel":{
+          "shape":"Channel",
+          "documentation":"<p>The channel for this phone number configuration. <b>Only <code>VOICE</code> is supported for this data type.</b> </p>"
+        },
+        "PhoneType":{
+          "shape":"PhoneType",
+          "documentation":"<p>The phone type. Valid values: SOFT_PHONE, DESK_PHONE.</p>"
+        },
+        "PhoneNumber":{
+          "shape":"SensitivePhoneNumber",
+          "documentation":"<p>The phone number for the user's desk phone.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for phone type and phone number.</p>"
+    },
+    "PhoneNumberConfigs":{
+      "type":"list",
+      "member":{"shape":"PhoneNumberConfig"},
+      "documentation":"<p>The list of phone number configuration settings for each channel.</p>"
     },
     "PhoneNumberCountryCode":{
       "type":"string",
@@ -27116,6 +28069,12 @@
     "RealtimeContactAnalysisSegments":{
       "type":"list",
       "member":{"shape":"RealtimeContactAnalysisSegment"}
+    },
+    "RecipientList":{
+      "type":"list",
+      "member":{"shape":"ARN"},
+      "documentation":"<p>A list of recipient Amazon Resource Names (ARNs). Maximum of 200 recipients.</p>",
+      "max":200
     },
     "RecordIds":{
       "type":"list",
@@ -28950,6 +29909,50 @@
         }
       }
     },
+    "SearchNotificationsRequest":{
+      "type":"structure",
+      "required":["InstanceId"],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response to retrieve the next page of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page. Valid range is 1-100.</p>",
+          "box":true
+        },
+        "SearchFilter":{
+          "shape":"NotificationSearchFilter",
+          "documentation":"<p>Filters to apply to the search results, such as tag-based filters.</p>"
+        },
+        "SearchCriteria":{
+          "shape":"NotificationSearchCriteria",
+          "documentation":"<p>The search criteria to apply when searching for notifications. Supports filtering by notification ID and message content using comparison types such as STARTS_WITH, CONTAINS, and EXACT.</p>"
+        }
+      }
+    },
+    "SearchNotificationsResponse":{
+      "type":"structure",
+      "members":{
+        "Notifications":{
+          "shape":"NotificationSearchSummaryList",
+          "documentation":"<p>A list of notifications matching the search criteria.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. If present, there are more results available.</p>"
+        },
+        "ApproximateTotalCount":{
+          "shape":"ApproximateTotalCount",
+          "documentation":"<p>The approximate total number of notifications matching the search criteria.</p>"
+        }
+      }
+    },
     "SearchPredefinedAttributesRequest":{
       "type":"structure",
       "required":["InstanceId"],
@@ -30125,6 +31128,11 @@
     "SendOutboundEmailResponse":{
       "type":"structure",
       "members":{}
+    },
+    "SensitivePhoneNumber":{
+      "type":"string",
+      "pattern":"\\+[1-9]\\d{1,14}$",
+      "sensitive":true
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
@@ -32039,13 +33047,20 @@
         "VoiceCallEntryPointParameters":{
           "shape":"VoiceCallEntryPointParameters",
           "documentation":"<p>Parameters for voice call entry point.</p>"
+        },
+        "ChatEntryPointParameters":{
+          "shape":"ChatEntryPointParameters",
+          "documentation":"<p>Parameters for chat entry point.</p>"
         }
       },
       "documentation":"<p>Defines the starting point for a test case.</p>"
     },
     "TestCaseEntryPointType":{
       "type":"string",
-      "enum":["VOICE_CALL"]
+      "enum":[
+        "VOICE_CALL",
+        "CHAT"
+      ]
     },
     "TestCaseExecution":{
       "type":"structure",
@@ -33563,6 +34578,37 @@
         }
       }
     },
+    "UpdateNotificationContentRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "NotificationId",
+        "Content"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "NotificationId":{
+          "shape":"NotificationId",
+          "documentation":"<p>The unique identifier for the notification to update.</p>",
+          "location":"uri",
+          "locationName":"NotificationId"
+        },
+        "Content":{
+          "shape":"NotificationContent",
+          "documentation":"<p>The updated localized content of the notification. A map of locale codes and values. Maximum 500 characters per locale.</p>"
+        }
+      }
+    },
+    "UpdateNotificationContentResponse":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The response from updating notification content.</p>"
+    },
     "UpdateParticipantAuthenticationRequest":{
       "type":"structure",
       "required":[
@@ -34424,6 +35470,47 @@
       "type":"structure",
       "members":{}
     },
+    "UpdateUserConfigRequest":{
+      "type":"structure",
+      "required":[
+        "UserId",
+        "InstanceId"
+      ],
+      "members":{
+        "AutoAcceptConfigs":{
+          "shape":"AutoAcceptConfigs",
+          "documentation":"<p>The list of auto-accept configuration settings for each channel. When auto-accept is enabled for a channel, available agents are automatically connected to contacts from that channel without needing to manually accept. Auto-accept connects agents to contacts in less than one second.</p>"
+        },
+        "AfterContactWorkConfigs":{
+          "shape":"AfterContactWorkConfigs",
+          "documentation":"<p>The list of after contact work (ACW) timeout configuration settings for each channel. ACW timeout specifies how many seconds agents have for after contact work, such as entering notes about the contact. The minimum setting is 1 second, and the maximum is 2,000,000 seconds (24 days). Enter 0 for an indefinite amount of time, meaning agents must manually choose to end ACW.</p>"
+        },
+        "PhoneNumberConfigs":{
+          "shape":"PhoneNumberConfigs",
+          "documentation":"<p>The list of phone number configuration settings for each channel.</p>"
+        },
+        "PersistentConnectionConfigs":{
+          "shape":"PersistentConnectionConfigs",
+          "documentation":"<p>The list of persistent connection configuration settings for each channel.</p>"
+        },
+        "VoiceEnhancementConfigs":{
+          "shape":"VoiceEnhancementConfigs",
+          "documentation":"<p>The list of voice enhancement configuration settings for each channel.</p>"
+        },
+        "UserId":{
+          "shape":"UserId",
+          "documentation":"<p>The identifier of the user account.</p>",
+          "location":"uri",
+          "locationName":"UserId"
+        },
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        }
+      }
+    },
     "UpdateUserHierarchyGroupNameRequest":{
       "type":"structure",
       "required":[
@@ -34519,6 +35606,56 @@
           "locationName":"InstanceId"
         }
       }
+    },
+    "UpdateUserNotificationStatusRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "NotificationId",
+        "UserId",
+        "Status"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "NotificationId":{
+          "shape":"NotificationId",
+          "documentation":"<p>The unique identifier for the notification.</p>",
+          "location":"uri",
+          "locationName":"NotificationId"
+        },
+        "UserId":{
+          "shape":"UserId",
+          "documentation":"<p>The identifier of the user whose notification status is being updated.</p>",
+          "location":"uri",
+          "locationName":"UserId"
+        },
+        "Status":{
+          "shape":"NotificationStatus",
+          "documentation":"<p>The new status for the notification. Valid values are READ, UNREAD, and HIDDEN.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the notification status was last modified. Used for cross-region replication and optimistic locking.</p>",
+          "location":"header",
+          "locationName":"x-amz-last-modified-time"
+        },
+        "LastModifiedRegion":{
+          "shape":"RegionName",
+          "documentation":"<p>The AWS Region where the notification status was last modified. Used for cross-region replication.</p>",
+          "location":"header",
+          "locationName":"x-amz-last-modified-region"
+        }
+      }
+    },
+    "UpdateUserNotificationStatusResponse":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The response from updating a user's notification status.</p>"
     },
     "UpdateUserPhoneConfigRequest":{
       "type":"structure",
@@ -34966,6 +36103,26 @@
           "shape":"TagMap",
           "documentation":"<p>The tags.</p>"
         },
+        "AutoAcceptConfigs":{
+          "shape":"AutoAcceptConfigs",
+          "documentation":"<p>The list of auto-accept configuration settings for each channel.</p>"
+        },
+        "AfterContactWorkConfigs":{
+          "shape":"AfterContactWorkConfigs",
+          "documentation":"<p>The list of after contact work (ACW) timeout configuration settings for each channel.</p>"
+        },
+        "PhoneNumberConfigs":{
+          "shape":"PhoneNumberConfigs",
+          "documentation":"<p>The list of phone number configuration settings for each channel.</p>"
+        },
+        "PersistentConnectionConfigs":{
+          "shape":"PersistentConnectionConfigs",
+          "documentation":"<p>The list of persistent connection configuration settings for each channel.</p>"
+        },
+        "VoiceEnhancementConfigs":{
+          "shape":"VoiceEnhancementConfigs",
+          "documentation":"<p>The list of voice enhancement configuration settings for each channel.</p>"
+        },
         "LastModifiedTime":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp when this resource was last modified.</p>"
@@ -35155,9 +36312,55 @@
       "error":{"httpStatusCode":404},
       "exception":true
     },
+    "UserNotificationSummary":{
+      "type":"structure",
+      "members":{
+        "NotificationId":{
+          "shape":"NotificationId",
+          "documentation":"<p>The unique identifier for the notification.</p>"
+        },
+        "NotificationStatus":{
+          "shape":"NotificationStatus",
+          "documentation":"<p>The status of the notification for this user. Valid values are READ, UNREAD, and HIDDEN.</p>"
+        },
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance.</p>"
+        },
+        "RecipientId":{
+          "shape":"AgentId",
+          "documentation":"<p>The identifier of the recipient user.</p>"
+        },
+        "Content":{
+          "shape":"NotificationContent",
+          "documentation":"<p>The localized content of the notification.</p>"
+        },
+        "Priority":{
+          "shape":"NotificationPriority",
+          "documentation":"<p>The priority level of the notification.</p>"
+        },
+        "Source":{
+          "shape":"NotificationSource",
+          "documentation":"<p>The source that created the notification. Valid values are CUSTOMER, RULES, and SYSTEM.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the notification was created.</p>"
+        },
+        "ExpiresAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the notification expires.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a notification for a specific user, including the user's read status.</p>"
+    },
+    "UserNotificationSummaryList":{
+      "type":"list",
+      "member":{"shape":"UserNotificationSummary"},
+      "documentation":"<p>A list of user notification summaries.</p>"
+    },
     "UserPhoneConfig":{
       "type":"structure",
-      "required":["PhoneType"],
       "members":{
         "PhoneType":{
           "shape":"PhoneType",
@@ -35172,7 +36375,7 @@
           "documentation":"<p>The After Call Work (ACW) timeout setting, in seconds. This parameter has a minimum value of 0 and a maximum value of 2,000,000 seconds (24 days). Enter 0 if you don't want to allocate a specific amount of ACW time. It essentially means an indefinite amount of time. When the conversation ends, ACW starts; the agent must choose Close contact to end ACW. </p> <note> <p>When returned by a <code>SearchUsers</code> call, <code>AfterContactWorkTimeLimit</code> is returned in milliseconds. </p> </note>"
         },
         "DeskPhoneNumber":{
-          "shape":"PhoneNumber",
+          "shape":"SensitivePhoneNumber",
           "documentation":"<p>The phone number for the user's desk phone.</p>"
         },
         "PersistentConnection":{
@@ -35344,6 +36547,26 @@
         "Username":{
           "shape":"AgentUsername",
           "documentation":"<p>The name of the user.</p>"
+        },
+        "AutoAcceptConfigs":{
+          "shape":"AutoAcceptConfigs",
+          "documentation":"<p>The list of auto-accept configuration settings for each channel.</p>"
+        },
+        "AfterContactWorkConfigs":{
+          "shape":"AfterContactWorkConfigs",
+          "documentation":"<p>The list of after contact work (ACW) timeout configuration settings for each channel.</p>"
+        },
+        "PhoneNumberConfigs":{
+          "shape":"PhoneNumberConfigs",
+          "documentation":"<p>The list of phone number configuration settings for each channel.</p>"
+        },
+        "PersistentConnectionConfigs":{
+          "shape":"PersistentConnectionConfigs",
+          "documentation":"<p>The list of persistent connection configuration settings for each channel.</p>"
+        },
+        "VoiceEnhancementConfigs":{
+          "shape":"VoiceEnhancementConfigs",
+          "documentation":"<p>The list of voice enhancement configuration settings for each channel.</p>"
         }
       },
       "documentation":"<p>Information about the returned users.</p>"
@@ -35941,6 +37164,37 @@
         }
       },
       "documentation":"<p>Parameters for initiating a voice call test.</p>"
+    },
+    "VoiceEnhancementConfig":{
+      "type":"structure",
+      "required":[
+        "Channel",
+        "VoiceEnhancementMode"
+      ],
+      "members":{
+        "Channel":{
+          "shape":"Channel",
+          "documentation":"<p>The channel for this voice enhancement configuration. <b>Only <code>VOICE</code> is supported for this data type.</b> </p>"
+        },
+        "VoiceEnhancementMode":{
+          "shape":"VoiceEnhancementMode",
+          "documentation":"<p>The voice enhancement mode.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for voice enhancement.</p>"
+    },
+    "VoiceEnhancementConfigs":{
+      "type":"list",
+      "member":{"shape":"VoiceEnhancementConfig"},
+      "documentation":"<p>The list of voice enhancement configuration settings for each channel.</p>"
+    },
+    "VoiceEnhancementMode":{
+      "type":"string",
+      "enum":[
+        "VOICE_ISOLATION",
+        "NOISE_SUPPRESSION",
+        "NONE"
+      ]
     },
     "VoiceRecordingConfiguration":{
       "type":"structure",

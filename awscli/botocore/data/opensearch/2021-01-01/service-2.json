@@ -1276,7 +1276,8 @@
         {"shape":"InternalException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"},
-        {"shape":"DisabledOperationException"}
+        {"shape":"DisabledOperationException"},
+        {"shape":"LimitExceededException"}
       ],
       "documentation":"<p> Updates the configuration or properties of an existing direct query data source in Amazon OpenSearch Service. </p>"
     },
@@ -1627,6 +1628,10 @@
         "OpenSearchArns":{
           "shape":"DirectQueryOpenSearchARNList",
           "documentation":"<p> A list of Amazon Resource Names (ARNs) for the OpenSearch collections that are associated with the direct query data source. </p>"
+        },
+        "DataSourceAccessPolicy":{
+          "shape":"PolicyDocument",
+          "documentation":"<p> An optional IAM access policy document that defines the permissions for accessing the data source. The policy document must be in valid JSON format and follow IAM policy syntax.</p>"
         },
         "TagList":{"shape":"TagList"}
       }
@@ -2802,6 +2807,10 @@
         "AIMLOptions":{
           "shape":"AIMLOptionsInput",
           "documentation":"<p>Options for all machine learning features for the specified domain.</p>"
+        },
+        "DeploymentStrategyOptions":{
+          "shape":"DeploymentStrategyOptions",
+          "documentation":"<p>Specifies the deployment strategy options for the domain.</p>"
         }
       }
     },
@@ -3015,6 +3024,10 @@
         "dataSourceDescription":{
           "shape":"DataSourceDescription",
           "documentation":"<p>Detailed description of a data source.</p>"
+        },
+        "iamRoleForDataSourceArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the IAM role to be used for cross account/region data source association.</p>"
         }
       },
       "documentation":"<p>Data sources that are associated with an OpenSearch application. </p>"
@@ -3300,6 +3313,43 @@
         "ELIGIBLE"
       ]
     },
+    "DeploymentStrategy":{
+      "type":"string",
+      "documentation":"<p>Specifies the deployment strategy for the domain. Valid values are <code>Default</code> and <code>CapacityOptimized</code>.</p>",
+      "enum":[
+        "Default",
+        "CapacityOptimized"
+      ]
+    },
+    "DeploymentStrategyOptions":{
+      "type":"structure",
+      "required":["DeploymentStrategy"],
+      "members":{
+        "DeploymentStrategy":{
+          "shape":"DeploymentStrategy",
+          "documentation":"<p>Specifies the deployment strategy for the domain. Valid values are <code>Default</code> and <code>CapacityOptimized</code>.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the deployment strategy options for the domain.</p>"
+    },
+    "DeploymentStrategyOptionsStatus":{
+      "type":"structure",
+      "required":[
+        "Options",
+        "Status"
+      ],
+      "members":{
+        "Options":{
+          "shape":"DeploymentStrategyOptions",
+          "documentation":"<p>Deployment strategy options for the domain.</p>"
+        },
+        "Status":{
+          "shape":"OptionStatus",
+          "documentation":"<p>The current status of the deployment strategy options for the domain.</p>"
+        }
+      },
+      "documentation":"<p>The status of deployment strategy options for the domain.</p>"
+    },
     "DeploymentType":{
       "type":"string",
       "max":128,
@@ -3317,11 +3367,15 @@
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>An optional parameter that specifies the maximum number of results to return. You can use <code>nextToken</code> to get the next page of results.</p>"
+          "documentation":"<p>An optional parameter that specifies the maximum number of results to return. You can use <code>nextToken</code> to get the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>If your initial <code>DescribeDomainAutoTunes</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent <code>DescribeDomainAutoTunes</code> operations, which returns results in the next page.</p>"
+          "documentation":"<p>If your initial <code>DescribeDomainAutoTunes</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent <code>DescribeDomainAutoTunes</code> operations, which returns results in the next page.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
         }
       },
       "documentation":"<p>Container for the parameters to the <code>DescribeDomainAutoTunes</code> operation.</p>"
@@ -4076,6 +4130,10 @@
         "AIMLOptions":{
           "shape":"AIMLOptionsStatus",
           "documentation":"<p>Container for parameters required to enable all machine learning features.</p>"
+        },
+        "DeploymentStrategyOptions":{
+          "shape":"DeploymentStrategyOptionsStatus",
+          "documentation":"<p>Specifies <code>DeploymentStrategyOptions</code> for the domain.</p>"
         }
       },
       "documentation":"<p>Container for the configuration of an OpenSearch Service domain.</p>"
@@ -4499,6 +4557,10 @@
         "AIMLOptions":{
           "shape":"AIMLOptionsOutput",
           "documentation":"<p>Container for parameters required to enable all machine learning features.</p>"
+        },
+        "DeploymentStrategyOptions":{
+          "shape":"DeploymentStrategyOptions",
+          "documentation":"<p>The current status of the domain's deployment strategy options.</p>"
         }
       },
       "documentation":"<p>The current status of an OpenSearch Service domain.</p>"
@@ -4901,6 +4963,10 @@
         "OpenSearchArns":{
           "shape":"DirectQueryOpenSearchARNList",
           "documentation":"<p> A list of Amazon Resource Names (ARNs) for the OpenSearch collections that are associated with the direct query data source. </p>"
+        },
+        "DataSourceAccessPolicy":{
+          "shape":"PolicyDocument",
+          "documentation":"<p> The IAM access policy document that defines the permissions for accessing the direct query data source. Returns the current policy configuration in JSON format, or null if no custom policy is configured. </p>"
         },
         "DataSourceArn":{
           "shape":"String",
@@ -8004,6 +8070,10 @@
         "OpenSearchArns":{
           "shape":"DirectQueryOpenSearchARNList",
           "documentation":"<p> A list of Amazon Resource Names (ARNs) for the OpenSearch collections that are associated with the direct query data source. </p>"
+        },
+        "DataSourceAccessPolicy":{
+          "shape":"PolicyDocument",
+          "documentation":"<p> An optional IAM access policy document that defines the updated permissions for accessing the direct query data source. The policy document must be in valid JSON format and follow IAM policy syntax. If not specified, the existing access policy if present remains unchanged. </p>"
         }
       }
     },
@@ -8102,6 +8172,10 @@
         "AIMLOptions":{
           "shape":"AIMLOptionsInput",
           "documentation":"<p>Options for all machine learning features for the specified domain.</p>"
+        },
+        "DeploymentStrategyOptions":{
+          "shape":"DeploymentStrategyOptions",
+          "documentation":"<p>Specifies the deployment strategy options for the domain.</p>"
         }
       },
       "documentation":"<p>Container for the request parameters to the <code>UpdateDomain</code> operation.</p>"

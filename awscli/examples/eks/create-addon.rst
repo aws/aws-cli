@@ -1,6 +1,6 @@
-**Example 1: To create an Amazon EKS add-on with default compatibile version for the respective EKS cluster version**
+**Example 1: To create an Amazon EKS add-on with default compatible version for the respective EKS cluster version**
 
-The following ``create-addon`` example command creates an Amazon EKS add-on with default compatibile version for the respective EKS cluster version. ::
+The following ``create-addon`` example command creates an Amazon EKS add-on with default compatible version for the respective EKS cluster version. ::
 
     aws eks create-addon \
         --cluster-name my-eks-cluster \

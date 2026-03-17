@@ -60,7 +60,7 @@ def apply_boolean_options(
 ):
     if true_option and false_option:
         error_message = (
-            'aws: error: cannot use both '
+            'cannot use both '
             + true_option_name
             + ' and '
             + false_option_name

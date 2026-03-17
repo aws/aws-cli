@@ -1787,7 +1787,6 @@
       "type":"structure",
       "required":[
         "logo",
-        "wallpaper",
         "favicon",
         "localizedStrings",
         "colorTheme"
@@ -1824,7 +1823,6 @@
       "type":"structure",
       "required":[
         "logo",
-        "wallpaper",
         "favicon",
         "localizedStrings",
         "colorTheme"
@@ -1836,7 +1834,7 @@
         },
         "wallpaper":{
           "shape":"WallpaperImageInput",
-          "documentation":"<p>The wallpaper image for the portal. Provide either a binary image file or an S3 URI pointing to the image file. Maximum 5 MB in JPEG or PNG format.</p>"
+          "documentation":"<p>The wallpaper image for the portal. Provide either a binary image file or an S3 URI pointing to the image file. Maximum 5 MB in JPEG or PNG format. If not provided, a default wallpaper will be used as the background image.</p>"
         },
         "favicon":{
           "shape":"IconImageInput",
@@ -2621,7 +2619,7 @@
         },
         "brandingConfigurationInput":{
           "shape":"BrandingConfigurationCreateInput",
-          "documentation":"<p>The branding configuration input that customizes the appearance of the web portal for end users. This includes a custom logo, favicon, wallpaper, localized strings, color theme, and an optional terms of service.</p>"
+          "documentation":"<p>The branding configuration input that customizes the appearance of the web portal for end users. This includes a custom logo, favicon, localized strings, color theme, and optionally a wallpaper and terms of service.</p>"
         },
         "webAuthnAllowed":{
           "shape":"EnabledType",
@@ -4537,7 +4535,7 @@
       "type":"string",
       "max":253,
       "min":1,
-      "pattern":"[a-zA-Z0-9]?((?!-)([A-Za-z0-9-]*[A-Za-z0-9])\\.)+[a-zA-Z0-9]+"
+      "pattern":"(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]"
     },
     "PortalId":{
       "type":"string",
@@ -5588,7 +5586,7 @@
         },
         "brandingConfigurationInput":{
           "shape":"BrandingConfigurationUpdateInput",
-          "documentation":"<p>The branding configuration that customizes the appearance of the web portal for end users. When updating user settings without an existing branding configuration, all fields (logo, favicon, wallpaper, localized strings, and color theme) are required except for terms of service. When updating user settings with an existing branding configuration, all fields are optional.</p>"
+          "documentation":"<p>The branding configuration that customizes the appearance of the web portal for end users. When updating user settings without an existing branding configuration, all fields (logo, favicon, localized strings, and color theme) are required except for wallpaper and terms of service. When updating user settings with an existing branding configuration, all fields are optional.</p>"
         },
         "webAuthnAllowed":{
           "shape":"EnabledType",

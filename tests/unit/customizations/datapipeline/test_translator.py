@@ -18,7 +18,7 @@ from awscli.customizations.datapipeline.translator import (
 )
 from awscli.testutils import unittest
 
-# Thoughout these tests, 'df' refers to the condensed JSON definition format
+# Throughout these tests, 'df' refers to the condensed JSON definition format
 # that the user provides and API refers to the format expected by the API.
 
 

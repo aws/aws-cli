@@ -150,6 +150,22 @@
       ],
       "documentation":"<p>Creates a new Launch Configuration Template.</p>"
     },
+    "CreateNetworkMigrationDefinition":{
+      "name":"CreateNetworkMigrationDefinition",
+      "http":{
+        "method":"POST",
+        "requestUri":"/network-migration/CreateNetworkMigrationDefinition",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateNetworkMigrationDefinitionRequest"},
+      "output":{"shape":"NetworkMigrationDefinition"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a new network migration definition that specifies the source and target network configuration for a migration.</p>",
+      "idempotent":true
+    },
     "CreateReplicationConfigurationTemplate":{
       "name":"CreateReplicationConfigurationTemplate",
       "http":{
@@ -248,6 +264,23 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Deletes a single Launch Configuration Template by ID.</p>",
+      "idempotent":true
+    },
+    "DeleteNetworkMigrationDefinition":{
+      "name":"DeleteNetworkMigrationDefinition",
+      "http":{
+        "method":"POST",
+        "requestUri":"/network-migration/DeleteNetworkMigrationDefinition",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteNetworkMigrationDefinitionRequest"},
+      "output":{"shape":"DeleteNetworkMigrationDefinitionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes a network migration definition. This operation removes the migration definition and all associated metadata.</p>",
       "idempotent":true
     },
     "DeleteReplicationConfigurationTemplate":{
@@ -499,6 +532,39 @@
       "documentation":"<p>Lists all LaunchConfigurations available, filtered by Source Server IDs.</p>",
       "readonly":true
     },
+    "GetNetworkMigrationDefinition":{
+      "name":"GetNetworkMigrationDefinition",
+      "http":{
+        "method":"POST",
+        "requestUri":"/network-migration/GetNetworkMigrationDefinition",
+        "responseCode":200
+      },
+      "input":{"shape":"GetNetworkMigrationDefinitionRequest"},
+      "output":{"shape":"NetworkMigrationDefinition"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves the details of a network migration definition including source and target configurations.</p>",
+      "readonly":true
+    },
+    "GetNetworkMigrationMapperSegmentConstruct":{
+      "name":"GetNetworkMigrationMapperSegmentConstruct",
+      "http":{
+        "method":"POST",
+        "requestUri":"/network-migration/GetNetworkMigrationMapperSegmentConstruct",
+        "responseCode":200
+      },
+      "input":{"shape":"GetNetworkMigrationMapperSegmentConstructRequest"},
+      "output":{"shape":"GetNetworkMigrationMapperSegmentConstructResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieves detailed information about a specific construct within a mapper segment, including its properties and configuration data.</p>",
+      "readonly":true
+    },
     "GetReplicationConfiguration":{
       "name":"GetReplicationConfiguration",
       "http":{
@@ -608,6 +674,21 @@
       "documentation":"<p>List import errors.</p>",
       "readonly":true
     },
+    "ListImportFileEnrichments":{
+      "name":"ListImportFileEnrichments",
+      "http":{
+        "method":"POST",
+        "requestUri":"/network-migration/ListImportFileEnrichments",
+        "responseCode":200
+      },
+      "input":{"shape":"ListImportFileEnrichmentsRequest"},
+      "output":{"shape":"ListImportFileEnrichmentsResponse"},
+      "errors":[
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists import file enrichment jobs with optional filtering by job IDs.</p>",
+      "readonly":true
+    },
     "ListImports":{
       "name":"ListImports",
       "http":{
@@ -638,6 +719,217 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>List Managed Accounts.</p>",
+      "readonly":true
+    },
+    "ListNetworkMigrationAnalyses":{
+      "name":"ListNetworkMigrationAnalyses",
+      "http":{
+        "method":"POST",
+        "requestUri":"/network-migration/ListNetworkMigrationAnalyses",
+        "responseCode":200
+      },
+      "input":{"shape":"ListNetworkMigrationAnalysesRequest"},
+      "output":{"shape":"ListNetworkMigrationAnalysesResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists network migration analysis jobs for a specified execution. Returns information about analysis job status and results.</p>",
+      "readonly":true
+    },
+    "ListNetworkMigrationAnalysisResults":{
+      "name":"ListNetworkMigrationAnalysisResults",
+      "http":{
+        "method":"POST",
+        "requestUri":"/network-migration/ListNetworkMigrationAnalysisResults",
+        "responseCode":200
+      },
+      "input":{"shape":"ListNetworkMigrationAnalysisResultsRequest"},
+      "output":{"shape":"ListNetworkMigrationAnalysisResultsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists the results of network migration analyses, showing connectivity and compatibility findings for migrated resources.</p>",
+      "readonly":true
+    },
+    "ListNetworkMigrationCodeGenerationSegments":{
+      "name":"ListNetworkMigrationCodeGenerationSegments",
+      "http":{
+        "method":"POST",
+        "requestUri":"/network-migration/ListNetworkMigrationCodeGenerationSegments",
+        "responseCode":200
+      },
+      "input":{"shape":"ListNetworkMigrationCodeGenerationSegmentsRequest"},
+      "output":{"shape":"ListNetworkMigrationCodeGenerationSegmentsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists code generation segments, which represent individual infrastructure components generated as code templates.</p>",
+      "readonly":true
+    },
+    "ListNetworkMigrationCodeGenerations":{
+      "name":"ListNetworkMigrationCodeGenerations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/network-migration/ListNetworkMigrationCodeGenerations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListNetworkMigrationCodeGenerationsRequest"},
+      "output":{"shape":"ListNetworkMigrationCodeGenerationsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists network migration code generation jobs, which convert network mappings into infrastructure-as-code templates.</p>",
+      "readonly":true
+    },
+    "ListNetworkMigrationDefinitions":{
+      "name":"ListNetworkMigrationDefinitions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/network-migration/ListNetworkMigrationDefinitions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListNetworkMigrationDefinitionsRequest"},
+      "output":{"shape":"ListNetworkMigrationDefinitionsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists all network migration definitions in the account, with optional filtering.</p>",
+      "readonly":true
+    },
+    "ListNetworkMigrationDeployedStacks":{
+      "name":"ListNetworkMigrationDeployedStacks",
+      "http":{
+        "method":"POST",
+        "requestUri":"/network-migration/ListNetworkMigrationDeployedStacks",
+        "responseCode":200
+      },
+      "input":{"shape":"ListNetworkMigrationDeployedStacksRequest"},
+      "output":{"shape":"ListNetworkMigrationDeployedStacksResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists CloudFormation stacks that have been deployed as part of the network migration.</p>",
+      "readonly":true
+    },
+    "ListNetworkMigrationDeployments":{
+      "name":"ListNetworkMigrationDeployments",
+      "http":{
+        "method":"POST",
+        "requestUri":"/network-migration/ListNetworkMigrationDeployments",
+        "responseCode":200
+      },
+      "input":{"shape":"ListNetworkMigrationDeploymentsRequest"},
+      "output":{"shape":"ListNetworkMigrationDeployerJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists network migration deployment jobs and their current status.</p>",
+      "readonly":true
+    },
+    "ListNetworkMigrationExecutions":{
+      "name":"ListNetworkMigrationExecutions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/network-migration/ListNetworkMigrationExecutions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListNetworkMigrationExecutionsRequest"},
+      "output":{"shape":"ListNetworkMigrationExecutionsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists network migration execution instances for a given definition, showing the status and progress of each execution.</p>",
+      "readonly":true
+    },
+    "ListNetworkMigrationMapperSegmentConstructs":{
+      "name":"ListNetworkMigrationMapperSegmentConstructs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/network-migration/ListNetworkMigrationMapperSegmentConstructs",
+        "responseCode":200
+      },
+      "input":{"shape":"ListNetworkMigrationMapperSegmentConstructsRequest"},
+      "output":{"shape":"ListNetworkMigrationMapperSegmentConstructsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists constructs within a mapper segment, representing individual infrastructure components like VPCs, subnets, or security groups.</p>",
+      "readonly":true
+    },
+    "ListNetworkMigrationMapperSegments":{
+      "name":"ListNetworkMigrationMapperSegments",
+      "http":{
+        "method":"POST",
+        "requestUri":"/network-migration/ListNetworkMigrationMapperSegments",
+        "responseCode":200
+      },
+      "input":{"shape":"ListNetworkMigrationMapperSegmentsRequest"},
+      "output":{"shape":"ListNetworkMigrationMapperSegmentsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists mapper segments, which represent logical groupings of network resources to be migrated together.</p>",
+      "readonly":true
+    },
+    "ListNetworkMigrationMappingUpdates":{
+      "name":"ListNetworkMigrationMappingUpdates",
+      "http":{
+        "method":"POST",
+        "requestUri":"/network-migration/ListNetworkMigrationMappingUpdates",
+        "responseCode":200
+      },
+      "input":{"shape":"ListNetworkMigrationMappingUpdatesRequest"},
+      "output":{"shape":"ListNetworkMigrationMappingUpdatesResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists mapping update jobs, which apply customer modifications to the generated network mappings.</p>",
+      "readonly":true
+    },
+    "ListNetworkMigrationMappings":{
+      "name":"ListNetworkMigrationMappings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/network-migration/ListNetworkMigrationMappings",
+        "responseCode":200
+      },
+      "input":{"shape":"ListNetworkMigrationMappingsRequest"},
+      "output":{"shape":"ListNetworkMigrationMappingsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists network migration mapping jobs, which analyze and create relationships between source and target network resources.</p>",
       "readonly":true
     },
     "ListSourceServerActions":{
@@ -890,6 +1182,125 @@
       ],
       "documentation":"<p>Start import.</p>"
     },
+    "StartImportFileEnrichment":{
+      "name":"StartImportFileEnrichment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/network-migration/StartImportFileEnrichment",
+        "responseCode":202
+      },
+      "input":{"shape":"StartImportFileEnrichmentRequest"},
+      "output":{"shape":"StartImportFileEnrichmentResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Starts an import file enrichment job to process and enrich network migration import files with additional metadata and IP assignment strategies.</p>",
+      "idempotent":true
+    },
+    "StartNetworkMigrationAnalysis":{
+      "name":"StartNetworkMigrationAnalysis",
+      "http":{
+        "method":"POST",
+        "requestUri":"/network-migration/StartNetworkMigrationAnalysis",
+        "responseCode":202
+      },
+      "input":{"shape":"StartNetworkMigrationAnalysisRequest"},
+      "output":{"shape":"StartNetworkMigrationAnalysisResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Starts a network migration analysis job to evaluate connectivity and compatibility of the migration mappings.</p>",
+      "idempotent":true
+    },
+    "StartNetworkMigrationCodeGeneration":{
+      "name":"StartNetworkMigrationCodeGeneration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/network-migration/StartNetworkMigrationCodeGeneration",
+        "responseCode":202
+      },
+      "input":{"shape":"StartNetworkMigrationCodeGenerationRequest"},
+      "output":{"shape":"StartNetworkMigrationCodeGenerationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Starts a code generation job to convert network migration mappings into infrastructure-as-code templates.</p>",
+      "idempotent":true
+    },
+    "StartNetworkMigrationDeployment":{
+      "name":"StartNetworkMigrationDeployment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/network-migration/StartNetworkMigrationDeployment",
+        "responseCode":202
+      },
+      "input":{"shape":"StartNetworkMigrationDeploymentRequest"},
+      "output":{"shape":"StartNetworkMigrationDeployerJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Starts a deployment job to create the target network infrastructure based on the generated code templates.</p>",
+      "idempotent":true
+    },
+    "StartNetworkMigrationMapping":{
+      "name":"StartNetworkMigrationMapping",
+      "http":{
+        "method":"POST",
+        "requestUri":"/network-migration/StartNetworkMigrationMapping",
+        "responseCode":202
+      },
+      "input":{"shape":"StartNetworkMigrationMappingRequest"},
+      "output":{"shape":"StartNetworkMigrationMappingResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Starts the network migration mapping process for a given network migration execution.</p>",
+      "idempotent":true
+    },
+    "StartNetworkMigrationMappingUpdate":{
+      "name":"StartNetworkMigrationMappingUpdate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/network-migration/StartNetworkMigrationMappingUpdate",
+        "responseCode":202
+      },
+      "input":{"shape":"StartNetworkMigrationMappingUpdateRequest"},
+      "output":{"shape":"StartNetworkMigrationMappingUpdateResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Starts a job to apply customer modifications to network migration mappings, such as changing properties.</p>",
+      "idempotent":true
+    },
     "StartReplication":{
       "name":"StartReplication",
       "http":{
@@ -1095,6 +1506,40 @@
       ],
       "documentation":"<p>Updates an existing Launch Configuration Template by ID.</p>"
     },
+    "UpdateNetworkMigrationDefinition":{
+      "name":"UpdateNetworkMigrationDefinition",
+      "http":{
+        "method":"POST",
+        "requestUri":"/network-migration/UpdateNetworkMigrationDefinition",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateNetworkMigrationDefinitionRequest"},
+      "output":{"shape":"NetworkMigrationDefinition"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Updates an existing network migration definition with new source or target configurations.</p>",
+      "idempotent":true
+    },
+    "UpdateNetworkMigrationMapperSegment":{
+      "name":"UpdateNetworkMigrationMapperSegment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/network-migration/UpdateNetworkMigrationMapperSegment",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateNetworkMigrationMapperSegmentRequest"},
+      "output":{"shape":"NetworkMigrationMapperSegment"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Updates a mapper segment's configuration, such as changing its scope tags.</p>",
+      "idempotent":true
+    },
     "UpdateReplicationConfiguration":{
       "name":"UpdateReplicationConfiguration",
       "http":{
@@ -1247,6 +1692,10 @@
       "max":256,
       "min":1,
       "pattern":"[^\\s\\x00]( *[^\\s\\x00])*"
+    },
+    "AnalyzerType":{
+      "type":"string",
+      "enum":["REACHABILITY_ANALYZER"]
     },
     "Application":{
       "type":"structure",
@@ -1525,6 +1974,26 @@
         "CUTOVER"
       ]
     },
+    "Checksum":{
+      "type":"structure",
+      "members":{
+        "encryptionAlgorithm":{
+          "shape":"EncryptionAlgorithm",
+          "documentation":"<p>The encryption algorithm used to generate the checksum.</p>"
+        },
+        "hash":{
+          "shape":"Hash",
+          "documentation":"<p>The hash value of the checksum.</p>"
+        }
+      },
+      "documentation":"<p>A checksum structure used to verify data integrity.</p>"
+    },
+    "Cidr":{
+      "type":"string",
+      "max":18,
+      "min":9,
+      "pattern":"((25[0-4]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\\/(1[6-9]|2[0-8])"
+    },
     "ClientIdempotencyToken":{
       "type":"string",
       "max":64,
@@ -1535,6 +2004,49 @@
       "max":512,
       "min":1,
       "pattern":"[\\.\\-_/#A-Za-z0-9]+"
+    },
+    "CodeGenerationOutputFormatStatus":{
+      "type":"string",
+      "enum":[
+        "SUCCEEDED",
+        "FAILED"
+      ]
+    },
+    "CodeGenerationOutputFormatStatusDetails":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"CodeGenerationOutputFormatStatus",
+          "documentation":"<p>The status of the code generation for this output format.</p>"
+        },
+        "statusDetailList":{
+          "shape":"LargeBoundedString",
+          "documentation":"<p>A list of detailed status information for the code generation.</p>"
+        }
+      },
+      "documentation":"<p>Status details for a specific code generation output format.</p>"
+    },
+    "CodeGenerationOutputFormatStatusDetailsMap":{
+      "type":"map",
+      "key":{"shape":"CodeGenerationOutputFormatType"},
+      "value":{"shape":"CodeGenerationOutputFormatStatusDetails"},
+      "max":10,
+      "min":0
+    },
+    "CodeGenerationOutputFormatType":{
+      "type":"string",
+      "enum":[
+        "CDK_L1",
+        "CDK_L2",
+        "TERRAFORM",
+        "LZA"
+      ]
+    },
+    "CodeGenerationOutputFormatTypes":{
+      "type":"list",
+      "member":{"shape":"CodeGenerationOutputFormatType"},
+      "max":10,
+      "min":0
     },
     "ConflictException":{
       "type":"structure",
@@ -1647,6 +2159,24 @@
     "ConnectorsList":{
       "type":"list",
       "member":{"shape":"Connector"}
+    },
+    "ConstructID":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
+    "ConstructProperties":{
+      "type":"map",
+      "key":{"shape":"ConstructPropertyKey"},
+      "value":{"shape":"MarshalledResourceDefinition"},
+      "max":20,
+      "min":0
+    },
+    "ConstructPropertyKey":{
+      "type":"string",
+      "max":24,
+      "min":0
     },
     "Cpus":{
       "type":"list",
@@ -1767,6 +2297,48 @@
         }
       }
     },
+    "CreateNetworkMigrationDefinitionRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "targetS3Configuration",
+        "targetNetwork"
+      ],
+      "members":{
+        "name":{
+          "shape":"NetworkMigrationDefinitionName",
+          "documentation":"<p>The name of the network migration definition.</p>"
+        },
+        "description":{
+          "shape":"NetworkMigrationDefinitionDescription",
+          "documentation":"<p>A description of the network migration definition.</p>"
+        },
+        "sourceConfigurations":{
+          "shape":"SourceConfigurationList",
+          "documentation":"<p>A list of source configurations for the network migration.</p>"
+        },
+        "targetS3Configuration":{
+          "shape":"TargetS3Configuration",
+          "documentation":"<p>The S3 configuration for storing the target network artifacts.</p>"
+        },
+        "targetNetwork":{
+          "shape":"TargetNetwork",
+          "documentation":"<p>The target network configuration including topology and CIDR ranges.</p>"
+        },
+        "targetDeployment":{
+          "shape":"TargetDeployment",
+          "documentation":"<p>The target deployment configuration for the migrated network.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Tags to assign to the network migration definition.</p>"
+        },
+        "scopeTags":{
+          "shape":"ScopeTagsMap",
+          "documentation":"<p>Scope tags for the network migration definition to control access and organization.</p>"
+        }
+      }
+    },
     "CreateReplicationConfigurationTemplateRequest":{
       "type":"structure",
       "required":[
@@ -1842,6 +2414,10 @@
         "internetProtocol":{
           "shape":"InternetProtocol",
           "documentation":"<p>Request to configure the internet protocol to IPv4 or IPv6.</p>"
+        },
+        "storeSnapshotOnLocalZone":{
+          "shape":"Boolean",
+          "documentation":"<p>Request to store snapshot on local zone during Replication Settings template creation.</p>"
         }
       }
     },
@@ -2108,6 +2684,20 @@
       }
     },
     "DeleteLaunchConfigurationTemplateResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteNetworkMigrationDefinitionRequest":{
+      "type":"structure",
+      "required":["networkMigrationDefinitionID"],
+      "members":{
+        "networkMigrationDefinitionID":{
+          "shape":"NetworkMigrationDefinitionID",
+          "documentation":"<p>The unique identifier of the network migration definition to delete.</p>"
+        }
+      }
+    },
+    "DeleteNetworkMigrationDefinitionResponse":{
       "type":"structure",
       "members":{}
     },
@@ -2537,6 +3127,56 @@
       "min":20,
       "pattern":"lt-[0-9a-z]{17}"
     },
+    "EncryptionAlgorithm":{
+      "type":"string",
+      "enum":["SHA256"]
+    },
+    "EnrichmentSourceS3Configuration":{
+      "type":"structure",
+      "required":[
+        "s3Bucket",
+        "s3BucketOwner",
+        "s3Key"
+      ],
+      "members":{
+        "s3Bucket":{
+          "shape":"S3BucketName",
+          "documentation":"<p>The name of the S3 bucket containing the source import file.</p>"
+        },
+        "s3BucketOwner":{
+          "shape":"AccountID",
+          "documentation":"<p>The AWS account ID of the S3 bucket owner.</p>"
+        },
+        "s3Key":{
+          "shape":"S3KeyName",
+          "documentation":"<p>The S3 key (path) for the source import file.</p>"
+        }
+      },
+      "documentation":"<p>S3 configuration for the source import file to be enriched.</p>"
+    },
+    "EnrichmentTargetS3Configuration":{
+      "type":"structure",
+      "required":[
+        "s3Bucket",
+        "s3BucketOwner",
+        "s3Key"
+      ],
+      "members":{
+        "s3Bucket":{
+          "shape":"S3BucketName",
+          "documentation":"<p>The name of the S3 bucket where the enriched import file will be stored.</p>"
+        },
+        "s3BucketOwner":{
+          "shape":"AccountID",
+          "documentation":"<p>The AWS account ID of the target S3 bucket owner.</p>"
+        },
+        "s3Key":{
+          "shape":"S3KeyName",
+          "documentation":"<p>The S3 key (path) where the enriched import file will be stored.</p>"
+        }
+      },
+      "documentation":"<p>S3 configuration for storing the enriched import file.</p>"
+    },
     "ErrorDetails":{
       "type":"structure",
       "members":{
@@ -2558,6 +3198,36 @@
         }
       },
       "documentation":"<p>Error details.</p>"
+    },
+    "ExecutionStage":{
+      "type":"string",
+      "enum":[
+        "MAPPING",
+        "CODE_GENERATION",
+        "DEPLOY",
+        "DEPLOYED_STACKS_DELETION",
+        "ANALYZE"
+      ]
+    },
+    "ExecutionStageActivity":{
+      "type":"string",
+      "enum":[
+        "MAPPING",
+        "MAPPING_UPDATE",
+        "CODE_GENERATION",
+        "DEPLOY",
+        "DEPLOYED_STACKS_DELETION",
+        "ANALYZE"
+      ]
+    },
+    "ExecutionStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "STARTED",
+        "SUCCEEDED",
+        "FAILED"
+      ]
     },
     "ExportErrorData":{
       "type":"structure",
@@ -2715,6 +3385,52 @@
         }
       }
     },
+    "GetNetworkMigrationDefinitionRequest":{
+      "type":"structure",
+      "required":["networkMigrationDefinitionID"],
+      "members":{
+        "networkMigrationDefinitionID":{
+          "shape":"NetworkMigrationDefinitionID",
+          "documentation":"<p>The unique identifier of the network migration definition to retrieve.</p>"
+        }
+      }
+    },
+    "GetNetworkMigrationMapperSegmentConstructRequest":{
+      "type":"structure",
+      "required":[
+        "networkMigrationDefinitionID",
+        "networkMigrationExecutionID",
+        "segmentID",
+        "constructID"
+      ],
+      "members":{
+        "networkMigrationDefinitionID":{
+          "shape":"NetworkMigrationDefinitionID",
+          "documentation":"<p>The unique identifier of the network migration definition.</p>"
+        },
+        "networkMigrationExecutionID":{
+          "shape":"NetworkMigrationExecutionID",
+          "documentation":"<p>The unique identifier of the network migration execution.</p>"
+        },
+        "segmentID":{
+          "shape":"SegmentID",
+          "documentation":"<p>The unique identifier of the mapper segment.</p>"
+        },
+        "constructID":{
+          "shape":"ConstructID",
+          "documentation":"<p>The unique identifier of the construct within the segment.</p>"
+        }
+      }
+    },
+    "GetNetworkMigrationMapperSegmentConstructResponse":{
+      "type":"structure",
+      "members":{
+        "construct":{
+          "shape":"NetworkMigrationMapperSegmentConstruct",
+          "documentation":"<p>The construct metadata including type, name, and configuration.</p>"
+        }
+      }
+    },
     "GetReplicationConfigurationRequest":{
       "type":"structure",
       "required":["sourceServerID"],
@@ -2728,6 +3444,12 @@
           "documentation":"<p>Request to get Replication Configuration by Account ID.</p>"
         }
       }
+    },
+    "Hash":{
+      "type":"string",
+      "max":32,
+      "min":32,
+      "pattern":"[A-Za-z0-9+/=]{32}"
     },
     "IPsList":{
       "type":"list",
@@ -2814,6 +3536,67 @@
     "ImportErrors":{
       "type":"list",
       "member":{"shape":"ImportTaskError"}
+    },
+    "ImportFileEnrichment":{
+      "type":"structure",
+      "members":{
+        "jobID":{
+          "shape":"ImportFileEnrichmentJobID",
+          "documentation":"<p>The unique identifier of the import file enrichment job.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the enrichment job was created.</p>"
+        },
+        "endedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the enrichment job completed or failed.</p>"
+        },
+        "status":{
+          "shape":"ImportFileEnrichmentStatus",
+          "documentation":"<p>The current status of the import file enrichment job.</p>"
+        },
+        "statusDetails":{
+          "shape":"LargeBoundedString",
+          "documentation":"<p>Detailed status information about the enrichment job.</p>"
+        },
+        "checksum":{
+          "shape":"Checksum",
+          "documentation":"<p>The checksum of the enriched file for integrity verification.</p>"
+        },
+        "s3BucketTarget":{
+          "shape":"EnrichmentTargetS3Configuration",
+          "documentation":"<p>The target S3 configuration for the enriched import file.</p>"
+        }
+      },
+      "documentation":"<p>Details about an import file enrichment job.</p>"
+    },
+    "ImportFileEnrichmentJobID":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
+    "ImportFileEnrichmentStatus":{
+      "type":"string",
+      "documentation":"<p>The status of an import file enrichment job. Can be PENDING, STARTED, FAILED, SUCCEEDED, or SUCCEEDED_WITH_WARNINGS.</p>",
+      "enum":[
+        "PENDING",
+        "STARTED",
+        "FAILED",
+        "SUCCEEDED",
+        "SUCCEEDED_WITH_WARNINGS"
+      ]
+    },
+    "ImportFileEnrichmentsIDsFilter":{
+      "type":"list",
+      "member":{"shape":"ImportFileEnrichmentJobID"},
+      "max":10,
+      "min":0
+    },
+    "ImportFileEnrichmentsList":{
+      "type":"list",
+      "member":{"shape":"ImportFileEnrichment"}
     },
     "ImportID":{
       "type":"string",
@@ -3006,6 +3789,14 @@
       "box":true,
       "max":64000,
       "min":100
+    },
+    "IpAssignmentStrategy":{
+      "type":"string",
+      "documentation":"<p>The strategy for assigning IP addresses during the enrichment process. STATIC assigns fixed IP addresses, while DYNAMIC allows for dynamic IP allocation.</p>",
+      "enum":[
+        "STATIC",
+        "DYNAMIC"
+      ]
     },
     "JmesPathString":{
       "type":"string",
@@ -3763,6 +4554,46 @@
       },
       "documentation":"<p>List imports errors response.</p>"
     },
+    "ListImportFileEnrichmentsFilters":{
+      "type":"structure",
+      "members":{
+        "jobIDs":{
+          "shape":"ImportFileEnrichmentsIDsFilter",
+          "documentation":"<p>A list of job IDs to filter by.</p>"
+        }
+      },
+      "documentation":"<p>Filters for listing import file enrichment jobs.</p>"
+    },
+    "ListImportFileEnrichmentsRequest":{
+      "type":"structure",
+      "members":{
+        "filters":{
+          "shape":"ListImportFileEnrichmentsFilters",
+          "documentation":"<p>Filters to apply when listing import file enrichment jobs.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultsType",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListImportFileEnrichmentsResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"ImportFileEnrichmentsList",
+          "documentation":"<p>A list of import file enrichment jobs.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+        }
+      }
+    },
     "ListImportsRequest":{
       "type":"structure",
       "members":{
@@ -3833,6 +4664,664 @@
         }
       },
       "documentation":"<p>List managed accounts response.</p>"
+    },
+    "ListNetworkMigrationAnalysesFilters":{
+      "type":"structure",
+      "members":{
+        "jobIDs":{
+          "shape":"ListNetworkMigrationAnalysesIDsFilter",
+          "documentation":"<p>A list of job IDs to filter by.</p>"
+        }
+      },
+      "documentation":"<p>Filters for listing network migration analysis jobs.</p>"
+    },
+    "ListNetworkMigrationAnalysesIDsFilter":{
+      "type":"list",
+      "member":{"shape":"NetworkMigrationJobID"},
+      "max":10,
+      "min":0
+    },
+    "ListNetworkMigrationAnalysesRequest":{
+      "type":"structure",
+      "required":[
+        "networkMigrationExecutionID",
+        "networkMigrationDefinitionID"
+      ],
+      "members":{
+        "networkMigrationExecutionID":{
+          "shape":"NetworkMigrationExecutionID",
+          "documentation":"<p>The unique identifier of the network migration execution to list analyses for.</p>"
+        },
+        "networkMigrationDefinitionID":{
+          "shape":"NetworkMigrationDefinitionID",
+          "documentation":"<p>The unique identifier of the network migration definition.</p>"
+        },
+        "filters":{
+          "shape":"ListNetworkMigrationAnalysesFilters",
+          "documentation":"<p>Filters to apply when listing analysis jobs.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultsType",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListNetworkMigrationAnalysesResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"NetworkMigrationAnalysesList",
+          "documentation":"<p>A list of network migration analysis job details.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListNetworkMigrationAnalysisResultsFilters":{
+      "type":"structure",
+      "members":{
+        "vpcIDs":{
+          "shape":"VpcIDsFilter",
+          "documentation":"<p>A list of VPC IDs to filter results by.</p>"
+        }
+      },
+      "documentation":"<p>Filters for listing network migration analysis results.</p>"
+    },
+    "ListNetworkMigrationAnalysisResultsRequest":{
+      "type":"structure",
+      "required":[
+        "networkMigrationExecutionID",
+        "networkMigrationDefinitionID"
+      ],
+      "members":{
+        "networkMigrationExecutionID":{
+          "shape":"NetworkMigrationExecutionID",
+          "documentation":"<p>The unique identifier of the network migration execution.</p>"
+        },
+        "networkMigrationDefinitionID":{
+          "shape":"NetworkMigrationDefinitionID",
+          "documentation":"<p>The unique identifier of the network migration definition.</p>"
+        },
+        "filters":{
+          "shape":"ListNetworkMigrationAnalysisResultsFilters",
+          "documentation":"<p>Filters to apply when listing analysis results, such as VPC IDs.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultsType",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListNetworkMigrationAnalysisResultsResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"NetworkMigrationAnalysisResultsList",
+          "documentation":"<p>A list of network migration analysis results.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListNetworkMigrationCodeGenerationSegmentsFilters":{
+      "type":"structure",
+      "members":{
+        "segmentIDs":{
+          "shape":"ListNetworkMigrationCodeGenerationSegmentsIDsFilter",
+          "documentation":"<p>A list of segment IDs to filter by.</p>"
+        }
+      },
+      "documentation":"<p>Filters for listing code generation segments.</p>"
+    },
+    "ListNetworkMigrationCodeGenerationSegmentsIDsFilter":{
+      "type":"list",
+      "member":{"shape":"SegmentID"},
+      "max":10,
+      "min":0
+    },
+    "ListNetworkMigrationCodeGenerationSegmentsRequest":{
+      "type":"structure",
+      "required":[
+        "networkMigrationExecutionID",
+        "networkMigrationDefinitionID"
+      ],
+      "members":{
+        "networkMigrationExecutionID":{
+          "shape":"NetworkMigrationExecutionID",
+          "documentation":"<p>The unique identifier of the network migration execution.</p>"
+        },
+        "networkMigrationDefinitionID":{
+          "shape":"NetworkMigrationDefinitionID",
+          "documentation":"<p>The unique identifier of the network migration definition.</p>"
+        },
+        "filters":{
+          "shape":"ListNetworkMigrationCodeGenerationSegmentsFilters",
+          "documentation":"<p>Filters to apply when listing code generation segments.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultsType",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListNetworkMigrationCodeGenerationSegmentsResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"NetworkMigrationCodeGenerationSegmentsList",
+          "documentation":"<p>A list of network migration code generation segments.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListNetworkMigrationCodeGenerationsFilters":{
+      "type":"structure",
+      "members":{
+        "jobIDs":{
+          "shape":"ListNetworkMigrationCodeGenerationsIDsFilter",
+          "documentation":"<p>A list of job IDs to filter by.</p>"
+        }
+      },
+      "documentation":"<p>Filters for listing code generation jobs.</p>"
+    },
+    "ListNetworkMigrationCodeGenerationsIDsFilter":{
+      "type":"list",
+      "member":{"shape":"NetworkMigrationJobID"},
+      "max":10,
+      "min":0
+    },
+    "ListNetworkMigrationCodeGenerationsRequest":{
+      "type":"structure",
+      "required":[
+        "networkMigrationExecutionID",
+        "networkMigrationDefinitionID"
+      ],
+      "members":{
+        "networkMigrationExecutionID":{
+          "shape":"NetworkMigrationExecutionID",
+          "documentation":"<p>The unique identifier of the network migration execution.</p>"
+        },
+        "networkMigrationDefinitionID":{
+          "shape":"NetworkMigrationDefinitionID",
+          "documentation":"<p>The unique identifier of the network migration definition.</p>"
+        },
+        "filters":{
+          "shape":"ListNetworkMigrationCodeGenerationsFilters",
+          "documentation":"<p>Filters to apply when listing code generation jobs.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultsType",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListNetworkMigrationCodeGenerationsResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"NetworkMigrationCodeGenerationsList",
+          "documentation":"<p>A list of network migration code generation job details.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListNetworkMigrationDefinitionsRequest":{
+      "type":"structure",
+      "members":{
+        "filters":{
+          "shape":"ListNetworkMigrationDefinitionsRequestFilters",
+          "documentation":"<p>Filters to apply when listing network migration definitions.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultsType",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>"
+        }
+      }
+    },
+    "ListNetworkMigrationDefinitionsRequestFilters":{
+      "type":"structure",
+      "members":{
+        "networkMigrationDefinitionIDs":{
+          "shape":"NetworkMigrationDefintionsIDsFilter",
+          "documentation":"<p>A list of definition IDs to filter by.</p>"
+        }
+      },
+      "documentation":"<p>Filters for listing network migration definitions.</p>"
+    },
+    "ListNetworkMigrationDefinitionsResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"NetworkMigrationDefinitionSummariesList",
+          "documentation":"<p>A list of network migration definition summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListNetworkMigrationDeployedStacksRequest":{
+      "type":"structure",
+      "required":[
+        "networkMigrationExecutionID",
+        "networkMigrationDefinitionID"
+      ],
+      "members":{
+        "networkMigrationExecutionID":{
+          "shape":"NetworkMigrationExecutionID",
+          "documentation":"<p>The unique identifier of the network migration execution.</p>"
+        },
+        "networkMigrationDefinitionID":{
+          "shape":"NetworkMigrationDefinitionID",
+          "documentation":"<p>The unique identifier of the network migration definition.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultsType",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListNetworkMigrationDeployedStacksResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"NetworkMigrationDeployedStacksList",
+          "documentation":"<p>A list of deployed stack details including status and resources.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListNetworkMigrationDeployerJobFilters":{
+      "type":"structure",
+      "members":{
+        "jobIDs":{
+          "shape":"ListNetworkMigrationDeployerJobIDsFilters",
+          "documentation":"<p>A list of job IDs to filter by.</p>"
+        }
+      },
+      "documentation":"<p>Filters for listing deployer jobs.</p>"
+    },
+    "ListNetworkMigrationDeployerJobIDsFilters":{
+      "type":"list",
+      "member":{"shape":"NetworkMigrationJobID"},
+      "max":10,
+      "min":0
+    },
+    "ListNetworkMigrationDeployerJobResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"NetworkMigrationDeployerJobList",
+          "documentation":"<p>A list of deployer job details.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListNetworkMigrationDeploymentsRequest":{
+      "type":"structure",
+      "required":[
+        "networkMigrationExecutionID",
+        "networkMigrationDefinitionID"
+      ],
+      "members":{
+        "networkMigrationExecutionID":{
+          "shape":"NetworkMigrationExecutionID",
+          "documentation":"<p>The unique identifier of the network migration execution.</p>"
+        },
+        "networkMigrationDefinitionID":{
+          "shape":"NetworkMigrationDefinitionID",
+          "documentation":"<p>The unique identifier of the network migration definition.</p>"
+        },
+        "filters":{
+          "shape":"ListNetworkMigrationDeployerJobFilters",
+          "documentation":"<p>Filters to apply when listing deployment jobs.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultsType",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListNetworkMigrationExecutionRequestFilters":{
+      "type":"structure",
+      "members":{
+        "networkMigrationExecutionIDs":{
+          "shape":"NetworkMigrationExecutionIDsFilter",
+          "documentation":"<p>A list of execution IDs to filter by.</p>"
+        },
+        "networkMigrationExecutionStatuses":{
+          "shape":"NetworkMigrationExecutionStatusesFilter",
+          "documentation":"<p>A list of execution statuses to filter by.</p>"
+        }
+      },
+      "documentation":"<p>Filters for listing network migration executions.</p>"
+    },
+    "ListNetworkMigrationExecutionsRequest":{
+      "type":"structure",
+      "required":["networkMigrationDefinitionID"],
+      "members":{
+        "networkMigrationDefinitionID":{
+          "shape":"NetworkMigrationDefinitionID",
+          "documentation":"<p>The unique identifier of the network migration definition to list executions for.</p>"
+        },
+        "filters":{
+          "shape":"ListNetworkMigrationExecutionRequestFilters",
+          "documentation":"<p>Filters to apply when listing executions, such as status or execution ID.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultsType",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>"
+        }
+      }
+    },
+    "ListNetworkMigrationExecutionsResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"NetworkMigrationExecutionsList",
+          "documentation":"<p>A list of network migration execution details.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListNetworkMigrationMapperSegmentConstructTypesFilter":{
+      "type":"list",
+      "member":{"shape":"NetworkMigrationMapperSegmentConstructType"},
+      "max":10,
+      "min":0
+    },
+    "ListNetworkMigrationMapperSegmentConstructsFilters":{
+      "type":"structure",
+      "members":{
+        "constructIDs":{
+          "shape":"ListNetworkMigrationMapperSegmentConstructsIDsFilter",
+          "documentation":"<p>A list of construct IDs to filter by.</p>"
+        },
+        "constructTypes":{
+          "shape":"ListNetworkMigrationMapperSegmentConstructTypesFilter",
+          "documentation":"<p>A list of construct types to filter by.</p>"
+        }
+      },
+      "documentation":"<p>Filters for listing mapper segment constructs.</p>"
+    },
+    "ListNetworkMigrationMapperSegmentConstructsIDsFilter":{
+      "type":"list",
+      "member":{"shape":"ConstructID"},
+      "max":10,
+      "min":0
+    },
+    "ListNetworkMigrationMapperSegmentConstructsRequest":{
+      "type":"structure",
+      "required":[
+        "networkMigrationExecutionID",
+        "networkMigrationDefinitionID",
+        "segmentID"
+      ],
+      "members":{
+        "networkMigrationExecutionID":{
+          "shape":"NetworkMigrationExecutionID",
+          "documentation":"<p>The unique identifier of the network migration execution.</p>"
+        },
+        "networkMigrationDefinitionID":{
+          "shape":"NetworkMigrationDefinitionID",
+          "documentation":"<p>The unique identifier of the network migration definition.</p>"
+        },
+        "segmentID":{
+          "shape":"SegmentID",
+          "documentation":"<p>The unique identifier of the segment to list constructs for.</p>"
+        },
+        "filters":{
+          "shape":"ListNetworkMigrationMapperSegmentConstructsFilters",
+          "documentation":"<p>Filters to apply when listing constructs, such as construct type or ID.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultsType",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListNetworkMigrationMapperSegmentConstructsResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"NetworkMigrationMapperSegmentConstructs",
+          "documentation":"<p>A list of mapper segment constructs.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListNetworkMigrationMapperSegmentsFilters":{
+      "type":"structure",
+      "members":{
+        "segmentIDs":{
+          "shape":"ListNetworkMigrationMapperSegmentsIDsFilter",
+          "documentation":"<p>A list of segment IDs to filter by.</p>"
+        }
+      },
+      "documentation":"<p>Filters for listing mapper segments.</p>"
+    },
+    "ListNetworkMigrationMapperSegmentsIDsFilter":{
+      "type":"list",
+      "member":{"shape":"SegmentID"},
+      "max":10,
+      "min":0
+    },
+    "ListNetworkMigrationMapperSegmentsRequest":{
+      "type":"structure",
+      "required":[
+        "networkMigrationExecutionID",
+        "networkMigrationDefinitionID"
+      ],
+      "members":{
+        "networkMigrationExecutionID":{
+          "shape":"NetworkMigrationExecutionID",
+          "documentation":"<p>The unique identifier of the network migration execution.</p>"
+        },
+        "networkMigrationDefinitionID":{
+          "shape":"NetworkMigrationDefinitionID",
+          "documentation":"<p>The unique identifier of the network migration definition.</p>"
+        },
+        "filters":{
+          "shape":"ListNetworkMigrationMapperSegmentsFilters",
+          "documentation":"<p>Filters to apply when listing segments.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultsType",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListNetworkMigrationMapperSegmentsResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"NetworkMigrationMapperSegmentsList",
+          "documentation":"<p>A list of mapper segments.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListNetworkMigrationMappingUpdatesFilters":{
+      "type":"structure",
+      "members":{
+        "jobIDs":{
+          "shape":"ListNetworkMigrationMappingUpdatesIDsFilter",
+          "documentation":"<p>A list of job IDs to filter by.</p>"
+        }
+      },
+      "documentation":"<p>Filters for listing mapping update jobs.</p>"
+    },
+    "ListNetworkMigrationMappingUpdatesIDsFilter":{
+      "type":"list",
+      "member":{"shape":"NetworkMigrationJobID"},
+      "max":10,
+      "min":0
+    },
+    "ListNetworkMigrationMappingUpdatesRequest":{
+      "type":"structure",
+      "required":[
+        "networkMigrationExecutionID",
+        "networkMigrationDefinitionID"
+      ],
+      "members":{
+        "networkMigrationExecutionID":{
+          "shape":"NetworkMigrationExecutionID",
+          "documentation":"<p>The unique identifier of the network migration execution.</p>"
+        },
+        "networkMigrationDefinitionID":{
+          "shape":"NetworkMigrationDefinitionID",
+          "documentation":"<p>The unique identifier of the network migration definition.</p>"
+        },
+        "filters":{
+          "shape":"ListNetworkMigrationMappingUpdatesFilters",
+          "documentation":"<p>Filters to apply when listing mapping update jobs.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultsType",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListNetworkMigrationMappingUpdatesResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"NetworkMigrationMappingUpdatesList",
+          "documentation":"<p>A list of mapping update job details.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListNetworkMigrationMappingsFilters":{
+      "type":"structure",
+      "members":{
+        "jobIDs":{
+          "shape":"ListNetworkMigrationMappingsIDsFilter",
+          "documentation":"<p>A list of job IDs to filter by.</p>"
+        }
+      },
+      "documentation":"<p>Filters for listing network migration mapping jobs.</p>"
+    },
+    "ListNetworkMigrationMappingsIDsFilter":{
+      "type":"list",
+      "member":{"shape":"NetworkMigrationJobID"},
+      "max":10,
+      "min":0
+    },
+    "ListNetworkMigrationMappingsRequest":{
+      "type":"structure",
+      "required":[
+        "networkMigrationExecutionID",
+        "networkMigrationDefinitionID"
+      ],
+      "members":{
+        "networkMigrationExecutionID":{
+          "shape":"NetworkMigrationExecutionID",
+          "documentation":"<p>The unique identifier of the network migration execution.</p>"
+        },
+        "networkMigrationDefinitionID":{
+          "shape":"NetworkMigrationDefinitionID",
+          "documentation":"<p>The unique identifier of the network migration definition.</p>"
+        },
+        "filters":{
+          "shape":"ListNetworkMigrationMappingsFilters",
+          "documentation":"<p>Filters to apply when listing mapping jobs.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultsType",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListNetworkMigrationMappingsResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"NetworkMigrationMappingsList",
+          "documentation":"<p>A list of network migration mapping job details.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+        }
+      }
     },
     "ListSourceServerActionsRequest":{
       "type":"structure",
@@ -3977,6 +5466,12 @@
         }
       }
     },
+    "LogicalID":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[a-zA-Z][a-zA-Z0-9-]*"
+    },
     "ManagedAccount":{
       "type":"structure",
       "members":{
@@ -4006,6 +5501,11 @@
           "documentation":"<p>Mark as archived by Account ID.</p>"
         }
       }
+    },
+    "MarshalledResourceDefinition":{
+      "type":"string",
+      "max":65536,
+      "min":0
     },
     "MaxResultsType":{
       "type":"integer",
@@ -4037,6 +5537,801 @@
       "max":32,
       "min":0
     },
+    "NetworkMigrationAnalysesList":{
+      "type":"list",
+      "member":{"shape":"NetworkMigrationAnalysisJobDetails"},
+      "max":100,
+      "min":0
+    },
+    "NetworkMigrationAnalysisJobDetails":{
+      "type":"structure",
+      "members":{
+        "jobID":{
+          "shape":"NetworkMigrationJobID",
+          "documentation":"<p>The unique identifier of the analysis job.</p>"
+        },
+        "networkMigrationExecutionID":{
+          "shape":"NetworkMigrationExecutionID",
+          "documentation":"<p>The unique identifier of the network migration execution.</p>"
+        },
+        "networkMigrationDefinitionID":{
+          "shape":"NetworkMigrationDefinitionID",
+          "documentation":"<p>The unique identifier of the network migration definition.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the job was created.</p>"
+        },
+        "endedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the job completed or failed.</p>"
+        },
+        "status":{
+          "shape":"NetworkMigrationJobStatus",
+          "documentation":"<p>The current status of the analysis job.</p>"
+        },
+        "statusDetails":{
+          "shape":"LargeBoundedString",
+          "documentation":"<p>Detailed status information about the job.</p>"
+        }
+      },
+      "documentation":"<p>Details about a network migration analysis job.</p>"
+    },
+    "NetworkMigrationAnalysisResult":{
+      "type":"structure",
+      "members":{
+        "jobID":{
+          "shape":"NetworkMigrationJobID",
+          "documentation":"<p>The unique identifier of the analysis job that generated this result.</p>"
+        },
+        "networkMigrationExecutionID":{
+          "shape":"NetworkMigrationExecutionID",
+          "documentation":"<p>The unique identifier of the network migration execution.</p>"
+        },
+        "networkMigrationDefinitionID":{
+          "shape":"NetworkMigrationDefinitionID",
+          "documentation":"<p>The unique identifier of the network migration definition.</p>"
+        },
+        "analyzerType":{
+          "shape":"AnalyzerType",
+          "documentation":"<p>The type of analyzer that generated this result.</p>"
+        },
+        "source":{
+          "shape":"NetworkMigrationAnalysisResultSource",
+          "documentation":"<p>The source resource that was analyzed.</p>"
+        },
+        "target":{
+          "shape":"NetworkMigrationAnalysisResultTarget",
+          "documentation":"<p>The target resource in the analysis.</p>"
+        },
+        "status":{
+          "shape":"NetworkMigrationAnalysisResultStatus",
+          "documentation":"<p>The status of the analysis result.</p>"
+        },
+        "analysisResult":{
+          "shape":"String",
+          "documentation":"<p>The detailed analysis findings and recommendations.</p>"
+        }
+      },
+      "documentation":"<p>The result of a network migration analysis operation.</p>"
+    },
+    "NetworkMigrationAnalysisResultSource":{
+      "type":"structure",
+      "members":{
+        "vpcID":{
+          "shape":"VpcID",
+          "documentation":"<p>The VPC ID of the source resource.</p>"
+        },
+        "subnetID":{
+          "shape":"SubnetID",
+          "documentation":"<p>The subnet ID of the source resource.</p>"
+        }
+      },
+      "documentation":"<p>The source resource information for an analysis result.</p>"
+    },
+    "NetworkMigrationAnalysisResultStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "STARTED",
+        "SUCCEEDED",
+        "FAILED"
+      ]
+    },
+    "NetworkMigrationAnalysisResultTarget":{
+      "type":"structure",
+      "members":{
+        "vpcID":{
+          "shape":"VpcID",
+          "documentation":"<p>The VPC ID of the target resource.</p>"
+        },
+        "subnetID":{
+          "shape":"SubnetID",
+          "documentation":"<p>The subnet ID of the target resource.</p>"
+        }
+      },
+      "documentation":"<p>The target resource information for an analysis result.</p>"
+    },
+    "NetworkMigrationAnalysisResultsList":{
+      "type":"list",
+      "member":{"shape":"NetworkMigrationAnalysisResult"},
+      "max":100,
+      "min":0
+    },
+    "NetworkMigrationCodeGenerationArtifact":{
+      "type":"structure",
+      "members":{
+        "artifactID":{
+          "shape":"NetworkMigrationCodeGenerationArtifactID",
+          "documentation":"<p>The unique identifier of the artifact.</p>"
+        },
+        "artifactType":{
+          "shape":"NetworkMigrationCodeGenerationArtifactType",
+          "documentation":"<p>The type of the artifact, such as CLOUDFORMATION_TEMPLATE or TERRAFORM_MODULE.</p>"
+        },
+        "artifactSubType":{
+          "shape":"NetworkMigrationCodeGenerationArtifactSubType",
+          "documentation":"<p>The sub-type of the artifact for further classification.</p>"
+        },
+        "logicalID":{
+          "shape":"LogicalID",
+          "documentation":"<p>The logical identifier for the artifact.</p>"
+        },
+        "outputS3Configuration":{
+          "shape":"S3Configuration",
+          "documentation":"<p>The S3 location where the artifact is stored.</p>"
+        },
+        "checksum":{
+          "shape":"Checksum",
+          "documentation":"<p>The checksum of the artifact for integrity verification.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the artifact was created.</p>"
+        }
+      },
+      "documentation":"<p>An artifact generated during code generation, such as a CloudFormation template or Terraform file.</p>"
+    },
+    "NetworkMigrationCodeGenerationArtifactID":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
+    "NetworkMigrationCodeGenerationArtifactSubType":{
+      "type":"string",
+      "enum":[
+        "APPLICATION",
+        "NESTED_STACK",
+        "STACK"
+      ]
+    },
+    "NetworkMigrationCodeGenerationArtifactType":{
+      "type":"string",
+      "enum":[
+        "CDK_TYPESCRIPT",
+        "CLOUDFORMATION_TEMPLATE",
+        "CDKTF_TYPESCRIPT",
+        "TERRAFORM_CONFIGURATION",
+        "CDK_L2_TYPESCRIPT"
+      ]
+    },
+    "NetworkMigrationCodeGenerationArtifacts":{
+      "type":"list",
+      "member":{"shape":"NetworkMigrationCodeGenerationArtifact"}
+    },
+    "NetworkMigrationCodeGenerationJobDetails":{
+      "type":"structure",
+      "members":{
+        "jobID":{
+          "shape":"NetworkMigrationJobID",
+          "documentation":"<p>The unique identifier of the code generation job.</p>"
+        },
+        "networkMigrationExecutionID":{
+          "shape":"NetworkMigrationExecutionID",
+          "documentation":"<p>The unique identifier of the network migration execution.</p>"
+        },
+        "networkMigrationDefinitionID":{
+          "shape":"NetworkMigrationDefinitionID",
+          "documentation":"<p>The unique identifier of the network migration definition.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the job was created.</p>"
+        },
+        "endedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the job completed or failed.</p>"
+        },
+        "status":{
+          "shape":"NetworkMigrationJobStatus",
+          "documentation":"<p>The current status of the code generation job.</p>"
+        },
+        "statusDetails":{
+          "shape":"LargeBoundedString",
+          "documentation":"<p>Detailed status information about the job.</p>"
+        },
+        "codeGenerationOutputFormatStatusDetailsMap":{
+          "shape":"CodeGenerationOutputFormatStatusDetailsMap",
+          "documentation":"<p>A map of output format types to their status details.</p>"
+        }
+      },
+      "documentation":"<p>Details about a network migration code generation job.</p>"
+    },
+    "NetworkMigrationCodeGenerationSegment":{
+      "type":"structure",
+      "members":{
+        "jobID":{
+          "shape":"NetworkMigrationJobID",
+          "documentation":"<p>The unique identifier of the code generation job.</p>"
+        },
+        "networkMigrationExecutionID":{
+          "shape":"NetworkMigrationExecutionID",
+          "documentation":"<p>The unique identifier of the network migration execution.</p>"
+        },
+        "networkMigrationDefinitionID":{
+          "shape":"NetworkMigrationDefinitionID",
+          "documentation":"<p>The unique identifier of the network migration definition.</p>"
+        },
+        "segmentID":{
+          "shape":"SegmentID",
+          "documentation":"<p>The unique identifier of the segment.</p>"
+        },
+        "segmentType":{
+          "shape":"NetworkMigrationCodeGenerationSegmentType",
+          "documentation":"<p>The type of the segment.</p>"
+        },
+        "logicalID":{
+          "shape":"LogicalID",
+          "documentation":"<p>The logical identifier for the segment.</p>"
+        },
+        "mapperSegmentID":{
+          "shape":"SegmentID",
+          "documentation":"<p>The ID of the mapper segment that this code generation segment was created from.</p>"
+        },
+        "artifacts":{
+          "shape":"NetworkMigrationCodeGenerationArtifacts",
+          "documentation":"<p>A list of artifacts generated for this segment.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the segment was created.</p>"
+        }
+      },
+      "documentation":"<p>A segment of generated code representing a logical grouping of infrastructure resources.</p>"
+    },
+    "NetworkMigrationCodeGenerationSegmentType":{
+      "type":"string",
+      "enum":[
+        "WORKLOAD",
+        "APPLIANCE",
+        "NETWORK"
+      ]
+    },
+    "NetworkMigrationCodeGenerationSegmentsList":{
+      "type":"list",
+      "member":{"shape":"NetworkMigrationCodeGenerationSegment"},
+      "max":100,
+      "min":0
+    },
+    "NetworkMigrationCodeGenerationsList":{
+      "type":"list",
+      "member":{"shape":"NetworkMigrationCodeGenerationJobDetails"},
+      "max":100,
+      "min":0
+    },
+    "NetworkMigrationDefinition":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the network migration definition.</p>"
+        },
+        "networkMigrationDefinitionID":{
+          "shape":"NetworkMigrationDefinitionID",
+          "documentation":"<p>The unique identifier of the network migration definition.</p>"
+        },
+        "name":{
+          "shape":"NetworkMigrationDefinitionName",
+          "documentation":"<p>The name of the network migration definition.</p>"
+        },
+        "description":{
+          "shape":"NetworkMigrationDefinitionDescription",
+          "documentation":"<p>A description of the network migration definition.</p>"
+        },
+        "sourceConfigurations":{
+          "shape":"SourceConfigurationList",
+          "documentation":"<p>A list of source configurations for the network migration.</p>"
+        },
+        "targetS3Configuration":{
+          "shape":"TargetS3Configuration",
+          "documentation":"<p>The S3 configuration for storing the target network artifacts.</p>"
+        },
+        "targetNetwork":{
+          "shape":"TargetNetwork",
+          "documentation":"<p>The target network configuration including topology and CIDR ranges.</p>"
+        },
+        "targetDeployment":{
+          "shape":"TargetDeployment",
+          "documentation":"<p>The target deployment configuration for the migrated network.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the network migration definition was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the network migration definition was last updated.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Tags assigned to the network migration definition.</p>"
+        },
+        "scopeTags":{
+          "shape":"ScopeTagsMap",
+          "documentation":"<p>Scope tags for the network migration definition.</p>"
+        }
+      }
+    },
+    "NetworkMigrationDefinitionDescription":{
+      "type":"string",
+      "max":600,
+      "min":0,
+      "pattern":"[^\\x00]*"
+    },
+    "NetworkMigrationDefinitionID":{
+      "type":"string",
+      "max":21,
+      "min":21,
+      "pattern":"nmd-[0-9a-zA-Z]{17}"
+    },
+    "NetworkMigrationDefinitionName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[^\\s\\x00]( *[^\\s\\x00])*"
+    },
+    "NetworkMigrationDefinitionSummariesList":{
+      "type":"list",
+      "member":{"shape":"NetworkMigrationDefinitionSummary"}
+    },
+    "NetworkMigrationDefinitionSummary":{
+      "type":"structure",
+      "members":{
+        "networkMigrationDefinitionID":{
+          "shape":"NetworkMigrationDefinitionID",
+          "documentation":"<p>The unique identifier of the network migration definition.</p>"
+        },
+        "name":{
+          "shape":"NetworkMigrationDefinitionName",
+          "documentation":"<p>The name of the network migration definition.</p>"
+        },
+        "sourceEnvironment":{
+          "shape":"SourceEnvironment",
+          "documentation":"<p>The source environment configuration.</p>"
+        },
+        "arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the network migration definition.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Tags assigned to the network migration definition.</p>"
+        },
+        "scopeTags":{
+          "shape":"ScopeTagsMap",
+          "documentation":"<p>Scope tags for the network migration definition.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a network migration definition.</p>"
+    },
+    "NetworkMigrationDefintionsIDsFilter":{
+      "type":"list",
+      "member":{"shape":"NetworkMigrationDefinitionID"},
+      "max":20,
+      "min":0
+    },
+    "NetworkMigrationDeployedStackDetails":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"NetworkMigrationDeployedStackStatus",
+          "documentation":"<p>The current status of the deployed stack.</p>"
+        },
+        "stackPhysicalID":{
+          "shape":"PhysicalID",
+          "documentation":"<p>The physical ID of the CloudFormation stack.</p>"
+        },
+        "stackLogicalID":{
+          "shape":"LogicalID",
+          "documentation":"<p>The logical ID of the stack.</p>"
+        },
+        "segmentID":{
+          "shape":"SegmentID",
+          "documentation":"<p>The ID of the segment that this stack was deployed for.</p>"
+        },
+        "targetAccount":{
+          "shape":"AccountID",
+          "documentation":"<p>The target AWS account where the stack was deployed.</p>"
+        },
+        "failedResources":{
+          "shape":"NetworkMigrationFailedResourcesList",
+          "documentation":"<p>A list of resources that failed to deploy.</p>"
+        }
+      },
+      "documentation":"<p>Details about a CloudFormation stack that has been deployed as part of the network migration.</p>"
+    },
+    "NetworkMigrationDeployedStackStatus":{
+      "type":"string",
+      "enum":[
+        "CREATE_COMPLETE",
+        "CREATE_FAILED",
+        "CREATE_STARTED",
+        "DELETE_COMPLETE",
+        "DELETE_FAILED",
+        "DELETE_STARTED"
+      ]
+    },
+    "NetworkMigrationDeployedStacksList":{
+      "type":"list",
+      "member":{"shape":"NetworkMigrationDeployedStackDetails"},
+      "max":100,
+      "min":0
+    },
+    "NetworkMigrationDeployerJobDetails":{
+      "type":"structure",
+      "members":{
+        "jobID":{
+          "shape":"NetworkMigrationJobID",
+          "documentation":"<p>The unique identifier of the deployer job.</p>"
+        },
+        "networkMigrationExecutionID":{
+          "shape":"NetworkMigrationExecutionID",
+          "documentation":"<p>The unique identifier of the network migration execution.</p>"
+        },
+        "networkMigrationDefinitionID":{
+          "shape":"NetworkMigrationDefinitionID",
+          "documentation":"<p>The unique identifier of the network migration definition.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the job was created.</p>"
+        },
+        "endedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the job completed or failed.</p>"
+        },
+        "status":{
+          "shape":"NetworkMigrationJobStatus",
+          "documentation":"<p>The current status of the deployer job.</p>"
+        },
+        "statusDetails":{
+          "shape":"LargeBoundedString",
+          "documentation":"<p>Detailed status information about the job.</p>"
+        }
+      },
+      "documentation":"<p>Details about a network migration deployer job.</p>"
+    },
+    "NetworkMigrationDeployerJobList":{
+      "type":"list",
+      "member":{"shape":"NetworkMigrationDeployerJobDetails"},
+      "max":100,
+      "min":0
+    },
+    "NetworkMigrationExecution":{
+      "type":"structure",
+      "members":{
+        "networkMigrationDefinitionID":{
+          "shape":"NetworkMigrationDefinitionID",
+          "documentation":"<p>The unique identifier of the network migration definition used by this execution.</p>"
+        },
+        "networkMigrationExecutionID":{
+          "shape":"NetworkMigrationExecutionID",
+          "documentation":"<p>The unique identifier of the execution.</p>"
+        },
+        "status":{
+          "shape":"ExecutionStatus",
+          "documentation":"<p>The current status of the execution.</p>"
+        },
+        "stage":{
+          "shape":"ExecutionStage",
+          "documentation":"<p>The current stage of the execution in the migration workflow.</p>"
+        },
+        "activity":{
+          "shape":"ExecutionStageActivity",
+          "documentation":"<p>The current activity being performed in the execution.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the execution was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the execution was last updated.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Tags assigned to the execution.</p>"
+        }
+      },
+      "documentation":"<p>Details about a network migration execution instance.</p>"
+    },
+    "NetworkMigrationExecutionID":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
+    "NetworkMigrationExecutionIDsFilter":{
+      "type":"list",
+      "member":{"shape":"NetworkMigrationExecutionID"},
+      "max":20,
+      "min":0
+    },
+    "NetworkMigrationExecutionStatusesFilter":{
+      "type":"list",
+      "member":{"shape":"ExecutionStatus"},
+      "max":20,
+      "min":0
+    },
+    "NetworkMigrationExecutionsList":{
+      "type":"list",
+      "member":{"shape":"NetworkMigrationExecution"}
+    },
+    "NetworkMigrationFailedResourceDetails":{
+      "type":"structure",
+      "members":{
+        "logicalID":{
+          "shape":"LogicalID",
+          "documentation":"<p>The logical ID of the failed resource.</p>"
+        },
+        "status":{
+          "shape":"NetworkMigrationFailedResourceStatus",
+          "documentation":"<p>The status of the failed resource.</p>"
+        },
+        "statusReason":{
+          "shape":"LargeBoundedString",
+          "documentation":"<p>The reason why the resource failed.</p>"
+        }
+      },
+      "documentation":"<p>Details about a resource that failed to deploy.</p>"
+    },
+    "NetworkMigrationFailedResourceStatus":{
+      "type":"string",
+      "enum":[
+        "CREATE_FAILED",
+        "DELETE_FAILED"
+      ]
+    },
+    "NetworkMigrationFailedResourcesList":{
+      "type":"list",
+      "member":{"shape":"NetworkMigrationFailedResourceDetails"},
+      "max":5,
+      "min":0
+    },
+    "NetworkMigrationJobID":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
+    "NetworkMigrationJobStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "STARTED",
+        "SUCCEEDED",
+        "FAILED"
+      ]
+    },
+    "NetworkMigrationMapperSegment":{
+      "type":"structure",
+      "members":{
+        "jobID":{
+          "shape":"NetworkMigrationJobID",
+          "documentation":"<p>The unique identifier of the job that created this segment.</p>"
+        },
+        "networkMigrationExecutionID":{
+          "shape":"NetworkMigrationExecutionID",
+          "documentation":"<p>The unique identifier of the network migration execution.</p>"
+        },
+        "networkMigrationDefinitionID":{
+          "shape":"NetworkMigrationDefinitionID",
+          "documentation":"<p>The unique identifier of the network migration definition.</p>"
+        },
+        "segmentID":{
+          "shape":"SegmentID",
+          "documentation":"<p>The unique identifier of the segment.</p>"
+        },
+        "segmentType":{
+          "shape":"NetworkMigrationMapperSegmentType",
+          "documentation":"<p>The type of the segment, such as VPC, subnet, or security group.</p>"
+        },
+        "name":{
+          "shape":"SegmentName",
+          "documentation":"<p>The name of the segment.</p>"
+        },
+        "description":{
+          "shape":"SegmentDescription",
+          "documentation":"<p>A description of the segment.</p>"
+        },
+        "logicalID":{
+          "shape":"LogicalID",
+          "documentation":"<p>The logical identifier for the segment in the infrastructure code.</p>"
+        },
+        "checksum":{
+          "shape":"Checksum",
+          "documentation":"<p>The checksum of the segment data for integrity verification.</p>"
+        },
+        "outputS3Configuration":{
+          "shape":"S3Configuration",
+          "documentation":"<p>The S3 location where segment artifacts are stored.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the segment was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the segment was last updated.</p>"
+        },
+        "scopeTags":{
+          "shape":"ScopeTagsMap",
+          "documentation":"<p>Scope tags for the segment.</p>"
+        },
+        "targetAccount":{
+          "shape":"AccountID",
+          "documentation":"<p>The target AWS account where this segment will be deployed.</p>"
+        },
+        "referencedSegments":{
+          "shape":"referencedSegmentsList",
+          "documentation":"<p>A list of other segments that this segment depends on or references.</p>"
+        }
+      }
+    },
+    "NetworkMigrationMapperSegmentConstruct":{
+      "type":"structure",
+      "members":{
+        "constructID":{
+          "shape":"ConstructID",
+          "documentation":"<p>The unique identifier of the construct.</p>"
+        },
+        "constructType":{
+          "shape":"NetworkMigrationMapperSegmentConstructType",
+          "documentation":"<p>The type of the construct, such as VPC, subnet, security group, or route table.</p>"
+        },
+        "name":{
+          "shape":"SegmentConstructName",
+          "documentation":"<p>The name of the construct.</p>"
+        },
+        "description":{
+          "shape":"SegmentConstructDescription",
+          "documentation":"<p>A description of the construct.</p>"
+        },
+        "logicalID":{
+          "shape":"LogicalID",
+          "documentation":"<p>The logical identifier for the construct in the infrastructure code.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the construct was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the construct was last updated.</p>"
+        },
+        "properties":{
+          "shape":"ConstructProperties",
+          "documentation":"<p>The properties and configuration of the construct.</p>"
+        }
+      },
+      "documentation":"<p>Represents a construct within a mapper segment. A construct is an individual infrastructure component such as a VPC, subnet, security group, route table, or other network resource that is part of the network migration.</p>"
+    },
+    "NetworkMigrationMapperSegmentConstructType":{
+      "type":"string",
+      "max":24,
+      "min":0,
+      "pattern":"AWS::([A-Z\\d]){2,10}::[a-zA-Z\\d]{2,30}"
+    },
+    "NetworkMigrationMapperSegmentConstructs":{
+      "type":"list",
+      "member":{"shape":"NetworkMigrationMapperSegmentConstruct"},
+      "max":100,
+      "min":0
+    },
+    "NetworkMigrationMapperSegmentType":{
+      "type":"string",
+      "enum":[
+        "WORKLOAD",
+        "APPLIANCE"
+      ]
+    },
+    "NetworkMigrationMapperSegmentsList":{
+      "type":"list",
+      "member":{"shape":"NetworkMigrationMapperSegment"},
+      "max":100,
+      "min":0
+    },
+    "NetworkMigrationMappingJobDetails":{
+      "type":"structure",
+      "members":{
+        "jobID":{
+          "shape":"NetworkMigrationJobID",
+          "documentation":"<p>The unique identifier of the mapping job.</p>"
+        },
+        "networkMigrationExecutionID":{
+          "shape":"NetworkMigrationExecutionID",
+          "documentation":"<p>The unique identifier of the network migration execution.</p>"
+        },
+        "networkMigrationDefinitionID":{
+          "shape":"NetworkMigrationDefinitionID",
+          "documentation":"<p>The unique identifier of the network migration definition.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the job was created.</p>"
+        },
+        "endedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the job completed or failed.</p>"
+        },
+        "status":{
+          "shape":"NetworkMigrationJobStatus",
+          "documentation":"<p>The current status of the mapping job.</p>"
+        },
+        "statusDetails":{
+          "shape":"LargeBoundedString",
+          "documentation":"<p>Detailed status information about the job.</p>"
+        }
+      },
+      "documentation":"<p>Details about a network migration mapping job.</p>"
+    },
+    "NetworkMigrationMappingUpdateJobDetails":{
+      "type":"structure",
+      "members":{
+        "jobID":{
+          "shape":"NetworkMigrationJobID",
+          "documentation":"<p>The unique identifier of the mapping update job.</p>"
+        },
+        "networkMigrationExecutionID":{
+          "shape":"NetworkMigrationExecutionID",
+          "documentation":"<p>The unique identifier of the network migration execution.</p>"
+        },
+        "networkMigrationDefinitionID":{
+          "shape":"NetworkMigrationDefinitionID",
+          "documentation":"<p>The unique identifier of the network migration definition.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the job was created.</p>"
+        },
+        "endedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the job completed or failed.</p>"
+        },
+        "status":{
+          "shape":"NetworkMigrationJobStatus",
+          "documentation":"<p>The current status of the mapping update job.</p>"
+        },
+        "statusDetails":{
+          "shape":"LargeBoundedString",
+          "documentation":"<p>Detailed status information about the job.</p>"
+        }
+      },
+      "documentation":"<p>Details about a network migration mapping update job.</p>"
+    },
+    "NetworkMigrationMappingUpdatesList":{
+      "type":"list",
+      "member":{"shape":"NetworkMigrationMappingUpdateJobDetails"},
+      "max":100,
+      "min":0
+    },
+    "NetworkMigrationMappingsList":{
+      "type":"list",
+      "member":{"shape":"NetworkMigrationMappingJobDetails"},
+      "max":100,
+      "min":0
+    },
     "OS":{
       "type":"structure",
       "members":{
@@ -4050,6 +6345,17 @@
     "OperatingSystemString":{
       "type":"string",
       "pattern":"(linux|windows)"
+    },
+    "OperationUnion":{
+      "type":"structure",
+      "members":{
+        "update":{
+          "shape":"UpdateOperation",
+          "documentation":"<p>An update operation to modify construct properties.</p>"
+        }
+      },
+      "documentation":"<p>A union type representing the operation to perform on a construct during a mapping update.</p>",
+      "union":true
     },
     "OrderType":{
       "type":"integer",
@@ -4102,6 +6408,12 @@
           "documentation":"<p>Pause Replication Request account ID.</p>"
         }
       }
+    },
+    "PhysicalID":{
+      "type":"string",
+      "max":128,
+      "min":86,
+      "pattern":"arn:aws:cloudformation:[a-z0-9-]+:[0-9]{12}:stack/[a-zA-Z0-9-]+/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
     },
     "PositiveInteger":{
       "type":"long",
@@ -4419,6 +6731,10 @@
         "internetProtocol":{
           "shape":"InternetProtocol",
           "documentation":"<p>Replication Configuration internet protocol.</p>"
+        },
+        "storeSnapshotOnLocalZone":{
+          "shape":"Boolean",
+          "documentation":"<p>Replication Configuration store snapshot on local zone.</p>"
         }
       }
     },
@@ -4560,6 +6876,10 @@
         "internetProtocol":{
           "shape":"InternetProtocol",
           "documentation":"<p>Replication Configuration template internet protocol.</p>"
+        },
+        "storeSnapshotOnLocalZone":{
+          "shape":"Boolean",
+          "documentation":"<p>Replication Configuration template store snapshot on local zone.</p>"
         }
       }
     },
@@ -4679,14 +6999,56 @@
       },
       "documentation":"<p>S3 bucket source.</p>"
     },
+    "S3Configuration":{
+      "type":"structure",
+      "members":{
+        "s3Bucket":{
+          "shape":"S3BucketName",
+          "documentation":"<p>The name of the S3 bucket.</p>"
+        },
+        "s3BucketOwner":{
+          "shape":"AccountID",
+          "documentation":"<p>The AWS account ID of the S3 bucket owner.</p>"
+        },
+        "s3Key":{
+          "shape":"S3KeyName",
+          "documentation":"<p>The S3 key (path) for the object.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for an S3 location.</p>"
+    },
     "S3Key":{
       "type":"string",
       "pattern":"[^\\x00]{1,1020}\\.csv"
+    },
+    "S3KeyName":{
+      "type":"string",
+      "pattern":"[^\\x00]{1,1024}"
     },
     "S3LogBucketName":{
       "type":"string",
       "max":63,
       "min":3
+    },
+    "ScopeTagKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"(?!aws:)[a-zA-Z0-9\\s+\\-=._:/@]*"
+    },
+    "ScopeTagValue":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"[a-zA-Z0-9\\s+\\-=._:/@]*"
+    },
+    "ScopeTagsMap":{
+      "type":"map",
+      "key":{"shape":"ScopeTagKey"},
+      "value":{"shape":"ScopeTagValue"},
+      "max":40,
+      "min":0,
+      "sensitive":true
     },
     "SecretArn":{
       "type":"string",
@@ -4699,6 +7061,43 @@
       "max":255,
       "min":0,
       "pattern":"sg-[0-9a-fA-F]{8,}"
+    },
+    "SecurityGroupMappingStrategy":{
+      "type":"string",
+      "enum":[
+        "MAP",
+        "SKIP"
+      ]
+    },
+    "SegmentConstructDescription":{
+      "type":"string",
+      "max":600,
+      "min":0,
+      "pattern":"[^\\x00]*"
+    },
+    "SegmentConstructName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[^\\s\\x00]( *[^\\s\\x00])*"
+    },
+    "SegmentDescription":{
+      "type":"string",
+      "max":600,
+      "min":0,
+      "pattern":"[^\\x00]*"
+    },
+    "SegmentID":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
+    "SegmentName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[^\\s\\x00]( *[^\\s\\x00])*"
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
@@ -4738,6 +7137,42 @@
       "max":128,
       "min":0
     },
+    "SourceConfiguration":{
+      "type":"structure",
+      "required":[
+        "sourceEnvironment",
+        "sourceS3Configuration"
+      ],
+      "members":{
+        "sourceEnvironment":{
+          "shape":"SourceEnvironment",
+          "documentation":"<p>The source environment type.</p>"
+        },
+        "sourceS3Configuration":{
+          "shape":"SourceS3Configuration",
+          "documentation":"<p>The S3 configuration for the source data.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for a migration source environment.</p>"
+    },
+    "SourceConfigurationList":{
+      "type":"list",
+      "member":{"shape":"SourceConfiguration"},
+      "max":2,
+      "min":0
+    },
+    "SourceEnvironment":{
+      "type":"string",
+      "enum":[
+        "NSX",
+        "VSPHERE",
+        "FORTIGATE_FIREWALL",
+        "PALO_ALTO_FIREWALL",
+        "CISCO_ACI",
+        "LOGICAL_MODEL",
+        "MODELIZE_IT"
+      ]
+    },
     "SourceProperties":{
       "type":"structure",
       "members":{
@@ -4775,6 +7210,29 @@
         }
       },
       "documentation":"<p>Source server properties.</p>"
+    },
+    "SourceS3Configuration":{
+      "type":"structure",
+      "required":[
+        "s3Bucket",
+        "s3BucketOwner",
+        "s3Key"
+      ],
+      "members":{
+        "s3Bucket":{
+          "shape":"S3BucketName",
+          "documentation":"<p>The name of the S3 bucket containing source data.</p>"
+        },
+        "s3BucketOwner":{
+          "shape":"AccountID",
+          "documentation":"<p>The AWS account ID of the S3 bucket owner.</p>"
+        },
+        "s3Key":{
+          "shape":"S3KeyName",
+          "documentation":"<p>The S3 key (path) for the source data.</p>"
+        }
+      },
+      "documentation":"<p>S3 configuration for source network data.</p>"
     },
     "SourceServer":{
       "type":"structure",
@@ -5126,6 +7584,41 @@
       },
       "documentation":"<p>Start export response.</p>"
     },
+    "StartImportFileEnrichmentRequest":{
+      "type":"structure",
+      "required":[
+        "s3BucketSource",
+        "s3BucketTarget"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientIdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "s3BucketSource":{
+          "shape":"EnrichmentSourceS3Configuration",
+          "documentation":"<p>The S3 configuration specifying the source location of the import file to be enriched.</p>"
+        },
+        "s3BucketTarget":{
+          "shape":"EnrichmentTargetS3Configuration",
+          "documentation":"<p>The S3 configuration specifying the target location where the enriched import file will be stored.</p>"
+        },
+        "ipAssignmentStrategy":{
+          "shape":"IpAssignmentStrategy",
+          "documentation":"<p>The IP assignment strategy to use when enriching the import file. Can be STATIC or DYNAMIC.</p>"
+        }
+      }
+    },
+    "StartImportFileEnrichmentResponse":{
+      "type":"structure",
+      "members":{
+        "jobID":{
+          "shape":"ImportFileEnrichmentJobID",
+          "documentation":"<p>The unique identifier of the import file enrichment job that was started.</p>"
+        }
+      }
+    },
     "StartImportRequest":{
       "type":"structure",
       "required":["s3BucketSource"],
@@ -5155,6 +7648,210 @@
         }
       },
       "documentation":"<p>Start import response.</p>"
+    },
+    "StartNetworkMigrationAnalysisRequest":{
+      "type":"structure",
+      "required":[
+        "networkMigrationExecutionID",
+        "networkMigrationDefinitionID"
+      ],
+      "members":{
+        "networkMigrationExecutionID":{
+          "shape":"NetworkMigrationExecutionID",
+          "documentation":"<p>The unique identifier of the network migration execution to analyze.</p>"
+        },
+        "networkMigrationDefinitionID":{
+          "shape":"NetworkMigrationDefinitionID",
+          "documentation":"<p>The unique identifier of the network migration definition.</p>"
+        }
+      }
+    },
+    "StartNetworkMigrationAnalysisResponse":{
+      "type":"structure",
+      "members":{
+        "jobID":{
+          "shape":"NetworkMigrationJobID",
+          "documentation":"<p>The unique identifier of the analysis job that was started.</p>"
+        }
+      }
+    },
+    "StartNetworkMigrationCodeGenerationRequest":{
+      "type":"structure",
+      "required":[
+        "networkMigrationExecutionID",
+        "networkMigrationDefinitionID"
+      ],
+      "members":{
+        "networkMigrationExecutionID":{
+          "shape":"NetworkMigrationExecutionID",
+          "documentation":"<p>The unique identifier of the network migration execution.</p>"
+        },
+        "networkMigrationDefinitionID":{
+          "shape":"NetworkMigrationDefinitionID",
+          "documentation":"<p>The unique identifier of the network migration definition.</p>"
+        },
+        "codeGenerationOutputFormatTypes":{
+          "shape":"CodeGenerationOutputFormatTypes",
+          "documentation":"<p>The output format types for code generation, such as CloudFormation or Terraform.</p>"
+        }
+      }
+    },
+    "StartNetworkMigrationCodeGenerationResponse":{
+      "type":"structure",
+      "members":{
+        "jobID":{
+          "shape":"NetworkMigrationJobID",
+          "documentation":"<p>The unique identifier of the code generation job that was started.</p>"
+        }
+      }
+    },
+    "StartNetworkMigrationDeployerJobResponse":{
+      "type":"structure",
+      "members":{
+        "jobID":{
+          "shape":"NetworkMigrationJobID",
+          "documentation":"<p>The unique identifier of the deployer job that was started.</p>"
+        }
+      }
+    },
+    "StartNetworkMigrationDeploymentRequest":{
+      "type":"structure",
+      "required":[
+        "networkMigrationExecutionID",
+        "networkMigrationDefinitionID"
+      ],
+      "members":{
+        "networkMigrationExecutionID":{
+          "shape":"NetworkMigrationExecutionID",
+          "documentation":"<p>The unique identifier of the network migration execution.</p>"
+        },
+        "networkMigrationDefinitionID":{
+          "shape":"NetworkMigrationDefinitionID",
+          "documentation":"<p>The unique identifier of the network migration definition.</p>"
+        }
+      }
+    },
+    "StartNetworkMigrationMappingRequest":{
+      "type":"structure",
+      "required":[
+        "networkMigrationExecutionID",
+        "networkMigrationDefinitionID"
+      ],
+      "members":{
+        "networkMigrationExecutionID":{
+          "shape":"NetworkMigrationExecutionID",
+          "documentation":"<p>The unique identifier of the network migration execution.</p>"
+        },
+        "networkMigrationDefinitionID":{
+          "shape":"NetworkMigrationDefinitionID",
+          "documentation":"<p>The unique identifier of the network migration definition.</p>"
+        },
+        "securityGroupMappingStrategy":{
+          "shape":"SecurityGroupMappingStrategy",
+          "documentation":"<p>The security group mapping strategy to use.</p>"
+        }
+      }
+    },
+    "StartNetworkMigrationMappingResponse":{
+      "type":"structure",
+      "members":{
+        "jobID":{
+          "shape":"NetworkMigrationJobID",
+          "documentation":"<p>The unique identifier of the mapping job that was started.</p>"
+        }
+      }
+    },
+    "StartNetworkMigrationMappingUpdateConstruct":{
+      "type":"structure",
+      "required":[
+        "segmentID",
+        "constructID",
+        "constructType"
+      ],
+      "members":{
+        "segmentID":{
+          "shape":"SegmentID",
+          "documentation":"<p>The ID of the segment containing the construct.</p>"
+        },
+        "constructID":{
+          "shape":"ConstructID",
+          "documentation":"<p>The ID of the construct to update.</p>"
+        },
+        "constructType":{
+          "shape":"NetworkMigrationMapperSegmentConstructType",
+          "documentation":"<p>The type of the construct.</p>"
+        },
+        "operation":{
+          "shape":"OperationUnion",
+          "documentation":"<p>The operation to perform on the construct.</p>"
+        }
+      },
+      "documentation":"<p>A construct update to apply during a mapping update operation.</p>"
+    },
+    "StartNetworkMigrationMappingUpdateConstructs":{
+      "type":"list",
+      "member":{"shape":"StartNetworkMigrationMappingUpdateConstruct"},
+      "max":100,
+      "min":0
+    },
+    "StartNetworkMigrationMappingUpdateRequest":{
+      "type":"structure",
+      "required":[
+        "networkMigrationExecutionID",
+        "networkMigrationDefinitionID"
+      ],
+      "members":{
+        "networkMigrationExecutionID":{
+          "shape":"NetworkMigrationExecutionID",
+          "documentation":"<p>The unique identifier of the network migration execution.</p>"
+        },
+        "networkMigrationDefinitionID":{
+          "shape":"NetworkMigrationDefinitionID",
+          "documentation":"<p>The unique identifier of the network migration definition.</p>"
+        },
+        "constructs":{
+          "shape":"StartNetworkMigrationMappingUpdateConstructs",
+          "documentation":"<p>A list of construct updates to apply.</p>"
+        },
+        "segments":{
+          "shape":"StartNetworkMigrationMappingUpdateSegments",
+          "documentation":"<p>A list of segment updates to apply.</p>"
+        }
+      }
+    },
+    "StartNetworkMigrationMappingUpdateResponse":{
+      "type":"structure",
+      "members":{
+        "jobID":{
+          "shape":"NetworkMigrationJobID",
+          "documentation":"<p>The unique identifier of the mapping update job that was started.</p>"
+        }
+      }
+    },
+    "StartNetworkMigrationMappingUpdateSegment":{
+      "type":"structure",
+      "required":["segmentID"],
+      "members":{
+        "segmentID":{
+          "shape":"SegmentID",
+          "documentation":"<p>The ID of the segment to update.</p>"
+        },
+        "targetAccount":{
+          "shape":"AccountID",
+          "documentation":"<p>The updated target AWS account for the segment.</p>"
+        },
+        "scopeTags":{
+          "shape":"ScopeTagsMap",
+          "documentation":"<p>The updated scope tags for the segment.</p>"
+        }
+      },
+      "documentation":"<p>A segment update to apply during a mapping update operation.</p>"
+    },
+    "StartNetworkMigrationMappingUpdateSegments":{
+      "type":"list",
+      "member":{"shape":"StartNetworkMigrationMappingUpdateSegment"},
+      "max":100,
+      "min":0
     },
     "StartReplicationRequest":{
       "type":"structure",
@@ -5222,6 +7919,7 @@
       "box":true,
       "min":1
     },
+    "String":{"type":"string"},
     "SubnetID":{
       "type":"string",
       "max":255,
@@ -5270,12 +7968,103 @@
       "min":0,
       "sensitive":true
     },
+    "TargetDeployment":{
+      "type":"string",
+      "enum":[
+        "SINGLE_ACCOUNT",
+        "MULTI_ACCOUNT"
+      ]
+    },
     "TargetInstanceTypeRightSizingMethod":{
       "type":"string",
       "enum":[
         "NONE",
         "BASIC"
       ]
+    },
+    "TargetNetwork":{
+      "type":"structure",
+      "required":["topology"],
+      "members":{
+        "topology":{
+          "shape":"TargetNetworkTopology",
+          "documentation":"<p>The network topology type for the target environment.</p>"
+        },
+        "inboundCidr":{
+          "shape":"Cidr",
+          "documentation":"<p>The CIDR block for inbound traffic in the target network.</p>"
+        },
+        "outboundCidr":{
+          "shape":"Cidr",
+          "documentation":"<p>The CIDR block for outbound traffic in the target network.</p>"
+        },
+        "inspectionCidr":{
+          "shape":"Cidr",
+          "documentation":"<p>The CIDR block for inspection traffic in the target network.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for the target network topology and addressing.</p>"
+    },
+    "TargetNetworkTopology":{
+      "type":"string",
+      "enum":[
+        "ISOLATED_VPC",
+        "HUB_AND_SPOKE"
+      ]
+    },
+    "TargetNetworkUpdate":{
+      "type":"structure",
+      "members":{
+        "topology":{
+          "shape":"TargetNetworkTopology",
+          "documentation":"<p>The updated network topology type.</p>"
+        },
+        "inboundCidr":{
+          "shape":"Cidr",
+          "documentation":"<p>The updated CIDR block for inbound traffic.</p>"
+        },
+        "outboundCidr":{
+          "shape":"Cidr",
+          "documentation":"<p>The updated CIDR block for outbound traffic.</p>"
+        },
+        "inspectionCidr":{
+          "shape":"Cidr",
+          "documentation":"<p>The updated CIDR block for inspection traffic.</p>"
+        }
+      },
+      "documentation":"<p>Updated configuration for the target network topology and addressing.</p>"
+    },
+    "TargetS3Configuration":{
+      "type":"structure",
+      "required":[
+        "s3Bucket",
+        "s3BucketOwner"
+      ],
+      "members":{
+        "s3Bucket":{
+          "shape":"S3BucketName",
+          "documentation":"<p>The name of the S3 bucket for target artifacts.</p>"
+        },
+        "s3BucketOwner":{
+          "shape":"AccountID",
+          "documentation":"<p>The AWS account ID of the S3 bucket owner.</p>"
+        }
+      },
+      "documentation":"<p>S3 configuration for storing target network artifacts.</p>"
+    },
+    "TargetS3ConfigurationUpdate":{
+      "type":"structure",
+      "members":{
+        "s3Bucket":{
+          "shape":"S3BucketName",
+          "documentation":"<p>The updated name of the S3 bucket.</p>"
+        },
+        "s3BucketOwner":{
+          "shape":"AccountID",
+          "documentation":"<p>The updated AWS account ID of the S3 bucket owner.</p>"
+        }
+      },
+      "documentation":"<p>Updated S3 configuration for storing target network artifacts.</p>"
     },
     "TemplateActionDocument":{
       "type":"structure",
@@ -5416,6 +8205,7 @@
       "max":1000,
       "min":125
     },
+    "Timestamp":{"type":"timestamp"},
     "UnarchiveApplicationRequest":{
       "type":"structure",
       "required":["applicationID"],
@@ -5636,6 +8426,80 @@
         }
       }
     },
+    "UpdateNetworkMigrationDefinitionRequest":{
+      "type":"structure",
+      "required":["networkMigrationDefinitionID"],
+      "members":{
+        "networkMigrationDefinitionID":{
+          "shape":"NetworkMigrationDefinitionID",
+          "documentation":"<p>The unique identifier of the network migration definition to update.</p>"
+        },
+        "name":{
+          "shape":"NetworkMigrationDefinitionName",
+          "documentation":"<p>The updated name of the network migration definition.</p>"
+        },
+        "description":{
+          "shape":"NetworkMigrationDefinitionDescription",
+          "documentation":"<p>The updated description of the network migration definition.</p>"
+        },
+        "sourceConfigurations":{
+          "shape":"SourceConfigurationList",
+          "documentation":"<p>The updated list of source configurations.</p>"
+        },
+        "targetS3Configuration":{
+          "shape":"TargetS3ConfigurationUpdate",
+          "documentation":"<p>The updated S3 configuration for storing the target network artifacts.</p>"
+        },
+        "targetNetwork":{
+          "shape":"TargetNetworkUpdate",
+          "documentation":"<p>The updated target network configuration.</p>"
+        },
+        "targetDeployment":{
+          "shape":"TargetDeployment",
+          "documentation":"<p>The updated target deployment configuration.</p>"
+        },
+        "scopeTags":{
+          "shape":"ScopeTagsMap",
+          "documentation":"<p>The updated scope tags for the network migration definition.</p>"
+        }
+      }
+    },
+    "UpdateNetworkMigrationMapperSegmentRequest":{
+      "type":"structure",
+      "required":[
+        "networkMigrationDefinitionID",
+        "networkMigrationExecutionID",
+        "segmentID"
+      ],
+      "members":{
+        "networkMigrationDefinitionID":{
+          "shape":"NetworkMigrationDefinitionID",
+          "documentation":"<p>The unique identifier of the network migration definition.</p>"
+        },
+        "networkMigrationExecutionID":{
+          "shape":"NetworkMigrationExecutionID",
+          "documentation":"<p>The unique identifier of the network migration execution.</p>"
+        },
+        "segmentID":{
+          "shape":"SegmentID",
+          "documentation":"<p>The unique identifier of the segment to update.</p>"
+        },
+        "scopeTags":{
+          "shape":"ScopeTagsMap",
+          "documentation":"<p>The updated scope tags for the segment.</p>"
+        }
+      }
+    },
+    "UpdateOperation":{
+      "type":"structure",
+      "members":{
+        "properties":{
+          "shape":"ConstructProperties",
+          "documentation":"<p>The properties to update on the construct.</p>"
+        }
+      },
+      "documentation":"<p>An operation that updates the properties of a construct.</p>"
+    },
     "UpdateReplicationConfigurationRequest":{
       "type":"structure",
       "required":["sourceServerID"],
@@ -5711,6 +8575,10 @@
         "internetProtocol":{
           "shape":"InternetProtocol",
           "documentation":"<p>Update replication configuration internet protocol.</p>"
+        },
+        "storeSnapshotOnLocalZone":{
+          "shape":"Boolean",
+          "documentation":"<p>Update replication configuration store snapshot on local zone.</p>"
         }
       }
     },
@@ -5781,6 +8649,10 @@
         "internetProtocol":{
           "shape":"InternetProtocol",
           "documentation":"<p>Update replication configuration template internet protocol request.</p>"
+        },
+        "storeSnapshotOnLocalZone":{
+          "shape":"Boolean",
+          "documentation":"<p>Update replication configuration template store snapshot on local zone request.</p>"
         }
       }
     },
@@ -5959,6 +8831,16 @@
         "standard"
       ]
     },
+    "VpcID":{
+      "type":"string",
+      "pattern":"vpc-([0-9a-f]){8}(([0-9a-f]){9})?"
+    },
+    "VpcIDsFilter":{
+      "type":"list",
+      "member":{"shape":"VpcID"},
+      "max":10,
+      "min":0
+    },
     "Wave":{
       "type":"structure",
       "members":{
@@ -6069,6 +8951,10 @@
     "WavesList":{
       "type":"list",
       "member":{"shape":"Wave"}
+    },
+    "referencedSegmentsList":{
+      "type":"list",
+      "member":{"shape":"SegmentID"}
     }
   },
   "documentation":"<p>The Application Migration Service service.</p>"

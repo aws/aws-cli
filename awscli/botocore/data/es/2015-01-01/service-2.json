@@ -1666,6 +1666,10 @@
         "TagList":{
           "shape":"TagList",
           "documentation":"<p>A list of <code>Tag</code> added during domain creation.</p>"
+        },
+        "DeploymentStrategyOptions":{
+          "shape":"DeploymentStrategyOptions",
+          "documentation":"<p>Specifies the deployment strategy options.</p>"
         }
       }
     },
@@ -1928,6 +1932,43 @@
         "ELIGIBLE"
       ]
     },
+    "DeploymentStrategy":{
+      "type":"string",
+      "documentation":"<p>Specifies the deployment strategy for the domain. Valid values are <code>Default</code> and <code>CapacityOptimized</code>.</p>",
+      "enum":[
+        "Default",
+        "CapacityOptimized"
+      ]
+    },
+    "DeploymentStrategyOptions":{
+      "type":"structure",
+      "required":["DeploymentStrategy"],
+      "members":{
+        "DeploymentStrategy":{
+          "shape":"DeploymentStrategy",
+          "documentation":"<p>Specifies the deployment strategy for the domain. Valid values are <code>Default</code> and <code>CapacityOptimized</code>.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the deployment strategy options for the domain.</p>"
+    },
+    "DeploymentStrategyOptionsStatus":{
+      "type":"structure",
+      "required":[
+        "Options",
+        "Status"
+      ],
+      "members":{
+        "Options":{
+          "shape":"DeploymentStrategyOptions",
+          "documentation":"<p>Specifies deployment strategy options for the specified Elasticsearch domain.</p>"
+        },
+        "Status":{
+          "shape":"OptionStatus",
+          "documentation":"<p>Specifies the status of the deployment strategy options for the specified Elasticsearch domain.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the status of deployment strategy options for the specified Elasticsearch domain.</p>"
+    },
     "DeploymentType":{
       "type":"string",
       "max":128,
@@ -1945,11 +1986,15 @@
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>Set this value to limit the number of results returned. If not specified, defaults to 100.</p>"
+          "documentation":"<p>Set this value to limit the number of results returned. If not specified, defaults to 100.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>NextToken is sent in case the earlier API call results contain the NextToken. It is used for pagination.</p>"
+          "documentation":"<p>NextToken is sent in case the earlier API call results contain the NextToken. It is used for pagination.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
         }
       },
       "documentation":"<p>Container for the parameters to the <code>DescribeDomainAutoTunes</code> operation.</p>"
@@ -2826,6 +2871,10 @@
         "ModifyingProperties":{
           "shape":"ModifyingPropertiesList",
           "documentation":"<p>Information about the domain properties that are currently being modified.</p>"
+        },
+        "DeploymentStrategyOptions":{
+          "shape":"DeploymentStrategyOptionsStatus",
+          "documentation":"<p>Specifies <code>DeploymentStrategyOptions</code> for the domain. </p>"
         }
       },
       "documentation":"<p>The configuration of an Elasticsearch domain.</p>"
@@ -2943,6 +2992,10 @@
         "ModifyingProperties":{
           "shape":"ModifyingPropertiesList",
           "documentation":"<p>Information about the domain properties that are currently being modified.</p>"
+        },
+        "DeploymentStrategyOptions":{
+          "shape":"DeploymentStrategyOptions",
+          "documentation":"<p>The current status of the Elasticsearch domain's deployment strategy options.</p>"
         }
       },
       "documentation":"<p>The current status of an Elasticsearch domain.</p>"
@@ -4678,6 +4731,10 @@
         "DryRun":{
           "shape":"DryRun",
           "documentation":"<p> This flag, when set to True, specifies whether the <code>UpdateElasticsearchDomain</code> request should return the results of validation checks without actually applying the change. This flag, when set to True, specifies the deployment mechanism through which the update shall be applied on the domain. This will not actually perform the Update. </p>"
+        },
+        "DeploymentStrategyOptions":{
+          "shape":"DeploymentStrategyOptions",
+          "documentation":"<p>Specifies the deployment strategy options.</p>"
         }
       },
       "documentation":"<p>Container for the parameters to the <code><a>UpdateElasticsearchDomain</a></code> operation. Specifies the type and number of instances in the domain cluster.</p>"

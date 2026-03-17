@@ -276,10 +276,10 @@
       "errors":[
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ConflictException"},
         {"shape":"ValidationException"},
-        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Creates a policy within the AgentCore Policy system. Policies provide real-time, deterministic control over agentic interactions with AgentCore Gateway. Using the Cedar policy language, you can define fine-grained policies that specify which interactions with Gateway tools are permitted based on input parameters and OAuth claims, ensuring agents operate within defined boundaries and business rules. The policy is validated during creation against the Cedar schema generated from the Gateway's tools' input schemas, which defines the available tools, their parameters, and expected data types. This is an asynchronous operation. Use the <a href=\"https://docs.aws.amazon.com/bedrock-agentcore-control/latest/APIReference/API_GetPolicy.html\">GetPolicy</a> operation to poll the <code>status</code> field to track completion.</p>"
@@ -573,9 +573,9 @@
       "input":{"shape":"DeletePolicyRequest"},
       "output":{"shape":"DeletePolicyResponse"},
       "errors":[
+        {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"},
-        {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
@@ -593,9 +593,9 @@
       "input":{"shape":"DeletePolicyEngineRequest"},
       "output":{"shape":"DeletePolicyEngineResponse"},
       "errors":[
+        {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"},
-        {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
@@ -886,8 +886,8 @@
       "errors":[
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
-        {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Retrieves detailed information about a specific policy within the AgentCore Policy system. This operation returns the complete policy definition, metadata, and current status, allowing administrators to review and manage policy configurations.</p>",
@@ -905,8 +905,8 @@
       "errors":[
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
-        {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Retrieves detailed information about a specific policy engine within the AgentCore Policy system. This operation returns the complete policy engine configuration, metadata, and current status, allowing administrators to review and manage policy engine settings.</p>",
@@ -924,8 +924,8 @@
       "errors":[
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
-        {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Retrieves information about a policy generation request within the AgentCore Policy system. Policy generation converts natural language descriptions into Cedar policy statements using AI-powered translation, enabling non-technical users to create policies.</p>",
@@ -1242,8 +1242,8 @@
       "errors":[
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
-        {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Retrieves a list of policies within the AgentCore Policy engine. This operation supports pagination and filtering to help administrators manage and discover policies across policy engines. Results can be filtered by policy engine or resource associations.</p>",
@@ -1279,8 +1279,8 @@
       "errors":[
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
-        {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Retrieves a list of generated policy assets from a policy generation request within the AgentCore Policy system. This operation returns the actual Cedar policies and related artifacts produced by the AI-powered policy generation process, allowing users to review and select from multiple generated policy options.</p>",
@@ -1298,8 +1298,8 @@
       "errors":[
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
-        {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Retrieves a list of policy generation requests within the AgentCore Policy system. This operation supports pagination and filtering to help track and manage AI-powered policy generation operations.</p>",
@@ -1659,7 +1659,7 @@
     "UpdatePolicy":{
       "name":"UpdatePolicy",
       "http":{
-        "method":"PUT",
+        "method":"PATCH",
         "requestUri":"/policy-engines/{policyEngineId}/policies/{policyId}",
         "responseCode":202
       },
@@ -1667,10 +1667,10 @@
       "output":{"shape":"UpdatePolicyResponse"},
       "errors":[
         {"shape":"AccessDeniedException"},
-        {"shape":"ConflictException"},
         {"shape":"ValidationException"},
-        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Updates an existing policy within the AgentCore Policy system. This operation allows modification of the policy description and definition while maintaining the policy's identity. The updated policy is validated against the Cedar schema before being applied. This is an asynchronous operation. Use the <code>GetPolicy</code> operation to poll the <code>status</code> field to track completion.</p>",
@@ -1679,7 +1679,7 @@
     "UpdatePolicyEngine":{
       "name":"UpdatePolicyEngine",
       "http":{
-        "method":"PUT",
+        "method":"PATCH",
         "requestUri":"/policy-engines/{policyEngineId}",
         "responseCode":202
       },
@@ -1687,10 +1687,10 @@
       "output":{"shape":"UpdatePolicyEngineResponse"},
       "errors":[
         {"shape":"AccessDeniedException"},
-        {"shape":"ConflictException"},
         {"shape":"ValidationException"},
-        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Updates an existing policy engine within the AgentCore Policy system. This operation allows modification of the policy engine description while maintaining its identity. This is an asynchronous operation. Use the <code>GetPolicyEngine</code> operation to poll the <code>status</code> field to track completion.</p>",
@@ -1746,7 +1746,8 @@
         "PYTHON_3_10",
         "PYTHON_3_11",
         "PYTHON_3_12",
-        "PYTHON_3_13"
+        "PYTHON_3_13",
+        "PYTHON_3_14"
       ]
     },
     "AgentRuntime":{
@@ -2740,6 +2741,32 @@
       "documentation":"<p>Represents content input for policy generation operations. This structure encapsulates the natural language descriptions or other content formats that are used as input for AI-powered policy generation.</p>",
       "union":true
     },
+    "ContentConfiguration":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "type":{
+          "shape":"ContentType",
+          "documentation":"<p>Type of content to stream.</p>"
+        },
+        "level":{
+          "shape":"ContentLevel",
+          "documentation":"<p>Level of detail for streamed content.</p>"
+        }
+      },
+      "documentation":"<p>Defines what content to stream and at what level of detail.</p>"
+    },
+    "ContentLevel":{
+      "type":"string",
+      "enum":[
+        "METADATA_ONLY",
+        "FULL_CONTENT"
+      ]
+    },
+    "ContentType":{
+      "type":"string",
+      "enum":["MEMORY_RECORDS"]
+    },
     "CreateAgentRuntimeEndpointRequest":{
       "type":"structure",
       "required":[
@@ -3489,6 +3516,10 @@
           "shape":"MemoryStrategyInputList",
           "documentation":"<p>The memory strategies to use for this memory. Strategies define how information is extracted, processed, and consolidated.</p>"
         },
+        "streamDeliveryResources":{
+          "shape":"StreamDeliveryResources",
+          "documentation":"<p>Configuration for streaming memory record data to external resources.</p>"
+        },
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>A map of tag keys and values to assign to an AgentCore Memory. Tags enable you to categorize your resources in different ways, for example, by purpose, owner, or environment.</p>"
@@ -3671,6 +3702,14 @@
           "shape":"ClientToken",
           "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you retry a request with the same client token, the service returns the same response without creating a duplicate policy engine.</p>",
           "idempotencyToken":true
+        },
+        "encryptionKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the policy engine data.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of tag keys and values to assign to an AgentCore Policy. Tags enable you to categorize your resources in different ways, for example, by purpose, owner, or environment.</p>"
         }
       }
     },
@@ -3717,6 +3756,10 @@
         "statusReasons":{
           "shape":"PolicyStatusReasons",
           "documentation":"<p>Additional information about the policy engine status. This provides details about any failures or the current state of the policy engine creation process.</p>"
+        },
+        "encryptionKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the policy engine data.</p>"
         }
       }
     },
@@ -4716,6 +4759,10 @@
         "statusReasons":{
           "shape":"PolicyStatusReasons",
           "documentation":"<p>Additional information about the deletion status. This provides details about the deletion process or any issues that may have occurred.</p>"
+        },
+        "encryptionKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the policy engine data.</p>"
         }
       }
     },
@@ -5764,6 +5811,10 @@
         "requestHeaderConfiguration":{
           "shape":"RequestHeaderConfiguration",
           "documentation":"<p>Configuration for HTTP request headers that will be passed through to the runtime.</p>"
+        },
+        "metadataConfiguration":{
+          "shape":"RuntimeMetadataConfiguration",
+          "documentation":"<p>Configuration for microVM Metadata Service (MMDS) settings for the AgentCore Runtime.</p>"
         }
       }
     },
@@ -6477,6 +6528,10 @@
         "statusReasons":{
           "shape":"PolicyStatusReasons",
           "documentation":"<p>Additional information about the policy engine status. This provides details about any failures or the current state of the policy engine.</p>"
+        },
+        "encryptionKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the policy engine data.</p>"
         }
       }
     },
@@ -6996,6 +7051,30 @@
         "CustomerManagedKey",
         "ServiceManagedKey"
       ]
+    },
+    "KinesisResource":{
+      "type":"structure",
+      "required":[
+        "dataStreamArn",
+        "contentConfigurations"
+      ],
+      "members":{
+        "dataStreamArn":{
+          "shape":"Arn",
+          "documentation":"<p>ARN of the Kinesis Data Stream.</p>"
+        },
+        "contentConfigurations":{
+          "shape":"KinesisResourceContentConfigurationsList",
+          "documentation":"<p>Content configurations for stream delivery.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for Kinesis Data Stream delivery.</p>"
+    },
+    "KinesisResourceContentConfigurationsList":{
+      "type":"list",
+      "member":{"shape":"ContentConfiguration"},
+      "max":1,
+      "min":1
     },
     "KmsConfiguration":{
       "type":"structure",
@@ -7945,6 +8024,10 @@
         "strategies":{
           "shape":"MemoryStrategyList",
           "documentation":"<p>The list of memory strategies associated with this memory.</p>"
+        },
+        "streamDeliveryResources":{
+          "shape":"StreamDeliveryResources",
+          "documentation":"<p>Configuration for streaming memory record data to external resources.</p>"
         }
       },
       "documentation":"<p>Contains information about a memory resource.</p>"
@@ -8864,6 +8947,10 @@
         "cedar":{
           "shape":"CedarPolicy",
           "documentation":"<p>The Cedar policy definition within the policy definition structure. This contains the Cedar policy statement that defines the authorization logic using Cedar's human-readable, analyzable policy language. Cedar policies specify principals (who can access), actions (what operations are allowed), resources (what can be accessed), and optional conditions for fine-grained control. Cedar provides a formal policy language designed for authorization with deterministic evaluation, making policies testable, reviewable, and auditable. All Cedar policies follow a default-deny model where actions are denied unless explicitly permitted, and forbid policies always override permit policies.</p>"
+        },
+        "policyGeneration":{
+          "shape":"PolicyGenerationDetails",
+          "documentation":"<p>The generated policy asset information within the policy definition structure. This contains information identifying a generated policy asset from the AI-powered policy generation process within the AgentCore Policy system. Each asset contains a Cedar policy statement generated from natural language input, along with associated metadata and analysis findings to help users evaluate and select the most appropriate policy option.</p>"
         }
       },
       "documentation":"<p>Represents the definition structure for policies within the AgentCore Policy system. This structure encapsulates different policy formats and languages that can be used to define access control rules.</p>",
@@ -8912,6 +8999,10 @@
         "statusReasons":{
           "shape":"PolicyStatusReasons",
           "documentation":"<p>Additional information about the policy engine status. This provides details about any failures or the current state of the policy engine lifecycle.</p>"
+        },
+        "encryptionKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the policy engine data.</p>"
         }
       },
       "documentation":"<p>Represents a policy engine resource within the AgentCore Policy system. Policy engines serve as containers for grouping related policies and provide the execution context for policy evaluation and management. Each policy engine can be associated with one Gateway (one engine per Gateway), where it intercepts all agent tool calls and evaluates them against the contained policies before allowing tools to execute. The policy engine maintains the Cedar schema generated from the Gateway's tool manifest, ensuring that policies are validated against the actual tools and parameters available. Policy engines support two enforcement modes that can be configured when associating with a Gateway: log-only mode for testing (evaluates decisions without blocking) and enforce mode for production (actively allows or denies based on policy evaluation).</p>"
@@ -9036,6 +9127,24 @@
     "PolicyGenerationAssets":{
       "type":"list",
       "member":{"shape":"PolicyGenerationAsset"}
+    },
+    "PolicyGenerationDetails":{
+      "type":"structure",
+      "required":[
+        "policyGenerationId",
+        "policyGenerationAssetId"
+      ],
+      "members":{
+        "policyGenerationId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for this policy generation request.</p>"
+        },
+        "policyGenerationAssetId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for this generated policy asset within the policy generation request.</p>"
+        }
+      },
+      "documentation":"<p>Represents the information identifying a generated policy asset from the AI-powered policy generation process within the AgentCore Policy system. Each asset contains a Cedar policy statement generated from natural language input, along with associated metadata and analysis findings to help users evaluate and select the most appropriate policy option.</p>"
     },
     "PolicyGenerationName":{
       "type":"string",
@@ -9311,7 +9420,18 @@
       "type":"string",
       "max":1024,
       "min":1,
-      "pattern":"([0-9]{12})\\.dkr\\.ecr\\.([a-z0-9-]+)\\.amazonaws\\.com/((?:[a-z0-9]+(?:[._-][a-z0-9]+)*/)*[a-z0-9]+(?:[._-][a-z0-9]+)*)(?::([^:@]{1,300}))?(?:@(.+))?"
+      "pattern":"(([0-9]{12})\\.dkr\\.ecr\\.([a-z0-9-]+)\\.amazonaws\\.com(\\.cn)?|public\\.ecr\\.aws)/((?:[a-z0-9]+(?:[._-][a-z0-9]+)*/)*[a-z0-9]+(?:[._-][a-z0-9]+)*)(?::([^:@]{1,300}))?(?:@(.+))?"
+    },
+    "RuntimeMetadataConfiguration":{
+      "type":"structure",
+      "required":["requireMMDSV2"],
+      "members":{
+        "requireMMDSV2":{
+          "shape":"Boolean",
+          "documentation":"<p>Enables MMDSv2 (microVM Metadata Service Version 2) requirement for the agent runtime. When set to <code>true</code>, the runtime microVM will only accept MMDSv2 requests.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for microVM metadata service settings.</p>"
     },
     "S3BucketUri":{
       "type":"string",
@@ -9651,7 +9771,8 @@
       "enum":[
         "MCP",
         "HTTP",
-        "A2A"
+        "A2A",
+        "AGUI"
       ]
     },
     "ServiceException":{
@@ -9861,7 +9982,7 @@
     },
     "Statement":{
       "type":"string",
-      "max":153600,
+      "max":10000,
       "min":35
     },
     "StatusReason":{
@@ -9900,6 +10021,34 @@
         }
       },
       "documentation":"<p>Contains configuration information for a memory strategy.</p>"
+    },
+    "StreamDeliveryResource":{
+      "type":"structure",
+      "members":{
+        "kinesis":{
+          "shape":"KinesisResource",
+          "documentation":"<p>Kinesis Data Stream configuration.</p>"
+        }
+      },
+      "documentation":"<p>Supported stream delivery resource types.</p>",
+      "union":true
+    },
+    "StreamDeliveryResources":{
+      "type":"structure",
+      "required":["resources"],
+      "members":{
+        "resources":{
+          "shape":"StreamDeliveryResourcesList",
+          "documentation":"<p>List of stream delivery resource configurations.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for streaming memory record data to external resources.</p>"
+    },
+    "StreamDeliveryResourcesList":{
+      "type":"list",
+      "member":{"shape":"StreamDeliveryResource"},
+      "max":1,
+      "min":0
     },
     "String":{"type":"string"},
     "SubnetId":{
@@ -10506,6 +10655,10 @@
           "shape":"LifecycleConfiguration",
           "documentation":"<p>The updated life cycle configuration for the AgentCore Runtime.</p>"
         },
+        "metadataConfiguration":{
+          "shape":"RuntimeMetadataConfiguration",
+          "documentation":"<p>The updated configuration for microVM Metadata Service (MMDS) settings for the AgentCore Runtime.</p>"
+        },
         "environmentVariables":{
           "shape":"EnvironmentVariablesMap",
           "documentation":"<p>Updated environment variables to set in the AgentCore Runtime environment.</p>"
@@ -10940,6 +11093,10 @@
         "memoryStrategies":{
           "shape":"ModifyMemoryStrategies",
           "documentation":"<p>The memory strategies to add, modify, or delete.</p>"
+        },
+        "streamDeliveryResources":{
+          "shape":"StreamDeliveryResources",
+          "documentation":"<p>Configuration for streaming memory record data to external resources.</p>"
         }
       }
     },
@@ -11119,7 +11276,7 @@
           "locationName":"policyEngineId"
         },
         "description":{
-          "shape":"Description",
+          "shape":"UpdatedDescription",
           "documentation":"<p>The new description for the policy engine.</p>"
         }
       }
@@ -11167,6 +11324,10 @@
         "statusReasons":{
           "shape":"PolicyStatusReasons",
           "documentation":"<p>Additional information about the update status.</p>"
+        },
+        "encryptionKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the policy engine data.</p>"
         }
       }
     },
@@ -11174,8 +11335,7 @@
       "type":"structure",
       "required":[
         "policyEngineId",
-        "policyId",
-        "definition"
+        "policyId"
       ],
       "members":{
         "policyEngineId":{
@@ -11191,7 +11351,7 @@
           "locationName":"policyId"
         },
         "description":{
-          "shape":"Description",
+          "shape":"UpdatedDescription",
           "documentation":"<p>The new human-readable description for the policy. This optional field allows updating the policy's documentation while keeping the same policy logic.</p>"
         },
         "definition":{
@@ -11304,6 +11464,16 @@
           "documentation":"<p>The timestamp when the workload identity was last updated.</p>"
         }
       }
+    },
+    "UpdatedDescription":{
+      "type":"structure",
+      "members":{
+        "optionalValue":{
+          "shape":"Description",
+          "documentation":"<p>Represents an optional value that is used to update the human-readable description of the resource. If set to null, it will clear the current description of the resource.</p>"
+        }
+      },
+      "documentation":"<p>Respresents an optional value that can be provided to update the human-readable description of the resource. If the field is omitted from the request, it will leave the current decription value unchanged.</p>"
     },
     "UserPreferenceConsolidationOverride":{
       "type":"structure",

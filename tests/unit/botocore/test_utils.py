@@ -3635,7 +3635,7 @@ class TestSSOTokenFetcher(unittest.TestCase):
             expiresAt=self._expires_at(600),
             verificationUri='https://sso.fake/device',
             verificationUriComplete='https://sso.fake/device?user_code=foo',
-            cross_device_flag='--use-device-code',
+            cross_device_flag=None,
         )
 
     def test_fetch_token_authorization_expires(self):

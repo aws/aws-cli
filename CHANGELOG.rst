@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.44.60
+=======
+
+* api-change:``bedrock-agentcore-control``: Deprecating namespaces field and adding namespaceTemplates.
+* api-change:``emr``: Add S3LoggingConfiguration to Control LogUploads
+* api-change:``glue``: Provide approval to overwrite existing Lake Formation permissions on all child resources with the default permissions specified in 'CreateTableDefaultPermissions' and 'CreateDatabaseDefaultPermissions' when updating catalog. Allowed values are ["Accept","Deny"] .
+* enhancement:emr: Add support for S3LoggingConfiguration in --monitoring-configuration parameter of the emr create-cluster command.
+
+
 1.44.59
 =======
 

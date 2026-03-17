@@ -573,10 +573,15 @@ EXTENDED_SUPPORT = '<p>Reserved.</p> '
 
 MONITORING_CONFIGURATION = (
     '<p>Monitoring configuration for an Amazon EMR cluster. '
-    'The configuration specifies CloudWatch logging settings for the cluster. '
+    'The configuration specifies CloudWatch logging settings and S3 logging settings for the cluster. '
     'You can configure the CloudWatchLogConfiguration which includes '
     'the Enabled flag (required), LogGroupName, LogStreamNamePrefix, '
     'EncryptionKeyArn, and LogTypes. The LogTypes parameter is a map '
     'of log type categories (e.g., "STEP_LOGS", "SPARK_DRIVER", '
-    '"SPARK_EXECUTOR") to a list of file names (e.g., "STDOUT", "STDERR").</p>'
+    '"SPARK_EXECUTOR") to a list of file names (e.g., "STDOUT", "STDERR"). '
+    'You can also configure the S3LoggingConfiguration which includes '
+    'the LogTypeUploadPolicy parameter. The LogTypeUploadPolicy is a map '
+    'of log type categories (e.g., "system-logs", "application-logs", '
+    '"persistent-ui-logs") to upload policies (e.g., "emr-managed", '
+    '"on-customer-s3only", "disabled").</p>'
 )

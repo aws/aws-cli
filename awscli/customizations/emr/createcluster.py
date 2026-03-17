@@ -564,6 +564,10 @@ class CreateCluster(Command):
                 'MonitoringConfiguration',
                 parsed_args.monitoring_configuration,
             )
+            emrutils.validate_s3_logging_configuration(
+                parsed_args.monitoring_configuration,
+                parsed_args.log_uri
+            )
 
         self._validate_required_applications(parsed_args)
 

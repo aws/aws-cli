@@ -1861,6 +1861,294 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         }
         self.assert_params_for_cmd(cmd, result)
 
+    def test_create_cluster_with_s3_logging_configuration(self):
+        cmd = (
+            self.prefix
+            + '--release-label emr-7.13.0 '
+            + '--log-uri s3://mybucket/logs '
+            + '--monitoring-configuration '
+            + 'S3LoggingConfiguration={LogTypeUploadPolicy={system-logs=emr-managed,application-logs=on-customer-s3only,persistent-ui-logs=disabled}} '
+            + '--instance-groups '
+            + DEFAULT_INSTANCE_GROUPS_ARG
+        )
+        result = {
+            'Name': DEFAULT_CLUSTER_NAME,
+            'Instances': DEFAULT_INSTANCES,
+            'ReleaseLabel': 'emr-7.13.0',
+            'VisibleToAllUsers': True,
+            'Tags': [],
+            'LogUri': 's3://mybucket/logs',
+            'MonitoringConfiguration': {
+                'S3LoggingConfiguration': {
+                    'LogTypeUploadPolicy': {
+                        'system-logs': 'emr-managed',
+                        'application-logs': 'on-customer-s3only',
+                        'persistent-ui-logs': 'disabled',
+                    },
+                },
+            },
+        }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_create_cluster_with_cloudwatch_and_s3_logging_configuration(self):
+        cmd = (
+            self.prefix
+            + '--release-label emr-7.13.0 '
+            + '--log-uri s3://mybucket/logs '
+            + '--monitoring-configuration '
+            + 'CloudWatchLogConfiguration={Enabled=true,LogGroupName=MyLogGroup,'
+            + 'LogStreamNamePrefix=MyPrefix,LogTypes={STEP_LOGS=[STDOUT,STDERR]}},'
+            + 'S3LoggingConfiguration={LogTypeUploadPolicy={system-logs=emr-managed,application-logs=on-customer-s3only}} '
+            + '--instance-groups '
+            + DEFAULT_INSTANCE_GROUPS_ARG
+        )
+        result = {
+            'Name': DEFAULT_CLUSTER_NAME,
+            'Instances': DEFAULT_INSTANCES,
+            'ReleaseLabel': 'emr-7.13.0',
+            'VisibleToAllUsers': True,
+            'Tags': [],
+            'LogUri': 's3://mybucket/logs',
+            'MonitoringConfiguration': {
+                'CloudWatchLogConfiguration': {
+                    'Enabled': True,
+                    'LogGroupName': 'MyLogGroup',
+                    'LogStreamNamePrefix': 'MyPrefix',
+                    'LogTypes': {
+                        'STEP_LOGS': ['STDOUT', 'STDERR'],
+                    },
+                },
+                'S3LoggingConfiguration': {
+                    'LogTypeUploadPolicy': {
+                        'system-logs': 'emr-managed',
+                        'application-logs': 'on-customer-s3only',
+                    },
+                },
+            },
+        }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_create_cluster_s3_logging_invalid_log_type(self):
+        """Test that invalid log type raises error"""
+        cmd = (
+            self.prefix
+            + '--release-label emr-7.13.0 '
+            + '--log-uri s3://mybucket/logs '
+            + '--monitoring-configuration '
+            + 'S3LoggingConfiguration={LogTypeUploadPolicy={invalid-logs=emr-managed}} '
+            + '--instance-groups '
+            + DEFAULT_INSTANCE_GROUPS_ARG
+        )
+        self.assert_error_msg(cmd, 'InvalidS3LoggingLogTypeError')
+
+    def test_create_cluster_s3_logging_invalid_policy(self):
+        """Test that invalid policy raises error"""
+        cmd = (
+            self.prefix
+            + '--release-label emr-7.13.0 '
+            + '--log-uri s3://mybucket/logs '
+            + '--monitoring-configuration '
+            + 'S3LoggingConfiguration={LogTypeUploadPolicy={system-logs=invalid-policy}} '
+            + '--instance-groups '
+            + DEFAULT_INSTANCE_GROUPS_ARG
+        )
+        self.assert_error_msg(cmd, 'InvalidS3LoggingPolicyError')
+
+    def test_create_cluster_s3_logging_on_customer_s3only_for_persistent_ui_logs(self):
+        """Test that on-customer-s3only is not allowed for persistent-ui-logs"""
+        cmd = (
+            self.prefix
+            + '--release-label emr-7.13.0 '
+            + '--log-uri s3://mybucket/logs '
+            + '--monitoring-configuration '
+            + 'S3LoggingConfiguration={LogTypeUploadPolicy={persistent-ui-logs=on-customer-s3only}} '
+            + '--instance-groups '
+            + DEFAULT_INSTANCE_GROUPS_ARG
+        )
+        self.assert_error_msg(cmd, 'InvalidS3LoggingPersistentUiLogsPolicyError')
+
+    def test_create_cluster_s3_logging_requires_log_uri_for_system_logs(self):
+        """Test that LogUri is required when system-logs uses emr-managed"""
+        cmd = (
+            self.prefix
+            + '--release-label emr-7.13.0 '
+            + '--monitoring-configuration '
+            + 'S3LoggingConfiguration={LogTypeUploadPolicy={system-logs=emr-managed,application-logs=disabled}} '
+            + '--instance-groups '
+            + DEFAULT_INSTANCE_GROUPS_ARG
+        )
+        self.assert_error_msg(cmd, 'S3LoggingConfigurationLogUriRequiredError')
+
+    def test_create_cluster_s3_logging_requires_log_uri_for_application_logs(self):
+        """Test that LogUri is required when application-logs uses on-customer-s3only"""
+        cmd = (
+            self.prefix
+            + '--release-label emr-7.13.0 '
+            + '--monitoring-configuration '
+            + 'S3LoggingConfiguration={LogTypeUploadPolicy={system-logs=disabled,application-logs=on-customer-s3only}} '
+            + '--instance-groups '
+            + DEFAULT_INSTANCE_GROUPS_ARG
+        )
+        self.assert_error_msg(cmd, 'S3LoggingConfigurationLogUriRequiredError')
+
+    def test_create_cluster_s3_logging_requires_log_uri_for_both_logs(self):
+        """Test that LogUri is required when both system-logs and application-logs use non-disabled policies"""
+        cmd = (
+            self.prefix
+            + '--release-label emr-7.13.0 '
+            + '--monitoring-configuration '
+            + 'S3LoggingConfiguration={LogTypeUploadPolicy={system-logs=emr-managed,application-logs=on-customer-s3only}} '
+            + '--instance-groups '
+            + DEFAULT_INSTANCE_GROUPS_ARG
+        )
+        self.assert_error_msg(cmd, 'S3LoggingConfigurationLogUriRequiredError')
+
+    def test_create_cluster_s3_logging_log_uri_not_allowed_when_both_disabled(self):
+        """Test that LogUri is not allowed when both system-logs and application-logs are disabled"""
+        cmd = (
+            self.prefix
+            + '--release-label emr-7.13.0 '
+            + '--log-uri s3://mybucket/logs '
+            + '--monitoring-configuration '
+            + 'S3LoggingConfiguration={LogTypeUploadPolicy={system-logs=disabled,application-logs=disabled}} '
+            + '--instance-groups '
+            + DEFAULT_INSTANCE_GROUPS_ARG
+        )
+        self.assert_error_msg(cmd, 'S3LoggingConfigurationLogUriNotAllowedError')
+
+    def test_create_cluster_s3_logging_valid_with_log_uri(self):
+        """Test valid S3LoggingConfiguration with LogUri"""
+        cmd = (
+            self.prefix
+            + '--release-label emr-7.13.0 '
+            + '--log-uri s3://mybucket/logs '
+            + '--monitoring-configuration '
+            + 'S3LoggingConfiguration={LogTypeUploadPolicy={system-logs=emr-managed,application-logs=on-customer-s3only,persistent-ui-logs=disabled}} '
+            + '--instance-groups '
+            + DEFAULT_INSTANCE_GROUPS_ARG
+        )
+        result = {
+            'Name': DEFAULT_CLUSTER_NAME,
+            'Instances': DEFAULT_INSTANCES,
+            'ReleaseLabel': 'emr-7.13.0',
+            'VisibleToAllUsers': True,
+            'Tags': [],
+            'LogUri': 's3://mybucket/logs',
+            'MonitoringConfiguration': {
+                'S3LoggingConfiguration': {
+                    'LogTypeUploadPolicy': {
+                        'system-logs': 'emr-managed',
+                        'application-logs': 'on-customer-s3only',
+                        'persistent-ui-logs': 'disabled',
+                    },
+                },
+            },
+        }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_create_cluster_s3_logging_valid_all_disabled_no_log_uri(self):
+        """Test valid S3LoggingConfiguration with all logs disabled and no LogUri"""
+        cmd = (
+            self.prefix
+            + '--release-label emr-7.13.0 '
+            + '--monitoring-configuration '
+            + 'S3LoggingConfiguration={LogTypeUploadPolicy={system-logs=disabled,application-logs=disabled,persistent-ui-logs=disabled}} '
+            + '--instance-groups '
+            + DEFAULT_INSTANCE_GROUPS_ARG
+        )
+        result = {
+            'Name': DEFAULT_CLUSTER_NAME,
+            'Instances': DEFAULT_INSTANCES,
+            'ReleaseLabel': 'emr-7.13.0',
+            'VisibleToAllUsers': True,
+            'Tags': [],
+            'MonitoringConfiguration': {
+                'S3LoggingConfiguration': {
+                    'LogTypeUploadPolicy': {
+                        'system-logs': 'disabled',
+                        'application-logs': 'disabled',
+                        'persistent-ui-logs': 'disabled',
+                    },
+                },
+            },
+        }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_create_cluster_s3_logging_empty_log_type_upload_policy(self):
+        """Test that empty LogTypeUploadPolicy is treated as no S3LoggingConfiguration.
+
+        Empty dict means no S3LoggingConfiguration, so no validation is performed.
+        """
+        cmd = (
+            self.prefix
+            + '--release-label emr-5.34.0 '
+            + '--monitoring-configuration '
+            + 'S3LoggingConfiguration={LogTypeUploadPolicy={}} '
+            + '--instance-groups '
+            + DEFAULT_INSTANCE_GROUPS_ARG
+        )
+        result = {
+            'Name': DEFAULT_CLUSTER_NAME,
+            'Instances': DEFAULT_INSTANCES,
+            'ReleaseLabel': 'emr-5.34.0',
+            'VisibleToAllUsers': True,
+            'Tags': [],
+            'MonitoringConfiguration': {
+                'S3LoggingConfiguration': {
+                    'LogTypeUploadPolicy': {},
+                },
+            },
+        }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_create_cluster_s3_logging_only_persistent_ui_logs_with_log_uri(self):
+        """Test that specifying only persistent-ui-logs with LogUri succeeds.
+
+        Missing log types (system-logs, application-logs) default to
+        requiring LogUri, so providing LogUri is valid and required.
+        """
+        cmd = (
+            self.prefix
+            + '--release-label emr-5.34.0 '
+            + '--log-uri s3://mybucket/logs '
+            + '--monitoring-configuration '
+            + 'S3LoggingConfiguration={LogTypeUploadPolicy={persistent-ui-logs=emr-managed}} '
+            + '--instance-groups '
+            + DEFAULT_INSTANCE_GROUPS_ARG
+        )
+        result = {
+            'Name': DEFAULT_CLUSTER_NAME,
+            'Instances': DEFAULT_INSTANCES,
+            'ReleaseLabel': 'emr-5.34.0',
+            'LogUri': 's3://mybucket/logs',
+            'VisibleToAllUsers': True,
+            'Tags': [],
+            'MonitoringConfiguration': {
+                'S3LoggingConfiguration': {
+                    'LogTypeUploadPolicy': {
+                        'persistent-ui-logs': 'emr-managed',
+                    },
+                },
+            },
+        }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_create_cluster_s3_logging_only_persistent_ui_logs_no_log_uri(self):
+        """Test S3LoggingConfiguration with only persistent-ui-logs requires LogUri.
+
+        Missing log types (system-logs, application-logs) default to
+        requiring LogUri (they use "default" policy internally, which resolves to "emr-managed").
+        """
+        cmd = (
+            self.prefix
+            + '--release-label emr-5.34.0 '
+            + '--monitoring-configuration '
+            + 'S3LoggingConfiguration={LogTypeUploadPolicy={persistent-ui-logs=emr-managed}} '
+            + '--instance-groups '
+            + DEFAULT_INSTANCE_GROUPS_ARG
+        )
+        self.assert_error_msg(cmd, 'S3LoggingConfigurationLogUriRequiredError')
+
     def test_create_cluster_with_log_encryption_kms_key_id(self):
         test_log_uri = 's3://test/logs'
         test_log_encryption_kms_key_id = 'valid_kms_key'

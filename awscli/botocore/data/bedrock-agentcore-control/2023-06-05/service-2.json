@@ -4167,7 +4167,14 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces associated with the custom memory strategy.</p>"
+          "documentation":"<p>The namespaces associated with the custom memory strategy.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use namespaceTemplates instead",
+          "deprecatedSince":"2026-03-02"
+        },
+        "namespaceTemplates":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaceTemplates associated with the custom memory strategy.</p>"
         },
         "configuration":{
           "shape":"CustomConfigurationInput",
@@ -4974,7 +4981,14 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces for which to create episodes.</p>"
+          "documentation":"<p>The namespaces for which to create episodes.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use namespaceTemplates instead",
+          "deprecatedSince":"2026-03-02"
+        },
+        "namespaceTemplates":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaceTemplates for which to create episodes.</p>"
         },
         "reflectionConfiguration":{
           "shape":"EpisodicReflectionConfigurationInput",
@@ -5054,29 +5068,48 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces to use for episodic reflection. Can be less nested than the episodic namespaces.</p>"
+          "documentation":"<p>The namespaces to use for episodic reflection. Can be less nested than the episodic namespaces.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use namespaceTemplates instead",
+          "deprecatedSince":"2026-03-02"
+        },
+        "namespaceTemplates":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaceTemplates to use for episodic reflection. Can be less nested than the episodic namespaces.</p>"
         }
       },
       "documentation":"<p>Configurations for overriding the reflection step of the episodic memory strategy.</p>"
     },
     "EpisodicReflectionConfiguration":{
       "type":"structure",
-      "required":["namespaces"],
       "members":{
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces for which to create reflections. Can be less nested than the episodic namespaces.</p>"
+          "documentation":"<p>The namespaces for which to create reflections. Can be less nested than the episodic namespaces.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use namespaceTemplates instead",
+          "deprecatedSince":"2026-03-02"
+        },
+        "namespaceTemplates":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaceTemplates for which to create reflections. Can be less nested than the episodic namespaces.</p>"
         }
       },
       "documentation":"<p>The configuration for the reflections created with the episodic memory strategy.</p>"
     },
     "EpisodicReflectionConfigurationInput":{
       "type":"structure",
-      "required":["namespaces"],
       "members":{
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces over which to create reflections. Can be less nested than episode namespaces.</p>"
+          "documentation":"<p>The namespaces over which to create reflections. Can be less nested than episode namespaces.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use namespaceTemplates instead",
+          "deprecatedSince":"2026-03-02"
+        },
+        "namespaceTemplates":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaceTemplates over which to create reflections. Can be less nested than episode namespaces.</p>"
         }
       },
       "documentation":"<p>An episodic reflection configuration input.</p>"
@@ -5098,7 +5131,14 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces over which reflections were created. Can be less nested than the episodic namespaces.</p>"
+          "documentation":"<p>The namespaces over which reflections were created. Can be less nested than the episodic namespaces.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use namespaceTemplates instead",
+          "deprecatedSince":"2026-03-02"
+        },
+        "namespaceTemplates":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaceTemplates over which reflections were created. Can be less nested than the episodic namespaces.</p>"
         }
       },
       "documentation":"<p>Contains configurations to override the default reflection step for the episodic memory strategy.</p>"
@@ -8062,7 +8102,8 @@
         "strategyId",
         "name",
         "type",
-        "namespaces"
+        "namespaces",
+        "namespaceTemplates"
       ],
       "members":{
         "strategyId":{
@@ -8087,7 +8128,14 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces associated with the memory strategy.</p>"
+          "documentation":"<p>The namespaces associated with the memory strategy.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use namespaceTemplates instead",
+          "deprecatedSince":"2026-03-02"
+        },
+        "namespaceTemplates":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaceTemplates associated with the memory strategy.</p>"
         },
         "createdAt":{
           "shape":"Timestamp",
@@ -8362,7 +8410,14 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The updated namespaces for the memory strategy.</p>"
+          "documentation":"<p>The updated namespaces for the memory strategy.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use namespaceTemplates instead",
+          "deprecatedSince":"2026-03-02"
+        },
+        "namespaceTemplates":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The updated namespaceTemplates for the memory strategy.</p>"
         },
         "configuration":{
           "shape":"ModifyStrategyConfiguration",
@@ -8438,13 +8493,14 @@
     },
     "Namespace":{
       "type":"string",
-      "max":1024,
+      "max":512,
       "min":1,
       "pattern":"[a-zA-Z0-9\\-_\\/]*(\\{(actorId|sessionId|memoryStrategyId)\\}[a-zA-Z0-9\\-_\\/]*)*"
     },
     "NamespacesList":{
       "type":"list",
       "member":{"shape":"Namespace"},
+      "max":1,
       "min":1
     },
     "NaturalLanguage":{
@@ -9711,7 +9767,14 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces associated with the semantic memory strategy.</p>"
+          "documentation":"<p>The namespaces associated with the semantic memory strategy.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use namespaceTemplates instead",
+          "deprecatedSince":"2026-03-02"
+        },
+        "namespaceTemplates":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaceTemplates associated with the semantic memory strategy.</p>"
         }
       },
       "documentation":"<p>Input for creating a semantic memory strategy.</p>"
@@ -10093,7 +10156,14 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces associated with the summary memory strategy.</p>"
+          "documentation":"<p>The namespaces associated with the summary memory strategy.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use namespaceTemplates instead",
+          "deprecatedSince":"2026-03-02"
+        },
+        "namespaceTemplates":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaceTemplates associated with the summary memory strategy.</p>"
         }
       },
       "documentation":"<p>Input for creating a summary memory strategy.</p>"
@@ -11525,7 +11595,14 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces associated with the user preference memory strategy.</p>"
+          "documentation":"<p>The namespaces associated with the user preference memory strategy.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use namespaceTemplates instead",
+          "deprecatedSince":"2026-03-02"
+        },
+        "namespaceTemplates":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaceTemplates associated with the user preference memory strategy.</p>"
         }
       },
       "documentation":"<p>Input for creating a user preference memory strategy.</p>"

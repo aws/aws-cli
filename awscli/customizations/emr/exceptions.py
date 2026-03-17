@@ -387,3 +387,43 @@ class MissingAutoScalingRoleError(EmrError, ParamValidationError):
         "Must specify --auto-scaling-role when configuring an "
         "AutoScaling policy for an instance group."
     )
+
+class InvalidS3LoggingLogTypeError(EmrError, ParamValidationError):
+    """
+    Invalid log type specified for S3LoggingConfiguration.
+    """
+    fmt = ('Invalid log type specified for the current '
+           'S3LoggingConfiguration. Supported log types: system-logs, '
+           'application-logs, persistent-ui-logs')
+
+class InvalidS3LoggingPolicyError(EmrError, ParamValidationError):
+    """
+    Invalid policy specified for S3LoggingConfiguration.
+    """
+    fmt = ('Invalid policy specified for the current '
+           'S3LoggingConfiguration. Supported policies: emr-managed, '
+           'on-customer-s3only, disabled')
+
+class InvalidS3LoggingPersistentUiLogsPolicyError(EmrError, ParamValidationError):
+    """
+    Invalid policy for persistent-ui-logs in S3LoggingConfiguration.
+    """
+    fmt = ("Invalid policy for log type 'persistent-ui-logs'. "
+           "Supported values for persistent-ui-logs: emr-managed, disabled")
+
+class S3LoggingConfigurationLogUriRequiredError(EmrError, ParamValidationError):
+    """
+    LogUri is required for the current S3LoggingConfiguration.
+    """
+    fmt = ('A valid S3 location (LogUri) is required for the '
+           'current S3LoggingConfiguration. Please specify an S3 bucket and '
+           'try again.')
+
+class S3LoggingConfigurationLogUriNotAllowedError(EmrError, ParamValidationError):
+    """
+    LogUri must not be specified when system-logs and application-logs
+    policies are both disabled in S3LoggingConfiguration.
+    """
+    fmt = ('LogUri must not be specified when system-logs and '
+           'application-logs policies are both disabled in '
+           'S3LoggingConfiguration')

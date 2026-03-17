@@ -327,6 +327,10 @@ class CaseInsensitiveDict(collections_abc.MutableMapping):
 
 
 def requires_crt(reason=None):
+    if callable(reason):
+        raise TypeError(
+            "Use @requires_crt() with parentheses, not bare @requires_crt"
+        )
     if reason is None:
         reason = "Test requires awscrt to be installed"
 

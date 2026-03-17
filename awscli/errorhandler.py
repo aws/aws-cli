@@ -49,8 +49,10 @@ MAX_INLINE_ITEMS = 5
 
 
 class EnhancedErrorFormatter:
-    def format_error(self, error_info, stream):
-        additional_fields = self._get_additional_fields(error_info)
+    def format_error(self, error_info, stream, modeled_fields=None):
+        additional_fields = self._get_additional_fields(
+            error_info, modeled_fields
+        )
 
         if not additional_fields:
             return
@@ -94,9 +96,19 @@ class EnhancedErrorFormatter:
             return f'{{{items}}}'
         return str(value)
 
-    def _get_additional_fields(self, error_info):
-        standard_keys = {'Code', 'Message'}
-        return {k: v for k, v in error_info.items() if k not in standard_keys}
+    def _get_additional_fields(self, error_info, modeled_fields=None):
+        standard_keys = {'code', 'message'}
+        if modeled_fields is not None:
+            return {
+                k: v
+                for k, v in error_info.items()
+                if k.lower() not in standard_keys and k in modeled_fields
+            }
+        return {
+            k: v
+            for k, v in error_info.items()
+            if k.lower() not in standard_keys
+        }
 
 
 def construct_entry_point_handlers_chain():
@@ -200,6 +212,7 @@ class FilteredExceptionHandler(BaseExceptionHandler):
     ):
         try:
             error_format = self._resolve_error_format(parsed_globals)
+            modeled_fields = error_info.pop('_modeled_fields', None)
 
             if error_format == 'legacy':
                 return False
@@ -213,7 +226,9 @@ class FilteredExceptionHandler(BaseExceptionHandler):
 
             if error_format == 'enhanced':
                 write_error(stderr, formatted_message)
-                EnhancedErrorFormatter().format_error(error_info, stderr)
+                EnhancedErrorFormatter().format_error(
+                    error_info, stderr, modeled_fields
+                )
                 return True
 
             color = getattr(parsed_globals, 'color', 'auto')
@@ -275,7 +290,10 @@ class ClientErrorHandler(FilteredExceptionHandler):
     def _extract_error_info(self, exception):
         error_response = self._extract_error_response(exception)
         if error_response and 'Error' in error_response:
-            return error_response['Error']
+            error_info = error_response['Error']
+            modeled_fields = error_response.get('ModeledErrorFields')
+            error_info['_modeled_fields'] = modeled_fields
+            return error_info
         return None
 
     @staticmethod
@@ -291,12 +309,18 @@ class ClientErrorHandler(FilteredExceptionHandler):
             # not nested under an Error key. Botocore preserves this structure.
             # Include these fields to provide complete error information.
             # Exclude response metadata and avoid duplicates.
-            excluded_keys = {'Error', 'ResponseMetadata', 'Code', 'Message'}
+            excluded_keys = {'Error', 'ResponseMetadata', 'Code', 'Message',
+                             'ModeledErrorFields'}
             for key, value in exception.response.items():
                 if key not in excluded_keys and key not in error_dict:
                     error_dict[key] = value
 
-            return {'Error': error_dict}
+            result = {'Error': error_dict}
+            if 'ModeledErrorFields' in exception.response:
+                result['ModeledErrorFields'] = exception.response[
+                    'ModeledErrorFields'
+                ]
+            return result
 
         return None
 

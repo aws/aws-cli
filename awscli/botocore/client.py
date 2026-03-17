@@ -903,6 +903,13 @@ class BaseClient:
 
         if http.status_code >= 300:
             error_code = parsed_response.get("Error", {}).get("Code")
+            error_shape = self._service_model.shape_for_error_code(
+                error_code
+            )
+            modeled_fields = {'Code', 'Message'}
+            if error_shape:
+                modeled_fields |= set(error_shape.members.keys())
+            parsed_response['ModeledErrorFields'] = modeled_fields
             error_class = self.exceptions.from_code(error_code)
             raise error_class(parsed_response, operation_name)
         else:

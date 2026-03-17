@@ -150,6 +150,47 @@ class TestClientErrorHandler:
         )
         assert stderr.getvalue() == expected
 
+    def test_modeled_fields_filters_unmodeled_from_display(self):
+        error_response = {
+            'Error': {
+                'Code': 'ExpiredToken',
+                'Message': 'Token expired',
+                'Token-0': 'AQoDYXdzEJr...sensitive...',
+            },
+            'ResponseMetadata': {'RequestId': '123'},
+            'ModeledErrorFields': {'Code', 'Message'},
+        }
+        client_error = ClientError(error_response, 'ListBuckets')
+
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+
+        rc = self.handler.handle_exception(client_error, stdout, stderr)
+
+        assert rc == CLIENT_ERROR_RC
+        assert 'Token-0' not in stderr.getvalue()
+        assert 'sensitive' not in stderr.getvalue()
+
+    def test_modeled_fields_not_leaked_in_json_format(self):
+        error_response = {
+            'Error': {
+                'Code': 'ExpiredToken',
+                'Message': 'Token expired',
+            },
+            'ResponseMetadata': {'RequestId': '123'},
+            'ModeledErrorFields': {'Code', 'Message'},
+        }
+        client_error = ClientError(error_response, 'ListBuckets')
+
+        self.session.session_vars['cli_error_format'] = 'json'
+
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+
+        self.handler.handle_exception(client_error, stdout, stderr)
+
+        assert '_modeled_fields' not in stderr.getvalue()
+
 
 class TestEnhancedErrorFormatter:
     def setup_method(self):
@@ -342,6 +383,38 @@ class TestEnhancedErrorFormatter:
             'Path: /path/to/file.txt\n'
         )
         assert output == expected
+
+    def test_format_error_hides_unmodeled_fields(self):
+        error_info = {
+            'Code': 'ExpiredToken',
+            'Message': 'Token expired',
+            'Token-0': 'AQoDYXdzEJr...sensitive...',
+        }
+
+        stream = io.StringIO()
+        self.formatter.format_error(
+            error_info, stream, modeled_fields={'Code', 'Message'}
+        )
+
+        assert stream.getvalue() == ''
+
+    def test_format_error_shows_modeled_fields(self):
+        error_info = {
+            'Code': 'FileSystemNotFound',
+            'Message': 'Not found',
+            'ErrorCode': 'FileSystemNotFound',
+            'UnmodeledField': 'should be hidden',
+        }
+
+        stream = io.StringIO()
+        self.formatter.format_error(
+            error_info, stream,
+            modeled_fields={'Code', 'Message', 'ErrorCode'},
+        )
+
+        output = stream.getvalue()
+        assert 'ErrorCode: FileSystemNotFound' in output
+        assert 'UnmodeledField' not in output
 
     def test_format_error_with_large_list(self):
         error_info = {

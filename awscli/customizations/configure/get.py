@@ -18,7 +18,7 @@ from awscli.customizations.commands import BasicCommand
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.utils import validate_mutually_exclusive
 
-from . import PREDEFINED_SECTION_NAMES, SUBSECTION_TYPE_ALLOWLIST
+from . import PREDEFINED_SECTION_NAMES, SUBSECTION_TYPE_ALLOWLIST, SubsectionNotFoundError
 
 LOG = logging.getLogger(__name__)
 
@@ -180,10 +180,13 @@ class ConfigureGetCommand(BasicCommand):
         full_config = self._session.full_config
 
         if section_type not in full_config:
-            return None
+            raise SubsectionNotFoundError(f"The config sub-section ({section_name}) could not be found ")
 
         section_type_config = full_config[section_type]
         section_config = section_type_config.get(section_name, None)
+
+        if section_config is None:
+            raise SubsectionNotFoundError(f"The config sub-section ({section_name}) could not be found ")
 
         # Handle nested properties
         if '.' in varname:

@@ -45,6 +45,9 @@ class SectionNotFoundError(Exception):
     pass
 
 
+class SubsectionNotFoundError(Exception):
+    pass
+
 def mask_value(current_value):
     if current_value is None:
         return 'None'

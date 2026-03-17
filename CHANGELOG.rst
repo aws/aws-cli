@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.34.11
+=======
+
+* enhancement:emr: Add support for S3LoggingConfiguration in --monitoring-configuration parameter of the emr create-cluster command.
+* api-change:``emr``: Add S3LoggingConfiguration to Control LogUploads
+* api-change:``glue``: Provide approval to overwrite existing Lake Formation permissions on all child resources with the default permissions specified in 'CreateTableDefaultPermissions' and 'CreateDatabaseDefaultPermissions' when updating catalog. Allowed values are ["Accept","Deny"] .
+* bugfix:autocomplete: Exclude completion models from final PyInstaller distribution since they're not needed at runtime.
+* api-change:``bedrock-agentcore-control``: Deprecating namespaces field and adding namespaceTemplates.
+
+
 2.34.10
 =======
 

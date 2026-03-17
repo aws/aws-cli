@@ -178,6 +178,7 @@ class TestClientErrorHandler:
             'Error': {
                 'Code': 'ExpiredToken',
                 'Message': 'Token expired',
+                'Token-0': 'AQoDYXdzEJr...sensitive...',
             },
             'ResponseMetadata': {'RequestId': '123'},
         }
@@ -191,8 +192,10 @@ class TestClientErrorHandler:
 
         self.handler.handle_exception(client_error, stdout, stderr)
 
-        assert '_modeled_fields' not in stderr.getvalue()
-        assert 'modeled_fields' not in stderr.getvalue()
+        parsed = json.loads(stderr.getvalue())
+        assert 'Token-0' not in parsed
+        assert '_modeled_fields' not in parsed
+        assert 'modeled_fields' not in parsed
 
     def test_no_modeled_fields_hides_additional_fields(self):
         # ClientError without modeled_fields attribute (e.g. manually
@@ -246,7 +249,7 @@ class TestEnhancedErrorFormatter:
         }
 
         stream = io.StringIO()
-        self.formatter.format_error(error_info, stream, modeled_fields=set(error_info.keys()))
+        self.formatter.format_error(error_info, stream)
 
         output = stream.getvalue()
         assert output == ''
@@ -260,7 +263,7 @@ class TestEnhancedErrorFormatter:
         }
 
         stream = io.StringIO()
-        self.formatter.format_error(error_info, stream, modeled_fields=set(error_info.keys()))
+        self.formatter.format_error(error_info, stream)
 
         output = stream.getvalue()
         expected = (
@@ -279,7 +282,7 @@ class TestEnhancedErrorFormatter:
         }
 
         stream = io.StringIO()
-        self.formatter.format_error(error_info, stream, modeled_fields=set(error_info.keys()))
+        self.formatter.format_error(error_info, stream)
 
         output = stream.getvalue()
         expected = (
@@ -297,7 +300,7 @@ class TestEnhancedErrorFormatter:
         }
 
         stream = io.StringIO()
-        self.formatter.format_error(error_info, stream, modeled_fields=set(error_info.keys()))
+        self.formatter.format_error(error_info, stream)
 
         output = stream.getvalue()
         expected = (
@@ -315,7 +318,7 @@ class TestEnhancedErrorFormatter:
         }
 
         stream = io.StringIO()
-        self.formatter.format_error(error_info, stream, modeled_fields=set(error_info.keys()))
+        self.formatter.format_error(error_info, stream)
 
         output = stream.getvalue()
         expected = (
@@ -338,7 +341,7 @@ class TestEnhancedErrorFormatter:
         }
 
         stream = io.StringIO()
-        self.formatter.format_error(error_info, stream, modeled_fields=set(error_info.keys()))
+        self.formatter.format_error(error_info, stream)
 
         output = stream.getvalue()
         expected = (
@@ -367,7 +370,7 @@ class TestEnhancedErrorFormatter:
         }
 
         stream = io.StringIO()
-        self.formatter.format_error(error_info, stream, modeled_fields=set(error_info.keys()))
+        self.formatter.format_error(error_info, stream)
 
         output = stream.getvalue()
         expected = (
@@ -391,7 +394,7 @@ class TestEnhancedErrorFormatter:
         }
 
         stream = io.StringIO()
-        self.formatter.format_error(error_info, stream, modeled_fields=set(error_info.keys()))
+        self.formatter.format_error(error_info, stream)
 
         output = stream.getvalue()
         expected = (
@@ -415,7 +418,7 @@ class TestEnhancedErrorFormatter:
         }
 
         stream = io.StringIO()
-        self.formatter.format_error(error_info, stream, modeled_fields=set(error_info.keys()))
+        self.formatter.format_error(error_info, stream)
 
         output = stream.getvalue()
         expected = (
@@ -428,36 +431,31 @@ class TestEnhancedErrorFormatter:
         assert output == expected
 
     def test_format_error_hides_unmodeled_fields(self):
+        # Unmodeled fields are now filtered before reaching the formatter.
+        # Formatter receives only modeled fields.
         error_info = {
             'Code': 'ExpiredToken',
             'Message': 'Token expired',
-            'Token-0': 'AQoDYXdzEJr...sensitive...',
         }
 
         stream = io.StringIO()
-        self.formatter.format_error(
-            error_info, stream, modeled_fields={'Code', 'Message'}
-        )
+        self.formatter.format_error(error_info, stream)
 
         assert stream.getvalue() == ''
 
     def test_format_error_shows_modeled_fields(self):
+        # Unmodeled fields are filtered before reaching the formatter.
         error_info = {
             'Code': 'FileSystemNotFound',
             'Message': 'Not found',
             'ErrorCode': 'FileSystemNotFound',
-            'UnmodeledField': 'should be hidden',
         }
 
         stream = io.StringIO()
-        self.formatter.format_error(
-            error_info, stream,
-            modeled_fields={'Code', 'Message', 'ErrorCode'},
-        )
+        self.formatter.format_error(error_info, stream)
 
         output = stream.getvalue()
         assert 'ErrorCode: FileSystemNotFound' in output
-        assert 'UnmodeledField' not in output
 
     def test_format_error_with_large_list(self):
         error_info = {
@@ -467,7 +465,7 @@ class TestEnhancedErrorFormatter:
         }
 
         stream = io.StringIO()
-        self.formatter.format_error(error_info, stream, modeled_fields=set(error_info.keys()))
+        self.formatter.format_error(error_info, stream)
 
         output = stream.getvalue()
         expected = (

@@ -49,10 +49,8 @@ MAX_INLINE_ITEMS = 5
 
 
 class EnhancedErrorFormatter:
-    def format_error(self, error_info, stream, modeled_fields=None):
-        additional_fields = self._get_additional_fields(
-            error_info, modeled_fields
-        )
+    def format_error(self, error_info, stream):
+        additional_fields = self._get_additional_fields(error_info)
 
         if not additional_fields:
             return
@@ -96,17 +94,13 @@ class EnhancedErrorFormatter:
             return f'{{{items}}}'
         return str(value)
 
-    def _get_additional_fields(self, error_info, modeled_fields=None):
+    def _get_additional_fields(self, error_info):
         standard_keys = {'code', 'message'}
-        if modeled_fields is not None:
-            modeled_lower = {f.lower() for f in modeled_fields}
-            return {
-                k: v
-                for k, v in error_info.items()
-                if k.lower() not in standard_keys
-                and k.lower() in modeled_lower
-            }
-        return {}
+        return {
+            k: v
+            for k, v in error_info.items()
+            if k.lower() not in standard_keys
+        }
 
 
 def construct_entry_point_handlers_chain():
@@ -212,6 +206,19 @@ class FilteredExceptionHandler(BaseExceptionHandler):
             error_format = self._resolve_error_format(parsed_globals)
             modeled_fields = error_info.pop('_modeled_fields', None)
 
+            if modeled_fields is not None:
+                modeled_lower = {f.lower() for f in modeled_fields}
+                for key in list(error_info.keys()):
+                    if key.lower() not in modeled_lower:
+                        del error_info[key]
+            else:
+                # No model info available (e.g. manually constructed
+                # ClientError). Remove all non-standard fields.
+                standard = {'code', 'message'}
+                for key in list(error_info.keys()):
+                    if key.lower() not in standard:
+                        del error_info[key]
+
             if error_format == 'legacy':
                 return False
 
@@ -225,7 +232,7 @@ class FilteredExceptionHandler(BaseExceptionHandler):
             if error_format == 'enhanced':
                 write_error(stderr, formatted_message)
                 EnhancedErrorFormatter().format_error(
-                    error_info, stderr, modeled_fields
+                    error_info, stderr
                 )
                 return True
 

@@ -909,9 +909,10 @@ class BaseClient:
             modeled_fields = {'Code', 'Message'}
             if error_shape:
                 modeled_fields |= set(error_shape.members.keys())
-            parsed_response['ModeledErrorFields'] = modeled_fields
             error_class = self.exceptions.from_code(error_code)
-            raise error_class(parsed_response, operation_name)
+            error = error_class(parsed_response, operation_name)
+            error.modeled_fields = modeled_fields
+            raise error
         else:
             return parsed_response
 

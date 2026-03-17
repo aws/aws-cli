@@ -99,16 +99,14 @@ class EnhancedErrorFormatter:
     def _get_additional_fields(self, error_info, modeled_fields=None):
         standard_keys = {'code', 'message'}
         if modeled_fields is not None:
+            modeled_lower = {f.lower() for f in modeled_fields}
             return {
                 k: v
                 for k, v in error_info.items()
-                if k.lower() not in standard_keys and k in modeled_fields
+                if k.lower() not in standard_keys
+                and k.lower() in modeled_lower
             }
-        return {
-            k: v
-            for k, v in error_info.items()
-            if k.lower() not in standard_keys
-        }
+        return {}
 
 
 def construct_entry_point_handlers_chain():
@@ -291,7 +289,7 @@ class ClientErrorHandler(FilteredExceptionHandler):
         error_response = self._extract_error_response(exception)
         if error_response and 'Error' in error_response:
             error_info = error_response['Error']
-            modeled_fields = error_response.get('ModeledErrorFields')
+            modeled_fields = getattr(exception, 'modeled_fields', None)
             error_info['_modeled_fields'] = modeled_fields
             return error_info
         return None
@@ -309,18 +307,12 @@ class ClientErrorHandler(FilteredExceptionHandler):
             # not nested under an Error key. Botocore preserves this structure.
             # Include these fields to provide complete error information.
             # Exclude response metadata and avoid duplicates.
-            excluded_keys = {'Error', 'ResponseMetadata', 'Code', 'Message',
-                             'ModeledErrorFields'}
+            excluded_keys = {'Error', 'ResponseMetadata', 'Code', 'Message'}
             for key, value in exception.response.items():
                 if key not in excluded_keys and key not in error_dict:
                     error_dict[key] = value
 
-            result = {'Error': error_dict}
-            if 'ModeledErrorFields' in exception.response:
-                result['ModeledErrorFields'] = exception.response[
-                    'ModeledErrorFields'
-                ]
-            return result
+            return {'Error': error_dict}
 
         return None
 

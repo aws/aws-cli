@@ -53,6 +53,7 @@ class TestClientErrorHandler:
             'ResponseMetadata': {'RequestId': '123'},
         }
         client_error = ClientError(error_response, 'GetObject')
+        client_error.modeled_fields = {'Code', 'Message', 'BucketName'}
 
         stdout = io.StringIO()
         stderr = io.StringIO()
@@ -129,6 +130,7 @@ class TestClientErrorHandler:
             'ResponseMetadata': {'RequestId': '123'},
         }
         client_error = ClientError(error_response, 'GetObject')
+        client_error.modeled_fields = {'Code', 'Message', 'BucketName'}
 
         self.session.config_store.set_config_provider(
             'cli_error_format', mock.Mock(provide=lambda: 'Enhanced')
@@ -158,9 +160,9 @@ class TestClientErrorHandler:
                 'Token-0': 'AQoDYXdzEJr...sensitive...',
             },
             'ResponseMetadata': {'RequestId': '123'},
-            'ModeledErrorFields': {'Code', 'Message'},
         }
         client_error = ClientError(error_response, 'ListBuckets')
+        client_error.modeled_fields = {'Code', 'Message'}
 
         stdout = io.StringIO()
         stderr = io.StringIO()
@@ -178,9 +180,9 @@ class TestClientErrorHandler:
                 'Message': 'Token expired',
             },
             'ResponseMetadata': {'RequestId': '123'},
-            'ModeledErrorFields': {'Code', 'Message'},
         }
         client_error = ClientError(error_response, 'ListBuckets')
+        client_error.modeled_fields = {'Code', 'Message'}
 
         self.session.session_vars['cli_error_format'] = 'json'
 
@@ -190,6 +192,47 @@ class TestClientErrorHandler:
         self.handler.handle_exception(client_error, stdout, stderr)
 
         assert '_modeled_fields' not in stderr.getvalue()
+        assert 'modeled_fields' not in stderr.getvalue()
+
+    def test_no_modeled_fields_hides_additional_fields(self):
+        # ClientError without modeled_fields attribute (e.g. manually
+        # constructed in customizations) should not show additional fields.
+        error_response = {
+            'Error': {
+                'Code': 'CustomError',
+                'Message': 'Something broke',
+                'Detail': 'extra info',
+            },
+            'ResponseMetadata': {'RequestId': '123'},
+        }
+        client_error = ClientError(error_response, 'DoThing')
+
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+
+        self.handler.handle_exception(client_error, stdout, stderr)
+
+        assert 'Detail' not in stderr.getvalue()
+
+    def test_modeled_fields_case_insensitive_match(self):
+        # Model has 'ErrorCode' but response has 'errorCode' (or vice versa)
+        error_response = {
+            'Error': {
+                'Code': 'SomeError',
+                'Message': 'msg',
+                'errorcode': 'detail',
+            },
+            'ResponseMetadata': {'RequestId': '123'},
+        }
+        client_error = ClientError(error_response, 'Op')
+        client_error.modeled_fields = {'Code', 'Message', 'ErrorCode'}
+
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+
+        self.handler.handle_exception(client_error, stdout, stderr)
+
+        assert 'errorcode: detail' in stderr.getvalue()
 
 
 class TestEnhancedErrorFormatter:
@@ -203,7 +246,7 @@ class TestEnhancedErrorFormatter:
         }
 
         stream = io.StringIO()
-        self.formatter.format_error(error_info, stream)
+        self.formatter.format_error(error_info, stream, modeled_fields=set(error_info.keys()))
 
         output = stream.getvalue()
         assert output == ''
@@ -217,7 +260,7 @@ class TestEnhancedErrorFormatter:
         }
 
         stream = io.StringIO()
-        self.formatter.format_error(error_info, stream)
+        self.formatter.format_error(error_info, stream, modeled_fields=set(error_info.keys()))
 
         output = stream.getvalue()
         expected = (
@@ -236,7 +279,7 @@ class TestEnhancedErrorFormatter:
         }
 
         stream = io.StringIO()
-        self.formatter.format_error(error_info, stream)
+        self.formatter.format_error(error_info, stream, modeled_fields=set(error_info.keys()))
 
         output = stream.getvalue()
         expected = (
@@ -254,7 +297,7 @@ class TestEnhancedErrorFormatter:
         }
 
         stream = io.StringIO()
-        self.formatter.format_error(error_info, stream)
+        self.formatter.format_error(error_info, stream, modeled_fields=set(error_info.keys()))
 
         output = stream.getvalue()
         expected = (
@@ -272,7 +315,7 @@ class TestEnhancedErrorFormatter:
         }
 
         stream = io.StringIO()
-        self.formatter.format_error(error_info, stream)
+        self.formatter.format_error(error_info, stream, modeled_fields=set(error_info.keys()))
 
         output = stream.getvalue()
         expected = (
@@ -295,7 +338,7 @@ class TestEnhancedErrorFormatter:
         }
 
         stream = io.StringIO()
-        self.formatter.format_error(error_info, stream)
+        self.formatter.format_error(error_info, stream, modeled_fields=set(error_info.keys()))
 
         output = stream.getvalue()
         expected = (
@@ -324,7 +367,7 @@ class TestEnhancedErrorFormatter:
         }
 
         stream = io.StringIO()
-        self.formatter.format_error(error_info, stream)
+        self.formatter.format_error(error_info, stream, modeled_fields=set(error_info.keys()))
 
         output = stream.getvalue()
         expected = (
@@ -348,7 +391,7 @@ class TestEnhancedErrorFormatter:
         }
 
         stream = io.StringIO()
-        self.formatter.format_error(error_info, stream)
+        self.formatter.format_error(error_info, stream, modeled_fields=set(error_info.keys()))
 
         output = stream.getvalue()
         expected = (
@@ -372,7 +415,7 @@ class TestEnhancedErrorFormatter:
         }
 
         stream = io.StringIO()
-        self.formatter.format_error(error_info, stream)
+        self.formatter.format_error(error_info, stream, modeled_fields=set(error_info.keys()))
 
         output = stream.getvalue()
         expected = (
@@ -424,7 +467,7 @@ class TestEnhancedErrorFormatter:
         }
 
         stream = io.StringIO()
-        self.formatter.format_error(error_info, stream)
+        self.formatter.format_error(error_info, stream, modeled_fields=set(error_info.keys()))
 
         output = stream.getvalue()
         expected = (
@@ -471,6 +514,9 @@ class TestRealWorldErrorScenarios:
             },
         }
         client_error = ClientError(error_response, 'TransactWriteItems')
+        client_error.modeled_fields = {
+            'Code', 'Message', 'CancellationReasons',
+        }
 
         stdout = io.StringIO()
         stderr = io.StringIO()
@@ -514,6 +560,7 @@ class TestParsedGlobalsPassthrough:
             'ResponseMetadata': {'RequestId': '123'},
         }
         client_error = ClientError(error_response, 'GetObject')
+        client_error.modeled_fields = {'Code', 'Message', 'BucketName'}
 
         stdout = io.StringIO()
         stderr = io.StringIO()
@@ -544,6 +591,7 @@ class TestParsedGlobalsPassthrough:
             'ResponseMetadata': {'RequestId': '123'},
         }
         client_error = ClientError(error_response, 'GetObject')
+        client_error.modeled_fields = {'Code', 'Message', 'BucketName'}
 
         stdout = io.StringIO()
         stderr = io.StringIO()

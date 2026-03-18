@@ -25,15 +25,21 @@ def generate_docs(root_dir, session):
         service's reference documentation is loacated at
         root_dir/reference/services/service-name.rst
     """
-    services_doc_path = os.path.join(root_dir, 'reference', 'services')
-    if not os.path.exists(services_doc_path):
-        os.makedirs(services_doc_path)
+    # Create the root directory where all service docs live.
+    services_dir_path = os.path.join(root_dir, 'reference', 'services')
+    if not os.path.exists(services_dir_path):
+        os.makedirs(services_dir_path)
 
     # Generate reference docs and write them out.
     for service_name in session.get_available_services():
-        docs = ServiceDocumenter(service_name, session).document_service()
-        service_doc_path = os.path.join(
-            services_doc_path, service_name + '.rst'
+        docs = ServiceDocumenter(
+            service_name, session, services_dir_path
+        ).document_service()
+
+        # Write the main service documentation page.
+        # Path: <root>/reference/services/<service>/index.rst
+        service_file_path = os.path.join(
+            services_dir_path, f'{service_name}.rst'
         )
-        with open(service_doc_path, 'wb') as f:
+        with open(service_file_path, 'wb') as f:
             f.write(docs)

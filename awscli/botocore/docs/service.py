@@ -19,9 +19,10 @@ from botocore.exceptions import DataNotFoundError
 
 
 class ServiceDocumenter:
-    def __init__(self, service_name, session):
+    def __init__(self, service_name, session, root_docs_path):
         self._session = session
         self._service_name = service_name
+        self._root_docs_path = root_docs_path
 
         self._client = self._session.create_client(
             service_name,
@@ -73,10 +74,14 @@ class ServiceDocumenter:
         except DataNotFoundError:
             pass
 
-        ClientDocumenter(self._client, examples).document_client(section)
+        ClientDocumenter(
+            self._client, self._root_docs_path, examples
+        ).document_client(section)
 
     def client_exceptions(self, section):
-        ClientExceptionsDocumenter(self._client).document_exceptions(section)
+        ClientExceptionsDocumenter(
+            self._client, self._root_docs_path
+        ).document_exceptions(section)
 
     def paginator_api(self, section):
         try:
@@ -85,10 +90,11 @@ class ServiceDocumenter:
             )
         except DataNotFoundError:
             return
-        paginator_documenter = PaginatorDocumenter(
-            self._client, service_paginator_model
-        )
-        paginator_documenter.document_paginators(section)
+        if service_paginator_model._paginator_config:
+            paginator_documenter = PaginatorDocumenter(
+                self._client, service_paginator_model, self._root_docs_path
+            )
+            paginator_documenter.document_paginators(section)
 
     def waiter_api(self, section):
         if self._client.waiter_names:
@@ -96,7 +102,7 @@ class ServiceDocumenter:
                 self._service_name
             )
             waiter_documenter = WaiterDocumenter(
-                self._client, service_waiter_model
+                self._client, service_waiter_model, self._root_docs_path
             )
             waiter_documenter.document_waiters(section)
 

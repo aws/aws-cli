@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.44.61
+=======
+
+* api-change:``ec2``: The DescribeInstanceTypes API now returns default connection tracking timeout values for TCP, UDP, and UDP stream via the new connectionTrackingConfiguration field on NetworkInfo.
+* api-change:``mediaconvert``: This update adds additional bitrate options for Dolby AC-4 audio outputs.
+
+
 1.44.60
 =======
 

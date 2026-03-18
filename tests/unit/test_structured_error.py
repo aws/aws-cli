@@ -513,7 +513,9 @@ class TestRealWorldErrorScenarios:
         }
         client_error = ClientError(error_response, 'TransactWriteItems')
         client_error.modeled_fields = {
-            'Code', 'Message', 'CancellationReasons',
+            'Code',
+            'Message',
+            'CancellationReasons',
         }
 
         stdout = io.StringIO()

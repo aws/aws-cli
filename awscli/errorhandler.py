@@ -231,9 +231,7 @@ class FilteredExceptionHandler(BaseExceptionHandler):
 
             if error_format == 'enhanced':
                 write_error(stderr, formatted_message)
-                EnhancedErrorFormatter().format_error(
-                    error_info, stderr
-                )
+                EnhancedErrorFormatter().format_error(error_info, stderr)
                 return True
 
             color = getattr(parsed_globals, 'color', 'auto')

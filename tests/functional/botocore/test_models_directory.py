@@ -37,7 +37,9 @@ def test_models_contain_only_known_file_types(service, loader):
     api_version = loader.determine_latest_version(service, "service-2")
     service_dir = os.path.join(loader.BUILTIN_DATA_PATH, service, api_version)
     for model_file in os.listdir(service_dir):
-        assert model_file.split(".")[0] in known_types
+        assert (
+            model_file.split(".")[0] in known_types
+        ), f'Found unexpected model file: \'{model_file}\' in \'{service_dir}\''
 
 
 @pytest.mark.parametrize("service", _available_services())

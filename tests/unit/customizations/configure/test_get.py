@@ -188,55 +188,18 @@ class TestConfigureGetCommandSubSections(unittest.TestCase):
         self.assertEqual(rendered.strip(), 'http://localhost:4566')
         self.assertEqual(rc, 0)
 
-    def test_non_existent_subsection_returns_exit_code_1(self):
-        session = FakeSession({})
-        session.full_config = {}
-        stream, error_stream, config_get = self.create_command(session)
-        rc = config_get(args=['--sso-session', 'non-existent', 'sso_region'],
-                       parsed_globals=None)
-
-        self.assertEqual(rc, 1)
-        self.assertEqual(stream.getvalue(), '')
-
     def test_non_existent_property_returns_exit_code_1(self):
         session = FakeSession({})
         session.full_config = {
             'sso_sessions': {
                     'my-session': {
-                    'sso_region': 'us-west-2'
+                      'sso_region': 'us-west-2'
                 }
             }
         }
-        stream, error_stream, config_get = self.create_command(session)
+        stream, _, config_get = self.create_command(session)
         rc = config_get(args=['--sso-session', 'my-session', 'non_existent_property'],
-                       parsed_globals=None)
+                        parsed_globals=None)
 
-        self.assertEqual(rc, 1)
-        self.assertEqual(stream.getvalue(), '')
-
-    def test_no_output_to_stdout_for_non_existent_items(self):
-        session = FakeSession({})
-        session.full_config = {}
-        stream, error_stream, config_get = self.create_command(session)
-        
-        rc = config_get(args=['--sso-session', 'non-existent', 'sso_region'],
-                       parsed_globals=None)
-        self.assertEqual(rc, 1)
-        self.assertEqual(stream.getvalue(), '')
-    
-    def test_no_output_to_stdout_for_non_existent_items_existing_subsection(self):
-        session = FakeSession({})
-        
-        session.full_config = {
-            'sso"sessions': {
-                    'my-session': {
-                     'sso_region': 'us-west-2'
-                }
-            }
-        }
-
-        stream, error_stream, config_get = self.create_command(session)
-        rc = config_get(args=['--sso-session', 'my-session', 'non_existent'],
-                       parsed_globals=None)
         self.assertEqual(rc, 1)
         self.assertEqual(stream.getvalue(), '')

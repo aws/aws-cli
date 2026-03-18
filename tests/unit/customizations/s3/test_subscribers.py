@@ -632,6 +632,46 @@ class TestSetMetadataDirectivePropsSubscriber(BaseCopyPropsSubscriberTest):
             RequestPayer='requester',
         )
 
+    def test_head_object_doesnt_use_sse_c_destination_key(self):
+        subscriber = SetMetadataDirectivePropsSubscriber(
+            client=self.client,
+            transfer_config=self.transfer_config,
+            cli_params={
+                'sse_c': 'AES256',
+                'sse_c_key': 'destination-key',
+            },
+            head_object_response=None,
+        )
+        self.client.head_object.return_value = {}
+        self.set_size_for_mp_copy(self.future)
+        subscriber.on_queued(self.future)
+        self.client.head_object.assert_called_with(
+            Bucket=self.source_bucket,
+            Key=self.source_key,
+        )
+
+    def test_head_object_uses_sse_c_copy_source_key(self):
+        subscriber = SetMetadataDirectivePropsSubscriber(
+            client=self.client,
+            transfer_config=self.transfer_config,
+            cli_params={
+                'sse_c_copy_source': 'AES256',
+                'sse_c_copy_source_key': 'source-key',
+                'sse_c': 'AES256',
+                'sse_c_key': 'destination-key',
+            },
+            head_object_response=None,
+        )
+        self.client.head_object.return_value = {}
+        self.set_size_for_mp_copy(self.future)
+        subscriber.on_queued(self.future)
+        self.client.head_object.assert_called_with(
+            Bucket=self.source_bucket,
+            Key=self.source_key,
+            SSECustomerAlgorithm='AES256',
+            SSECustomerKey='source-key',
+        )
+
 
 class PutObjectTaggingException(Exception):
     pass

@@ -1609,17 +1609,14 @@ class CommandArchitecture:
         # not need any of these because it is used only for sync operations
         # which only use ListObjects which does not require HeadObject.
         if paths_type == 's3s3':
-            head_params = self.parameters.copy()
-            head_params['sse_c'] = self.parameters.get('sse_c_copy_source')
-            head_params['sse_c_key'] = self.parameters.get(
-                'sse_c_copy_source_key'
-            )
-            RequestParamsMapper.map_head_object_params(
-                request_parameters['HeadObject'], head_params
+            RequestParamsMapper.map_head_object_params_with_copy_source_sse(
+                request_parameters['HeadObject'],
+                self.parameters,
             )
         else:
             RequestParamsMapper.map_head_object_params(
-                request_parameters['HeadObject'], self.parameters
+                request_parameters['HeadObject'],
+                self.parameters,
             )
 
     def _get_s3_handler_params(self):

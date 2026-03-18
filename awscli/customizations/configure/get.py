@@ -11,14 +11,16 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import logging
-import re
 import sys
 
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.utils import validate_mutually_exclusive
 
-from . import PREDEFINED_SECTION_NAMES, SUBSECTION_TYPE_ALLOWLIST, SubsectionNotFoundError
+from . import (
+    PREDEFINED_SECTION_NAMES,
+    SUBSECTION_TYPE_ALLOWLIST,
+    SubsectionNotFoundError,
+)
 
 LOG = logging.getLogger(__name__)
 
@@ -53,7 +55,7 @@ class ConfigureGetCommand(BasicCommand):
     ]
 
     def __init__(self, session, stream=None, error_stream=None):
-        super(ConfigureGetCommand, self).__init__(session)
+        super().__init__(session)
         if stream is None:
             stream = sys.stdout
         if error_stream is None:
@@ -180,13 +182,17 @@ class ConfigureGetCommand(BasicCommand):
         full_config = self._session.full_config
 
         if section_type not in full_config:
-            raise SubsectionNotFoundError(f"The config sub-section ({section_name}) could not be found ")
+            raise SubsectionNotFoundError(
+                f"The config sub-section ({section_name}) could not be found"
+            )
 
         section_type_config = full_config[section_type]
         section_config = section_type_config.get(section_name, None)
 
         if section_config is None:
-            raise SubsectionNotFoundError(f"The config sub-section ({section_name}) could not be found ")
+            raise SubsectionNotFoundError(
+                f"The config sub-section ({section_name}) could not be found"
+            )
 
         # Handle nested properties
         if '.' in varname:

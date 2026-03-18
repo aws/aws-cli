@@ -10,10 +10,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+
 from awscli.compat import shlex
 
-# A map between the command line parameter name and the Python object name
-# For allowed sub-section types
 NOT_SET = '<not set>'
 PREDEFINED_SECTION_NAMES = 'plugins'
 # A map between the command line parameter name and the name used
@@ -47,6 +46,7 @@ class SectionNotFoundError(Exception):
 
 class SubsectionNotFoundError(Exception):
     pass
+
 
 def mask_value(current_value):
     if current_value is None:

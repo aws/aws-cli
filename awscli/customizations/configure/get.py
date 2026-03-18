@@ -40,13 +40,13 @@ class ConfigureGetCommand(BasicCommand):
         },
         {
             'name': 'sso-session',
-            'help_text': 'The name of the sub-section to configure.',
+            'help_text': 'The name of the sub-section from which to retrieve a value.',
             'action': 'store',
             'cli_type_name': 'string',
         },
         {
             'name': 'services',
-            'help_text': 'The name of the sub-section to configure.',
+            'help_text': 'The name of the sub-section from which to retrieve a value.',
             'action': 'store',
             'cli_type_name': 'string',
         },

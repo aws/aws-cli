@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+2.34.12
+=======
+
+* api-change:``mediaconvert``: This update adds additional bitrate options for Dolby AC-4 audio outputs.
+* enhancement:autocomplete: Adds and updates autocompletion models with additional resources and parameters.
+* api-change:``ec2``: The DescribeInstanceTypes API now returns default connection tracking timeout values for TCP, UDP, and UDP stream via the new connectionTrackingConfiguration field on NetworkInfo.
+
+
 2.34.11
 =======
 

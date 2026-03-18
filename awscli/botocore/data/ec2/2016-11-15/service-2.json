@@ -20828,6 +20828,27 @@
         "locationName":"item"
       }
     },
+    "DefaultConnectionTrackingConfiguration":{
+      "type":"structure",
+      "members":{
+        "DefaultTcpEstablishedTimeout":{
+          "shape":"DefaultTcpEstablishedTimeout",
+          "documentation":"<p>Default timeout (in seconds) for idle TCP connections in an established state.</p>",
+          "locationName":"defaultTcpEstablishedTimeout"
+        },
+        "DefaultUdpTimeout":{
+          "shape":"DefaultUdpTimeout",
+          "documentation":"<p>Default timeout (in seconds) for idle UDP flows that have seen traffic only in a single direction or a single request-response transaction.</p>",
+          "locationName":"defaultUdpTimeout"
+        },
+        "DefaultUdpStreamTimeout":{
+          "shape":"DefaultUdpStreamTimeout",
+          "documentation":"<p>Default timeout (in seconds) for idle UDP flows classified as streams which have seen more than one request-response transaction.</p>",
+          "locationName":"defaultUdpStreamTimeout"
+        }
+      },
+      "documentation":"<p>Indicates default conntrack information for the instance type. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/security-group-connection-tracking.html#connection-tracking-timeouts\"> Connection tracking timeouts </a> in the Amazon EC2 User Guide. </p>"
+    },
     "DefaultEnaQueueCountPerInterface":{"type":"integer"},
     "DefaultHttpTokensEnforcedState":{
       "type":"string",
@@ -20876,6 +20897,9 @@
         "capacity-block"
       ]
     },
+    "DefaultTcpEstablishedTimeout":{"type":"integer"},
+    "DefaultUdpStreamTimeout":{"type":"integer"},
+    "DefaultUdpTimeout":{"type":"integer"},
     "DefaultingDhcpOptionsId":{"type":"string"},
     "DeleteCapacityManagerDataExportRequest":{
       "type":"structure",
@@ -57291,6 +57315,11 @@
           "shape":"FlexibleEnaQueuesSupport",
           "documentation":"<p>Indicates whether changing the number of ENA queues is supported.</p>",
           "locationName":"flexibleEnaQueuesSupport"
+        },
+        "ConnectionTrackingConfiguration":{
+          "shape":"DefaultConnectionTrackingConfiguration",
+          "documentation":"<p>Indicates conntrack information for the instance type</p>",
+          "locationName":"connectionTrackingConfiguration"
         },
         "SecondaryNetworkSupported":{
           "shape":"SecondaryNetworkSupportedFlag",

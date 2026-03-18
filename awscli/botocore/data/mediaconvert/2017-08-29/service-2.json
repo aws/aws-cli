@@ -1850,9 +1850,9 @@
       "type": "structure",
       "members": {
         "Bitrate": {
-          "shape": "__integerMin192000Max1024000",
+          "shape": "__integerMin48000Max768000",
           "locationName": "bitrate",
-          "documentation": "Specify the average bitrate in bits per second. Leave blank to use the default bitrate for the coding mode you select according to ETSI TS 103 190. Valid bitrates for coding mode 2.0 (stereo): 192000, 256000, or 320000. Valid bitrates for coding mode 5.1 (3/2 with LFE): 512000. Valid bitrates for coding mode 5.1.4 (immersive): 512000, 768000, or 1024000."
+          "documentation": "Specify the average bitrate in bits per second. Leave blank to use the default bitrate for the coding mode you select according to ETSI TS 103 190. Valid bitrates for coding mode 2.0 (stereo): 48000, 64000, 96000, 128000, 144000, 192000, 256000, 288000, 320000, 384000, 448000, 512000, or 768000. Valid bitrates for coding mode 5.1 (3/2 with LFE): 96000, 128000, 144000, 192000, 256000, 288000, 320000, 384000, 448000, 512000, or 768000. Valid bitrates for coding mode 5.1.4 (immersive): 192000, 256000, 288000, 320000, 384000, 448000, 512000, or 768000."
         },
         "BitstreamMode": {
           "shape": "Ac4BitstreamMode",
@@ -4443,7 +4443,7 @@
         "Format": {
           "shape": "Format",
           "locationName": "format",
-          "documentation": "The format of your media file. For example: MP4, QuickTime (MOV), Matroska (MKV), WebM, MXF, Wave, or AVI. Note that this will be blank if your media file has a format that the MediaConvert Probe operation does not recognize."
+          "documentation": "The format of your media file. For example: MP4, QuickTime (MOV), Matroska (MKV), WebM, MXF, Wave, AVI, or MPEG-TS. Note that this will be blank if your media file has a format that the MediaConvert Probe operation does not recognize."
         },
         "Tracks": {
           "shape": "__listOfTrack",
@@ -6534,7 +6534,8 @@
         "webm",
         "mxf",
         "wave",
-        "avi"
+        "avi",
+        "mpegts"
       ]
     },
     "FrameCaptureSettings": {
@@ -15724,11 +15725,6 @@
       "min": 16,
       "max": 24
     },
-    "__integerMin192000Max1024000": {
-      "type": "integer",
-      "min": 192000,
-      "max": 1024000
-    },
     "__integerMin1Max1": {
       "type": "integer",
       "min": 1,
@@ -15918,6 +15914,11 @@
       "type": "integer",
       "min": 48000,
       "max": 48000
+    },
+    "__integerMin48000Max768000": {
+      "type": "integer",
+      "min": 48000,
+      "max": 768000
     },
     "__integerMin4Max12": {
       "type": "integer",

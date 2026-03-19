@@ -10,11 +10,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import mock
-from awscli.compat import six
-
-from awscli.testutils import unittest
+from awscli.compat import StringIO
 from awscli.customizations.configservice.getstatus import GetStatusCommand
+from awscli.testutils import mock, unittest
 
 
 class TestGetStatusCommand(unittest.TestCase):
@@ -30,24 +28,29 @@ class TestGetStatusCommand(unittest.TestCase):
         self.channel_status = []
 
         # Set the output handles to the client.
-        self.config_client.describe_configuration_recorder_status.\
-            return_value = {'ConfigurationRecordersStatus':
-                            self.recorder_status}
-        self.config_client.describe_delivery_channel_status.\
-            return_value = {'DeliveryChannelsStatus': self.channel_status}
+        self.config_client.describe_configuration_recorder_status.return_value = {
+            'ConfigurationRecordersStatus': self.recorder_status
+        }
+        self.config_client.describe_delivery_channel_status.return_value = {
+            'DeliveryChannelsStatus': self.channel_status
+        }
 
         self.parsed_args = mock.Mock()
         self.parsed_globals = mock.Mock()
         self.cmd = GetStatusCommand(self.session)
 
-    def _make_delivery_channel_status(self, name, stream_delivery_status,
-                                      history_delivery_status,
-                                      snapshot_delivery_status):
+    def _make_delivery_channel_status(
+        self,
+        name,
+        stream_delivery_status,
+        history_delivery_status,
+        snapshot_delivery_status,
+    ):
         status = {
             'name': 'default',
             'configStreamDeliveryInfo': stream_delivery_status,
             'configHistoryDeliveryInfo': history_delivery_status,
-            'configSnapshotDeliveryInfo': snapshot_delivery_status
+            'configSnapshotDeliveryInfo': snapshot_delivery_status,
         }
         return status
 
@@ -63,12 +66,15 @@ class TestGetStatusCommand(unittest.TestCase):
             'config',
             verify=self.parsed_globals.verify_ssl,
             region_name=self.parsed_globals.region,
-            endpoint_url=self.parsed_globals.endpoint_url
+            endpoint_url=self.parsed_globals.endpoint_url,
         )
 
     def test_configuration_recorder_success(self):
-        status = {'name': 'default', 'recording': True,
-                  'lastStatus': 'SUCCESS'}
+        status = {
+            'name': 'default',
+            'recording': True,
+            'lastStatus': 'SUCCESS',
+        }
         self.recorder_status.append(status)
 
         expected_output = (
@@ -79,14 +85,18 @@ class TestGetStatusCommand(unittest.TestCase):
             'Delivery Channels:\n\n'
         )
 
-        with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
+        with mock.patch('sys.stdout', StringIO()) as mock_stdout:
             self.cmd._run_main(self.parsed_args, self.parsed_globals)
             self.assertEqual(expected_output, mock_stdout.getvalue())
 
     def test_configuration_recorder_fail(self):
-        status = {'name': 'default', 'recording': True,
-                  'lastStatus': 'FAILURE', 'lastErrorCode': '500',
-                  'lastErrorMessage': 'This is the error'}
+        status = {
+            'name': 'default',
+            'recording': True,
+            'lastStatus': 'FAILURE',
+            'lastErrorCode': '500',
+            'lastErrorMessage': 'This is the error',
+        }
         self.recorder_status.append(status)
 
         expected_output = (
@@ -99,7 +109,7 @@ class TestGetStatusCommand(unittest.TestCase):
             'Delivery Channels:\n\n'
         )
 
-        with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
+        with mock.patch('sys.stdout', StringIO()) as mock_stdout:
             self.cmd._run_main(self.parsed_args, self.parsed_globals)
             self.assertEqual(expected_output, mock_stdout.getvalue())
 
@@ -114,18 +124,25 @@ class TestGetStatusCommand(unittest.TestCase):
             'Delivery Channels:\n\n'
         )
 
-        with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
+        with mock.patch('sys.stdout', StringIO()) as mock_stdout:
             self.cmd._run_main(self.parsed_args, self.parsed_globals)
             self.assertEqual(expected_output, mock_stdout.getvalue())
 
     def test_multiple_configuration_recorders(self):
-        status = {'name': 'default', 'recording': True,
-                  'lastStatus': 'SUCCESS'}
+        status = {
+            'name': 'default',
+            'recording': True,
+            'lastStatus': 'SUCCESS',
+        }
         self.recorder_status.append(status)
 
-        status = {'name': 'default', 'recording': True,
-                  'lastStatus': 'FAILURE', 'lastErrorCode': '500',
-                  'lastErrorMessage': 'This is the error'}
+        status = {
+            'name': 'default',
+            'recording': True,
+            'lastStatus': 'FAILURE',
+            'lastErrorCode': '500',
+            'lastErrorMessage': 'This is the error',
+        }
         self.recorder_status.append(status)
 
         status = {'name': 'default', 'recording': False}
@@ -145,7 +162,7 @@ class TestGetStatusCommand(unittest.TestCase):
             'recorder: OFF\n\n'
             'Delivery Channels:\n\n'
         )
-        with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
+        with mock.patch('sys.stdout', StringIO()) as mock_stdout:
             self.cmd._run_main(self.parsed_args, self.parsed_globals)
             self.assertEqual(expected_output, mock_stdout.getvalue())
 
@@ -158,9 +175,10 @@ class TestGetStatusCommand(unittest.TestCase):
         snapshot_delivery_status = {}
 
         status = self._make_delivery_channel_status(
-            name, stream_delivery_status=stream_delivery_status,
+            name,
+            stream_delivery_status=stream_delivery_status,
             history_delivery_status=history_delivery_status,
-            snapshot_delivery_status=snapshot_delivery_status
+            snapshot_delivery_status=snapshot_delivery_status,
         )
         self.channel_status.append(status)
 
@@ -171,7 +189,7 @@ class TestGetStatusCommand(unittest.TestCase):
             'last stream delivery status: SUCCESS\n\n'
         )
 
-        with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
+        with mock.patch('sys.stdout', StringIO()) as mock_stdout:
             self.cmd._run_main(self.parsed_args, self.parsed_globals)
             self.assertEqual(expected_output, mock_stdout.getvalue())
 
@@ -184,9 +202,10 @@ class TestGetStatusCommand(unittest.TestCase):
         snapshot_delivery_status = success
 
         status = self._make_delivery_channel_status(
-            name, stream_delivery_status=stream_delivery_status,
+            name,
+            stream_delivery_status=stream_delivery_status,
             history_delivery_status=history_delivery_status,
-            snapshot_delivery_status=snapshot_delivery_status
+            snapshot_delivery_status=snapshot_delivery_status,
         )
         self.channel_status.append(status)
 
@@ -199,23 +218,27 @@ class TestGetStatusCommand(unittest.TestCase):
             'last snapshot delivery status: SUCCESS\n\n'
         )
 
-        with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
+        with mock.patch('sys.stdout', StringIO()) as mock_stdout:
             self.cmd._run_main(self.parsed_args, self.parsed_globals)
             self.assertEqual(expected_output, mock_stdout.getvalue())
 
     def test_delivery_channel_fail_single_delivery_info(self):
         name = 'default'
-        failure = {'lastStatus': 'FAILURE', 'lastErrorCode': '500',
-                   'lastErrorMessage': 'This is the error'}
+        failure = {
+            'lastStatus': 'FAILURE',
+            'lastErrorCode': '500',
+            'lastErrorMessage': 'This is the error',
+        }
 
         stream_delivery_status = failure
         history_delivery_status = {}
         snapshot_delivery_status = {}
 
         status = self._make_delivery_channel_status(
-            name, stream_delivery_status=stream_delivery_status,
+            name,
+            stream_delivery_status=stream_delivery_status,
             history_delivery_status=history_delivery_status,
-            snapshot_delivery_status=snapshot_delivery_status
+            snapshot_delivery_status=snapshot_delivery_status,
         )
         self.channel_status.append(status)
 
@@ -228,24 +251,28 @@ class TestGetStatusCommand(unittest.TestCase):
             'message: This is the error\n\n'
         )
 
-        with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
+        with mock.patch('sys.stdout', StringIO()) as mock_stdout:
             self.cmd._run_main(self.parsed_args, self.parsed_globals)
             self.assertEqual(expected_output, mock_stdout.getvalue())
 
     def test_delivery_channel_mixed_multiple_delivery_info(self):
         name = 'default'
         success = {'lastStatus': 'SUCCESS'}
-        failure = {'lastStatus': 'FAILURE', 'lastErrorCode': '500',
-                   'lastErrorMessage': 'This is the error'}
+        failure = {
+            'lastStatus': 'FAILURE',
+            'lastErrorCode': '500',
+            'lastErrorMessage': 'This is the error',
+        }
 
         stream_delivery_status = failure
         history_delivery_status = success
         snapshot_delivery_status = success
 
         status = self._make_delivery_channel_status(
-            name, stream_delivery_status=stream_delivery_status,
+            name,
+            stream_delivery_status=stream_delivery_status,
             history_delivery_status=history_delivery_status,
-            snapshot_delivery_status=snapshot_delivery_status
+            snapshot_delivery_status=snapshot_delivery_status,
         )
         self.channel_status.append(status)
 
@@ -260,24 +287,28 @@ class TestGetStatusCommand(unittest.TestCase):
             'last snapshot delivery status: SUCCESS\n\n'
         )
 
-        with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
+        with mock.patch('sys.stdout', StringIO()) as mock_stdout:
             self.cmd._run_main(self.parsed_args, self.parsed_globals)
             self.assertEqual(expected_output, mock_stdout.getvalue())
 
     def test_multiple_delivery_channels(self):
         name = 'default'
         success = {'lastStatus': 'SUCCESS'}
-        failure = {'lastStatus': 'FAILURE', 'lastErrorCode': '500',
-                   'lastErrorMessage': 'This is the error'}
+        failure = {
+            'lastStatus': 'FAILURE',
+            'lastErrorCode': '500',
+            'lastErrorMessage': 'This is the error',
+        }
 
         stream_delivery_status = failure
         history_delivery_status = success
         snapshot_delivery_status = success
 
         status = self._make_delivery_channel_status(
-            name, stream_delivery_status=stream_delivery_status,
+            name,
+            stream_delivery_status=stream_delivery_status,
             history_delivery_status=history_delivery_status,
-            snapshot_delivery_status=snapshot_delivery_status
+            snapshot_delivery_status=snapshot_delivery_status,
         )
         self.channel_status.append(status)
         self.channel_status.append(status)
@@ -299,19 +330,26 @@ class TestGetStatusCommand(unittest.TestCase):
             'last snapshot delivery status: SUCCESS\n\n'
         )
 
-        with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
+        with mock.patch('sys.stdout', StringIO()) as mock_stdout:
             self.cmd._run_main(self.parsed_args, self.parsed_globals)
             self.assertEqual(expected_output, mock_stdout.getvalue())
 
     def test_full_get_status(self):
         # Create the configuration recorder statuses.
-        status = {'name': 'default', 'recording': True,
-                  'lastStatus': 'SUCCESS'}
+        status = {
+            'name': 'default',
+            'recording': True,
+            'lastStatus': 'SUCCESS',
+        }
         self.recorder_status.append(status)
 
-        status = {'name': 'default', 'recording': True,
-                  'lastStatus': 'FAILURE', 'lastErrorCode': '500',
-                  'lastErrorMessage': 'This is the error'}
+        status = {
+            'name': 'default',
+            'recording': True,
+            'lastStatus': 'FAILURE',
+            'lastErrorCode': '500',
+            'lastErrorMessage': 'This is the error',
+        }
         self.recorder_status.append(status)
 
         status = {'name': 'default', 'recording': False}
@@ -320,17 +358,21 @@ class TestGetStatusCommand(unittest.TestCase):
         # Create the delivery channel statuses.
         name = 'default'
         success = {'lastStatus': 'SUCCESS'}
-        failure = {'lastStatus': 'FAILURE', 'lastErrorCode': '500',
-                   'lastErrorMessage': 'This is the error'}
+        failure = {
+            'lastStatus': 'FAILURE',
+            'lastErrorCode': '500',
+            'lastErrorMessage': 'This is the error',
+        }
 
         stream_delivery_status = failure
         history_delivery_status = success
         snapshot_delivery_status = success
 
         status = self._make_delivery_channel_status(
-            name, stream_delivery_status=stream_delivery_status,
+            name,
+            stream_delivery_status=stream_delivery_status,
             history_delivery_status=history_delivery_status,
-            snapshot_delivery_status=snapshot_delivery_status
+            snapshot_delivery_status=snapshot_delivery_status,
         )
         self.channel_status.append(status)
         self.channel_status.append(status)
@@ -362,6 +404,6 @@ class TestGetStatusCommand(unittest.TestCase):
             'last snapshot delivery status: SUCCESS\n\n'
         )
 
-        with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
+        with mock.patch('sys.stdout', StringIO()) as mock_stdout:
             self.cmd._run_main(self.parsed_args, self.parsed_globals)
             self.assertEqual(expected_output, mock_stdout.getvalue())

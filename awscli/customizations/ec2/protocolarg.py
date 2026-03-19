@@ -31,7 +31,7 @@ def _fix_args(params, **kwargs):
 
 
 def register_protocol_args(cli):
-    cli.register('before-parameter-build.ec2.CreateNetworkAclEntry',
-                 _fix_args)
-    cli.register('before-parameter-build.ec2.ReplaceNetworkAclEntry',
-                 _fix_args)
+    cli.register('before-parameter-build.ec2.CreateNetworkAclEntry', _fix_args)
+    cli.register(
+        'before-parameter-build.ec2.ReplaceNetworkAclEntry', _fix_args
+    )

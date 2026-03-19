@@ -10,19 +10,15 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import mock
 from argparse import Namespace
 
-from awscli.testutils import unittest
 from awscli.customizations.ec2.paginate import EC2PageSizeInjector
+from awscli.testutils import mock, unittest
 
 
 class TestEC2PageSizeInjector(unittest.TestCase):
     def test_register(self):
-        target_operations = {
-            'foo': [],
-            'bar': []
-        }
+        target_operations = {'foo': [], 'bar': []}
         injector = EC2PageSizeInjector()
         injector.TARGET_OPERATIONS = target_operations
         event_emitter = mock.Mock()
@@ -30,10 +26,9 @@ class TestEC2PageSizeInjector(unittest.TestCase):
 
         call_args = event_emitter.register_last.call_args_list
         events_registered = sorted([c[0][0] for c in call_args])
-        expected_events = sorted([
-            'calling-command.ec2.bar',
-            'calling-command.ec2.foo'
-        ])
+        expected_events = sorted(
+            ['calling-command.ec2.bar', 'calling-command.ec2.foo']
+        )
         self.assertEqual(events_registered, expected_events)
 
     def test_inject(self):
@@ -47,7 +42,7 @@ class TestEC2PageSizeInjector(unittest.TestCase):
         injector.inject(
             event_name=event_name,
             parsed_globals=parsed_globals,
-            call_parameters=call_parameters
+            call_parameters=call_parameters,
         )
         page_size = call_parameters.get('PaginationConfig', {}).get('PageSize')
         self.assertEqual(page_size, 5)
@@ -62,7 +57,7 @@ class TestEC2PageSizeInjector(unittest.TestCase):
         injector.inject(
             event_name=event_name,
             parsed_globals=parsed_globals,
-            call_parameters=call_parameters
+            call_parameters=call_parameters,
         )
         page_size = call_parameters.get('PaginationConfig', {}).get('PageSize')
         self.assertIsNone(page_size)
@@ -78,7 +73,7 @@ class TestEC2PageSizeInjector(unittest.TestCase):
         injector.inject(
             event_name=event_name,
             parsed_globals=parsed_globals,
-            call_parameters=call_parameters
+            call_parameters=call_parameters,
         )
         page_size = call_parameters.get('PaginationConfig', {}).get('PageSize')
         self.assertIsNone(page_size)
@@ -94,7 +89,7 @@ class TestEC2PageSizeInjector(unittest.TestCase):
         injector.inject(
             event_name=event_name,
             parsed_globals=parsed_globals,
-            call_parameters=call_parameters
+            call_parameters=call_parameters,
         )
         page_size = call_parameters.get('PaginationConfig', {}).get('PageSize')
         self.assertIsNone(page_size)
@@ -109,7 +104,7 @@ class TestEC2PageSizeInjector(unittest.TestCase):
         injector.inject(
             event_name=event_name,
             parsed_globals=parsed_globals,
-            call_parameters=call_parameters
+            call_parameters=call_parameters,
         )
         page_size = call_parameters.get('PaginationConfig', {}).get('PageSize')
         self.assertIsNone(page_size)

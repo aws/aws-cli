@@ -11,8 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from awscli.customizations.emr import constants
-from awscli.customizations.emr import exceptions
+from awscli.customizations.emr import constants, exceptions
 
 
 def build_instance_groups(parsed_instance_groups):
@@ -44,17 +43,21 @@ def build_instance_groups(parsed_instance_groups):
             ig_config['EbsConfiguration'] = instance_group['EbsConfiguration']
 
         if 'AutoScalingPolicy' in keys:
-            ig_config['AutoScalingPolicy'] = instance_group['AutoScalingPolicy']
+            ig_config['AutoScalingPolicy'] = instance_group[
+                'AutoScalingPolicy'
+            ]
 
         if 'Configurations' in keys:
             ig_config['Configurations'] = instance_group['Configurations']
+
+        if 'CustomAmiId' in keys:
+            ig_config['CustomAmiId'] = instance_group['CustomAmiId']
 
         instance_groups.append(ig_config)
     return instance_groups
 
 
-def _build_instance_group(
-        instance_type, instance_count, instance_group_type):
+def _build_instance_group(instance_type, instance_count, instance_group_type):
     ig_config = {}
     ig_config['InstanceType'] = instance_type
     ig_config['InstanceCount'] = instance_count
@@ -65,13 +68,14 @@ def _build_instance_group(
 
 
 def validate_and_build_instance_groups(
-        instance_groups, instance_type, instance_count):
-    if (instance_groups is None and instance_type is None):
+    instance_groups, instance_type, instance_count
+):
+    if instance_groups is None and instance_type is None:
         raise exceptions.MissingRequiredInstanceGroupsError
 
-    if (instance_groups is not None and
-        (instance_type is not None or
-            instance_count is not None)):
+    if instance_groups is not None and (
+        instance_type is not None or instance_count is not None
+    ):
         raise exceptions.InstanceGroupsValidationError
 
     if instance_groups is not None:
@@ -81,13 +85,15 @@ def validate_and_build_instance_groups(
         master_ig = _build_instance_group(
             instance_type=instance_type,
             instance_count=1,
-            instance_group_type="MASTER")
+            instance_group_type="MASTER",
+        )
         instance_groups.append(master_ig)
         if instance_count is not None and int(instance_count) > 1:
             core_ig = _build_instance_group(
                 instance_type=instance_type,
                 instance_count=int(instance_count) - 1,
-                instance_group_type="CORE")
+                instance_group_type="CORE",
+            )
             instance_groups.append(core_ig)
 
         return instance_groups

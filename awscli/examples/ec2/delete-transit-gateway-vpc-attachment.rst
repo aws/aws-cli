@@ -1,6 +1,6 @@
 **To delete a transit gateway VPC attachment**
 
-The following ``delete-transit-gateway-vpc-attachment`` example deletes the specified transit gateway VPC attachment. ::
+The following ``delete-transit-gateway-vpc-attachment`` example deletes the specified VPC attachment. ::
 
     aws ec2 delete-transit-gateway-vpc-attachment \
         --transit-gateway-attachment-id tgw-attach-0d2c54bdbEXAMPLE
@@ -16,11 +16,6 @@ Output::
             "State": "deleting",
             "CreationTime": "2019-07-17T16:04:27.000Z"
         }
-    }{
-        "Key": {
-            "Key": 
-            "Value"
-        }
     }
 
-For more information, see `Delete a VPC Attachment <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-vpc-attachments.html#delete-vpc-attachment>`__ in the *AWS Transit Gateways Guide*.
+For more information, see `Delete a VPC attachment <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-vpc-attachments.html#delete-vpc-attachment>`__ in the *Transit Gateways Guide*.

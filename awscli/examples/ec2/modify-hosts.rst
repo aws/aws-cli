@@ -15,6 +15,8 @@ Output::
         "Unsuccessful": []
     }
 
+For more information, see `Modify the auto-placement setting for a Dedicated Host <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/modify-host-auto-placement.html>`__ in the *Amazon EC2 User Guide*.
+
 **Example 2: To enable host recovery for a Dedicated Host**
 
 The following ``modify-hosts`` example enables host recovery for the specified Dedicated Host. ::
@@ -32,4 +34,4 @@ Output::
         "Unsuccessful": []
     }
 
-For more information, see `Modifying Dedicated Host Auto-Placement <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/how-dedicated-hosts-work.html#modify-host-auto-placement>`__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.
+For more information, see `Modify the auto-placement setting for a Dedicated Host <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/modify-host-auto-placement.html>`__ in the *Amazon EC2 User Guide*.

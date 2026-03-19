@@ -17,9 +17,7 @@ import os
 from botocore.exceptions import ClientError
 
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.sso.utils import SSO_TOKEN_DIR
-from awscli.customizations.sso.utils import AWS_CREDS_CACHE_DIR
-
+from awscli.customizations.sso.utils import AWS_CREDS_CACHE_DIR, SSO_TOKEN_DIR
 
 LOG = logging.getLogger(__name__)
 
@@ -27,19 +25,22 @@ LOG = logging.getLogger(__name__)
 class LogoutCommand(BasicCommand):
     NAME = 'logout'
     DESCRIPTION = (
-        'Removes all cached AWS SSO access tokens and any cached temporary '
-        'AWS credentials retrieved with SSO access tokens across all '
-        'profiles. To use these profiles again, run: ``aws sso login``'
+        'Removes all cached AWS IAM Identity Center access tokens and any '
+        'cached temporary AWS credentials retrieved with SSO access tokens '
+        'across all profiles. To use these profiles again, run: '
+        '``aws sso login``'
     )
     ARG_TABLE = []
 
     def _run_main(self, parsed_args, parsed_globals):
-        SSOTokenSweeper(self._session).delete_credentials(SSO_TOKEN_DIR)
+        SSOTokenSweeper(self._session, parsed_globals).delete_credentials(
+            SSO_TOKEN_DIR
+        )
         SSOCredentialSweeper().delete_credentials(AWS_CREDS_CACHE_DIR)
         return 0
 
 
-class BaseCredentialSweeper(object):
+class BaseCredentialSweeper:
     def delete_credentials(self, creds_dir):
         if not os.path.isdir(creds_dir):
             return
@@ -58,7 +59,7 @@ class BaseCredentialSweeper(object):
 
     def _get_json_contents(self, filename):
         try:
-            with open(filename, 'r') as f:
+            with open(filename) as f:
                 return json.load(f)
         except Exception:
             # We do not want to include the traceback in the exception
@@ -72,8 +73,9 @@ class BaseCredentialSweeper(object):
 
 
 class SSOTokenSweeper(BaseCredentialSweeper):
-    def __init__(self, session):
+    def __init__(self, session, parsed_globals):
         self._session = session
+        self._parsed_globals = parsed_globals
 
     def _should_delete(self, contents):
         return 'accessToken' in contents
@@ -83,11 +85,15 @@ class SSOTokenSweeper(BaseCredentialSweeper):
         # and invoke the logout api to invalidate the token before deleting it.
         sso_region = contents.get('region')
         if sso_region:
-            sso = self._session.create_client('sso', region_name=sso_region)
+            sso = self._session.create_client(
+                'sso',
+                region_name=sso_region,
+                verify=self._parsed_globals.verify_ssl,
+            )
             try:
                 sso.logout(accessToken=contents['accessToken'])
             except ClientError:
-                # The token may alread be expired or otherwise invalid. If we
+                # The token may already be expired or otherwise invalid. If we
                 # get a client error on logout just log and continue on
                 LOG.debug('Failed to call logout API:', exc_info=True)
 

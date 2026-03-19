@@ -10,11 +10,26 @@ Output::
     {
         "WindowExecutions": [
             {
-                "Status": "SUCCESS",
                 "WindowId": "mw-ab12cd34eEXAMPLE",
-                "StartTime": 1487692834.595,
-                "EndTime": 1487692835.051,
-                "WindowExecutionId": "518d5565-5969-4cca-8f0e-da3b2a638355"
+                "WindowExecutionId": "6027b513-64fe-4cf0-be7d-1191aEXAMPLE",
+                "Status": "IN_PROGRESS",
+                "StartTime": "2021-08-04T11:00:00.000000-07:00"
+                
+            },
+            {            
+                "WindowId": "mw-ab12cd34eEXAMPLE",
+                "WindowExecutionId": "ff75b750-4834-4377-8f61-b3cadEXAMPLE",
+                "Status": "SUCCESS",
+                "StartTime": "2021-08-03T11:00:00.000000-07:00",
+                "EndTime": "2021-08-03T11:37:21.450000-07:00"
+            },
+            {            
+                "WindowId": "mw-ab12cd34eEXAMPLE",
+                "WindowExecutionId": "9fac7dd9-ff21-42a5-96ad-bbc4bEXAMPLE",
+                "Status": "FAILED",
+                "StatusDetails": "One or more tasks in the orchestration failed.",
+                "StartTime": "2021-08-02T11:00:00.000000-07:00",
+                "EndTime": "2021-08-02T11:22:36.190000-07:00"
             }
         ]
     }
@@ -25,64 +40,42 @@ The following ``describe-maintenance-window-executions`` example lists all of th
 
     aws ssm describe-maintenance-window-executions \
         --window-id "mw-ab12cd34eEXAMPLE" \
-        --filters "Key=ExecutedBefore,Values=2020-11-04T05:00:00Z"
+        --filters "Key=ExecutedBefore,Values=2021-08-03T00:00:00Z"
 
 Output::
 
     {
         "WindowExecutions": [
-            {
-                "WindowId": "mw-ab12cd34eEXAMPLE",
-                "WindowExecutionId": "407a2cc0-9602-4463-af87-9d94bEXAMPLE",
-                "Status": "SUCCESS",
-                "StartTime": 1581546172.042,
-                "EndTime": 1581546172.454
-            },
-            {
-                "WindowId": "mw-ab12cd34eEXAMPLE",
-                "WindowExecutionId": "a45d2571-f225-45a2-b448-bf57aEXAMPLE",
-                "Status": "FAILED",
-                "StatusDetails": "One or more tasks in the orchestration failed.",
-                "StartTime": 1579891950.312,
-                "EndTime": 1579891950.35
-            }
+            {            
+            "WindowId": "mw-ab12cd34eEXAMPLE",
+            "WindowExecutionId": "9fac7dd9-ff21-42a5-96ad-bbc4bEXAMPLE",
+            "Status": "FAILED",
+            "StatusDetails": "One or more tasks in the orchestration failed.",
+            "StartTime": "2021-08-02T11:00:00.000000-07:00",
+            "EndTime": "2021-08-02T11:22:36.190000-07:00"
+        }
         ]
     }
-        
+
 **Example 3: To list all executions for a maintenance window after a specified date**
 
 The following ``describe-maintenance-window-executions`` example lists all of the executions for the specified maintenance window after the specified date. ::
 
     aws ssm describe-maintenance-window-executions \
         --window-id "mw-ab12cd34eEXAMPLE" \
-        --filters "Key=ExecutedAfter,Values=2016-11-04T17:00:00Z"
+        --filters "Key=ExecutedAfter,Values=2021-08-04T00:00:00Z"
 
 Output::
 
     {
         "WindowExecutions": [
             {
-                "WindowId": "mw-ab12cd34eEXAMPLE",
-                "WindowExecutionId": "f4ad7a92-d83f-4569-a437-dea8fe74e315EXAMPLE",
-                "Status": "SUCCESS",
-                "StartTime": 1581546531.776,
-                "EndTime": 1581546532.219
-            },
-            {
-                "WindowId": "mw-ab12cd34eEXAMPLE",
-                "WindowExecutionId": "0bb99ef3-c3cc-4160-bded-d3e61EXAMPLE",
-                "Status": "SUCCESS",
-                "StartTime": 1581546352.01,
-                "EndTime": 1581546352.403
-            },
-            {
-                "WindowId": "mw-ab12cd34eEXAMPLE",
-                "WindowExecutionId": "407a2cc0-9602-4463-af87-9d94bEXAMPLE",
-                "Status": "SUCCESS",
-                "StartTime": 1581546172.042,
-                "EndTime": 1581546172.454
+            "WindowId": "mw-ab12cd34eEXAMPLE",
+            "WindowExecutionId": "6027b513-64fe-4cf0-be7d-1191aEXAMPLE",
+            "Status": "IN_PROGRESS",
+            "StartTime": "2021-08-04T11:00:00.000000-07:00"
             }
         ]
     }
 
-For more information, see `View Information About Tasks and Task Executions (AWS CLI) <https://docs.aws.amazon.com/systems-manager/latest/userguide/mw-cli-tutorial-task-info.html>`__ in the *AWS Systems Manager User Guide*.
+For more information, see `View information about tasks and task executions (AWS CLI)  <https://docs.aws.amazon.com/systems-manager/latest/userguide/mw-cli-tutorial-task-info.html>`__ in the *AWS Systems Manager User Guide*.

@@ -1,0 +1,122 @@
+{
+            "version": "2.0",
+            "metadata": {
+                "apiVersion": "2018-08-31",
+                "endpointPrefix": "fooendpoint",
+                "jsonVersion": "1.1",
+                "protocol": "json",
+                "serviceAbbreviation": "TDES",
+                "serviceId": "TDEService",
+                "serviceFullName": "TestEndpointDiscoveryService",
+                "signatureVersion": "v4",
+                "signingName": "test-discovery-endpoint",
+                "targetPrefix": "test-discovery-endpoint"
+            },
+            "operations": {
+                "DescribeEndpoints": {
+                    "name": "DescribeEndpoints",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "input": {"shape": "DescribeEndpointsRequest"},
+                    "output": {"shape": "DescribeEndpointsResponse"},
+                    "endpointoperation": true
+                },
+                "TestDiscoveryRequired": {
+                    "name": "TestDiscoveryRequired",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "input": {"shape": "TestDiscoveryIdsRequest"},
+                    "output": {"shape": "EmptyStruct"},
+                    "endpointdiscovery": {"required": true}
+                },
+                "TestDiscoveryOptional": {
+                    "name": "TestDiscoveryOptional",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "input": {"shape": "TestDiscoveryIdsRequest"},
+                    "output": {"shape": "EmptyStruct"},
+                    "endpointdiscovery": {}
+                },
+                "TestDiscovery": {
+                    "name": "TestDiscovery",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "input": {"shape": "EmptyStruct"},
+                    "output": {"shape": "EmptyStruct"},
+                    "endpointdiscovery": {}
+                }
+            },
+            "shapes": {
+               "Boolean": {"type": "boolean"},
+                "DescribeEndpointsRequest": {
+                    "type": "structure",
+                    "members": {
+                        "Operation": {"shape": "String"},
+                        "Identifiers": {"shape": "Identifiers"}
+                    }
+                },
+                "DescribeEndpointsResponse": {
+                    "type": "structure",
+                    "required": ["Endpoints"],
+                    "members": {
+                        "Endpoints": {"shape": "Endpoints"}
+                    }
+                },
+                "Endpoint": {
+                    "type": "structure",
+                    "required": [
+                        "Address",
+                        "CachePeriodInMinutes"
+                    ],
+                    "members": {
+                        "Address": {"shape": "String"},
+                        "CachePeriodInMinutes": {"shape": "Long"}
+                    }
+                },
+                "Endpoints": {
+                    "type": "list",
+                    "member": {"shape": "Endpoint"}
+                },
+                "Identifiers": {
+                    "type": "map",
+                    "key": {"shape": "String"},
+                    "value": {"shape": "String"}
+                },
+                "Long": {"type": "long"},
+                "String": {"type": "string"},
+                "TestDiscoveryIdsRequest": {
+                    "type": "structure",
+                    "required": ["Foo"],
+                    "members": {
+                        "Foo": {
+                            "shape": "String",
+                            "endpointdiscoveryid": true
+                        },
+                        "Baz": {"shape": "String"},
+                        "Empty": {"shape": "EmptyStruct"}
+                    }
+                },
+                "EmptyStruct": {
+                    "type": "structure",
+                    "members": {}
+                },
+                "Nested": {
+                    "type": "structure",
+                    "required": "Bar",
+                    "members": {
+                        "Bar": {
+                            "shape": "String",
+                            "endpointdiscoveryid": true
+                        }
+                    }
+                }
+            }
+        }

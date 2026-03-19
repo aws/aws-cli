@@ -1,4 +1,4 @@
-**To create a version of the function defintion**
+**To create a version of the function definition**
 
 The following ``create-function-definition-version`` example creates a new version of the specified function definition. This version specifies a single function whose ID is ``Hello-World-function``, allows access to the file system, and specifies a maximum memory size and timeout period. ::
 

@@ -19,9 +19,7 @@ class TestDescribeDBLogFiles(BaseAWSCommandParamsTest):
     prefix = 'rds describe-db-log-files '
 
     def test_add_option(self):
-        args = ('--file-last-written 10 '
-                '--db-instance-identifier foo')
+        args = '--file-last-written 10 ' '--db-instance-identifier foo'
         cmdline = self.prefix + args
-        result = {'DBInstanceIdentifier': 'foo',
-                  'FileLastWritten': 10}
+        result = {'DBInstanceIdentifier': 'foo', 'FileLastWritten': 10}
         self.assert_params_for_cmd(cmdline, result)

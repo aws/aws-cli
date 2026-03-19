@@ -13,7 +13,6 @@
 
 
 class CliDriverFetcher:
-
     def __init__(self, cli_driver):
         self._cli_driver = cli_driver
 
@@ -35,12 +34,18 @@ class CliDriverFetcher:
             return command.create_help_command().obj
 
     def get_argument_model(self, lineage, current_command, arg_name):
-        return getattr(self._get_argument(
-            lineage, current_command, arg_name), 'argument_model', None)
+        return getattr(
+            self._get_argument(lineage, current_command, arg_name),
+            'argument_model',
+            None,
+        )
 
     def get_argument_documentation(self, lineage, current_command, arg_name):
-        return getattr(self._get_argument(
-            lineage, current_command, arg_name), 'documentation', '')
+        return getattr(
+            self._get_argument(lineage, current_command, arg_name),
+            'documentation',
+            '',
+        )
 
     def get_global_arg_documentation(self, arg_name):
         return self._cli_driver.arg_table[arg_name].documentation

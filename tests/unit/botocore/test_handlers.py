@@ -1,0 +1,2019 @@
+# Copyright 2012-2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"). You
+# may not use this file except in compliance with the License. A copy of
+# the License is located at
+#
+# http://aws.amazon.com/apache2.0/
+#
+# or in the "license" file accompanying this file. This file is
+# distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
+# ANY KIND, either express or implied. See the License for the specific
+# language governing permissions and limitations under the License.
+
+import base64
+import copy
+import io
+import json
+import logging
+import os
+
+import botocore
+import botocore.session
+import pytest
+from botocore import handlers
+from botocore.args import ClientConfigString
+from botocore.awsrequest import AWSRequest
+from botocore.compat import OrderedDict, quote
+from botocore.config import Config
+from botocore.credentials import Credentials
+from botocore.docs.bcdoc.restdoc import DocumentStructure
+from botocore.docs.example import RequestExampleDocumenter
+from botocore.docs.params import RequestParamsDocumenter
+from botocore.exceptions import (
+    AliasConflictParameterError,
+    MD5UnavailableError,
+    MissingServiceIdError,
+    ParamValidationError,
+)
+from botocore.hooks import HierarchicalEmitter
+from botocore.loaders import Loader
+from botocore.model import (
+    DenormalizedStructureBuilder,
+    OperationModel,
+    ServiceId,
+    ServiceModel,
+)
+from botocore.session import Session
+from botocore.signers import RequestSigner
+from botocore.utils import conditionally_calculate_md5
+
+from tests import BaseSessionTest, mock, unittest
+
+
+class TestHandlers(BaseSessionTest):
+    def test_get_console_output(self):
+        parsed = {'Output': base64.b64encode(b'foobar').decode('utf-8')}
+        handlers.decode_console_output(parsed)
+        self.assertEqual(parsed['Output'], 'foobar')
+
+    def test_get_console_output_cant_be_decoded(self):
+        parsed = {'Output': 1}
+        handlers.decode_console_output(parsed)
+        self.assertEqual(parsed['Output'], 1)
+
+    def test_get_console_output_bad_unicode_errors(self):
+        original = base64.b64encode(b'before\xffafter').decode('utf-8')
+        parsed = {'Output': original}
+        handlers.decode_console_output(parsed)
+        self.assertEqual(parsed['Output'], 'before\ufffdafter')
+
+    def test_noop_if_output_key_does_not_exist(self):
+        original = {'foo': 'bar'}
+        parsed = original.copy()
+
+        handlers.decode_console_output(parsed)
+        # Should be unchanged because the 'Output'
+        # key is not in the output.
+        self.assertEqual(parsed, original)
+
+    def test_decode_quoted_jsondoc(self):
+        value = quote('{"foo":"bar"}')
+        converted_value = handlers.decode_quoted_jsondoc(value)
+        self.assertEqual(converted_value, {'foo': 'bar'})
+
+    def test_cant_decode_quoted_jsondoc(self):
+        value = quote('{"foo": "missing end quote}')
+        converted_value = handlers.decode_quoted_jsondoc(value)
+        self.assertEqual(converted_value, value)
+
+    def test_disable_signing(self):
+        self.assertEqual(handlers.disable_signing(), botocore.UNSIGNED)
+
+    def test_only_quote_url_path_not_version_id(self):
+        params = {'CopySource': '/foo/bar++baz?versionId=123'}
+        handlers.handle_copy_source_param(params)
+        self.assertEqual(
+            params['CopySource'], '/foo/bar%2B%2Bbaz?versionId=123'
+        )
+
+    def test_only_version_id_is_special_cased(self):
+        params = {'CopySource': '/foo/bar++baz?notVersion=foo+'}
+        handlers.handle_copy_source_param(params)
+        self.assertEqual(
+            params['CopySource'], '/foo/bar%2B%2Bbaz%3FnotVersion%3Dfoo%2B'
+        )
+
+    def test_copy_source_with_multiple_questions(self):
+        params = {'CopySource': '/foo/bar+baz?a=baz+?versionId=a+'}
+        handlers.handle_copy_source_param(params)
+        self.assertEqual(
+            params['CopySource'], '/foo/bar%2Bbaz%3Fa%3Dbaz%2B?versionId=a+'
+        )
+
+    def test_copy_source_supports_dict(self):
+        params = {'CopySource': {'Bucket': 'foo', 'Key': 'keyname+'}}
+        handlers.handle_copy_source_param(params)
+        self.assertEqual(params['CopySource'], 'foo/keyname%2B')
+
+    def test_copy_source_ignored_if_not_dict(self):
+        params = {'CopySource': 'stringvalue'}
+        handlers.handle_copy_source_param(params)
+        self.assertEqual(params['CopySource'], 'stringvalue')
+
+    def test_copy_source_supports_optional_version_id(self):
+        params = {
+            'CopySource': {
+                'Bucket': 'foo',
+                'Key': 'keyname+',
+                'VersionId': 'asdf+',
+            }
+        }
+        handlers.handle_copy_source_param(params)
+        self.assertEqual(
+            params['CopySource'],
+            # Note, versionId is not url encoded.
+            'foo/keyname%2B?versionId=asdf+',
+        )
+
+    def test_copy_source_has_validation_failure(self):
+        with self.assertRaisesRegex(ParamValidationError, 'Key'):
+            handlers.handle_copy_source_param(
+                {'CopySource': {'Bucket': 'foo'}}
+            )
+
+    def test_quote_source_header_needs_no_changes(self):
+        params = {'CopySource': '/foo/bar?versionId=123'}
+        handlers.handle_copy_source_param(params)
+        self.assertEqual(params['CopySource'], '/foo/bar?versionId=123')
+
+    def test_presigned_url_already_present_ec2(self):
+        operation_model = mock.Mock()
+        operation_model.name = 'CopySnapshot'
+        params = {'body': {'PresignedUrl': 'https://foo'}}
+        credentials = Credentials('key', 'secret')
+        event_emitter = HierarchicalEmitter()
+        request_signer = RequestSigner(
+            ServiceId('ec2'),
+            'us-east-1',
+            'ec2',
+            'v4',
+            credentials,
+            event_emitter,
+        )
+        handlers.inject_presigned_url_ec2(
+            params, request_signer, operation_model
+        )
+        self.assertEqual(params['body']['PresignedUrl'], 'https://foo')
+
+    def test_presigned_url_with_source_region_ec2(self):
+        operation_model = mock.Mock()
+        operation_model.name = 'CopySnapshot'
+        params = {
+            'body': {
+                'PresignedUrl': 'https://foo',
+                'SourceRegion': 'us-east-1',
+            }
+        }
+        credentials = Credentials('key', 'secret')
+        event_emitter = HierarchicalEmitter()
+        request_signer = RequestSigner(
+            ServiceId('ec2'),
+            'us-east-1',
+            'ec2',
+            'v4',
+            credentials,
+            event_emitter,
+        )
+        handlers.inject_presigned_url_ec2(
+            params, request_signer, operation_model
+        )
+        self.assertEqual(params['body']['PresignedUrl'], 'https://foo')
+        self.assertEqual(params['body']['SourceRegion'], 'us-east-1')
+
+    def test_presigned_url_already_present_rds(self):
+        operation_model = mock.Mock()
+        operation_model.name = 'CopyDBSnapshot'
+        params = {'body': {'PreSignedUrl': 'https://foo'}}
+        credentials = Credentials('key', 'secret')
+        event_emitter = HierarchicalEmitter()
+        request_signer = RequestSigner(
+            ServiceId('rds'),
+            'us-east-1',
+            'rds',
+            'v4',
+            credentials,
+            event_emitter,
+        )
+        handlers.inject_presigned_url_rds(
+            params, request_signer, operation_model
+        )
+        self.assertEqual(params['body']['PreSignedUrl'], 'https://foo')
+
+    def test_presigned_url_with_source_region_rds(self):
+        operation_model = mock.Mock()
+        operation_model.name = 'CopyDBSnapshot'
+        params = {
+            'body': {
+                'PreSignedUrl': 'https://foo',
+                'SourceRegion': 'us-east-1',
+            }
+        }
+        credentials = Credentials('key', 'secret')
+        event_emitter = HierarchicalEmitter()
+        request_signer = RequestSigner(
+            ServiceId('rds'),
+            'us-east-1',
+            'rds',
+            'v4',
+            credentials,
+            event_emitter,
+        )
+        handlers.inject_presigned_url_rds(
+            params, request_signer, operation_model
+        )
+        self.assertEqual(params['body']['PreSignedUrl'], 'https://foo')
+        self.assertNotIn('SourceRegion', params['body'])
+
+    def test_inject_presigned_url_ec2(self):
+        operation_model = mock.Mock()
+        operation_model.name = 'CopySnapshot'
+        credentials = Credentials('key', 'secret')
+        event_emitter = HierarchicalEmitter()
+        request_signer = RequestSigner(
+            ServiceId('ec2'),
+            'us-east-1',
+            'ec2',
+            'v4',
+            credentials,
+            event_emitter,
+        )
+        request_dict = {}
+        params = {'SourceRegion': 'us-west-2'}
+        request_dict['body'] = params
+        request_dict['url'] = 'https://ec2.us-east-1.amazonaws.com'
+        request_dict['method'] = 'POST'
+        request_dict['headers'] = {}
+        request_dict['context'] = {}
+
+        handlers.inject_presigned_url_ec2(
+            request_dict, request_signer, operation_model
+        )
+
+        self.assertIn(
+            'https://ec2.us-west-2.amazonaws.com?', params['PresignedUrl']
+        )
+        self.assertIn('X-Amz-Signature', params['PresignedUrl'])
+        self.assertIn('DestinationRegion', params['PresignedUrl'])
+        # We should also populate the DestinationRegion with the
+        # region_name of the endpoint object.
+        self.assertEqual(params['DestinationRegion'], 'us-east-1')
+
+    def test_use_event_operation_name(self):
+        operation_model = mock.Mock()
+        operation_model.name = 'FakeOperation'
+        request_signer = mock.Mock()
+        request_signer._region_name = 'us-east-1'
+        request_dict = {}
+        params = {'SourceRegion': 'us-west-2'}
+        request_dict['body'] = params
+        request_dict['url'] = 'https://myservice.us-east-1.amazonaws.com'
+        request_dict['method'] = 'POST'
+        request_dict['headers'] = {}
+        request_dict['context'] = {}
+
+        handlers.inject_presigned_url_ec2(
+            request_dict, request_signer, operation_model
+        )
+
+        call_args = request_signer.generate_presigned_url.call_args
+        operation_name = call_args[1].get('operation_name')
+        self.assertEqual(operation_name, 'FakeOperation')
+
+    def test_destination_region_always_changed(self):
+        # If the user provides a destination region, we will still
+        # override the DesinationRegion with the region_name from
+        # the endpoint object.
+        actual_region = 'us-west-1'
+        operation_model = mock.Mock()
+        operation_model.name = 'CopySnapshot'
+
+        credentials = Credentials('key', 'secret')
+        event_emitter = HierarchicalEmitter()
+        request_signer = RequestSigner(
+            ServiceId('ec2'),
+            actual_region,
+            'ec2',
+            'v4',
+            credentials,
+            event_emitter,
+        )
+        request_dict = {}
+        params = {
+            'SourceRegion': 'us-west-2',
+            'DestinationRegion': 'us-east-1',
+        }
+        request_dict['body'] = params
+        request_dict['url'] = 'https://ec2.us-west-1.amazonaws.com'
+        request_dict['method'] = 'POST'
+        request_dict['headers'] = {}
+        request_dict['context'] = {}
+
+        # The user provides us-east-1, but we will override this to
+        # endpoint.region_name, of 'us-west-1' in this case.
+        handlers.inject_presigned_url_ec2(
+            request_dict, request_signer, operation_model
+        )
+
+        self.assertIn(
+            'https://ec2.us-west-2.amazonaws.com?', params['PresignedUrl']
+        )
+
+        # Always use the DestinationRegion from the endpoint, regardless of
+        # whatever value the user provides.
+        self.assertEqual(params['DestinationRegion'], actual_region)
+
+    def test_inject_presigned_url_rds(self):
+        operation_model = mock.Mock()
+        operation_model.name = 'CopyDBSnapshot'
+        credentials = Credentials('key', 'secret')
+        event_emitter = HierarchicalEmitter()
+        request_signer = RequestSigner(
+            ServiceId('rds'),
+            'us-east-1',
+            'rds',
+            'v4',
+            credentials,
+            event_emitter,
+        )
+        request_dict = {}
+        params = {'SourceRegion': 'us-west-2'}
+        request_dict['body'] = params
+        request_dict['url'] = 'https://rds.us-east-1.amazonaws.com'
+        request_dict['method'] = 'POST'
+        request_dict['headers'] = {}
+        request_dict['context'] = {}
+
+        handlers.inject_presigned_url_rds(
+            request_dict, request_signer, operation_model
+        )
+
+        self.assertIn(
+            'https://rds.us-west-2.amazonaws.com?', params['PreSignedUrl']
+        )
+        self.assertIn('X-Amz-Signature', params['PreSignedUrl'])
+        self.assertIn('DestinationRegion', params['PreSignedUrl'])
+        # We should not populate the destination region for rds
+        self.assertNotIn('DestinationRegion', params)
+
+    def test_source_region_removed(self):
+        operation_model = mock.Mock()
+        operation_model.name = 'CopyDBSnapshot'
+        credentials = Credentials('key', 'secret')
+        event_emitter = HierarchicalEmitter()
+        request_signer = RequestSigner(
+            ServiceId('rds'),
+            'us-east-1',
+            'rds',
+            'v4',
+            credentials,
+            event_emitter,
+        )
+        request_dict = {}
+        params = {'SourceRegion': 'us-west-2'}
+        request_dict['body'] = params
+        request_dict['url'] = 'https://rds.us-east-1.amazonaws.com'
+        request_dict['method'] = 'POST'
+        request_dict['headers'] = {}
+        request_dict['context'] = {}
+
+        handlers.inject_presigned_url_rds(
+            params=request_dict,
+            request_signer=request_signer,
+            model=operation_model,
+        )
+
+        self.assertNotIn('SourceRegion', params)
+
+    def test_source_region_removed_when_presigned_url_provided_for_rds(self):
+        operation_model = mock.Mock()
+        operation_model.name = 'CopyDBSnapshot'
+        credentials = Credentials('key', 'secret')
+        event_emitter = HierarchicalEmitter()
+        request_signer = RequestSigner(
+            ServiceId('rds'),
+            'us-east-1',
+            'rds',
+            'v4',
+            credentials,
+            event_emitter,
+        )
+        request_dict = {}
+        params = {'SourceRegion': 'us-west-2', 'PreSignedUrl': 'https://foo'}
+        request_dict['body'] = params
+        request_dict['url'] = 'https://rds.us-east-1.amazonaws.com'
+        request_dict['method'] = 'POST'
+        request_dict['headers'] = {}
+        request_dict['context'] = {}
+
+        handlers.inject_presigned_url_rds(
+            params=request_dict,
+            request_signer=request_signer,
+            model=operation_model,
+        )
+
+        self.assertNotIn('SourceRegion', params)
+
+    def test_dest_region_removed(self):
+        operation_model = mock.Mock()
+        operation_model.name = 'CopyDBSnapshot'
+        credentials = Credentials('key', 'secret')
+        event_emitter = HierarchicalEmitter()
+        request_signer = RequestSigner(
+            ServiceId('rds'),
+            'us-east-1',
+            'rds',
+            'v4',
+            credentials,
+            event_emitter,
+        )
+        request_dict = {}
+        params = {'SourceRegion': 'us-west-2'}
+        request_dict['body'] = params
+        request_dict['url'] = 'https://rds.us-east-1.amazonaws.com'
+        request_dict['method'] = 'POST'
+        request_dict['headers'] = {}
+        request_dict['context'] = {}
+
+        handlers.inject_presigned_url_rds(
+            params=request_dict,
+            request_signer=request_signer,
+            model=operation_model,
+        )
+
+        self.assertNotIn('DestinationRegion', params)
+
+    def test_presigned_url_already_present_for_rds(self):
+        operation_model = mock.Mock()
+        operation_model.name = 'CopyDBSnapshot'
+        params = {'body': {'PresignedUrl': 'https://foo'}}
+        credentials = Credentials('key', 'secret')
+        event_emitter = HierarchicalEmitter()
+        request_signer = RequestSigner(
+            ServiceId('rds'),
+            'us-east-1',
+            'rds',
+            'v4',
+            credentials,
+            event_emitter,
+        )
+        handlers.inject_presigned_url_rds(
+            params=params, request_signer=request_signer, model=operation_model
+        )
+        self.assertEqual(params['body']['PresignedUrl'], 'https://foo')
+
+    def test_presigned_url_casing_changed_for_rds(self):
+        operation_model = mock.Mock()
+        operation_model.name = 'CopyDBSnapshot'
+        credentials = Credentials('key', 'secret')
+        event_emitter = HierarchicalEmitter()
+        request_signer = RequestSigner(
+            ServiceId('rds'),
+            'us-east-1',
+            'rds',
+            'v4',
+            credentials,
+            event_emitter,
+        )
+        request_dict = {}
+        params = {'SourceRegion': 'us-west-2'}
+        request_dict['body'] = params
+        request_dict['url'] = 'https://rds.us-east-1.amazonaws.com'
+        request_dict['method'] = 'POST'
+        request_dict['headers'] = {}
+        request_dict['context'] = {}
+
+        handlers.inject_presigned_url_rds(
+            params=request_dict,
+            request_signer=request_signer,
+            model=operation_model,
+        )
+
+        self.assertNotIn('PresignedUrl', params)
+        self.assertIn(
+            'https://rds.us-west-2.amazonaws.com?', params['PreSignedUrl']
+        )
+        self.assertIn('X-Amz-Signature', params['PreSignedUrl'])
+
+    def test_route53_resource_id(self):
+        event = 'before-parameter-build.route-53.GetHostedZone'
+        params = {
+            'Id': '/hostedzone/ABC123',
+            'HostedZoneId': '/hostedzone/ABC123',
+            'ResourceId': '/hostedzone/DEF456',
+            'DelegationSetId': '/hostedzone/GHI789',
+            'ChangeId': '/hostedzone/JKL012',
+            'Other': '/hostedzone/foo',
+        }
+        operation_def = {
+            'name': 'GetHostedZone',
+            'input': {'shape': 'GetHostedZoneInput'},
+        }
+        service_def = {
+            'metadata': {},
+            'shapes': {
+                'GetHostedZoneInput': {
+                    'type': 'structure',
+                    'members': {
+                        'Id': {'shape': 'ResourceId'},
+                        'HostedZoneId': {'shape': 'ResourceId'},
+                        'ResourceId': {'shape': 'ResourceId'},
+                        'DelegationSetId': {'shape': 'DelegationSetId'},
+                        'ChangeId': {'shape': 'ChangeId'},
+                        'Other': {'shape': 'String'},
+                    },
+                },
+                'ResourceId': {'type': 'string'},
+                'DelegationSetId': {'type': 'string'},
+                'ChangeId': {'type': 'string'},
+                'String': {'type': 'string'},
+            },
+        }
+        model = OperationModel(operation_def, ServiceModel(service_def))
+        self.session.emit(event, params=params, model=model)
+
+        self.assertEqual(params['Id'], 'ABC123')
+        self.assertEqual(params['HostedZoneId'], 'ABC123')
+        self.assertEqual(params['ResourceId'], 'DEF456')
+        self.assertEqual(params['DelegationSetId'], 'GHI789')
+        self.assertEqual(params['ChangeId'], 'JKL012')
+
+        # This one should have been left alone
+        self.assertEqual(params['Other'], '/hostedzone/foo')
+
+    def test_route53_resource_id_missing_input_shape(self):
+        event = 'before-parameter-build.route-53.GetHostedZone'
+        params = {'HostedZoneId': '/hostedzone/ABC123'}
+        operation_def = {'name': 'GetHostedZone'}
+        service_def = {'metadata': {}, 'shapes': {}}
+        model = OperationModel(operation_def, ServiceModel(service_def))
+        self.session.emit(event, params=params, model=model)
+
+        self.assertEqual(params['HostedZoneId'], '/hostedzone/ABC123')
+
+    def test_run_instances_userdata(self):
+        user_data = 'This is a test'
+        b64_user_data = base64.b64encode(user_data.encode('latin-1')).decode(
+            'utf-8'
+        )
+        params = dict(
+            ImageId='img-12345678', MinCount=1, MaxCount=5, UserData=user_data
+        )
+        handlers.base64_encode_user_data(params=params)
+        result = {
+            'ImageId': 'img-12345678',
+            'MinCount': 1,
+            'MaxCount': 5,
+            'UserData': b64_user_data,
+        }
+        self.assertEqual(params, result)
+
+    def test_run_instances_userdata_blob(self):
+        # Ensure that binary can be passed in as user data.
+        # This is valid because you can send gzip compressed files as
+        # user data.
+        user_data = b'\xc7\xa9This is a test'
+        b64_user_data = base64.b64encode(user_data).decode('utf-8')
+        params = dict(
+            ImageId='img-12345678', MinCount=1, MaxCount=5, UserData=user_data
+        )
+        handlers.base64_encode_user_data(params=params)
+        result = {
+            'ImageId': 'img-12345678',
+            'MinCount': 1,
+            'MaxCount': 5,
+            'UserData': b64_user_data,
+        }
+        self.assertEqual(params, result)
+
+    def test_get_template_has_error_response(self):
+        original = {'Error': {'Code': 'Message'}}
+        handler_input = copy.deepcopy(original)
+        handlers.json_decode_template_body(parsed=handler_input)
+        # The handler should not have changed the response because it's
+        # an error response.
+        self.assertEqual(original, handler_input)
+
+    def test_does_decode_template_body_in_order(self):
+        expected_ordering = OrderedDict(
+            [
+                ('TemplateVersion', 1.0),
+                ('APropertyOfSomeKind', 'a value'),
+                ('list', [1, 2, 3]),
+                ('nested', OrderedDict([('key', 'value'), ('foo', 'bar')])),
+            ]
+        )
+        template_string = json.dumps(expected_ordering)
+        parsed_response = {'TemplateBody': template_string}
+
+        handlers.json_decode_template_body(parsed=parsed_response)
+        result = parsed_response['TemplateBody']
+
+        self.assertTrue(isinstance(result, OrderedDict))
+        for element, expected_element in zip(result, expected_ordering):
+            self.assertEqual(element, expected_element)
+
+    def test_decode_json_policy(self):
+        parsed = {
+            'Document': '{"foo": "foobarbaz"}',
+            'Other': 'bar',
+        }
+        service_def = {
+            'operations': {
+                'Foo': {
+                    'output': {'shape': 'PolicyOutput'},
+                }
+            },
+            'shapes': {
+                'PolicyOutput': {
+                    'type': 'structure',
+                    'members': {
+                        'Document': {'shape': 'policyDocumentType'},
+                        'Other': {'shape': 'stringType'},
+                    },
+                },
+                'policyDocumentType': {'type': 'string'},
+                'stringType': {'type': 'string'},
+            },
+        }
+        model = ServiceModel(service_def)
+        op_model = model.operation_model('Foo')
+        handlers.json_decode_policies(parsed, op_model)
+        self.assertEqual(parsed['Document'], {'foo': 'foobarbaz'})
+
+        no_document = {'Other': 'bar'}
+        handlers.json_decode_policies(no_document, op_model)
+        self.assertEqual(no_document, {'Other': 'bar'})
+
+    def test_inject_account_id(self):
+        params = {}
+        handlers.inject_account_id(params)
+        self.assertEqual(params['accountId'], '-')
+
+    def test_account_id_not_added_if_present(self):
+        params = {'accountId': 'foo'}
+        handlers.inject_account_id(params)
+        self.assertEqual(params['accountId'], 'foo')
+
+    def test_glacier_version_header_added(self):
+        request_dict = {'headers': {}}
+        model = ServiceModel({'metadata': {'apiVersion': '2012-01-01'}})
+        handlers.add_glacier_version(model, request_dict)
+        self.assertEqual(
+            request_dict['headers']['x-amz-glacier-version'], '2012-01-01'
+        )
+
+    def test_application_json_header_added(self):
+        request_dict = {'headers': {}}
+        handlers.add_accept_header(None, request_dict)
+        self.assertEqual(request_dict['headers']['Accept'], 'application/json')
+
+    def test_accept_header_not_added_if_present(self):
+        request_dict = {'headers': {'Accept': 'application/yaml'}}
+        handlers.add_accept_header(None, request_dict)
+        self.assertEqual(request_dict['headers']['Accept'], 'application/yaml')
+
+    def test_glacier_checksums_added(self):
+        request_dict = {
+            'headers': {},
+            'body': io.BytesIO(b'hello world'),
+        }
+        handlers.add_glacier_checksums(request_dict)
+        self.assertIn('x-amz-content-sha256', request_dict['headers'])
+        self.assertIn('x-amz-sha256-tree-hash', request_dict['headers'])
+        self.assertEqual(
+            request_dict['headers']['x-amz-content-sha256'],
+            'b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9',
+        )
+        self.assertEqual(
+            request_dict['headers']['x-amz-sha256-tree-hash'],
+            'b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9',
+        )
+        # And verify that the body can still be read.
+        self.assertEqual(request_dict['body'].read(), b'hello world')
+
+    def test_tree_hash_added_only_if_not_exists(self):
+        request_dict = {
+            'headers': {
+                'x-amz-sha256-tree-hash': 'pre-exists',
+            },
+            'body': io.BytesIO(b'hello world'),
+        }
+        handlers.add_glacier_checksums(request_dict)
+        self.assertEqual(
+            request_dict['headers']['x-amz-sha256-tree-hash'], 'pre-exists'
+        )
+
+    def test_checksum_added_only_if_not_exists(self):
+        request_dict = {
+            'headers': {
+                'x-amz-content-sha256': 'pre-exists',
+            },
+            'body': io.BytesIO(b'hello world'),
+        }
+        handlers.add_glacier_checksums(request_dict)
+        self.assertEqual(
+            request_dict['headers']['x-amz-content-sha256'], 'pre-exists'
+        )
+
+    def test_glacier_checksums_support_raw_bytes(self):
+        request_dict = {
+            'headers': {},
+            'body': b'hello world',
+        }
+        handlers.add_glacier_checksums(request_dict)
+        self.assertEqual(
+            request_dict['headers']['x-amz-content-sha256'],
+            'b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9',
+        )
+        self.assertEqual(
+            request_dict['headers']['x-amz-sha256-tree-hash'],
+            'b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9',
+        )
+
+    def test_switch_host_with_param(self):
+        request = AWSRequest()
+        url = 'https://machinelearning.us-east-1.amazonaws.com'
+        new_endpoint = 'https://my-custom-endpoint.amazonaws.com'
+        data = f'{{"PredictEndpoint":"{new_endpoint}"}}'
+        request.data = data.encode('utf-8')
+        request.url = url
+        handlers.switch_host_with_param(request, 'PredictEndpoint')
+        self.assertEqual(request.url, new_endpoint)
+
+    def test_invalid_char_in_bucket_raises_exception(self):
+        params = {
+            'Bucket': 'bad/bucket/name',
+            'Key': 'foo',
+            'Body': b'asdf',
+        }
+        with self.assertRaises(ParamValidationError):
+            handlers.validate_bucket_name(params)
+
+    def test_bucket_too_long_raises_exception(self):
+        params = {
+            'Bucket': 'a' * 300,
+            'Key': 'foo',
+            'Body': b'asdf',
+        }
+        with self.assertRaises(ParamValidationError):
+            handlers.validate_bucket_name(params)
+
+    def test_not_dns_compat_but_still_valid_bucket_name(self):
+        params = {
+            'Bucket': 'foasdf......bar--baz-a_b_CD10',
+            'Key': 'foo',
+            'Body': b'asdf',
+        }
+        self.assertIsNone(handlers.validate_bucket_name(params))
+
+    def test_valid_bucket_name_hyphen(self):
+        self.assertIsNone(
+            handlers.validate_bucket_name({'Bucket': 'my-bucket-name'})
+        )
+
+    def test_valid_bucket_name_underscore(self):
+        self.assertIsNone(
+            handlers.validate_bucket_name({'Bucket': 'my_bucket_name'})
+        )
+
+    def test_valid_bucket_name_period(self):
+        self.assertIsNone(
+            handlers.validate_bucket_name({'Bucket': 'my.bucket.name'})
+        )
+
+    def test_validation_is_noop_if_no_bucket_param_exists(self):
+        self.assertIsNone(handlers.validate_bucket_name(params={}))
+
+    def test_validation_is_s3_accesspoint_arn(self):
+        try:
+            arn = 'arn:aws:s3:us-west-2:123456789012:accesspoint:endpoint'
+            handlers.validate_bucket_name({'Bucket': arn})
+        except ParamValidationError:
+            self.fail(f'The s3 arn: {arn} should pass validation')
+
+    def test_validation_is_s3_outpost_arn(self):
+        try:
+            arn = (
+                'arn:aws:s3-outposts:us-west-2:123456789012:outpost:'
+                'op-01234567890123456:accesspoint:myaccesspoint'
+            )
+            handlers.validate_bucket_name({'Bucket': arn})
+        except ParamValidationError:
+            self.fail(f'The s3 arn: {arn} should pass validation')
+
+    def test_validation_is_global_s3_bucket_arn(self):
+        with self.assertRaises(ParamValidationError):
+            arn = 'arn:aws:s3:::mybucket'
+            handlers.validate_bucket_name({'Bucket': arn})
+
+    def test_validation_is_other_service_arn(self):
+        with self.assertRaises(ParamValidationError):
+            arn = 'arn:aws:ec2:us-west-2:123456789012:instance:myinstance'
+            handlers.validate_bucket_name({'Bucket': arn})
+
+    def test_validate_non_ascii_metadata_values(self):
+        with self.assertRaises(ParamValidationError):
+            handlers.validate_ascii_metadata({'Metadata': {'foo': '\u2713'}})
+
+    def test_validate_non_ascii_metadata_keys(self):
+        with self.assertRaises(ParamValidationError):
+            handlers.validate_ascii_metadata({'Metadata': {'\u2713': 'bar'}})
+
+    def test_validate_non_triggered_when_no_md_specified(self):
+        original = {'NotMetadata': ''}
+        copied = original.copy()
+        handlers.validate_ascii_metadata(copied)
+        self.assertEqual(original, copied)
+
+    def test_validation_passes_when_all_ascii_chars(self):
+        original = {'Metadata': {'foo': 'bar'}}
+        copied = original.copy()
+        handlers.validate_ascii_metadata(original)
+        self.assertEqual(original, copied)
+
+    def test_set_encoding_type(self):
+        params = {}
+        context = {}
+        handlers.set_list_objects_encoding_type_url(params, context=context)
+        self.assertEqual(params['EncodingType'], 'url')
+        self.assertTrue(context['encoding_type_auto_set'])
+
+        params['EncodingType'] = 'new_value'
+        handlers.set_list_objects_encoding_type_url(params, context={})
+        self.assertEqual(params['EncodingType'], 'new_value')
+
+    def test_decode_list_objects(self):
+        parsed = {
+            'Contents': [{'Key': "%C3%A7%C3%B6s%25asd%08"}],
+            'EncodingType': 'url',
+        }
+        context = {'encoding_type_auto_set': True}
+        handlers.decode_list_object(parsed, context=context)
+        self.assertEqual(parsed['Contents'][0]['Key'], '\xe7\xf6s%asd\x08')
+
+    def test_decode_list_objects_does_not_decode_without_context(self):
+        parsed = {
+            'Contents': [{'Key': "%C3%A7%C3%B6s%25asd"}],
+            'EncodingType': 'url',
+        }
+        handlers.decode_list_object(parsed, context={})
+        self.assertEqual(parsed['Contents'][0]['Key'], '%C3%A7%C3%B6s%25asd')
+
+    def test_decode_list_objects_with_marker(self):
+        parsed = {
+            'Marker': "%C3%A7%C3%B6s%25%20asd%08+c",
+            'EncodingType': 'url',
+        }
+        context = {'encoding_type_auto_set': True}
+        handlers.decode_list_object(parsed, context=context)
+        self.assertEqual(parsed['Marker'], '\xe7\xf6s% asd\x08 c')
+
+    def test_decode_list_objects_with_nextmarker(self):
+        parsed = {
+            'NextMarker': "%C3%A7%C3%B6s%25%20asd%08+c",
+            'EncodingType': 'url',
+        }
+        context = {'encoding_type_auto_set': True}
+        handlers.decode_list_object(parsed, context=context)
+        self.assertEqual(parsed['NextMarker'], '\xe7\xf6s% asd\x08 c')
+
+    def test_decode_list_objects_with_common_prefixes(self):
+        parsed = {
+            'CommonPrefixes': [{'Prefix': "%C3%A7%C3%B6s%25%20asd%08+c"}],
+            'EncodingType': 'url',
+        }
+        context = {'encoding_type_auto_set': True}
+        handlers.decode_list_object(parsed, context=context)
+        self.assertEqual(
+            parsed['CommonPrefixes'][0]['Prefix'], '\xe7\xf6s% asd\x08 c'
+        )
+
+    def test_decode_list_objects_with_delimiter(self):
+        parsed = {
+            'Delimiter': "%C3%A7%C3%B6s%25%20asd%08+c",
+            'EncodingType': 'url',
+        }
+        context = {'encoding_type_auto_set': True}
+        handlers.decode_list_object(parsed, context=context)
+        self.assertEqual(parsed['Delimiter'], '\xe7\xf6s% asd\x08 c')
+
+    def test_decode_list_objects_v2(self):
+        parsed = {
+            'Contents': [{'Key': "%C3%A7%C3%B6s%25asd%08"}],
+            'EncodingType': 'url',
+        }
+        context = {'encoding_type_auto_set': True}
+        handlers.decode_list_object_v2(parsed, context=context)
+        self.assertEqual(parsed['Contents'][0]['Key'], '\xe7\xf6s%asd\x08')
+
+    def test_decode_list_objects_v2_does_not_decode_without_context(self):
+        parsed = {
+            'Contents': [{'Key': "%C3%A7%C3%B6s%25asd"}],
+            'EncodingType': 'url',
+        }
+        handlers.decode_list_object_v2(parsed, context={})
+        self.assertEqual(parsed['Contents'][0]['Key'], '%C3%A7%C3%B6s%25asd')
+
+    def test_decode_list_objects_v2_with_delimiter(self):
+        parsed = {
+            'Delimiter': "%C3%A7%C3%B6s%25%20asd%08+c",
+            'EncodingType': 'url',
+        }
+        context = {'encoding_type_auto_set': True}
+        handlers.decode_list_object_v2(parsed, context=context)
+        self.assertEqual(parsed['Delimiter'], '\xe7\xf6s% asd\x08 c')
+
+    def test_decode_list_objects_v2_with_prefix(self):
+        parsed = {
+            'Prefix': "%C3%A7%C3%B6s%25%20asd%08+c",
+            'EncodingType': 'url',
+        }
+        context = {'encoding_type_auto_set': True}
+        handlers.decode_list_object_v2(parsed, context=context)
+        self.assertEqual(parsed['Prefix'], '\xe7\xf6s% asd\x08 c')
+
+    def test_decode_list_objects_v2_does_not_decode_continuationtoken(self):
+        parsed = {
+            'ContinuationToken': "%C3%A7%C3%B6s%25%20asd%08+c",
+            'EncodingType': 'url',
+        }
+        context = {'encoding_type_auto_set': True}
+        handlers.decode_list_object_v2(parsed, context=context)
+        self.assertEqual(
+            parsed['ContinuationToken'], "%C3%A7%C3%B6s%25%20asd%08+c"
+        )
+
+    def test_decode_list_objects_v2_with_startafter(self):
+        parsed = {
+            'StartAfter': "%C3%A7%C3%B6s%25%20asd%08+c",
+            'EncodingType': 'url',
+        }
+        context = {'encoding_type_auto_set': True}
+        handlers.decode_list_object_v2(parsed, context=context)
+        self.assertEqual(parsed['StartAfter'], '\xe7\xf6s% asd\x08 c')
+
+    def test_decode_list_objects_v2_with_common_prefixes(self):
+        parsed = {
+            'CommonPrefixes': [{'Prefix': "%C3%A7%C3%B6s%25%20asd%08+c"}],
+            'EncodingType': 'url',
+        }
+        context = {'encoding_type_auto_set': True}
+        handlers.decode_list_object_v2(parsed, context=context)
+        self.assertEqual(
+            parsed['CommonPrefixes'][0]['Prefix'], '\xe7\xf6s% asd\x08 c'
+        )
+
+    def test_set_operation_specific_signer_no_auth_type(self):
+        signing_name = 'myservice'
+        context = {'auth_type': None}
+        response = handlers.set_operation_specific_signer(
+            context=context, signing_name=signing_name
+        )
+        self.assertIsNone(response)
+
+    def test_set_operation_specific_signer_unsigned(self):
+        signing_name = 'myservice'
+        context = {'auth_type': 'none'}
+        response = handlers.set_operation_specific_signer(
+            context=context, signing_name=signing_name
+        )
+        self.assertEqual(response, botocore.UNSIGNED)
+
+    def test_set_operation_specific_signer_v4(self):
+        signing_name = 'myservice'
+        context = {'auth_type': 'v4'}
+        response = handlers.set_operation_specific_signer(
+            context=context, signing_name=signing_name
+        )
+        self.assertEqual(response, 'v4')
+
+    def test_set_operation_specific_signer_v4a(self):
+        signing_name = 'myservice'
+        context = {'auth_type': 'v4a'}
+        response = handlers.set_operation_specific_signer(
+            context=context, signing_name=signing_name
+        )
+        self.assertEqual(response, 'v4a')
+        # for v4a, context gets updated in place
+        self.assertIsNotNone(context.get('signing'))
+        self.assertEqual(context['signing']['region'], '*')
+        self.assertEqual(context['signing']['signing_name'], signing_name)
+
+    def test_set_operation_specific_signer_v4a_existing_signing_context(self):
+        signing_name = 'myservice'
+        context = {
+            'auth_type': 'v4a',
+            'signing': {'foo': 'bar'},
+        }
+        handlers.set_operation_specific_signer(
+            context=context, signing_name=signing_name
+        )
+        # signing_name has been added
+        self.assertEqual(context['signing']['signing_name'], signing_name)
+        # foo remained untouched
+        self.assertEqual(context['signing']['foo'], 'bar')
+
+    def test_set_operation_specific_signer_v4_unsinged_payload(self):
+        signing_name = 'myservice'
+        context = {'auth_type': 'v4-unsigned-body'}
+        response = handlers.set_operation_specific_signer(
+            context=context, signing_name=signing_name
+        )
+        self.assertEqual(response, 'v4')
+        self.assertEqual(context.get('payload_signing_enabled'), False)
+
+    def test_set_operation_specific_signer_s3v4_unsigned_payload(self):
+        signing_name = 's3'
+        context = {
+            'auth_type': 'v4-unsigned-body',
+            'signing': {
+                'foo': 'bar',
+                'region': 'abc',
+                'disableDoubleEncoding': True,
+            },
+        }
+        response = handlers.set_operation_specific_signer(
+            context=context, signing_name=signing_name
+        )
+        self.assertEqual(response, 's3v4')
+        self.assertEqual(context.get('payload_signing_enabled'), False)
+
+    def test_set_operation_specific_signer_defaults_to_asterisk(self):
+        signing_name = 'myservice'
+        context = {
+            'auth_type': 'v4a',
+        }
+        handlers.set_operation_specific_signer(
+            context=context, signing_name=signing_name
+        )
+        self.assertEqual(context['signing']['region'], '*')
+
+    def test_set_operation_specific_signer_prefers_client_config(self):
+        signing_name = 'myservice'
+        context = {
+            'auth_type': 'v4a',
+            'client_config': Config(
+                sigv4a_signing_region_set="region_1,region_2"
+            ),
+            'signing': {
+                'region': 'abc',
+            },
+        }
+        handlers.set_operation_specific_signer(
+            context=context, signing_name=signing_name
+        )
+        self.assertEqual(context['signing']['region'], 'region_1,region_2')
+
+    def test_payload_signing_disabled_sets_proper_key(self):
+        signing_name = 'myservice'
+        context = {
+            'auth_type': 'v4',
+            'signing': {
+                'foo': 'bar',
+                'region': 'abc',
+            },
+            'unsigned_payload': True,
+        }
+        handlers.set_operation_specific_signer(
+            context=context, signing_name=signing_name
+        )
+        self.assertEqual(context.get('payload_signing_enabled'), False)
+
+    def test_no_payload_signing_disabled_does_not_set_key(self):
+        signing_name = 'myservice'
+        context = {
+            'auth_type': 'v4',
+            'signing': {
+                'foo': 'bar',
+                'region': 'abc',
+            },
+        }
+        handlers.set_operation_specific_signer(
+            context=context, signing_name=signing_name
+        )
+        self.assertNotIn('payload_signing_enabled', context)
+
+
+@pytest.mark.parametrize(
+    'auth_type, expected_response', [('v4', 's3v4'), ('v4a', 's3v4a')]
+)
+def test_set_operation_specific_signer_s3v4(auth_type, expected_response):
+    signing_name = 's3'
+    context = {
+        'auth_type': auth_type,
+        'signing': {'disableDoubleEncoding': True},
+    }
+    response = handlers.set_operation_specific_signer(
+        context=context, signing_name=signing_name
+    )
+    assert response == expected_response
+
+
+class TestConvertStringBodyToFileLikeObject(BaseSessionTest):
+    def assert_converts_to_file_like_object_with_bytes(self, body, body_bytes):
+        params = {'Body': body}
+        handlers.convert_body_to_file_like_object(params)
+        self.assertTrue(hasattr(params['Body'], 'read'))
+        contents = params['Body'].read()
+        self.assertIsInstance(contents, bytes)
+        self.assertEqual(contents, body_bytes)
+
+    def test_string(self):
+        self.assert_converts_to_file_like_object_with_bytes('foo', b'foo')
+
+    def test_binary(self):
+        body = os.urandom(500)
+        body_bytes = body
+        self.assert_converts_to_file_like_object_with_bytes(body, body_bytes)
+
+    def test_file(self):
+        body = io.StringIO()
+        params = {'Body': body}
+        handlers.convert_body_to_file_like_object(params)
+        self.assertEqual(params['Body'], body)
+
+    def test_unicode(self):
+        self.assert_converts_to_file_like_object_with_bytes('bar', b'bar')
+
+    def test_non_ascii_characters(self):
+        self.assert_converts_to_file_like_object_with_bytes(
+            '\u2713', b'\xe2\x9c\x93'
+        )
+
+
+class TestRetryHandlerOrder(BaseSessionTest):
+    def get_handler_names(self, responses):
+        names = []
+        for response in responses:
+            handler = response[0]
+            if hasattr(handler, '__name__'):
+                names.append(handler.__name__)
+            elif hasattr(handler, '__class__'):
+                names.append(handler.__class__.__name__)
+            else:
+                names.append(str(handler))
+        return names
+
+    def test_s3_special_case_is_before_other_retry(self):
+        client = self.session.create_client('s3')
+        service_model = self.session.get_service_model('s3')
+        operation = service_model.operation_model('CopyObject')
+        responses = client.meta.events.emit(
+            'needs-retry.s3.CopyObject',
+            request_dict={'context': {}},
+            response=(mock.Mock(), mock.Mock()),
+            endpoint=mock.Mock(),
+            operation=operation,
+            attempts=1,
+            caught_exception=None,
+        )
+        # This is implementation specific, but we're trying to verify that
+        # the _update_status_code is before any of the retry logic in
+        # botocore.retries.*.
+        # Technically, as long as the relative order is preserved, we don't
+        # care about the absolute order.
+        names = self.get_handler_names(responses)
+        self.assertIn('_update_status_code', names)
+        self.assertIn('needs_retry', names)
+        s3_200_handler = names.index('_update_status_code')
+        general_retry_handler = names.index('needs_retry')
+        self.assertTrue(
+            s3_200_handler < general_retry_handler,
+            "S3 200 error handler was supposed to be before "
+            "the general retry handler, but it was not.",
+        )
+
+
+class BaseMD5Test(BaseSessionTest):
+    def setUp(self, **environ):
+        super().setUp(**environ)
+        self.md5_object = mock.Mock()
+        self.md5_digest = mock.Mock(return_value=b'foo')
+        self.md5_object.digest = self.md5_digest
+        md5_builder = mock.Mock(return_value=self.md5_object)
+        self.md5_patch = mock.patch('hashlib.md5', md5_builder)
+        self.md5_patch.start()
+        self._md5_available_patch = None
+        self.set_md5_available()
+
+    def tearDown(self):
+        super().tearDown()
+        self.md5_patch.stop()
+        if self._md5_available_patch:
+            self._md5_available_patch.stop()
+
+    def set_md5_available(self, is_available=True):
+        if self._md5_available_patch:
+            self._md5_available_patch.stop()
+
+        self._md5_available_patch = mock.patch(
+            'botocore.compat.MD5_AVAILABLE', is_available
+        )
+        self._md5_available_patch.start()
+
+
+class TestSSEMD5(BaseMD5Test):
+    def test_raises_error_when_md5_unavailable(self):
+        self.set_md5_available(False)
+
+        with self.assertRaises(MD5UnavailableError):
+            handlers.sse_md5({'SSECustomerKey': b'foo'})
+
+        with self.assertRaises(MD5UnavailableError):
+            handlers.copy_source_sse_md5({'CopySourceSSECustomerKey': b'foo'})
+
+    def test_sse_params(self):
+        for op in (
+            'HeadObject',
+            'GetObject',
+            'PutObject',
+            'CopyObject',
+            'CreateMultipartUpload',
+            'UploadPart',
+            'UploadPartCopy',
+        ):
+            event = f'before-parameter-build.s3.{op}'
+            params = {
+                'SSECustomerKey': b'bar',
+                'SSECustomerAlgorithm': 'AES256',
+            }
+            self.session.emit(
+                event, params=params, model=mock.MagicMock(), context={}
+            )
+            self.assertEqual(params['SSECustomerKey'], 'YmFy')
+            self.assertEqual(params['SSECustomerKeyMD5'], 'Zm9v')
+
+    def test_sse_params_as_str(self):
+        event = 'before-parameter-build.s3.PutObject'
+        params = {'SSECustomerKey': 'bar', 'SSECustomerAlgorithm': 'AES256'}
+        self.session.emit(
+            event, params=params, model=mock.MagicMock(), context={}
+        )
+        self.assertEqual(params['SSECustomerKey'], 'YmFy')
+        self.assertEqual(params['SSECustomerKeyMD5'], 'Zm9v')
+
+    def test_copy_source_sse_params(self):
+        for op in ['CopyObject', 'UploadPartCopy']:
+            event = f'before-parameter-build.s3.{op}'
+            params = {
+                'CopySourceSSECustomerKey': b'bar',
+                'CopySourceSSECustomerAlgorithm': 'AES256',
+            }
+            self.session.emit(
+                event, params=params, model=mock.MagicMock(), context={}
+            )
+            self.assertEqual(params['CopySourceSSECustomerKey'], 'YmFy')
+            self.assertEqual(params['CopySourceSSECustomerKeyMD5'], 'Zm9v')
+
+    def test_copy_source_sse_params_as_str(self):
+        event = 'before-parameter-build.s3.CopyObject'
+        params = {
+            'CopySourceSSECustomerKey': 'bar',
+            'CopySourceSSECustomerAlgorithm': 'AES256',
+        }
+        self.session.emit(
+            event, params=params, model=mock.MagicMock(), context={}
+        )
+        self.assertEqual(params['CopySourceSSECustomerKey'], 'YmFy')
+        self.assertEqual(params['CopySourceSSECustomerKeyMD5'], 'Zm9v')
+
+
+class TestAddMD5(BaseMD5Test):
+    def get_context(self, s3_config=None):
+        if s3_config is None:
+            s3_config = {}
+        return {'client_config': Config(s3=s3_config)}
+
+    def test_adds_md5_when_v4(self):
+        credentials = Credentials('key', 'secret')
+        request_signer = RequestSigner(
+            ServiceId('s3'), 'us-east-1', 's3', 'v4', credentials, mock.Mock()
+        )
+        request_dict = {
+            'body': b'bar',
+            'url': 'https://s3.us-east-1.amazonaws.com',
+            'method': 'PUT',
+            'headers': {},
+        }
+        context = self.get_context()
+        conditionally_calculate_md5(
+            request_dict, request_signer=request_signer, context=context
+        )
+        self.assertTrue('Content-MD5' in request_dict['headers'])
+
+    def test_adds_md5_when_s3v4(self):
+        credentials = Credentials('key', 'secret')
+        request_signer = RequestSigner(
+            ServiceId('s3'),
+            'us-east-1',
+            's3',
+            's3v4',
+            credentials,
+            mock.Mock(),
+        )
+        request_dict = {
+            'body': b'bar',
+            'url': 'https://s3.us-east-1.amazonaws.com',
+            'method': 'PUT',
+            'headers': {},
+        }
+        context = self.get_context({'payload_signing_enabled': False})
+        conditionally_calculate_md5(
+            request_dict, request_signer=request_signer, context=context
+        )
+        self.assertTrue('Content-MD5' in request_dict['headers'])
+
+    def test_conditional_does_not_add_when_md5_unavailable(self):
+        credentials = Credentials('key', 'secret')
+        request_signer = RequestSigner(
+            's3', 'us-east-1', 's3', 's3', credentials, mock.Mock()
+        )
+        request_dict = {
+            'body': b'bar',
+            'url': 'https://s3.us-east-1.amazonaws.com',
+            'method': 'PUT',
+            'headers': {},
+        }
+
+        context = self.get_context()
+        self.set_md5_available(False)
+        with mock.patch('botocore.utils.MD5_AVAILABLE', False):
+            conditionally_calculate_md5(
+                request_dict, request_signer=request_signer, context=context
+            )
+            self.assertFalse('Content-MD5' in request_dict['headers'])
+
+    def test_add_md5_raises_error_when_md5_unavailable(self):
+        credentials = Credentials('key', 'secret')
+        request_signer = RequestSigner(
+            ServiceId('s3'), 'us-east-1', 's3', 's3', credentials, mock.Mock()
+        )
+        request_dict = {
+            'body': b'bar',
+            'url': 'https://s3.us-east-1.amazonaws.com',
+            'method': 'PUT',
+            'headers': {},
+        }
+
+        self.set_md5_available(False)
+        with self.assertRaises(MD5UnavailableError):
+            conditionally_calculate_md5(
+                request_dict, request_signer=request_signer
+            )
+
+    def test_adds_md5_when_s3v2(self):
+        credentials = Credentials('key', 'secret')
+        request_signer = RequestSigner(
+            ServiceId('s3'), 'us-east-1', 's3', 's3', credentials, mock.Mock()
+        )
+        request_dict = {
+            'body': b'bar',
+            'url': 'https://s3.us-east-1.amazonaws.com',
+            'method': 'PUT',
+            'headers': {},
+        }
+        context = self.get_context()
+        conditionally_calculate_md5(
+            request_dict, request_signer=request_signer, context=context
+        )
+        self.assertTrue('Content-MD5' in request_dict['headers'])
+
+    def test_add_md5_with_file_like_body(self):
+        request_dict = {'body': io.BytesIO(b'foobar'), 'headers': {}}
+        self.md5_digest.return_value = b'8X\xf6"0\xac<\x91_0\x0cfC\x12\xc6?'
+        conditionally_calculate_md5(request_dict)
+        self.assertEqual(
+            request_dict['headers']['Content-MD5'], 'OFj2IjCsPJFfMAxmQxLGPw=='
+        )
+
+    def test_add_md5_with_bytes_object(self):
+        request_dict = {'body': b'foobar', 'headers': {}}
+        self.md5_digest.return_value = b'8X\xf6"0\xac<\x91_0\x0cfC\x12\xc6?'
+        conditionally_calculate_md5(request_dict)
+        self.assertEqual(
+            request_dict['headers']['Content-MD5'], 'OFj2IjCsPJFfMAxmQxLGPw=='
+        )
+
+    def test_add_md5_with_empty_body(self):
+        request_dict = {'body': b'', 'headers': {}}
+        self.md5_digest.return_value = b'8X\xf6"0\xac<\x91_0\x0cfC\x12\xc6?'
+        conditionally_calculate_md5(request_dict)
+        self.assertEqual(
+            request_dict['headers']['Content-MD5'], 'OFj2IjCsPJFfMAxmQxLGPw=='
+        )
+
+    def test_add_md5_with_bytearray_object(self):
+        request_dict = {'body': bytearray(b'foobar'), 'headers': {}}
+        self.md5_digest.return_value = b'8X\xf6"0\xac<\x91_0\x0cfC\x12\xc6?'
+        conditionally_calculate_md5(request_dict)
+        self.assertEqual(
+            request_dict['headers']['Content-MD5'], 'OFj2IjCsPJFfMAxmQxLGPw=='
+        )
+
+    def test_skip_md5_when_flexible_checksum_context(self):
+        request_dict = {
+            'body': io.BytesIO(b'foobar'),
+            'headers': {},
+            'context': {
+                'checksum': {
+                    'request_algorithm': {
+                        'in': 'header',
+                        'algorithm': 'crc32',
+                        'name': 'x-amz-checksum-crc32',
+                    }
+                }
+            },
+        }
+        conditionally_calculate_md5(request_dict)
+        self.assertNotIn('Content-MD5', request_dict['headers'])
+
+    def test_skip_md5_when_flexible_checksum_explicit_header(self):
+        request_dict = {
+            'body': io.BytesIO(b'foobar'),
+            'headers': {'x-amz-checksum-crc32': 'foo'},
+        }
+        conditionally_calculate_md5(request_dict)
+        self.assertNotIn('Content-MD5', request_dict['headers'])
+
+
+class TestParameterAlias(unittest.TestCase):
+    def setUp(self):
+        self.original_name = 'original'
+        self.alias_name = 'alias'
+        self.parameter_alias = handlers.ParameterAlias(
+            self.original_name, self.alias_name
+        )
+
+        self.operation_model = mock.Mock()
+        request_shape = (
+            DenormalizedStructureBuilder()
+            .with_members({self.original_name: {'type': 'string'}})
+            .build_model()
+        )
+        self.operation_model.input_shape = request_shape
+        self.sample_section = DocumentStructure('')
+        self.event_emitter = HierarchicalEmitter()
+
+    def test_alias_parameter_in_call(self):
+        value = 'value'
+        params = {self.alias_name: value}
+        self.parameter_alias.alias_parameter_in_call(
+            params, self.operation_model
+        )
+        self.assertEqual(params, {self.original_name: value})
+
+    def test_alias_parameter_and_original_in_call(self):
+        params = {
+            self.original_name: 'orginal_value',
+            self.alias_name: 'alias_value',
+        }
+        with self.assertRaises(AliasConflictParameterError):
+            self.parameter_alias.alias_parameter_in_call(
+                params, self.operation_model
+            )
+
+    def test_alias_parameter_in_call_does_not_touch_original(self):
+        value = 'value'
+        params = {self.original_name: value}
+        self.parameter_alias.alias_parameter_in_call(
+            params, self.operation_model
+        )
+        self.assertEqual(params, {self.original_name: value})
+
+    def test_does_not_alias_parameter_for_no_input_shape(self):
+        value = 'value'
+        params = {self.alias_name: value}
+        self.operation_model.input_shape = None
+        self.parameter_alias.alias_parameter_in_call(
+            params, self.operation_model
+        )
+        self.assertEqual(params, {self.alias_name: value})
+
+    def test_does_not_alias_parameter_for_not_modeled_member(self):
+        value = 'value'
+        params = {self.alias_name: value}
+
+        request_shape = (
+            DenormalizedStructureBuilder()
+            .with_members({'foo': {'type': 'string'}})
+            .build_model()
+        )
+        self.operation_model.input_shape = request_shape
+        self.parameter_alias.alias_parameter_in_call(
+            params, self.operation_model
+        )
+        self.assertEqual(params, {self.alias_name: value})
+
+    def test_alias_parameter_in_documentation_request_params(self):
+        RequestParamsDocumenter(
+            'myservice', 'myoperation', self.event_emitter
+        ).document_params(
+            self.sample_section, self.operation_model.input_shape
+        )
+        self.parameter_alias.alias_parameter_in_documentation(
+            'docs.request-params.myservice.myoperation.complete-section',
+            self.sample_section,
+        )
+        contents = self.sample_section.flush_structure().decode('utf-8')
+        self.assertIn(':type ' + self.alias_name + ':', contents)
+        self.assertIn(':param ' + self.alias_name + ':', contents)
+        self.assertNotIn(':type ' + self.original_name + ':', contents)
+        self.assertNotIn(':param ' + self.original_name + ':', contents)
+
+    def test_alias_parameter_in_documentation_request_example(self):
+        RequestExampleDocumenter(
+            'myservice', 'myoperation', self.event_emitter
+        ).document_example(
+            self.sample_section, self.operation_model.input_shape
+        )
+        self.parameter_alias.alias_parameter_in_documentation(
+            'docs.request-example.myservice.myoperation.complete-section',
+            self.sample_section,
+        )
+        contents = self.sample_section.flush_structure().decode('utf-8')
+        self.assertIn(self.alias_name + '=', contents)
+        self.assertNotIn(self.original_name + '=', contents)
+
+
+class TestCommandAlias(unittest.TestCase):
+    def test_command_alias(self):
+        alias = handlers.ClientMethodAlias('foo')
+        client = mock.Mock()
+        client.foo.return_value = 'bar'
+
+        response = alias(client=client)()
+        self.assertEqual(response, 'bar')
+
+
+class TestPrependToHost(unittest.TestCase):
+    def setUp(self):
+        self.hoister = handlers.HeaderToHostHoister('test-header')
+
+    def _prepend_to_host(self, url, prepend_string):
+        params = {
+            'headers': {
+                'test-header': prepend_string,
+            },
+            'url': url,
+        }
+        self.hoister.hoist(params=params)
+        return params['url']
+
+    def test_does_prepend_to_host(self):
+        prepended = self._prepend_to_host('https://bar.example.com/', 'foo')
+        self.assertEqual(prepended, 'https://foo.bar.example.com/')
+
+    def test_does_prepend_to_host_with_http(self):
+        prepended = self._prepend_to_host('http://bar.example.com/', 'foo')
+        self.assertEqual(prepended, 'http://foo.bar.example.com/')
+
+    def test_does_prepend_to_host_with_path(self):
+        prepended = self._prepend_to_host(
+            'https://bar.example.com/path', 'foo'
+        )
+        self.assertEqual(prepended, 'https://foo.bar.example.com/path')
+
+    def test_does_prepend_to_host_with_more_components(self):
+        prepended = self._prepend_to_host(
+            'https://bar.baz.example.com/path', 'foo'
+        )
+        self.assertEqual(prepended, 'https://foo.bar.baz.example.com/path')
+
+    def test_does_validate_long_host(self):
+        with self.assertRaises(ParamValidationError):
+            self._prepend_to_host('https://example.com/path', 'toolong' * 100)
+
+    def test_does_validate_host_with_illegal_char(self):
+        with self.assertRaises(ParamValidationError):
+            self._prepend_to_host('https://example.com/path', 'host#name')
+
+
+@pytest.mark.parametrize(
+    'auth_path_in, auth_path_expected',
+    [
+        # access points should be stripped
+        (
+            '/arn%3Aaws%3As3%3Aus-west-2%3A1234567890%3Aaccesspoint%2Fmy-ap/object.txt',
+            '/object.txt',
+        ),
+        (
+            '/arn%3Aaws%3As3%3Aus-west-2%3A1234567890%3Aaccesspoint%2Fmy-ap/foo/foo/foo/object.txt',
+            '/foo/foo/foo/object.txt',
+        ),
+        # regular bucket names should not be stripped
+        (
+            '/mybucket/object.txt',
+            '/mybucket/object.txt',
+        ),
+        (
+            '/mybucket/foo/foo/foo/object.txt',
+            '/mybucket/foo/foo/foo/object.txt',
+        ),
+        (
+            '/arn-is-a-valid-bucketname/object.txt',
+            '/arn-is-a-valid-bucketname/object.txt',
+        ),
+        # non-bucket cases
+        (
+            '',
+            '',
+        ),
+        (
+            None,
+            None,
+        ),
+        (
+            123,
+            123,
+        ),
+    ],
+)
+def test_remove_arn_from_signing_path(auth_path_in, auth_path_expected):
+    request = AWSRequest(method='GET', auth_path=auth_path_in)
+    # the handler modifies the request in place
+    handlers.remove_arn_from_signing_path(
+        request=request, some='other', kwarg='values'
+    )
+    assert request.auth_path == auth_path_expected
+
+
+@pytest.fixture()
+def operation_model_mock():
+    operation_model = mock.Mock()
+    operation_model.output_shape = mock.Mock()
+    operation_model.output_shape.members = {'Expires': mock.Mock()}
+    operation_model.output_shape.members['Expires'].name = 'Expires'
+    operation_model.output_shape.members['Expires'].serialization = {
+        'name': 'Expires'
+    }
+    return operation_model
+
+
+@pytest.mark.parametrize(
+    "expires, expect_expires_header",
+    [
+        # Valid expires values
+        ("Thu, 01 Jan 2015 00:00:00 GMT", True),
+        ("10/21/2018", True),
+        ("01 dec 2100", True),
+        ("2023-11-02 08:43:04 -0400", True),
+        ("Sun, 22 Oct 23 00:45:02 UTC", True),
+        # Invalid expires values
+        ("Invalid Date", False),
+        ("access plus 1 month", False),
+        ("Expires: Thu, 9 Sep 2013 14:19:41 GMT", False),
+        ("{ts '2023-10-10 09:27:14'}", False),
+        (-33702800404003370280040400, False),
+    ],
+)
+def test_handle_expires_header(
+    expires, expect_expires_header, operation_model_mock
+):
+    response_dict = {
+        'headers': {
+            'Expires': expires,
+        }
+    }
+    customized_response_dict = {}
+    handlers.handle_expires_header(
+        operation_model_mock, response_dict, customized_response_dict
+    )
+    assert customized_response_dict.get('ExpiresString') == expires
+    assert ('Expires' in response_dict['headers']) == expect_expires_header
+
+
+def test_handle_expires_header_logs_warning(operation_model_mock, caplog):
+    response_dict = {
+        'headers': {
+            'Expires': 'Invalid Date',
+        }
+    }
+    with caplog.at_level(logging.WARNING):
+        handlers.handle_expires_header(operation_model_mock, response_dict, {})
+    assert len(caplog.records) == 1
+    assert 'Failed to parse the "Expires" member as a timestamp' in caplog.text
+
+
+def test_handle_expires_header_does_not_log_warning(
+    operation_model_mock, caplog
+):
+    response_dict = {
+        'headers': {
+            'Expires': 'Thu, 01 Jan 2015 00:00:00 GMT',
+        }
+    }
+    with caplog.at_level(logging.WARNING):
+        handlers.handle_expires_header(operation_model_mock, response_dict, {})
+    assert len(caplog.records) == 0
+
+
+@pytest.fixture()
+def document_expires_mocks():
+    return {
+        'section': mock.Mock(),
+        'parent': mock.Mock(),
+        'param_line': mock.Mock(),
+        'param_section': mock.Mock(),
+        'doc_section': mock.Mock(),
+        'new_param_line': mock.Mock(),
+        'new_param_section': mock.Mock(),
+        'response_example_event': 'docs.response-example.s3.TestOperation.complete-section',
+        'response_params_event': 'docs.response-params.s3.TestOperation.complete-section',
+    }
+
+
+def test_document_response_example_with_expires(document_expires_mocks):
+    mocks = document_expires_mocks
+    mocks['section'].has_section.return_value = True
+    mocks['section'].get_section.return_value = mocks['parent']
+    mocks['parent'].has_section.return_value = True
+    mocks['parent'].get_section.return_value = mocks['param_line']
+    mocks['param_line'].has_section.return_value = True
+    mocks['param_line'].get_section.return_value = mocks['new_param_line']
+    handlers.document_expires_shape(
+        mocks['section'], mocks['response_example_event']
+    )
+    mocks['param_line'].add_new_section.assert_called_once_with(
+        'ExpiresString'
+    )
+    mocks['new_param_line'].write.assert_called_once_with(
+        "'ExpiresString': 'string',"
+    )
+    mocks['new_param_line'].style.new_line.assert_called_once()
+
+
+def test_document_response_example_without_expires(document_expires_mocks):
+    mocks = document_expires_mocks
+    mocks['section'].has_section.return_value = True
+    mocks['section'].get_section.return_value = mocks['parent']
+    mocks['parent'].has_section.return_value = False
+    handlers.document_expires_shape(
+        mocks['section'], mocks['response_example_event']
+    )
+    mocks['parent'].add_new_section.assert_not_called()
+    mocks['parent'].get_section.assert_not_called()
+    mocks['new_param_line'].write.assert_not_called()
+
+
+def test_document_response_params_with_expires(document_expires_mocks):
+    mocks = document_expires_mocks
+    mocks['section'].has_section.return_value = True
+    mocks['section'].get_section.return_value = mocks['param_section']
+    mocks['param_section'].get_section.side_effect = [
+        mocks['doc_section'],
+    ]
+    mocks['param_section'].add_new_section.side_effect = [
+        mocks['new_param_section'],
+    ]
+    mocks['doc_section'].style = mock.Mock()
+    mocks['new_param_section'].style = mock.Mock()
+    handlers.document_expires_shape(
+        mocks['section'], mocks['response_params_event']
+    )
+    mocks['param_section'].get_section.assert_any_call('param-documentation')
+    mocks['doc_section'].style.start_note.assert_called_once()
+    mocks['doc_section'].write.assert_called_once_with(
+        'This member has been deprecated. Please use ``ExpiresString`` instead.'
+    )
+    mocks['doc_section'].style.end_note.assert_called_once()
+    mocks['param_section'].add_new_section.assert_called_once_with(
+        'ExpiresString'
+    )
+    mocks['new_param_section'].style.new_paragraph.assert_any_call()
+    mocks['new_param_section'].write.assert_any_call(
+        '- **ExpiresString** *(string) --*'
+    )
+    mocks['new_param_section'].style.indent.assert_called_once()
+    mocks['new_param_section'].write.assert_any_call(
+        'The raw, unparsed value of the ``Expires`` field.'
+    )
+
+
+def test_document_response_params_without_expires(document_expires_mocks):
+    mocks = document_expires_mocks
+    mocks['section'].has_section.return_value = False
+    handlers.document_expires_shape(
+        mocks['section'], mocks['response_params_event']
+    )
+    mocks['section'].get_section.assert_not_called()
+    mocks['param_section'].add_new_section.assert_not_called()
+    mocks['doc_section'].write.assert_not_called()
+
+
+@pytest.fixture()
+def checksum_operation_model():
+    operation_model = mock.Mock(spec=OperationModel)
+    operation_model.http_checksum = {
+        "requestValidationModeMember": "ChecksumMode",
+    }
+    return operation_model
+
+
+def create_checksum_context(
+    request_checksum_calculation="when_supported",
+    response_checksum_validation="when_supported",
+):
+    context = {
+        "client_config": Config(
+            request_checksum_calculation=request_checksum_calculation,
+            response_checksum_validation=response_checksum_validation,
+        )
+    }
+    return context
+
+
+def test_request_validation_mode_member_default(checksum_operation_model):
+    params = {}
+    handlers._handle_request_validation_mode_member(
+        params, checksum_operation_model, context=create_checksum_context()
+    )
+    assert params["ChecksumMode"] == "ENABLED"
+
+
+def test_request_validation_mode_member_when_required(
+    checksum_operation_model,
+):
+    params = {}
+    context = create_checksum_context(
+        response_checksum_validation="when_required"
+    )
+    handlers._handle_request_validation_mode_member(
+        params, checksum_operation_model, context=context
+    )
+    assert "ChecksumMode" not in params
+
+
+def test_request_validation_mode_member_set_by_user(
+    checksum_operation_model,
+):
+    params = {"ChecksumMode": "FAKE_VALUE"}
+    handlers._handle_request_validation_mode_member(
+        params, checksum_operation_model, context=create_checksum_context()
+    )
+    assert params["ChecksumMode"] == "FAKE_VALUE"
+
+
+@pytest.mark.parametrize(
+    "signing_name, config_kwargs, auth_options, expected_signature_version",
+    [
+        # Case 1: Signature version explicitly set, no update to the signer.
+        (
+            "my-service",
+            {"signature_version": ClientConfigString("v4")},
+            ["aws.auth#sigv4", "smithy.api#httpBearerAuth"],
+            None,
+        ),
+        # Case 2: Auth scheme preference explicitly set and resolved.
+        (
+            "my-service",
+            {
+                "signature_version": "v4",
+                "auth_scheme_preference": ClientConfigString("httpBearerAuth"),
+            },
+            ["aws.auth#sigv4", "smithy.api#httpBearerAuth"],
+            "bearer",
+        ),
+        # Case 3: Auth scheme preference not explicitly set and resolved to first supported scheme.
+        (
+            "my-service",
+            {
+                "signature_version": "v4",
+                "auth_scheme_preference": "sigv4a,httpBearerAuth",
+            },
+            ["aws.auth#sigv4", "smithy.api#httpBearerAuth"],
+            "bearer",
+        ),
+        # Case 4: Auth scheme preference not supported by service
+        (
+            "my-service",
+            {
+                "signature_version": "v4",
+                "auth_scheme_preference": "scheme1,scheme2",
+            },
+            ["aws.auth#sigv4"],
+            None,
+        ),
+        # Case 5: Service does not have auth trait
+        (
+            "my-service",
+            {"signature_version": "v4"},
+            None,
+            None,
+        ),
+    ],
+)
+def test_set_auth_scheme_preference_signer(
+    monkeypatch,
+    signing_name,
+    config_kwargs,
+    auth_options,
+    expected_signature_version,
+):
+    config = Config(**config_kwargs)
+    context = {"client_config": config, "auth_options": auth_options}
+    signature_version = handlers._set_auth_scheme_preference_signer(
+        context, signing_name
+    )
+    assert (
+        signature_version == expected_signature_version
+    ), f"Expected '{expected_signature_version}' but got '{signature_version}'"
+
+
+@pytest.mark.parametrize(
+    "signing_name, config_kwargs, auth_options, env_token, expected_signature_version",
+    [
+        # Case 1: Bearer token present, no auth scheme preference, resolves to bearer.
+        (
+            "bedrock",
+            {"signature_version": "v4"},
+            ["aws.auth#sigv4", "smithy.api#httpBearerAuth"],
+            "test_token",
+            "bearer",
+        ),
+        # Case 2: Bearer token not present, fallback to default signature version.
+        (
+            "bedrock",
+            {"signature_version": "v4"},
+            ["aws.auth#sigv4", "smithy.api#httpBearerAuth"],
+            None,
+            None,
+        ),
+        # Case 3: Bearer token present, auth preference not set explicitly so token takes precedence.
+        (
+            "bedrock",
+            {
+                "signature_version": "v4",
+                "auth_scheme_preference": "sigv4",
+            },
+            ["aws.auth#sigv4", "smithy.api#httpBearerAuth"],
+            "test_token",
+            "bearer",
+        ),
+        # Case 4: Bearer token present, but auth scheme preference explicitly set to non-bearer.
+        (
+            "bedrock",
+            {
+                "signature_version": "v4",
+                "auth_scheme_preference": ClientConfigString(
+                    "noAuth,httpBearerAuth"
+                ),
+            },
+            ["smithy.api#httpBearerAuth", "smithy.api#noAuth"],
+            "test_token",
+            botocore.UNSIGNED,
+        ),
+        # Case 5: Bearer token present but service does not support bearer auth.
+        (
+            "foo-service",
+            {"signature_version": "v4"},
+            ["aws.auth#sigv4"],
+            "test_token",
+            None,
+        ),
+        # Case 6: Service has 'bedrock' signing name but does not support bearer auth.
+        (
+            "bedrock",
+            {
+                "signature_version": "v4",
+                "auth_scheme_preference": ClientConfigString("httpBearerAuth"),
+            },
+            ["aws.auth#sigv4"],
+            "test_token",
+            None,
+        ),
+    ],
+)
+def test_set_auth_scheme_preference_signer_with_bearer_token(
+    monkeypatch,
+    signing_name,
+    config_kwargs,
+    auth_options,
+    env_token,
+    expected_signature_version,
+):
+    env_var = "AWS_BEARER_TOKEN_BEDROCK"
+    if env_token is not None:
+        monkeypatch.setenv(env_var, env_token)
+    else:
+        monkeypatch.delenv(env_var, raising=False)
+
+    config = Config(**config_kwargs)
+    context = {"client_config": config, "auth_options": auth_options}
+
+    signature_version = handlers._set_auth_scheme_preference_signer(
+        context, signing_name
+    )
+    assert (
+        signature_version == expected_signature_version
+    ), f"Expected '{expected_signature_version}' but got '{signature_version}'"

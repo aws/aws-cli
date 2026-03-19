@@ -23,7 +23,7 @@ Output::
         }
     }
 
-For more information, see `Creating a gateway endpoint <https://docs.aws.amazon.com/vpc/latest/privatelink/vpce-gateway.html#create-gateway-endpoint>`__ in the *AWSPrivateLink Guide*.
+For more information, see `Create a gateway endpoint <https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints-s3.html#create-gateway-endpoint-s3>`__ in the *AWS PrivateLink User Guide*.
 
 **Example 2: To create an interface endpoint**
 
@@ -33,7 +33,7 @@ The following ``create-vpc-endpoint`` example creates an interface VPC endpoint 
         --vpc-id vpc-1a2b3c4d \
         --vpc-endpoint-type Interface \
         --service-name com.amazonaws.us-east-1.s3 \
-        --subnet-id subnet-7b16de0c \
+        --subnet-ids subnet-7b16de0c \
         --security-group-id sg-1a2b3c4d \
         --tag-specifications ResourceType=vpc-endpoint,Tags=[{Key=service,Value=S3}]
 
@@ -82,7 +82,7 @@ Output::
         }
     }
 
-For more information, see `Creating an interface endpoint <https://docs.aws.amazon.com/vpc/latest/privatelink/vpce-interface.html#create-interface-endpoint>`__ in the *User Guide for AWSPrivateLink*.
+For more information, see `Create an interface VPC endpoint <https://docs.aws.amazon.com/vpc/latest/privatelink/create-interface-endpoint.html>`__ in the *AWS PrivateLink User Guide*.
 
 **Example 3: To create a Gateway Load Balancer endpoint**
 
@@ -92,7 +92,7 @@ The following ``create-vpc-endpoint`` example creates a Gateway Load Balancer en
         --service-name com.amazonaws.vpce.us-east-1.vpce-svc-123123a1c43abc123 \
         --vpc-endpoint-type GatewayLoadBalancer \
         --vpc-id vpc-111122223333aabbc \
-        --subnet-id subnet-0011aabbcc2233445
+        --subnet-ids subnet-0011aabbcc2233445
 
 Output::
 
@@ -115,4 +115,82 @@ Output::
         }
     }
 
-For more information, see `Gateway Load Balancer endpoints <https://docs.aws.amazon.com/vpc/latest/privatelink/vpce-gateway-load-balancer.html>`__ in the *User Guide for AWSPrivateLink*.
+For more information, see `Gateway Load Balancer endpoints <https://docs.aws.amazon.com/vpc/latest/privatelink/gateway-load-balancer-endpoints.html>`__ in the *AWS PrivateLink User Guide*.
+
+**Example 4: To create a resource endpoint**
+
+The following ``create-vpc-endpoint`` example creates a resource endpoint. ::
+
+    aws ec2 create-vpc-endpoint \
+        --vpc-endpoint-type Resource \
+        --vpc-id vpc-111122223333aabbc \
+        --subnet-ids subnet-0011aabbcc2233445 \
+        --resource-configuration-arn arn:aws:vpc-lattice-us-east-1:123456789012:resourceconfiguration/rcfg-0123abcde98765432
+
+Output::
+
+    {
+        "VpcEndpoint": {
+            "VpcEndpointId": "vpce-00939a7ed9EXAMPLE",
+            "VpcEndpointType": "Resource",
+            "VpcId": "vpc-111122223333aabbc",
+            "State": "Pending",
+            "SubnetIds": [
+                "subnet-0011aabbcc2233445"
+            ],
+            "Groups": [
+                {
+                    "GroupId": "sg-03e2f15fbfc09b000",
+                    "GroupName": "default"
+                }
+            ],
+            "IpAddressType": "IPV4",
+            "PrivateDnsEnabled": false,
+            "CreationTimestamp": "2025-02-06T23:38:49.525000+00:00",
+            "Tags": [],
+            "OwnerId": "123456789012",
+            "ResourceConfigurationArn": "arn:aws:vpc-lattice:us-east-1:123456789012:resourceconfiguration/rcfg-0123abcde98765432"
+        }
+    }
+
+For more information, see `Resource endpoints <https://docs.aws.amazon.com/vpc/latest/privatelink/privatelink-access-resources.html>`__ in the *AWS PrivateLink User Guide*.
+
+**Example 5: To create a service network endpoint**
+
+The following ``create-vpc-endpoint`` example creates a service network endpoint. ::
+
+    aws ec2 create-vpc-endpoint \
+        --vpc-endpoint-type ServiceNetwork \
+        --vpc-id vpc-111122223333aabbc \
+        --subnet-ids subnet-0011aabbcc2233445 \
+        --service-network-arn arn:aws:vpc-lattice:us-east-1:123456789012:servicenetwork/sn-0101abcd5432abcd0 \
+        --security-group-ids sg-0123456789012abcd
+
+Output::
+
+    {
+        "VpcEndpoint": {
+            "VpcEndpointId": "vpce-0f00567fa8EXAMPLE",
+            "VpcEndpointType": "ServiceNetwork",
+            "VpcId": "vpc-111122223333aabbc",
+            "State": "Pending",
+            "SubnetIds": [
+                "subnet-0011aabbcc2233445"
+            ],
+            "Groups": [
+                {
+                    "GroupId": "sg-0123456789012abcd",
+                    "GroupName": "my-security-group"
+                }
+            ],
+            "IpAddressType": "IPV4",
+            "PrivateDnsEnabled": false,
+            "CreationTimestamp": "2025-02-06T23:44:20.449000+00:00",
+            "Tags": [],
+            "OwnerId": "123456789012",
+            "ServiceNetworkArn": "arn:aws:vpc-lattice:us-east-1:123456789012:servicenetwork/sn-0101abcd5432abcd0"
+        }
+    }
+
+For more information, see `Service network endpoints <https://docs.aws.amazon.com/vpc/latest/privatelink/privatelink-access-service-networks.html>`__ in the *AWS PrivateLink User Guide*.
+

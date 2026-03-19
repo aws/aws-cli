@@ -7,6 +7,7 @@ The following ``upload-build`` example uploads Linux game server build files fro
         --build-version 2.0.1 \
         --build-root ~/MegaFrogRace_Server/release-na \
         --operating-system AMAZON_LINUX_2
+        --server-sdk-version 4.0.2
 
 Output::
 
@@ -27,6 +28,7 @@ The following ``upload-build`` example uploads Windows game server build files f
         --build-version 2.0.1 \
         --build-root C:\MegaFrogRace_Server\release-na \
         --operating-system WINDOWS_2012
+        --server-sdk-version 4.0.2
 
 Output::
 

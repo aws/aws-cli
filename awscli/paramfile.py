@@ -10,15 +10,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import copy
 import logging
 import os
-import copy
 
-from awscli.compat import six
-
+from awscli import argprocess
 from awscli.compat import compat_open
-from awscli.argprocess import ParamError
-
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +30,7 @@ def register_uri_param_handler(session, **kwargs):
     session.register('load-cli-arg', handler)
 
 
-class URIArgumentHandler(object):
+class URIArgumentHandler:
     def __init__(self, prefixes):
         self._prefixes = prefixes
 
@@ -44,7 +41,7 @@ class URIArgumentHandler(object):
         try:
             return get_paramfile(value, self._prefixes)
         except ResourceLoadingError as e:
-            raise ParamError(param.cli_name, six.text_type(e))
+            raise argprocess.ParamError(param.cli_name, str(e))
 
 
 def get_paramfile(path, cases):
@@ -71,7 +68,7 @@ def get_paramfile(path, cases):
 
     """
     data = None
-    if isinstance(path, six.string_types):
+    if isinstance(path, str):
         for prefix, function_spec in cases.items():
             if path.startswith(prefix):
                 function, kwargs = function_spec
@@ -80,7 +77,7 @@ def get_paramfile(path, cases):
 
 
 def get_file(prefix, path, mode):
-    file_path = os.path.expandvars(os.path.expanduser(path[len(prefix):]))
+    file_path = os.path.expandvars(os.path.expanduser(path[len(prefix) :]))
     try:
         with compat_open(file_path, mode) as f:
             return f.read()
@@ -88,10 +85,12 @@ def get_file(prefix, path, mode):
         raise ResourceLoadingError(
             'Unable to load paramfile (%s), text contents could '
             'not be decoded.  If this is a binary file, please use the '
-            'fileb:// prefix instead of the file:// prefix.' % file_path)
-    except (OSError, IOError) as e:
-        raise ResourceLoadingError('Unable to load paramfile %s: %s' % (
-            path, e))
+            'fileb:// prefix instead of the file:// prefix.' % file_path
+        )
+    except OSError as e:
+        raise ResourceLoadingError(
+            'Unable to load paramfile %s: %s' % (path, e)
+        )
 
 
 LOCAL_PREFIX_MAP = {

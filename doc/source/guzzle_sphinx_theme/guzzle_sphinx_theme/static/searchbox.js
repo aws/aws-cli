@@ -1,0 +1,1 @@
+document.getElementById('searchbox').style.display = "block";

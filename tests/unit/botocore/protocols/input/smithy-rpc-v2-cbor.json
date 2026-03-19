@@ -1,0 +1,988 @@
+[
+    {
+        "description": "Test cases for EmptyInputOutput operation",
+        "metadata": {
+            "protocol": "smithy-rpc-v2-cbor",
+            "protocols": [
+                "smithy-rpc-v2-cbor"
+            ],
+            "apiVersion": "2020-07-14",
+            "targetPrefix": "RpcV2Protocol"
+        },
+        "shapes": {
+            "EmptyStructure": {
+                "type": "structure",
+                "members": {}
+            }
+        },
+        "cases": [
+            {
+                "id": "empty_input",
+                "given": {
+                    "name": "EmptyInputOutput",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "input": {
+                        "shape": "EmptyStructure"
+                    }
+                },
+                "description": "When Input structure is empty we write CBOR equivalent of {}",
+                "params": {},
+                "serialized": {
+                    "method": "POST",
+                    "uri": "/service/RpcV2Protocol/operation/EmptyInputOutput",
+                    "body": "v/8=",
+                    "headers": {
+                        "Accept": "application/cbor",
+                        "Content-Type": "application/cbor",
+                        "smithy-protocol": "rpc-v2-cbor"
+                    },
+                    "forbidHeaders": [
+                        "X-Amz-Target"
+                    ],
+                    "requireHeaders": [
+                        "Content-Length"
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for NoInputOutput operation",
+        "metadata": {
+            "protocol": "smithy-rpc-v2-cbor",
+            "protocols": [
+                "smithy-rpc-v2-cbor"
+            ],
+            "apiVersion": "2020-07-14",
+            "targetPrefix": "RpcV2Protocol"
+        },
+        "shapes": {},
+        "cases": [
+            {
+                "id": "no_input",
+                "given": {
+                    "name": "NoInputOutput",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    }
+                },
+                "description": "Body is empty and no Content-Type header if no input",
+                "params": {},
+                "serialized": {
+                    "method": "POST",
+                    "uri": "/service/RpcV2Protocol/operation/NoInputOutput",
+                    "body": "",
+                    "headers": {
+                        "Accept": "application/cbor",
+                        "smithy-protocol": "rpc-v2-cbor"
+                    },
+                    "forbidHeaders": [
+                        "Content-Type",
+                        "X-Amz-Target"
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for OptionalInputOutput operation",
+        "metadata": {
+            "protocol": "smithy-rpc-v2-cbor",
+            "protocols": [
+                "smithy-rpc-v2-cbor"
+            ],
+            "apiVersion": "2020-07-14",
+            "targetPrefix": "RpcV2Protocol"
+        },
+        "shapes": {
+            "SimpleStructure": {
+                "type": "structure",
+                "members": {
+                    "value": {
+                        "shape": "String"
+                    }
+                }
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "optional_input",
+                "given": {
+                    "name": "OptionalInputOutput",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "input": {
+                        "shape": "SimpleStructure"
+                    }
+                },
+                "description": "When input is empty we write CBOR equivalent of {}",
+                "params": {},
+                "serialized": {
+                    "method": "POST",
+                    "uri": "/service/RpcV2Protocol/operation/OptionalInputOutput",
+                    "body": "v/8=",
+                    "headers": {
+                        "Accept": "application/cbor",
+                        "Content-Type": "application/cbor",
+                        "smithy-protocol": "rpc-v2-cbor"
+                    },
+                    "forbidHeaders": [
+                        "X-Amz-Target"
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for RecursiveShapes operation",
+        "metadata": {
+            "protocol": "smithy-rpc-v2-cbor",
+            "protocols": [
+                "smithy-rpc-v2-cbor"
+            ],
+            "apiVersion": "2020-07-14",
+            "targetPrefix": "RpcV2Protocol"
+        },
+        "shapes": {
+            "RecursiveShapesInputOutput": {
+                "type": "structure",
+                "members": {
+                    "nested": {
+                        "shape": "RecursiveShapesInputOutputNested1"
+                    }
+                }
+            },
+            "RecursiveShapesInputOutputNested1": {
+                "type": "structure",
+                "members": {
+                    "foo": {
+                        "shape": "String"
+                    },
+                    "nested": {
+                        "shape": "RecursiveShapesInputOutputNested2"
+                    }
+                }
+            },
+            "String": {
+                "type": "string"
+            },
+            "RecursiveShapesInputOutputNested2": {
+                "type": "structure",
+                "members": {
+                    "bar": {
+                        "shape": "String"
+                    },
+                    "recursiveMember": {
+                        "shape": "RecursiveShapesInputOutputNested1"
+                    }
+                }
+            }
+        },
+        "cases": [
+            {
+                "id": "RpcV2CborRecursiveShapes",
+                "given": {
+                    "name": "RecursiveShapes",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "input": {
+                        "shape": "RecursiveShapesInputOutput"
+                    }
+                },
+                "description": "Serializes recursive structures",
+                "params": {
+                    "nested": {
+                        "foo": "Foo1",
+                        "nested": {
+                            "bar": "Bar1",
+                            "recursiveMember": {
+                                "foo": "Foo2",
+                                "nested": {
+                                    "bar": "Bar2"
+                                }
+                            }
+                        }
+                    }
+                },
+                "serialized": {
+                    "method": "POST",
+                    "uri": "/service/RpcV2Protocol/operation/RecursiveShapes",
+                    "body": "v2ZuZXN0ZWS/Y2Zvb2RGb28xZm5lc3RlZL9jYmFyZEJhcjFvcmVjdXJzaXZlTWVtYmVyv2Nmb29kRm9vMmZuZXN0ZWS/Y2JhcmRCYXIy//////8=",
+                    "headers": {
+                        "Accept": "application/cbor",
+                        "Content-Type": "application/cbor",
+                        "smithy-protocol": "rpc-v2-cbor"
+                    },
+                    "requireHeaders": [
+                        "Content-Length"
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for RpcV2CborDenseMaps operation",
+        "metadata": {
+            "protocol": "smithy-rpc-v2-cbor",
+            "protocols": [
+                "smithy-rpc-v2-cbor"
+            ],
+            "apiVersion": "2020-07-14",
+            "targetPrefix": "RpcV2Protocol"
+        },
+        "shapes": {
+            "RpcV2CborDenseMapsInputOutput": {
+                "type": "structure",
+                "members": {
+                    "denseStructMap": {
+                        "shape": "DenseStructMap"
+                    },
+                    "denseNumberMap": {
+                        "shape": "DenseNumberMap"
+                    },
+                    "denseBooleanMap": {
+                        "shape": "DenseBooleanMap"
+                    },
+                    "denseStringMap": {
+                        "shape": "DenseStringMap"
+                    },
+                    "denseSetMap": {
+                        "shape": "DenseSetMap"
+                    }
+                }
+            },
+            "DenseStructMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "GreetingStruct"
+                }
+            },
+            "DenseNumberMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "Integer"
+                }
+            },
+            "DenseBooleanMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "Boolean"
+                }
+            },
+            "DenseStringMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "String"
+                }
+            },
+            "DenseSetMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "StringSet"
+                }
+            },
+            "StringSet": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                }
+            },
+            "String": {
+                "type": "string"
+            },
+            "Boolean": {
+                "type": "boolean",
+                "box": true
+            },
+            "Integer": {
+                "type": "integer",
+                "box": true
+            },
+            "GreetingStruct": {
+                "type": "structure",
+                "members": {
+                    "hi": {
+                        "shape": "String"
+                    }
+                }
+            }
+        },
+        "cases": [
+            {
+                "id": "RpcV2CborMaps",
+                "given": {
+                    "name": "RpcV2CborDenseMaps",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "input": {
+                        "shape": "RpcV2CborDenseMapsInputOutput"
+                    },
+                    "documentation": "<p>The example tests basic map serialization.</p>"
+                },
+                "description": "Serializes maps",
+                "params": {
+                    "denseStructMap": {
+                        "foo": {
+                            "hi": "there"
+                        },
+                        "baz": {
+                            "hi": "bye"
+                        }
+                    }
+                },
+                "serialized": {
+                    "method": "POST",
+                    "uri": "/service/RpcV2Protocol/operation/RpcV2CborDenseMaps",
+                    "body": "oW5kZW5zZVN0cnVjdE1hcKJjZm9voWJoaWV0aGVyZWNiYXqhYmhpY2J5ZQ==",
+                    "headers": {
+                        "Accept": "application/cbor",
+                        "Content-Type": "application/cbor",
+                        "smithy-protocol": "rpc-v2-cbor"
+                    },
+                    "requireHeaders": [
+                        "Content-Length"
+                    ]
+                }
+            },
+            {
+                "id": "RpcV2CborSerializesZeroValuesInMaps",
+                "given": {
+                    "name": "RpcV2CborDenseMaps",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "input": {
+                        "shape": "RpcV2CborDenseMapsInputOutput"
+                    },
+                    "documentation": "<p>The example tests basic map serialization.</p>"
+                },
+                "description": "Ensure that 0 and false are sent over the wire in all maps and lists",
+                "params": {
+                    "denseNumberMap": {
+                        "x": 0
+                    },
+                    "denseBooleanMap": {
+                        "x": false
+                    }
+                },
+                "serialized": {
+                    "method": "POST",
+                    "uri": "/service/RpcV2Protocol/operation/RpcV2CborDenseMaps",
+                    "body": "om5kZW5zZU51bWJlck1hcKFheABvZGVuc2VCb29sZWFuTWFwoWF49A==",
+                    "headers": {
+                        "Accept": "application/cbor",
+                        "Content-Type": "application/cbor",
+                        "smithy-protocol": "rpc-v2-cbor"
+                    },
+                    "requireHeaders": [
+                        "Content-Length"
+                    ]
+                }
+            },
+            {
+                "id": "RpcV2CborSerializesDenseSetMap",
+                "given": {
+                    "name": "RpcV2CborDenseMaps",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "input": {
+                        "shape": "RpcV2CborDenseMapsInputOutput"
+                    },
+                    "documentation": "<p>The example tests basic map serialization.</p>"
+                },
+                "description": "A request that contains a dense map of sets.",
+                "params": {
+                    "denseSetMap": {
+                        "x": [],
+                        "y": [
+                            "a",
+                            "b"
+                        ]
+                    }
+                },
+                "serialized": {
+                    "method": "POST",
+                    "uri": "/service/RpcV2Protocol/operation/RpcV2CborDenseMaps",
+                    "body": "oWtkZW5zZVNldE1hcKJheIBheYJhYWFi",
+                    "headers": {
+                        "Accept": "application/cbor",
+                        "Content-Type": "application/cbor",
+                        "smithy-protocol": "rpc-v2-cbor"
+                    },
+                    "requireHeaders": [
+                        "Content-Length"
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for RpcV2CborLists operation",
+        "metadata": {
+            "protocol": "smithy-rpc-v2-cbor",
+            "protocols": [
+                "smithy-rpc-v2-cbor"
+            ],
+            "apiVersion": "2020-07-14",
+            "targetPrefix": "RpcV2Protocol"
+        },
+        "shapes": {
+            "RpcV2CborListInputOutput": {
+                "type": "structure",
+                "members": {
+                    "stringList": {
+                        "shape": "StringList"
+                    },
+                    "stringSet": {
+                        "shape": "StringSet"
+                    },
+                    "integerList": {
+                        "shape": "IntegerList"
+                    },
+                    "booleanList": {
+                        "shape": "BooleanList"
+                    },
+                    "timestampList": {
+                        "shape": "TimestampList"
+                    },
+                    "enumList": {
+                        "shape": "FooEnumList"
+                    },
+                    "intEnumList": {
+                        "shape": "IntegerEnumList"
+                    },
+                    "nestedStringList": {
+                        "shape": "NestedStringList"
+                    },
+                    "structureList": {
+                        "shape": "StructureList"
+                    },
+                    "blobList": {
+                        "shape": "BlobList"
+                    }
+                }
+            },
+            "StringList": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                }
+            },
+            "StringSet": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                }
+            },
+            "IntegerList": {
+                "type": "list",
+                "member": {
+                    "shape": "Integer"
+                }
+            },
+            "BooleanList": {
+                "type": "list",
+                "member": {
+                    "shape": "Boolean"
+                }
+            },
+            "TimestampList": {
+                "type": "list",
+                "member": {
+                    "shape": "Timestamp"
+                }
+            },
+            "FooEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "FooEnum"
+                }
+            },
+            "IntegerEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "IntegerEnum"
+                }
+            },
+            "NestedStringList": {
+                "type": "list",
+                "member": {
+                    "shape": "StringList"
+                },
+                "documentation": "<p>A list of lists of strings.</p>"
+            },
+            "StructureList": {
+                "type": "list",
+                "member": {
+                    "shape": "StructureListMember"
+                }
+            },
+            "BlobList": {
+                "type": "list",
+                "member": {
+                    "shape": "Blob"
+                }
+            },
+            "Blob": {
+                "type": "blob"
+            },
+            "StructureListMember": {
+                "type": "structure",
+                "members": {
+                    "a": {
+                        "shape": "String"
+                    },
+                    "b": {
+                        "shape": "String"
+                    }
+                }
+            },
+            "String": {
+                "type": "string"
+            },
+            "IntegerEnum": {
+                "type": "integer",
+                "box": true
+            },
+            "FooEnum": {
+                "type": "string",
+                "enum": [
+                    "Foo",
+                    "Baz",
+                    "Bar",
+                    "1",
+                    "0"
+                ]
+            },
+            "Timestamp": {
+                "type": "timestamp"
+            },
+            "Boolean": {
+                "type": "boolean",
+                "box": true
+            },
+            "Integer": {
+                "type": "integer",
+                "box": true
+            }
+        },
+        "cases": [
+            {
+                "id": "RpcV2CborLists",
+                "given": {
+                    "name": "RpcV2CborLists",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "input": {
+                        "shape": "RpcV2CborListInputOutput"
+                    },
+                    "documentation": "<p>This test case serializes JSON lists for the following cases for both input and output:</p> <ol> <li>Normal lists.</li> <li>Normal sets.</li> <li>Lists of lists.</li> <li>Lists of structures.</li> </ol>",
+                    "idempotent": true
+                },
+                "description": "Serializes RpcV2 Cbor lists",
+                "params": {
+                    "stringList": [
+                        "foo",
+                        "bar"
+                    ],
+                    "stringSet": [
+                        "foo",
+                        "bar"
+                    ],
+                    "integerList": [
+                        1,
+                        2
+                    ],
+                    "booleanList": [
+                        true,
+                        false
+                    ],
+                    "timestampList": [
+                        1398796238,
+                        1398796238
+                    ],
+                    "enumList": [
+                        "Foo",
+                        "0"
+                    ],
+                    "intEnumList": [
+                        1,
+                        2
+                    ],
+                    "nestedStringList": [
+                        [
+                            "foo",
+                            "bar"
+                        ],
+                        [
+                            "baz",
+                            "qux"
+                        ]
+                    ],
+                    "structureList": [
+                        {
+                            "a": "1",
+                            "b": "2"
+                        },
+                        {
+                            "a": "3",
+                            "b": "4"
+                        }
+                    ],
+                    "blobList": [
+                        "foo",
+                        "bar"
+                    ]
+                },
+                "serialized": {
+                    "method": "POST",
+                    "uri": "/service/RpcV2Protocol/operation/RpcV2CborLists",
+                    "body": "v2pzdHJpbmdMaXN0gmNmb29jYmFyaXN0cmluZ1NldIJjZm9vY2JhcmtpbnRlZ2VyTGlzdIIBAmtib29sZWFuTGlzdIL19G10aW1lc3RhbXBMaXN0gsH7QdTX+/OAAADB+0HU1/vzgAAAaGVudW1MaXN0gmNGb29hMGtpbnRFbnVtTGlzdIIBAnBuZXN0ZWRTdHJpbmdMaXN0goJjZm9vY2JhcoJjYmF6Y3F1eG1zdHJ1Y3R1cmVMaXN0gqJhYWExYWJhMqJhYWEzYWJhNGhibG9iTGlzdIJDZm9vQ2Jhcv8=",
+                    "headers": {
+                        "Accept": "application/cbor",
+                        "Content-Type": "application/cbor",
+                        "smithy-protocol": "rpc-v2-cbor"
+                    },
+                    "requireHeaders": [
+                        "Content-Length"
+                    ]
+                }
+            },
+            {
+                "id": "RpcV2CborListsEmpty",
+                "given": {
+                    "name": "RpcV2CborLists",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "input": {
+                        "shape": "RpcV2CborListInputOutput"
+                    },
+                    "documentation": "<p>This test case serializes JSON lists for the following cases for both input and output:</p> <ol> <li>Normal lists.</li> <li>Normal sets.</li> <li>Lists of lists.</li> <li>Lists of structures.</li> </ol>",
+                    "idempotent": true
+                },
+                "description": "Serializes empty JSON lists",
+                "params": {
+                    "stringList": []
+                },
+                "serialized": {
+                    "method": "POST",
+                    "uri": "/service/RpcV2Protocol/operation/RpcV2CborLists",
+                    "body": "v2pzdHJpbmdMaXN0n///",
+                    "headers": {
+                        "Accept": "application/cbor",
+                        "Content-Type": "application/cbor",
+                        "smithy-protocol": "rpc-v2-cbor"
+                    },
+                    "requireHeaders": [
+                        "Content-Length"
+                    ]
+                }
+            },
+            {
+                "id": "RpcV2CborListsEmptyUsingDefiniteLength",
+                "given": {
+                    "name": "RpcV2CborLists",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "input": {
+                        "shape": "RpcV2CborListInputOutput"
+                    },
+                    "documentation": "<p>This test case serializes JSON lists for the following cases for both input and output:</p> <ol> <li>Normal lists.</li> <li>Normal sets.</li> <li>Lists of lists.</li> <li>Lists of structures.</li> </ol>",
+                    "idempotent": true
+                },
+                "description": "Serializes empty JSON definite length lists",
+                "params": {
+                    "stringList": []
+                },
+                "serialized": {
+                    "method": "POST",
+                    "uri": "/service/RpcV2Protocol/operation/RpcV2CborLists",
+                    "body": "oWpzdHJpbmdMaXN0gA==",
+                    "headers": {
+                        "Accept": "application/cbor",
+                        "Content-Type": "application/cbor",
+                        "smithy-protocol": "rpc-v2-cbor"
+                    },
+                    "requireHeaders": [
+                        "Content-Length"
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for SimpleScalarProperties operation",
+        "metadata": {
+            "protocol": "smithy-rpc-v2-cbor",
+            "protocols": [
+                "smithy-rpc-v2-cbor"
+            ],
+            "apiVersion": "2020-07-14",
+            "targetPrefix": "RpcV2Protocol"
+        },
+        "shapes": {
+            "SimpleScalarStructure": {
+                "type": "structure",
+                "members": {
+                    "trueBooleanValue": {
+                        "shape": "Boolean"
+                    },
+                    "falseBooleanValue": {
+                        "shape": "Boolean"
+                    },
+                    "byteValue": {
+                        "shape": "Integer"
+                    },
+                    "doubleValue": {
+                        "shape": "Double"
+                    },
+                    "floatValue": {
+                        "shape": "Float"
+                    },
+                    "integerValue": {
+                        "shape": "Integer"
+                    },
+                    "longValue": {
+                        "shape": "Long"
+                    },
+                    "shortValue": {
+                        "shape": "Integer"
+                    },
+                    "stringValue": {
+                        "shape": "String"
+                    },
+                    "blobValue": {
+                        "shape": "Blob"
+                    }
+                }
+            },
+            "Boolean": {
+                "type": "boolean",
+                "box": true
+            },
+            "Integer": {
+                "type": "integer",
+                "box": true
+            },
+            "Double": {
+                "type": "double",
+                "box": true
+            },
+            "Float": {
+                "type": "float",
+                "box": true
+            },
+            "Long": {
+                "type": "long",
+                "box": true
+            },
+            "String": {
+                "type": "string"
+            },
+            "Blob": {
+                "type": "blob"
+            }
+        },
+        "cases": [
+            {
+                "id": "RpcV2CborSimpleScalarProperties",
+                "given": {
+                    "name": "SimpleScalarProperties",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "input": {
+                        "shape": "SimpleScalarStructure"
+                    }
+                },
+                "description": "Serializes simple scalar properties",
+                "params": {
+                    "byteValue": 5,
+                    "doubleValue": 1.889,
+                    "falseBooleanValue": false,
+                    "floatValue": 7.625,
+                    "integerValue": 256,
+                    "longValue": 9873,
+                    "shortValue": 9898,
+                    "stringValue": "simple",
+                    "trueBooleanValue": true,
+                    "blobValue": "foo"
+                },
+                "serialized": {
+                    "method": "POST",
+                    "uri": "/service/RpcV2Protocol/operation/SimpleScalarProperties",
+                    "body": "v2lieXRlVmFsdWUFa2RvdWJsZVZhbHVl+z/+OVgQYk3TcWZhbHNlQm9vbGVhblZhbHVl9GpmbG9hdFZhbHVl+kD0AABsaW50ZWdlclZhbHVlGQEAaWxvbmdWYWx1ZRkmkWpzaG9ydFZhbHVlGSaqa3N0cmluZ1ZhbHVlZnNpbXBsZXB0cnVlQm9vbGVhblZhbHVl9WlibG9iVmFsdWVDZm9v/w==",
+                    "headers": {
+                        "Accept": "application/cbor",
+                        "Content-Type": "application/cbor",
+                        "smithy-protocol": "rpc-v2-cbor"
+                    },
+                    "requireHeaders": [
+                        "Content-Length"
+                    ]
+                }
+            },
+            {
+                "id": "RpcV2CborClientDoesntSerializeNullStructureValues",
+                "given": {
+                    "name": "SimpleScalarProperties",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "input": {
+                        "shape": "SimpleScalarStructure"
+                    }
+                },
+                "description": "RpcV2 Cbor should not serialize null structure values",
+                "params": {
+                    "stringValue": null
+                },
+                "serialized": {
+                    "method": "POST",
+                    "uri": "/service/RpcV2Protocol/operation/SimpleScalarProperties",
+                    "body": "v/8=",
+                    "headers": {
+                        "Accept": "application/cbor",
+                        "Content-Type": "application/cbor",
+                        "smithy-protocol": "rpc-v2-cbor"
+                    },
+                    "requireHeaders": [
+                        "Content-Length"
+                    ]
+                }
+            },
+            {
+                "id": "RpcV2CborSupportsNaNFloatInputs",
+                "given": {
+                    "name": "SimpleScalarProperties",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "input": {
+                        "shape": "SimpleScalarStructure"
+                    }
+                },
+                "description": "Supports handling NaN float values.",
+                "params": {
+                    "doubleValue": "NaN",
+                    "floatValue": "NaN"
+                },
+                "serialized": {
+                    "method": "POST",
+                    "uri": "/service/RpcV2Protocol/operation/SimpleScalarProperties",
+                    "body": "v2tkb3VibGVWYWx1Zft/+AAAAAAAAGpmbG9hdFZhbHVl+n/AAAD/",
+                    "headers": {
+                        "Accept": "application/cbor",
+                        "Content-Type": "application/cbor",
+                        "smithy-protocol": "rpc-v2-cbor"
+                    },
+                    "requireHeaders": [
+                        "Content-Length"
+                    ]
+                }
+            },
+            {
+                "id": "RpcV2CborSupportsInfinityFloatInputs",
+                "given": {
+                    "name": "SimpleScalarProperties",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "input": {
+                        "shape": "SimpleScalarStructure"
+                    }
+                },
+                "description": "Supports handling Infinity float values.",
+                "params": {
+                    "doubleValue": "Infinity",
+                    "floatValue": "Infinity"
+                },
+                "serialized": {
+                    "method": "POST",
+                    "uri": "/service/RpcV2Protocol/operation/SimpleScalarProperties",
+                    "body": "v2tkb3VibGVWYWx1Zft/8AAAAAAAAGpmbG9hdFZhbHVl+n+AAAD/",
+                    "headers": {
+                        "Accept": "application/cbor",
+                        "Content-Type": "application/cbor",
+                        "smithy-protocol": "rpc-v2-cbor"
+                    },
+                    "requireHeaders": [
+                        "Content-Length"
+                    ]
+                }
+            },
+            {
+                "id": "RpcV2CborSupportsNegativeInfinityFloatInputs",
+                "given": {
+                    "name": "SimpleScalarProperties",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "input": {
+                        "shape": "SimpleScalarStructure"
+                    }
+                },
+                "description": "Supports handling Infinity float values.",
+                "params": {
+                    "doubleValue": "-Infinity",
+                    "floatValue": "-Infinity"
+                },
+                "serialized": {
+                    "method": "POST",
+                    "uri": "/service/RpcV2Protocol/operation/SimpleScalarProperties",
+                    "body": "v2tkb3VibGVWYWx1Zfv/8AAAAAAAAGpmbG9hdFZhbHVl+v+AAAD/",
+                    "headers": {
+                        "Accept": "application/cbor",
+                        "Content-Type": "application/cbor",
+                        "smithy-protocol": "rpc-v2-cbor"
+                    },
+                    "requireHeaders": [
+                        "Content-Length"
+                    ]
+                }
+            }
+        ]
+    }
+]

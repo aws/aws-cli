@@ -1,4 +1,4 @@
-**To download a DB log file**
+**Example 1: To download the latest part of a DB log file**
 
 The following ``download-db-log-file-portion`` example downloads only the latest part of your log file, saving it to a local file named ``tail.txt``. ::
 
@@ -7,7 +7,11 @@ The following ``download-db-log-file-portion`` example downloads only the latest
         --log-file-name log.txt \
         --output text > tail.txt
 
-To download the entire file, you need to include the ``--starting-token 0`` parameter. The following example saves the output to a local file named ``full.txt``. ::
+The saved file might contain blank lines.  They appear at the end of each part of the log file while being downloaded.
+
+**Example 2: To download an entire DB log file**
+
+The following ``download-db-log-file-portion`` example downloads the entire log file, using the ``--starting-token 0`` parameter, and saves the output to a local file named ``full.txt``. ::
 
     aws rds download-db-log-file-portion \
         --db-instance-identifier test-instance \
@@ -15,4 +19,4 @@ To download the entire file, you need to include the ``--starting-token 0`` para
         --starting-token 0 \
         --output text > full.txt
 
-The saved file might contain blank lines.  They appear at the end of each part of the log file while being downloaded.  This generally doesn't cause any trouble in your log file analysis.
+The saved file might contain blank lines.  They appear at the end of each part of the log file while being downloaded.

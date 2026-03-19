@@ -1,12 +1,15 @@
 **To delete a key pair**
 
-This example deletes the key pair named ``MyKeyPair``. If the command succeeds, no output is returned.
+The following ``delete-key-pair`` example deletes the specified key pair. ::
 
-Command::
+    aws ec2 delete-key-pair \
+        --key-name my-key-pair
 
-  aws ec2 delete-key-pair --key-name MyKeyPair
+Output::
 
-For more information, see `Using Key Pairs`_ in the *AWS Command Line Interface User Guide*.
+    {
+        "Return": true,
+        "KeyPairId": "key-03c8d3aceb53b507"
+    }
 
-.. _`Using Key Pairs`: http://docs.aws.amazon.com/cli/latest/userguide/cli-ec2-keypairs.html
-
+For more information, see `Create and delete key pairs <https://docs.aws.amazon.com/cli/latest/userguide/cli-ec2-keypairs.html>`__ in the *AWS Command Line Interface User Guide*.

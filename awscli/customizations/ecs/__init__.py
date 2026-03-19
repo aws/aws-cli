@@ -12,8 +12,13 @@
 # language governing permissions and limitations under the License.
 
 from awscli.customizations.ecs.deploy import ECSDeploy
-from awscli.customizations.ecs.executecommand import ECSExecuteCommand
-from awscli.customizations.ecs.executecommand import ExecuteCommandCaller
+from awscli.customizations.ecs.executecommand import (
+    ECSExecuteCommand,
+    ExecuteCommandCaller,
+)
+from awscli.customizations.ecs.monitorexpressgatewayservice import (
+    ECSMonitorExpressGatewayService,
+)
 
 
 def initialize(cli):
@@ -33,7 +38,11 @@ def inject_commands(command_table, session, **kwargs):
         name='execute-command',
         parent_name='ecs',
         session=session,
-        operation_model=session.get_service_model('ecs')
-                    .operation_model('ExecuteCommand'),
+        operation_model=session.get_service_model('ecs').operation_model(
+            'ExecuteCommand'
+        ),
         operation_caller=ExecuteCommandCaller(session),
+    )
+    command_table['monitor-express-gateway-service'] = (
+        ECSMonitorExpressGatewayService(session)
     )

@@ -12,19 +12,17 @@
 # language governing permissions and limitations under the License.
 import re
 
-import ruamel.yaml as yaml
+import ruamel.yaml
+from botocore.compat import OrderedDict, json
 from ruamel.yaml.resolver import ScalarNode, SequenceNode
-from botocore.compat import json
-from botocore.compat import OrderedDict
 
-
-from awscli.compat import six
+from awscli.utils import dump_yaml_to_str
 
 
 def intrinsics_multi_constructor(loader, tag_prefix, node):
     """
     YAML constructor to parse CloudFormation intrinsics.
-    This will return a dictionary with key being the instrinsic name
+    This will return a dictionary with key being the intrinsic name
     """
 
     # Get the actual tag name excluding the first exclamation
@@ -37,7 +35,7 @@ def intrinsics_multi_constructor(loader, tag_prefix, node):
 
     cfntag = prefix + tag
 
-    if tag == "GetAtt" and isinstance(node.value, six.string_types):
+    if tag == "GetAtt" and isinstance(node.value, str):
         # ShortHand notation for !GetAtt accepts Resource.Attribute format
         # while the standard notation is to use an array
         # [Resource, Attribute]. Convert shorthand to standard format
@@ -74,9 +72,10 @@ def _add_yaml_1_1_boolean_resolvers(resolver_cls):
         '|true|True|TRUE|false|False|FALSE'
         '|on|On|ON|off|Off|OFF)$'
     )
-    boolean_first_chars = list(u'yYnNtTfFoO')
+    boolean_first_chars = list('yYnNtTfFoO')
     resolver_cls.add_implicit_resolver(
-        'tag:yaml.org,2002:bool', boolean_regex, boolean_first_chars)
+        'tag:yaml.org,2002:bool', boolean_regex, boolean_first_chars
+    )
 
 
 def yaml_dump(dict_to_dump):
@@ -85,13 +84,14 @@ def yaml_dump(dict_to_dump):
     :param dict_to_dump:
     :return:
     """
-    FlattenAliasDumper.add_representer(OrderedDict, _dict_representer)
-    _add_yaml_1_1_boolean_resolvers(FlattenAliasDumper)
-    return yaml.dump(
-        dict_to_dump,
-        default_flow_style=False,
-        Dumper=FlattenAliasDumper,
-    )
+
+    yaml = ruamel.yaml.YAML(typ="safe", pure=True)
+    yaml.default_flow_style = False
+    yaml.Representer = FlattenAliasRepresenter
+    _add_yaml_1_1_boolean_resolvers(yaml.Resolver)
+    yaml.Representer.add_representer(OrderedDict, _dict_representer)
+
+    return dump_yaml_to_str(yaml, dict_to_dump)
 
 
 def _dict_constructor(loader, node):
@@ -108,13 +108,19 @@ def yaml_parse(yamlstr):
         # json parser.
         return json.loads(yamlstr, object_pairs_hook=OrderedDict)
     except ValueError:
-        yaml.SafeLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, _dict_constructor)
-        yaml.SafeLoader.add_multi_constructor(
-            "!", intrinsics_multi_constructor)
-        _add_yaml_1_1_boolean_resolvers(yaml.SafeLoader)
-        return yaml.safe_load(yamlstr)
+        yaml = ruamel.yaml.YAML(typ="safe", pure=True)
+        yaml.Constructor.add_constructor(
+            ruamel.yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
+            _dict_constructor,
+        )
+        yaml.Constructor.add_multi_constructor(
+            "!", intrinsics_multi_constructor
+        )
+        _add_yaml_1_1_boolean_resolvers(yaml.Resolver)
+
+        return yaml.load(yamlstr)
 
 
-class FlattenAliasDumper(yaml.SafeDumper):
+class FlattenAliasRepresenter(ruamel.yaml.representer.SafeRepresenter):
     def ignore_aliases(self, data):
         return True

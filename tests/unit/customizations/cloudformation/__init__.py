@@ -11,12 +11,11 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import copy
+import unittest
 
-import six, unittest
 import ruamel.yaml as yaml
 
-if six.PY3:
-    unittest.TestCase.assertItemsEqual = unittest.TestCase.assertCountEqual
+unittest.TestCase.assertItemsEqual = unittest.TestCase.assertCountEqual
 
 
 class BaseYAMLTest(unittest.TestCase):
@@ -30,10 +29,12 @@ class BaseYAMLTest(unittest.TestCase):
     CLI command runs because we do not run multiple commands that differ
     in YAML loading logic in a single process.
     """
+
     def setUp(self):
         super(BaseYAMLTest, self).setUp()
         self.original_implicit_resolvers = copy.deepcopy(
-            yaml.resolver.implicit_resolvers)
+            yaml.resolver.implicit_resolvers
+        )
 
     def tearDown(self):
         super(BaseYAMLTest, self).tearDown()

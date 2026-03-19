@@ -1,0 +1,198 @@
+{
+    "testCases": [
+        {
+            "documentation": "FIPS should error",
+            "expect": {
+                "error": "Invalid Configuration: FIPS is not supported with CloudFront-KeyValueStore."
+            },
+            "params": {
+                "UseFIPS": true
+            }
+        },
+        {
+            "documentation": "KVS ARN must be provided to use this service",
+            "expect": {
+                "error": "KVS ARN must be provided to use this service"
+            }
+        },
+        {
+            "documentation": "KVS ARN must be a valid ARN",
+            "expect": {
+                "error": "KVS ARN must be a valid ARN"
+            },
+            "params": {
+                "KvsARN": "not-a-valid-arn"
+            }
+        },
+        {
+            "documentation": "Provided ARN was not a valid CloudFront Service ARN. Found: `notcloudfront`",
+            "expect": {
+                "error": "Provided ARN is not a valid CloudFront Service ARN. Found: `notcloudfront`"
+            },
+            "params": {
+                "KvsARN": "arn:aws:notcloudfront::123456789012:key-value-store/my-first-kvs-e10b1dce4f394248811e77167e0451ba"
+            }
+        },
+        {
+            "documentation": "Provided ARN must be a global resource ARN. Found: `us-west-2`",
+            "expect": {
+                "error": "Provided ARN must be a global resource ARN. Found: `us-west-2`"
+            },
+            "params": {
+                "KvsARN": "arn:aws:cloudfront:us-west-2:123456789012:key-value-store/my-first-kvs-e10b1dce4f394248811e77167e0451ba"
+            }
+        },
+        {
+            "documentation": "ARN resource type is invalid. Expected `key-value-store`, found: `some-other-resource-type`",
+            "expect": {
+                "error": "ARN resource type is invalid. Expected `key-value-store`, found: `some-other-resource-type`"
+            },
+            "params": {
+                "KvsARN": "arn:aws:cloudfront::123456789012:some-other-resource-type/my-first-kvs-e10b1dce4f394248811e77167e0451ba"
+            }
+        },
+        {
+            "documentation": "CloudFront-KeyValueStore is not supported in partition `aws-cn`",
+            "expect": {
+                "error": "CloudFront-KeyValueStore is not supported in partition `aws-cn`"
+            },
+            "params": {
+                "KvsARN": "arn:aws-cn:cloudfront::123456789012:key-value-store/my-first-kvs-e10b1dce4f394248811e77167e0451ba"
+            }
+        },
+        {
+            "documentation": "CloudFront-KeyValueStore is not supported in partition `aws-us-gov`",
+            "expect": {
+                "error": "CloudFront-KeyValueStore is not supported in partition `aws-us-gov`"
+            },
+            "params": {
+                "KvsARN": "arn:aws-us-gov:cloudfront::123456789012:key-value-store/my-first-kvs-e10b1dce4f394248811e77167e0451ba"
+            }
+        },
+        {
+            "documentation": "Valid account based endpoint",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "signingName": "cloudfront-keyvaluestore",
+                                "name": "sigv4a",
+                                "signingRegionSet": [
+                                    "*"
+                                ]
+                            }
+                        ]
+                    },
+                    "url": "https://123456789012.cloudfront-kvs.global.api.aws"
+                }
+            },
+            "params": {
+                "KvsARN": "arn:aws:cloudfront::123456789012:key-value-store/my-first-kvs-e10b1dce4f394248811e77167e0451ba"
+            }
+        },
+        {
+            "documentation": "Valid account based endpoint, with SDK region",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "signingName": "cloudfront-keyvaluestore",
+                                "name": "sigv4a",
+                                "signingRegionSet": [
+                                    "*"
+                                ]
+                            }
+                        ]
+                    },
+                    "url": "https://123456789012.cloudfront-kvs.global.api.aws"
+                }
+            },
+            "params": {
+                "KvsARN": "arn:aws:cloudfront::123456789012:key-value-store/my-first-kvs-e10b1dce4f394248811e77167e0451ba",
+                "Region": "us-west-2"
+            }
+        },
+        {
+            "documentation": "Valid ARN, different partition, should error",
+            "expect": {
+                "error": "Client was configured for partition `aws-cn` but Kvs ARN has `aws`"
+            },
+            "params": {
+                "KvsARN": "arn:aws:cloudfront::123456789012:key-value-store/my-first-kvs-e10b1dce4f394248811e77167e0451ba",
+                "Region": "cn-north-1"
+            }
+        },
+        {
+            "documentation": "Valid account based endpoint with FIPS, should error",
+            "expect": {
+                "error": "Invalid Configuration: FIPS is not supported with CloudFront-KeyValueStore."
+            },
+            "params": {
+                "KvsARN": "arn:aws:cloudfront::123456789012:key-value-store/my-first-kvs-e10b1dce4f394248811e77167e0451ba",
+                "Region": "us-east-1",
+                "UseFIPS": true
+            }
+        },
+        {
+            "documentation": "Custom sdk endpoint override",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "signingName": "cloudfront-keyvaluestore",
+                                "name": "sigv4a",
+                                "signingRegionSet": [
+                                    "*"
+                                ]
+                            }
+                        ]
+                    },
+                    "url": "https://123456789012.my-override.example.com"
+                }
+            },
+            "params": {
+                "KvsARN": "arn:aws:cloudfront::123456789012:key-value-store/my-first-kvs-e10b1dce4f394248811e77167e0451ba",
+                "Region": "us-east-1",
+                "Endpoint": "https://my-override.example.com"
+            }
+        },
+        {
+            "documentation": "Custom sdk endpoint override with path and http",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "signingName": "cloudfront-keyvaluestore",
+                                "name": "sigv4a",
+                                "signingRegionSet": [
+                                    "*"
+                                ]
+                            }
+                        ]
+                    },
+                    "url": "http://123456789012.my-override.example.com/custom-path"
+                }
+            },
+            "params": {
+                "KvsARN": "arn:aws:cloudfront::123456789012:key-value-store/my-first-kvs-e10b1dce4f394248811e77167e0451ba",
+                "Endpoint": "http://my-override.example.com/custom-path"
+            }
+        },
+        {
+            "documentation": "Custom override with different partition should error",
+            "expect": {
+                "error": "Client was configured for partition `aws-us-gov` but Kvs ARN has `aws`"
+            },
+            "params": {
+                "KvsARN": "arn:aws:cloudfront::123456789012:key-value-store/my-first-kvs-e10b1dce4f394248811e77167e0451ba",
+                "Region": "us-gov-east-1",
+                "Endpoint": "https://my-override.example.com"
+            }
+        }
+    ],
+    "version": "1.0"
+}

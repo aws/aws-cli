@@ -65,4 +65,4 @@ Output::
         ]
     }
 
-For more information, see `ListRepositoryAssociations<https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_ListRepositoryAssociations.html>`__ in the *Amazon DevOps Guru API Reference*.
+For more information, see `View all repository associations in CodeGuru Reviewer <https://docs.aws.amazon.com/codeguru/latest/reviewer-ug/repository-association-view-all.html>`__ in the *Amazon CodeGuru Reviewer User Guide*.

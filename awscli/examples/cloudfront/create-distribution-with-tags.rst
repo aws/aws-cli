@@ -1,20 +1,16 @@
 **To create a CloudFront distribution with tags**
 
-The following example creates a distribution with two tags by providing the
-distribution configuration and tags in a JSON file named
-``dist-config-with-tags.json``::
+The following ``create-distribution-with-tags`` example creates a distribution with two tags by providing the distribution configuration and tags in a JSON file named ``dist-config-with-tags.json``. ::
 
     aws cloudfront create-distribution-with-tags \
         --distribution-config-with-tags file://dist-config-with-tags.json
 
-The file ``dist-config-with-tags.json`` is a JSON document in the current
-folder that contains the following. Note the ``Tags`` object at the top of
-the file, which contains two tags:
+The file ``dist-config-with-tags.json`` is a JSON document in the current folder. Note the ``Tags`` object at the top of the file, which contains two tags:
 
 - ``Name = ExampleDistribution``
 - ``Project = ExampleProject``
 
-::
+Contents of ``dist-config-with-tags.json``::
 
     {
         "Tags": {
@@ -39,8 +35,8 @@ the file, which contains two tags:
                 "Quantity": 1,
                 "Items": [
                     {
-                        "Id": "awsexamplebucket.s3.amazonaws.com-cli-example",
-                        "DomainName": "awsexamplebucket.s3.amazonaws.com",
+                        "Id": "amzn-s3-demo-bucket.s3.amazonaws.com-cli-example",
+                        "DomainName": "amzn-s3-demo-bucket.s3.amazonaws.com",
                         "OriginPath": "",
                         "CustomHeaders": {
                             "Quantity": 0
@@ -55,7 +51,7 @@ the file, which contains two tags:
                 "Quantity": 0
             },
             "DefaultCacheBehavior": {
-                "TargetOriginId": "awsexamplebucket.s3.amazonaws.com-cli-example",
+                "TargetOriginId": "amzn-s3-demo-bucket.s3.amazonaws.com-cli-example",
                 "ForwardedValues": {
                     "QueryString": false,
                     "Cookies": {
@@ -155,8 +151,8 @@ Output::
                     "Quantity": 1,
                     "Items": [
                         {
-                            "Id": "awsexamplebucket.s3.amazonaws.com-cli-example",
-                            "DomainName": "awsexamplebucket.s3.amazonaws.com",
+                            "Id": "amzn-s3-demo-bucket.s3.amazonaws.com-cli-example",
+                            "DomainName": "amzn-s3-demo-bucket.s3.amazonaws.com",
                             "OriginPath": "",
                             "CustomHeaders": {
                                 "Quantity": 0
@@ -171,7 +167,7 @@ Output::
                     "Quantity": 0
                 },
                 "DefaultCacheBehavior": {
-                    "TargetOriginId": "awsexamplebucket.s3.amazonaws.com-cli-example",
+                    "TargetOriginId": "amzn-s3-demo-bucket.s3.amazonaws.com-cli-example",
                     "ForwardedValues": {
                         "QueryString": false,
                         "Cookies": {

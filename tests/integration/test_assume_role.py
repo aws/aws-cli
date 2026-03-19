@@ -10,16 +10,16 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import json
 import os
 import shutil
 import tempfile
-import json
 import time
 
-from botocore.session import Session
 from botocore.exceptions import ClientError
+from botocore.session import Session
 
-from awscli.testutils import unittest, aws, random_chars
+from awscli.testutils import aws, random_chars, unittest
 
 S3_READ_POLICY_ARN = 'arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess'
 
@@ -42,12 +42,10 @@ class TestAssumeRoleCredentials(unittest.TestCase):
             "Statement": [
                 {
                     "Effect": "Allow",
-                    "Principal": {
-                        "AWS": "arn:aws:iam::%s:root" % account_id
-                    },
-                    "Action": "sts:AssumeRole"
+                    "Principal": {"AWS": "arn:aws:iam::%s:root" % account_id},
+                    "Action": "sts:AssumeRole",
                 }
-            ]
+            ],
         }
 
     def tearDown(self):
@@ -60,15 +58,15 @@ class TestAssumeRoleCredentials(unittest.TestCase):
     def create_role(self, policy_document, policy_arn=None):
         name = self.random_name()
         response = self.iam.create_role(
-            RoleName=name,
-            AssumeRolePolicyDocument=json.dumps(policy_document)
+            RoleName=name, AssumeRolePolicyDocument=json.dumps(policy_document)
         )
         self.addCleanup(self.iam.delete_role, RoleName=name)
         if policy_arn:
             self.iam.attach_role_policy(RoleName=name, PolicyArn=policy_arn)
             self.addCleanup(
-                self.iam.detach_role_policy, RoleName=name,
-                PolicyArn=policy_arn
+                self.iam.detach_role_policy,
+                RoleName=name,
+                PolicyArn=policy_arn,
             )
         return response['Role']
 
@@ -78,13 +76,9 @@ class TestAssumeRoleCredentials(unittest.TestCase):
         self.addCleanup(self.iam.delete_user, UserName=name)
 
         for arn in policy_arns:
-            self.iam.attach_user_policy(
-                UserName=name,
-                PolicyArn=arn
-            )
+            self.iam.attach_user_policy(UserName=name, PolicyArn=arn)
             self.addCleanup(
-                self.iam.detach_user_policy,
-                UserName=name, PolicyArn=arn
+                self.iam.detach_user_policy, UserName=name, PolicyArn=arn
             )
 
         return user
@@ -93,19 +87,29 @@ class TestAssumeRoleCredentials(unittest.TestCase):
         creds = self.iam.create_access_key(UserName=user_name)['AccessKey']
         self.addCleanup(
             self.iam.delete_access_key,
-            UserName=user_name, AccessKeyId=creds['AccessKeyId']
+            UserName=user_name,
+            AccessKeyId=creds['AccessKeyId'],
         )
         return creds
 
-    def wait_for_assume_role(self, role_arn, access_key, secret_key,
-                             token=None, attempts=30, delay=10,
-                             num_success_needed=3):
+    def wait_for_assume_role(
+        self,
+        role_arn,
+        access_key,
+        secret_key,
+        token=None,
+        attempts=30,
+        delay=10,
+        num_success_needed=3,
+    ):
         # "Why not use the policy simulator?" you might ask. The answer is
         # that the policy simulator will return success far before you can
         # actually make the calls.
         client = self.parent_session.create_client(
-            'sts', aws_access_key_id=access_key,
-            aws_secret_access_key=secret_key, aws_session_token=token
+            'sts',
+            aws_access_key_id=access_key,
+            aws_secret_access_key=secret_key,
+            aws_session_token=token,
         )
         attempts_remaining = attempts
         role_session_name = random_chars(10)
@@ -113,7 +117,8 @@ class TestAssumeRoleCredentials(unittest.TestCase):
         while attempts_remaining > 0:
             try:
                 result = client.assume_role(
-                    RoleArn=role_arn, RoleSessionName=role_session_name)
+                    RoleArn=role_arn, RoleSessionName=role_session_name
+                )
                 num_success += 1
                 if num_success == num_success_needed:
                     return result['Credentials']
@@ -133,14 +138,13 @@ class TestAssumeRoleCredentials(unittest.TestCase):
                 {
                     "Effect": "Allow",
                     "Resource": role_arn,
-                    "Action": "sts:AssumeRole"
+                    "Action": "sts:AssumeRole",
                 }
-            ]
+            ],
         }
         name = self.random_name()
         response = self.iam.create_policy(
-            PolicyName=name,
-            PolicyDocument=json.dumps(policy_document)
+            PolicyName=name, PolicyDocument=json.dumps(policy_document)
         )
         self.addCleanup(
             self.iam.delete_policy, PolicyArn=response['Policy']['Arn']
@@ -188,8 +192,10 @@ class TestAssumeRoleCredentials(unittest.TestCase):
             'role_arn = %s\n'
         )
         config = config % (
-            user_creds['AccessKeyId'], user_creds['SecretAccessKey'],
-            middle_role['Arn'], final_role['Arn']
+            user_creds['AccessKeyId'],
+            user_creds['SecretAccessKey'],
+            middle_role['Arn'],
+            final_role['Arn'],
         )
         with open(self.config_file, 'w') as f:
             f.write(config)

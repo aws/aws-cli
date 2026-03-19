@@ -11,21 +11,18 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import datetime
-import mock
 
+from botocore.compat import parse_qs, urlparse
 from dateutil.tz import tzutc
-from botocore.compat import urlparse, parse_qs
 
-from awscli.compat import six
-from awscli.testutils import BaseAWSCommandParamsTest
+from awscli.testutils import BaseAWSCommandParamsTest, mock
 
 
 class TestGenerateDBAuthToken(BaseAWSCommandParamsTest):
-
     prefix = 'rds generate-db-auth-token'
 
     def _urlparse(self, url):
-        if isinstance(url, six.binary_type):
+        if isinstance(url, bytes):
             # Not really necessary, but it helps to reduce noise on Python 2.x
             url = url.decode('utf8')
         return urlparse(url)
@@ -66,4 +63,5 @@ class TestGenerateDBAuthToken(BaseAWSCommandParamsTest):
         )
 
         self.assert_url_equal(
-            'https://' + stdout.strip('\n'), 'https://' + expected)
+            'https://' + stdout.strip('\n'), 'https://' + expected
+        )

@@ -1,7 +1,10 @@
-**To delete an Internet gateway**
+**To delete an internet gateway**
 
-This example deletes the specified Internet gateway. If the command succeeds, no output is returned.
+The following ``delete-internet-gateway`` example deletes the specified internet gateway. ::
 
-Command::
+    aws ec2 delete-internet-gateway \
+        --internet-gateway-id igw-0d0fb496b3EXAMPLE
 
-  aws ec2 delete-internet-gateway --internet-gateway-id igw-c0a643a9
+This command produces no output. 
+
+For more information, see `Internet gateways <https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html>`__ in the *Amazon VPC User Guide*.

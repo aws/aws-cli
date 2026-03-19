@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 import os
 
-
 HISTORY_FILENAME_ENV_VAR = 'AWS_CLI_HISTORY_FILE'
 DEFAULT_HISTORY_FILENAME = os.path.expanduser(
-    os.path.join('~', '.aws', 'cli', 'history', 'history.db'))
+    os.path.join('~', '.aws', 'cli', 'history', 'history.db')
+)

@@ -21,3 +21,5 @@ Output::
             },
             ...
     }
+
+For more information, see `Refining permissions in AWS using last accessed information <https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html>`__ in the *AWS IAM User Guide*.

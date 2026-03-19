@@ -37,4 +37,4 @@ Output::
         }
     }
 
-For more information, see `Removing a cluster from an Amazon Aurora global database<https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database-managing.html#aurora-global-database-detaching>`__ in the *Amazon Aurora User Guide*.
+For more information, see `Removing a cluster from an Amazon Aurora global database <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database-managing.html#aurora-global-database-detaching>`__ in the *Amazon Aurora User Guide*.

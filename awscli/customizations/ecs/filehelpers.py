@@ -11,7 +11,8 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import json
-import ruamel.yaml as yaml
+
+from ruamel.yaml import YAML
 
 from awscli.customizations.ecs import exceptions
 
@@ -21,16 +22,17 @@ DGP_PREFIX = 'DgpECS-'
 
 
 def find_required_key(resource_name, obj, key):
-
     if obj is None:
         raise exceptions.MissingPropertyError(
-            resource=resource_name, prop_name=key)
+            resource=resource_name, prop_name=key
+        )
 
     result = _get_case_insensitive_key(obj, key)
 
     if result is None:
         raise exceptions.MissingPropertyError(
-            resource=resource_name, prop_name=key)
+            resource=resource_name, prop_name=key
+        )
     else:
         return result
 
@@ -77,4 +79,5 @@ def parse_appspec(appspec_str):
     try:
         return json.loads(appspec_str)
     except ValueError:
-        return yaml.safe_load(appspec_str)
+        yaml = YAML(typ='safe', pure=True)
+        return yaml.load(appspec_str)

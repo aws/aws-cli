@@ -10,15 +10,16 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest
-import mock
+from botocore.hooks import HierarchicalEmitter
 
 from awscli.clidriver import CLIDriver
-from awscli.customizations.commands import BasicHelp, BasicCommand
-from awscli.customizations.commands import BasicDocHandler
-from awscli.testutils import BaseAWSCommandParamsTest
-from botocore.hooks import HierarchicalEmitter
-from tests.unit.test_clidriver import FakeSession, FakeCommand
+from awscli.customizations.commands import (
+    BasicCommand,
+    BasicDocHandler,
+    BasicHelp,
+)
+from awscli.testutils import BaseAWSCommandParamsTest, mock, unittest
+from tests.unit.test_clidriver import FakeCommand, FakeSession
 
 
 class MockCustomCommand(BasicCommand):
@@ -28,22 +29,22 @@ class MockCustomCommand(BasicCommand):
 
 
 class TestCommandLoader(unittest.TestCase):
-
     def test_basic_help_with_contents(self):
         cmd_object = mock.Mock()
         mock_module = mock.Mock()
         mock_module.__file__ = '/some/root'
         cmd_object.DESCRIPTION = BasicCommand.FROM_FILE(
-            'foo', 'bar', 'baz.txt', root_module=mock_module)
+            'foo', 'bar', 'baz.txt', root_module=mock_module
+        )
         help_command = BasicHelp(mock.Mock(), cmd_object, {}, {})
         with mock.patch('awscli.customizations.commands._open') as mock_open:
-            mock_open.return_value.__enter__.return_value.read.return_value = \
+            mock_open.return_value.__enter__.return_value.read.return_value = (
                 'fake description'
+            )
             self.assertEqual(help_command.description, 'fake description')
 
 
 class TestBasicCommand(unittest.TestCase):
-
     def setUp(self):
         self.session = mock.Mock()
         self.command = BasicCommand(self.session)
@@ -80,8 +81,7 @@ class TestBasicCommand(unittest.TestCase):
         self.assertEqual(lineage[0], self.command)
         self.assertIsInstance(lineage[1], BasicCommand)
         self.assertEqual(
-            subcommand.lineage_names,
-            [self.command.name, subcommand.name]
+            subcommand.lineage_names, [self.command.name, subcommand.name]
         )
 
     def test_event_class(self):
@@ -102,7 +102,7 @@ class TestBasicCommandHooks(unittest.TestCase):
     def setUp(self):
         self.session = FakeSession()
         self.session.get_config_variable = mock.Mock()
-        return_values = {'cli_auto_prompt': 'off'}
+        return_values = {'cli_auto_prompt': 'off', 'cli_help_output': None}
         self.session.get_config_variable.side_effect = return_values
         self.emitter = mock.Mock(wraps=HierarchicalEmitter())
         self.session.emitter = self.emitter
@@ -119,21 +119,22 @@ class TestBasicCommandHooks(unittest.TestCase):
 
     def test_expected_events_are_emitted_in_order(self):
         driver = CLIDriver(session=self.session)
-        self.emitter.register(
-            'building-command-table.s3', self.inject_command)
+        self.emitter.register('building-command-table.s3', self.inject_command)
 
         driver.main('s3 foo'.split())
 
-        self.assert_events_fired_in_order([
-            'building-command-table.main',
-            'building-top-level-params',
-            'top-level-args-parsed',
-            'session-initialized',
-            'building-command-table.s3',
-            'building-command-table.s3_foo',
-            'building-arg-table.s3_foo',
-            'before-building-argument-table-parser.s3.foo'
-        ])
+        self.assert_events_fired_in_order(
+            [
+                'building-command-table.main',
+                'building-top-level-params',
+                'top-level-args-parsed',
+                'session-initialized',
+                'building-command-table.s3',
+                'building-command-table.s3_foo',
+                'building-arg-table.s3_foo',
+                'before-building-argument-table-parser.s3.foo',
+            ]
+        )
 
 
 class TestBasicDocHandler(unittest.TestCase):
@@ -148,48 +149,60 @@ class TestBasicDocHandler(unittest.TestCase):
             self.session, self.obj, self.command_table, self.arg_table
         )
 
-    def test_includes_global_args_ref_in_man_description(self):
-        help_command = self.create_help_command()
-        operation_handler = BasicDocHandler(help_command)
-        operation_handler.doc_description(help_command=help_command)
-        rendered = help_command.doc.getvalue()
-        rendered = rendered.decode('utf-8')
-        # The links aren't generated in the "man" mode.
-        self.assertIn(
-            "See 'aws help' for descriptions of global parameters", rendered
-        )
+    def create_arg_table(self):
+        return CLIDriver().create_help_command().arg_table
 
-    def test_includes_global_args_ref_in_html_description(self):
-        help_command = self.create_help_command()
-        help_command.doc.target = 'html'
+    def generate_global_option_docs(self, help_command):
         operation_handler = BasicDocHandler(help_command)
-        operation_handler.doc_description(help_command=help_command)
-        rendered = help_command.doc.getvalue().decode('utf-8')
-        self.assertIn(
-            "See :doc:`'aws help' </reference/index>` for descriptions of "
-            "global parameters", rendered
-        )
+        operation_handler.doc_global_option(help_command=help_command)
+        return help_command.doc.getvalue().decode('utf-8')
 
-    def test_includes_global_args_ref_in_man_options(self):
-        help_command = self.create_help_command()
+    def generate_global_synopsis_docs(self, help_command):
         operation_handler = BasicDocHandler(help_command)
-        operation_handler.doc_options_end(help_command=help_command)
-        rendered = help_command.doc.getvalue().decode('utf-8')
-        # The links aren't generated in the "man" mode.
-        self.assertIn(
-            "See 'aws help' for descriptions of global parameters", rendered
-        )
+        operation_handler.doc_synopsis_end(help_command=help_command)
+        return help_command.doc.getvalue().decode('utf-8')
 
-    def test_includes_global_args_ref_in_html_options(self):
+    def assert_global_args_documented(self, arg_table, content):
+        for arg in arg_table:
+            self.assertIn(arg_table.get(arg).cli_name, content)
+
+    def assert_global_args_not_documented(self, arg_table, content):
+        for arg in arg_table:
+            self.assertNotIn(arg_table.get(arg).cli_name, content)
+
+    def test_includes_global_options_when_command_table_empty(self):
         help_command = self.create_help_command()
-        help_command.doc.target = 'html'
-        operation_handler = BasicDocHandler(help_command)
-        operation_handler.doc_options_end(help_command=help_command)
-        rendered = help_command.doc.getvalue().decode('utf-8')
-        self.assertIn(
-            "See :doc:`'aws help' </reference/index>` for descriptions of "
-            "global parameters", rendered
-        )
+        arg_table = self.create_arg_table()
+        help_command.arg_table = arg_table
+        rendered = self.generate_global_option_docs(help_command)
+        self.assert_global_args_documented(arg_table, rendered)
+
+    def test_excludes_global_options_when_command_table_not_empty(self):
+        help_command = self.create_help_command()
+        arg_table = self.create_arg_table()
+        help_command.arg_table = arg_table
+        fake_command = FakeCommand(FakeSession())
+        fake_command.NAME = 'command'
+        help_command.command_table = {'command': fake_command}
+        rendered = self.generate_global_option_docs(help_command)
+        self.assert_global_args_not_documented(arg_table, rendered)
+
+    def test_includes_global_synopsis_when_command_table_empty(self):
+        help_command = self.create_help_command()
+        arg_table = self.create_arg_table()
+        help_command.arg_table = arg_table
+        rendered = self.generate_global_synopsis_docs(help_command)
+        self.assert_global_args_documented(arg_table, rendered)
+
+    def test_excludes_global_synopsis_when_command_table_not_empty(self):
+        help_command = self.create_help_command()
+        arg_table = self.create_arg_table()
+        help_command.arg_table = arg_table
+        fake_command = FakeCommand(FakeSession())
+        fake_command.NAME = 'command'
+        help_command.command_table = {'command': fake_command}
+        rendered = self.generate_global_synopsis_docs(help_command)
+        self.assert_global_args_not_documented(arg_table, rendered)
 
 
 class TestUserAgentCommandSection(BaseAWSCommandParamsTest):
@@ -201,30 +214,29 @@ class TestUserAgentCommandSection(BaseAWSCommandParamsTest):
     def test_customization_in_user_agent_s3_cp(self):
         cmd = 's3 cp s3://foo s3://bar'
         self.run_cmd(cmd)
-        self._assert_customization_in_user_agent(' command/s3.cp')
+        self._assert_customization_in_user_agent(' md/command#s3.cp')
 
     def test_customization_in_user_agent_s3_ls(self):
         cmd = 's3 ls'
-        # it should fail but the user_agent should be correct
-        self.run_cmd(cmd, expected_rc=255)
-        self._assert_customization_in_user_agent(' command/s3.ls')
+        self.run_cmd(cmd)
+        self._assert_customization_in_user_agent(' md/command#s3.ls')
 
     def test_customization_in_user_agent_logs_tail(self):
         cmd = 'logs tail foo'
         # it should fail but the user_agent should be correct
         self.run_cmd(cmd, expected_rc=255)
-        self._assert_customization_in_user_agent(' command/logs.tail')
+        self._assert_customization_in_user_agent(' md/command#logs.tail')
 
     def test_service_operation_in_user_agent(self):
         cmd = 'ec2 describe-instances'
         self.run_cmd(cmd)
         self._assert_customization_in_user_agent(
-            ' command/ec2.describe-instances'
+            ' md/command#ec2.describe-instances'
         )
 
     def test_custom_service_operation_in_user_agent(self):
         cmd = 'rds add-option-to-option-group --option-group-name foo'
         self.run_cmd(cmd)
         self._assert_customization_in_user_agent(
-            ' command/rds.add-option-to-option-group'
+            ' md/command#rds.add-option-to-option-group'
         )

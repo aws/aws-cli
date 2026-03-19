@@ -90,7 +90,7 @@ Output::
                         {
                             "name": "SourceArtifact",
                             "s3location": {
-                                "bucket": "my-bucket",
+                                "bucket": "amzn-s3-demo-bucket",
                                 "key": "myPipeline/SourceArti/key"
                             }
                         }

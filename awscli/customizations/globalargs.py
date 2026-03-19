@@ -10,29 +10,38 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import sys
 import os
+import sys
 
+import jmespath
+from botocore import UNSIGNED
 from botocore.client import Config
 from botocore.endpoint import DEFAULT_TIMEOUT
-from botocore.handlers import disable_signing
-import jmespath
 
 from awscli.compat import urlparse
 from awscli.customizations.exceptions import ParamValidationError
 
 
 def register_parse_global_args(cli):
-    cli.register('top-level-args-parsed', resolve_types,
-                 unique_id='resolve-types')
-    cli.register('top-level-args-parsed', no_sign_request,
-                 unique_id='no-sign')
-    cli.register('top-level-args-parsed', resolve_verify_ssl,
-                 unique_id='resolve-verify-ssl')
-    cli.register('top-level-args-parsed', resolve_cli_read_timeout,
-                 unique_id='resolve-cli-read-timeout')
-    cli.register('top-level-args-parsed', resolve_cli_connect_timeout,
-                 unique_id='resolve-cli-connect-timeout')
+    cli.register(
+        'top-level-args-parsed', resolve_types, unique_id='resolve-types'
+    )
+    cli.register('top-level-args-parsed', no_sign_request, unique_id='no-sign')
+    cli.register(
+        'top-level-args-parsed',
+        resolve_verify_ssl,
+        unique_id='resolve-verify-ssl',
+    )
+    cli.register(
+        'top-level-args-parsed',
+        resolve_cli_read_timeout,
+        unique_id='resolve-cli-read-timeout',
+    )
+    cli.register(
+        'top-level-args-parsed',
+        resolve_cli_connect_timeout,
+        unique_id='resolve-cli-connect-timeout',
+    )
 
 
 def resolve_types(parsed_args, **kwargs):
@@ -89,10 +98,10 @@ def resolve_verify_ssl(parsed_args, session, **kwargs):
 
 def no_sign_request(parsed_args, session, **kwargs):
     if not parsed_args.sign_request:
-        # In order to make signing disabled for all requests
-        # we need to use botocore's ``disable_signing()`` handler.
-        session.register(
-            'choose-signer', disable_signing, unique_id='disable-signing')
+        # Disable request signing by setting the signature version to UNSIGNED
+        # in the default client configuration. This ensures all new clients
+        # will be created with signing disabled.
+        _update_default_client_config(session, 'signature_version', UNSIGNED)
 
 
 def resolve_cli_connect_timeout(parsed_args, session, **kwargs):

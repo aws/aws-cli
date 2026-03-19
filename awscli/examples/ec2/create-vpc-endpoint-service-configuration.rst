@@ -31,13 +31,15 @@ Output::
        }
     }
 
+For more information, see `Create an endpoint service <https://docs.aws.amazon.com/vpc/latest/privatelink/create-endpoint-service.html>`__ in the *AWS PrivateLink User Guide*.
+
 **Example 2: To create an endpoint service configuration for a Gateway Load Balancer endpoint**
 
 The following ``create-vpc-endpoint-service-configuration`` example creates a VPC endpoint service configuration using the Gateway Load Balancer ``GWLBService``. Requests to connect to the service through a Gateway Load Balancer endpoint are automatically accepted. ::
 
-  aws ec2 create-vpc-endpoint-service-configuration \
-      --gateway-load-balancer-arns arn:aws:elasticloadbalancing:us-east-1:123456789012:loadbalancer/gwy/GWLBService/123123123123abcc \
-      --no-acceptance-required
+    aws ec2 create-vpc-endpoint-service-configuration \
+        --gateway-load-balancer-arns arn:aws:elasticloadbalancing:us-east-1:123456789012:loadbalancer/gwy/GWLBService/123123123123abcc \
+        --no-acceptance-required
 
 Output::
 
@@ -62,4 +64,4 @@ Output::
         }
     }
 
-For more information, see `VPC endpoint services <https://docs.aws.amazon.com/vpc/latest/userguide/endpoint-service.html>`__ in the *Amazon VPC User Guide*.
+For more information, see `Create a Gateway Load Balancer endpoint service <https://docs.aws.amazon.com/vpc/latest/privatelink/create-gateway-load-balancer-endpoint-service.html>`__ in the *AWS PrivateLink User Guide*.

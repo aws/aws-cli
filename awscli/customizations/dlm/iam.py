@@ -1,8 +1,7 @@
 import json
 
 
-class IAM(object):
-
+class IAM:
     def __init__(self, iam_client):
         self.iam_client = iam_client
 
@@ -25,17 +24,17 @@ class IAM(object):
     def attach_policy_to_role(self, policy_arn, role_name):
         """Method to attach LifecyclePolicy to role specified by role_name"""
         return self.iam_client.attach_role_policy(
-            PolicyArn=policy_arn,
-            RoleName=role_name
+            PolicyArn=policy_arn, RoleName=role_name
         )
 
     def create_role_with_trust_policy(self, role_name, assume_role_policy):
         """Method to create role with a given role name
-            and assume_role_policy
+        and assume_role_policy
         """
         return self.iam_client.create_role(
             RoleName=role_name,
-            AssumeRolePolicyDocument=json.dumps(assume_role_policy))
+            AssumeRolePolicyDocument=json.dumps(assume_role_policy),
+        )
 
     def get_policy(self, arn):
         """Method to get the Policy for a particular ARN
@@ -44,8 +43,8 @@ class IAM(object):
         pol_det = self.iam_client.get_policy(PolicyArn=arn)
         policy_version_details = self.iam_client.get_policy_version(
             PolicyArn=arn,
-            VersionId=pol_det.get("Policy", {}).get("DefaultVersionId", "")
+            VersionId=pol_det.get("Policy", {}).get("DefaultVersionId", ""),
         )
-        return policy_version_details\
-            .get("PolicyVersion", {})\
-            .get("Document", {})
+        return policy_version_details.get("PolicyVersion", {}).get(
+            "Document", {}
+        )

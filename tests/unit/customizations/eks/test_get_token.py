@@ -10,19 +10,14 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-
-import mock
-from mock import patch, call
 import base64
-import botocore
 import json
 from datetime import datetime
 
-from awscli.testutils import unittest, capture_output
-from awscli.customizations.eks.get_token import (
-    GetTokenCommand,
-    TokenGenerator
-)
+import botocore
+
+from awscli.customizations.eks.get_token import GetTokenCommand, TokenGenerator
+from awscli.testutils import capture_output, mock, unittest
 
 
 class BaseTokenTest(unittest.TestCase):
@@ -37,7 +32,11 @@ class BaseTokenTest(unittest.TestCase):
 
 
 class TestTokenGenerator(BaseTokenTest):
-    @patch.object(TokenGenerator, '_get_presigned_url', return_value='aHR0cHM6Ly9zdHMuYW1hem9uYXdzLmNvbS8=')
+    @mock.patch.object(
+        TokenGenerator,
+        '_get_presigned_url',
+        return_value='aHR0cHM6Ly9zdHMuYW1hem9uYXdzLmNvbS8=',
+    )
     def test_token_no_padding(self, mock_presigned_url):
         generator = TokenGenerator(self._sts_client)
         tok = generator.get_token(self._cluster_name)
@@ -51,4 +50,6 @@ class TestGetTokenCommand(BaseTokenTest):
         try:
             datetime.strptime(timestamp, '%Y-%m-%dT%H:%M:%SZ')
         except ValueError:
-            raise ValueError("Incorrect data format, should be %Y-%m-%dT%H:%M:%SZ")
+            raise ValueError(
+                "Incorrect data format, should be %Y-%m-%dT%H:%M:%SZ"
+            )

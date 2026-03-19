@@ -8,4 +8,4 @@ The following ``untag-resource`` removes two tags with keys "Secret" and "Team" 
 
 This command produces no output.
 
-For more information, see `UntagResource<https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_UntagResource.html>`__ in the *Amazon CodeGuru Reviewer API Reference*.
+For more information, see `Remove tags from a CodeGuru Reviewer associated repository (AWS CLI) <https://docs.aws.amazon.com/codeguru/latest/reviewer-ug/how-to-tag-associated-repository-remove-cli.html>`__ in the *Amazon CodeGuru Reviewer User Guide*.

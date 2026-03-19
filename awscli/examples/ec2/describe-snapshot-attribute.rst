@@ -1,25 +1,20 @@
 **To describe the snapshot attributes for a snapshot**
 
-The following ``describe-snapshot`` example describes the ``createVolumePermission`` attribute for the specified snapshot. ::
+The following ``describe-snapshot-attribute`` example lists the accounts with which a snapshot is shared. ::
 
     aws ec2 describe-snapshot-attribute \
-        --snapshot-id snap-066877671789bd71b \
+        --snapshot-id snap-01234567890abcedf \
         --attribute createVolumePermission
 
-The output indicates that the specified user has volume permissions. ::
+Output::
 
     {
-        "SnapshotId": "snap-066877671789bd71b",
+        "SnapshotId": "snap-01234567890abcedf",
         "CreateVolumePermissions": [
             {
                 "UserId": "123456789012"
             }
         ]
     }
-   
-Output similar to the following indicates that there are no volume permissions. ::
 
-    {
-        "SnapshotId": "snap-066877671789bd71b",
-        "CreateVolumePermissions": []
-    }
+For more information, see `Share an Amazon EBS snapshot <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-modifying-snapshot-permissions.html#share-unencrypted-snapshot>`__ in the *Amazon Elastic Compute Cloud User Guide*.

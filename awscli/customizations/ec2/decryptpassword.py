@@ -10,21 +10,14 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import base64
 import logging
 import os
-import base64
 
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.asymmetric.padding import PKCS1v15
-from cryptography.hazmat.primitives.serialization import load_pem_private_key
-
-from awscli.compat import six
-
+from awscrt.crypto import RSA, RSASignatureAlgorithm
 from botocore import model
 
 from awscli.arguments import BaseCLIArgument
-
 
 logger = logging.getLogger(__name__)
 
@@ -34,22 +27,25 @@ the instance (e.g. windows-keypair.pem).  If this is supplied, the
 password data sent from EC2 will be decrypted before display.</p>"""
 
 
-def ec2_add_priv_launch_key(argument_table, operation_model, session,
-                            **kwargs):
+def ec2_add_priv_launch_key(
+    argument_table, operation_model, session, **kwargs
+):
     """
     This handler gets called after the argument table for the
     operation has been created.  It's job is to add the
     ``priv-launch-key`` parameter.
     """
     argument_table['priv-launch-key'] = LaunchKeyArgument(
-        session, operation_model, 'priv-launch-key')
+        session, operation_model, 'priv-launch-key'
+    )
 
 
 class LaunchKeyArgument(BaseCLIArgument):
-
     def __init__(self, session, operation_model, name):
         self._session = session
-        self.argument_model = model.Shape('LaunchKeyArgument', {'type': 'string'})
+        self.argument_model = model.Shape(
+            'LaunchKeyArgument', {'type': 'string'}
+        )
         self._operation_model = operation_model
         self._name = name
         self._key_path = None
@@ -72,8 +68,9 @@ class LaunchKeyArgument(BaseCLIArgument):
         return HELP
 
     def add_to_parser(self, parser):
-        parser.add_argument(self.cli_name, dest=self.py_name,
-                            help='SSH Private Key file')
+        parser.add_argument(
+            self.cli_name, dest=self.py_name, help='SSH Private Key file'
+        )
 
     def add_to_params(self, parameters, value):
         """
@@ -87,23 +84,25 @@ class LaunchKeyArgument(BaseCLIArgument):
             path = os.path.expanduser(path)
             if os.path.isfile(path):
                 self._key_path = path
-                endpoint_prefix = \
-                    self._operation_model.service_model.endpoint_prefix
                 service_id = self._operation_model.service_model.service_id
-                event = 'after-call.%s.%s' % (service_id.hyphenize(),
-                                              self._operation_model.name)
+                event = 'after-call.%s.%s' % (
+                    service_id.hyphenize(),
+                    self._operation_model.name,
+                )
                 self._session.register(event, self._decrypt_password_data)
             else:
-                msg = ('priv-launch-key should be a path to the '
-                       'local SSH private key file used to launch '
-                       'the instance.')
+                msg = (
+                    'priv-launch-key should be a path to the '
+                    'local SSH private key file used to launch '
+                    'the instance.'
+                )
                 raise ValueError(msg)
 
     def _decrypt_password_data(self, parsed, **kwargs):
         """
         This handler gets called after the GetPasswordData command has been
-        executed.  It is called with the and the ``parsed`` data.  It checks to
-        see if a private launch key was specified on the command.  If it was,
+        executed. It is called with the ``parsed`` data. It checks to
+        see if a private launch key was specified on the command. If it was,
         it tries to use that private key to decrypt the password data and
         replace it in the returned data dictionary.
         """
@@ -115,15 +114,18 @@ class LaunchKeyArgument(BaseCLIArgument):
             try:
                 with open(self._key_path, 'rb') as pk_file:
                     pk_bytes = pk_file.read()
-                    backend = default_backend()
-                    private_key = load_pem_private_key(pk_bytes, None, backend)
+                    private_key = RSA.new_private_key_from_pem_data(pk_bytes)
                     value = base64.b64decode(value)
-                    value = private_key.decrypt(value, PKCS1v15())
+                    value = private_key.decrypt(
+                        RSASignatureAlgorithm.PKCS1_5_SHA256, value
+                    )
                     logger.debug(parsed)
                     parsed['PasswordData'] = value.decode('utf-8')
                     logger.debug(parsed)
             except Exception:
                 logger.debug('Unable to decrypt PasswordData', exc_info=True)
-                msg = ('Unable to decrypt password data using '
-                       'provided private key file.')
+                msg = (
+                    'Unable to decrypt password data using '
+                    'provided private key file.'
+                )
                 raise ValueError(msg)

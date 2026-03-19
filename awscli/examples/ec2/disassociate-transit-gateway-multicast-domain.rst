@@ -1,6 +1,6 @@
 **To disassociate subnets from a multicast domain**
 
-This example disassociates a subnet from the specified multicast domain. ::
+The following ``disassociate-transit-gateway-multicast-domain`` example disassociates a subnet from the specified multicast domain. ::
 
     aws ec2 disassociate-transit-gateway-multicast-domain \
         --transit-gateway-attachment-id tgw-attach-070e571cd1EXAMPLE \
@@ -24,4 +24,4 @@ Output::
         }
     }
 
-For more information, see 'Disassociate Subnets from a Transit Gateway Multicast Domain<https://docs.aws.amazon.com/vpc/latest/tgw/working-with-multicast.html#remove-subnet-association>'__ in the *AWS Transit Gateways User Guide*'.
+For more information, see `Multicast domains <https://docs.aws.amazon.com/vpc/latest/tgw/multicast-domains-about.html>`__ in the *Transit Gateways Guide*'.

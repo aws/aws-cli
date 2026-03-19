@@ -1,6 +1,6 @@
 **To list all the RecordingConfiguration resources created in this account**
 
-The following ``get-recording-configuration`` example gets information about the RecordingConfiguration resource for the specified ARN. ::
+The following ``list-recording-configurations`` example gets information about all RecordingConfiguration resources in your account. ::
 
     aws ivs list-recording-configurations
 
@@ -33,4 +33,4 @@ Output::
         ]
     }
 
-For more information, see `Record to Amazon S3 <https://docs.aws.amazon.com/ivs/latest/userguide/record-to-S3.html>`__ in the *Amazon Interactive Video Service User Guide*.
+For more information, see `Record to Amazon S3 <https://docs.aws.amazon.com/ivs/latest/userguide/record-to-s3.html>`__ in the *Amazon Interactive Video Service User Guide*.

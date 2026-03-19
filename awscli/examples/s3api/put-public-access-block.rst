@@ -3,7 +3,7 @@
 The following ``put-public-access-block`` example sets a restrictive block public access configuration for the specified bucket. ::
 
     aws s3api put-public-access-block \
-        --bucket my-bucket \
+        --bucket amzn-s3-demo-bucket \
         --public-access-block-configuration "BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true"
 
 This command produces no output.

@@ -2,7 +2,9 @@
 
 The following ``get-document-text-detection`` example shows how to get the results of asynchronous text detection in a multi-page document. ::
 
-    aws textract get-document-text-detection --job-id 57849a3dc627d4df74123dca269d69f7b89329c870c65bb16c9fd63409d200b9 --max-results 1000
+    aws textract get-document-text-detection \
+        --job-id 57849a3dc627d4df74123dca269d69f7b89329c870c65bb16c9fd63409d200b9 \
+        --max-results 1000
 
 Output ::
 

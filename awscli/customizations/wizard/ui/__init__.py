@@ -10,7 +10,6 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from __future__ import unicode_literals
 import os
 
 import prompt_toolkit
@@ -19,7 +18,7 @@ from prompt_toolkit.completion import Completer, Completion
 from awscli.customizations.wizard.ui import selectmenu
 
 
-class Prompter(object):
+class Prompter:
     def prompt(self, display_text, choices=None):
         raise NotImplementedError('prompt')
 
@@ -34,7 +33,8 @@ class UIPrompter(Prompter):
                 return selectmenu.select_menu(choices)
             else:
                 response = selectmenu.select_menu(
-                    choices, display_format=self._display_text)
+                    choices, display_format=self._display_text
+                )
                 result = response['actual_value']
                 return result
 
@@ -52,16 +52,16 @@ class FileCompleter(Completer):
             for child in sorted(children):
                 if child.startswith(partial):
                     result = os.path.join(dirname, child)
-                    yield Completion(result,
-                                     start_position=-len(result))
+                    yield Completion(result, start_position=-len(result))
         except OSError:
             return
 
 
-class UIFilePrompter(object):
+class UIFilePrompter:
     def __init__(self, completer):
         self._completer = completer
 
     def prompt(self, display_text):
         return prompt_toolkit.prompt(
-            '%s: ' % display_text, completer=self._completer)
+            '%s: ' % display_text, completer=self._completer
+        )

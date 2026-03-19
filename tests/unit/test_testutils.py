@@ -10,10 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import mock
-
-from awscli.testutils import create_bucket
-from awscli.testutils import BaseCLIDriverTest
+from awscli.testutils import BaseCLIDriverTest, create_bucket, mock
 
 
 class TestCreateBucket(BaseCLIDriverTest):
@@ -23,7 +20,8 @@ class TestCreateBucket(BaseCLIDriverTest):
             _send.side_effect = [
                 mock.Mock(status_code=500, headers={}, content=b''),
                 mock.Mock(
-                    status_code=409, headers={},
+                    status_code=409,
+                    headers={},
                     content=b'''<?xml version="1.0" encoding="UTF-8"?>
                         <Error>
                         <Code>BucketAlreadyOwnedByYou</Code>
@@ -32,6 +30,8 @@ class TestCreateBucket(BaseCLIDriverTest):
                         <BucketName>awscli-foo-bar</BucketName>
                         <RequestId>0123456789ABCDEF</RequestId>
                         <HostId>foo</HostId>
-                        </Error>'''),
-                ]
+                        </Error>''',
+                ),
+                mock.Mock(status_code=200, headers={}, content=b''),
+            ]
             self.assertEqual(create_bucket(self.session, 'bucket'), 'bucket')

@@ -10,16 +10,17 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from . import FakeSession
-from awscli.compat import six
-from awscli.testutils import unittest
+from awscli.compat import StringIO
 from awscli.customizations.configure.listprofiles import ListProfilesCommand
+from awscli.testutils import unittest
+
+from . import FakeSession
 
 
 class TestListProfilesCommand(unittest.TestCase):
     def _create_command(self, profiles=None):
         session = FakeSession({}, available_profiles=profiles)
-        stdout = six.StringIO()
+        stdout = StringIO()
         command = ListProfilesCommand(session, out_stream=stdout)
         return stdout, command
 

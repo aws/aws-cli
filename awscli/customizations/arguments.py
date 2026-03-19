@@ -11,10 +11,14 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
+import re
+
+import jmespath
 
 from awscli.arguments import CustomArgument
+from awscli.compat import compat_open
 from awscli.customizations.exceptions import ParamValidationError
-import jmespath
+
 
 def resolve_given_outfile_path(path):
     """Asserts that a path is writable and returns the expanded path"""
@@ -59,8 +63,10 @@ class OverrideRequiredArgsArgument(CustomArgument):
         super(OverrideRequiredArgsArgument, self).__init__(**self.ARG_DATA)
 
     def _register_argument_action(self):
-        self._session.register('before-building-argument-table-parser',
-                               self.override_required_args)
+        self._session.register(
+            'before-building-argument-table-parser',
+            self.override_required_args,
+        )
 
     def override_required_args(self, argument_table, args, **kwargs):
         name_in_cmdline = '--' + self.name
@@ -90,16 +96,19 @@ class StatefulArgument(CustomArgument):
 class QueryOutFileArgument(StatefulArgument):
     """An argument that write a JMESPath query result to a file"""
 
-    def __init__(self, session, name, query, after_call_event, perm,
-                 *args, **kwargs):
+    def __init__(
+        self, session, name, query, after_call_event, perm, *args, **kwargs
+    ):
         self._session = session
         self._query = query
         self._after_call_event = after_call_event
         self._perm = perm
         # Generate default help_text if text was not provided.
         if 'help_text' not in kwargs:
-            kwargs['help_text'] = ('Saves the command output contents of %s '
-                                   'to the given filename' % self.query)
+            kwargs['help_text'] = (
+                'Saves the command output contents of %s '
+                'to the given filename' % self.query
+            )
         super(QueryOutFileArgument, self).__init__(name, *args, **kwargs)
 
     @property
@@ -125,10 +134,94 @@ class QueryOutFileArgument(StatefulArgument):
         """
         if is_parsed_result_successful(parsed):
             contents = jmespath.search(self.query, parsed)
-            with open(self.value, 'w') as fp:
+            with compat_open(
+                self.value, 'w', access_permissions=self.perm
+            ) as fp:
                 # Don't write 'None' to a file -- write ''.
                 if contents is None:
                     fp.write('')
                 else:
                     fp.write(contents)
+                # Even though the file is opened using the requested mode
+                # (e.g. 0o600), the mode is only applied if a new file is
+                # created. This means if the file already exists, its
+                # permissions will not be changed. So, the os.chmod call is
+                # retained here to preserve behavior of this argument always
+                # clobbering a preexisting file's permissions to the desired
+                # mode.
                 os.chmod(self.value, self.perm)
+
+
+class NestedBlobArgumentHoister:
+    """Can be registered to update a single argument / model value combination
+    mapping that to a new top-level argument.
+    Currently limited to blob argument types as these are the only ones
+    requiring the hoist.
+    """
+
+    def __init__(
+        self,
+        source_arg,
+        source_arg_blob_member,
+        new_arg,
+        new_arg_doc_string,
+        doc_string_addendum,
+    ):
+        self._source_arg = source_arg
+        self._source_arg_blob_member = source_arg_blob_member
+        self._new_arg = new_arg
+        self._new_arg_doc_string = new_arg_doc_string
+        self._doc_string_addendum = doc_string_addendum
+
+    def __call__(self, session, argument_table, **kwargs):
+        if not self._valid_target(argument_table):
+            return
+        self._update_arg(argument_table, self._source_arg, self._new_arg)
+
+    def _valid_target(self, argument_table):
+        # Find the source argument and check that it has a member of
+        # the same name and type.
+        if self._source_arg in argument_table:
+            arg = argument_table[self._source_arg]
+            input_model = arg.argument_model
+            member = input_model.members.get(self._source_arg_blob_member)
+            if member is not None and member.type_name == 'blob':
+                return True
+        return False
+
+    def _update_arg(self, argument_table, source_arg, new_arg):
+        argument_table[new_arg] = _NestedBlobArgumentParamOverwrite(
+            new_arg,
+            source_arg,
+            self._source_arg_blob_member,
+            help_text=self._new_arg_doc_string,
+            cli_type_name='blob',
+        )
+        argument_table[source_arg].required = False
+        argument_table[source_arg].documentation += self._doc_string_addendum
+
+
+class _NestedBlobArgumentParamOverwrite(CustomArgument):
+    def __init__(self, new_arg, source_arg, source_arg_blob_member, **kwargs):
+        super(_NestedBlobArgumentParamOverwrite, self).__init__(
+            new_arg, **kwargs
+        )
+        self._param_to_overwrite = _reverse_xform_name(source_arg)
+        self._source_arg_blob_member = source_arg_blob_member
+
+    def add_to_params(self, parameters, value):
+        if value is None:
+            return
+        param_value = {self._source_arg_blob_member: value}
+        if parameters.get(self._param_to_overwrite):
+            parameters[self._param_to_overwrite].update(param_value)
+        else:
+            parameters[self._param_to_overwrite] = param_value
+
+
+def _upper(match):
+    return match.group(1).lstrip('-').upper()
+
+
+def _reverse_xform_name(name):
+    return re.sub(r'(^.|-.)', _upper, name)

@@ -14,4 +14,4 @@ Output::
         }
     }
 
-For more information, see `ListTagsForResource<https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_ListTagsForResource.html>`__ in the *Amazon CodeGuru Reviewer API Reference*.
+For more information, see `View tags for a CodeGuru Reviewer associated repository (AWS CLI) <https://docs.aws.amazon.com/codeguru/latest/reviewer-ug/how-to-tag-associated-repository-view-cli.html>`__ in the *Amazon CodeGuru Reviewer User Guide*.

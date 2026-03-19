@@ -10,19 +10,18 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import zipfile
 import copy
+import zipfile
 from contextlib import closing
 
-from botocore.vendored import six
-
-from awscli.arguments import CustomArgument, CLIArgument
+from awscli.arguments import CLIArgument, CustomArgument
+from awscli.compat import BytesIO
 from awscli.customizations.exceptions import ParamValidationError
-
 
 ERROR_MSG = (
     "--zip-file must be a zip file with the fileb:// prefix.\n"
-    "Example usage:  --zip-file fileb://path/to/file.zip")
+    "Example usage:  --zip-file fileb://path/to/file.zip"
+)
 
 ZIP_DOCSTRING = (
     '<p>The path to the zip file of the {param_type} you are uploading. '
@@ -32,14 +31,21 @@ ZIP_DOCSTRING = (
 
 
 def register_lambda_create_function(cli):
-    cli.register('building-argument-table.lambda.create-function',
-                 ZipFileArgumentHoister('Code').hoist)
-    cli.register('building-argument-table.lambda.publish-layer-version',
-                 ZipFileArgumentHoister('Content').hoist)
-    cli.register('building-argument-table.lambda.update-function-code',
-                 _modify_zipfile_docstring)
-    cli.register('process-cli-arg.lambda.update-function-code',
-                 validate_is_zip_file)
+    cli.register(
+        'building-argument-table.lambda.create-function',
+        ZipFileArgumentHoister('Code').hoist,
+    )
+    cli.register(
+        'building-argument-table.lambda.publish-layer-version',
+        ZipFileArgumentHoister('Content').hoist,
+    )
+    cli.register(
+        'building-argument-table.lambda.update-function-code',
+        _modify_zipfile_docstring,
+    )
+    cli.register(
+        'process-cli-arg.lambda.update-function-code', validate_is_zip_file
+    )
 
 
 def validate_is_zip_file(cli_argument, value, **kwargs):
@@ -47,15 +53,16 @@ def validate_is_zip_file(cli_argument, value, **kwargs):
         _should_contain_zip_content(value)
 
 
-class ZipFileArgumentHoister(object):
+class ZipFileArgumentHoister:
     """Hoists a ZipFile argument up to the top level.
 
     Injects a top-level ZipFileArgument into the argument table which maps
     a --zip-file parameter to the underlying ``serialized_name`` ZipFile
-    shape. Repalces the old ZipFile argument with an instance of
+    shape. Replaces the old ZipFile argument with an instance of
     ReplacedZipFileArgument to prevent its usage and recommend the new
     top-level injected parameter.
     """
+
     def __init__(self, serialized_name):
         self._serialized_name = serialized_name
         self._name = serialized_name.lower()
@@ -63,8 +70,10 @@ class ZipFileArgumentHoister(object):
     def hoist(self, session, argument_table, **kwargs):
         help_text = ZIP_DOCSTRING.format(param_type=self._name)
         argument_table['zip-file'] = ZipFileArgument(
-            'zip-file', help_text=help_text, cli_type_name='blob',
-            serialized_name=self._serialized_name
+            'zip-file',
+            help_text=help_text,
+            cli_type_name='blob',
+            serialized_name=self._serialized_name,
         )
         argument = argument_table[self._name]
         model = copy.deepcopy(argument.argument_model)
@@ -91,11 +100,11 @@ def _should_contain_zip_content(value):
         # still try to load the contents as a zip file
         # to be absolutely sure.
         value = value.encode('utf-8')
-    fileobj = six.BytesIO(value)
+    fileobj = BytesIO(value)
     try:
         with closing(zipfile.ZipFile(fileobj)) as f:
             f.infolist()
-    except zipfile.BadZipfile:
+    except zipfile.BadZipFile:
         raise ParamValidationError(ERROR_MSG)
 
 
@@ -105,9 +114,10 @@ class ZipFileArgument(CustomArgument):
     This class injects a ZipFile argument under the specified serialized_name
     parameter. This can be used to take a top level parameter like --zip-file
     and inject it into a nested different parameter like Code so
-    --zip-file foo.zip winds up being serilized as
+    --zip-file foo.zip winds up being serialized as
     { 'Code': { 'ZipFile': <contents of foo.zip> } }.
     """
+
     def __init__(self, *args, **kwargs):
         self._param_to_replace = kwargs.pop('serialized_name')
         super(ZipFileArgument, self).__init__(*args, **kwargs)
@@ -124,7 +134,7 @@ class ZipFileArgument(CustomArgument):
 
 
 class ReplacedZipFileArgument(CLIArgument):
-    """A replacement arugment for nested ZipFile argument.
+    """A replacement argument for nested ZipFile argument.
 
     This prevents the use of a non-working nested argument that expects binary.
     Instead an instance of ZipFileArgument should be injected at the top level
@@ -132,6 +142,7 @@ class ReplacedZipFileArgument(CLIArgument):
     contents. And the argument class can inject those bytes into the correct
     serialization name.
     """
+
     def __init__(self, *args, **kwargs):
         super(ReplacedZipFileArgument, self).__init__(*args, **kwargs)
         self._cli_name = '--%s' % kwargs['name']

@@ -1,6 +1,6 @@
-The following command retrieves the lifecycle configuration for a bucket named ``my-bucket``::
+The following command retrieves the lifecycle configuration for a bucket named ``amzn-s3-demo-bucket``::
 
-  aws s3api get-bucket-lifecycle-configuration --bucket my-bucket
+  aws s3api get-bucket-lifecycle-configuration --bucket amzn-s3-demo-bucket
 
 Output::
 

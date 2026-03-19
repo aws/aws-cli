@@ -10,19 +10,16 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import BaseAWSCommandParamsTest
-from awscli.testutils import FileCreator
+from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
 
 
 class TestImortTerminology(BaseAWSCommandParamsTest):
-
     prefix = 'translate import-terminology'
 
     def setUp(self):
         super(TestImortTerminology, self).setUp()
         self.files = FileCreator()
-        self.temp_file = self.files.create_file(
-            'foo', 'mycontents')
+        self.temp_file = self.files.create_file('foo', 'mycontents')
         with open(self.temp_file, 'rb') as f:
             self.temp_file_contents = f.read()
 
@@ -70,7 +67,7 @@ class TestImortTerminology(BaseAWSCommandParamsTest):
             "File cannot be provided as part of the '--terminology-data' "
             "argument. Please use the '--data-file' option instead to specify "
             "a file.",
-            stderr
+            stderr,
         )
 
     def test_import_terminology_with_no_file(self):

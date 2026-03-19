@@ -13,14 +13,14 @@
 import logging
 
 from botocore.compat import OrderedDict
+
 from awscli.bcdoc.docstringparser import DocStringParser
 from awscli.bcdoc.style import ReSTStyle
 
 LOG = logging.getLogger('bcdocs')
 
 
-class ReSTDocument(object):
-
+class ReSTDocument:
     def __init__(self, target='man'):
         self.style = ReSTStyle(self)
         self.target = target
@@ -67,6 +67,23 @@ class ReSTDocument(object):
         """
         self._writes.append(s)
 
+    def find_last_write(self, content):
+        """
+        Returns the index of the last occurrence of the content argument
+        in the stack, or returns None if content is not on the stack.
+        """
+        try:
+            return len(self._writes) - self._writes[::-1].index(content) - 1
+        except ValueError:
+            return None
+
+    def insert_write(self, index, content):
+        """
+        Inserts the content argument to the stack directly before the
+        supplied index.
+        """
+        self._writes.insert(index, content)
+
     def getvalue(self):
         """
         Returns the current content of the document as a string.
@@ -102,19 +119,24 @@ class ReSTDocument(object):
             start, end = self._last_doc_string
             del self._writes[start:end]
 
+    def write_from_file(self, filename):
+        with open(filename) as f:
+            for line in f.readlines():
+                self.writeln(line.strip())
+
 
 class DocumentStructure(ReSTDocument):
     def __init__(self, name, section_names=None, target='man', context=None):
         """Provides a Hierarichial structure to a ReSTDocument
 
-        You can write to it similiar to as you can to a ReSTDocument but
+        You can write to it similar to as you can to a ReSTDocument but
         has an innate structure for more orginaztion and abstraction.
 
         :param name: The name of the document
         :param section_names: A list of sections to be included
             in the document.
         :param target: The target documentation of the Document structure
-        :param context: A dictionary of data to store with the strucuture. These
+        :param context: A dictionary of data to store with the structure. These
             are only stored per section not the entire structure.
         """
         super(DocumentStructure, self).__init__(target=target)
@@ -165,17 +187,18 @@ class DocumentStructure(ReSTDocument):
         as well
 
         :param name: The name of the section.
-        :param context: A dictionary of data to store with the strucuture. These
+        :param context: A dictionary of data to store with the structure. These
             are only stored per section not the entire structure.
         :rtype: DocumentStructure
         :returns: A new document structure to add to but lives as a section
             to the document structure it was instantiated from.
         """
         # Add a new section
-        section = self.__class__(name=name, target=self.target,
-                                 context=context)
+        section = self.__class__(
+            name=name, target=self.target, context=context
+        )
         section.path = self.path + [name]
-        # Indent the section apporpriately as well
+        # Indent the section appropriately as well
         section.style.indentation = self.style.indentation
         section.translation_map = self.translation_map
         section.hrefs = self.hrefs

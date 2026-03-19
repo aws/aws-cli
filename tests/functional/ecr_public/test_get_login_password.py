@@ -21,7 +21,7 @@ class TestGetLoginPasswordCommand(BaseAWSCommandParamsTest):
             {
                 'authorizationData': {
                     "authorizationToken": "Zm9vOmJhcg==",
-                    "expiresAt": "2015-10-16T00:00:00Z"
+                    "expiresAt": "2015-10-16T00:00:00Z",
                 }
             },
         ]
@@ -29,4 +29,4 @@ class TestGetLoginPasswordCommand(BaseAWSCommandParamsTest):
     def test_prints_login_password(self):
         stdout = self.run_cmd("ecr-public get-login-password")[0]
         self.assertIn('bar', stdout)
-        self.assertEquals(1, len(self.operations_called))
+        self.assertEqual(1, len(self.operations_called))

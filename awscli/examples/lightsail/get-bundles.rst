@@ -9,14 +9,14 @@ Output::
     {
         "bundles": [
             {
-                "price": 3.5,
-                "cpuCount": 1,
+                "price": 5.0,
+                "cpuCount": 2,
                 "diskSizeInGb": 20,
-                "bundleId": "nano_2_0",
+                "bundleId": "nano_3_0",
                 "instanceType": "nano",
                 "isActive": true,
                 "name": "Nano",
-                "power": 300,
+                "power": 298,
                 "ramSizeInGb": 0.5,
                 "transferPerMonthInGb": 1024,
                 "supportedPlatforms": [
@@ -24,10 +24,10 @@ Output::
                 ]
             },
             {
-                "price": 5.0,
-                "cpuCount": 1,
+                "price": 7.0,
+                "cpuCount": 2,
                 "diskSizeInGb": 40,
-                "bundleId": "micro_2_0",
+                "bundleId": "micro_3_0",
                 "instanceType": "micro",
                 "isActive": true,
                 "name": "Micro",
@@ -39,10 +39,10 @@ Output::
                 ]
             },
             {
-                "price": 10.0,
-                "cpuCount": 1,
+                "price": 12.0,
+                "cpuCount": 2,
                 "diskSizeInGb": 60,
-                "bundleId": "small_2_0",
+                "bundleId": "small_3_0",
                 "instanceType": "small",
                 "isActive": true,
                 "name": "Small",

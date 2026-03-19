@@ -1,4 +1,4 @@
-**To list customer recommendation feedback for a recommendation on an associated repository.**
+**To list customer recommendation feedback for a recommendation on an associated repository**
 
 The following ``list-recommendation-feedback`` Lists customer feedback on all recommendations on a code review. This code review has one piece of feedback, a "ThumbsUp", from a customer. ::
 
@@ -19,4 +19,4 @@ Output::
         ]
     }
 
-For more information, see `ListRecommendationFeedback <https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_ListRecommendationFeedback.html>`__ in the *Amazon CodeGuru Reviewer API Reference*.
+For more information, see `Step 4: Provide feedback <https://docs.aws.amazon.com/codeguru/latest/reviewer-ug/provide-feedback.html>`__ in the *Amazon CodeGuru Reviewer User Guide*.

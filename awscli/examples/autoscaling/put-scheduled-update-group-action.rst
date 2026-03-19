@@ -5,14 +5,14 @@ This example adds the specified scheduled action to the specified Auto Scaling g
     aws autoscaling put-scheduled-update-group-action \
         --auto-scaling-group-name my-asg \
         --scheduled-action-name my-scheduled-action \
-        --start-time "2021-05-12T08:00:00Z" \
+        --start-time "2023-05-12T08:00:00Z" \
         --min-size 2 \
         --max-size 6 \
         --desired-capacity 4
 
 This command produces no output. If a scheduled action with the same name already exists, it will be overwritten by the new scheduled action.
 
-For more examples, see `Scheduled scaling <https://docs.aws.amazon.com/autoscaling/ec2/userguide/schedule_time.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.
+For more examples, see `Scheduled scaling <https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-scheduled-scaling.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.
 
 **Example 2: To specify a recurring schedule**
 
@@ -28,4 +28,4 @@ This example creates a scheduled action to scale on a recurring schedule that is
 
 This command produces no output. If a scheduled action with the same name already exists, it will be overwritten by the new scheduled action.
 
-For more examples, see `Scheduled scaling <https://docs.aws.amazon.com/autoscaling/ec2/userguide/schedule_time.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.
+For more examples, see `Scheduled scaling <https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-scheduled-scaling.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.

@@ -1,19 +1,27 @@
 #!/usr/bin/env python
 """Script to build a Docker image of the AWS CLI"""
+
 import argparse
 import os
-import sys
 import shutil
+import sys
 from distutils.dir_util import copy_tree
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from utils import run, tmp_dir, cd, BadRCError, \
-                  extract_zip, update_metadata, save_to_zip
+from utils import (
+    BadRCError,
+    cd,
+    extract_zip,
+    run,
+    save_to_zip,
+    tmp_dir,
+    update_metadata,
+)
 
-
-ROOT = os.path.dirname(os.path.dirname(os.path.dirname(
-    os.path.abspath(__file__))))
+ROOT = os.path.dirname(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+)
 DOCKER_DIR = os.path.join(ROOT, 'docker')
 DIST_DIR = os.path.join(ROOT, 'dist')
 DEFAULT_EXE_ZIP = os.path.join(DIST_DIR, 'awscli-exe.zip')
@@ -52,8 +60,10 @@ def _make_build_context(build_context_dir, exe):
 def _update_exe_metadata(exe):
     with tmp_dir() as tmp:
         extract_zip(exe, tmp)
-        update_metadata(os.path.join(tmp, 'aws', 'dist'),
-                        distribution_source=DISTRIBUTION_SOURCE)
+        update_metadata(
+            os.path.join(tmp, 'aws', 'dist'),
+            distribution_source=DISTRIBUTION_SOURCE,
+        )
         save_to_zip(tmp, exe)
 
 
@@ -63,15 +73,19 @@ def _copy_docker_dir_to_build_context(build_context_dir):
 
 def _copy_exe_to_build_context(build_context_dir, exe):
     build_context_exe_path = os.path.join(
-        build_context_dir, os.path.basename(exe))
+        build_context_dir, os.path.basename(exe)
+    )
     shutil.copy(exe, build_context_exe_path)
 
 
 def _docker_build(build_context_dir, tags, exe_filename):
     with cd(build_context_dir):
         docker_build_cmd = [
-            'docker', 'build', '--build-arg',
-            f'EXE_FILENAME={exe_filename}', '.'
+            'docker',
+            'build',
+            '--build-arg',
+            f'EXE_FILENAME={exe_filename}',
+            '.',
         ]
         for tag in tags:
             docker_build_cmd.extend(['-t', tag])
@@ -94,7 +108,7 @@ def main():
         help=(
             'The name of the exe zip to build into the Docker image. By '
             'default the exe located at: %s' % DEFAULT_EXE_ZIP
-        )
+        ),
     )
     parser.add_argument(
         '--output',
@@ -102,7 +116,7 @@ def main():
         help=(
             'The name of the file to save the Docker image. By default, '
             'this will be saved at: %s' % DEFAULT_DOCKER_OUTPUT
-        )
+        ),
     )
     parser.add_argument(
         '--tags',

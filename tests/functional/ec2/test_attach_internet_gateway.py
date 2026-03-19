@@ -15,15 +15,13 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestAttachInternetGateway(BaseAWSCommandParamsTest):
-
     prefix = 'ec2 attach-internet-gateway'
 
     def test_both_params(self):
         cmdline = self.prefix
         cmdline += ' --vpc-id vpc-12345678'
         cmdline += ' --internet-gateway-id igw-12345678'
-        result = {'VpcId': 'vpc-12345678',
-                  'InternetGatewayId': 'igw-12345678'}
+        result = {'VpcId': 'vpc-12345678', 'InternetGatewayId': 'igw-12345678'}
         self.assert_params_for_cmd(cmdline, result)
 
 

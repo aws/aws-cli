@@ -11,7 +11,7 @@
 #
 # https://github.com/zsh-users/zsh/commit/edab1d3dbe61da7efe5f1ac0e40444b2ec9b9570
 #
-# zsh relases prior to that version do not export the required env variables!
+# zsh releases prior to that version do not export the required env variables!
 
 autoload -Uz bashcompinit
 bashcompinit -i

@@ -14,7 +14,7 @@ Output::
         }
     }
 
-For more information, see `Scheduled events for your instances <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitoring-instances-status-check_sched.html>`__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.
+For more information, see `Scheduled events for your instances <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitoring-instances-status-check_sched.html>`__ in the *Amazon EC2 User Guide*.
 
 **Example 2: To include specific tags in event notifications**
 
@@ -35,4 +35,4 @@ Output::
         }
     }
 
-For more information, see `Scheduled events for your instances <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitoring-instances-status-check_sched.html>`__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.
+For more information, see `Scheduled events for your instances <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitoring-instances-status-check_sched.html>`__ in the *Amazon EC2 User Guide*.

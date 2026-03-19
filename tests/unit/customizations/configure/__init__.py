@@ -13,19 +13,26 @@
 from botocore.exceptions import ProfileNotFound
 
 
-class FakeConfigStore(object):
+class FakeConfigStore:
     def set_config_provider(self, *args, **kwargs):
         pass
 
 
-class FakeSession(object):
-
-    def __init__(self, all_variables, profile_does_not_exist=False,
-                 config_file_vars=None, environment_vars=None,
-                 credentials=None, profile=None, available_profiles=None):
+class FakeSession:
+    def __init__(
+        self,
+        all_variables,
+        profile_does_not_exist=False,
+        config_file_vars=None,
+        environment_vars=None,
+        credentials=None,
+        profile=None,
+        available_profiles=None,
+    ):
         self.variables = all_variables
         self.profile_does_not_exist = profile_does_not_exist
         self.config = {}
+        self.full_config = {}
         if config_file_vars is None:
             config_file_vars = {}
         self.config_file_vars = config_file_vars

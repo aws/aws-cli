@@ -11,30 +11,30 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+import contextlib
 import logging
 import os
-import tempfile
-import zipfile
-import contextlib
-import uuid
 import shutil
-from awscli.compat import six
+import tempfile
+import uuid
+import zipfile
+from contextlib import contextmanager
+
+import jmespath
 from botocore.utils import set_value_from_jmespath
 
-from awscli.compat import urlparse
-from contextlib import contextmanager
-from awscli.compat import compat_open
+from awscli.compat import compat_open, urlparse
 from awscli.customizations.cloudformation import exceptions
-from awscli.customizations.cloudformation.yamlhelper import yaml_dump, \
-    yaml_parse
-import jmespath
-
+from awscli.customizations.cloudformation.yamlhelper import (
+    yaml_dump,
+    yaml_parse,
+)
 
 LOG = logging.getLogger(__name__)
 
 
 def is_path_value_valid(path):
-    return isinstance(path, six.string_types)
+    return isinstance(path, str)
 
 
 def make_abs_path(directory, path):
@@ -61,19 +61,16 @@ def is_local_file(path):
 
 
 def is_zip_file(path):
-    return (
-        is_path_value_valid(path) and
-        zipfile.is_zipfile(path))
+    return is_path_value_valid(path) and zipfile.is_zipfile(path)
 
 
-def parse_s3_url(url,
-                 bucket_name_property="Bucket",
-                 object_key_property="Key",
-                 version_property=None):
-
-    if isinstance(url, six.string_types) \
-            and url.startswith("s3://"):
-
+def parse_s3_url(
+    url,
+    bucket_name_property="Bucket",
+    object_key_property="Key",
+    version_property=None,
+):
+    if isinstance(url, str) and url.startswith("s3://"):
         # Python < 2.7.10 don't parse query parameters from URI with custom
         # scheme such as s3://blah/blah. As a workaround, remove scheme
         # altogether to trigger the parser "s3://foo/bar?v=1" =>"//foo/bar?v=1"
@@ -87,19 +84,23 @@ def parse_s3_url(url,
 
             # If there is a query string that has a single versionId field,
             # set the object version and return
-            if version_property is not None \
-                    and 'versionId' in query \
-                    and len(query['versionId']) == 1:
+            if (
+                version_property is not None
+                and 'versionId' in query
+                and len(query['versionId']) == 1
+            ):
                 result[version_property] = query['versionId'][0]
 
             return result
 
-    raise ValueError("URL given to the parse method is not a valid S3 url "
-                     "{0}".format(url))
+    raise ValueError(
+        f"URL given to the parse method is not a valid S3 url {url}"
+    )
 
 
-def upload_local_artifacts(resource_id, resource_dict, property_name,
-                           parent_dir, uploader):
+def upload_local_artifacts(
+    resource_id, resource_dict, property_name, parent_dir, uploader
+):
     """
     Upload local artifacts referenced by the property at given resource and
     return S3 URL of the uploaded object. It is the responsibility of callers
@@ -135,8 +136,9 @@ def upload_local_artifacts(resource_id, resource_dict, property_name,
         # This check is supporting the case where your resource does not
         # refer to local artifacts
         # Nothing to do if property value is an S3 URL
-        LOG.debug("Property {0} of {1} is already a S3 URL"
-                  .format(property_name, resource_id))
+        LOG.debug(
+            f"Property {property_name} of {resource_id} is already a S3 URL"
+        )
         return local_path
 
     local_path = make_abs_path(parent_dir, local_path)
@@ -150,14 +152,15 @@ def upload_local_artifacts(resource_id, resource_dict, property_name,
         return uploader.upload_with_dedup(local_path)
 
     raise exceptions.InvalidLocalPathError(
-            resource_id=resource_id,
-            property_name=property_name,
-            local_path=local_path)
+        resource_id=resource_id,
+        property_name=property_name,
+        local_path=local_path,
+    )
 
 
 def zip_and_upload(local_path, uploader):
     with zip_folder(local_path) as zipfile:
-            return uploader.upload_with_dedup(zipfile)
+        return uploader.upload_with_dedup(zipfile)
 
 
 @contextmanager
@@ -170,8 +173,7 @@ def zip_folder(folder_path):
     :return: Name of the zipfile
     """
 
-    filename = os.path.join(
-        tempfile.gettempdir(), "data-" + uuid.uuid4().hex)
+    filename = os.path.join(tempfile.gettempdir(), "data-" + uuid.uuid4().hex)
 
     zipfile_name = make_zip(filename, folder_path)
     try:
@@ -182,7 +184,7 @@ def zip_folder(folder_path):
 
 
 def make_zip(filename, source_root):
-    zipfile_name = "{0}.zip".format(filename)
+    zipfile_name = f"{filename}.zip"
     source_root = os.path.abspath(source_root)
     with open(zipfile_name, 'wb') as f:
         zip_file = zipfile.ZipFile(f, 'w', zipfile.ZIP_DEFLATED)
@@ -190,8 +192,7 @@ def make_zip(filename, source_root):
             for root, dirs, files in os.walk(source_root, followlinks=True):
                 for filename in files:
                     full_path = os.path.join(root, filename)
-                    relative_path = os.path.relpath(
-                        full_path, source_root)
+                    relative_path = os.path.relpath(full_path, source_root)
                     zf.write(full_path, relative_path)
 
     return zipfile_name
@@ -217,7 +218,7 @@ def copy_to_temp_dir(filepath):
     return tmp_dir
 
 
-class Resource(object):
+class Resource:
     """
     Base class representing a CloudFormation resource that can be exported
     """
@@ -242,17 +243,25 @@ class Resource(object):
             return
 
         if isinstance(property_value, dict):
-            LOG.debug("Property {0} of {1} resource is not a URL"
-                      .format(self.PROPERTY_NAME, resource_id))
+            LOG.debug(
+                "Property %s of %s resource is not a URL",
+                self.PROPERTY_NAME,
+                resource_id,
+            )
             return
 
         # If property is a file but not a zip file, place file in temp
         # folder and send the temp folder to be zipped
         temp_dir = None
-        if is_local_file(property_value) and not \
-                is_zip_file(property_value) and self.FORCE_ZIP:
+        if (
+            is_local_file(property_value)
+            and not is_zip_file(property_value)
+            and self.FORCE_ZIP
+        ):
             temp_dir = copy_to_temp_dir(property_value)
-            set_value_from_jmespath(resource_dict, self.PROPERTY_NAME, temp_dir)
+            set_value_from_jmespath(
+                resource_dict, self.PROPERTY_NAME, temp_dir
+            )
 
         try:
             self.do_export(resource_id, resource_dict, parent_dir)
@@ -260,10 +269,11 @@ class Resource(object):
         except Exception as ex:
             LOG.debug("Unable to export", exc_info=ex)
             raise exceptions.ExportFailedError(
-                    resource_id=resource_id,
-                    property_name=self.PROPERTY_NAME,
-                    property_value=property_value,
-                    ex=ex)
+                resource_id=resource_id,
+                property_name=self.PROPERTY_NAME,
+                property_value=property_value,
+                ex=ex,
+            )
         finally:
             if temp_dir:
                 shutil.rmtree(temp_dir)
@@ -273,10 +283,16 @@ class Resource(object):
         Default export action is to upload artifacts and set the property to
         S3 URL of the uploaded object
         """
-        uploaded_url = upload_local_artifacts(resource_id, resource_dict,
-                                   self.PROPERTY_NAME,
-                                   parent_dir, self.uploader)
-        set_value_from_jmespath(resource_dict, self.PROPERTY_NAME, uploaded_url)
+        uploaded_url = upload_local_artifacts(
+            resource_id,
+            resource_dict,
+            self.PROPERTY_NAME,
+            parent_dir,
+            self.uploader,
+        )
+        set_value_from_jmespath(
+            resource_dict, self.PROPERTY_NAME, uploaded_url
+        )
 
 
 class ResourceWithS3UrlDict(Resource):
@@ -298,16 +314,20 @@ class ResourceWithS3UrlDict(Resource):
         of the uploaded object
         """
 
-        artifact_s3_url = \
-            upload_local_artifacts(resource_id, resource_dict,
-                                   self.PROPERTY_NAME,
-                                   parent_dir, self.uploader)
+        artifact_s3_url = upload_local_artifacts(
+            resource_id,
+            resource_dict,
+            self.PROPERTY_NAME,
+            parent_dir,
+            self.uploader,
+        )
 
         parsed_url = parse_s3_url(
-                artifact_s3_url,
-                bucket_name_property=self.BUCKET_NAME_PROPERTY,
-                object_key_property=self.OBJECT_KEY_PROPERTY,
-                version_property=self.VERSION_PROPERTY)
+            artifact_s3_url,
+            bucket_name_property=self.BUCKET_NAME_PROPERTY,
+            object_key_property=self.OBJECT_KEY_PROPERTY,
+            version_property=self.VERSION_PROPERTY,
+        )
         set_value_from_jmespath(resource_dict, self.PROPERTY_NAME, parsed_url)
 
 
@@ -427,11 +447,21 @@ class StepFunctionsStateMachineDefinitionResource(ResourceWithS3UrlDict):
     PACKAGE_NULL_PROPERTY = False
 
 
+class ServerlessStateMachineDefinitionResource(ResourceWithS3UrlDict):
+    RESOURCE_TYPE = "AWS::Serverless::StateMachine"
+    PROPERTY_NAME = "DefinitionUri"
+    BUCKET_NAME_PROPERTY = "Bucket"
+    OBJECT_KEY_PROPERTY = "Key"
+    VERSION_PROPERTY = "Version"
+    PACKAGE_NULL_PROPERTY = False
+
+
 class CloudFormationStackResource(Resource):
     """
     Represents CloudFormation::Stack resource that can refer to a nested
     stack template via TemplateURL property.
     """
+
     RESOURCE_TYPE = "AWS::CloudFormation::Stack"
     PROPERTY_NAME = "TemplateURL"
 
@@ -447,21 +477,26 @@ class CloudFormationStackResource(Resource):
 
         template_path = resource_dict.get(self.PROPERTY_NAME, None)
 
-        if template_path is None or is_s3_url(template_path) or \
-                template_path.startswith("http://") or \
-                template_path.startswith("https://"):
+        if (
+            template_path is None
+            or is_s3_url(template_path)
+            or template_path.startswith("http://")
+            or template_path.startswith("https://")
+        ):
             # Nothing to do
             return
 
         abs_template_path = make_abs_path(parent_dir, template_path)
         if not is_local_file(abs_template_path):
             raise exceptions.InvalidTemplateUrlParameterError(
-                    property_name=self.PROPERTY_NAME,
-                    resource_id=resource_id,
-                    template_path=abs_template_path)
+                property_name=self.PROPERTY_NAME,
+                resource_id=resource_id,
+                template_path=abs_template_path,
+            )
 
-        exported_template_dict = \
-            Template(template_path, parent_dir, self.uploader).export()
+        exported_template_dict = Template(
+            template_path, parent_dir, self.uploader
+        ).export()
 
         exported_template_str = yaml_dump(exported_template_dict)
 
@@ -470,13 +505,17 @@ class CloudFormationStackResource(Resource):
             temporary_file.flush()
 
             url = self.uploader.upload_with_dedup(
-                    temporary_file.name, "template")
+                temporary_file.name, "template"
+            )
 
             # TemplateUrl property requires S3 URL to be in path-style format
             parts = parse_s3_url(url, version_property="Version")
             s3_path_url = self.uploader.to_path_style_s3_url(
-                    parts["Key"], parts.get("Version", None))
-            set_value_from_jmespath(resource_dict, self.PROPERTY_NAME, s3_path_url)
+                parts["Key"], parts.get("Version", None)
+            )
+            set_value_from_jmespath(
+                resource_dict, self.PROPERTY_NAME, s3_path_url
+            )
 
 
 class ServerlessApplicationResource(CloudFormationStackResource):
@@ -484,18 +523,34 @@ class ServerlessApplicationResource(CloudFormationStackResource):
     Represents Serverless::Application resource that can refer to a nested
     app template via Location property.
     """
+
     RESOURCE_TYPE = "AWS::Serverless::Application"
     PROPERTY_NAME = "Location"
-
 
 
 class GlueJobCommandScriptLocationResource(Resource):
     """
     Represents Glue::Job resource.
     """
+
     RESOURCE_TYPE = "AWS::Glue::Job"
     # Note the PROPERTY_NAME includes a '.' implying it's nested.
     PROPERTY_NAME = "Command.ScriptLocation"
+
+
+class CodeCommitRepositoryS3Resource(ResourceWithS3UrlDict):
+    """
+    Represents CodeCommit::Repository resource.
+    """
+
+    RESOURCE_TYPE = "AWS::CodeCommit::Repository"
+    PROPERTY_NAME = "Code.S3"
+    BUCKET_NAME_PROPERTY = "Bucket"
+    OBJECT_KEY_PROPERTY = "Key"
+    VERSION_PROPERTY = "ObjectVersion"
+    # Don't package the directory if S3 is omitted.
+    PACKAGE_NULL_PROPERTY = False
+    FORCE_ZIP = True
 
 
 RESOURCES_EXPORT_LIST = [
@@ -514,12 +569,14 @@ RESOURCES_EXPORT_LIST = [
     ServerlessLayerVersionResource,
     LambdaLayerVersionResource,
     GlueJobCommandScriptLocationResource,
-    StepFunctionsStateMachineDefinitionResource
+    StepFunctionsStateMachineDefinitionResource,
+    ServerlessStateMachineDefinitionResource,
+    CodeCommitRepositoryS3Resource,
 ]
 
 METADATA_EXPORT_LIST = [
     ServerlessRepoApplicationReadme,
-    ServerlessRepoApplicationLicense
+    ServerlessRepoApplicationLicense,
 ]
 
 
@@ -527,47 +584,58 @@ def include_transform_export_handler(template_dict, uploader, parent_dir):
     if template_dict.get("Name", None) != "AWS::Include":
         return template_dict
 
-    include_location = template_dict.get("Parameters", {}).get("Location", None)
-    if not include_location \
-            or not is_path_value_valid(include_location) \
-            or is_s3_url(include_location):
+    include_location = template_dict.get("Parameters", {}).get(
+        "Location", None
+    )
+    if (
+        not include_location
+        or not is_path_value_valid(include_location)
+        or is_s3_url(include_location)
+    ):
         # `include_location` is either empty, or not a string, or an S3 URI
         return template_dict
 
     # We are confident at this point that `include_location` is a string containing the local path
     abs_include_location = os.path.join(parent_dir, include_location)
     if is_local_file(abs_include_location):
-        template_dict["Parameters"]["Location"] = uploader.upload_with_dedup(abs_include_location)
+        template_dict["Parameters"]["Location"] = uploader.upload_with_dedup(
+            abs_include_location
+        )
     else:
         raise exceptions.InvalidLocalPathError(
             resource_id="AWS::Include",
             property_name="Location",
-            local_path=abs_include_location)
+            local_path=abs_include_location,
+        )
 
     return template_dict
 
 
-GLOBAL_EXPORT_DICT = {
-    "Fn::Transform": include_transform_export_handler
-}
+GLOBAL_EXPORT_DICT = {"Fn::Transform": include_transform_export_handler}
 
 
-class Template(object):
+class Template:
     """
     Class to export a CloudFormation template
     """
 
-    def __init__(self, template_path, parent_dir, uploader,
-                 resources_to_export=RESOURCES_EXPORT_LIST,
-                 metadata_to_export=METADATA_EXPORT_LIST):
+    def __init__(
+        self,
+        template_path,
+        parent_dir,
+        uploader,
+        resources_to_export=RESOURCES_EXPORT_LIST,
+        metadata_to_export=METADATA_EXPORT_LIST,
+    ):
         """
         Reads the template and makes it ready for export
         """
 
         if not (is_local_folder(parent_dir) and os.path.isabs(parent_dir)):
-            raise ValueError("parent_dir parameter must be "
-                             "an absolute path to a folder {0}"
-                             .format(parent_dir))
+            raise ValueError(
+                "parent_dir parameter must be "
+                f"an absolute path to a folder {parent_dir}"
+            )
 
         abs_template_path = make_abs_path(parent_dir, template_path)
         template_dir = os.path.dirname(abs_template_path)
@@ -590,7 +658,9 @@ class Template(object):
         """
         for key, val in template_dict.items():
             if key in GLOBAL_EXPORT_DICT:
-                template_dict[key] = GLOBAL_EXPORT_DICT[key](val, self.uploader, self.template_dir)
+                template_dict[key] = GLOBAL_EXPORT_DICT[key](
+                    val, self.uploader, self.template_dir
+                )
             elif isinstance(val, dict):
                 self.export_global_artifacts(val)
             elif isinstance(val, list):
@@ -616,7 +686,9 @@ class Template(object):
                     continue
 
                 exporter = exporter_class(self.uploader)
-                exporter.export(metadata_type, metadata_dict, self.template_dir)
+                exporter.export(
+                    metadata_type, metadata_dict, self.template_dir
+                )
 
         return template_dict
 
@@ -635,7 +707,19 @@ class Template(object):
 
         self.template_dict = self.export_global_artifacts(self.template_dict)
 
-        for resource_id, resource in self.template_dict["Resources"].items():
+        self.export_resources(self.template_dict["Resources"])
+
+        return self.template_dict
+
+    def export_resources(self, resource_dict):
+        for resource_id, resource in resource_dict.items():
+            if resource_id.startswith("Fn::ForEach::"):
+                if not isinstance(resource, list) or len(resource) != 3:
+                    raise exceptions.InvalidForEachIntrinsicFunctionError(
+                        resource_id=resource_id
+                    )
+                self.export_resources(resource[2])
+                continue
 
             resource_type = resource.get("Type", None)
             resource_dict = resource.get("Properties", None)
@@ -647,5 +731,3 @@ class Template(object):
                 # Export code resources
                 exporter = exporter_class(self.uploader)
                 exporter.export(resource_id, resource_dict, self.template_dir)
-
-        return self.template_dict

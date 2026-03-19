@@ -12,9 +12,8 @@
 # language governing permissions and limitations under the License.
 from awscli.clidriver import AWSCLIEntryPoint
 from awscli.compat import ensure_text_type
-
-from tests.functional.history import BaseHistoryCommandParamsTest
 from awscli.testutils import create_clidriver
+from tests.functional.history import BaseHistoryCommandParamsTest
 
 
 class TestListCommand(BaseHistoryCommandParamsTest):
@@ -27,7 +26,7 @@ class TestListCommand(BaseHistoryCommandParamsTest):
                 "Regions": [
                     {
                         "Endpoint": "ec2.ap-south-1.amazonaws.com",
-                        "RegionName": "ap-south-1"
+                        "RegionName": "ap-south-1",
                     },
                 ]
             }
@@ -46,7 +45,7 @@ class TestListCommand(BaseHistoryCommandParamsTest):
             'to the config file.'
         )
         self.assertEqual('', ensure_text_type(out))
-        self.assertEqual('\n%s\n' % error_message, ensure_text_type(err))
+        self.assertEqual('\naws: [ERROR]: %s\n' % error_message, ensure_text_type(err))
 
     def test_show_one_call_present(self):
         self.parsed_responses = [
@@ -54,7 +53,7 @@ class TestListCommand(BaseHistoryCommandParamsTest):
                 "Regions": [
                     {
                         "Endpoint": "ec2.ap-south-1.amazonaws.com",
-                        "RegionName": "ap-south-1"
+                        "RegionName": "ap-south-1",
                     },
                 ]
             }
@@ -65,25 +64,25 @@ class TestListCommand(BaseHistoryCommandParamsTest):
         self.assertIn('ec2 describe-regions', stdout)
 
     def test_multiple_calls_present(self):
-            self.parsed_responses = [
-                {
-                    "Regions": [
-                        {
-                            "Endpoint": "ec2.ap-south-1.amazonaws.com",
-                            "RegionName": "ap-south-1"
-                        },
-                    ]
-                },
-                {
-                    "UserId": "foo",
-                    "Account": "bar",
-                    "Arn": "arn:aws:iam::1234567:user/baz"
-                }
-            ]
-            _, _, rc = self.run_cmd('ec2 describe-instances', expected_rc=0)
-            self.history_recorder.record('CLI_RC', rc, 'CLI')
-            _, _, rc = self.run_cmd('sts get-caller-identity', expected_rc=0)
-            self.history_recorder.record('CLI_RC', rc, 'CLI')
-            stdout, _, _ = self.run_cmd('history list', expected_rc=0)
-            self.assertIn('ec2 describe-instances', stdout)
-            self.assertIn('sts get-caller-identity', stdout)
+        self.parsed_responses = [
+            {
+                "Regions": [
+                    {
+                        "Endpoint": "ec2.ap-south-1.amazonaws.com",
+                        "RegionName": "ap-south-1",
+                    },
+                ]
+            },
+            {
+                "UserId": "foo",
+                "Account": "bar",
+                "Arn": "arn:aws:iam::1234567:user/baz",
+            },
+        ]
+        _, _, rc = self.run_cmd('ec2 describe-regions', expected_rc=0)
+        self.history_recorder.record('CLI_RC', rc, 'CLI')
+        _, _, rc = self.run_cmd('sts get-caller-identity', expected_rc=0)
+        self.history_recorder.record('CLI_RC', rc, 'CLI')
+        stdout, _, _ = self.run_cmd('history list', expected_rc=0)
+        self.assertIn('ec2 describe-regions', stdout)
+        self.assertIn('sts get-caller-identity', stdout)

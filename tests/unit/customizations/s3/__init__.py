@@ -12,10 +12,8 @@
 # language governing permissions and limitations under the License.
 import os
 
-from awscli.compat import six
 
-
-class FakeTransferFuture(object):
+class FakeTransferFuture:
     def __init__(self, result=None, exception=None, meta=None):
         self._result = result
         self._exception = exception
@@ -30,16 +28,17 @@ class FakeTransferFuture(object):
         self._exception = exception
 
 
-class FakeTransferFutureMeta(object):
-    def __init__(self, size=None, call_args=None, transfer_id=None,
-                 user_context=None):
+class FakeTransferFutureMeta:
+    def __init__(
+        self, size=None, call_args=None, transfer_id=None, user_context=None
+    ):
         self.size = size
         self.call_args = call_args
         self.transfer_id = transfer_id
         self.user_context = user_context
 
 
-class FakeTransferFutureCallArgs(object):
+class FakeTransferFutureCallArgs:
     def __init__(self, **kwargs):
         for kwarg, val in kwargs.items():
             setattr(self, kwarg, val)
@@ -57,14 +56,20 @@ def make_loc_files(file_creator, size=None):
         body = 'This is a test.'
 
     filename1 = file_creator.create_file(
-        os.path.join('some_directory', 'text1.txt'), body)
+        os.path.join('some_directory', 'text1.txt'), body
+    )
 
     filename2 = file_creator.create_file(
-        os.path.join('some_directory', 'another_directory', 'text2.txt'), body)
-    filename1 = six.text_type(filename1)
-    filename2 = six.text_type(filename2)
-    return [filename1, filename2, os.path.dirname(filename2),
-            os.path.dirname(filename1)]
+        os.path.join('some_directory', 'another_directory', 'text2.txt'), body
+    )
+    filename1 = str(filename1)
+    filename2 = str(filename2)
+    return [
+        filename1,
+        filename2,
+        os.path.dirname(filename2),
+        os.path.dirname(filename1),
+    ]
 
 
 def clean_loc_files(file_creator):
@@ -74,16 +79,16 @@ def clean_loc_files(file_creator):
     file_creator.remove_all()
 
 
-def compare_files(self, result_file, ref_file):
+def compare_files(result_file, ref_file):
     """
     Ensures that the FileStat's properties are what they
     are suppose to be.
     """
-    self.assertEqual(result_file.src, ref_file.src)
-    self.assertEqual(result_file.dest, ref_file.dest)
-    self.assertEqual(result_file.compare_key, ref_file.compare_key)
-    self.assertEqual(result_file.size, ref_file.size)
-    self.assertEqual(result_file.last_update, ref_file.last_update)
-    self.assertEqual(result_file.src_type, ref_file.src_type)
-    self.assertEqual(result_file.dest_type, ref_file.dest_type)
-    self.assertEqual(result_file.operation_name, ref_file.operation_name)
+    assert result_file.src == ref_file.src
+    assert result_file.dest == ref_file.dest
+    assert result_file.compare_key == ref_file.compare_key
+    assert result_file.size == ref_file.size
+    assert result_file.last_update == ref_file.last_update
+    assert result_file.src_type == ref_file.src_type
+    assert result_file.dest_type == ref_file.dest_type
+    assert result_file.operation_name == ref_file.operation_name

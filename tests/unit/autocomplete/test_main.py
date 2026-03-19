@@ -10,10 +10,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.autocomplete import main, completer
-from nose.tools import assert_is_instance
+from awscli.autocomplete import completer, main
 
 
 def test_can_create_completer():
     cli_completer = main.create_autocompleter()
-    assert_is_instance(cli_completer, completer.AutoCompleter)
+    assert isinstance(cli_completer, completer.AutoCompleter)

@@ -14,7 +14,6 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestCreateOpenIDConnectProvider(BaseAWSCommandParamsTest):
-
     prefix = 'iam create-open-id-connect-provider'
 
     def test_create_open_id_connect_provider(self):
@@ -24,6 +23,6 @@ class TestCreateOpenIDConnectProvider(BaseAWSCommandParamsTest):
 
         result = {
             'Url': 'https://example.com',
-            'ThumbprintList': ['990F4193972F2BECF12DDEDA5237F9C952F20D9E']
+            'ThumbprintList': ['990F4193972F2BECF12DDEDA5237F9C952F20D9E'],
         }
         self.assert_params_for_cmd(cmdline, result)

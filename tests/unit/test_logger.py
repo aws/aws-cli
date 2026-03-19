@@ -15,26 +15,30 @@ import logging
 import awscrt.io
 
 from awscli.logger import (
-    set_stream_logger, remove_stream_logger, enable_crt_logging,
     disable_crt_logging,
+    enable_crt_logging,
+    remove_stream_logger,
+    set_stream_logger,
 )
-from awscli.testutils import unittest, mock
+from awscli.testutils import mock, unittest
 
 
 class TestLogger(unittest.TestCase):
     def test_can_set_stream_handler(self):
         set_stream_logger('test_stream_logger', logging.DEBUG)
         log = logging.getLogger('test_stream_logger')
-        self.assertEqual(log.handlers[0].name,
-                         'test_stream_logger_stream_handler')
+        self.assertEqual(
+            log.handlers[0].name, 'test_stream_logger_stream_handler'
+        )
 
     def test_keeps_only_one_stream_handler(self):
         set_stream_logger('test_stream_logger', logging.DEBUG)
         set_stream_logger('test_stream_logger', logging.ERROR)
         log = logging.getLogger('test_stream_logger')
         self.assertEqual(len(log.handlers), 1)
-        self.assertEqual(log.handlers[0].name,
-                         'test_stream_logger_stream_handler')
+        self.assertEqual(
+            log.handlers[0].name, 'test_stream_logger_stream_handler'
+        )
         self.assertEqual(log.handlers[0].level, logging.ERROR)
 
     def test_can_remove_stream_handler(self):
@@ -43,16 +47,16 @@ class TestLogger(unittest.TestCase):
         log = logging.getLogger('test_stream_logger')
         self.assertEqual(len(log.handlers), 0)
 
-    @mock.patch('awscrt.io.init_logging')
+    @mock.patch('awscrt.io.set_log_level')
     def test_can_enable_crt_logging(self, mock_init_logging):
         enable_crt_logging()
         mock_init_logging.assert_called_with(
-            awscrt.io.LogLevel.Debug, 'stderr'
+            awscrt.io.LogLevel.Debug,
         )
 
-    @mock.patch('awscrt.io.init_logging')
+    @mock.patch('awscrt.io.set_log_level')
     def test_can_disable_crt_logging(self, mock_init_logging):
         disable_crt_logging()
         mock_init_logging.assert_called_with(
-            awscrt.io.LogLevel.NoLogs, 'stderr'
+            awscrt.io.LogLevel.NoLogs,
         )

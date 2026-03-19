@@ -11,15 +11,15 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import string
-from botocore.vendored.six.moves import shlex_quote
+
+from awscli.compat import shlex
 
 NOT_SET = '<not set>'
-PREDEFINED_SECTION_NAMES = ('plugins')
+PREDEFINED_SECTION_NAMES = 'plugins'
 _WHITESPACE = ' \t'
 
 
-class ConfigValue(object):
-
+class ConfigValue:
     def __init__(self, value, config_type, config_variable):
         self.value = value
         self.config_type = config_type
@@ -46,6 +46,10 @@ def profile_to_section(profile_name):
     """Converts a profile name to a section header to be used in the config."""
     if profile_name == 'default':
         return profile_name
-    if any(c in _WHITESPACE for c in profile_name):
-        profile_name = shlex_quote(profile_name)
-    return 'profile %s' % profile_name
+    return get_section_header('profile', profile_name)
+
+
+def get_section_header(section_type, section_name):
+    if any(c in _WHITESPACE for c in section_name):
+        section_name = shlex.quote(section_name)
+    return f'{section_type} {section_name}'

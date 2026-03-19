@@ -10,17 +10,18 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import mock
-
 from prompt_toolkit.buffer import Buffer
 from prompt_toolkit.formatted_text import FormattedText
 from prompt_toolkit.layout import (
-    HSplit, Window, ConditionalContainer, FloatContainer
+    ConditionalContainer,
+    FloatContainer,
+    HSplit,
+    Window,
 )
 from prompt_toolkit.widgets import Dialog
 
 from awscli.autoprompt import widgets
-from awscli.testutils import unittest
+from awscli.testutils import mock, unittest
 
 
 class TestHelpPanelWidget(unittest.TestCase):
@@ -124,8 +125,9 @@ class TestDebugPanelWidget(unittest.TestCase):
     def test_can_create_float_container_with_correct_bindings(self):
         widget = widgets.DebugPanelWidget()
         self.assertIsInstance(widget.float_container, FloatContainer)
-        key_bindings = widget.float_container.key_bindings.\
-                                get_bindings_starting_with_keys('')
+        key_bindings = widget.float_container.key_bindings.get_bindings_starting_with_keys(
+            ''
+        )
         self.assertEqual(len(key_bindings), 1)
         self.assertEqual(key_bindings[0].keys, ('c-s',))
 
@@ -137,28 +139,39 @@ class TestFormatTextProcessor(unittest.TestCase):
     def test_can_apply_transformation(self):
         text_input = mock.Mock()
         text_input.fragments = [('', '<style fg="black">[tab]</style>text1')]
-        transformed_text = \
-            self.format_text_processor.apply_transformation(text_input)
+        transformed_text = self.format_text_processor.apply_transformation(
+            text_input
+        )
         actual_fragments = transformed_text.fragments
-        expected_fragments = FormattedText([('fg:black', '[tab]'),
-                                            ('', 'text1')])
+        expected_fragments = FormattedText(
+            [('fg:black', '[tab]'), ('', 'text1')]
+        )
         self.assertEqual(actual_fragments, expected_fragments)
 
     def test_can_apply_transformation_on_multiple_tags(self):
         text_input = mock.Mock()
         text_input.fragments = [
-            ('',
-             ('<style fg="black">[tab]</style>text1'
-              '<style fg="red">[up]</style>text2'
-              '<style fg="blue">[down]</style>text3')
-        )]
-        transformed_text = \
-            self.format_text_processor.apply_transformation(text_input)
+            (
+                '',
+                (
+                    '<style fg="black">[tab]</style>text1'
+                    '<style fg="red">[up]</style>text2'
+                    '<style fg="blue">[down]</style>text3'
+                ),
+            )
+        ]
+        transformed_text = self.format_text_processor.apply_transformation(
+            text_input
+        )
         actual_fragments = transformed_text.fragments
         expected_fragments = FormattedText(
             [
-                ('fg:black', '[tab]'), ('', 'text1'),
-                ('fg:red', '[up]'), ('', 'text2'),
-                ('fg:blue', '[down]'), ('', 'text3')
-            ])
+                ('fg:black', '[tab]'),
+                ('', 'text1'),
+                ('fg:red', '[up]'),
+                ('', 'text2'),
+                ('fg:blue', '[down]'),
+                ('', 'text3'),
+            ]
+        )
         self.assertEqual(actual_fragments, expected_fragments)

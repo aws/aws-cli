@@ -1,15 +1,16 @@
 **To get information about an OU**
 
-The following example shows how to request details about an OU: ::
+The following ``describe-organizational-unit`` example requests details about an OU. ::
 
-	aws organizations describe-organizational-unit --organizational-unit-id ou-examplerootid111-exampleouid111
-	
-The output includes an OrganizationUnit object that contains the details about the OU: ::
+    aws organizations describe-organizational-unit \
+        --organizational-unit-id ou-examplerootid111-exampleouid111
 
-	{
-		"OrganizationalUnit": {
-			"Name": "Accounting Group",
-			"Arn": "arn:aws:organizations::o-exampleorgid:ou/o-exampleorgid/ou-examplerootid111-exampleouid111",
-			"Id": "ou-examplerootid111-exampleouid111"
-		}
-	}
+Output::
+
+    {
+        "OrganizationalUnit": {
+            "Name": "Accounting Group",
+            "Arn": "arn:aws:organizations::123456789012:ou/o-exampleorgid/ou-examplerootid111-exampleouid111",
+            "Id": "ou-examplerootid111-exampleouid111"
+        }
+    }

@@ -10,33 +10,34 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import mock
-import nose
 from collections import namedtuple
 
-from awscli.clidriver import create_clidriver
+import pytest
+
 from awscli.autoprompt import core
+from awscli.clidriver import create_clidriver
 from awscli.customizations.exceptions import ParamValidationError
-from awscli.testutils import unittest
+from awscli.testutils import mock, unittest
 
 
 class TestCLIAutoPrompt(unittest.TestCase):
     def setUp(self):
         self.driver = mock.Mock()
         self.prompter = mock.Mock(spec=core.AutoPrompter)
-        self.prompt_driver = core.AutoPromptDriver(self.driver,
-                                                   prompter=self.prompter)
+        self.prompt_driver = core.AutoPromptDriver(
+            self.driver, prompter=self.prompter
+        )
 
     def test_throw_error_if_both_args_specified(self):
         args = ['--cli-auto-prompt', '--no-cli-auto-prompt']
         self.assertRaises(
             ParamValidationError,
             self.prompt_driver.validate_auto_prompt_args_are_mutually_exclusive,
-            args
+            args,
         )
 
 
-def test_auto_prompt_resolve_mode():
+def _generate_auto_prompt_resolve_cases():
     # Each case is a 5-namedtuple with the following meaning:
     # "args" is a list of arguments that command got as input from
     #   command line
@@ -49,12 +50,15 @@ def test_auto_prompt_resolve_mode():
     # or --cli-auto-prompt overrides can be specified.
     # TestCLIAutoPrompt.test_throw_error_if_both_args_specified tests
     # that these command line overrides are mutually exclusive.
-    Case = namedtuple('Case', [
-        'args',
-        'config_variable',
-        'expected_result',
-    ])
-    cases = [
+    Case = namedtuple(
+        'Case',
+        [
+            'args',
+            'config_variable',
+            'expected_result',
+        ],
+    )
+    return [
         Case([], 'off', 'off'),
         Case([], 'on', 'on'),
         Case(['--cli-auto-prompt'], 'off', 'on'),
@@ -68,18 +72,16 @@ def test_auto_prompt_resolve_mode():
         Case(['--version'], 'on', 'off'),
         Case(['help'], 'on', 'off'),
     ]
-    for case in cases:
-        yield (_assert_auto_prompt_runs_as_expected, case)
 
 
-def _assert_auto_prompt_runs_as_expected(case):
+@pytest.mark.parametrize('case', _generate_auto_prompt_resolve_cases())
+def test_auto_prompt_resolve_mode(case):
     driver = create_clidriver()
-    driver.session.set_config_variable('cli_auto_prompt',
-                                       case.config_variable)
+    driver.session.set_config_variable('cli_auto_prompt', case.config_variable)
     prompter = mock.Mock(spec=core.AutoPrompter)
     prompt_driver = core.AutoPromptDriver(driver, prompter=prompter)
     result = prompt_driver.resolve_mode(args=case.args)
-    nose.tools.eq_(result, case.expected_result)
+    assert result == case.expected_result
 
 
 def test_auto_prompt_resolve_mode_on_non_existing_profile():
@@ -88,7 +90,7 @@ def test_auto_prompt_resolve_mode_on_non_existing_profile():
     prompter = mock.Mock(spec=core.AutoPrompter)
     prompt_driver = core.AutoPromptDriver(driver, prompter=prompter)
     result = prompt_driver.resolve_mode(args=[])
-    nose.tools.eq_(result, 'off')
+    assert result == 'off'
 
 
 class TestAutoPrompter(unittest.TestCase):
@@ -99,7 +101,8 @@ class TestAutoPrompter(unittest.TestCase):
         prompter.prompt_for_args = lambda x: x
         driver.arg_table = []
         self.auto_prompter = core.AutoPrompter(
-            completion_source, driver, prompter)
+            completion_source, driver, prompter
+        )
 
     def test_auto_prompter_returns_args(self):
         original_args = ['aws', 'ec2', 'help']

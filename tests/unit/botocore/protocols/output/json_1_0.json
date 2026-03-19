@@ -1,0 +1,1157 @@
+[
+    {
+        "description": "Test cases for EmptyInputAndEmptyOutput operation",
+        "metadata": {
+            "protocol": "json",
+            "protocols": [
+                "json"
+            ],
+            "apiVersion": "2020-07-14",
+            "jsonVersion": "1.0",
+            "targetPrefix": "JsonRpc10"
+        },
+        "shapes": {
+            "EmptyInputAndEmptyOutputOutput": {
+                "type": "structure",
+                "members": {}
+            }
+        },
+        "cases": [
+            {
+                "id": "AwsJson10EmptyInputAndEmptyOutputSendJsonObject",
+                "given": {
+                    "name": "EmptyInputAndEmptyOutput",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "output": {
+                        "shape": "EmptyInputAndEmptyOutputOutput"
+                    },
+                    "documentation": "<p>The example tests how requests and responses are serialized when there's no request or response payload because the operation has an empty input and empty output structure that reuses the same shape. While this should be rare, code generators must support this.</p>"
+                },
+                "description": "A service will always return a JSON object for operations with modeled output.",
+                "result": {},
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/x-amz-json-1.0"
+                    },
+                    "body": "{}"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for GreetingWithErrors operation",
+        "metadata": {
+            "protocol": "json",
+            "protocols": [
+                "json"
+            ],
+            "apiVersion": "2020-07-14",
+            "jsonVersion": "1.0",
+            "targetPrefix": "JsonRpc10"
+        },
+        "shapes": {
+            "InvalidGreeting": {
+                "type": "structure",
+                "members": {
+                    "Message": {
+                        "shape": "String"
+                    }
+                },
+                "documentation": "<p>This error is thrown when an invalid greeting value is provided.</p>",
+                "exception": true
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "AwsJson10InvalidGreetingError",
+                "given": {
+                    "name": "GreetingWithErrors",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "documentation": "<p>This operation has three possible return values:</p> <ol> <li>A successful response in the form of GreetingWithErrorsOutput</li> <li>An InvalidGreeting error.</li> <li>A ComplexError error.</li> </ol> <p>Implementations must be able to successfully take a response and properly deserialize successful and error responses.</p>",
+                    "idempotent": true,
+                    "errors": [
+                        {
+                            "shape": "InvalidGreeting"
+                        }
+                    ]
+                },
+                "description": "Parses simple JSON errors",
+                "errorCode": "InvalidGreeting",
+                "errorMessage": "Hi",
+                "error": {
+                    "Message": "Hi"
+                },
+                "response": {
+                    "status_code": 400,
+                    "headers": {
+                        "Content-Type": "application/x-amz-json-1.0"
+                    },
+                    "body": "{\n    \"__type\": \"aws.protocoltests.json10#InvalidGreeting\",\n    \"Message\": \"Hi\"\n}"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for GreetingWithErrors operation",
+        "metadata": {
+            "protocol": "json",
+            "protocols": [
+                "json"
+            ],
+            "apiVersion": "2020-07-14",
+            "jsonVersion": "1.0",
+            "targetPrefix": "JsonRpc10"
+        },
+        "shapes": {
+            "FooError": {
+                "type": "structure",
+                "members": {},
+                "documentation": "<p>This error has test cases that test some of the dark corners of Amazon service framework history. It should only be implemented by clients.</p>",
+                "exception": true,
+                "fault": true
+            }
+        },
+        "cases": [
+            {
+                "id": "AwsJson10FooErrorUsingXAmznErrorType",
+                "given": {
+                    "name": "GreetingWithErrors",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "documentation": "<p>This operation has three possible return values:</p> <ol> <li>A successful response in the form of GreetingWithErrorsOutput</li> <li>An InvalidGreeting error.</li> <li>A ComplexError error.</li> </ol> <p>Implementations must be able to successfully take a response and properly deserialize successful and error responses.</p>",
+                    "idempotent": true,
+                    "errors": [
+                        {
+                            "shape": "FooError"
+                        }
+                    ]
+                },
+                "description": "Serializes the X-Amzn-ErrorType header. For an example service, see Amazon EKS.",
+                "errorCode": "FooError",
+                "error": {},
+                "response": {
+                    "status_code": 500,
+                    "headers": {
+                        "X-Amzn-Errortype": "FooError"
+                    }
+                }
+            },
+            {
+                "id": "AwsJson10FooErrorUsingXAmznErrorTypeWithUri",
+                "given": {
+                    "name": "GreetingWithErrors",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "documentation": "<p>This operation has three possible return values:</p> <ol> <li>A successful response in the form of GreetingWithErrorsOutput</li> <li>An InvalidGreeting error.</li> <li>A ComplexError error.</li> </ol> <p>Implementations must be able to successfully take a response and properly deserialize successful and error responses.</p>",
+                    "idempotent": true,
+                    "errors": [
+                        {
+                            "shape": "FooError"
+                        }
+                    ]
+                },
+                "description": "Some X-Amzn-Errortype headers contain URLs. Clients need to split the URL on ':' and take only the first half of the string. For example, 'ValidationException:http://internal.amazon.com/coral/com.amazon.coral.validate/'\nis to be interpreted as 'ValidationException'.\n\nFor an example service see Amazon Polly.",
+                "errorCode": "FooError",
+                "error": {},
+                "response": {
+                    "status_code": 500,
+                    "headers": {
+                        "X-Amzn-Errortype": "FooError:http://internal.amazon.com/coral/com.amazon.coral.validate/"
+                    }
+                }
+            },
+            {
+                "id": "AwsJson10FooErrorUsingXAmznErrorTypeWithUriAndNamespace",
+                "given": {
+                    "name": "GreetingWithErrors",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "documentation": "<p>This operation has three possible return values:</p> <ol> <li>A successful response in the form of GreetingWithErrorsOutput</li> <li>An InvalidGreeting error.</li> <li>A ComplexError error.</li> </ol> <p>Implementations must be able to successfully take a response and properly deserialize successful and error responses.</p>",
+                    "idempotent": true,
+                    "errors": [
+                        {
+                            "shape": "FooError"
+                        }
+                    ]
+                },
+                "description": "X-Amzn-Errortype might contain a URL and a namespace. Client should extract only the shape name. This is a pathalogical case that might not actually happen in any deployed AWS service.",
+                "errorCode": "FooError",
+                "error": {},
+                "response": {
+                    "status_code": 500,
+                    "headers": {
+                        "X-Amzn-Errortype": "aws.protocoltests.json10#FooError:http://internal.amazon.com/coral/com.amazon.coral.validate/"
+                    }
+                }
+            },
+            {
+                "id": "AwsJson10FooErrorUsingCode",
+                "given": {
+                    "name": "GreetingWithErrors",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "documentation": "<p>This operation has three possible return values:</p> <ol> <li>A successful response in the form of GreetingWithErrorsOutput</li> <li>An InvalidGreeting error.</li> <li>A ComplexError error.</li> </ol> <p>Implementations must be able to successfully take a response and properly deserialize successful and error responses.</p>",
+                    "idempotent": true,
+                    "errors": [
+                        {
+                            "shape": "FooError"
+                        }
+                    ]
+                },
+                "description": "This example uses the 'code' property in the output rather than X-Amzn-Errortype. Some services do this though it's preferable to send the X-Amzn-Errortype. Client implementations must first check for the X-Amzn-Errortype and then check for a top-level 'code' property.\n\nFor example service see Amazon S3 Glacier.",
+                "errorCode": "FooError",
+                "error": {},
+                "response": {
+                    "status_code": 500,
+                    "headers": {
+                        "Content-Type": "application/x-amz-json-1.0"
+                    },
+                    "body": "{\n    \"code\": \"FooError\"\n}"
+                }
+            },
+            {
+                "id": "AwsJson10FooErrorUsingCodeAndNamespace",
+                "given": {
+                    "name": "GreetingWithErrors",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "documentation": "<p>This operation has three possible return values:</p> <ol> <li>A successful response in the form of GreetingWithErrorsOutput</li> <li>An InvalidGreeting error.</li> <li>A ComplexError error.</li> </ol> <p>Implementations must be able to successfully take a response and properly deserialize successful and error responses.</p>",
+                    "idempotent": true,
+                    "errors": [
+                        {
+                            "shape": "FooError"
+                        }
+                    ]
+                },
+                "description": "Some services serialize errors using code, and it might contain a namespace. Clients should just take the last part of the string after '#'.",
+                "errorCode": "FooError",
+                "error": {},
+                "response": {
+                    "status_code": 500,
+                    "headers": {
+                        "Content-Type": "application/x-amz-json-1.0"
+                    },
+                    "body": "{\n    \"code\": \"aws.protocoltests.json10#FooError\"\n}"
+                }
+            },
+            {
+                "id": "AwsJson10FooErrorUsingCodeUriAndNamespace",
+                "given": {
+                    "name": "GreetingWithErrors",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "documentation": "<p>This operation has three possible return values:</p> <ol> <li>A successful response in the form of GreetingWithErrorsOutput</li> <li>An InvalidGreeting error.</li> <li>A ComplexError error.</li> </ol> <p>Implementations must be able to successfully take a response and properly deserialize successful and error responses.</p>",
+                    "idempotent": true,
+                    "errors": [
+                        {
+                            "shape": "FooError"
+                        }
+                    ]
+                },
+                "description": "Some services serialize errors using code, and it might contain a namespace. It also might contain a URI. Clients should just take the last part of the string after '#' and before \":\". This is a pathalogical case that might not occur in any deployed AWS service.",
+                "errorCode": "FooError",
+                "error": {},
+                "response": {
+                    "status_code": 500,
+                    "headers": {
+                        "Content-Type": "application/x-amz-json-1.0"
+                    },
+                    "body": "{\n    \"code\": \"aws.protocoltests.json10#FooError:http://internal.amazon.com/coral/com.amazon.coral.validate/\"\n}"
+                }
+            },
+            {
+                "id": "AwsJson10FooErrorWithDunderType",
+                "given": {
+                    "name": "GreetingWithErrors",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "documentation": "<p>This operation has three possible return values:</p> <ol> <li>A successful response in the form of GreetingWithErrorsOutput</li> <li>An InvalidGreeting error.</li> <li>A ComplexError error.</li> </ol> <p>Implementations must be able to successfully take a response and properly deserialize successful and error responses.</p>",
+                    "idempotent": true,
+                    "errors": [
+                        {
+                            "shape": "FooError"
+                        }
+                    ]
+                },
+                "description": "Some services serialize errors using __type.",
+                "errorCode": "FooError",
+                "error": {},
+                "response": {
+                    "status_code": 500,
+                    "headers": {
+                        "Content-Type": "application/x-amz-json-1.0"
+                    },
+                    "body": "{\n    \"__type\": \"FooError\"\n}"
+                }
+            },
+            {
+                "id": "AwsJson10FooErrorWithDunderTypeAndNamespace",
+                "given": {
+                    "name": "GreetingWithErrors",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "documentation": "<p>This operation has three possible return values:</p> <ol> <li>A successful response in the form of GreetingWithErrorsOutput</li> <li>An InvalidGreeting error.</li> <li>A ComplexError error.</li> </ol> <p>Implementations must be able to successfully take a response and properly deserialize successful and error responses.</p>",
+                    "idempotent": true,
+                    "errors": [
+                        {
+                            "shape": "FooError"
+                        }
+                    ]
+                },
+                "description": "Some services serialize errors using __type, and it might contain a namespace. Clients should just take the last part of the string after '#'.",
+                "errorCode": "FooError",
+                "error": {},
+                "response": {
+                    "status_code": 500,
+                    "headers": {
+                        "Content-Type": "application/x-amz-json-1.0"
+                    },
+                    "body": "{\n    \"__type\": \"aws.protocoltests.json10#FooError\"\n}"
+                }
+            },
+            {
+                "id": "AwsJson10FooErrorWithDunderTypeUriAndNamespace",
+                "given": {
+                    "name": "GreetingWithErrors",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "documentation": "<p>This operation has three possible return values:</p> <ol> <li>A successful response in the form of GreetingWithErrorsOutput</li> <li>An InvalidGreeting error.</li> <li>A ComplexError error.</li> </ol> <p>Implementations must be able to successfully take a response and properly deserialize successful and error responses.</p>",
+                    "idempotent": true,
+                    "errors": [
+                        {
+                            "shape": "FooError"
+                        }
+                    ]
+                },
+                "description": "Some services serialize errors using __type, and it might contain a namespace. It also might contain a URI. Clients should just take the last part of the string after '#' and before \":\". This is a pathalogical case that might not occur in any deployed AWS service.",
+                "errorCode": "FooError",
+                "error": {},
+                "response": {
+                    "status_code": 500,
+                    "headers": {
+                        "Content-Type": "application/x-amz-json-1.0"
+                    },
+                    "body": "{\n    \"__type\": \"aws.protocoltests.json10#FooError:http://internal.amazon.com/coral/com.amazon.coral.validate/\"\n}"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for GreetingWithErrors operation",
+        "metadata": {
+            "protocol": "json",
+            "protocols": [
+                "json"
+            ],
+            "apiVersion": "2020-07-14",
+            "jsonVersion": "1.0",
+            "targetPrefix": "JsonRpc10"
+        },
+        "shapes": {
+            "ComplexError": {
+                "type": "structure",
+                "members": {
+                    "TopLevel": {
+                        "shape": "String"
+                    },
+                    "Nested": {
+                        "shape": "ComplexNestedErrorData"
+                    }
+                },
+                "documentation": "<p>This error is thrown when a request is invalid.</p>",
+                "exception": true
+            },
+            "String": {
+                "type": "string"
+            },
+            "ComplexNestedErrorData": {
+                "type": "structure",
+                "members": {
+                    "Foo": {
+                        "shape": "String"
+                    }
+                }
+            }
+        },
+        "cases": [
+            {
+                "id": "AwsJson10ComplexError",
+                "given": {
+                    "name": "GreetingWithErrors",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "documentation": "<p>This operation has three possible return values:</p> <ol> <li>A successful response in the form of GreetingWithErrorsOutput</li> <li>An InvalidGreeting error.</li> <li>A ComplexError error.</li> </ol> <p>Implementations must be able to successfully take a response and properly deserialize successful and error responses.</p>",
+                    "idempotent": true,
+                    "errors": [
+                        {
+                            "shape": "ComplexError"
+                        }
+                    ]
+                },
+                "description": "Parses a complex error with no message member",
+                "errorCode": "ComplexError",
+                "error": {
+                    "TopLevel": "Top level",
+                    "Nested": {
+                        "Foo": "bar"
+                    }
+                },
+                "response": {
+                    "status_code": 400,
+                    "headers": {
+                        "Content-Type": "application/x-amz-json-1.0"
+                    },
+                    "body": "{\n    \"__type\": \"aws.protocoltests.json10#ComplexError\",\n    \"TopLevel\": \"Top level\",\n    \"Nested\": {\n        \"Foo\": \"bar\"\n    }\n}"
+                }
+            },
+            {
+                "id": "AwsJson10EmptyComplexError",
+                "given": {
+                    "name": "GreetingWithErrors",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "documentation": "<p>This operation has three possible return values:</p> <ol> <li>A successful response in the form of GreetingWithErrorsOutput</li> <li>An InvalidGreeting error.</li> <li>A ComplexError error.</li> </ol> <p>Implementations must be able to successfully take a response and properly deserialize successful and error responses.</p>",
+                    "idempotent": true,
+                    "errors": [
+                        {
+                            "shape": "ComplexError"
+                        }
+                    ]
+                },
+                "description": "Parses a complex error with an empty body",
+                "errorCode": "ComplexError",
+                "error": {},
+                "response": {
+                    "status_code": 400,
+                    "headers": {
+                        "Content-Type": "application/x-amz-json-1.0"
+                    },
+                    "body": "{\n    \"__type\": \"aws.protocoltests.json10#ComplexError\"\n}"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for JsonUnions operation",
+        "metadata": {
+            "protocol": "json",
+            "protocols": [
+                "json"
+            ],
+            "apiVersion": "2020-07-14",
+            "jsonVersion": "1.0",
+            "targetPrefix": "JsonRpc10"
+        },
+        "shapes": {
+            "JsonUnionsOutput": {
+                "type": "structure",
+                "members": {
+                    "contents": {
+                        "shape": "MyUnion"
+                    }
+                }
+            },
+            "MyUnion": {
+                "type": "structure",
+                "members": {
+                    "stringValue": {
+                        "shape": "String"
+                    },
+                    "booleanValue": {
+                        "shape": "Boolean"
+                    },
+                    "numberValue": {
+                        "shape": "Integer"
+                    },
+                    "blobValue": {
+                        "shape": "Blob"
+                    },
+                    "timestampValue": {
+                        "shape": "Timestamp"
+                    },
+                    "enumValue": {
+                        "shape": "FooEnum"
+                    },
+                    "intEnumValue": {
+                        "shape": "IntegerEnum"
+                    },
+                    "listValue": {
+                        "shape": "StringList"
+                    },
+                    "mapValue": {
+                        "shape": "StringMap"
+                    },
+                    "structureValue": {
+                        "shape": "GreetingStruct"
+                    }
+                },
+                "documentation": "<p>A union with a representative set of types for members.</p>",
+                "union": true
+            },
+            "String": {
+                "type": "string"
+            },
+            "Boolean": {
+                "type": "boolean",
+                "box": true
+            },
+            "Integer": {
+                "type": "integer",
+                "box": true
+            },
+            "Blob": {
+                "type": "blob"
+            },
+            "Timestamp": {
+                "type": "timestamp"
+            },
+            "FooEnum": {
+                "type": "string",
+                "enum": [
+                    "Foo",
+                    "Baz",
+                    "Bar",
+                    "1",
+                    "0"
+                ]
+            },
+            "IntegerEnum": {
+                "type": "integer",
+                "box": true
+            },
+            "StringList": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                }
+            },
+            "StringMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "String"
+                }
+            },
+            "GreetingStruct": {
+                "type": "structure",
+                "members": {
+                    "hi": {
+                        "shape": "String"
+                    }
+                }
+            }
+        },
+        "cases": [
+            {
+                "id": "AwsJson10DeserializeStringUnionValue",
+                "given": {
+                    "name": "JsonUnions",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "output": {
+                        "shape": "JsonUnionsOutput"
+                    },
+                    "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
+                    "idempotent": true
+                },
+                "description": "Deserializes a string union value",
+                "result": {
+                    "contents": {
+                        "stringValue": "foo"
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/x-amz-json-1.0"
+                    },
+                    "body": "{\n    \"contents\": {\n        \"stringValue\": \"foo\"\n    }\n}"
+                }
+            },
+            {
+                "id": "AwsJson10DeserializeBooleanUnionValue",
+                "given": {
+                    "name": "JsonUnions",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "output": {
+                        "shape": "JsonUnionsOutput"
+                    },
+                    "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
+                    "idempotent": true
+                },
+                "description": "Deserializes a boolean union value",
+                "result": {
+                    "contents": {
+                        "booleanValue": true
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/x-amz-json-1.0"
+                    },
+                    "body": "{\n    \"contents\": {\n        \"booleanValue\": true\n    }\n}"
+                }
+            },
+            {
+                "id": "AwsJson10DeserializeNumberUnionValue",
+                "given": {
+                    "name": "JsonUnions",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "output": {
+                        "shape": "JsonUnionsOutput"
+                    },
+                    "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
+                    "idempotent": true
+                },
+                "description": "Deserializes a number union value",
+                "result": {
+                    "contents": {
+                        "numberValue": 1
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/x-amz-json-1.0"
+                    },
+                    "body": "{\n    \"contents\": {\n        \"numberValue\": 1\n    }\n}"
+                }
+            },
+            {
+                "id": "AwsJson10DeserializeBlobUnionValue",
+                "given": {
+                    "name": "JsonUnions",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "output": {
+                        "shape": "JsonUnionsOutput"
+                    },
+                    "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
+                    "idempotent": true
+                },
+                "description": "Deserializes a blob union value",
+                "result": {
+                    "contents": {
+                        "blobValue": "foo"
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/x-amz-json-1.0"
+                    },
+                    "body": "{\n    \"contents\": {\n        \"blobValue\": \"Zm9v\"\n    }\n}"
+                }
+            },
+            {
+                "id": "AwsJson10DeserializeTimestampUnionValue",
+                "given": {
+                    "name": "JsonUnions",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "output": {
+                        "shape": "JsonUnionsOutput"
+                    },
+                    "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
+                    "idempotent": true
+                },
+                "description": "Deserializes a timestamp union value",
+                "result": {
+                    "contents": {
+                        "timestampValue": 1398796238
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/x-amz-json-1.0"
+                    },
+                    "body": "{\n    \"contents\": {\n        \"timestampValue\": 1398796238\n    }\n}"
+                }
+            },
+            {
+                "id": "AwsJson10DeserializeEnumUnionValue",
+                "given": {
+                    "name": "JsonUnions",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "output": {
+                        "shape": "JsonUnionsOutput"
+                    },
+                    "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
+                    "idempotent": true
+                },
+                "description": "Deserializes an enum union value",
+                "result": {
+                    "contents": {
+                        "enumValue": "Foo"
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/x-amz-json-1.0"
+                    },
+                    "body": "{\n    \"contents\": {\n        \"enumValue\": \"Foo\"\n    }\n}"
+                }
+            },
+            {
+                "id": "AwsJson10DeserializeIntEnumUnionValue",
+                "given": {
+                    "name": "JsonUnions",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "output": {
+                        "shape": "JsonUnionsOutput"
+                    },
+                    "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
+                    "idempotent": true
+                },
+                "description": "Deserializes an intEnum union value",
+                "result": {
+                    "contents": {
+                        "intEnumValue": 1
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/x-amz-json-1.0"
+                    },
+                    "body": "{\n    \"contents\": {\n        \"intEnumValue\": 1\n    }\n}"
+                }
+            },
+            {
+                "id": "AwsJson10DeserializeListUnionValue",
+                "given": {
+                    "name": "JsonUnions",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "output": {
+                        "shape": "JsonUnionsOutput"
+                    },
+                    "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
+                    "idempotent": true
+                },
+                "description": "Deserializes a list union value",
+                "result": {
+                    "contents": {
+                        "listValue": [
+                            "foo",
+                            "bar"
+                        ]
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/x-amz-json-1.0"
+                    },
+                    "body": "{\n    \"contents\": {\n        \"listValue\": [\"foo\", \"bar\"]\n    }\n}"
+                }
+            },
+            {
+                "id": "AwsJson10DeserializeMapUnionValue",
+                "given": {
+                    "name": "JsonUnions",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "output": {
+                        "shape": "JsonUnionsOutput"
+                    },
+                    "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
+                    "idempotent": true
+                },
+                "description": "Deserializes a map union value",
+                "result": {
+                    "contents": {
+                        "mapValue": {
+                            "foo": "bar",
+                            "spam": "eggs"
+                        }
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/x-amz-json-1.0"
+                    },
+                    "body": "{\n    \"contents\": {\n        \"mapValue\": {\n            \"foo\": \"bar\",\n            \"spam\": \"eggs\"\n        }\n    }\n}"
+                }
+            },
+            {
+                "id": "AwsJson10DeserializeStructureUnionValue",
+                "given": {
+                    "name": "JsonUnions",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "output": {
+                        "shape": "JsonUnionsOutput"
+                    },
+                    "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
+                    "idempotent": true
+                },
+                "description": "Deserializes a structure union value",
+                "result": {
+                    "contents": {
+                        "structureValue": {
+                            "hi": "hello"
+                        }
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/x-amz-json-1.0"
+                    },
+                    "body": "{\n    \"contents\": {\n        \"structureValue\": {\n            \"hi\": \"hello\"\n        }\n    }\n}"
+                }
+            },
+            {
+                "id": "AwsJson10DeserializeIgnoreType",
+                "given": {
+                    "name": "JsonUnions",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "output": {
+                        "shape": "JsonUnionsOutput"
+                    },
+                    "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
+                    "idempotent": true
+                },
+                "description": "Ignores an unrecognized __type property",
+                "result": {
+                    "contents": {
+                        "structureValue": {
+                            "hi": "hello"
+                        }
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/x-amz-json-1.0"
+                    },
+                    "body": "{\n    \"contents\": {\n        \"__type\": \"aws.protocoltests.json10#MyUnion\",\n        \"structureValue\": {\n            \"hi\": \"hello\"\n        }\n    }\n}"
+                }
+            },
+            {
+                "id": "AwsJson10DeserializeAllowNulls",
+                "given": {
+                    "name": "JsonUnions",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "output": {
+                        "shape": "JsonUnionsOutput"
+                    },
+                    "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
+                    "idempotent": true
+                },
+                "description": "Allows for `: null` to be set for all unset fields",
+                "result": {
+                    "contents": {
+                        "structureValue": {
+                            "hi": "hello"
+                        }
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/x-amz-json-1.0"
+                    },
+                    "body": "{\n    \"contents\": {\n      \"stringValue\": null,\n      \"booleanValue\": null,\n      \"numberValue\": null,\n      \"blobValue\": null,\n      \"timestampValue\": null,\n      \"enumValue\": null,\n      \"intEnumValue\": null,\n      \"listValue\": null,\n      \"mapValue\": null,\n      \"structureValue\": {\n          \"hi\": \"hello\"\n      }\n    }\n}"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for NoInputAndNoOutput operation",
+        "metadata": {
+            "protocol": "json",
+            "protocols": [
+                "json"
+            ],
+            "apiVersion": "2020-07-14",
+            "jsonVersion": "1.0",
+            "targetPrefix": "JsonRpc10"
+        },
+        "shapes": {},
+        "cases": [
+            {
+                "id": "AwsJson10HandlesEmptyOutputShape",
+                "given": {
+                    "name": "NoInputAndNoOutput",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "documentation": "<p>The example tests how requests and responses are serialized when there's no request or response payload because the operation has no input or output. While this should be rare, code generators must support this.</p>"
+                },
+                "description": "When no output is defined, the service is expected to return\nan empty payload, however, client must ignore a JSON payload\nif one is returned. This ensures that if output is added later,\nthen it will not break the client.",
+                "result": {},
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/x-amz-json-1.0"
+                    },
+                    "body": "{}"
+                }
+            },
+            {
+                "id": "AwsJson10HandlesUnexpectedJsonOutput",
+                "given": {
+                    "name": "NoInputAndNoOutput",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "documentation": "<p>The example tests how requests and responses are serialized when there's no request or response payload because the operation has no input or output. While this should be rare, code generators must support this.</p>"
+                },
+                "description": "This client-only test builds on handles_empty_output_shape,\nby including unexpected fields in the JSON. A client\nneeds to ignore JSON output that is empty or that contains\nJSON object data.",
+                "result": {},
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/x-amz-json-1.0"
+                    },
+                    "body": "{\n    \"foo\": true\n}"
+                }
+            },
+            {
+                "id": "AwsJson10ServiceRespondsWithNoPayload",
+                "given": {
+                    "name": "NoInputAndNoOutput",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "documentation": "<p>The example tests how requests and responses are serialized when there's no request or response payload because the operation has no input or output. While this should be rare, code generators must support this.</p>"
+                },
+                "description": "When no output is defined, the service is expected to return\nan empty payload. Despite the lack of a payload, the service\nis expected to always send a Content-Type header. Clients must\nhandle cases where a service returns a JSON object and where\na service returns no JSON at all.",
+                "result": {},
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/x-amz-json-1.0"
+                    },
+                    "body": ""
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for NoInputAndOutput operation",
+        "metadata": {
+            "protocol": "json",
+            "protocols": [
+                "json"
+            ],
+            "apiVersion": "2020-07-14",
+            "jsonVersion": "1.0",
+            "targetPrefix": "JsonRpc10"
+        },
+        "shapes": {
+            "NoInputAndOutputOutput": {
+                "type": "structure",
+                "members": {}
+            }
+        },
+        "cases": [
+            {
+                "id": "AwsJson10NoInputAndOutput",
+                "given": {
+                    "name": "NoInputAndOutput",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "output": {
+                        "shape": "NoInputAndOutputOutput"
+                    },
+                    "documentation": "<p>The example tests how requests and responses are serialized when there's no request or response payload because the operation has no input and the output is empty. While this should be rare, code generators must support this.</p>"
+                },
+                "description": "Empty output always serializes an empty object payload.",
+                "result": {},
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/x-amz-json-1.0"
+                    },
+                    "body": "{}"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for SimpleScalarProperties operation",
+        "metadata": {
+            "protocol": "json",
+            "protocols": [
+                "json"
+            ],
+            "apiVersion": "2020-07-14",
+            "jsonVersion": "1.0",
+            "targetPrefix": "JsonRpc10"
+        },
+        "shapes": {
+            "SimpleScalarPropertiesOutput": {
+                "type": "structure",
+                "members": {
+                    "floatValue": {
+                        "shape": "Float"
+                    },
+                    "doubleValue": {
+                        "shape": "Double"
+                    }
+                }
+            },
+            "Float": {
+                "type": "float",
+                "box": true
+            },
+            "Double": {
+                "type": "double",
+                "box": true
+            }
+        },
+        "cases": [
+            {
+                "id": "AwsJson10SupportsNaNFloatInputs",
+                "given": {
+                    "name": "SimpleScalarProperties",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "output": {
+                        "shape": "SimpleScalarPropertiesOutput"
+                    }
+                },
+                "description": "Supports handling NaN float values.",
+                "result": {
+                    "floatValue": "NaN",
+                    "doubleValue": "NaN"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/x-amz-json-1.0"
+                    },
+                    "body": "{\n    \"floatValue\": \"NaN\",\n    \"doubleValue\": \"NaN\"\n}"
+                }
+            },
+            {
+                "id": "AwsJson10SupportsInfinityFloatInputs",
+                "given": {
+                    "name": "SimpleScalarProperties",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "output": {
+                        "shape": "SimpleScalarPropertiesOutput"
+                    }
+                },
+                "description": "Supports handling Infinity float values.",
+                "result": {
+                    "floatValue": "Infinity",
+                    "doubleValue": "Infinity"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/x-amz-json-1.0"
+                    },
+                    "body": "{\n    \"floatValue\": \"Infinity\",\n    \"doubleValue\": \"Infinity\"\n}"
+                }
+            },
+            {
+                "id": "AwsJson10SupportsNegativeInfinityFloatInputs",
+                "given": {
+                    "name": "SimpleScalarProperties",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "output": {
+                        "shape": "SimpleScalarPropertiesOutput"
+                    }
+                },
+                "description": "Supports handling -Infinity float values.",
+                "result": {
+                    "floatValue": "-Infinity",
+                    "doubleValue": "-Infinity"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/x-amz-json-1.0"
+                    },
+                    "body": "{\n    \"floatValue\": \"-Infinity\",\n    \"doubleValue\": \"-Infinity\"\n}"
+                }
+            }
+        ]
+    }
+]

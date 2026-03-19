@@ -1,6 +1,6 @@
 **To get details about the current IAM identity**
 
-The following ``get-caller-identity`` example displays information about the IAM identity used to authenticate the request. The caller is an IAM user. ::
+The following ``get-caller-identity`` command displays information about the IAM identity used to authenticate the request. The caller is an IAM user. ::
 
     aws sts get-caller-identity
 

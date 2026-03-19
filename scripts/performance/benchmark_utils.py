@@ -1,251 +1,448 @@
-import s3transfer
+import json
+import math
 import os
-import subprocess
-import uuid
 import shutil
-import argparse
-import tempfile
+import sys
+import time
+
+import psutil
+
+from awscli.clidriver import AWSCLIEntryPoint, create_clidriver
+from scripts.performance import BaseBenchmarkSuite
+from scripts.performance.simple_stubbed_tests import (
+    JSONStubbedBenchmarkSuite,
+)
 
 
-def summarize(script, result_dir, summary_dir):
-    """Run the given summary script on every file in the given directory.
+class Metric:
+    def __init__(self, description, unit, value):
+        self.description = description
+        self.unit = unit
+        self.value = value
 
-    :param script: A summarization script that takes a list of csv files.
-    :param result_dir: A directory containing csv performance result files.
-    :param summary_dir: The directory to put the summary file in.
+
+class BenchmarkResultsSerializer:
     """
-    summarize_args = [script]
-    for f in os.listdir(result_dir):
-        path = os.path.join(result_dir, f)
-        if os.path.isfile(path):
-            summarize_args.append(path)
-
-    with open(os.path.join(summary_dir, 'summary.txt'), 'wb') as f:
-        subprocess.check_call(summarize_args, stdout=f)
-    with open(os.path.join(summary_dir, 'summary.json'), 'wb') as f:
-        summarize_args.extend(['--output-format', 'json'])
-        subprocess.check_call(summarize_args, stdout=f)
-
-
-def _get_s3transfer_performance_script(script_name):
-    """Retrieves an s3transfer performance script if available."""
-    s3transfer_directory = os.path.dirname(s3transfer.__file__)
-    s3transfer_directory = os.path.dirname(s3transfer_directory)
-    scripts_directory = 'scripts/performance'
-    scripts_directory = os.path.join(s3transfer_directory, scripts_directory)
-    script = os.path.join(scripts_directory, script_name)
-
-    if os.path.isfile(script):
-        return script
-    else:
-        return None
-
-
-def get_benchmark_script():
-    return _get_s3transfer_performance_script('benchmark')
-
-
-def get_summarize_script():
-    return _get_s3transfer_performance_script('summarize')
-
-
-def backup(source, recursive):
-    """Backup a given source to a temporary location.
-
-    :type source: str
-    :param source: A local path or s3 path to backup.
-
-    :type recursive: bool
-    :param recursive: if True, the source will be treated as a directory.
+    A class that serializes the execution results of a performance test case.
     """
-    if source[:5] == 's3://':
-        parts = source.split('/')
-        parts.insert(3, str(uuid.uuid4()))
-        backup_path = '/'.join(parts)
-    else:
-        name = os.path.split(source)[-1]
-        temp_dir = tempfile.mkdtemp()
-        backup_path = os.path.join(temp_dir, name)
 
-    copy(source, backup_path, recursive)
-    return backup_path
+    def __init__(self):
+        self._summarizer = Summarizer()
+        self._benchmark_results = {}
+
+    def add_execution_results(self, case, samples, execution_results):
+        """
+        Store a performance test case's execution result.
+        """
+        summarized_results = self._summarizer.summarize(
+            samples, execution_results
+        )
+        for metric, val in summarized_results.items():
+            key = f'{case["name"]}.{metric}'
+            if key not in self._benchmark_results:
+                self._benchmark_results[key] = {
+                    'name': key,
+                    'description': val.description,
+                    'unit': val.unit,
+                    'dimensions': case.get('dimensions', []),
+                    'measurements': [],
+                }
+            self._benchmark_results[key]['measurements'].append(val.value)
+
+    def get_processed_results(self):
+        """
+        Returns a list of dictionaries representing all stored execution
+        results. The key-value pairs will be converted to JSON and displayed as part
+        of the final output.
+        """
+        return list(self._benchmark_results.values())
+
+    def reset(self):
+        """
+        Resets the stored list of execution results.
+        """
+        self._benchmark_results.clear()
 
 
-def copy(source, destination, recursive):
-    """Copy files from one location to another.
+class Summarizer:
+    DATA_INDEX_IN_ROW = {'time': 0, 'memory': 1, 'cpu': 2}
 
-    The source and destination must both be s3 paths or both be local paths.
+    def __init__(self):
+        self._start_time = None
+        self._end_time = None
+        self._samples = []
+        self._sums = {
+            'memory': 0.0,
+            'cpu': 0.0,
+        }
 
-    :type source: str
-    :param source: A local path or s3 path to backup.
+    def summarize(self, samples, worker_results):
+        """
+        Processes benchmark data from samples and the output of the benchmark
+        worker.
+        """
+        self._samples = samples
+        self._validate_samples(samples)
+        for idx, sample in enumerate(samples):
+            # If the sample is the first one, collect the start time.
+            if idx == 0:
+                self._start_time = self._get_time(sample)
+            self.process_data_sample(sample)
+        self._end_time = self._get_time(samples[-1])
+        metrics = self._finalize_processed_data_for_file(
+            samples, worker_results
+        )
+        return metrics
 
-    :type destination: str
-    :param destination: A local path or s3 path to backup the source to.
+    def _validate_samples(self, samples):
+        if not samples:
+            raise RuntimeError(
+                'Benchmark samples could not be processed. '
+                'The samples list is empty'
+            )
 
-    :type recursive: bool
-    :param recursive: if True, the source will be treated as a directory.
+    def process_data_sample(self, sample):
+        self._add_to_sums('memory', sample['memory'])
+        self._add_to_sums('cpu', sample['cpu'])
+
+    def _finalize_processed_data_for_file(self, samples, worker_results):
+        # compute percentiles
+        self._samples.sort(key=self._get_memory)
+        memory_p50 = self._compute_metric_percentile(50, 'memory')
+        memory_p95 = self._compute_metric_percentile(95, 'memory')
+        self._samples.sort(key=self._get_cpu)
+        cpu_p50 = self._compute_metric_percentile(50, 'cpu')
+        cpu_p95 = self._compute_metric_percentile(95, 'cpu')
+        max_memory = max(samples, key=self._get_memory)['memory']
+        max_cpu = max(samples, key=self._get_cpu)['cpu']
+        # format computed statistics
+        metrics = {
+            'mean.run.memory': Metric(
+                'Mean memory usage of a single command execution.',
+                'Bytes',
+                self._sums['memory'] / len(samples),
+            ),
+            'mean.run.cpu': Metric(
+                'Mean CPU usage of a single command execution.',
+                'Percent',
+                self._sums['cpu'] / len(samples),
+            ),
+            'peak.run.memory': Metric(
+                'Peak memory usage of a single command execution.',
+                'Bytes',
+                max_memory,
+            ),
+            'peak.run.cpu': Metric(
+                'Peak CPU usage of a single command execution.',
+                'Percent',
+                max_cpu,
+            ),
+            'p50.run.memory': Metric(
+                'p50 memory usage of a single command execution.',
+                'Bytes',
+                memory_p50,
+            ),
+            'p95.run.memory': Metric(
+                'p95 memory usage of a single command execution.',
+                'Bytes',
+                memory_p95,
+            ),
+            'p50.run.cpu': Metric(
+                'p50 CPU usage of a single command execution.',
+                'Percent',
+                cpu_p50,
+            ),
+            'p95.run.cpu': Metric(
+                'p95 CPU usage of a single command execution.',
+                'Percent',
+                cpu_p95,
+            ),
+            'run.time': Metric(
+                'Total running time of the Python process executing the CLI command.',
+                'Seconds',
+                worker_results['end_time'] - worker_results['start_time'],
+            ),
+            'pre.marshal.time': Metric(
+                'Elapsed time from the start of the Python process until just '
+                'before the HTTP request is created.',
+                'Seconds',
+                worker_results['first_client_invocation_time']
+                - worker_results['start_time'],
+            ),
+        }
+        # reset data state
+        self._samples.clear()
+        self._sums = self._sums.fromkeys(self._sums, 0.0)
+        return metrics
+
+    def _compute_metric_percentile(self, percentile, name):
+        num_samples = len(self._samples)
+        p_idx = math.ceil(percentile * num_samples / 100) - 1
+        return self._samples[p_idx][name]
+
+    def _get_time(self, sample):
+        return sample['time']
+
+    def _get_memory(self, sample):
+        return sample['memory']
+
+    def _get_cpu(self, sample):
+        return sample['cpu'] / 100
+
+    def _add_to_sums(self, name, data_point):
+        self._sums[name] += data_point
+
+
+class ProcessBenchmarker:
     """
-    if 's3://' in [source[:5], destination[:5]]:
-        cp_args = ['aws', 's3', 'cp', source, destination, '--quiet']
-        if recursive:
-            cp_args.append('--recursive')
-        subprocess.check_call(cp_args)
-        return
-
-    if recursive:
-        shutil.copytree(source, destination)
-    else:
-        shutil.copy(source, destination)
-
-
-def clean(destination, recursive):
-    """Delete a file or directory either locally or on S3."""
-    if destination[:5] == 's3://':
-        rm_args = ['aws', 's3', 'rm', '--quiet', destination]
-        if recursive:
-            rm_args.append('--recursive')
-        subprocess.check_call(rm_args)
-    else:
-        if recursive:
-            shutil.rmtree(destination)
-        else:
-            os.remove(destination)
-
-
-def create_random_subfolder(destination):
-    """Create a random subdirectory in a given directory."""
-    folder_name = str(uuid.uuid4())
-    if destination.startswith('s3://'):
-        parts = destination.split('/')
-        parts.append(folder_name)
-        return '/'.join(parts)
-    else:
-        parts = list(os.path.split(destination))
-        parts.append(folder_name)
-        path = os.path.join(*parts)
-        os.makedirs(path)
-        return path
-
-
-def get_transfer_command(command, recursive, quiet):
-    """Get a full cli transfer command.
-
-    Performs common transformations, e.g. adding --quiet
+    Periodically samples CPU and memory usage of a process given its pid.
+    These measurements are sampled until the process is no longer running.
     """
-    cli_command = 'aws s3 ' + command
 
-    if recursive:
-        cli_command += ' --recursive'
+    def benchmark_process(self, pid, data_interval):
+        parent_pid = os.getpid()
+        try:
+            # Benchmark the process where the script is being run.
+            return self._run_benchmark(pid, data_interval)
+        except KeyboardInterrupt:
+            # If there is an interrupt, then try to clean everything up.
+            proc = psutil.Process(parent_pid)
+            procs = proc.children(recursive=True)
 
-    if quiet:
-        cli_command += ' --quiet'
-    else:
-        print(cli_command)
+            for child in procs:
+                child.terminate()
 
-    return cli_command
+            gone, alive = psutil.wait_procs(procs, timeout=1)
+            for child in alive:
+                child.kill()
+            raise
+
+    def _run_benchmark(self, pid, data_interval):
+        process_to_measure = psutil.Process(pid)
+        samples = []
+
+        while process_to_measure.is_running():
+            if process_to_measure.status() == psutil.STATUS_ZOMBIE:
+                break
+            time.sleep(data_interval)
+            try:
+                # Collect the memory and cpu usage.
+                memory_used = process_to_measure.memory_info().rss
+                cpu_percent = process_to_measure.cpu_percent()
+            except (
+                psutil.AccessDenied,
+                psutil.ZombieProcess,
+                psutil.NoSuchProcess,
+            ):
+                # Trying to get process information from a closed or
+                # zombie process will result in corresponding exceptions.
+                break
+            # Determine the lapsed time for bookkeeping
+            current_time = time.time()
+            samples.append(
+                {
+                    "time": current_time,
+                    "memory": memory_used,
+                    "cpu": cpu_percent,
+                }
+            )
+        return samples
 
 
-def benchmark_command(command, benchmark_script, summarize_script,
-                      output_dir, num_iterations, dry_run, upkeep=None,
-                      cleanup=None):
-    """Benchmark several runs of a long-running command.
+class BenchmarkHarness:
+    BENCHMARK_SUITES = [JSONStubbedBenchmarkSuite]
 
-    :type command: str
-    :param command: The full aws cli command to benchmark
-
-    :type benchmark_script: str
-    :param benchmark_script: A benchmark script that takes a command to run
-        and outputs performance data to a file. This should be from s3transfer.
-
-    :type summarize_script: str
-    :param summarize_script:  A summarization script that the output of the
-        benchmark script. This should be from s3transfer.
-
-    :type output_dir: str
-    :param output_dir: The directory to output performance results to.
-
-    :type num_iterations: int
-    :param num_iterations: The number of times to run the benchmark on the
-        command.
-
-    :type dry_run: bool
-    :param dry_run: Whether or not to actually run the benchmarks.
-
-    :type upkeep: function that takes no arguments
-    :param upkeep: A function that is run after every iteration of the
-        benchmark process. This should be used for upkeep, such as restoring
-        files that were deleted as part of the command executing.
-
-    :type cleanup: function that takes no arguments
-    :param cleanup: A function that is run at the end of the benchmark
-        process or if there are any problems during the benchmark process.
-        It should be uses for the final cleanup, such as deleting files that
-        were created at some destination.
     """
-    performance_dir = os.path.join(output_dir, 'performance')
-    if os.path.exists(performance_dir):
-        shutil.rmtree(performance_dir)
-    os.makedirs(performance_dir)
+    Orchestrates running benchmarks in isolated, configurable environments.
+    """
 
-    try:
-        for i in range(num_iterations):
-            out_file = 'performance%s.csv' % i
-            out_file = os.path.join(performance_dir, out_file)
-            benchmark_args = [
-                benchmark_script, command, '--output-file', out_file
-            ]
-            if not dry_run:
-                subprocess.check_call(benchmark_args)
-                if upkeep is not None:
-                    upkeep()
+    def __init__(self, results_processor=BenchmarkResultsSerializer()):
+        self._results_processor = results_processor
 
-        if not dry_run:
-            summarize(summarize_script, performance_dir, output_dir)
-    finally:
-        if not dry_run and cleanup is not None:
-            cleanup()
+    def _run_command_with_metric_hooks(self, cmd, out_file):
+        """
+        Runs a CLI command and logs CLI-specific metrics to a file.
+        """
+        first_client_invocation_time = None
+        start_time = time.time()
+        driver = create_clidriver()
+        event_emitter = driver.session.get_component('event_emitter')
 
+        def _log_invocation_time(params, request_signer, model, **kwargs):
+            nonlocal first_client_invocation_time
+            if first_client_invocation_time is None:
+                first_client_invocation_time = time.time()
 
-def get_default_argparser():
-    """Get an ArgumentParser with all the base benchmark arguments added in."""
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        '--no-cleanup', action='store_true', default=False,
-        help='Do not remove the destination after the tests complete.'
-    )
-    parser.add_argument(
-        '--recursive', action='store_true', default=False,
-        help='Indicates that this is a recursive transfer.'
-    )
-    benchmark_script = get_benchmark_script()
-    parser.add_argument(
-        '--benchmark-script', default=benchmark_script,
-        required=benchmark_script is None,
-        help=('The benchmark script to run the commands with. This should be '
-              'from s3transfer.')
-    )
-    summarize_script = get_summarize_script()
-    parser.add_argument(
-        '--summarize-script', default=summarize_script,
-        required=summarize_script is None,
-        help=('The summarize script to run the commands with. This should be '
-              'from s3transfer.')
-    )
-    parser.add_argument(
-        '-o', '--result-dir', default='results',
-        help='The directory to output performance results to. Existing '
-             'results will be deleted.'
-    )
-    parser.add_argument(
-        '--dry-run', default=False, action='store_true',
-        help='If set, commands will only be printed out, not executed.'
-    )
-    parser.add_argument(
-        '--quiet', default=False, action='store_true',
-        help='If set, output is suppressed.'
-    )
-    parser.add_argument(
-        '-n', '--num-iterations', default=1, type=int,
-        help='The number of times to run the test.'
-    )
-    return parser
+        event_emitter.register_last(
+            'before-call',
+            _log_invocation_time,
+            'benchmarks.log-invocation-time',
+        )
+
+        rc = AWSCLIEntryPoint(driver).main(cmd)
+        end_time = time.time()
+
+        # write the collected metrics to a file
+        with open(out_file, 'w') as metrics_f:
+            metrics_f.write(
+                json.dumps(
+                    {
+                        'return_code': rc,
+                        'start_time': start_time,
+                        'end_time': end_time,
+                        'first_client_invocation_time': first_client_invocation_time,
+                    }
+                )
+            )
+
+    def _run_isolated_benchmark(
+        self,
+        result_dir,
+        iteration,
+        benchmark,
+        suite,
+        process_benchmarker,
+        args,
+    ):
+        """
+        Runs a single iteration of one benchmark execution. Includes setting up
+        the environment, running the benchmarked execution, formatting
+        the results, and cleaning up the environment.
+        """
+        assets_path = os.path.join(result_dir, 'assets')
+        metrics_path = os.path.join(assets_path, 'metrics.json')
+        child_output_path = os.path.join(assets_path, 'output.txt')
+        child_err_path = os.path.join(assets_path, 'err.txt')
+
+        # setup for iteration of benchmark
+        suite.begin_iteration(benchmark, result_dir, assets_path, iteration)
+        os.chdir(result_dir)
+
+        # fork a child process to run the command on.
+        pid = os.fork()
+
+        try:
+            if pid == 0:
+                with (
+                    open(child_output_path, 'w') as out,
+                    open(child_err_path, 'w') as err,
+                ):
+                    if not args.debug_dir:
+                        # redirect standard output of the child process to a file
+                        os.dup2(out.fileno(), sys.stdout.fileno())
+                        os.dup2(err.fileno(), sys.stderr.fileno())
+                    else:
+                        with open(
+                            os.path.abspath(
+                                os.path.join(
+                                    args.debug_dir,
+                                    f'{benchmark["name"]}-{iteration}.txt',
+                                )
+                            ),
+                            'w',
+                        ) as f:
+                            with open(
+                                os.path.abspath(
+                                    os.path.join(
+                                        args.debug_dir,
+                                        f'{benchmark["name"]}-{iteration}-err.txt',
+                                    )
+                                ),
+                                'w',
+                            ) as f_err:
+                                os.dup2(f.fileno(), sys.stdout.fileno())
+                                os.dup2(f_err.fileno(), sys.stderr.fileno())
+                    # execute command on child process
+                    self._run_command_with_metric_hooks(
+                        benchmark['command'], metrics_path
+                    )
+                    # terminate the child process
+                    os._exit(0)
+
+            # benchmark child process from parent process until child becomes zombie
+            samples = process_benchmarker.benchmark_process(
+                pid, args.data_interval
+            )
+
+            # reap the child process and error on unsuccessful return codes
+            _, status = os.waitpid(pid, 0)
+            if status != 0:
+                raise RuntimeError(
+                    f'Child process execution failed: status code {status}'
+                )
+
+            # load child-collected metrics
+            if not os.path.exists(metrics_path):
+                raise RuntimeError(
+                    'Child process execution failed: output file not found.'
+                )
+            worker_results = json.load(open(metrics_path))
+
+            # raise error if CLI execution unsuccessful.
+            # this is different from the process return code checked above,
+            # because the process can succeed while the CLI execution failed
+            if (rc := worker_results['return_code']) != 0:
+                with open(child_err_path) as err:
+                    raise RuntimeError(
+                        f'CLI execution failed: return code {rc}.\n'
+                        f'Error: {err.read()}'
+                    )
+
+            # summarize benchmark results and process summary
+            return samples, worker_results
+        finally:
+            suite.end_iteration(benchmark, iteration)
+            shutil.rmtree(result_dir, ignore_errors=True)
+            os.makedirs(result_dir, 0o777)
+
+    def get_test_suites(self, args):
+        """
+        Returns all test suites that should be executed by the default
+        performance test runner.
+        """
+        return [suite() for suite in BenchmarkHarness.BENCHMARK_SUITES]
+
+    def run_benchmarks(self, cases, args):
+        """
+        Orchestrates benchmarking via the supplied list of performance test
+        cases.
+        """
+        summaries = {'results': []}
+        result_dir = args.result_dir
+        process_benchmarker = ProcessBenchmarker()
+
+        if os.path.exists(result_dir):
+            shutil.rmtree(result_dir)
+        os.makedirs(result_dir, 0o777)
+        try:
+            for suite, case in cases:
+                for idx in range(args.num_iterations):
+                    for cmd in case:
+                        samples, execution_results = (
+                            self._run_isolated_benchmark(
+                                result_dir,
+                                idx,
+                                cmd,
+                                suite,
+                                process_benchmarker,
+                                args,
+                            )
+                        )
+                        self._results_processor.add_execution_results(
+                            cmd, samples, execution_results
+                        )
+                summaries['results'].extend(
+                    self._results_processor.get_processed_results()
+                )
+                self._results_processor.reset()
+        finally:
+            # final cleanup
+            shutil.rmtree(result_dir, ignore_errors=True)
+        print(json.dumps(summaries, indent=2))
+
+    def run_benchmark_suite(self, suite: BaseBenchmarkSuite, args):
+        """
+        Orchestrates benchmarking a particular benchmark suite.
+        """
+        sequence_generators = suite.get_test_cases(args)
+        self.run_benchmarks(sequence_generators, args)

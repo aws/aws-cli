@@ -5,18 +5,18 @@ The following ``create-table`` example creates a table in the AWS Glue Data Cata
     aws glue create-table \
         --database-name tempdb \
         --table-input  '{"Name":"test-kinesis-input", "StorageDescriptor":{ \
-            "Columns":[ \
-                {"Name":"sensorid", "Type":"int"}, \
-                {"Name":"currenttemperature", "Type":"int"}, \
-                {"Name":"status", "Type":"string"}
-            ], \
-            "Location":"my-testing-stream", \
-            "Parameters":{ \
-                "typeOfData":"kinesis","streamName":"my-testing-stream", \
-                "kinesisUrl":"https://kinesis.us-east-1.amazonaws.com" \
-            }, \
-            "SerdeInfo":{ \
-                "SerializationLibrary":"org.openx.data.jsonserde.JsonSerDe"} \
+                "Columns":[ \
+                    {"Name":"sensorid", "Type":"int"}, \
+                    {"Name":"currenttemperature", "Type":"int"}, \
+                    {"Name":"status", "Type":"string"}
+                ], \
+                "Location":"my-testing-stream", \
+                "Parameters":{ \
+                    "typeOfData":"kinesis","streamName":"my-testing-stream", \
+                    "kinesisUrl":"https://kinesis.us-east-1.amazonaws.com" \
+                }, \
+                "SerdeInfo":{ \
+                    "SerializationLibrary":"org.openx.data.jsonserde.JsonSerDe"} \
             }, \
             "Parameters":{ \
                 "classification":"json"} \
@@ -35,18 +35,18 @@ The following ``create-table`` example creates a table in the AWS Glue Data Cata
         aws glue create-table \
             --database-name tempdb \
             --table-input  '{"Name":"test-kafka-input", "StorageDescriptor":{ \
-                "Columns":[ \
-                    {"Name":"sensorid", "Type":"int"}, \
-                    {"Name":"currenttemperature", "Type":"int"}, \
-                    {"Name":"status", "Type":"string"}
-                ], \
-                "Location":"glue-topic", \
-                "Parameters":{ \
-                    "typeOfData":"kafka","topicName":"glue-topic", \
-                    "connectionName":"my-kafka-connection"
-                }, \
-                "SerdeInfo":{ \
-                    "SerializationLibrary":"org.apache.hadoop.hive.serde2.OpenCSVSerde"} \
+                    "Columns":[ \
+                        {"Name":"sensorid", "Type":"int"}, \
+                        {"Name":"currenttemperature", "Type":"int"}, \
+                        {"Name":"status", "Type":"string"}
+                    ], \
+                    "Location":"glue-topic", \
+                    "Parameters":{ \
+                        "typeOfData":"kafka","topicName":"glue-topic", \
+                        "connectionName":"my-kafka-connection"
+                    }, \
+                    "SerdeInfo":{ \
+                        "SerializationLibrary":"org.apache.hadoop.hive.serde2.OpenCSVSerde"} \
                 }, \
                 "Parameters":{ \
                     "separatorChar":","} \
@@ -66,14 +66,15 @@ describes a AWS Simple Storage Service (AWS S3) data store. ::
         aws glue create-table \
             --database-name tempdb \
             --table-input  '{"Name":"s3-output", "StorageDescriptor":{ \
-                "Columns":[ \
-                    {"Name":"s1", "Type":"string"}, \
-                    {"Name":"s2", "Type":"int"}, \
-                    {"Name":"s3", "Type":"string"}
-                ], \
-                "Location":"s3://bucket-path/"}, \
-                "SerdeInfo":{ \
-                    "SerializationLibrary":"org.openx.data.jsonserde.JsonSerDe"}, \
+                    "Columns":[ \
+                        {"Name":"s1", "Type":"string"}, \
+                        {"Name":"s2", "Type":"int"}, \
+                        {"Name":"s3", "Type":"string"}
+                    ], \
+                    "Location":"s3://bucket-path/", \
+                    "SerdeInfo":{ \
+                        "SerializationLibrary":"org.openx.data.jsonserde.JsonSerDe"} \
+                }, \
                 "Parameters":{ \
                     "classification":"json"} \
                 }' \

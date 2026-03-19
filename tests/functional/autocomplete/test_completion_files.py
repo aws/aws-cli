@@ -10,10 +10,15 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli import clidriver
-from jsonschema import Draft4Validator
-from nose.tools import assert_in
+from dataclasses import dataclass
 
+import jmespath
+import pytest
+from jsonschema import Draft4Validator
+
+from awscli import clidriver
+from awscli.botocore.model import ServiceModel
+from awscli.botocore.utils import ArgumentGenerator
 
 COMPLETIONS_SCHEMA = {
     "type": "object",
@@ -28,6 +33,7 @@ COMPLETIONS_SCHEMA = {
                     "resourceIdentifier": {
                         "type": "object",
                         "additionalProperties": {"type": "string"},
+                        "minProperties": 1,
                     },
                     "inputParameters": {
                         "type": "array",
@@ -35,8 +41,8 @@ COMPLETIONS_SCHEMA = {
                     },
                 },
                 "required": ["operation", "resourceIdentifier"],
-                "additionalProperties": False
-            }
+                "additionalProperties": False,
+            },
         },
         "operations": {
             "type": "object",
@@ -58,38 +64,101 @@ COMPLETIONS_SCHEMA = {
                                     },
                                     "resourceName": {"type": "string"},
                                     "resourceIdentifier": {"type": "string"},
-                                }
-                            }
+                                },
+                                "required": [
+                                    "resourceName",
+                                    "resourceIdentifier",
+                                ],
+                            },
                         }
                     },
                     "required": ["completions"],
                     "additionalProperties": False,
-                }
-            }
-        }
+                },
+            },
+        },
     },
-    "additionalProperties": False
+    "required": ["version", "resources", "operations"],
+    "additionalProperties": False,
 }
 
 
-def test_verify_generated_completions_are_valid():
+@dataclass
+class ServiceTestData:
+    service_model: dict
+    completions: dict
+    service_name: str
+
+
+def get_models_with_completions():
     session = clidriver.create_clidriver().session
     loader = session.get_component('data_loader')
     services_with_completions = loader.list_available_services('completions-1')
+    models = []
     for service_name in services_with_completions:
-        yield _lint_service_completions, service_name, loader
+        service_model = loader.load_service_model(service_name, 'service-2')
+        api_version = service_model['metadata']['apiVersion']
+        completions = loader.load_service_model(
+            service_name, 'completions-1', api_version
+        )
+        models.append(
+            ServiceTestData(service_model, completions, service_name)
+        )
+    return models
 
 
-def _lint_service_completions(service_name, loader):
-    service_model = loader.load_service_model(service_name, 'service-2')
-    api_version = service_model['metadata']['apiVersion']
-    completions = loader.load_service_model(
-        service_name, 'completions-1', api_version)
+def _get_invalid_completion_operations():
+    cases = []
+    for test_data in get_models_with_completions():
+        known_ops = set(test_data.service_model['operations'])
+        for op_name in test_data.completions['operations']:
+            if op_name not in known_ops:
+                cases.append((test_data.service_name, op_name))
+    return cases
+
+
+@pytest.mark.validates_models
+@pytest.mark.parametrize(
+    "service_name, operation_name",
+    _get_invalid_completion_operations(),
+    ids=lambda val: str(val),
+)
+def test_completions_operations_exist_in_model(
+    service_name, operation_name, record_property
+):
+    record_property('aws_service', service_name)
+    record_property('aws_operation', operation_name)
+    pytest.fail(
+        f"Completions file for '{service_name}' references operation "
+        f"'{operation_name}' which does not exist in the service model. "
+        f"The completions-1.json file must be updated to remove or "
+        f"update references to this operation."
+    )
+
+
+@pytest.mark.parametrize(
+    "test_data",
+    get_models_with_completions(),
+    ids=lambda test_data: test_data.service_name,
+)
+def test_verify_generated_completions_are_valid(test_data):
+    completions = test_data.completions
+    service_model = test_data.service_model
     _validate_schema(completions)
     # Validate that every operation named in the completions
     # file references a known operation.
     _lint_model_references(completions, service_model)
     _lint_resource_references(completions, service_model)
+    _lint_completions(completions, service_model)
+    _validate_jmespaths(completions, service_model)
+
+
+def _get_input_members(service_model, operation_name):
+    operation = service_model['operations'][operation_name]
+    if 'input' not in operation:
+        return {}
+    input_shape = operation['input']['shape']
+    return service_model['shapes'][input_shape]['members']
 
 
 def _validate_schema(completions):
@@ -103,27 +172,90 @@ def _validate_schema(completions):
 def _lint_model_references(completions, service_model):
     known_operations = set(service_model['operations'])
     for op_name in completions['operations']:
-        assert_in(op_name, known_operations)
+        assert op_name in known_operations
         # We also want to ensure that all parameters in completions-1.json
         # map to an input member in the service model.
-        input_shape = service_model['operations'][op_name]['input']['shape']
-        input_members = service_model['shapes'][input_shape]['members']
+        input_members = _get_input_members(service_model, op_name)
         for param in completions['operations'][op_name]:
-            assert_in(param, input_members)
+            assert param in input_members
 
 
 def _lint_resource_references(completions, service_model):
-    # Verify resourceIdentifier keys in the operations map to
-    # resourceIdentifier keys in the resources map.
     resources = completions['resources']
-    for completions in completions['operations'].values():
-        for param_data in completions.values():
-            for comp_data in param_data['completions']:
-                resource_name = comp_data['resourceName']
-                resource_id = comp_data['resourceIdentifier']
-                assert_in(resource_name, resources)
-                identifiers = resources[resource_name]['resourceIdentifier']
-                assert_in(resource_id, identifiers)
-    # We also want to lint the 'resources' key as well.
     for resource_data in resources.values():
-        assert_in(resource_data['operation'], service_model['operations'])
+        operation_name = resource_data['operation']
+        assert operation_name in service_model['operations']
+
+        if 'inputParameters' in resource_data:
+            input_members = _get_input_members(service_model, operation_name)
+            for param in resource_data['inputParameters']:
+                assert param in input_members
+
+
+def _lint_completions(completions, service_model):
+    resources = completions['resources']
+    for op_name, completions_data in completions['operations'].items():
+        completion_input_members = _get_input_members(service_model, op_name)
+
+        for param_data in completions_data.values():
+            for completer_config in param_data['completions']:
+                resource_name = completer_config['resourceName']
+                resource_id = completer_config['resourceIdentifier']
+                assert resource_name in resources
+                resource_identifiers = resources[resource_name][
+                    'resourceIdentifier'
+                ]
+                assert resource_id in resource_identifiers
+
+                _validate_completion_parameters(
+                    completer_config, resources, completion_input_members
+                )
+
+
+def _validate_completion_parameters(
+    completer_config, resources, completion_input_members
+):
+    resource_name = completer_config['resourceName']
+    resource_config = resources[resource_name]
+    required_params = resource_config.get('inputParameters', [])
+    completion_params = completer_config.get('parameters', {})
+
+    # All required parameters must be provided
+    assert set(completion_params.keys()) == set(required_params)
+
+    # Parameter values must be valid in completion operation
+    for param_value in completion_params.values():
+        assert param_value in completion_input_members
+
+
+def _validate_jmespaths(completions, service_model):
+    service_model_obj = ServiceModel(service_model)
+    resources = completions['resources']
+    for rconfig in resources.values():
+        op_model = service_model_obj.operation_model(rconfig['operation'])
+        output_shape = op_model.output_shape
+        assert output_shape is not None
+
+        for jmespath_expr in rconfig['resourceIdentifier'].values():
+            _validate_jmespath_expression(
+                jmespath_expr,
+                op_model.output_shape,
+            )
+
+
+def _validate_jmespath_expression(
+    jmespath_expr,
+    output_shape,
+):
+    # Test if the JMESPath expression can resolve to a non-empty value
+    arg_gen = ArgumentGenerator(use_member_names=True)
+    sample_output = arg_gen.generate_skeleton(output_shape)
+    search_result = jmespath.search(jmespath_expr, sample_output)
+    assert (
+        search_result is not None
+    ), "Expression is blob or another unsupported type"
+    assert search_result, f"Expression is broken: {jmespath_expr}"
+    sample_arg = search_result[0]
+    assert isinstance(
+        sample_arg, str
+    ), f"Expression not a string: {jmespath_expr}"

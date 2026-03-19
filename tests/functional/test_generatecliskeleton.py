@@ -12,8 +12,6 @@
 # language governing permissions and limitations under the License.
 import json
 
-from ruamel import yaml
-
 from awscli.testutils import BaseAWSCommandParamsTest
 
 
@@ -52,7 +50,7 @@ class TestGenerateCliSkeletonYamlInput(BaseAWSCommandParamsTest):
         cmdline = 's3api delete-object --generate-cli-skeleton yaml-input'
         stdout, _, rc = self.run_cmd(cmdline)
         self.assertEqual(rc, 0)
-        loaded_skeleton = yaml.safe_load(stdout)
+        loaded_skeleton = self.yaml.load(stdout)
         self.assertEqual(loaded_skeleton['Bucket'], '')
         self.assertEqual(loaded_skeleton['BypassGovernanceRetention'], True)
         self.assertEqual(loaded_skeleton['Key'], '')
@@ -64,7 +62,7 @@ class TestGenerateCliSkeletonYamlInput(BaseAWSCommandParamsTest):
             'sqs change-message-visibility --generate-cli-skeleton yaml-input'
         )
         self.assertEqual(rc, 0)
-        loaded_skeleton = yaml.safe_load(stdout)
+        loaded_skeleton = self.yaml.load(stdout)
         self.assertEqual(loaded_skeleton['QueueUrl'], '')
         self.assertEqual(loaded_skeleton['ReceiptHandle'], '')
         self.assertEqual(loaded_skeleton['VisibilityTimeout'], 0)
@@ -73,7 +71,7 @@ class TestGenerateCliSkeletonYamlInput(BaseAWSCommandParamsTest):
         cmdline = 'iam create-group --generate-cli-skeleton yaml-input'
         stdout, _, rc = self.run_cmd(cmdline)
         self.assertEqual(rc, 0)
-        loaded_skeleton = yaml.safe_load(stdout)
+        loaded_skeleton = self.yaml.load(stdout)
         self.assertEqual(loaded_skeleton['Path'], '')
         self.assertEqual(loaded_skeleton['GroupName'], '')
 
@@ -107,23 +105,24 @@ class TestGenerateCliSkeletonOutput(BaseAWSCommandParamsTest):
         skeleton_output = json.loads(stdout)
         self.assertIn('Regions', skeleton_output)
         self.assertEqual(
-            skeleton_output['Regions'][0]['RegionName'], 'RegionName')
-        self.assertEqual(
-            skeleton_output['Regions'][0]['Endpoint'], 'Endpoint')
+            skeleton_output['Regions'][0]['RegionName'], 'RegionName'
+        )
+        self.assertEqual(skeleton_output['Regions'][0]['Endpoint'], 'Endpoint')
 
     def test_can_pass_in_input_parameters(self):
         cmdline = 'ec2 describe-regions --generate-cli-skeleton output '
         cmdline += ' --region-names us-east-1'
         stdout, _, _ = self.assert_params_for_cmd(
-            cmdline, {'RegionNames': ['us-east-1']})
+            cmdline, {'RegionNames': ['us-east-1']}
+        )
 
         # Make sure the output has the proper mocked response as well.
         skeleton_output = json.loads(stdout)
         self.assertIn('Regions', skeleton_output)
         self.assertEqual(
-            skeleton_output['Regions'][0]['RegionName'], 'RegionName')
-        self.assertEqual(
-            skeleton_output['Regions'][0]['Endpoint'], 'Endpoint')
+            skeleton_output['Regions'][0]['RegionName'], 'RegionName'
+        )
+        self.assertEqual(skeleton_output['Regions'][0]['Endpoint'], 'Endpoint')
 
     def test_when_no_output_shape(self):
         cmdline = 'ec2 attach-internet-gateway '
@@ -131,7 +130,8 @@ class TestGenerateCliSkeletonOutput(BaseAWSCommandParamsTest):
         cmdline += '--generate-cli-skeleton output'
         stdout, _, _ = self.assert_params_for_cmd(
             cmdline,
-            {'InternetGatewayId': 'igw-c0a643a9', 'VpcId': 'vpc-a01106'})
+            {'InternetGatewayId': 'igw-c0a643a9', 'VpcId': 'vpc-a01106'},
+        )
         # There should be no output as the command has no output shape
         self.assertEqual('', stdout)
 
@@ -142,7 +142,7 @@ class TestGenerateCliSkeletonOutput(BaseAWSCommandParamsTest):
         # The CreationDate has the type of timestamp
         self.assertEqual(
             skeleton_output['Buckets'][0]['CreationDate'],
-            '1970-01-01T00:00:00'
+            '1970-01-01T00:00:00',
         )
 
     def test_can_handle_lists_with_strings_that_have_a_min_length(self):
@@ -158,10 +158,10 @@ class TestGenerateCliSkeletonOutput(BaseAWSCommandParamsTest):
         self.assertEqual(stdout, 'RegionName\n')
 
     def test_validates_at_command_line_level(self):
-        cmdline = 'ec2 create-vpc --generate-cli-skeleton output'
+        cmdline = 'ec2 start-instances --generate-cli-skeleton output'
         stdout, stderr, _ = self.run_cmd(cmdline, expected_rc=252)
         self.assertIn('required', stderr)
-        self.assertIn('--cidr-block', stderr)
+        self.assertIn('--instance-ids', stderr)
         self.assertEqual('', stdout)
 
     def test_validates_at_client_level(self):

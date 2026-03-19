@@ -1,25 +1,21 @@
-Counting Closed Workflow Executions
------------------------------------
+**Counting Closed Workflow Executions**
 
-You can use ``swf count-closed-workflow-executions`` to retrieve the number of closed workflow executions for a given
-domain. You can specify filters to count specific classes of executions.
+You can use ``swf count-closed-workflow-executions`` to retrieve the number of closed workflow executions for a given domain. You can specify filters to count specific classes of executions.
 
-The ``--domain`` and *either* ``--close-time-filter`` or ``--start-time-filter`` arguments are required. All other
-arguments are optional.
+The ``--domain`` and *either* ``--close-time-filter`` or ``--start-time-filter`` arguments are required. All other arguments are optional. ::
 
-Here is a basic example::
+    aws swf count-closed-workflow-executions \
+        --domain DataFrobtzz \
+        --close-time-filter "{ \"latestDate\" : 1377129600, \"oldestDate\" : 1370044800 }"
 
-    aws swf count-closed-workflow-executions --domain DataFrobtzz --close-time-filter "{ \"latestDate\" : 1377129600, \"oldestDate\" : 1370044800 }"
-
-Result::
+Output::
 
     {
         "count": 2,
         "truncated": false
     }
 
-If "truncated" is ``true``, then "count" represents the maximum number that can be returned by Amazon SWF. Any further
-results are truncated.
+If "truncated" is ``true``, then "count" represents the maximum number that can be returned by Amazon SWF. Any further results are truncated.
 
 To reduce the number of results returned, you can:
 
@@ -32,5 +28,4 @@ To reduce the number of results returned, you can:
 See Also
 --------
 
--  `CountClosedWorkflowExecutions <http://docs.aws.amazon.com/amazonswf/latest/apireference/API_CountClosedWorkflowExecutions.html>`_ in the *Amazon Simple Workflow Service API Reference*
-
+-  `CountClosedWorkflowExecutions <https://docs.aws.amazon.com/amazonswf/latest/apireference/API_CountClosedWorkflowExecutions.html>`_ in the *Amazon Simple Workflow Service API Reference*

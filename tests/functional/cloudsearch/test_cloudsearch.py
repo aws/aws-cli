@@ -15,7 +15,6 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestCloudSearchDefineExpression(BaseAWSCommandParamsTest):
-
     prefix = 'cloudsearch define-expression'
 
     def test_flattened(self):
@@ -25,13 +24,12 @@ class TestCloudSearchDefineExpression(BaseAWSCommandParamsTest):
         cmdline += ' --expression 10'
         result = {
             'DomainName': 'abc123',
-            'Expression': {'ExpressionName': 'foo',
-                           'ExpressionValue': '10'}}
+            'Expression': {'ExpressionName': 'foo', 'ExpressionValue': '10'},
+        }
         self.assert_params_for_cmd(cmdline, result)
 
 
 class TestCloudSearchDefineIndexField(BaseAWSCommandParamsTest):
-
     prefix = 'cloudsearch define-index-field'
 
     def test_flattened(self):
@@ -41,12 +39,19 @@ class TestCloudSearchDefineIndexField(BaseAWSCommandParamsTest):
         cmdline += ' --type int'
         cmdline += ' --default-value 10'
         cmdline += ' --search-enabled false'
+        cmdline += ' --source-field fieldname123'
         result = {
             'DomainName': 'abc123',
-            'IndexField': {'IndexFieldName': 'foo',
-                           'IndexFieldType': 'int',
-                           'IntOptions': {'DefaultValue': 10,
-                                          'SearchEnabled': False}}}
+            'IndexField': {
+                'IndexFieldName': 'foo',
+                'IndexFieldType': 'int',
+                'IntOptions': {
+                    'DefaultValue': 10,
+                    'SearchEnabled': False,
+                    'SourceField': 'fieldname123',
+                },
+            },
+        }
         self.assert_params_for_cmd(cmdline, result)
 
     def test_latlon(self):
@@ -56,11 +61,17 @@ class TestCloudSearchDefineIndexField(BaseAWSCommandParamsTest):
         cmdline += ' --type latlon'
         cmdline += ' --default-value 10'
         cmdline += ' --search-enabled false'
+        cmdline += ' --source-field fieldname123'
         result = {
             'DomainName': 'abc123',
             'IndexField': {
                 'IndexFieldName': 'foo',
                 'IndexFieldType': 'latlon',
                 'LatLonOptions': {
-                    'DefaultValue': '10', 'SearchEnabled': False}}}
+                    'DefaultValue': '10',
+                    'SearchEnabled': False,
+                    'SourceField': 'fieldname123',
+                },
+            },
+        }
         self.assert_params_for_cmd(cmdline, result)

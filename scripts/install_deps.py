@@ -1,10 +1,13 @@
 import os
+from pathlib import Path
 
-from utils import cd, bin_path, run, virtualenv_enabled
+from utils import bin_path, cd, run, virtualenv_enabled
 
-INSTALL_ARGS = "--no-build-isolation --no-cache-dir --no-index "
-PINNED_PIP_VERSION = '20.0.2'
-SETUP_DEPS = ("setuptools-", "setuptools_scm", "wheel")
+INSTALL_ARGS = (
+    "--no-build-isolation --no-cache-dir --no-index --prefer-binary "
+)
+PINNED_PIP_VERSION = '26.0.1'
+SETUP_DEPS = ("setuptools-", "setuptools_scm", "wheel", "hatchling")
 
 
 class InstallationError(Exception):
@@ -17,17 +20,19 @@ def get_package_tarball(package_dir, package_prefix):
     )
     if len(package_filenames) == 0:
         raise InstallationError(
-            "Unable to find local package starting with %s prefix." % package_prefix
+            "Unable to find local package starting with %s prefix."
+            % package_prefix
         )
     # We only expect a single package from the downloader
     return package_filenames[0]
 
 
 def install_local_package(package_dir, package, pip_script="pip"):
+    url = Path(package_dir).as_uri()
     with cd(package_dir):
         run(
-            "%s install %s --find-links file://%s %s"
-            % (pip_script, INSTALL_ARGS, package_dir, package)
+            f"{pip_script} install {INSTALL_ARGS} "
+            f"--find-links {url} {package}"
         )
 
 
@@ -41,7 +46,9 @@ def pip_install_packages(package_dir):
 
     # Setup pip to support modern setuptools calls
     pip_script = os.path.join(os.environ["VIRTUAL_ENV"], bin_path(), "pip")
-    local_python = os.path.join(os.environ["VIRTUAL_ENV"], bin_path(), "python")
+    local_python = os.path.join(
+        os.environ["VIRTUAL_ENV"], bin_path(), "python"
+    )
 
     # Windows can't replace a running pip.exe, so we need to work around
     run("%s -m pip install pip==%s" % (local_python, PINNED_PIP_VERSION))

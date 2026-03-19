@@ -1,6 +1,6 @@
 **To describe an image in a repository**
 
-The folowing ``describe-images`` example displays details about an image in the ``cluster-autoscaler`` repository with the tag ``v1.13.6``. ::
+The following ``describe-images`` example displays details about an image in the ``cluster-autoscaler`` repository with the tag ``v1.13.6``. ::
 
     aws ecr describe-images \
         --repository-name cluster-autoscaler \

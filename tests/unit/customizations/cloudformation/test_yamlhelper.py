@@ -10,20 +10,17 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import mock
-import tempfile
-from mock import patch, Mock, MagicMock
-
-from botocore.compat import json
 from botocore.compat import OrderedDict
 
 from awscli.customizations.cloudformation.deployer import Deployer
-from awscli.customizations.cloudformation.yamlhelper import yaml_parse, yaml_dump
+from awscli.customizations.cloudformation.yamlhelper import (
+    yaml_dump,
+    yaml_parse,
+)
 from tests.unit.customizations.cloudformation import BaseYAMLTest
 
 
 class TestYaml(BaseYAMLTest):
-
     yaml_with_tags = """
     Resource:
         Key1: !Ref Something
@@ -36,40 +33,23 @@ class TestYaml(BaseYAMLTest):
 
     parsed_yaml_dict = {
         "Resource": {
-            "Key1": {
-                "Ref": "Something"
-            },
-            "Key2": {
-                "Fn::GetAtt": ["Another", "Arn"]
-            },
-            "Key3": {
-                "Fn::FooBar": [
-                    {"Fn::Baz": "YetAnother"},
-                    "hello"
-                ]
-            },
-            "Key4": {
-                "Fn::SomeTag": {
-                    "a": "1"
-                }
-            },
-            "Key5": {
-                "Fn::GetAtt": ["OneMore", "Outputs.Arn"]
-            },
-            "Key6": {
-                "Condition": "OtherCondition"
-            }
+            "Key1": {"Ref": "Something"},
+            "Key2": {"Fn::GetAtt": ["Another", "Arn"]},
+            "Key3": {"Fn::FooBar": [{"Fn::Baz": "YetAnother"}, "hello"]},
+            "Key4": {"Fn::SomeTag": {"a": "1"}},
+            "Key5": {"Fn::GetAtt": ["OneMore", "Outputs.Arn"]},
+            "Key6": {"Condition": "OtherCondition"},
         }
     }
 
     def test_yaml_with_tags(self):
         output = yaml_parse(self.yaml_with_tags)
-        self.assertEquals(self.parsed_yaml_dict, output)
+        self.assertEqual(self.parsed_yaml_dict, output)
 
         # Make sure formatter and parser work well with each other
         formatted_str = yaml_dump(output)
         output_again = yaml_parse(formatted_str)
-        self.assertEquals(output, output_again)
+        self.assertEqual(output, output_again)
 
     def test_yaml_getatt(self):
         # This is an invalid syntax for !GetAtt. But make sure the code does
@@ -80,17 +60,10 @@ class TestYaml(BaseYAMLTest):
             Key: !GetAtt ["a", "b"]
         """
 
-        output = {
-            "Resource": {
-               "Key": {
-                "Fn::GetAtt": ["a", "b"]
-               }
-
-            }
-        }
+        output = {"Resource": {"Key": {"Fn::GetAtt": ["a", "b"]}}}
 
         actual_output = yaml_parse(yaml_input)
-        self.assertEquals(actual_output, output)
+        self.assertEqual(actual_output, output)
 
     def test_parse_json_with_tabs(self):
         template = '{\n\t"foo": "bar"\n}'
@@ -118,31 +91,67 @@ class TestYaml(BaseYAMLTest):
             }
         }
         """
-        expected_dict = OrderedDict([
-            ('B_Resource', OrderedDict([('Key2', {'Name': 'name2'}), ('Key1', {'Name': 'name1'})])),
-            ('A_Resource', OrderedDict([('Key2', {'Name': 'name2'}), ('Key1', {'Name': 'name1'})]))
-        ])
+        expected_dict = OrderedDict(
+            [
+                (
+                    'B_Resource',
+                    OrderedDict(
+                        [
+                            ('Key2', {'Name': 'name2'}),
+                            ('Key1', {'Name': 'name1'}),
+                        ]
+                    ),
+                ),
+                (
+                    'A_Resource',
+                    OrderedDict(
+                        [
+                            ('Key2', {'Name': 'name2'}),
+                            ('Key1', {'Name': 'name1'}),
+                        ]
+                    ),
+                ),
+            ]
+        )
         output_dict = yaml_parse(input_template)
         self.assertEqual(expected_dict, output_dict)
 
     def test_parse_yaml_preserve_elements_order(self):
         input_template = (
-        'B_Resource:\n'
-        '  Key2:\n'
-        '    Name: name2\n'
-        '  Key1:\n'
-        '    Name: name1\n'
-        'A_Resource:\n'
-        '  Key2:\n'
-        '    Name: name2\n'
-        '  Key1:\n'
-        '    Name: name1\n'
+            'B_Resource:\n'
+            '  Key2:\n'
+            '    Name: name2\n'
+            '  Key1:\n'
+            '    Name: name1\n'
+            'A_Resource:\n'
+            '  Key2:\n'
+            '    Name: name2\n'
+            '  Key1:\n'
+            '    Name: name1\n'
         )
         output_dict = yaml_parse(input_template)
-        expected_dict = OrderedDict([
-            ('B_Resource', OrderedDict([('Key2', {'Name': 'name2'}), ('Key1', {'Name': 'name1'})])),
-            ('A_Resource', OrderedDict([('Key2', {'Name': 'name2'}), ('Key1', {'Name': 'name1'})]))
-        ])
+        expected_dict = OrderedDict(
+            [
+                (
+                    'B_Resource',
+                    OrderedDict(
+                        [
+                            ('Key2', {'Name': 'name2'}),
+                            ('Key1', {'Name': 'name1'}),
+                        ]
+                    ),
+                ),
+                (
+                    'A_Resource',
+                    OrderedDict(
+                        [
+                            ('Key2', {'Name': 'name2'}),
+                            ('Key1', {'Name': 'name1'}),
+                        ]
+                    ),
+                ),
+            ]
+        )
         self.assertEqual(expected_dict, output_dict)
 
         output_template = yaml_dump(output_dict)
@@ -167,7 +176,7 @@ class TestYaml(BaseYAMLTest):
         template = {
             "Resources": {
                 "Resource1": {"Properties": properties},
-                "Resource2": {"Properties": properties}
+                "Resource2": {"Properties": properties},
             }
         }
 
@@ -187,10 +196,26 @@ class TestYaml(BaseYAMLTest):
 
     def test_yaml_dump_quotes_boolean_strings(self):
         bools_as_strings = [
-            'yes', 'Yes', 'YES', 'no', 'No', 'NO',
-            'true', 'True', 'TRUE', 'false', 'False', 'FALSE',
-            'on', 'On', 'ON', 'off', 'Off', 'OFF'
+            'yes',
+            'Yes',
+            'YES',
+            'no',
+            'No',
+            'NO',
+            'true',
+            'True',
+            'TRUE',
+            'false',
+            'False',
+            'FALSE',
+            'on',
+            'On',
+            'ON',
+            'off',
+            'Off',
+            'OFF',
         ]
         for bool_as_string in bools_as_strings:
             self.assertEqual(
-                yaml_dump(bool_as_string), "'%s'\n" % bool_as_string)
+                yaml_dump(bool_as_string), "'%s'\n" % bool_as_string
+            )

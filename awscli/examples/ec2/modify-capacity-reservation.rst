@@ -12,6 +12,8 @@ Output::
         "Return": true
     }
 
+For more information, see `Modify a Capacity Reservation <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/capacity-reservations-modify.html>`__ in the *Amazon EC2 User Guide*.
+
 **Example 2: To change the end date and time for an existing capacity reservation**
 
 The following ``modify-capacity-reservation`` example modifies an existing capacity reservation to end at the specified date and time. ::
@@ -21,4 +23,4 @@ The following ``modify-capacity-reservation`` example modifies an existing capac
         --end-date-type limited \
         --end-date 2019-08-31T23:59:59Z
 
-For more information, see `Modifying a Capacity Reservation <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/capacity-reservations-using.html#capacity-reservations-modify>`__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.
+For more information, see `Modify a Capacity Reservation <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/capacity-reservations-modify.html>`__ in the *Amazon EC2 User Guide*.

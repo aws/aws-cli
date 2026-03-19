@@ -2,13 +2,13 @@
 
 The following ``describe-certificate`` command retrieves all of the fields for the certificate with the specified ARN::
 
-  aws acm describe-certificate --certificate-arn arn:aws:acm:us-east-1:123456789012:certificate/12345678-1234-1234-1234-123456789012
+  aws acm describe-certificate --certificate-arn arn:aws:acm:region:account:certificate/12345678-1234-1234-1234-123456789012
  
 Output similar to the following is displayed::
 
   {
     "Certificate": {
-      "CertificateArn": "arn:aws:acm:us-east-1:123456789012:certificate/12345678-1234-1234-1234-123456789012", 
+      "CertificateArn": "arn:aws:acm:region:account:certificate/12345678-1234-1234-1234-123456789012", 
       "CreatedAt": 1446835267.0, 
       "DomainName": "www.example.com", 
       "DomainValidationOptions": [

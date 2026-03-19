@@ -13,10 +13,12 @@
 
 import sys
 
-from awscli.customizations.servicecatalog import helptext
-from awscli.customizations.servicecatalog.generatebase \
-    import GenerateBaseCommand
 from botocore.compat import json
+
+from awscli.customizations.servicecatalog import helptext
+from awscli.customizations.servicecatalog.generatebase import (
+    GenerateBaseCommand,
+)
 
 
 class GenerateProductCommand(GenerateBaseCommand):
@@ -26,71 +28,66 @@ class GenerateProductCommand(GenerateBaseCommand):
         {
             'name': 'product-name',
             'required': True,
-            'help_text': helptext.PRODUCT_NAME
+            'help_text': helptext.PRODUCT_NAME,
         },
         {
             'name': 'product-owner',
             'required': True,
-            'help_text': helptext.OWNER
+            'help_text': helptext.OWNER,
         },
         {
             'name': 'product-type',
             'required': True,
             'help_text': helptext.PRODUCT_TYPE,
-            'choices': ['CLOUD_FORMATION_TEMPLATE', 'MARKETPLACE']
+            'choices': ['CLOUD_FORMATION_TEMPLATE', 'MARKETPLACE'],
         },
         {
             'name': 'product-description',
             'required': False,
-            'help_text': helptext.PRODUCT_DESCRIPTION
+            'help_text': helptext.PRODUCT_DESCRIPTION,
         },
         {
             'name': 'product-distributor',
             'required': False,
-            'help_text': helptext.DISTRIBUTOR
+            'help_text': helptext.DISTRIBUTOR,
         },
         {
             'name': 'tags',
             'required': False,
-            'schema': {
-                'type': 'array',
-                'items': {
-                    'type': 'string'
-                }
-            },
+            'schema': {'type': 'array', 'items': {'type': 'string'}},
             'default': [],
             'synopsis': '--tags Key=key1,Value=value1 Key=key2,Value=value2',
-            'help_text': helptext.TAGS
+            'help_text': helptext.TAGS,
         },
         {
             'name': 'file-path',
             'required': True,
-            'help_text': helptext.FILE_PATH
+            'help_text': helptext.FILE_PATH,
         },
         {
             'name': 'bucket-name',
             'required': True,
-            'help_text': helptext.BUCKET_NAME
+            'help_text': helptext.BUCKET_NAME,
         },
         {
             'name': 'support-description',
             'required': False,
-            'help_text': helptext.SUPPORT_DESCRIPTION
+            'help_text': helptext.SUPPORT_DESCRIPTION,
         },
         {
             'name': 'support-email',
             'required': False,
-            'help_text': helptext.SUPPORT_EMAIL
+            'help_text': helptext.SUPPORT_EMAIL,
         },
         {
             'name': 'provisioning-artifact-name',
             'required': True,
-            'help_text': helptext.PA_NAME
+            'help_text': helptext.PA_NAME,
         },
         {
             'name': 'provisioning-artifact-description',
             'required': True,
-            'help_text': helptext.PA_DESCRIPTION
+            'help_text': helptext.PA_DESCRIPTION,
         },
         {
             'name': 'provisioning-artifact-type',
@@ -99,27 +96,30 @@ class GenerateProductCommand(GenerateBaseCommand):
             'choices': [
                 'CLOUD_FORMATION_TEMPLATE',
                 'MARKETPLACE_AMI',
-                'MARKETPLACE_CAR'
-            ]
-        }
+                'MARKETPLACE_CAR',
+            ],
+        },
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
-        super(GenerateProductCommand, self)._run_main(parsed_args,
-                                                      parsed_globals)
+        super(GenerateProductCommand, self)._run_main(
+            parsed_args, parsed_globals
+        )
         self.region = self.get_and_validate_region(parsed_globals)
 
-        self.s3_url = self.create_s3_url(parsed_args.bucket_name,
-                                         parsed_args.file_path)
+        self.s3_url = self.create_s3_url(
+            parsed_args.bucket_name, parsed_args.file_path
+        )
         self.scs_client = self._session.create_client(
-            'servicecatalog', region_name=self.region,
+            'servicecatalog',
+            region_name=self.region,
             endpoint_url=parsed_globals.endpoint_url,
-            verify=parsed_globals.verify_ssl
+            verify=parsed_globals.verify_ssl,
         )
 
-        response = self.create_product(self.build_args(parsed_args,
-                                                       self.s3_url),
-                                       parsed_globals)
+        response = self.create_product(
+            self.build_args(parsed_args, self.s3_url), parsed_globals
+        )
         sys.stdout.write(json.dumps(response, indent=2, ensure_ascii=False))
 
         return 0
@@ -145,11 +145,9 @@ class GenerateProductCommand(GenerateBaseCommand):
             "ProvisioningArtifactParameters": {
                 'Name': parsed_args.provisioning_artifact_name,
                 'Description': parsed_args.provisioning_artifact_description,
-                'Info': {
-                    'LoadTemplateFromURL': s3_url
-                },
-                'Type': parsed_args.provisioning_artifact_type
-            }
+                'Info': {'LoadTemplateFromURL': s3_url},
+                'Type': parsed_args.provisioning_artifact_type,
+            },
         }
 
         # Non-required args

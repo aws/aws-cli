@@ -1,4 +1,23 @@
-**To add an authorizer to a route**
+**Example 1: To update the integration of a route**
+
+The following ``update-route`` example updates the integration of a specified route. ::
+
+    aws apigatewayv2 update-route \
+        --api-id a1b2c3d4 \
+        --route-id a1b2c3 \
+        --target integrations/a1b2c6
+
+Output::
+    
+    {
+        "ApiKeyRequired": false,
+        "AuthorizationType": "NONE",
+        "RouteId": "a1b2c3",
+        "RouteKey": "ANY /pets",
+        "Target": "integrations/a1b2c6"
+    }
+
+**Example 2: To add an authorizer to a route**
 
 The following ``update-route`` example updates the specified route to use a JWT authorizer. ::
 
@@ -7,7 +26,7 @@ The following ``update-route`` example updates the specified route to use a JWT 
         --route-id a1b2c3  \
         --authorization-type JWT \
         --authorizer-id a1b2c5 \
-        --authorization-scopes user.id user.email  
+        --authorization-scopes user.id user.email
 
 Output::
 

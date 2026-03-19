@@ -10,37 +10,40 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import logging
 import os
 import sys
-import logging
 
-from botocore.history import get_global_history_recorder
 from botocore.exceptions import ProfileNotFound
+from botocore.history import get_global_history_recorder
 
 from awscli.compat import sqlite3
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.history.constants import HISTORY_FILENAME_ENV_VAR
-from awscli.customizations.history.constants import DEFAULT_HISTORY_FILENAME
-from awscli.customizations.history.db import DatabaseConnection
-from awscli.customizations.history.db import DatabaseRecordWriter
-from awscli.customizations.history.db import RecordBuilder
-from awscli.customizations.history.db import DatabaseHistoryHandler
-from awscli.customizations.history.show import ShowCommand
+from awscli.customizations.history.constants import (
+    DEFAULT_HISTORY_FILENAME,
+    HISTORY_FILENAME_ENV_VAR,
+)
+from awscli.customizations.history.db import (
+    DatabaseConnection,
+    DatabaseHistoryHandler,
+    DatabaseRecordWriter,
+    RecordBuilder,
+)
 from awscli.customizations.history.list import ListCommand
-
+from awscli.customizations.history.show import ShowCommand
 
 LOG = logging.getLogger(__name__)
 HISTORY_RECORDER = get_global_history_recorder()
 
 
 def register_history_mode(event_handlers):
-    event_handlers.register(
-        'session-initialized', attach_history_handler)
+    event_handlers.register('session-initialized', attach_history_handler)
 
 
 def register_history_commands(event_handlers):
     event_handlers.register(
-        "building-command-table.main", add_history_commands)
+        "building-command-table.main", add_history_commands
+    )
 
 
 def attach_history_handler(session, parsed_args, **kwargs):
@@ -48,11 +51,20 @@ def attach_history_handler(session, parsed_args, **kwargs):
         LOG.debug('Enabling CLI history')
 
         history_filename = os.environ.get(
-            HISTORY_FILENAME_ENV_VAR, DEFAULT_HISTORY_FILENAME)
+            HISTORY_FILENAME_ENV_VAR, DEFAULT_HISTORY_FILENAME
+        )
         if not os.path.isdir(os.path.dirname(history_filename)):
             os.makedirs(os.path.dirname(history_filename))
 
-        connection = DatabaseConnection(history_filename)
+        try:
+            connection = DatabaseConnection(history_filename)
+        except Exception as e:
+            LOG.debug('Unable to open history database: %s', e)
+            sys.stderr.write(
+                'Warning: Unable to record CLI history. '
+                'Check file permissions for %s\n' % history_filename
+            )
+            return
         writer = DatabaseRecordWriter(connection)
         record_builder = RecordBuilder()
         db_handler = DatabaseHistoryHandler(writer, record_builder)
@@ -68,7 +80,7 @@ def _should_enable_cli_history(session, parsed_args):
         scoped_config = session.get_scoped_config()
     except ProfileNotFound:
         # If the profile does not exist, cli history is definitely not
-        # enabled, but don't let the error get propogated as commands down
+        # enabled, but don't let the error get propagated as commands down
         # the road may handle this such as the configure set command with
         # a --profile flag set.
         return False
@@ -98,7 +110,7 @@ class HistoryCommand(BasicCommand):
     )
     SUBCOMMANDS = [
         {'name': 'show', 'command_class': ShowCommand},
-        {'name': 'list', 'command_class': ListCommand}
+        {'name': 'list', 'command_class': ListCommand},
     ]
 
     def _run_main(self, parsed_args, parsed_globals):

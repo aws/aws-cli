@@ -1,0 +1,50 @@
+[
+    {
+        "description": "Test cases for NonQueryCompatibleOperation operation",
+        "metadata": {
+            "apiVersion": "2025-06-20",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "nonquerycompatiblerpcv2protocol",
+            "protocol": "smithy-rpc-v2-cbor",
+            "protocols": [
+                "smithy-rpc-v2-cbor"
+            ],
+            "serviceFullName": "NonQueryCompatibleRpcV2Protocol",
+            "serviceId": "Non Query Compatible RpcV2 Protocol",
+            "signatureVersion": "v4",
+            "signingName": "NonQueryCompatibleRpcV2Protocol",
+            "targetPrefix": "NonQueryCompatibleRpcV2Protocol",
+            "uid": "non-query-compatible-rpcv2-protocol-2025-06-20"
+        },
+        "shapes": {},
+        "cases": [
+            {
+                "id": "NonQueryCompatibleRpcV2CborForbidsQueryModeHeader",
+                "given": {
+                    "name": "NonQueryCompatibleOperation",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "idempotent": true
+                },
+                "description": "The query mode header MUST NOT be set on non-query-compatible services.",
+                "params": {},
+                "serialized": {
+                    "method": "POST",
+                    "uri": "/service/NonQueryCompatibleRpcV2Protocol/operation/NonQueryCompatibleOperation",
+                    "body": "",
+                    "headers": {
+                        "Accept": "application/cbor",
+                        "smithy-protocol": "rpc-v2-cbor"
+                    },
+                    "forbidHeaders": [
+                        "x-amzn-query-mode"
+                    ]
+                }
+            }
+        ]
+    }
+]

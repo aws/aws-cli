@@ -15,13 +15,12 @@ import json
 import logging
 import os
 
+from botocore import xform_name
+from botocore.exceptions import NoCredentialsError, WaiterError
 
 from awscli.clidriver import CLIOperationCaller
+from awscli.customizations.emr import constants, exceptions
 from awscli.customizations.exceptions import ParamValidationError
-from awscli.customizations.emr import constants
-from awscli.customizations.emr import exceptions
-from botocore.exceptions import WaiterError, NoCredentialsError
-from botocore import xform_name
 
 LOG = logging.getLogger(__name__)
 
@@ -57,11 +56,16 @@ def parse_key_value_string(key_value_string):
 
 
 def apply_boolean_options(
-        true_option, true_option_name, false_option, false_option_name):
+    true_option, true_option_name, false_option, false_option_name
+):
     if true_option and false_option:
-        error_message = \
-            'aws: error: cannot use both ' + true_option_name + \
-            ' and ' + false_option_name + ' options together.'
+        error_message = (
+            'cannot use both '
+            + true_option_name
+            + ' and '
+            + false_option_name
+            + ' options together.'
+        )
         raise ParamValidationError(error_message)
     elif true_option:
         return True
@@ -92,13 +96,16 @@ def apply_params(src_params, src_key, dest_params, dest_key):
 
 
 def build_step(
-        jar, name='Step',
-        action_on_failure=constants.DEFAULT_FAILURE_ACTION,
-        args=None,
-        main_class=None,
-        properties=None):
-    check_required_field(
-        structure='HadoopJarStep', name='Jar', value=jar)
+    jar,
+    name='Step',
+    action_on_failure=constants.DEFAULT_FAILURE_ACTION,
+    args=None,
+    main_class=None,
+    properties=None,
+    log_uri=None,
+    encryption_key_arn=None,
+):
+    check_required_field(structure='HadoopJarStep', name='Jar', value=jar)
 
     step = {}
     apply_dict(step, 'Name', name)
@@ -109,17 +116,26 @@ def build_step(
     apply_dict(jar_config, 'MainClass', main_class)
     apply_dict(jar_config, 'Properties', properties)
     step['HadoopJarStep'] = jar_config
+    step_monitoring_config = {}
+    s3_monitoring_configuration = {}
+    apply_dict(s3_monitoring_configuration, 'LogUri', log_uri)
+    apply_dict(
+        s3_monitoring_configuration, 'EncryptionKeyArn', encryption_key_arn
+    )
+    if s3_monitoring_configuration:
+        step_monitoring_config['S3MonitoringConfiguration'] = (
+            s3_monitoring_configuration
+        )
+        step['StepMonitoringConfiguration'] = step_monitoring_config
 
     return step
 
 
-def build_bootstrap_action(
-        path,
-        name='Bootstrap Action',
-        args=None):
+def build_bootstrap_action(path, name='Bootstrap Action', args=None):
     if path is None:
         raise exceptions.MissingParametersError(
-            object_name='ScriptBootstrapActionConfig', missing='Path')
+            object_name='ScriptBootstrapActionConfig', missing='Path'
+        )
     ba_config = {}
     apply_dict(ba_config, 'Name', name)
     script_config = {}
@@ -133,20 +149,22 @@ def build_bootstrap_action(
 def build_s3_link(relative_path='', region='us-east-1'):
     if region is None:
         region = 'us-east-1'
-    return 's3://{0}.elasticmapreduce{1}'.format(region, relative_path)
+    return f's3://{region}.elasticmapreduce{relative_path}'
 
 
 def get_script_runner(region='us-east-1'):
     if region is None:
         region = 'us-east-1'
     return build_s3_link(
-        relative_path=constants.SCRIPT_RUNNER_PATH, region=region)
+        relative_path=constants.SCRIPT_RUNNER_PATH, region=region
+    )
 
 
 def check_required_field(structure, name, value):
     if not value:
         raise exceptions.MissingParametersError(
-            object_name=structure, missing=name)
+            object_name=structure, missing=name
+        )
 
 
 def check_empty_string_list(name, value):
@@ -154,8 +172,14 @@ def check_empty_string_list(name, value):
         raise exceptions.EmptyListError(param=name)
 
 
-def call(session, operation_name, parameters, region_name=None,
-         endpoint_url=None, verify=None):
+def call(
+    session,
+    operation_name,
+    parameters,
+    region_name=None,
+    endpoint_url=None,
+    verify=None,
+):
     # We could get an error from get_endpoint() about not having
     # a region configured.  Before this happens we want to check
     # for credentials so we can give a good error message.
@@ -163,8 +187,11 @@ def call(session, operation_name, parameters, region_name=None,
         raise NoCredentialsError()
 
     client = session.create_client(
-        'emr', region_name=region_name, endpoint_url=endpoint_url,
-        verify=verify)
+        'emr',
+        region_name=region_name,
+        endpoint_url=endpoint_url,
+        verify=verify,
+    )
     LOG.debug('Calling ' + str(operation_name))
     return getattr(client, operation_name)(**parameters)
 
@@ -182,7 +209,8 @@ def get_client(session, parsed_globals):
         'emr',
         region_name=get_region(session, parsed_globals),
         endpoint_url=parsed_globals.endpoint_url,
-        verify=parsed_globals.verify_ssl)
+        verify=parsed_globals.verify_ssl,
+    )
 
 
 def get_cluster_state(session, parsed_globals, cluster_id):
@@ -210,12 +238,13 @@ def which(program):
     return None
 
 
-def call_and_display_response(session, operation_name, parameters,
-                              parsed_globals):
+def call_and_display_response(
+    session, operation_name, parameters, parsed_globals
+):
     cli_operation_caller = CLIOperationCaller(session)
     cli_operation_caller.invoke(
-        'emr', operation_name,
-        parameters, parsed_globals)
+        'emr', operation_name, parameters, parsed_globals
+    )
 
 
 def display_response(session, operation_name, result, parsed_globals):
@@ -223,7 +252,8 @@ def display_response(session, operation_name, result, parsed_globals):
     # Calling a private method. Should be changed after the functionality
     # is moved outside CliOperationCaller.
     cli_operation_caller._display_response(
-        operation_name, result, parsed_globals)
+        operation_name, result, parsed_globals
+    )
 
 
 def get_region(session, parsed_globals):
@@ -245,8 +275,9 @@ def join(values, separator=',', lastSeparator='and'):
         return values[0]
     else:
         separator = '%s ' % separator
-        return ' '.join([separator.join(values[:-1]),
-                         lastSeparator, values[-1]])
+        return ' '.join(
+            [separator.join(values[:-1]), lastSeparator, values[-1]]
+        )
 
 
 def split_to_key_value(string):
@@ -256,21 +287,100 @@ def split_to_key_value(string):
         return string.split('=', 1)
 
 
-def get_cluster(cluster_id, session, region,
-                endpoint_url, verify_ssl):
-        describe_cluster_params = {'ClusterId': cluster_id}
-        describe_cluster_response = call(
-            session, 'describe_cluster', describe_cluster_params,
-            region, endpoint_url,
-            verify_ssl)
+def get_cluster(cluster_id, session, region, endpoint_url, verify_ssl):
+    describe_cluster_params = {'ClusterId': cluster_id}
+    describe_cluster_response = call(
+        session,
+        'describe_cluster',
+        describe_cluster_params,
+        region,
+        endpoint_url,
+        verify_ssl,
+    )
 
-        if describe_cluster_response is not None:
-            return describe_cluster_response.get('Cluster')
+    if describe_cluster_response is not None:
+        return describe_cluster_response.get('Cluster')
 
 
-def get_release_label(cluster_id, session, region,
-                      endpoint_url, verify_ssl):
-        cluster = get_cluster(cluster_id, session, region,
-                              endpoint_url, verify_ssl)
-        if cluster is not None:
-            return cluster.get('ReleaseLabel')
+def get_release_label(cluster_id, session, region, endpoint_url, verify_ssl):
+    cluster = get_cluster(
+        cluster_id, session, region, endpoint_url, verify_ssl
+    )
+    if cluster is not None:
+        return cluster.get('ReleaseLabel')
+
+def validate_s3_logging_configuration(monitoring_config, log_uri):
+    """
+    Validates S3LoggingConfiguration policies and LogUri requirements.
+
+    Validation rules:
+    1. 'on-customer-s3only' is NOT supported for 'persistent-ui-logs'
+    2. LogUri is MANDATORY when 'system-logs' or 'application-logs' use
+       'emr-managed' or 'on-customer-s3only' policies
+    3. LogUri is NOT ALLOWED when both 'system-logs' and 'application-logs'
+       are 'disabled'
+    4. Valid log types: system-logs, application-logs, persistent-ui-logs
+    5. Valid policies: emr-managed, on-customer-s3only, disabled
+
+    Args:
+        monitoring_config: MonitoringConfiguration dict containing S3LoggingConfiguration
+        log_uri: LogUri value (can be None)
+
+    Raises:
+        InvalidS3LoggingLogTypeError: If invalid log type is specified
+        InvalidS3LoggingPolicyError: If invalid policy is specified
+        InvalidS3LoggingPersistentUiLogsPolicyError: If on-customer-s3only is used for persistent-ui-logs
+        S3LoggingConfigurationLogUriRequiredError: If LogUri is required but not provided
+        S3LoggingConfigurationLogUriNotAllowedError: If LogUri is provided when not allowed
+    """
+    if not monitoring_config:
+        return
+
+    s3_logging_config = monitoring_config.get('S3LoggingConfiguration')
+    if not s3_logging_config:
+        return
+
+    log_type_upload_policy = s3_logging_config.get('LogTypeUploadPolicy')
+    if log_type_upload_policy is None:
+        return
+
+    # Empty LogTypeUploadPolicy is treated as no S3LoggingConfiguration
+    if len(log_type_upload_policy) == 0:
+        return
+
+    # Valid log types and policies
+    valid_log_types = {'system-logs', 'application-logs', 'persistent-ui-logs'}
+    valid_policies = {'emr-managed', 'on-customer-s3only', 'disabled'}
+
+    # Validate each policy entry
+    for log_type, policy in log_type_upload_policy.items():
+        # Validate log type
+        if log_type not in valid_log_types:
+            raise exceptions.InvalidS3LoggingLogTypeError()
+
+        # Validate policy value
+        if policy not in valid_policies:
+            raise exceptions.InvalidS3LoggingPolicyError()
+
+        # Rule 1: 'on-customer-s3only' is NOT supported for 'persistent-ui-logs'
+        if log_type == 'persistent-ui-logs' and policy == 'on-customer-s3only':
+            raise exceptions.InvalidS3LoggingPersistentUiLogsPolicyError()
+
+    # Determine if LogUri is required based on system-logs and application-logs policies
+    system_logs_policy = log_type_upload_policy.get('system-logs')
+    application_logs_policy = log_type_upload_policy.get('application-logs')
+
+    # LogUri is required if either system-logs or application-logs are missing or NOT disabled
+    system_logs_requires_log_uri = system_logs_policy is None or system_logs_policy != 'disabled'
+    application_logs_requires_log_uri = application_logs_policy is None or application_logs_policy != 'disabled'
+    log_uri_required = system_logs_requires_log_uri or application_logs_requires_log_uri
+
+    log_uri_provided = log_uri is not None and log_uri.strip() != ''
+
+    # Rule 2: LogUri is MANDATORY when system-logs or application-logs use non-disabled policies
+    if log_uri_required and not log_uri_provided:
+        raise exceptions.S3LoggingConfigurationLogUriRequiredError()
+
+    # Rule 3: LogUri is NOT ALLOWED when both system-logs and application-logs are disabled
+    if not log_uri_required and log_uri_provided:
+        raise exceptions.S3LoggingConfigurationLogUriNotAllowedError()

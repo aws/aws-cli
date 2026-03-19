@@ -1,0 +1,2147 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2024-12-01",
+    "auth":["aws.auth#sigv4"],
+    "endpointPrefix":"invoicing",
+    "jsonVersion":"1.0",
+    "protocol":"json",
+    "protocols":["json"],
+    "serviceFullName":"AWS Invoicing",
+    "serviceId":"Invoicing",
+    "signatureVersion":"v4",
+    "signingName":"invoicing",
+    "targetPrefix":"Invoicing",
+    "uid":"invoicing-2024-12-01"
+  },
+  "operations":{
+    "BatchGetInvoiceProfile":{
+      "name":"BatchGetInvoiceProfile",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchGetInvoiceProfileRequest"},
+      "output":{"shape":"BatchGetInvoiceProfileResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>This gets the invoice profile associated with a set of accounts. The accounts must be linked accounts under the requester management account organization.</p>",
+      "readonly":true
+    },
+    "CreateInvoiceUnit":{
+      "name":"CreateInvoiceUnit",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateInvoiceUnitRequest"},
+      "output":{"shape":"CreateInvoiceUnitResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>This creates a new invoice unit with the provided definition.</p>"
+    },
+    "CreateProcurementPortalPreference":{
+      "name":"CreateProcurementPortalPreference",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateProcurementPortalPreferenceRequest"},
+      "output":{"shape":"CreateProcurementPortalPreferenceResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates a procurement portal preference configuration for e-invoice delivery and purchase order retrieval. This preference defines how invoices are delivered to a procurement portal and how purchase orders are retrieved.</p>",
+      "idempotent":true
+    },
+    "DeleteInvoiceUnit":{
+      "name":"DeleteInvoiceUnit",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteInvoiceUnitRequest"},
+      "output":{"shape":"DeleteInvoiceUnitResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>This deletes an invoice unit with the provided invoice unit ARN. </p>"
+    },
+    "DeleteProcurementPortalPreference":{
+      "name":"DeleteProcurementPortalPreference",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteProcurementPortalPreferenceRequest"},
+      "output":{"shape":"DeleteProcurementPortalPreferenceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes an existing procurement portal preference. This action cannot be undone. Active e-invoice delivery and PO retrieval configurations will be terminated.</p>"
+    },
+    "GetInvoicePDF":{
+      "name":"GetInvoicePDF",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetInvoicePDFRequest"},
+      "output":{"shape":"GetInvoicePDFResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns a URL to download the invoice document and supplemental documents associated with an invoice. The URLs are pre-signed and have expiration time. For special cases like Brazil, where Amazon Web Services generated invoice identifiers and government provided identifiers do not match, use the Amazon Web Services generated invoice identifier when making API requests. To grant IAM permission to use this operation, the caller needs the <code>invoicing:GetInvoicePDF</code> policy action.</p>",
+      "readonly":true
+    },
+    "GetInvoiceUnit":{
+      "name":"GetInvoiceUnit",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetInvoiceUnitRequest"},
+      "output":{"shape":"GetInvoiceUnitResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>This retrieves the invoice unit definition.</p>",
+      "readonly":true
+    },
+    "GetProcurementPortalPreference":{
+      "name":"GetProcurementPortalPreference",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetProcurementPortalPreferenceRequest"},
+      "output":{"shape":"GetProcurementPortalPreferenceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves the details of a specific procurement portal preference configuration.</p>"
+    },
+    "ListInvoiceSummaries":{
+      "name":"ListInvoiceSummaries",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListInvoiceSummariesRequest"},
+      "output":{"shape":"ListInvoiceSummariesResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves your invoice details programmatically, without line item details.</p>"
+    },
+    "ListInvoiceUnits":{
+      "name":"ListInvoiceUnits",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListInvoiceUnitsRequest"},
+      "output":{"shape":"ListInvoiceUnitsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>This fetches a list of all invoice unit definitions for a given account, as of the provided <code>AsOf</code> date.</p>",
+      "readonly":true
+    },
+    "ListProcurementPortalPreferences":{
+      "name":"ListProcurementPortalPreferences",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListProcurementPortalPreferencesRequest"},
+      "output":{"shape":"ListProcurementPortalPreferencesResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves a list of procurement portal preferences associated with the Amazon Web Services account.</p>"
+    },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists the tags for a resource. </p>",
+      "readonly":true
+    },
+    "PutProcurementPortalPreference":{
+      "name":"PutProcurementPortalPreference",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutProcurementPortalPreferenceRequest"},
+      "output":{"shape":"PutProcurementPortalPreferenceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates an existing procurement portal preference configuration. This operation can modify settings for e-invoice delivery and purchase order retrieval.</p>"
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "output":{"shape":"TagResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Adds a tag to a resource. </p>"
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "output":{"shape":"UntagResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p> Removes a tag from a resource. </p>"
+    },
+    "UpdateInvoiceUnit":{
+      "name":"UpdateInvoiceUnit",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateInvoiceUnitRequest"},
+      "output":{"shape":"UpdateInvoiceUnitResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>You can update the invoice unit configuration at any time, and Amazon Web Services will use the latest configuration at the end of the month.</p>"
+    },
+    "UpdateProcurementPortalPreferenceStatus":{
+      "name":"UpdateProcurementPortalPreferenceStatus",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateProcurementPortalPreferenceStatusRequest"},
+      "output":{"shape":"UpdateProcurementPortalPreferenceStatusResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates the status of a procurement portal preference, including the activation state of e-invoice delivery and purchase order retrieval features.</p>"
+    }
+  },
+  "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"BasicString"},
+        "resourceName":{
+          "shape":"InvoiceUnitArnString",
+          "documentation":"<p>You don't have sufficient access to perform this action. </p>"
+        }
+      },
+      "documentation":"<p>You don't have sufficient access to perform this action.</p>",
+      "exception":true
+    },
+    "AccountIdList":{
+      "type":"list",
+      "member":{"shape":"AccountIdString"},
+      "max":1000,
+      "min":1
+    },
+    "AccountIdString":{
+      "type":"string",
+      "pattern":"\\d{12}"
+    },
+    "AmountBreakdown":{
+      "type":"structure",
+      "members":{
+        "SubTotalAmount":{
+          "shape":"BasicString",
+          "documentation":"<p> The total of a set of the breakdown. </p>"
+        },
+        "Discounts":{
+          "shape":"DiscountsBreakdown",
+          "documentation":"<p> The discounted amount. </p>"
+        },
+        "Taxes":{
+          "shape":"TaxesBreakdown",
+          "documentation":"<p> The tax amount. </p>"
+        },
+        "Fees":{
+          "shape":"FeesBreakdown",
+          "documentation":"<p> The fee amount. </p>"
+        }
+      },
+      "documentation":"<p>Details about how the total amount was calculated and categorized. </p>"
+    },
+    "AsOfTimestamp":{"type":"timestamp"},
+    "BasicString":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "pattern":"[\\s\\S]*"
+    },
+    "BasicStringWithoutSpace":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "pattern":"\\S+"
+    },
+    "BatchGetInvoiceProfileRequest":{
+      "type":"structure",
+      "required":["AccountIds"],
+      "members":{
+        "AccountIds":{
+          "shape":"AccountIdList",
+          "documentation":"<p>Retrieves the corresponding invoice profile data for these account IDs. </p>"
+        }
+      }
+    },
+    "BatchGetInvoiceProfileResponse":{
+      "type":"structure",
+      "members":{
+        "Profiles":{
+          "shape":"ProfileList",
+          "documentation":"<p> A list of invoice profiles corresponding to the requested accounts. </p>"
+        }
+      }
+    },
+    "BillingPeriod":{
+      "type":"structure",
+      "required":[
+        "Month",
+        "Year"
+      ],
+      "members":{
+        "Month":{
+          "shape":"Month",
+          "documentation":"<p> The billing period month. </p>"
+        },
+        "Year":{
+          "shape":"Year",
+          "documentation":"<p> The billing period year. </p>"
+        }
+      },
+      "documentation":"<p> The billing period for which you want to retrieve invoice-related documents. </p>"
+    },
+    "Boolean":{
+      "type":"boolean",
+      "box":true
+    },
+    "BuyerDomain":{
+      "type":"string",
+      "enum":["NetworkID"]
+    },
+    "ConflictException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"BasicString"},
+        "resourceId":{
+          "shape":"BasicString",
+          "documentation":"<p>The identifier of the resource that caused the conflict.</p>"
+        },
+        "resourceType":{
+          "shape":"BasicString",
+          "documentation":"<p>The type of resource that caused the conflict.</p>"
+        }
+      },
+      "documentation":"<p>The request could not be completed due to a conflict with the current state of the resource. This exception occurs when a concurrent modification is detected during an update operation, or when attempting to create a resource that already exists.</p>",
+      "exception":true
+    },
+    "ConnectionTestingMethod":{
+      "type":"string",
+      "enum":[
+        "PROD_ENV_DOLLAR_TEST",
+        "TEST_ENV_REPLAY_TEST"
+      ]
+    },
+    "Contact":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"BasicString",
+          "documentation":"<p>The name of the contact person or role.</p>"
+        },
+        "Email":{
+          "shape":"EmailString",
+          "documentation":"<p>The email address of the contact person or role.</p>"
+        }
+      },
+      "documentation":"<p>Represents contact information for a person or role associated with the procurement portal preference.</p>",
+      "sensitive":true
+    },
+    "Contacts":{
+      "type":"list",
+      "member":{"shape":"Contact"},
+      "max":1,
+      "min":1
+    },
+    "CreateInvoiceUnitRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "InvoiceReceiver",
+        "Rule"
+      ],
+      "members":{
+        "Name":{
+          "shape":"InvoiceUnitName",
+          "documentation":"<p> The unique name of the invoice unit that is shown on the generated invoice. This can't be changed once it is set. To change this name, you must delete the invoice unit recreate. </p>"
+        },
+        "InvoiceReceiver":{
+          "shape":"AccountIdString",
+          "documentation":"<p> The Amazon Web Services account ID chosen to be the receiver of an invoice unit. All invoices generated for that invoice unit will be sent to this account ID. </p>"
+        },
+        "Description":{
+          "shape":"DescriptionString",
+          "documentation":"<p> The invoice unit's description. This can be changed at a later time. </p>"
+        },
+        "TaxInheritanceDisabled":{
+          "shape":"TaxInheritanceDisabledFlag",
+          "documentation":"<p>Whether the invoice unit based tax inheritance is/ should be enabled or disabled. </p>"
+        },
+        "Rule":{
+          "shape":"InvoiceUnitRule",
+          "documentation":"<p>The <code>InvoiceUnitRule</code> object used to create invoice units. </p>"
+        },
+        "ResourceTags":{
+          "shape":"ResourceTagList",
+          "documentation":"<p> The tag structure that contains a tag key and value. </p>"
+        }
+      }
+    },
+    "CreateInvoiceUnitResponse":{
+      "type":"structure",
+      "members":{
+        "InvoiceUnitArn":{
+          "shape":"InvoiceUnitArnString",
+          "documentation":"<p> The ARN to identify an invoice unit. This information can't be modified or deleted. </p>"
+        }
+      }
+    },
+    "CreateProcurementPortalPreferenceRequest":{
+      "type":"structure",
+      "required":[
+        "ProcurementPortalName",
+        "BuyerDomain",
+        "BuyerIdentifier",
+        "SupplierDomain",
+        "SupplierIdentifier",
+        "EinvoiceDeliveryEnabled",
+        "PurchaseOrderRetrievalEnabled",
+        "Contacts"
+      ],
+      "members":{
+        "ProcurementPortalName":{
+          "shape":"ProcurementPortalName",
+          "documentation":"<p>The name of the procurement portal.</p>"
+        },
+        "BuyerDomain":{
+          "shape":"BuyerDomain",
+          "documentation":"<p>The domain identifier for the buyer in the procurement portal.</p>"
+        },
+        "BuyerIdentifier":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p>The unique identifier for the buyer in the procurement portal. </p>"
+        },
+        "SupplierDomain":{
+          "shape":"SupplierDomain",
+          "documentation":"<p>The domain identifier for the supplier in the procurement portal.</p>"
+        },
+        "SupplierIdentifier":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p>The unique identifier for the supplier in the procurement portal.</p>"
+        },
+        "Selector":{"shape":"ProcurementPortalPreferenceSelector"},
+        "ProcurementPortalSharedSecret":{
+          "shape":"SensitiveBasicStringWithoutSpace",
+          "documentation":"<p>The shared secret or authentication credential used to establish secure communication with the procurement portal. This value must be encrypted at rest.</p>"
+        },
+        "ProcurementPortalInstanceEndpoint":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p>The endpoint URL where e-invoices will be delivered to the procurement portal. Must be a valid HTTPS URL.</p>"
+        },
+        "TestEnvPreference":{
+          "shape":"TestEnvPreferenceInput",
+          "documentation":"<p>Configuration settings for the test environment of the procurement portal. Includes test credentials and endpoints that are used for validation before production deployment.</p>"
+        },
+        "EinvoiceDeliveryEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether e-invoice delivery is enabled for this procurement portal preference. Set to true to enable e-invoice delivery, false to disable.</p>"
+        },
+        "EinvoiceDeliveryPreference":{
+          "shape":"EinvoiceDeliveryPreference",
+          "documentation":"<p>Specifies the e-invoice delivery configuration including document types, attachment types, and customization settings for the portal.</p>"
+        },
+        "PurchaseOrderRetrievalEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether purchase order retrieval is enabled for this procurement portal preference. Set to true to enable PO retrieval, false to disable.</p>"
+        },
+        "Contacts":{
+          "shape":"Contacts",
+          "documentation":"<p>List of contact information for portal administrators and technical contacts responsible for the e-invoice integration.</p>"
+        },
+        "ResourceTags":{
+          "shape":"ResourceTagList",
+          "documentation":"<p>The tags to apply to this procurement portal preference resource. Each tag consists of a key and an optional value.</p>"
+        },
+        "ClientToken":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateProcurementPortalPreferenceResponse":{
+      "type":"structure",
+      "required":["ProcurementPortalPreferenceArn"],
+      "members":{
+        "ProcurementPortalPreferenceArn":{
+          "shape":"ProcurementPortalPreferenceArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created procurement portal preference.</p>"
+        }
+      }
+    },
+    "CurrencyCode":{
+      "type":"string",
+      "max":3,
+      "min":3
+    },
+    "CurrencyExchangeDetails":{
+      "type":"structure",
+      "members":{
+        "SourceCurrencyCode":{
+          "shape":"BasicString",
+          "documentation":"<p>The exchange source currency. </p>"
+        },
+        "TargetCurrencyCode":{
+          "shape":"BasicString",
+          "documentation":"<p>The exchange target currency. </p>"
+        },
+        "Rate":{
+          "shape":"BasicString",
+          "documentation":"<p>The currency exchange rate. </p>"
+        }
+      },
+      "documentation":"<p>The details of currency exchange. </p>"
+    },
+    "DateInterval":{
+      "type":"structure",
+      "required":[
+        "StartDate",
+        "EndDate"
+      ],
+      "members":{
+        "StartDate":{
+          "shape":"Timestamp",
+          "documentation":"<p> The beginning of the time period that you want invoice-related documents for. The start date is inclusive. For example, if <code>start</code> is <code>2019-01-01</code>, AWS retrieves invoices starting at <code>2019-01-01</code> up to the end date. </p>"
+        },
+        "EndDate":{
+          "shape":"Timestamp",
+          "documentation":"<p> The end of the time period that you want invoice-related documents for. The end date is exclusive. For example, if <code>end</code> is <code>2019-01-10</code>, Amazon Web Services retrieves invoice-related documents from the start date up to, but not including, <code>2018-01-10</code>. </p>"
+        }
+      },
+      "documentation":"<p> The time period that you want invoice-related documents for. </p>"
+    },
+    "DeleteInvoiceUnitRequest":{
+      "type":"structure",
+      "required":["InvoiceUnitArn"],
+      "members":{
+        "InvoiceUnitArn":{
+          "shape":"InvoiceUnitArnString",
+          "documentation":"<p> The ARN to identify an invoice unit. This information can't be modified or deleted. </p>"
+        }
+      }
+    },
+    "DeleteInvoiceUnitResponse":{
+      "type":"structure",
+      "members":{
+        "InvoiceUnitArn":{
+          "shape":"InvoiceUnitArnString",
+          "documentation":"<p> The ARN to identify an invoice unit. This information can't be modified or deleted. </p>"
+        }
+      }
+    },
+    "DeleteProcurementPortalPreferenceRequest":{
+      "type":"structure",
+      "required":["ProcurementPortalPreferenceArn"],
+      "members":{
+        "ProcurementPortalPreferenceArn":{
+          "shape":"ProcurementPortalPreferenceArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the procurement portal preference to delete.</p>"
+        }
+      }
+    },
+    "DeleteProcurementPortalPreferenceResponse":{
+      "type":"structure",
+      "required":["ProcurementPortalPreferenceArn"],
+      "members":{
+        "ProcurementPortalPreferenceArn":{
+          "shape":"ProcurementPortalPreferenceArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the deleted procurement portal preference.</p>"
+        }
+      }
+    },
+    "DescriptionString":{
+      "type":"string",
+      "max":500,
+      "min":0,
+      "pattern":"[\\S\\s]*"
+    },
+    "DiscountsBreakdown":{
+      "type":"structure",
+      "members":{
+        "Breakdown":{
+          "shape":"DiscountsBreakdownAmountList",
+          "documentation":"<p>The list of discounts information. </p>"
+        },
+        "TotalAmount":{
+          "shape":"BasicString",
+          "documentation":"<p> The discount's total amount. </p>"
+        }
+      },
+      "documentation":"<p>The discounts details. </p>"
+    },
+    "DiscountsBreakdownAmount":{
+      "type":"structure",
+      "members":{
+        "Description":{
+          "shape":"BasicString",
+          "documentation":"<p> The list of discounts information. </p>"
+        },
+        "Amount":{
+          "shape":"BasicString",
+          "documentation":"<p>The discounted amount. </p>"
+        },
+        "Rate":{
+          "shape":"BasicString",
+          "documentation":"<p> The details for the discount rate.. </p>"
+        }
+      },
+      "documentation":"<p> The discounted amount. </p>"
+    },
+    "DiscountsBreakdownAmountList":{
+      "type":"list",
+      "member":{"shape":"DiscountsBreakdownAmount"}
+    },
+    "EinvoiceDeliveryAttachmentType":{
+      "type":"string",
+      "enum":[
+        "INVOICE_PDF",
+        "RFP_PDF"
+      ]
+    },
+    "EinvoiceDeliveryAttachmentTypes":{
+      "type":"list",
+      "member":{"shape":"EinvoiceDeliveryAttachmentType"}
+    },
+    "EinvoiceDeliveryDocumentType":{
+      "type":"string",
+      "enum":[
+        "AWS_CLOUD_INVOICE",
+        "AWS_CLOUD_CREDIT_MEMO",
+        "AWS_MARKETPLACE_INVOICE",
+        "AWS_MARKETPLACE_CREDIT_MEMO",
+        "AWS_REQUEST_FOR_PAYMENT"
+      ]
+    },
+    "EinvoiceDeliveryDocumentTypes":{
+      "type":"list",
+      "member":{"shape":"EinvoiceDeliveryDocumentType"},
+      "max":10,
+      "min":0
+    },
+    "EinvoiceDeliveryPreference":{
+      "type":"structure",
+      "required":[
+        "EinvoiceDeliveryDocumentTypes",
+        "Protocol",
+        "PurchaseOrderDataSources",
+        "ConnectionTestingMethod",
+        "EinvoiceDeliveryActivationDate"
+      ],
+      "members":{
+        "EinvoiceDeliveryDocumentTypes":{
+          "shape":"EinvoiceDeliveryDocumentTypes",
+          "documentation":"<p>The types of e-invoice documents to be delivered.</p>"
+        },
+        "EinvoiceDeliveryAttachmentTypes":{
+          "shape":"EinvoiceDeliveryAttachmentTypes",
+          "documentation":"<p>The types of attachments to include with the e-invoice delivery.</p>"
+        },
+        "Protocol":{
+          "shape":"Protocol",
+          "documentation":"<p>The communication protocol to use for e-invoice delivery.</p>"
+        },
+        "PurchaseOrderDataSources":{
+          "shape":"PurchaseOrderDataSources",
+          "documentation":"<p>The sources of purchase order data to use for e-invoice generation and delivery.</p>"
+        },
+        "ConnectionTestingMethod":{
+          "shape":"ConnectionTestingMethod",
+          "documentation":"<p>The method to use for testing the connection to the procurement portal.</p>"
+        },
+        "EinvoiceDeliveryActivationDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date when e-invoice delivery should be activated for this preference.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the preferences for e-invoice delivery, including document types, attachment types, and customization settings.</p>"
+    },
+    "EmailString":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}"
+    },
+    "Entity":{
+      "type":"structure",
+      "members":{
+        "InvoicingEntity":{
+          "shape":"BasicString",
+          "documentation":"<p>The name of the entity that issues the Amazon Web Services invoice.</p>"
+        }
+      },
+      "documentation":"<p>The organization name providing Amazon Web Services services.</p>"
+    },
+    "FeesBreakdown":{
+      "type":"structure",
+      "members":{
+        "Breakdown":{
+          "shape":"FeesBreakdownAmountList",
+          "documentation":"<p>The list of fees information. </p>"
+        },
+        "TotalAmount":{
+          "shape":"BasicString",
+          "documentation":"<p> The total amount of fees. </p>"
+        }
+      },
+      "documentation":"<p> The details of fees. </p>"
+    },
+    "FeesBreakdownAmount":{
+      "type":"structure",
+      "members":{
+        "Description":{
+          "shape":"BasicString",
+          "documentation":"<p> The list of fees information. </p>"
+        },
+        "Amount":{
+          "shape":"BasicString",
+          "documentation":"<p> The fee amount. </p>"
+        },
+        "Rate":{
+          "shape":"BasicString",
+          "documentation":"<p> Details about the rate amount. </p>"
+        }
+      },
+      "documentation":"<p> The fee amount. </p>"
+    },
+    "FeesBreakdownAmountList":{
+      "type":"list",
+      "member":{"shape":"FeesBreakdownAmount"}
+    },
+    "Filters":{
+      "type":"structure",
+      "members":{
+        "Names":{
+          "shape":"InvoiceUnitNames",
+          "documentation":"<p> An optional input to the list API. You can specify a list of invoice unit names inside filters to return invoice units that match only the specified invoice unit names. If multiple names are provided, the result is an <code>OR</code> condition (match any) of the specified invoice unit names. </p>"
+        },
+        "InvoiceReceivers":{
+          "shape":"AccountIdList",
+          "documentation":"<p> You can specify a list of Amazon Web Services account IDs inside filters to return invoice units that match only the specified accounts. If multiple accounts are provided, the result is an <code>OR</code> condition (match any) of the specified accounts. This filter only matches the specified accounts on the invoice receivers of the invoice units. </p>"
+        },
+        "Accounts":{
+          "shape":"AccountIdList",
+          "documentation":"<p> You can specify a list of Amazon Web Services account IDs inside filters to return invoice units that match only the specified accounts. If multiple accounts are provided, the result is an <code>OR</code> condition (match any) of the specified accounts. The specified account IDs are matched with either the receiver or the linked accounts in the rules. </p>"
+        },
+        "BillSourceAccounts":{
+          "shape":"AccountIdList",
+          "documentation":"<p> A list of Amazon Web Services account account IDs used to filter invoice units. These are payer accounts from other Organizations that have delegated their billing responsibility to the receiver account through the billing transfer feature. </p>"
+        }
+      },
+      "documentation":"<p>An optional input to the list API. If multiple filters are specified, the returned list will be a configuration that match all of the provided filters. Supported filter types are <code>InvoiceReceivers</code>, <code>Names</code>, and <code>Accounts</code>. </p>"
+    },
+    "GetInvoicePDFRequest":{
+      "type":"structure",
+      "required":["InvoiceId"],
+      "members":{
+        "InvoiceId":{
+          "shape":"StringWithoutNewLine",
+          "documentation":"<p> Your unique invoice ID. </p>"
+        }
+      }
+    },
+    "GetInvoicePDFResponse":{
+      "type":"structure",
+      "members":{
+        "InvoicePDF":{
+          "shape":"InvoicePDF",
+          "documentation":"<p> The invoice document and supplemental documents associated with the invoice. </p>"
+        }
+      }
+    },
+    "GetInvoiceUnitRequest":{
+      "type":"structure",
+      "required":["InvoiceUnitArn"],
+      "members":{
+        "InvoiceUnitArn":{
+          "shape":"InvoiceUnitArnString",
+          "documentation":"<p> The ARN to identify an invoice unit. This information can't be modified or deleted. </p>"
+        },
+        "AsOf":{
+          "shape":"AsOfTimestamp",
+          "documentation":"<p> The state of an invoice unit at a specified time. You can see legacy invoice units that are currently deleted if the <code>AsOf</code> time is set to before it was deleted. If an <code>AsOf</code> is not provided, the default value is the current time. </p>"
+        }
+      }
+    },
+    "GetInvoiceUnitResponse":{
+      "type":"structure",
+      "members":{
+        "InvoiceUnitArn":{
+          "shape":"InvoiceUnitArnString",
+          "documentation":"<p> The ARN to identify an invoice unit. This information can't be modified or deleted. </p>"
+        },
+        "InvoiceReceiver":{
+          "shape":"AccountIdString",
+          "documentation":"<p> The Amazon Web Services account ID chosen to be the receiver of an invoice unit. All invoices generated for that invoice unit will be sent to this account ID. </p>"
+        },
+        "Name":{
+          "shape":"InvoiceUnitName",
+          "documentation":"<p> The unique name of the invoice unit that is shown on the generated invoice. </p>"
+        },
+        "Description":{
+          "shape":"DescriptionString",
+          "documentation":"<p> The assigned description for an invoice unit. </p>"
+        },
+        "TaxInheritanceDisabled":{
+          "shape":"TaxInheritanceDisabledFlag",
+          "documentation":"<p> Whether the invoice unit based tax inheritance is/ should be enabled or disabled. </p>",
+          "box":true
+        },
+        "Rule":{"shape":"InvoiceUnitRule"},
+        "LastModified":{
+          "shape":"LastModifiedTimestamp",
+          "documentation":"<p> The most recent date the invoice unit response was updated. </p>"
+        }
+      }
+    },
+    "GetProcurementPortalPreferenceRequest":{
+      "type":"structure",
+      "required":["ProcurementPortalPreferenceArn"],
+      "members":{
+        "ProcurementPortalPreferenceArn":{
+          "shape":"ProcurementPortalPreferenceArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the procurement portal preference to retrieve.</p>"
+        }
+      }
+    },
+    "GetProcurementPortalPreferenceResponse":{
+      "type":"structure",
+      "required":["ProcurementPortalPreference"],
+      "members":{
+        "ProcurementPortalPreference":{
+          "shape":"ProcurementPortalPreference",
+          "documentation":"<p>The detailed configuration of the requested procurement portal preference.</p>"
+        }
+      }
+    },
+    "Integer":{
+      "type":"integer",
+      "box":true
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "members":{
+        "retryAfterSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>The processing request failed because of an unknown error, exception, or failure.</p>"
+        },
+        "message":{"shape":"BasicString"}
+      },
+      "documentation":"<p>The processing request failed because of an unknown error, exception, or failure. </p>",
+      "exception":true,
+      "fault":true
+    },
+    "InvoiceCurrencyAmount":{
+      "type":"structure",
+      "members":{
+        "TotalAmount":{
+          "shape":"BasicString",
+          "documentation":"<p> The invoice currency amount. </p>"
+        },
+        "TotalAmountBeforeTax":{
+          "shape":"BasicString",
+          "documentation":"<p> Details about the invoice total amount before tax. </p>"
+        },
+        "CurrencyCode":{
+          "shape":"CurrencyCode",
+          "documentation":"<p>The currency dominion of the invoice document.</p>"
+        },
+        "AmountBreakdown":{
+          "shape":"AmountBreakdown",
+          "documentation":"<p> Details about the invoice currency amount. </p>"
+        },
+        "CurrencyExchangeDetails":{
+          "shape":"CurrencyExchangeDetails",
+          "documentation":"<p> The details of currency exchange. </p>"
+        }
+      },
+      "documentation":"<p> The amount charged after taxes, in the preferred currency. </p>"
+    },
+    "InvoicePDF":{
+      "type":"structure",
+      "members":{
+        "InvoiceId":{
+          "shape":"StringWithoutNewLine",
+          "documentation":"<p> Your unique invoice ID. </p>"
+        },
+        "DocumentUrl":{
+          "shape":"StringWithoutNewLine",
+          "documentation":"<p>The pre-signed URL to download the invoice document. </p>"
+        },
+        "DocumentUrlExpirationDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The pre-signed URL expiration date of the invoice document.</p>"
+        },
+        "SupplementalDocuments":{
+          "shape":"SupplementalDocuments",
+          "documentation":"<p>List of supplemental documents associated with the invoice.</p>"
+        }
+      },
+      "documentation":"<p> Invoice document data. </p>"
+    },
+    "InvoiceProfile":{
+      "type":"structure",
+      "members":{
+        "AccountId":{
+          "shape":"AccountIdString",
+          "documentation":"<p> The account ID the invoice profile is generated for. </p>"
+        },
+        "ReceiverName":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p> The name of the person receiving the invoice profile. </p>"
+        },
+        "ReceiverAddress":{
+          "shape":"ReceiverAddress",
+          "documentation":"<p>The address of the receiver that will be printed on the invoice. </p>"
+        },
+        "ReceiverEmail":{
+          "shape":"SensitiveBasicStringWithoutSpace",
+          "documentation":"<p>The email address for the invoice profile receiver. </p>"
+        },
+        "Issuer":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p> This specifies the issuing entity of the invoice. </p>"
+        },
+        "TaxRegistrationNumber":{
+          "shape":"SensitiveBasicStringWithoutSpace",
+          "documentation":"<p> Your Tax Registration Number (TRN) information. </p>"
+        }
+      },
+      "documentation":"<p> Contains high-level information about the invoice receiver. </p>"
+    },
+    "InvoiceSummaries":{
+      "type":"list",
+      "member":{"shape":"InvoiceSummary"}
+    },
+    "InvoiceSummariesFilter":{
+      "type":"structure",
+      "members":{
+        "TimeInterval":{
+          "shape":"DateInterval",
+          "documentation":"<p>The date range for invoice summary retrieval. </p>"
+        },
+        "BillingPeriod":{
+          "shape":"BillingPeriod",
+          "documentation":"<p>The billing period associated with the invoice documents. </p>"
+        },
+        "InvoicingEntity":{
+          "shape":"BasicString",
+          "documentation":"<p>The name of the entity that issues the Amazon Web Services invoice.</p>"
+        }
+      },
+      "documentation":"<p> Filters for your invoice summaries. </p>"
+    },
+    "InvoiceSummariesMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "InvoiceSummariesSelector":{
+      "type":"structure",
+      "required":[
+        "ResourceType",
+        "Value"
+      ],
+      "members":{
+        "ResourceType":{
+          "shape":"ListInvoiceSummariesResourceType",
+          "documentation":"<p>The query identifier type (<code>INVOICE_ID</code> or <code>ACCOUNT_ID</code>).</p>"
+        },
+        "Value":{
+          "shape":"StringWithoutNewLine",
+          "documentation":"<p>The value of the query identifier.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the invoice summary.</p>"
+    },
+    "InvoiceSummary":{
+      "type":"structure",
+      "members":{
+        "AccountId":{
+          "shape":"AccountIdString",
+          "documentation":"<p> The Amazon Web Services account ID. </p>"
+        },
+        "InvoiceId":{
+          "shape":"BasicString",
+          "documentation":"<p> The invoice ID. </p>"
+        },
+        "IssuedDate":{
+          "shape":"Timestamp",
+          "documentation":"<p> The issued date of the invoice. </p>"
+        },
+        "DueDate":{
+          "shape":"Timestamp",
+          "documentation":"<p> The invoice due date. </p>"
+        },
+        "Entity":{
+          "shape":"Entity",
+          "documentation":"<p>The organization name providing Amazon Web Services services.</p>"
+        },
+        "BillingPeriod":{
+          "shape":"BillingPeriod",
+          "documentation":"<p> The billing period of the invoice-related document. </p>"
+        },
+        "InvoiceType":{
+          "shape":"InvoiceType",
+          "documentation":"<p> The type of invoice. </p>"
+        },
+        "OriginalInvoiceId":{
+          "shape":"BasicString",
+          "documentation":"<p>The initial or original invoice ID. </p>"
+        },
+        "PurchaseOrderNumber":{
+          "shape":"BasicString",
+          "documentation":"<p> The purchase order number associated to the invoice.</p>"
+        },
+        "BaseCurrencyAmount":{
+          "shape":"InvoiceCurrencyAmount",
+          "documentation":"<p> The summary with the product and service currency. </p>"
+        },
+        "TaxCurrencyAmount":{
+          "shape":"InvoiceCurrencyAmount",
+          "documentation":"<p> The summary with the tax currency. </p>"
+        },
+        "PaymentCurrencyAmount":{
+          "shape":"InvoiceCurrencyAmount",
+          "documentation":"<p> The summary with the customer configured currency. </p>"
+        }
+      },
+      "documentation":"<p> The invoice that the API retrieved. </p>"
+    },
+    "InvoiceType":{
+      "type":"string",
+      "enum":[
+        "INVOICE",
+        "CREDIT_MEMO"
+      ]
+    },
+    "InvoiceUnit":{
+      "type":"structure",
+      "members":{
+        "InvoiceUnitArn":{
+          "shape":"InvoiceUnitArnString",
+          "documentation":"<p>ARN to identify an invoice unit. This information can't be modified or deleted. </p>"
+        },
+        "InvoiceReceiver":{
+          "shape":"AccountIdString",
+          "documentation":"<p>The account that receives invoices related to the invoice unit. </p>"
+        },
+        "Name":{
+          "shape":"InvoiceUnitName",
+          "documentation":"<p> A unique name that is distinctive within your Amazon Web Services. </p>"
+        },
+        "Description":{
+          "shape":"DescriptionString",
+          "documentation":"<p>The assigned description for an invoice unit. This information can't be modified or deleted. </p>"
+        },
+        "TaxInheritanceDisabled":{
+          "shape":"TaxInheritanceDisabledFlag",
+          "documentation":"<p>Whether the invoice unit based tax inheritance is/ should be enabled or disabled. </p>",
+          "box":true
+        },
+        "Rule":{
+          "shape":"InvoiceUnitRule",
+          "documentation":"<p> An <code>InvoiceUnitRule</code> object used the categorize invoice units. </p>"
+        },
+        "LastModified":{
+          "shape":"LastModifiedTimestamp",
+          "documentation":"<p> The last time the invoice unit was updated. This is important to determine the version of invoice unit configuration used to create the invoices. Any invoice created after this modified time will use this invoice unit configuration. </p>"
+        }
+      },
+      "documentation":"<p>An invoice unit is a set of mutually exclusive accounts that correspond to your business entity. Invoice units allow you separate Amazon Web Services account costs and configures your invoice for each business entity going forward. </p>"
+    },
+    "InvoiceUnitArnString":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"arn:aws[-a-z0-9]*:[a-z0-9]+:[-a-z0-9]*:[0-9]{12}:[-a-zA-Z0-9/:_]+"
+    },
+    "InvoiceUnitArns":{
+      "type":"list",
+      "member":{"shape":"InvoiceUnitArnString"},
+      "max":500,
+      "min":0
+    },
+    "InvoiceUnitName":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"(?! )[\\p{L}\\p{N}\\p{Z}-_]*(?<! )"
+    },
+    "InvoiceUnitNames":{
+      "type":"list",
+      "member":{"shape":"InvoiceUnitName"}
+    },
+    "InvoiceUnitRule":{
+      "type":"structure",
+      "members":{
+        "LinkedAccounts":{
+          "shape":"RuleAccountIdList",
+          "documentation":"<p>The list of <code>LINKED_ACCOUNT</code> IDs where charges are included within the invoice unit. </p>"
+        },
+        "BillSourceAccounts":{
+          "shape":"RuleAccountIdList",
+          "documentation":"<p> A list of Amazon Web Services account account IDs that have delegated their billing responsibility to the receiver account through transfer billing. Unlike linked accounts, these bill source accounts can be payer accounts from other organizations that have authorized billing transfer to this account. </p>"
+        }
+      },
+      "documentation":"<p> This is used to categorize the invoice unit. Values are Amazon Web Services account IDs. Currently, the only supported rule is <code>LINKED_ACCOUNT</code>. </p>"
+    },
+    "InvoiceUnits":{
+      "type":"list",
+      "member":{"shape":"InvoiceUnit"}
+    },
+    "LastModifiedTimestamp":{"type":"timestamp"},
+    "ListInvoiceSummariesRequest":{
+      "type":"structure",
+      "required":["Selector"],
+      "members":{
+        "Selector":{
+          "shape":"InvoiceSummariesSelector",
+          "documentation":"<p>The option to retrieve details for a specific invoice by providing its unique ID. Alternatively, access information for all invoices linked to the account by providing an account ID.</p>"
+        },
+        "Filter":{
+          "shape":"InvoiceSummariesFilter",
+          "documentation":"<p>Filters you can use to customize your invoice summary.</p>"
+        },
+        "NextToken":{
+          "shape":"NextTokenString",
+          "documentation":"<p>The token to retrieve the next set of results. Amazon Web Services provides the token when the response from a previous call has more results than the maximum page size.</p>"
+        },
+        "MaxResults":{
+          "shape":"InvoiceSummariesMaxResults",
+          "documentation":"<p>The maximum number of invoice summaries a paginated response can contain.</p>"
+        }
+      }
+    },
+    "ListInvoiceSummariesResourceType":{
+      "type":"string",
+      "enum":[
+        "ACCOUNT_ID",
+        "INVOICE_ID"
+      ]
+    },
+    "ListInvoiceSummariesResponse":{
+      "type":"structure",
+      "required":["InvoiceSummaries"],
+      "members":{
+        "InvoiceSummaries":{
+          "shape":"InvoiceSummaries",
+          "documentation":"<p>List of key (summary level) invoice details without line item details.</p>"
+        },
+        "NextToken":{
+          "shape":"NextTokenString",
+          "documentation":"<p>The token to retrieve the next set of results. Amazon Web Services provides the token when the response from a previous call has more results than the maximum page size.</p>"
+        }
+      }
+    },
+    "ListInvoiceUnitsRequest":{
+      "type":"structure",
+      "members":{
+        "Filters":{
+          "shape":"Filters",
+          "documentation":"<p> An optional input to the list API. If multiple filters are specified, the returned list will be a configuration that match all of the provided filters. Supported filter types are <code>InvoiceReceivers</code>, <code>Names</code>, and <code>Accounts</code>. </p>"
+        },
+        "NextToken":{
+          "shape":"NextTokenString",
+          "documentation":"<p>The next token used to indicate where the returned list should start from. </p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResultsInteger",
+          "documentation":"<p>The maximum number of invoice units that can be returned. </p>"
+        },
+        "AsOf":{
+          "shape":"AsOfTimestamp",
+          "documentation":"<p> The state of an invoice unit at a specified time. You can see legacy invoice units that are currently deleted if the <code>AsOf</code> time is set to before it was deleted. If an <code>AsOf</code> is not provided, the default value is the current time. </p>"
+        }
+      }
+    },
+    "ListInvoiceUnitsResponse":{
+      "type":"structure",
+      "members":{
+        "InvoiceUnits":{
+          "shape":"InvoiceUnits",
+          "documentation":"<p> An invoice unit is a set of mutually exclusive accounts that correspond to your business entity. </p>"
+        },
+        "NextToken":{
+          "shape":"NextTokenString",
+          "documentation":"<p>The next token used to indicate where the returned list should start from. </p>"
+        }
+      }
+    },
+    "ListProcurementPortalPreferencesRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p>The token for the next set of results. (You received this token from a previous call.)</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. To retrieve the remaining results, make another call with the returned NextToken value.</p>"
+        }
+      }
+    },
+    "ListProcurementPortalPreferencesResponse":{
+      "type":"structure",
+      "members":{
+        "ProcurementPortalPreferences":{
+          "shape":"ProcurementPortalPreferenceSummaries",
+          "documentation":"<p>The list of procurement portal preferences associated with the Amazon Web Services account.</p>"
+        },
+        "NextToken":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p>The token to use to retrieve the next set of results, or null if there are no more results.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"TagrisArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of tags to list. </p>"
+        }
+      }
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "members":{
+        "ResourceTags":{
+          "shape":"ResourceTagList",
+          "documentation":"<p> Adds a tag to a resource. </p>"
+        }
+      }
+    },
+    "Long":{
+      "type":"long",
+      "box":true
+    },
+    "MaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "MaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":500,
+      "min":1
+    },
+    "Month":{
+      "type":"integer",
+      "box":true,
+      "max":12,
+      "min":1
+    },
+    "NextTokenString":{
+      "type":"string",
+      "min":1,
+      "pattern":"[\\S\\s]*"
+    },
+    "ProcurementPortalName":{
+      "type":"string",
+      "enum":[
+        "SAP_BUSINESS_NETWORK",
+        "COUPA"
+      ]
+    },
+    "ProcurementPortalPreference":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "ProcurementPortalPreferenceArn",
+        "ProcurementPortalName",
+        "BuyerDomain",
+        "BuyerIdentifier",
+        "SupplierDomain",
+        "SupplierIdentifier",
+        "EinvoiceDeliveryEnabled",
+        "PurchaseOrderRetrievalEnabled",
+        "Version",
+        "CreateDate",
+        "LastUpdateDate"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AccountIdString",
+          "documentation":"<p>The Amazon Web Services account ID associated with this procurement portal preference.</p>"
+        },
+        "ProcurementPortalPreferenceArn":{
+          "shape":"ProcurementPortalPreferenceArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the procurement portal preference.</p>"
+        },
+        "ProcurementPortalName":{
+          "shape":"ProcurementPortalName",
+          "documentation":"<p>The name of the procurement portal.</p>"
+        },
+        "BuyerDomain":{
+          "shape":"BuyerDomain",
+          "documentation":"<p>The domain identifier for the buyer in the procurement portal.</p>"
+        },
+        "BuyerIdentifier":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p>The unique identifier for the buyer in the procurement portal.</p>"
+        },
+        "SupplierDomain":{
+          "shape":"SupplierDomain",
+          "documentation":"<p>The domain identifier for the supplier in the procurement portal.</p>"
+        },
+        "SupplierIdentifier":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p>The unique identifier for the supplier in the procurement portal.</p>"
+        },
+        "Selector":{"shape":"ProcurementPortalPreferenceSelector"},
+        "ProcurementPortalSharedSecret":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p>The shared secret or authentication credential used for secure communication with the procurement portal.</p>"
+        },
+        "ProcurementPortalInstanceEndpoint":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p>The endpoint URL where e-invoices are delivered to the procurement portal.</p>"
+        },
+        "PurchaseOrderRetrievalEndpoint":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p>The endpoint URL used for retrieving purchase orders from the procurement portal.</p>"
+        },
+        "TestEnvPreference":{
+          "shape":"TestEnvPreference",
+          "documentation":"<p>Configuration on settings for the test environment of the procurement portal.</p>"
+        },
+        "EinvoiceDeliveryEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether e-invoice delivery is enabled for this procurement portal preference.</p>"
+        },
+        "EinvoiceDeliveryPreference":{
+          "shape":"EinvoiceDeliveryPreference",
+          "documentation":"<p>The configuration settings that specify how e-invoices are delivered to the procurement portal.</p>"
+        },
+        "PurchaseOrderRetrievalEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether purchase order retrieval is enabled for this procurement portal preference.</p>"
+        },
+        "Contacts":{
+          "shape":"Contacts",
+          "documentation":"<p>List of contact information for portal administrators and technical contacts.</p>"
+        },
+        "EinvoiceDeliveryPreferenceStatus":{
+          "shape":"ProcurementPortalPreferenceStatus",
+          "documentation":"<p>The current status of the e-invoice delivery preference.</p>"
+        },
+        "EinvoiceDeliveryPreferenceStatusReason":{
+          "shape":"BasicString",
+          "documentation":"<p>The reason for the current e-invoice delivery preference status.</p>"
+        },
+        "PurchaseOrderRetrievalPreferenceStatus":{
+          "shape":"ProcurementPortalPreferenceStatus",
+          "documentation":"<p>The current status of the purchase order retrieval preference.</p>"
+        },
+        "PurchaseOrderRetrievalPreferenceStatusReason":{
+          "shape":"BasicString",
+          "documentation":"<p>The reason for the current purchase order retrieval preference status.</p>"
+        },
+        "Version":{
+          "shape":"Long",
+          "documentation":"<p>The version number of the procurement portal preference configuration.</p>"
+        },
+        "CreateDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the procurement portal preference was created.</p>"
+        },
+        "LastUpdateDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the procurement portal preference was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Represents the full configuration of a procurement portal preference, including settings for e-invoice delivery and purchase order retrieval.</p>"
+    },
+    "ProcurementPortalPreferenceArnString":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"arn:aws:invoicing::[0-9]{12}:procurement-portal-preference/[-a-zA-Z0-9]+"
+    },
+    "ProcurementPortalPreferenceSelector":{
+      "type":"structure",
+      "members":{
+        "InvoiceUnitArns":{
+          "shape":"InvoiceUnitArns",
+          "documentation":"<p> The Amazon Resource Name (ARN) of invoice unit identifiers to which this preference applies. </p>"
+        },
+        "SellerOfRecords":{
+          "shape":"SellerOfRecords",
+          "documentation":"<p> The list of seller of record IDs to which this preference applies. </p>"
+        }
+      },
+      "documentation":"<p>Specifies criteria for selecting which invoices should be processed using a particular procurement portal preference.</p>"
+    },
+    "ProcurementPortalPreferenceStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING_VERIFICATION",
+        "TEST_INITIALIZED",
+        "TEST_INITIALIZATION_FAILED",
+        "TEST_FAILED",
+        "ACTIVE",
+        "SUSPENDED"
+      ]
+    },
+    "ProcurementPortalPreferenceSummaries":{
+      "type":"list",
+      "member":{"shape":"ProcurementPortalPreferenceSummary"}
+    },
+    "ProcurementPortalPreferenceSummary":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "ProcurementPortalPreferenceArn",
+        "ProcurementPortalName",
+        "BuyerDomain",
+        "BuyerIdentifier",
+        "SupplierDomain",
+        "SupplierIdentifier",
+        "EinvoiceDeliveryEnabled",
+        "PurchaseOrderRetrievalEnabled",
+        "Version",
+        "CreateDate",
+        "LastUpdateDate"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AccountIdString",
+          "documentation":"<p>The Amazon Web Services account ID associated with this procurement portal preference summary.</p>"
+        },
+        "ProcurementPortalPreferenceArn":{
+          "shape":"ProcurementPortalPreferenceArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the procurement portal preference.</p>"
+        },
+        "ProcurementPortalName":{
+          "shape":"ProcurementPortalName",
+          "documentation":"<p>The name of the procurement portal.</p>"
+        },
+        "BuyerDomain":{
+          "shape":"BuyerDomain",
+          "documentation":"<p>The domain identifier for the buyer in the procurement portal.</p>"
+        },
+        "BuyerIdentifier":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p>The unique identifier for the buyer in the procurement portal.</p>"
+        },
+        "SupplierDomain":{
+          "shape":"SupplierDomain",
+          "documentation":"<p>The domain identifier for the supplier in the procurement portal.</p>"
+        },
+        "SupplierIdentifier":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p>The unique identifier for the supplier in the procurement portal.</p>"
+        },
+        "Selector":{"shape":"ProcurementPortalPreferenceSelector"},
+        "EinvoiceDeliveryEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether e-invoice delivery is enabled for this procurement portal preference.</p>"
+        },
+        "PurchaseOrderRetrievalEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether purchase order retrieval is enabled for this procurement portal preference.</p>"
+        },
+        "EinvoiceDeliveryPreferenceStatus":{
+          "shape":"ProcurementPortalPreferenceStatus",
+          "documentation":"<p>The current status of the e-invoice delivery preference in this summary.</p>"
+        },
+        "EinvoiceDeliveryPreferenceStatusReason":{
+          "shape":"BasicString",
+          "documentation":"<p>The reason for the current e-invoice delivery preference status in this summary.</p>"
+        },
+        "PurchaseOrderRetrievalPreferenceStatus":{
+          "shape":"ProcurementPortalPreferenceStatus",
+          "documentation":"<p>The current status of the purchase order retrieval preference in this summary.</p>"
+        },
+        "PurchaseOrderRetrievalPreferenceStatusReason":{
+          "shape":"BasicString",
+          "documentation":"<p>The reason for the current purchase order retrieval preference status in this summary.</p>"
+        },
+        "Version":{
+          "shape":"Long",
+          "documentation":"<p>The version number of the procurement portal preference configuration in this summary.</p>"
+        },
+        "CreateDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the procurement portal preference was created.</p>"
+        },
+        "LastUpdateDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the procurement portal preference was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Provides a summary of a procurement portal preference, including key identifiers and status information.</p>"
+    },
+    "ProfileList":{
+      "type":"list",
+      "member":{"shape":"InvoiceProfile"}
+    },
+    "Protocol":{
+      "type":"string",
+      "enum":["CXML"]
+    },
+    "PurchaseOrderDataSource":{
+      "type":"structure",
+      "members":{
+        "EinvoiceDeliveryDocumentType":{
+          "shape":"EinvoiceDeliveryDocumentType",
+          "documentation":"<p>The type of e-invoice document that requires purchase order data.</p>"
+        },
+        "PurchaseOrderDataSourceType":{
+          "shape":"PurchaseOrderDataSourceType",
+          "documentation":"<p>The type of source for purchase order data.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the source configuration for retrieving purchase order data.</p>"
+    },
+    "PurchaseOrderDataSourceType":{
+      "type":"string",
+      "enum":[
+        "ASSOCIATED_PURCHASE_ORDER_REQUIRED",
+        "PURCHASE_ORDER_NOT_REQUIRED"
+      ]
+    },
+    "PurchaseOrderDataSources":{
+      "type":"list",
+      "member":{"shape":"PurchaseOrderDataSource"}
+    },
+    "PutProcurementPortalPreferenceRequest":{
+      "type":"structure",
+      "required":[
+        "ProcurementPortalPreferenceArn",
+        "EinvoiceDeliveryEnabled",
+        "PurchaseOrderRetrievalEnabled",
+        "Contacts"
+      ],
+      "members":{
+        "ProcurementPortalPreferenceArn":{
+          "shape":"ProcurementPortalPreferenceArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the procurement portal preference to update.</p>"
+        },
+        "Selector":{"shape":"ProcurementPortalPreferenceSelector"},
+        "ProcurementPortalSharedSecret":{
+          "shape":"SensitiveBasicStringWithoutSpace",
+          "documentation":"<p>The updated shared secret or authentication credential for the procurement portal. This value must be encrypted at rest.</p>"
+        },
+        "ProcurementPortalInstanceEndpoint":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p>The updated endpoint URL where e-invoices will be delivered to the procurement portal. Must be a valid HTTPS URL.</p>"
+        },
+        "TestEnvPreference":{
+          "shape":"TestEnvPreferenceInput",
+          "documentation":"<p>Updated configuration settings for the test environment of the procurement portal.</p>"
+        },
+        "EinvoiceDeliveryEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Updated flag indicating whether e-invoice delivery is enabled for this procurement portal preference.</p>"
+        },
+        "EinvoiceDeliveryPreference":{
+          "shape":"EinvoiceDeliveryPreference",
+          "documentation":"<p>Updated e-invoice delivery configuration including document types, attachment types, and customization settings for the portal.</p>"
+        },
+        "PurchaseOrderRetrievalEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Updated flag indicating whether purchase order retrieval is enabled for this procurement portal preference.</p>"
+        },
+        "Contacts":{
+          "shape":"Contacts",
+          "documentation":"<p>Updated list of contact information for portal administrators and technical contacts.</p>"
+        }
+      }
+    },
+    "PutProcurementPortalPreferenceResponse":{
+      "type":"structure",
+      "required":["ProcurementPortalPreferenceArn"],
+      "members":{
+        "ProcurementPortalPreferenceArn":{
+          "shape":"ProcurementPortalPreferenceArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the updated procurement portal preference.</p>"
+        }
+      }
+    },
+    "ReceiverAddress":{
+      "type":"structure",
+      "members":{
+        "AddressLine1":{
+          "shape":"BasicString",
+          "documentation":"<p> The first line of the address. </p>"
+        },
+        "AddressLine2":{
+          "shape":"BasicString",
+          "documentation":"<p> The second line of the address, if applicable. </p>"
+        },
+        "AddressLine3":{
+          "shape":"BasicString",
+          "documentation":"<p> The third line of the address, if applicable. </p>"
+        },
+        "DistrictOrCounty":{
+          "shape":"BasicString",
+          "documentation":"<p> The district or country the address is located in. </p>"
+        },
+        "City":{
+          "shape":"BasicString",
+          "documentation":"<p> The city that the address is in. </p>"
+        },
+        "StateOrRegion":{
+          "shape":"BasicString",
+          "documentation":"<p> The state, region, or province the address is located. </p>"
+        },
+        "CountryCode":{
+          "shape":"BasicString",
+          "documentation":"<p> The country code for the country the address is in. </p>"
+        },
+        "CompanyName":{
+          "shape":"BasicString",
+          "documentation":"<p> A unique company name. </p>"
+        },
+        "PostalCode":{
+          "shape":"BasicString",
+          "documentation":"<p> The postal code associated with the address. </p>"
+        }
+      },
+      "documentation":"<p> The details of the address associated with the receiver. </p>",
+      "sensitive":true
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"BasicString"},
+        "resourceName":{
+          "shape":"InvoiceUnitArnString",
+          "documentation":"<p>The resource could not be found.</p>"
+        }
+      },
+      "documentation":"<p>The resource could not be found. </p>",
+      "exception":true
+    },
+    "ResourceTag":{
+      "type":"structure",
+      "required":[
+        "Key",
+        "Value"
+      ],
+      "members":{
+        "Key":{
+          "shape":"ResourceTagKey",
+          "documentation":"<p>The object key of your of your resource tag. </p>"
+        },
+        "Value":{
+          "shape":"ResourceTagValue",
+          "documentation":"<p> The specific value of the resource tag. </p>"
+        }
+      },
+      "documentation":"<p>The tag structure that contains a tag key and value. </p>"
+    },
+    "ResourceTagKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "ResourceTagKeyList":{
+      "type":"list",
+      "member":{"shape":"ResourceTagKey"},
+      "max":200,
+      "min":0
+    },
+    "ResourceTagList":{
+      "type":"list",
+      "member":{"shape":"ResourceTag"},
+      "max":200,
+      "min":0
+    },
+    "ResourceTagValue":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "RuleAccountIdList":{
+      "type":"list",
+      "member":{"shape":"AccountIdString"},
+      "max":1000,
+      "min":0
+    },
+    "SellerOfRecords":{
+      "type":"list",
+      "member":{"shape":"BasicStringWithoutSpace"},
+      "max":100,
+      "min":0
+    },
+    "SensitiveBasicStringWithoutSpace":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "pattern":"\\S+",
+      "sensitive":true
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"BasicString"}
+      },
+      "documentation":"<p>The request was rejected because it attempted to create resources beyond the current Amazon Web Services account limits. The error message describes the limit exceeded. </p>",
+      "exception":true
+    },
+    "StringWithoutNewLine":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "pattern":".*"
+    },
+    "SupplementalDocument":{
+      "type":"structure",
+      "members":{
+        "DocumentUrl":{
+          "shape":"StringWithoutNewLine",
+          "documentation":"<p>The pre-signed URL to download invoice supplemental document.</p>"
+        },
+        "DocumentUrlExpirationDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The pre-signed URL expiration date of invoice supplemental document.</p>"
+        }
+      },
+      "documentation":"<p>Supplemental document associated with the invoice.</p>"
+    },
+    "SupplementalDocuments":{
+      "type":"list",
+      "member":{"shape":"SupplementalDocument"}
+    },
+    "SupplierDomain":{
+      "type":"string",
+      "enum":["NetworkID"]
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "ResourceTags"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"TagrisArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the tags. </p>"
+        },
+        "ResourceTags":{
+          "shape":"ResourceTagList",
+          "documentation":"<p> Adds a tag to a resource. </p>"
+        }
+      }
+    },
+    "TagResourceResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "TagrisArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws[-a-z0-9]*:(invoicing)::[0-9]{12}:[-a-zA-Z0-9/:_]+"
+    },
+    "TaxInheritanceDisabledFlag":{"type":"boolean"},
+    "TaxesBreakdown":{
+      "type":"structure",
+      "members":{
+        "Breakdown":{
+          "shape":"TaxesBreakdownAmountList",
+          "documentation":"<p> A list of tax information. </p>"
+        },
+        "TotalAmount":{
+          "shape":"BasicString",
+          "documentation":"<p> The total amount for your taxes. </p>"
+        }
+      },
+      "documentation":"<p> The details of the taxes. </p>"
+    },
+    "TaxesBreakdownAmount":{
+      "type":"structure",
+      "members":{
+        "Description":{
+          "shape":"BasicString",
+          "documentation":"<p> The details of the taxes. </p>"
+        },
+        "Amount":{
+          "shape":"BasicString",
+          "documentation":"<p> The tax amount. </p>"
+        },
+        "Rate":{
+          "shape":"BasicString",
+          "documentation":"<p> The details of the tax rate. </p>"
+        }
+      },
+      "documentation":"<p> The tax amount. </p>"
+    },
+    "TaxesBreakdownAmountList":{
+      "type":"list",
+      "member":{"shape":"TaxesBreakdownAmount"}
+    },
+    "TestEnvPreference":{
+      "type":"structure",
+      "required":[
+        "BuyerDomain",
+        "BuyerIdentifier",
+        "SupplierDomain",
+        "SupplierIdentifier"
+      ],
+      "members":{
+        "BuyerDomain":{
+          "shape":"BuyerDomain",
+          "documentation":"<p>The domain identifier for the buyer in the test environment of the procurement portal.</p>"
+        },
+        "BuyerIdentifier":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p>The unique identifier for the buyer in the test environment of the procurement portal.</p>"
+        },
+        "SupplierDomain":{
+          "shape":"SupplierDomain",
+          "documentation":"<p>The domain identifier for the supplier in the test environment of the procurement portal.</p>"
+        },
+        "SupplierIdentifier":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p>The unique identifier for the supplier in the test environment of the procurement portal.</p>"
+        },
+        "ProcurementPortalSharedSecret":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p>The shared secret or authentication credential used for secure communication with the test environment.</p>"
+        },
+        "ProcurementPortalInstanceEndpoint":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p>The endpoint URL where e-invoices are delivered in the test environment.</p>"
+        },
+        "PurchaseOrderRetrievalEndpoint":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p>The endpoint URL used for retrieving purchase orders in the test environment.</p>"
+        }
+      },
+      "documentation":"<p>Contains configuration settings for testing the procurement portal integration in a non-production environment.</p>"
+    },
+    "TestEnvPreferenceInput":{
+      "type":"structure",
+      "required":[
+        "BuyerDomain",
+        "BuyerIdentifier",
+        "SupplierDomain",
+        "SupplierIdentifier"
+      ],
+      "members":{
+        "BuyerDomain":{
+          "shape":"BuyerDomain",
+          "documentation":"<p>The domain identifier to use for the buyer in the test environment.</p>"
+        },
+        "BuyerIdentifier":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p>The unique identifier to use for the buyer in the test environment.</p>"
+        },
+        "SupplierDomain":{
+          "shape":"SupplierDomain",
+          "documentation":"<p>The domain identifier to use for the supplier in the test environment.</p>"
+        },
+        "SupplierIdentifier":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p>The unique identifier to use for the supplier in the test environment.</p>"
+        },
+        "ProcurementPortalSharedSecret":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p>The shared secret or authentication credential to use for secure communication in the test environment.</p>"
+        },
+        "ProcurementPortalInstanceEndpoint":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p>The endpoint URL where e-invoices will be delivered in the test environment.</p>"
+        }
+      },
+      "documentation":"<p>Input parameters for configuring test environment preferences for a procurement portal.</p>"
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"BasicString"}
+      },
+      "documentation":"<p>The request was denied due to request throttling.</p>",
+      "exception":true
+    },
+    "Timestamp":{"type":"timestamp"},
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "ResourceTagKeys"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"TagrisArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) to untag. </p>"
+        },
+        "ResourceTagKeys":{
+          "shape":"ResourceTagKeyList",
+          "documentation":"<p> Keys for the tags to be removed. </p>"
+        }
+      }
+    },
+    "UntagResourceResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "UpdateInvoiceUnitRequest":{
+      "type":"structure",
+      "required":["InvoiceUnitArn"],
+      "members":{
+        "InvoiceUnitArn":{
+          "shape":"InvoiceUnitArnString",
+          "documentation":"<p>The ARN to identify an invoice unit. This information can't be modified or deleted. </p>"
+        },
+        "Description":{
+          "shape":"DescriptionString",
+          "documentation":"<p>The assigned description for an invoice unit. This information can't be modified or deleted. </p>"
+        },
+        "TaxInheritanceDisabled":{
+          "shape":"TaxInheritanceDisabledFlag",
+          "documentation":"<p>Whether the invoice unit based tax inheritance is/ should be enabled or disabled. </p>",
+          "box":true
+        },
+        "Rule":{
+          "shape":"InvoiceUnitRule",
+          "documentation":"<p>The <code>InvoiceUnitRule</code> object used to update invoice units. </p>"
+        }
+      }
+    },
+    "UpdateInvoiceUnitResponse":{
+      "type":"structure",
+      "members":{
+        "InvoiceUnitArn":{
+          "shape":"InvoiceUnitArnString",
+          "documentation":"<p> The ARN to identify an invoice unit. This information can't be modified or deleted. </p>"
+        }
+      }
+    },
+    "UpdateProcurementPortalPreferenceStatusRequest":{
+      "type":"structure",
+      "required":["ProcurementPortalPreferenceArn"],
+      "members":{
+        "ProcurementPortalPreferenceArn":{
+          "shape":"ProcurementPortalPreferenceArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the procurement portal preference to update.</p>"
+        },
+        "EinvoiceDeliveryPreferenceStatus":{
+          "shape":"ProcurementPortalPreferenceStatus",
+          "documentation":"<p>The updated status of the e-invoice delivery preference.</p>"
+        },
+        "EinvoiceDeliveryPreferenceStatusReason":{
+          "shape":"BasicString",
+          "documentation":"<p>The reason for the e-invoice delivery preference status update, providing context for the change.</p>"
+        },
+        "PurchaseOrderRetrievalPreferenceStatus":{
+          "shape":"ProcurementPortalPreferenceStatus",
+          "documentation":"<p>The updated status of the purchase order retrieval preference.</p>"
+        },
+        "PurchaseOrderRetrievalPreferenceStatusReason":{
+          "shape":"BasicString",
+          "documentation":"<p>The reason for the purchase order retrieval preference status update, providing context for the change.</p>"
+        }
+      }
+    },
+    "UpdateProcurementPortalPreferenceStatusResponse":{
+      "type":"structure",
+      "required":["ProcurementPortalPreferenceArn"],
+      "members":{
+        "ProcurementPortalPreferenceArn":{
+          "shape":"ProcurementPortalPreferenceArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the procurement portal preference with updated status.</p>"
+        }
+      }
+    },
+    "ValidationException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"BasicString"},
+        "resourceName":{
+          "shape":"InvoiceUnitArnString",
+          "documentation":"<p>You don't have sufficient access to perform this action. </p>"
+        },
+        "reason":{
+          "shape":"ValidationExceptionReason",
+          "documentation":"<p>You don't have sufficient access to perform this action. </p>"
+        },
+        "fieldList":{
+          "shape":"ValidationExceptionFieldList",
+          "documentation":"<p> The input fails to satisfy the constraints specified by an Amazon Web Services service. </p>"
+        }
+      },
+      "documentation":"<p> The input fails to satisfy the constraints specified by an Amazon Web Services service. </p>",
+      "exception":true
+    },
+    "ValidationExceptionField":{
+      "type":"structure",
+      "required":[
+        "name",
+        "message"
+      ],
+      "members":{
+        "name":{
+          "shape":"BasicString",
+          "documentation":"<p> The input fails to satisfy the constraints specified by an Amazon Web Services service. </p>"
+        },
+        "message":{
+          "shape":"BasicString",
+          "documentation":"<p> The input fails to satisfy the constraints specified by an Amazon Web Services service. </p>"
+        }
+      },
+      "documentation":"<p> The input fails to satisfy the constraints specified by an Amazon Web Services service. </p>"
+    },
+    "ValidationExceptionFieldList":{
+      "type":"list",
+      "member":{"shape":"ValidationExceptionField"}
+    },
+    "ValidationExceptionReason":{
+      "type":"string",
+      "enum":[
+        "nonMemberPresent",
+        "maxAccountsExceeded",
+        "maxInvoiceUnitsExceeded",
+        "duplicateInvoiceUnit",
+        "mutualExclusionError",
+        "accountMembershipError",
+        "taxSettingsError",
+        "expiredNextToken",
+        "invalidNextToken",
+        "invalidInput",
+        "fieldValidationFailed",
+        "cannotParse",
+        "unknownOperation",
+        "other"
+      ]
+    },
+    "Year":{
+      "type":"integer",
+      "box":true,
+      "max":2050,
+      "min":2005
+    }
+  },
+  "documentation":"<p> <b>Amazon Web Services Invoice Configuration</b> </p> <p>You can use Amazon Web Services Invoice Configuration APIs to programmatically create, update, delete, get, and list invoice units. You can also programmatically fetch the information of the invoice receiver. For example, business legal name, address, and invoicing contacts. </p> <p>You can use Amazon Web Services Invoice Configuration to receive separate Amazon Web Services invoices based your organizational needs. By using Amazon Web Services Invoice Configuration, you can configure invoice units that are groups of Amazon Web Services accounts that represent your business entities, and receive separate invoices for each business entity. You can also assign a unique member or payer account as the invoice receiver for each invoice unit. As you create new accounts within your Organizations using Amazon Web Services Invoice Configuration APIs, you can automate the creation of new invoice units and subsequently automate the addition of new accounts to your invoice units.</p> <p> <b>Amazon Web Services Procurement Portal Preferences</b> </p> <p>You can use Amazon Web Services Procurement Portal Preferences APIs to programmatically create, update, delete, get, and list procurement portal connections and e-invoice delivery settings. You can also programmatically fetch and modify the status of procurement portal configurations. For example, SAP Business Network or Coupa connections, configure e-invoice delivery and purchase order retrieval features.</p> <p>You can use Amazon Web Services Procurement Portal Preferences to connect e-invoice delivery to your procurement portals based on your organizational needs. By using Amazon Web Services Procurement Portal Preferences, you can configure connections to SAP Business Network and Coupa procurement portals that retrieve purchase orders and deliver Amazon Web Services invoices on the same day they are generated. You can also set up testing environments to validate invoice delivery without affecting live transactions, and manage contact information for portal setup and support. </p> <p>Administrative users should understand that billing read-only policies will show all procurement portal connection details. Review your IAM policies to ensure appropriate access controls are in place for procurement portal preferences.</p> <p> <b>Amazon Web Services Invoice Management</b> </p> <p>You can use Amazon Web Services Invoice Management APIs to programmatically list invoice summaries and get invoice documents. You can also programmatically fetch invoice documents with S3 pre-signed URLs.</p> <p>You can use Amazon Web Services Invoice Management to access invoice information based on your organizational needs. By using Amazon Web Services Invoice Management, you can retrieve paginated lists of invoice summaries that include invoice metadata such as invoice IDs, amounts, and currencies without downloading documents. You can also download invoice documents in PDF format using S3 pre-signed URLs with built-in expiration. As you manage invoices across your organization using Amazon Web Services Invoice Management APIs, you can create invoice retrieval processes and integrate invoice data into your financial systems.</p> <p>Service endpoint</p> <p>You can use the following endpoints for Amazon Web Services Invoice Configuration, Amazon Web Services Procurement Portal Preferences, and Amazon Web Services Invoice Management:</p> <ul> <li> <p> <code>https://invoicing.us-east-1.api.aws</code> </p> </li> </ul>"
+}

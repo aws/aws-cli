@@ -1,6 +1,6 @@
-**To copy a key policy from one CMK to another CMK**
+**To copy a key policy from one KMS key to another KMS key**
 
-The following ``get-key-policy`` example gets the key policy from one CMK and saves it in a text file. Then, it replaces the policy of a different CMK using the text file as the policy input.
+The following ``get-key-policy`` example gets the key policy from one KMS key and saves it in a text file. Then, it replaces the policy of a different KMS key using the text file as the policy input.
 
 Because the ``--policy`` parameter of ``put-key-policy`` requires a string, you must use the ``--output text`` option to return the output as a text string instead of JSON. ::
 

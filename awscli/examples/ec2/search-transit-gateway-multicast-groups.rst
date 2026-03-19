@@ -23,4 +23,4 @@ Output::
         ]
     }
 
-For more information, see `View Your Multicast Groups <https://docs.aws.amazon.com/vpc/latest/tgw/working-with-multicast.html#view-multicast-group>`__ in the *AWS Transit Gateways User Guide*.
+For more information, see `Multicast on transit gateways <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-multicast-overview.html>`__ in the *Transit Gateways Guide*.

@@ -10,23 +10,37 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import csv
-import signal
-import datetime
+import base64
 import contextlib
+import csv
+import datetime
+import logging
 import os
 import re
+import signal
 import sys
-from subprocess import Popen, PIPE
-import logging
+from subprocess import PIPE, Popen
 
-from awscli.compat import six
-from awscli.compat import get_stdout_text_writer
-from awscli.compat import get_popen_kwargs_for_pager_cmd
-from botocore.utils import IMDSFetcher
 from botocore.configprovider import BaseProvider
+from botocore.useragent import UserAgentComponent
+from botocore.utils import (
+    BadIMDSRequestError,
+    IMDSFetcher,
+    original_ld_library_path,
+    resolve_imds_endpoint_mode,
+)
+
+from awscli.compat import (
+    StringIO,
+    get_popen_kwargs_for_pager_cmd,
+    get_stdout_text_writer,
+)
 
 logger = logging.getLogger(__name__)
+
+
+class PagerInitializationException(Exception):
+    pass
 
 
 class LazyStdin:
@@ -57,7 +71,7 @@ class LazyPager:
 
     def initialize(self):
         if self._process is None:
-            self._process = self._popen(**self._popen_kwargs)
+            self._process = self._do_popen()
         return self._process
 
     def __getattr__(self, item):
@@ -70,6 +84,12 @@ class LazyPager:
         if self._process is not None or args or kwargs:
             return getattr(self.initialize(), 'communicate')(*args, **kwargs)
         return None, None
+
+    def _do_popen(self):
+        try:
+            return self._popen(**self._popen_kwargs)
+        except FileNotFoundError as e:
+            raise PagerInitializationException(e)
 
 
 class IMDSRegionProvider(BaseProvider):
@@ -115,11 +135,21 @@ class IMDSRegionProvider(BaseProvider):
 
     def _create_fetcher(self):
         metadata_timeout = self._session.get_config_variable(
-            'metadata_service_timeout')
+            'metadata_service_timeout'
+        )
         metadata_num_attempts = self._session.get_config_variable(
-            'metadata_service_num_attempts')
+            'metadata_service_num_attempts'
+        )
         imds_config = {
-            'imds_use_ipv6': self._session.get_config_variable('imds_use_ipv6')
+            'ec2_metadata_service_endpoint': self._session.get_config_variable(
+                'ec2_metadata_service_endpoint'
+            ),
+            'ec2_metadata_service_endpoint_mode': resolve_imds_endpoint_mode(
+                self._session
+            ),
+            'ec2_metadata_v1_disabled': self._session.get_config_variable(
+                'ec2_metadata_v1_disabled'
+            ),
         }
         fetcher = InstanceMetadataRegionFetcher(
             timeout=metadata_timeout,
@@ -152,9 +182,18 @@ class InstanceMetadataRegionFetcher(IMDSFetcher):
             region = self._get_region()
             return region
         except self._RETRIES_EXCEEDED_ERROR_CLS:
-            logger.debug("Max number of attempts exceeded (%s) when "
-                         "attempting to retrieve data from metadata service.",
-                         self._num_attempts)
+            logger.debug(
+                "Max number of attempts exceeded (%s) when "
+                "attempting to retrieve data from metadata service.",
+                self._num_attempts,
+            )
+        except BadIMDSRequestError as e:
+            logger.debug(
+                "Failed to retrieve a region from IMDS. "
+                "Region detection may not be supported from this endpoint: "
+                "%s",
+                e.request.url,
+            )
         return None
 
     def _get_region(self):
@@ -162,7 +201,7 @@ class InstanceMetadataRegionFetcher(IMDSFetcher):
         response = self._get_request(
             url_path=self._URL_PATH,
             retry_func=self._default_retry,
-            token=token
+            token=token,
         )
         availability_zone = response.text
         region = availability_zone[:-1]
@@ -175,7 +214,7 @@ def split_on_commas(value):
         return value.split(',')
     elif not any(char in value for char in ['"', "'", '[', ']']):
         # Simple escaping, let the csv module handle it.
-        return list(csv.reader(six.StringIO(value), escapechar='\\'))[0]
+        return list(csv.reader(StringIO(value), escapechar='\\'))[0]
     else:
         # If there's quotes for the values, we have to handle this
         # ourselves.
@@ -189,9 +228,9 @@ def strip_html_tags(text):
 
 def _split_with_quotes(value):
     try:
-        parts = list(csv.reader(six.StringIO(value), escapechar='\\'))[0]
+        parts = list(csv.reader(StringIO(value), escapechar='\\'))[0]
     except csv.Error:
-        raise ValueError("Bad csv value: %s" % value)
+        raise ValueError(f"Bad csv value: {value}")
     iter_parts = iter(parts)
     new_parts = []
     for part in iter_parts:
@@ -201,16 +240,19 @@ def _split_with_quotes(value):
         # Find an opening list bracket
         list_start = part.find('=[')
 
-        if list_start >= 0 and value.find(']') != -1 and \
-           (quote_char is None or part.find(quote_char) > list_start):
+        if (
+            list_start >= 0
+            and value.find(']') != -1
+            and (quote_char is None or part.find(quote_char) > list_start)
+        ):
             # This is a list, eat all the items until the end
             if ']' in part:
                 # Short circuit for only one item
                 new_chunk = part
             else:
                 new_chunk = _eat_items(value, iter_parts, part, ']')
-            list_items = _split_with_quotes(new_chunk[list_start + 2:-1])
-            new_chunk = new_chunk[:list_start + 1] + ','.join(list_items)
+            list_items = _split_with_quotes(new_chunk[list_start + 2 : -1])
+            new_chunk = new_chunk[: list_start + 1] + ','.join(list_items)
             new_parts.append(new_chunk)
             continue
         elif quote_char is None:
@@ -239,7 +281,7 @@ def _eat_items(value, iter_parts, part, end_char, replace_char=''):
     chunks = [current.replace(replace_char, '')]
     while True:
         try:
-            current = six.advance_iterator(iter_parts)
+            current = next(iter_parts)
         except StopIteration:
             raise ValueError(value)
         chunks.append(current.replace(replace_char, ''))
@@ -249,19 +291,16 @@ def _eat_items(value, iter_parts, part, end_char, replace_char=''):
 
 
 def _find_quote_char_in_part(part):
-    if '"' not in part and "'" not in part:
-        return
+    """
+    Returns a single or double quote character, whichever appears first in the
+    given string. None is returned if the given string doesn't have a single or
+    double quote character.
+    """
     quote_char = None
-    double_quote = part.find('"')
-    single_quote = part.find("'")
-    if double_quote >= 0 and single_quote == -1:
-        quote_char = '"'
-    elif single_quote >= 0 and double_quote == -1:
-        quote_char = "'"
-    elif double_quote < single_quote:
-        quote_char = '"'
-    elif single_quote < double_quote:
-        quote_char = "'"
+    for ch in part:
+        if ch in ('"', "'"):
+            quote_char = ch
+            break
     return quote_char
 
 
@@ -282,12 +321,66 @@ def find_service_and_method_in_event_name(event_name):
     return service_name, operation_name
 
 
+def is_document_type(shape):
+    """Check if shape is a document type"""
+    return getattr(shape, 'is_document_type', False)
+
+
+def is_document_type_container(shape):
+    """Check if the shape is a document type or wraps document types
+
+    This is helpful to determine if a shape purely deals with document types
+    whether the shape is a document type or it is lists or maps whose base
+    values are document types.
+    """
+    if not shape:
+        return False
+    recording_visitor = ShapeRecordingVisitor()
+    ShapeWalker().walk(shape, recording_visitor)
+    end_shape = recording_visitor.visited.pop()
+    if not is_document_type(end_shape):
+        return False
+    for shape in recording_visitor.visited:
+        if shape.type_name not in ['list', 'map']:
+            return False
+    return True
+
+
+def is_streaming_blob_type(shape):
+    """Check if the shape is a streaming blob type."""
+    return (
+        shape
+        and shape.type_name == 'blob'
+        and shape.serialization.get('streaming', False)
+    )
+
+
+def is_tagged_union_type(shape):
+    """Check if the shape is a tagged union structure."""
+    return getattr(shape, 'is_tagged_union', False)
+
+
+def operation_uses_document_types(operation_model):
+    """Check if document types are ever used in the operation"""
+    recording_visitor = ShapeRecordingVisitor()
+    walker = ShapeWalker()
+    walker.walk(operation_model.input_shape, recording_visitor)
+    walker.walk(operation_model.output_shape, recording_visitor)
+    for visited_shape in recording_visitor.visited:
+        if is_document_type(visited_shape):
+            return True
+    return False
+
+
 def json_encoder(obj):
-    """JSON encoder that formats datetimes as ISO8601 format."""
+    """JSON encoder that formats datetimes as ISO8601 format
+    and encodes bytes to UTF-8 Base64 string."""
     if isinstance(obj, datetime.datetime):
         return obj.isoformat()
+    elif isinstance(obj, bytes):
+        return base64.b64encode(obj).decode("utf-8")
     else:
-        return obj
+        raise TypeError('Encountered unrecognized type in JSON encoder.')
 
 
 @contextlib.contextmanager
@@ -300,34 +393,38 @@ def ignore_ctrl_c():
 
 
 def emit_top_level_args_parsed_event(session, args):
-    session.emit(
-        'top-level-args-parsed', parsed_args=args, session=session)
+    session.emit('top-level-args-parsed', parsed_args=args, session=session)
 
 
 def is_a_tty():
     try:
         return os.isatty(sys.stdout.fileno())
-    except Exception as e:
+    except Exception:
         return False
 
 
 def is_stdin_a_tty():
     try:
         return os.isatty(sys.stdin.fileno())
-    except Exception as e:
+    except Exception:
         return False
 
 
-class OutputStreamFactory(object):
-    def __init__(self, session, popen=None, environ=None,
-                 default_less_flags='FRX'):
+class OutputStreamFactory:
+    def __init__(
+        self, session, popen=None, environ=None, default_less_flags='FRX'
+    ):
         self._session = session
         self._popen = popen
         if popen is None:
             self._popen = Popen
         self._environ = environ
         if environ is None:
-            self._environ = os.environ.copy()
+            # When calling out to the system's pager, we want to avoid using
+            # shared libraries bundled with the AWS CLI so that the pager uses
+            # the system's shared libraries.
+            with original_ld_library_path():
+                self._environ = os.environ.copy()
         self._default_less_flags = default_less_flags
 
     def get_output_stream(self):
@@ -344,7 +441,7 @@ class OutputStreamFactory(object):
         process = LazyPager(self._popen, **popen_kwargs)
         try:
             yield process.stdin
-        except IOError:
+        except OSError:
             # Ignore IOError since this can commonly be raised when a pager
             # is closed abruptly and causes a broken pipe.
             pass
@@ -373,31 +470,101 @@ class OutputStreamFactory(object):
 
 def write_exception(ex, outfile):
     outfile.write("\n")
-    outfile.write(six.text_type(ex))
+    outfile.write(str(ex))
     outfile.write("\n")
 
 
-@contextlib.contextmanager
-def original_ld_library_path(env=None):
-    # See: https://pyinstaller.readthedocs.io/en/stable/runtime-information.html
-    # When running under pyinstaller, it will set an
-    # LD_LIBRARY_PATH to ensure it prefers its bundled version of libs.
-    # There are times where we don't want this behavior, for example when
-    # running a separate subprocess.
-    if env is None:
-        env = os.environ
+def dump_yaml_to_str(yaml, data):
+    """Dump a Python object to a YAML-formatted string.
 
-    value_to_put_back = env.get('LD_LIBRARY_PATH')
-    # The first case is where a user has exported an LD_LIBRARY_PATH
-    # in their env.  This will be mapped to LD_LIBRARY_PATH_ORIG.
-    if 'LD_LIBRARY_PATH_ORIG' in env:
-        env['LD_LIBRARY_PATH'] = env['LD_LIBRARY_PATH_ORIG']
-    else:
-        # Otherwise if they didn't set an LD_LIBRARY_PATH we just need
-        # to make sure this value is unset.
-        env.pop('LD_LIBRARY_PATH', None)
-    try:
-        yield
-    finally:
-        if value_to_put_back is not None:
-            env['LD_LIBRARY_PATH'] = value_to_put_back
+    :type yaml: ruamel.yaml.YAML
+    :param yaml: An instance of ruamel.yaml.YAML.
+
+    :type data: object
+    :param data: A Python object that can be dumped to YAML.
+    """
+    stream = StringIO()
+    yaml.dump(data, stream)
+    return stream.getvalue()
+
+
+class ShapeWalker:
+    def walk(self, shape, visitor):
+        """Walk through and visit shapes for introspection
+
+        :type shape: botocore.model.Shape
+        :param shape: Shape to walk
+
+        :type visitor: BaseShapeVisitor
+        :param visitor: The visitor to call when walking a shape
+        """
+
+        if shape is None:
+            return
+        stack = []
+        return self._walk(shape, visitor, stack)
+
+    def _walk(self, shape, visitor, stack):
+        if shape.name in stack:
+            return
+        stack.append(shape.name)
+        getattr(self, f'_walk_{shape.type_name}', self._default_scalar_walk)(
+            shape, visitor, stack
+        )
+        stack.pop()
+
+    def _walk_structure(self, shape, visitor, stack):
+        self._do_shape_visit(shape, visitor)
+        for _, member_shape in shape.members.items():
+            self._walk(member_shape, visitor, stack)
+
+    def _walk_list(self, shape, visitor, stack):
+        self._do_shape_visit(shape, visitor)
+        self._walk(shape.member, visitor, stack)
+
+    def _walk_map(self, shape, visitor, stack):
+        self._do_shape_visit(shape, visitor)
+        self._walk(shape.value, visitor, stack)
+
+    def _default_scalar_walk(self, shape, visitor, stack):
+        self._do_shape_visit(shape, visitor)
+
+    def _do_shape_visit(self, shape, visitor):
+        visitor.visit_shape(shape)
+
+
+class BaseShapeVisitor:
+    """Visit shape encountered by ShapeWalker"""
+
+    def visit_shape(self, shape):
+        pass
+
+
+class ShapeRecordingVisitor(BaseShapeVisitor):
+    """Record shapes visited by ShapeWalker"""
+
+    def __init__(self):
+        self.visited = []
+
+    def visit_shape(self, shape):
+        self.visited.append(shape)
+
+
+def add_component_to_user_agent_extra(session, component):
+    if session.user_agent_extra and not session.user_agent_extra.endswith(" "):
+        session.user_agent_extra += " "
+    session.user_agent_extra += f"{component.to_string()}"
+
+
+def add_metadata_component_to_user_agent_extra(session, name, value=None):
+    add_component_to_user_agent_extra(
+        session, UserAgentComponent("md", name, value)
+    )
+
+
+def add_command_lineage_to_user_agent_extra(session, lineage):
+    # Only add a command lineage if one is not already present in the user agent extra.
+    if not re.search(r'md\/command#[\w\.]*', session.user_agent_extra):
+        add_metadata_component_to_user_agent_extra(
+            session, "command", ".".join(lineage)
+        )

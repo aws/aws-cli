@@ -160,7 +160,7 @@ Contents of ``mapping.json``. This example adds ``ephemeral1`` as an instance st
 
 For an example of the output for ``run-instances``, see Example 1.
 
-For more information about block device mappings, see `Block device mapping <http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/block-device-mapping-concepts.html>`__ in the *Amazon EC2 User Guide*.
+For more information about block device mappings, see `Block device mapping <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/block-device-mapping-concepts.html>`__ in the *Amazon EC2 User Guide*.
 
 **Example 4: To launch an instance and add tags on creation**
 
@@ -192,7 +192,7 @@ The following ``run-instances`` example passes user data in a file called ``my_s
 
 For an example of the output for ``run-instances``, see Example 1. 
 
-For more information about instance user data, see `Working with instance user data <http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-add-user-data.html>`__ in the *Amazon EC2 User Guide*.
+For more information about instance user data, see `Working with instance user data <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-add-user-data.html>`__ in the *Amazon EC2 User Guide*.
 
 **Example 6: To launch a burstable performance instance**
 
@@ -209,4 +209,4 @@ The following ``run-instances`` example launches a t2.micro instance with the ``
 
 For an example of the output for ``run-instances``, see Example 1.
 
-For more information about burstable performance instances, see `Burstable performance instances <http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/burstable-performance-instances.html>`__ in the *Amazon EC2 User Guide*.
+For more information about burstable performance instances, see `Burstable performance instances <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/burstable-performance-instances.html>`__ in the *Amazon EC2 User Guide*.

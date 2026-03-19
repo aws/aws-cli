@@ -12,8 +12,7 @@
 # language governing permissions and limitations under the License.
 
 from awscli.argprocess import unpack_cli_arg
-from awscli.arguments import CustomArgument
-from awscli.arguments import create_argument_model_from_schema
+from awscli.arguments import CustomArgument, create_argument_model_from_schema
 from awscli.customizations.exceptions import ParamValidationError
 
 S3_LOCATION_ARG_DESCRIPTION = {
@@ -23,7 +22,7 @@ S3_LOCATION_ARG_DESCRIPTION = {
         'Information about the location of the application revision in Amazon '
         'S3. You must specify the bucket, the key, and bundleType. '
         'Optionally, you can also specify an eTag and version.'
-    )
+    ),
 }
 
 S3_LOCATION_SCHEMA = {
@@ -32,30 +31,30 @@ S3_LOCATION_SCHEMA = {
         "bucket": {
             "type": "string",
             "description": "The Amazon S3 bucket name.",
-            "required": True
+            "required": True,
         },
         "key": {
             "type": "string",
             "description": "The Amazon S3 object key name.",
-            "required": True
+            "required": True,
         },
         "bundleType": {
             "type": "string",
             "description": "The format of the bundle stored in Amazon S3.",
             "enum": ["tar", "tgz", "zip"],
-            "required": True
+            "required": True,
         },
         "eTag": {
             "type": "string",
             "description": "The Amazon S3 object eTag.",
-            "required": False
+            "required": False,
         },
         "version": {
             "type": "string",
             "description": "The Amazon S3 object version.",
-            "required": False
-        }
-    }
+            "required": False,
+        },
+    },
 }
 
 GITHUB_LOCATION_ARG_DESCRIPTION = {
@@ -67,7 +66,7 @@ GITHUB_LOCATION_ARG_DESCRIPTION = {
         'references the application revision. For the repository, use the '
         'format GitHub-account/repository-name or GitHub-org/repository-name. '
         'For the commit ID, use the SHA1 Git commit reference.'
-    )
+    ),
 }
 
 GITHUB_LOCATION_SCHEMA = {
@@ -79,32 +78,28 @@ GITHUB_LOCATION_SCHEMA = {
                 "The GitHub account or organization and repository. Specify "
                 "as GitHub-account/repository or GitHub-org/repository."
             ),
-            "required": True
+            "required": True,
         },
         "commitId": {
             "type": "string",
             "description": "The SHA1 Git commit reference.",
-            "required": True
-        }
-    }
+            "required": True,
+        },
+    },
 }
 
 
 def modify_revision_arguments(argument_table, session, **kwargs):
     s3_model = create_argument_model_from_schema(S3_LOCATION_SCHEMA)
-    argument_table[S3_LOCATION_ARG_DESCRIPTION['name']] = (
-        S3LocationArgument(
-            argument_model=s3_model,
-            session=session,
-            **S3_LOCATION_ARG_DESCRIPTION
-        )
+    argument_table[S3_LOCATION_ARG_DESCRIPTION['name']] = S3LocationArgument(
+        argument_model=s3_model, session=session, **S3_LOCATION_ARG_DESCRIPTION
     )
     github_model = create_argument_model_from_schema(GITHUB_LOCATION_SCHEMA)
     argument_table[GITHUB_LOCATION_ARG_DESCRIPTION['name']] = (
         GitHubLocationArgument(
             argument_model=github_model,
             session=session,
-            **GITHUB_LOCATION_ARG_DESCRIPTION
+            **GITHUB_LOCATION_ARG_DESCRIPTION,
         )
     )
     argument_table['revision'].required = False
@@ -123,7 +118,7 @@ class LocationArgument(CustomArgument):
             param=self.argument_model,
             cli_argument=self,
             value=value,
-            operation=None
+            operation=None,
         )
         if parsed is None:
             parsed = unpack_cli_arg(self, value)
@@ -149,8 +144,8 @@ class S3LocationArgument(LocationArgument):
             "s3Location": {
                 "bucket": value_dict['bucket'],
                 "key": value_dict['key'],
-                "bundleType": value_dict['bundleType']
-            }
+                "bundleType": value_dict['bundleType'],
+            },
         }
         if 'eTag' in value_dict:
             revision['s3Location']['eTag'] = value_dict['eTag']
@@ -171,6 +166,6 @@ class GitHubLocationArgument(LocationArgument):
             "revisionType": "GitHub",
             "gitHubLocation": {
                 "repository": value_dict['repository'],
-                "commitId": value_dict['commitId']
-            }
+                "commitId": value_dict['commitId'],
+            },
         }

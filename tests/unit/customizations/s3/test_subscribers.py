@@ -12,34 +12,45 @@
 # language governing permissions and limitations under the License.
 import datetime
 import errno
+import logging
 import os
 import shutil
 import tempfile
 
+import pytest
 from dateutil.tz import tzlocal
 from s3transfer.crt import CRTTransferFuture, CRTTransferMeta
-from s3transfer.futures import TransferMeta, TransferFuture
+from s3transfer.futures import TransferFuture, TransferMeta
 from s3transfer.manager import TransferConfig
 
-from awscli.testutils import unittest, mock
-from awscli.testutils import FileCreator
 from awscli.compat import queue
 from awscli.customizations.s3 import utils
 from awscli.customizations.s3.fileinfo import FileInfo
-from awscli.customizations.s3.subscribers import (
-    ProvideSizeSubscriber, OnDoneFilteredSubscriber,
-    ProvideUploadContentTypeSubscriber,
-    ProvideLastModifiedTimeSubscriber, DirectoryCreatorSubscriber,
-    DeleteSourceObjectSubscriber, DeleteSourceFileSubscriber,
-    DeleteCopySourceObjectSubscriber, CreateDirectoryError,
-    CopyPropsSubscriberFactory, ReplaceMetadataDirectiveSubscriber,
-    ReplaceTaggingDirectiveSubscriber, SetMetadataDirectivePropsSubscriber,
-    SetTagsSubscriber
-)
 from awscli.customizations.s3.results import WarningResult
-from tests.unit.customizations.s3 import FakeTransferFuture
-from tests.unit.customizations.s3 import FakeTransferFutureMeta
-from tests.unit.customizations.s3 import FakeTransferFutureCallArgs
+from awscli.customizations.s3.subscribers import (
+    CaseConflictCleanupSubscriber,
+    CopyPropsSubscriberFactory,
+    CreateDirectoryError,
+    DeleteCopySourceObjectSubscriber,
+    DeleteSourceFileSubscriber,
+    DeleteSourceObjectSubscriber,
+    DirectoryCreatorSubscriber,
+    OnDoneFilteredSubscriber,
+    ProvideETagSubscriber,
+    ProvideLastModifiedTimeSubscriber,
+    ProvideSizeSubscriber,
+    ProvideUploadContentTypeSubscriber,
+    ReplaceMetadataDirectiveSubscriber,
+    ReplaceTaggingDirectiveSubscriber,
+    SetMetadataDirectivePropsSubscriber,
+    SetTagsSubscriber,
+)
+from awscli.testutils import FileCreator, mock, unittest
+from tests.unit.customizations.s3 import (
+    FakeTransferFuture,
+    FakeTransferFutureCallArgs,
+    FakeTransferFutureMeta,
+)
 
 
 class TestProvideSizeSubscriber(unittest.TestCase):
@@ -65,6 +76,30 @@ class TestProvideSizeSubscriber(unittest.TestCase):
                 'Subscriber should not have used provide_transfer_size '
                 'method because it is not available'
             )
+
+
+class TestProvideEtagSubscriber:
+    def test_etag_set(self):
+        transfer_meta = TransferMeta()
+        transfer_future = mock.Mock(spec=TransferFuture)
+        transfer_future.meta = transfer_meta
+        etag = 'myetag'
+
+        transfer_meta.provide_object_etag('oldetag')
+        subscriber = ProvideETagSubscriber(etag)
+        subscriber.on_queued(transfer_future)
+        assert transfer_meta.etag == etag
+
+    def test_does_not_try_to_set_etag_on_crt_transfer_future(self, caplog):
+        caplog.set_level(logging.DEBUG)
+        crt_transfer_future = mock.Mock(spec=CRTTransferFuture)
+        crt_transfer_future.meta = CRTTransferMeta()
+
+        subscriber = ProvideETagSubscriber('myetag')
+        subscriber.on_queued(crt_transfer_future)
+        assert not hasattr(crt_transfer_future.meta, 'etag')
+
+        assert "Not providing object ETag." in caplog.text
 
 
 class OnDoneFilteredRecordingSubscriber(OnDoneFilteredSubscriber):
@@ -105,7 +140,8 @@ class TestProvideUploadContentTypeSubscriber(unittest.TestCase):
 
     def set_future(self):
         call_args = FakeTransferFutureCallArgs(
-            fileobj=self.filename, extra_args=self.extra_args)
+            fileobj=self.filename, extra_args=self.extra_args
+        )
         meta = FakeTransferFutureMeta(call_args=call_args)
         return FakeTransferFuture(meta=meta)
 
@@ -133,10 +169,12 @@ class TestProvideLastModifiedTimeSubscriber(BaseTestWithFileCreator):
         super(TestProvideLastModifiedTimeSubscriber, self).setUp()
         self.filename = self.file_creator.create_file('myfile', 'my contents')
         self.desired_utime = datetime.datetime(
-            2016, 1, 18, 7, 0, 0, tzinfo=tzlocal())
+            2016, 1, 18, 7, 0, 0, tzinfo=tzlocal()
+        )
         self.result_queue = queue.Queue()
         self.subscriber = ProvideLastModifiedTimeSubscriber(
-            self.desired_utime, self.result_queue)
+            self.desired_utime, self.result_queue
+        )
 
         call_args = FakeTransferFutureCallArgs(fileobj=self.filename)
         meta = FakeTransferFutureMeta(call_args=call_args)
@@ -149,7 +187,8 @@ class TestProvideLastModifiedTimeSubscriber(BaseTestWithFileCreator):
 
     def test_on_success_failure_in_utime_mod_raises_warning(self):
         self.subscriber = ProvideLastModifiedTimeSubscriber(
-            None, self.result_queue)
+            None, self.result_queue
+        )
         self.subscriber.on_done(self.future)
         # Because the time to provide was None it will throw an exception
         # which results in the a warning about the utime not being able
@@ -157,14 +196,16 @@ class TestProvideLastModifiedTimeSubscriber(BaseTestWithFileCreator):
         result = self.result_queue.get()
         self.assertIsInstance(result, WarningResult)
         self.assertIn(
-            'unable to update the last modified time', result.message)
+            'unable to update the last modified time', result.message
+        )
 
 
 class TestDirectoryCreatorSubscriber(BaseTestWithFileCreator):
     def setUp(self):
         super(TestDirectoryCreatorSubscriber, self).setUp()
         self.directory_to_create = os.path.join(
-            self.file_creator.rootdir, 'new-directory')
+            self.file_creator.rootdir, 'new-directory'
+        )
         self.filename = os.path.join(self.directory_to_create, 'myfile')
 
         call_args = FakeTransferFutureCallArgs(fileobj=self.filename)
@@ -208,7 +249,8 @@ class TestDirectoryCreatorSubscriber(BaseTestWithFileCreator):
                 self.fail(
                     'on_queued should not have raised an exception related '
                     'to directory creation especially if one already existed '
-                    'but got %s' % e)
+                    'but got %s' % e
+                )
 
 
 class TestDeleteSourceObjectSubscriber(unittest.TestCase):
@@ -217,7 +259,8 @@ class TestDeleteSourceObjectSubscriber(unittest.TestCase):
         self.bucket = 'mybucket'
         self.key = 'mykey'
         call_args = FakeTransferFutureCallArgs(
-            bucket=self.bucket, key=self.key, extra_args={})
+            bucket=self.bucket, key=self.key, extra_args={}
+        )
         meta = FakeTransferFutureMeta(call_args=call_args)
         self.future = mock.Mock()
         self.future.meta = meta
@@ -225,7 +268,8 @@ class TestDeleteSourceObjectSubscriber(unittest.TestCase):
     def test_deletes_object(self):
         DeleteSourceObjectSubscriber(self.client).on_done(self.future)
         self.client.delete_object.assert_called_once_with(
-            Bucket=self.bucket, Key=self.key)
+            Bucket=self.bucket, Key=self.key
+        )
         self.future.set_exception.assert_not_called()
 
     def test_sets_exception_on_error(self):
@@ -233,14 +277,16 @@ class TestDeleteSourceObjectSubscriber(unittest.TestCase):
         self.client.delete_object.side_effect = exception
         DeleteSourceObjectSubscriber(self.client).on_done(self.future)
         self.client.delete_object.assert_called_once_with(
-            Bucket=self.bucket, Key=self.key)
+            Bucket=self.bucket, Key=self.key
+        )
         self.future.set_exception.assert_called_once_with(exception)
 
     def test_with_request_payer(self):
         self.future.meta.call_args.extra_args = {'RequestPayer': 'requester'}
         DeleteSourceObjectSubscriber(self.client).on_done(self.future)
         self.client.delete_object.assert_called_once_with(
-            Bucket=self.bucket, Key=self.key, RequestPayer='requester')
+            Bucket=self.bucket, Key=self.key, RequestPayer='requester'
+        )
 
 
 class TestDeleteCopySourceObjectSubscriber(unittest.TestCase):
@@ -250,7 +296,8 @@ class TestDeleteCopySourceObjectSubscriber(unittest.TestCase):
         self.key = 'mykey'
         copy_source = {'Bucket': self.bucket, 'Key': self.key}
         call_args = FakeTransferFutureCallArgs(
-            copy_source=copy_source, extra_args={})
+            copy_source=copy_source, extra_args={}
+        )
         meta = FakeTransferFutureMeta(call_args=call_args)
         self.future = mock.Mock()
         self.future.meta = meta
@@ -258,7 +305,8 @@ class TestDeleteCopySourceObjectSubscriber(unittest.TestCase):
     def test_deletes_object(self):
         DeleteCopySourceObjectSubscriber(self.client).on_done(self.future)
         self.client.delete_object.assert_called_once_with(
-            Bucket=self.bucket, Key=self.key)
+            Bucket=self.bucket, Key=self.key
+        )
         self.future.set_exception.assert_not_called()
 
     def test_sets_exception_on_error(self):
@@ -266,14 +314,16 @@ class TestDeleteCopySourceObjectSubscriber(unittest.TestCase):
         self.client.delete_object.side_effect = exception
         DeleteCopySourceObjectSubscriber(self.client).on_done(self.future)
         self.client.delete_object.assert_called_once_with(
-            Bucket=self.bucket, Key=self.key)
+            Bucket=self.bucket, Key=self.key
+        )
         self.future.set_exception.assert_called_once_with(exception)
 
     def test_with_request_payer(self):
         self.future.meta.call_args.extra_args = {'RequestPayer': 'requester'}
         DeleteCopySourceObjectSubscriber(self.client).on_done(self.future)
         self.client.delete_object.assert_called_once_with(
-            Bucket=self.bucket, Key=self.key, RequestPayer='requester')
+            Bucket=self.bucket, Key=self.key, RequestPayer='requester'
+        )
 
 
 class TestDeleteSourceFileSubscriber(unittest.TestCase):
@@ -323,19 +373,18 @@ class BaseCopyPropsSubscriberTest(unittest.TestCase):
                     },
                     bucket=self.bucket,
                     key=self.key,
-                    extra_args={}
+                    extra_args={},
                 ),
                 size=size,
                 user_context={},
             )
-
         )
 
     def assert_extra_args(self, future, expected_extra_args):
         self.assertEqual(expected_extra_args, future.meta.call_args.extra_args)
 
     def set_size_for_mp_copy(self, future):
-        future.meta.size = 10 * (1024 ** 2)
+        future.meta.size = 10 * (1024**2)
 
     def set_cli_params_to_recursive_copy(self):
         self.cli_params['dir_op'] = True
@@ -354,9 +403,7 @@ class TestCopyPropsSubscriberFactory(BaseCopyPropsSubscriberTest):
         self.cli_params['copy_props'] = value
 
     def get_fileinfo(self, **override_kwargs):
-        fileinfo_kwargs = {
-            'src': 'src'
-        }
+        fileinfo_kwargs = {'src': 'src'}
         fileinfo_kwargs.update(override_kwargs)
         return FileInfo(**fileinfo_kwargs)
 
@@ -373,7 +420,7 @@ class TestCopyPropsSubscriberFactory(BaseCopyPropsSubscriberTest):
             [
                 ReplaceMetadataDirectiveSubscriber,
                 ReplaceTaggingDirectiveSubscriber,
-            ]
+            ],
         )
 
     def test_get_subscribers_for_copy_props_metadata_directive(self):
@@ -384,7 +431,7 @@ class TestCopyPropsSubscriberFactory(BaseCopyPropsSubscriberTest):
             [
                 SetMetadataDirectivePropsSubscriber,
                 ReplaceTaggingDirectiveSubscriber,
-            ]
+            ],
         )
 
     def test_get_subscribers_for_copy_props_default(self):
@@ -395,15 +442,13 @@ class TestCopyPropsSubscriberFactory(BaseCopyPropsSubscriberTest):
             [
                 SetMetadataDirectivePropsSubscriber,
                 SetTagsSubscriber,
-            ]
+            ],
         )
 
     def test_get_subscribers_injects_cached_head_object_response(self):
         self.set_copy_props('default')
         self.cli_params['dir_op'] = False
-        self.fileinfo.associated_response_data = {
-            'ContentType': 'from-cache'
-        }
+        self.fileinfo.associated_response_data = {'ContentType': 'from-cache'}
         metadata_subscriber = self.factory.get_subscribers(self.fileinfo)[0]
         self.set_size_for_mp_copy(self.future)
         metadata_subscriber.on_queued(self.future)
@@ -440,7 +485,7 @@ class TestSetMetadataDirectivePropsSubscriber(BaseCopyPropsSubscriberTest):
             'ContentLanguage': 'content-language',
             'ContentType': 'content-type',
             'Expires': 'Tue, 07 Jan 2020 20:40:03 GMT',
-            'Metadata': {'key': 'value'}
+            'Metadata': {'key': 'value'},
         }
 
     def set_head_object_response_props(self, **props):
@@ -470,7 +515,7 @@ class TestSetMetadataDirectivePropsSubscriber(BaseCopyPropsSubscriberTest):
         self.subscriber.on_queued(self.future)
         self.assert_extra_args(
             self.future,
-            {'MetadataDirective': 'REPLACE', 'CacheControl': 'override'}
+            {'MetadataDirective': 'REPLACE', 'CacheControl': 'override'},
         )
 
     def test_sets_props_for_content_disposition_override(self):
@@ -478,7 +523,7 @@ class TestSetMetadataDirectivePropsSubscriber(BaseCopyPropsSubscriberTest):
         self.subscriber.on_queued(self.future)
         self.assert_extra_args(
             self.future,
-            {'MetadataDirective': 'REPLACE', 'ContentDisposition': 'override'}
+            {'MetadataDirective': 'REPLACE', 'ContentDisposition': 'override'},
         )
 
     def test_sets_props_for_content_encoding_override(self):
@@ -486,7 +531,7 @@ class TestSetMetadataDirectivePropsSubscriber(BaseCopyPropsSubscriberTest):
         self.subscriber.on_queued(self.future)
         self.assert_extra_args(
             self.future,
-            {'MetadataDirective': 'REPLACE', 'ContentEncoding': 'override'}
+            {'MetadataDirective': 'REPLACE', 'ContentEncoding': 'override'},
         )
 
     def test_sets_props_for_content_language_override(self):
@@ -494,7 +539,7 @@ class TestSetMetadataDirectivePropsSubscriber(BaseCopyPropsSubscriberTest):
         self.subscriber.on_queued(self.future)
         self.assert_extra_args(
             self.future,
-            {'MetadataDirective': 'REPLACE', 'ContentLanguage': 'override'}
+            {'MetadataDirective': 'REPLACE', 'ContentLanguage': 'override'},
         )
 
     def test_sets_props_for_content_type_override(self):
@@ -502,7 +547,7 @@ class TestSetMetadataDirectivePropsSubscriber(BaseCopyPropsSubscriberTest):
         self.subscriber.on_queued(self.future)
         self.assert_extra_args(
             self.future,
-            {'MetadataDirective': 'REPLACE', 'ContentType': 'override'}
+            {'MetadataDirective': 'REPLACE', 'ContentType': 'override'},
         )
 
     def test_sets_props_for_expires_override(self):
@@ -510,7 +555,7 @@ class TestSetMetadataDirectivePropsSubscriber(BaseCopyPropsSubscriberTest):
         self.subscriber.on_queued(self.future)
         self.assert_extra_args(
             self.future,
-            {'MetadataDirective': 'REPLACE', 'Expires': 'override'}
+            {'MetadataDirective': 'REPLACE', 'Expires': 'override'},
         )
 
     def test_sets_props_for_metadata_override(self):
@@ -518,13 +563,14 @@ class TestSetMetadataDirectivePropsSubscriber(BaseCopyPropsSubscriberTest):
         self.subscriber.on_queued(self.future)
         self.assert_extra_args(
             self.future,
-            {'MetadataDirective': 'REPLACE', 'Metadata': {'key': 'override'}}
+            {'MetadataDirective': 'REPLACE', 'Metadata': {'key': 'override'}},
         )
 
     def test_overrides_merges_with_head_object_data(self):
         self.set_head_object_response_props(**self.all_props)
         self.set_extra_args(
-            self.future, ContentType='override', Metadata={'key': 'override'})
+            self.future, ContentType='override', Metadata={'key': 'override'}
+        )
         self.subscriber.on_queued(self.future)
         expected_extra_args = {
             'CacheControl': 'cache-control',
@@ -534,7 +580,7 @@ class TestSetMetadataDirectivePropsSubscriber(BaseCopyPropsSubscriberTest):
             'ContentType': 'override',
             'Expires': 'Tue, 07 Jan 2020 20:40:03 GMT',
             'Metadata': {'key': 'override'},
-            'MetadataDirective': 'REPLACE'
+            'MetadataDirective': 'REPLACE',
         }
         self.assert_extra_args(self.future, expected_extra_args)
 
@@ -547,7 +593,7 @@ class TestSetMetadataDirectivePropsSubscriber(BaseCopyPropsSubscriberTest):
             'ContentLanguage': 'override',
             'ContentType': 'override',
             'Expires': 'override',
-            'Metadata': {'key': 'override'}
+            'Metadata': {'key': 'override'},
         }
         self.set_extra_args(self.future, **all_override_args)
         self.subscriber.on_queued(self.future)
@@ -566,7 +612,8 @@ class TestSetMetadataDirectivePropsSubscriber(BaseCopyPropsSubscriberTest):
         self.set_size_for_mp_copy(self.future)
         subscriber.on_queued(self.future)
         self.client.head_object.assert_called_with(
-            Bucket=self.source_bucket, Key=self.source_key)
+            Bucket=self.source_bucket, Key=self.source_key
+        )
 
     def test_add_extra_params_to_head_object_call(self):
         subscriber = SetMetadataDirectivePropsSubscriber(
@@ -580,8 +627,9 @@ class TestSetMetadataDirectivePropsSubscriber(BaseCopyPropsSubscriberTest):
         self.set_size_for_mp_copy(self.future)
         subscriber.on_queued(self.future)
         self.client.head_object.assert_called_with(
-            Bucket=self.source_bucket, Key=self.source_key,
-            RequestPayer='requester'
+            Bucket=self.source_bucket,
+            Key=self.source_key,
+            RequestPayer='requester',
         )
 
 
@@ -592,30 +640,23 @@ class PutObjectTaggingException(Exception):
 class TestSetTagsSubscriber(BaseCopyPropsSubscriberTest):
     def setUp(self):
         super(TestSetTagsSubscriber, self).setUp()
+        self.source_client = mock.Mock()
         self.subscriber = SetTagsSubscriber(
             client=self.client,
             transfer_config=self.transfer_config,
             cli_params=self.cli_params,
+            source_client=self.source_client,
         )
         self.tagging_response = {
             'TagSet': [
-                {
-                    'Key': 'tag1',
-                    'Value': 'val1'
-                },
-                {
-                    'Key': 'tag2',
-                    'Value': 'val2'
-                },
+                {'Key': 'tag1', 'Value': 'val1'},
+                {'Key': 'tag2', 'Value': 'val2'},
             ]
         }
         self.url_encoded_tags = 'tag1=val1&tag2=val2'
         self.tagging_response_over_limit = {
             'TagSet': [
-                {
-                    'Key': 'tag',
-                    'Value': 'val1' * (2 * 1024)
-                },
+                {'Key': 'tag', 'Value': 'val1' * (2 * 1024)},
             ]
         }
 
@@ -625,41 +666,46 @@ class TestSetTagsSubscriber(BaseCopyPropsSubscriberTest):
 
     def test_sets_tags_for_mp_copy(self):
         self.set_size_for_mp_copy(self.future)
-        self.client.get_object_tagging.return_value = self.tagging_response
+        self.source_client.get_object_tagging.return_value = (
+            self.tagging_response
+        )
         self.subscriber.on_queued(self.future)
-        self.client.get_object_tagging.assert_called_with(
+        self.source_client.get_object_tagging.assert_called_with(
             Bucket=self.source_bucket, Key=self.source_key
         )
         self.assert_extra_args(self.future, {'Tagging': self.url_encoded_tags})
 
     def test_does_not_set_tags_if_not_present(self):
         self.set_size_for_mp_copy(self.future)
-        self.client.get_object_tagging.return_value = {'TagSet': []}
+        self.source_client.get_object_tagging.return_value = {'TagSet': []}
         self.subscriber.on_queued(self.future)
-        self.client.get_object_tagging.assert_called_with(
+        self.source_client.get_object_tagging.assert_called_with(
             Bucket=self.source_bucket, Key=self.source_key
         )
         self.assert_extra_args(self.future, {})
 
     def test_sets_tags_using_put_object_tagging_if_over_size_limit(self):
         self.set_size_for_mp_copy(self.future)
-        self.client.get_object_tagging.return_value = \
+        self.source_client.get_object_tagging.return_value = (
             self.tagging_response_over_limit
+        )
         self.subscriber.on_queued(self.future)
-        self.client.get_object_tagging.assert_called_with(
+        self.source_client.get_object_tagging.assert_called_with(
             Bucket=self.source_bucket, Key=self.source_key
         )
         self.assert_extra_args(self.future, {})
         self.subscriber.on_done(self.future)
         self.client.put_object_tagging.assert_called_with(
-            Bucket=self.bucket, Key=self.key,
+            Bucket=self.bucket,
+            Key=self.key,
             Tagging=self.tagging_response_over_limit,
         )
 
     def test_does_not_call_put_object_tagging_if_transfer_fails(self):
         self.set_size_for_mp_copy(self.future)
-        self.client.get_object_tagging.return_value = \
+        self.source_client.get_object_tagging.return_value = (
             self.tagging_response_over_limit
+        )
         self.subscriber.on_queued(self.future)
         self.future.set_exception(Exception())
         self.subscriber.on_done(self.future)
@@ -667,36 +713,56 @@ class TestSetTagsSubscriber(BaseCopyPropsSubscriberTest):
 
     def test_put_object_tagging_propagates_error_and_cleans_up_if_fails(self):
         self.set_size_for_mp_copy(self.future)
-        self.client.get_object_tagging.return_value = \
+        self.source_client.get_object_tagging.return_value = (
             self.tagging_response_over_limit
+        )
         self.subscriber.on_queued(self.future)
 
-        self.client.put_object_tagging.side_effect = \
+        self.client.put_object_tagging.side_effect = (
             PutObjectTaggingException()
+        )
         self.subscriber.on_done(self.future)
 
         with self.assertRaises(PutObjectTaggingException):
             self.future.result()
 
         self.client.put_object_tagging.assert_called_with(
-            Bucket=self.bucket, Key=self.key,
+            Bucket=self.bucket,
+            Key=self.key,
             Tagging=self.tagging_response_over_limit,
         )
         self.client.delete_object.assert_called_once_with(
-            Bucket=self.bucket, Key=self.key,
+            Bucket=self.bucket,
+            Key=self.key,
         )
 
     def test_add_extra_params_to_delete_object_call(self):
         self.cli_params['request_payer'] = 'requester'
         self.set_size_for_mp_copy(self.future)
-        self.client.get_object_tagging.return_value = \
+        self.source_client.get_object_tagging.return_value = (
             self.tagging_response_over_limit
+        )
         self.subscriber.on_queued(self.future)
 
-        self.client.put_object_tagging.side_effect = \
+        self.client.put_object_tagging.side_effect = (
             PutObjectTaggingException()
+        )
         self.subscriber.on_done(self.future)
 
         self.client.delete_object.assert_called_once_with(
             Bucket=self.bucket, Key=self.key, RequestPayer='requester'
         )
+
+
+class TestCaseConflictCleanupSubscriber:
+    def test_on_done_removes_key_from_set(self):
+        submitted = {123, 456}
+        subscriber = CaseConflictCleanupSubscriber(submitted, 123)
+        subscriber.on_done(future=None)
+        assert submitted == {456}
+
+    def test_on_done_handles_missing_key(self):
+        submitted = {456}
+        subscriber = CaseConflictCleanupSubscriber(submitted, 123)
+        subscriber.on_done(future=None)
+        assert submitted == {456}

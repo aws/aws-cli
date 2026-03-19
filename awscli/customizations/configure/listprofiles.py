@@ -18,12 +18,8 @@ from awscli.customizations.utils import uni_print
 
 class ListProfilesCommand(BasicCommand):
     NAME = 'list-profiles'
-    DESCRIPTION = (
-        'List the profiles available to the AWS CLI.'
-    )
-    EXAMPLES = (
-        'aws configure list-profiles\n\n'
-    )
+    DESCRIPTION = 'List the profiles available to the AWS CLI.'
+    EXAMPLES = 'aws configure list-profiles\n\n'
 
     def __init__(self, session, out_stream=None):
         super(ListProfilesCommand, self).__init__(session)

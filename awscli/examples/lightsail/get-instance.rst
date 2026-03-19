@@ -19,9 +19,9 @@ Output::
             },
             "resourceType": "Instance",
             "tags": [],
-            "blueprintId": "mean_4_0_9",
+            "blueprintId": "mean",
             "blueprintName": "MEAN",
-            "bundleId": "medium_2_0",
+            "bundleId": "medium_3_0",
             "isStaticIp": false,
             "privateIpAddress": "192.0.2.0",
             "publicIpAddress": "192.0.2.0",
@@ -33,7 +33,7 @@ Output::
                         "sizeInGb": 80,
                         "isSystemDisk": true,
                         "iops": 240,
-                        "path": "/dev/sda1",
+                        "path": "/dev/xvda",
                         "attachedTo": "MEAN-1",
                         "attachmentState": "attached"
                     }

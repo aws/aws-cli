@@ -14,7 +14,6 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestUpdateStack(BaseAWSCommandParamsTest):
-
     prefix = 'cloudformation update-stack'
 
     def test_stack_policy_during_update_url(self):
@@ -23,6 +22,6 @@ class TestUpdateStack(BaseAWSCommandParamsTest):
         cmdline += '--stack-policy-during-update-url http://foo'
         result = {
             'StackName': 'test-stack',
-            'StackPolicyDuringUpdateURL': 'http://foo'
+            'StackPolicyDuringUpdateURL': 'http://foo',
         }
         self.assert_params_for_cmd(cmdline, result)

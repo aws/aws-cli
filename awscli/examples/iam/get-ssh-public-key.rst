@@ -22,7 +22,7 @@ Output::
 
 **Example 2: To retrieve an SSH public key attached to an IAM user in PEM encoded form**
 
-The following ``get-ssh-public-key`` command retrieves the specified SSH public key from the IAM user 'sofia'. The output is in PEM encoding. ::
+The following ``get-ssh-public-key`` command retrieves the specified SSH public key from the IAM user ``sofia``. The output is in PEM encoding. ::
 
     aws iam get-ssh-public-key \
         --user-name sofia \
@@ -42,4 +42,4 @@ Output::
         }
     }
 
-For more information about SSH keys in IAM, see `Use SSH Keys and SSH with CodeCommit <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_ssh-keys.html#ssh-keys-code-commit>`_ in the *AWS IAM User Guide*.
+For more information, see `Use SSH keys and SSH with CodeCommit <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_ssh-keys.html#ssh-keys-code-commit>`__ in the *AWS IAM User Guide*.

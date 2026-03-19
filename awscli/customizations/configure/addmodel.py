@@ -60,7 +60,7 @@ def get_model_location(session, service_definition, service_name=None):
         and the service definition.
 
     :returns: The path to where are model should be placed based on
-        the service defintion and the current services in botocore.
+        the service definition and the current services in botocore.
     """
     # Add the ServiceModel abstraction over the service json definition to
     # make it easier to work with.
@@ -76,11 +76,12 @@ def get_model_location(session, service_definition, service_name=None):
     # not the one set by AWS_DATA_PATH)
     data_path = session.get_component('data_loader').CUSTOMER_DATA_PATH
     # Use the version of the model to determine the file's naming convention.
-    service_model_name = (
-        'service-%d.json' % int(
-            float(service_definition.get('version', '2.0'))))
-    return os.path.join(data_path, service_name, api_version,
-        service_model_name)
+    service_model_name = 'service-%d.json' % int(
+        float(service_definition.get('version', '2.0'))
+    )
+    return os.path.join(
+        data_path, service_name, api_version, service_model_name
+    )
 
 
 class AddModelCommand(BasicCommand):
@@ -92,11 +93,18 @@ class AddModelCommand(BasicCommand):
         'provided.'
     )
     ARG_TABLE = [
-        {'name': 'service-model', 'required': True, 'help_text': (
-            'The contents of the service JSON model.')},
-        {'name': 'service-name', 'help_text': (
-            'Overrides the default name used by the service JSON '
-            'model to generate CLI service commands and Boto3 clients.')}
+        {
+            'name': 'service-model',
+            'required': True,
+            'help_text': ('The contents of the service JSON model.'),
+        },
+        {
+            'name': 'service-name',
+            'help_text': (
+                'Overrides the default name used by the service JSON '
+                'model to generate CLI service commands and Boto3 clients.'
+            ),
+        },
     ]
 
     def _run_main(self, parsed_args, parsed_globals):

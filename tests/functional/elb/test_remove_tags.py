@@ -14,7 +14,6 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestRemoveTags(BaseAWSCommandParamsTest):
-
     prefix = 'elb remove-tags'
 
     def test_shorthand(self):
@@ -22,9 +21,6 @@ class TestRemoveTags(BaseAWSCommandParamsTest):
         command += ' --tags bar baz'
         expected_params = {
             'LoadBalancerNames': ['foo'],
-            'Tags': [
-                {'Key': 'bar'},
-                {'Key': 'baz'}
-            ]
+            'Tags': [{'Key': 'bar'}, {'Key': 'baz'}],
         }
         self.assert_params_for_cmd(command, expected_params)

@@ -1,0 +1,48 @@
+{
+  "version": "1.0",
+  "testCases": [
+    {
+      "documentation": "simple region endpoint",
+      "params": {
+        "region": "us-east-1"
+      },
+      "expect": {
+        "endpoint": {
+          "url": "https://events.us-east-1.amazonaws.com"
+        }
+      }
+    },
+    {
+      "documentation": "basic case of endpointId",
+      "params": {
+        "region": "us-east-1",
+        "endpointId": "myendpoint"
+      },
+      "expect": {
+        "endpoint": {
+          "url": "https://myendpoint.endpoint.events.amazonaws.com",
+          "properties": {
+            "authSchemes": [
+              {
+                "name": "sigv4a",
+                "signingName": "events",
+                "signingRegionSet": ["*"]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "documentation": "endpointId & FIPS",
+      "params": {
+        "region": "us-east-1",
+        "endpointId": "myendpoint",
+        "useFIPSEndpoint": true
+      },
+      "expect": {
+        "error": "FIPS endpoints not supported with multi-region endpoints"
+      }
+    }
+  ]
+}

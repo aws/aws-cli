@@ -1,17 +1,19 @@
-import os
 import logging
+import os
 
-from botocore.exceptions import ProfileNotFound
 from botocore.credentials import JSONFileCache
+from botocore.exceptions import ProfileNotFound
 
 LOG = logging.getLogger(__name__)
 CACHE_DIR = os.path.expanduser(os.path.join('~', '.aws', 'cli', 'cache'))
 
 
 def register_assume_role_provider(event_handlers):
-    event_handlers.register('session-initialized',
-                            inject_assume_role_provider_cache,
-                            unique_id='inject_assume_role_cred_provider_cache')
+    event_handlers.register(
+        'session-initialized',
+        inject_assume_role_provider_cache,
+        unique_id='inject_assume_role_cred_provider_cache',
+    )
 
 
 def inject_assume_role_provider_cache(session, **kwargs):
@@ -33,9 +35,11 @@ def inject_assume_role_provider_cache(session, **kwargs):
         # immediately return.  If it's invalid something else
         # up the stack will raise ProfileNotFound, otherwise
         # the configure (and other) commands will work as expected.
-        LOG.debug("ProfileNotFound caught when trying to inject "
-                  "assume-role cred provider cache.  Not configuring "
-                  "JSONFileCache for assume-role.")
+        LOG.debug(
+            "ProfileNotFound caught when trying to inject "
+            "assume-role cred provider cache.  Not configuring "
+            "JSONFileCache for assume-role."
+        )
         return
     assume_role_provider = cred_chain.get_provider('assume-role')
     assume_role_provider.cache = JSONFileCache(CACHE_DIR)

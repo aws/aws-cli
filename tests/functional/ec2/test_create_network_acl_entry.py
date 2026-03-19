@@ -15,7 +15,6 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestCreateNetworkACLEntry(BaseAWSCommandParamsTest):
-
     prefix = 'ec2 create-network-acl-entry'
 
     def test_tcp(self):
@@ -27,13 +26,15 @@ class TestCreateNetworkACLEntry(BaseAWSCommandParamsTest):
         cmdline += ' --ingress'
         cmdline += ' --port-range From=22,To=22'
         cmdline += ' --cidr-block 0.0.0.0/0'
-        result = {'NetworkAclId': 'acl-12345678',
-                  'RuleNumber': 100,
-                  'Protocol': '6',
-                  'RuleAction': 'allow',
-                  'Egress': False,
-                  'CidrBlock': '0.0.0.0/0',
-                  'PortRange': {'From': 22, 'To': 22}}
+        result = {
+            'NetworkAclId': 'acl-12345678',
+            'RuleNumber': 100,
+            'Protocol': '6',
+            'RuleAction': 'allow',
+            'Egress': False,
+            'CidrBlock': '0.0.0.0/0',
+            'PortRange': {'From': 22, 'To': 22},
+        }
         self.assert_params_for_cmd(cmdline, result)
 
     def test_udp(self):
@@ -45,13 +46,15 @@ class TestCreateNetworkACLEntry(BaseAWSCommandParamsTest):
         cmdline += ' --ingress'
         cmdline += ' --port-range From=22,To=22'
         cmdline += ' --cidr-block 0.0.0.0/0'
-        result = {'NetworkAclId': 'acl-12345678',
-                  'RuleNumber': 100,
-                  'Protocol': '17',
-                  'RuleAction': 'allow',
-                  'Egress': False,
-                  'CidrBlock': '0.0.0.0/0',
-                  'PortRange': {'From': 22, 'To': 22}}
+        result = {
+            'NetworkAclId': 'acl-12345678',
+            'RuleNumber': 100,
+            'Protocol': '17',
+            'RuleAction': 'allow',
+            'Egress': False,
+            'CidrBlock': '0.0.0.0/0',
+            'PortRange': {'From': 22, 'To': 22},
+        }
         self.assert_params_for_cmd(cmdline, result)
 
     def test_icmp(self):
@@ -63,13 +66,15 @@ class TestCreateNetworkACLEntry(BaseAWSCommandParamsTest):
         cmdline += ' --ingress'
         cmdline += ' --port-range From=22,To=22'
         cmdline += ' --cidr-block 0.0.0.0/0'
-        result = {'NetworkAclId': 'acl-12345678',
-                  'RuleNumber': 100,
-                  'Protocol': '1',
-                  'RuleAction': 'allow',
-                  'Egress': False,
-                  'CidrBlock': '0.0.0.0/0',
-                  'PortRange': {'From': 22, 'To': 22}}
+        result = {
+            'NetworkAclId': 'acl-12345678',
+            'RuleNumber': 100,
+            'Protocol': '1',
+            'RuleAction': 'allow',
+            'Egress': False,
+            'CidrBlock': '0.0.0.0/0',
+            'PortRange': {'From': 22, 'To': 22},
+        }
         self.assert_params_for_cmd(cmdline, result)
 
     def test_all(self):
@@ -81,13 +86,15 @@ class TestCreateNetworkACLEntry(BaseAWSCommandParamsTest):
         cmdline += ' --ingress'
         cmdline += ' --port-range From=22,To=22'
         cmdline += ' --cidr-block 0.0.0.0/0'
-        result = {'NetworkAclId': 'acl-12345678',
-                  'RuleNumber': 100,
-                  'Protocol': '-1',
-                  'RuleAction': 'allow',
-                  'Egress': False,
-                  'CidrBlock': '0.0.0.0/0',
-                  'PortRange': {'From': 22, 'To': 22}}
+        result = {
+            'NetworkAclId': 'acl-12345678',
+            'RuleNumber': 100,
+            'Protocol': '-1',
+            'RuleAction': 'allow',
+            'Egress': False,
+            'CidrBlock': '0.0.0.0/0',
+            'PortRange': {'From': 22, 'To': 22},
+        }
         self.assert_params_for_cmd(cmdline, result)
 
     def test_number(self):
@@ -99,12 +106,13 @@ class TestCreateNetworkACLEntry(BaseAWSCommandParamsTest):
         cmdline += ' --ingress'
         cmdline += ' --port-range From=22,To=22'
         cmdline += ' --cidr-block 0.0.0.0/0'
-        result = {'NetworkAclId': 'acl-12345678',
-                  'RuleNumber': 100,
-                  'Protocol': '99',
-                  'RuleAction': 'allow',
-                  'Egress': False,
-                  'CidrBlock': '0.0.0.0/0',
-                  'PortRange': {'From': 22, 'To': 22}}
+        result = {
+            'NetworkAclId': 'acl-12345678',
+            'RuleNumber': 100,
+            'Protocol': '99',
+            'RuleAction': 'allow',
+            'Egress': False,
+            'CidrBlock': '0.0.0.0/0',
+            'PortRange': {'From': 22, 'To': 22},
+        }
         self.assert_params_for_cmd(cmdline, result)
-

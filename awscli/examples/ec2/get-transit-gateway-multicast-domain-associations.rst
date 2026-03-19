@@ -1,6 +1,6 @@
 **To view the information about the transit gateway multicast domain associations**
 
-This example returns the associations for the specified transit gateway multicast domain. ::
+The following ``get-transit-gateway-multicast-domain-associations`` example returns the associations for the specified multicast domain. ::
 
     aws ec2 get-transit-gateway-multicast-domain-associations \
         --transit-gateway-multicast-domain-id tgw-mcast-domain-0c4905cef7EXAMPLE
@@ -57,4 +57,4 @@ Output::
         ]
     }
 
-For more information, see 'View Your Transit Gateway Multicast Domain Associations <https://docs.aws.amazon.com/vpc/latest/tgw/working-with-multicast.html#view-tgw-domain-association>'__ in the *AWS Transit Gateways User Guide*.
+For more information, see `Multicast domains <https://docs.aws.amazon.com/vpc/latest/tgw/multicast-domains-about.html>`__ in the *Transit Gateways Guide*.

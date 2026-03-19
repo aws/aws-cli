@@ -14,7 +14,7 @@
 import json
 
 
-class IAM(object):
+class IAM:
     def __init__(self, iam_client):
         self.iam_client = iam_client
 
@@ -26,6 +26,5 @@ class IAM(object):
     def update_assume_role_policy(self, role_name, assume_role_policy):
         """Method to update trust policy of given role name"""
         return self.iam_client.update_assume_role_policy(
-            RoleName=role_name,
-            PolicyDocument=json.dumps(assume_role_policy)
+            RoleName=role_name, PolicyDocument=json.dumps(assume_role_policy)
         )

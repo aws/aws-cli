@@ -9,11 +9,11 @@ The preceding command produces output similar to the following::
   {
       "CertificateSummaryList": [
           {
-              "CertificateArn": "arn:aws:acm:us-east-1:123456789012:certificate/12345678-1234-1234-1234-123456789012", 
+              "CertificateArn": "arn:aws:acm:region:account:certificate/12345678-1234-1234-1234-123456789012", 
               "DomainName": "www.example.com"
           }, 
           {
-              "CertificateArn": "arn:aws:acm:us-east-1:493619779192:certificate/87654321-4321-4321-4321-210987654321", 
+              "CertificateArn": "arn:aws:acm:region:account:certificate/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee", 
               "DomainName": "www.example.net"
           }
       ]
@@ -27,13 +27,13 @@ Two certificate ARNs and a ``NextToken`` value will be displayed::
 
   "CertificateSummaryList": [
     {
-      "CertificateArn": "arn:aws:acm:us-east-1:123456789012: \
+      "CertificateArn": "arn:aws:acm:region:account: \
               certificate/12345678-1234-1234-1234-123456789012", 
       "DomainName": "www.example.com"
     }, 
     {
-      "CertificateArn": "arn:aws:acm:us-east-1:123456789012: \
-              certificate/87654321-4321-4321-4321-210987654321", 
+      "CertificateArn": "arn:aws:acm:region:account: \
+               certificate/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee", 
       "DomainName": "www.example.net"
     }
     ], 

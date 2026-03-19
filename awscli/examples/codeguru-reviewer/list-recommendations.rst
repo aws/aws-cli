@@ -1,6 +1,6 @@
 **To list the recommendations for a completed code review**
 
-The following ``list-recommendations`` example lists the recommendations for a comleted code review. This code review has one recommendations. ::
+The following ``list-recommendations`` example lists the recommendations for a completed code review. This code review has one recommendations. ::
 
     aws codeguru-reviewer list-recommendations \
         --code-review-arn arn:aws:codeguru-reviewer:us-west-2:544120495673:code-review:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
@@ -19,4 +19,4 @@ Output::
         ]
     }
 
-For more information, see `ListRecommendations<https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_ListRecommendations.html>`__ in the *Amazon DevOps Guru API Reference*.
+For more information, see `Step 4: Provide feedback <https://docs.aws.amazon.com/codeguru/latest/reviewer-ug/provide-feedback.html>`__ in the *Amazon CodeGuru Reviewer User Guide*.

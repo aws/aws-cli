@@ -15,40 +15,52 @@ import os
 
 from s3transfer.manager import TransferManager
 
-from awscli.customizations.s3.utils import (
-    human_readable_size, MAX_UPLOAD_SIZE, find_bucket_key, relative_path,
-    create_warning, NonSeekableStream)
-from awscli.customizations.s3.transferconfig import \
-    create_transfer_config_from_runtime_config
-from awscli.customizations.s3.results import QueuedResultSubscriber
-from awscli.customizations.s3.results import ProgressResultSubscriber
-from awscli.customizations.s3.results import DoneResultSubscriber
-from awscli.customizations.s3.results import QueuedResult
-from awscli.customizations.s3.results import SuccessResult
-from awscli.customizations.s3.results import FailureResult
-from awscli.customizations.s3.results import DryRunResult
-from awscli.customizations.s3.results import ResultRecorder
-from awscli.customizations.s3.results import ResultPrinter
-from awscli.customizations.s3.results import OnlyShowErrorsResultPrinter
-from awscli.customizations.s3.results import NoProgressResultPrinter
-from awscli.customizations.s3.results import ResultProcessor
-from awscli.customizations.s3.results import CommandResultRecorder
-from awscli.customizations.s3.utils import RequestParamsMapper
-from awscli.customizations.s3.utils import StdoutBytesWriter
-from awscli.customizations.s3.subscribers import (
-    ProvideSizeSubscriber, ProvideUploadContentTypeSubscriber,
-    ProvideLastModifiedTimeSubscriber,
-    CopyPropsSubscriberFactory, DirectoryCreatorSubscriber,
-    DeleteSourceFileSubscriber, DeleteSourceObjectSubscriber,
-    DeleteCopySourceObjectSubscriber
-)
 from awscli.compat import get_binary_stdin
-
+from awscli.customizations.s3.results import (
+    CommandResultRecorder,
+    DoneResultSubscriber,
+    DryRunResult,
+    FailureResult,
+    NoProgressResultPrinter,
+    OnlyShowErrorsResultPrinter,
+    ProgressResultSubscriber,
+    QueuedResult,
+    QueuedResultSubscriber,
+    ResultPrinter,
+    ResultProcessor,
+    ResultRecorder,
+    SuccessResult,
+)
+from awscli.customizations.s3.subscribers import (
+    CaseConflictCleanupSubscriber,
+    CopyPropsSubscriberFactory,
+    DeleteCopySourceObjectSubscriber,
+    DeleteSourceFileSubscriber,
+    DeleteSourceObjectSubscriber,
+    DirectoryCreatorSubscriber,
+    ProvideETagSubscriber,
+    ProvideLastModifiedTimeSubscriber,
+    ProvideSizeSubscriber,
+    ProvideUploadContentTypeSubscriber,
+)
+from awscli.customizations.s3.transferconfig import (
+    create_transfer_config_from_runtime_config,
+)
+from awscli.customizations.s3.utils import (
+    MAX_UPLOAD_SIZE,
+    NonSeekableStream,
+    RequestParamsMapper,
+    StdoutBytesWriter,
+    create_warning,
+    find_bucket_key,
+    human_readable_size,
+    relative_path,
+)
 
 LOGGER = logging.getLogger(__name__)
 
 
-class S3TransferHandlerFactory(object):
+class S3TransferHandlerFactory:
     def __init__(self, cli_params):
         """Factory for S3TransferHandlers
 
@@ -73,12 +85,15 @@ class S3TransferHandlerFactory(object):
         result_processor_handlers = [result_recorder]
         self._add_result_printer(result_recorder, result_processor_handlers)
         result_processor = ResultProcessor(
-            result_queue, result_processor_handlers)
+            result_queue, result_processor_handlers
+        )
         command_result_recorder = CommandResultRecorder(
-            result_queue, result_recorder, result_processor)
+            result_queue, result_recorder, result_processor
+        )
 
         return S3TransferHandler(
-            transfer_manager, self._cli_params, command_result_recorder)
+            transfer_manager, self._cli_params, command_result_recorder
+        )
 
     def _add_result_printer(self, result_recorder, result_processor_handlers):
         if self._cli_params.get('quiet'):
@@ -90,11 +105,15 @@ class S3TransferHandlerFactory(object):
         elif not self._cli_params.get('progress'):
             result_printer = NoProgressResultPrinter(result_recorder)
         else:
-            result_printer = ResultPrinter(result_recorder)
+            result_printer = ResultPrinter(
+                result_recorder,
+                frequency=self._cli_params.get('progress_frequency'),
+                oneline=not self._cli_params.get('progress_multiline'),
+            )
         result_processor_handlers.append(result_printer)
 
 
-class S3TransferHandler(object):
+class S3TransferHandler:
     def __init__(self, transfer_manager, cli_params, result_command_recorder):
         """Backend for performing S3 transfers
 
@@ -119,8 +138,9 @@ class S3TransferHandler(object):
         self._result_command_recorder = result_command_recorder
 
         submitter_args = (
-            self._transfer_manager, self._result_command_recorder.result_queue,
-            cli_params
+            self._transfer_manager,
+            self._result_command_recorder.result_queue,
+            cli_params,
         )
         self._submitters = [
             UploadStreamRequestSubmitter(*submitter_args),
@@ -129,7 +149,7 @@ class S3TransferHandler(object):
             DownloadRequestSubmitter(*submitter_args),
             CopyRequestSubmitter(*submitter_args),
             DeleteRequestSubmitter(*submitter_args),
-            LocalDeleteRequestSubmitter(*submitter_args)
+            LocalDeleteRequestSubmitter(*submitter_args),
         ]
 
     def call(self, fileinfos):
@@ -153,11 +173,12 @@ class S3TransferHandler(object):
                                 total_submissions += 1
                             break
                 self._result_command_recorder.notify_total_submissions(
-                    total_submissions)
+                    total_submissions
+                )
         return self._result_command_recorder.get_command_result()
 
 
-class BaseTransferRequestSubmitter(object):
+class BaseTransferRequestSubmitter:
     REQUEST_MAPPER_METHOD = None
 
     def __init__(self, transfer_manager, result_queue, cli_params):
@@ -219,7 +240,8 @@ class BaseTransferRequestSubmitter(object):
             self.REQUEST_MAPPER_METHOD(extra_args, self._cli_params)
         if not self._cli_params.get('dryrun'):
             return self._submit_transfer_request(
-                fileinfo, extra_args, self._get_subscribers(fileinfo))
+                fileinfo, extra_args, self._get_subscribers(fileinfo)
+            )
         else:
             self._submit_dryrun(fileinfo)
 
@@ -227,14 +249,14 @@ class BaseTransferRequestSubmitter(object):
         subscribers = []
         result_subscriber_kwargs = self._get_result_subscriber_kwargs(fileinfo)
         self._add_provide_size_subscriber(subscribers, fileinfo)
+        subscribers.append(ProvideETagSubscriber(fileinfo.etag))
         subscribers.append(QueuedResultSubscriber(**result_subscriber_kwargs))
         self._add_additional_subscribers(subscribers, fileinfo)
         subscribers.extend(
             [
                 ProgressResultSubscriber(**result_subscriber_kwargs),
-                DoneResultSubscriber(**result_subscriber_kwargs)
+                DoneResultSubscriber(**result_subscriber_kwargs),
             ]
-
         )
         return subscribers
 
@@ -251,8 +273,9 @@ class BaseTransferRequestSubmitter(object):
     def _submit_dryrun(self, fileinfo):
         transfer_type = self._get_transfer_type(fileinfo)
         src, dest = self._format_src_dest(fileinfo)
-        self._result_queue.put(DryRunResult(
-            transfer_type=transfer_type, src=src, dest=dest))
+        self._result_queue.put(
+            DryRunResult(transfer_type=transfer_type, src=src, dest=dest)
+        )
 
     def _add_provide_size_subscriber(self, subscribers, fileinfo):
         subscribers.append(ProvideSizeSubscriber(fileinfo.size))
@@ -280,27 +303,27 @@ class BaseTransferRequestSubmitter(object):
         return []
 
     def _should_inject_content_type(self):
-        return (
-            self._cli_params.get('guess_mime_type') and
-            not self._cli_params.get('content_type')
-        )
+        return self._cli_params.get(
+            'guess_mime_type'
+        ) and not self._cli_params.get('content_type')
 
     def _warn_glacier(self, fileinfo):
         if not self._cli_params.get('force_glacier_transfer'):
             if not fileinfo.is_glacier_compatible():
                 LOGGER.debug(
                     'Encountered glacier object s3://%s. Not performing '
-                    '%s on object.' % (fileinfo.src, fileinfo.operation_name))
+                    '%s on object.' % (fileinfo.src, fileinfo.operation_name)
+                )
                 if not self._cli_params.get('ignore_glacier_warnings'):
                     warning = create_warning(
-                        's3://'+fileinfo.src,
+                        's3://' + fileinfo.src,
                         'Object is of storage class GLACIER. Unable to '
                         'perform %s operations on GLACIER objects. You must '
                         'restore the object to be able to perform the '
                         'operation. See aws s3 %s help for additional '
                         'parameter options to ignore or force these '
-                        'transfers.' %
-                        (fileinfo.operation_name, fileinfo.operation_name)
+                        'transfers.'
+                        % (fileinfo.operation_name, fileinfo.operation_name),
                     )
                     self._result_queue.put(warning)
                 return True
@@ -311,10 +334,12 @@ class BaseTransferRequestSubmitter(object):
         # need to take that into account when checking for a parent prefix.
         parent_prefix = '..' + os.path.sep
         escapes_cwd = os.path.normpath(fileinfo.compare_key).startswith(
-            parent_prefix)
+            parent_prefix
+        )
         if escapes_cwd:
             warning = create_warning(
-                fileinfo.compare_key, "File references a parent directory.")
+                fileinfo.compare_key, "File references a parent directory."
+            )
             self._result_queue.put(warning)
             return True
         return False
@@ -353,8 +378,11 @@ class UploadRequestSubmitter(BaseTransferRequestSubmitter):
         bucket, key = find_bucket_key(fileinfo.dest)
         filein = self._get_filein(fileinfo)
         return self._transfer_manager.upload(
-            fileobj=filein, bucket=bucket, key=key,
-            extra_args=extra_args, subscribers=subscribers
+            fileobj=filein,
+            bucket=bucket,
+            key=key,
+            extra_args=extra_args,
+            subscribers=subscribers,
         )
 
     def _get_filein(self, fileinfo):
@@ -366,11 +394,13 @@ class UploadRequestSubmitter(BaseTransferRequestSubmitter):
     def _warn_if_too_large(self, fileinfo):
         if getattr(fileinfo, 'size') and fileinfo.size > MAX_UPLOAD_SIZE:
             file_path = relative_path(fileinfo.src)
-            warning_message = (
-                "File %s exceeds s3 upload limit of %s." % (
-                    file_path, human_readable_size(MAX_UPLOAD_SIZE)))
+            warning_message = "File %s exceeds s3 upload limit of %s." % (
+                file_path,
+                human_readable_size(MAX_UPLOAD_SIZE),
+            )
             warning = create_warning(
-                file_path, warning_message, skip_file=False)
+                file_path, warning_message, skip_file=False
+            )
             self._result_queue.put(warning)
 
     def _format_src_dest(self, fileinfo):
@@ -387,25 +417,68 @@ class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
 
     def _add_additional_subscribers(self, subscribers, fileinfo):
         subscribers.append(DirectoryCreatorSubscriber())
-        subscribers.append(ProvideLastModifiedTimeSubscriber(
-            fileinfo.last_update, self._result_queue))
+        subscribers.append(
+            ProvideLastModifiedTimeSubscriber(
+                fileinfo.last_update, self._result_queue
+            )
+        )
         if self._cli_params.get('is_move', False):
-            subscribers.append(DeleteSourceObjectSubscriber(
-                fileinfo.source_client))
+            subscribers.append(
+                DeleteSourceObjectSubscriber(fileinfo.source_client)
+            )
+        if fileinfo.case_conflict_submitted is not None:
+            subscribers.append(
+                CaseConflictCleanupSubscriber(
+                    fileinfo.case_conflict_submitted,
+                    fileinfo.case_conflict_key,
+                )
+            )
 
     def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
         bucket, key = find_bucket_key(fileinfo.src)
         fileout = self._get_fileout(fileinfo)
         return self._transfer_manager.download(
-            fileobj=fileout, bucket=bucket, key=key,
-            extra_args=extra_args, subscribers=subscribers
+            fileobj=fileout,
+            bucket=bucket,
+            key=key,
+            extra_args=extra_args,
+            subscribers=subscribers,
         )
 
     def _get_fileout(self, fileinfo):
         return fileinfo.dest
 
     def _get_warning_handlers(self):
-        return [self._warn_glacier, self._warn_parent_reference]
+        return [
+            self._warn_glacier,
+            self._warn_parent_reference,
+            self._warn_if_file_exists_with_no_overwrite,
+        ]
+
+    def _warn_if_file_exists_with_no_overwrite(self, fileinfo):
+        """
+        Warning handler to skip downloads when no-overwrite is set and local file exists.
+
+        This method prevents overwriting existing local files during S3 download operations
+        when the --no-overwrite flag is specified. It checks if the destination file already
+        exists on the local filesystem and skips the download if found.
+
+        :type fileinfo: FileInfo
+        :param fileinfo: The FileInfo object containing transfer details
+
+        :rtype: bool
+        :returns: True if the file should be skipped (exists and no-overwrite is set),
+                False if the download should proceed
+        """
+        if not self._cli_params.get('no_overwrite'):
+            return False
+        fileout = self._get_fileout(fileinfo)
+        if os.path.exists(fileout):
+            LOGGER.debug(
+                f"warning: skipping {fileinfo.src} -> {fileinfo.dest}, file exists at destination"
+            )
+            return True
+        return False
 
     def _format_src_dest(self, fileinfo):
         src = self._format_s3_path(fileinfo.src)
@@ -423,8 +496,9 @@ class CopyRequestSubmitter(BaseTransferRequestSubmitter):
         if not self._cli_params.get('metadata_directive'):
             self._add_copy_props_subscribers(subscribers, fileinfo)
         if self._cli_params.get('is_move', False):
-            subscribers.append(DeleteCopySourceObjectSubscriber(
-                fileinfo.source_client))
+            subscribers.append(
+                DeleteCopySourceObjectSubscriber(fileinfo.source_client)
+            )
 
     def _add_copy_props_subscribers(self, subscribers, fileinfo):
         copy_props_factory = CopyPropsSubscriberFactory(
@@ -439,13 +513,18 @@ class CopyRequestSubmitter(BaseTransferRequestSubmitter):
         source_bucket, source_key = find_bucket_key(fileinfo.src)
         copy_source = {'Bucket': source_bucket, 'Key': source_key}
         return self._transfer_manager.copy(
-            bucket=bucket, key=key, copy_source=copy_source,
-            extra_args=extra_args, subscribers=subscribers,
-            source_client=fileinfo.source_client
+            bucket=bucket,
+            key=key,
+            copy_source=copy_source,
+            extra_args=extra_args,
+            subscribers=subscribers,
+            source_client=fileinfo.source_client,
         )
 
     def _get_warning_handlers(self):
-        return [self._warn_glacier]
+        return [
+            self._warn_glacier,
+        ]
 
     def _format_src_dest(self, fileinfo):
         src = self._format_s3_path(fileinfo.src)
@@ -455,9 +534,8 @@ class CopyRequestSubmitter(BaseTransferRequestSubmitter):
 
 class UploadStreamRequestSubmitter(UploadRequestSubmitter):
     def can_submit(self, fileinfo):
-        return (
-            fileinfo.operation_name == 'upload' and
-            self._cli_params.get('is_stream')
+        return fileinfo.operation_name == 'upload' and self._cli_params.get(
+            'is_stream'
         )
 
     def _add_provide_size_subscriber(self, subscribers, fileinfo):
@@ -478,9 +556,8 @@ class UploadStreamRequestSubmitter(UploadRequestSubmitter):
 
 class DownloadStreamRequestSubmitter(DownloadRequestSubmitter):
     def can_submit(self, fileinfo):
-        return (
-            fileinfo.operation_name == 'download' and
-            self._cli_params.get('is_stream')
+        return fileinfo.operation_name == 'download' and self._cli_params.get(
+            'is_stream'
         )
 
     def _add_provide_size_subscriber(self, subscribers, fileinfo):
@@ -500,8 +577,9 @@ class DeleteRequestSubmitter(BaseTransferRequestSubmitter):
     REQUEST_MAPPER_METHOD = RequestParamsMapper.map_delete_object_params
 
     def can_submit(self, fileinfo):
-        return fileinfo.operation_name == 'delete' and \
-            fileinfo.src_type == 's3'
+        return (
+            fileinfo.operation_name == 'delete' and fileinfo.src_type == 's3'
+        )
 
     def _add_provide_size_subscriber(self, subscribers, fileinfo):
         pass
@@ -509,8 +587,11 @@ class DeleteRequestSubmitter(BaseTransferRequestSubmitter):
     def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
         bucket, key = find_bucket_key(fileinfo.src)
         return self._transfer_manager.delete(
-            bucket=bucket, key=key, extra_args=extra_args,
-            subscribers=subscribers)
+            bucket=bucket,
+            key=key,
+            extra_args=extra_args,
+            subscribers=subscribers,
+        )
 
     def _format_src_dest(self, fileinfo):
         return self._format_s3_path(fileinfo.src), None
@@ -520,8 +601,10 @@ class LocalDeleteRequestSubmitter(BaseTransferRequestSubmitter):
     REQUEST_MAPPER_METHOD = None
 
     def can_submit(self, fileinfo):
-        return fileinfo.operation_name == 'delete' and \
-            fileinfo.src_type == 'local'
+        return (
+            fileinfo.operation_name == 'delete'
+            and fileinfo.src_type == 'local'
+        )
 
     def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
         # This is quirky but essentially instead of relying on a built-in
@@ -537,22 +620,16 @@ class LocalDeleteRequestSubmitter(BaseTransferRequestSubmitter):
         # deleting a local file only happens for sync --delete downloads and
         # is very fast compared to all of the other types of transfers.
         src, dest = self._format_src_dest(fileinfo)
-        result_kwargs = {
-            'transfer_type': 'delete',
-            'src': src,
-            'dest': dest
-        }
+        result_kwargs = {'transfer_type': 'delete', 'src': src, 'dest': dest}
         try:
-            self._result_queue.put(QueuedResult(
-                total_transfer_size=0, **result_kwargs))
+            self._result_queue.put(
+                QueuedResult(total_transfer_size=0, **result_kwargs)
+            )
             os.remove(fileinfo.src)
             self._result_queue.put(SuccessResult(**result_kwargs))
         except Exception as e:
-            self._result_queue.put(
-                FailureResult(exception=e, **result_kwargs))
-        finally:
-            # Return True to indicate that the transfer was submitted
-            return True
+            self._result_queue.put(FailureResult(exception=e, **result_kwargs))
+        return True
 
     def _format_src_dest(self, fileinfo):
         return self._format_local_path(fileinfo.src), None

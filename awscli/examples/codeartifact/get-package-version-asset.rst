@@ -1,13 +1,14 @@
 **To get an asset from a package version**
 
-The following ``get-package-version-asset`` example retrieves the package.tgz asset for version 4.0.0 of an npm package named test-package. ::
+The following ``get-package-version-asset`` example retrieves the ``package.tgz`` asset for version 4.0.0 of an npm package named test-package. ::
 
     aws codeartifact get-package-version-asset \
         --domain test-domain \
-        --repo test-repo \
+        --repository test-repo \
         --format npm \
         --package test-package \
         --package-version 4.0.0 \
+        --asset 'package.tgz' \
         outfileName
 
 Output::

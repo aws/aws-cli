@@ -11,8 +11,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import json
-
-import mock
 import os
 import shutil
 import tempfile
@@ -20,22 +18,21 @@ import tempfile
 from prompt_toolkit.buffer import Buffer
 from prompt_toolkit.completion import Completion
 from prompt_toolkit.document import Document
-from prompt_toolkit.history import History
 from prompt_toolkit.formatted_text import FormattedText
+from prompt_toolkit.history import History
 
-from awscli.autoprompt.history import (
-    HistoryCompleter, HistoryDriver
-)
-from awscli.testutils import unittest
+from awscli.autoprompt.history import HistoryCompleter, HistoryDriver
+from awscli.testutils import mock, skip_if_windows, unittest
 
 
 class TestHistoryCompleter(unittest.TestCase):
     def setUp(self):
         self.strings = [
             'chime associate-phone-number-with-user',
-            'opsworks-cm associate-node',
             'deploy add-tags-to-on-premises-instances',
             's3 ls',
+            'ecs get-task-protection',
+            'ecr get-lifecycle-policy-preview',
         ]
         self.buffer = mock.Mock(spec=Buffer)
         history = mock.Mock(spec=History)
@@ -48,32 +45,60 @@ class TestHistoryCompleter(unittest.TestCase):
         strings = self.completer.get_completions(document)
         self.assertEqual(
             list(strings),
-            [Completion(text='s3 ls', start_position=0,
-                        display=FormattedText([('', 's3 ls')])),
-             Completion(text='deploy add-tags-to-on-premises-instances',
-                        start_position=0, display=FormattedText([('',
-                        'deploy add-tags-to-on-premises-instances')])),
-             Completion(text='opsworks-cm associate-node',
-                        start_position=0, display=FormattedText(
-                        [('', 'opsworks-cm associate-node')])),
-             Completion(text='chime associate-phone-number-with-user',
-                        start_position=0, display=FormattedText([('',
-                        'chime associate-phone-number-with-user')]))
-            ]
+            [
+                Completion(
+                    text='ecr get-lifecycle-policy-preview',
+                    start_position=0,
+                    display=FormattedText(
+                        [('', 'ecr get-lifecycle-policy-preview')]
+                    ),
+                ),
+                Completion(
+                    text='ecs get-task-protection',
+                    start_position=0,
+                    display=FormattedText([('', 'ecs get-task-protection')]),
+                ),
+                Completion(
+                    text='s3 ls',
+                    start_position=0,
+                    display=FormattedText([('', 's3 ls')]),
+                ),
+                Completion(
+                    text='deploy add-tags-to-on-premises-instances',
+                    start_position=0,
+                    display=FormattedText(
+                        [('', 'deploy add-tags-to-on-premises-instances')]
+                    ),
+                ),
+                Completion(
+                    text='chime associate-phone-number-with-user',
+                    start_position=0,
+                    display=FormattedText(
+                        [('', 'chime associate-phone-number-with-user')]
+                    ),
+                ),
+            ],
         )
 
     def test_get_completions_with_fuzzy_search(self):
-        document = Document('omine')
+        document = Document('ecgpr')
         strings = self.completer.get_completions(document)
         self.assertEqual(
             list(strings),
-            [Completion(text='opsworks-cm associate-node',
-                        start_position=-5, display=FormattedText(
-                        [('', 'opsworks-cm associate-node')])),
-             Completion(text='deploy add-tags-to-on-premises-instances',
-                        start_position=-5, display=FormattedText([('',
-                        'deploy add-tags-to-on-premises-instances')]))
-            ]
+            [
+                Completion(
+                    text='ecs get-task-protection',
+                    start_position=-5,
+                    display=FormattedText([('', 'ecs get-task-protection')]),
+                ),
+                Completion(
+                    text='ecr get-lifecycle-policy-preview',
+                    start_position=-5,
+                    display=FormattedText(
+                        [('', 'ecr get-lifecycle-policy-preview')]
+                    ),
+                ),
+            ],
         )
 
     def test_show_newest_duplicated_command(self):
@@ -81,7 +106,7 @@ class TestHistoryCompleter(unittest.TestCase):
             'chime associate-phone-number-with-user',
             's3 ls',
             's3api list-buckets',
-            's3 ls'
+            's3 ls',
         ]
         history = mock.Mock(spec=History)
         history.get_strings.return_value = strings
@@ -91,16 +116,25 @@ class TestHistoryCompleter(unittest.TestCase):
         response = self.completer.get_completions(document)
         self.assertEqual(
             list(response),
-            [Completion(text='s3 ls',
-                        start_position=0, display=FormattedText(
-                        [('', 's3 ls')])),
-             Completion(text='s3api list-buckets',
-                        start_position=0, display=FormattedText([('',
-                        's3api list-buckets')])),
-             Completion(text='chime associate-phone-number-with-user',
-                        start_position=0, display=FormattedText([('',
-                        'chime associate-phone-number-with-user')]))
-            ]
+            [
+                Completion(
+                    text='s3 ls',
+                    start_position=0,
+                    display=FormattedText([('', 's3 ls')]),
+                ),
+                Completion(
+                    text='s3api list-buckets',
+                    start_position=0,
+                    display=FormattedText([('', 's3api list-buckets')]),
+                ),
+                Completion(
+                    text='chime associate-phone-number-with-user',
+                    start_position=0,
+                    display=FormattedText(
+                        [('', 'chime associate-phone-number-with-user')]
+                    ),
+                ),
+            ],
         )
 
 
@@ -115,11 +149,10 @@ class TestHistoryDriver(unittest.TestCase):
 
     def test_store_string(self):
         self.history_driver.store_string('aws ec2 describe-instances')
-        with open(self.filename, 'r') as f:
+        with open(self.filename) as f:
             history = json.load(f)
         self.assertEqual(
-            history,
-            {'version': 1, 'commands': ['aws ec2 describe-instances']}
+            history, {'version': 1, 'commands': ['aws ec2 describe-instances']}
         )
 
     def test_creates_folder_and_file(self):
@@ -136,10 +169,11 @@ class TestHistoryDriver(unittest.TestCase):
         commands = history_driver.load_history_strings()
         self.assertEqual(
             list(commands),
-            ['aws dynamodb create-table',
-             'aws s3 ls',
-             'aws ec2 describe-instances'
-             ]
+            [
+                'aws dynamodb create-table',
+                'aws s3 ls',
+                'aws ec2 describe-instances',
+            ],
         )
 
     def test_keep_last_max_commands(self):
@@ -147,14 +181,18 @@ class TestHistoryDriver(unittest.TestCase):
         history_driver.store_string('aws ec2 describe-instances')
         history_driver.store_string('aws s3 ls')
         history_driver.store_string('aws dynamodb create-table')
-        with open(self.filename, 'r') as f:
+        with open(self.filename) as f:
             commands = json.load(f)['commands']
-        self.assertEqual(
-            commands, ['aws s3 ls', 'aws dynamodb create-table']
-        )
+        self.assertEqual(commands, ['aws s3 ls', 'aws dynamodb create-table'])
 
     @mock.patch('awscli.autoprompt.history.FileHistory')
     def test_handle_io_errors(self, file_history_mock):
         history_driver = HistoryDriver(self.filename)
         file_history_mock.store_string.side_effect = IOError
         history_driver.store_string('aws dynamodb create-table')
+
+    @skip_if_windows('chmod is not supported on Windows')
+    def test_sets_file_permissions_to_0600(self):
+        self.history_driver.store_string('aws ec2 describe-instances')
+        permissions = os.stat(self.filename).st_mode & 0o777
+        self.assertEqual(permissions, 0o600)

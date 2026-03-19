@@ -11,16 +11,15 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import argparse
-import logging
 import io
+import logging
 import re
 
 import jmespath
 from botocore.utils import ArgumentGenerator
 
-from awscli.formatter import get_formatter
 from awscli.autocomplete.local.fetcher import CliDriverFetcher
-
+from awscli.formatter import get_formatter
 
 LOG = logging.getLogger(__name__)
 
@@ -34,13 +33,16 @@ class OutputGetter:
 
     def get_output(self, parsed):
         operation_model = self._cli_driver_fetcher.get_operation_model(
-            parsed.lineage, parsed.current_command)
+            parsed.lineage, parsed.current_command
+        )
         if operation_model:
             output_shape = getattr(operation_model, 'output_shape', None)
             if self._shape_has_members(output_shape):
                 operation = ''.join(
-                    [part.capitalize()
-                     for part in parsed.current_command.split('-')]
+                    [
+                        part.capitalize()
+                        for part in parsed.current_command.split('-')
+                    ]
                 )
                 output, error_message = self._get_output(parsed)
                 if error_message is not None:
@@ -48,13 +50,15 @@ class OutputGetter:
                 query, error_message = self._get_query(parsed)
                 if error_message is not None:
                     return error_message
-                return self._get_display(operation, output_shape,
-                                         output, query)
+                return self._get_display(
+                    operation, output_shape, output, query
+                )
         return 'No output'
 
     def _shape_has_members(self, shape):
-        return shape and (getattr(shape, 'members', False) or
-                          getattr(shape, 'member', False))
+        return shape and (
+            getattr(shape, 'members', False) or getattr(shape, 'member', False)
+        )
 
     def _get_output(self, parsed):
         error_message = None
@@ -65,8 +69,8 @@ class OutputGetter:
         output = parsed.global_params.get('output') or session_output
         if output not in self._output_formats:
             error_message = (
-                "Bad value for --output: %s\n\nValid values are: %s" %
-                (output, ', '.join(self._output_formats))
+                "Bad value for --output: %s\n\nValid values are: %s"
+                % (output, ', '.join(self._output_formats))
             )
         return output, error_message
 
@@ -81,7 +85,7 @@ class OutputGetter:
             # user enters query like Groups[2] jmespath will return "null"
             # so we change all the numbers in brackets to 0 to keep the output
             # meaningful
-            query = re.sub(r'([\{\[])\d+?([\}\]])', '\g<1>0\g<2>', query)
+            query = re.sub(r'([\{\[])\d+?([\}\]])', r'\g<1>0\g<2>', query)
             # In case of incorrect expression we return an error message
             # but we want to do it only in the case expression is really broken
             # and not during user types it so if expression has open bracket

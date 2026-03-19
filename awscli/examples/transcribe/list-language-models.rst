@@ -17,8 +17,8 @@ Output::
                 "ModelStatus": "IN_PROGRESS",
                 "UpgradeAvailability": false,
                 "InputDataConfig": {
-                    "S3Uri": "s3://DOC-EXAMPLE-BUCKET/clm-training-data/",
-                    "TuningDataS3Uri": "s3://DOC-EXAMPLE-BUCKET/clm-tuning-data/",
+                    "S3Uri": "s3://amzn-s3-demo-bucket/clm-training-data/",
+                    "TuningDataS3Uri": "s3://amzn-s3-demo-bucket/clm-tuning-data/",
                     "DataAccessRoleArn": "arn:aws:iam::AWS-account-number:role/IAM-role-used-to-create-the-custom-language-model"
                 }
             },
@@ -31,7 +31,7 @@ Output::
                 "ModelStatus": "IN_PROGRESS",
                 "UpgradeAvailability": false,
                 "InputDataConfig": {
-                    "S3Uri": "s3://DOC-EXAMPLE-BUCKET/clm-training-data/",
+                    "S3Uri": "s3://amzn-s3-demo-bucket/clm-training-data/",
                     "DataAccessRoleArn": "arn:aws:iam::AWS-account-number:role/IAM-role-used-to-create-the-custom-language-model"
                 }
             },
@@ -44,7 +44,7 @@ Output::
                 "ModelStatus": "COMPLETED",
                 "UpgradeAvailability": false,
                 "InputDataConfig": {
-                    "S3Uri": "s3://DOC-EXAMPLE-BUCKET/clm-training-data/",
+                    "S3Uri": "s3://amzn-s3-demo-bucket/clm-training-data/",
                     "DataAccessRoleArn": "arn:aws:iam::AWS-account-number:role/IAM-role-used-to-create-the-custom-language-model"
                 }
             }

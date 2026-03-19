@@ -1,10 +1,11 @@
 **To create a transit gateway**
 
-The following ``create-transit-gateway`` This example creates a transit gateway. ::
+The following ``create-transit-gateway`` example creates a transit gateway. ::
 
-    aws ec2 create-transit-gateway --description MyTGW \
-        --options=AmazonSideAsn=64516,AutoAcceptSharedAttachments=enable,DefaultRouteTableAssociation=enable,DefaultRouteTablePropagation=enable,VpnEcmpSupport=enable,DnsSupport=enable
-        
+    aws ec2 create-transit-gateway \
+        --description MyTGW \
+        --options AmazonSideAsn=64516,AutoAcceptSharedAttachments=enable,DefaultRouteTableAssociation=enable,DefaultRouteTablePropagation=enable,VpnEcmpSupport=enable,DnsSupport=enable
+
 Output::
 
     {
@@ -28,4 +29,4 @@ Output::
         }
     }
 
-For more information, see `Create a Transit Gateway <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-transit-gateways.html#create-tgw>`__ in the *AWS Transit Gateways Guide*.
+For more information, see `Create a transit gateway <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-transit-gateways.html#create-tgw>`__ in the *Transit Gateways Guide*.

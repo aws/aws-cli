@@ -12,20 +12,26 @@
 # language governing permissions and limitations under the License.
 
 import logging
-from awscli.customizations.emr import configutils
-from awscli.customizations.emr import exceptions
+
+from awscli.customizations.emr import configutils, exceptions
 
 LOG = logging.getLogger(__name__)
 
 SUPPORTED_CONFIG_LIST = [
     {'name': 'service_role'},
     {'name': 'log_uri'},
-    {'name': 'instance_profile', 'arg_name': 'ec2_attributes',
-     'arg_value_key': 'InstanceProfile'},
-    {'name': 'key_name', 'arg_name': 'ec2_attributes',
-     'arg_value_key': 'KeyName'},
+    {
+        'name': 'instance_profile',
+        'arg_name': 'ec2_attributes',
+        'arg_value_key': 'InstanceProfile',
+    },
+    {
+        'name': 'key_name',
+        'arg_name': 'ec2_attributes',
+        'arg_value_key': 'KeyName',
+    },
     {'name': 'enable_debugging', 'type': 'boolean'},
-    {'name': 'key_pair_file'}
+    {'name': 'key_pair_file'},
 ]
 
 TYPES = ['string', 'boolean']
@@ -39,27 +45,30 @@ def get_applicable_configurations(command):
 def _create_supported_configuration(config):
     config_type = config['type'] if 'type' in config else 'string'
 
-    if (config_type == 'string'):
-        config_arg_name = config['arg_name'] \
-            if 'arg_name' in config else config['name']
-        config_arg_value_key = config['arg_value_key'] \
-            if 'arg_value_key' in config else None
-        configuration = StringConfiguration(config['name'],
-                                            config_arg_name,
-                                            config_arg_value_key)
-    elif (config_type == 'boolean'):
+    if config_type == 'string':
+        config_arg_name = (
+            config['arg_name'] if 'arg_name' in config else config['name']
+        )
+        config_arg_value_key = (
+            config['arg_value_key'] if 'arg_value_key' in config else None
+        )
+        configuration = StringConfiguration(
+            config['name'], config_arg_name, config_arg_value_key
+        )
+    elif config_type == 'boolean':
         configuration = BooleanConfiguration(config['name'])
 
     return configuration
 
 
 def _create_supported_configurations():
-    return [_create_supported_configuration(config)
-            for config in SUPPORTED_CONFIG_LIST]
+    return [
+        _create_supported_configuration(config)
+        for config in SUPPORTED_CONFIG_LIST
+    ]
 
 
-class Configuration(object):
-
+class Configuration:
     def __init__(self, name, arg_name):
         self.name = name
         self.arg_name = arg_name
@@ -78,7 +87,6 @@ class Configuration(object):
 
 
 class StringConfiguration(Configuration):
-
     def __init__(self, name, arg_name, arg_value_key=None):
         super(StringConfiguration, self).__init__(name, arg_name)
         self.arg_value_key = arg_value_key
@@ -87,40 +95,42 @@ class StringConfiguration(Configuration):
         return command.supports_arg(self.arg_name.replace('_', '-'))
 
     def is_present(self, parsed_args):
-        if (not self.arg_value_key):
+        if not self.arg_value_key:
             return self._check_arg(parsed_args, self.arg_name)
         else:
-            return self._check_arg(parsed_args, self.arg_name) \
-                and self.arg_value_key in getattr(parsed_args, self.arg_name)
+            return self._check_arg(
+                parsed_args, self.arg_name
+            ) and self.arg_value_key in getattr(parsed_args, self.arg_name)
 
     def add(self, command, parsed_args, value):
-        if (not self.arg_value_key):
+        if not self.arg_value_key:
             setattr(parsed_args, self.arg_name, value)
         else:
-            if (not self._check_arg(parsed_args, self.arg_name)):
+            if not self._check_arg(parsed_args, self.arg_name):
                 setattr(parsed_args, self.arg_name, {})
             getattr(parsed_args, self.arg_name)[self.arg_value_key] = value
 
 
 class BooleanConfiguration(Configuration):
-
     def __init__(self, name):
         super(BooleanConfiguration, self).__init__(name, name)
         self.no_version_arg_name = "no_" + name
 
     def is_applicable(self, command):
-        return command.supports_arg(self.arg_name.replace('_', '-')) and \
-            command.supports_arg(self.no_version_arg_name.replace('_', '-'))
+        return command.supports_arg(
+            self.arg_name.replace('_', '-')
+        ) and command.supports_arg(self.no_version_arg_name.replace('_', '-'))
 
     def is_present(self, parsed_args):
-        return self._check_arg(parsed_args, self.arg_name) \
-            or self._check_arg(parsed_args, self.no_version_arg_name)
+        return self._check_arg(parsed_args, self.arg_name) or self._check_arg(
+            parsed_args, self.no_version_arg_name
+        )
 
     def add(self, command, parsed_args, value):
-        if (value.lower() == 'true'):
+        if value.lower() == 'true':
             setattr(parsed_args, self.arg_name, True)
             setattr(parsed_args, self.no_version_arg_name, False)
-        elif (value.lower() == 'false'):
+        elif value.lower() == 'false':
             setattr(parsed_args, self.arg_name, False)
             setattr(parsed_args, self.no_version_arg_name, True)
         else:
@@ -128,4 +138,6 @@ class BooleanConfiguration(Configuration):
                 config_value=value,
                 config_key=self.arg_name,
                 profile_var_name=configutils.get_current_profile_var_name(
-                    command._session))
+                    command._session
+                ),
+            )

@@ -20,22 +20,21 @@ from tests.functional.sso import BaseSSOTest
 class TestLogoutCommand(BaseSSOTest):
     def setUp(self):
         super(TestLogoutCommand, self).setUp()
-        self.token_cache_dir = self.files.full_path('token-cache')
-        self.token_cache_dir_patch = mock.patch(
+        self.logout_token_cache_dir_patch = mock.patch(
             'awscli.customizations.sso.logout.SSO_TOKEN_DIR',
-            self.token_cache_dir
+            self.token_cache_dir,
         )
-        self.token_cache_dir_patch.start()
+        self.logout_token_cache_dir_patch.start()
         self.aws_creds_cache_dir = self.files.full_path('aws-creds-cache')
         self.aws_creds_cache_dir_patch = mock.patch(
             'awscli.customizations.sso.logout.AWS_CREDS_CACHE_DIR',
-            self.aws_creds_cache_dir
+            self.aws_creds_cache_dir,
         )
         self.aws_creds_cache_dir_patch.start()
 
     def tearDown(self):
         super(TestLogoutCommand, self).tearDown()
-        self.token_cache_dir_patch.stop()
+        self.logout_token_cache_dir_patch.stop()
         self.aws_creds_cache_dir_patch.stop()
 
     def add_cached_token(self, filename):
@@ -55,7 +54,7 @@ class TestLogoutCommand(BaseSSOTest):
                 'AccessKeyId': 'access-key',
                 'SecretAccessKey': 'secret-key',
                 "SessionToken": 'session-token',
-                "Expiration": '2020-01-23T20:48:59UTC'
+                "Expiration": '2020-01-23T20:48:59UTC',
             },
         }
         if from_sso:
@@ -90,9 +89,11 @@ class TestLogoutCommand(BaseSSOTest):
 
     def test_logout_ignores_non_sso_tokens(self):
         registration_token = os.path.join(
-            self.token_cache_dir, 'botocore-client-id.json')
+            self.token_cache_dir, 'botocore-client-id.json'
+        )
         self.files.create_file(
-            registration_token, json.dumps({'clientId': 'myid'}))
+            registration_token, json.dumps({'clientId': 'myid'})
+        )
         self.run_cmd('sso logout')
         self.assert_file_exists(registration_token)
 
@@ -128,3 +129,29 @@ class TestLogoutCommand(BaseSSOTest):
         token = self.add_cached_token('token.json')
         self.run_cmd('sso logout', expected_rc=0)
         self.assert_file_does_not_exist(token)
+
+    @mock.patch('botocore.session.Session.create_client')
+    def test_logout_with_custom_ca(self, create_client_patch):
+        token = self.add_cached_token('token.json')
+        creds = self.add_cached_aws_credentials('sso-creds.json')
+        self.run_cmd('sso logout --ca-bundle /path/to/ca/bundle.pem')
+        create_client_patch.assert_called_once_with(
+            'sso',
+            region_name='us-west-2',
+            verify='/path/to/ca/bundle.pem',
+        )
+        self.assert_file_does_not_exist(token)
+        self.assert_file_does_not_exist(creds)
+
+    @mock.patch('botocore.session.Session.create_client')
+    def test_logout_no_verify_ssl(self, create_client_patch):
+        token = self.add_cached_token('token.json')
+        creds = self.add_cached_aws_credentials('sso-creds.json')
+        self.run_cmd('sso logout --no-verify-ssl')
+        create_client_patch.assert_called_once_with(
+            'sso',
+            region_name='us-west-2',
+            verify=False,
+        )
+        self.assert_file_does_not_exist(token)
+        self.assert_file_does_not_exist(creds)

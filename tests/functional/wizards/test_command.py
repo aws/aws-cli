@@ -11,11 +11,15 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
-import tempfile
 import shutil
+import tempfile
 
-from awscli.testutils import BaseAWSCommandParamsTest, mock, cd
-from awscli.testutils import BaseAWSHelpOutputTest
+from awscli.testutils import (
+    BaseAWSCommandParamsTest,
+    BaseAWSHelpOutputTest,
+    cd,
+    mock,
+)
 
 
 class TestRunWizard(BaseAWSCommandParamsTest):
@@ -26,8 +30,7 @@ class TestRunWizard(BaseAWSCommandParamsTest):
             os.mkdir('iam')
         self.parsed_responses = [{"Roles": []}]
         self.root_dir_patch = mock.patch(
-            'awscli.customizations.wizard.loader.WIZARD_SPEC_DIR',
-            self.tempdir
+            'awscli.customizations.wizard.loader.WIZARD_SPEC_DIR', self.tempdir
         )
         self.root_dir_patch.start()
 
@@ -40,7 +43,7 @@ class TestRunWizard(BaseAWSCommandParamsTest):
         wizard_path = os.path.join(self.tempdir, 'iam', 'test-wizard.yml')
         with open(wizard_path, 'w') as f:
             f.write(
-                'version: "0.9"\n'
+                'version: "0.1"\n'
                 'plan:\n'
                 '  start:\n'
                 '    values:\n'
@@ -55,8 +58,7 @@ class TestRunWizard(BaseAWSCommandParamsTest):
                 '        PathPrefix: "{myprefix}"\n'
             )
         stdout, _, _ = self.assert_params_for_cmd(
-            'iam wizard test-wizard',
-            params={'PathPrefix': '/foo/'}
+            'iam wizard test-wizard', params={'PathPrefix': '/foo/'}
         )
         self.assertEqual(self.operations_called[0][0].name, 'ListRoles')
 
@@ -64,7 +66,7 @@ class TestRunWizard(BaseAWSCommandParamsTest):
         wizard_path = os.path.join(self.tempdir, 'iam', '_main.yml')
         with open(wizard_path, 'w') as f:
             f.write(
-                'version: "0.9"\n'
+                'version: "0.1"\n'
                 'plan:\n'
                 '  start:\n'
                 '    values:\n'
@@ -85,10 +87,10 @@ class TestRunWizard(BaseAWSCommandParamsTest):
 
 
 class TestWizardHelpCommand(BaseAWSHelpOutputTest):
-    def test_wait_help_command(self):
+    def test_wizard_help_command(self):
         self.driver.main(['iam', 'wizard', 'help'])
         self.assert_contains('new-role')
 
-    def test_wait_help_command(self):
+    def test_wizard_subcommand_help_command(self):
         self.driver.main(['iam', 'wizard', 'new-role', 'help'])
         self.assert_contains('new-role')

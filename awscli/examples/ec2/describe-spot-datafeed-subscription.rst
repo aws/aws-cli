@@ -12,7 +12,7 @@ Output::
       "SpotDatafeedSubscription": {
           "OwnerId": "123456789012",
           "Prefix": "spotdata",
-          "Bucket": "my-s3-bucket",
+          "Bucket": "amzn-s3-demo-bucket",
           "State": "Active"
       }
   }

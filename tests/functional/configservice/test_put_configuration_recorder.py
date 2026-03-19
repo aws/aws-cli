@@ -20,23 +20,14 @@ class TestPutConfigurationRecorder(BaseAWSCommandParamsTest):
         cmdline = self.prefix + ' --configuration-recorder'
         cmdline += ' name=myrecorder,roleARN=myarn'
         result = {
-            'ConfigurationRecorder': {
-                'name': 'myrecorder',
-                'roleARN': 'myarn'
-            }
+            'ConfigurationRecorder': {'name': 'myrecorder', 'roleARN': 'myarn'}
         }
         self.assert_params_for_cmd(cmdline, result)
 
     def test_no_configuration_recorder(self):
         stdout, stderr, rc = self.run_cmd(self.prefix, expected_rc=252)
-        self.assertIn(
-            'required',
-            stderr
-        )
-        self.assertIn(
-            '--configuration-recorder',
-            stderr
-        )
+        self.assertIn('required', stderr)
+        self.assertIn('--configuration-recorder', stderr)
 
     def test_configuration_recorder_with_recording_group(self):
         cmdline = self.prefix + ' --configuration-recorder'
@@ -50,8 +41,8 @@ class TestPutConfigurationRecorder(BaseAWSCommandParamsTest):
                 'roleARN': 'myarn',
                 'recordingGroup': {
                     'allSupported': True,
-                    'resourceTypes': ['AWS::EC2::Volume', 'AWS::EC2::VPC']
-                }
+                    'resourceTypes': ['AWS::EC2::Volume', 'AWS::EC2::VPC'],
+                },
             }
         }
         self.assert_params_for_cmd(cmdline, result)

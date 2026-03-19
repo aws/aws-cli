@@ -10,11 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import sys
 import logging
+import sys
 
 from awscli.customizations.commands import BasicCommand
-from awscli.compat import six
 
 from . import PREDEFINED_SECTION_NAMES
 
@@ -23,19 +22,27 @@ LOG = logging.getLogger(__name__)
 
 class ConfigureGetCommand(BasicCommand):
     NAME = 'get'
-    DESCRIPTION = BasicCommand.FROM_FILE('configure', 'get',
-                                         '_description.rst')
+    DESCRIPTION = BasicCommand.FROM_FILE(
+        'configure', 'get', '_description.rst'
+    )
     SYNOPSIS = 'aws configure get varname [--profile profile-name]'
     EXAMPLES = BasicCommand.FROM_FILE('configure', 'get', '_examples.rst')
     ARG_TABLE = [
-        {'name': 'varname',
-         'help_text': 'The name of the config value to retrieve.',
-         'action': 'store',
-         'cli_type_name': 'string', 'positional_arg': True},
+        {
+            'name': 'varname',
+            'help_text': 'The name of the config value to retrieve.',
+            'action': 'store',
+            'cli_type_name': 'string',
+            'positional_arg': True,
+        },
     ]
 
-    def __init__(self, session, stream=sys.stdout, error_stream=sys.stderr):
+    def __init__(self, session, stream=None, error_stream=None):
         super(ConfigureGetCommand, self).__init__(session)
+        if stream is None:
+            stream = sys.stdout
+        if error_stream is None:
+            error_stream = sys.stderr
         self._stream = stream
         self._error_stream = error_stream
 
@@ -50,9 +57,9 @@ class ConfigureGetCommand(BasicCommand):
         else:
             value = self._get_dotted_config_value(varname)
 
-        LOG.debug(u'Config value retrieved: %s' % value)
+        LOG.debug('Config value retrieved: %s' % value)
 
-        if isinstance(value, six.string_types):
+        if isinstance(value, str):
             self._stream.write(value)
             self._stream.write('\n')
             return 0
@@ -78,8 +85,9 @@ class ConfigureGetCommand(BasicCommand):
             value = full_config.get(section, {}).get(config_name)
             if value is None:
                 # Try to retrieve it from the profile config.
-                value = full_config['profiles'].get(
-                    section, {}).get(config_name)
+                value = (
+                    full_config['profiles'].get(section, {}).get(config_name)
+                )
             return value
 
         if parts[0] == 'profile':
@@ -90,7 +98,8 @@ class ConfigureGetCommand(BasicCommand):
         # default.emr-dev.emr.instance_profile) If not, go further to check
         # if varname starts with a known profile name
         elif parts[0] == 'default' or (
-                parts[0] in self._session.full_config['profiles']):
+            parts[0] in self._session.full_config['profiles']
+        ):
             profile_name = parts[0]
             config_name = parts[1]
             remaining = parts[2:]
@@ -101,8 +110,11 @@ class ConfigureGetCommand(BasicCommand):
             config_name = parts[0]
             remaining = parts[1:]
 
-        value = self._session.full_config['profiles'].get(
-            profile_name, {}).get(config_name)
+        value = (
+            self._session.full_config['profiles']
+            .get(profile_name, {})
+            .get(config_name)
+        )
         if len(remaining) == 1:
             try:
                 value = value.get(remaining[-1])

@@ -11,10 +11,12 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
-    BaseAWSCommandParamsTest
 from datetime import datetime
 from time import mktime
+
+from tests.unit.customizations.emr import (
+    EMRBaseAWSCommandParamsTest as BaseAWSCommandParamsTest,
+)
 
 
 class TestListClusters(BaseAWSCommandParamsTest):
@@ -23,13 +25,15 @@ class TestListClusters(BaseAWSCommandParamsTest):
     def test_list_active_clusters(self):
         args = '--active'
         cmdline = self.prefix + args
-        result = {'ClusterStates': ['STARTING',
-                                    'BOOTSTRAPPING',
-                                    'RUNNING',
-                                    'WAITING',
-                                    'TERMINATING'
-                                    ]
-                  }
+        result = {
+            'ClusterStates': [
+                'STARTING',
+                'BOOTSTRAPPING',
+                'RUNNING',
+                'WAITING',
+                'TERMINATING',
+            ]
+        }
         self.assert_params_for_cmd(cmdline, result)
 
     def test_list_terminated_clusters(self):
@@ -54,18 +58,20 @@ class TestListClusters(BaseAWSCommandParamsTest):
         args = '--active --failed'
         cmdline = self.prefix + args
         expected_error_msg = (
-            '\naws: error: You can specify only one of the cluster state '
-            'filters: --cluster-states, --active, --terminated, --failed.\n')
+            '\naws: [ERROR]: An error occurred (ParamValidation): You can specify only one of the cluster state '
+            'filters: --cluster-states, --active, --terminated, --failed.\n'
+        )
         result = self.run_cmd(cmdline, 252)
-        self.assertEquals(expected_error_msg, result[1])
+        self.assertEqual(expected_error_msg, result[1])
 
         args = '--cluster-states STARTING RUNNING --terminated'
         cmdline = self.prefix + args
         expected_error_msg = (
-            '\naws: error: You can specify only one of the cluster state '
-            'filters: --cluster-states, --active, --terminated, --failed.\n')
+            '\naws: [ERROR]: An error occurred (ParamValidation): You can specify only one of the cluster state '
+            'filters: --cluster-states, --active, --terminated, --failed.\n'
+        )
         result = self.run_cmd(cmdline, 252)
-        self.assertEquals(expected_error_msg, result[1])
+        self.assertEqual(expected_error_msg, result[1])
 
 
 if __name__ == "__main__":

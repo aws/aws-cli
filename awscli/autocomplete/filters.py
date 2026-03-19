@@ -37,26 +37,29 @@ def fuzzy_filter(prefix, completions):
             matches = list(regex.finditer(name))
             if matches:
                 # Prefer the match, closest to the left, then shortest.
-                best = min(matches, key=lambda m: (m.start(),
-                                                   len(m.group(1))))
-                fuzzy_matches.append(_FuzzyMatch(
-                    len(best.group(1)),
-                    best.start(),
-                    completion)
+                best = min(matches, key=lambda m: (m.start(), len(m.group(1))))
+                fuzzy_matches.append(
+                    _FuzzyMatch(len(best.group(1)), best.start(), completion)
                 )
-        return [x for _, _, x in sorted(
-                    fuzzy_matches,
-                    key=lambda match: (
-                        match.match_length, match.start_pos,
-                        match.completion.display_text,
-                        match.completion.name)
-                )]
+        return [
+            x
+            for _, _, x in sorted(
+                fuzzy_matches,
+                key=lambda match: (
+                    match.match_length,
+                    match.start_pos,
+                    match.completion.display_text,
+                    match.completion.name,
+                ),
+            )
+        ]
     return completions
 
 
 def startswith_filter(prefix, completions):
     return [
-        completion for completion in completions
+        completion
+        for completion in completions
         if (completion.display_text or completion.name).startswith(prefix)
     ]
 

@@ -71,8 +71,6 @@ output               --output       output                AWS_DEFAULT_OUTPUT    
 -------------------- -------------- --------------------- --------------------- --------------------------------
 cli_timestamp_format N/A            cli_timestamp_format  N/A                   Output format of timestamps
 -------------------- -------------- --------------------- --------------------- --------------------------------
-cli_follow_urlparam  N/A            cli_follow_urlparam   N/A                   Fetch URL url parameters
--------------------- -------------- --------------------- --------------------- --------------------------------
 ca_bundle            --ca-bundle    ca_bundle             AWS_CA_BUNDLE         CA Certificate Bundle
 -------------------- -------------- --------------------- --------------------- --------------------------------
 parameter_validation N/A            parameter_validation  N/A                   Toggles parameter validation
@@ -84,6 +82,9 @@ max_attempts         N/A            max_attempts          AWS_MAX_ATTEMPTS      
 retry_mode           N/A            retry_mode            AWS_RETRY_MODE        Type of retries performed
 -------------------- -------------- --------------------- --------------------- --------------------------------
 cli_pager            --no-cli-pager cli_pager             AWS_PAGER             Redirect/Disable output to pager
+-------------------- -------------- --------------------- --------------------- --------------------------------
+cli_error_format     --cli-error-   cli_error_format      AWS_CLI_ERROR_FORMAT  Format for error output
+                     format
 ==================== ============== ===================== ===================== ================================
 
 The third column, Config Entry, is the value you would specify in the AWS CLI
@@ -96,6 +97,26 @@ The valid values of the ``output`` configuration variable are:
 * json
 * table
 * text
+* yaml
+* yaml-stream
+* off
+
+The ``off`` value suppresses all stdout output while preserving stderr for 
+errors and warnings.
+
+``cli_error_format`` controls how CLI errors are displayed. The valid 
+values of the ``cli_error_format`` configuration variable are:
+
+* enhanced - Errors display additional fields in a 
+  human-readable format with inline display for simple values and small 
+  collections. This is the default behavior.
+* json - Errors are formatted as JSON, showing all available fields.
+* yaml - Errors are formatted as YAML, showing all available fields.
+* text - Errors are formatted as text with key-value pairs, showing 
+  all available fields.
+* table - Errors are formatted as a table, showing all available fields.
+* legacy - Errors are written to stderr as unstructured text, 
+  displaying only the error code and message without additional fields.
 
 ``cli_timestamp_format`` controls the format of timestamps displayed by the AWS CLI.
 The valid values of the ``cli_timestamp_format`` configuration variable are:
@@ -116,17 +137,6 @@ the ``cli_binary_format`` setting. When using ``file://`` the file contents
 will need to properly formatted for the configured ``cli_binary_format``.
 
 The default value is ``iso8601``.
-
-``cli_follow_urlparam`` controls whether or not the CLI will attempt to follow
-URL links in parameters that start with either prefix ``https://`` or
-``http://``.  The valid values of the ``cli_follow_urlparam`` configuration
-variable are:
-
-* true - This is the default value. With this configured the CLI will follow
-  any string parameters that start with ``https://`` or ``http://`` will be
-  fetched, and the downloaded content will be used as the parameter instead.
-* false - The CLI will not treat strings prefixed with ``https://`` or
-  ``http://`` any differently than normal string parameters.
 
 ``parameter_validation`` controls whether parameter validation should occur
 when serializing requests. The default is True. You can disable parameter
@@ -247,7 +257,9 @@ in the AWS CLI config file:
   the initial ``assume-role`` call. This parameter cannot be provided
   alongside ``source_profile``. Valid values are:
 
-  * ``Environment`` to pull source credentials from environment variables.
+  * ``Environment`` to pull source credentials from environment variables. Note
+    this credential source does not work alongside the ``AWS_PROFILE``
+    environment variable.
   * ``Ec2InstanceMetadata`` to use the EC2 instance role as source credentials.
   * ``EcsContainer`` to use the ECS container credentials as the source
     credentials.
@@ -433,8 +445,7 @@ These configuration variables control how the AWS CLI retries requests.
     a single request, including the initial attempt.  For example,
     setting this value to 5 will result in a request being retried up to
     4 times.  If not provided, the number of retries will default to whatever
-    is modeled, which is typically 5 total attempts in the ``legacy`` retry mode,
-    and 3 in the ``standard`` and ``adaptive`` retry modes.
+    is modeled, which is 3 in the ``standard`` and ``adaptive`` retry modes.
 
 ``retry_mode``
     A string representing the type of retries the AWS CLI will perform.  Value
@@ -473,10 +484,19 @@ One option for UNIX systems is the ``LC_ALL`` environment variable. Setting
 ``LC_ALL=en_US.UTF-8``, for instance, would give you a United States English
 locale which is compatible with unicode.
 
-To set encoding used for text files different from the locale, you can use
+To set the encoding that is used when reading from text files, you can use the
 ``AWS_CLI_FILE_ENCODING`` environment variable. For example, if you use Windows
 with default encoding ``CP1252``, setting ``AWS_CLI_FILE_ENCODING=UTF-8`` would
 make CLI ignore locale encoding and open text files using ``UTF-8``.
+
+To set the encoding used for the CLI's output, you can use the
+``AWS_CLI_OUTPUT_ENCODING`` environment variable. For example, if you use Windows
+with the default encoding ``CP1252``, setting ``AWS_CLI_OUTPUT_ENCODING=UTF-8``
+would make CLI ignore the locale encoding and format its output using ``UTF-8``.
+
+Refer to
+`Python's Standard Encodings documentation <https://docs.python.org/3/library/codecs.html#standard-encodings>`_
+for possible values for both settings.
 
 Pager
 -----
@@ -554,7 +574,7 @@ To enable plugin support, create ``[plugins]`` section in your
 ``~/.aws/config`` file::
 
      [plugins]
-     cli_legacy_plugin_path = <path-to-plugins>/python3.7/site-packages
+     cli_legacy_plugin_path = <path-to-plugins>/python3.8/site-packages
      <plugin-name> = <plugin-module>
 
 

@@ -57,4 +57,4 @@ Output::
     }
 
 
-For more information, see `Creatinga and Managing Streams <https://docs.aws.amazon.com/streams/latest/dev/working-with-streams.html>`__ in the *Amazon Kinesis Data Streams Developer Guide*.
+For more information, see `Creating and Managing Streams <https://docs.aws.amazon.com/streams/latest/dev/working-with-streams.html>`__ in the *Amazon Kinesis Data Streams Developer Guide*.

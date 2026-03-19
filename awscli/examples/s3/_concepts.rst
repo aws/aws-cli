@@ -1,5 +1,9 @@
 This section explains prominent concepts and notations in the set of high-level S3 commands provided.
 
+If you are looking for the low level S3 commands for the CLI, please see the
+``s3api`` command `reference page
+<https://docs.aws.amazon.com/cli/latest/reference/s3api/index.html>`_.
+
 Path Argument Type
 ++++++++++++++++++
 
@@ -10,13 +14,13 @@ are two types of path arguments: ``LocalPath`` and ``S3Uri``.
 written as an absolute path or relative path.
 
 ``S3Uri``: represents the location of a S3 object, prefix, or bucket.  This
-must be written in the form ``s3://mybucket/mykey`` where ``mybucket`` is
+must be written in the form ``s3://amzn-s3-demo-bucket/mykey`` where ``amzn-s3-demo-bucket`` is
 the specified S3 bucket, ``mykey`` is the specified S3 key.  The path argument
 must begin with ``s3://`` in order to denote that the path argument refers to
 a S3 object. Note that prefixes are separated by forward slashes. For
 example, if the S3 object ``myobject`` had the prefix ``myprefix``, the
 S3 key would be ``myprefix/myobject``, and if the object was in the bucket
-``mybucket``, the ``S3Uri`` would be ``s3://mybucket/myprefix/myobject``.
+``amzn-s3-demo-bucket``, the ``S3Uri`` would be ``s3://amzn-s3-demo-bucket/myprefix/myobject``.
 
 ``S3Uri`` also supports S3 access points. To specify an access point, this
 value must be of the form ``s3://<access-point-arn>/<key>``. For example if
@@ -27,11 +31,6 @@ being accessed has the key ``mykey``, then the ``S3URI`` used must be:
 Similar to bucket names, you can also use prefixes with access point ARNs for
 the ``S3Uri``. For example:
 ``s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/myprefix/``
-
-The higher level ``s3`` commands do **not** support access point object ARNs.
-For example, if the following was specified:
-``s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/object/mykey``
-the ``S3URI`` will resolve to the object key ``object/mykey``
 
 
 

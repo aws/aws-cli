@@ -1,8 +1,10 @@
 **To get information about a policy attached to an IAM role**
 
-The following ``get-role-policy`` command gets information about the specified policy attached to the role named ``Test-Role``::
+The following ``get-role-policy`` command gets information about the specified policy attached to the role named ``Test-Role``. ::
 
-  aws iam get-role-policy --role-name Test-Role --policy-name ExamplePolicy
+    aws iam get-role-policy \
+        --role-name Test-Role \
+        --policy-name ExamplePolicy
 
 Output::
 
@@ -26,7 +28,4 @@ Output::
       "PolicyName": "ExamplePolicy"
     }
 
-For more information, see `Creating a Role`_ in the *Using IAM* guide.
-
-.. _`Creating a Role`: http://docs.aws.amazon.com/IAM/latest/UserGuide/creating-role.html
-
+For more information, see `Creating IAM roles <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create.html>`__ in the *AWS IAM User Guide*.

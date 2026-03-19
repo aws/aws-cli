@@ -14,34 +14,58 @@
 # Class to create default roles for datapipeline
 
 import logging
-from awscli.customizations.datapipeline.constants \
-    import DATAPIPELINE_DEFAULT_SERVICE_ROLE_NAME, \
-    DATAPIPELINE_DEFAULT_RESOURCE_ROLE_NAME, \
-    DATAPIPELINE_DEFAULT_SERVICE_ROLE_ARN, \
-    DATAPIPELINE_DEFAULT_RESOURCE_ROLE_ARN, \
-    DATAPIPELINE_DEFAULT_SERVICE_ROLE_ASSUME_POLICY, \
-    DATAPIPELINE_DEFAULT_RESOURCE_ROLE_ASSUME_POLICY
-from awscli.customizations.commands import BasicCommand
-from awscli.customizations.datapipeline.translator \
-    import display_response, dict_to_string, get_region
+import warnings
+
 from botocore.exceptions import ClientError
+
+from awscli.customizations.commands import BasicCommand
+from awscli.customizations.datapipeline.constants import (
+    DATAPIPELINE_DEFAULT_RESOURCE_ROLE_ARN,
+    DATAPIPELINE_DEFAULT_RESOURCE_ROLE_ASSUME_POLICY,
+    DATAPIPELINE_DEFAULT_RESOURCE_ROLE_NAME,
+    DATAPIPELINE_DEFAULT_SERVICE_ROLE_ARN,
+    DATAPIPELINE_DEFAULT_SERVICE_ROLE_ASSUME_POLICY,
+    DATAPIPELINE_DEFAULT_SERVICE_ROLE_NAME,
+)
+from awscli.customizations.datapipeline.translator import (
+    dict_to_string,
+    display_response,
+    get_region,
+)
 
 LOG = logging.getLogger(__name__)
 
 
-class CreateDefaultRoles(BasicCommand):
+_DEPRECATION_NOTICE = """
+Support for this command has been deprecated and may fail to create these roles
+if they do not already exist. For more information on managing these policies
+manually see the following documentation:
 
+https://docs.aws.amazon.com/datapipeline/latest/DeveloperGuide/dp-iam-roles.html
+"""
+
+_DESCRIPTION = """
+NOTE: {}
+
+Creates the default IAM role "{}" and "{}" which are used while creating an EMR
+cluster.
+
+If these roles do not exist, create-default-roles will automatically create
+them and set their policies.
+
+If these roles have already been created create-default-roles will not update
+their policies.
+"""
+
+
+class CreateDefaultRoles(BasicCommand):
     NAME = "create-default-roles"
-    DESCRIPTION = ('Creates the default IAM role ' +
-                   DATAPIPELINE_DEFAULT_SERVICE_ROLE_NAME + ' and ' +
-                   DATAPIPELINE_DEFAULT_RESOURCE_ROLE_NAME +
-                   ' which are used while creating an EMR cluster.\n'
-                   'If the roles do not exist, create-default-roles '
-                   'will automatically create them and set their policies.'
-                   ' If these roles are already '
-                   'created create-default-roles'
-                   ' will not update their policies.'
-                   '\n')
+    _UNDOCUMENTED = True
+    DESCRIPTION = _DESCRIPTION.format(
+        _DEPRECATION_NOTICE,
+        DATAPIPELINE_DEFAULT_SERVICE_ROLE_NAME,
+        DATAPIPELINE_DEFAULT_RESOURCE_ROLE_NAME,
+    )
 
     def __init__(self, session, formatter=None):
         super(CreateDefaultRoles, self).__init__(session)
@@ -51,11 +75,12 @@ class CreateDefaultRoles(BasicCommand):
         self._region = get_region(self._session, parsed_globals)
         self._endpoint_url = parsed_globals.endpoint_url
         self._iam_client = self._session.create_client(
-            'iam', 
-            region_name=self._region, 
+            'iam',
+            region_name=self._region,
             endpoint_url=self._endpoint_url,
-            verify=parsed_globals.verify_ssl
+            verify=parsed_globals.verify_ssl,
         )
+        warnings.warn(_DEPRECATION_NOTICE)
         return self._create_default_roles(parsed_args, parsed_globals)
 
     def _create_role(self, role_name, role_arn, role_policy):
@@ -69,63 +94,78 @@ class CreateDefaultRoles(BasicCommand):
         if self._check_if_role_exists(role_name):
             LOG.debug('Role ' + role_name + ' exists.')
         else:
-            LOG.debug('Role ' + role_name + ' does not exist.'
-                      ' Creating default role for EC2: ' + role_name)
+            LOG.debug(
+                'Role ' + role_name + ' does not exist.'
+                ' Creating default role for EC2: ' + role_name
+            )
             # Create a create using the IAM Client with a particular triplet
             # (role_name, role_arn, assume_role_policy)
-            role_result = self._create_role_with_role_policy(role_name,
-                                                             role_policy,
-                                                             role_arn)
+            role_result = self._create_role_with_role_policy(
+                role_name, role_policy, role_arn
+            )
             role_policy_result = self._get_role_policy(role_arn)
         return role_result, role_policy_result
 
-    def _construct_result(self, dpl_default_result,
-                          dpl_default_policy,
-                          dpl_default_res_result,
-                          dpl_default_res_policy):
+    def _construct_result(
+        self,
+        dpl_default_result,
+        dpl_default_policy,
+        dpl_default_res_result,
+        dpl_default_res_policy,
+    ):
         """Method to create a resultant list of responses for create roles
         for service and resource role
         """
 
         result = []
-        self._construct_role_and_role_policy_structure(result,
-                                                       dpl_default_result,
-                                                       dpl_default_policy)
-        self._construct_role_and_role_policy_structure(result,
-                                                       dpl_default_res_result,
-                                                       dpl_default_res_policy)
+        self._construct_role_and_role_policy_structure(
+            result, dpl_default_result, dpl_default_policy
+        )
+        self._construct_role_and_role_policy_structure(
+            result, dpl_default_res_result, dpl_default_res_policy
+        )
         return result
 
     def _create_default_roles(self, parsed_args, parsed_globals):
-
         # Setting the role name and arn value
-        (datapipline_default_result,
-            datapipline_default_policy) = self._create_role(
+        (datapipline_default_result, datapipline_default_policy) = (
+            self._create_role(
                 DATAPIPELINE_DEFAULT_SERVICE_ROLE_NAME,
                 DATAPIPELINE_DEFAULT_SERVICE_ROLE_ARN,
-                DATAPIPELINE_DEFAULT_SERVICE_ROLE_ASSUME_POLICY)
+                DATAPIPELINE_DEFAULT_SERVICE_ROLE_ASSUME_POLICY,
+            )
+        )
 
-        (datapipline_default_resource_result,
-            datapipline_default_resource_policy) = self._create_role(
-                DATAPIPELINE_DEFAULT_RESOURCE_ROLE_NAME,
-                DATAPIPELINE_DEFAULT_RESOURCE_ROLE_ARN,
-                DATAPIPELINE_DEFAULT_RESOURCE_ROLE_ASSUME_POLICY)
+        (
+            datapipline_default_resource_result,
+            datapipline_default_resource_policy,
+        ) = self._create_role(
+            DATAPIPELINE_DEFAULT_RESOURCE_ROLE_NAME,
+            DATAPIPELINE_DEFAULT_RESOURCE_ROLE_ARN,
+            DATAPIPELINE_DEFAULT_RESOURCE_ROLE_ASSUME_POLICY,
+        )
 
         # Check if the default EC2 Instance Profile for DataPipeline exists.
         instance_profile_name = DATAPIPELINE_DEFAULT_RESOURCE_ROLE_NAME
         if self._check_if_instance_profile_exists(instance_profile_name):
             LOG.debug('Instance Profile ' + instance_profile_name + ' exists.')
         else:
-            LOG.debug('Instance Profile ' + instance_profile_name +
-                      'does not exist. Creating default Instance Profile ' +
-                      instance_profile_name)
-            self._create_instance_profile_with_role(instance_profile_name,
-                                                    instance_profile_name)
+            LOG.debug(
+                'Instance Profile '
+                + instance_profile_name
+                + 'does not exist. Creating default Instance Profile '
+                + instance_profile_name
+            )
+            self._create_instance_profile_with_role(
+                instance_profile_name, instance_profile_name
+            )
 
-        result = self._construct_result(datapipline_default_result,
-                                        datapipline_default_policy,
-                                        datapipline_default_resource_result,
-                                        datapipline_default_resource_policy)
+        result = self._construct_result(
+            datapipline_default_result,
+            datapipline_default_policy,
+            datapipline_default_resource_result,
+            datapipline_default_resource_policy,
+        )
 
         display_response(self._session, 'create_role', result, parsed_globals)
 
@@ -137,27 +177,32 @@ class CreateDefaultRoles(BasicCommand):
         """
         pol_det = self._iam_client.get_policy(PolicyArn=arn)
         policy_version_details = self._iam_client.get_policy_version(
-            PolicyArn=arn, VersionId=pol_det["Policy"]["DefaultVersionId"])
+            PolicyArn=arn, VersionId=pol_det["Policy"]["DefaultVersionId"]
+        )
         return policy_version_details["PolicyVersion"]["Document"]
 
     def _create_role_with_role_policy(
-            self, role_name, assume_role_policy, role_arn):
+        self, role_name, assume_role_policy, role_arn
+    ):
         """Method to create role with a given rolename, assume_role_policy
         and role_arn
         """
         # Create a role using IAM client CreateRole API
         create_role_response = self._iam_client.create_role(
-            RoleName=role_name, AssumeRolePolicyDocument=dict_to_string(
-                assume_role_policy))
+            RoleName=role_name,
+            AssumeRolePolicyDocument=dict_to_string(assume_role_policy),
+        )
 
         # Create a role using IAM client AttachRolePolicy API
-        self._iam_client.attach_role_policy(PolicyArn=role_arn,
-                                            RoleName=role_name)
+        self._iam_client.attach_role_policy(
+            PolicyArn=role_arn, RoleName=role_name
+        )
 
         return create_role_response
 
     def _construct_role_and_role_policy_structure(
-            self, list_val, response, policy):
+        self, list_val, response, policy
+    ):
         """Method to construct the message to be displayed to the user"""
         # If the response is not none they we get the role name
         # from the response and
@@ -171,7 +216,8 @@ class CreateDefaultRoles(BasicCommand):
         try:
             # Client call to get the instance profile with that name
             self._iam_client.get_instance_profile(
-                InstanceProfileName=instance_profile_name)
+                InstanceProfileName=instance_profile_name
+            )
 
         except ClientError as e:
             # If the instance profile does not exist then the error message
@@ -202,14 +248,17 @@ class CreateDefaultRoles(BasicCommand):
 
         return True
 
-    def _create_instance_profile_with_role(self, instance_profile_name,
-                                           role_name):
+    def _create_instance_profile_with_role(
+        self, instance_profile_name, role_name
+    ):
         """Method to create the instance profile with the role"""
         # Setting the value for instance profile name
         # Client call to create an instance profile
         self._iam_client.create_instance_profile(
-            InstanceProfileName=instance_profile_name)
+            InstanceProfileName=instance_profile_name
+        )
 
         # Adding the role to the Instance Profile
         self._iam_client.add_role_to_instance_profile(
-            InstanceProfileName=instance_profile_name, RoleName=role_name)
+            InstanceProfileName=instance_profile_name, RoleName=role_name
+        )

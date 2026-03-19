@@ -3,7 +3,7 @@
 The following ``describe-instance-types`` example displays details for the specified instance type. ::
 
     aws ec2 describe-instance-types \
-        --instance-types t2.micro 
+        --instance-types t2.micro
 
 Output::
 
@@ -70,11 +70,15 @@ Output::
         ]
     }
 
+For more information, see `Instance Types <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html>`__ in *Amazon Elastic Compute Cloud
+User Guide for Linux Instances*.
+
 **Example 2: To filter the available instance types**
 
 You can specify a filter to scope the results to instance types that have a specific characteristic. The following ``describe-instance-types`` example lists the instance types that support hibernation. ::
 
-    aws ec2 describe-instance-types --filters Name=hibernation-supported,Values=true --query InstanceTypes[].InstanceType
+    aws ec2 describe-instance-types \
+        --filters Name=hibernation-supported,Values=true --query 'InstanceTypes[*].InstanceType'
 
 Output::
 
@@ -95,3 +99,6 @@ Output::
         "r5.4xlarge",
         "c5.4xlarge"
     ]
+
+For more information, see `Instance Types <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html>`__ in *Amazon Elastic Compute Cloud
+User Guide for Linux Instances*.

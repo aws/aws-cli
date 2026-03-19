@@ -10,20 +10,18 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import pytest
 from botocore.model import OperationModel
 
 from awscli.clidriver import create_clidriver
 
-
-_ALLOWED_COMMANDS = [
-    's3api select-object-content'
-]
+# Excluded commands must be registered in awscli/customizations/removals.py
+_ALLOWED_COMMANDS = ['s3api select-object-content']
 
 
-def test_no_event_stream_unless_allowed():
+def _generate_command_tests():
     driver = create_clidriver()
     help_command = driver.create_help_command()
-    errors = []
     for command_name, command_obj in help_command.command_table.items():
         sub_help = command_obj.create_help_command()
         if hasattr(sub_help, 'command_table'):
@@ -31,16 +29,40 @@ def test_no_event_stream_unless_allowed():
                 op_help = sub_command.create_help_command()
                 model = op_help.obj
                 if isinstance(model, OperationModel):
-                    full_command = '%s %s' % (command_name, sub_name)
-                    if model.has_event_stream_input or \
-                            model.has_event_stream_output:
-                        if full_command in _ALLOWED_COMMANDS:
-                            continue
-                        supported_commands = '\n'.join(_ALLOWED_COMMANDS)
-                        errors.append(
-                            'The "%s" command uses event streams '
-                            'which is only supported for these operations:\n'
-                            '%s' % (full_command, supported_commands)
-                        )
-    if errors:
-        raise AssertionError('\n' + '\n'.join(errors))
+                    # Extract the properties needed for tests to avoid
+                    # parametrizing entire model objects, which may cause
+                    # excessive memory usage.
+                    if not model.has_event_stream_input and not model.has_event_stream_output:
+                        # Only parameterize the models that actually have event streams.
+                        # This has shown to improve test execution performance.
+                        continue
+                    model_description = {
+                        'service_name': model.service_model.service_name,
+                        'name': model.name,
+                    }
+                    yield command_name, sub_name, model_description
+
+
+@pytest.mark.validates_models
+@pytest.mark.parametrize(
+    "command_name, sub_name, model", _generate_command_tests()
+)
+def test_no_event_stream_unless_allowed(
+        command_name,
+        sub_name,
+        model,
+        record_property
+):
+    full_command = f'{command_name} {sub_name}'
+    # Store the service and operation in
+    # PyTest custom properties
+    record_property(
+        'aws_service', model['service_name']
+    )
+    record_property('aws_operation', model['name'])
+    supported_commands = '\n'.join(_ALLOWED_COMMANDS)
+    assert full_command in _ALLOWED_COMMANDS, (
+        f'The {full_command} command uses event streams '
+        'which is only supported for these operations:\n'
+        f'{supported_commands}'
+    )

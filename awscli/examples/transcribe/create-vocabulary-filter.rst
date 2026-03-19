@@ -4,7 +4,7 @@ The following ``create-vocabulary-filter`` example creates a vocabulary filter t
 
     aws transcribe create-vocabulary-filter \
         --language-code language-code \
-        --vocabulary-filter-file-uri s3://DOC-EXAMPLE-BUCKET/vocabulary-filter.txt \
+        --vocabulary-filter-file-uri s3://amzn-s3-demo-bucket/vocabulary-filter.txt \
         --vocabulary-filter-name cli-vocabulary-filter-example
 
 Output::

@@ -1,9 +1,9 @@
-**To update a CloudFront distribution's default root object**
+**Example 1: To update a CloudFront distribution's default root object**
 
-The following example updates the default root object to ``index.html`` for the
-CloudFront distribution with the ID ``EDFDVBD6EXAMPLE``::
+The following example updates the default root object to ``index.html`` for the CloudFront distribution with the ID ``EDFDVBD6EXAMPLE``. ::
 
-    aws cloudfront update-distribution --id EDFDVBD6EXAMPLE \
+    aws cloudfront update-distribution \
+        --id EDFDVBD6EXAMPLE \
         --default-root-object index.html
 
 Output::
@@ -136,28 +136,20 @@ Output::
         }
     }
 
-**To update a CloudFront distribution**
+**Example 2: To update a CloudFront distribution**
 
-The following example disables the CloudFront distribution with the ID
-``EMLARXS9EXAMPLE`` by providing the distribution configuration in a JSON file
-named ``dist-config-disable.json``. To update a distribution, you must use the
-``--if-match`` option to provide the distribution's ``ETag``. To get the
-``ETag``, use the `get-distribution <get-distribution.html>`_ or
-`get-distribution-config <get-distribution-config.html>`_ command.
+The following example disables the CloudFront distribution with the ID ``EMLARXS9EXAMPLE`` by providing the distribution configuration in a JSON file named ``dist-config-disable.json``. To update a distribution, you must use the ``--if-match`` option to provide the distribution's ``ETag``. To get the
+``ETag``, use the `get-distribution <get-distribution.html>`_ or `get-distribution-config <get-distribution-config.html>`_ command. Note that the ``Enabled`` field is set to
+``false`` in the JSON file.
 
-After you use the following example to disable a distribution, you can use the
-`delete-distribution <delete-distribution.html>`_ command to delete it.
-
-::
+After you use the following example to disable a distribution, you can use the `delete-distribution <delete-distribution.html>`_ command to delete it. ::
 
     aws cloudfront update-distribution \
         --id EMLARXS9EXAMPLE \
         --if-match E2QWRUHEXAMPLE \
         --distribution-config file://dist-config-disable.json
 
-The file ``dist-config-disable.json`` is a JSON document in the current folder
-that contains the following. Note that the ``Enabled`` field is set to
-``false``::
+Contents of ``dist-config-disable.json``::
 
     {
         "CallerReference": "cli-1574382155-496510",
@@ -169,8 +161,8 @@ that contains the following. Note that the ``Enabled`` field is set to
             "Quantity": 1,
             "Items": [
                 {
-                    "Id": "awsexamplebucket.s3.amazonaws.com-1574382155-273939",
-                    "DomainName": "awsexamplebucket.s3.amazonaws.com",
+                    "Id": "amzn-s3-demo-bucket.s3.amazonaws.com-1574382155-273939",
+                    "DomainName": "amzn-s3-demo-bucket.s3.amazonaws.com",
                     "OriginPath": "",
                     "CustomHeaders": {
                         "Quantity": 0
@@ -185,7 +177,7 @@ that contains the following. Note that the ``Enabled`` field is set to
             "Quantity": 0
         },
         "DefaultCacheBehavior": {
-            "TargetOriginId": "awsexamplebucket.s3.amazonaws.com-1574382155-273939",
+            "TargetOriginId": "amzn-s3-demo-bucket.s3.amazonaws.com-1574382155-273939",
             "ForwardedValues": {
                 "QueryString": false,
                 "Cookies": {
@@ -283,8 +275,8 @@ Output::
                     "Quantity": 1,
                     "Items": [
                         {
-                            "Id": "awsexamplebucket.s3.amazonaws.com-1574382155-273939",
-                            "DomainName": "awsexamplebucket.s3.amazonaws.com",
+                            "Id": "amzn-s3-demo-bucket.s3.amazonaws.com-1574382155-273939",
+                            "DomainName": "amzn-s3-demo-bucket.s3.amazonaws.com",
                             "OriginPath": "",
                             "CustomHeaders": {
                                 "Quantity": 0
@@ -299,7 +291,7 @@ Output::
                     "Quantity": 0
                 },
                 "DefaultCacheBehavior": {
-                    "TargetOriginId": "awsexamplebucket.s3.amazonaws.com-1574382155-273939",
+                    "TargetOriginId": "amzn-s3-demo-bucket.s3.amazonaws.com-1574382155-273939",
                     "ForwardedValues": {
                         "QueryString": false,
                         "Cookies": {

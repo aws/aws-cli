@@ -3,7 +3,6 @@
 # which doesn't have argparse.  Given that argparse is
 # a dependency that eventually gets installed, we could
 # try to bootstrap, but using optparse is just easier.
-from __future__ import print_function
 
 import optparse
 import os
@@ -13,19 +12,18 @@ import subprocess
 import sys
 import tarfile
 import tempfile
-
 from contextlib import contextmanager
 
 PACKAGES_DIR = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), 'packages')
-INSTALL_DIR = os.path.expanduser(os.path.join(
-    '~', '.local', 'lib', 'aws'))
+    os.path.dirname(os.path.abspath(__file__)), 'packages'
+)
+INSTALL_DIR = os.path.expanduser(os.path.join('~', '.local', 'lib', 'aws'))
 GTE_PY37 = sys.version_info[:2] >= (3, 7)
 UNSUPPORTED_PYTHON = (
-    (2,6),
-    (3,3),
-    (3,4),
-    (3,5),
+    (2, 6),
+    (3, 3),
+    (3, 4),
+    (3, 5),
 )
 INSTALL_ARGS = (
     '--no-binary :all: --no-build-isolation --no-cache-dir --no-index '
@@ -45,6 +43,7 @@ class PythonDeprecationWarning(Warning):
     Python version being used is scheduled to become unsupported
     in an future release. See warning for specifics.
     """
+
     pass
 
 
@@ -52,12 +51,10 @@ def _build_deprecations():
     py_27_params = {
         'date': 'July 15, 2021',
         'blog_link': 'https://aws.amazon.com/blogs/developer/announcing-end-'
-                     'of-support-for-python-2-7-in-aws-sdk-for-python-and-'
-                     'aws-cli-v1/'
+        'of-support-for-python-2-7-in-aws-sdk-for-python-and-'
+        'aws-cli-v1/',
     }
-    return {
-        (2,7): py_27_params
-    }
+    return {(2, 7): py_27_params}
 
 
 DEPRECATED_PYTHON = _build_deprecations()
@@ -75,13 +72,13 @@ def cd(dirname):
 
 def run(cmd):
     sys.stdout.write("Running cmd: %s\n" % cmd)
-    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE)
+    p = subprocess.Popen(
+        cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    )
     stdout, stderr = p.communicate()
     if p.returncode != 0:
         output = (stdout + stderr).decode("utf-8")
-        raise BadRCError("Bad rc (%s) for cmd '%s': %s" % (
-            p.returncode, cmd, output))
+        raise BadRCError(f"Bad rc ({p.returncode}) for cmd '{cmd}': {output}")
     return stdout
 
 
@@ -123,15 +120,16 @@ def _create_virtualenv_external(location, working_dir):
         # We know that virtualenv is the only dir in this directory
         # so we can listdir()[0] it.
         with cd(os.listdir('.')[0]):
-            run(('%s virtualenv.py --no-download '
-                 '--python %s %s') % (sys.executable,
-                                      sys.executable,
-                                      location))
+            run(
+                ('%s virtualenv.py --no-download ' '--python %s %s')
+                % (sys.executable, sys.executable, location)
+            )
 
 
 def _get_package_tarball(package_dir, package_prefix):
-    package_filenames = sorted([p for p in os.listdir(package_dir)
-                                if p.startswith(package_prefix)])
+    package_filenames = sorted(
+        [p for p in os.listdir(package_dir) if p.startswith(package_prefix)]
+    )
     return package_filenames[-1]
 
 
@@ -145,8 +143,9 @@ def create_working_dir():
 
 
 def pip_install_packages(install_dir):
-    cli_tarball = [p for p in os.listdir(PACKAGES_DIR)
-                   if p.startswith('awscli')]
+    cli_tarball = [
+        p for p in os.listdir(PACKAGES_DIR) if p.startswith('awscli')
+    ]
     if len(cli_tarball) != 1:
         message = (
             "Multiple versions of the CLI were found in %s. Please clear "
@@ -161,8 +160,10 @@ def pip_install_packages(install_dir):
         _install_setup_deps(pip_script, '.')
 
     with cd(PACKAGES_DIR):
-        run('%s install %s --find-links file://%s %s' % (
-                pip_script, INSTALL_ARGS, PACKAGES_DIR, cli_tarball))
+        run(
+            '%s install %s --find-links file://%s %s'
+            % (pip_script, INSTALL_ARGS, PACKAGES_DIR, cli_tarball)
+        )
 
 
 def _install_setup_deps(pip_script, setup_package_dir):
@@ -172,15 +173,19 @@ def _install_setup_deps(pip_script, setup_package_dir):
     # so for now we're explicitly installing the one setup_requires package
     # we need.  This comes from python-dateutils.
     setuptools_scm_tarball = _get_package_tarball(
-        setup_package_dir, 'setuptools_scm')
-    run('%s install --no-binary :all: --no-cache-dir --no-index '
-        '--find-links file://%s %s' % (
-            pip_script, setup_package_dir, setuptools_scm_tarball))
-    wheel_tarball = _get_package_tarball(
-        setup_package_dir, 'wheel')
-    run('%s install --no-binary :all: --no-cache-dir --no-index '
-        '--find-links file://%s %s' % (
-            pip_script, setup_package_dir, wheel_tarball))
+        setup_package_dir, 'setuptools_scm'
+    )
+    run(
+        '%s install --no-binary :all: --no-cache-dir --no-index '
+        '--find-links file://%s %s'
+        % (pip_script, setup_package_dir, setuptools_scm_tarball)
+    )
+    wheel_tarball = _get_package_tarball(setup_package_dir, 'wheel')
+    run(
+        '%s install --no-binary :all: --no-cache-dir --no-index '
+        '--find-links file://%s %s'
+        % (pip_script, setup_package_dir, wheel_tarball)
+    )
 
 
 def create_symlink(real_location, symlink_name):
@@ -197,17 +202,25 @@ def create_symlink(real_location, symlink_name):
 
 def main():
     parser = optparse.OptionParser()
-    parser.add_option('-i', '--install-dir', help="The location to install "
-                      "the AWS CLI.  The default value is ~/.local/lib/aws",
-                      default=INSTALL_DIR)
-    parser.add_option('-b', '--bin-location', help="If this argument is "
-                      "provided, then a symlink will be created at this "
-                      "location that points to the aws executable. "
-                      "This argument is useful if you want to put the aws "
-                      "executable somewhere already on your path, e.g. "
-                      "-b /usr/local/bin/aws.  This is an optional argument. "
-                      "If you do not provide this argument you will have to "
-                      "add INSTALL_DIR/bin to your PATH.")
+    parser.add_option(
+        '-i',
+        '--install-dir',
+        help="The location to install "
+        "the AWS CLI.  The default value is ~/.local/lib/aws",
+        default=INSTALL_DIR,
+    )
+    parser.add_option(
+        '-b',
+        '--bin-location',
+        help="If this argument is "
+        "provided, then a symlink will be created at this "
+        "location that points to the aws executable. "
+        "This argument is useful if you want to put the aws "
+        "executable somewhere already on your path, e.g. "
+        "-b /usr/local/bin/aws.  This is an optional argument. "
+        "If you do not provide this argument you will have to "
+        "add INSTALL_DIR/bin to your PATH.",
+    )
     py_version = sys.version_info[:2]
     if py_version in UNSUPPORTED_PYTHON:
         unsupported_python_msg = (
@@ -240,8 +253,9 @@ def main():
         create_install_structure(working_dir, opts.install_dir)
         pip_install_packages(opts.install_dir)
         real_location = os.path.join(opts.install_dir, bin_path(), 'aws')
-        if opts.bin_location and create_symlink(real_location,
-                                                opts.bin_location):
+        if opts.bin_location and create_symlink(
+            real_location, opts.bin_location
+        ):
             print("You can now run: %s --version" % opts.bin_location)
         else:
             print("You can now run: %s --version" % real_location)

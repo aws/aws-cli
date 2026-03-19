@@ -108,4 +108,4 @@ Output::
         ]
     }
 
-For more information, see `ListCodeReviews<https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_ListCodeReviews.html>`__ in the *Amazon DevOps Guru API Reference*
+For more information, see `View all code reviews <https://docs.aws.amazon.com/codeguru/latest/reviewer-ug/view-all-code-reviews.html>`__ in the *Amazon CodeGuru Reviewer User Guide*.

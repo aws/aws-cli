@@ -14,45 +14,51 @@ import sys
 
 from awscli.customizations.commands import BasicCommand
 
-from . import ConfigValue, NOT_SET
+from . import NOT_SET, ConfigValue
 
 
 class ConfigureListCommand(BasicCommand):
     NAME = 'list'
     DESCRIPTION = (
-        'List the AWS CLI configuration data.  This command will '
-        'show you the current configuration data.  For each configuration '
-        'item, it will show you the value, where the configuration value '
-        'was retrieved, and the configuration variable name.  For example, '
+        'Lists the profile, access key, secret key, and region configuration '
+        'information used for the specified profile. For each configuration '
+        'item, it shows the value, where the configuration value '
+        'was retrieved, and the configuration variable name.\n'
+        '\n'
+        'For example, '
         'if you provide the AWS region in an environment variable, this '
-        'command will show you the name of the region you\'ve configured, '
-        'it will tell you that this value came from an environment '
-        'variable, and it will tell you the name of the environment '
+        'command shows you the name of the region you\'ve configured, '
+        'that this value came from an environment '
+        'variable, and the name of the environment '
         'variable.\n'
+        '\n'
+        'For temporary credential methods such as roles and IAM Identity '
+        'Center, this command displays the temporarily cached access key and '
+        'secret access key is displayed.\n'
     )
     SYNOPSIS = 'aws configure list [--profile profile-name]'
     EXAMPLES = (
         'To show your current configuration values::\n'
         '\n'
         '  $ aws configure list\n'
-        '        Name                    Value             Type    Location\n'
-        '        ----                    -----             ----    --------\n'
-        '     profile                <not set>             None    None\n'
-        '  access_key     ****************ABCD      config_file    ~/.aws/config\n'
-        '  secret_key     ****************ABCD      config_file    ~/.aws/config\n'
-        '      region                us-west-2              env    AWS_DEFAULT_REGION\n'
+        '  NAME       : VALUE                    : TYPE             : LOCATION\n'
+        '  profile    : <not set>                : None             : None\n'
+        '  access_key : ****************ABCD     : config_file      : ~/.aws/config\n'
+        '  secret_key : ****************ABCD     : config_file      : ~/.aws/config\n'
+        '  region     : us-west-2                : env              : AWS_DEFAULT_REGION\n'
         '\n'
     )
 
-    def __init__(self, session, stream=sys.stdout):
-        super(ConfigureListCommand, self).__init__(session)
+    def __init__(self, session, stream=None):
+        super().__init__(session)
+        if stream is None:
+            stream = sys.stdout
         self._stream = stream
 
     def _run_main(self, args, parsed_globals):
-        self._display_config_value(ConfigValue('Value', 'Type', 'Location'),
-                                   'Name')
-        self._display_config_value(ConfigValue('-----', '----', '--------'),
-                                   '----')
+        self._display_config_value(
+            ConfigValue('VALUE', 'TYPE', 'LOCATION'), 'NAME'
+        )
 
         if parsed_globals and parsed_globals.profile is not None:
             profile = ConfigValue(self._session.profile, 'manual', '--profile')
@@ -69,9 +75,12 @@ class ConfigureListCommand(BasicCommand):
         return 0
 
     def _display_config_value(self, config_value, config_name):
-        self._stream.write('%10s %24s %16s    %s\n' % (
-            config_name, config_value.value, config_value.config_type,
-            config_value.config_variable))
+        self._stream.write(
+            f'{config_name:<10} : '
+            f'{config_value.value:<24} : '
+            f'{str(config_value.config_type):<16} : '
+            f'{str(config_value.config_variable)}\n'
+        )
 
     def _lookup_credentials(self):
         # First try it with _lookup_config.  It's possible
@@ -97,10 +106,12 @@ class ConfigureListCommand(BasicCommand):
                 # visible from botocore.credentials.  I think
                 # the credentials.method is sufficient to show
                 # where the credentials are coming from.
-                access_key = ConfigValue(credentials.access_key,
-                                         credentials.method, '')
-                secret_key = ConfigValue(credentials.secret_key,
-                                         credentials.method, '')
+                access_key = ConfigValue(
+                    credentials.access_key, credentials.method, ''
+                )
+                secret_key = ConfigValue(
+                    credentials.secret_key, credentials.method, ''
+                )
                 access_key.mask_value()
                 secret_key.mask_value()
                 return access_key, secret_key
@@ -127,14 +138,17 @@ class ConfigureListCommand(BasicCommand):
         # First try to look up the variable in the env.
         value = self._session.get_config_variable(name, methods=('env',))
         if value is not None:
-            return ConfigValue(value, 'env',
-                               self._session.session_var_map[name][1])
+            return ConfigValue(
+                value, 'env', self._session.session_var_map[name][1]
+            )
         # Then try to look up the variable in the config file.
         value = self._session.get_config_variable(name, methods=('config',))
         if value is not None:
             return ConfigValue(
-                value, 'config-file',
-                self._session.get_config_variable('config_file'))
+                value,
+                'config-file',
+                self._session.get_config_variable('config_file'),
+            )
 
     def _lookup_config(self, name):
         val = self._lookup_in_env_and_config(name)

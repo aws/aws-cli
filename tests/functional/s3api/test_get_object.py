@@ -11,22 +11,20 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import BaseAWSCommandParamsTest
 import os
 import re
 
-from awscli.compat import six
-
 import awscli.clidriver
+from awscli.compat import StringIO
+from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestGetObject(BaseAWSCommandParamsTest):
-
     prefix = 's3api get-object'
 
     def setUp(self):
         super(TestGetObject, self).setUp()
-        self.parsed_response = {'Body': six.StringIO()}
+        self.parsed_response = {'Body': StringIO()}
 
     def remove_file_if_exists(self, filename):
         if os.path.isfile(filename):
@@ -38,8 +36,10 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += ' --key mykey'
         cmdline += ' outfile'
         self.addCleanup(self.remove_file_if_exists, 'outfile')
-        self.assert_params_for_cmd(cmdline, {'Bucket': 'mybucket',
-                                              'Key': 'mykey'})
+        self.assert_params_for_cmd(
+            cmdline,
+            {'Bucket': 'mybucket', 'ChecksumMode': 'ENABLED', 'Key': 'mykey'},
+        )
 
     def test_range(self):
         cmdline = self.prefix
@@ -48,9 +48,15 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += ' --range bytes=0-499'
         cmdline += ' outfile'
         self.addCleanup(self.remove_file_if_exists, 'outfile')
-        self.assert_params_for_cmd(cmdline, {'Bucket': 'mybucket',
-                                              'Key': 'mykey',
-                                              'Range': 'bytes=0-499'})
+        self.assert_params_for_cmd(
+            cmdline,
+            {
+                'Bucket': 'mybucket',
+                'ChecksumMode': 'ENABLED',
+                'Key': 'mykey',
+                'Range': 'bytes=0-499',
+            },
+        )
 
     def test_response_headers(self):
         cmdline = self.prefix
@@ -61,11 +67,14 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += ' outfile'
         self.addCleanup(self.remove_file_if_exists, 'outfile')
         self.assert_params_for_cmd(
-            cmdline, {
-                'Bucket': 'mybucket', 'Key': 'mykey',
+            cmdline,
+            {
+                'Bucket': 'mybucket',
+                'ChecksumMode': 'ENABLED',
+                'Key': 'mykey',
                 'ResponseCacheControl': 'No-cache',
-                'ResponseContentEncoding': 'x-gzip'
-            }
+                'ResponseContentEncoding': 'x-gzip',
+            },
         )
 
     def test_streaming_output_arg_with_error_response(self):
@@ -74,9 +83,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         # it would propogate a KeyError so we want to ensure
         # this case is handled.
         self.parsed_response = {
-            'Error': {
-                'Code': 'AuthError', 'Message': 'SomeError'
-            }
+            'Error': {'Code': 'AuthError', 'Message': 'SomeError'}
         }
         cmdline = self.prefix
         cmdline += ' --bucket mybucket'
@@ -84,7 +91,9 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += ' outfile'
         self.addCleanup(self.remove_file_if_exists, 'outfile')
         self.assert_params_for_cmd(
-            cmdline, {'Bucket': 'mybucket', 'Key': 'mykey'})
+            cmdline,
+            {'Bucket': 'mybucket', 'ChecksumMode': 'ENABLED', 'Key': 'mykey'},
+        )
 
 
 if __name__ == "__main__":

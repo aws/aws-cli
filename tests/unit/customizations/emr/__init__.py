@@ -13,12 +13,10 @@
 
 from awscli.customizations.emr import exceptions
 from awscli.customizations.emr.configutils import ConfigWriter
-from awscli.testutils import BaseAWSCommandParamsTest
-import mock
+from awscli.testutils import BaseAWSCommandParamsTest, mock
 
 
 class EMRBaseAWSCommandParamsTest(BaseAWSCommandParamsTest):
-
     def setUp(self):
         super(EMRBaseAWSCommandParamsTest, self).setUp()
 
@@ -28,7 +26,8 @@ class EMRBaseAWSCommandParamsTest(BaseAWSCommandParamsTest):
 
         # Do not write or update the config (~/.aws/config) file
         self.patcher_update_config = mock.patch(
-            'awscli.customizations.emr.configutils.ConfigWriter.update_config')
+            'awscli.customizations.emr.configutils.ConfigWriter.update_config'
+        )
         self.mock_update_config = self.patcher_update_config.start()
 
     def set_configs(self, configs):
@@ -39,9 +38,10 @@ class EMRBaseAWSCommandParamsTest(BaseAWSCommandParamsTest):
         super(EMRBaseAWSCommandParamsTest, self).tearDown()
         self.patcher_update_config.stop()
 
-    def assert_error_msg(self, cmd,
-                         exception_class_name, error_msg_kwargs={}, rc=255):
+    def assert_error_msg(
+        self, cmd, exception_class_name, error_msg_kwargs={}, rc=255
+    ):
         exception_class = getattr(exceptions, exception_class_name)
-        error_msg = "\n%s\n" % exception_class.fmt.format(**error_msg_kwargs)
+        error_msg = "\naws: [ERROR]: An error occurred (ParamValidation): %s\n" % exception_class.fmt.format(**error_msg_kwargs)
         result = self.run_cmd(cmd, rc)
-        self.assertEquals(error_msg, result[1])
+        self.assertEqual(error_msg, result[1])

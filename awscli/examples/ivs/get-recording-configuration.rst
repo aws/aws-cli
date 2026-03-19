@@ -10,15 +10,33 @@ Output::
     {
         "recordingConfiguration": {
             "arn": "arn:aws:ivs:us-west-2:123456789012:recording-configuration/ABcdef34ghIJ",
-            "name": "test-recording-config",
             "destinationConfiguration": {
                 "s3": {
                     "bucketName": "demo-recording-bucket"
                 }
             },
+            "name": "test-recording-config",
+            "recordingReconnectWindowSeconds": 60,
             "state": "ACTIVE",
-            "tags": {}
+            "tags": { 
+                "key1" : "value1", 
+                "key2" : "value2" 
+            },
+            "thumbnailConfiguration": { 
+                "recordingMode": "INTERVAL",
+                "targetIntervalSeconds": 1,
+                "resolution": "LOWEST_RESOLUTION",
+                "storage": [
+                    "LATEST"
+                ]
+            },
+            "renditionConfiguration": {
+                "renditionSelection": "CUSTOM",
+                "renditions": [
+                    "HD"
+                ]
+            }
         }
     }
 
-For more information, see `Record to Amazon S3 <https://docs.aws.amazon.com/ivs/latest/userguide/record-to-S3.html>`__ in the *Amazon Interactive Video Service User Guide*.
+For more information, see `Record to Amazon S3 <https://docs.aws.amazon.com/ivs/latest/userguide/record-to-s3.html>`__ in the *Amazon Interactive Video Service User Guide*.

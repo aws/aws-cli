@@ -11,27 +11,30 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import logging
-from awscli.compat import advance_iterator
 
+from awscli.compat import advance_iterator
 
 LOG = logging.getLogger(__name__)
 
 
-class Comparator(object):
+class Comparator:
     """
     This class performs all of the comparisons behind the sync operation
     """
-    def __init__(self, file_at_src_and_dest_sync_strategy,
-                 file_not_at_dest_sync_strategy,
-                 file_not_at_src_sync_strategy):
-        
+
+    def __init__(
+        self,
+        file_at_src_and_dest_sync_strategy,
+        file_not_at_dest_sync_strategy,
+        file_not_at_src_sync_strategy,
+    ):
         self._sync_strategy = file_at_src_and_dest_sync_strategy
         self._not_at_dest_sync_strategy = file_not_at_dest_sync_strategy
         self._not_at_src_sync_strategy = file_not_at_src_sync_strategy
 
     def call(self, src_files, dest_files):
         """
-        This function preforms the actual comparisons.  The parameters it takes
+        This function performs the actual comparisons.  The parameters it takes
         are the generated files for both the source and the destination.  The
         key concept in this function is that no matter the type of where the
         files are coming from, they are listed in the same order, least to
@@ -44,7 +47,7 @@ class Comparator(object):
         the ``S3Handler``.
 
         :param src_files: The generated FileInfo objects from the source.
-        :param dest_files: The genereated FileInfo objects from the dest.
+        :param dest_files: The generated FileInfo objects from the dest.
 
         :returns: Yields the FilInfo objects of the files that need to be
             operated on
@@ -61,7 +64,7 @@ class Comparator(object):
             but not the source file.  If the source list is empty delete the
             rest of the files in the dest list from the destination.  If the
             dest list is empty add the rest of the file in source list to
-            the destionation.
+            the destination.
         """
         # :var src_done: True if there are no more files from the source left.
         src_done = False
@@ -102,27 +105,43 @@ class Comparator(object):
                 elif compare_keys == 'less_than':
                     src_take = True
                     dest_take = False
-                    should_sync = self._not_at_dest_sync_strategy.determine_should_sync(src_file, None)
+                    should_sync = (
+                        self._not_at_dest_sync_strategy.determine_should_sync(
+                            src_file, None
+                        )
+                    )
                     if should_sync:
                         yield src_file
 
                 elif compare_keys == 'greater_than':
                     src_take = False
                     dest_take = True
-                    should_sync = self._not_at_src_sync_strategy.determine_should_sync(None, dest_file)
-                    if should_sync:                        
+                    should_sync = (
+                        self._not_at_src_sync_strategy.determine_should_sync(
+                            None, dest_file
+                        )
+                    )
+                    if should_sync:
                         yield dest_file
 
             elif (not src_done) and dest_done:
                 src_take = True
-                should_sync = self._not_at_dest_sync_strategy.determine_should_sync(src_file, None)
+                should_sync = (
+                    self._not_at_dest_sync_strategy.determine_should_sync(
+                        src_file, None
+                    )
+                )
                 if should_sync:
                     yield src_file
 
             elif src_done and (not dest_done):
                 dest_take = True
-                should_sync = self._not_at_src_sync_strategy.determine_should_sync(None, dest_file)
-                if should_sync:                        
+                should_sync = (
+                    self._not_at_src_sync_strategy.determine_should_sync(
+                        None, dest_file
+                    )
+                )
+                if should_sync:
                     yield dest_file
             else:
                 break
@@ -135,10 +154,10 @@ class Comparator(object):
 
         src_comp_key = src_file.compare_key
         dest_comp_key = dest_file.compare_key
-        if (src_comp_key == dest_comp_key):
+        if src_comp_key == dest_comp_key:
             return 'equal'
 
-        elif (src_comp_key < dest_comp_key):
+        elif src_comp_key < dest_comp_key:
             return 'less_than'
 
         else:

@@ -1,6 +1,6 @@
 **To update a resource share**
 
-The following ``update-resource-share`` example makes changes to the specified resource share. ::
+The following ``update-resource-share`` example changes the specified resource share to allow external principals that are not in an AWS Organization. ::
 
     aws ram update-resource-share \
         --allow-external-principals \

@@ -2,7 +2,8 @@
 
 The following ``delete-transit-gateway`` example deletes the specified transit gateway. ::
 
-    aws ec2  delete-transit-gateway --transit-gateway-id tgw-01f04542b2EXAMPLE
+    aws ec2  delete-transit-gateway \
+        --transit-gateway-id tgw-01f04542b2EXAMPLE
 
 Output::
 
@@ -26,4 +27,4 @@ Output::
         }
     }
 
-For more information, see `Delete a Transit Gateway<https://docs.aws.amazon.com/vpc/latest/tgw/tgw-transit-gateways.html#delete-tgw>`__ in the *AWS Transit Gateways Guide*.
+For more information, see `Delete a transit gateway <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-transit-gateways.html#delete-tgw>`__ in the *Transit Gateways Guide*.

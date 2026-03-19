@@ -2,7 +2,8 @@
 
 The following ``get-server-certificate`` command retrieves all of the details about the specified server certificate in your AWS account. ::
 
-    aws iam get-server-certificate --server-certificate-name myUpdatedServerCertificate
+    aws iam get-server-certificate \
+        --server-certificate-name myUpdatedServerCertificate
 
 Output::
 
@@ -51,6 +52,4 @@ Output::
 
 To list the server certificates available in your AWS account, use the ``list-server-certificates`` command.
 
-For more information, see `Creating, Uploading, and Deleting Server Certificates`_ in the *IAM Users Guide*.
-
-.. _`Creating, Uploading, and Deleting Server Certificates`: http://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_server-certs.html
+For more information, see `Managing server certificates in IAM <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_server-certs.html>`__ in the *AWS IAM User Guide*.

@@ -18,7 +18,7 @@ Contents of ``create-stream.json``::
                     "key":"48c67f3c-63bb-4f92-a98a-4ee0fbc2bef6"
                 }
             }
-        ]
+        ],
         "roleArn": "arn:aws:iam:123456789012:role/service-role/my_ota_stream_role"
     }
 

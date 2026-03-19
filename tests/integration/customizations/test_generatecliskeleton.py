@@ -11,15 +11,16 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import contextlib
-import os
 import json
 import logging
+import os
 
-import mock
 import pytest
-import ruamel.yaml as yaml
+from ruamel.yaml import YAML
 
 from awscli.clidriver import create_clidriver
+from awscli.testutils import mock
+
 
 # NOTE: This should be a standalone pytest fixture.  However, fixtures cannot
 # be used outside of other fixtures or test cases, and it is needed by
@@ -45,6 +46,11 @@ def patch_environ():
 def clean_environ():
     with patch_environ():
         yield
+
+
+@pytest.fixture
+def yaml_safe_loader():
+    return YAML(typ="safe", pure=True)
 
 
 def get_all_cli_skeleton_commands():
@@ -84,12 +90,12 @@ def test_gen_input_skeleton(cmd, capsys, clean_environ):
 
 
 @pytest.mark.parametrize('cmd', SKELETON_COMMANDS)
-def test_gen_yaml_input_skeleton(cmd, capsys, clean_environ):
+def test_gen_yaml_input_skeleton(cmd, capsys, clean_environ, yaml_safe_loader):
     stdout, stderr, _ = _run_cmd(
         cmd + ' --generate-cli-skeleton yaml-input', capsys
     )
     try:
-        yaml.safe_load(stdout)
+        yaml_safe_loader.load(stdout)
     except ValueError:
         raise AssertionError(
             f"Could not generate CLI YAML skeleton for command: {cmd}\n"

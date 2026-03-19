@@ -22,6 +22,7 @@ file. This customization adds the following options:
   - ``--public-key-outfile``: keyPair.PublicKey
   - ``--private-key-outfile``: keyPair.PrivateKey
 """
+
 from awscli.customizations.arguments import QueryOutFileArgument
 
 
@@ -34,19 +35,34 @@ def register_create_keys_and_cert_arguments(session, argument_table, **kwargs):
     """
     after_event = 'after-call.iot.CreateKeysAndCertificate'
     argument_table['certificate-pem-outfile'] = QueryOutFileArgument(
-        session=session, name='certificate-pem-outfile',
-        query='certificatePem', after_call_event=after_event, perm=0o600)
+        session=session,
+        name='certificate-pem-outfile',
+        query='certificatePem',
+        after_call_event=after_event,
+        perm=0o600,
+    )
     argument_table['public-key-outfile'] = QueryOutFileArgument(
-        session=session, name='public-key-outfile', query='keyPair.PublicKey',
-        after_call_event=after_event, perm=0o600)
+        session=session,
+        name='public-key-outfile',
+        query='keyPair.PublicKey',
+        after_call_event=after_event,
+        perm=0o600,
+    )
     argument_table['private-key-outfile'] = QueryOutFileArgument(
-        session=session, name='private-key-outfile',
-        query='keyPair.PrivateKey', after_call_event=after_event, perm=0o600)
+        session=session,
+        name='private-key-outfile',
+        query='keyPair.PrivateKey',
+        after_call_event=after_event,
+        perm=0o600,
+    )
 
 
 def register_create_keys_from_csr_arguments(session, argument_table, **kwargs):
     """Add certificate-pem-outfile to create-certificate-from-csr"""
     argument_table['certificate-pem-outfile'] = QueryOutFileArgument(
-        session=session, name='certificate-pem-outfile',
+        session=session,
+        name='certificate-pem-outfile',
         query='certificatePem',
-        after_call_event='after-call.iot.CreateCertificateFromCsr', perm=0o600)
+        after_call_event='after-call.iot.CreateCertificateFromCsr',
+        perm=0o600,
+    )

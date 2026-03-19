@@ -1,13 +1,9 @@
 **To get a CloudFront distribution configuration**
 
-The following example gets metadata about the CloudFront distribution with the
-ID ``EDFDVBD6EXAMPLE``, including its ``ETag``. The distribution ID is returned
-in the `create-distribution <create-distribution.html>`_ and
-`list-distributions <list-distributions.html>`_ commands.
+The following example gets metadata about the CloudFront distribution with the ID ``EDFDVBD6EXAMPLE``, including its ``ETag``. The distribution ID is returned in the `create-distribution <create-distribution.html>`__ and `list-distributions <list-distributions.html>`__ commands. ::
 
-::
-
-    aws cloudfront get-distribution-config --id EDFDVBD6EXAMPLE
+    aws cloudfront get-distribution-config \
+        --id EDFDVBD6EXAMPLE
 
 Output::
 
@@ -23,8 +19,8 @@ Output::
                 "Quantity": 1,
                 "Items": [
                     {
-                        "Id": "awsexamplebucket.s3.amazonaws.com-cli-example",
-                        "DomainName": "awsexamplebucket.s3.amazonaws.com",
+                        "Id": "amzn-s3-demo-bucket.s3.amazonaws.com-cli-example",
+                        "DomainName": "amzn-s3-demo-bucket.s3.amazonaws.com",
                         "OriginPath": "",
                         "CustomHeaders": {
                             "Quantity": 0
@@ -39,7 +35,7 @@ Output::
                 "Quantity": 0
             },
             "DefaultCacheBehavior": {
-                "TargetOriginId": "awsexamplebucket.s3.amazonaws.com-cli-example",
+                "TargetOriginId": "amzn-s3-demo-bucket.s3.amazonaws.com-cli-example",
                 "ForwardedValues": {
                     "QueryString": false,
                     "Cookies": {

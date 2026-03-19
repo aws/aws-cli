@@ -21,14 +21,75 @@ at the man output, we look one step before at the generated rst output
 (it's easier to verify).
 
 """
-import io
 
-from awscli.testutils import BaseAWSHelpOutputTest
-from awscli.testutils import FileCreator
+import os
 
-from awscli.compat import six
+import pytest
+
 from awscli.alias import AliasLoader
-import mock
+from awscli.compat import StringIO
+from awscli.testutils import (
+    BaseAWSHelpOutputTest,
+    CapturedRenderer,
+    FileCreator,
+    mock,
+)
+from tests import CLIRunner
+
+COMMAND_ARGS_TEST_DATA = [
+    {
+        'command_args': ["ec2", "create-launch-template-version", "help"],
+        'expected_url_suffix': "/reference/ec2/create-launch-template-version.html",
+    },
+    {
+        'command_args': ["help"],
+        'expected_url_suffix': "/index.html",
+    },
+    {
+        'command_args': ["s3", "help"],
+        'expected_url_suffix': "/reference/s3/index.html",
+    },
+]
+
+
+def create_cases():
+    for test_data in COMMAND_ARGS_TEST_DATA:
+        yield pytest.param(test_data, id="-".join(test_data['command_args']))
+
+
+def runner(config_file=None):
+    runner = CLIRunner()
+
+    # Add the PATH to the environment variables so that that posix help
+    # renderers can find either the groff or mandoc executables required to
+    # render the help pages for posix environments
+    if "PATH" in os.environ:
+        runner.env["PATH"] = os.environ["PATH"]
+
+    if config_file is not None:
+        runner.env['AWS_CONFIG_FILE'] = config_file
+
+    return runner
+
+
+@pytest.fixture
+def runner_url():
+    file_creator = FileCreator()
+    return runner(
+        file_creator.create_file(
+            'config', '[default]\n' 'cli_help_output = url\n'
+        )
+    )
+
+
+@pytest.fixture
+def runner_browser():
+    file_creator = FileCreator()
+    return runner(
+        file_creator.create_file(
+            'config', '[default]\n' 'cli_help_output = browser\n'
+        )
+    )
 
 
 class TestHelpOutput(BaseAWSHelpOutputTest):
@@ -39,7 +100,8 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
         self.assert_contains('***\naws\n***')
         self.assert_contains(
             'The AWS Command Line Interface is a unified tool '
-            'to manage your AWS services.')
+            'to manage your AWS services.'
+        )
         self.assert_contains('Use *aws help topics* to view')
         # Verify we see the docs for top level params, so pick
         # a few representative types of params.
@@ -48,9 +110,9 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
         self.assert_contains('``--no-paginate``')
         # Arg with choices
         self.assert_contains('``--color``')
-        self.assert_contains('* on')
-        self.assert_contains('* off')
-        self.assert_contains('* auto')
+        self.assert_contains('*   on')
+        self.assert_contains('*   off')
+        self.assert_contains('*   auto')
         # Then we should see the services.
         self.assert_contains('* ec2')
         self.assert_contains('* s3api')
@@ -82,22 +144,23 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
         self.assert_contains('Launches the specified number of instances')
         self.assert_contains('``--count`` (string)')
 
-    def test_waiter_does_not_have_duplicate_global_params_link(self):
-        self.driver.main(['ec2', 'wait', 'help'])
-        self.assert_contains_with_count(
-            'for descriptions of global parameters', 1)
-
     def test_custom_service_help_output(self):
         self.driver.main(['s3', 'help'])
         self.assert_contains('.. _cli:aws s3:')
         self.assert_contains('high-level S3 commands')
         self.assert_contains('* cp')
 
+    def test_waiter_does_not_have_global_args(self):
+        self.driver.main(['ec2', 'wait', 'help'])
+        self.assert_not_contains('--debug')
+        self.assert_not_contains('Global Options')
+
     def test_custom_operation_help_output(self):
         self.driver.main(['s3', 'ls', 'help'])
         self.assert_contains('.. _cli:aws s3 ls:')
         self.assert_contains('List S3 objects')
         self.assert_contains('--summarize')
+        self.assert_contains('--debug')
 
     def test_topic_list_help_output(self):
         self.driver.main(['help', 'topics'])
@@ -113,19 +176,17 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
         self.assert_text_order(
             '-------\nGeneral\n-------',
             '--\nS3\n--',
-            starting_from='Available Topics'
+            starting_from='Available Topics',
         )
         # Make sure that the topic elements elements show up as well.
-        self.assert_contains(
-            '* return-codes: Describes'
-        )
+        self.assert_contains('* return-codes: Describes')
         # Make sure the topic elements are underneath the categories as well
         # and they get added to each category they fall beneath
         self.assert_text_order(
             '-------\nGeneral\n-------',
             '* return-codes: Describes',
             '--\nS3\n--',
-            starting_from='-------\nGeneral\n-------'
+            starting_from='-------\nGeneral\n-------',
         )
 
     def test_topic_help_command(self):
@@ -156,20 +217,28 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
         self.assert_text_order(
             '--image-id <value>',
             '[--key-name <value>]',
-            '[--security-groups <value>]', starting_from='Synopsis')
+            '[--security-groups <value>]',
+            starting_from='Synopsis',
+        )
 
     def test_service_operation_order(self):
         self.driver.main(['ec2', 'help'])
         self.assert_text_order(
             'activate-license',
             'allocate-address',
-            'assign-private-ip-addresses', starting_from='Available Commands')
+            'assign-private-ip-addresses',
+            starting_from='Available Commands',
+        )
 
     def test_top_level_args_order(self):
         self.driver.main(['help'])
         self.assert_text_order(
-            'autoscaling\n', 'cloudformation\n', 'elb\n', 'swf\n',
-            starting_from='Available Services')
+            'autoscaling\n',
+            'cloudformation\n',
+            'elb\n',
+            'swf\n',
+            starting_from='Available Services',
+        )
 
     def test_examples_in_operation_help(self):
         self.driver.main(['ec2', 'run-instances', 'help'])
@@ -204,13 +273,15 @@ class TestRemoveDeprecatedCommands(BaseAWSHelpOutputTest):
         # command verify that we get a SystemExit exception
         # and that we get something in stderr that says that
         # we made an invalid choice (because the operation is removed).
-        stderr = io.StringIO()
+        stderr = StringIO()
         with mock.patch('sys.stderr', stderr):
             cr = self.driver.main([service, command, 'help'])
         self.assertEqual(cr, 252)
         # We should see an error message complaining about
         # an invalid choice because the operation has been removed.
-        self.assertIn('argument operation: Invalid choice', stderr.getvalue())
+        self.assertIn(
+            'argument operation: Found invalid choice', stderr.getvalue()
+        )
 
     def test_ses_deprecated_commands(self):
         self.driver.main(['ses', 'help'])
@@ -219,27 +290,28 @@ class TestRemoveDeprecatedCommands(BaseAWSHelpOutputTest):
         self.assert_not_contains('verify-email-address')
 
         self.assert_command_does_not_exist(
-            'ses', 'list-verified-email-addresses')
+            'ses', 'list-verified-email-addresses'
+        )
         self.assert_command_does_not_exist(
-            'ses', 'delete-verified-email-address')
-        self.assert_command_does_not_exist(
-            'ses', 'verify-email-address')
+            'ses', 'delete-verified-email-address'
+        )
+        self.assert_command_does_not_exist('ses', 'verify-email-address')
 
     def test_ec2_import_export(self):
         self.driver.main(['ec2', 'help'])
         self.assert_not_contains('import-instance')
         self.assert_not_contains('import-volume')
-        self.assert_command_does_not_exist(
-            'ec2', 'import-instance')
-        self.assert_command_does_not_exist(
-            'ec2', 'import-volume')
+        self.assert_command_does_not_exist('ec2', 'import-instance')
+        self.assert_command_does_not_exist('ec2', 'import-volume')
 
     def test_boolean_param_documented(self):
-        self.driver.main(['autoscaling',
-                          'terminate-instance-in-auto-scaling-group', 'help'])
+        self.driver.main(
+            ['autoscaling', 'terminate-instance-in-auto-scaling-group', 'help']
+        )
         self.assert_contains(
-            ('``--should-decrement-desired-capacity`` | '
-             '``--no-should-decrement-desired-capacity`` (boolean)'))
+            '``--should-decrement-desired-capacity`` | '
+            '``--no-should-decrement-desired-capacity`` (boolean)'
+        )
 
     def test_streaming_output_arg(self):
         self.driver.main(['s3api', 'get-object', 'help'])
@@ -346,6 +418,7 @@ class TestParamRename(BaseAWSHelpOutputTest):
         self.assert_not_contains('no-no-reboot')
         self.assert_contains('--reboot')
 
+
 class TestCustomCommandDocsFromFile(BaseAWSHelpOutputTest):
     def test_description_from_rst_file(self):
         # The description for the configure command
@@ -357,30 +430,6 @@ class TestCustomCommandDocsFromFile(BaseAWSHelpOutputTest):
         self.assert_contains('metadata_service_num_attempts')
         self.assert_contains('aws_access_key_id')
 
-class TestEnumDocsArentDuplicated(BaseAWSHelpOutputTest):
-    def test_enum_docs_arent_duplicated(self):
-        # Test for: https://github.com/aws/aws-cli/issues/609
-        # What's happening is if you have a list param that has
-        # an enum, we document it as:
-        # a|b|c|d   a|b|c|d
-        # Except we show all of the possible enum params twice.
-        # Each enum param should only occur once.  The ideal documentation
-        # should be:
-        #
-        # string1 string2
-        #
-        # Where each value is one of:
-        #     value1
-        #     value2
-        self.driver.main(['cloudformation', 'list-stacks', 'help'])
-        # "CREATE_IN_PROGRESS" is a enum value, and should only
-        # appear once in the help output.
-        contents = self.renderer.rendered_contents
-        self.assertTrue(contents.count("CREATE_IN_PROGRESS") == 1,
-                        ("Enum param was only suppose to be appear once in "
-                         "rendered doc output, appeared: %s" %
-                         contents.count("CREATE_IN_PROGRESS")))
-
 
 class TestParametersCanBeHidden(BaseAWSHelpOutputTest):
     def mark_as_undocumented(self, argument_table, **kwargs):
@@ -389,8 +438,9 @@ class TestParametersCanBeHidden(BaseAWSHelpOutputTest):
     def test_hidden_params_are_not_documented(self):
         # We're going to demonstrate hiding a parameter.
         # --device
-        self.driver.session.register('building-argument-table',
-                                     self.mark_as_undocumented)
+        self.driver.session.register(
+            'building-argument-table', self.mark_as_undocumented
+        )
         self.driver.main(['kinesis', 'get-shard-iterator', 'help'])
         self.assert_not_contains('--starting-sequence-number')
 
@@ -400,11 +450,14 @@ class TestCanDocumentAsRequired(BaseAWSHelpOutputTest):
         # This param is already marked as required, but to be
         # explicit this is repeated here to make it more clear.
         def doc_as_required(argument_table, **kwargs):
-            arg = argument_table['volume-arns']
-        self.driver.session.register('building-argument-table',
-                                     doc_as_required)
-        self.driver.main(['storagegateway', 'describe-cached-iscsi-volumes',
-                          'help'])
+            arg = argument_table['volume-arns']  # noqa: F841
+
+        self.driver.session.register(
+            'building-argument-table', doc_as_required
+        )
+        self.driver.main(
+            ['storagegateway', 'describe-cached-iscsi-volumes', 'help']
+        )
         self.assert_not_contains('[--volume-arns <value>]')
 
 
@@ -431,7 +484,8 @@ class TestRoute53CreateHostedZone(BaseAWSHelpOutputTest):
         self.driver.main(['route53', 'create-hosted-zone', 'help'])
         # Ensure that the proper casing is used for this command's docs.
         self.assert_contains(
-            'do **not** include ``PrivateZone`` in this input structure')
+            'do **not** include ``PrivateZone`` in this input structure'
+        )
 
 
 class TestIotData(BaseAWSHelpOutputTest):
@@ -439,31 +493,33 @@ class TestIotData(BaseAWSHelpOutputTest):
         self.driver.main(['iot-data', 'help'])
         # Ensure the note is in help page.
         self.assert_contains(
-            'The default endpoint data.iot.[region].amazonaws.com is '
-            'intended for testing purposes only.')
+            'The default endpoints (intended for testing purposes only) can be found at '
+            'https://docs.aws.amazon.com/general/latest/gr/iot-core.html#iot-core-data-plane-endpoints'
+        )
 
     def test_operation_help_command_has_note(self):
         self.driver.main(['iot-data', 'get-thing-shadow', 'help'])
         # Ensure the note is in help page.
         self.assert_contains(
-            'The default endpoint data.iot.[region].amazonaws.com is '
-            'intended for testing purposes only.')
+            'The default endpoints (intended for testing purposes only) can be found at '
+            'https://docs.aws.amazon.com/general/latest/gr/iot-core.html#iot-core-data-plane-endpoints'
+        )
 
 
 class TestAliases(BaseAWSHelpOutputTest):
     def setUp(self):
-        super(TestAliases, self).setUp()
+        super().setUp()
         self.files = FileCreator()
         self.alias_file = self.files.create_file('alias', '[toplevel]\n')
         self.driver.alias_loader = AliasLoader(self.alias_file)
 
     def tearDown(self):
-        super(TestAliases, self).tearDown()
+        super().tearDown()
         self.files.remove_all()
 
     def add_alias(self, alias_name, alias_value):
         with open(self.alias_file, 'a+') as f:
-            f.write('%s = %s\n' % (alias_name, alias_value))
+            f.write(f'{alias_name} = {alias_value}\n')
 
     def test_alias_not_in_main_help(self):
         self.add_alias('my-alias', 'ec2 describe-regions')
@@ -476,3 +532,52 @@ class TestStreamingOutputHelp(BaseAWSHelpOutputTest):
         self.driver.main(['s3api', 'get-object', 'help'])
         self.assert_not_contains('outfile <value>')
         self.assert_contains('<outfile>')
+
+
+class TestUrlOutputHelp:
+    @pytest.mark.parametrize(
+        "test_case",
+        create_cases(),
+    )
+    @mock.patch('awscli.help.get_renderer')
+    def test_docs_prints_url(self, mock_get_renderer, test_case, runner_url):
+        renderer = CapturedRenderer()
+        mock_get_renderer.return_value = renderer
+
+        runner_url.run(test_case['command_args'])
+        assert (
+            "https://awscli.amazonaws.com/v2/documentation/api/"
+            in renderer.rendered_contents
+        )
+        assert test_case['expected_url_suffix'] in renderer.rendered_contents
+
+
+# Use this test class for "help" cases that require the default renderer
+# (i.e. renderer from get_render()) instead of a mocked version.
+class TestHelpOutputDefaultRenderer:
+    def test_line_lengths_do_not_break_create_launch_template_version_cmd(
+        self,
+    ):
+        runner = CLIRunner()
+        # Add the PATH to the environment variables so that that posix help
+        # renderers can find either the groff or mandoc executables required to
+        # render the help pages for posix environments
+        if "PATH" in os.environ:
+            runner.env["PATH"] = os.environ["PATH"]
+
+        result = runner.run(["ec2", "create-launch-template-version", "help"])
+        assert 'exceeds the line-length-limit' not in result.stderr
+
+
+@pytest.mark.skip("Cross-test interaction with CLIRunner mocking os.environ")
+class TestHelpOutputBrowserRenderer:
+    @pytest.mark.parametrize("test_case", create_cases())
+    @mock.patch("awscli.help.webbrowser.open_new_tab")
+    def test_docs_opens_browser(
+        self, mock_open_new_tab, test_case, runner_browser
+    ):
+        runner_result = runner_browser.run(test_case['command_args'])
+        assert (
+            "Opening help file in the default browser." in runner_result.stdout
+        )
+        mock_open_new_tab.assert_called_once()

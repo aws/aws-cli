@@ -1,6 +1,6 @@
 **To delete a CIDR block from a route table**
 
-The following command deletes the CIDR block from the specified transit gateway route table. ::
+The following ``delete-transit-gateway-route`` example deletes the CIDR block from the specified transit gateway route table. ::
 
     aws ec2 delete-transit-gateway-route \
         --transit-gateway-route-table-id tgw-rtb-0b6f6aaa01EXAMPLE \
@@ -23,4 +23,4 @@ Output::
         }
     }
 
-For more information, see `Delete a Static Route <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-route-tables.html#tgw-delete-static-route>`__ in the *AWS Transit Gateways*.
+For more information, see `Delete a static route <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-route-tables.html#tgw-delete-static-route>`__ in the *Transit Gateways Guide*.

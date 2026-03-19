@@ -13,36 +13,48 @@
 
 
 class ECSError(Exception):
-    """ Base class for all ECSErrors."""
+    """Base class for all ECSErrors."""
+
     fmt = 'An unspecified error occurred'
 
     def __init__(self, **kwargs):
         msg = self.fmt.format(**kwargs)
-        super(ECSError, self).__init__(msg)
+        super().__init__(msg)
         self.kwargs = kwargs
 
 
 class MissingPropertyError(ECSError):
-    fmt = \
-        "Error: Resource '{resource}' must include property '{prop_name}'"
+    fmt = "Resource '{resource}' must include property '{prop_name}'"
 
 
 class FileLoadError(ECSError):
-    fmt = "Error: Unable to load file at {file_path}: {error}"
+    fmt = "Unable to load file at {file_path}: {error}"
 
 
 class InvalidPlatformError(ECSError):
-    fmt = "Error: {resource} '{name}' must support 'ECS' compute platform"
+    fmt = "{resource} '{name}' must support 'ECS' compute platform"
 
 
 class InvalidProperyError(ECSError):
-    fmt = ("Error: deployment group '{dg_name}' does not target "
-           "ECS {resource} '{resource_name}'")
+    fmt = (
+        "deployment group '{dg_name}' does not target "
+        "ECS {resource} '{resource_name}'"
+    )
 
 
 class InvalidServiceError(ECSError):
-    fmt = "Error: Service '{service}' not found in cluster '{cluster}'"
+    fmt = "Service '{service}' not found in cluster '{cluster}'"
 
 
 class ServiceClientError(ECSError):
     fmt = "Failed to {action}:\n{error}"
+
+
+class MonitoringError(ECSError):
+    """Custom exception for monitoring-specific errors."""
+
+    fmt = '{message}'
+
+    def __init__(self, message):
+        self.message = message
+        super().__init__(message=message)

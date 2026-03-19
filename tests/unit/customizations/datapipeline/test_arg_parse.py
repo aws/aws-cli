@@ -11,13 +11,11 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from awscli.testutils import unittest
-
 from awscli.customizations.datapipeline import ParameterValuesInlineArgument
+from awscli.testutils import unittest
 
 
 class TestParameterValuesInlineArgument(unittest.TestCase):
-
     def test_over_2_values_with_same_key(self):
         parameters = {}
         argument = ParameterValuesInlineArgument('parameter-values')
@@ -27,22 +25,13 @@ class TestParameterValuesInlineArgument(unittest.TestCase):
                 'param1=value1',
                 'param1=value2',
                 'param1=value3',
-            ]
+            ],
         )
         self.assertEqual(
             parameters['parameterValues'],
             [
-                {
-                    "id": "param1",
-                    "stringValue": "value1"
-                },
-                {
-                    "id": "param1",
-                    "stringValue": "value2"
-                },
-                {
-                    "id": "param1",
-                    "stringValue": "value3"
-                }
-            ]
+                {"id": "param1", "stringValue": "value1"},
+                {"id": "param1", "stringValue": "value2"},
+                {"id": "param1", "stringValue": "value3"},
+            ],
         )

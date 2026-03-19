@@ -11,12 +11,14 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+import errno
 import os
 import sys
-import errno
 
-from awscli.customizations.codedeploy.utils import validate_instance, \
-    validate_region
+from awscli.customizations.codedeploy.utils import (
+    validate_instance,
+    validate_region,
+)
 from awscli.customizations.commands import BasicCommand
 
 
@@ -41,11 +43,11 @@ class Uninstall(BasicCommand):
             sys.stdout.flush()
             sys.stderr.write(
                 'ERROR\n'
-                '{0}\n'
+                f'{e}\n'
                 'Uninstall the AWS CodeDeploy Agent on the on-premises '
                 'instance by following the instructions in "Configure '
                 'Existing On-Premises Instances by Using AWS CodeDeploy" in '
-                'the AWS CodeDeploy User Guide.\n'.format(e)
+                'the AWS CodeDeploy User Guide.\n'
             )
             return 255
         return 0

@@ -76,4 +76,4 @@ Output::
         ]
     }
 
-For more information, see `Working with Transit Gateways <https://docs.aws.amazon.com/vpc/latest/tgw/working-with-transit-gateways.html>`__ in the *AWS Transit Gateways Guide*.
+For more information, see `Work with transit gateways <https://docs.aws.amazon.com/vpc/latest/tgw/working-with-transit-gateways.html>`__ in the *Transit Gateways Guide*.

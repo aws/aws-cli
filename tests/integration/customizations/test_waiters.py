@@ -12,10 +12,10 @@
 # language governing permissions and limitations under the License.
 import random
 
-from nose.plugins.attrib import attr
 import botocore.session
+import pytest
 
-from awscli.testutils import unittest, aws, random_chars
+from awscli.testutils import aws, random_chars, unittest
 
 
 class TestDynamoDBWait(unittest.TestCase):
@@ -23,23 +23,28 @@ class TestDynamoDBWait(unittest.TestCase):
         self.session = botocore.session.get_session()
         self.client = self.session.create_client('dynamodb', 'us-west-2')
 
-    @attr('slow')
+    @pytest.mark.slow
     def test_wait_table_exists(self):
         # Create a table.
         table_name = 'awscliddb-%s' % random_chars(10)
         self.client.create_table(
             TableName=table_name,
-            ProvisionedThroughput={"ReadCapacityUnits": 5,
-                                   "WriteCapacityUnits": 5},
+            ProvisionedThroughput={
+                "ReadCapacityUnits": 5,
+                "WriteCapacityUnits": 5,
+            },
             KeySchema=[{"AttributeName": "foo", "KeyType": "HASH"}],
-            AttributeDefinitions=[{"AttributeName": "foo",
-                                   "AttributeType": "S"}])
+            AttributeDefinitions=[
+                {"AttributeName": "foo", "AttributeType": "S"}
+            ],
+        )
         self.addCleanup(self.client.delete_table, TableName=table_name)
 
         # Wait for the table to be active.
         p = aws(
-            'dynamodb wait table-exists --table-name %s --region us-west-2' %
-            table_name)
+            'dynamodb wait table-exists --table-name %s --region us-west-2'
+            % table_name
+        )
         self.assertEqual(p.rc, 0)
 
         # Make sure the table is active.

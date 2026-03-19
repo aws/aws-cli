@@ -1,4 +1,4 @@
-**To create a replication task** 
+**To describe a replication task** 
 
 The following ``describe-replication-tasks`` example describes current replication tasks. ::
 

@@ -15,9 +15,12 @@ from awscli.customizations.emr import constants
 
 
 def build_hbase_restore_from_backup_args(dir, backup_version=None):
-    args = [constants.HBASE_MAIN,
-            constants.HBASE_RESTORE,
-            constants.HBASE_BACKUP_DIR, dir]
+    args = [
+        constants.HBASE_MAIN,
+        constants.HBASE_RESTORE,
+        constants.HBASE_BACKUP_DIR,
+        dir,
+    ]
 
     if backup_version is not None:
         args.append(constants.HBASE_BACKUP_VERSION_FOR_RESTORE)

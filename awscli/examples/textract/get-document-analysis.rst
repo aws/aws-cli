@@ -2,9 +2,11 @@
 
 The following ``get-document-analysis`` example shows how to get the results of asynchronous text analysis of a multi-page document. ::
 
-    aws textract get-document-analysis --job-id df7cf32ebbd2a5de113535fcf4d921926a701b09b4e7d089f3aebadb41e0712b --max-results 1000
+    aws textract get-document-analysis \
+        --job-id df7cf32ebbd2a5de113535fcf4d921926a701b09b4e7d089f3aebadb41e0712b \
+        --max-results 1000
 
-Output ::
+Output::
 
     {
         "Blocks": [

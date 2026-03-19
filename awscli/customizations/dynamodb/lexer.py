@@ -10,21 +10,19 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from base64 import b64decode
 import binascii
-from decimal import Decimal
 import re
 import string
+from base64 import b64decode
+from decimal import Decimal
 
-
-from .exceptions import LexerError, EmptyExpressionError
+from .exceptions import EmptyExpressionError, LexerError
 from .types import Binary
-
 
 VALID_BASE64 = re.compile(r'[A-Za-z0-9+/=]+')
 
 
-class Lexer(object):
+class Lexer:
     START_IDENTIFIER = set(string.ascii_letters + '_')
     VALID_IDENTIFIER = set(string.ascii_letters + string.digits + '_')
     WHITESPACE = set(' \t\n\r')
@@ -43,7 +41,11 @@ class Lexer(object):
     DIGITS = set(string.digits)
     INT_CHARS = set(string.digits + '-')
     OPERATION_TOKENS = {
-        'and', 'between', 'in', 'or', 'not',
+        'and',
+        'between',
+        'in',
+        'or',
+        'not',
     }
 
     def tokenize(self, expression):
@@ -76,8 +78,10 @@ class Lexer(object):
                     position=self._position,
                 )
         yield {
-            'type': 'eof', 'value': '',
-            'start': self._length, 'end': self._length
+            'type': 'eof',
+            'value': '',
+            'start': self._length,
+            'end': self._length,
         }
 
     def _consume_unquoted_identifier(self):
@@ -91,8 +95,10 @@ class Lexer(object):
                 buff += self._current
             else:
                 return {
-                    'type': 'unquoted_identifier', 'value': buff,
-                    'start': start, 'end': start + 1,
+                    'type': 'unquoted_identifier',
+                    'value': buff,
+                    'start': start,
+                    'end': start + 1,
                 }
 
         while self._next() in self.VALID_IDENTIFIER:
@@ -101,30 +107,40 @@ class Lexer(object):
         lower = buff.lower()
         if lower in self.OPERATION_TOKENS:
             return {
-                'type': lower, 'value': buff,
-                'start': start, 'end': start + len(buff)
+                'type': lower,
+                'value': buff,
+                'start': start,
+                'end': start + len(buff),
             }
 
         if lower == 'true':
             return {
-                'type': 'literal', 'value': True,
-                'start': start, 'end': start + len(buff)
+                'type': 'literal',
+                'value': True,
+                'start': start,
+                'end': start + len(buff),
             }
 
         if lower == 'false':
             return {
-                'type': 'literal', 'value': False,
-                'start': start, 'end': start + len(buff)
+                'type': 'literal',
+                'value': False,
+                'start': start,
+                'end': start + len(buff),
             }
 
         if lower == 'null':
             return {
-                'type': 'literal', 'value': None,
-                'start': start, 'end': start + len(buff)
+                'type': 'literal',
+                'value': None,
+                'start': start,
+                'end': start + len(buff),
             }
         return {
-            'type': 'unquoted_identifier', 'value': buff,
-            'start': start, 'end': start + len(buff)
+            'type': 'unquoted_identifier',
+            'value': buff,
+            'start': start,
+            'end': start + len(buff),
         }
 
     def _consume_quoted_identifier(self):
@@ -132,8 +148,10 @@ class Lexer(object):
         lexeme = self._consume_until("'").replace("\\'", "'")
         token_len = self._position - start
         return {
-            'type': 'identifier', 'value': lexeme,
-            'start': start, 'end': token_len
+            'type': 'identifier',
+            'value': lexeme,
+            'start': start,
+            'end': token_len,
         }
 
     def _consume_string_literal(self):
@@ -141,8 +159,10 @@ class Lexer(object):
         lexeme = self._consume_until('"').replace('\\"', '"')
         token_len = self._position - start
         return {
-            'type': 'literal', 'value': lexeme,
-            'start': start, 'end': token_len
+            'type': 'literal',
+            'value': lexeme,
+            'start': start,
+            'end': token_len,
         }
 
     def _consume_base64_string(self):
@@ -199,8 +219,10 @@ class Lexer(object):
             buff += self._consume_int()
 
         return {
-            'type': 'literal', 'value': Decimal(buff),
-            'start': start, 'end': start + len(buff)
+            'type': 'literal',
+            'value': Decimal(buff),
+            'start': start,
+            'end': start + len(buff),
         }
 
     def _consume_int(self):
@@ -221,31 +243,41 @@ class Lexer(object):
             if self._next() == '>':
                 self._next()
                 return {
-                    'type': 'ne', 'value': '<>',
-                    'start': self._position - 2, 'end': self._position,
+                    'type': 'ne',
+                    'value': '<>',
+                    'start': self._position - 2,
+                    'end': self._position,
                 }
             elif self._current == '=':
                 self._next()
                 return {
-                    'type': 'lte', 'value': '<=',
-                    'start': self._position - 2, 'end': self._position,
+                    'type': 'lte',
+                    'value': '<=',
+                    'start': self._position - 2,
+                    'end': self._position,
                 }
             else:
                 return {
-                    'type': 'lt', 'value': '<',
-                    'start': self._position - 1, 'end': self._position
+                    'type': 'lt',
+                    'value': '<',
+                    'start': self._position - 1,
+                    'end': self._position,
                 }
         elif self._current == '>':
             if self._next() == '=':
                 self._next()
                 return {
-                    'type': 'gte', 'value': '>=',
-                    'start': self._position - 2, 'end': self._position,
+                    'type': 'gte',
+                    'value': '>=',
+                    'start': self._position - 2,
+                    'end': self._position,
                 }
             else:
                 return {
-                    'type': 'gt', 'value': '>',
-                    'start': self._position - 1, 'end': self._position,
+                    'type': 'gt',
+                    'value': '>',
+                    'start': self._position - 1,
+                    'end': self._position,
                 }
 
     def _init_expression(self, expression):

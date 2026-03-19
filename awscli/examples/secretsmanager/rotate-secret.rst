@@ -1,29 +1,54 @@
-**To configure rotation for a secret**
+**Example 1: To configure and start automatic rotation for a secret**
 
-The following example configures rotation for a secret by providing the ARN of a Lambda rotation function (which must already exist) and the number of days between rotation. The first rotation happens immediately upon completion of this command. The rotation function runs asynchronously in the background. ::
+The following ``rotate-secret`` example configures and starts automatic rotation for a secret. Secrets Manager rotates the secret once immediately, and then every eight hours in a two hour window. The output shows the ``VersionId`` of the new secret version created by rotation. ::
 
-	aws secretsmanager rotate-secret --secret-id MyTestDatabaseSecret \
-	  --rotation-lambda-arn arn:aws:lambda:us-west-2:1234566789012:function:MyTestRotationLambda \
-	  --rotation-rules AutomaticallyAfterDays=30
+    aws secretsmanager rotate-secret \
+        --secret-id MyTestDatabaseSecret \
+        --rotation-lambda-arn arn:aws:lambda:us-west-2:1234566789012:function:SecretsManagerTestRotationLambda \
+        --rotation-rules "{\"ScheduleExpression\": \"cron(0 8/8 * * ? *)\", \"Duration\": \"2h\"}"
 
-The output shows the following, including the ``VersionId`` of the new secret version: ::
+Output::
 
-	{
-	  "ARN": "aws:arn:secretsmanager:us-west-2:123456789012:secret:MyTestDatabaseSecret-a1b2c3",
-	  "Name": "MyTestDatabaseSecret",
-	  "VersionId": "EXAMPLE1-90ab-cdef-fedc-ba987EXAMPLE"
-	}
-	
-**To request an immediate rotation for a secret**
+    {
+        "ARN": "aws:arn:secretsmanager:us-west-2:123456789012:secret:MyTestDatabaseSecret-a1b2c3",
+        "Name": "MyTestDatabaseSecret",
+        "VersionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
+    }
 
-The following example requests an immediate invocation of the secret's Lambda rotation function. It assumes that the specified secret already has rotation configured. The rotation function runs asynchronously in the background. ::
+For more information, see `Rotate secrets <https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotating-secrets.html>`__ in the *Secrets Manager User Guide*.
 
-	aws secretsmanager rotate-secret --secret-id MyTestDatabaseSecret
+**Example 2: To configure and start automatic rotation on a rotation interval**
 
-The output shows the following, including the ``VersionId`` of the new secret version: ::
+The following ``rotate-secret`` example configures and starts automatic rotation for a secret. Secrets Manager rotates the secret once immediately, and then every 10 days. The output shows the ``VersionId`` of the new secret version created by rotation. ::
 
-	{
-	  "ARN": "aws:arn:secretsmanager:us-west-2:123456789012:secret:MyTestDatabaseSecret-a1b2c3",
-	  "Name": "MyTestDatabaseSecret",
-	  "VersionId": "EXAMPLE2-90ab-cdef-fedc-ba987EXAMPLE"
-	}	
+    aws secretsmanager rotate-secret \
+        --secret-id MyTestDatabaseSecret \
+        --rotation-lambda-arn arn:aws:lambda:us-west-2:1234566789012:function:SecretsManagerTestRotationLambda \
+        --rotation-rules "{\"ScheduleExpression\": \"rate(10 days)\"}"
+
+Output::
+
+    {
+        "ARN": "aws:arn:secretsmanager:us-west-2:123456789012:secret:MyTestDatabaseSecret-a1b2c3",
+        "Name": "MyTestDatabaseSecret",
+        "VersionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
+    }
+
+For more information, see `Rotate secrets <https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotating-secrets.html>`__ in the *Secrets Manager User Guide*.
+
+**Example 3: To rotate a secret immediately**
+
+The following ``rotate-secret`` example starts an immediate rotation. The output shows the ``VersionId`` of the new secret version created by rotation. The secret must already have rotation configured. ::
+
+    aws secretsmanager rotate-secret \
+        --secret-id MyTestDatabaseSecret
+
+Output::
+
+    {
+        "ARN": "aws:arn:secretsmanager:us-west-2:123456789012:secret:MyTestDatabaseSecret-a1b2c3",
+        "Name": "MyTestDatabaseSecret",
+        "VersionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
+    }
+
+For more information, see `Rotate secrets <https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotating-secrets.html>`__ in the *Secrets Manager User Guide*.

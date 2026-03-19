@@ -1,6 +1,6 @@
-The following command retrieves metadata for an object in a bucket named ``my-bucket``::
+The following command retrieves metadata for an object in a bucket named ``amzn-s3-demo-bucket``::
 
-  aws s3api head-object --bucket my-bucket --key index.html
+  aws s3api head-object --bucket amzn-s3-demo-bucket --key index.html
 
 Output::
 

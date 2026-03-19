@@ -10,16 +10,15 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import mock
-from awscli.compat import six
-from awscli.testutils import unittest, FileCreator
-from awscli.testutils import skip_if_windows
-
-from awscli.paramfile import get_paramfile, ResourceLoadingError
-from awscli.paramfile import LOCAL_PREFIX_MAP
-from awscli.paramfile import register_uri_param_handler
 from botocore.session import Session
-from botocore.exceptions import ProfileNotFound
+
+from awscli.paramfile import (
+    LOCAL_PREFIX_MAP,
+    ResourceLoadingError,
+    get_paramfile,
+    register_uri_param_handler,
+)
+from awscli.testutils import FileCreator, mock, skip_if_windows, unittest
 
 
 class TestParamFile(unittest.TestCase):
@@ -38,7 +37,7 @@ class TestParamFile(unittest.TestCase):
         prefixed_filename = 'file://' + filename
         data = self.get_paramfile(prefixed_filename)
         self.assertEqual(data, contents)
-        self.assertIsInstance(data, six.string_types)
+        self.assertIsInstance(data, str)
 
     def test_binary_file(self):
         contents = 'This is a test'
@@ -46,10 +45,11 @@ class TestParamFile(unittest.TestCase):
         prefixed_filename = 'fileb://' + filename
         data = self.get_paramfile(prefixed_filename)
         self.assertEqual(data, b'This is a test')
-        self.assertIsInstance(data, six.binary_type)
+        self.assertIsInstance(data, bytes)
 
-    @skip_if_windows('Binary content error only occurs '
-                     'on non-Windows platforms.')
+    @skip_if_windows(
+        'Binary content error only occurs ' 'on non-Windows platforms.'
+    )
     def test_cannot_load_text_file(self):
         contents = b'\xbfX\xac\xbe'
         filename = self.files.create_file('foo', contents, mode='wb')
@@ -69,7 +69,6 @@ class TestParamFile(unittest.TestCase):
 
 
 class TestConfigureURIArgumentHandler(unittest.TestCase):
-
     @mock.patch('awscli.paramfile.URIArgumentHandler')
     def test_default_prefix_maps(self, mock_handler_cls):
         session = mock.Mock(spec=Session)

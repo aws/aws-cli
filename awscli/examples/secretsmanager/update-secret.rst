@@ -1,44 +1,33 @@
-The following examples show how to modify individual components of the secret. Alternatively, you can combine all of the parameters into a single command to do them all in one operation.
+**Example 1: To update the description of a secret**
 
-**To update the description of a secret**
+The following ``update-secret`` example updates the description of a secret. ::
 
-The following example shows how to modify the description of a secret. ::
+    aws secretsmanager update-secret \
+        --secret-id MyTestSecret \
+        --description "This is a new description for the secret."
 
-	aws secretsmanager update-secret --secret-id MyTestDatabaseSecret \
-	  --description "This is a new description for the secret."
+Output::
 
-The output shows the following: ::
+    {
+        "ARN": "arn:aws:secretsmanager:us-west-2:123456789012:secret:MyTestSecret-a1b2c3",
+        "Name": "MyTestSecret"
+    }
 
-	{
-	  "ARN": "arn:aws:secretsmanager:us-west-2:123456789012:secret:MyTestDatabaseSecret-a1b2c3",
-	  "Name": "MyTestDatabaseSecret"
-	}
+For more information, see `Modify a secret <https://docs.aws.amazon.com/secretsmanager/latest/userguide/manage_update-secret.html>`__ in the *Secrets Manager User Guide*.
 
-**To update the KMS key associated with a secret**
-	
-This example shows how to update the KMS customer managed key (CMK) used to encrypt the secret value. The KMS CMK must be in the same region as the secret. ::
+**Example 2: To update the encryption key associated with a secret**
 
-	aws secretsmanager update-secret --secret-id MyTestDatabaseSecret \
-	  --kms-key-id arn:aws:kms:us-west-2:123456789012:key/EXAMPLE1-90ab-cdef-fedc-ba987EXAMPLE
+The following ``update-secret`` example updates the KMS key used to encrypt the secret value. The KMS key must be in the same region as the secret. ::
 
-The output shows the following: ::
+    aws secretsmanager update-secret \
+        --secret-id MyTestSecret \
+        --kms-key-id arn:aws:kms:us-west-2:123456789012:key/EXAMPLE1-90ab-cdef-fedc-ba987EXAMPLE
 
-	{
-	  "ARN": "arn:aws:secretsmanager:us-west-2:123456789012:secret:MyTestDatabaseSecret-a1b2c3",
-	  "Name": "MyTestDatabaseSecret"
-	}
+Output::
 
-**To create a new version of the encrypted secret value**
+    {
+        "ARN": "arn:aws:secretsmanager:us-west-2:123456789012:secret:MyTestSecret-a1b2c3",
+        "Name": "MyTestSecret"
+    }
 
-The following example shows how to create a new version of the secret by updating the --secret-string field. The secret string is read from the contents of the specified file. Alternatively, you can use the put-secret-value operation. ::
-
-	aws secretsmanager update-secret --secret-id MyTestDatabaseSecret \
-	  --secret-string file://mycreds.json
-
-The output shows the following, including the ``VersionId`` of the new secret version: ::
-
-	{
-	  "ARN": "aws:arn:secretsmanager:us-west-2:123456789012:secret:MyTestDatabaseSecret-a1b2c3",
-	  "Name": "MyTestDatabaseSecret",
-	  "VersionId": "EXAMPLE1-90ab-cdef-fedc-ba987EXAMPLE"
-	}	
+For more information, see `Modify a secret <https://docs.aws.amazon.com/secretsmanager/latest/userguide/manage_update-secret.html>`__ in the *Secrets Manager User Guide*.

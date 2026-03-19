@@ -1,10 +1,21 @@
 **To analyze text in a document**
 
-The following ``analyze-document`` example shows how to analyze text in a document. ::
+The following ``analyze-document`` example shows how to analyze text in a document. 
 
-    aws textract analyze-document --document '{"S3Object":{"Bucket":"bucket","Name":"document"}}' --feature-types '["TABLES","FORMS"]'
+Linux/macOS::
 
-Output ::
+    aws textract analyze-document \
+        --document '{"S3Object":{"Bucket":"bucket","Name":"document"}}' \
+        --feature-types '["TABLES","FORMS"]'
+
+Windows::
+
+    aws textract analyze-document \
+        --document "{\"S3Object\":{\"Bucket\":\"bucket\",\"Name\":\"document\"}}" \
+        --feature-types "[\"TABLES\",\"FORMS\"]" \
+        --region region-name
+
+Output::
 
     {
         "Blocks": [

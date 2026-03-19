@@ -3,7 +3,7 @@
 The following ``update-vocabulary`` example overwrites the terms used to create a custom vocabulary with the new ones that you provide. Prerequisite: to replace the terms in a custom vocabulary, you need a file with new terms. ::
 
     aws transcribe update-vocabulary \
-        --vocabulary-file-uri s3://DOC-EXAMPLE-BUCKET/Amazon-S3-Prefix/custom-vocabulary.txt \
+        --vocabulary-file-uri s3://amzn-s3-demo-bucket/Amazon-S3-Prefix/custom-vocabulary.txt \
         --vocabulary-name custom-vocabulary \
         --language-code language-code
 

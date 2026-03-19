@@ -25,15 +25,31 @@ plan:
             actual_value: schedule
 
       # Event pattern related prompts
-      service_for_event_pattern:
+      event_pattern_input_type:
+        type: prompt
         condition:
           variable: pattern_type
           equals: event_pattern
+        description: Select method to choose the event pattern
+        choices:
+          - display: Use pre-defined pattern by service
+            actual_value: predefined
+          - display: Use custom pattern
+            actual_value: custom
+
+      service_for_event_pattern:
+        condition:
+          - variable: pattern_type
+            equals: event_pattern
+          - variable: event_pattern_input_type
+            equals: predefined
         type: prompt
         description: Select a service to match events for
         choices:
           - display: AWS CodeBuild
             actual_value: codebuild
+          - display: AWS CodeCommit
+            actual_value: codecommit
           - display: Amazon DynamoDB
             actual_value: dynamodb
           - display: Amazon EC2
@@ -45,9 +61,35 @@ plan:
         details:
           value: event_pattern_value
           description: "Event pattern"
+
+      custom_event_pattern_filename:
+        condition:
+          - variable: pattern_type
+            equals: event_pattern
+          - variable: event_pattern_input_type
+            equals: custom
+        type: prompt
+        description: Enter the filename with the custom event pattern
+        completer: file_completer
+
+      custom_event_pattern:
+        type: load-data
+        load_type: json
+        value:
+          __wizard__:File:
+            path: "{custom_event_pattern_filename}"
+
+      custom_event_pattern_as_normalized_json:
+        type: dump-data
+        dump_type: json
+        value: "{custom_event_pattern}"
+
       event_pattern_value:
         type: template
-        value: "{{\"source\": [\"aws.{service_for_event_pattern}\"]}}"
+        value: |
+          {% if {event_pattern_input_type} == predefined %}{{"source": ["aws.{service_for_event_pattern}"]}}{% endif %}
+          {% if {event_pattern_input_type} == custom %}{custom_event_pattern_as_normalized_json}{% endif %}
+
       # Schedule related prompts
       schedule_type:
         condition:
@@ -107,12 +149,36 @@ plan:
         type: prompt
         description: Select the target type
         choices:
+          - display: CloudWatch Logs group
+            actual_value: logs_group
           - display: CodeBuild project
             actual_value: codebuild_project
           - display: Lambda function
             actual_value: lambda_function
           - display: SNS topic
             actual_value: sns_topic
+
+      # CloudWatch Logs target specific variables
+      logs_target:
+        condition:
+          variable: target_type
+          equals: logs_group
+        type: prompt
+        description: Select the CloudWatch Logs group
+        choices: existing_groups
+      existing_groups:
+        type: apicall
+        operation: logs.DescribeLogGroups
+        params: { }
+        query: "sort_by(logGroups[].{display: logGroupName, actual_value: arn}, &display)"
+        cache: true
+        paginate: true
+      logs_resource_policy:
+        condition:
+          variable: target_type
+          equals: logs_group
+        type: template
+        value: '{{"Version":"2012-10-17", "Statement":[{{"Sid":"TrustEventsToStoreLogEvent","Effect":"Allow","Principal":{{"Service":["delivery.logs.amazonaws.com","events.amazonaws.com"]}},"Action":["logs:CreateLogStream","logs:PutLogEvents"],"Resource":"{logs_target}:*"}}]}}'
 
       # CodeBuild target specific variables
       codebuild_target:
@@ -186,6 +252,7 @@ plan:
           {% if {target_type} == codebuild_project %}yes{% endif %}
           {% if {target_type} == lambda_function %}no{% endif %}
           {% if {target_type} == sns_topic %}no{% endif %}
+          {% if {target_type} == logs_group %}no{% endif %}
       target_role_arn:
         condition:
           variable: target_needs_role
@@ -206,6 +273,7 @@ plan:
           {% if {target_type} == codebuild_project %}{codebuild_project_arn}{% endif %}
           {% if {target_type} == lambda_function %}{lambda_function_arn}{% endif %}
           {% if {target_type} == sns_topic %}{sns_topic_target}{% endif %}
+          {% if {target_type} == logs_group %}{logs_target}{% endif %}
 
   preview:
     shortname: Preview
@@ -279,6 +347,12 @@ plan:
             --attribute-value file://policy.json
           {% endif %}
 
+          {% if {target_type} == logs_group %}
+          aws logs put-resource-policy \
+            --policy-name 'WriteEventLogs' \
+            --policy-document '{logs_resource_policy}'
+          {% endif %}
+
           aws events put-targets \
             --rule '{rule_name}' \
             --targets 'Id=cli-wizard-0,Arn={target_arn}{% if {target_needs_role} == yes %},RoleArn={target_role_arn}{% endif %}'
@@ -296,9 +370,7 @@ plan:
                 ScheduleExpression: {schedule_expression}
                 {% endif %}
                 {%if {pattern_type} == event_pattern %}
-                EventPattern:
-                  source:
-                    - aws.{service_for_event_pattern}
+                EventPattern: {event_pattern_value}
                 {% endif %}
                 Targets:
                   - Id: cli-wizard-0
@@ -333,6 +405,13 @@ plan:
                 Topics:
                   - {sns_topic_target}
             {% endif %}
+            {% if {target_type} == logs_group %}
+            LogsGroupPolicy:
+              Type: AWS::Logs::ResourcePolicy
+              Properties:
+                PolicyName: WriteEventLogs
+                PolicyDocument: '{logs_resource_policy}'
+            {% endif %}
 
   __DONE__:
 execute:
@@ -363,6 +442,16 @@ execute:
       params: "{put_rule_params}"
       query: "RuleArn"
       output_var: rule_arn
+
+    # CloudWatch Logs specific calls
+    - type: apicall
+      condition:
+        variable: target_type
+        equals: logs_group
+      operation: logs.PutResourcePolicy
+      params:
+        policyName: WriteEventLogs
+        policyDocument: "{logs_resource_policy}"
 
     # Lambda specific calls
     - type: apicall

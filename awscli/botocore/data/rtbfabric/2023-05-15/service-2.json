@@ -1,0 +1,2843 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2023-05-15",
+    "auth":["aws.auth#sigv4"],
+    "endpointPrefix":"rtbfabric",
+    "jsonVersion":"1.1",
+    "protocol":"rest-json",
+    "protocols":["rest-json"],
+    "serviceAbbreviation":"RTBFabric",
+    "serviceFullName":"RTBFabric",
+    "serviceId":"RTBFabric",
+    "signatureVersion":"v4",
+    "signingName":"rtbfabric",
+    "uid":"rtbfabric-2023-05-15"
+  },
+  "operations":{
+    "AcceptLink":{
+      "name":"AcceptLink",
+      "http":{
+        "method":"POST",
+        "requestUri":"/gateway/{gatewayId}/link/{linkId}/accept",
+        "responseCode":200
+      },
+      "input":{"shape":"AcceptLinkRequest"},
+      "output":{"shape":"AcceptLinkResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Accepts a link request between gateways.</p> <p>When a requester gateway requests to link with a responder gateway, the responder can use this operation to accept the link request and establish the connection.</p>",
+      "idempotent":true
+    },
+    "CreateInboundExternalLink":{
+      "name":"CreateInboundExternalLink",
+      "http":{
+        "method":"POST",
+        "requestUri":"/responder-gateway/{gatewayId}/inbound-external-link",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateInboundExternalLinkRequest"},
+      "output":{"shape":"CreateInboundExternalLinkResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Creates an inbound external link.</p>",
+      "idempotent":true
+    },
+    "CreateLink":{
+      "name":"CreateLink",
+      "http":{
+        "method":"POST",
+        "requestUri":"/gateway/{gatewayId}/create-link",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateLinkRequest"},
+      "output":{"shape":"CreateLinkResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Creates a new link between gateways.</p> <p>Establishes a connection that allows gateways to communicate and exchange bid requests and responses.</p>",
+      "idempotent":true
+    },
+    "CreateOutboundExternalLink":{
+      "name":"CreateOutboundExternalLink",
+      "http":{
+        "method":"POST",
+        "requestUri":"/requester-gateway/{gatewayId}/outbound-external-link",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateOutboundExternalLinkRequest"},
+      "output":{"shape":"CreateOutboundExternalLinkResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Creates an outbound external link.</p>",
+      "idempotent":true
+    },
+    "CreateRequesterGateway":{
+      "name":"CreateRequesterGateway",
+      "http":{
+        "method":"POST",
+        "requestUri":"/requester-gateway",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateRequesterGatewayRequest"},
+      "output":{"shape":"CreateRequesterGatewayResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Creates a requester gateway.</p>",
+      "idempotent":true
+    },
+    "CreateResponderGateway":{
+      "name":"CreateResponderGateway",
+      "http":{
+        "method":"POST",
+        "requestUri":"/responder-gateway",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateResponderGatewayRequest"},
+      "output":{"shape":"CreateResponderGatewayResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Creates a responder gateway.</p> <important> <p>A domain name or managed endpoint is required.</p> </important>",
+      "idempotent":true
+    },
+    "DeleteInboundExternalLink":{
+      "name":"DeleteInboundExternalLink",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/responder-gateway/{gatewayId}/inbound-external-link/{linkId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteInboundExternalLinkRequest"},
+      "output":{"shape":"DeleteInboundExternalLinkResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Deletes an inbound external link.</p>",
+      "idempotent":true
+    },
+    "DeleteLink":{
+      "name":"DeleteLink",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/gateway/{gatewayId}/link/{linkId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteLinkRequest"},
+      "output":{"shape":"DeleteLinkResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Deletes a link between gateways.</p> <p>Permanently removes the connection between gateways. This action cannot be undone.</p>",
+      "idempotent":true
+    },
+    "DeleteOutboundExternalLink":{
+      "name":"DeleteOutboundExternalLink",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/requester-gateway/{gatewayId}/outbound-external-link/{linkId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteOutboundExternalLinkRequest"},
+      "output":{"shape":"DeleteOutboundExternalLinkResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Deletes an outbound external link.</p>",
+      "idempotent":true
+    },
+    "DeleteRequesterGateway":{
+      "name":"DeleteRequesterGateway",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/requester-gateway/{gatewayId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteRequesterGatewayRequest"},
+      "output":{"shape":"DeleteRequesterGatewayResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Deletes a requester gateway.</p>",
+      "idempotent":true
+    },
+    "DeleteResponderGateway":{
+      "name":"DeleteResponderGateway",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/responder-gateway/{gatewayId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteResponderGatewayRequest"},
+      "output":{"shape":"DeleteResponderGatewayResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Deletes a responder gateway.</p>",
+      "idempotent":true
+    },
+    "GetInboundExternalLink":{
+      "name":"GetInboundExternalLink",
+      "http":{
+        "method":"GET",
+        "requestUri":"/responder-gateway/{gatewayId}/inbound-external-link/{linkId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetInboundExternalLinkRequest"},
+      "output":{"shape":"GetInboundExternalLinkResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieves information about an inbound external link.</p>",
+      "readonly":true
+    },
+    "GetLink":{
+      "name":"GetLink",
+      "http":{
+        "method":"GET",
+        "requestUri":"/gateway/{gatewayId}/link/{linkId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetLinkRequest"},
+      "output":{"shape":"GetLinkResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieves information about a link between gateways.</p> <p>Returns detailed information about the link configuration, status, and associated gateways.</p>",
+      "readonly":true
+    },
+    "GetOutboundExternalLink":{
+      "name":"GetOutboundExternalLink",
+      "http":{
+        "method":"GET",
+        "requestUri":"/requester-gateway/{gatewayId}/outbound-external-link/{linkId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetOutboundExternalLinkRequest"},
+      "output":{"shape":"GetOutboundExternalLinkResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieves information about an outbound external link.</p>",
+      "readonly":true
+    },
+    "GetRequesterGateway":{
+      "name":"GetRequesterGateway",
+      "http":{
+        "method":"GET",
+        "requestUri":"/requester-gateway/{gatewayId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetRequesterGatewayRequest"},
+      "output":{"shape":"GetRequesterGatewayResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieves information about a requester gateway.</p>",
+      "readonly":true
+    },
+    "GetResponderGateway":{
+      "name":"GetResponderGateway",
+      "http":{
+        "method":"GET",
+        "requestUri":"/responder-gateway/{gatewayId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetResponderGatewayRequest"},
+      "output":{"shape":"GetResponderGatewayResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieves information about a responder gateway.</p>",
+      "readonly":true
+    },
+    "ListLinks":{
+      "name":"ListLinks",
+      "http":{
+        "method":"GET",
+        "requestUri":"/gateway/{gatewayId}/links/",
+        "responseCode":200
+      },
+      "input":{"shape":"ListLinksRequest"},
+      "output":{"shape":"ListLinksResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists links associated with gateways.</p> <p>Returns a list of all links for the specified gateways, including their status and configuration details.</p>",
+      "readonly":true
+    },
+    "ListRequesterGateways":{
+      "name":"ListRequesterGateways",
+      "http":{
+        "method":"GET",
+        "requestUri":"/requester-gateways",
+        "responseCode":200
+      },
+      "input":{"shape":"ListRequesterGatewaysRequest"},
+      "output":{"shape":"ListRequesterGatewaysResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists requester gateways.</p>",
+      "readonly":true
+    },
+    "ListResponderGateways":{
+      "name":"ListResponderGateways",
+      "http":{
+        "method":"GET",
+        "requestUri":"/responder-gateways",
+        "responseCode":200
+      },
+      "input":{"shape":"ListResponderGatewaysRequest"},
+      "output":{"shape":"ListResponderGatewaysResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists reponder gateways.</p>",
+      "readonly":true
+    },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists tags for a resource.</p>",
+      "readonly":true
+    },
+    "RejectLink":{
+      "name":"RejectLink",
+      "http":{
+        "method":"POST",
+        "requestUri":"/gateway/{gatewayId}/link/{linkId}/reject",
+        "responseCode":200
+      },
+      "input":{"shape":"RejectLinkRequest"},
+      "output":{"shape":"RejectLinkResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Rejects a link request between gateways.</p> <p>When a requester gateway requests to link with a responder gateway, the responder can use this operation to decline the link request.</p>",
+      "idempotent":true
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":204
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "output":{"shape":"TagResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Assigns one or more tags (key-value pairs) to the specified resource.</p>",
+      "idempotent":true
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":204
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "output":{"shape":"UntagResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Removes a tag or tags from a resource.</p>",
+      "idempotent":true
+    },
+    "UpdateLink":{
+      "name":"UpdateLink",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/gateway/{gatewayId}/link/{linkId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateLinkRequest"},
+      "output":{"shape":"UpdateLinkResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Updates the configuration of a link between gateways.</p> <p>Allows you to modify settings and parameters for an existing link.</p>",
+      "idempotent":true
+    },
+    "UpdateLinkModuleFlow":{
+      "name":"UpdateLinkModuleFlow",
+      "http":{
+        "method":"POST",
+        "requestUri":"/gateway/{gatewayId}/link/{linkId}/module-flow",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateLinkModuleFlowRequest"},
+      "output":{"shape":"UpdateLinkModuleFlowResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Updates a link module flow.</p>",
+      "idempotent":true
+    },
+    "UpdateRequesterGateway":{
+      "name":"UpdateRequesterGateway",
+      "http":{
+        "method":"POST",
+        "requestUri":"/requester-gateway/{gatewayId}/update",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateRequesterGatewayRequest"},
+      "output":{"shape":"UpdateRequesterGatewayResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Updates a requester gateway.</p>",
+      "idempotent":true
+    },
+    "UpdateResponderGateway":{
+      "name":"UpdateResponderGateway",
+      "http":{
+        "method":"POST",
+        "requestUri":"/responder-gateway/{gatewayId}/update",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateResponderGatewayRequest"},
+      "output":{"shape":"UpdateResponderGatewayResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Updates a responder gateway.</p>",
+      "idempotent":true
+    }
+  },
+  "shapes":{
+    "AcceptLinkRequest":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "linkId",
+        "logSettings"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayId"
+        },
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The unique identifier of the link.</p>",
+          "location":"uri",
+          "locationName":"linkId"
+        },
+        "attributes":{
+          "shape":"LinkAttributes",
+          "documentation":"<p>Attributes of the link.</p>"
+        },
+        "logSettings":{
+          "shape":"LinkLogSettings",
+          "documentation":"<p>Settings for the application logs.</p>"
+        }
+      }
+    },
+    "AcceptLinkResponse":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "peerGatewayId",
+        "status",
+        "createdAt",
+        "updatedAt",
+        "linkId"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>"
+        },
+        "peerGatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the peer gateway.</p>"
+        },
+        "status":{
+          "shape":"LinkStatus",
+          "documentation":"<p>The status of the link.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the link was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the link was updated.</p>"
+        },
+        "direction":{
+          "shape":"LinkDirection",
+          "documentation":"<p>The direction of the link.</p>"
+        },
+        "flowModules":{
+          "shape":"ModuleConfigurationList",
+          "documentation":"<p>The configuration of flow modules.</p>"
+        },
+        "pendingFlowModules":{
+          "shape":"ModuleConfigurationList",
+          "documentation":"<p>The configuration of pending flow modules.</p>"
+        },
+        "attributes":{
+          "shape":"LinkAttributes",
+          "documentation":"<p>Attributes of the link.</p>"
+        },
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The unique identifier of the link.</p>"
+        }
+      }
+    },
+    "AccessDeniedException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request could not be completed because you do not have sufficient access to perform this action.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "Action":{
+      "type":"structure",
+      "members":{
+        "noBid":{
+          "shape":"NoBidAction",
+          "documentation":"<p>Describes a no bid action.</p>"
+        },
+        "headerTag":{
+          "shape":"HeaderTagAction",
+          "documentation":"<p>Describes the header tag for a bid action.</p>"
+        }
+      },
+      "documentation":"<p>Describes a bid action.</p>",
+      "union":true
+    },
+    "AutoScalingGroupName":{"type":"string"},
+    "AutoScalingGroupNameList":{
+      "type":"list",
+      "member":{"shape":"AutoScalingGroupName"}
+    },
+    "AutoScalingGroupsConfiguration":{
+      "type":"structure",
+      "required":[
+        "autoScalingGroupNames",
+        "roleArn"
+      ],
+      "members":{
+        "autoScalingGroupNames":{
+          "shape":"AutoScalingGroupNameList",
+          "documentation":"<p>The names of the auto scaling group.</p>"
+        },
+        "roleArn":{
+          "shape":"String",
+          "documentation":"<p>The role ARN of the auto scaling group.</p>"
+        }
+      },
+      "documentation":"<p>Describes the configuration of an auto scaling group.</p>"
+    },
+    "Base64EncodedCertificateChain":{
+      "type":"string",
+      "max":2097152,
+      "min":1,
+      "sensitive":true
+    },
+    "Boolean":{
+      "type":"boolean",
+      "box":true
+    },
+    "CertificateAuthorityCertificates":{
+      "type":"list",
+      "member":{"shape":"Base64EncodedCertificateChain"},
+      "max":2,
+      "min":0
+    },
+    "ConflictException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request could not be completed because of a conflict in the current state of the resource.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "CreateInboundExternalLinkRequest":{
+      "type":"structure",
+      "required":[
+        "clientToken",
+        "gatewayId",
+        "logSettings"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>The unique client token.</p>",
+          "idempotencyToken":true
+        },
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayId"
+        },
+        "attributes":{
+          "shape":"LinkAttributes",
+          "documentation":"<p>Attributes of the link.</p>"
+        },
+        "logSettings":{"shape":"LinkLogSettings"},
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of the key-value pairs of the tag or tags to assign to the resource.</p>"
+        }
+      }
+    },
+    "CreateInboundExternalLinkResponse":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "linkId",
+        "status",
+        "domainName"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>"
+        },
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The unique identifier of the link.</p>"
+        },
+        "status":{
+          "shape":"LinkStatus",
+          "documentation":"<p>The status of the request.</p>"
+        },
+        "domainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The domain name.</p>"
+        }
+      }
+    },
+    "CreateLinkRequest":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "peerGatewayId",
+        "logSettings"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayId"
+        },
+        "peerGatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the peer gateway.</p>"
+        },
+        "attributes":{
+          "shape":"LinkAttributes",
+          "documentation":"<p>Attributes of the link.</p>"
+        },
+        "httpResponderAllowed":{
+          "shape":"Boolean",
+          "documentation":"<p>Boolean to specify if an HTTP responder is allowed.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of the key-value pairs of the tag or tags to assign to the resource.</p>"
+        },
+        "logSettings":{
+          "shape":"LinkLogSettings",
+          "documentation":"<p>Settings for the application logs.</p>"
+        }
+      }
+    },
+    "CreateLinkResponse":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "peerGatewayId",
+        "status",
+        "createdAt",
+        "updatedAt",
+        "linkId"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>"
+        },
+        "peerGatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the peer gateway.</p>"
+        },
+        "status":{
+          "shape":"LinkStatus",
+          "documentation":"<p>The status of the request.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the link was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the link was updated.</p>"
+        },
+        "direction":{
+          "shape":"LinkDirection",
+          "documentation":"<p>The direction of the link.</p>"
+        },
+        "flowModules":{
+          "shape":"ModuleConfigurationList",
+          "documentation":"<p>The configuration of flow modules.</p>"
+        },
+        "pendingFlowModules":{
+          "shape":"ModuleConfigurationList",
+          "documentation":"<p>The configuration of pending flow modules.</p>"
+        },
+        "attributes":{
+          "shape":"LinkAttributes",
+          "documentation":"<p>Attributes of the link.</p>"
+        },
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The unique identifier of the link.</p>"
+        },
+        "customerProvidedId":{
+          "shape":"CreateLinkResponseCustomerProvidedIdString",
+          "documentation":"<p>The customer-provided unique identifier of the link.</p>"
+        }
+      }
+    },
+    "CreateLinkResponseCustomerProvidedIdString":{
+      "type":"string",
+      "pattern":"[a-zA-Z0-9_-]{5,50}"
+    },
+    "CreateOutboundExternalLinkRequest":{
+      "type":"structure",
+      "required":[
+        "clientToken",
+        "gatewayId",
+        "publicEndpoint",
+        "logSettings"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>The unique client token.</p>",
+          "idempotencyToken":true
+        },
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayId"
+        },
+        "attributes":{"shape":"LinkAttributes"},
+        "publicEndpoint":{
+          "shape":"URL",
+          "documentation":"<p>The public endpoint of the link.</p>"
+        },
+        "logSettings":{"shape":"LinkLogSettings"},
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of the key-value pairs of the tag or tags to assign to the resource.</p>"
+        }
+      }
+    },
+    "CreateOutboundExternalLinkResponse":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "linkId",
+        "status"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>"
+        },
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The unique identifier of the link.</p>"
+        },
+        "status":{
+          "shape":"LinkStatus",
+          "documentation":"<p>The status of the request.</p>"
+        }
+      }
+    },
+    "CreateRequesterGatewayRequest":{
+      "type":"structure",
+      "required":[
+        "vpcId",
+        "subnetIds",
+        "securityGroupIds",
+        "clientToken"
+      ],
+      "members":{
+        "vpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>The unique identifier of the Virtual Private Cloud (VPC).</p>"
+        },
+        "subnetIds":{
+          "shape":"CreateRequesterGatewayRequestSubnetIdsList",
+          "documentation":"<p>The unique identifiers of the subnets.</p>"
+        },
+        "securityGroupIds":{
+          "shape":"CreateRequesterGatewayRequestSecurityGroupIdsList",
+          "documentation":"<p>The unique identifiers of the security groups.</p>"
+        },
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>The unique client token.</p>",
+          "idempotencyToken":true
+        },
+        "description":{
+          "shape":"CreateRequesterGatewayRequestDescriptionString",
+          "documentation":"<p>An optional description for the requester gateway.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of the key-value pairs of the tag or tags to assign to the resource.</p>"
+        }
+      }
+    },
+    "CreateRequesterGatewayRequestDescriptionString":{
+      "type":"string",
+      "pattern":"[A-Za-z0-9 ]+"
+    },
+    "CreateRequesterGatewayRequestSecurityGroupIdsList":{
+      "type":"list",
+      "member":{"shape":"SecurityGroupId"},
+      "min":1
+    },
+    "CreateRequesterGatewayRequestSubnetIdsList":{
+      "type":"list",
+      "member":{"shape":"SubnetId"},
+      "min":1
+    },
+    "CreateRequesterGatewayResponse":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "domainName",
+        "status"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>"
+        },
+        "domainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The domain name of the requester gateway.</p>"
+        },
+        "status":{
+          "shape":"RequesterGatewayStatus",
+          "documentation":"<p>The status of the request.</p>"
+        }
+      }
+    },
+    "CreateResponderGatewayRequest":{
+      "type":"structure",
+      "required":[
+        "vpcId",
+        "subnetIds",
+        "securityGroupIds",
+        "port",
+        "protocol",
+        "clientToken"
+      ],
+      "members":{
+        "vpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>The unique identifier of the Virtual Private Cloud (VPC).</p>"
+        },
+        "subnetIds":{
+          "shape":"CreateResponderGatewayRequestSubnetIdsList",
+          "documentation":"<p>The unique identifiers of the subnets.</p>"
+        },
+        "securityGroupIds":{
+          "shape":"CreateResponderGatewayRequestSecurityGroupIdsList",
+          "documentation":"<p>The unique identifiers of the security groups.</p>"
+        },
+        "domainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The domain name for the responder gateway.</p>"
+        },
+        "port":{
+          "shape":"CreateResponderGatewayRequestPortInteger",
+          "documentation":"<p>The networking port to use.</p>"
+        },
+        "protocol":{
+          "shape":"Protocol",
+          "documentation":"<p>The networking protocol to use.</p>"
+        },
+        "trustStoreConfiguration":{
+          "shape":"TrustStoreConfiguration",
+          "documentation":"<p>The configuration of the trust store.</p>"
+        },
+        "managedEndpointConfiguration":{
+          "shape":"ManagedEndpointConfiguration",
+          "documentation":"<p>The configuration for the managed endpoint.</p>"
+        },
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>The unique client token.</p>",
+          "idempotencyToken":true
+        },
+        "description":{
+          "shape":"CreateResponderGatewayRequestDescriptionString",
+          "documentation":"<p>An optional description for the responder gateway.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of the key-value pairs of the tag or tags to assign to the resource.</p>"
+        }
+      }
+    },
+    "CreateResponderGatewayRequestDescriptionString":{
+      "type":"string",
+      "pattern":"[A-Za-z0-9 ]+"
+    },
+    "CreateResponderGatewayRequestPortInteger":{
+      "type":"integer",
+      "box":true,
+      "max":65535,
+      "min":1
+    },
+    "CreateResponderGatewayRequestSecurityGroupIdsList":{
+      "type":"list",
+      "member":{"shape":"SecurityGroupId"},
+      "min":1
+    },
+    "CreateResponderGatewayRequestSubnetIdsList":{
+      "type":"list",
+      "member":{"shape":"SubnetId"},
+      "min":1
+    },
+    "CreateResponderGatewayResponse":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "status"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>"
+        },
+        "status":{
+          "shape":"ResponderGatewayStatus",
+          "documentation":"<p>The status of the request.</p>"
+        }
+      }
+    },
+    "CustomerProvidedId":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "DeleteInboundExternalLinkRequest":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "linkId"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayId"
+        },
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The unique identifier of the link.</p>",
+          "location":"uri",
+          "locationName":"linkId"
+        }
+      }
+    },
+    "DeleteInboundExternalLinkResponse":{
+      "type":"structure",
+      "required":[
+        "linkId",
+        "status"
+      ],
+      "members":{
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The unique identifier of the link.</p>"
+        },
+        "status":{
+          "shape":"LinkStatus",
+          "documentation":"<p>The status of the request.</p>"
+        }
+      }
+    },
+    "DeleteLinkRequest":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "linkId"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayId"
+        },
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The unique identifier of the link.</p>",
+          "location":"uri",
+          "locationName":"linkId"
+        }
+      }
+    },
+    "DeleteLinkResponse":{
+      "type":"structure",
+      "required":[
+        "linkId",
+        "status"
+      ],
+      "members":{
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The unique identifier of the link.</p>"
+        },
+        "status":{
+          "shape":"LinkStatus",
+          "documentation":"<p>The status of the link.</p>"
+        }
+      }
+    },
+    "DeleteOutboundExternalLinkRequest":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "linkId"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayId"
+        },
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The unique identifier of the link.</p>",
+          "location":"uri",
+          "locationName":"linkId"
+        }
+      }
+    },
+    "DeleteOutboundExternalLinkResponse":{
+      "type":"structure",
+      "required":[
+        "linkId",
+        "status"
+      ],
+      "members":{
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The unique identifier of the link.</p>"
+        },
+        "status":{
+          "shape":"LinkStatus",
+          "documentation":"<p>The status of the request.</p>"
+        }
+      }
+    },
+    "DeleteRequesterGatewayRequest":{
+      "type":"structure",
+      "required":["gatewayId"],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayId"
+        }
+      }
+    },
+    "DeleteRequesterGatewayResponse":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "status"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>"
+        },
+        "status":{
+          "shape":"RequesterGatewayStatus",
+          "documentation":"<p>The status of the request.</p>"
+        }
+      }
+    },
+    "DeleteResponderGatewayRequest":{
+      "type":"structure",
+      "required":["gatewayId"],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayId"
+        }
+      }
+    },
+    "DeleteResponderGatewayResponse":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "status"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>"
+        },
+        "status":{
+          "shape":"ResponderGatewayStatus",
+          "documentation":"<p>The status of the request.</p>"
+        }
+      }
+    },
+    "DomainName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)(?:\\.(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?))+"
+    },
+    "EksEndpointsConfiguration":{
+      "type":"structure",
+      "required":[
+        "endpointsResourceName",
+        "endpointsResourceNamespace",
+        "clusterApiServerEndpointUri",
+        "clusterApiServerCaCertificateChain",
+        "clusterName",
+        "roleArn"
+      ],
+      "members":{
+        "endpointsResourceName":{
+          "shape":"KubernetesEndpointsResourceName",
+          "documentation":"<p>The name of the endpoint resource.</p>"
+        },
+        "endpointsResourceNamespace":{
+          "shape":"KubernetesNamespace",
+          "documentation":"<p>The namespace of the endpoint resource.</p>"
+        },
+        "clusterApiServerEndpointUri":{
+          "shape":"URI",
+          "documentation":"<p>The URI of the cluster API server endpoint.</p>"
+        },
+        "clusterApiServerCaCertificateChain":{
+          "shape":"Base64EncodedCertificateChain",
+          "documentation":"<p>The CA certificate chain of the cluster API server.</p>"
+        },
+        "clusterName":{
+          "shape":"KubernetesClusterName",
+          "documentation":"<p>The name of the cluster.</p>"
+        },
+        "roleArn":{
+          "shape":"String",
+          "documentation":"<p>The role ARN for the cluster.</p>"
+        }
+      },
+      "documentation":"<p>Describes the configuration of an Amazon Elastic Kubernetes Service endpoint.</p>"
+    },
+    "Filter":{
+      "type":"structure",
+      "required":["criteria"],
+      "members":{
+        "criteria":{
+          "shape":"FilterCriteria",
+          "documentation":"<p>Describes the criteria for a filter.</p>"
+        }
+      },
+      "documentation":"<p>Describes the configuration of a filter.</p>"
+    },
+    "FilterConfiguration":{
+      "type":"list",
+      "member":{"shape":"Filter"}
+    },
+    "FilterCriteria":{
+      "type":"list",
+      "member":{"shape":"FilterCriterion"}
+    },
+    "FilterCriterion":{
+      "type":"structure",
+      "required":[
+        "path",
+        "values"
+      ],
+      "members":{
+        "path":{
+          "shape":"String",
+          "documentation":"<p>The path to filter.</p>"
+        },
+        "values":{
+          "shape":"FilterCriterionValuesList",
+          "documentation":"<p>The value to filter.</p>"
+        }
+      },
+      "documentation":"<p>Describes the criteria for a filter.</p>"
+    },
+    "FilterCriterionValuesList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "min":1
+    },
+    "FilterType":{
+      "type":"string",
+      "enum":[
+        "INCLUDE",
+        "EXCLUDE"
+      ]
+    },
+    "Float":{
+      "type":"float",
+      "box":true
+    },
+    "FlowModuleName":{
+      "type":"string",
+      "max":255,
+      "min":0,
+      "pattern":"[A-Za-z0-9 -]+"
+    },
+    "FlowModuleNameList":{
+      "type":"list",
+      "member":{"shape":"FlowModuleName"}
+    },
+    "GatewayId":{
+      "type":"string",
+      "pattern":"rtb-gw-[a-z0-9-]{1,25}"
+    },
+    "GatewayIdList":{
+      "type":"list",
+      "member":{"shape":"GatewayId"}
+    },
+    "GetInboundExternalLinkRequest":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "linkId"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayId"
+        },
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The unique identifier of the link.</p>",
+          "location":"uri",
+          "locationName":"linkId"
+        }
+      }
+    },
+    "GetInboundExternalLinkResponse":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "linkId",
+        "status",
+        "domainName"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>"
+        },
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The unique identifier of the link.</p>"
+        },
+        "status":{
+          "shape":"LinkStatus",
+          "documentation":"<p>The status of the request.</p>"
+        },
+        "domainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The domain name.</p>"
+        },
+        "flowModules":{
+          "shape":"ModuleConfigurationList",
+          "documentation":"<p>The configuration of flow modules.</p>"
+        },
+        "pendingFlowModules":{
+          "shape":"ModuleConfigurationList",
+          "documentation":"<p>The configuration of pending flow modules.</p>"
+        },
+        "attributes":{
+          "shape":"LinkAttributes",
+          "documentation":"<p>Attributes of the link.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the inbound external link was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the inbound external link was updated.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of the key-value pairs for the tag or tags assigned to the specified resource.</p>"
+        },
+        "logSettings":{"shape":"LinkLogSettings"}
+      }
+    },
+    "GetLinkRequest":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "linkId"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayId"
+        },
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The unique identifier of the link.</p>",
+          "location":"uri",
+          "locationName":"linkId"
+        }
+      }
+    },
+    "GetLinkResponse":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "peerGatewayId",
+        "status",
+        "createdAt",
+        "updatedAt",
+        "linkId"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>"
+        },
+        "peerGatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the peer gateway.</p>"
+        },
+        "status":{
+          "shape":"LinkStatus",
+          "documentation":"<p>The status of the link.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the link was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the link was updated.</p>"
+        },
+        "direction":{
+          "shape":"LinkDirection",
+          "documentation":"<p>The direction of the link.</p>"
+        },
+        "flowModules":{
+          "shape":"ModuleConfigurationList",
+          "documentation":"<p>The configuration of flow modules.</p>"
+        },
+        "pendingFlowModules":{
+          "shape":"ModuleConfigurationList",
+          "documentation":"<p>The configuration of pending flow modules.</p>"
+        },
+        "attributes":{
+          "shape":"LinkAttributes",
+          "documentation":"<p>Attributes of the link.</p>"
+        },
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The unique identifier of the link.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of the key-value pairs for the tag or tags assigned to the specified resource.</p>"
+        },
+        "logSettings":{
+          "shape":"LinkLogSettings",
+          "documentation":"<p>Settings for the application logs.</p>"
+        }
+      }
+    },
+    "GetOutboundExternalLinkRequest":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "linkId"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayId"
+        },
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The unique identifier of the link.</p>",
+          "location":"uri",
+          "locationName":"linkId"
+        }
+      }
+    },
+    "GetOutboundExternalLinkResponse":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "linkId",
+        "status",
+        "publicEndpoint"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>"
+        },
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The unique identifier of the link.</p>"
+        },
+        "status":{
+          "shape":"LinkStatus",
+          "documentation":"<p>The status of the request.</p>"
+        },
+        "publicEndpoint":{
+          "shape":"URL",
+          "documentation":"<p>The public endpoint for the link.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the outbound external link was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the outbound external link was updated.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of the key-value pairs for the tag or tags assigned to the specified resource.</p>"
+        },
+        "logSettings":{"shape":"LinkLogSettings"}
+      }
+    },
+    "GetRequesterGatewayRequest":{
+      "type":"structure",
+      "required":["gatewayId"],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayId"
+        }
+      }
+    },
+    "GetRequesterGatewayResponse":{
+      "type":"structure",
+      "required":[
+        "status",
+        "domainName",
+        "vpcId",
+        "subnetIds",
+        "securityGroupIds",
+        "gatewayId"
+      ],
+      "members":{
+        "status":{
+          "shape":"RequesterGatewayStatus",
+          "documentation":"<p>The status of the request.</p>"
+        },
+        "domainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The domain name of the requester gateway.</p>"
+        },
+        "description":{
+          "shape":"GetRequesterGatewayResponseDescriptionString",
+          "documentation":"<p>The description of the requester gateway.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the requester gateway was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the requester gateway was updated.</p>"
+        },
+        "vpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>The unique identifier of the Virtual Private Cloud (VPC).</p>"
+        },
+        "subnetIds":{
+          "shape":"GetRequesterGatewayResponseSubnetIdsList",
+          "documentation":"<p>The unique identifiers of the subnets.</p>"
+        },
+        "securityGroupIds":{
+          "shape":"GetRequesterGatewayResponseSecurityGroupIdsList",
+          "documentation":"<p>The unique identifiers of the security groups.</p>"
+        },
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of the key-value pairs for the tag or tags assigned to the specified resource.</p>"
+        },
+        "activeLinksCount":{
+          "shape":"Integer",
+          "documentation":"<p>The count of active links for the requester gateway.</p>"
+        },
+        "totalLinksCount":{
+          "shape":"Integer",
+          "documentation":"<p>The total count of links for the requester gateway.</p>"
+        }
+      }
+    },
+    "GetRequesterGatewayResponseDescriptionString":{
+      "type":"string",
+      "pattern":"[A-Za-z0-9 ]+"
+    },
+    "GetRequesterGatewayResponseSecurityGroupIdsList":{
+      "type":"list",
+      "member":{"shape":"SecurityGroupId"},
+      "min":1
+    },
+    "GetRequesterGatewayResponseSubnetIdsList":{
+      "type":"list",
+      "member":{"shape":"SubnetId"},
+      "min":1
+    },
+    "GetResponderGatewayRequest":{
+      "type":"structure",
+      "required":["gatewayId"],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayId"
+        }
+      }
+    },
+    "GetResponderGatewayResponse":{
+      "type":"structure",
+      "required":[
+        "vpcId",
+        "subnetIds",
+        "securityGroupIds",
+        "status",
+        "port",
+        "protocol",
+        "gatewayId"
+      ],
+      "members":{
+        "vpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>The unique identifier of the Virtual Private Cloud (VPC).</p>"
+        },
+        "subnetIds":{
+          "shape":"GetResponderGatewayResponseSubnetIdsList",
+          "documentation":"<p>The unique identifiers of the subnets.</p>"
+        },
+        "securityGroupIds":{
+          "shape":"GetResponderGatewayResponseSecurityGroupIdsList",
+          "documentation":"<p>The unique identifiers of the security groups.</p>"
+        },
+        "status":{
+          "shape":"ResponderGatewayStatus",
+          "documentation":"<p>The status of the request.</p>"
+        },
+        "description":{
+          "shape":"GetResponderGatewayResponseDescriptionString",
+          "documentation":"<p>The description of the responder gateway.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the responder gateway was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the responder gateway was updated.</p>"
+        },
+        "domainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The domain name of the responder gateway.</p>"
+        },
+        "port":{
+          "shape":"GetResponderGatewayResponsePortInteger",
+          "documentation":"<p>The networking port.</p>"
+        },
+        "protocol":{
+          "shape":"Protocol",
+          "documentation":"<p>The networking protocol.</p>"
+        },
+        "trustStoreConfiguration":{
+          "shape":"TrustStoreConfiguration",
+          "documentation":"<p>The configuration of the trust store.</p>"
+        },
+        "managedEndpointConfiguration":{
+          "shape":"ManagedEndpointConfiguration",
+          "documentation":"<p>The configuration of the managed endpoint.</p>"
+        },
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of the key-value pairs for the tag or tags assigned to the specified resource.</p>"
+        },
+        "activeLinksCount":{
+          "shape":"Integer",
+          "documentation":"<p>The count of active links for the responder gateway.</p>"
+        },
+        "totalLinksCount":{
+          "shape":"Integer",
+          "documentation":"<p>The total count of links for the responder gateway.</p>"
+        },
+        "inboundLinksCount":{
+          "shape":"Integer",
+          "documentation":"<p>The count of inbound links for the responder gateway.</p>"
+        }
+      }
+    },
+    "GetResponderGatewayResponseDescriptionString":{
+      "type":"string",
+      "pattern":"[A-Za-z0-9 ]+"
+    },
+    "GetResponderGatewayResponsePortInteger":{
+      "type":"integer",
+      "box":true,
+      "max":65535,
+      "min":1
+    },
+    "GetResponderGatewayResponseSecurityGroupIdsList":{
+      "type":"list",
+      "member":{"shape":"SecurityGroupId"},
+      "min":1
+    },
+    "GetResponderGatewayResponseSubnetIdsList":{
+      "type":"list",
+      "member":{"shape":"SubnetId"},
+      "min":1
+    },
+    "HeaderTagAction":{
+      "type":"structure",
+      "required":[
+        "name",
+        "value"
+      ],
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the bid action.</p>"
+        },
+        "value":{
+          "shape":"String",
+          "documentation":"<p>The value of the bid action.</p>"
+        }
+      },
+      "documentation":"<p>Describes the header tag for a bid action.</p>"
+    },
+    "Integer":{
+      "type":"integer",
+      "box":true
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request could not be completed because of an internal server error. Try your call again.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true,
+      "retryable":{"throttling":false}
+    },
+    "KubernetesClusterName":{
+      "type":"string",
+      "pattern":"[A-Za-z0-9][A-Za-z0-9-]{0,61}[A-Za-z0-9]"
+    },
+    "KubernetesEndpointsResourceName":{
+      "type":"string",
+      "pattern":"[A-Za-z0-9][A-Za-z0-9-]{0,61}[A-Za-z0-9]"
+    },
+    "KubernetesNamespace":{
+      "type":"string",
+      "pattern":"[A-Za-z0-9][A-Za-z0-9-]{0,61}[A-Za-z0-9]"
+    },
+    "LinkApplicationLogConfiguration":{
+      "type":"structure",
+      "required":["sampling"],
+      "members":{
+        "sampling":{
+          "shape":"LinkApplicationLogSampling",
+          "documentation":"<p>Describes a link application log sample.</p>"
+        }
+      },
+      "documentation":"<p>Describes the configuration of a link application log.</p>"
+    },
+    "LinkApplicationLogSampling":{
+      "type":"structure",
+      "required":[
+        "errorLog",
+        "filterLog"
+      ],
+      "members":{
+        "errorLog":{
+          "shape":"LinkApplicationLogSamplingErrorLogDouble",
+          "documentation":"<p>An error log entry.</p>"
+        },
+        "filterLog":{
+          "shape":"LinkApplicationLogSamplingFilterLogDouble",
+          "documentation":"<p>A filter log entry.</p>"
+        }
+      },
+      "documentation":"<p>Describes a link application log sample.</p>"
+    },
+    "LinkApplicationLogSamplingErrorLogDouble":{
+      "type":"double",
+      "box":true,
+      "max":100.0,
+      "min":0.0
+    },
+    "LinkApplicationLogSamplingFilterLogDouble":{
+      "type":"double",
+      "box":true,
+      "max":100.0,
+      "min":0.0
+    },
+    "LinkAttributes":{
+      "type":"structure",
+      "members":{
+        "responderErrorMasking":{
+          "shape":"ResponderErrorMasking",
+          "documentation":"<p>Describes the masking for HTTP error codes.</p>"
+        },
+        "customerProvidedId":{
+          "shape":"CustomerProvidedId",
+          "documentation":"<p>The customer-provided unique identifier of the link.</p>"
+        }
+      },
+      "documentation":"<p>Describes the attributes of a link.</p>"
+    },
+    "LinkDirection":{
+      "type":"string",
+      "enum":[
+        "RESPONSE",
+        "REQUEST"
+      ]
+    },
+    "LinkId":{
+      "type":"string",
+      "pattern":"link-[a-z0-9-]{1,25}"
+    },
+    "LinkList":{
+      "type":"list",
+      "member":{"shape":"ListLinksResponseStructure"}
+    },
+    "LinkLogSettings":{
+      "type":"structure",
+      "required":["applicationLogs"],
+      "members":{
+        "applicationLogs":{
+          "shape":"LinkApplicationLogConfiguration",
+          "documentation":"<p>Describes the configuration of a link application log.</p>"
+        }
+      },
+      "documentation":"<p>Describes the settings for a link log.</p>"
+    },
+    "LinkStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING_CREATION",
+        "PENDING_REQUEST",
+        "REQUESTED",
+        "ACCEPTED",
+        "ACTIVE",
+        "REJECTED",
+        "FAILED",
+        "PENDING_DELETION",
+        "DELETED",
+        "PENDING_UPDATE",
+        "PENDING_ISOLATION",
+        "ISOLATED",
+        "PENDING_RESTORATION"
+      ]
+    },
+    "ListLinksRequest":{
+      "type":"structure",
+      "required":["gatewayId"],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayId"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken error</i>.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of results that are returned per call. You can use <code>nextToken</code> to obtain further pages of results.</p> <p>This is only an upper limit. The actual number of results returned per call might be fewer than the specified maximum.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListLinksResponse":{
+      "type":"structure",
+      "members":{
+        "links":{
+          "shape":"LinkList",
+          "documentation":"<p>Information about created links.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken error</i>.</p>"
+        }
+      }
+    },
+    "ListLinksResponseStructure":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "peerGatewayId",
+        "status",
+        "createdAt",
+        "updatedAt",
+        "linkId"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>"
+        },
+        "peerGatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the peer gateway.</p>"
+        },
+        "status":{
+          "shape":"LinkStatus",
+          "documentation":"<p>The status of the link.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the link was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the link was updated.</p>"
+        },
+        "direction":{
+          "shape":"LinkDirection",
+          "documentation":"<p>The direction of the link.</p>"
+        },
+        "flowModules":{
+          "shape":"ModuleConfigurationList",
+          "documentation":"<p>Describes the configuration of flow modules.</p>"
+        },
+        "pendingFlowModules":{
+          "shape":"ModuleConfigurationList",
+          "documentation":"<p>Describes the configuration of pending flow modules.</p>"
+        },
+        "attributes":{
+          "shape":"LinkAttributes",
+          "documentation":"<p>Describes attributes of a link.</p>"
+        },
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The unique identifier of the link.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of the key-value pairs of the tag or tags to assign to the resource.</p>"
+        }
+      },
+      "documentation":"<p>Describes a link.</p>"
+    },
+    "ListRequesterGatewaysRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"ListRequesterGatewaysRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results that are returned per call. You can use <code>nextToken</code> to obtain further pages of results.</p> <p>This is only an upper limit. The actual number of results returned per call might be fewer than the specified maximum.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken error</i>.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListRequesterGatewaysRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":10,
+      "min":1
+    },
+    "ListRequesterGatewaysResponse":{
+      "type":"structure",
+      "members":{
+        "gatewayIds":{
+          "shape":"GatewayIdList",
+          "documentation":"<p>The unique identifier of the gateways.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken error</i>.</p>"
+        }
+      }
+    },
+    "ListResponderGatewaysRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"ListResponderGatewaysRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results that are returned per call. You can use <code>nextToken</code> to obtain further pages of results.</p> <p>This is only an upper limit. The actual number of results returned per call might be fewer than the specified maximum.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken error</i>.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListResponderGatewaysRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":10,
+      "min":1
+    },
+    "ListResponderGatewaysResponse":{
+      "type":"structure",
+      "members":{
+        "gatewayIds":{
+          "shape":"GatewayIdList",
+          "documentation":"<p>The unique identifier of the gateways.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken error</i>.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"RtbTaggableResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource for which you want to retrieve tags.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "members":{
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of the key-value pairs for the tag or tags assigned to the specified resource.</p>"
+        }
+      }
+    },
+    "ManagedEndpointConfiguration":{
+      "type":"structure",
+      "members":{
+        "autoScalingGroups":{
+          "shape":"AutoScalingGroupsConfiguration",
+          "documentation":"<p>Describes the configuration of an auto scaling group.</p>"
+        },
+        "eksEndpoints":{
+          "shape":"EksEndpointsConfiguration",
+          "documentation":"<p>Describes the configuration of an Amazon Elastic Kubernetes Service endpoint.</p>"
+        }
+      },
+      "documentation":"<p>Describes the configuration of a managed endpoint.</p>",
+      "union":true
+    },
+    "ModuleConfiguration":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "version":{
+          "shape":"Version",
+          "documentation":"<p>The version of the module.</p>"
+        },
+        "name":{
+          "shape":"FlowModuleName",
+          "documentation":"<p>The name of the module.</p>"
+        },
+        "dependsOn":{
+          "shape":"FlowModuleNameList",
+          "documentation":"<p>The dependencies of the module.</p>"
+        },
+        "moduleParameters":{
+          "shape":"ModuleParameters",
+          "documentation":"<p>Describes the parameters of a module.</p>"
+        }
+      },
+      "documentation":"<p>Describes the configuration of a module.</p>"
+    },
+    "ModuleConfigurationList":{
+      "type":"list",
+      "member":{"shape":"ModuleConfiguration"}
+    },
+    "ModuleParameters":{
+      "type":"structure",
+      "members":{
+        "noBid":{
+          "shape":"NoBidModuleParameters",
+          "documentation":"<p>Describes the parameters of a no bid module.</p>"
+        },
+        "openRtbAttribute":{
+          "shape":"OpenRtbAttributeModuleParameters",
+          "documentation":"<p>Describes the parameters of an open RTB attribute module.</p>"
+        },
+        "rateLimiter":{
+          "shape":"RateLimiterModuleParameters",
+          "documentation":"<p>Describes the parameters of a rate limit.</p>"
+        }
+      },
+      "documentation":"<p>Describes the parameters of a module.</p>",
+      "union":true
+    },
+    "NoBidAction":{
+      "type":"structure",
+      "members":{
+        "noBidReasonCode":{
+          "shape":"NoBidActionNoBidReasonCodeInteger",
+          "documentation":"<p>The reason code for the no bid action.</p>"
+        }
+      },
+      "documentation":"<p>Describes a no bid action.</p>"
+    },
+    "NoBidActionNoBidReasonCodeInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "NoBidModuleParameters":{
+      "type":"structure",
+      "members":{
+        "reason":{
+          "shape":"NoBidModuleParametersReasonString",
+          "documentation":"<p>The reason description.</p>"
+        },
+        "reasonCode":{
+          "shape":"NoBidModuleParametersReasonCodeInteger",
+          "documentation":"<p>The reason code.</p>"
+        },
+        "passThroughPercentage":{
+          "shape":"NoBidModuleParametersPassThroughPercentageFloat",
+          "documentation":"<p>The pass through percentage.</p>"
+        }
+      },
+      "documentation":"<p>Describes the parameters of a no bid module.</p>"
+    },
+    "NoBidModuleParametersPassThroughPercentageFloat":{
+      "type":"float",
+      "box":true,
+      "max":100,
+      "min":0
+    },
+    "NoBidModuleParametersReasonCodeInteger":{
+      "type":"integer",
+      "box":true,
+      "max":10,
+      "min":0
+    },
+    "NoBidModuleParametersReasonString":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"[a-zA-Z0-9]*"
+    },
+    "OpenRtbAttributeModuleParameters":{
+      "type":"structure",
+      "required":[
+        "filterType",
+        "filterConfiguration",
+        "action",
+        "holdbackPercentage"
+      ],
+      "members":{
+        "filterType":{
+          "shape":"FilterType",
+          "documentation":"<p>The filter type.</p>"
+        },
+        "filterConfiguration":{
+          "shape":"FilterConfiguration",
+          "documentation":"<p>Describes the configuration of a filter.</p>"
+        },
+        "action":{
+          "shape":"Action",
+          "documentation":"<p>Describes a bid action.</p>"
+        },
+        "holdbackPercentage":{
+          "shape":"OpenRtbAttributeModuleParametersHoldbackPercentageFloat",
+          "documentation":"<p>The hold back percentage.</p>"
+        }
+      },
+      "documentation":"<p>Describes the parameters of an open RTB attribute module.</p>"
+    },
+    "OpenRtbAttributeModuleParametersHoldbackPercentageFloat":{
+      "type":"float",
+      "box":true,
+      "max":100,
+      "min":0
+    },
+    "Protocol":{
+      "type":"string",
+      "enum":[
+        "HTTP",
+        "HTTPS"
+      ]
+    },
+    "RateLimiterModuleParameters":{
+      "type":"structure",
+      "members":{
+        "tps":{
+          "shape":"Float",
+          "documentation":"<p>The transactions per second rate limit.</p>"
+        }
+      },
+      "documentation":"<p>Describes the parameters of a rate limit.</p>"
+    },
+    "RejectLinkRequest":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "linkId"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayId"
+        },
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The unique identifier of the link.</p>",
+          "location":"uri",
+          "locationName":"linkId"
+        }
+      }
+    },
+    "RejectLinkResponse":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "peerGatewayId",
+        "status",
+        "createdAt",
+        "updatedAt",
+        "linkId"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>"
+        },
+        "peerGatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the peer gateway.</p>"
+        },
+        "status":{
+          "shape":"LinkStatus",
+          "documentation":"<p>The status of the link.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the link was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the link was updated.</p>"
+        },
+        "direction":{
+          "shape":"LinkDirection",
+          "documentation":"<p>The direction of the link.</p>"
+        },
+        "flowModules":{
+          "shape":"ModuleConfigurationList",
+          "documentation":"<p>The configuration of flow modules.</p>"
+        },
+        "pendingFlowModules":{
+          "shape":"ModuleConfigurationList",
+          "documentation":"<p>The configuration of pending flow modules.</p>"
+        },
+        "attributes":{
+          "shape":"LinkAttributes",
+          "documentation":"<p>Attributes of the link.</p>"
+        },
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The unique identifier of the link.</p>"
+        }
+      }
+    },
+    "RequesterGatewayStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING_CREATION",
+        "ACTIVE",
+        "PENDING_DELETION",
+        "DELETED",
+        "ERROR",
+        "PENDING_UPDATE",
+        "ISOLATED",
+        "PENDING_ISOLATION",
+        "PENDING_RESTORATION"
+      ]
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request could not be completed because the resource does not exist.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ResponderErrorMasking":{
+      "type":"list",
+      "member":{"shape":"ResponderErrorMaskingForHttpCode"},
+      "max":200,
+      "min":1
+    },
+    "ResponderErrorMaskingAction":{
+      "type":"string",
+      "enum":[
+        "NO_BID",
+        "PASSTHROUGH"
+      ]
+    },
+    "ResponderErrorMaskingForHttpCode":{
+      "type":"structure",
+      "required":[
+        "httpCode",
+        "action",
+        "loggingTypes"
+      ],
+      "members":{
+        "httpCode":{
+          "shape":"ResponderErrorMaskingForHttpCodeHttpCodeString",
+          "documentation":"<p>The HTTP error code.</p>"
+        },
+        "action":{
+          "shape":"ResponderErrorMaskingAction",
+          "documentation":"<p>The action for the error..</p>"
+        },
+        "loggingTypes":{
+          "shape":"ResponderErrorMaskingLoggingTypes",
+          "documentation":"<p>The error log type.</p>"
+        },
+        "responseLoggingPercentage":{
+          "shape":"ResponderErrorMaskingForHttpCodeResponseLoggingPercentageFloat",
+          "documentation":"<p>The percentage of response logging.</p>"
+        }
+      },
+      "documentation":"<p>Describes the masking for HTTP error codes.</p>"
+    },
+    "ResponderErrorMaskingForHttpCodeHttpCodeString":{
+      "type":"string",
+      "max":7,
+      "min":3,
+      "pattern":"DEFAULT|4XX|5XX|\\d{3}"
+    },
+    "ResponderErrorMaskingForHttpCodeResponseLoggingPercentageFloat":{
+      "type":"float",
+      "box":true,
+      "max":100,
+      "min":0
+    },
+    "ResponderErrorMaskingLoggingType":{
+      "type":"string",
+      "enum":[
+        "NONE",
+        "METRIC",
+        "RESPONSE"
+      ]
+    },
+    "ResponderErrorMaskingLoggingTypes":{
+      "type":"list",
+      "member":{"shape":"ResponderErrorMaskingLoggingType"},
+      "max":2,
+      "min":1
+    },
+    "ResponderGatewayStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING_CREATION",
+        "ACTIVE",
+        "PENDING_DELETION",
+        "DELETED",
+        "ERROR",
+        "PENDING_UPDATE",
+        "ISOLATED",
+        "PENDING_ISOLATION",
+        "PENDING_RESTORATION"
+      ]
+    },
+    "RtbTaggableResourceArn":{
+      "type":"string",
+      "max":1600,
+      "min":1,
+      "pattern":"arn:aws:rtbfabric:[a-zA-Z0-9_-]+:[0-9]{12}:gateway/[a-zA-Z0-9-]+(/link/[a-zA-Z0-9-]+)?"
+    },
+    "SecurityGroupId":{
+      "type":"string",
+      "pattern":"sg-[0-9a-f]{8,40}"
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request could not be completed because you exceeded a service quota.</p>",
+      "error":{
+        "httpStatusCode":402,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "String":{"type":"string"},
+    "SubnetId":{
+      "type":"string",
+      "pattern":"subnet-\\w{8,17}"
+    },
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"(resourceArn|internalId|(?!aws:)[a-zA-Z0-9+\\-=._:/@]+)"
+    },
+    "TagKeyList":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "max":50,
+      "min":1
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tags"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"RtbTaggableResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource that you want to tag.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of the key-value pairs of the tag or tags to assign to the resource.</p>"
+        }
+      }
+    },
+    "TagResourceResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "TagValue":{
+      "type":"string",
+      "max":1600,
+      "min":0
+    },
+    "TagsMap":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"}
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request was denied due to request throttling.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true,
+      "retryable":{"throttling":false}
+    },
+    "Timestamp":{"type":"timestamp"},
+    "TrustStoreConfiguration":{
+      "type":"structure",
+      "required":["certificateAuthorityCertificates"],
+      "members":{
+        "certificateAuthorityCertificates":{
+          "shape":"CertificateAuthorityCertificates",
+          "documentation":"<p>The certificate authority certificate.</p>"
+        }
+      },
+      "documentation":"<p>Describes the configuration of a trust store.</p>"
+    },
+    "URI":{
+      "type":"string",
+      "max":255,
+      "min":0,
+      "pattern":"(https|http)://(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)(?:\\.(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?))+"
+    },
+    "URL":{
+      "type":"string",
+      "max":255,
+      "min":0,
+      "pattern":"(https|http)://.+"
+    },
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tagKeys"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"RtbTaggableResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource that you want to untag.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tagKeys":{
+          "shape":"TagKeyList",
+          "documentation":"<p>The keys of the key-value pairs for the tag or tags you want to remove from the specified resource.</p>",
+          "location":"querystring",
+          "locationName":"tagKeys"
+        }
+      }
+    },
+    "UntagResourceResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "UpdateLinkModuleFlowRequest":{
+      "type":"structure",
+      "required":[
+        "clientToken",
+        "gatewayId",
+        "linkId",
+        "modules"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>The unique client token.</p>",
+          "idempotencyToken":true
+        },
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayId"
+        },
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The unique identifier of the link.</p>",
+          "location":"uri",
+          "locationName":"linkId"
+        },
+        "modules":{
+          "shape":"ModuleConfigurationList",
+          "documentation":"<p>The configuration of a module.</p>"
+        }
+      }
+    },
+    "UpdateLinkModuleFlowResponse":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "linkId",
+        "status"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>"
+        },
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The unique identifier of the link.</p>"
+        },
+        "status":{
+          "shape":"LinkStatus",
+          "documentation":"<p>The status of the request.</p>"
+        }
+      }
+    },
+    "UpdateLinkRequest":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "linkId"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayId"
+        },
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The unique identifier of the link.</p>",
+          "location":"uri",
+          "locationName":"linkId"
+        },
+        "logSettings":{
+          "shape":"LinkLogSettings",
+          "documentation":"<p>Settings for the application logs.</p>"
+        }
+      }
+    },
+    "UpdateLinkResponse":{
+      "type":"structure",
+      "required":[
+        "linkId",
+        "status"
+      ],
+      "members":{
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The unique identifier of the link.</p>"
+        },
+        "status":{
+          "shape":"LinkStatus",
+          "documentation":"<p>The status of the request.</p>"
+        }
+      }
+    },
+    "UpdateRequesterGatewayRequest":{
+      "type":"structure",
+      "required":[
+        "clientToken",
+        "gatewayId"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>The unique client token.</p>",
+          "idempotencyToken":true
+        },
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayId"
+        },
+        "description":{
+          "shape":"UpdateRequesterGatewayRequestDescriptionString",
+          "documentation":"<p>An optional description for the requester gateway.</p>"
+        }
+      }
+    },
+    "UpdateRequesterGatewayRequestDescriptionString":{
+      "type":"string",
+      "pattern":"[A-Za-z0-9 ]+"
+    },
+    "UpdateRequesterGatewayResponse":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "status"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>"
+        },
+        "status":{
+          "shape":"RequesterGatewayStatus",
+          "documentation":"<p>The status of the request.</p>"
+        }
+      }
+    },
+    "UpdateResponderGatewayRequest":{
+      "type":"structure",
+      "required":[
+        "port",
+        "protocol",
+        "clientToken",
+        "gatewayId"
+      ],
+      "members":{
+        "domainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The domain name for the responder gateway.</p>"
+        },
+        "port":{
+          "shape":"UpdateResponderGatewayRequestPortInteger",
+          "documentation":"<p>The networking port to use.</p>"
+        },
+        "protocol":{
+          "shape":"Protocol",
+          "documentation":"<p>The networking protocol to use.</p>"
+        },
+        "trustStoreConfiguration":{
+          "shape":"TrustStoreConfiguration",
+          "documentation":"<p>The configuration of the trust store.</p>"
+        },
+        "managedEndpointConfiguration":{
+          "shape":"ManagedEndpointConfiguration",
+          "documentation":"<p>The configuration for the managed endpoint.</p>"
+        },
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>The unique client token.</p>",
+          "idempotencyToken":true
+        },
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayId"
+        },
+        "description":{
+          "shape":"UpdateResponderGatewayRequestDescriptionString",
+          "documentation":"<p>An optional description for the responder gateway.</p>"
+        }
+      }
+    },
+    "UpdateResponderGatewayRequestDescriptionString":{
+      "type":"string",
+      "pattern":"[A-Za-z0-9 ]+"
+    },
+    "UpdateResponderGatewayRequestPortInteger":{
+      "type":"integer",
+      "box":true,
+      "max":65535,
+      "min":1
+    },
+    "UpdateResponderGatewayResponse":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "status"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>"
+        },
+        "status":{
+          "shape":"ResponderGatewayStatus",
+          "documentation":"<p>The status of the request.</p>"
+        }
+      }
+    },
+    "ValidationException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request could not be completed because it fails satisfy the constraints specified by the service.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "Version":{
+      "type":"string",
+      "pattern":"[a-z0-9-]{1,25}"
+    },
+    "VpcId":{
+      "type":"string",
+      "pattern":"vpc-[a-f0-9]{8,17}"
+    }
+  },
+  "documentation":"<p>Amazon Web Services RTB Fabric provides secure, low-latency infrastructure for connecting real-time bidding (RTB) applications. Rather than hosting applications directly, RTB Fabric acts as the connecting fabric that enables your applications to communicate efficiently over private networks instead of the public internet. You maintain complete control over your applications, data, and bidding decisions, while RTB Fabric provides the underlying infrastructure for secure, reliable connectivity.</p> <p>You can use these APIs to complete RTB Fabric tasks, such as setting up audit log ingestions or viewing user access. For more information about RTB Fabric, including the required permissions to use the service, see the <a href=\"https://docs.aws.amazon.com/rtb-fabric/latest/userguide/\">Amazon Web Services RTB Fabric User Guide</a>.</p>"
+}

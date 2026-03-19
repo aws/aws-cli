@@ -1,11 +1,10 @@
 **To get detailed information about a merge commit**
 
-The following ``get-merge-commit`` example displays details about a merge commit for the source branch named ``bugfix-bug1234`` with a destination branch named ``main`` using the THREE_WAY_MERGE strategy in a repository named ``MyDemoRepo``. ::
+The following ``get-merge-commit`` example displays details about a merge commit for the source branch named ``bugfix-bug1234`` with a destination branch named ``main`` in a repository named ``MyDemoRepo``. ::
 
     aws codecommit get-merge-commit \
         --source-commit-specifier bugfix-bug1234 \
         --destination-commit-specifier main \
-        --merge-option THREE_WAY_MERGE \
         --repository-name MyDemoRepo
 
 Output::

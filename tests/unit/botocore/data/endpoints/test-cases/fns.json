@@ -1,0 +1,50 @@
+{
+  "version": "1.0",
+  "testCases": [
+    {
+      "documentation": "test where URI is set and flows to URI and header",
+      "params": {
+        "Uri": "https://www.example.com",
+        "Arn": "arn:aws:s3:us-east-2:012345678:outpost:op-1234"
+      },
+      "expect": {
+        "endpoint": {
+          "url": "https://www.example.com",
+          "headers": {
+            "x-uri": [
+              "https://www.example.com"
+            ],
+            "x-arn-region": [
+              "us-east-2"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "documentation": "test where explicit error is set",
+      "params": {
+        "CustomError": "This is an error!"
+      },
+      "expect": {
+        "error": "This is an error!"
+      }
+    },
+    {
+      "documentation": "test where an ARN field is used in the error directly",
+      "params": {
+        "Arn": "arn:This is an error!:s3:us-east-2:012345678:outpost:op-1234"
+      },
+      "expect": {
+        "error": "This is an error!"
+      }
+    },
+    {
+      "documentation": "test case where no fields are set",
+      "params": {},
+      "expect": {
+        "error": "No fields were set"
+      }
+    }
+  ]
+}

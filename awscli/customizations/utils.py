@@ -14,20 +14,19 @@
 Utility functions to make it easier to work with customizations.
 
 """
+
 import copy
 import re
 import sys
 import xml
 
 from botocore.exceptions import ClientError
+
 from awscli.customizations.exceptions import ParamValidationError
 
-
 _SENTENCE_DELIMETERS_REGEX = re.compile(r'[.:]+')
-_LINE_BREAK_CHARS = [
-    '\n',
-    '\u2028'
-]
+_LINE_BREAK_CHARS = ['\n', '\u2028']
+
 
 def rename_argument(argument_table, existing_name, new_name):
     current = argument_table[existing_name]
@@ -93,11 +92,12 @@ def alias_command(command_table, existing_name, new_name):
 def validate_mutually_exclusive_handler(*groups):
     def _handler(parsed_args, **kwargs):
         return validate_mutually_exclusive(parsed_args, *groups)
+
     return _handler
 
 
 def validate_mutually_exclusive(parsed_args, *groups):
-    """Validate mututally exclusive groups in the parsed args."""
+    """Validate mutually exclusive groups in the parsed args."""
     args_dict = vars(parsed_args)
     all_args = set(arg for group in groups for arg in group)
     if not any(k in all_args for k in args_dict if args_dict[k] is not None):
@@ -140,8 +140,9 @@ def s3_bucket_exists(s3_client, bucket_name):
     return bucket_exists
 
 
-def create_client_from_parsed_globals(session, service_name, parsed_globals,
-                                      overrides=None):
+def create_client_from_parsed_globals(
+    session, service_name, parsed_globals, overrides=None
+):
     """Creates a service client, taking parsed_globals into account
 
     Any values specified in overrides will override the returned dict. Note
@@ -197,8 +198,9 @@ def uni_print(statement, out_file=None):
         # ``sys.stdout.encoding`` is ``None``.
         if new_encoding is None:
             new_encoding = 'ascii'
-        new_statement = statement.encode(
-            new_encoding, 'replace').decode(new_encoding)
+        new_statement = statement.encode(new_encoding, 'replace').decode(
+            new_encoding
+        )
         out_file.write(new_statement)
     out_file.flush()
 

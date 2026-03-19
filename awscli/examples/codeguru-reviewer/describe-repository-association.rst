@@ -21,7 +21,7 @@ Output::
         }
     }
 
-For more information, see `DescribeRepositoryAssociation<https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_DescribeRepositoryAssociation.html>`__ in the *Amazon DevOps Guru API Reference*
+For more information, see `Create a GitHub Enterprise Server repository association in Amazon CodeGuru Reviewer <https://docs.aws.amazon.com/codeguru/latest/reviewer-ug/create-github-enterprise-association.html>`__ in the *Amazon CodeGuru Reviewer User Guide*.
 
 **Example 2: To return information about a failed repository association**
 
@@ -47,7 +47,7 @@ Output::
         }
     }
 
-For more information, see `DescribeRepositoryAssociation<https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_DescribeRepositoryAssociation.html>`__ in the *Amazon DevOps Guru API Reference*.
+For more information, see `Create a GitHub Enterprise Server repository association in Amazon CodeGuru Reviewer <https://docs.aws.amazon.com/codeguru/latest/reviewer-ug/create-github-enterprise-association.html>`__ in the *Amazon CodeGuru Reviewer User Guide*.
 
 **Example 3: To return information about a disassociating repository association**
 
@@ -73,4 +73,4 @@ Output::
         }
     }
 
-For more information, see `DescribeRepositoryAssociation<https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_DescribeRepositoryAssociation.html>`__ in the *Amazon DevOps Guru API Reference*.
+For more information, see `Create a GitHub Enterprise Server repository association in Amazon CodeGuru Reviewer <https://docs.aws.amazon.com/codeguru/latest/reviewer-ug/create-github-enterprise-association.html>`__ in the *Amazon CodeGuru Reviewer User Guide*.

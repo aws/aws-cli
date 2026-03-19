@@ -10,11 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.clidriver import create_clidriver
 from awscli.autocomplete import parser
 from awscli.autoprompt.doc import DocsGetter
-from awscli.testutils import unittest, mock
-
+from awscli.clidriver import create_clidriver
+from awscli.testutils import mock, unittest
 from tests.unit.autocomplete import InMemoryIndex
 
 
@@ -22,26 +21,35 @@ class TestDocsGetter(unittest.TestCase):
     def setUp(self):
         self.driver = create_clidriver()
         self.docs_getter = DocsGetter(self.driver)
-        self.index = InMemoryIndex({
-            'command_names': {
-                '': [('aws', None)],
-                'aws': [('ec2', None)],
-                'aws.ec2': [('describe-instances', None)],
-            },
-            'arg_names': {
-                '': {'aws': ['region']},
-                'aws.ec2': {'describe-instances': []},
-            },
-            'arg_data': {
-                '': {
-                    'aws': {
-                        'region': ('region', 'string', 'aws', '', None, False,
-                                   False),
-                    }
+        self.index = InMemoryIndex(
+            {
+                'command_names': {
+                    '': [('aws', None)],
+                    'aws': [('ec2', None)],
+                    'aws.ec2': [('describe-instances', None)],
                 },
-                'aws.ec2': {'describe-instances': {}}
+                'arg_names': {
+                    '': {'aws': ['region']},
+                    'aws.ec2': {'describe-instances': []},
+                },
+                'arg_data': {
+                    '': {
+                        'aws': {
+                            'region': (
+                                'region',
+                                'string',
+                                'aws',
+                                '',
+                                None,
+                                False,
+                                False,
+                            ),
+                        }
+                    },
+                    'aws.ec2': {'describe-instances': {}},
+                },
             }
-        })
+        )
         self.parser = parser.CLIParser(self.index)
 
     def test_get_service_command_docs(self):

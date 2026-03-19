@@ -10,41 +10,43 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import sys
-import re
-import shlex
+import collections.abc as collections_abc
+import contextlib
+import io
+import locale
+import logging
 import os
 import os.path
 import platform
-import zipfile
+import queue
+import re
+import shlex
 import signal
-import contextlib
-import collections.abc as collections_abc
-import locale
-from functools import partial
+import sys
 import urllib.parse as urlparse
+import zipfile
+from configparser import RawConfigParser
+from functools import partial
 from urllib.error import URLError
+from urllib.request import urlopen
 
-from botocore.compat import six
-from botocore.compat import OrderedDict
+from botocore.compat import OrderedDict, six
 
-# If you ever want to import from the vendored six. Add it here and then
-# import from awscli.compat. Also try to keep it in alphabetical order.
-# This may get large.
-advance_iterator = six.advance_iterator
-PY3 = six.PY3
-queue = six.moves.queue
-shlex_quote = six.moves.shlex_quote
-StringIO = six.StringIO
-BytesIO = six.BytesIO
-urlopen = six.moves.urllib.request.urlopen
-binary_type = six.binary_type
+# Backwards compatible definitions from six
+PY3 = sys.version_info[0] == 3
+advance_iterator = next
+shlex_quote = shlex.quote
+StringIO = io.StringIO
+BytesIO = io.BytesIO
+binary_type = bytes
+raw_input = input
 
 # Most, but not all, python installations will have zlib. This is required to
 # compress any files we send via a push. If we can't compress, we can still
 # package the files in a zip container.
 try:
     import zlib
+
     ZIP_COMPRESSION_MODE = zipfile.ZIP_DEFLATED
 except ImportError:
     ZIP_COMPRESSION_MODE = zipfile.ZIP_STORED
@@ -58,6 +60,8 @@ except ImportError:
 
 is_windows = sys.platform == 'win32'
 
+is_macos = sys.platform == 'darwin'
+
 
 if is_windows:
     default_pager = 'more'
@@ -68,40 +72,46 @@ else:
 imap = map
 raw_input = input
 
+OUTPUT_ENCODING_ENV_VAR = 'AWS_CLI_OUTPUT_ENCODING'
+PYTHONUTF8_ENV_VAR = 'PYTHONUTF8'
+
+LOG = logging.getLogger(__name__)
+
 
 class StdinMissingError(Exception):
     def __init__(self):
-        message = (
-            'stdin is required for this operation, but is not available.'
-        )
+        message = 'stdin is required for this operation, but is not available.'
         super(StdinMissingError, self).__init__(message)
 
 
-class NonTranslatedStdout(object):
-    """ This context manager sets the line-end translation mode for stdout.
+class NonTranslatedStdout:
+    """This context manager sets the line-end translation mode for stdout.
 
     It is deliberately set to binary mode so that `\r` does not get added to
     the line ending. This can be useful when printing commands where a
-    windows style line ending would casuse errors.
+    windows style line ending would cause errors.
     """
 
     def __enter__(self):
         if sys.platform == "win32":
             import msvcrt
-            self.previous_mode = msvcrt.setmode(sys.stdout.fileno(),
-                                                os.O_BINARY)
+
+            self.previous_mode = msvcrt.setmode(
+                sys.stdout.fileno(), os.O_BINARY
+            )
         return sys.stdout
 
     def __exit__(self, type, value, traceback):
         if sys.platform == "win32":
             import msvcrt
+
             msvcrt.setmode(sys.stdout.fileno(), self.previous_mode)
 
 
 def ensure_text_type(s):
-    if isinstance(s, six.text_type):
+    if isinstance(s, str):
         return s
-    if isinstance(s, six.binary_type):
+    if isinstance(s, bytes):
         return s.decode('utf-8')
     raise ValueError("Expected str, unicode or bytes, received %s." % type(s))
 
@@ -111,11 +121,60 @@ def get_binary_stdin():
         raise StdinMissingError()
     return sys.stdin.buffer
 
+
 def get_binary_stdout():
     return sys.stdout.buffer
 
+
 def _get_text_writer(stream, errors):
+    set_preferred_output_encoding(stream)
     return stream
+
+
+def validate_preferred_output_encoding():
+    """
+    Validate that the preferred output encoding is valid if it's set.
+    We do this separately from set_preferred_output_encoding because that
+    may be called from error handlers while handling another exception, which
+    we still want to print successfully.
+    """
+    if OUTPUT_ENCODING_ENV_VAR in os.environ:
+        try:
+            ''.encode(os.environ[OUTPUT_ENCODING_ENV_VAR])
+        except LookupError:
+            raise ValueError(
+                f'Unknown codec `'
+                f'{os.environ[OUTPUT_ENCODING_ENV_VAR]}` '
+                f'specified for {OUTPUT_ENCODING_ENV_VAR}.'
+            )
+
+
+def set_preferred_output_encoding(stream):
+    """
+    If the user specified AWS_CLI_OUTPUT_ENCODING, use that encoding
+    for the output stream. This lets us move away from the Python-specific
+    environment variables in the long-term, though we support PYTHONUTF8
+    here as well for backwards compatability.
+    """
+    if OUTPUT_ENCODING_ENV_VAR in os.environ:
+        try:
+            stream.reconfigure(encoding=os.environ[OUTPUT_ENCODING_ENV_VAR])
+        except LookupError:
+            # At this point we don't want to raise the exception, since we
+            # could be writing out another error. Callers should call
+            # validate_preferred_output_encoding first.
+            LOG.debug(
+                f'Ignoring invalid codec '
+                f'{os.environ[OUTPUT_ENCODING_ENV_VAR]} '
+                f'specified for {OUTPUT_ENCODING_ENV_VAR}.'
+            )
+    # Fall back to PYTHONUTF8, for users who were setting it
+    # before the PyInstaller 6 upgrade which stopped supporting it
+    elif (
+        PYTHONUTF8_ENV_VAR in os.environ
+        and os.environ[PYTHONUTF8_ENV_VAR] == '1'
+    ):
+        stream.reconfigure(encoding='UTF-8')
 
 
 def getpreferredencoding(*args, **kwargs):
@@ -177,6 +236,13 @@ def get_stderr_text_writer():
     return _get_text_writer(sys.stderr, errors="replace")
 
 
+def get_stderr_encoding():
+    encoding = getattr(sys.__stderr__, 'encoding', None)
+    if encoding is None:
+        encoding = 'utf-8'
+    return encoding
+
+
 def compat_input(prompt):
     """
     Cygwin's pty's are based on pipes. Therefore, when it interacts with a Win32
@@ -191,7 +257,14 @@ def compat_input(prompt):
     """
     sys.stdout.write(prompt)
     sys.stdout.flush()
-    return raw_input()
+    try:
+        # This is unused directly when the user pastes the cross-device
+        # verification code, which may be longer than some terminal's buffers
+        import readline  # noqa: F401
+        return raw_input()
+    except ImportError:
+        LOG.debug('readline module not available')
+        return raw_input()
 
 
 def compat_shell_quote(s, platform=None):
@@ -206,7 +279,7 @@ def compat_shell_quote(s, platform=None):
     if platform == "win32":
         return _windows_shell_quote(s)
     else:
-        return shlex_quote(s)
+        return shlex.quote(s)
 
 
 def _windows_shell_quote(s):
@@ -318,12 +391,12 @@ try:
     from platform import linux_distribution
 except ImportError:
     _UNIXCONFDIR = '/etc'
-    def _dist_try_harder(distname, version, id):
 
-        """ Tries some special tricks to get the distribution
-            information in case the default method fails.
-            Currently supports older SuSE Linux, Caldera OpenLinux and
-            Slackware Linux distributions.
+    def _dist_try_harder(distname, version, id):
+        """Tries some special tricks to get the distribution
+        information in case the default method fails.
+        Currently supports older SuSE Linux, Caldera OpenLinux and
+        Slackware Linux distributions.
         """
         if os.path.exists('/var/adm/inst-log/info'):
             # SuSE Linux stores distribution information in that file
@@ -355,7 +428,7 @@ except ImportError:
         if os.path.isdir('/usr/lib/setup'):
             # Check for slackware version tag file (thanks to Greg Andruk)
             verfiles = os.listdir('/usr/lib/setup')
-            for n in range(len(verfiles)-1, -1, -1):
+            for n in range(len(verfiles) - 1, -1, -1):
                 if verfiles[n][:14] != 'slack-version-':
                     del verfiles[n]
             if verfiles:
@@ -367,14 +440,13 @@ except ImportError:
         return distname, version, id
 
     _release_filename = re.compile(r'(\w+)[-_](release|version)', re.ASCII)
-    _lsb_release_version = re.compile(r'(.+)'
-                                      r' release '
-                                      r'([\d.]+)'
-                                      r'[^(]*(?:\((.+)\))?', re.ASCII)
-    _release_version = re.compile(r'([^0-9]+)'
-                                  r'(?: release )?'
-                                  r'([\d.]+)'
-                                  r'[^(]*(?:\((.+)\))?', re.ASCII)
+    _lsb_release_version = re.compile(
+        r'(.+)' r' release ' r'([\d.]+)' r'[^(]*(?:\((.+)\))?', re.ASCII
+    )
+    _release_version = re.compile(
+        r'([^0-9]+)' r'(?: release )?' r'([\d.]+)' r'[^(]*(?:\((.+)\))?',
+        re.ASCII,
+    )
 
     # See also http://www.novell.com/coolsolutions/feature/11251.html
     # and http://linuxmafia.com/faq/Admin/release-files.html
@@ -382,12 +454,24 @@ except ImportError:
     # and http://www.die.net/doc/linux/man/man1/lsb_release.1.html
 
     _supported_dists = (
-        'SuSE', 'debian', 'fedora', 'redhat', 'centos',
-        'mandrake', 'mandriva', 'rocks', 'slackware', 'yellowdog', 'gentoo',
-        'UnitedLinux', 'turbolinux', 'arch', 'mageia')
+        'SuSE',
+        'debian',
+        'fedora',
+        'redhat',
+        'centos',
+        'mandrake',
+        'mandriva',
+        'rocks',
+        'slackware',
+        'yellowdog',
+        'gentoo',
+        'UnitedLinux',
+        'turbolinux',
+        'arch',
+        'mageia',
+    )
 
     def _parse_release_file(firstline):
-
         # Default to empty 'version' and 'id' strings.  Both defaults are used
         # when 'firstline' is empty.  'id' defaults to empty when an id can not
         # be deduced.
@@ -413,38 +497,43 @@ except ImportError:
                 id = l[1]
         return '', version, id
 
-    _distributor_id_file_re = re.compile("(?:DISTRIB_ID\s*=)\s*(.*)", re.I)
-    _release_file_re = re.compile("(?:DISTRIB_RELEASE\s*=)\s*(.*)", re.I)
-    _codename_file_re = re.compile("(?:DISTRIB_CODENAME\s*=)\s*(.*)", re.I)
+    _distributor_id_file_re = re.compile(r"(?:DISTRIB_ID\s*=)\s*(.*)", re.I)
+    _release_file_re = re.compile(r"(?:DISTRIB_RELEASE\s*=)\s*(.*)", re.I)
+    _codename_file_re = re.compile(r"(?:DISTRIB_CODENAME\s*=)\s*(.*)", re.I)
 
-    def linux_distribution(distname='', version='', id='',
-                           supported_dists=_supported_dists,
-                           full_distribution_name=1):
-        return _linux_distribution(distname, version, id, supported_dists,
-                                   full_distribution_name)
+    def linux_distribution(
+        distname='',
+        version='',
+        id='',
+        supported_dists=_supported_dists,
+        full_distribution_name=1,
+    ):
+        return _linux_distribution(
+            distname, version, id, supported_dists, full_distribution_name
+        )
 
-    def _linux_distribution(distname, version, id, supported_dists,
-                            full_distribution_name):
-
-        """ Tries to determine the name of the Linux OS distribution name.
-            The function first looks for a distribution release file in
-            /etc and then reverts to _dist_try_harder() in case no
-            suitable files are found.
-            supported_dists may be given to define the set of Linux
-            distributions to look for. It defaults to a list of currently
-            supported Linux distributions identified by their release file
-            name.
-            If full_distribution_name is true (default), the full
-            distribution read from the OS is returned. Otherwise the short
-            name taken from supported_dists is used.
-            Returns a tuple (distname, version, id) which default to the
-            args given as parameters.
+    def _linux_distribution(
+        distname, version, id, supported_dists, full_distribution_name
+    ):
+        """Tries to determine the name of the Linux OS distribution name.
+        The function first looks for a distribution release file in
+        /etc and then reverts to _dist_try_harder() in case no
+        suitable files are found.
+        supported_dists may be given to define the set of Linux
+        distributions to look for. It defaults to a list of currently
+        supported Linux distributions identified by their release file
+        name.
+        If full_distribution_name is true (default), the full
+        distribution read from the OS is returned. Otherwise the short
+        name taken from supported_dists is used.
+        Returns a tuple (distname, version, id) which default to the
+        args given as parameters.
         """
         # check for the Debian/Ubuntu /etc/lsb-release file first, needed so
         # that the distribution doesn't get identified as Debian.
         # https://bugs.python.org/issue9514
         try:
-            with open("/etc/lsb-release", "r") as etclsbrel:
+            with open("/etc/lsb-release") as etclsbrel:
                 for line in etclsbrel:
                     m = _distributor_id_file_re.search(line)
                     if m:
@@ -457,8 +546,8 @@ except ImportError:
                         _u_id = m.group(1).strip()
                 if _u_distname and _u_version:
                     return (_u_distname, _u_version, _u_id)
-        except (EnvironmentError, UnboundLocalError):
-                pass
+        except (OSError, UnboundLocalError):
+            pass
 
         try:
             etc = os.listdir(_UNIXCONFDIR)
@@ -477,8 +566,11 @@ except ImportError:
             return _dist_try_harder(distname, version, id)
 
         # Read the first line
-        with open(os.path.join(_UNIXCONFDIR, file), 'r',
-                  encoding='utf-8', errors='surrogateescape') as f:
+        with open(
+            os.path.join(_UNIXCONFDIR, file),
+            encoding='utf-8',
+            errors='surrogateescape',
+        ) as f:
             firstline = f.readline()
         _distname, _version, _id = _parse_release_file(firstline)
 

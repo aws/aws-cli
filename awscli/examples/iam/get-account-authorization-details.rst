@@ -1,6 +1,8 @@
-The following ``get-account-authorization-details`` command returns information about all IAM users, groups, roles, and policies in the AWS account::
+**To list an AWS account's IAM users, groups, roles, and policies**
 
-  aws iam get-account-authorization-details
+The following ``get-account-authorization-details`` command returns information about all IAM users, groups, roles, and policies in the AWS account. ::
+
+    aws iam get-account-authorization-details
 
 Output::
 
@@ -234,8 +236,8 @@ Output::
                                         "s3:List*"
                                     ],
                                     "Resource": [
-                                        "arn:aws:s3:::example-bucket",
-                                        "arn:aws:s3:::example-bucket/*"
+                                        "arn:aws:s3:::amzn-s3-demo-bucket",
+                                        "arn:aws:s3:::amzn-s3-demo-bucket/*"
                                     ]
                                 }
                             ]
@@ -294,3 +296,5 @@ Output::
         "Marker": "EXAMPLEkakv9BCuUNFDtxWSyfzetYwEx2ADc8dnzfvERF5S6YMvXKx41t6gCl/eeaCX3Jo94/bKqezEAg8TEVS99EKFLxm3jtbpl25FDWEXAMPLE",
         "IsTruncated": true
     }
+
+For more information, see `AWS security audit guidelines <https://docs.aws.amazon.com/IAM/latest/UserGuide/security-audit-guide.html>`__ in the *AWS IAM User Guide*.

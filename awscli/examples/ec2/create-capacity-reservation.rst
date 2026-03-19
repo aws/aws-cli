@@ -92,4 +92,4 @@ Output::
         }
     }
 
-For more information, see `Creating a Capacity Reservation <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/capacity-reservations-using.html#capacity-reservations-create>`__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.
+For more information, see `Create a Capacity Reservation <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/capacity-reservations-using.html>`__ in the *Amazon EC2 User Guide*.

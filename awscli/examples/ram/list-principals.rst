@@ -1,6 +1,6 @@
 **To list principals with access to a resource**
 
-The following ``list-principals`` example displays a list of the principals that can access the subnets associated with a resource share. ::
+The following ``list-principals`` example displays a list of the principals that can access resources of the specified type through any resource shares. ::
 
     aws ram list-principals \
         --resource-type ec2:Subnet

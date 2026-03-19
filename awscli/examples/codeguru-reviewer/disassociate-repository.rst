@@ -24,4 +24,4 @@ Output::
         }
     }
 
-For more information, see `DisassociateRepository <https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_DisassociateRepository.html>`__ in the *Amazon CodeGuru Reviewer API Reference*.
+For more information, see `Disassociate a repository in CodeGuru Reviewer <https://docs.aws.amazon.com/codeguru/latest/reviewer-ug/disassociate-repository-association.html>`__ in the *Amazon CodeGuru Reviewer User Guide*.

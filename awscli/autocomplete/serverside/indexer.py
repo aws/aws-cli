@@ -12,8 +12,8 @@
 # language governing permissions and limitations under the License.
 import json
 
-from botocore.exceptions import UnknownServiceError
 from botocore import xform_name
+from botocore.exceptions import UnknownServiceError
 
 import awscli.clidriver
 from awscli.autocomplete.db import DatabaseConnection
@@ -24,7 +24,7 @@ def create_apicall_indexer(filename):
     return index
 
 
-class APICallIndexer(object):
+class APICallIndexer:
     _CREATE_APICALL_TABLE = """\
         CREATE TABLE IF NOT EXISTS apicall_table (
           apicall_data TEXT,
@@ -79,7 +79,8 @@ class APICallIndexer(object):
         service_name = op_model.service_model.service_name
         try:
             completions = loader.load_service_model(
-                service_name, type_name='completions-1')
+                service_name, type_name='completions-1'
+            )
         except UnknownServiceError:
             return None
         # The completions-1 file is for the entire service.  We need
@@ -96,8 +97,10 @@ class APICallIndexer(object):
                 continue
             # At this point we know there's completion info we need.
             transformed = self._transform_completion_data(
-                completion_for_op[api_casing], completions['resources'],
-                service_name)
+                completion_for_op[api_casing],
+                completions['resources'],
+                service_name,
+            )
             self._insert_into_db(transformed, arg_name, command)
 
     def _insert_into_db(self, transformed, arg_name, command):
@@ -110,8 +113,9 @@ class APICallIndexer(object):
             parent=parent,
         )
 
-    def _transform_completion_data(self, completions_for_op, resources,
-                                   service_name):
+    def _transform_completion_data(
+        self, completions_for_op, resources, service_name
+    ):
         # The completions-1.json data is strictly model based.  That is,
         # it's based entirely on the service API and has no mention of CLI
         # commands, parameters, etc.  This method attempts to map
@@ -133,10 +137,13 @@ class APICallIndexer(object):
         for completion in completions_for_op['completions']:
             resource = resources[completion['resourceName']]
             jp_expr = resource['resourceIdentifier'][
-                completion['resourceIdentifier']]
-            transformed = {'parameters': completion['parameters'],
-                           'service': service_name,
-                           'operation': xform_name(resource['operation']),
-                           'jp_expr': jp_expr}
+                completion['resourceIdentifier']
+            ]
+            transformed = {
+                'parameters': completion['parameters'],
+                'service': service_name,
+                'operation': xform_name(resource['operation']),
+                'jp_expr': jp_expr,
+            }
             completions.append(transformed)
         return {'completions': completions}

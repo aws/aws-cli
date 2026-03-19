@@ -22,22 +22,27 @@ pull the appropriate data field out of the response and write it
 to the specified file.  It will also remove the two bootstrap data
 fields from the response.
 """
+
 import base64
 
-from awscli.customizations.arguments import StatefulArgument
-from awscli.customizations.arguments import resolve_given_outfile_path
-from awscli.customizations.arguments import is_parsed_result_successful
-
+from awscli.customizations.arguments import (
+    StatefulArgument,
+    is_parsed_result_successful,
+    resolve_given_outfile_path,
+)
 
 CHOICES = ('QRCodePNG', 'Base32StringSeed')
-OUTPUT_HELP = ('The output path and file name where the bootstrap '
-               'information will be stored.')
-BOOTSTRAP_HELP = ('Method to use to seed the virtual MFA.  '
-                  'Valid values are: %s | %s' % CHOICES)
+OUTPUT_HELP = (
+    'The output path and file name where the bootstrap '
+    'information will be stored.'
+)
+BOOTSTRAP_HELP = (
+    'Method to use to seed the virtual MFA.  '
+    'Valid values are: %s | %s' % CHOICES
+)
 
 
 class FileArgument(StatefulArgument):
-
     def add_to_params(self, parameters, value):
         # Validate the file here so we can raise an error prior
         # calling the service.
@@ -45,20 +50,25 @@ class FileArgument(StatefulArgument):
         super(FileArgument, self).add_to_params(parameters, value)
 
 
-class IAMVMFAWrapper(object):
-
+class IAMVMFAWrapper:
     def __init__(self, event_handler):
         self._event_handler = event_handler
         self._outfile = FileArgument(
-            'outfile', help_text=OUTPUT_HELP, required=True)
+            'outfile', help_text=OUTPUT_HELP, required=True
+        )
         self._method = StatefulArgument(
-            'bootstrap-method', help_text=BOOTSTRAP_HELP,
-            choices=CHOICES, required=True)
+            'bootstrap-method',
+            help_text=BOOTSTRAP_HELP,
+            choices=CHOICES,
+            required=True,
+        )
         self._event_handler.register(
             'building-argument-table.iam.create-virtual-mfa-device',
-            self._add_options)
+            self._add_options,
+        )
         self._event_handler.register(
-            'after-call.iam.CreateVirtualMFADevice', self._save_file)
+            'after-call.iam.CreateVirtualMFADevice', self._save_file
+        )
 
     def _add_options(self, argument_table, **kwargs):
         argument_table['outfile'] = self._outfile

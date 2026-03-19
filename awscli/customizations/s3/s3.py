@@ -12,17 +12,26 @@
 # language governing permissions and limitations under the License.
 from awscli.customizations import utils
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.s3.subcommands import ListCommand, WebsiteCommand, \
-    CpCommand, MvCommand, RmCommand, SyncCommand, MbCommand, RbCommand, \
-    PresignCommand
-from awscli.customizations.s3.syncstrategy.register import \
-    register_sync_strategies
+from awscli.customizations.s3.subcommands import (
+    CpCommand,
+    ListCommand,
+    MbCommand,
+    MvCommand,
+    PresignCommand,
+    RbCommand,
+    RmCommand,
+    SyncCommand,
+    WebsiteCommand,
+)
+from awscli.customizations.s3.syncstrategy.register import (
+    register_sync_strategies,
+)
 
 
 def awscli_initialize(cli):
     """
     This function is require to use the plugin.  It calls the functions
-    required to add all neccessary commands and parameters to the CLI.
+    required to add all necessary commands and parameters to the CLI.
     This function is necessary to install the plugin using a configuration
     file
     """
@@ -33,7 +42,7 @@ def awscli_initialize(cli):
 def s3_plugin_initialize(event_handlers):
     """
     This is a wrapper to make the plugin built-in to the cli as opposed
-    to specifiying it in the configuration file.
+    to specifying it in the configuration file.
     """
     awscli_initialize(event_handlers)
 

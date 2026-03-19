@@ -1,12 +1,14 @@
 import contextlib
+import glob
 import json
 import os
 import platform
 import shutil
-import sys
 import subprocess
+import sys
 import tempfile
 import zipfile
+
 
 class BadRCError(Exception):
     pass
@@ -30,8 +32,9 @@ def run(cmd, cwd=None, env=None, echo=True):
     stdout, stderr = p.communicate()
     output = stdout.decode('utf-8') + stderr.decode('utf-8')
     if p.returncode != 0:
-        raise BadRCError("Bad rc (%s) for cmd '%s': %s" % (
-            p.returncode, cmd, output))
+        raise BadRCError(
+            "Bad rc (%s) for cmd '%s': %s" % (p.returncode, cmd, output)
+        )
     return output
 
 
@@ -96,3 +99,15 @@ def save_to_zip(dirname, zipfile_name):
     if zipfile_name.endswith('.zip'):
         zipfile_name = zipfile_name[:-4]
     shutil.make_archive(zipfile_name, 'zip', dirname)
+
+
+def remove_dist_info_directories(dirname, keep_packages):
+    """Remove .dist-info directories except for specified packages.
+    Generally these are not needed in the final CLI executable,
+    unless specified via keep_packages.
+    """
+    for item in os.listdir(dirname):
+        if item.endswith('.dist-info') and not any(
+            package in item for package in keep_packages
+        ):
+            shutil.rmtree(os.path.join(dirname, item))

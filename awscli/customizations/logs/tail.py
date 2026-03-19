@@ -10,28 +10,30 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from collections import defaultdict
-from datetime import datetime, timedelta
+import json
 import re
 import time
+from collections import defaultdict
+from datetime import datetime, timedelta
 
-from botocore.utils import parse_timestamp, datetime2timestamp
-from dateutil import tz
 import colorama
+from botocore.utils import datetime2timestamp, parse_timestamp
+from dateutil import tz
 
 from awscli.compat import get_stdout_text_writer
-from awscli.utils import is_a_tty
 from awscli.customizations.commands import BasicCommand
+from awscli.utils import is_a_tty
 
 
-class BaseLogEventsFormatter(object):
+class BaseLogEventsFormatter:
     _TIMESTAMP_COLOR = colorama.Fore.GREEN
+    _STREAM_NAME_COLOR = colorama.Fore.CYAN
 
     def __init__(self, output, colorize=True):
         self._output = output
         self._colorize = colorize
         if self._colorize:
-            colorama.init(autoreset=True, strip=False)
+            colorama.init(autoreset=True, strip=False)  # noqa
 
     def display_log_event(self, log_event):
         raise NotImplementedError('display_log_event()')
@@ -53,30 +55,56 @@ class ShortLogEventsFormatter(BaseLogEventsFormatter):
     def display_log_event(self, log_event):
         log_event = '%s %s' % (
             self._format_timestamp(log_event['timestamp']),
-            log_event['message']
+            log_event['message'],
         )
         self._write_log_event(log_event)
 
     def _format_timestamp(self, timestamp):
         return self._color_if_configured(
-            timestamp.strftime("%Y-%m-%dT%H:%M:%S"), self._TIMESTAMP_COLOR)
+            timestamp.strftime("%Y-%m-%dT%H:%M:%S"), self._TIMESTAMP_COLOR
+        )
 
 
 class DetailedLogEventsFormatter(BaseLogEventsFormatter):
-    _STREAM_NAME_COLOR = colorama.Fore.CYAN
-
     def display_log_event(self, log_event):
         log_event = '%s %s %s' % (
             self._format_timestamp(log_event['timestamp']),
             self._color_if_configured(
-                log_event['logStreamName'], self._STREAM_NAME_COLOR),
-            log_event['message']
+                log_event['logStreamName'], self._STREAM_NAME_COLOR
+            ),
+            log_event['message'],
         )
         self._write_log_event(log_event)
 
     def _format_timestamp(self, timestamp):
         return self._color_if_configured(
-            timestamp.isoformat(), self._TIMESTAMP_COLOR)
+            timestamp.isoformat(timespec='microseconds'), self._TIMESTAMP_COLOR
+        )
+
+
+class PrettyJSONLogEventsFormatter(BaseLogEventsFormatter):
+    def display_log_event(self, log_event):
+        log_event = '%s %s %s' % (
+            self._format_timestamp(log_event['timestamp']),
+            self._color_if_configured(
+                log_event['logStreamName'], self._STREAM_NAME_COLOR
+            ),
+            self._format_pretty_json(log_event['message']),
+        )
+        self._write_log_event(log_event)
+
+    def _format_pretty_json(self, log_message):
+        try:
+            loaded_json = json.loads(log_message)
+            return '\n%s' % json.dumps(loaded_json, indent=4)
+        except json.decoder.JSONDecodeError:
+            pass
+        return log_message
+
+    def _format_timestamp(self, timestamp):
+        return self._color_if_configured(
+            timestamp.isoformat(), self._TIMESTAMP_COLOR
+        )
 
 
 class TailCommand(BasicCommand):
@@ -113,7 +141,7 @@ class TailCommand(BasicCommand):
                 'display logs starting five minutes in the past. '
                 'Note that multiple units are **not** supported '
                 '(i.e. ``5h30m``)'
-            )
+            ),
         },
         {
             'name': 'follow',
@@ -123,12 +151,12 @@ class TailCommand(BasicCommand):
                 'Whether to continuously poll for new logs. By default, the '
                 'command will exit once there are no more logs to display. '
                 'To exit from this mode, use Control-C.'
-            )
+            ),
         },
         {
             'name': 'format',
             'default': 'detailed',
-            'choices': ['detailed', 'short'],
+            'choices': ['detailed', 'short', 'json'],
             'help_text': (
                 'The format to display the logs. The following formats are '
                 'supported:\n\n'
@@ -140,8 +168,10 @@ class TailCommand(BasicCommand):
                 '<li> short - A shortened format. It prints out the '
                 'a shortened timestamp and the log message.'
                 '</li>'
+                '<li> json - Pretty print any messages that are entirely JSON.'
+                '</li>'
                 '</ul>'
-            )
+            ),
         },
         {
             'name': 'filter-pattern',
@@ -151,27 +181,50 @@ class TailCommand(BasicCommand):
                 'latest/logs/FilterAndPatternSyntax.html">Filter and '
                 'Pattern Syntax</a> for details. If not provided, all '
                 'the events are matched'
-            )
+            ),
         },
-
-
+        {
+            'name': 'log-stream-names',
+            'nargs': '+',
+            'help_text': (
+                'The list of stream names to filter logs by. This parameter '
+                'cannot be specified when ``--log-stream-name-prefix`` is '
+                'also specified.'
+            ),
+        },
+        {
+            'name': 'log-stream-name-prefix',
+            'help_text': (
+                'The prefix to filter logs by. Only events from log streams '
+                'with names beginning with this prefix will be returned. This '
+                'parameter cannot be specified when ``log-stream-names`` is '
+                'also specified.'
+            ),
+        },
     ]
     _FORMAT_TO_FORMATTER_CLS = {
         'detailed': DetailedLogEventsFormatter,
-        'short': ShortLogEventsFormatter
+        'short': ShortLogEventsFormatter,
+        'json': PrettyJSONLogEventsFormatter,
     }
 
     def _run_main(self, parsed_args, parsed_globals):
         logs_client = self._session.create_client(
-            'logs', region_name=parsed_globals.region,
+            'logs',
+            region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,
-            verify=parsed_globals.verify_ssl
+            verify=parsed_globals.verify_ssl,
         )
         logs_generator = self._get_log_events_generator(
-            logs_client, parsed_args.follow)
+            logs_client, parsed_args.follow
+        )
         log_events = logs_generator.iter_log_events(
-            parsed_args.group_name, start=parsed_args.since,
-            filter_pattern=parsed_args.filter_pattern)
+            parsed_args.group_name,
+            start=parsed_args.since,
+            filter_pattern=parsed_args.filter_pattern,
+            log_stream_names=parsed_args.log_stream_names,
+            log_stream_name_prefix=parsed_args.log_stream_name_prefix,
+        )
         self._output_log_events(parsed_args, parsed_globals, log_events)
         return 0
 
@@ -185,7 +238,8 @@ class TailCommand(BasicCommand):
     def _output_log_events(self, parsed_args, parsed_globals, log_events):
         output = get_stdout_text_writer()
         logs_formatter = self._FORMAT_TO_FORMATTER_CLS[parsed_args.format](
-            output, colorize=self._should_use_color(parsed_globals))
+            output, colorize=self._should_use_color(parsed_globals)
+        )
         for event in log_events:
             logs_formatter.display_log_event(event)
 
@@ -197,7 +251,7 @@ class TailCommand(BasicCommand):
         return is_a_tty()
 
 
-class TimestampUtils(object):
+class TimestampUtils:
     _RELATIVE_TIMESTAMP_REGEX = re.compile(
         r"(?P<amount>\d+)(?P<unit>s|m|h|d|w)$"
     )
@@ -232,14 +286,26 @@ class TimestampUtils(object):
         return self._now() + timedelta(seconds=amount * multiplier * -1)
 
 
-class BaseLogEventsGenerator(object):
+class BaseLogEventsGenerator:
     def __init__(self, client, timestamp_utils):
         self._client = client
         self._timestamp_utils = timestamp_utils
 
-    def iter_log_events(self, group_name, start=None, filter_pattern=None):
+    def iter_log_events(
+        self,
+        group_name,
+        start=None,
+        filter_pattern=None,
+        log_stream_names=None,
+        log_stream_name_prefix=None,
+    ):
         filter_logs_events_kwargs = self._get_filter_logs_events_kwargs(
-            group_name, start, filter_pattern)
+            group_name,
+            start,
+            filter_pattern,
+            log_stream_names,
+            log_stream_name_prefix,
+        )
         log_events = self._filter_log_events(filter_logs_events_kwargs)
         for log_event in log_events:
             self._convert_event_timestamps(log_event)
@@ -248,23 +314,32 @@ class BaseLogEventsGenerator(object):
     def _filter_log_events(self, filter_logs_events_kwargs):
         raise NotImplementedError('_filter_log_events()')
 
-    def _get_filter_logs_events_kwargs(self, group_name, start,
-                                       filter_pattern):
-        kwargs = {
-            'logGroupName': group_name,
-            'interleaved': True
-        }
+    def _get_filter_logs_events_kwargs(
+        self,
+        group_name,
+        start,
+        filter_pattern,
+        log_stream_names,
+        log_stream_name_prefix,
+    ):
+        kwargs = {'logGroupName': group_name, 'interleaved': True}
         if start is not None:
             kwargs['startTime'] = self._timestamp_utils.to_epoch_millis(start)
         if filter_pattern is not None:
             kwargs['filterPattern'] = filter_pattern
+        if log_stream_names is not None:
+            kwargs['logStreamNames'] = log_stream_names
+        if log_stream_name_prefix is not None:
+            kwargs['logStreamNamePrefix'] = log_stream_name_prefix
         return kwargs
 
     def _convert_event_timestamps(self, event):
         event['ingestionTime'] = self._timestamp_utils.to_datetime(
-            event['ingestionTime'])
+            event['ingestionTime']
+        )
         event['timestamp'] = self._timestamp_utils.to_datetime(
-            event['timestamp'])
+            event['timestamp']
+        )
 
 
 class NoFollowLogEventsGenerator(BaseLogEventsGenerator):
@@ -299,32 +374,39 @@ class FollowLogEventsGenerator(BaseLogEventsGenerator):
             # Keep only ids of the events with the newest timestamp
             newest_timestamp = max(event_ids_per_timestamp.keys())
             event_ids_per_timestamp = defaultdict(
-                set, {newest_timestamp: event_ids_per_timestamp[newest_timestamp]}
+                set,
+                {newest_timestamp: event_ids_per_timestamp[newest_timestamp]},
             )
         return event_ids_per_timestamp
 
-    def _reset_filter_log_events_params(self, fle_kwargs, event_ids_per_timestamp):
+    def _reset_filter_log_events_params(
+        self, fle_kwargs, event_ids_per_timestamp
+    ):
         # Remove nextToken and update startTime for the next request
         # with the timestamp of the newest event
         if event_ids_per_timestamp:
-            fle_kwargs['startTime'] = max(
-                event_ids_per_timestamp.keys()
-            )
+            fle_kwargs['startTime'] = max(event_ids_per_timestamp.keys())
         fle_kwargs.pop('nextToken', None)
 
     def _do_filter_log_events(self, filter_logs_events_kwargs):
         event_ids_per_timestamp = defaultdict(set)
         while True:
             response = self._client.filter_log_events(
-                **filter_logs_events_kwargs)
+                **filter_logs_events_kwargs
+            )
             for event in response['events']:
                 # For the case where we've hit the last page, we will be
                 # reusing the newest timestamp of the received events to keep polling.
                 # This means it is possible that duplicate log events with same timestamp
                 # are returned back which we do not want to yield again.
                 # We only want to yield log events that we have not seen.
-                if event['eventId'] not in event_ids_per_timestamp[event['timestamp']]:
-                    event_ids_per_timestamp[event['timestamp']].add(event['eventId'])
+                if (
+                    event['eventId']
+                    not in event_ids_per_timestamp[event['timestamp']]
+                ):
+                    event_ids_per_timestamp[event['timestamp']].add(
+                        event['eventId']
+                    )
                     yield event
             event_ids_per_timestamp = self._get_latest_events_and_timestamp(
                 event_ids_per_timestamp
@@ -333,7 +415,6 @@ class FollowLogEventsGenerator(BaseLogEventsGenerator):
                 filter_logs_events_kwargs['nextToken'] = response['nextToken']
             else:
                 self._reset_filter_log_events_params(
-                    filter_logs_events_kwargs,
-                    event_ids_per_timestamp
+                    filter_logs_events_kwargs, event_ids_per_timestamp
                 )
                 self._sleep(self._TIME_TO_SLEEP)

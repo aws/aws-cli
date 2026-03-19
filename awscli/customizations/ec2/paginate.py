@@ -16,15 +16,14 @@ def register_ec2_page_size_injector(event_emitter):
     EC2PageSizeInjector().register(event_emitter)
 
 
-class EC2PageSizeInjector(object):
-
+class EC2PageSizeInjector:
     # Operations to auto-paginate and their specific whitelists.
     # Format:
     #    Key:   Operation
     #    Value: List of parameters to add to whitelist for that operation.
     TARGET_OPERATIONS = {
         "describe-volumes": [],
-        "describe-snapshots": ['OwnerIds', 'RestorableByUserIds']
+        "describe-snapshots": ['OwnerIds', 'RestorableByUserIds'],
     }
 
     # Parameters which should be whitelisted for every operation.

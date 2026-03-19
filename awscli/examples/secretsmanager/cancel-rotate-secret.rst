@@ -1,13 +1,15 @@
-**To cancel scheduled rotation for a secret**
+**To turn off automatic rotation for a secret**
 
-The following example shows how to cancel rotation for a secret. The operation sets the ``RotationEnabled`` field to false and cancels all scheduled rotations. To resume scheduled rotations, you must re-enable rotation by calling the ``rotate-secret`` operation. ::
+The following ``cancel-rotate-secret`` example turns off automatic rotation for a secret. To resume rotation, call ``rotate-secret``. ::
 
-	aws secretsmanager cancel-rotate-secret --secret-id MyTestDatabaseSecret
+    aws secretsmanager cancel-rotate-secret \
+        --secret-id MyTestSecret
 
-The output shows the following: ::
+Output::
 
-	{
-	  "ARN": "arn:aws:secretsmanager:us-west-2:123456789012:secret:MyTestDatabaseSecret-a1b2c3",
-	  "Name": "MyTestDatabaseSecret"
-	}
+    {
+      "ARN": "arn:aws:secretsmanager:us-west-2:123456789012:secret:MyTestSecret-a1b2c3",
+      "Name": "MyTestSecret"
+    }
 
+For more information, see `Rotate a secret <https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotating-secrets.html>`__ in the *Secrets Manager User Guide*.

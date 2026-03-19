@@ -10,9 +10,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import sys
-import os
 import logging
+import os
+import sys
 
 from botocore.hooks import HierarchicalEmitter
 
@@ -80,6 +80,9 @@ def _import_plugins(plugin_mapping):
 
 def _add_plugin_path_to_sys_path(plugin_path):
     for dirname in plugin_path.split(os.pathsep):
-        log.debug("Adding additional path from cli_legacy_plugin_path "
-                  "configuration: %s", dirname)
+        log.debug(
+            "Adding additional path from cli_legacy_plugin_path "
+            "configuration: %s",
+            dirname,
+        )
         sys.path.append(dirname)

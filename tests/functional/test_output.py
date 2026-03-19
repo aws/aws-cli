@@ -15,14 +15,23 @@ import json
 import ruamel.yaml as yaml
 
 from awscli.clidriver import AWSCLIEntryPoint
-from awscli.testutils import skip_if_windows, if_windows
-from awscli.testutils import mock, create_clidriver, FileCreator
-from awscli.testutils import BaseAWSCommandParamsTest
+from awscli.testutils import (
+    BaseAWSCommandParamsTest,
+    FileCreator,
+    create_clidriver,
+    if_windows,
+    mock,
+    skip_if_windows,
+)
 
 
 class TestOutput(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(TestOutput, self).setUp()
+        # Patch this before super, in case called on import
+        self.patch_colorama_init = mock.patch('colorama.init')
+        self.mock_colorama_init = self.patch_colorama_init.start()
+
+        super().setUp()
         self.files = FileCreator()
 
         self.patch_popen = mock.patch('awscli.utils.Popen')
@@ -36,15 +45,15 @@ class TestOutput(BaseAWSCommandParamsTest):
         self.parsed_response = {
             "Regions": [
                 {
-                        "Endpoint": "ec2.ap-south-1.amazonaws.com",
-                        "RegionName": "ap-south-1"
+                    "Endpoint": "ec2.ap-south-1.amazonaws.com",
+                    "RegionName": "ap-south-1",
                 },
             ]
         }
         self.expected_content = self.get_expected_content(self.parsed_response)
 
     def tearDown(self):
-        super(TestOutput, self).tearDown()
+        super().tearDown()
         self.files.remove_all()
         self.patch_popen.stop()
         self.patch_tty.stop()
@@ -56,16 +65,15 @@ class TestOutput(BaseAWSCommandParamsTest):
 
     def write_cli_pager_config(self, pager):
         config_file = self.files.create_file(
-            'config',
-            '[default]\n'
-            'cli_pager = %s\n' % pager
+            'config', '[default]\n' f'cli_pager = {pager}\n'
         )
         self.environ['AWS_CONFIG_FILE'] = config_file
         self.driver = create_clidriver()
         self.entry_point = AWSCLIEntryPoint(self.driver)
 
-    def assert_content_to_pager(self, expected_pager, expected_content,
-                                expected_less_flags=None):
+    def assert_content_to_pager(
+        self, expected_pager, expected_content, expected_less_flags=None
+    ):
         actual_pager = self.mock_popen.call_args[1]['args']
         if isinstance(actual_pager, list):
             actual_pager = ' '.join(actual_pager)
@@ -89,8 +97,7 @@ class TestOutput(BaseAWSCommandParamsTest):
     def test_outputs_to_pager(self):
         self.run_cmd(self.cmdline)
         self.assert_content_to_pager(
-            expected_pager=mock.ANY,
-            expected_content=self.expected_content
+            expected_pager=mock.ANY, expected_content=self.expected_content
         )
 
     def test_does_not_output_to_pager_if_not_tty(self):
@@ -105,7 +112,7 @@ class TestOutput(BaseAWSCommandParamsTest):
         self.assert_content_to_pager(
             expected_pager='less',
             expected_content=self.expected_content,
-            expected_less_flags='FRX'
+            expected_less_flags='FRX',
         )
 
     @if_windows('more is only used for windows')
@@ -180,100 +187,80 @@ class TestOutput(BaseAWSCommandParamsTest):
         self.assert_content_to_pager(
             expected_pager='less',
             expected_content=self.expected_content,
-            expected_less_flags='S'
+            expected_less_flags='S',
         )
+
+    def test_raises_exception_when_pager_cannot_be_opened(self):
+        self.environ['AWS_PAGER'] = 'no-exists'
+        pager_error_message = 'Cannot open no-exists'
+        self.mock_popen.side_effect = FileNotFoundError(pager_error_message)
+        _, stderr, _ = self.run_cmd(self.cmdline, expected_rc=253)
+        self.assertIn('Unable to redirect output to pager', stderr)
+        self.assertIn(pager_error_message, stderr)
+
+    def test_colorama_init_not_called(self):
+        """
+        For https://github.com/aws/aws-cli/issues/9864,
+        we had an issue where colorama was always being initialized, instead of
+        just during the custom commands or modes that use it
+        """
+        self.run_cmd(self.cmdline)
+        self.mock_colorama_init.assert_not_called()
 
 
 class TestYAMLStream(BaseAWSCommandParamsTest):
     def assert_yaml_response_equal(self, response, expected):
         with self.assertRaises(ValueError):
             json.loads(response)
-        loaded = yaml.safe_load(response)
+        loaded = self.yaml.load(response)
         self.assertEqual(loaded, expected)
 
     def test_yaml_stream_single_response(self):
         cmdline = 'dynamodb list-tables --output yaml-stream --no-paginate'
-        self.parsed_responses = [
-            {
-                'TableNames': [
-                    'MyTable'
-                ]
-            }
-        ]
+        self.parsed_responses = [{'TableNames': ['MyTable']}]
         stdout, _, _ = self.run_cmd(cmdline)
-        self.assert_yaml_response_equal(
-            stdout,
-            [
-                {'TableNames': ['MyTable']}
-            ]
-        )
+        self.assert_yaml_response_equal(stdout, [{'TableNames': ['MyTable']}])
 
     def test_yaml_stream_paginated_response(self):
         cmdline = 'dynamodb list-tables --output yaml-stream'
         self.parsed_responses = [
-            {
-                'TableNames': [
-                    'MyTable'
-                ],
-                'LastEvaluatedTableName': 'MyTable'
-            },
-            {
-                'TableNames': [
-                    'MyTable2'
-                ]
-            },
+            {'TableNames': ['MyTable'], 'LastEvaluatedTableName': 'MyTable'},
+            {'TableNames': ['MyTable2']},
         ]
         stdout, _, _ = self.run_cmd(cmdline)
         self.assert_yaml_response_equal(
             stdout,
             [
                 {
-                    'TableNames': [
-                        'MyTable'
-                    ],
-                    'LastEvaluatedTableName': 'MyTable'
+                    'TableNames': ['MyTable'],
+                    'LastEvaluatedTableName': 'MyTable',
                 },
-                {
-                    'TableNames': [
-                        'MyTable2'
-                    ]
-                },
-            ]
+                {'TableNames': ['MyTable2']},
+            ],
         )
 
     def test_yaml_stream_removes_response_metadata(self):
         cmdline = 'dynamodb list-tables --output yaml-stream --no-paginate'
         self.parsed_responses = [
             {
-                'TableNames': [
-                    'MyTable'
-                ],
-                'ResponseMetadata': {'RequestId': 'id'}
+                'TableNames': ['MyTable'],
+                'ResponseMetadata': {'RequestId': 'id'},
             }
         ]
         stdout, _, _ = self.run_cmd(cmdline)
-        self.assert_yaml_response_equal(
-            stdout,
-            [
-                {'TableNames': ['MyTable']}
-            ]
-        )
+        self.assert_yaml_response_equal(stdout, [{'TableNames': ['MyTable']}])
 
     def test_yaml_stream_removes_response_metadata_for_all_responses(self):
         cmdline = 'dynamodb list-tables --output yaml-stream'
         self.parsed_responses = [
             {
-                'TableNames': [
-                    'MyTable'
-                ],
+                'TableNames': ['MyTable'],
                 'LastEvaluatedTableName': 'MyTable',
-                'ResponseMetadata': {'RequestId': 'id'}
+                'ResponseMetadata': {'RequestId': 'id'},
             },
             {
-                'TableNames': [
-                    'MyTable2'
-                ],
-                'ResponseMetadata': {'RequestId': 'id2'}
+                'TableNames': ['MyTable2'],
+                'ResponseMetadata': {'RequestId': 'id2'},
             },
         ]
         stdout, _, _ = self.run_cmd(cmdline)
@@ -281,17 +268,11 @@ class TestYAMLStream(BaseAWSCommandParamsTest):
             stdout,
             [
                 {
-                    'TableNames': [
-                        'MyTable'
-                    ],
-                    'LastEvaluatedTableName': 'MyTable'
+                    'TableNames': ['MyTable'],
+                    'LastEvaluatedTableName': 'MyTable',
                 },
-                {
-                    'TableNames': [
-                        'MyTable2'
-                    ]
-                },
-            ]
+                {'TableNames': ['MyTable2']},
+            ],
         )
 
     def test_yaml_stream_uses_query(self):
@@ -299,51 +280,23 @@ class TestYAMLStream(BaseAWSCommandParamsTest):
             'dynamodb list-tables --output yaml-stream --no-paginate '
             '--query TableNames'
         )
-        self.parsed_responses = [
-            {
-                'TableNames': [
-                    'MyTable'
-                ]
-            }
-        ]
+        self.parsed_responses = [{'TableNames': ['MyTable']}]
         stdout, _, _ = self.run_cmd(cmdline)
-        self.assert_yaml_response_equal(
-            stdout,
-            [
-                ['MyTable']
-            ]
-        )
+        self.assert_yaml_response_equal(stdout, [['MyTable']])
 
     def test_yaml_stream_uses_query_across_each_response(self):
         cmdline = (
             'dynamodb list-tables --output yaml-stream --query TableNames'
         )
         self.parsed_responses = [
-            {
-                'TableNames': [
-                    'MyTable'
-                ],
-                'LastEvaluatedTableName': 'MyTable'
-            },
-            {
-                'TableNames': [
-                    'MyTable2'
-                ]
-            },
+            {'TableNames': ['MyTable'], 'LastEvaluatedTableName': 'MyTable'},
+            {'TableNames': ['MyTable2']},
         ]
         stdout, _, _ = self.run_cmd(cmdline)
-        self.assert_yaml_response_equal(
-            stdout,
-            [
-                ['MyTable'],
-                ['MyTable2']
-            ]
-        )
+        self.assert_yaml_response_equal(stdout, [['MyTable'], ['MyTable2']])
 
     def test_yaml_stream_with_empty_response(self):
-        cmdline = (
-            's3api delete-bucket --bucket mybucket --output yaml-stream'
-        )
+        cmdline = 's3api delete-bucket --bucket mybucket --output yaml-stream'
         self.parsed_responses = [{}]
         stdout, _, _ = self.run_cmd(cmdline)
         self.assertEqual(stdout, '')

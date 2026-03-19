@@ -14,7 +14,6 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestPutAccountDetails(BaseAWSCommandParamsTest):
-
     prefix = 'sesv2 put-account-details'
 
     def test_put_account_details(self):
@@ -26,6 +25,6 @@ class TestPutAccountDetails(BaseAWSCommandParamsTest):
         result = {
             'WebsiteURL': 'https://example.com',
             'MailType': 'MARKETING',
-            'UseCaseDescription': 'Description'
+            'UseCaseDescription': 'Description',
         }
         self.assert_params_for_cmd(cmdline, result)

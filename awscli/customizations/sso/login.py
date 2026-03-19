@@ -10,57 +10,54 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.customizations.commands import BasicCommand
-from awscli.customizations.sso.utils import do_sso_login
+from awscli.customizations.sso.utils import (
+    LOGIN_ARGS,
+    BaseSSOCommand,
+    PrintOnlyHandler,
+    do_sso_login,
+)
 from awscli.customizations.utils import uni_print
-from awscli.customizations.exceptions import ConfigurationError
 
 
-class InvalidSSOConfigError(ConfigurationError):
-    pass
-
-
-class LoginCommand(BasicCommand):
+class LoginCommand(BaseSSOCommand):
     NAME = 'login'
     DESCRIPTION = (
-        'Retrieves and caches an AWS SSO access token to exchange for AWS '
-        'credentials. To login, the requested profile must have first been '
-        'setup using ``aws configure sso``. Each time the ``login`` command '
-        'is called, a new SSO access token will be retrieved.'
+        'Retrieves and caches an AWS IAM Identity Center access token to '
+        'exchange for AWS credentials. To login, the requested profile must '
+        'have first been setup using ``aws configure sso``. Each time the '
+        '``login`` command is called, a new SSO access token will be '
+        'retrieved. Please note that only one login session can be active for '
+        'a given SSO Session and creating multiple profiles does not allow for'
+        ' multiple users to be authenticated against the same SSO Session.'
     )
-    ARG_TABLE = []
-    _REQUIRED_SSO_CONFIG_VARS = [
-        'sso_start_url',
-        'sso_region',
-        'sso_role_name',
-        'sso_account_id',
+    ARG_TABLE = LOGIN_ARGS + [
+        {
+            'name': 'sso-session',
+            'help_text': (
+                'An explicit SSO session to use to login. By default, this '
+                'command will login using the SSO session configured as part '
+                'of the requested profile and generally does not require this '
+                'argument to be set.'
+            ),
+        }
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
-        sso_config = self._get_sso_config()
+        sso_config = self._get_sso_config(sso_session=parsed_args.sso_session)
+        on_pending_authorization = None
+        if parsed_args.no_browser:
+            on_pending_authorization = PrintOnlyHandler()
         do_sso_login(
             session=self._session,
+            parsed_globals=parsed_globals,
             sso_region=sso_config['sso_region'],
             start_url=sso_config['sso_start_url'],
-            force_refresh=True
+            on_pending_authorization=on_pending_authorization,
+            force_refresh=True,
+            session_name=sso_config.get('session_name'),
+            registration_scopes=sso_config.get('registration_scopes'),
+            use_device_code=parsed_args.use_device_code,
         )
-        success_msg = 'Successully logged into Start URL: %s\n'
+        success_msg = 'Successfully logged into Start URL: %s\n'
         uni_print(success_msg % sso_config['sso_start_url'])
         return 0
-
-    def _get_sso_config(self):
-        scoped_config = self._session.get_scoped_config()
-        sso_config = {}
-        missing_vars = []
-        for config_var in self._REQUIRED_SSO_CONFIG_VARS:
-            if config_var not in scoped_config:
-                missing_vars.append(config_var)
-            else:
-                sso_config[config_var] = scoped_config[config_var]
-        if missing_vars:
-            raise InvalidSSOConfigError(
-                'Missing the following required SSO configuration values: %s. '
-                'To make sure this profile is properly configured to use SSO, '
-                'please run: aws configure sso' % ', '.join(missing_vars)
-            )
-        return sso_config

@@ -1,8 +1,20 @@
 [run]
 branch = True
-include =
-    awscli/*
-omit = awscli/testutils.py
 
 [report]
 show_missing = True
+omit =
+    # For run-tests, we install the awscli package via a distribution
+    # which means it will only be collecting coverage for the package
+    # installed in site-packages. However, the test report still finds
+    # the awscli package in the git repository and thus shows zero
+    # coverage in the report. So, we purposely exclude any directory
+    # named aws-cli (i.e., the name of the repository) as that path would
+    # indicate it is part of the git repository and should not be included
+    # in the report.
+    */aws-cli/*
+    # The testutils module is strictly for testing and should not be included
+    # in the coverage report. The wildcard prefix ensures it is not being
+    # included in the report even if it is being installed as part of
+    # a distribution (i.e., in site-packages directory)
+    */awscli/testutils.py

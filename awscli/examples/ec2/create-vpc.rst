@@ -1,10 +1,10 @@
 **Example 1: To create a VPC**
 
-The following ``create-vpc`` example creates a VPC with the specified IPv4 CIDR block. ::
+The following ``create-vpc`` example creates a VPC with the specified IPv4 CIDR block and a Name tag. ::
 
     aws ec2 create-vpc \
-        --ipv6-cidr-block-network-border-group us-west-2-lax-1 \
-        --cidr-block 10.0.0.0/16
+        --cidr-block 10.0.0.0/16 \
+        --tag-specifications ResourceType=vpc,Tags=[{Key=Name,Value=MyVpc}]
 
 Output::
 
@@ -23,18 +23,22 @@ Output::
                     "CidrBlock": "10.0.0.0/16",
                     "CidrBlockState": {
                         "State": "associated"
-                }
-            "NetworkBorderGroup": "us-west-2-lax-1"
+                    }
                 }
             ],
             "IsDefault": false,
-            "Tags": []
+            "Tags": [
+                {
+                    "Key": "Name",
+                    "Value": MyVpc"
+                }
+            ]
         }
     }
 
 **Example 2: To create a VPC with dedicated tenancy**
 
-The following ``create-vpc`` example creates a VPC with the specified IPv4 CIDR block and dedicated tenancy.
+The following ``create-vpc`` example creates a VPC with the specified IPv4 CIDR block and dedicated tenancy. ::
 
     aws ec2 create-vpc \
         --cidr-block 10.0.0.0/16 \
@@ -60,14 +64,13 @@ Output::
                     }
                 }
             ],
-            "IsDefault": false,
-            "Tags": []
+            "IsDefault": false
         }
     }
-                  
+
 **Example 3: To create a VPC with an IPv6 CIDR block**
 
-The following ``create-vpc`` example creates a VPC with an Amazon-provided IPv6 CIDR block.
+The following ``create-vpc`` example creates a VPC with an Amazon-provided IPv6 CIDR block. ::
 
     aws ec2 create-vpc \
         --cidr-block 10.0.0.0/16 \
@@ -103,9 +106,58 @@ Output::
                     }
                 }
             ],
-            "IsDefault": false,
-            "Tags": []
+            "IsDefault": false
         }
     }
 
-For more information, see `Creating a VPC <https://docs.aws.amazon.com/vpc/latest/userguide/working-with-vpcs.html#Create-VPC>`__ in the *AWS VPC User Guide*.
+**Example 4: To create a VPC with a CIDR from an IPAM pool**
+
+The following ``create-vpc`` example creates a VPC with a CIDR from an Amazon VPC IP Address Manager (IPAM) pool.
+
+Linux and macOS::
+
+    aws ec2 create-vpc \
+        --ipv4-ipam-pool-id ipam-pool-0533048da7d823723 \
+        --tag-specifications ResourceType=vpc,Tags='[{Key=Environment,Value="Preprod"},{Key=Owner,Value="Build Team"}]'
+
+Windows::
+
+    aws ec2 create-vpc ^
+        --ipv4-ipam-pool-id ipam-pool-0533048da7d823723 ^
+        --tag-specifications ResourceType=vpc,Tags=[{Key=Environment,Value="Preprod"},{Key=Owner,Value="Build Team"}]
+
+Output::
+
+    {
+        "Vpc": {
+            "CidrBlock": "10.0.1.0/24",
+            "DhcpOptionsId": "dopt-2afccf50",
+            "State": "pending",
+            "VpcId": "vpc-010e1791024eb0af9",
+            "OwnerId": "123456789012",
+            "InstanceTenancy": "default",
+            "Ipv6CidrBlockAssociationSet": [],
+            "CidrBlockAssociationSet": [
+                {
+                    "AssociationId": "vpc-cidr-assoc-0a77de1d803226d4b",
+                    "CidrBlock": "10.0.1.0/24",
+                    "CidrBlockState": {
+                        "State": "associated"
+                    }
+                }
+            ],
+            "IsDefault": false,
+            "Tags": [
+                {
+                    "Key": "Environment",
+                    "Value": "Preprod"
+                },
+                {
+                    "Key": "Owner",
+                    "Value": "Build Team"
+                }
+            ]
+        }
+    }
+
+For more information, see `Create a VPC that uses an IPAM pool CIDR <https://docs.aws.amazon.com/vpc/latest/ipam/create-vpc-ipam.html>`__ in the *Amazon VPC IPAM User Guide*.

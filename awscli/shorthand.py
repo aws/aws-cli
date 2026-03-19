@@ -38,14 +38,17 @@ necessary to maintain backwards compatibility.  This is done in the
 ``BackCompatVisitor`` class.
 
 """
+
 import re
 import string
 
+from awscli.paramfile import LOCAL_PREFIX_MAP, get_paramfile
+from awscli.utils import is_document_type
 
 _EOF = object()
 
 
-class _NamedRegex(object):
+class _NamedRegex:
     def __init__(self, name, regex_str):
         self.name = name
         self.regex = re.compile(regex_str, re.UNICODE)
@@ -55,25 +58,24 @@ class _NamedRegex(object):
 
 
 class ShorthandParseError(Exception):
-
     def _error_location(self):
         consumed, remaining, num_spaces = self.value, '', self.index
-        if '\n' in self.value[:self.index]:
+        if '\n' in self.value[: self.index]:
             # If there's newlines in the consumed expression, we want
             # to make sure we're only counting the spaces
             # from the last newline:
             # foo=bar,\n
             # bar==baz
             #     ^
-            last_newline = self.value[:self.index].rindex('\n')
+            last_newline = self.value[: self.index].rindex('\n')
             num_spaces = self.index - last_newline - 1
-        if '\n' in self.value[self.index:]:
+        if '\n' in self.value[self.index :]:
             # If there's newline in the remaining, divide value
             # into consumed and remainig
             # foo==bar,\n
             #     ^
             # bar=baz
-            next_newline = self.index + self.value[self.index:].index('\n')
+            next_newline = self.index + self.value[self.index :].index('\n')
             consumed = self.value[:next_newline]
             remaining = self.value[next_newline:]
         return '%s\n%s%s' % (consumed, (' ' * num_spaces) + '^', remaining)
@@ -89,10 +91,11 @@ class ShorthandParseSyntaxError(ShorthandParseError):
         super(ShorthandParseSyntaxError, self).__init__(msg)
 
     def _construct_msg(self):
-        msg = (
-            "Expected: '%s', received: '%s' for input:\n"
-            "%s"
-        ) % (self.expected, self.actual, self._error_location())
+        msg = ("Expected: '%s', received: '%s' for input:\n %s") % (
+            self.expected,
+            self.actual,
+            self._error_location(),
+        )
         return msg
 
 
@@ -107,13 +110,17 @@ class DuplicateKeyInObjectError(ShorthandParseError):
     def _construct_msg(self):
         msg = (
             "Second instance of key \"%s\" encountered for input:\n%s\n"
-            "This is often because there is a preceeding \",\" instead of a "
+            "This is often because there is a preceding \",\" instead of a "
             "space."
         ) % (self.key, self._error_location())
         return msg
 
 
-class ShorthandParser(object):
+class DocumentTypesNotSupportedError(Exception):
+    pass
+
+
+class ShorthandParser:
     """Parses shorthand syntax in the CLI.
 
     Note that this parser does not rely on any JSON models to control
@@ -121,28 +128,22 @@ class ShorthandParser(object):
 
     """
 
-    _SINGLE_QUOTED = _NamedRegex('singled quoted', r'\'(?:\\\\|\\\'|[^\'])*\'')
-    _DOUBLE_QUOTED = _NamedRegex('double quoted', r'"(?:\\\\|\\"|[^"])*"')
-    _START_WORD = u'\!\#-&\(-\+\--\<\>-Z\\\\-z\u007c-\uffff'
-    _FIRST_FOLLOW_CHARS = u'\s\!\#-&\(-\+\--\\\\\^-\|~-\uffff'
-    _SECOND_FOLLOW_CHARS = u'\s\!\#-&\(-\+\--\<\>-\uffff'
+    _SINGLE_QUOTED = _NamedRegex('singled quoted', r'\'(?:\\\'|[^\'])*\'')
+    _DOUBLE_QUOTED = _NamedRegex('double quoted', r'"(?:\\"|[^"])*"')
+    _START_WORD = r'\!\#-&\(-\+\--\<\>-Z\\-z' + '\u007c-\uffff'
+    _FIRST_FOLLOW_CHARS = r'\s\!\#-&\(-\+\--\\\^-\|~-' + '\uffff'
+    _SECOND_FOLLOW_CHARS = r'\s\!\#-&\(-\+\--\<\>-' + '\uffff'
     _ESCAPED_COMMA = '(\\\\,)'
     _FIRST_VALUE = _NamedRegex(
         'first',
-        u'({escaped_comma}|[{start_word}])'
-        u'({escaped_comma}|[{follow_chars}])*'.format(
-            escaped_comma=_ESCAPED_COMMA,
-            start_word=_START_WORD,
-            follow_chars=_FIRST_FOLLOW_CHARS,
-        ))
+        f'({_ESCAPED_COMMA}|[{_START_WORD}])'
+        f'({_ESCAPED_COMMA}|[{_FIRST_FOLLOW_CHARS}])*',
+    )
     _SECOND_VALUE = _NamedRegex(
         'second',
-        u'({escaped_comma}|[{start_word}])'
-        u'({escaped_comma}|[{follow_chars}])*'.format(
-            escaped_comma=_ESCAPED_COMMA,
-            start_word=_START_WORD,
-            follow_chars=_SECOND_FOLLOW_CHARS,
-        ))
+        f'({_ESCAPED_COMMA}|[{_START_WORD}])'
+        f'({_ESCAPED_COMMA}|[{_SECOND_FOLLOW_CHARS}])*',
+    )
 
     def __init__(self):
         self._tokens = []
@@ -156,13 +157,14 @@ class ShorthandParser(object):
             parser.parse('a=b')  # {'a': 'b'}
             parser.parse('a=b,c')  # {'a': ['b', 'c']}
 
-        :tpye value: str
+        :type value: str
         :param value: Any value that needs to be parsed.
 
         :return: Parsed value, which will be a dictionary.
         """
         self._input_value = value
         self._index = 0
+        self._should_resolve_paramfiles = False
         return self._parameter()
 
     def _parameter(self):
@@ -185,8 +187,15 @@ class ShorthandParser(object):
         return params
 
     def _keyval(self):
-        # keyval = key "=" [values]
+        # keyval = key "=" [values] / key "@=" [file-optional-values]
+        # file-optional-values = file://value / fileb://value / value
         key = self._key()
+        self._should_resolve_paramfiles = False
+        try:
+            self._expect('@', consume_whitespace=True)
+            self._should_resolve_paramfiles = True
+        except ShorthandParseSyntaxError:
+            pass
         self._expect('=', consume_whitespace=True)
         values = self._values()
         return key, values
@@ -199,7 +208,7 @@ class ShorthandParser(object):
             if self._current() not in valid_chars:
                 break
             self._index += 1
-        return self._input_value[start:self._index]
+        return self._input_value[start : self._index]
 
     def _values(self):
         # values = csv-list / explicit-list / hash-literal
@@ -261,10 +270,15 @@ class ShorthandParser(object):
         return csv_list
 
     def _value(self):
-        result = self._FIRST_VALUE.match(self._input_value[self._index:])
+        result = self._FIRST_VALUE.match(self._input_value[self._index :])
         if result is not None:
             consumed = self._consume_matched_regex(result)
-            return consumed.replace('\\,', ',').rstrip()
+            processed = consumed.replace('\\,', ',').rstrip()
+            return (
+                self._resolve_paramfiles(processed)
+                if self._should_resolve_paramfiles
+                else processed
+            )
         return ''
 
     def _explicit_list(self):
@@ -295,6 +309,12 @@ class ShorthandParser(object):
         keyvals = {}
         while self._current() != '}':
             key = self._key()
+            self._should_resolve_paramfiles = False
+            try:
+                self._expect('@', consume_whitespace=True)
+                self._should_resolve_paramfiles = True
+            except ShorthandParseSyntaxError:
+                pass
             self._expect('=', consume_whitespace=True)
             v = self._explicit_values()
             self._consume_whitespace()
@@ -317,7 +337,12 @@ class ShorthandParser(object):
         # single-quoted-value = %x27 *(val-escaped-single) %x27
         # val-escaped-single  = %x20-26 / %x28-7F / escaped-escape /
         #                       (escape single-quote)
-        return self._consume_quoted(self._SINGLE_QUOTED, escaped_char="'")
+        processed = self._consume_quoted(self._SINGLE_QUOTED, escaped_char="'")
+        return (
+            self._resolve_paramfiles(processed)
+            if self._should_resolve_paramfiles
+            else processed
+        )
 
     def _consume_quoted(self, regex, escaped_char=None):
         value = self._must_consume_regex(regex)[1:-1]
@@ -327,7 +352,12 @@ class ShorthandParser(object):
         return value
 
     def _double_quoted_value(self):
-        return self._consume_quoted(self._DOUBLE_QUOTED, escaped_char='"')
+        processed = self._consume_quoted(self._DOUBLE_QUOTED, escaped_char='"')
+        return (
+            self._resolve_paramfiles(processed)
+            if self._should_resolve_paramfiles
+            else processed
+        )
 
     def _second_value(self):
         if self._current() == "'":
@@ -336,33 +366,46 @@ class ShorthandParser(object):
             return self._double_quoted_value()
         else:
             consumed = self._must_consume_regex(self._SECOND_VALUE)
-            return consumed.replace('\\,', ',').rstrip()
+            processed = consumed.replace('\\,', ',').rstrip()
+            return (
+                self._resolve_paramfiles(processed)
+                if self._should_resolve_paramfiles
+                else processed
+            )
+
+    def _resolve_paramfiles(self, val):
+        if (paramfile := get_paramfile(val, LOCAL_PREFIX_MAP)) is not None:
+            return paramfile
+        return val
 
     def _expect(self, char, consume_whitespace=False):
         if consume_whitespace:
             self._consume_whitespace()
         if self._index >= len(self._input_value):
-            raise ShorthandParseSyntaxError(self._input_value, char,
-                                            'EOF', self._index)
+            raise ShorthandParseSyntaxError(
+                self._input_value, char, 'EOF', self._index
+            )
         actual = self._input_value[self._index]
         if actual != char:
-            raise ShorthandParseSyntaxError(self._input_value, char,
-                                            actual, self._index)
+            raise ShorthandParseSyntaxError(
+                self._input_value, char, actual, self._index
+            )
         self._index += 1
         if consume_whitespace:
             self._consume_whitespace()
 
     def _must_consume_regex(self, regex):
-        result = regex.match(self._input_value[self._index:])
+        result = regex.match(self._input_value[self._index :])
         if result is not None:
             return self._consume_matched_regex(result)
-        raise ShorthandParseSyntaxError(self._input_value, '<%s>' % regex.name,
-                                        '<none>', self._index)
+        raise ShorthandParseSyntaxError(
+            self._input_value, '<%s>' % regex.name, '<none>', self._index
+        )
 
     def _consume_matched_regex(self, result):
         start, end = result.span()
-        v = self._input_value[self._index+start:self._index+end]
-        self._index += (end - start)
+        v = self._input_value[self._index + start : self._index + end]
+        self._index += end - start
         return v
 
     def _current(self):
@@ -384,21 +427,23 @@ class ShorthandParser(object):
             self._index += 1
 
 
-class ModelVisitor(object):
+class ModelVisitor:
     def visit(self, params, model):
         self._visit({}, model, '', params)
 
     def _visit(self, parent, shape, name, value):
-        method = getattr(self, '_visit_%s' % shape.type_name,
-                         self._visit_scalar)
+        method = getattr(
+            self, '_visit_%s' % shape.type_name, self._visit_scalar
+        )
         method(parent, shape, name, value)
 
     def _visit_structure(self, parent, shape, name, value):
         if not isinstance(value, dict):
             return
         for member_name, member_shape in shape.members.items():
-            self._visit(value, member_shape, member_name,
-                        value.get(member_name))
+            self._visit(
+                value, member_shape, member_name, value.get(member_name)
+            )
 
     def _visit_list(self, parent, shape, name, value):
         if not isinstance(value, list):
@@ -418,6 +463,26 @@ class ModelVisitor(object):
 
 
 class BackCompatVisitor(ModelVisitor):
+    def _visit_structure(self, parent, shape, name, value):
+        self._raise_if_document_type_found(value, shape)
+        if not isinstance(value, dict):
+            return
+        for member_name, member_shape in shape.members.items():
+            try:
+                self._visit(
+                    value, member_shape, member_name, value.get(member_name)
+                )
+            except DocumentTypesNotSupportedError:
+                # Catch and propagate the document type error to a better
+                # error message as when the original error is thrown there is
+                # no reference to the original member that used the document
+                # type.
+                raise ShorthandParseError(
+                    'Shorthand syntax does not support document types. Use '
+                    'JSON input for top-level argument to specify nested '
+                    'parameter: %s' % member_name
+                )
+
     def _visit_list(self, parent, shape, name, value):
         if not isinstance(value, list):
             # Convert a -> [a] because they specified
@@ -426,7 +491,8 @@ class BackCompatVisitor(ModelVisitor):
                 parent[name] = [value]
         else:
             return super(BackCompatVisitor, self)._visit_list(
-                parent, shape, name, value)
+                parent, shape, name, value
+            )
 
     def _visit_scalar(self, parent, shape, name, value):
         if value is None:
@@ -443,3 +509,14 @@ class BackCompatVisitor(ModelVisitor):
                 parent[name] = True
             elif value.lower() == 'false':
                 parent[name] = False
+
+    def _raise_if_document_type_found(self, value, member_shape):
+        # Shorthand syntax does not have support for explicit typing and
+        # instead relies on the model to do type coercion. However, document
+        # types are unmodeled. So using short hand syntax on a document type
+        # would result in all values being typed as strings (e.g. 1 -> "1",
+        # null -> "null") which is probably not desired. So blocking the use
+        # of document types allows us to add proper support for them in the
+        # future in a backwards compatible way.
+        if value is not None and is_document_type(member_shape):
+            raise DocumentTypesNotSupportedError()

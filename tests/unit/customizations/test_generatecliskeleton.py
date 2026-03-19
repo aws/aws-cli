@@ -10,14 +10,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import mock
-
 from botocore.model import DenormalizedStructureBuilder
 
-from awscli.compat import six
-from awscli.testutils import unittest, capture_output
-from awscli.customizations.generatecliskeleton import \
-    GenerateCliSkeletonArgument
+from awscli.compat import StringIO
+from awscli.customizations.generatecliskeleton import (
+    GenerateCliSkeletonArgument,
+)
+from awscli.testutils import capture_output, mock, unittest
 
 
 class TestGenerateCliSkeleton(unittest.TestCase):
@@ -32,22 +31,26 @@ class TestGenerateCliSkeleton(unittest.TestCase):
                 'type': 'structure',
                 'members': {
                     'B': {'type': 'string'},
-                }
+                },
             }
         }
-        shape = DenormalizedStructureBuilder().with_members(
-            self.input_shape).build_model()
+        shape = (
+            DenormalizedStructureBuilder()
+            .with_members(self.input_shape)
+            .build_model()
+        )
         self.operation_model = mock.Mock(input_shape=shape)
         self.argument = GenerateCliSkeletonArgument(
-            self.session, self.operation_model)
+            self.session, self.operation_model
+        )
 
         # This is what the json should should look like after being
         # generated to standard output.
-        self.ref_json_output = \
-            '{\n    "A": {\n        "B": ""\n    }\n}\n'
+        self.ref_json_output = '{\n    "A": {\n        "B": ""\n    }\n}\n'
 
-    def assert_skeleton_equals(self, arg_value, expected_output,
-                               expected_rc=0, input_shape=None):
+    def assert_skeleton_equals(
+        self, arg_value, expected_output, expected_rc=0, input_shape=None
+    ):
         argument = self.argument
         if input_shape is not None:
             argument = self.create_argument(input_shape)
@@ -70,8 +73,9 @@ class TestGenerateCliSkeleton(unittest.TestCase):
     def test_register_argument_action(self):
         register_args = self.session.register.call_args_list
         self.assertEqual(register_args[0][0][0], 'calling-command.*')
-        self.assertEqual(register_args[0][0][1],
-                         self.argument.generate_skeleton)
+        self.assertEqual(
+            register_args[0][0][1], self.argument.generate_skeleton
+        )
 
     def test_no_override_required_args_when_output(self):
         argument_table = {}
@@ -103,10 +107,12 @@ class TestGenerateCliSkeleton(unittest.TestCase):
     def test_generate_json_skeleton(self):
         parsed_args = mock.Mock()
         parsed_args.generate_cli_skeleton = 'input'
-        with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
+        with mock.patch('sys.stdout', StringIO()) as mock_stdout:
             rc = self.argument.generate_skeleton(
-                service_operation=self.service_operation, call_parameters=None,
-                parsed_args=parsed_args, parsed_globals=None
+                service_operation=self.service_operation,
+                call_parameters=None,
+                parsed_args=parsed_args,
+                parsed_globals=None,
             )
             # Ensure the contents printed to standard output are correct.
             self.assertEqual(self.ref_json_output, mock_stdout.getvalue())
@@ -116,10 +122,12 @@ class TestGenerateCliSkeleton(unittest.TestCase):
     def test_no_generate_json_skeleton(self):
         parsed_args = mock.Mock()
         parsed_args.generate_cli_skeleton = None
-        with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
+        with mock.patch('sys.stdout', StringIO()) as mock_stdout:
             rc = self.argument.generate_skeleton(
-                service_operation=self.service_operation, call_parameters=None,
-                parsed_args=parsed_args, parsed_globals=None
+                service_operation=self.service_operation,
+                call_parameters=None,
+                parsed_args=parsed_args,
+                parsed_globals=None,
             )
             # Ensure nothing is printed to standard output
             self.assertEqual('', mock_stdout.getvalue())
@@ -131,11 +139,14 @@ class TestGenerateCliSkeleton(unittest.TestCase):
         parsed_args.generate_cli_skeleton = 'input'
         # Set the input shape to ``None``.
         self.argument = GenerateCliSkeletonArgument(
-            self.session, mock.Mock(input_shape=None))
-        with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
+            self.session, mock.Mock(input_shape=None)
+        )
+        with mock.patch('sys.stdout', StringIO()) as mock_stdout:
             rc = self.argument.generate_skeleton(
-                service_operation=self.service_operation, call_parameters=None,
-                parsed_args=parsed_args, parsed_globals=None
+                service_operation=self.service_operation,
+                call_parameters=None,
+                parsed_args=parsed_args,
+                parsed_globals=None,
             )
             # Ensure the contents printed to standard output are correct,
             # which should be an empty dictionary.
@@ -151,32 +162,34 @@ class TestGenerateCliSkeleton(unittest.TestCase):
                 'type': 'structure',
                 'members': {
                     'B': {'type': 'timestamp'},
-                }
+                },
             }
         }
-        shape = DenormalizedStructureBuilder().with_members(
-            input_shape).build_model()
+        shape = (
+            DenormalizedStructureBuilder()
+            .with_members(input_shape)
+            .build_model()
+        )
         operation_model = mock.Mock(input_shape=shape)
-        argument = GenerateCliSkeletonArgument(
-            self.session, operation_model)
-        with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
+        argument = GenerateCliSkeletonArgument(self.session, operation_model)
+        with mock.patch('sys.stdout', StringIO()) as mock_stdout:
             rc = argument.generate_skeleton(
-                call_parameters=None, parsed_args=parsed_args,
-                parsed_globals=None
+                call_parameters=None,
+                parsed_args=parsed_args,
+                parsed_globals=None,
             )
             self.assertEqual(
                 '{\n'
                 '    "A": {\n'
                 '        "B": "1970-01-01T00:00:00"\n'
                 '    }\n'
-                '}\n', mock_stdout.getvalue())
+                '}\n',
+                mock_stdout.getvalue(),
+            )
             self.assertEqual(rc, 0)
 
     def test_generate_yaml_input_skeleton(self):
-        expected = (
-            "A:\n"
-            "  B: ''\n"
-        )
+        expected = "A:\n" "  B: ''\n"
         self.assert_skeleton_equals('yaml-input', expected)
 
     def test_generate_yaml_input_with_bytes(self):
@@ -185,28 +198,20 @@ class TestGenerateCliSkeleton(unittest.TestCase):
                 'type': 'structure',
                 'members': {
                     'B': {'type': 'blob'},
-                }
+                },
             }
         }
-        expected = (
-            "A:\n"
-            "  B: !!binary ''\n"
-        )
+        expected = "A:\n" "  B: !!binary ''\n"
         self.assert_skeleton_equals(
-            'yaml-input', expected, input_shape=input_shape)
+            'yaml-input', expected, input_shape=input_shape
+        )
 
     def test_generate_yaml_input_with_comments(self):
-        input_shape = {
-            'A': {
-                'type': 'string',
-                'documentation': 'docstring'
-            }
-        }
-        expected = (
-            "A: ''  # docstring.\n"
-        )
+        input_shape = {'A': {'type': 'string', 'documentation': 'docstring'}}
+        expected = "A: ''  # docstring.\n"
         self.assert_skeleton_equals(
-            'yaml-input', expected, input_shape=input_shape)
+            'yaml-input', expected, input_shape=input_shape
+        )
 
     def test_generate_yaml_input_with_nested_comments(self):
         input_shape = {
@@ -216,17 +221,17 @@ class TestGenerateCliSkeleton(unittest.TestCase):
                 'members': {
                     'B': {
                         'type': 'string',
-                        'documentation': 'nested docstring'
+                        'documentation': 'nested docstring',
                     }
-                }
+                },
             }
         }
         expected = (
-            "A:  # top-level docstring.\n"
-            "  B: ''  # nested docstring.\n"
+            "A:  # top-level docstring.\n" "  B: ''  # nested docstring.\n"
         )
         self.assert_skeleton_equals(
-            'yaml-input', expected, input_shape=input_shape)
+            'yaml-input', expected, input_shape=input_shape
+        )
 
     def test_generate_yaml_input_with_required_member(self):
         input_shape = {
@@ -236,10 +241,10 @@ class TestGenerateCliSkeleton(unittest.TestCase):
                 'members': {
                     'B': {
                         'type': 'string',
-                        'documentation': 'nested docstring'
+                        'documentation': 'nested docstring',
                     }
                 },
-                'required': ['B']
+                'required': ['B'],
             }
         }
         expected = (
@@ -247,96 +252,74 @@ class TestGenerateCliSkeleton(unittest.TestCase):
             "  B: ''  # [REQUIRED] nested docstring.\n"
         )
         self.assert_skeleton_equals(
-            'yaml-input', expected, input_shape=input_shape)
+            'yaml-input', expected, input_shape=input_shape
+        )
 
     def test_generate_yaml_input_ignores_newline(self):
         input_shape = {
-            'A': {
-                'type': 'string',
-                'documentation': 'one-line\ntwo-line'
-            }
+            'A': {'type': 'string', 'documentation': 'one-line\ntwo-line'}
         }
-        expected = (
-            "A: ''  # one-line two-line.\n"
-        )
+        expected = "A: ''  # one-line two-line.\n"
         self.assert_skeleton_equals(
-            'yaml-input', expected, input_shape=input_shape)
+            'yaml-input', expected, input_shape=input_shape
+        )
 
     def test_generate_yaml_input_ignores_line_separator_char(self):
         input_shape = {
-            'A': {
-                'type': 'string',
-                'documentation': 'one-line\u2028two-line'
-            }
+            'A': {'type': 'string', 'documentation': 'one-line\u2028two-line'}
         }
-        expected = (
-            "A: ''  # one-line two-line.\n"
-        )
+        expected = "A: ''  # one-line two-line.\n"
         self.assert_skeleton_equals(
-            'yaml-input', expected, input_shape=input_shape)
+            'yaml-input', expected, input_shape=input_shape
+        )
 
     def test_generate_yaml_input_removes_xml_tags(self):
-        input_shape = {
-            'A': {
-                'type': 'string',
-                'documentation': '<p>text</p>'
-            }
-        }
-        expected = (
-            "A: ''  # text.\n"
-        )
+        input_shape = {'A': {'type': 'string', 'documentation': '<p>text</p>'}}
+        expected = "A: ''  # text.\n"
         self.assert_skeleton_equals(
-            'yaml-input', expected, input_shape=input_shape)
+            'yaml-input', expected, input_shape=input_shape
+        )
 
     def test_generate_yaml_input_can_handle_broken_xml(self):
-        input_shape = {
-            'A': {
-                'type': 'string',
-                'documentation': '<p>text'
-            }
-        }
-        expected = (
-            "A: ''  # <p>text.\n"
-        )
+        input_shape = {'A': {'type': 'string', 'documentation': '<p>text'}}
+        expected = "A: ''  # <p>text.\n"
         self.assert_skeleton_equals(
-            'yaml-input', expected, input_shape=input_shape)
+            'yaml-input', expected, input_shape=input_shape
+        )
 
     def test_generate_yaml_input_uses_only_content_before_first_period(self):
         input_shape = {
             'A': {
                 'type': 'string',
-                'documentation': 'First sentence. Second Sentence'
+                'documentation': 'First sentence. Second Sentence',
             }
         }
-        expected = (
-            "A: ''  # First sentence.\n"
-        )
+        expected = "A: ''  # First sentence.\n"
         self.assert_skeleton_equals(
-            'yaml-input', expected, input_shape=input_shape)
+            'yaml-input', expected, input_shape=input_shape
+        )
 
     def test_generate_yaml_input_uses_only_content_before_first_colon(self):
         input_shape = {
             'A': {
                 'type': 'string',
-                'documentation': 'First sentence: * Option 1 * Option 2'
+                'documentation': 'First sentence: * Option 1 * Option 2',
             }
         }
-        expected = (
-            "A: ''  # First sentence.\n"
-        )
+        expected = "A: ''  # First sentence.\n"
         self.assert_skeleton_equals(
-            'yaml-input', expected, input_shape=input_shape)
+            'yaml-input', expected, input_shape=input_shape
+        )
 
     def test_generate_yaml_input_includes_enums_in_comments(self):
         input_shape = {
             'A': {
                 'type': 'string',
                 'documentation': 'First sentence.',
-                'enum': ['ENUM1']
+                'enum': ['ENUM1'],
             }
         }
-        expected = (
-            "A: ENUM1  # First sentence. Valid values are: ENUM1.\n"
-        )
+        expected = "A: ENUM1  # First sentence. Valid values are: ENUM1.\n"
         self.assert_skeleton_equals(
-            'yaml-input', expected, input_shape=input_shape)
+            'yaml-input', expected, input_shape=input_shape
+        )

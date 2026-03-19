@@ -1,6 +1,6 @@
-**To get the customer master keys (CMKs) in an account and Region**
+**To get the KMS keys in an account and Region**
 
-The following ``list-keys`` example gets the CMKs in an account and Region. This command returns both AWS managed CMKs and customer managed CMKs. ::
+The following ``list-keys`` example gets the KMS keys in an account and Region. This command returns both AWS managed keys and customer managed keys. ::
 
     aws kms list-keys 
 

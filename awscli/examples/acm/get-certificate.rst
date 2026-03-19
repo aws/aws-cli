@@ -2,7 +2,7 @@
 
 The following ``get-certificate`` command retrieves the certificate for the specified ARN and the certificate chain::
 
-  aws acm get-certificate --certificate-arn arn:aws:acm:us-east-1:123456789012:certificate/12345678-1234-1234-1234-123456789012
+  aws acm get-certificate --certificate-arn arn:aws:acm:region:account:certificate/12345678-1234-1234-1234-123456789012
 
 Output similar to the following is displayed::
 

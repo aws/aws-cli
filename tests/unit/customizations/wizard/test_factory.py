@@ -12,8 +12,8 @@
 # language governing permissions and limitations under the License.
 from botocore.session import Session
 
-from awscli.customizations.wizard import factory, core, app
-from awscli.testutils import unittest, mock
+from awscli.customizations.wizard import app, core, factory
+from awscli.testutils import mock, unittest
 
 
 class TestCanCreateWizardComponents(unittest.TestCase):

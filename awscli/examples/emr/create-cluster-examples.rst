@@ -77,7 +77,7 @@ The following ``create-cluster`` example creates a cluster instance based on the
 
 **Example 8: To customize application configurations**
 
-The following examples use the ``--configurations`` parameter to specify a JSON configuration file that contains application customizations for Hadoop. For more information, see `Configuring Applications <http://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-configure-apps.html>`__ in the *Amazon EMR Release Guide*.
+The following examples use the ``--configurations`` parameter to specify a JSON configuration file that contains application customizations for Hadoop. For more information, see `Configuring Applications <https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-configure-apps.html>`__ in the *Amazon EMR Release Guide*.
 
 Contents of ``configurations.json``::
 
@@ -114,7 +114,7 @@ The following example references ``configurations.json`` as a local file. ::
 The following example references ``configurations.json`` as a file in Amazon S3. ::
 
     aws emr create-cluster \
-        --configurations https://s3.amazonaws.com/myBucket/configurations.json \
+        --configurations https://s3.amazonaws.com/amzn-s3-demo-bucket/configurations.json \
         --release-label emr-5.9.0 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large \
         --auto-terminate
@@ -138,7 +138,7 @@ The following ``create-cluster`` example uses ``--auto-terminate`` to specify th
 
 **Example 11: To specify cluster configuration details such as the Amazon EC2 key pair, network configuration, and security groups**
 
-The following ``create-cluster`` example creates a cluster with the Amazon EC2 key pair named ``myKey`` and a customized instance profile named ``myProfile``. Key pairs are used to authorize SSH connections to cluster nodes, most often the master node. For more information, see `Use an Amazon EC2 Key Pair for SSH Credentials <http://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-plan-access-ssh.html>`__ in the *Amazon EMR Management Guide*. ::
+The following ``create-cluster`` example creates a cluster with the Amazon EC2 key pair named ``myKey`` and a customized instance profile named ``myProfile``. Key pairs are used to authorize SSH connections to cluster nodes, most often the master node. For more information, see `Use an Amazon EC2 Key Pair for SSH Credentials <https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-plan-access-ssh.html>`__ in the *Amazon EMR Management Guide*. ::
 
     aws emr create-cluster \
         --ec2-attributes KeyName=myKey,InstanceProfile=myProfile \
@@ -223,7 +223,7 @@ The following ``create-cluster`` example uses the ``--enable-debugging`` paramet
 
     aws emr create-cluster \
         --enable-debugging \
-        --log-uri s3://myBucket/myLog \
+        --log-uri s3://amzn-s3-demo-bucket/myLog \
         --release-label emr-5.9.0 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large \
         --auto-terminate
@@ -276,7 +276,7 @@ The following example creates a cluster with multiple EBS volumes attached to EC
 
 **Example 16: To create a cluster with an automatic scaling policy**
 
-You can attach automatic scaling policies to core and task instance groups using Amazon EMR version 4.0 and later. The automatic scaling policy dynamically adds and removes EC2 instances in response to an Amazon CloudWatch metric. For more information, see `Using Automatic Scaling in Amazon EMR` <http://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-automatic-scaling.html>`_ in the *Amazon EMR Management Guide*.
+You can attach automatic scaling policies to core and task instance groups using Amazon EMR version 4.0 and later. The automatic scaling policy dynamically adds and removes EC2 instances in response to an Amazon CloudWatch metric. For more information, see `Using Automatic Scaling in Amazon EMR` <https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-automatic-scaling.html>`_ in the *Amazon EMR Management Guide*.
 
 When attaching an automatic scaling policy, you must also specify the default role for automatic scaling using ``--auto-scaling-role EMR_AutoScaling_DefaultRole``.
 
@@ -293,7 +293,7 @@ The following example uses a JSON file, ``instancegroupconfig.json``, to specify
         --release-label emr-5.9.0 \
         --service-role EMR_DefaultRole \
         --ec2-attributes InstanceProfile=EMR_EC2_DefaultRole \
-        --instance-groups s3://mybucket/instancegroupconfig.json \
+        --instance-groups file://myfolder/instancegroupconfig.json \
         --auto-scaling-role EMR_AutoScaling_DefaultRole
 
 Contents of ``instancegroupconfig.json``::
@@ -357,7 +357,7 @@ The following ``create-cluster`` example adds steps by specifying a JAR file sto
 Custom JAR steps require the ``Jar=`` parameter, which specifies the path and file name of the JAR. Optional parameters are ``Type``, ``Name``, ``ActionOnFailure``, ``Args``, and ``MainClass``. If main class is not specified, the JAR file should specify ``Main-Class`` in its manifest file. ::
 
     aws emr create-cluster \
-        --steps Type=CUSTOM_JAR,Name=CustomJAR,ActionOnFailure=CONTINUE,Jar=s3://myBucket/mytest.jar,Args=arg1,arg2,arg3 Type=CUSTOM_JAR,Name=CustomJAR,ActionOnFailure=CONTINUE,Jar=s3://myBucket/mytest.jar,MainClass=mymainclass,Args=arg1,arg2,arg3  \
+        --steps Type=CUSTOM_JAR,Name=CustomJAR,ActionOnFailure=CONTINUE,Jar=s3://amzn-s3-demo-bucket/mytest.jar,Args=arg1,arg2,arg3 Type=CUSTOM_JAR,Name=CustomJAR,ActionOnFailure=CONTINUE,Jar=s3://amzn-s3-demo-bucket/mytest.jar,MainClass=mymainclass,Args=arg1,arg2,arg3  \
         --release-label emr-5.3.1 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large \
         --auto-terminate
@@ -369,7 +369,7 @@ The following ``create-cluster`` examples add a streaming step to a cluster that
 The following example specifies the step inline. ::
 
     aws emr create-cluster \
-        --steps Type=STREAMING,Name='Streaming Program',ActionOnFailure=CONTINUE,Args=[-files,s3://elasticmapreduce/samples/wordcount/wordSplitter.py,-mapper,wordSplitter.py,-reducer,aggregate,-input,s3://elasticmapreduce/samples/wordcount/input,-output,s3://mybucket/wordcount/output] \
+        --steps Type=STREAMING,Name='Streaming Program',ActionOnFailure=CONTINUE,Args=[-files,s3://elasticmapreduce/samples/wordcount/wordSplitter.py,-mapper,wordSplitter.py,-reducer,aggregate,-input,s3://elasticmapreduce/samples/wordcount/input,-output,s3://amzn-s3-demo-bucket/wordcount/output] \
         --release-label emr-5.3.1 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large \
         --auto-terminate
@@ -397,7 +397,7 @@ Contents of ``multiplefiles.json``::
                 "-input",
                 "s3://elasticmapreduce/samples/wordcount/input",
                 "-output",
-                "s3://mybucket/wordcount/output"
+                "s3://amzn-s3-demo-bucket/wordcount/output"
             ],
             "ActionOnFailure": "CONTINUE",
             "Type": "STREAMING"
@@ -409,7 +409,7 @@ Contents of ``multiplefiles.json``::
 The following example add Hive steps when creating a cluster. Hive steps require parameters ``Type`` and ``Args``. Hive steps optional parameters are ``Name`` and ``ActionOnFailure``. ::
 
     aws emr create-cluster \
-        --steps Type=HIVE,Name='Hive program',ActionOnFailure=CONTINUE,ActionOnFailure=TERMINATE_CLUSTER,Args=[-f,s3://elasticmapreduce/samples/hive-ads/libs/model-build.q,-d,INPUT=s3://elasticmapreduce/samples/hive-ads/tables,-d,OUTPUT=s3://mybucket/hive-ads/output/2014-04-18/11-07-32,-d,LIBS=s3://elasticmapreduce/samples/hive-ads/libs] \
+        --steps Type=HIVE,Name='Hive program',ActionOnFailure=CONTINUE,ActionOnFailure=TERMINATE_CLUSTER,Args=[-f,s3://elasticmapreduce/samples/hive-ads/libs/model-build.q,-d,INPUT=s3://elasticmapreduce/samples/hive-ads/tables,-d,OUTPUT=s3://amzn-s3-demo-bucket/hive-ads/output/2014-04-18/11-07-32,-d,LIBS=s3://elasticmapreduce/samples/hive-ads/libs] \
         --applications Name=Hive \
         --release-label emr-5.3.1 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large
@@ -419,7 +419,7 @@ The following example add Hive steps when creating a cluster. Hive steps require
 The following example adds Pig steps when creating a cluster. Pig steps required parameters are ``Type`` and ``Args``. Pig steps optional parameters are ``Name`` and ``ActionOnFailure``. ::
 
     aws emr create-cluster \
-        --steps Type=PIG,Name='Pig program',ActionOnFailure=CONTINUE,Args=[-f,s3://elasticmapreduce/samples/pig-apache/do-reports2.pig,-p,INPUT=s3://elasticmapreduce/samples/pig-apache/input,-p,OUTPUT=s3://mybucket/pig-apache/output] \
+        --steps Type=PIG,Name='Pig program',ActionOnFailure=CONTINUE,Args=[-f,s3://elasticmapreduce/samples/pig-apache/do-reports2.pig,-p,INPUT=s3://elasticmapreduce/samples/pig-apache/input,-p,OUTPUT=s3://amzn-s3-demo-bucket/pig-apache/output] \
         --applications Name=Pig \
         --release-label emr-5.3.1 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large
@@ -429,7 +429,7 @@ The following example adds Pig steps when creating a cluster. Pig steps required
 The following ``create-cluster`` example runs two bootstrap actions defined as scripts that are stored in Amazon S3. ::
 
     aws emr create-cluster \
-        --bootstrap-actions Path=s3://mybucket/myscript1,Name=BootstrapAction1,Args=[arg1,arg2] Path=s3://mybucket/myscript2,Name=BootstrapAction2,Args=[arg1,arg2] \
+        --bootstrap-actions Path=s3://amzn-s3-demo-bucket/myscript1,Name=BootstrapAction1,Args=[arg1,arg2] Path=s3://amzn-s3-demo-bucket/myscript2,Name=BootstrapAction2,Args=[arg1,arg2] \
         --release-label emr-5.3.1 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large \
         --auto-terminate
@@ -503,7 +503,7 @@ The following ``create-cluster`` example creates an Amazon EMR cluster that uses
 
     aws emr create-cluster \
         --release-label emr-5.30.0 \
-        --log-uri s3://myBucket/myLog \
+        --log-uri s3://amzn-s3-demo-bucket/myLog \
         --log-encryption-kms-key-id arn:aws:kms:us-east-1:110302272565:key/dd559181-283e-45d7-99d1-66da348c4d33 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large
 
@@ -515,3 +515,36 @@ The following ``create-cluster`` example creates an Amazon EMR cluster that uses
         --ec2-attributes InstanceProfile=EMR_EC2_DefaultRole \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=3,InstanceType=m4.largeInstanceGroupType=CORE,InstanceCount=1,InstanceType=m4.large \
         --placement-group-configs InstanceRole=MASTER
+
+The following ``create-cluster`` example creates an Amazon EMR cluster that uses the "--auto-termination-policy" configuration to place an automatic idle termination threshold for the cluster. ::
+
+    aws emr create-cluster \
+        --release-label emr-5.34.0 \
+        --service-role EMR_DefaultRole \
+        --ec2-attributes InstanceProfile=EMR_EC2_DefaultRole \
+        --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=1,InstanceType=m4.large \
+        --auto-termination-policy IdleTimeout=100
+
+The following ``create-cluster`` example creates an Amazon EMR cluster that uses the "--os-release-label" to define an Amazon Linux release for cluster launch ::
+
+    aws emr create-cluster \
+        --release-label emr-6.6.0 \
+        --os-release-label 2.0.20220406.1 \
+        --service-role EMR_DefaultRole \
+        --ec2-attributes InstanceProfile=EMR_EC2_DefaultRole \
+        --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=1,InstanceType=m4.large
+
+**Example 24: To specify an EBS root volume attributes: size, iops and throughput for cluster instances created with EMR releases 6.15.0 and later**
+
+The following ``create-cluster`` example creates an Amazon EMR cluster that uses root volume attributes to configure root volumes specifications for the EC2 instances. ::
+
+    aws emr create-cluster \
+        --name "Cluster with My Custom AMI" \
+        --custom-ami-id ami-a518e6df \
+        --ebs-root-volume-size 20 \
+        --ebs-root-volume-iops 3000 \
+        --ebs-root-volume-throughput 125 \
+        --release-label emr-6.15.0 \
+        --use-default-roles \
+        --instance-count 2 \
+        --instance-type m4.large

@@ -13,24 +13,26 @@
 from awscli.customizations.s3.fileinfo import FileInfo
 
 
-class FileInfoBuilder(object):
+class FileInfoBuilder:
     """
     This class takes a ``FileBase`` object's attributes and generates
     a ``FileInfo`` object so that the operation can be performed.
     """
-    def __init__(self, client, source_client=None,
-                 parameters = None, is_stream=False):
+
+    def __init__(
+        self, client, source_client=None, parameters=None, is_stream=False
+    ):
         self._client = client
         self._source_client = client
         if source_client is not None:
             self._source_client = source_client
         self._parameters = parameters
-        self._is_stream = is_stream 
+        self._is_stream = is_stream
 
     def call(self, files):
         for file_base in files:
             file_info = self._inject_info(file_base)
-            yield file_info            
+            yield file_info
 
     def _inject_info(self, file_base):
         file_info_attr = {}
@@ -45,6 +47,13 @@ class FileInfoBuilder(object):
         file_info_attr['parameters'] = self._parameters
         file_info_attr['is_stream'] = self._is_stream
         file_info_attr['associated_response_data'] = file_base.response_data
+        file_info_attr['etag'] = file_base.etag
+        file_info_attr['case_conflict_submitted'] = getattr(
+            file_base, 'case_conflict_submitted', None
+        )
+        file_info_attr['case_conflict_key'] = getattr(
+            file_base, 'case_conflict_key', None
+        )
 
         # This is a bit quirky. The below conditional hinges on the --delete
         # flag being set, which only occurs during a sync command. The source
@@ -57,8 +66,9 @@ class FileInfoBuilder(object):
         # issue by swapping clients only in the case of a sync delete since
         # swapping which client is used in the delete function would then break
         # moving under s3v4.
-        if (file_base.operation_name == 'delete' and
-                self._parameters.get('delete')):
+        if file_base.operation_name == 'delete' and self._parameters.get(
+            'delete'
+        ):
             file_info_attr['client'] = self._source_client
             file_info_attr['source_client'] = self._client
         else:

@@ -66,6 +66,6 @@ Output::
 
 To confirm that the operation succeeded, you can run ``get-operation-detail``. For more information, see `get-operation-detail <https://docs.aws.amazon.com/cli/latest/reference/route53domains/get-operation-detail.html>`__ . 
 
-For more information, see `Registering a New Domain <http://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-register.html>`__ in the *Amazon Route 53 Developer Guide*.
+For more information, see `Registering a New Domain <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-register.html>`__ in the *Amazon Route 53 Developer Guide*.
 
 For information about which top-level domains (TLDs) require values for ``ExtraParams`` and what the valid values are, see `ExtraParam <https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_ExtraParam.html>`__ in the *Amazon Route 53 API Reference*.

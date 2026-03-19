@@ -11,8 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from awscli.customizations.emr import constants
-from awscli.customizations.emr import exceptions
+from awscli.customizations.emr import constants, exceptions
 
 
 def validate_and_build_instance_fleets(parsed_instance_fleets):
@@ -31,31 +30,73 @@ def validate_and_build_instance_fleets(parsed_instance_fleets):
             instance_fleet_config['Name'] = instance_fleet['Name']
         else:
             instance_fleet_config['Name'] = instance_fleet['InstanceFleetType']
-        instance_fleet_config['InstanceFleetType'] = instance_fleet['InstanceFleetType']
+        instance_fleet_config['InstanceFleetType'] = instance_fleet[
+            'InstanceFleetType'
+        ]
 
         if 'TargetOnDemandCapacity' in keys:
-            instance_fleet_config['TargetOnDemandCapacity'] = instance_fleet['TargetOnDemandCapacity']
+            instance_fleet_config['TargetOnDemandCapacity'] = instance_fleet[
+                'TargetOnDemandCapacity'
+            ]
 
         if 'TargetSpotCapacity' in keys:
-            instance_fleet_config['TargetSpotCapacity'] = instance_fleet['TargetSpotCapacity']
+            instance_fleet_config['TargetSpotCapacity'] = instance_fleet[
+                'TargetSpotCapacity'
+            ]
 
         if 'InstanceTypeConfigs' in keys:
-            if 'TargetSpotCapacity' in keys:
-                for instance_type_config in instance_fleet['InstanceTypeConfigs']:
-                    instance_type_config_keys = instance_type_config.keys()
-            instance_fleet_config['InstanceTypeConfigs'] = instance_fleet['InstanceTypeConfigs']
+            instance_fleet_config['InstanceTypeConfigs'] = instance_fleet[
+                'InstanceTypeConfigs'
+            ]
 
         if 'LaunchSpecifications' in keys:
-            instanceFleetProvisioningSpecifications = instance_fleet['LaunchSpecifications']
+            instanceFleetProvisioningSpecifications = instance_fleet[
+                'LaunchSpecifications'
+            ]
             instance_fleet_config['LaunchSpecifications'] = {}
 
             if 'SpotSpecification' in instanceFleetProvisioningSpecifications:
-                instance_fleet_config['LaunchSpecifications']['SpotSpecification'] = \
-                    instanceFleetProvisioningSpecifications['SpotSpecification']
+                instance_fleet_config['LaunchSpecifications'][
+                    'SpotSpecification'
+                ] = instanceFleetProvisioningSpecifications[
+                    'SpotSpecification'
+                ]
 
-            if 'OnDemandSpecification' in instanceFleetProvisioningSpecifications:
-                instance_fleet_config['LaunchSpecifications']['OnDemandSpecification'] = \
-                    instanceFleetProvisioningSpecifications['OnDemandSpecification']
+            if (
+                'OnDemandSpecification'
+                in instanceFleetProvisioningSpecifications
+            ):
+                instance_fleet_config['LaunchSpecifications'][
+                    'OnDemandSpecification'
+                ] = instanceFleetProvisioningSpecifications[
+                    'OnDemandSpecification'
+                ]
+
+        if 'ResizeSpecifications' in keys:
+            instanceFleetResizeSpecifications = instance_fleet[
+                'ResizeSpecifications'
+            ]
+            instance_fleet_config['ResizeSpecifications'] = {}
+
+            if 'SpotResizeSpecification' in instanceFleetResizeSpecifications:
+                instance_fleet_config['ResizeSpecifications'][
+                    'SpotResizeSpecification'
+                ] = instanceFleetResizeSpecifications[
+                    'SpotResizeSpecification'
+                ]
+
+            if (
+                'OnDemandResizeSpecification'
+                in instanceFleetResizeSpecifications
+            ):
+                instance_fleet_config['ResizeSpecifications'][
+                    'OnDemandResizeSpecification'
+                ] = instanceFleetResizeSpecifications[
+                    'OnDemandResizeSpecification'
+                ]
+
+        if 'Context' in keys:
+            instance_fleet_config['Context'] = instance_fleet['Context']
 
         instance_fleets.append(instance_fleet_config)
     return instance_fleets

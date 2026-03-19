@@ -18,7 +18,8 @@ def register_create_hosted_zone_doc_fix(cli):
     # has the necessary documentation.
     cli.register(
         'doc-option.route53.create-hosted-zone.hosted-zone-config',
-        add_private_zone_note)
+        add_private_zone_note,
+    )
 
 
 def add_private_zone_note(help_command, **kwargs):

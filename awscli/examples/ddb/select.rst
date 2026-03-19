@@ -29,7 +29,7 @@ One You Know".
 Command::
 
     aws ddb select MusicCollection --projection SongTitle \
-        --key-condition-expression 'Artist = "No One You Know"'
+        --key-condition 'Artist = "No One You Know"'
 
 Output::
 

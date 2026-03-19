@@ -11,8 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from awscli.testutils import unittest
 from awscli.customizations.emrcontainers.base36 import Base36
+from awscli.testutils import unittest
+
 
 class TestBase36(unittest.TestCase):
     base36 = Base36()
@@ -25,25 +26,32 @@ class TestBase36(unittest.TestCase):
         self.assertEqual(self.base36.encode(''), '0')
 
         # Test for a short string
-        self.assertEqual(self.base36.encode('abcdefghijkl'),
-                         '2x6xx5ubcrus4bplmr0')
+        self.assertEqual(
+            self.base36.encode('abcdefghijkl'), '2x6xx5ubcrus4bplmr0'
+        )
 
         # Test for a really lengthy string
-        self.assertEqual(self.base36.encode('abcdefghijklmnopqrstuvwxyzabcdef'
-                                            'ghijklmnopqrstuvwxyzabcdefghijkl'
-                                            'mnopqrstuvwxyzabcdefghijklmnopqr'
-                                            'stuvwxyzabcdefghijklmnopqrstuvwx'),
-                         'hihg421ybq8vpwgxd21fae22r9rho7x8qpyskkz6iqadme7ds5f'
-                         'qxpnedq44doj5dlitkm8wswo3c5503yl55jfazzhbbqnnee7r70'
-                         'zw89fs5ojeipi6xeiydas7g7y9w3usdlzrlhxx0q50bxvt27tfu'
-                         '3ruwyx4fuv96rcfpkqxxg93vdclsof5ribhnrcvajmpvc')
+        self.assertEqual(
+            self.base36.encode(
+                'abcdefghijklmnopqrstuvwxyzabcdef'
+                'ghijklmnopqrstuvwxyzabcdefghijkl'
+                'mnopqrstuvwxyzabcdefghijklmnopqr'
+                'stuvwxyzabcdefghijklmnopqrstuvwx'
+            ),
+            'hihg421ybq8vpwgxd21fae22r9rho7x8qpyskkz6iqadme7ds5f'
+            'qxpnedq44doj5dlitkm8wswo3c5503yl55jfazzhbbqnnee7r70'
+            'zw89fs5ojeipi6xeiydas7g7y9w3usdlzrlhxx0q50bxvt27tfu'
+            '3ruwyx4fuv96rcfpkqxxg93vdclsof5ribhnrcvajmpvc',
+        )
 
         # Test for a string with only special characters
         self.assertEqual(self.base36.encode('+=,.@-_'), '3bu5b0xg4tb')
 
         # Test for a string containing special characters
-        self.assertEqual(self.base36.encode('abcdefghijkl+=,.@-_'),
-                         '1ll75jdngh5gbk11wbh7h35ji05wtb')
+        self.assertEqual(
+            self.base36.encode('abcdefghijkl+=,.@-_'),
+            '1ll75jdngh5gbk11wbh7h35ji05wtb',
+        )
 
 
 if __name__ == "__main__":

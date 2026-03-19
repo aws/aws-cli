@@ -3,7 +3,7 @@
 The following ``list-bucket-metrics-configurations`` example retrieves a list of metrics configurations for the specified bucket. ::
 
     aws s3api list-bucket-metrics-configurations \
-        --bucket my-bucket
+        --bucket amzn-s3-demo-bucket
 
 Output::
 

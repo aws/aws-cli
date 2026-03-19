@@ -1,4 +1,4 @@
-**To modify a Traffic Mirror Session**
+**To modify a traffic mirror session**
 
 The following ``modify-traffic-mirror-session`` example changes the traffic mirror session description and the number of packets to mirror. ::
 
@@ -23,4 +23,4 @@ Output::
         }
     }
 
-For more information, see `Modify Your Traffic MIrror Session <https://docs.aws.amazon.com/vpc/latest/mirroring/traffic-mirroring-session.html#modify-traffic-mirroring-session>`__ in the *AWS Traffic Mirroring Guide*.
+For more information, see `Modify your traffic mirror session <https://docs.aws.amazon.com/vpc/latest/mirroring/traffic-mirroring-session.html#modify-traffic-mirroring-session>`__ in the *Traffic Mirroring Guide*.

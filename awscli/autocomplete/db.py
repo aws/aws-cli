@@ -1,9 +1,8 @@
-import os
 import logging
+import os
 import sqlite3
 
 from awscli import __version__ as cli_version
-
 
 LOG = logging.getLogger(__name__)
 
@@ -14,7 +13,8 @@ INDEX_DIR = os.path.expanduser(os.path.join('~', '.aws', 'cli', 'cache'))
 INDEX_FILE = os.path.join(INDEX_DIR, '%s.index' % cli_version)
 BUILTIN_INDEX_FILE = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-    'data', 'ac.index'
+    'data',
+    'ac.index',
 )
 
 
@@ -22,7 +22,7 @@ BUILTIN_INDEX_FILE = os.path.join(
 # I'd like to reuse code, but we also have the contraint that we don't
 # want to import anything outside of awscli.autocomplete to ensure
 # our startup time is as minimal as possible.
-class DatabaseConnection(object):
+class DatabaseConnection:
     _JOURNAL_MODE_OFF = 'PRAGMA journal_mode=OFF'
 
     def __init__(self, db_filename=None):
@@ -34,10 +34,7 @@ class DatabaseConnection(object):
     @property
     def _connection(self):
         if self._db_conn is None:
-            kwargs = {
-                'check_same_thread': False,
-                'isolation_level': None
-            }
+            kwargs = {'check_same_thread': False, 'isolation_level': None}
             if self._db_filename.startswith('file::memory:'):
                 # This statement was added because old versions of sqlite
                 # don't support 'uri' but we use it for tests and because

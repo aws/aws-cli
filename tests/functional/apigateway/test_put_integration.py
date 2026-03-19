@@ -14,7 +14,6 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestPutIntegration(BaseAWSCommandParamsTest):
-
     prefix = 'apigateway put-integration '
 
     def test_put_integration(self):
@@ -26,9 +25,11 @@ class TestPutIntegration(BaseAWSCommandParamsTest):
         cmdline += '--integration-http-method GET '
         cmdline += '--uri https://api.endpoint.com'
         result = {
-            'restApiId': 'api-id', 'resourceId': 'resource-id',
-            'httpMethod': 'GET', 'type': 'HTTP',
+            'restApiId': 'api-id',
+            'resourceId': 'resource-id',
+            'httpMethod': 'GET',
+            'type': 'HTTP',
             'integrationHttpMethod': 'GET',
-            'uri': 'https://api.endpoint.com'
+            'uri': 'https://api.endpoint.com',
         }
         self.assert_params_for_cmd(cmdline, result)

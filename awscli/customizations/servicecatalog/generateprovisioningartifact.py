@@ -13,10 +13,12 @@
 
 import sys
 
-from awscli.customizations.servicecatalog import helptext
-from awscli.customizations.servicecatalog.generatebase \
-    import GenerateBaseCommand
 from botocore.compat import json
+
+from awscli.customizations.servicecatalog import helptext
+from awscli.customizations.servicecatalog.generatebase import (
+    GenerateBaseCommand,
+)
 
 
 class GenerateProvisioningArtifactCommand(GenerateBaseCommand):
@@ -26,22 +28,22 @@ class GenerateProvisioningArtifactCommand(GenerateBaseCommand):
         {
             'name': 'file-path',
             'required': True,
-            'help_text': helptext.FILE_PATH
+            'help_text': helptext.FILE_PATH,
         },
         {
             'name': 'bucket-name',
             'required': True,
-            'help_text': helptext.BUCKET_NAME
+            'help_text': helptext.BUCKET_NAME,
         },
         {
             'name': 'provisioning-artifact-name',
             'required': True,
-            'help_text': helptext.PA_NAME
+            'help_text': helptext.PA_NAME,
         },
         {
             'name': 'provisioning-artifact-description',
             'required': True,
-            'help_text': helptext.PA_DESCRIPTION
+            'help_text': helptext.PA_DESCRIPTION,
         },
         {
             'name': 'provisioning-artifact-type',
@@ -50,31 +52,33 @@ class GenerateProvisioningArtifactCommand(GenerateBaseCommand):
             'choices': [
                 'CLOUD_FORMATION_TEMPLATE',
                 'MARKETPLACE_AMI',
-                'MARKETPLACE_CAR'
-            ]
+                'MARKETPLACE_CAR',
+            ],
         },
         {
             'name': 'product-id',
             'required': True,
-            'help_text': helptext.PRODUCT_ID
-        }
+            'help_text': helptext.PRODUCT_ID,
+        },
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
         super(GenerateProvisioningArtifactCommand, self)._run_main(
-            parsed_args, parsed_globals)
+            parsed_args, parsed_globals
+        )
         self.region = self.get_and_validate_region(parsed_globals)
 
-        self.s3_url = self.create_s3_url(parsed_args.bucket_name,
-                                         parsed_args.file_path)
+        self.s3_url = self.create_s3_url(
+            parsed_args.bucket_name, parsed_args.file_path
+        )
         self.scs_client = self._session.create_client(
-            'servicecatalog', region_name=self.region,
+            'servicecatalog',
+            region_name=self.region,
             endpoint_url=parsed_globals.endpoint_url,
-            verify=parsed_globals.verify_ssl
+            verify=parsed_globals.verify_ssl,
         )
 
-        response = self.create_provisioning_artifact(parsed_args,
-                                                     self.s3_url)
+        response = self.create_provisioning_artifact(parsed_args, self.s3_url)
 
         sys.stdout.write(json.dumps(response, indent=2, ensure_ascii=False))
 
@@ -86,11 +90,9 @@ class GenerateProvisioningArtifactCommand(GenerateBaseCommand):
             Parameters={
                 'Name': parsed_args.provisioning_artifact_name,
                 'Description': parsed_args.provisioning_artifact_description,
-                'Info': {
-                    'LoadTemplateFromURL': s3_url
-                },
-                'Type': parsed_args.provisioning_artifact_type
-            }
+                'Info': {'LoadTemplateFromURL': s3_url},
+                'Type': parsed_args.provisioning_artifact_type,
+            },
         )
 
         if 'ResponseMetadata' in response:

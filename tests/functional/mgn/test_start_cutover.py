@@ -18,18 +18,14 @@ class TestStartCutover(BaseAWSCommandParamsTest):
     SOURCE_SERVER_ID = 'a' * 50
 
     def test_accepts_old_argname(self):
-        cmdline = (
-            f'{self.PREFIX} --source-server-i-ds {self.SOURCE_SERVER_ID}'
-        )
+        cmdline = f'{self.PREFIX} --source-server-i-ds {self.SOURCE_SERVER_ID}'
         params = {
             'sourceServerIDs': [self.SOURCE_SERVER_ID],
         }
         self.assert_params_for_cmd(cmdline, params)
 
     def test_accepts_fixed_param_name(self):
-        cmdline = (
-            f'{self.PREFIX} --source-server-ids {self.SOURCE_SERVER_ID}'
-        )
+        cmdline = f'{self.PREFIX} --source-server-ids {self.SOURCE_SERVER_ID}'
         params = {
             'sourceServerIDs': [self.SOURCE_SERVER_ID],
         }

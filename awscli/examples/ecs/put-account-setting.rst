@@ -1,16 +1,19 @@
 **To modify the account setting for your IAM user account**
 
-The following ``put-account-setting`` example enables the ``serviceLongArnFormat`` account setting for your IAM user account. ::
+The following ``put-account-setting`` example sets the ``containerInsights`` account setting to ``enhanced`` for your IAM user account. This turns on Container Insights with enhanced observability. ::
 
-    aws ecs put-account-setting --name serviceLongArnFormat --value enabled
+    aws ecs put-account-setting \
+        --name containerInsights \
+        --value enhanced
 
 Output::
 
     {
         "setting": {
-            "name": "serviceLongArnFormat",
-            "value": "enabled",
-            "principalArn": "arn:aws:iam::130757420319:user/your_username"
+            "name": "containerInsights",
+            "value": "enhanced",
+            "principalArn": "arn:aws:iam::123456789012:user/johndoe",
+            "type": "user"
         }
     }
 

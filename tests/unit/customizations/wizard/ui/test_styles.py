@@ -10,13 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest, mock
-
 from awscli.customizations.wizard.ui.style import get_default_style
+from awscli.testutils import mock, unittest
 
 
 class TestStyles(unittest.TestCase):
-
     @mock.patch('awscli.customizations.wizard.ui.style.is_windows')
     def test_get_styles_for_windows(self, is_windows):
         is_windows.return_value = True

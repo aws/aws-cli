@@ -8,4 +8,4 @@ The following ``delete-access-log-settings`` example deletes the access log sett
 
 This command produces no output.
 
-For more information, see `Configuring logging for an HTTP API <https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-logging.htmll>`__ in the *Amazon API Gateway Developer Guide*.
+For more information, see `Configuring logging for an HTTP API <https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-logging.html>`__ in the *Amazon API Gateway Developer Guide*.

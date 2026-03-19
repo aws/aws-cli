@@ -1,7 +1,11 @@
-**To attach an Internet gateway to your VPC**
+**To attach an internet gateway to your VPC**
 
-This example attaches the specified Internet gateway to the specified VPC. If the command succeeds, no output is returned.
+The following ``attach-internet-gateway`` example attaches the specified internet gateway to the specific VPC. ::
 
-Command::
+    aws ec2 attach-internet-gateway \
+        --internet-gateway-id igw-0d0fb496b3EXAMPLE \
+        --vpc-id vpc-0a60eb65b4EXAMPLE
 
-  aws ec2 attach-internet-gateway --internet-gateway-id igw-c0a643a9 --vpc-id vpc-a01106c2
+This command produces no output. 
+
+For more information, see `Internet gateways <https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html>`__ in the *Amazon VPC User Guide*.

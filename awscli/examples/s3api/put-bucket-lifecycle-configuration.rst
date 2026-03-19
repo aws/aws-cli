@@ -1,6 +1,6 @@
-The following command applies a lifecycle configuration to a bucket named ``my-bucket``::
+The following command applies a lifecycle configuration to a bucket named ``amzn-s3-demo-bucket``::
 
-  aws s3api put-bucket-lifecycle-configuration --bucket my-bucket --lifecycle-configuration  file://lifecycle.json
+  aws s3api put-bucket-lifecycle-configuration --bucket amzn-s3-demo-bucket --lifecycle-configuration  file://lifecycle.json
 
 The file ``lifecycle.json`` is a JSON document in the current folder that specifies two rules::
 

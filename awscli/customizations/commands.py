@@ -1,3 +1,4 @@
+import copy
 import logging
 import os
 
@@ -6,22 +7,22 @@ from botocore.compat import OrderedDict
 from botocore.validate import validate_parameters
 
 import awscli
-from awscli.argparser import ArgTableArgParser
+from awscli.argparser import ArgTableArgParser, SubCommandArgParser
 from awscli.argprocess import unpack_argument, unpack_cli_arg
 from awscli.arguments import CustomArgument, create_argument_model_from_schema
+from awscli.bcdoc import docevents
 from awscli.clidocs import OperationDocumentEventHandler
 from awscli.commands import CLICommand
-from awscli.bcdoc import docevents
+from awscli.customizations.exceptions import ParamValidationError
 from awscli.help import HelpCommand
 from awscli.schema import SchemaTransformer
-from awscli.customizations.exceptions import ParamValidationError
+from awscli.utils import add_command_lineage_to_user_agent_extra
 
 LOG = logging.getLogger(__name__)
 _open = open
 
 
-class _FromFile(object):
-
+class _FromFile:
     def __init__(self, *paths, **kwargs):
         """
         ``**kwargs`` can contain a ``root_module`` argument
@@ -41,7 +42,6 @@ class _FromFile(object):
 
 
 class BasicCommand(CLICommand):
-
     """Basic top level command with no subcommands.
 
     If you want to create a new command, subclass this and
@@ -126,16 +126,33 @@ class BasicCommand(CLICommand):
         self._subcommand_table = None
         self._lineage = [self]
 
+    def _parse_potential_subcommand(self, args, subcommand_table):
+        if subcommand_table:
+            parser = SubCommandArgParser(self.arg_table, subcommand_table)
+            return parser.parse_known_args(args)
+        return None
+
     def __call__(self, args, parsed_globals):
         # args is the remaining unparsed args.
         # We might be able to parse these args so we need to create
         # an arg parser and parse them.
         self._subcommand_table = self._build_subcommand_table()
         self._arg_table = self._build_arg_table()
-        event = 'before-building-argument-table-parser.%s' % \
-            ".".join(self.lineage_names)
-        self._session.emit(event, argument_table=self._arg_table, args=args,
-                           session=self._session)
+        event = f'before-building-argument-table-parser.{".".join(self.lineage_names)}'
+        self._session.emit(
+            event,
+            argument_table=self._arg_table,
+            args=args,
+            session=self._session,
+        )
+        maybe_parsed_subcommand = self._parse_potential_subcommand(
+            args, self._subcommand_table
+        )
+        if maybe_parsed_subcommand is not None:
+            new_args, subcommand_name = maybe_parsed_subcommand
+            return self._subcommand_table[subcommand_name](
+                new_args, parsed_globals
+            )
         parser = ArgTableArgParser(self.arg_table, self.subcommand_table)
         parsed_args, remaining = parser.parse_known_args(args)
 
@@ -151,20 +168,18 @@ class BasicCommand(CLICommand):
                 cli_argument = self.arg_table[xformed]
 
             value = unpack_argument(
-                self._session,
-                'custom',
-                self.name,
-                cli_argument,
-                value
+                self._session, 'custom', self.name, cli_argument, value
             )
 
             # If this parameter has a schema defined, then allow plugins
             # a chance to process and override its value.
             if self._should_allow_plugins_override(cli_argument, value):
-                override = self._session\
-                    .emit_first_non_none_response(
-                        'process-cli-arg.%s.%s' % ('custom', self.name),
-                        cli_argument=cli_argument, value=value, operation=None)
+                override = self._session.emit_first_non_none_response(
+                    f'process-cli-arg.custom.{self.name}',
+                    cli_argument=cli_argument,
+                    value=value,
+                    operation=None,
+                )
 
                 if override is not None:
                     # A plugin supplied a conversion
@@ -174,7 +189,8 @@ class BasicCommand(CLICommand):
                     # correct Python type (dict, list, etc)
                     value = unpack_cli_arg(cli_argument, value)
                 self._validate_value_against_schema(
-                    cli_argument.argument_model, value)
+                    cli_argument.argument_model, value
+                )
 
             setattr(parsed_args, key, value)
         if hasattr(self._session, 'user_agent_extra'):
@@ -186,23 +202,19 @@ class BasicCommand(CLICommand):
             # function for this top level command.
             if remaining:
                 raise ParamValidationError(
-                    "Unknown options: %s" % ','.join(remaining)
+                    f"Unknown options: {','.join(remaining)}"
                 )
             rc = self._run_main(parsed_args, parsed_globals)
             if rc is None:
                 return 0
             else:
                 return rc
-        else:
-            return self.subcommand_table[parsed_args.subcommand](remaining,
-                                                                 parsed_globals)
 
-    def _validate_value_against_schema(self, model, value):
+    def _validate_value_against_schema(self, model, value):  # noqa: F811
         validate_parameters(value, model)
 
     def _should_allow_plugins_override(self, param, value):
-        if (param and param.argument_model is not None and
-                value is not None):
+        if param and param.argument_model is not None and value is not None:
             return True
         return False
 
@@ -224,10 +236,12 @@ class BasicCommand(CLICommand):
             subcommand_class = subcommand['command_class']
             subcommand_table[subcommand_name] = subcommand_class(self._session)
         name = '_'.join([c.name for c in self.lineage])
-        self._session.emit('building-command-table.%s' % name,
-                           command_table=subcommand_table,
-                           session=self._session,
-                           command_object=self)
+        self._session.emit(
+            f'building-command-table.{name}',
+            command_table=subcommand_table,
+            session=self._session,
+            command_object=self,
+        )
         self._add_lineage(subcommand_table)
         return subcommand_table
 
@@ -239,8 +253,12 @@ class BasicCommand(CLICommand):
         command_help_table = {}
         if self.SUBCOMMANDS:
             command_help_table = self.create_help_command_table()
-        return BasicHelp(self._session, self, command_table=command_help_table,
-                         arg_table=self.arg_table)
+        return BasicHelp(
+            self._session,
+            self,
+            command_table=command_help_table,
+            arg_table=self.arg_table,
+        )
 
     def create_help_command_table(self):
         """
@@ -256,15 +274,16 @@ class BasicCommand(CLICommand):
     def _build_arg_table(self):
         arg_table = OrderedDict()
         name = '_'.join([c.name for c in self.lineage])
-        self._session.emit('building-arg-table.%s' % name,
-                           arg_table=self.ARG_TABLE)
+        self._session.emit(
+            f'building-arg-table.{name}', arg_table=self.ARG_TABLE
+        )
         for arg_data in self.ARG_TABLE:
-
             # If a custom schema was passed in, create the argument_model
             # so that it can be validated and docs can be generated.
             if 'schema' in arg_data:
                 argument_model = create_argument_model_from_schema(
-                    arg_data.pop('schema'))
+                    arg_data.pop('schema')
+                )
                 arg_data['argument_model'] = argument_model
             custom_argument = CustomArgument(**arg_data)
 
@@ -307,26 +326,27 @@ class BasicCommand(CLICommand):
     def _raise_usage_error(self):
         lineage = ' '.join([c.name for c in self.lineage])
         error_msg = (
-            "usage: aws [options] %s <subcommand> "
-            "[parameters]\naws: error: too few arguments"
-        ) % lineage
+            f"usage: aws [options] {lineage} <subcommand> "
+            "[parameters]\naws: [ERROR]: too few arguments"
+        )
         raise ParamValidationError(error_msg)
 
     def _add_customization_to_user_agent(self):
-        if ' command/' in self._session.user_agent_extra:
-            self._session.user_agent_extra += '.%s' % self.lineage_names[-1]
-        else:
-            self._session.user_agent_extra += ' command/%s' % '.'.join(
-                self.lineage_names
-            )
+        add_command_lineage_to_user_agent_extra(
+            self._session, self.lineage_names
+        )
 
 
 class BasicHelp(HelpCommand):
-
-    def __init__(self, session, command_object, command_table, arg_table,
-                 event_handler_class=None):
-        super(BasicHelp, self).__init__(session, command_object,
-                                        command_table, arg_table)
+    def __init__(
+        self,
+        session,
+        command_object,
+        command_table,
+        arg_table,
+        event_handler_class=None,
+    ):
+        super().__init__(session, command_object, command_table, arg_table)
         # This is defined in HelpCommand so we're matching the
         # casing here.
         if event_handler_class is None:
@@ -359,6 +379,16 @@ class BasicHelp(HelpCommand):
     def event_class(self):
         return '.'.join(self.obj.lineage_names)
 
+    @property
+    def url(self):
+        # If the operation command has a subcommand table with commands
+        # in it, treat it as a service command as opposed to an operation
+        # command. This is to support things like a customization command
+        # that rely on the `BasicHelp` object.
+        if len(self.command_table) > 0:
+            return f"{self._base_remote_url}/reference/{self.event_class.replace('.', '/')}/index.html"
+        return f"{self._base_remote_url}/reference/{self.event_class.replace('.', '/')}.html"
+
     def _get_doc_contents(self, attr_name):
         value = getattr(self, attr_name)
         if isinstance(value, BasicCommand.FROM_FILE):
@@ -369,7 +399,9 @@ class BasicHelp(HelpCommand):
             root_module = value.root_module
             doc_path = os.path.join(
                 os.path.abspath(os.path.dirname(root_module.__file__)),
-                'examples', trailing_path)
+                'examples',
+                trailing_path,
+            )
             with _open(doc_path) as f:
                 return f.read()
         else:
@@ -382,26 +414,28 @@ class BasicHelp(HelpCommand):
         # We pass ourselves along so that we can, in turn, get passed
         # to all event handlers.
         docevents.generate_events(self.session, self)
-        self.renderer.render(self.doc.getvalue())
+
+        if self._help_output_format == 'url':
+            self.renderer.render(self.url.encode())
+        else:
+            self.renderer.render(self.doc.getvalue())
+
         instance.unregister()
 
 
 class BasicDocHandler(OperationDocumentEventHandler):
-
     def __init__(self, help_command):
-        super(BasicDocHandler, self).__init__(help_command)
+        super().__init__(help_command)
         self.doc = help_command.doc
 
     def doc_description(self, help_command, **kwargs):
         self.doc.style.h2('Description')
         self.doc.write(help_command.description)
         self.doc.style.new_paragraph()
-        self._add_top_level_args_reference(help_command)
 
     def doc_synopsis_start(self, help_command, **kwargs):
         if not help_command.synopsis:
-            super(BasicDocHandler, self).doc_synopsis_start(
-                help_command=help_command, **kwargs)
+            super().doc_synopsis_start(help_command=help_command, **kwargs)
         else:
             self.doc.style.h2('Synopsis')
             self.doc.style.start_codeblock()
@@ -418,18 +452,18 @@ class BasicDocHandler(OperationDocumentEventHandler):
                     # This arg is already documented so we can move on.
                     return
                 option_str = ' | '.join(
-                    [a.cli_name for a in
-                     self._arg_groups[argument.group_name]])
+                    [a.cli_name for a in self._arg_groups[argument.group_name]]
+                )
                 self._documented_arg_groups.append(argument.group_name)
             elif argument.cli_type_name == 'boolean':
-                option_str = '%s' % argument.cli_name
+                option_str = f'{argument.cli_name}'
             elif argument.nargs == '+':
-                option_str = "%s <value> [<value>...]" % argument.cli_name
+                option_str = f"{argument.cli_name} <value> [<value>...]"
             else:
-                option_str = '%s <value>' % argument.cli_name
+                option_str = f'{argument.cli_name} <value>'
             if not (argument.required or argument.positional_arg):
-                option_str = '[%s]' % option_str
-            doc.writeln('%s' % option_str)
+                option_str = f'[{option_str}]'
+            doc.writeln(f'{option_str}')
 
         else:
             # A synopsis has been provided so we don't need to write
@@ -437,11 +471,14 @@ class BasicDocHandler(OperationDocumentEventHandler):
             pass
 
     def doc_synopsis_end(self, help_command, **kwargs):
-        if not help_command.synopsis:
-            super(BasicDocHandler, self).doc_synopsis_end(
-                help_command=help_command, **kwargs)
+        if not help_command.synopsis and not help_command.command_table:
+            super().doc_synopsis_end(help_command=help_command, **kwargs)
         else:
             self.doc.style.end_codeblock()
+
+    def doc_global_option(self, help_command, **kwargs):
+        if not help_command.command_table:
+            super().doc_global_option(help_command, **kwargs)
 
     def doc_examples(self, help_command, **kwargs):
         if help_command.examples:
@@ -464,6 +501,3 @@ class BasicDocHandler(OperationDocumentEventHandler):
 
     def doc_output(self, help_command, event_name, **kwargs):
         pass
-
-    def doc_options_end(self, help_command, **kwargs):
-        self._add_top_level_args_reference(help_command)

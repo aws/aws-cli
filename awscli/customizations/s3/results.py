@@ -10,24 +10,22 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from __future__ import division
 import logging
 import sys
 import threading
 import time
-from collections import namedtuple
-from collections import defaultdict
+from collections import defaultdict, namedtuple
 
-from s3transfer.exceptions import CancelledError
-from s3transfer.exceptions import FatalError
+from s3transfer.exceptions import CancelledError, FatalError
 from s3transfer.subscribers import BaseSubscriber
 
-from awscli.compat import queue, ensure_text_type
-from awscli.customizations.s3.utils import human_readable_size
-from awscli.customizations.utils import uni_print
-from awscli.customizations.s3.utils import WarningResult
+from awscli.compat import ensure_text_type, queue
 from awscli.customizations.s3.subscribers import OnDoneFilteredSubscriber
-
+from awscli.customizations.s3.utils import (
+    WarningResult,
+    human_readable_size,
+)
+from awscli.customizations.utils import uni_print
 
 LOGGER = logging.getLogger(__name__)
 
@@ -51,27 +49,30 @@ def _create_new_result_cls(name, extra_fields=None, base_cls=BaseResult):
 QueuedResult = _create_new_result_cls('QueuedResult', ['total_transfer_size'])
 
 ProgressResult = _create_new_result_cls(
-    'ProgressResult', ['bytes_transferred', 'total_transfer_size',
-                       'timestamp'])
+    'ProgressResult', ['bytes_transferred', 'total_transfer_size', 'timestamp']
+)
 
 SuccessResult = _create_new_result_cls('SuccessResult')
 
 FailureResult = _create_new_result_cls('FailureResult', ['exception'])
 
 DryRunResult = _create_new_result_cls('DryRunResult')
+SkipFileResult = _create_new_result_cls('SkipFileResult')
 
 ErrorResult = namedtuple('ErrorResult', ['exception'])
 
 CtrlCResult = _create_new_result_cls('CtrlCResult', base_cls=ErrorResult)
 
 CommandResult = namedtuple(
-    'CommandResult', ['num_tasks_failed', 'num_tasks_warned'])
+    'CommandResult', ['num_tasks_failed', 'num_tasks_warned']
+)
 
 FinalTotalSubmissionsResult = namedtuple(
-    'FinalTotalSubmissionsResult', ['total_submissions'])
+    'FinalTotalSubmissionsResult', ['total_submissions']
+)
 
 
-class ShutdownThreadRequest(object):
+class ShutdownThreadRequest:
     pass
 
 
@@ -91,7 +92,7 @@ class QueuedResultSubscriber(BaseResultSubscriber):
                 transfer_type=self._transfer_type,
                 src=self._src,
                 dest=self._dest,
-                total_transfer_size=self._size
+                total_transfer_size=self._size,
             )
         )
 
@@ -105,7 +106,7 @@ class ProgressResultSubscriber(BaseResultSubscriber):
                 dest=self._dest,
                 bytes_transferred=bytes_transferred,
                 timestamp=time.time(),
-                total_transfer_size=self._size
+                total_transfer_size=self._size,
             )
         )
 
@@ -126,6 +127,17 @@ class DoneResultSubscriber(BaseResultSubscriber, OnDoneFilteredSubscriber):
             if isinstance(e, FatalError):
                 error_result_cls = ErrorResult
             self._result_queue.put(error_result_cls(exception=e))
+        elif self._is_precondition_failed(e):
+            LOGGER.debug(
+                f"warning: Skipping file {self._src} as it already exists on {self._dest}"
+            )
+            self._result_queue.put(
+                SkipFileResult(
+                    transfer_type=self._transfer_type,
+                    src=self._src,
+                    dest=self._dest,
+                )
+            )
         else:
             self._result_queue.put(
                 FailureResult(
@@ -136,21 +148,31 @@ class DoneResultSubscriber(BaseResultSubscriber, OnDoneFilteredSubscriber):
                 )
             )
 
+    def _is_precondition_failed(self, exception):
+        return (
+            hasattr(exception, 'response')
+            and exception.response.get('Error', {}).get('Code')
+            == 'PreconditionFailed'
+        )
 
-class BaseResultHandler(object):
+
+class BaseResultHandler:
     """Base handler class to be called in the ResultProcessor"""
+
     def __call__(self, result):
         raise NotImplementedError('__call__()')
 
 
 class ResultRecorder(BaseResultHandler):
-    """Records and track transfer statistics based on results receieved"""
+    """Records and track transfer statistics based on results received"""
+
     def __init__(self):
         self.bytes_transferred = 0
         self.bytes_failed_to_transfer = 0
         self.files_transferred = 0
         self.files_failed = 0
         self.files_warned = 0
+        self.files_skipped = 0
         self.errors = 0
         self.expected_bytes_transferred = 0
         self.expected_files_transferred = 0
@@ -168,6 +190,7 @@ class ResultRecorder(BaseResultHandler):
             SuccessResult: self._record_success_result,
             FailureResult: self._record_failure_result,
             WarningResult: self._record_warning_result,
+            SkipFileResult: self._record_skipped_file_result,
             ErrorResult: self._record_error_result,
             CtrlCResult: self._record_error_result,
             FinalTotalSubmissionsResult: self._record_final_expected_files,
@@ -175,26 +198,27 @@ class ResultRecorder(BaseResultHandler):
 
     def expected_totals_are_final(self):
         return (
-            self.final_expected_files_transferred ==
-            self.expected_files_transferred
+            self.final_expected_files_transferred
+            == self.expected_files_transferred
         )
 
     def __call__(self, result):
         """Record the result of an individual Result object"""
         self._result_handler_map.get(type(result), self._record_noop)(
-            result=result)
+            result=result
+        )
 
     def _get_ongoing_dict_key(self, result):
         if not isinstance(result, BaseResult):
             raise ValueError(
                 'Any result using _get_ongoing_dict_key must subclass from '
-                'BaseResult. Provided result is of type: %s' % type(result)
+                f'BaseResult. Provided result is of type: {type(result)}'
             )
         key_parts = []
         for result_property in [result.transfer_type, result.src, result.dest]:
             if result_property is not None:
                 key_parts.append(ensure_text_type(result_property))
-        return u':'.join(key_parts)
+        return ':'.join(key_parts)
 
     def _pop_result_from_ongoing_dicts(self, result):
         ongoing_key = self._get_ongoing_dict_key(result)
@@ -210,8 +234,9 @@ class ResultRecorder(BaseResultHandler):
         if self.start_time is None:
             self.start_time = time.time()
         total_transfer_size = result.total_transfer_size
-        self._ongoing_total_sizes[
-            self._get_ongoing_dict_key(result)] = total_transfer_size
+        self._ongoing_total_sizes[self._get_ongoing_dict_key(result)] = (
+            total_transfer_size
+        )
         # The total transfer size can be None if we do not know the size
         # immediately so do not add to the total right away.
         if total_transfer_size:
@@ -221,8 +246,9 @@ class ResultRecorder(BaseResultHandler):
     def _record_progress_result(self, result, **kwargs):
         bytes_transferred = result.bytes_transferred
         self._update_ongoing_transfer_size_if_unknown(result)
-        self._ongoing_progress[
-            self._get_ongoing_dict_key(result)] += bytes_transferred
+        self._ongoing_progress[self._get_ongoing_dict_key(result)] += (
+            bytes_transferred
+        )
         self.bytes_transferred += bytes_transferred
         # Since the start time is captured in the result recorder and
         # capture timestamps in the subscriber, there is a chance that if
@@ -230,10 +256,11 @@ class ResultRecorder(BaseResultHandler):
         # gets created that the timestamp on the progress result is less
         # than the timestamp of when the result processor actually
         # processes that initial queued result. So this will avoid
-        # negative progress being displayed or zero divison occuring.
+        # negative progress being displayed or zero division occurring.
         if result.timestamp > self.start_time:
             self.bytes_transfer_speed = self.bytes_transferred / (
-                result.timestamp - self.start_time)
+                result.timestamp - self.start_time
+            )
 
     def _update_ongoing_transfer_size_if_unknown(self, result):
         # This is a special case when the transfer size was previous not
@@ -270,13 +297,17 @@ class ResultRecorder(BaseResultHandler):
         # the count for bytes transferred by just adding on the remaining bytes
         # that did not get transferred.
         total_progress, total_file_size = self._pop_result_from_ongoing_dicts(
-            result)
+            result
+        )
         if total_file_size is not None:
             progress_left = total_file_size - total_progress
             self.bytes_failed_to_transfer += progress_left
 
         self.files_failed += 1
         self.files_transferred += 1
+
+    def _record_skipped_file_result(self, result, **kwargs):
+        self.files_skipped += 1
 
     def _record_warning_result(self, **kwargs):
         self.files_warned += 1
@@ -299,27 +330,26 @@ class ResultPrinter(BaseResultHandler):
     FILE_PROGRESS_FORMAT = (
         'Completed {files_completed} file(s) with ' + _FILES_REMAINING
     )
-    SUCCESS_FORMAT = (
-        u'{transfer_type}: {transfer_location}'
-    )
-    DRY_RUN_FORMAT = u'(dryrun) ' + SUCCESS_FORMAT
-    FAILURE_FORMAT = (
-        u'{transfer_type} failed: {transfer_location} {exception}'
-    )
+    SUCCESS_FORMAT = '{transfer_type}: {transfer_location}'
+    DRY_RUN_FORMAT = '(dryrun) ' + SUCCESS_FORMAT
+    FAILURE_FORMAT = '{transfer_type} failed: {transfer_location} {exception}'
     # TODO: Add "warning: " prefix once all commands are converted to using
     # result printer and remove "warning: " prefix from ``create_warning``.
-    WARNING_FORMAT = (
-        u'{message}'
-    )
-    ERROR_FORMAT = (
-        u'fatal error: {exception}'
-    )
+    WARNING_FORMAT = '{message}'
+    ERROR_FORMAT = 'fatal error: {exception}'
     CTRL_C_MSG = 'cancelled: ctrl-c received'
 
-    SRC_DEST_TRANSFER_LOCATION_FORMAT = u'{src} to {dest}'
-    SRC_TRANSFER_LOCATION_FORMAT = u'{src}'
+    SRC_DEST_TRANSFER_LOCATION_FORMAT = '{src} to {dest}'
+    SRC_TRANSFER_LOCATION_FORMAT = '{src}'
 
-    def __init__(self, result_recorder, out_file=None, error_file=None):
+    def __init__(
+        self,
+        result_recorder,
+        out_file=None,
+        error_file=None,
+        frequency=0,
+        oneline=True,
+    ):
         """Prints status of ongoing transfer
 
         :type result_recorder: ResultRecorder
@@ -332,9 +362,22 @@ class ResultPrinter(BaseResultHandler):
         :type error_file: file-like obj
         :param error_file: Location to write warnings and errors.
             By default, the location is sys.stderr.
+
+        :type frequency: int
+        :param frequency: Frequency in seconds to print progress.
+            By default, prints progress in real time.
+
+        :type oneline: boolean
+        :param oneline: Indicates if progress should be on one line.
+            By default, prints progress on one line, overwriting previous
+            progress message. Setting to False prints each progress
+            message on a new line.
+
         """
         self._result_recorder = result_recorder
         self._out_file = out_file
+        self._frequency = frequency
+        self._first = True
         if self._out_file is None:
             self._out_file = sys.stdout
         self._error_file = error_file
@@ -346,26 +389,33 @@ class ResultPrinter(BaseResultHandler):
             SuccessResult: self._print_success,
             FailureResult: self._print_failure,
             WarningResult: self._print_warning,
+            SkipFileResult: self._print_skip,
             ErrorResult: self._print_error,
             CtrlCResult: self._print_ctrl_c,
             DryRunResult: self._print_dry_run,
-            FinalTotalSubmissionsResult:
-                self._clear_progress_if_no_more_expected_transfers,
+            FinalTotalSubmissionsResult: self._clear_progress_if_no_more_expected_transfers,
         }
+        self._now = time.time()
+        self._oneline = oneline
 
     def __call__(self, result):
         """Print the progress of the ongoing transfer based on a result"""
         self._result_handler_map.get(type(result), self._print_noop)(
-            result=result)
+            result=result
+        )
 
     def _print_noop(self, **kwargs):
         # If the result does not have a handler, then do nothing with it.
         pass
 
+    def _print_skip(self, **kwargs):
+        # Don't reset progress length since this result printer doesn't print a newline
+        self._redisplay_progress(reset_progress_length=False)
+
     def _print_dry_run(self, result, **kwargs):
         statement = self.DRY_RUN_FORMAT.format(
             transfer_type=result.transfer_type,
-            transfer_location=self._get_transfer_location(result)
+            transfer_location=self._get_transfer_location(result),
         )
         statement = self._adjust_statement_padding(statement)
         self._print_to_out_file(statement)
@@ -373,7 +423,7 @@ class ResultPrinter(BaseResultHandler):
     def _print_success(self, result, **kwargs):
         success_statement = self.SUCCESS_FORMAT.format(
             transfer_type=result.transfer_type,
-            transfer_location=self._get_transfer_location(result)
+            transfer_location=self._get_transfer_location(result),
         )
         success_statement = self._adjust_statement_padding(success_statement)
         self._print_to_out_file(success_statement)
@@ -383,7 +433,7 @@ class ResultPrinter(BaseResultHandler):
         failure_statement = self.FAILURE_FORMAT.format(
             transfer_type=result.transfer_type,
             transfer_location=self._get_transfer_location(result),
-            exception=result.exception
+            exception=result.exception,
         )
         failure_statement = self._adjust_statement_padding(failure_statement)
         self._print_to_error_file(failure_statement)
@@ -397,7 +447,8 @@ class ResultPrinter(BaseResultHandler):
 
     def _print_error(self, result, **kwargs):
         self._flush_error_statement(
-            self.ERROR_FORMAT.format(exception=result.exception))
+            self.ERROR_FORMAT.format(exception=result.exception)
+        )
 
     def _print_ctrl_c(self, result, **kwargs):
         self._flush_error_statement(self.CTRL_C_MSG)
@@ -410,70 +461,106 @@ class ResultPrinter(BaseResultHandler):
         if result.dest is None:
             return self.SRC_TRANSFER_LOCATION_FORMAT.format(src=result.src)
         return self.SRC_DEST_TRANSFER_LOCATION_FORMAT.format(
-            src=result.src, dest=result.dest)
+            src=result.src, dest=result.dest
+        )
 
-    def _redisplay_progress(self):
+    def _redisplay_progress(self, reset_progress_length=True):
         # Reset to zero because done statements are printed with new lines
         # meaning there are no carriage returns to take into account when
         # printing the next line.
-        self._progress_length = 0
+        if reset_progress_length:
+            self._progress_length = 0
         self._add_progress_if_needed()
 
     def _add_progress_if_needed(self):
         if self._has_remaining_progress():
             self._print_progress()
+        else:
+            self._clear_progress_if_no_more_expected_transfers(ending_char='\r')
+
+    def _should_print_progress_now(self):
+        """Check to see if should print progres based on frequency.
+
+        Will only return true if its the first time or enough time has elapsed
+        since the last time printing.
+        """
+
+        if (
+            self._first
+            or (self._frequency == 0)
+            or (time.time() - self._now >= self._frequency)
+        ):
+            self._now = time.time()
+            self._first = False
+            return True
+
+        return False
 
     def _print_progress(self, **kwargs):
         # Get all of the statistics in the correct form.
+
         remaining_files = self._get_expected_total(
-            str(self._result_recorder.expected_files_transferred -
-                self._result_recorder.files_transferred)
+            str(
+                self._result_recorder.expected_files_transferred
+                - (self._result_recorder.files_transferred + self._result_recorder.files_skipped)
+            )
         )
 
         # Create the display statement.
         if self._result_recorder.expected_bytes_transferred > 0:
             bytes_completed = human_readable_size(
-                self._result_recorder.bytes_transferred +
-                self._result_recorder.bytes_failed_to_transfer
+                self._result_recorder.bytes_transferred
+                + self._result_recorder.bytes_failed_to_transfer
             )
             expected_bytes_completed = self._get_expected_total(
                 human_readable_size(
-                    self._result_recorder.expected_bytes_transferred))
+                    self._result_recorder.expected_bytes_transferred
+                )
+            )
 
-            transfer_speed = human_readable_size(
-                self._result_recorder.bytes_transfer_speed) + '/s'
+            transfer_speed = (
+                human_readable_size(self._result_recorder.bytes_transfer_speed)
+                + '/s'
+            )
             progress_statement = self.BYTE_PROGRESS_FORMAT.format(
                 bytes_completed=bytes_completed,
                 expected_bytes_completed=expected_bytes_completed,
                 transfer_speed=transfer_speed,
-                remaining_files=remaining_files
+                remaining_files=remaining_files,
             )
         else:
             # We're not expecting any bytes to be transferred, so we should
             # only print of information about number of files transferred.
             progress_statement = self.FILE_PROGRESS_FORMAT.format(
                 files_completed=self._result_recorder.files_transferred,
-                remaining_files=remaining_files
+                remaining_files=remaining_files,
             )
 
         if not self._result_recorder.expected_totals_are_final():
             progress_statement += self._STILL_CALCULATING_TOTALS
 
-        # Make sure that it overrides any previous progress bar.
-        progress_statement = self._adjust_statement_padding(
-                progress_statement, ending_char='\r')
-        # We do not want to include the carriage return in this calculation
-        # as progress length is used for determining whitespace padding.
-        # So we subtract one off of the length.
-        self._progress_length = len(progress_statement) - 1
-
+        if self._oneline:
+            # Make sure that it overrides any previous progress bar.
+            progress_statement = self._adjust_statement_padding(
+                progress_statement, ending_char='\r'
+            )
+            # We do not want to include the carriage return in this calculation
+            # as progress length is used for determining whitespace padding.
+            # So we subtract one off of the length.
+            self._progress_length = len(progress_statement) - 1
+        else:
+            progress_statement = self._adjust_statement_padding(
+                progress_statement, ending_char='\n'
+            )
         # Print the progress out.
-        self._print_to_out_file(progress_statement)
+        if self._should_print_progress_now():
+            self._print_to_out_file(progress_statement)
 
     def _get_expected_total(self, expected_total):
         if not self._result_recorder.expected_totals_are_final():
             return self._ESTIMATED_EXPECTED_TOTAL.format(
-                expected_total=expected_total)
+                expected_total=expected_total
+            )
         return expected_total
 
     def _adjust_statement_padding(self, print_statement, ending_char='\n'):
@@ -483,7 +570,7 @@ class ResultPrinter(BaseResultHandler):
     def _has_remaining_progress(self):
         if not self._result_recorder.expected_totals_are_final():
             return True
-        actual = self._result_recorder.files_transferred
+        actual = self._result_recorder.files_transferred + self._result_recorder.files_skipped
         expected = self._result_recorder.expected_files_transferred
         return actual != expected
 
@@ -493,19 +580,21 @@ class ResultPrinter(BaseResultHandler):
     def _print_to_error_file(self, statement):
         uni_print(statement, self._error_file)
 
-    def _clear_progress_if_no_more_expected_transfers(self, **kwargs):
+    def _clear_progress_if_no_more_expected_transfers(self, ending_char='\n', **kwargs):
         if self._progress_length and not self._has_remaining_progress():
-            uni_print(self._adjust_statement_padding(''), self._out_file)
+            uni_print(self._adjust_statement_padding('', ending_char=ending_char), self._out_file)
 
 
 class NoProgressResultPrinter(ResultPrinter):
     """A result printer that doesn't print progress"""
+
     def _print_progress(self, **kwargs):
         pass
 
 
 class OnlyShowErrorsResultPrinter(ResultPrinter):
     """A result printer that only prints out errors"""
+
     def _print_progress(self, **kwargs):
         pass
 
@@ -537,7 +626,8 @@ class ResultProcessor(threading.Thread):
                 if isinstance(result, ShutdownThreadRequest):
                     LOGGER.debug(
                         'Shutdown request received in result processing '
-                        'thread, shutting down result thread.')
+                        'thread, shutting down result thread.'
+                    )
                     break
                 if self._result_handlers_enabled:
                     self._process_result(result)
@@ -558,10 +648,14 @@ class ResultProcessor(threading.Thread):
             except Exception as e:
                 LOGGER.debug(
                     'Error processing result %s with handler %s: %s',
-                    result, result_handler, e, exc_info=True)
+                    result,
+                    result_handler,
+                    e,
+                    exc_info=True,
+                )
 
 
-class CommandResultRecorder(object):
+class CommandResultRecorder:
     def __init__(self, result_queue, result_recorder, result_processor):
         """Records the result for an entire command
 
@@ -600,7 +694,7 @@ class CommandResultRecorder(object):
         """
         return CommandResult(
             self._result_recorder.files_failed + self._result_recorder.errors,
-            self._result_recorder.files_warned
+            self._result_recorder.files_warned,
         )
 
     def notify_total_submissions(self, total):
@@ -612,8 +706,11 @@ class CommandResultRecorder(object):
 
     def __exit__(self, exc_type, exc_value, *args):
         if exc_type:
-            LOGGER.debug('Exception caught during command execution: %s',
-                         exc_value, exc_info=True)
+            LOGGER.debug(
+                'Exception caught during command execution: %s',
+                exc_value,
+                exc_info=True,
+            )
             self.result_queue.put(ErrorResult(exception=exc_value))
             self.shutdown()
             return True

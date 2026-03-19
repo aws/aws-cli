@@ -1,9 +1,9 @@
 **To create a filter rule for incoming TCP traffic**
 
-The following ``create-traffic-mirror-filter-rule`` example creates a rule that you can use to mirror all incoming TCP traffic. Before you run this command, use ``create-traffic-mirror-filter`` to create the the Traffic Mirror filter. ::
+The following ``create-traffic-mirror-filter-rule`` example creates a rule that you can use to mirror all incoming TCP traffic. Before you run this command, use ``create-traffic-mirror-filter`` to create the the traffic mirror filter. ::
 
     aws ec2 create-traffic-mirror-filter-rule \
-        --description "TCP Rule" \
+        --description 'TCP Rule' \
         --destination-cidr-block 0.0.0.0/0  \
         --protocol 6 \
         --rule-action accept \
@@ -29,4 +29,4 @@ Output::
         "ClientToken": "4752b573-40a6-4eac-a8a4-a72058761219"
     }
 
-For more information, see `Create a Traffic Mirror Filter <https://docs.aws.amazon.com/vpc/latest/mirroring/traffic-mirroring-filter.html#create-traffic-mirroring-filter>`__ in the *AWS Traffic Mirroring Guide*.
+For more information, see `Create a traffic mirror filter <https://docs.aws.amazon.com/vpc/latest/mirroring/create-traffic-mirroring-filter.html>`__ in the *Traffic Mirroring Guide*.

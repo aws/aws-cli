@@ -16,7 +16,7 @@ The following ``revoke-security-group-egress`` example command removes the rule 
 
     aws ec2 revoke-security-group-egress \
         --group-id sg-026c12253ce15eff7 \
-        --ip-permissions [{IpProtocol=tcp,FromPort=80,ToPort=80,UserIdGroupPairs=[{GroupId=sg-06df23a01ff2df86d}]
+        --ip-permissions '[{"IpProtocol": "tcp", "FromPort": 443, "ToPort": 443,"UserIdGroupPairs": [{"GroupId": "sg-06df23a01ff2df86d"}]}]'
 
 This command produces no output.
 

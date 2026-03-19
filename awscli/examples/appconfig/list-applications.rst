@@ -1,6 +1,6 @@
-**To list the AppConfig applications in your AWS account**
+**To list the available applications**
 
-This ``list-applications`` example lists the applications in your account in the current Region. ::
+The following ``list-applications`` example lists the available applications in your AWS account. ::
 
     aws appconfig list-applications
 
@@ -9,11 +9,15 @@ Output::
     {
         "Items": [
             {
-                "Description": "My first AppConfig application",
-                "Id": "abc1234",
-                "Name": "MyTestApp"
+                "Id": "339ohji",
+                "Name": "test-application",
+                "Description": "An application used for creating an example."
+            },
+            {
+                "Id": "rwalwu7",
+                "Name": "Test-Application"
             }
         ]
-    }  
+    }
 
-For more information, see `Create an AppConfig Application <https://docs.aws.amazon.com/systems-manager/latest/userguide/appconfig-creating-application.html>`__ in the *AWS Systems Manager User Guide*.
+For more information, see `Step 1: Creating an AWS AppConfig application <https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-creating-application.html>`__ in the *AWS AppConfig User Guide*.

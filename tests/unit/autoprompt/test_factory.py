@@ -10,18 +10,23 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import mock
-
 from prompt_toolkit.buffer import Buffer
-from prompt_toolkit.completion import DummyCompleter, Completer
+from prompt_toolkit.completion import Completer, DummyCompleter
 from prompt_toolkit.layout import Window
 from prompt_toolkit.widgets import SearchToolbar
 
 from awscli.autoprompt.factory import (
-    PromptToolkitKeyBindings, PromptToolkitFactory, CLIPromptBuffer
+    CLIPromptBuffer,
+    PromptToolkitFactory,
+    PromptToolkitKeyBindings,
 )
 from awscli.autoprompt.history import HistoryCompleter
-from awscli.testutils import unittest
+from awscli.testutils import mock, unittest
+
+
+class FakeCLIPromptBuffer(CLIPromptBuffer):
+    def start_completion(self):
+        pass
 
 
 class TestPromptToolkitFactory(unittest.TestCase):
@@ -66,7 +71,8 @@ class TestPromptToolkitFactory(unittest.TestCase):
 
     def test_can_create_layout_with_input_buffer_callback_specified(self):
         layout = self.factory.create_layout(
-            on_input_buffer_text_changed=self.dummy_callback)
+            on_input_buffer_text_changed=self.dummy_callback
+        )
         self.assertIsNotNone(layout.container)
 
     def test_can_create_layout_with_input_buffer_container_specified(self):
@@ -84,7 +90,7 @@ class TestPromptToolkitFactory(unittest.TestCase):
 
 class TestCLIPromptBuffer(unittest.TestCase):
     def setUp(self):
-        self.buffer = CLIPromptBuffer()
+        self.buffer = FakeCLIPromptBuffer()
 
     def test_history_mode_switching(self):
         self.buffer.switch_history_mode()

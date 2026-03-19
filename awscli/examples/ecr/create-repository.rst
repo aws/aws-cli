@@ -3,15 +3,15 @@
 The following ``create-repository`` example creates a repository inside the specified namespace in the default registry for an account. ::
 
     aws ecr create-repository \
-        --repository-name project-a/nginx-web-app
+        --repository-name project-a/sample-repo
 
 Output::
 
     {
         "repository": {
             "registryId": "123456789012",
-            "repositoryName": "sample-repo",
-            "repositoryArn": "arn:aws:ecr:us-west-2:123456789012:repository/project-a/nginx-web-app"
+            "repositoryName": "project-a/sample-repo",
+            "repositoryArn": "arn:aws:ecr:us-west-2:123456789012:repository/project-a/sample-repo"
         }
     }
 
@@ -22,7 +22,7 @@ For more information, see `Creating a Repository <https://docs.aws.amazon.com/Am
 The following ``create-repository`` example creates a repository configured for tag immutability in the default registry for an account. ::
 
     aws ecr create-repository \
-        --repository-name sample-repo \
+        --repository-name project-a/sample-repo \
         --image-tag-mutability IMMUTABLE
 
 Output::
@@ -30,8 +30,8 @@ Output::
     {
         "repository": {
             "registryId": "123456789012",
-            "repositoryName": "sample-repo",
-            "repositoryArn": "arn:aws:ecr:us-west-2:123456789012:repository/sample-repo",
+            "repositoryName": "project-a/sample-repo",
+            "repositoryArn": "arn:aws:ecr:us-west-2:123456789012:repository/project-a/sample-repo",
             "imageTagMutability": "IMMUTABLE"
         }
     }
@@ -43,7 +43,7 @@ For more information, see `Image Tag Mutability <https://docs.aws.amazon.com/Ama
 The following ``create-repository`` example creates a repository configured to perform a vulnerability scan on image push in the default registry for an account. ::
 
     aws ecr create-repository \
-        --repository-name sample-repo \
+        --repository-name project-a/sample-repo \
         --image-scanning-configuration scanOnPush=true
 
 Output::
@@ -51,8 +51,8 @@ Output::
     {
         "repository": {
             "registryId": "123456789012",
-            "repositoryName": "sample-repo",
-            "repositoryArn": "arn:aws:ecr:us-west-2:123456789012:repository/sample-repo",
+            "repositoryName": "project-a/sample-repo",
+            "repositoryArn": "arn:aws:ecr:us-west-2:123456789012:repository/project-a/sample-repo",
             "imageScanningConfiguration": {
                 "scanOnPush": true
             }

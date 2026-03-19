@@ -11,21 +11,24 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import json
+import os
+from asyncio import new_event_loop, set_event_loop
 from collections.abc import MutableMapping
 
 from prompt_toolkit.application import Application
-from prompt_toolkit.eventloop import get_event_loop, run_until_complete
 
 from awscli.customizations.wizard import core
-from awscli.customizations.wizard.ui.style import get_default_style
-from awscli.customizations.wizard.ui.keybindings import get_default_keybindings
 from awscli.customizations.wizard.exceptions import (
-    UnexpectedWizardException, UnableToRunWizardError, InvalidChoiceException
+    InvalidChoiceException,
+    UnableToRunWizardError,
+    UnexpectedWizardException,
 )
+from awscli.customizations.wizard.ui.keybindings import get_default_keybindings
+from awscli.customizations.wizard.ui.style import get_default_style
 from awscli.utils import json_encoder
 
 
-class WizardAppRunner(object):
+class WizardAppRunner:
     def __init__(self, session, app_factory):
         self._session = session
         self._app_factory = app_factory
@@ -34,14 +37,23 @@ class WizardAppRunner(object):
         """Run a single wizard given the contents as a string."""
         app = self._app_factory(loaded, self._session)
         app.run()
-        # Propagates any exceptions that got set while in the app
-        app.future.result()
         print(app.traverser.get_output())
 
 
 class WizardApp(Application):
-    def __init__(self, layout, values, traverser, executor, style=None,
-                 key_bindings=None, full_screen=True, output=None):
+    def __init__(
+        self,
+        layout,
+        values,
+        traverser,
+        executor,
+        style=None,
+        key_bindings=None,
+        full_screen=True,
+        output=None,
+        app_input=None,
+        file_io=None,
+    ):
         self.values = values
         self.traverser = traverser
         self.executor = executor
@@ -51,26 +63,31 @@ class WizardApp(Application):
             key_bindings = get_default_keybindings()
         self.details_visible = False
         self.error_bar_visible = None
+        self.save_details_visible = False
+        if file_io is None:
+            file_io = FileIO()
+        self.file_io = file_io
         super().__init__(
-            layout=layout, style=style, key_bindings=key_bindings,
-            full_screen=full_screen, output=output
+            layout=layout,
+            style=style,
+            key_bindings=key_bindings,
+            full_screen=full_screen,
+            output=output,
+            input=app_input,
         )
 
     def run(self, pre_run=None, **kwargs):
-        loop = get_event_loop()
-        previous_exc_handler = loop.get_exception_handler()
-        loop.set_exception_handler(self._handle_exception)
+        loop = new_event_loop()
         try:
-            f = self.run_async(pre_run=pre_run)
-            run_until_complete(f)
-            return f.result()
+            set_event_loop(loop)
+            loop.set_exception_handler(self._handle_exception)
+            f = self.run_async(pre_run=pre_run, set_exception_handler=False)
+            return loop.run_until_complete(f)
         finally:
-            loop.set_exception_handler(previous_exc_handler)
+            loop.close()
 
-    def _handle_exception(self, context):
-        self.exit(
-            exception=UnexpectedWizardException(context['exception'])
-        )
+    def _handle_exception(self, loop, context):
+        self.exit(exception=UnexpectedWizardException(context['exception']))
 
 
 class WizardTraverser:
@@ -103,18 +120,19 @@ class WizardTraverser:
 
     def current_prompt_has_details(self):
         return 'details' in self._prompt_definitions.get(
-            self._current_prompt, {})
-    
+            self._current_prompt, {}
+        )
+
     def submit_prompt_answer(self, answer):
         definition = self._prompt_definitions[self._current_prompt]
         if 'choices' in definition:
             answer = self._convert_display_value_to_actual_value(
-                self._get_choices(self._current_prompt),
-                answer
+                self._get_choices(self._current_prompt), answer
             )
         if 'datatype' in definition:
             answer = core.DataTypeConverter.convert(
-                definition['datatype'], answer)
+                definition['datatype'], answer
+            )
 
         self._values[self._current_prompt] = answer
 
@@ -150,8 +168,11 @@ class WizardTraverser:
         return self._prompt_meets_condition(value_name)
 
     def is_prompt_details_visible_by_default(self, value_name):
-        return self._prompt_definitions[value_name].get(
-            'details', {}).get('visible', False)
+        return (
+            self._prompt_definitions[value_name]
+            .get('details', {})
+            .get('visible', False)
+        )
 
     def has_visited_section(self, section_name):
         return section_name in self._visited_sections
@@ -230,10 +251,7 @@ class WizardTraverser:
         for choice in choices:
             if isinstance(choice, str):
                 normalized_choices.append(
-                    {
-                        'display': choice,
-                        'actual_value': choice
-                    }
+                    {'display': choice, 'actual_value': choice}
                 )
             else:
                 normalized_choices.append(choice)
@@ -252,7 +270,7 @@ class WizardTraverser:
     def _get_next_prompt(self):
         prompts = list(self._prompt_definitions)
         current_pos = prompts.index(self._current_prompt)
-        for prompt in prompts[current_pos+1:]:
+        for prompt in prompts[current_pos + 1 :]:
             if self._prompt_meets_condition(prompt):
                 return prompt
         return self.DONE
@@ -268,12 +286,14 @@ class WizardTraverser:
     def get_output(self):
         template_step = core.TemplateStep()
         return template_step.run_step(
-            self._definition[self.OUTPUT], self._values)
+            self._definition[self.OUTPUT], self._values
+        )
 
 
 class WizardValues(MutableMapping):
-    def __init__(self, definition, value_retrieval_steps=None,
-                 exception_handler=None):
+    def __init__(
+        self, definition, value_retrieval_steps=None, exception_handler=None
+    ):
         self._definition = definition
         if value_retrieval_steps is None:
             value_retrieval_steps = {}
@@ -332,3 +352,9 @@ class WizardValues(MutableMapping):
         return new_vars
 
     copy = __copy__
+
+
+class FileIO:
+    def write_file_contents(self, filename, contents):
+        with open(os.path.expanduser(filename), 'w') as f:
+            f.write(contents)

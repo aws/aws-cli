@@ -1,0 +1,3660 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2018-05-10",
+    "auth":["aws.auth#sigv4"],
+    "endpointPrefix":"s3tables",
+    "protocol":"rest-json",
+    "protocols":["rest-json"],
+    "serviceFullName":"Amazon S3 Tables",
+    "serviceId":"S3Tables",
+    "signatureVersion":"v4",
+    "signingName":"s3tables",
+    "uid":"s3tables-2018-05-10"
+  },
+  "operations":{
+    "CreateNamespace":{
+      "name":"CreateNamespace",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/namespaces/{tableBucketARN}",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateNamespaceRequest"},
+      "output":{"shape":"CreateNamespaceResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Creates a namespace. A namespace is a logical grouping of tables within your table bucket, which you can use to organize tables. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-namespace-create.html\">Create a namespace</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:CreateNamespace</code> permission to use this operation. </p> </dd> </dl>"
+    },
+    "CreateTable":{
+      "name":"CreateTable",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/tables/{tableBucketARN}/{namespace}",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateTableRequest"},
+      "output":{"shape":"CreateTableResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Creates a new table associated with the given namespace in a table bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-create.html\">Creating an Amazon S3 table</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <ul> <li> <p>You must have the <code>s3tables:CreateTable</code> permission to use this operation. </p> </li> <li> <p>If you use this operation with the optional <code>metadata</code> request parameter you must have the <code>s3tables:PutTableData</code> permission. </p> </li> <li> <p>If you use this operation with the optional <code>encryptionConfiguration</code> request parameter you must have the <code>s3tables:PutTableEncryption</code> permission. </p> </li> <li> <p>If you use this operation with the <code>storageClassConfiguration</code> request parameter, you must have the <code>s3tables:PutTableStorageClass</code> permission.</p> </li> <li> <p>To create a table with tags, you must have the <code>s3tables:TagResource</code> permission in addition to <code>s3tables:CreateTable</code> permission.</p> </li> </ul> <note> <p>Additionally, If you choose SSE-KMS encryption you must grant the S3 Tables maintenance principal access to your KMS key. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-kms-permissions.html\">Permissions requirements for S3 Tables SSE-KMS encryption</a>. </p> </note> </dd> </dl>"
+    },
+    "CreateTableBucket":{
+      "name":"CreateTableBucket",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/buckets",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateTableBucketRequest"},
+      "output":{"shape":"CreateTableBucketResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Creates a table bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-buckets-create.html\">Creating a table bucket</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <ul> <li> <p>You must have the <code>s3tables:CreateTableBucket</code> permission to use this operation. </p> </li> <li> <p>If you use this operation with the optional <code>encryptionConfiguration</code> parameter you must have the <code>s3tables:PutTableBucketEncryption</code> permission.</p> </li> <li> <p>If you use this operation with the <code>storageClassConfiguration</code> request parameter, you must have the <code>s3tables:PutTableBucketStorageClass</code> permission.</p> </li> <li> <p>To create a table bucket with tags, you must have the <code>s3tables:TagResource</code> permission in addition to <code>s3tables:CreateTableBucket</code> permission.</p> </li> </ul> </dd> </dl>"
+    },
+    "DeleteNamespace":{
+      "name":"DeleteNamespace",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/namespaces/{tableBucketARN}/{namespace}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteNamespaceRequest"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Deletes a namespace. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-namespace-delete.html\">Delete a namespace</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:DeleteNamespace</code> permission to use this operation. </p> </dd> </dl>",
+      "idempotent":true
+    },
+    "DeleteTable":{
+      "name":"DeleteTable",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/tables/{tableBucketARN}/{namespace}/{name}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteTableRequest"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Deletes a table. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-delete.html\">Deleting an Amazon S3 table</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:DeleteTable</code> permission to use this operation. </p> </dd> </dl>",
+      "idempotent":true
+    },
+    "DeleteTableBucket":{
+      "name":"DeleteTableBucket",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/buckets/{tableBucketARN}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteTableBucketRequest"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Deletes a table bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-buckets-delete.html\">Deleting a table bucket</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:DeleteTableBucket</code> permission to use this operation. </p> </dd> </dl>",
+      "idempotent":true
+    },
+    "DeleteTableBucketEncryption":{
+      "name":"DeleteTableBucketEncryption",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/buckets/{tableBucketARN}/encryption",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteTableBucketEncryptionRequest"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Deletes the encryption configuration for a table bucket.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:DeleteTableBucketEncryption</code> permission to use this operation.</p> </dd> </dl>",
+      "idempotent":true
+    },
+    "DeleteTableBucketMetricsConfiguration":{
+      "name":"DeleteTableBucketMetricsConfiguration",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/buckets/{tableBucketARN}/metrics",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteTableBucketMetricsConfigurationRequest"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Deletes the metrics configuration for a table bucket.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:DeleteTableBucketMetricsConfiguration</code> permission to use this operation.</p> </dd> </dl>",
+      "idempotent":true
+    },
+    "DeleteTableBucketPolicy":{
+      "name":"DeleteTableBucketPolicy",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/buckets/{tableBucketARN}/policy",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteTableBucketPolicyRequest"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Deletes a table bucket policy. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-bucket-policy.html#table-bucket-policy-delete\">Deleting a table bucket policy</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:DeleteTableBucketPolicy</code> permission to use this operation. </p> </dd> </dl>",
+      "idempotent":true
+    },
+    "DeleteTableBucketReplication":{
+      "name":"DeleteTableBucketReplication",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/table-bucket-replication",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteTableBucketReplicationRequest"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Deletes the replication configuration for a table bucket. After deletion, new table updates will no longer be replicated to destination buckets, though existing replicated tables will remain in destination buckets.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:DeleteTableBucketReplication</code> permission to use this operation.</p> </dd> </dl>",
+      "idempotent":true
+    },
+    "DeleteTablePolicy":{
+      "name":"DeleteTablePolicy",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/tables/{tableBucketARN}/{namespace}/{name}/policy",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteTablePolicyRequest"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Deletes a table policy. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-table-policy.html#table-policy-delete\">Deleting a table policy</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:DeleteTablePolicy</code> permission to use this operation. </p> </dd> </dl>",
+      "idempotent":true
+    },
+    "DeleteTableReplication":{
+      "name":"DeleteTableReplication",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/table-replication",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteTableReplicationRequest"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Deletes the replication configuration for a specific table. After deletion, new updates to this table will no longer be replicated to destination tables, though existing replicated copies will remain in destination buckets.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:DeleteTableReplication</code> permission to use this operation.</p> </dd> </dl>",
+      "idempotent":true
+    },
+    "GetNamespace":{
+      "name":"GetNamespace",
+      "http":{
+        "method":"GET",
+        "requestUri":"/namespaces/{tableBucketARN}/{namespace}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetNamespaceRequest"},
+      "output":{"shape":"GetNamespaceResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Gets details about a namespace. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-namespace.html\">Table namespaces</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:GetNamespace</code> permission to use this operation. </p> </dd> </dl>",
+      "readonly":true
+    },
+    "GetTable":{
+      "name":"GetTable",
+      "http":{
+        "method":"GET",
+        "requestUri":"/get-table",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTableRequest"},
+      "output":{"shape":"GetTableResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Gets details about a table. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-tables.html\">S3 Tables</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:GetTable</code> permission to use this operation. </p> </dd> </dl>",
+      "readonly":true
+    },
+    "GetTableBucket":{
+      "name":"GetTableBucket",
+      "http":{
+        "method":"GET",
+        "requestUri":"/buckets/{tableBucketARN}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTableBucketRequest"},
+      "output":{"shape":"GetTableBucketResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Gets details on a table bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-buckets-details.html\">Viewing details about an Amazon S3 table bucket</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:GetTableBucket</code> permission to use this operation. </p> </dd> </dl>",
+      "readonly":true
+    },
+    "GetTableBucketEncryption":{
+      "name":"GetTableBucketEncryption",
+      "http":{
+        "method":"GET",
+        "requestUri":"/buckets/{tableBucketARN}/encryption",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTableBucketEncryptionRequest"},
+      "output":{"shape":"GetTableBucketEncryptionResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Gets the encryption configuration for a table bucket.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:GetTableBucketEncryption</code> permission to use this operation.</p> </dd> </dl>",
+      "readonly":true
+    },
+    "GetTableBucketMaintenanceConfiguration":{
+      "name":"GetTableBucketMaintenanceConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/buckets/{tableBucketARN}/maintenance",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTableBucketMaintenanceConfigurationRequest"},
+      "output":{"shape":"GetTableBucketMaintenanceConfigurationResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Gets details about a maintenance configuration for a given table bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-table-buckets-maintenance.html\">Amazon S3 table bucket maintenance</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:GetTableBucketMaintenanceConfiguration</code> permission to use this operation. </p> </dd> </dl>",
+      "readonly":true
+    },
+    "GetTableBucketMetricsConfiguration":{
+      "name":"GetTableBucketMetricsConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/buckets/{tableBucketARN}/metrics",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTableBucketMetricsConfigurationRequest"},
+      "output":{"shape":"GetTableBucketMetricsConfigurationResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Gets the metrics configuration for a table bucket.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:GetTableBucketMetricsConfiguration</code> permission to use this operation.</p> </dd> </dl>",
+      "readonly":true
+    },
+    "GetTableBucketPolicy":{
+      "name":"GetTableBucketPolicy",
+      "http":{
+        "method":"GET",
+        "requestUri":"/buckets/{tableBucketARN}/policy",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTableBucketPolicyRequest"},
+      "output":{"shape":"GetTableBucketPolicyResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Gets details about a table bucket policy. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-bucket-policy.html#table-bucket-policy-get\">Viewing a table bucket policy</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:GetTableBucketPolicy</code> permission to use this operation. </p> </dd> </dl>",
+      "readonly":true
+    },
+    "GetTableBucketReplication":{
+      "name":"GetTableBucketReplication",
+      "http":{
+        "method":"GET",
+        "requestUri":"/table-bucket-replication",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTableBucketReplicationRequest"},
+      "output":{"shape":"GetTableBucketReplicationResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Retrieves the replication configuration for a table bucket.This operation returns the IAM role, <code>versionToken</code>, and replication rules that define how tables in this bucket are replicated to other buckets.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:GetTableBucketReplication</code> permission to use this operation.</p> </dd> </dl>",
+      "readonly":true
+    },
+    "GetTableBucketStorageClass":{
+      "name":"GetTableBucketStorageClass",
+      "http":{
+        "method":"GET",
+        "requestUri":"/buckets/{tableBucketARN}/storage-class",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTableBucketStorageClassRequest"},
+      "output":{"shape":"GetTableBucketStorageClassResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Retrieves the storage class configuration for a specific table. This allows you to view the storage class settings that apply to an individual table, which may differ from the table bucket's default configuration.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:GetTableBucketStorageClass</code> permission to use this operation.</p> </dd> </dl>",
+      "readonly":true
+    },
+    "GetTableEncryption":{
+      "name":"GetTableEncryption",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tables/{tableBucketARN}/{namespace}/{name}/encryption",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTableEncryptionRequest"},
+      "output":{"shape":"GetTableEncryptionResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Gets the encryption configuration for a table.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:GetTableEncryption</code> permission to use this operation.</p> </dd> </dl>",
+      "readonly":true
+    },
+    "GetTableMaintenanceConfiguration":{
+      "name":"GetTableMaintenanceConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tables/{tableBucketARN}/{namespace}/{name}/maintenance",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTableMaintenanceConfigurationRequest"},
+      "output":{"shape":"GetTableMaintenanceConfigurationResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Gets details about the maintenance configuration of a table. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-maintenance.html\">S3 Tables maintenance</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <ul> <li> <p>You must have the <code>s3tables:GetTableMaintenanceConfiguration</code> permission to use this operation. </p> </li> <li> <p>You must have the <code>s3tables:GetTableData</code> permission to use set the compaction strategy to <code>sort</code> or <code>zorder</code>.</p> </li> </ul> </dd> </dl>",
+      "readonly":true
+    },
+    "GetTableMaintenanceJobStatus":{
+      "name":"GetTableMaintenanceJobStatus",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tables/{tableBucketARN}/{namespace}/{name}/maintenance-job-status",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTableMaintenanceJobStatusRequest"},
+      "output":{"shape":"GetTableMaintenanceJobStatusResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Gets the status of a maintenance job for a table. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-maintenance.html\">S3 Tables maintenance</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:GetTableMaintenanceJobStatus</code> permission to use this operation. </p> </dd> </dl>",
+      "readonly":true
+    },
+    "GetTableMetadataLocation":{
+      "name":"GetTableMetadataLocation",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tables/{tableBucketARN}/{namespace}/{name}/metadata-location",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTableMetadataLocationRequest"},
+      "output":{"shape":"GetTableMetadataLocationResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Gets the location of the table metadata.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:GetTableMetadataLocation</code> permission to use this operation. </p> </dd> </dl>",
+      "readonly":true
+    },
+    "GetTablePolicy":{
+      "name":"GetTablePolicy",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tables/{tableBucketARN}/{namespace}/{name}/policy",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTablePolicyRequest"},
+      "output":{"shape":"GetTablePolicyResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Gets details about a table policy. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-table-policy.html#table-policy-get\">Viewing a table policy</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:GetTablePolicy</code> permission to use this operation. </p> </dd> </dl>",
+      "readonly":true
+    },
+    "GetTableRecordExpirationConfiguration":{
+      "name":"GetTableRecordExpirationConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/table-record-expiration",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTableRecordExpirationConfigurationRequest"},
+      "output":{"shape":"GetTableRecordExpirationConfigurationResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"MethodNotAllowedException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Retrieves the expiration configuration settings for records in a table, and the status of the configuration. If the status of the configuration is <code>enabled</code>, records expire and are automatically removed from the table after the specified number of days.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:GetTableRecordExpirationConfiguration</code> permission to use this operation.</p> </dd> </dl>",
+      "readonly":true
+    },
+    "GetTableRecordExpirationJobStatus":{
+      "name":"GetTableRecordExpirationJobStatus",
+      "http":{
+        "method":"GET",
+        "requestUri":"/table-record-expiration-job-status",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTableRecordExpirationJobStatusRequest"},
+      "output":{"shape":"GetTableRecordExpirationJobStatusResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"MethodNotAllowedException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Retrieves the status, metrics, and details of the latest record expiration job for a table. This includes when the job ran, and whether it succeeded or failed. If the job ran successfully, this also includes statistics about the records that were removed.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:GetTableRecordExpirationJobStatus</code> permission to use this operation.</p> </dd> </dl>",
+      "readonly":true
+    },
+    "GetTableReplication":{
+      "name":"GetTableReplication",
+      "http":{
+        "method":"GET",
+        "requestUri":"/table-replication",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTableReplicationRequest"},
+      "output":{"shape":"GetTableReplicationResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Retrieves the replication configuration for a specific table.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:GetTableReplication</code> permission to use this operation.</p> </dd> </dl>",
+      "readonly":true
+    },
+    "GetTableReplicationStatus":{
+      "name":"GetTableReplicationStatus",
+      "http":{
+        "method":"GET",
+        "requestUri":"/replication-status",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTableReplicationStatusRequest"},
+      "output":{"shape":"GetTableReplicationStatusResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Retrieves the replication status for a table, including the status of replication to each destination. This operation provides visibility into replication health and progress.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:GetTableReplicationStatus</code> permission to use this operation.</p> </dd> </dl>",
+      "readonly":true
+    },
+    "GetTableStorageClass":{
+      "name":"GetTableStorageClass",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tables/{tableBucketARN}/{namespace}/{name}/storage-class",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTableStorageClassRequest"},
+      "output":{"shape":"GetTableStorageClassResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Retrieves the storage class configuration for a specific table. This allows you to view the storage class settings that apply to an individual table, which may differ from the table bucket's default configuration.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:GetTableStorageClass</code> permission to use this operation.</p> </dd> </dl>",
+      "readonly":true
+    },
+    "ListNamespaces":{
+      "name":"ListNamespaces",
+      "http":{
+        "method":"GET",
+        "requestUri":"/namespaces/{tableBucketARN}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListNamespacesRequest"},
+      "output":{"shape":"ListNamespacesResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Lists the namespaces within a table bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-namespace.html\">Table namespaces</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:ListNamespaces</code> permission to use this operation. </p> </dd> </dl>",
+      "readonly":true
+    },
+    "ListTableBuckets":{
+      "name":"ListTableBuckets",
+      "http":{
+        "method":"GET",
+        "requestUri":"/buckets",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTableBucketsRequest"},
+      "output":{"shape":"ListTableBucketsResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Lists table buckets for your account. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-buckets.html\">S3 Table buckets</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:ListTableBuckets</code> permission to use this operation. </p> </dd> </dl>",
+      "readonly":true
+    },
+    "ListTables":{
+      "name":"ListTables",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tables/{tableBucketARN}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTablesRequest"},
+      "output":{"shape":"ListTablesResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>List tables in the given table bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-tables.html\">S3 Tables</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:ListTables</code> permission to use this operation. </p> </dd> </dl>",
+      "readonly":true
+    },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tag/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Lists all of the tags applied to a specified Amazon S3 Tables resource. Each tag is a label consisting of a key and value pair. Tags can help you organize, track costs for, and control access to resources. </p> <note> <p>For a list of S3 resources that support tagging, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/tagging.html#manage-tags\">Managing tags for Amazon S3 resources</a>.</p> </note> <dl> <dt>Permissions</dt> <dd> <p>For tables and table buckets, you must have the <code>s3tables:ListTagsForResource</code> permission to use this operation.</p> </dd> </dl>",
+      "readonly":true
+    },
+    "PutTableBucketEncryption":{
+      "name":"PutTableBucketEncryption",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/buckets/{tableBucketARN}/encryption",
+        "responseCode":200
+      },
+      "input":{"shape":"PutTableBucketEncryptionRequest"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Sets the encryption configuration for a table bucket.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:PutTableBucketEncryption</code> permission to use this operation.</p> <note> <p>If you choose SSE-KMS encryption you must grant the S3 Tables maintenance principal access to your KMS key. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-kms-permissions.html\">Permissions requirements for S3 Tables SSE-KMS encryption</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> </note> </dd> </dl>",
+      "idempotent":true
+    },
+    "PutTableBucketMaintenanceConfiguration":{
+      "name":"PutTableBucketMaintenanceConfiguration",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/buckets/{tableBucketARN}/maintenance/{type}",
+        "responseCode":204
+      },
+      "input":{"shape":"PutTableBucketMaintenanceConfigurationRequest"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Creates a new maintenance configuration or replaces an existing maintenance configuration for a table bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-table-buckets-maintenance.html\">Amazon S3 table bucket maintenance</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:PutTableBucketMaintenanceConfiguration</code> permission to use this operation. </p> </dd> </dl>"
+    },
+    "PutTableBucketMetricsConfiguration":{
+      "name":"PutTableBucketMetricsConfiguration",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/buckets/{tableBucketARN}/metrics",
+        "responseCode":204
+      },
+      "input":{"shape":"PutTableBucketMetricsConfigurationRequest"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Sets the metrics configuration for a table bucket.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:PutTableBucketMetricsConfiguration</code> permission to use this operation.</p> </dd> </dl>",
+      "idempotent":true
+    },
+    "PutTableBucketPolicy":{
+      "name":"PutTableBucketPolicy",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/buckets/{tableBucketARN}/policy",
+        "responseCode":200
+      },
+      "input":{"shape":"PutTableBucketPolicyRequest"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Creates a new table bucket policy or replaces an existing table bucket policy for a table bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-bucket-policy.html#table-bucket-policy-add\">Adding a table bucket policy</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:PutTableBucketPolicy</code> permission to use this operation. </p> </dd> </dl>",
+      "idempotent":true
+    },
+    "PutTableBucketReplication":{
+      "name":"PutTableBucketReplication",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/table-bucket-replication",
+        "responseCode":200
+      },
+      "input":{"shape":"PutTableBucketReplicationRequest"},
+      "output":{"shape":"PutTableBucketReplicationResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Creates or updates the replication configuration for a table bucket. This operation defines how tables in the source bucket are replicated to destination buckets. Replication helps ensure data availability and disaster recovery across regions or accounts.</p> <dl> <dt>Permissions</dt> <dd> <ul> <li> <p>You must have the <code>s3tables:PutTableBucketReplication</code> permission to use this operation. The IAM role specified in the configuration must have permissions to read from the source bucket and write permissions to all destination buckets.</p> </li> <li> <p>You must also have the following permissions:</p> <ul> <li> <p> <code>s3tables:GetTable</code> permission on the source table.</p> </li> <li> <p> <code>s3tables:ListTables</code> permission on the bucket containing the table.</p> </li> <li> <p> <code>s3tables:CreateTable</code> permission for the destination.</p> </li> <li> <p> <code>s3tables:CreateNamespace</code> permission for the destination.</p> </li> <li> <p> <code>s3tables:GetTableMaintenanceConfig</code> permission for the source bucket.</p> </li> <li> <p> <code>s3tables:PutTableMaintenanceConfig</code> permission for the destination bucket.</p> </li> </ul> </li> <li> <p>You must have <code>iam:PassRole</code> permission with condition allowing roles to be passed to <code>replication.s3tables.amazonaws.com</code>.</p> </li> </ul> </dd> </dl>",
+      "idempotent":true
+    },
+    "PutTableBucketStorageClass":{
+      "name":"PutTableBucketStorageClass",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/buckets/{tableBucketARN}/storage-class",
+        "responseCode":200
+      },
+      "input":{"shape":"PutTableBucketStorageClassRequest"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Sets or updates the storage class configuration for a table bucket. This configuration serves as the default storage class for all new tables created in the bucket, allowing you to optimize storage costs at the bucket level.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:PutTableBucketStorageClass</code> permission to use this operation.</p> </dd> </dl>",
+      "idempotent":true
+    },
+    "PutTableMaintenanceConfiguration":{
+      "name":"PutTableMaintenanceConfiguration",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/tables/{tableBucketARN}/{namespace}/{name}/maintenance/{type}",
+        "responseCode":204
+      },
+      "input":{"shape":"PutTableMaintenanceConfigurationRequest"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Creates a new maintenance configuration or replaces an existing maintenance configuration for a table. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-maintenance.html\">S3 Tables maintenance</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:PutTableMaintenanceConfiguration</code> permission to use this operation. </p> </dd> </dl>"
+    },
+    "PutTablePolicy":{
+      "name":"PutTablePolicy",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/tables/{tableBucketARN}/{namespace}/{name}/policy",
+        "responseCode":200
+      },
+      "input":{"shape":"PutTablePolicyRequest"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Creates a new table policy or replaces an existing table policy for a table. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-table-policy.html#table-policy-add\">Adding a table policy</a> in the <i>Amazon Simple Storage Service User Guide</i>. </p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:PutTablePolicy</code> permission to use this operation. </p> </dd> </dl>",
+      "idempotent":true
+    },
+    "PutTableRecordExpirationConfiguration":{
+      "name":"PutTableRecordExpirationConfiguration",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/table-record-expiration",
+        "responseCode":204
+      },
+      "input":{"shape":"PutTableRecordExpirationConfigurationRequest"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"MethodNotAllowedException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Creates or updates the expiration configuration settings for records in a table, including the status of the configuration. If you enable record expiration for a table, records expire and are automatically removed from the table after the number of days that you specify.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:PutTableRecordExpirationConfiguration</code> permission to use this operation.</p> </dd> </dl>",
+      "idempotent":true
+    },
+    "PutTableReplication":{
+      "name":"PutTableReplication",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/table-replication",
+        "responseCode":200
+      },
+      "input":{"shape":"PutTableReplicationRequest"},
+      "output":{"shape":"PutTableReplicationResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Creates or updates the replication configuration for a specific table. This operation allows you to define table-level replication independently of bucket-level replication, providing granular control over which tables are replicated and where.</p> <dl> <dt>Permissions</dt> <dd> <ul> <li> <p>You must have the <code>s3tables:PutTableReplication</code> permission to use this operation. The IAM role specified in the configuration must have permissions to read from the source table and write to all destination tables.</p> </li> <li> <p>You must also have the following permissions:</p> <ul> <li> <p> <code>s3tables:GetTable</code> permission on the source table being replicated.</p> </li> <li> <p> <code>s3tables:CreateTable</code> permission for the destination.</p> </li> <li> <p> <code>s3tables:CreateNamespace</code> permission for the destination.</p> </li> <li> <p> <code>s3tables:GetTableMaintenanceConfig</code> permission for the source table.</p> </li> <li> <p> <code>s3tables:PutTableMaintenanceConfig</code> permission for the destination table.</p> </li> </ul> </li> <li> <p>You must have <code>iam:PassRole</code> permission with condition allowing roles to be passed to <code>replication.s3tables.amazonaws.com</code>.</p> </li> </ul> </dd> </dl>",
+      "idempotent":true
+    },
+    "RenameTable":{
+      "name":"RenameTable",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/tables/{tableBucketARN}/{namespace}/{name}/rename",
+        "responseCode":204
+      },
+      "input":{"shape":"RenameTableRequest"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Renames a table or a namespace. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-tables.html\">S3 Tables</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:RenameTable</code> permission to use this operation. </p> </dd> </dl>"
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/tag/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "output":{"shape":"TagResourceResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Applies one or more user-defined tags to an Amazon S3 Tables resource or updates existing tags. Each tag is a label consisting of a key and value pair. Tags can help you organize, track costs for, and control access to your resources. You can add up to 50 tags for each S3 resource. </p> <note> <p>For a list of S3 resources that support tagging, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/tagging.html#manage-tags\">Managing tags for Amazon S3 resources</a>.</p> </note> <dl> <dt>Permissions</dt> <dd> <p>For tables and table buckets, you must have the <code>s3tables:TagResource</code> permission to use this operation.</p> </dd> </dl>",
+      "idempotent":true
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/tag/{resourceArn}",
+        "responseCode":204
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "output":{"shape":"UntagResourceResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Removes the specified user-defined tags from an Amazon S3 Tables resource. You can pass one or more tag keys. </p> <note> <p>For a list of S3 resources that support tagging, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/tagging.html#manage-tags\">Managing tags for Amazon S3 resources</a>.</p> </note> <dl> <dt>Permissions</dt> <dd> <p>For tables and table buckets, you must have the <code>s3tables:UntagResource</code> permission to use this operation.</p> </dd> </dl>",
+      "idempotent":true
+    },
+    "UpdateTableMetadataLocation":{
+      "name":"UpdateTableMetadataLocation",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/tables/{tableBucketARN}/{namespace}/{name}/metadata-location",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateTableMetadataLocationRequest"},
+      "output":{"shape":"UpdateTableMetadataLocationResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Updates the metadata location for a table. The metadata location of a table must be an S3 URI that begins with the table's warehouse location. The metadata location for an Apache Iceberg table must end with <code>.metadata.json</code>, or if the metadata file is Gzip-compressed, <code>.metadata.json.gz</code>.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:UpdateTableMetadataLocation</code> permission to use this operation. </p> </dd> </dl>"
+    }
+  },
+  "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The action cannot be performed because you do not have the required permission.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "AccountId":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"[0-9].*"
+    },
+    "BadRequestException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The request is invalid or malformed.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "Boolean":{
+      "type":"boolean",
+      "box":true
+    },
+    "ConflictException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The request failed because there is a conflict with a previous write. You can retry the request.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "CreateNamespaceRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "namespace"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket to create the namespace in.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"CreateNamespaceRequestNamespaceList",
+          "documentation":"<p>A name for the namespace.</p>"
+        }
+      }
+    },
+    "CreateNamespaceRequestNamespaceList":{
+      "type":"list",
+      "member":{"shape":"NamespaceName"},
+      "max":1,
+      "min":1
+    },
+    "CreateNamespaceResponse":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "namespace"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket the namespace was created in.</p>"
+        },
+        "namespace":{
+          "shape":"NamespaceList",
+          "documentation":"<p>The name of the namespace.</p>"
+        }
+      }
+    },
+    "CreateTableBucketRequest":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"TableBucketName",
+          "documentation":"<p>The name for the table bucket.</p>"
+        },
+        "encryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>The encryption configuration to use for the table bucket. This configuration specifies the default encryption settings that will be applied to all tables created in this bucket unless overridden at the table level. The configuration includes the encryption algorithm and, if using SSE-KMS, the KMS key to use.</p>"
+        },
+        "storageClassConfiguration":{
+          "shape":"StorageClassConfiguration",
+          "documentation":"<p>The default storage class configuration for the table bucket. This configuration will be applied to all new tables created in this bucket unless overridden at the table level. If not specified, the service default storage class will be used.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>A map of user-defined tags that you would like to apply to the table bucket that you are creating. A tag is a key-value pair that you apply to your resources. Tags can help you organize and control access to resources. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/tagging.html\">Tagging for cost allocation or attribute-based access control (ABAC)</a>.</p> <note> <p>You must have the <code>s3tables:TagResource</code> permission in addition to <code>s3tables:CreateTableBucket</code> permisson to create a table bucket with tags.</p> </note>"
+        }
+      }
+    },
+    "CreateTableBucketResponse":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>"
+        }
+      }
+    },
+    "CreateTableRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "namespace",
+        "name",
+        "format"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket to create the table in.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The namespace to associated with the table.</p>",
+          "location":"uri",
+          "locationName":"namespace"
+        },
+        "name":{
+          "shape":"TableName",
+          "documentation":"<p>The name for the table.</p>"
+        },
+        "format":{
+          "shape":"OpenTableFormat",
+          "documentation":"<p>The format for the table.</p>"
+        },
+        "metadata":{
+          "shape":"TableMetadata",
+          "documentation":"<p>The metadata for the table.</p>"
+        },
+        "encryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>The encryption configuration to use for the table. This configuration specifies the encryption algorithm and, if using SSE-KMS, the KMS key to use for encrypting the table. </p> <note> <p>If you choose SSE-KMS encryption you must grant the S3 Tables maintenance principal access to your KMS key. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-kms-permissions.html\">Permissions requirements for S3 Tables SSE-KMS encryption</a>.</p> </note>"
+        },
+        "storageClassConfiguration":{
+          "shape":"StorageClassConfiguration",
+          "documentation":"<p>The storage class configuration for the table. If not specified, the table inherits the storage class configuration from its table bucket. Specify this parameter to override the bucket's default storage class for this table.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>A map of user-defined tags that you would like to apply to the table that you are creating. A tag is a key-value pair that you apply to your resources. Tags can help you organize, track costs for, and control access to resources. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/tagging.html\">Tagging for cost allocation or attribute-based access control (ABAC)</a>.</p> <note> <p>You must have the <code>s3tables:TagResource</code> permission in addition to <code>s3tables:CreateTable</code> permission to create a table with tags.</p> </note>"
+        }
+      }
+    },
+    "CreateTableResponse":{
+      "type":"structure",
+      "required":[
+        "tableARN",
+        "versionToken"
+      ],
+      "members":{
+        "tableARN":{
+          "shape":"TableARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table.</p>"
+        },
+        "versionToken":{
+          "shape":"VersionToken",
+          "documentation":"<p>The version token of the table.</p>"
+        }
+      }
+    },
+    "DeleteNamespaceRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "namespace"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket associated with the namespace.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The name of the namespace.</p>",
+          "location":"uri",
+          "locationName":"namespace"
+        }
+      }
+    },
+    "DeleteTableBucketEncryptionRequest":{
+      "type":"structure",
+      "required":["tableBucketARN"],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        }
+      }
+    },
+    "DeleteTableBucketMetricsConfigurationRequest":{
+      "type":"structure",
+      "required":["tableBucketARN"],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        }
+      }
+    },
+    "DeleteTableBucketPolicyRequest":{
+      "type":"structure",
+      "required":["tableBucketARN"],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        }
+      }
+    },
+    "DeleteTableBucketReplicationRequest":{
+      "type":"structure",
+      "required":["tableBucketARN"],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"querystring",
+          "locationName":"tableBucketARN"
+        },
+        "versionToken":{
+          "shape":"VersionToken",
+          "documentation":"<p>A version token from a previous GetTableBucketReplication call. Use this token to ensure you're deleting the expected version of the configuration.</p>",
+          "location":"querystring",
+          "locationName":"versionToken"
+        }
+      }
+    },
+    "DeleteTableBucketRequest":{
+      "type":"structure",
+      "required":["tableBucketARN"],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        }
+      }
+    },
+    "DeleteTablePolicyRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "namespace",
+        "name"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket that contains the table.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The namespace associated with the table. </p>",
+          "location":"uri",
+          "locationName":"namespace"
+        },
+        "name":{
+          "shape":"TableName",
+          "documentation":"<p>The table name.</p>",
+          "location":"uri",
+          "locationName":"name"
+        }
+      }
+    },
+    "DeleteTableReplicationRequest":{
+      "type":"structure",
+      "required":[
+        "tableArn",
+        "versionToken"
+      ],
+      "members":{
+        "tableArn":{
+          "shape":"TableARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table.</p>",
+          "location":"querystring",
+          "locationName":"tableArn"
+        },
+        "versionToken":{
+          "shape":"String",
+          "documentation":"<p>A version token from a previous GetTableReplication call. Use this token to ensure you're deleting the expected version of the configuration.</p>",
+          "location":"querystring",
+          "locationName":"versionToken"
+        }
+      }
+    },
+    "DeleteTableRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "namespace",
+        "name"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket that contains the table.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The namespace associated with the table.</p>",
+          "location":"uri",
+          "locationName":"namespace"
+        },
+        "name":{
+          "shape":"TableName",
+          "documentation":"<p>The name of the table.</p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "versionToken":{
+          "shape":"VersionToken",
+          "documentation":"<p>The version token of the table.</p>",
+          "location":"querystring",
+          "locationName":"versionToken"
+        }
+      }
+    },
+    "EncryptionConfiguration":{
+      "type":"structure",
+      "required":["sseAlgorithm"],
+      "members":{
+        "sseAlgorithm":{
+          "shape":"SSEAlgorithm",
+          "documentation":"<p>The server-side encryption algorithm to use. Valid values are <code>AES256</code> for S3-managed encryption keys, or <code>aws:kms</code> for Amazon Web Services KMS-managed encryption keys. If you choose SSE-KMS encryption you must grant the S3 Tables maintenance principal access to your KMS key. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-kms-permissions.html\">Permissions requirements for S3 Tables SSE-KMS encryption</a>.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"EncryptionConfigurationKmsKeyArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key to use for encryption. This field is required only when <code>sseAlgorithm</code> is set to <code>aws:kms</code>.</p>"
+        }
+      },
+      "documentation":"<p>Configuration specifying how data should be encrypted. This structure defines the encryption algorithm and optional KMS key to be used for server-side encryption.</p>"
+    },
+    "EncryptionConfigurationKmsKeyArnString":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"(arn:aws[-a-z0-9]*:kms:[-a-z0-9]*:[0-9]{12}:key/.+)"
+    },
+    "ErrorMessage":{"type":"string"},
+    "ForbiddenException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The caller isn't authorized to make the request.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "GetNamespaceRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "namespace"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The name of the namespace.</p>",
+          "location":"uri",
+          "locationName":"namespace"
+        }
+      }
+    },
+    "GetNamespaceResponse":{
+      "type":"structure",
+      "required":[
+        "namespace",
+        "createdAt",
+        "createdBy",
+        "ownerAccountId"
+      ],
+      "members":{
+        "namespace":{
+          "shape":"NamespaceList",
+          "documentation":"<p>The name of the namespace.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the namespace was created at.</p>"
+        },
+        "createdBy":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the account that created the namespace.</p>"
+        },
+        "ownerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the account that owns the namespcace.</p>"
+        },
+        "namespaceId":{
+          "shape":"NamespaceId",
+          "documentation":"<p>The unique identifier of the namespace.</p>"
+        },
+        "tableBucketId":{
+          "shape":"TableBucketId",
+          "documentation":"<p>The unique identifier of the table bucket containing this namespace.</p>"
+        }
+      }
+    },
+    "GetTableBucketEncryptionRequest":{
+      "type":"structure",
+      "required":["tableBucketARN"],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        }
+      }
+    },
+    "GetTableBucketEncryptionResponse":{
+      "type":"structure",
+      "required":["encryptionConfiguration"],
+      "members":{
+        "encryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>The encryption configuration for the table bucket.</p>"
+        }
+      }
+    },
+    "GetTableBucketMaintenanceConfigurationRequest":{
+      "type":"structure",
+      "required":["tableBucketARN"],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket associated with the maintenance configuration.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        }
+      }
+    },
+    "GetTableBucketMaintenanceConfigurationResponse":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "configuration"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket associated with the maintenance configuration.</p>"
+        },
+        "configuration":{
+          "shape":"TableBucketMaintenanceConfiguration",
+          "documentation":"<p>Details about the maintenance configuration for the table bucket.</p>"
+        }
+      }
+    },
+    "GetTableBucketMetricsConfigurationRequest":{
+      "type":"structure",
+      "required":["tableBucketARN"],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        }
+      }
+    },
+    "GetTableBucketMetricsConfigurationResponse":{
+      "type":"structure",
+      "required":["tableBucketARN"],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>"
+        },
+        "id":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the metrics configuration.</p>"
+        }
+      }
+    },
+    "GetTableBucketPolicyRequest":{
+      "type":"structure",
+      "required":["tableBucketARN"],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        }
+      }
+    },
+    "GetTableBucketPolicyResponse":{
+      "type":"structure",
+      "required":["resourcePolicy"],
+      "members":{
+        "resourcePolicy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The <code>JSON</code> that defines the policy.</p>"
+        }
+      }
+    },
+    "GetTableBucketReplicationRequest":{
+      "type":"structure",
+      "required":["tableBucketARN"],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"querystring",
+          "locationName":"tableBucketARN"
+        }
+      }
+    },
+    "GetTableBucketReplicationResponse":{
+      "type":"structure",
+      "required":[
+        "versionToken",
+        "configuration"
+      ],
+      "members":{
+        "versionToken":{
+          "shape":"VersionToken",
+          "documentation":"<p>A version token that represents the current state of the replication configuration. Use this token when updating the configuration to ensure consistency.</p>"
+        },
+        "configuration":{
+          "shape":"TableBucketReplicationConfiguration",
+          "documentation":"<p>The replication configuration for the table bucket, including the IAM role and replication rules.</p>"
+        }
+      }
+    },
+    "GetTableBucketRequest":{
+      "type":"structure",
+      "required":["tableBucketARN"],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        }
+      }
+    },
+    "GetTableBucketResponse":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "name",
+        "ownerAccountId",
+        "createdAt"
+      ],
+      "members":{
+        "arn":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>"
+        },
+        "name":{
+          "shape":"TableBucketName",
+          "documentation":"<p>The name of the table bucket</p>"
+        },
+        "ownerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the account that owns the table bucket.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the table bucket was created.</p>"
+        },
+        "tableBucketId":{
+          "shape":"TableBucketId",
+          "documentation":"<p>The unique identifier of the table bucket.</p>"
+        },
+        "type":{
+          "shape":"TableBucketType",
+          "documentation":"<p>The type of the table bucket.</p>"
+        }
+      }
+    },
+    "GetTableBucketStorageClassRequest":{
+      "type":"structure",
+      "required":["tableBucketARN"],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        }
+      }
+    },
+    "GetTableBucketStorageClassResponse":{
+      "type":"structure",
+      "required":["storageClassConfiguration"],
+      "members":{
+        "storageClassConfiguration":{
+          "shape":"StorageClassConfiguration",
+          "documentation":"<p>The storage class configuration for the table bucket.</p>"
+        }
+      }
+    },
+    "GetTableEncryptionRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "namespace",
+        "name"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket containing the table.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The namespace associated with the table.</p>",
+          "location":"uri",
+          "locationName":"namespace"
+        },
+        "name":{
+          "shape":"TableName",
+          "documentation":"<p>The name of the table.</p>",
+          "location":"uri",
+          "locationName":"name"
+        }
+      }
+    },
+    "GetTableEncryptionResponse":{
+      "type":"structure",
+      "required":["encryptionConfiguration"],
+      "members":{
+        "encryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>The encryption configuration for the table.</p>"
+        }
+      }
+    },
+    "GetTableMaintenanceConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "namespace",
+        "name"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The namespace associated with the table.</p>",
+          "location":"uri",
+          "locationName":"namespace"
+        },
+        "name":{
+          "shape":"TableName",
+          "documentation":"<p>The name of the table.</p>",
+          "location":"uri",
+          "locationName":"name"
+        }
+      }
+    },
+    "GetTableMaintenanceConfigurationResponse":{
+      "type":"structure",
+      "required":[
+        "tableARN",
+        "configuration"
+      ],
+      "members":{
+        "tableARN":{
+          "shape":"TableARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table.</p>"
+        },
+        "configuration":{
+          "shape":"TableMaintenanceConfiguration",
+          "documentation":"<p>Details about the maintenance configuration for the table bucket.</p>"
+        }
+      }
+    },
+    "GetTableMaintenanceJobStatusRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "namespace",
+        "name"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The name of the namespace the table is associated with. </p>",
+          "location":"uri",
+          "locationName":"namespace"
+        },
+        "name":{
+          "shape":"TableName",
+          "documentation":"<p>The name of the table containing the maintenance job status you want to check.</p>",
+          "location":"uri",
+          "locationName":"name"
+        }
+      }
+    },
+    "GetTableMaintenanceJobStatusResponse":{
+      "type":"structure",
+      "required":[
+        "tableARN",
+        "status"
+      ],
+      "members":{
+        "tableARN":{
+          "shape":"TableARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table.</p>"
+        },
+        "status":{
+          "shape":"TableMaintenanceJobStatus",
+          "documentation":"<p>The status of the maintenance job.</p>"
+        }
+      }
+    },
+    "GetTableMetadataLocationRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "namespace",
+        "name"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The namespace of the table.</p>",
+          "location":"uri",
+          "locationName":"namespace"
+        },
+        "name":{
+          "shape":"TableName",
+          "documentation":"<p>The name of the table.</p>",
+          "location":"uri",
+          "locationName":"name"
+        }
+      }
+    },
+    "GetTableMetadataLocationResponse":{
+      "type":"structure",
+      "required":[
+        "versionToken",
+        "warehouseLocation"
+      ],
+      "members":{
+        "versionToken":{
+          "shape":"VersionToken",
+          "documentation":"<p>The version token.</p>"
+        },
+        "metadataLocation":{
+          "shape":"MetadataLocation",
+          "documentation":"<p>The metadata location.</p>"
+        },
+        "warehouseLocation":{
+          "shape":"WarehouseLocation",
+          "documentation":"<p>The warehouse location.</p>"
+        }
+      }
+    },
+    "GetTablePolicyRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "namespace",
+        "name"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket that contains the table.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The namespace associated with the table.</p>",
+          "location":"uri",
+          "locationName":"namespace"
+        },
+        "name":{
+          "shape":"TableName",
+          "documentation":"<p>The name of the table.</p>",
+          "location":"uri",
+          "locationName":"name"
+        }
+      }
+    },
+    "GetTablePolicyResponse":{
+      "type":"structure",
+      "required":["resourcePolicy"],
+      "members":{
+        "resourcePolicy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The <code>JSON</code> that defines the policy.</p>"
+        }
+      }
+    },
+    "GetTableRecordExpirationConfigurationRequest":{
+      "type":"structure",
+      "required":["tableArn"],
+      "members":{
+        "tableArn":{
+          "shape":"TableARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table.</p>",
+          "location":"querystring",
+          "locationName":"tableArn"
+        }
+      }
+    },
+    "GetTableRecordExpirationConfigurationResponse":{
+      "type":"structure",
+      "required":["configuration"],
+      "members":{
+        "configuration":{
+          "shape":"TableRecordExpirationConfigurationValue",
+          "documentation":"<p>The record expiration configuration for the table, including the status and retention settings.</p>"
+        }
+      }
+    },
+    "GetTableRecordExpirationJobStatusRequest":{
+      "type":"structure",
+      "required":["tableArn"],
+      "members":{
+        "tableArn":{
+          "shape":"TableARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table.</p>",
+          "location":"querystring",
+          "locationName":"tableArn"
+        }
+      }
+    },
+    "GetTableRecordExpirationJobStatusResponse":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"TableRecordExpirationJobStatus",
+          "documentation":"<p>The current status of the most recent expiration job.</p>"
+        },
+        "lastRunTimestamp":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the expiration job was last executed.</p>"
+        },
+        "failureMessage":{
+          "shape":"String",
+          "documentation":"<p>If the job failed, this field contains an error message describing the failure reason.</p>"
+        },
+        "metrics":{
+          "shape":"TableRecordExpirationJobMetrics",
+          "documentation":"<p>Metrics about the most recent expiration job execution, including the number of records and files deleted.</p>"
+        }
+      }
+    },
+    "GetTableReplicationRequest":{
+      "type":"structure",
+      "required":["tableArn"],
+      "members":{
+        "tableArn":{
+          "shape":"TableARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table.</p>",
+          "location":"querystring",
+          "locationName":"tableArn"
+        }
+      }
+    },
+    "GetTableReplicationResponse":{
+      "type":"structure",
+      "required":[
+        "versionToken",
+        "configuration"
+      ],
+      "members":{
+        "versionToken":{
+          "shape":"String",
+          "documentation":"<p>A version token that represents the current state of the table's replication configuration. Use this token when updating the configuration to ensure consistency.</p>"
+        },
+        "configuration":{
+          "shape":"TableReplicationConfiguration",
+          "documentation":"<p>The replication configuration for the table, including the IAM role and replication rules.</p>"
+        }
+      }
+    },
+    "GetTableReplicationStatusRequest":{
+      "type":"structure",
+      "required":["tableArn"],
+      "members":{
+        "tableArn":{
+          "shape":"TableARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table.</p>",
+          "location":"querystring",
+          "locationName":"tableArn"
+        }
+      }
+    },
+    "GetTableReplicationStatusResponse":{
+      "type":"structure",
+      "required":[
+        "sourceTableArn",
+        "destinations"
+      ],
+      "members":{
+        "sourceTableArn":{
+          "shape":"TableARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source table being replicated.</p>"
+        },
+        "destinations":{
+          "shape":"ReplicationDestinationStatuses",
+          "documentation":"<p>An array of status information for each replication destination, including the current state, last successful update, and any error messages.</p>"
+        }
+      }
+    },
+    "GetTableRequest":{
+      "type":"structure",
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket associated with the table.</p>",
+          "location":"querystring",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The name of the namespace the table is associated with.</p>",
+          "location":"querystring",
+          "locationName":"namespace"
+        },
+        "name":{
+          "shape":"TableName",
+          "documentation":"<p>The name of the table.</p>",
+          "location":"querystring",
+          "locationName":"name"
+        },
+        "tableArn":{
+          "shape":"TableARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table.</p>",
+          "location":"querystring",
+          "locationName":"tableArn"
+        }
+      }
+    },
+    "GetTableResponse":{
+      "type":"structure",
+      "required":[
+        "name",
+        "type",
+        "tableARN",
+        "namespace",
+        "versionToken",
+        "warehouseLocation",
+        "createdAt",
+        "createdBy",
+        "modifiedAt",
+        "modifiedBy",
+        "ownerAccountId",
+        "format"
+      ],
+      "members":{
+        "name":{
+          "shape":"TableName",
+          "documentation":"<p>The name of the table.</p>"
+        },
+        "type":{
+          "shape":"TableType",
+          "documentation":"<p>The type of the table.</p>"
+        },
+        "tableARN":{
+          "shape":"TableARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table.</p>"
+        },
+        "namespace":{
+          "shape":"NamespaceList",
+          "documentation":"<p>The namespace associated with the table.</p>"
+        },
+        "namespaceId":{
+          "shape":"NamespaceId",
+          "documentation":"<p>The unique identifier of the namespace containing this table.</p>"
+        },
+        "versionToken":{
+          "shape":"VersionToken",
+          "documentation":"<p>The version token of the table.</p>"
+        },
+        "metadataLocation":{
+          "shape":"MetadataLocation",
+          "documentation":"<p>The metadata location of the table.</p>"
+        },
+        "warehouseLocation":{
+          "shape":"WarehouseLocation",
+          "documentation":"<p>The warehouse location of the table.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the table bucket was created at.</p>"
+        },
+        "createdBy":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the account that created the table.</p>"
+        },
+        "managedByService":{
+          "shape":"String",
+          "documentation":"<p>The service that manages the table.</p>"
+        },
+        "modifiedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the table was last modified on.</p>"
+        },
+        "modifiedBy":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the account that last modified the table.</p>"
+        },
+        "ownerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the account that owns the table.</p>"
+        },
+        "format":{
+          "shape":"OpenTableFormat",
+          "documentation":"<p>The format of the table.</p>"
+        },
+        "tableBucketId":{
+          "shape":"TableBucketId",
+          "documentation":"<p>The unique identifier of the table bucket containing this table.</p>"
+        },
+        "managedTableInformation":{
+          "shape":"ManagedTableInformation",
+          "documentation":"<p>If this table is managed by S3 Tables, contains additional information such as replication details.</p>"
+        }
+      }
+    },
+    "GetTableStorageClassRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "namespace",
+        "name"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket that contains the table.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The namespace associated with the table.</p>",
+          "location":"uri",
+          "locationName":"namespace"
+        },
+        "name":{
+          "shape":"TableName",
+          "documentation":"<p>The name of the table.</p>",
+          "location":"uri",
+          "locationName":"name"
+        }
+      }
+    },
+    "GetTableStorageClassResponse":{
+      "type":"structure",
+      "required":["storageClassConfiguration"],
+      "members":{
+        "storageClassConfiguration":{
+          "shape":"StorageClassConfiguration",
+          "documentation":"<p>The storage class configuration for the table.</p>"
+        }
+      }
+    },
+    "IAMRole":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:.+:iam::[0-9]{12}:role/.+"
+    },
+    "IcebergCompactionSettings":{
+      "type":"structure",
+      "members":{
+        "targetFileSizeMB":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>The target file size for the table in MB.</p>"
+        },
+        "strategy":{
+          "shape":"IcebergCompactionStrategy",
+          "documentation":"<p>The compaction strategy to use for the table. This determines how files are selected and combined during compaction operations.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the compaction settings for an Iceberg table.</p>"
+    },
+    "IcebergCompactionStrategy":{
+      "type":"string",
+      "enum":[
+        "auto",
+        "binpack",
+        "sort",
+        "z-order"
+      ]
+    },
+    "IcebergMetadata":{
+      "type":"structure",
+      "required":["schema"],
+      "members":{
+        "schema":{
+          "shape":"IcebergSchema",
+          "documentation":"<p>The schema for an Iceberg table.</p>"
+        },
+        "partitionSpec":{
+          "shape":"IcebergPartitionSpec",
+          "documentation":"<p>The partition specification for the Iceberg table. Partitioning organizes data into separate files based on the values of one or more fields, which can improve query performance by reducing the amount of data scanned. Each partition field applies a transform (such as identity, year, month, or bucket) to a single field.</p>"
+        },
+        "writeOrder":{
+          "shape":"IcebergSortOrder",
+          "documentation":"<p>The sort order for the Iceberg table. Sort order defines how data is sorted within data files, which can improve query performance by enabling more efficient data skipping and filtering.</p>"
+        },
+        "properties":{
+          "shape":"TableProperties",
+          "documentation":"<p>A map of custom configuration properties for the Iceberg table.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the metadata for an Iceberg table.</p>"
+    },
+    "IcebergNullOrder":{
+      "type":"string",
+      "enum":[
+        "nulls-first",
+        "nulls-last"
+      ]
+    },
+    "IcebergPartitionField":{
+      "type":"structure",
+      "required":[
+        "sourceId",
+        "transform",
+        "name"
+      ],
+      "members":{
+        "sourceId":{
+          "shape":"Integer",
+          "documentation":"<p>The ID of the source schema field to partition by. This must reference a valid field ID from the table schema.</p>",
+          "locationName":"source-id"
+        },
+        "transform":{
+          "shape":"String",
+          "documentation":"<p>The partition transform to apply to the source field. Supported transforms include <code>identity</code>, <code>year</code>, <code>month</code>, <code>day</code>, <code>hour</code>, <code>bucket</code>, and <code>truncate</code>. For more information, see the <a href=\"https://iceberg.apache.org/spec/#partition-transforms\">Apache Iceberg partition transforms documentation</a>.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name for this partition field. This name is used in the partitioned file paths.</p>"
+        },
+        "fieldId":{
+          "shape":"Integer",
+          "documentation":"<p>An optional unique identifier for this partition field. If not specified, S3 Tables automatically assigns a field ID.</p>",
+          "locationName":"field-id"
+        }
+      },
+      "documentation":"<p>Defines a single partition field in an Iceberg partition specification.</p>"
+    },
+    "IcebergPartitionFieldList":{
+      "type":"list",
+      "member":{"shape":"IcebergPartitionField"}
+    },
+    "IcebergPartitionSpec":{
+      "type":"structure",
+      "required":["fields"],
+      "members":{
+        "fields":{
+          "shape":"IcebergPartitionFieldList",
+          "documentation":"<p>The list of partition fields that define how the table data is partitioned. Each field specifies a source field and a transform to apply. This field is required if <code>partitionSpec</code> is provided.</p>"
+        },
+        "specId":{
+          "shape":"Integer",
+          "documentation":"<p>The unique identifier for this partition specification. If not specified, defaults to <code>0</code>.</p>",
+          "locationName":"spec-id"
+        }
+      },
+      "documentation":"<p>Defines how data in an Iceberg table is partitioned. Partitioning helps optimize query performance by organizing data into separate files based on field values. Each partition field specifies a transform to apply to a source field.</p>"
+    },
+    "IcebergSchema":{
+      "type":"structure",
+      "required":["fields"],
+      "members":{
+        "fields":{
+          "shape":"SchemaFieldList",
+          "documentation":"<p>The schema fields for the table</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the schema for an Iceberg table.</p>"
+    },
+    "IcebergSnapshotManagementSettings":{
+      "type":"structure",
+      "members":{
+        "minSnapshotsToKeep":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>The minimum number of snapshots to keep.</p>"
+        },
+        "maxSnapshotAgeHours":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>The maximum age of a snapshot before it can be expired.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the snapshot management settings for an Iceberg table. The oldest snapshot expires when its age exceeds the <code>maxSnapshotAgeHours</code> and the total number of snapshots exceeds the value for the minimum number of snapshots to keep <code>minSnapshotsToKeep</code>.</p>"
+    },
+    "IcebergSortDirection":{
+      "type":"string",
+      "enum":[
+        "asc",
+        "desc"
+      ]
+    },
+    "IcebergSortField":{
+      "type":"structure",
+      "required":[
+        "sourceId",
+        "transform",
+        "direction",
+        "nullOrder"
+      ],
+      "members":{
+        "sourceId":{
+          "shape":"Integer",
+          "documentation":"<p>The ID of the source schema field to sort by. This must reference a valid field ID from the table schema.</p>",
+          "locationName":"source-id"
+        },
+        "transform":{
+          "shape":"String",
+          "documentation":"<p>The transform to apply to the source field before sorting. Use <code>identity</code> to sort by the field value directly, or specify other transforms as needed.</p>"
+        },
+        "direction":{
+          "shape":"IcebergSortDirection",
+          "documentation":"<p>The sort direction. Valid values are <code>asc</code> for ascending order or <code>desc</code> for descending order.</p>"
+        },
+        "nullOrder":{
+          "shape":"IcebergNullOrder",
+          "documentation":"<p>Specifies how null values are ordered. Valid values are <code>nulls-first</code> to place nulls before non-null values, or <code>nulls-last</code> to place nulls after non-null values.</p>",
+          "locationName":"null-order"
+        }
+      },
+      "documentation":"<p>Defines a single sort field in an Iceberg sort order specification.</p>"
+    },
+    "IcebergSortFieldList":{
+      "type":"list",
+      "member":{"shape":"IcebergSortField"}
+    },
+    "IcebergSortOrder":{
+      "type":"structure",
+      "required":[
+        "orderId",
+        "fields"
+      ],
+      "members":{
+        "orderId":{
+          "shape":"Integer",
+          "documentation":"<p>The unique identifier for this sort order. If not specified, defaults to <code>1</code>. The order ID is used by Apache Iceberg to track sort order evolution.</p>",
+          "locationName":"order-id"
+        },
+        "fields":{
+          "shape":"IcebergSortFieldList",
+          "documentation":"<p>The list of sort fields that define how data is sorted within files. Each field specifies a source field, sort direction, and null ordering. This field is required if <code>writeOrder</code> is provided.</p>"
+        }
+      },
+      "documentation":"<p>Defines the sort order for data within an Iceberg table. Sorting data can improve query performance by enabling more efficient data skipping.</p>"
+    },
+    "IcebergUnreferencedFileRemovalSettings":{
+      "type":"structure",
+      "members":{
+        "unreferencedDays":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>The number of days an object has to be unreferenced before it is marked as non-current.</p>"
+        },
+        "nonCurrentDays":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>The number of days an object has to be non-current before it is deleted.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the unreferenced file removal settings for an Iceberg table bucket.</p>"
+    },
+    "Integer":{
+      "type":"integer",
+      "box":true
+    },
+    "InternalServerErrorException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The request failed due to an internal server error.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true
+    },
+    "JobStatus":{
+      "type":"string",
+      "enum":[
+        "Not_Yet_Run",
+        "Successful",
+        "Failed",
+        "Disabled"
+      ]
+    },
+    "LastSuccessfulReplicatedUpdate":{
+      "type":"structure",
+      "required":[
+        "metadataLocation",
+        "timestamp"
+      ],
+      "members":{
+        "metadataLocation":{
+          "shape":"MetadataLocation",
+          "documentation":"<p>The S3 location of the metadata that was successfully replicated.</p>"
+        },
+        "timestamp":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the replication update completed successfully.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the most recent successful replication update to a destination.</p>"
+    },
+    "ListNamespacesLimit":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "ListNamespacesRequest":{
+      "type":"structure",
+      "required":["tableBucketARN"],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "prefix":{
+          "shape":"ListNamespacesRequestPrefixString",
+          "documentation":"<p>The prefix of the namespaces.</p>",
+          "location":"querystring",
+          "locationName":"prefix"
+        },
+        "continuationToken":{
+          "shape":"NextToken",
+          "documentation":"<p> <code>ContinuationToken</code> indicates to Amazon S3 that the list is being continued on this bucket with a token. <code>ContinuationToken</code> is obfuscated and is not a real key. You can use this <code>ContinuationToken</code> for pagination of the list results.</p>",
+          "location":"querystring",
+          "locationName":"continuationToken"
+        },
+        "maxNamespaces":{
+          "shape":"ListNamespacesLimit",
+          "documentation":"<p>The maximum number of namespaces to return in the list.</p>",
+          "location":"querystring",
+          "locationName":"maxNamespaces"
+        }
+      }
+    },
+    "ListNamespacesRequestPrefixString":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "ListNamespacesResponse":{
+      "type":"structure",
+      "required":["namespaces"],
+      "members":{
+        "namespaces":{
+          "shape":"NamespaceSummaryList",
+          "documentation":"<p>A list of namespaces.</p>"
+        },
+        "continuationToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The <code>ContinuationToken</code> for pagination of the list results.</p>"
+        }
+      }
+    },
+    "ListTableBucketsLimit":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "ListTableBucketsRequest":{
+      "type":"structure",
+      "members":{
+        "prefix":{
+          "shape":"ListTableBucketsRequestPrefixString",
+          "documentation":"<p>The prefix of the table buckets.</p>",
+          "location":"querystring",
+          "locationName":"prefix"
+        },
+        "continuationToken":{
+          "shape":"NextToken",
+          "documentation":"<p> <code>ContinuationToken</code> indicates to Amazon S3 that the list is being continued on this bucket with a token. <code>ContinuationToken</code> is obfuscated and is not a real key. You can use this <code>ContinuationToken</code> for pagination of the list results.</p>",
+          "location":"querystring",
+          "locationName":"continuationToken"
+        },
+        "maxBuckets":{
+          "shape":"ListTableBucketsLimit",
+          "documentation":"<p>The maximum number of table buckets to return in the list.</p>",
+          "location":"querystring",
+          "locationName":"maxBuckets"
+        },
+        "type":{
+          "shape":"TableBucketType",
+          "documentation":"<p>The type of table buckets to filter by in the list.</p>",
+          "location":"querystring",
+          "locationName":"type"
+        }
+      }
+    },
+    "ListTableBucketsRequestPrefixString":{
+      "type":"string",
+      "max":63,
+      "min":1
+    },
+    "ListTableBucketsResponse":{
+      "type":"structure",
+      "required":["tableBuckets"],
+      "members":{
+        "tableBuckets":{
+          "shape":"TableBucketSummaryList",
+          "documentation":"<p>A list of table buckets.</p>"
+        },
+        "continuationToken":{
+          "shape":"NextToken",
+          "documentation":"<p>You can use this <code>ContinuationToken</code> for pagination of the list results.</p>"
+        }
+      }
+    },
+    "ListTablesLimit":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "ListTablesRequest":{
+      "type":"structure",
+      "required":["tableBucketARN"],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon resource Name (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The namespace of the tables.</p>",
+          "location":"querystring",
+          "locationName":"namespace"
+        },
+        "prefix":{
+          "shape":"ListTablesRequestPrefixString",
+          "documentation":"<p>The prefix of the tables.</p>",
+          "location":"querystring",
+          "locationName":"prefix"
+        },
+        "continuationToken":{
+          "shape":"NextToken",
+          "documentation":"<p> <code>ContinuationToken</code> indicates to Amazon S3 that the list is being continued on this bucket with a token. <code>ContinuationToken</code> is obfuscated and is not a real key. You can use this <code>ContinuationToken</code> for pagination of the list results.</p>",
+          "location":"querystring",
+          "locationName":"continuationToken"
+        },
+        "maxTables":{
+          "shape":"ListTablesLimit",
+          "documentation":"<p>The maximum number of tables to return.</p>",
+          "location":"querystring",
+          "locationName":"maxTables"
+        }
+      }
+    },
+    "ListTablesRequestPrefixString":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "ListTablesResponse":{
+      "type":"structure",
+      "required":["tables"],
+      "members":{
+        "tables":{
+          "shape":"TableSummaryList",
+          "documentation":"<p>A list of tables.</p>"
+        },
+        "continuationToken":{
+          "shape":"NextToken",
+          "documentation":"<p>You can use this <code>ContinuationToken</code> for pagination of the list results.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon S3 Tables resource that you want to list tags for. The tagged resource can be a table bucket or a table. For a list of all S3 resources that support tagging, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/tagging.html#manage-tags\">Managing tags for Amazon S3 resources</a>.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "members":{
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The user-defined tags that are applied to the resource. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/tagging.html\">Tagging for cost allocation or attribute-based access control (ABAC)</a>.</p>"
+        }
+      }
+    },
+    "Long":{
+      "type":"long",
+      "box":true
+    },
+    "MaintenanceStatus":{
+      "type":"string",
+      "enum":[
+        "enabled",
+        "disabled"
+      ]
+    },
+    "ManagedTableInformation":{
+      "type":"structure",
+      "members":{
+        "replicationInformation":{
+          "shape":"ReplicationInformation",
+          "documentation":"<p>If this table is a replica, contains information about the source table from which it is replicated.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about tables that are managed by S3 Tables, including replication information for replica tables.</p>"
+    },
+    "MetadataLocation":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "MethodNotAllowedException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The requested operation is not allowed on this resource. This may occur when attempting to modify a resource that is managed by a service or has restrictions that prevent the operation.</p>",
+      "error":{
+        "httpStatusCode":405,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "NamespaceId":{"type":"string"},
+    "NamespaceList":{
+      "type":"list",
+      "member":{"shape":"NamespaceName"}
+    },
+    "NamespaceName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[0-9a-z_]*"
+    },
+    "NamespaceSummary":{
+      "type":"structure",
+      "required":[
+        "namespace",
+        "createdAt",
+        "createdBy",
+        "ownerAccountId"
+      ],
+      "members":{
+        "namespace":{
+          "shape":"NamespaceList",
+          "documentation":"<p>The name of the namespace.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the namespace was created at.</p>"
+        },
+        "createdBy":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the account that created the namespace.</p>"
+        },
+        "ownerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the account that owns the namespace.</p>"
+        },
+        "namespaceId":{
+          "shape":"NamespaceId",
+          "documentation":"<p>The system-assigned unique identifier for the namespace.</p>"
+        },
+        "tableBucketId":{
+          "shape":"TableBucketId",
+          "documentation":"<p>The system-assigned unique identifier for the table bucket that contains this namespace.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a namespace.</p>"
+    },
+    "NamespaceSummaryList":{
+      "type":"list",
+      "member":{"shape":"NamespaceSummary"}
+    },
+    "NextToken":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "NotFoundException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The request was rejected because the specified resource could not be found.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "OpenTableFormat":{
+      "type":"string",
+      "enum":["ICEBERG"]
+    },
+    "PositiveInteger":{
+      "type":"integer",
+      "box":true,
+      "max":2147483647,
+      "min":1
+    },
+    "PutTableBucketEncryptionRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "encryptionConfiguration"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "encryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>The encryption configuration to apply to the table bucket.</p>"
+        }
+      }
+    },
+    "PutTableBucketMaintenanceConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "type",
+        "value"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket associated with the maintenance configuration.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "type":{
+          "shape":"TableBucketMaintenanceType",
+          "documentation":"<p>The type of the maintenance configuration.</p>",
+          "location":"uri",
+          "locationName":"type"
+        },
+        "value":{
+          "shape":"TableBucketMaintenanceConfigurationValue",
+          "documentation":"<p>Defines the values of the maintenance configuration for the table bucket.</p>"
+        }
+      }
+    },
+    "PutTableBucketMetricsConfigurationRequest":{
+      "type":"structure",
+      "required":["tableBucketARN"],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        }
+      }
+    },
+    "PutTableBucketPolicyRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "resourcePolicy"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "resourcePolicy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The <code>JSON</code> that defines the policy.</p>"
+        }
+      }
+    },
+    "PutTableBucketReplicationRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "configuration"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source table bucket.</p>",
+          "location":"querystring",
+          "locationName":"tableBucketARN"
+        },
+        "versionToken":{
+          "shape":"VersionToken",
+          "documentation":"<p>A version token from a previous GetTableBucketReplication call. Use this token to ensure you're updating the expected version of the configuration.</p>",
+          "location":"querystring",
+          "locationName":"versionToken"
+        },
+        "configuration":{
+          "shape":"TableBucketReplicationConfiguration",
+          "documentation":"<p>The replication configuration to apply, including the IAM role and replication rules.</p>"
+        }
+      }
+    },
+    "PutTableBucketReplicationResponse":{
+      "type":"structure",
+      "required":[
+        "versionToken",
+        "status"
+      ],
+      "members":{
+        "versionToken":{
+          "shape":"VersionToken",
+          "documentation":"<p>A new version token representing the updated replication configuration.</p>"
+        },
+        "status":{
+          "shape":"String",
+          "documentation":"<p>The status of the replication configuration operation.</p>"
+        }
+      }
+    },
+    "PutTableBucketStorageClassRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "storageClassConfiguration"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "storageClassConfiguration":{
+          "shape":"StorageClassConfiguration",
+          "documentation":"<p>The storage class configuration to apply to the table bucket. This configuration will serve as the default for new tables created in this bucket.</p>"
+        }
+      }
+    },
+    "PutTableMaintenanceConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "namespace",
+        "name",
+        "type",
+        "value"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table associated with the maintenance configuration.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The namespace of the table.</p>",
+          "location":"uri",
+          "locationName":"namespace"
+        },
+        "name":{
+          "shape":"TableName",
+          "documentation":"<p>The name of the table.</p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "type":{
+          "shape":"TableMaintenanceType",
+          "documentation":"<p>The type of the maintenance configuration.</p>",
+          "location":"uri",
+          "locationName":"type"
+        },
+        "value":{
+          "shape":"TableMaintenanceConfigurationValue",
+          "documentation":"<p>Defines the values of the maintenance configuration for the table.</p>"
+        }
+      }
+    },
+    "PutTablePolicyRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "namespace",
+        "name",
+        "resourcePolicy"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket that contains the table.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The namespace associated with the table.</p>",
+          "location":"uri",
+          "locationName":"namespace"
+        },
+        "name":{
+          "shape":"TableName",
+          "documentation":"<p>The name of the table.</p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "resourcePolicy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The <code>JSON</code> that defines the policy.</p>"
+        }
+      }
+    },
+    "PutTableRecordExpirationConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "tableArn",
+        "value"
+      ],
+      "members":{
+        "tableArn":{
+          "shape":"TableARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table.</p>",
+          "location":"querystring",
+          "locationName":"tableArn"
+        },
+        "value":{
+          "shape":"TableRecordExpirationConfigurationValue",
+          "documentation":"<p>The record expiration configuration to apply to the table, including the status (<code>enabled</code> or <code>disabled</code>) and retention period in days.</p>"
+        }
+      }
+    },
+    "PutTableReplicationRequest":{
+      "type":"structure",
+      "required":[
+        "tableArn",
+        "configuration"
+      ],
+      "members":{
+        "tableArn":{
+          "shape":"TableARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source table.</p>",
+          "location":"querystring",
+          "locationName":"tableArn"
+        },
+        "versionToken":{
+          "shape":"String",
+          "documentation":"<p>A version token from a previous GetTableReplication call. Use this token to ensure you're updating the expected version of the configuration.</p>",
+          "location":"querystring",
+          "locationName":"versionToken"
+        },
+        "configuration":{
+          "shape":"TableReplicationConfiguration",
+          "documentation":"<p>The replication configuration to apply to the table, including the IAM role and replication rules.</p>"
+        }
+      }
+    },
+    "PutTableReplicationResponse":{
+      "type":"structure",
+      "required":[
+        "versionToken",
+        "status"
+      ],
+      "members":{
+        "versionToken":{
+          "shape":"String",
+          "documentation":"<p>A new version token representing the updated replication configuration.</p>"
+        },
+        "status":{
+          "shape":"String",
+          "documentation":"<p>The status of the replication configuration operation.</p>"
+        }
+      }
+    },
+    "RenameTableRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "namespace",
+        "name"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket. </p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The namespace associated with the table. </p>",
+          "location":"uri",
+          "locationName":"namespace"
+        },
+        "name":{
+          "shape":"TableName",
+          "documentation":"<p>The current name of the table.</p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "newNamespaceName":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The new name for the namespace.</p>"
+        },
+        "newName":{
+          "shape":"TableName",
+          "documentation":"<p>The new name for the table.</p>"
+        },
+        "versionToken":{
+          "shape":"VersionToken",
+          "documentation":"<p>The version token of the table.</p>"
+        }
+      }
+    },
+    "ReplicationDestination":{
+      "type":"structure",
+      "required":["destinationTableBucketARN"],
+      "members":{
+        "destinationTableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the destination table bucket where tables will be replicated.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a destination table bucket for replication.</p>"
+    },
+    "ReplicationDestinationStatusModel":{
+      "type":"structure",
+      "required":[
+        "replicationStatus",
+        "destinationTableBucketArn"
+      ],
+      "members":{
+        "replicationStatus":{
+          "shape":"ReplicationStatus",
+          "documentation":"<p>The current status of replication to this destination.</p>"
+        },
+        "destinationTableBucketArn":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the destination table bucket.</p>"
+        },
+        "destinationTableArn":{
+          "shape":"TableARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the destination table.</p>"
+        },
+        "lastSuccessfulReplicatedUpdate":{
+          "shape":"LastSuccessfulReplicatedUpdate",
+          "documentation":"<p>Information about the most recent successful replication update to this destination.</p>"
+        },
+        "failureMessage":{
+          "shape":"String",
+          "documentation":"<p>If replication has failed, this field contains an error message describing the failure reason.</p>"
+        }
+      },
+      "documentation":"<p>Contains status information for a replication destination, including the current replication state, last successful update, and any error messages.</p>"
+    },
+    "ReplicationDestinationStatuses":{
+      "type":"list",
+      "member":{"shape":"ReplicationDestinationStatusModel"},
+      "max":5,
+      "min":1
+    },
+    "ReplicationDestinations":{
+      "type":"list",
+      "member":{"shape":"ReplicationDestination"},
+      "max":5,
+      "min":1
+    },
+    "ReplicationInformation":{
+      "type":"structure",
+      "required":["sourceTableARN"],
+      "members":{
+        "sourceTableARN":{
+          "shape":"TableARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source table from which this table is replicated.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the source of a replicated table.</p>"
+    },
+    "ReplicationStatus":{
+      "type":"string",
+      "enum":[
+        "pending",
+        "completed",
+        "failed"
+      ]
+    },
+    "ResourceArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws[-a-z0-9]*:[a-z0-9]+:[-a-z0-9]*:[0-9]{12}:bucket/.+"
+    },
+    "ResourcePolicy":{
+      "type":"string",
+      "max":20480,
+      "min":1
+    },
+    "SSEAlgorithm":{
+      "type":"string",
+      "enum":[
+        "AES256",
+        "aws:kms"
+      ]
+    },
+    "SchemaField":{
+      "type":"structure",
+      "required":[
+        "name",
+        "type"
+      ],
+      "members":{
+        "id":{
+          "shape":"Integer",
+          "documentation":"<p>An optional unique identifier for the schema field. Field IDs are used by Apache Iceberg to track schema evolution and maintain compatibility across schema changes. If not specified, S3 Tables automatically assigns field IDs.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the field.</p>"
+        },
+        "type":{
+          "shape":"String",
+          "documentation":"<p>The field type. S3 Tables supports all Apache Iceberg primitive types. For more information, see the <a href=\"https://iceberg.apache.org/spec/#primitive-types\">Apache Iceberg documentation</a>.</p>"
+        },
+        "required":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean value that specifies whether values are required for each row in this field. By default, this is <code>false</code> and null values are allowed in the field. If this is <code>true</code> the field does not allow null values.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a schema field.</p>"
+    },
+    "SchemaFieldList":{
+      "type":"list",
+      "member":{"shape":"SchemaField"}
+    },
+    "StorageClass":{
+      "type":"string",
+      "enum":[
+        "STANDARD",
+        "INTELLIGENT_TIERING"
+      ]
+    },
+    "StorageClassConfiguration":{
+      "type":"structure",
+      "required":["storageClass"],
+      "members":{
+        "storageClass":{
+          "shape":"StorageClass",
+          "documentation":"<p>The storage class for the table or table bucket. Valid values include storage classes optimized for different access patterns and cost profiles.</p>"
+        }
+      },
+      "documentation":"<p>The configuration details for the storage class of tables or table buckets. This allows you to optimize storage costs by selecting the appropriate storage class based on your access patterns and performance requirements.</p>"
+    },
+    "String":{"type":"string"},
+    "SyntheticTimestamp_date_time":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
+    "TableARN":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"(arn:aws[-a-z0-9]*:[a-z0-9]+:[-a-z0-9]*:[0-9]{12}:bucket/[a-z0-9_-]{3,63}/table/[a-zA-Z0-9-_]{1,255})"
+    },
+    "TableBucketARN":{
+      "type":"string",
+      "pattern":"(arn:aws[-a-z0-9]*:[a-z0-9]+:[-a-z0-9]*:[0-9]{12}:bucket/[a-z0-9_-]{3,63})"
+    },
+    "TableBucketId":{"type":"string"},
+    "TableBucketMaintenanceConfiguration":{
+      "type":"map",
+      "key":{"shape":"TableBucketMaintenanceType"},
+      "value":{"shape":"TableBucketMaintenanceConfigurationValue"}
+    },
+    "TableBucketMaintenanceConfigurationValue":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"MaintenanceStatus",
+          "documentation":"<p>The status of the maintenance configuration.</p>"
+        },
+        "settings":{
+          "shape":"TableBucketMaintenanceSettings",
+          "documentation":"<p>Contains details about the settings of the maintenance configuration.</p>"
+        }
+      },
+      "documentation":"<p>Details about the values that define the maintenance configuration for a table bucket.</p>"
+    },
+    "TableBucketMaintenanceSettings":{
+      "type":"structure",
+      "members":{
+        "icebergUnreferencedFileRemoval":{
+          "shape":"IcebergUnreferencedFileRemovalSettings",
+          "documentation":"<p>The unreferenced file removal settings for the table bucket.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the maintenance settings for the table bucket.</p>",
+      "union":true
+    },
+    "TableBucketMaintenanceType":{
+      "type":"string",
+      "enum":["icebergUnreferencedFileRemoval"]
+    },
+    "TableBucketName":{
+      "type":"string",
+      "max":63,
+      "min":3,
+      "pattern":"[0-9a-z-]*"
+    },
+    "TableBucketReplicationConfiguration":{
+      "type":"structure",
+      "required":[
+        "role",
+        "rules"
+      ],
+      "members":{
+        "role":{
+          "shape":"IAMRole",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that S3 Tables assumes to replicate tables on your behalf.</p>"
+        },
+        "rules":{
+          "shape":"TableBucketReplicationRules",
+          "documentation":"<p>An array of replication rules that define which tables to replicate and where to replicate them.</p>"
+        }
+      },
+      "documentation":"<p>The replication configuration for a table bucket. This configuration defines how tables in the source bucket are replicated to destination table buckets, including the IAM role used for replication.</p>"
+    },
+    "TableBucketReplicationRule":{
+      "type":"structure",
+      "required":["destinations"],
+      "members":{
+        "destinations":{
+          "shape":"ReplicationDestinations",
+          "documentation":"<p>An array of destination table buckets where tables should be replicated.</p>"
+        }
+      },
+      "documentation":"<p>Defines a rule for replicating tables from a source table bucket to one or more destination table buckets.</p>"
+    },
+    "TableBucketReplicationRules":{
+      "type":"list",
+      "member":{"shape":"TableBucketReplicationRule"},
+      "max":1,
+      "min":1
+    },
+    "TableBucketSummary":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "name",
+        "ownerAccountId",
+        "createdAt"
+      ],
+      "members":{
+        "arn":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>"
+        },
+        "name":{
+          "shape":"TableBucketName",
+          "documentation":"<p>The name of the table bucket.</p>"
+        },
+        "ownerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the account that owns the table bucket.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the table bucket was created at.</p>"
+        },
+        "tableBucketId":{
+          "shape":"TableBucketId",
+          "documentation":"<p>The system-assigned unique identifier for the table bucket.</p>"
+        },
+        "type":{
+          "shape":"TableBucketType",
+          "documentation":"<p>The type of the table bucket.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a table bucket.</p>"
+    },
+    "TableBucketSummaryList":{
+      "type":"list",
+      "member":{"shape":"TableBucketSummary"}
+    },
+    "TableBucketType":{
+      "type":"string",
+      "enum":[
+        "customer",
+        "aws"
+      ]
+    },
+    "TableMaintenanceConfiguration":{
+      "type":"map",
+      "key":{"shape":"TableMaintenanceType"},
+      "value":{"shape":"TableMaintenanceConfigurationValue"}
+    },
+    "TableMaintenanceConfigurationValue":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"MaintenanceStatus",
+          "documentation":"<p>The status of the maintenance configuration.</p>"
+        },
+        "settings":{
+          "shape":"TableMaintenanceSettings",
+          "documentation":"<p>Contains details about the settings for the maintenance configuration.</p>"
+        }
+      },
+      "documentation":"<p>The values that define a maintenance configuration for a table.</p>"
+    },
+    "TableMaintenanceJobStatus":{
+      "type":"map",
+      "key":{"shape":"TableMaintenanceJobType"},
+      "value":{"shape":"TableMaintenanceJobStatusValue"}
+    },
+    "TableMaintenanceJobStatusValue":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"JobStatus",
+          "documentation":"<p>The status of the job.</p>"
+        },
+        "lastRunTimestamp":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time that the maintenance job was last run.</p>"
+        },
+        "failureMessage":{
+          "shape":"String",
+          "documentation":"<p>The failure message of a failed job.</p>"
+        }
+      },
+      "documentation":"<p>Details about the status of a maintenance job.</p>"
+    },
+    "TableMaintenanceJobType":{
+      "type":"string",
+      "enum":[
+        "icebergCompaction",
+        "icebergSnapshotManagement",
+        "icebergUnreferencedFileRemoval"
+      ]
+    },
+    "TableMaintenanceSettings":{
+      "type":"structure",
+      "members":{
+        "icebergCompaction":{
+          "shape":"IcebergCompactionSettings",
+          "documentation":"<p>Contains details about the Iceberg compaction settings for the table.</p>"
+        },
+        "icebergSnapshotManagement":{
+          "shape":"IcebergSnapshotManagementSettings",
+          "documentation":"<p>Contains details about the Iceberg snapshot management settings for the table.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about maintenance settings for the table.</p>",
+      "union":true
+    },
+    "TableMaintenanceType":{
+      "type":"string",
+      "enum":[
+        "icebergCompaction",
+        "icebergSnapshotManagement"
+      ]
+    },
+    "TableMetadata":{
+      "type":"structure",
+      "members":{
+        "iceberg":{
+          "shape":"IcebergMetadata",
+          "documentation":"<p>Contains details about the metadata of an Iceberg table.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the table metadata.</p>",
+      "union":true
+    },
+    "TableName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[0-9a-z_]*"
+    },
+    "TableProperties":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"}
+    },
+    "TableRecordExpirationConfigurationValue":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"TableRecordExpirationStatus",
+          "documentation":"<p>The status of the expiration settings for records in the table.</p>"
+        },
+        "settings":{
+          "shape":"TableRecordExpirationSettings",
+          "documentation":"<p>The expiration settings for records in the table.</p>"
+        }
+      },
+      "documentation":"<p>The expiration configuration settings for records in a table, and the status of the configuration. If the status of the configuration is enabled, records expire and are automatically removed after the number of days specified in the record expiration settings for the table.</p>"
+    },
+    "TableRecordExpirationJobMetrics":{
+      "type":"structure",
+      "members":{
+        "deletedDataFiles":{
+          "shape":"Long",
+          "documentation":"<p>The total number of data files that were removed when the job ran.</p>"
+        },
+        "deletedRecords":{
+          "shape":"Long",
+          "documentation":"<p>The total number of records that were removed when the job ran.</p>"
+        },
+        "removedFilesSize":{
+          "shape":"Long",
+          "documentation":"<p>The total size (in bytes) of the data files that were removed when the job ran.</p>"
+        }
+      },
+      "documentation":"<p>Provides metrics for the record expiration job that most recently ran for a table. The metrics provide insight into the amount of data that was removed when the job ran.</p>"
+    },
+    "TableRecordExpirationJobStatus":{
+      "type":"string",
+      "enum":[
+        "NotYetRun",
+        "Successful",
+        "Failed",
+        "Disabled"
+      ]
+    },
+    "TableRecordExpirationSettings":{
+      "type":"structure",
+      "members":{
+        "days":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>If you enable record expiration for a table, you can specify the number of days to retain your table records. For example, to retain your table records for one year, set this value to <code>365</code>.</p>"
+        }
+      },
+      "documentation":"<p>The record expiration setting that specifies when records expire and are automatically removed from a table.</p>"
+    },
+    "TableRecordExpirationStatus":{
+      "type":"string",
+      "enum":[
+        "enabled",
+        "disabled"
+      ]
+    },
+    "TableReplicationConfiguration":{
+      "type":"structure",
+      "required":[
+        "role",
+        "rules"
+      ],
+      "members":{
+        "role":{
+          "shape":"IAMRole",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that S3 Tables assumes to replicate the table on your behalf.</p>"
+        },
+        "rules":{
+          "shape":"TableReplicationRules",
+          "documentation":"<p>An array of replication rules that define where this table should be replicated.</p>"
+        }
+      },
+      "documentation":"<p>The replication configuration for an individual table. This configuration defines how the table is replicated to destination tables.</p>"
+    },
+    "TableReplicationRule":{
+      "type":"structure",
+      "required":["destinations"],
+      "members":{
+        "destinations":{
+          "shape":"ReplicationDestinations",
+          "documentation":"<p>An array of destination table buckets where this table should be replicated.</p>"
+        }
+      },
+      "documentation":"<p>Defines a rule for replicating a table to one or more destination tables.</p>"
+    },
+    "TableReplicationRules":{
+      "type":"list",
+      "member":{"shape":"TableReplicationRule"},
+      "max":1,
+      "min":1
+    },
+    "TableSummary":{
+      "type":"structure",
+      "required":[
+        "namespace",
+        "name",
+        "type",
+        "tableARN",
+        "createdAt",
+        "modifiedAt"
+      ],
+      "members":{
+        "namespace":{
+          "shape":"NamespaceList",
+          "documentation":"<p>The name of the namespace.</p>"
+        },
+        "name":{
+          "shape":"TableName",
+          "documentation":"<p>The name of the table.</p>"
+        },
+        "type":{
+          "shape":"TableType",
+          "documentation":"<p>The type of the table.</p>"
+        },
+        "tableARN":{
+          "shape":"TableARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the table was created at.</p>"
+        },
+        "modifiedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the table was last modified at.</p>"
+        },
+        "managedByService":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services service managing this table, if applicable. For example, a replicated table is managed by the S3 Tables replication service.</p>"
+        },
+        "namespaceId":{
+          "shape":"NamespaceId",
+          "documentation":"<p>The unique identifier for the namespace that contains this table.</p>"
+        },
+        "tableBucketId":{
+          "shape":"TableBucketId",
+          "documentation":"<p>The unique identifier for the table bucket that contains this table.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a table.</p>"
+    },
+    "TableSummaryList":{
+      "type":"list",
+      "member":{"shape":"TableSummary"}
+    },
+    "TableType":{
+      "type":"string",
+      "enum":[
+        "customer",
+        "aws"
+      ]
+    },
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "TagKeyList":{
+      "type":"list",
+      "member":{"shape":"TagKey"}
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tags"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon S3 Tables resource that you're applying tags to. The tagged resource can be a table bucket or a table. For a list of all S3 resources that support tagging, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/tagging.html#manage-tags\">Managing tags for Amazon S3 resources</a>.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The user-defined tag that you want to add to the specified S3 Tables resource. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/tagging.html\">Tagging for cost allocation or attribute-based access control (ABAC)</a>.</p>"
+        }
+      }
+    },
+    "TagResourceResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "TagValue":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "Tags":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"}
+    },
+    "TooManyRequestsException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The limit on the number of requests per second was exceeded.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tagKeys"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon S3 Tables resource that you're removing tags from. The tagged resource can be a table bucket or a table. For a list of all S3 resources that support tagging, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/tagging.html#manage-tags\">Managing tags for Amazon S3 resources</a>.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tagKeys":{
+          "shape":"TagKeyList",
+          "documentation":"<p>The array of tag keys that you're removing from the S3 Tables resource. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/tagging.html\">Tagging for cost allocation or attribute-based access control (ABAC)</a>.</p>",
+          "location":"querystring",
+          "locationName":"tagKeys"
+        }
+      }
+    },
+    "UntagResourceResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "UpdateTableMetadataLocationRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "namespace",
+        "name",
+        "versionToken",
+        "metadataLocation"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket. </p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The namespace of the table.</p>",
+          "location":"uri",
+          "locationName":"namespace"
+        },
+        "name":{
+          "shape":"TableName",
+          "documentation":"<p>The name of the table.</p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "versionToken":{
+          "shape":"VersionToken",
+          "documentation":"<p>The version token of the table. </p>"
+        },
+        "metadataLocation":{
+          "shape":"MetadataLocation",
+          "documentation":"<p>The new metadata location for the table. </p>"
+        }
+      }
+    },
+    "UpdateTableMetadataLocationResponse":{
+      "type":"structure",
+      "required":[
+        "name",
+        "tableARN",
+        "namespace",
+        "versionToken",
+        "metadataLocation"
+      ],
+      "members":{
+        "name":{
+          "shape":"TableName",
+          "documentation":"<p>The name of the table.</p>"
+        },
+        "tableARN":{
+          "shape":"TableARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table.</p>"
+        },
+        "namespace":{
+          "shape":"NamespaceList",
+          "documentation":"<p>The namespace the table is associated with.</p>"
+        },
+        "versionToken":{
+          "shape":"VersionToken",
+          "documentation":"<p>The version token of the table.</p>"
+        },
+        "metadataLocation":{
+          "shape":"MetadataLocation",
+          "documentation":"<p>The metadata location of the table.</p>"
+        }
+      }
+    },
+    "VersionToken":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "WarehouseLocation":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    }
+  },
+  "documentation":"<p>An Amazon S3 table represents a structured dataset consisting of tabular data in <a href=\"https://parquet.apache.org/docs/\">Apache Parquet</a> format and related metadata. This data is stored inside an S3 table as a subresource. All tables in a table bucket are stored in the <a href=\"https://iceberg.apache.org/docs/latest/\">Apache Iceberg</a> table format. Through integration with the <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/glue/latest/dg/catalog-and-crawler.html\">Amazon Web Services Glue Data Catalog</a> you can interact with your tables using Amazon Web Services analytics services, such as <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/athena/\">Amazon Athena</a> and <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/redshift/\">Amazon Redshift</a>. Amazon S3 manages maintenance of your tables through automatic file compaction and snapshot management. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-buckets.html\">Amazon S3 table buckets</a>.</p>"
+}

@@ -59,6 +59,11 @@ FAKE_RULESET_WITH_CLIENT_CONTEXT_PARAM = {
             "documentation": "",
             "type": "String",
         },
+        "BarClientContextParamName": {
+            "required": False,
+            "documentation": "",
+            "type": "String",
+        },
     },
 }
 
@@ -134,7 +139,11 @@ FAKE_MODEL_WITH_CLIENT_CONTEXT_PARAM = {
         "FooClientContextParamName": {
             "documentation": "My mock client context parameter",
             "type": "string",
-        }
+        },
+        "BarClientContextParamName": {
+            "documentation": "My mock client context parameter",
+            "type": "string",
+        },
     },
 }
 
@@ -224,86 +233,178 @@ FAKE_S3CONTROL_MODEL_WITH_CLIENT_CONTEXT_PARAM = {
     **FAKE_MODEL_WITH_CLIENT_CONTEXT_PARAM,
     "metadata": S3CONTROL_METADATA,
 }
+CLIENT_CONTEXT_PARAM_INPUT = {
+    "foo_client_context_param_name": "foo_context_param_value"
+}
+OTHER_CLIENT_CONTEXT_PARAM_INPUT = {
+    "bar_client_context_param_name": "bar_value"
+}
+
+CONFIG_WITH_S3 = Config(s3=CLIENT_CONTEXT_PARAM_INPUT)
+CONFIG_WITH_CLIENT_CONTEXT_PARAMS = Config(
+    client_context_params=CLIENT_CONTEXT_PARAM_INPUT
+)
+CONFIG_WITH_S3_AND_CLIENT_CONTEXT_PARAMS = Config(
+    s3=CLIENT_CONTEXT_PARAM_INPUT,
+    client_context_params=OTHER_CLIENT_CONTEXT_PARAM_INPUT,
+)
+CONFIG_WITH_CONFLICTING_S3_AND_CLIENT_CONTEXT_PARAMS = Config(
+    s3=CLIENT_CONTEXT_PARAM_INPUT,
+    client_context_params={"foo_client_context_param_name": "bar_value"},
+)
+NO_CTX_PARAM_EXPECTED_CALL_KWARGS = {"Region": "us-east-1"}
+CTX_PARAM_EXPECTED_CALL_KWARGS = {
+    **NO_CTX_PARAM_EXPECTED_CALL_KWARGS,
+    "FooClientContextParamName": "foo_context_param_value",
+}
+MULTIPLE_CONTEXT_PARAMS_EXPECTED_CALL_KWARGS = {
+    **CTX_PARAM_EXPECTED_CALL_KWARGS,
+    "BarClientContextParamName": "bar_value",
+}
 
 
 @pytest.mark.parametrize(
-    'service_name,service_model,ruleset,call_should_include_ctx_param',
+    'service_name,service_model,ruleset,config,expected_call_kwargs',
     [
         # s3
         (
             's3',
             FAKE_S3_MODEL_WITH_CLIENT_CONTEXT_PARAM,
             FAKE_RULESET_WITH_CLIENT_CONTEXT_PARAM,
-            True,
+            CONFIG_WITH_S3,
+            CTX_PARAM_EXPECTED_CALL_KWARGS,
         ),
         (
             's3',
             FAKE_S3_MODEL_WITH_CLIENT_CONTEXT_PARAM,
             FAKE_RULESET_WITHOUT_ANY_CONTEXT_PARAMS,
-            False,
+            CONFIG_WITH_S3,
+            NO_CTX_PARAM_EXPECTED_CALL_KWARGS,
         ),
         (
             's3',
             FAKE_S3_MODEL_WITHOUT_ANY_CONTEXT_PARAMS,
             FAKE_RULESET_WITH_CLIENT_CONTEXT_PARAM,
-            False,
+            CONFIG_WITH_S3,
+            NO_CTX_PARAM_EXPECTED_CALL_KWARGS,
         ),
         (
             's3',
             FAKE_S3_MODEL_WITHOUT_ANY_CONTEXT_PARAMS,
             FAKE_RULESET_WITHOUT_ANY_CONTEXT_PARAMS,
-            False,
+            CONFIG_WITH_S3,
+            NO_CTX_PARAM_EXPECTED_CALL_KWARGS,
+        ),
+        (
+            's3',
+            FAKE_S3_MODEL_WITH_CLIENT_CONTEXT_PARAM,
+            FAKE_RULESET_WITH_CLIENT_CONTEXT_PARAM,
+            CONFIG_WITH_CLIENT_CONTEXT_PARAMS,
+            CTX_PARAM_EXPECTED_CALL_KWARGS,
+        ),
+        # use both s3 and client_context_params when they don't overlap
+        (
+            's3',
+            FAKE_S3_MODEL_WITH_CLIENT_CONTEXT_PARAM,
+            FAKE_RULESET_WITH_CLIENT_CONTEXT_PARAM,
+            CONFIG_WITH_S3_AND_CLIENT_CONTEXT_PARAMS,
+            MULTIPLE_CONTEXT_PARAMS_EXPECTED_CALL_KWARGS,
+        ),
+        # use s3 over client_context_params when they overlap
+        (
+            's3',
+            FAKE_S3_MODEL_WITH_CLIENT_CONTEXT_PARAM,
+            FAKE_RULESET_WITH_CLIENT_CONTEXT_PARAM,
+            CONFIG_WITH_CONFLICTING_S3_AND_CLIENT_CONTEXT_PARAMS,
+            CTX_PARAM_EXPECTED_CALL_KWARGS,
         ),
         # s3control
         (
             's3control',
             FAKE_S3CONTROL_MODEL_WITH_CLIENT_CONTEXT_PARAM,
             FAKE_RULESET_WITH_CLIENT_CONTEXT_PARAM,
-            True,
+            CONFIG_WITH_S3,
+            CTX_PARAM_EXPECTED_CALL_KWARGS,
         ),
         (
             's3control',
             FAKE_S3CONTROL_MODEL_WITH_CLIENT_CONTEXT_PARAM,
             FAKE_RULESET_WITHOUT_ANY_CONTEXT_PARAMS,
-            False,
+            CONFIG_WITH_S3,
+            NO_CTX_PARAM_EXPECTED_CALL_KWARGS,
         ),
         (
             's3control',
             FAKE_S3CONTROL_MODEL_WITHOUT_ANY_CONTEXT_PARAMS,
             FAKE_RULESET_WITH_CLIENT_CONTEXT_PARAM,
-            False,
+            CONFIG_WITH_S3,
+            NO_CTX_PARAM_EXPECTED_CALL_KWARGS,
         ),
         (
             's3control',
             FAKE_S3CONTROL_MODEL_WITHOUT_ANY_CONTEXT_PARAMS,
             FAKE_RULESET_WITHOUT_ANY_CONTEXT_PARAMS,
-            False,
+            CONFIG_WITH_S3,
+            NO_CTX_PARAM_EXPECTED_CALL_KWARGS,
         ),
-        # botocore does not currently support client context params for
-        # services other than s3 and s3-control.
+        (
+            's3control',
+            FAKE_S3CONTROL_MODEL_WITH_CLIENT_CONTEXT_PARAM,
+            FAKE_RULESET_WITH_CLIENT_CONTEXT_PARAM,
+            CONFIG_WITH_CLIENT_CONTEXT_PARAMS,
+            CTX_PARAM_EXPECTED_CALL_KWARGS,
+        ),
+        # use both s3 and client_context_params when they don't overlap
+        (
+            's3control',
+            FAKE_S3CONTROL_MODEL_WITH_CLIENT_CONTEXT_PARAM,
+            FAKE_RULESET_WITH_CLIENT_CONTEXT_PARAM,
+            CONFIG_WITH_S3_AND_CLIENT_CONTEXT_PARAMS,
+            MULTIPLE_CONTEXT_PARAMS_EXPECTED_CALL_KWARGS,
+        ),
+        # use s3 over client_context_params when they overlap
+        (
+            's3control',
+            FAKE_S3CONTROL_MODEL_WITH_CLIENT_CONTEXT_PARAM,
+            FAKE_RULESET_WITH_CLIENT_CONTEXT_PARAM,
+            CONFIG_WITH_CONFLICTING_S3_AND_CLIENT_CONTEXT_PARAMS,
+            CTX_PARAM_EXPECTED_CALL_KWARGS,
+        ),
+        # otherservice
         (
             'otherservice',
             FAKE_MODEL_WITH_CLIENT_CONTEXT_PARAM,
             FAKE_RULESET_WITH_CLIENT_CONTEXT_PARAM,
-            False,  # would be True for s3 and s3control
+            CONFIG_WITH_S3,
+            NO_CTX_PARAM_EXPECTED_CALL_KWARGS,
         ),
         (
             'otherservice',
             FAKE_MODEL_WITH_CLIENT_CONTEXT_PARAM,
             FAKE_RULESET_WITHOUT_ANY_CONTEXT_PARAMS,
-            False,  # same as for s3 and s3control
+            CONFIG_WITH_S3,
+            NO_CTX_PARAM_EXPECTED_CALL_KWARGS,
         ),
         (
             'otherservice',
             FAKE_MODEL_WITHOUT_ANY_CONTEXT_PARAMS,
             FAKE_RULESET_WITH_CLIENT_CONTEXT_PARAM,
-            False,  # same as for s3 and s3control
+            CONFIG_WITH_S3,
+            NO_CTX_PARAM_EXPECTED_CALL_KWARGS,
         ),
         (
             'otherservice',
             FAKE_MODEL_WITHOUT_ANY_CONTEXT_PARAMS,
             FAKE_RULESET_WITHOUT_ANY_CONTEXT_PARAMS,
-            False,  # same as for s3 and s3control
+            CONFIG_WITH_S3,
+            NO_CTX_PARAM_EXPECTED_CALL_KWARGS,
+        ),
+        (
+            'otherservice',
+            FAKE_MODEL_WITH_CLIENT_CONTEXT_PARAM,
+            FAKE_RULESET_WITH_CLIENT_CONTEXT_PARAM,
+            CONFIG_WITH_CLIENT_CONTEXT_PARAMS,
+            CTX_PARAM_EXPECTED_CALL_KWARGS,
         ),
     ],
 )
@@ -313,7 +414,8 @@ def test_client_context_param_sent_to_endpoint_resolver(
     service_name,
     service_model,
     ruleset,
-    call_should_include_ctx_param,
+    config,
+    expected_call_kwargs,
 ):
     # patch loader to return fake service model and fake endpoint ruleset
     patch_load_service_model(
@@ -321,13 +423,11 @@ def test_client_context_param_sent_to_endpoint_resolver(
     )
 
     # construct client using patched loader and a config object with an s3
-    # section that sets the foo_context_param to a value
+    # or client_context_param section that sets the foo_context_param to a value
     client = patched_session.create_client(
         service_name,
         region_name='us-east-1',
-        config=Config(
-            s3={'foo_client_context_param_name': 'foo_context_param_value'}
-        ),
+        config=config,
     )
 
     # Stub client to prevent a request from getting sent and ascertain that
@@ -342,13 +442,7 @@ def test_client_context_param_sent_to_endpoint_resolver(
         ) as mock_resolve_endpoint:
             client.mock_operation(MockOpParam='mock-op-param-value')
 
-    if call_should_include_ctx_param:
-        mock_resolve_endpoint.assert_called_once_with(
-            Region='us-east-1',
-            FooClientContextParamName='foo_context_param_value',
-        )
-    else:
-        mock_resolve_endpoint.assert_called_once_with(Region='us-east-1')
+    mock_resolve_endpoint.assert_called_once_with(**expected_call_kwargs)
 
 
 @pytest.mark.parametrize(

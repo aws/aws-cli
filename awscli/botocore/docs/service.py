@@ -11,7 +11,11 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from botocore.docs.bcdoc.restdoc import DocumentStructure
-from botocore.docs.client import ClientDocumenter, ClientExceptionsDocumenter
+from botocore.docs.client import (
+    ClientContextParamsDocumenter,
+    ClientDocumenter,
+    ClientExceptionsDocumenter,
+)
 from botocore.docs.paginator import PaginatorDocumenter
 from botocore.docs.utils import get_official_service_name
 from botocore.docs.waiter import WaiterDocumenter
@@ -39,6 +43,7 @@ class ServiceDocumenter:
             'client-exceptions',
             'paginator-api',
             'waiter-api',
+            'client-context-params',
         ]
 
     def document_service(self):
@@ -55,6 +60,10 @@ class ServiceDocumenter:
         self.client_exceptions(doc_structure.get_section('client-exceptions'))
         self.paginator_api(doc_structure.get_section('paginator-api'))
         self.waiter_api(doc_structure.get_section('waiter-api'))
+        context_params_section = doc_structure.get_section(
+            'client-context-params'
+        )
+        self.client_context_params(context_params_section)
         return doc_structure.flush_structure()
 
     def title(self, section):
@@ -110,3 +119,17 @@ class ServiceDocumenter:
         loader = self._session.get_component('data_loader')
         examples = loader.load_service_model(service_name, 'examples-1')
         return examples['examples']
+
+    def client_context_params(self, section):
+        omitted_params = ClientContextParamsDocumenter.OMITTED_CONTEXT_PARAMS
+        params_to_omit = omitted_params.get(self._service_name, [])
+        service_model = self._client.meta.service_model
+        raw_context_params = service_model.client_context_parameters
+        context_params = [
+            p for p in raw_context_params if p.name not in params_to_omit
+        ]
+        if context_params:
+            context_param_documenter = ClientContextParamsDocumenter(
+                self._service_name, context_params
+            )
+            context_param_documenter.document_context_params(section)

@@ -4,6 +4,7 @@
     "apiVersion":"2016-06-10",
     "endpointPrefix":"polly",
     "protocol":"rest-json",
+    "protocolSettings":{"h2":"eventstream"},
     "protocols":["rest-json"],
     "serviceFullName":"Amazon Polly",
     "serviceId":"Polly",
@@ -123,6 +124,22 @@
       ],
       "documentation":"<p>Stores a pronunciation lexicon in an Amazon Web Services Region. If a lexicon with the same name already exists in the region, it is overwritten by the new lexicon. Lexicon operations have eventual consistency, therefore, it might take some time before the lexicon is available to the SynthesizeSpeech operation.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/polly/latest/dg/managing-lexicons.html\">Managing Lexicons</a>.</p>"
     },
+    "StartSpeechSynthesisStream":{
+      "name":"StartSpeechSynthesisStream",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/synthesisStream"
+      },
+      "input":{"shape":"StartSpeechSynthesisStreamInput"},
+      "output":{"shape":"StartSpeechSynthesisStreamOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ServiceFailureException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Synthesizes UTF-8 input, plain text, or SSML over a bidirectional streaming connection. Specify synthesis parameters in HTTP/2 headers, send text incrementally as events on the input stream, and receive synthesized audio as it becomes available.</p> <p>This operation serves as a bidirectional counterpart to <code>SynthesizeSpeech</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/polly/latest/API/API_SynthesizeSpeech.html\">SynthesizeSpeech</a> </p> </li> </ul>"
+    },
     "StartSpeechSynthesisTask":{
       "name":"StartSpeechSynthesisTask",
       "http":{
@@ -173,11 +190,33 @@
   },
   "shapes":{
     "Alphabet":{"type":"string"},
+    "AudioChunk":{"type":"blob"},
+    "AudioEvent":{
+      "type":"structure",
+      "members":{
+        "AudioChunk":{
+          "shape":"AudioChunk",
+          "documentation":"<p>A chunk of synthesized audio data encoded in the format specified by the <code>OutputFormat</code> parameter.</p>",
+          "eventpayload":true
+        }
+      },
+      "documentation":"<p>Contains a chunk of synthesized audio data.</p>",
+      "event":true
+    },
     "AudioStream":{
       "type":"blob",
       "streaming":true
     },
+    "AvailabilityErrorMessage":{"type":"string"},
+    "CloseStreamEvent":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Indicates the end of the input stream. After sending this event, the input stream will be closed and all audio will be returned.</p>",
+      "event":true
+    },
     "ContentType":{"type":"string"},
+    "CoralAvailabilityThrottledResource":{"type":"string"},
+    "CoralAvailabilityThrottlingReason":{"type":"string"},
     "DateTime":{"type":"timestamp"},
     "DeleteLexiconInput":{
       "type":"structure",
@@ -260,6 +299,17 @@
       "exception":true
     },
     "ErrorMessage":{"type":"string"},
+    "FlushStreamConfiguration":{
+      "type":"structure",
+      "members":{
+        "Force":{
+          "shape":"Force",
+          "documentation":"<p>Specifies whether to force the synthesis engine to immediately write buffered audio data to the output stream.</p>"
+        }
+      },
+      "documentation":"<p>Configuration that controls when synthesized audio data is sent on the output stream.</p>"
+    },
+    "Force":{"type":"boolean"},
     "Gender":{
       "type":"string",
       "enum":[
@@ -682,8 +732,19 @@
       "type":"structure",
       "members":{}
     },
+    "QuotaCode":{
+      "type":"string",
+      "enum":[
+        "input-stream-inbound-event-timeout",
+        "input-stream-timeout"
+      ]
+    },
     "RequestCharacters":{"type":"integer"},
     "SampleRate":{"type":"string"},
+    "ServiceCode":{
+      "type":"string",
+      "enum":["polly"]
+    },
     "ServiceFailureException":{
       "type":"structure",
       "members":{
@@ -693,6 +754,28 @@
       "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "quotaCode",
+        "serviceCode"
+      ],
+      "members":{
+        "message":{"shape":"ErrorMessage"},
+        "quotaCode":{
+          "shape":"QuotaCode",
+          "documentation":"<p>The quota code identifying the specific quota.</p>"
+        },
+        "serviceCode":{
+          "shape":"ServiceCode",
+          "documentation":"<p>The service code identifying the originating service.</p>"
+        }
+      },
+      "documentation":"<p>The request would cause a service quota to be exceeded.</p>",
+      "error":{"httpStatusCode":402},
+      "exception":true
     },
     "Size":{"type":"integer"},
     "SnsTopicArn":{
@@ -722,6 +805,110 @@
       "error":{"httpStatusCode":400},
       "exception":true
     },
+    "StartSpeechSynthesisStreamActionStream":{
+      "type":"structure",
+      "members":{
+        "TextEvent":{
+          "shape":"TextEvent",
+          "documentation":"<p>A text event containing content to be synthesized.</p>"
+        },
+        "CloseStreamEvent":{
+          "shape":"CloseStreamEvent",
+          "documentation":"<p>An event indicating the end of the input stream.</p>"
+        }
+      },
+      "documentation":"<p>Inbound event stream for sending input and control events to manage bidirectional speech synthesis.</p>",
+      "eventstream":true
+    },
+    "StartSpeechSynthesisStreamEventStream":{
+      "type":"structure",
+      "members":{
+        "AudioEvent":{
+          "shape":"AudioEvent",
+          "documentation":"<p>An audio event containing synthesized speech.</p>"
+        },
+        "StreamClosedEvent":{
+          "shape":"StreamClosedEvent",
+          "documentation":"<p>An event, with summary information, indicating the stream has closed.</p>"
+        },
+        "ValidationException":{
+          "shape":"ValidationException",
+          "documentation":"<p>An exception indicating the input failed validation.</p>"
+        },
+        "ServiceQuotaExceededException":{
+          "shape":"ServiceQuotaExceededException",
+          "documentation":"<p>An exception indicating a service quota would be exceeded.</p>"
+        },
+        "ServiceFailureException":{"shape":"ServiceFailureException"},
+        "ThrottlingException":{
+          "shape":"ThrottlingException",
+          "documentation":"<p>An exception indicating the request was throttled.</p>"
+        }
+      },
+      "documentation":"<p>Outbound event stream that contains synthesized audio data and stream status events.</p>",
+      "eventstream":true
+    },
+    "StartSpeechSynthesisStreamInput":{
+      "type":"structure",
+      "required":[
+        "Engine",
+        "OutputFormat",
+        "VoiceId"
+      ],
+      "members":{
+        "Engine":{
+          "shape":"Engine",
+          "documentation":"<p>Specifies the engine for Amazon Polly to use when processing input text for speech synthesis. Currently, only the <code>generative</code> engine is supported. If you specify a voice that the selected engine doesn't support, Amazon Polly returns an error.</p>",
+          "location":"header",
+          "locationName":"x-amzn-Engine"
+        },
+        "LanguageCode":{
+          "shape":"LanguageCode",
+          "documentation":"<p>An optional parameter that sets the language code for the speech synthesis request. Specify this parameter only when using a bilingual voice. If a bilingual voice is used and no language code is specified, Amazon Polly uses the default language of the bilingual voice.</p>",
+          "location":"header",
+          "locationName":"x-amzn-LanguageCode"
+        },
+        "LexiconNames":{
+          "shape":"LexiconNameList",
+          "documentation":"<p>The names of one or more pronunciation lexicons for the service to apply during synthesis. Amazon Polly applies lexicons only when the lexicon language matches the voice language.</p>",
+          "location":"header",
+          "locationName":"x-amzn-LexiconNames"
+        },
+        "OutputFormat":{
+          "shape":"OutputFormat",
+          "documentation":"<p>The audio format for the synthesized speech. Currently, Amazon Polly does not support JSON speech marks.</p>",
+          "location":"header",
+          "locationName":"x-amzn-OutputFormat"
+        },
+        "SampleRate":{
+          "shape":"SampleRate",
+          "documentation":"<p>The audio frequency, specified in Hz.</p>",
+          "location":"header",
+          "locationName":"x-amzn-SampleRate"
+        },
+        "VoiceId":{
+          "shape":"VoiceId",
+          "documentation":"<p>The voice to use in synthesis. To get a list of available voice IDs, use the <a href=\"https://docs.aws.amazon.com/polly/latest/API/API_DescribeVoices.html\">DescribeVoices</a> operation.</p>",
+          "location":"header",
+          "locationName":"x-amzn-VoiceId"
+        },
+        "ActionStream":{
+          "shape":"StartSpeechSynthesisStreamActionStream",
+          "documentation":"<p>The input event stream that contains text events and stream control events.</p>"
+        }
+      },
+      "payload":"ActionStream"
+    },
+    "StartSpeechSynthesisStreamOutput":{
+      "type":"structure",
+      "members":{
+        "EventStream":{
+          "shape":"StartSpeechSynthesisStreamEventStream",
+          "documentation":"<p>The output event stream that contains synthesized audio events and stream status events.</p>"
+        }
+      },
+      "payload":"EventStream"
+    },
     "StartSpeechSynthesisTaskInput":{
       "type":"structure",
       "required":[
@@ -745,7 +932,7 @@
         },
         "OutputFormat":{
           "shape":"OutputFormat",
-          "documentation":"<p>The format in which the returned output will be encoded. For audio stream, this will be mp3, ogg_vorbis, or pcm. For speech marks, this will be json. </p>"
+          "documentation":"<p>The format in which the returned output will be encoded. For audio stream, this will be mp3, ogg_vorbis, ogg_opus, mu-law, a-law, or pcm. For speech marks, this will be json. </p>"
         },
         "OutputS3BucketName":{
           "shape":"OutputS3BucketName",
@@ -757,7 +944,7 @@
         },
         "SampleRate":{
           "shape":"SampleRate",
-          "documentation":"<p>The audio frequency specified in Hz.</p> <p>The valid values for mp3 and ogg_vorbis are \"8000\", \"16000\", \"22050\", and \"24000\". The default value for standard voices is \"22050\". The default value for neural voices is \"24000\". The default value for long-form voices is \"24000\". The default value for generative voices is \"24000\".</p> <p>Valid values for pcm are \"8000\" and \"16000\" The default value is \"16000\". </p>"
+          "documentation":"<p>The audio frequency specified in Hz.</p> <p>The valid values for mp3 and ogg_vorbis are \"8000\", \"16000\", \"22050\", and \"24000\". The default value for standard voices is \"22050\". The default value for neural voices is \"24000\". The default value for long-form voices is \"24000\". The default value for generative voices is \"24000\".</p> <p>Valid values for pcm are \"8000\" and \"16000\" The default value is \"16000\". </p> <p>Valid value for ogg_opus is \"48000\". </p> <p>Valid value for mu-law and a-law is \"8000\". </p>"
         },
         "SnsTopicArn":{
           "shape":"SnsTopicArn",
@@ -789,6 +976,17 @@
           "documentation":"<p>SynthesisTask object that provides information and attributes about a newly submitted speech synthesis task.</p>"
         }
       }
+    },
+    "StreamClosedEvent":{
+      "type":"structure",
+      "members":{
+        "RequestCharacters":{
+          "shape":"RequestCharacters",
+          "documentation":"<p>The total number of characters synthesized during the streaming session.</p>"
+        }
+      },
+      "documentation":"<p>Indicates that the synthesis stream is closed and provides summary information.</p>",
+      "event":true
     },
     "SynthesisTask":{
       "type":"structure",
@@ -831,11 +1029,11 @@
         },
         "OutputFormat":{
           "shape":"OutputFormat",
-          "documentation":"<p>The format in which the returned output will be encoded. For audio stream, this will be mp3, ogg_vorbis, or pcm. For speech marks, this will be json. </p>"
+          "documentation":"<p>The format in which the returned output will be encoded. For audio stream, this will be mp3, ogg_vorbis, ogg_opus, mu-law, a-law, or pcm. For speech marks, this will be json. </p>"
         },
         "SampleRate":{
           "shape":"SampleRate",
-          "documentation":"<p>The audio frequency specified in Hz.</p> <p>The valid values for mp3 and ogg_vorbis are \"8000\", \"16000\", \"22050\", and \"24000\". The default value for standard voices is \"22050\". The default value for neural voices is \"24000\". The default value for long-form voices is \"24000\". The default value for generative voices is \"24000\".</p> <p>Valid values for pcm are \"8000\" and \"16000\" The default value is \"16000\". </p>"
+          "documentation":"<p>The audio frequency specified in Hz.</p> <p>The valid values for mp3 and ogg_vorbis are \"8000\", \"16000\", \"22050\", and \"24000\". The default value for standard voices is \"22050\". The default value for neural voices is \"24000\". The default value for long-form voices is \"24000\". The default value for generative voices is \"24000\".</p> <p>Valid values for pcm are \"8000\" and \"16000\" The default value is \"16000\". </p> <p>Valid value for ogg_opus is \"48000\". </p> <p>Valid value for mu-law and a-law is \"8000\". </p>"
         },
         "SpeechMarkTypes":{
           "shape":"SpeechMarkTypeList",
@@ -891,11 +1089,11 @@
         },
         "OutputFormat":{
           "shape":"OutputFormat",
-          "documentation":"<p> The format in which the returned output will be encoded. For audio stream, this will be mp3, ogg_vorbis, or pcm. For speech marks, this will be json. </p> <p>When pcm is used, the content returned is audio/pcm in a signed 16-bit, 1 channel (mono), little-endian format. </p>"
+          "documentation":"<p> The format in which the returned output will be encoded. For audio stream, this will be mp3, ogg_vorbis, ogg_opus, mu-law, a-law or pcm. For speech marks, this will be json. </p> <p>When pcm is used, the content returned is audio/pcm in a signed 16-bit, 1 channel (mono), little-endian format. </p>"
         },
         "SampleRate":{
           "shape":"SampleRate",
-          "documentation":"<p>The audio frequency specified in Hz.</p> <p>The valid values for mp3 and ogg_vorbis are \"8000\", \"16000\", \"22050\", \"24000\", \"44100\" and \"48000\". The default value for standard voices is \"22050\". The default value for neural voices is \"24000\". The default value for long-form voices is \"24000\". The default value for generative voices is \"24000\".</p> <p>Valid values for pcm are \"8000\" and \"16000\" The default value is \"16000\". </p>"
+          "documentation":"<p>The audio frequency specified in Hz.</p> <p>The valid values for mp3 and ogg_vorbis are \"8000\", \"16000\", \"22050\", \"24000\", \"44100\" and \"48000\". The default value for standard voices is \"22050\". The default value for neural voices is \"24000\". The default value for long-form voices is \"24000\". The default value for generative voices is \"24000\".</p> <p>Valid values for pcm are \"8000\" and \"16000\" The default value is \"16000\". </p> <p>Valid value for ogg_opus is \"48000\". </p> <p>Valid value for mu-law and a-law is \"8000\". </p>"
         },
         "SpeechMarkTypes":{
           "shape":"SpeechMarkTypeList",
@@ -924,7 +1122,7 @@
         },
         "ContentType":{
           "shape":"ContentType",
-          "documentation":"<p> Specifies the type audio stream. This should reflect the <code>OutputFormat</code> parameter in your request. </p> <ul> <li> <p> If you request <code>mp3</code> as the <code>OutputFormat</code>, the <code>ContentType</code> returned is audio/mpeg. </p> </li> <li> <p> If you request <code>ogg_vorbis</code> as the <code>OutputFormat</code>, the <code>ContentType</code> returned is audio/ogg. </p> </li> <li> <p> If you request <code>pcm</code> as the <code>OutputFormat</code>, the <code>ContentType</code> returned is audio/pcm in a signed 16-bit, 1 channel (mono), little-endian format. </p> </li> <li> <p>If you request <code>json</code> as the <code>OutputFormat</code>, the <code>ContentType</code> returned is application/x-json-stream.</p> </li> </ul> <p> </p>",
+          "documentation":"<p> Specifies the type audio stream. This should reflect the <code>OutputFormat</code> parameter in your request. </p> <ul> <li> <p> If you request <code>mp3</code> as the <code>OutputFormat</code>, the <code>ContentType</code> returned is audio/mpeg. </p> </li> <li> <p> If you request <code>ogg_vorbis</code> as the <code>OutputFormat</code>, the <code>ContentType</code> returned is audio/ogg. </p> </li> <li> <p> If you request <code>ogg_opus</code> as the <code>OutputFormat</code>, the <code>ContentType</code> returned is audio/ogg. </p> </li> <li> <p> If you request <code>pcm</code> as the <code>OutputFormat</code>, the <code>ContentType</code> returned is audio/pcm in a signed 16-bit, 1 channel (mono), little-endian format. </p> </li> <li> <p> If you request <code>mu-law</code> as the <code>OutputFormat</code>, the <code>ContentType</code> returned is audio/mulaw. </p> </li> <li> <p> If you request <code>a-law</code> as the <code>OutputFormat</code>, the <code>ContentType</code> returned is audio/alaw. </p> </li> <li> <p>If you request <code>json</code> as the <code>OutputFormat</code>, the <code>ContentType</code> returned is application/x-json-stream.</p> </li> </ul> <p> </p>",
           "location":"header",
           "locationName":"Content-Type"
         },
@@ -952,6 +1150,26 @@
     },
     "TaskStatusReason":{"type":"string"},
     "Text":{"type":"string"},
+    "TextEvent":{
+      "type":"structure",
+      "required":["Text"],
+      "members":{
+        "Text":{
+          "shape":"Text",
+          "documentation":"<p>The text content to synthesize. If you specify <code>ssml</code> as the <code>TextType</code>, follow the SSML format for the input text.</p>"
+        },
+        "TextType":{
+          "shape":"TextType",
+          "documentation":"<p>Specifies whether the input text is plain text or SSML. Default: plain text.</p>"
+        },
+        "FlushStreamConfiguration":{
+          "shape":"FlushStreamConfiguration",
+          "documentation":"<p>Configuration for controlling when synthesized audio flushes to the output stream.</p>"
+        }
+      },
+      "documentation":"<p>Contains text content to be synthesized into speech.</p>",
+      "event":true
+    },
     "TextLengthExceededException":{
       "type":"structure",
       "members":{
@@ -967,6 +1185,38 @@
         "ssml",
         "text"
       ]
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"AvailabilityErrorMessage"},
+        "throttlingReasons":{
+          "shape":"ThrottlingReasonList",
+          "documentation":"<p>A list of reasons explaining why the request was throttled.</p>"
+        }
+      },
+      "documentation":"<p>The request was denied because of request throttling.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true,
+      "synthetic":true
+    },
+    "ThrottlingReason":{
+      "type":"structure",
+      "members":{
+        "reason":{
+          "shape":"CoralAvailabilityThrottlingReason",
+          "documentation":"<p>The reason code explaining why the request was throttled.</p>"
+        },
+        "resource":{
+          "shape":"CoralAvailabilityThrottledResource",
+          "documentation":"<p>The resource that caused the throttling.</p>"
+        }
+      },
+      "documentation":"<p>Provides information about a specific throttling reason.</p>"
+    },
+    "ThrottlingReasonList":{
+      "type":"list",
+      "member":{"shape":"ThrottlingReason"}
     },
     "UnsupportedPlsAlphabetException":{
       "type":"structure",
@@ -985,6 +1235,60 @@
       "documentation":"<p>The language specified in the lexicon is unsupported. For a list of supported languages, see <a href=\"https://docs.aws.amazon.com/polly/latest/dg/API_LexiconAttributes.html\">Lexicon Attributes</a>.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
+    },
+    "ValidationException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "reason"
+      ],
+      "members":{
+        "message":{"shape":"ErrorMessage"},
+        "reason":{
+          "shape":"ValidationExceptionReason",
+          "documentation":"<p>The reason the request failed validation.</p>"
+        },
+        "fields":{
+          "shape":"ValidationExceptionFieldList",
+          "documentation":"<p>The fields that caused the validation error.</p>"
+        }
+      },
+      "documentation":"<p>The input fails to satisfy the constraints specified by the service.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
+    "ValidationExceptionField":{
+      "type":"structure",
+      "required":[
+        "name",
+        "message"
+      ],
+      "members":{
+        "name":{
+          "shape":"ValidationExceptionFieldName",
+          "documentation":"<p>The name of the field that failed validation.</p>"
+        },
+        "message":{
+          "shape":"ValidationExceptionFieldMessage",
+          "documentation":"<p>A message describing why the field failed validation.</p>"
+        }
+      },
+      "documentation":"<p>Information about a field that failed validation.</p>"
+    },
+    "ValidationExceptionFieldList":{
+      "type":"list",
+      "member":{"shape":"ValidationExceptionField"}
+    },
+    "ValidationExceptionFieldMessage":{"type":"string"},
+    "ValidationExceptionFieldName":{"type":"string"},
+    "ValidationExceptionReason":{
+      "type":"string",
+      "enum":[
+        "unsupportedOperation",
+        "fieldValidationFailed",
+        "other",
+        "invalidInboundEvent"
+      ]
     },
     "Voice":{
       "type":"structure",

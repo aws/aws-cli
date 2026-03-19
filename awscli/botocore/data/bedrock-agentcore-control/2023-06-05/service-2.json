@@ -2257,6 +2257,34 @@
       "type":"string",
       "pattern":"arn:(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:(aws|[0-9]{12}):browser(-custom)?/(aws\\.browser\\.v1|[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10})"
     },
+    "BrowserEnterprisePolicies":{
+      "type":"list",
+      "member":{"shape":"BrowserEnterprisePolicy"},
+      "max":100,
+      "min":0
+    },
+    "BrowserEnterprisePolicy":{
+      "type":"structure",
+      "required":["location"],
+      "members":{
+        "location":{
+          "shape":"ResourceLocation",
+          "documentation":"<p>The location of the enterprise policy file.</p>"
+        },
+        "type":{
+          "shape":"BrowserEnterprisePolicyType",
+          "documentation":"<p>The type of browser enterprise policy. Available values are <code>MANAGED</code> and <code>RECOMMENDED</code>.</p>"
+        }
+      },
+      "documentation":"<p>Browser enterprise policy configuration.</p>"
+    },
+    "BrowserEnterprisePolicyType":{
+      "type":"string",
+      "enum":[
+        "MANAGED",
+        "RECOMMENDED"
+      ]
+    },
     "BrowserId":{
       "type":"string",
       "pattern":"(aws\\.browser\\.v1|[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10})"
@@ -2478,6 +2506,34 @@
         }
       },
       "documentation":"<p>Represents a Cedar policy statement within the AgentCore Policy system. Cedar is a policy language designed for authorization that provides human-readable, analyzable, and high-performance policy evaluation for controlling agent behavior and access decisions. </p>"
+    },
+    "Certificate":{
+      "type":"structure",
+      "required":["location"],
+      "members":{
+        "location":{
+          "shape":"CertificateLocation",
+          "documentation":"<p>The location of the certificate.</p>"
+        }
+      },
+      "documentation":"<p>A certificate to install in the browser or code interpreter.</p>"
+    },
+    "CertificateLocation":{
+      "type":"structure",
+      "members":{
+        "secretsManager":{
+          "shape":"SecretsManagerLocation",
+          "documentation":"<p>The Amazon Web Services Secrets Manager location of the certificate.</p>"
+        }
+      },
+      "documentation":"<p>The location from which to retrieve a certificate.</p>",
+      "union":true
+    },
+    "Certificates":{
+      "type":"list",
+      "member":{"shape":"Certificate"},
+      "max":200,
+      "min":1
     },
     "ClaimMatchOperatorType":{
       "type":"string",
@@ -3060,6 +3116,14 @@
           "shape":"BrowserSigningConfigInput",
           "documentation":"<p>The browser signing configuration that enables cryptographic agent identification using HTTP message signatures for web bot authentication.</p>"
         },
+        "enterprisePolicies":{
+          "shape":"BrowserEnterprisePolicies",
+          "documentation":"<p>A list of enterprise policy files for the browser.</p>"
+        },
+        "certificates":{
+          "shape":"Certificates",
+          "documentation":"<p>A list of certificates to install in the browser.</p>"
+        },
         "clientToken":{
           "shape":"ClientToken",
           "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, Amazon Bedrock AgentCore ignores the request but does not return an error.</p>",
@@ -3120,6 +3184,10 @@
         "networkConfiguration":{
           "shape":"CodeInterpreterNetworkConfiguration",
           "documentation":"<p>The network configuration for the code interpreter. This configuration specifies the network mode for the code interpreter.</p>"
+        },
+        "certificates":{
+          "shape":"Certificates",
+          "documentation":"<p>A list of certificates to install in the code interpreter.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -6015,6 +6083,14 @@
           "shape":"BrowserSigningConfigOutput",
           "documentation":"<p>The browser signing configuration that shows whether cryptographic agent identification is enabled for web bot authentication.</p>"
         },
+        "enterprisePolicies":{
+          "shape":"BrowserEnterprisePolicies",
+          "documentation":"<p>The list of enterprise policy files configured for the browser.</p>"
+        },
+        "certificates":{
+          "shape":"Certificates",
+          "documentation":"<p>The list of certificates configured for the browser.</p>"
+        },
         "status":{
           "shape":"BrowserStatus",
           "documentation":"<p>The current status of the browser.</p>"
@@ -6081,6 +6157,10 @@
         "status":{
           "shape":"CodeInterpreterStatus",
           "documentation":"<p>The current status of the code interpreter.</p>"
+        },
+        "certificates":{
+          "shape":"Certificates",
+          "documentation":"<p>The list of certificates configured for the code interpreter.</p>"
         },
         "failureReason":{
           "shape":"String",
@@ -9392,6 +9472,14 @@
       },
       "exception":true
     },
+    "ResourceLocation":{
+      "type":"structure",
+      "members":{
+        "s3":{"shape":"S3Location"}
+      },
+      "documentation":"<p>The location of a resource.</p>",
+      "union":true
+    },
     "ResourceNotFoundException":{
       "type":"structure",
       "members":{
@@ -9658,6 +9746,17 @@
     "SecretArn":{
       "type":"string",
       "pattern":"arn:(aws|aws-us-gov):secretsmanager:[A-Za-z0-9-]{1,64}:[0-9]{12}:secret:[a-zA-Z0-9-_/+=.@!]+"
+    },
+    "SecretsManagerLocation":{
+      "type":"structure",
+      "required":["secretArn"],
+      "members":{
+        "secretArn":{
+          "shape":"ToolSecretArn",
+          "documentation":"<p>The ARN of the Amazon Web Services Secrets Manager secret containing the certificate.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Web Services Secrets Manager location configuration.</p>"
     },
     "SecurityGroupId":{
       "type":"string",
@@ -10521,6 +10620,10 @@
       },
       "documentation":"<p>A tool schema for a gateway target. This structure defines the schema for a tool that the target exposes through the Model Context Protocol.</p>",
       "union":true
+    },
+    "ToolSecretArn":{
+      "type":"string",
+      "pattern":"arn:aws(-[a-z-]+)?:secretsmanager:[a-z0-9-]+:[0-9]{12}:secret:[a-zA-Z0-9/_+=.@-]+"
     },
     "TriggerCondition":{
       "type":"structure",

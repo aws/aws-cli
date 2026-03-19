@@ -70,6 +70,20 @@
       ],
       "documentation":"<p>Creates an Batch job queue. When you create a job queue, you associate one or more compute environments to the queue and assign an order of preference for the compute environments.</p> <p>You also set a priority to the job queue that determines the order that the Batch scheduler places jobs onto its associated compute environments. For example, if a compute environment is associated with more than one job queue, the job queue with a higher priority is given preference for scheduling jobs to that compute environment.</p>"
     },
+    "CreateQuotaShare":{
+      "name":"CreateQuotaShare",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/createquotashare"
+      },
+      "input":{"shape":"CreateQuotaShareRequest"},
+      "output":{"shape":"CreateQuotaShareResponse"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Creates an Batch quota share. Each quota share operates as a virtual queue with a configured compute capacity, resource sharing strategy, and borrow limits. </p>"
+    },
     "CreateSchedulingPolicy":{
       "name":"CreateSchedulingPolicy",
       "http":{
@@ -138,7 +152,21 @@
         {"shape":"ClientException"},
         {"shape":"ServerException"}
       ],
-      "documentation":"<p>Deletes the specified job queue. You must first disable submissions for a queue with the <a>UpdateJobQueue</a> operation. All jobs in the queue are eventually terminated when you delete a job queue. The jobs are terminated at a rate of about 16 jobs each second.</p> <p>It's not necessary to disassociate compute environments from a queue before submitting a <code>DeleteJobQueue</code> request.</p>"
+      "documentation":"<p>Deletes the specified job queue. You must first disable submissions for a queue with the <a>UpdateJobQueue</a> operation. All jobs in the queue are eventually terminated when you delete a job queue.</p> <p>It's not necessary to disassociate compute environments from a queue before submitting a <code>DeleteJobQueue</code> request.</p>"
+    },
+    "DeleteQuotaShare":{
+      "name":"DeleteQuotaShare",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/deletequotashare"
+      },
+      "input":{"shape":"DeleteQuotaShareRequest"},
+      "output":{"shape":"DeleteQuotaShareResponse"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Deletes the specified quota share. You must first disable submissions for the share by updating the state to <code>DISABLED</code> using the <a>UpdateQuotaShare</a> operation. All jobs in the share are eventually terminated when you delete a quota share.</p>"
     },
     "DeleteSchedulingPolicy":{
       "name":"DeleteSchedulingPolicy",
@@ -252,6 +280,20 @@
       ],
       "documentation":"<p>Describes a list of Batch jobs.</p>"
     },
+    "DescribeQuotaShare":{
+      "name":"DescribeQuotaShare",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/describequotashare"
+      },
+      "input":{"shape":"DescribeQuotaShareRequest"},
+      "output":{"shape":"DescribeQuotaShareResponse"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Returns a description of the specified quota share.</p>"
+    },
     "DescribeSchedulingPolicies":{
       "name":"DescribeSchedulingPolicies",
       "http":{
@@ -306,7 +348,7 @@
         {"shape":"ClientException"},
         {"shape":"ServerException"}
       ],
-      "documentation":"<p>Provides a list of the first 100 <code>RUNNABLE</code> jobs associated to a single job queue and includes capacity utilization, including total usage and breakdown by share for fairshare scheduling job queues. </p>"
+      "documentation":"<p>Provides a snapshot of job queue state, including ordering of <code>RUNNABLE</code> jobs, as well as capacity utilization for already dispatched jobs. The first 100 <code>RUNNABLE</code> jobs in the job queue are listed in order of dispatch. For job queues with an attached quota-share policy, the first <code>RUNNABLE</code> job in each quota share is also listed. Capacity utilization for the job queue is provided, as well as break downs by share for job queues with attached fair-share or quota-share scheduling policies.</p>"
     },
     "ListConsumableResources":{
       "name":"ListConsumableResources",
@@ -349,6 +391,20 @@
         {"shape":"ServerException"}
       ],
       "documentation":"<p>Returns a list of Batch jobs that require a specific consumable resource.</p>"
+    },
+    "ListQuotaShares":{
+      "name":"ListQuotaShares",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/listquotashares"
+      },
+      "input":{"shape":"ListQuotaSharesRequest"},
+      "output":{"shape":"ListQuotaSharesResponse"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Returns a list of Batch quota shares associated with a job queue.</p>"
     },
     "ListSchedulingPolicies":{
       "name":"ListSchedulingPolicies",
@@ -532,6 +588,20 @@
       ],
       "documentation":"<p>Updates a job queue.</p>"
     },
+    "UpdateQuotaShare":{
+      "name":"UpdateQuotaShare",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/updatequotashare"
+      },
+      "input":{"shape":"UpdateQuotaShareRequest"},
+      "output":{"shape":"UpdateQuotaShareResponse"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Updates a quota share.</p>"
+    },
     "UpdateSchedulingPolicy":{
       "name":"UpdateSchedulingPolicy",
       "http":{
@@ -559,6 +629,20 @@
         {"shape":"ServerException"}
       ],
       "documentation":"<p>Updates a service environment. You can update the state of a service environment from <code>ENABLED</code> to <code>DISABLED</code> to prevent new service jobs from being placed in the service environment.</p>"
+    },
+    "UpdateServiceJob":{
+      "name":"UpdateServiceJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/updateservicejob"
+      },
+      "input":{"shape":"UpdateServiceJobRequest"},
+      "output":{"shape":"UpdateServiceJobResponse"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Updates the priority of a specified service job in an Batch job queue.</p>"
     }
   },
   "shapes":{
@@ -818,14 +902,14 @@
       "members":{
         "maxCapacity":{
           "shape":"Integer",
-          "documentation":"<p>The maximum capacity available for the service environment. This value represents the maximum amount of resources that can be allocated to service jobs.</p> <p>For example, <code>maxCapacity=50</code>, <code>capacityUnit=NUM_INSTANCES</code>. This indicates that the maximum number of instances that can be run on this service environment is 50. You could then run 5 SageMaker Training jobs that each use 10 instances. However, if you submit another job that requires 10 instances, it will wait in the queue.</p>"
+          "documentation":"<p>The maximum capacity available for the service environment. For a quota management enabled service environment, this value represents the maximum quantity of a particular resource type (specified by <code>capacityUnit</code>) that can be allocated to service jobs. For other service environments, this value represents the maximum quantity of all resources that can be allocated to service jobs.</p> <p>For example, if <code>maxCapacity=50</code> and <code>capacityUnit=NUM_INSTANCES</code>, you can run up to 50 instances concurrently. If you run 5 SageMaker Training jobs that each use 10 instances, a subsequent job requiring 10 instances waits in the queue until capacity is available. In a quota management enabled service environment with <code>capacityUnit=ml.m5.large</code>, only <code>ml.m5.large</code> instances count against this limit, and jobs requiring other instance types wait until a matching capacity limit is configured.</p>"
         },
         "capacityUnit":{
           "shape":"String",
-          "documentation":"<p>The unit of measure for the capacity limit. This defines how the maxCapacity value should be interpreted. For <code>SAGEMAKER_TRAINING</code> jobs, use <code>NUM_INSTANCES</code>.</p>"
+          "documentation":"<p>The unit of measure for the capacity limit, which defines how <code>maxCapacity</code> is interpreted. For <code>SAGEMAKER_TRAINING</code> jobs in a quota management enabled service environment, specify the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ResourceConfig.html#sagemaker-Type-ResourceConfig-InstanceType\">instance type</a> (for example, <code>ml.m5.large</code>). Otherwise, use <code>NUM_INSTANCES</code>.</p>"
         }
       },
-      "documentation":"<p>Defines the capacity limit for a service environment. This structure specifies the maximum amount of resources that can be used by service jobs in the environment.</p>"
+      "documentation":"<p>Defines the type and maximum quantity of resources that can be allocated to service jobs in a service environment.</p>"
     },
     "CapacityLimits":{
       "type":"list",
@@ -1621,6 +1705,59 @@
         }
       }
     },
+    "CreateQuotaShareRequest":{
+      "type":"structure",
+      "required":[
+        "quotaShareName",
+        "jobQueue",
+        "capacityLimits",
+        "resourceSharingConfiguration",
+        "preemptionConfiguration"
+      ],
+      "members":{
+        "quotaShareName":{
+          "shape":"String",
+          "documentation":"<p>The name of the quota share. It can be up to 128 characters long. It can contain uppercase and lowercase letters, numbers, hyphens (-), and underscores (_).</p>"
+        },
+        "jobQueue":{
+          "shape":"String",
+          "documentation":"<p>The Batch job queue associated with the quota share. This can be the job queue name or ARN. A job queue must be in the <code>VALID</code> state before you can associate it with a quota share.</p>"
+        },
+        "capacityLimits":{
+          "shape":"QuotaShareCapacityLimits",
+          "documentation":"<p>A list that specifies the quantity and type of compute capacity allocated to the quota share. </p>"
+        },
+        "resourceSharingConfiguration":{
+          "shape":"QuotaShareResourceSharingConfiguration",
+          "documentation":"<p>Specifies whether a quota share reserves, lends, or both lends and borrows idle compute capacity.</p>"
+        },
+        "preemptionConfiguration":{
+          "shape":"QuotaSharePreemptionConfiguration",
+          "documentation":"<p>Specifies the preemption behavior for jobs in a quota share.</p>"
+        },
+        "state":{
+          "shape":"QuotaShareState",
+          "documentation":"<p>The state of the quota share. If the quota share is <code>ENABLED</code>, it is able to accept jobs. If the quota share is <code>DISABLED</code>, new jobs won't be accepted but jobs already submitted can finish. The default state is <code>ENABLED</code>.</p>"
+        },
+        "tags":{
+          "shape":"TagrisTagsMap",
+          "documentation":"<p>The tags that you apply to the quota share to help you categorize and organize your resources. Each tag consists of a key and an optional value. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/using-tags.html\">Tagging your Batch resources</a> in <i>Batch User Guide</i>.</p>"
+        }
+      }
+    },
+    "CreateQuotaShareResponse":{
+      "type":"structure",
+      "members":{
+        "quotaShareName":{
+          "shape":"String",
+          "documentation":"<p>The name of the quota share.</p>"
+        },
+        "quotaShareArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the quota share.</p>"
+        }
+      }
+    },
     "CreateSchedulingPolicyRequest":{
       "type":"structure",
       "required":["name"],
@@ -1629,9 +1766,13 @@
           "shape":"String",
           "documentation":"<p>The name of the fair-share scheduling policy. It can be up to 128 letters long. It can contain uppercase and lowercase letters, numbers, hyphens (-), and underscores (_).</p>"
         },
+        "quotaSharePolicy":{
+          "shape":"QuotaSharePolicy",
+          "documentation":"<p>The quota share scheduling policy details. Only one of fairsharePolicy or quotaSharePolicy can be set. Once set, this policy type cannot be removed or changed to a fairSharePolicy.</p>"
+        },
         "fairsharePolicy":{
           "shape":"FairsharePolicy",
-          "documentation":"<p>The fair-share scheduling policy details.</p>"
+          "documentation":"<p>The fair-share scheduling policy details. Only one of fairsharePolicy or quotaSharePolicy can be set. Once set, this policy type cannot be removed or changed to a quotaSharePolicy.</p>"
         },
         "tags":{
           "shape":"TagrisTagsMap",
@@ -1745,6 +1886,20 @@
       "documentation":"<p>Contains the parameters for <code>DeleteJobQueue</code>.</p>"
     },
     "DeleteJobQueueResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteQuotaShareRequest":{
+      "type":"structure",
+      "required":["quotaShareArn"],
+      "members":{
+        "quotaShareArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the quota share.</p>"
+        }
+      }
+    },
+    "DeleteQuotaShareResponse":{
       "type":"structure",
       "members":{}
     },
@@ -1963,6 +2118,57 @@
         }
       }
     },
+    "DescribeQuotaShareRequest":{
+      "type":"structure",
+      "required":["quotaShareArn"],
+      "members":{
+        "quotaShareArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the quota share.</p>"
+        }
+      }
+    },
+    "DescribeQuotaShareResponse":{
+      "type":"structure",
+      "members":{
+        "quotaShareName":{
+          "shape":"String",
+          "documentation":"<p>The name of the quota share.</p>"
+        },
+        "quotaShareArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the quota share.</p>"
+        },
+        "jobQueueArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the job queue associated with the quota share.</p>"
+        },
+        "capacityLimits":{
+          "shape":"QuotaShareCapacityLimits",
+          "documentation":"<p>A list that specifies the quantity and type of compute capacity allocated to the quota share.</p>"
+        },
+        "resourceSharingConfiguration":{
+          "shape":"QuotaShareResourceSharingConfiguration",
+          "documentation":"<p>Specifies whether a quota share reserves, lends, or both lends and borrows idle compute capacity.</p>"
+        },
+        "preemptionConfiguration":{
+          "shape":"QuotaSharePreemptionConfiguration",
+          "documentation":"<p>Specifies the preemption behavior for jobs in a quota share.</p>"
+        },
+        "state":{
+          "shape":"QuotaShareState",
+          "documentation":"<p>The state of the quota share.</p>"
+        },
+        "status":{
+          "shape":"QuotaShareStatus",
+          "documentation":"<p>The current status of the quota share.</p>"
+        },
+        "tags":{
+          "shape":"TagrisTagsMap",
+          "documentation":"<p>The tags applied to the quota share.</p>"
+        }
+      }
+    },
     "DescribeSchedulingPoliciesRequest":{
       "type":"structure",
       "required":["arns"],
@@ -2093,6 +2299,18 @@
         "shareIdentifier":{
           "shape":"String",
           "documentation":"<p>The share identifier for the service job. This is used for fair-share scheduling.</p>"
+        },
+        "quotaShareName":{
+          "shape":"String",
+          "documentation":"<p>The name of the quota share that the service job is associated with.</p>"
+        },
+        "preemptionConfiguration":{
+          "shape":"ServiceJobPreemptionConfiguration",
+          "documentation":"<p>Specifies the service job behavior when preempted.</p>"
+        },
+        "preemptionSummary":{
+          "shape":"ServiceJobPreemptionSummary",
+          "documentation":"<p>Summarizes the preemptions of the service job. This field appears on a service job when it has been preempted.</p>"
         },
         "startedAt":{
           "shape":"Long",
@@ -3131,6 +3349,43 @@
       "type":"list",
       "member":{"shape":"FrontOfQueueJobSummary"}
     },
+    "FrontOfQuotaShareJobSummary":{
+      "type":"structure",
+      "members":{
+        "jobArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN for a job in a named quota share.</p>"
+        },
+        "earliestTimeAtPosition":{
+          "shape":"Long",
+          "documentation":"<p>The Unix timestamp (in milliseconds) for when the job transitioned to its current position in the quota share.</p>"
+        }
+      },
+      "documentation":"<p>An object that represents summary details for the first <code>RUNNABLE</code> job in a quota share.</p>"
+    },
+    "FrontOfQuotaShareJobSummaryList":{
+      "type":"list",
+      "member":{"shape":"FrontOfQuotaShareJobSummary"}
+    },
+    "FrontOfQuotaSharesDetail":{
+      "type":"structure",
+      "members":{
+        "quotaShares":{
+          "shape":"FrontOfQuotaSharesJobSummaryMap",
+          "documentation":"<p>Contains a list of the first <code>RUNNABLE</code> job in each named quota share.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"Long",
+          "documentation":"<p>The Unix timestamp (in milliseconds) for when the first <code>RUNNABLE</code> job per quota share were all last updated.</p>"
+        }
+      },
+      "documentation":"<p>An object that represents the details of the first <code>RUNNABLE</code> job in each named quota share associated with a single job queue.</p>"
+    },
+    "FrontOfQuotaSharesJobSummaryMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"FrontOfQuotaShareJobSummaryList"}
+    },
     "GetJobQueueSnapshotRequest":{
       "type":"structure",
       "required":["jobQueue"],
@@ -3146,11 +3401,15 @@
       "members":{
         "frontOfQueue":{
           "shape":"FrontOfQueueDetail",
-          "documentation":"<p>The list of the first 100 <code>RUNNABLE</code> jobs in each job queue. For first-in-first-out (FIFO) job queues, jobs are ordered based on their submission time. For fair-share scheduling (FSS) job queues, jobs are ordered based on their job priority and share usage.</p>"
+          "documentation":"<p>The list of the first 100 <code>RUNNABLE</code> jobs in each job queue. For first-in-first-out (FIFO) job queues, jobs are ordered based on their submission time. For job queues with an attached fair-share scheduling (FSS) or quota-share policy, jobs are ordered based on their job priority and share usage.</p>"
+        },
+        "frontOfQuotaShares":{
+          "shape":"FrontOfQuotaSharesDetail",
+          "documentation":"<p>The first <code>RUNNABLE</code> job in each quota share. Jobs are ordered based on their job priority and share usage.</p>"
         },
         "queueUtilization":{
           "shape":"QueueSnapshotUtilizationDetail",
-          "documentation":"<p>The job queue's capacity utilization, including total usage and breakdown by fairshare scheduling queue.</p>"
+          "documentation":"<p>The job queue's capacity utilization, including total usage and breakdown per given share.</p>"
         }
       }
     },
@@ -3579,7 +3838,7 @@
         },
         "action":{
           "shape":"JobStateTimeLimitActionsAction",
-          "documentation":"<p>The action to take when a job is at the head of the job queue in the specified state for the specified period of time. The only supported value is <code>CANCEL</code>, which will cancel the job.</p>"
+          "documentation":"<p>The action to take when a job is at the head of the job queue in the specified state for the specified period of time. For job queues connected to a <code>ECS</code>, <code>FARGATE</code> or <code>EKS</code> compute environment, the only supported value is <code>CANCEL</code>, which will cancel the job. For job queues connected to a <code>SAGEMAKER_TRAINING</code> service environment, the only supported value is <code>TERMINATE</code>, which will terminate the job.</p>"
         }
       },
       "documentation":"<p>Specifies an action that Batch will take after the job has remained at the head of the queue in the specified state for longer than the specified time.</p>"
@@ -4030,6 +4289,37 @@
         }
       }
     },
+    "ListQuotaSharesRequest":{
+      "type":"structure",
+      "required":["jobQueue"],
+      "members":{
+        "jobQueue":{
+          "shape":"String",
+          "documentation":"<p>The name or full Amazon Resource Name (ARN) of the job queue used to list quota shares.</p>"
+        },
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of results returned by <code>ListQuotaShares</code> in paginated output. When this parameter is used, <code>ListQuotaShares</code> only returns <code>maxResults</code> results in a single page and a <code>nextToken</code> response element. You can see the remaining results of the initial request by sending another <code>ListQuotaShares</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 100. If this parameter isn't used, <code>ListQuotaShares</code> returns up to 100 results and a <code>nextToken</code> value if applicable.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value that's returned from a previous paginated <code>ListQuotaShares</code> request where <code>maxResults</code> was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the <code>nextToken</code> value. This value is <code>null</code> when there are no more results to return.</p> <note> <p>Treat this token as an opaque identifier that's only used to retrieve the next items in a list and not for other programmatic purposes.</p> </note>"
+        }
+      }
+    },
+    "ListQuotaSharesResponse":{
+      "type":"structure",
+      "members":{
+        "quotaShares":{
+          "shape":"QuotaShareList",
+          "documentation":"<p>A list of quota shares that match the request.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value to include in a future <code>ListQuotaShares</code> request. When the results of a <code>ListQuotaShares</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+        }
+      }
+    },
     "ListSchedulingPoliciesRequest":{
       "type":"structure",
       "members":{
@@ -4416,18 +4706,205 @@
       "members":{
         "totalCapacityUsage":{
           "shape":"QueueSnapshotCapacityUsageList",
-          "documentation":"<p>The total capacity usage for the entire job queue, for both first-in, first-out (FIFO) and fairshare scheduling job queue.</p>"
+          "documentation":"<p>The total capacity usage for the entire job queue.</p>"
         },
         "fairshareUtilization":{
           "shape":"FairshareUtilizationDetail",
           "documentation":"<p>The utilization information for a fairshare scheduling job queues, including active share count and top capacity utilization by share.</p>"
+        },
+        "quotaShareUtilization":{
+          "shape":"QuotaShareUtilizationDetail",
+          "documentation":"<p>The utilization information for a job queue with a quota share scheduling policy.</p>"
         },
         "lastUpdatedAt":{
           "shape":"Long",
           "documentation":"<p>The Unix timestamp (in milliseconds) for when the queue utilization information was last updated.</p>"
         }
       },
-      "documentation":"<p>The job queue utilization at a specific point in time, including total capacity usage and fairshare utilization breakdown.</p>"
+      "documentation":"<p>The job queue utilization at a specific point in time, including total capacity usage, and quota share or fairshare utilization breakdown depending on the job queue scheduling policy.</p>"
+    },
+    "QuotaShareCapacityLimit":{
+      "type":"structure",
+      "required":[
+        "maxCapacity",
+        "capacityUnit"
+      ],
+      "members":{
+        "maxCapacity":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum capacity available for the quota share. This value represents the maximum quantity of a resource that can be allocated to jobs in the quota share without borrowing.</p>"
+        },
+        "capacityUnit":{
+          "shape":"String",
+          "documentation":"<p>The unit of compute capacity for the capacityLimit. For example, <code>ml.m5.large</code>.</p>"
+        }
+      },
+      "documentation":"<p>Defines the capacity limit for a quota share, or the type and maximum quantity of a particular resource that can be allocated to jobs in the quota share without borrowing. </p>"
+    },
+    "QuotaShareCapacityLimits":{
+      "type":"list",
+      "member":{"shape":"QuotaShareCapacityLimit"}
+    },
+    "QuotaShareCapacityUsage":{
+      "type":"structure",
+      "members":{
+        "capacityUnit":{
+          "shape":"String",
+          "documentation":"<p>The unit of compute capacity for the capacity usage.</p>"
+        },
+        "quantity":{
+          "shape":"Double",
+          "documentation":"<p>The quantity of capacity being used.</p>"
+        }
+      },
+      "documentation":"<p>The capacity usage for a quota share, including units of compute capacity and quantity of resources being used.</p>"
+    },
+    "QuotaShareCapacityUsageList":{
+      "type":"list",
+      "member":{"shape":"QuotaShareCapacityUsage"}
+    },
+    "QuotaShareCapacityUtilization":{
+      "type":"structure",
+      "members":{
+        "quotaShareName":{
+          "shape":"String",
+          "documentation":"<p>The name of the quota share.</p>"
+        },
+        "capacityUsage":{
+          "shape":"QuotaShareCapacityUsageList",
+          "documentation":"<p>The capacity usage information for this quota share, including the units of compute capacity and quantity being used.</p>"
+        }
+      },
+      "documentation":"<p>The capacity utilization for a specific quota share, including the quota share name and its current usage.</p>"
+    },
+    "QuotaShareCapacityUtilizationList":{
+      "type":"list",
+      "member":{"shape":"QuotaShareCapacityUtilization"}
+    },
+    "QuotaShareDetail":{
+      "type":"structure",
+      "members":{
+        "quotaShareName":{
+          "shape":"String",
+          "documentation":"<p>The name of the quota share.</p>"
+        },
+        "quotaShareArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the quota share.</p>"
+        },
+        "jobQueueArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the job queue associated with the quota share.</p>"
+        },
+        "capacityLimits":{
+          "shape":"QuotaShareCapacityLimits",
+          "documentation":"<p>A list that specifies the quantity and type of compute capacity allocated to the quota share.</p>"
+        },
+        "resourceSharingConfiguration":{
+          "shape":"QuotaShareResourceSharingConfiguration",
+          "documentation":"<p>Specifies whether a quota share reserves, lends, or both lends and borrows idle compute capacity.</p>"
+        },
+        "preemptionConfiguration":{
+          "shape":"QuotaSharePreemptionConfiguration",
+          "documentation":"<p>Specifies the preemption behavior for jobs in a quota share.</p>"
+        },
+        "state":{
+          "shape":"QuotaShareState",
+          "documentation":"<p>The state of the quota share.</p>"
+        },
+        "status":{
+          "shape":"QuotaShareStatus",
+          "documentation":"<p>The current status of the quota share.</p>"
+        }
+      },
+      "documentation":"<p>Detailed information about a quota share, including its configuration, state, and capacity limits.</p>"
+    },
+    "QuotaShareIdleResourceAssignmentStrategy":{
+      "type":"string",
+      "enum":["FIFO"]
+    },
+    "QuotaShareInSharePreemptionState":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "QuotaShareList":{
+      "type":"list",
+      "member":{"shape":"QuotaShareDetail"}
+    },
+    "QuotaSharePolicy":{
+      "type":"structure",
+      "required":["idleResourceAssignmentStrategy"],
+      "members":{
+        "idleResourceAssignmentStrategy":{
+          "shape":"QuotaShareIdleResourceAssignmentStrategy",
+          "documentation":"<p>The strategy that determines how idle resources are assigned to quota shares that are borrowing capacity. Currently, only <code>FIFO</code> is supported.</p>"
+        }
+      },
+      "documentation":"<p>The quota share scheduling policy details for a job queue.</p>"
+    },
+    "QuotaSharePreemptionConfiguration":{
+      "type":"structure",
+      "required":["inSharePreemption"],
+      "members":{
+        "inSharePreemption":{
+          "shape":"QuotaShareInSharePreemptionState",
+          "documentation":"<p>Specifies whether jobs within a quota share can be preempted by another, higher priority job in the same quota share.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the preemption behavior for jobs in a quota share.</p>"
+    },
+    "QuotaShareResourceSharingConfiguration":{
+      "type":"structure",
+      "required":["strategy"],
+      "members":{
+        "strategy":{
+          "shape":"QuotaShareResourceSharingStrategy",
+          "documentation":"<p>The resource sharing strategy for the quota share. The <code>RESERVE</code> strategy allows a quota share to reserve idle capacity for itself. <code>LEND</code> configures the share to lend its idle capacity to another share in need of capacity. The <code>LEND_AND_BORROW</code> strategy configures the share to borrow idle capacity from an underutilized share, as well as lend to another share.</p>"
+        },
+        "borrowLimit":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum percentage of additional capacity that the quota share can borrow from other shares. <code>borrowLimit</code> can only be applied to quota shares with a strategy of <code>LEND_AND_BORROW</code>. This value is expressed as a percentage of the quota share's configured <a href=\"https://docs.aws.amazon.com/batch/latest/APIReference/API_QuotaShareCapacityLimit.html\">CapacityLimits</a>.</p> <p>The <code>borrowLimit</code> is applied uniformly across all capacity units. For example, if the <code>borrowLimit</code> is 200, the quota share can borrow up to 200% of its configured <code>maxCapacity</code> for each capacity unit. The default <code>borrowLimit</code> is -1, which indicates unlimited borrowing.</p>"
+        }
+      },
+      "documentation":"<p>Specifies whether a quota share reserves, lends, or both lends and borrows idle compute capacity.</p>"
+    },
+    "QuotaShareResourceSharingStrategy":{
+      "type":"string",
+      "enum":[
+        "RESERVE",
+        "LEND",
+        "LEND_AND_BORROW"
+      ]
+    },
+    "QuotaShareState":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "QuotaShareStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "VALID",
+        "INVALID",
+        "UPDATING",
+        "DELETING"
+      ]
+    },
+    "QuotaShareUtilizationDetail":{
+      "type":"structure",
+      "members":{
+        "topCapacityUtilization":{
+          "shape":"QuotaShareCapacityUtilizationList",
+          "documentation":"<p>A list of the top capacity utilizations across quota shares associated with a job queue.</p>"
+        }
+      },
+      "documentation":"<p>An object that represents the capacity utilization details of all quota shares associated with a single job queue.</p>"
     },
     "RegisterJobDefinitionRequest":{
       "type":"structure",
@@ -4607,6 +5084,10 @@
         "arn":{
           "shape":"String",
           "documentation":"<p>The Amazon Resource Name (ARN) of the scheduling policy. An example is <code>arn:<i>aws</i>:batch:<i>us-east-1</i>:<i>123456789012</i>:scheduling-policy/<i>HighPriority</i> </code>.</p>"
+        },
+        "quotaSharePolicy":{
+          "shape":"QuotaSharePolicy",
+          "documentation":"<p>The quota share scheduling policy details.</p>"
         },
         "fairsharePolicy":{
           "shape":"FairsharePolicy",
@@ -4838,6 +5319,56 @@
       "type":"list",
       "member":{"shape":"ServiceJobEvaluateOnExit"}
     },
+    "ServiceJobPreemptedAttempt":{
+      "type":"structure",
+      "members":{
+        "serviceResourceId":{
+          "shape":"ServiceResourceId",
+          "documentation":"<p>The service resource identifier associated with the service job attempt.</p>"
+        },
+        "startedAt":{
+          "shape":"Long",
+          "documentation":"<p>The Unix timestamp (in milliseconds) for when the service job attempt was started.</p>"
+        },
+        "stoppedAt":{
+          "shape":"Long",
+          "documentation":"<p>The Unix timestamp (in milliseconds) for when the service job attempt stopped running.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>A string that provides additional details for the current status of the service job attempt.</p>"
+        }
+      },
+      "documentation":"<p>Detailed information about a preempted attempt of a service job.</p>"
+    },
+    "ServiceJobPreemptionConfiguration":{
+      "type":"structure",
+      "members":{
+        "preemptionRetriesBeforeTermination":{
+          "shape":"Integer",
+          "documentation":"<p>The number of times a service job can be retried after it is preempted. A job will be terminated when preemption retries have been exhausted. If this field is unset, preempted jobs will be requeued an unlimited number of times. </p>"
+        }
+      },
+      "documentation":"<p>Specifies the service job behavior when preempted.</p>"
+    },
+    "ServiceJobPreemptionSummary":{
+      "type":"structure",
+      "members":{
+        "preemptedAttemptCount":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of times the service job has been preempted.</p>"
+        },
+        "recentPreemptedAttempts":{
+          "shape":"ServiceJobRecentPreemptedAttemptList",
+          "documentation":"<p>A list of the most recent preemption attempts for the service job.</p>"
+        }
+      },
+      "documentation":"<p>Summarizes the preemptions of the service job. This field appears on a service job when it has been preempted.</p>"
+    },
+    "ServiceJobRecentPreemptedAttemptList":{
+      "type":"list",
+      "member":{"shape":"ServiceJobPreemptedAttempt"}
+    },
     "ServiceJobRetryAction":{
       "type":"string",
       "enum":[
@@ -4916,6 +5447,10 @@
         "shareIdentifier":{
           "shape":"String",
           "documentation":"<p>The share identifier for the job.</p>"
+        },
+        "quotaShareName":{
+          "shape":"String",
+          "documentation":"<p>The quota share for the service job.</p>"
         },
         "status":{
           "shape":"ServiceJobStatus",
@@ -5136,6 +5671,14 @@
         "shareIdentifier":{
           "shape":"String",
           "documentation":"<p>The share identifier for the service job. Don't specify this parameter if the job queue doesn't have a fair-share scheduling policy. If the job queue has a fair-share scheduling policy, then this parameter must be specified.</p>"
+        },
+        "quotaShareName":{
+          "shape":"String",
+          "documentation":"<p>The quota share for the service job. Don't specify this parameter if the job queue doesn't have a quota share scheduling policy. If the job queue has a quota share scheduling policy, then this parameter must be specified.</p>"
+        },
+        "preemptionConfiguration":{
+          "shape":"ServiceJobPreemptionConfiguration",
+          "documentation":"<p>Specifies the service job behavior when preempted.</p>"
         },
         "timeoutConfig":{
           "shape":"ServiceJobTimeout",
@@ -5715,6 +6258,45 @@
       },
       "documentation":"<p>Specifies the infrastructure update policy for the Amazon EC2 compute environment. For more information about infrastructure updates, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html\">Updating compute environments</a> in the <i>Batch User Guide</i>.</p>"
     },
+    "UpdateQuotaShareRequest":{
+      "type":"structure",
+      "required":["quotaShareArn"],
+      "members":{
+        "quotaShareArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the quota share to update.</p>"
+        },
+        "capacityLimits":{
+          "shape":"QuotaShareCapacityLimits",
+          "documentation":"<p>A list that specifies the quantity and type of compute capacity allocated to the quota share.</p>"
+        },
+        "resourceSharingConfiguration":{
+          "shape":"QuotaShareResourceSharingConfiguration",
+          "documentation":"<p>Specifies whether a quota share reserves, lends, or both lends and borrows idle compute capacity.</p>"
+        },
+        "preemptionConfiguration":{
+          "shape":"QuotaSharePreemptionConfiguration",
+          "documentation":"<p>Specifies the preemption behavior for jobs in a quota share.</p>"
+        },
+        "state":{
+          "shape":"QuotaShareState",
+          "documentation":"<p>The state of the quota share. If the quota share is <code>ENABLED</code>, it is able to accept jobs. If the quota share is <code>DISABLED</code>, new jobs won't be accepted but jobs already submitted can finish.</p>"
+        }
+      }
+    },
+    "UpdateQuotaShareResponse":{
+      "type":"structure",
+      "members":{
+        "quotaShareName":{
+          "shape":"String",
+          "documentation":"<p>The name of the quota share.</p>"
+        },
+        "quotaShareArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the quota share.</p>"
+        }
+      }
+    },
     "UpdateSchedulingPolicyRequest":{
       "type":"structure",
       "required":["arn"],
@@ -5723,12 +6305,16 @@
           "shape":"String",
           "documentation":"<p>The Amazon Resource Name (ARN) of the scheduling policy to update.</p>"
         },
+        "quotaSharePolicy":{
+          "shape":"QuotaSharePolicy",
+          "documentation":"<p>The quota share scheduling policy details. Once set during creation, a quotaSharePolicy cannot be removed or changed to a fairsharePolicy.</p>"
+        },
         "fairsharePolicy":{
           "shape":"FairsharePolicy",
-          "documentation":"<p>The fair-share policy scheduling details.</p>"
+          "documentation":"<p>The fair-share policy scheduling details. Once set during creation, a fairsharePolicy cannot be removed or changed to a quotaSharePolicy.</p>"
         }
       },
-      "documentation":"<p>Contains the parameters for <code>UpdateSchedulingPolicy</code>.</p>"
+      "documentation":"<p>Contains the parameters for <code>UpdateSchedulingPolicy</code>. </p>"
     },
     "UpdateSchedulingPolicyResponse":{
       "type":"structure",
@@ -5766,6 +6352,40 @@
         "serviceEnvironmentArn":{
           "shape":"String",
           "documentation":"<p>The Amazon Resource Name (ARN) of the service environment that was updated.</p>"
+        }
+      }
+    },
+    "UpdateServiceJobRequest":{
+      "type":"structure",
+      "required":[
+        "jobId",
+        "schedulingPriority"
+      ],
+      "members":{
+        "jobId":{
+          "shape":"String",
+          "documentation":"<p>The Batch job ID of the job to update.</p>"
+        },
+        "schedulingPriority":{
+          "shape":"Integer",
+          "documentation":"<p>The scheduling priority for the job. This only affects jobs in job queues with a quota-share or fair-share scheduling policy. Jobs with a higher scheduling priority are scheduled before jobs with a lower scheduling priority within a share.</p> <p>The minimum supported value is 0 and the maximum supported value is 9999.</p>"
+        }
+      }
+    },
+    "UpdateServiceJobResponse":{
+      "type":"structure",
+      "members":{
+        "jobArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the job.</p>"
+        },
+        "jobName":{
+          "shape":"String",
+          "documentation":"<p>The name of the job.</p>"
+        },
+        "jobId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the job.</p>"
         }
       }
     },

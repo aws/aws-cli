@@ -626,6 +626,10 @@ class ClientArgsCreator:
             client_context = {}
         if self._is_s3_service(service_name_raw):
             client_context.update(s3_config_raw)
+            if s3_disable_express_session_auth is not None:
+                client_context['disable_s3_express_session_auth'] = (
+                    s3_disable_express_session_auth
+                )
 
         sig_version = (
             client_config.signature_version
@@ -653,6 +657,7 @@ class ClientArgsCreator:
         legacy_endpoint_url,
         credentials,
         account_id_endpoint_mode,
+        s3_disable_express_session_auth,
     ):
         # EndpointRulesetResolver rulesets may accept an "SDK::Endpoint" as
         # input. If the endpoint_url argument of create_client() is set, it
@@ -718,8 +723,8 @@ class ClientArgsCreator:
             EPRBuiltins.AWS_S3_DISABLE_MRAP: s3_config.get(
                 's3_disable_multiregion_access_points', False
             ),
-            EPRBuiltins.AWS_S3_DISABLE_EXPRESS_SESSION_AUTH: s3_config.get(
-                'disable_s3_express_session_auth', False
+            EPRBuiltins.AWS_S3_DISABLE_EXPRESS_SESSION_AUTH: (
+                s3_disable_express_session_auth
             ),
             EPRBuiltins.SDK_ENDPOINT: given_endpoint,
             EPRBuiltins.ACCOUNT_ID: credentials.get_deferred_property(

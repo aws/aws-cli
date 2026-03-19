@@ -276,6 +276,7 @@ class Config:
             ('proxies', None),
             ('proxies_config', None),
             ('s3', None),
+            ('s3_disable_express_session_auth', None),
             ('retries', None),
             ('client_cert', None),
             ('inject_host_prefix', None),

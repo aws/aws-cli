@@ -73,6 +73,8 @@ def register_removals(event_handler):
         on_event='building-command-table.connecthealth',
         remove_commands=['start-medical-scribe-listening-session'],
     )
+    cmd_remover.remove(on_event='building-command-table.polly',
+                        remove_commands=['start-speech-synthesis-stream'])
 
 
 class CommandRemover(object):

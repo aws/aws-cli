@@ -629,9 +629,7 @@ class LocalDeleteRequestSubmitter(BaseTransferRequestSubmitter):
             self._result_queue.put(SuccessResult(**result_kwargs))
         except Exception as e:
             self._result_queue.put(FailureResult(exception=e, **result_kwargs))
-        finally:
-            # Return True to indicate that the transfer was submitted
-            return True
+        return True
 
     def _format_src_dest(self, fileinfo):
         return self._format_local_path(fileinfo.src), None

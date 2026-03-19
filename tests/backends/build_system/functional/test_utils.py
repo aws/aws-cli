@@ -46,8 +46,8 @@ def utils():
         ),
         ("docutils>=0.10,<0.16", Requirement("docutils", ">=0.10", "<0.16")),
         (
-            "ruamel.yaml>=0.15.0,<=0.17.21",
-            Requirement("ruamel.yaml", ">=0.15.0", "<=0.17.21"),
+            "ruamel_yaml>=0.15.0,<=0.17.21",
+            Requirement("ruamel_yaml", ">=0.15.0", "<=0.17.21"),
         ),
         ("wcwidth<0.2.0", Requirement("wcwidth", "<0.2.0")),
         (

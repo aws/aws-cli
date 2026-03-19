@@ -285,8 +285,8 @@ class ClientArgsCreator:
                 account_id_endpoint_mode=client_config.account_id_endpoint_mode,
                 auth_scheme_preference=client_config.auth_scheme_preference,
                 s3_disable_express_session_auth=(
-                    s3_config.get('disable_s3_express_session_auth')
-                    if s3_config is not None
+                    client_config.s3.get('disable_s3_express_session_auth')
+                    if client_config.s3 is not None
                     else None
                 ),
             )

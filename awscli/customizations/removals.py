@@ -106,6 +106,10 @@ def register_removals(event_handler):
         on_event='building-command-table.logs',
         remove_commands=['get-log-object'],
     )
+    cmd_remover.remove(
+        on_event='building-command-table.polly',
+        remove_commands=['start-speech-synthesis-stream'],
+    )
 
     cmd_remover.remove(
         on_event='building-command-table.connecthealth',

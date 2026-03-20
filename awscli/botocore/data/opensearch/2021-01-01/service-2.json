@@ -1457,6 +1457,10 @@
       },
       "documentation":"<p>The status of machine learning options on the specified domain.</p>"
     },
+    "AMPWorkspaceArn":{
+      "type":"string",
+      "pattern":"^arn:aws[a-zA-Z-]*:aps:[a-z0-9-]+:[0-9]{12}:workspace\\/ws-[a-z0-9-]*$"
+    },
     "ARN":{
       "type":"string",
       "documentation":"<p>The Amazon Resource Name (ARN) of the domain. See <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/index.html\">Identifiers for IAM Entities </a> in <i>Using Amazon Web Services Identity and Access Management</i> for more information. </p>",
@@ -1609,8 +1613,7 @@
       "type":"structure",
       "required":[
         "DataSourceName",
-        "DataSourceType",
-        "OpenSearchArns"
+        "DataSourceType"
       ],
       "members":{
         "DataSourceName":{
@@ -1627,7 +1630,7 @@
         },
         "OpenSearchArns":{
           "shape":"DirectQueryOpenSearchARNList",
-          "documentation":"<p> A list of Amazon Resource Names (ARNs) for the OpenSearch collections that are associated with the direct query data source. </p>"
+          "documentation":"<p> An optional list of Amazon Resource Names (ARNs) for the OpenSearch collections that are associated with the direct query data source. This field is required for CloudWatchLogs and SecurityLake datasource types. </p>"
         },
         "DataSourceAccessPolicy":{
           "shape":"PolicyDocument",
@@ -3966,6 +3969,10 @@
         "SecurityLake":{
           "shape":"SecurityLakeDirectQueryDataSource",
           "documentation":"<p> Specifies Security Lake as a type of data source for direct queries. </p>"
+        },
+        "Prometheus":{
+          "shape":"PrometheusDirectQueryDataSource",
+          "documentation":"<p> Specifies Prometheus as a type of data source for direct queries. </p>"
         }
       },
       "documentation":"<p> The type of data source that is used for direct queries. This is a supported Amazon Web Services service, such as CloudWatch Logs or Security Lake. </p>",
@@ -7045,6 +7052,24 @@
         "AWS_SERVICE"
       ]
     },
+    "PrometheusDirectQueryDataSource":{
+      "type":"structure",
+      "required":[
+        "RoleArn",
+        "WorkspaceArn"
+      ],
+      "members":{
+        "RoleArn":{
+          "shape":"DirectQueryDataSourceRoleArn",
+          "documentation":"<p> The unique identifier of the IAM role that grants OpenSearch Service permission to access the specified data source. </p>"
+        },
+        "WorkspaceArn":{
+          "shape":"AMPWorkspaceArn",
+          "documentation":"<p> The unique identifier of the Amazon Managed Prometheus Workspace that is associated with the specified data source. </p>"
+        }
+      },
+      "documentation":"<p> Configuration details for a Prometheus data source that can be used for direct queries. </p>"
+    },
     "PropertyValueType":{
       "type":"string",
       "enum":[
@@ -8049,8 +8074,7 @@
       "type":"structure",
       "required":[
         "DataSourceName",
-        "DataSourceType",
-        "OpenSearchArns"
+        "DataSourceType"
       ],
       "members":{
         "DataSourceName":{
@@ -8069,7 +8093,7 @@
         },
         "OpenSearchArns":{
           "shape":"DirectQueryOpenSearchARNList",
-          "documentation":"<p> A list of Amazon Resource Names (ARNs) for the OpenSearch collections that are associated with the direct query data source. </p>"
+          "documentation":"<p> An optional list of Amazon Resource Names (ARNs) for the OpenSearch collections that are associated with the direct query data source. This field is required for CloudWatchLogs and SecurityLake datasource types. </p>"
         },
         "DataSourceAccessPolicy":{
           "shape":"PolicyDocument",

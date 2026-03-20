@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+2.34.14
+=======
+
+* api-change:``backup``: Fix Typo for S3Backup Options ( S3BackupACLs to BackupACLs)
+* api-change:``dynamodb``: Adding ReplicaArn to ReplicaDescription of a global table replica
+* api-change:``opensearch``: Added support for Amazon Managed Service for Prometheus (AMP) as a connected data source in OpenSearch UI. Now users can analyze Prometheus metrics in OpenSearch UI without data copy.
+* api-change:``verifiedpermissions``: Adds support for Policy Store Aliases, Policy Names, and Policy Template Names. These are customizable identifiers that can be used in place of Policy Store ids, Policy ids, and Policy Template ids respectively in Amazon Verified Permissions APIs.
+
+
 2.34.13
 =======
 

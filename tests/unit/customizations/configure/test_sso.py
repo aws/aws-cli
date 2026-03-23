@@ -37,6 +37,7 @@ from awscli.customizations.configure.sso import (
     SSOSessionConfigurationPrompter,
     StartUrlValidator,
     display_account,
+    get_account_sorting_key,
 )
 from awscli.customizations.sso.utils import (
     PrintOnlyHandler,
@@ -359,12 +360,14 @@ def account_id_select(account_id):
     }
     return SelectMenu(
         answer=selected_account,
-        expected_choices=[
-            selected_account,
-            {"accountId": "1234567890", "emailAddress": "account2@site.com"},
-        ],
+        expected_choices=sorted(
+            [
+                selected_account,
+                {"accountId": "1234567890", "emailAddress": "account2@site.com"},
+            ],
+            key=get_account_sorting_key,
+        )
     )
-
 
 @pytest.fixture
 def role_name_select(role_name):

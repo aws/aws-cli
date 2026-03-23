@@ -186,6 +186,15 @@ def display_account(account):
     return account_template.format(**account)
 
 
+def get_account_sorting_key(account):
+    only_account_id = ('accountName' not in account and 'emailAddress' not in account)
+    for key in ('accountName', 'emailAddress', 'accountId'):
+        value = account.get(key, None)
+        if value is not None:
+            return (only_account_id, value.lower())
+    return (only_account_id, None)
+
+
 class SSOSessionConfigurationPrompter:
     _DEFAULT_SSO_SCOPE = 'sso:account:access'
     _KNOWN_SSO_SCOPES = {
@@ -441,9 +450,7 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
             'There are {} AWS accounts available to you.\n'
         )
         uni_print(available_accounts_msg.format(len(accounts)))
-        sorted_accounts = sorted(accounts, key=lambda x: (
-            'accountName' not in x, x.get('accountName',
-                                          x.get('accountId')).lower()))
+        sorted_accounts = sorted(accounts, key=get_account_sorting_key)
         selected_account = self._selector(
             sorted_accounts, display_format=display_account
         )

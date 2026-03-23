@@ -52,7 +52,13 @@ def process_args(args):
         test_args += f'--junit-xml={args.junit_xml_path} '
     if args.markers:
         test_args += f'-m {args.markers} '
-    test_args += '--numprocesses=auto --dist=loadfile --maxprocesses=4 '
+    if os.getenv('GITHUB_ACTIONS', 'false') == 'true':
+        # Limiting parallelism in GitHub, to see if this helps with the
+        # ~2026 'Error: The operation was canceled.' issues
+        max_processes=2
+    else:
+        max_processes=4
+    test_args += f'--numprocesses=auto --dist=loadfile --maxprocesses={max_processes} '
     dirs = " ".join(args.test_dirs)
 
     return runner, test_args, dirs

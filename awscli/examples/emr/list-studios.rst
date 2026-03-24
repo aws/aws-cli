@@ -19,4 +19,3 @@ Output::
     }
 
 For more information, see `Monitor, update and delete Amazon EMR Studio resources <https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-studio-manage-studio.html>`__ in the *Amazon EMR Management Guide*.
-    

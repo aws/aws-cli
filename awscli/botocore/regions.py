@@ -440,11 +440,6 @@ class EndpointResolverBuiltins(str, Enum):
     # Whether to use the ARN region or raise an error when ARN and client
     # region differ (for s3 service only, bool)
     AWS_S3_USE_ARN_REGION = "AWS::S3::UseArnRegion"
-    # Whether to use S3 Express session authentication, or fallback to default
-    # authentication (for s3 service only, bool).
-    AWS_S3_DISABLE_EXPRESS_SESSION_AUTH = (
-        "AWS::S3::DisableS3ExpressSessionAuth"
-    )
     # Whether to use the ARN region or raise an error when ARN and client
     # region differ (for s3-control service only, bool)
     AWS_S3CONTROL_USE_ARN_REGION = 'AWS::S3Control::UseArnRegion'

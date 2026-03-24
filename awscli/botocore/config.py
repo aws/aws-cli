@@ -120,10 +120,6 @@ class Config:
           * path -- Addressing style is always by path. Endpoints will be
             addressed as such: s3.amazonaws.com/mybucket
 
-        * ``disable_s3_express_session_auth`` -- Refers to whether to use S3
-          Express session authentication. The value must be a boolean. If True, the
-          client will NOT use S3 Express session authentication.
-
     :type retries: dict
     :param retries: A dictionary for retry specific configurations.
         Valid keys are:
@@ -276,7 +272,6 @@ class Config:
             ('proxies', None),
             ('proxies_config', None),
             ('s3', None),
-            ('s3_disable_express_session_auth', None),
             ('retries', None),
             ('client_cert', None),
             ('inject_host_prefix', None),

@@ -695,7 +695,6 @@ class TestEndpointResolverBuiltins(unittest.TestCase):
         defaults = {
             'region_name': 'ca-central-1',
             'service_name': 'fooservice',
-            's3_disable_express_session_auth': False,
             's3_config': {},
             'endpoint_bridge': self.bridge,
             'client_endpoint_url': None,
@@ -723,7 +722,6 @@ class TestEndpointResolverBuiltins(unittest.TestCase):
         self.assertEqual(
             bins['AWS::S3::DisableMultiRegionAccessPoints'], False
         )
-        self.assertEqual(bins['AWS::S3::DisableS3ExpressSessionAuth'], False)
         self.assertEqual(bins['SDK::Endpoint'], None)
         self.assertEqual(bins['AWS::Auth::AccountId'], None)
         self.assertEqual(bins['AWS::Auth::AccountIdEndpointMode'], 'preferred')
@@ -889,22 +887,6 @@ class TestEndpointResolverBuiltins(unittest.TestCase):
             account_id_endpoint_mode='disabled'
         )
         self.assertEqual(bins['AWS::Auth::AccountIdEndpointMode'], 'disabled')
-
-    def test_disable_s3_express_session_auth_default(self):
-        bins = self.call_compute_endpoint_resolver_builtin_defaults()
-        self.assertEqual(bins['AWS::S3::DisableS3ExpressSessionAuth'], False)
-
-    def test_disable_s3_express_session_auth_set_to_false(self):
-        bins = self.call_compute_endpoint_resolver_builtin_defaults(
-            s3_disable_express_session_auth=False,
-        )
-        self.assertEqual(bins['AWS::S3::DisableS3ExpressSessionAuth'], False)
-
-    def test_disable_s3_express_session_auth_set_to_true(self):
-        bins = self.call_compute_endpoint_resolver_builtin_defaults(
-            s3_disable_express_session_auth=True,
-        )
-        self.assertEqual(bins['AWS::S3::DisableS3ExpressSessionAuth'], True)
 
 
 class TestProtocolPriorityList:

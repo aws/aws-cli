@@ -2950,6 +2950,10 @@
           "shape":"EnvironmentVariablesMap",
           "documentation":"<p>Environment variables to set in the AgentCore Runtime environment.</p>"
         },
+        "filesystemConfigurations":{
+          "shape":"FilesystemConfigurations",
+          "documentation":"<p>The filesystem configurations to mount into the AgentCore Runtime. Use filesystem configurations to provide persistent storage to your AgentCore Runtime sessions.</p>"
+        },
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>A map of tag keys and values to assign to the agent runtime. Tags enable you to categorize your resources in different ways, for example, by purpose, owner, or environment.</p>"
@@ -5383,6 +5387,23 @@
       "documentation":"<p>Contains extraction configuration information for a memory strategy.</p>",
       "union":true
     },
+    "FilesystemConfiguration":{
+      "type":"structure",
+      "members":{
+        "sessionStorage":{
+          "shape":"SessionStorageConfiguration",
+          "documentation":"<p>Configuration for session storage. Session storage provides persistent storage that is preserved across AgentCore Runtime session invocations.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for a filesystem that can be mounted into the AgentCore Runtime.</p>",
+      "union":true
+    },
+    "FilesystemConfigurations":{
+      "type":"list",
+      "member":{"shape":"FilesystemConfiguration"},
+      "max":1,
+      "min":0
+    },
     "Filter":{
       "type":"structure",
       "required":[
@@ -5923,6 +5944,10 @@
         "metadataConfiguration":{
           "shape":"RuntimeMetadataConfiguration",
           "documentation":"<p>Configuration for microVM Metadata Service (MMDS) settings for the AgentCore Runtime.</p>"
+        },
+        "filesystemConfigurations":{
+          "shape":"FilesystemConfigurations",
+          "documentation":"<p>The filesystem configurations mounted into the AgentCore Runtime.</p>"
         }
       }
     },
@@ -7438,6 +7463,10 @@
           "documentation":"<p>A token to retrieve the next page of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
+        },
+        "name":{
+          "shape":"BrowserProfileName",
+          "documentation":"<p>The name of the browser profile to filter results by.</p>"
         }
       }
     },
@@ -8566,6 +8595,12 @@
         }
       },
       "documentation":"<p>Contains information for modifying a strategy configuration.</p>"
+    },
+    "MountPath":{
+      "type":"string",
+      "max":200,
+      "min":6,
+      "pattern":"/mnt/[a-zA-Z0-9._-]+/?"
     },
     "Name":{
       "type":"string",
@@ -9983,6 +10018,17 @@
       "max":1440,
       "min":1
     },
+    "SessionStorageConfiguration":{
+      "type":"structure",
+      "required":["mountPath"],
+      "members":{
+        "mountPath":{
+          "shape":"MountPath",
+          "documentation":"<p>The mount path for the session storage filesystem inside the AgentCore Runtime. The path must be under <code>/mnt</code> with exactly one subdirectory level (for example, <code>/mnt/data</code>).</p>"
+        }
+      },
+      "documentation":"<p>Configuration for a session storage filesystem mounted into the AgentCore Runtime. Session storage provides persistent storage that is preserved across AgentCore Runtime session invocations.</p>"
+    },
     "SetTokenVaultCMKRequest":{
       "type":"structure",
       "required":["kmsConfiguration"],
@@ -10836,6 +10882,10 @@
           "shape":"EnvironmentVariablesMap",
           "documentation":"<p>Updated environment variables to set in the AgentCore Runtime environment.</p>"
         },
+        "filesystemConfigurations":{
+          "shape":"FilesystemConfigurations",
+          "documentation":"<p>The updated filesystem configurations to mount into the AgentCore Runtime.</p>"
+        },
         "clientToken":{
           "shape":"ClientToken",
           "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency of the request.</p>",
@@ -11646,7 +11696,7 @@
           "documentation":"<p>Represents an optional value that is used to update the human-readable description of the resource. If set to null, it will clear the current description of the resource.</p>"
         }
       },
-      "documentation":"<p>Respresents an optional value that can be provided to update the human-readable description of the resource. If the field is omitted from the request, it will leave the current decription value unchanged.</p>"
+      "documentation":"<p>Wrapper for updating an optional Description field with PATCH semantics. When present in an update request, the description is replaced with optionalValue. When absent, the description is left unchanged. To unset the description, include the wrapper with optionalValue set to null.</p>"
     },
     "UserPreferenceConsolidationOverride":{
       "type":"structure",

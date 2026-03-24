@@ -437,6 +437,28 @@
       "min":1,
       "pattern":"[\\S]+"
     },
+    "CgroupCustomSetting":{
+      "type":"structure",
+      "required":[
+        "parameterName",
+        "parameterValue"
+      ],
+      "members":{
+        "parameterName":{
+          "shape":"String",
+          "documentation":"<p>PCS supports custom Cgroup settings for clusters. For more information, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/cgroup-custom-settings.html\">Configuring custom Cgroup settings in PCS</a> in the <i>PCS User Guide</i>.</p>"
+        },
+        "parameterValue":{
+          "shape":"String",
+          "documentation":"<p>The values for the configured Cgroup settings.</p>"
+        }
+      },
+      "documentation":"<p>Additional settings that directly map to Cgroup settings.</p> <important> <p>PCS supports a subset of Cgroup settings. For more information, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/cgroup-custom-settings.html\">Configuring custom Cgroup settings in PCS</a> in the <i>PCS User Guide</i>.</p> </important>"
+    },
+    "CgroupCustomSettings":{
+      "type":"list",
+      "member":{"shape":"CgroupCustomSetting"}
+    },
     "Cluster":{
       "type":"structure",
       "required":[
@@ -521,6 +543,14 @@
           "shape":"SlurmCustomSettings",
           "documentation":"<p>Additional Slurm-specific configuration that directly maps to Slurm settings.</p>"
         },
+        "slurmdbdCustomSettings":{
+          "shape":"SlurmdbdCustomSettings",
+          "documentation":"<p>Additional SlurmDBD-specific configuration that directly maps to SlurmDBD settings.</p>"
+        },
+        "cgroupCustomSettings":{
+          "shape":"CgroupCustomSettings",
+          "documentation":"<p>Additional Cgroup-specific configuration that directly maps to Cgroup settings.</p>"
+        },
         "authKey":{
           "shape":"SlurmAuthKey",
           "documentation":"<p>The shared Slurm key for authentication, also known as the <b>cluster secret</b>.</p>"
@@ -550,6 +580,14 @@
         "slurmCustomSettings":{
           "shape":"SlurmCustomSettings",
           "documentation":"<p>Additional Slurm-specific configuration that directly maps to Slurm settings.</p>"
+        },
+        "slurmdbdCustomSettings":{
+          "shape":"SlurmdbdCustomSettings",
+          "documentation":"<p>Additional SlurmDBD-specific configuration that directly maps to SlurmDBD settings.</p>"
+        },
+        "cgroupCustomSettings":{
+          "shape":"CgroupCustomSettings",
+          "documentation":"<p>Additional Cgroup-specific configuration that directly maps to Cgroup settings.</p>"
         },
         "accounting":{
           "shape":"AccountingRequest",
@@ -1724,7 +1762,7 @@
         },
         "version":{
           "shape":"String",
-          "documentation":"<p>The version of the specified scheduling software that PCS uses to manage cluster scaling and job scheduling. For more information, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/slurm-versions.html\">Slurm versions in PCS</a> in the <i>PCS User Guide</i>.</p> <p>Valid Values: <code>23.11 | 24.05 | 24.11</code> </p>"
+          "documentation":"<p>The version of the specified scheduling software that PCS uses to manage cluster scaling and job scheduling. For more information, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/slurm-versions.html\">Slurm versions in PCS</a> in the <i>PCS User Guide</i>.</p> <p>Valid Values: <code>23.11 | 24.05 | 24.11 | 25.05</code> </p>"
         }
       },
       "documentation":"<p>The cluster management and job scheduling software associated with the cluster.</p>"
@@ -1742,7 +1780,7 @@
         },
         "version":{
           "shape":"String",
-          "documentation":"<p>The version of the specified scheduling software that PCS uses to manage cluster scaling and job scheduling. For more information, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/slurm-versions.html\">Slurm versions in PCS</a> in the <i>PCS User Guide</i>.</p> <p>Valid Values: <code>23.11 | 24.05 | 24.11</code> </p>"
+          "documentation":"<p>The version of the specified scheduling software that PCS uses to manage cluster scaling and job scheduling. For more information, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/slurm-versions.html\">Slurm versions in PCS</a> in the <i>PCS User Guide</i>.</p> <p>Valid Values: <code>24.11 | 25.05</code> </p>"
         }
       },
       "documentation":"<p>The cluster management and job scheduling software associated with the cluster.</p>"
@@ -1867,6 +1905,28 @@
         }
       },
       "documentation":"<p>The Slurm REST API configuration includes settings for enabling and configuring the Slurm REST API. It's a property of the <b>ClusterSlurmConfiguration</b> object.</p>"
+    },
+    "SlurmdbdCustomSetting":{
+      "type":"structure",
+      "required":[
+        "parameterName",
+        "parameterValue"
+      ],
+      "members":{
+        "parameterName":{
+          "shape":"String",
+          "documentation":"<p>PCS supports custom SlurmDBD settings for clusters. For more information, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/slurmdbd-custom-settings.html\">Configuring custom SlurmDBD settings in PCS</a> in the <i>PCS User Guide</i>.</p>"
+        },
+        "parameterValue":{
+          "shape":"String",
+          "documentation":"<p>The values for the configured SlurmDBD settings.</p>"
+        }
+      },
+      "documentation":"<p>Additional settings that directly map to SlurmDBD settings.</p> <important> <p>PCS supports a subset of SlurmDBD settings. For more information, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/slurmdbd-custom-settings.html\">Configuring custom SlurmDBD settings in PCS</a> in the <i>PCS User Guide</i>.</p> </important>"
+    },
+    "SlurmdbdCustomSettings":{
+      "type":"list",
+      "member":{"shape":"SlurmdbdCustomSetting"}
     },
     "SpotAllocationStrategy":{
       "type":"string",
@@ -2031,6 +2091,14 @@
         "slurmCustomSettings":{
           "shape":"SlurmCustomSettings",
           "documentation":"<p>Additional Slurm-specific configuration that directly maps to Slurm settings.</p>"
+        },
+        "slurmdbdCustomSettings":{
+          "shape":"SlurmdbdCustomSettings",
+          "documentation":"<p>Additional SlurmDBD-specific configuration that directly maps to SlurmDBD settings.</p>"
+        },
+        "cgroupCustomSettings":{
+          "shape":"CgroupCustomSettings",
+          "documentation":"<p>Additional Cgroup-specific configuration that directly maps to Cgroup settings.</p>"
         },
         "accounting":{
           "shape":"UpdateAccountingRequest",

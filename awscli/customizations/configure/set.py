@@ -48,6 +48,7 @@ class ConfigureSetCommand(BasicCommand):
         'aws_access_key_id',
         'aws_secret_access_key',
         'aws_session_token',
+        'aws_security_token',
     ]
 
     def __init__(self, session, config_writer=None):

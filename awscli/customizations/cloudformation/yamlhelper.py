@@ -69,6 +69,9 @@ def yaml_dump(dict_to_dump):
         dict_to_dump,
         default_flow_style=False,
         Dumper=FlattenAliasDumper,
+        # Prevent PyYAML from inserting physical line breaks into long
+        # double-quoted scalars (which can fold to spaces and corrupt content).
+        width=4096,
     )
 
 

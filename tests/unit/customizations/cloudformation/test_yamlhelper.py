@@ -15,6 +15,8 @@ import tempfile
 from botocore.compat import json
 from botocore.compat import OrderedDict
 
+import yaml
+
 from awscli.testutils import mock, unittest
 from awscli.customizations.cloudformation.deployer import Deployer
 from awscli.customizations.cloudformation.yamlhelper import yaml_parse, yaml_dump
@@ -182,3 +184,38 @@ class TestYaml(unittest.TestCase):
         )
         actual = yaml_dump(template)
         self.assertEqual(actual, expected)
+
+    def test_yaml_dump_preserves_long_sub_string(self):
+        # Regression test: long strings in YAML double quotes must not be
+        # corrupted by emitter line wrapping (newline folding to spaces).
+        long_message = (
+            'template: |\\n'
+            '{{ define "test.message" }}\\n'
+            '{{- $queryExprClean := "" }}\\n'
+            '{{- $queryExprTemplated := reReplaceAll "\\\\]" "%5D" ('
+            'reReplaceAll "\\\\[" "%5B" (reReplaceAll "=" "%3D" ('
+            'reReplaceAll "\\\\}" "%7D" (reReplaceAll "\\\\{" "%7B" ('
+            'reReplaceAll ">" "%3E" (reReplaceAll "<" "%3C" ('
+            'reReplaceAll " " "%20" (reReplaceAll "\\"" "%22" ('
+            "reReplaceAll \"'\" \"%27\" ($queryExprClean)))))))))) }}\\n"
+            '{{ end }}\\n'
+        )
+        template = {
+            "Resources": {
+                "TestResource": {
+                    "Type": "AWS::SSM::Parameter",
+                    "Properties": {
+                        "Value": {
+                            "Fn::Sub": [
+                                long_message,
+                                {},
+                            ]
+                        }
+                    },
+                }
+            }
+        }
+
+        dumped = yaml_dump(template)
+        loaded = yaml.safe_load(dumped)
+        self.assertEqual(loaded, template)

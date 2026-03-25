@@ -52,7 +52,11 @@ def process_args(args):
         test_args += f'--junit-xml={args.junit_xml_path} '
     if args.markers:
         test_args += f'-m {args.markers} '
-    if os.getenv('GITHUB_ACTIONS', 'false') == 'true':
+    if os.getenv('PYTEST_XDIST_AUTO_NUM_WORKERS'):
+        # If the user set PYTEST_XDIST_AUTO_NUM_WORKERS,
+        # use that to limit max processes
+        max_processes = int(os.environ['PYTEST_XDIST_AUTO_NUM_WORKERS'])
+    elif os.getenv('GITHUB_ACTIONS', 'false') == 'true':
         # Limiting parallelism in GitHub, to avoid the
         # 'Error: The operation was canceled.' issues in 2026
         max_processes=3

@@ -68,8 +68,8 @@ class ConfigureCommand(BasicCommand):
         'To create a new configuration::\n'
         '\n'
         '    $ aws configure\n'
-        '    Tip: You can now deliver temporary credentials to the AWS CLI\n'
-        '    using your AWS Console session. Simply run \'aws login\'.\n\n'
+        '    Tip: You can deliver temporary credentials to the AWS CLI using \n'
+        '    your AWS Console session by running the command \'aws login\'.\n\n'
         '    AWS Access Key ID [None]: accesskey\n'
         '    AWS Secret Access Key [None]: secretkey\n'
         '    Default region name [None]: us-west-2\n'
@@ -148,9 +148,9 @@ class ConfigureCommand(BasicCommand):
 
         if not config:
             sys.stdout.write(
-                '\nTip: You can now deliver temporary credentials'
-                ' to the AWS CLI using your AWS Console session.'
-                ' Simply run \'aws login\'.\n\n'
+                '\nTip: You can deliver temporary credentials to the AWS '
+                'CLI using your AWS Console session by running the command '
+                '\'aws login\'.\n\n'
             )
 
         for config_name, prompt_text in self.VALUES_TO_PROMPT:

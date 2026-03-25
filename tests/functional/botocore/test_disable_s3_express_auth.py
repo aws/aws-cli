@@ -54,37 +54,38 @@ class TestDisableS3ExpressAuth:
     def test_disable_s3_express_auth_enabled_env_var(
             self, patched_session, mock_datetime
     ):
-        os.environ['AWS_S3_DISABLE_EXPRESS_SESSION_AUTH'] = 'true'
-        s3_client = patched_session.create_client(
-            's3',
-            region_name='us-west-2',
-        )
-
-        with ClientHTTPStubber(s3_client, strict=True) as stubber:
-            stubber.add_response(body=self.LIST_OBJECTS_RESPONSE)
-            s3_client.list_objects_v2(Bucket=self.BUCKET_NAME)
-
-        assert len(stubber.requests) == 1
-
-    def test_disable_s3_express_auth_enabled_shared_config(
-            self, patched_session, mock_datetime
-    ):
-        with temporary_file('w') as f:
-            os.environ['AWS_CONFIG_FILE'] = f.name
-            f.write('[default]\n')
-            f.write('s3_disable_express_session_auth = true\n')
-            f.flush()
-
+        env = {'AWS_S3_DISABLE_EXPRESS_SESSION_AUTH': 'true'}
+        with mock.patch.dict(os.environ, env):
             s3_client = patched_session.create_client(
                 's3',
                 region_name='us-west-2',
             )
 
-        with ClientHTTPStubber(s3_client, strict=True) as stubber:
-            stubber.add_response(body=self.LIST_OBJECTS_RESPONSE)
-            s3_client.list_objects_v2(Bucket=self.BUCKET_NAME)
+            with ClientHTTPStubber(s3_client, strict=True) as stubber:
+                stubber.add_response(body=self.LIST_OBJECTS_RESPONSE)
+                s3_client.list_objects_v2(Bucket=self.BUCKET_NAME)
 
-        assert len(stubber.requests) == 1
+            assert len(stubber.requests) == 1
+
+    def test_disable_s3_express_auth_enabled_shared_config(
+            self, patched_session, mock_datetime
+    ):
+        with temporary_file('w') as f:
+            f.write('[default]\n')
+            f.write('s3_disable_express_session_auth = true\n')
+            f.flush()
+
+            with mock.patch.dict(os.environ, {'AWS_CONFIG_FILE': f.name}):
+                s3_client = patched_session.create_client(
+                    's3',
+                    region_name='us-west-2',
+                )
+
+                with ClientHTTPStubber(s3_client, strict=True) as stubber:
+                    stubber.add_response(body=self.LIST_OBJECTS_RESPONSE)
+                    s3_client.list_objects_v2(Bucket=self.BUCKET_NAME)
+
+                assert len(stubber.requests) == 1
 
     def test_disable_s3_express_auth_disabled(
             self, patched_session, mock_datetime

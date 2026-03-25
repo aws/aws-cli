@@ -47,6 +47,10 @@ VALID_HOST_LABEL_RE = re.compile(
     r"^(?!-)[a-zA-Z\d-]{1,63}(?<!-)$",
 )
 CACHE_SIZE = 100
+# S3 endpoint ruleset parameters that are defined but not currently referenced.
+# They are excluded from the cache key to avoid cache thrashing when
+# accessing multiple objects in the same bucket.
+S3_UNREFERENCED_PARAMS = {'Key', 'Prefix', 'CopySource'}
 ARN_PARSER = ArnParser()
 STRING_FORMATTER = Formatter()
 
@@ -700,16 +704,22 @@ class RuleSet:
 class EndpointProvider:
     """Derives endpoints from a RuleSet for given input parameters."""
 
-    def __init__(self, ruleset_data, partition_data):
+    def __init__(self, ruleset_data, partition_data, excluded_params=None):
         self.ruleset = RuleSet(**ruleset_data, partitions=partition_data)
+        self._excluded_params = excluded_params or frozenset()
 
-    @lru_cache_weakref(maxsize=CACHE_SIZE)
     def resolve_endpoint(self, **input_parameters):
         """Match input parameters to a rule.
 
         :type input_parameters: dict
         :rtype: RuleSetEndpoint
         """
+        for param in self._excluded_params:
+            input_parameters.pop(param, None)
+        return self._resolve_endpoint(**input_parameters)
+
+    @lru_cache_weakref(maxsize=CACHE_SIZE)
+    def _resolve_endpoint(self, **input_parameters):
         params_for_error = input_parameters.copy()
         endpoint = self.ruleset.evaluate(input_parameters)
         if endpoint is None:

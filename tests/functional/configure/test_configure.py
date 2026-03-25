@@ -374,19 +374,6 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
             self.get_config_file_contents(),
         )
 
-
-class TestConfigureSetNewlineRejection(BaseAWSCommandParamsTest):
-    def setUp(self):
-        super().setUp()
-        self.files = FileCreator()
-        self.config_filename = self.files.full_path("configure")
-        self.environ["AWS_CONFIG_FILE"] = self.config_filename
-        self.environ["AWS_SHARED_CREDENTIALS_FILE"] = "asdf-does-not-exist"
-
-    def tearDown(self):
-        super().tearDown()
-        self.files.remove_all()
-
     def test_set_rejects_newline_in_value(self):
         _, stderr, _ = self.run_cmd(
             ["configure", "set", "region", "us-east-1\nus-west-2"],
@@ -403,7 +390,7 @@ class TestConfigureSetNewlineRejection(BaseAWSCommandParamsTest):
 
     def test_set_rejects_newline_in_nested_value(self):
         _, stderr, _ = self.run_cmd(
-            ["configure", "set", "default.s3.signature_version", "s3v4\nevil"],
+            ["configure", "set", "default.s3.signature_version", "s3v4\nfoo"],
             expected_rc=255,
         )
         self.assertIn("newline", stderr)

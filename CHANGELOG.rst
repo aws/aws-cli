@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.34.17
+=======
+
+* api-change:``batch``: Documentation-only update for AWS Batch.
+* api-change:``uxc``: GA release of AccountCustomizations, used to manage account color, visible services, and visible regions settings in the AWS Management Console.
+* api-change:``marketplace-agreement``: The Variable Payments APIs enable AWS Marketplace Sellers to perform manage their payment requests (send, get, list, cancel).
+* api-change:``apigatewayv2``: Added DISABLE IN PROGRESS and DISABLE FAILED Portal statuses.
+* api-change:``application-signals``: This release adds support for creating SLOs on RUM appMonitors, Synthetics canaries and services.
+* api-change:``polly``: Add support for Mu-law and A-law codecs for output format
+
+
 2.34.16
 =======
 

@@ -398,6 +398,7 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
     def test_newline_injection_does_not_write_injected_key_to_file(self):
         # Simulates: aws configure set output $'table\nregion = us-east-1'
         # The injected key must not appear anywhere in the config file.
+        self.set_config_file_contents("[default]\n")
         self.run_cmd(
             ["configure", "set", "output", "table\nregion = us-east-1"],
             expected_rc=255,
@@ -408,6 +409,7 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
     def test_newline_injection_does_not_set_injected_key_in_parsed_config(self):
         # Even if the file were somehow written, the injected key must not be
         # readable back via 'configure get'.
+        self.set_config_file_contents("[default]\n")
         self.run_cmd(
             ["configure", "set", "output", "table\nregion = us-east-1"],
             expected_rc=255,

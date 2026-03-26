@@ -381,6 +381,24 @@
       "min":2,
       "pattern":"[^_\"][^\"]*"
     },
+    "ClusterConfiguration":{
+      "type":"structure",
+      "members":{
+        "ingestQueryInstances":{
+          "shape":"Integer",
+          "documentation":"<p>The number of instances in the DbCluster which can both ingest and query.</p>"
+        },
+        "queryOnlyInstances":{
+          "shape":"Integer",
+          "documentation":"<p>The number of instances in the DbCluster which can only query.</p>"
+        },
+        "dedicatedCompactor":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates if the compactor instance is a standalone instance or not.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for node modes in the DbCluster.</p>"
+    },
     "ClusterDeploymentType":{
       "type":"string",
       "enum":["MULTI_NODE_READ_REPLICAS"]
@@ -499,6 +517,10 @@
           "shape":"LogDeliveryConfiguration",
           "documentation":"<p>Configuration for sending InfluxDB engine logs to a specified S3 bucket.</p>"
         },
+        "maintenanceSchedule":{
+          "shape":"MaintenanceSchedule",
+          "documentation":"<p>Specifies the maintenance schedule for the DB cluster, including the preferred maintenance window and timezone.</p>"
+        },
         "tags":{
           "shape":"RequestTagMap",
           "documentation":"<p>A list of key-value pairs to associate with the DB instance.</p>"
@@ -584,6 +606,10 @@
         "logDeliveryConfiguration":{
           "shape":"LogDeliveryConfiguration",
           "documentation":"<p>Configuration for sending InfluxDB engine logs to a specified S3 bucket.</p>"
+        },
+        "maintenanceSchedule":{
+          "shape":"MaintenanceSchedule",
+          "documentation":"<p>Specifies the maintenance schedule for the DB instance, including the preferred maintenance window and timezone.</p>"
         },
         "tags":{
           "shape":"RequestTagMap",
@@ -695,6 +721,18 @@
         "instanceModes":{
           "shape":"InstanceModeList",
           "documentation":"<p>Specifies the DbInstance's roles in the cluster.</p>"
+        },
+        "maintenanceSchedule":{
+          "shape":"MaintenanceSchedule",
+          "documentation":"<p>The maintenance schedule for the DB instance.</p>"
+        },
+        "lastMaintenanceTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp of the last completed maintenance operation on the DB instance.</p>"
+        },
+        "nextMaintenanceTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp of the next scheduled maintenance operation on the DB instance.</p>"
         }
       }
     },
@@ -1181,6 +1219,18 @@
         "instanceModes":{
           "shape":"InstanceModeList",
           "documentation":"<p>Specifies the DbInstance's roles in the cluster.</p>"
+        },
+        "maintenanceSchedule":{
+          "shape":"MaintenanceSchedule",
+          "documentation":"<p>The maintenance schedule for the DB instance.</p>"
+        },
+        "lastMaintenanceTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp of the last completed maintenance operation on the DB instance.</p>"
+        },
+        "nextMaintenanceTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp of the next scheduled maintenance operation on the DB instance.</p>"
         }
       }
     },
@@ -1321,6 +1371,18 @@
           "shape":"LogDeliveryConfiguration",
           "documentation":"<p>Configuration for sending InfluxDB engine logs to send to specified S3 bucket.</p>"
         },
+        "maintenanceSchedule":{
+          "shape":"MaintenanceSchedule",
+          "documentation":"<p>The maintenance schedule for the DB cluster.</p>"
+        },
+        "lastMaintenanceTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp of the last completed maintenance operation on the DB cluster.</p>"
+        },
+        "nextMaintenanceTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp of the next scheduled maintenance operation on the DB cluster.</p>"
+        },
         "influxAuthParametersSecretArn":{
           "shape":"String",
           "documentation":"<p>The Amazon Resource Name (ARN) of the Secrets Manager secret containing the initial InfluxDB authorization parameters. The secret value is a JSON formatted key-value pair holding InfluxDB authorization values: organization, bucket, username, and password.</p>"
@@ -1336,6 +1398,10 @@
         "failoverMode":{
           "shape":"FailoverMode",
           "documentation":"<p>The configured failover mode for the DB cluster.</p>"
+        },
+        "clusterConfiguration":{
+          "shape":"ClusterConfiguration",
+          "documentation":"<p>Configuration for node modes in the DbCluster.</p>"
         }
       }
     },
@@ -1445,6 +1511,18 @@
         "instanceModes":{
           "shape":"InstanceModeList",
           "documentation":"<p>Specifies the DbInstance's roles in the cluster.</p>"
+        },
+        "maintenanceSchedule":{
+          "shape":"MaintenanceSchedule",
+          "documentation":"<p>The maintenance schedule for the DB instance.</p>"
+        },
+        "lastMaintenanceTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp of the last completed maintenance operation on the DB instance.</p>"
+        },
+        "nextMaintenanceTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp of the next scheduled maintenance operation on the DB instance.</p>"
         }
       }
     },
@@ -1487,6 +1565,13 @@
           "documentation":"<p>The parameters that comprise the DB parameter group.</p>"
         }
       }
+    },
+    "IanaTimezone":{
+      "type":"string",
+      "documentation":"<p>IANA timezone identifier.</p> <p>Format: Region/City or UTC See: https://www.iana.org/time-zones</p>",
+      "max":64,
+      "min":1,
+      "pattern":"(UTC|[A-Za-z_]+/[A-Za-z0-9_]+(/[A-Za-z0-9_]+)?)"
     },
     "InfluxDBv2Parameters":{
       "type":"structure",
@@ -1896,7 +1981,7 @@
     },
     "InfluxDBv3CoreParametersDataFusionConfigString":{
       "type":"string",
-      "pattern":"[a-zA-Z0-9_]+=[^,\\s]+(?:,[a-zA-Z0-9_]+=[^,\\s]+)*"
+      "pattern":"[a-zA-Z0-9_.]+:[^,\\s]+(?:,[a-zA-Z0-9_.]+:[^,\\s]+)*"
     },
     "InfluxDBv3CoreParametersDataFusionMaxParquetFanoutInteger":{
       "type":"integer",
@@ -2244,7 +2329,7 @@
     },
     "InfluxDBv3EnterpriseParametersDataFusionConfigString":{
       "type":"string",
-      "pattern":"[a-zA-Z0-9_]+=[^,\\s]+(?:,[a-zA-Z0-9_]+=[^,\\s]+)*"
+      "pattern":"[a-zA-Z0-9_.]+:[^,\\s]+(?:,[a-zA-Z0-9_.]+:[^,\\s]+)*"
     },
     "InfluxDBv3EnterpriseParametersDataFusionMaxParquetFanoutInteger":{
       "type":"integer",
@@ -2551,6 +2636,31 @@
         "error"
       ]
     },
+    "MaintenanceSchedule":{
+      "type":"structure",
+      "required":[
+        "timezone",
+        "preferredMaintenanceWindow"
+      ],
+      "members":{
+        "timezone":{
+          "shape":"IanaTimezone",
+          "documentation":"<p>The IANA timezone identifier for the maintenance window. Format: Region/City or UTC. For example, America/New_York or UTC.</p>"
+        },
+        "preferredMaintenanceWindow":{
+          "shape":"MaintenanceWindow",
+          "documentation":"<p>The preferred maintenance window in the format ddd:HH:MM-ddd:HH:MM (UTC). Day must be one of: Mon, Tue, Wed, Thu, Fri, Sat, Sun. For example, Sun:02:00-Sun:06:00. Provide an empty string to let the system choose a window.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the maintenance schedule for a DB instance or cluster, defining when maintenance operations such as patching can be performed.</p>"
+    },
+    "MaintenanceWindow":{
+      "type":"string",
+      "documentation":"<p>Preferred maintenance window in format &quot;ddd:HH:MM-ddd:HH:MM&quot;</p> <p>Format requirements:</p> <ul> <li>Day: Mon, Tue, Wed, Thu, Fri, Sat, Sun</li> <li>Hour: 00-23 (24-hour format, 2 digits)</li> <li>Minute: 00-59 (2 digits)</li> </ul> <p>Provide empty string to let the system choose a window.</p> <p>Examples:</p> <ul> <li>&quot;Sun:02:00-Sun:06:00&quot; (4-hour window Sunday morning)</li> <li>&quot;Sat:23:00-Sun:03:00&quot; (cross-midnight window)</li> <li>&quot;&quot; or (system chooses)</li> </ul>",
+      "max":19,
+      "min":0,
+      "pattern":"$|^(Mon|Tue|Wed|Thu|Fri|Sat|Sun):([01]\\d|2[0-3]):[0-5]\\d-(Mon|Tue|Wed|Thu|Fri|Sat|Sun):([01]\\d|2[0-3]):[0-5]\\d"
+    },
     "MaxResults":{
       "type":"integer",
       "box":true,
@@ -2767,6 +2877,18 @@
         "instanceModes":{
           "shape":"InstanceModeList",
           "documentation":"<p>Specifies the DbInstance's roles in the cluster.</p>"
+        },
+        "maintenanceSchedule":{
+          "shape":"MaintenanceSchedule",
+          "documentation":"<p>The maintenance schedule for the DB instance.</p>"
+        },
+        "lastMaintenanceTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp of the last completed maintenance operation on the DB instance.</p>"
+        },
+        "nextMaintenanceTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp of the next scheduled maintenance operation on the DB instance.</p>"
         }
       }
     },
@@ -2856,6 +2978,10 @@
       ]
     },
     "String":{"type":"string"},
+    "SyntheticTimestamp_date_time":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
     "TagKey":{
       "type":"string",
       "max":128,
@@ -2955,6 +3081,10 @@
         "failoverMode":{
           "shape":"FailoverMode",
           "documentation":"<p>Update the DB cluster's failover behavior.</p>"
+        },
+        "maintenanceSchedule":{
+          "shape":"MaintenanceSchedule",
+          "documentation":"<p>Specifies the maintenance schedule for the DB cluster, including the preferred maintenance window and timezone.</p>"
         }
       }
     },
@@ -3002,6 +3132,10 @@
         "allocatedStorage":{
           "shape":"AllocatedStorage",
           "documentation":"<p>The amount of storage to allocate for your DB storage type (in gibibytes).</p>"
+        },
+        "maintenanceSchedule":{
+          "shape":"MaintenanceSchedule",
+          "documentation":"<p>Specifies the maintenance schedule for the DB instance, including the preferred maintenance window and timezone.</p>"
         }
       }
     },
@@ -3101,6 +3235,18 @@
         "instanceModes":{
           "shape":"InstanceModeList",
           "documentation":"<p>Specifies the DbInstance's roles in the cluster.</p>"
+        },
+        "maintenanceSchedule":{
+          "shape":"MaintenanceSchedule",
+          "documentation":"<p>The maintenance schedule for the DB instance.</p>"
+        },
+        "lastMaintenanceTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp of the last completed maintenance operation on the DB instance.</p>"
+        },
+        "nextMaintenanceTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp of the next scheduled maintenance operation on the DB instance.</p>"
         }
       }
     },

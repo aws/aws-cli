@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.34.18
+=======
+
+* api-change:``sagemaker``: Release support for ml.r5d.16xlarge instance types for SageMaker HyperPod
+* api-change:``bcm-data-exports``: With this release we are providing an option to accounts to have their export delivered to an S3 bucket that is not owned by the account.
+* enhancement:emr: Add support for StepExecutionRoleArn parameter in RunJobFlow API.
+* api-change:``logs``: This release adds parameter support to saved queries in CloudWatch Logs Insights. Define reusable query templates with named placeholders, invoke them using start query. Available in Console, CLI and SDK
+* api-change:``emr``: Add StepExecutionRoleArn to RunJobFlow API
+* bugfix:``s3``: Fix handling of SSE-C keys when copying unencrypted to encrypted objects or objects with different encryption keys
+* api-change:``timestream-influxdb``: Timestream for InfluxDB adds support for customer defined maintenance windows. This allows customers to define maintenance schedule during resource creation and updates
+* enhancement:``configure``: Add tip that suggests ``aws login`` during ``aws configure`` for new profiles
+
+
 2.34.17
 =======
 

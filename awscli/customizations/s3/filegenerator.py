@@ -19,6 +19,7 @@ from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
 from awscli.compat import queue
+from awscli.customizations.s3.fileinfo import VersionedFileInfo
 from awscli.customizations.s3.utils import (
     EPOCH_TIME,
     BucketLister,
@@ -26,6 +27,7 @@ from awscli.customizations.s3.utils import (
     find_bucket_key,
     find_dest_path_comp_key,
     get_file_stat,
+    split_s3_bucket_key,
 )
 
 _open = open
@@ -406,3 +408,109 @@ class FileGenerator:
         response['LastModified'] = last_update.astimezone(tzlocal())
         response['ETag'] = response.pop('ETag', None)
         return s3_path, response
+
+
+class VersionedFileGenerator:
+    """
+    This class generates VersionedFileInfo objects for all versions of objects in a bucket.
+    It uses the BucketLister class to list all versions and creates appropriate
+    VersionedFileInfo objects for each version.
+    """
+
+    def __init__(
+        self,
+        client,
+        operation_name,
+        follow_symlinks=True,
+        page_size=None,
+        result_queue=None,
+        request_parameters=None,
+    ):
+        """
+        Initialize a new VersionedFileGenerator.
+
+        :param client: The S3 client to use.
+        :param operation_name: The name of the operation to perform.
+        :param follow_symlinks: Whether to follow symlinks.
+        :param page_size: The number of items to include in each API response.
+        :param result_queue: Queue for results and warnings.
+        :param request_parameters: Additional parameters for the request.
+        """
+        self._client = client
+        self.operation_name = operation_name
+        self.follow_symlinks = follow_symlinks
+        self.page_size = page_size
+        self.result_queue = result_queue
+        if not result_queue:
+            self.result_queue = queue.Queue()
+        self.request_parameters = {}
+        if request_parameters is not None:
+            self.request_parameters = request_parameters
+        self._version_lister = BucketLister(client)
+
+    def call(self, files):
+        """
+        Generate VersionedFileInfo objects for all versions of objects.
+
+        :param files: Dictionary containing source and destination information.
+        :yields: VersionedFileInfo objects for each version of each object.
+        """
+        source = files['src']['path']
+        src_type = files['src']['type']
+        dest_type = files['dest']['type']
+
+        # Use the list_object_versions method to get all versions
+        file_iterator = self.list_object_versions(source, files['dir_op'])
+
+        for src_path, content, version_id in file_iterator:
+            dest_path, compare_key = find_dest_path_comp_key(files, src_path)
+
+            # Create a VersionedFileInfo for this object version
+            yield VersionedFileInfo(
+                src=src_path,
+                dest=dest_path,
+                compare_key=compare_key,
+                size=content.get('Size', 0),
+                last_update=content.get('LastModified'),
+                src_type=src_type,
+                dest_type=dest_type,
+                operation_name=self.operation_name,
+                associated_response_data=content,
+                version_id=version_id,
+            )
+
+    def list_object_versions(self, s3_path, dir_op):
+        """
+        This function yields the appropriate object versions or all object versions
+        under a common prefix depending if the operation is on objects under a
+        common prefix. It yields the file's source path, content, and version ID.
+
+        :param s3_path: The S3 path to list versions for.
+        :param dir_op: Whether this is a directory operation.
+        :yields: Tuples of (source_path, content, version_id)
+        """
+        bucket, key = split_s3_bucket_key(s3_path)
+
+        # Short circuit path: if we are not recursing into the s3
+        # bucket and a specific path was given, we can just yield
+        # that path and not have to call any operation in s3.
+        # However, for versioned objects, we still need to list all versions
+        # even for a specific object, so we don't have a short circuit path here.
+
+        # List all versions of objects
+        for (
+            src_path,
+            content,
+            version_id,
+        ) in self._version_lister.list_object_versions(
+            bucket=bucket,
+            prefix=key,
+            page_size=self.page_size,
+            extra_args=self.request_parameters.get('ListObjectVersions', {}),
+        ):
+            # If this is not a directory operation and the path doesn't match exactly,
+            # skip it (similar to the behavior in FileGenerator.list_objects)
+            if not dir_op and s3_path != src_path:
+                continue
+
+            yield src_path, content, version_id

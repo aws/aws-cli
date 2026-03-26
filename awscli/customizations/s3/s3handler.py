@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import itertools
 import logging
 import os
 
@@ -54,12 +55,18 @@ from awscli.customizations.s3.utils import (
     find_bucket_key,
     human_readable_size,
     relative_path,
+    split_s3_bucket_key,
 )
+from awscli.customizations.utils import uni_print
+from awscli.s3transfer.constants import MAX_BATCH_SIZE
 
 LOGGER = logging.getLogger(__name__)
 
 
 class S3TransferHandlerFactory:
+    # Define parameters that requires batch handling
+    BATCH_PARAMS = ['all_versions']
+
     def __init__(self, cli_params):
         """Factory for S3TransferHandlers
 
@@ -89,7 +96,10 @@ class S3TransferHandlerFactory:
         command_result_recorder = CommandResultRecorder(
             result_queue, result_recorder, result_processor
         )
-
+        if self._requires_batch_handler():
+            return BatchS3TransferHandler(
+                transfer_manager, self._cli_params, command_result_recorder
+            )
         return S3TransferHandler(
             transfer_manager, self._cli_params, command_result_recorder
         )
@@ -106,6 +116,12 @@ class S3TransferHandlerFactory:
         else:
             result_printer = ResultPrinter(result_recorder)
         result_processor_handlers.append(result_printer)
+
+    def _requires_batch_handler(self):
+        """
+        Check if any batch parameters are enabled
+        """
+        return any(self._cli_params.get(param) for param in self.BATCH_PARAMS)
 
 
 class S3TransferHandler:
@@ -124,6 +140,7 @@ class S3TransferHandler:
             used to get the final result of the transfer
         """
         self._transfer_manager = transfer_manager
+        self._cli_params = cli_params
         # TODO: Ideally the s3 transfer handler should not need to know
         # about the result command recorder. It really only needs an interface
         # for adding results to the queue. When all of the commands have
@@ -592,3 +609,284 @@ class LocalDeleteRequestSubmitter(BaseTransferRequestSubmitter):
 
     def _format_src_dest(self, fileinfo):
         return self._format_local_path(fileinfo.src), None
+
+
+class BatchBase:
+    def __init__(self, result_queue):
+        self.result_queue = result_queue
+
+    def create_batch(self, objects, max_size):
+        """
+        Create a batch of objects.
+
+        :param objects: The list of objects to batch.
+        :param max_size: The maximum size of the batch.
+        :return: A list of batches.
+        """
+        batches = []
+        for i in range(0, len(objects), max_size):
+            batches.append(objects[i : i + max_size])
+        LOGGER.debug("Created %d batches", len(batches))
+        return batches
+
+    def create_batches(self, fileinfos):
+        """
+        :param fileinfos: List of VersionedFileInfo objects
+        :return: List of batches
+        """
+        raise NotImplementedError('create_batches()')
+
+
+class BatchDelete(BatchBase):
+    """
+    Specialized batch class for delete operations.
+    Creates batches in S3 delete-objects API format.
+    """
+
+    def create_batches(self, fileinfos):
+        """
+        Create delete batches from VersionedFileInfo objects.
+
+        :param fileinfos: Iterable of VersionedFileInfo objects to delete
+        :return: List of batches in S3 delete-objects format
+        """
+        if not fileinfos:
+            return []
+        bucket = None
+        objects_with_fileinfo = []
+        for fileinfo in fileinfos:
+            bucket, key = split_s3_bucket_key(fileinfo.src)
+            obj_entry = {'Key': key}
+            if getattr(fileinfo, 'version_id', None):
+                obj_entry['VersionId'] = fileinfo.version_id
+
+            objects_with_fileinfo.append(
+                {'object': obj_entry, 'fileinfo': fileinfo}
+            )
+
+        object_batches = self.create_batch(
+            objects_with_fileinfo, MAX_BATCH_SIZE
+        )
+
+        formatted_batches = []
+        for batch in object_batches:
+            formatted_batch = {
+                'bucket': bucket,
+                'delete_request': {
+                    'Objects': [item['object'] for item in batch],
+                    'Quiet': False,
+                },
+                'fileinfos': [item['fileinfo'] for item in batch],
+            }
+            formatted_batches.append(formatted_batch)
+
+        return formatted_batches
+
+    def get_delete_batches(self, fileinfos):
+        """
+        :param fileinfos: List of FileInfo objects to delete
+        :return: List of formatted delete batches
+        """
+        return self.create_batches(fileinfos)
+
+
+class BatchS3TransferHandler:
+    def __init__(self, transfer_manager, cli_params, result_command_recorder):
+        """
+        Backend for performing S3 batch transfers .
+
+        :type transfer_manager: s3transfer.manager.TransferManager
+        :param transfer_manager: Transfer manager to use for transfers
+
+        :type cli_params: dict
+        :param cli_params: The parameters passed to the CLI command in the
+            form of a dictionary
+
+        :type result_command_recorder: ResultCommandRecorder
+        :param result_command_recorder: The result command recorder to be
+            used to get the final result of the transfer
+        """
+
+        self._transfer_manager = transfer_manager
+        self._cli_params = cli_params
+        self._result_command_recorder = result_command_recorder
+
+        submitter_args = (
+            self._transfer_manager,
+            self._result_command_recorder.result_queue,
+            cli_params,
+        )
+        # Submitter list for batch request submitters
+        self._batch_submitters = [
+            BatchDeleteRequestSubmitter(*submitter_args),
+        ]
+
+    def call(self, fileinfos):
+        """
+        Process iterable of VersionedFileInfo for batch transfers
+
+        :type versionedFileInfo: Set of VersionedFileInfo to submit to batch submitter
+        :param fileinfos: The fileinfos to submit to the batch submitter
+
+        :rtype: CommandResult
+        :returns: The result of the command that specifies the number of
+            failures and warnings encountered.
+        """
+
+        with self._result_command_recorder:
+            with self._transfer_manager:
+                first_fileinfo = next(iter(fileinfos), None)
+
+                if not first_fileinfo:
+                    self._result_command_recorder.notify_total_submissions(0)
+                    return self._result_command_recorder.get_command_result()
+
+                selected_submitter = None
+                for submitter in self._batch_submitters:
+                    if submitter.can_submit(first_fileinfo):
+                        selected_submitter = submitter
+
+                total_submissions = selected_submitter.submit_batch(
+                    itertools.chain([first_fileinfo], fileinfos)
+                )
+                self._result_command_recorder.notify_total_submissions(
+                    total_submissions
+                )
+        return self._result_command_recorder.get_command_result()
+
+
+class BatchDeleteRequestSubmitter:
+    def __init__(self, transfer_manager, result_queue, cli_params):
+        """Submits transfer requests to the TransferManager
+
+        Given a VersionedFileInfo object and provided CLI parameters, it will add the
+        necessary extra arguments and subscribers in making a call to the
+        TransferManager.
+
+        :type transfer_manager: s3transfer.manager.TransferManager
+        :param transfer_manager: The underlying transfer manager
+
+        :type result_queue: queue.Queue
+        :param result_queue: The result queue to use
+
+        :type cli_params: dict
+        :param cli_params: The associated CLI parameters passed in to the
+            command as a dictionary.
+        """
+        self._transfer_manager = transfer_manager
+        self._result_queue = result_queue
+        self._cli_params = cli_params
+
+    def can_submit(self, fileinfo):
+        return (
+            fileinfo.operation_name == 'delete'
+            and fileinfo.src_type == 's3'
+            and hasattr(fileinfo, 'version_id')
+        )
+
+    def submit_batch(self, fileinfos):
+        """Submit a batch of versionedFileInfo for deletion"""
+        delete_batch = BatchDelete(self._result_queue)
+        batches = delete_batch.get_delete_batches(fileinfos)
+        if self._cli_params.get('dryrun'):
+            return self._submit_dryrun(batches)
+
+        return self._submit_transfer_request_for_batch(batches)
+
+    def _submit_dryrun(self, batches):
+        total_objects = 0
+        for batch in batches:
+            for fileinfo in batch['fileinfos']:
+                src, dest = self._format_src_dest(fileinfo)
+                self._result_queue.put(
+                    DryRunResult(transfer_type='delete', src=src, dest=dest)
+                )
+                total_objects += 1
+        return total_objects
+
+    def _submit_transfer_request_for_batch(self, batches):
+        """Transfer each batch to S3Transfer manager"""
+        total_objects = 0
+
+        for i, batch in enumerate(batches):
+            bucket = batch['bucket']
+            objects = batch['delete_request']['Objects']
+            fileinfos_in_batch = batch['fileinfos']
+
+            for fileinfo in fileinfos_in_batch:
+                src, dest = self._format_src_dest(fileinfo)
+                self._result_queue.put(
+                    QueuedResult(
+                        total_transfer_size=0,
+                        transfer_type='delete',
+                        src=src,
+                        dest=dest,
+                    )
+                )
+                total_objects += 1
+
+            try:
+                extra_args = {}
+                RequestParamsMapper.map_delete_object_params(
+                    extra_args, self._cli_params
+                )
+                future = self._transfer_manager.batch_delete(
+                    bucket=bucket, objects=objects, extra_args=extra_args
+                )
+                response = future.result()
+                self._handle_batch_delete_response(
+                    response, fileinfos_in_batch
+                )
+
+            except Exception as e:
+                for fileinfo in fileinfos_in_batch:
+                    self._report_failure(fileinfo, e)
+        return total_objects
+
+    def _report_success(self, fileinfo):
+        src, dest = self._format_src_dest(fileinfo)
+        self._result_queue.put(
+            SuccessResult(transfer_type='delete', src=src, dest=dest)
+        )
+
+    def _report_failure(self, fileinfo, exception):
+        src, dest = self._format_src_dest(fileinfo)
+        self._result_queue.put(
+            FailureResult(
+                transfer_type='delete',
+                src=src,
+                dest=dest,
+                exception=exception,
+            )
+        )
+
+    def _format_s3_path(self, path):
+        if path.startswith('s3://'):
+            return path
+        return 's3://' + path
+
+    def _format_src_dest(self, fileinfo):
+        src = fileinfo.src
+        if hasattr(fileinfo, 'version_id') and fileinfo.version_id:
+            src = f"{src} (version {fileinfo.version_id})"
+        return self._format_s3_path(src), None
+
+    def _report_error(self, fileinfo, error_message):
+        src, _ = self._format_src_dest(fileinfo)
+        uni_print(f"delete failed: {src} - {error_message}\n")
+
+    def _handle_batch_delete_response(self, response, fileinfos_in_batch):
+        error_objects = {}
+        for error in response.get('Errors', []):
+            key = error['Key']
+            version_id = error.get('VersionId', None)
+            error_objects[(key, version_id)] = error['Message']
+
+        for fileinfo in fileinfos_in_batch:
+            _, key = split_s3_bucket_key(fileinfo.src)
+            if (key, fileinfo.version_id) in error_objects:
+                self._report_error(
+                    fileinfo, error_objects[(key, fileinfo.version_id)]
+                )
+            else:
+                self._report_success(fileinfo)

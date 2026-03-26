@@ -1031,3 +1031,94 @@ class TestS3PathResolver:
     ):
         has_underlying_s3_path = S3PathResolver.has_underlying_s3_path(path)
         assert has_underlying_s3_path == expected_has_underlying_s3_path
+
+
+class TestBucketVersionLister:
+    @pytest.fixture(autouse=True)
+    def setUp(self):
+        self.client = mock.Mock()
+        self.emitter = HierarchicalEmitter()
+        self.client.meta.events = self.emitter
+        self.date_parser = mock.Mock()
+        self.date_parser.return_value = mock.sentinel.now
+        self.responses = []
+
+    def fake_paginate(self, *args, **kwargs):
+        for response in self.responses:
+            self.emitter.emit(
+                'after-call.s3.ListObjectsVersion', parsed=response
+            )
+        return self.responses
+
+    def test_list_object_versions(self):
+        now = mock.sentinel.now
+        self.client.get_paginator.return_value.paginate = self.fake_paginate
+        versions = [
+            {
+                'LastModified': '2015-08-05T04:20:38.000Z',
+                'Key': 'a',
+                'Size': 1,
+                'VersionId': 'version1',
+            },
+            {
+                'LastModified': '2015-08-05T04:20:38.000Z',
+                'Key': 'b',
+                'Size': 2,
+                'VersionId': 'version2',
+            },
+        ]
+
+        delete_markers = [
+            {
+                'LastModified': '2015-08-05T04:20:38.000Z',
+                'Key': 'b',
+                'VersionId': 'delete1',
+            },
+        ]
+
+        self.responses = [
+            {'Versions': versions[0:1], 'DeleteMarkers': []},
+            {'Versions': [versions[1]], 'DeleteMarkers': delete_markers},
+        ]
+
+        lister = BucketLister(self.client, self.date_parser)
+        objects = list(lister.list_object_versions(bucket='foo'))
+        expected_version_a = versions[0].copy()
+        expected_version_b = versions[1].copy()
+        expected_delete_marker_a = delete_markers[0].copy()
+
+        assert objects == [
+            ('foo/a', expected_version_a, 'version1'),
+            ('foo/b', expected_version_b, 'version2'),
+            ('foo/b', expected_delete_marker_a, 'delete1'),
+        ]
+        for version in versions:
+            assert version['LastModified'] == now
+        for delete_marker in delete_markers:
+            assert delete_marker['LastModified'] == now
+
+    def test_list_object_versions_with_extra_args(self):
+        self.client.get_paginator.return_value.paginate.return_value = [
+            {
+                'Versions': [
+                    {
+                        'LastModified': '2015-08-05T04:20:38.000Z',
+                        'Key': 'a',
+                        'Size': 1,
+                        'VersionId': 'version1',
+                    },
+                ],
+                'DeleteMarkers': [],
+            }
+        ]
+        lister = BucketLister(self.client, self.date_parser)
+        list(
+            lister.list_object_versions(
+                bucket='mybucket', extra_args={'RequestPayer': 'requester'}
+            )
+        )
+        self.client.get_paginator.return_value.paginate.assert_called_with(
+            Bucket='mybucket',
+            PaginationConfig={'PageSize': None},
+            RequestPayer='requester',
+        )

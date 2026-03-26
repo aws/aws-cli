@@ -12,10 +12,11 @@
 # language governing permissions and limitations under the License.
 import os
 
+import pytest
 from s3transfer.manager import TransferManager
 
 from awscli.compat import queue
-from awscli.customizations.s3.fileinfo import FileInfo
+from awscli.customizations.s3.fileinfo import FileInfo, VersionedFileInfo
 from awscli.customizations.s3.results import (
     CommandResultRecorder,
     DoneResultSubscriber,
@@ -29,6 +30,9 @@ from awscli.customizations.s3.results import (
     SuccessResult,
 )
 from awscli.customizations.s3.s3handler import (
+    BatchDelete,
+    BatchDeleteRequestSubmitter,
+    BatchS3TransferHandler,
     CopyRequestSubmitter,
     DeleteRequestSubmitter,
     DownloadRequestSubmitter,
@@ -57,6 +61,7 @@ from awscli.customizations.s3.utils import (
     StdoutBytesWriter,
     WarningResult,
 )
+from awscli.s3transfer.constants import MAX_BATCH_SIZE
 from awscli.testutils import FileCreator, mock, unittest
 
 
@@ -76,6 +81,15 @@ class TestS3TransferHandlerFactory(unittest.TestCase):
         self.assertIsInstance(
             factory(self.transfer_manager, self.result_queue),
             S3TransferHandler,
+        )
+
+    def test_call_returns_batch_s3_handler_with_all_versions(self):
+        self.cli_params['all_versions'] = True
+        factory = S3TransferHandlerFactory(self.cli_params)
+        self.assertTrue(factory._requires_batch_handler())
+        self.assertIsInstance(
+            factory(self.transfer_manager, self.result_queue),
+            BatchS3TransferHandler,
         )
 
 
@@ -1253,3 +1267,170 @@ class TestLocalDeleteRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.assertEqual(result.transfer_type, 'delete')
         self.assertTrue(result.src.endswith(self.filename))
         self.assertIsNone(result.dest)
+
+
+class TestBatchS3TransferHandler:
+    @pytest.fixture(autouse=True)
+    def setUp(self):
+        self.result_queue = queue.Queue()
+        self.result_recorder = ResultRecorder()
+        self.processed_results = []
+        self.result_processor = ResultProcessor(
+            self.result_queue,
+            [self.result_recorder, self.processed_results.append],
+        )
+        self.command_result_recorder = CommandResultRecorder(
+            self.result_queue, self.result_recorder, self.result_processor
+        )
+
+        self.transfer_manager = mock.Mock(spec=TransferManager)
+        self.transfer_manager.__enter__ = mock.Mock()
+        self.transfer_manager.__exit__ = mock.Mock()
+        self.parameters = {}
+        self.batch_s3_handler = BatchS3TransferHandler(
+            self.transfer_manager,
+            self.parameters,
+            self.command_result_recorder,
+        )
+
+    def test_call_return_command_result(self):
+        num_failures = 5
+        num_warnings = 3
+        self.result_recorder.files_failed = num_failures
+        self.result_recorder.files_warned = num_warnings
+        command_result = self.batch_s3_handler.call([])
+        assert command_result == (num_failures, num_warnings)
+
+    def test_enqueue_batch_deletes(self):
+        fileinfos = []
+        num_transfers = 5
+        for i in range(num_transfers):
+            fileinfo = VersionedFileInfo(
+                src=f'bucket/key{i}',
+                dest=None,
+                operation_name='delete',
+                src_type='s3',
+                version_id=f'version{i}',
+            )
+            fileinfos.append(fileinfo)
+
+        self.batch_s3_handler.call(iter(fileinfos))
+        self.transfer_manager.batch_delete.assert_called_once()
+
+    def test_notifies_total_submissions(self):
+        fileinfos = []
+        num_transfers = 5
+        for i in range(num_transfers):
+            fileinfo = VersionedFileInfo(
+                src=f'bucket/key{i}',
+                dest=None,
+                operation_name='delete',
+                src_type='s3',
+                version_id=f'version{i}',
+            )
+            fileinfos.append(fileinfo)
+
+        self.batch_s3_handler.call(iter(fileinfos))
+        assert (
+            self.result_recorder.final_expected_files_transferred
+            == num_transfers
+        )
+
+
+class TestBatchDelete:
+    def test_create_batches_with_multiple_objects(self):
+        self.result_queue = queue.Queue()
+        self.delete_batch = BatchDelete(self.result_queue)
+        self.bucket = 'mybucket'
+        self.key = 'mykey'
+        fileinfos = []
+        num_objects = MAX_BATCH_SIZE + 5
+        for i in range(num_objects):
+            fileinfo = VersionedFileInfo(
+                src=self.bucket + f'/key{i}',
+                dest=None,
+                operation_name='delete',
+                src_type='s3',
+                version_id=f'version{i}',
+            )
+            fileinfos.append(fileinfo)
+
+        batches = self.delete_batch.create_batches(fileinfos)
+        assert len(batches) == 2
+        assert len(batches[0]['delete_request']['Objects']) == MAX_BATCH_SIZE
+        assert len(batches[1]['delete_request']['Objects']) == 5
+        for batch in batches:
+            assert batch['bucket'] == self.bucket
+
+
+class TestBatchDeleteRequestSubmitter:
+    @pytest.fixture(autouse=True)
+    def setUp(self):
+        self._transfer_manager = mock.Mock(spec=TransferManager)
+        self._result_queue = queue.Queue()
+        self._cli_params = {}
+        self.bucket = 'mybucket'
+        self.key = 'mykey'
+        self.delete_batch_submitter = BatchDeleteRequestSubmitter(
+            self._transfer_manager, self._result_queue, self._cli_params
+        )
+
+    def test_can_submit_with_delete_operation_and_version_id(self):
+        fileinfo = VersionedFileInfo(
+            src=self.bucket + "/" + self.key,
+            dest=None,
+            operation_name='delete',
+            src_type='s3',
+            version_id='version123',
+        )
+        assert self.delete_batch_submitter.can_submit(fileinfo)
+
+    def test_cannot_submit_local_src_type_for_delete(self):
+        fileinfo = VersionedFileInfo(
+            src=self.bucket + "/" + self.key,
+            dest=None,
+            operation_name='delete',
+            src_type='local',
+            version_id='',
+        )
+        assert not self.delete_batch_submitter.can_submit(fileinfo)
+
+    def test_submit_batch_with_multiple_objects(self):
+        fileinfos = []
+        num_files = 5
+        for i in range(num_files):
+            fileinfo = VersionedFileInfo(
+                src=self.bucket + f'/key{i}',
+                dest=None,
+                operation_name='delete',
+                src_type='s3',
+                version_id=f'version{i}',
+            )
+            fileinfos.append(fileinfo)
+
+        mock_future = mock.Mock()
+        mock_future.result.return_value = None
+        self._transfer_manager.batch_delete.return_value = mock_future
+        total_objects = self.delete_batch_submitter.submit_batch(fileinfos)
+        assert total_objects == num_files
+        self._transfer_manager.batch_delete.assert_called_once()
+
+    def test_dry_run(self):
+        self._cli_params['dryrun'] = True
+        fileinfos = []
+        num_files = 5
+        for i in range(num_files):
+            fileinfo = VersionedFileInfo(
+                src=self.bucket + f'/key{i}',
+                dest=None,
+                operation_name='delete',
+                src_type='s3',
+                version_id=f'version{i}',
+            )
+            fileinfos.append(fileinfo)
+
+        total_objects = self.delete_batch_submitter.submit_batch(fileinfos)
+        assert total_objects == num_files
+        self._transfer_manager.batch_delete.assert_not_called()
+        result = self._result_queue.get()
+        assert isinstance(result, DryRunResult)

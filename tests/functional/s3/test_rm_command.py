@@ -71,6 +71,49 @@ class TestRmCommand(BaseS3TransferCommandTest):
             ]
         )
 
+    def test_delete_all_versions_of_single_object(self):
+        self.parsed_responses = [
+            self.list_object_versions_response(['mykey']),
+            self.delete_objects_response(['mykey']),
+        ]
+        cmdline = f'{self.prefix} s3://mybucket/mykey --all-versions'
+        self.run_cmd(cmdline, expected_rc=0)
+
+        self.assert_operations_called(
+            [
+                self.list_object_versions_request('mybucket', prefix='mykey'),
+                self.delete_objects_request(
+                    'mybucket',
+                    [
+                        {'Key': 'mykey', 'VersionId': 'version1'},
+                        {'Key': 'mykey', 'VersionId': 'deletemarker1'},
+                    ],
+                ),
+            ]
+        )
+
+    def test_recursive_delete_all_versions_of_all_objects(self):
+        self.parsed_responses = [
+            self.list_object_versions_response(['mykey1', 'mykey2']),
+            self.delete_objects_response(['mykey1', 'mykey2']),
+        ]
+        cmdline = f'{self.prefix} s3://mybucket/ --all-versions --recursive'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.list_object_versions_request('mybucket', prefix=''),
+                self.delete_objects_request(
+                    'mybucket',
+                    [
+                        {'Key': 'mykey1', 'VersionId': 'version1'},
+                        {'Key': 'mykey2', 'VersionId': 'version1'},
+                        {'Key': 'mykey1', 'VersionId': 'deletemarker1'},
+                        {'Key': 'mykey2', 'VersionId': 'deletemarker1'},
+                    ],
+                ),
+            ]
+        )
+
 
 class TestRmWithCRTClient(BaseCRTTransferClientTest):
     def test_delete_using_crt_client(self):

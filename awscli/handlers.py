@@ -26,6 +26,9 @@ from awscli.customizations.argrename import register_arg_renames
 from awscli.customizations.assumerole import register_assume_role_provider
 from awscli.customizations.awslambda import register_lambda_create_function
 from awscli.customizations.binaryformat import add_binary_formatter
+from awscli.customizations.clientcontextparams import (
+    register_client_context_params,
+)
 from awscli.customizations.cliinput import register_cli_input_args
 from awscli.customizations.cloudformation import (
     initialize as cloudformation_init,
@@ -165,6 +168,7 @@ def awscli_initialize(event_handlers):
     )
     register_parse_global_args(event_handlers)
     register_pagination(event_handlers)
+    register_client_context_params(event_handlers)
     register_secgroup(event_handlers)
     register_bundleinstance(event_handlers)
     s3_plugin_initialize(event_handlers)

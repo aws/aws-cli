@@ -61,6 +61,7 @@ def test_client_context_param_types_are_supported(
 def test_client_context_params_do_not_collide_with_operation_inputs(
     service_name, operation_name, collisions, record_property
 ):
+    # Only runs when a collision exists; unconditional failure is intentional.
     record_property('aws_service', service_name)
     record_property('aws_operation', operation_name)
     raise AssertionError(

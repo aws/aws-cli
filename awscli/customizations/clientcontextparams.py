@@ -32,9 +32,7 @@ def inject_client_context_params(
     argument_table, operation_model, event_name, session, **kwargs
 ):
     service_model = operation_model.service_model
-    if not hasattr(service_model, 'client_context_parameters'):
-        return
-    context_params = service_model.client_context_parameters
+    context_params = getattr(service_model, 'client_context_parameters', None)
     if not context_params:
         return
 
@@ -70,6 +68,7 @@ def inject_client_context_params(
             context_param_name=param.name,
             param_type=param.type,
             documentation=getattr(param, 'documentation', ''),
+            action='store_true' if param.type == 'boolean' else None,
             group_name=cli_name if param.type == 'boolean' else None,
         )
         argument_table[cli_name] = arg
@@ -115,7 +114,7 @@ class ClientContextParamArgument(BaseCLIArgument):
         context_param_name,
         param_type,
         documentation='',
-        action='store_true',
+        action=None,
         dest=None,
         group_name=None,
     ):

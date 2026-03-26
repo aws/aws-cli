@@ -533,6 +533,13 @@ STEP_CONCURRENCY_LEVEL = (
     'Default is 1 which is non-concurrent.'
 )
 
+STEP_EXECUTION_ROLE_ARN = (
+    '<p>The IAM role ARN that will be used to execute steps on the cluster. '
+    'This parameter applies only to steps included in the <code>Steps</code> '
+    'parameter of this RunJobFlow request. It does not apply to steps added '
+    'later to the cluster.</p>'
+)
+
 MANAGED_SCALING_POLICY = (
     '<p>Managed scaling policy for an Amazon EMR cluster. The policy '
     'specifies the limits for resources that can be added or terminated '

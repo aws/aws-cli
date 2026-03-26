@@ -68,6 +68,8 @@ class ConfigureCommand(BasicCommand):
         'To create a new configuration::\n'
         '\n'
         '    $ aws configure\n'
+        '    Tip: You can deliver temporary credentials to the AWS CLI using \n'
+        '    your AWS Console session by running the command \'aws login\'.\n\n'
         '    AWS Access Key ID [None]: accesskey\n'
         '    AWS Secret Access Key [None]: secretkey\n'
         '    Default region name [None]: us-west-2\n'
@@ -127,9 +129,11 @@ class ConfigureCommand(BasicCommand):
         new_access_key = new_values.get('aws_access_key_id')
         if new_access_key and not self._needs_session_token(new_values):
             return False
-        
+
         # Prompt if needed for temporary credentials or if already exists
-        return self._needs_session_token(new_values) or config.get('aws_session_token')
+        return self._needs_session_token(new_values) or config.get(
+            'aws_session_token'
+        )
 
     def _run_main(self, parsed_args, parsed_globals):
         # Called when invoked with no args "aws configure"
@@ -142,10 +146,22 @@ class ConfigureCommand(BasicCommand):
         except ProfileNotFound:
             config = {}
 
+        if not config:
+            sys.stdout.write(
+                '\nTip: You can deliver temporary credentials to the AWS '
+                'CLI using your AWS Console session by running the command '
+                '\'aws login\'.\n\n'
+            )
+
         for config_name, prompt_text in self.VALUES_TO_PROMPT:
-            if config_name == 'aws_session_token' and not self._should_prompt_for_session_token(new_values, config):
+            if (
+                config_name == 'aws_session_token'
+                and not self._should_prompt_for_session_token(
+                    new_values, config
+                )
+            ):
                 continue
-                
+
             current_value = config.get(config_name)
             new_value = self._prompter.get_value(
                 current_value, config_name, prompt_text

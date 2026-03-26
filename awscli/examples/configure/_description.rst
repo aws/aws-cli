@@ -10,6 +10,10 @@ When you are prompted for information, the current value will be displayed in
 config file.  It does not use any configuration values from environment
 variables or the IAM role.
 
+Tip: You can deliver temporary credentials to the AWS CLI using your AWS
+Console session by running the command ``aws login``. For more information, see
+`Login for AWS local development using console credentials <https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-sign-in.html>`__.
+
 Note: the values you provide for the AWS Access Key ID and the AWS Secret
 Access Key will be written to the shared credentials file
 (``~/.aws/credentials``).

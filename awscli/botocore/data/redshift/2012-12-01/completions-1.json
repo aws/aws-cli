@@ -18,7 +18,9 @@
       "operation": "DescribeClusterSnapshots",
       "resourceIdentifier": {
         "SnapshotType": "Snapshots[].SnapshotType",
-        "OwnerAccount": "Snapshots[].OwnerAccount"
+        "OwnerAccount": "Snapshots[].OwnerAccount",
+        "SnapshotIdentifier": "Snapshots[].SnapshotIdentifier",
+        "SnapshotArn": "Snapshots[].SnapshotArn"
       }
     },
     "ClusterVersion": {
@@ -33,13 +35,16 @@
         "ClusterSubnetGroupName": "Clusters[].ClusterSubnetGroupName",
         "AvailabilityZone": "Clusters[].AvailabilityZone",
         "PreferredMaintenanceWindow": "Clusters[].PreferredMaintenanceWindow",
-        "MaintenanceTrackName": "Clusters[].MaintenanceTrackName"
+        "MaintenanceTrackName": "Clusters[].MaintenanceTrackName",
+        "ClustersClusterIdentifier": "Clusters[].ClusterIdentifier",
+        "ClusterNamespaceArn": "Clusters[].ClusterNamespaceArn"
       }
     },
     "EventSubscription": {
       "operation": "DescribeEventSubscriptions",
       "resourceIdentifier": {
-        "SnsTopicArn": "EventSubscriptionsList[].SnsTopicArn"
+        "SnsTopicArn": "EventSubscriptionsList[].SnsTopicArn",
+        "CustSubscriptionId": "EventSubscriptionsList[].CustSubscriptionId"
       }
     },
     "Event": {
@@ -105,6 +110,66 @@
         "ResourceName": "TaggedResources[].ResourceName",
         "ResourceType": "TaggedResources[].ResourceType"
       }
+    },
+    "DataShare": {
+      "operation": "DescribeDataShares",
+      "resourceIdentifier": {
+        "DataShareArn": "DataShares[].DataShareArn"
+      }
+    },
+    "ClusterSubnetGroup": {
+      "operation": "DescribeClusterSubnetGroups",
+      "resourceIdentifier": {
+        "ClusterSubnetGroupName": "ClusterSubnetGroups[].ClusterSubnetGroupName"
+      }
+    },
+    "SnapshotSchedule": {
+      "operation": "DescribeSnapshotSchedules",
+      "resourceIdentifier": {
+        "ScheduleIdentifier": "SnapshotSchedules[].ScheduleIdentifier"
+      }
+    },
+    "RedshiftIdcApplication": {
+      "operation": "DescribeRedshiftIdcApplications",
+      "resourceIdentifier": {
+        "RedshiftIdcApplicationArn": "RedshiftIdcApplications[].RedshiftIdcApplicationArn"
+      }
+    },
+    "AuthenticationProfile": {
+      "operation": "DescribeAuthenticationProfiles",
+      "resourceIdentifier": {
+        "AuthenticationProfileName": "AuthenticationProfiles[].AuthenticationProfileName"
+      }
+    },
+    "EndpointAccess": {
+      "operation": "DescribeEndpointAccess",
+      "resourceIdentifier": {
+        "EndpointName": "EndpointAccessList[].EndpointName"
+      }
+    },
+    "Integration": {
+      "operation": "DescribeIntegrations",
+      "resourceIdentifier": {
+        "IntegrationArn": "Integrations[].IntegrationArn"
+      }
+    },
+    "ScheduledAction": {
+      "operation": "DescribeScheduledActions",
+      "resourceIdentifier": {
+        "ScheduledActionName": "ScheduledActions[].ScheduledActionName"
+      }
+    },
+    "UsageLimit": {
+      "operation": "DescribeUsageLimits",
+      "resourceIdentifier": {
+        "UsageLimitId": "UsageLimits[].UsageLimitId"
+      }
+    },
+    "CustomDomainAssociation": {
+      "operation": "DescribeCustomDomainAssociations",
+      "resourceIdentifier": {
+        "CustomDomainCertificateArn": "Associations[].CustomDomainCertificateArn"
+      }
     }
   },
   "operations": {
@@ -137,6 +202,24 @@
             "parameters": {},
             "resourceName": "TableRestoreStatu",
             "resourceIdentifier": "SnapshotIdentifier"
+          }
+        ]
+      },
+      "SnapshotArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ClusterSnapshot",
+            "resourceIdentifier": "SnapshotArn"
+          }
+        ]
+      },
+      "SnapshotClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "ClustersClusterIdentifier"
           }
         ]
       }
@@ -181,6 +264,15 @@
             "parameters": {},
             "resourceName": "TableRestoreStatu",
             "resourceIdentifier": "SnapshotIdentifier"
+          }
+        ]
+      },
+      "SnapshotClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "ClustersClusterIdentifier"
           }
         ]
       }
@@ -318,6 +410,15 @@
             "parameters": {},
             "resourceName": "ClusterSnapshot",
             "resourceIdentifier": "OwnerAccount"
+          }
+        ]
+      },
+      "SnapshotArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ClusterSnapshot",
+            "resourceIdentifier": "SnapshotArn"
           }
         ]
       }
@@ -719,6 +820,15 @@
             "resourceIdentifier": "KmsKeyId"
           }
         ]
+      },
+      "ClusterParameterGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ClusterParameterGroup",
+            "resourceIdentifier": "ParameterGroupName"
+          }
+        ]
       }
     },
     "ModifyClusterDbRevision": {
@@ -801,6 +911,15 @@
             "resourceIdentifier": "Severity"
           }
         ]
+      },
+      "SubscriptionName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "EventSubscription",
+            "resourceIdentifier": "CustSubscriptionId"
+          }
+        ]
       }
     },
     "ModifySnapshotCopyRetentionPeriod": {
@@ -872,6 +991,15 @@
             "parameters": {},
             "resourceName": "ReservedNode",
             "resourceIdentifier": "NodeType"
+          }
+        ]
+      },
+      "ReservedNodeId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReservedNode",
+            "resourceIdentifier": "ReservedNodeId"
           }
         ]
       }
@@ -975,6 +1103,51 @@
             "resourceIdentifier": "MaintenanceTrackName"
           }
         ]
+      },
+      "SnapshotArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ClusterSnapshot",
+            "resourceIdentifier": "SnapshotArn"
+          }
+        ]
+      },
+      "ClusterParameterGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ClusterParameterGroup",
+            "resourceIdentifier": "ParameterGroupName"
+          }
+        ]
+      },
+      "SnapshotScheduleIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "SnapshotSchedule",
+            "resourceIdentifier": "ScheduleIdentifier"
+          }
+        ]
+      },
+      "ReservedNodeId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReservedNode",
+            "resourceIdentifier": "ReservedNodeId"
+          }
+        ]
+      },
+      "RedshiftIdcApplicationArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RedshiftIdcApplication",
+            "resourceIdentifier": "RedshiftIdcApplicationArn"
+          }
+        ]
       }
     },
     "RestoreTableFromClusterSnapshot": {
@@ -1071,6 +1244,15 @@
             "resourceIdentifier": "SnapshotIdentifier"
           }
         ]
+      },
+      "SnapshotArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ClusterSnapshot",
+            "resourceIdentifier": "SnapshotArn"
+          }
+        ]
       }
     },
     "RotateEncryptionKey": {
@@ -1080,6 +1262,841 @@
             "parameters": {},
             "resourceName": "TableRestoreStatu",
             "resourceIdentifier": "ClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "AssociateDataShareConsumer": {
+      "DataShareArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DataShare",
+            "resourceIdentifier": "DataShareArn"
+          }
+        ]
+      }
+    },
+    "AuthorizeDataShare": {
+      "DataShareArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DataShare",
+            "resourceIdentifier": "DataShareArn"
+          }
+        ]
+      }
+    },
+    "AuthorizeEndpointAccess": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "ClustersClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "BatchModifyClusterSnapshots": {
+      "SnapshotIdentifierList": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ClusterSnapshot",
+            "resourceIdentifier": "SnapshotIdentifier"
+          }
+        ]
+      }
+    },
+    "CancelResize": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "ClustersClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "CopyClusterSnapshot": {
+      "SourceSnapshotIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ClusterSnapshot",
+            "resourceIdentifier": "SnapshotIdentifier"
+          }
+        ]
+      },
+      "SourceSnapshotClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "ClustersClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "CreateCluster": {
+      "ClusterParameterGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ClusterParameterGroup",
+            "resourceIdentifier": "ParameterGroupName"
+          }
+        ]
+      },
+      "ClusterSubnetGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ClusterSubnetGroup",
+            "resourceIdentifier": "ClusterSubnetGroupName"
+          }
+        ]
+      },
+      "HsmClientCertificateIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HsmClientCertificate",
+            "resourceIdentifier": "HsmClientCertificateIdentifier"
+          }
+        ]
+      },
+      "HsmConfigurationIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HsmConfiguration",
+            "resourceIdentifier": "HsmConfigurationIdentifier"
+          }
+        ]
+      },
+      "SnapshotScheduleIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "SnapshotSchedule",
+            "resourceIdentifier": "ScheduleIdentifier"
+          }
+        ]
+      },
+      "RedshiftIdcApplicationArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RedshiftIdcApplication",
+            "resourceIdentifier": "RedshiftIdcApplicationArn"
+          }
+        ]
+      }
+    },
+    "CreateClusterSnapshot": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "ClustersClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "CreateCustomDomainAssociation": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "ClustersClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "CreateEndpointAccess": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "ClustersClusterIdentifier"
+          }
+        ]
+      },
+      "SubnetGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ClusterSubnetGroup",
+            "resourceIdentifier": "ClusterSubnetGroupName"
+          }
+        ]
+      }
+    },
+    "CreateUsageLimit": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "ClustersClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "DeauthorizeDataShare": {
+      "DataShareArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DataShare",
+            "resourceIdentifier": "DataShareArn"
+          }
+        ]
+      }
+    },
+    "DeleteAuthenticationProfile": {
+      "AuthenticationProfileName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "AuthenticationProfile",
+            "resourceIdentifier": "AuthenticationProfileName"
+          }
+        ]
+      }
+    },
+    "DeleteCustomDomainAssociation": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "ClustersClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "DeleteEndpointAccess": {
+      "EndpointName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "EndpointAccess",
+            "resourceIdentifier": "EndpointName"
+          }
+        ]
+      }
+    },
+    "DeleteEventSubscription": {
+      "SubscriptionName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "EventSubscription",
+            "resourceIdentifier": "CustSubscriptionId"
+          }
+        ]
+      }
+    },
+    "DeleteIntegration": {
+      "IntegrationArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Integration",
+            "resourceIdentifier": "IntegrationArn"
+          }
+        ]
+      }
+    },
+    "DeleteRedshiftIdcApplication": {
+      "RedshiftIdcApplicationArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RedshiftIdcApplication",
+            "resourceIdentifier": "RedshiftIdcApplicationArn"
+          }
+        ]
+      }
+    },
+    "DeleteResourcePolicy": {
+      "ResourceArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ClusterSnapshot",
+            "resourceIdentifier": "SnapshotArn"
+          }
+        ]
+      }
+    },
+    "DeleteScheduledAction": {
+      "ScheduledActionName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ScheduledAction",
+            "resourceIdentifier": "ScheduledActionName"
+          }
+        ]
+      }
+    },
+    "DeleteSnapshotSchedule": {
+      "ScheduleIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "SnapshotSchedule",
+            "resourceIdentifier": "ScheduleIdentifier"
+          }
+        ]
+      }
+    },
+    "DeleteUsageLimit": {
+      "UsageLimitId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "UsageLimit",
+            "resourceIdentifier": "UsageLimitId"
+          }
+        ]
+      }
+    },
+    "DescribeAuthenticationProfiles": {
+      "AuthenticationProfileName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "AuthenticationProfile",
+            "resourceIdentifier": "AuthenticationProfileName"
+          }
+        ]
+      }
+    },
+    "DescribeCustomDomainAssociations": {
+      "CustomDomainCertificateArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CustomDomainAssociation",
+            "resourceIdentifier": "CustomDomainCertificateArn"
+          }
+        ]
+      }
+    },
+    "DescribeDataShares": {
+      "DataShareArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DataShare",
+            "resourceIdentifier": "DataShareArn"
+          }
+        ]
+      }
+    },
+    "DescribeDataSharesForProducer": {
+      "ProducerArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "ClusterNamespaceArn"
+          }
+        ]
+      }
+    },
+    "DescribeEndpointAccess": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "ClustersClusterIdentifier"
+          }
+        ]
+      },
+      "EndpointName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "EndpointAccess",
+            "resourceIdentifier": "EndpointName"
+          }
+        ]
+      }
+    },
+    "DescribeEndpointAuthorization": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "ClustersClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "DescribeEventSubscriptions": {
+      "SubscriptionName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "EventSubscription",
+            "resourceIdentifier": "CustSubscriptionId"
+          }
+        ]
+      }
+    },
+    "DescribeInboundIntegrations": {
+      "IntegrationArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Integration",
+            "resourceIdentifier": "IntegrationArn"
+          }
+        ]
+      }
+    },
+    "DescribeIntegrations": {
+      "IntegrationArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Integration",
+            "resourceIdentifier": "IntegrationArn"
+          }
+        ]
+      }
+    },
+    "DescribeNodeConfigurationOptions": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "ClustersClusterIdentifier"
+          }
+        ]
+      },
+      "SnapshotIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ClusterSnapshot",
+            "resourceIdentifier": "SnapshotIdentifier"
+          }
+        ]
+      },
+      "SnapshotArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ClusterSnapshot",
+            "resourceIdentifier": "SnapshotArn"
+          }
+        ]
+      }
+    },
+    "DescribeRedshiftIdcApplications": {
+      "RedshiftIdcApplicationArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RedshiftIdcApplication",
+            "resourceIdentifier": "RedshiftIdcApplicationArn"
+          }
+        ]
+      }
+    },
+    "DescribeReservedNodeExchangeStatus": {
+      "ReservedNodeId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReservedNode",
+            "resourceIdentifier": "ReservedNodeId"
+          }
+        ]
+      }
+    },
+    "DescribeScheduledActions": {
+      "ScheduledActionName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ScheduledAction",
+            "resourceIdentifier": "ScheduledActionName"
+          }
+        ]
+      }
+    },
+    "DescribeSnapshotSchedules": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "ClustersClusterIdentifier"
+          }
+        ]
+      },
+      "ScheduleIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "SnapshotSchedule",
+            "resourceIdentifier": "ScheduleIdentifier"
+          }
+        ]
+      }
+    },
+    "DescribeUsageLimits": {
+      "UsageLimitId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "UsageLimit",
+            "resourceIdentifier": "UsageLimitId"
+          }
+        ]
+      },
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "ClustersClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "DisassociateDataShareConsumer": {
+      "DataShareArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DataShare",
+            "resourceIdentifier": "DataShareArn"
+          }
+        ]
+      }
+    },
+    "FailoverPrimaryCompute": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "ClustersClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "GetClusterCredentialsWithIAM": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "ClustersClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "GetIdentityCenterAuthToken": {
+      "ClusterIds": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "ClustersClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "GetReservedNodeExchangeConfigurationOptions": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "ClustersClusterIdentifier"
+          }
+        ]
+      },
+      "SnapshotIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ClusterSnapshot",
+            "resourceIdentifier": "SnapshotIdentifier"
+          }
+        ]
+      }
+    },
+    "GetResourcePolicy": {
+      "ResourceArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ClusterSnapshot",
+            "resourceIdentifier": "SnapshotArn"
+          }
+        ]
+      }
+    },
+    "ListRecommendations": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "ClustersClusterIdentifier"
+          }
+        ]
+      },
+      "NamespaceArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "ClusterNamespaceArn"
+          }
+        ]
+      }
+    },
+    "ModifyAquaConfiguration": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "ClustersClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "ModifyAuthenticationProfile": {
+      "AuthenticationProfileName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "AuthenticationProfile",
+            "resourceIdentifier": "AuthenticationProfileName"
+          }
+        ]
+      }
+    },
+    "ModifyClusterMaintenance": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "ClustersClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "ModifyClusterSnapshot": {
+      "SnapshotIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ClusterSnapshot",
+            "resourceIdentifier": "SnapshotIdentifier"
+          }
+        ]
+      }
+    },
+    "ModifyClusterSnapshotSchedule": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "ClustersClusterIdentifier"
+          }
+        ]
+      },
+      "ScheduleIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "SnapshotSchedule",
+            "resourceIdentifier": "ScheduleIdentifier"
+          }
+        ]
+      }
+    },
+    "ModifyCustomDomainAssociation": {
+      "CustomDomainCertificateArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CustomDomainAssociation",
+            "resourceIdentifier": "CustomDomainCertificateArn"
+          }
+        ]
+      },
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "ClustersClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "ModifyEndpointAccess": {
+      "EndpointName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "EndpointAccess",
+            "resourceIdentifier": "EndpointName"
+          }
+        ]
+      }
+    },
+    "ModifyIntegration": {
+      "IntegrationArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Integration",
+            "resourceIdentifier": "IntegrationArn"
+          }
+        ]
+      }
+    },
+    "ModifyLakehouseConfiguration": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "ClustersClusterIdentifier"
+          }
+        ]
+      },
+      "LakehouseIdcApplicationArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RedshiftIdcApplication",
+            "resourceIdentifier": "RedshiftIdcApplicationArn"
+          }
+        ]
+      }
+    },
+    "ModifyRedshiftIdcApplication": {
+      "RedshiftIdcApplicationArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RedshiftIdcApplication",
+            "resourceIdentifier": "RedshiftIdcApplicationArn"
+          }
+        ]
+      }
+    },
+    "ModifyScheduledAction": {
+      "ScheduledActionName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ScheduledAction",
+            "resourceIdentifier": "ScheduledActionName"
+          }
+        ]
+      }
+    },
+    "ModifySnapshotSchedule": {
+      "ScheduleIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "SnapshotSchedule",
+            "resourceIdentifier": "ScheduleIdentifier"
+          }
+        ]
+      }
+    },
+    "ModifyUsageLimit": {
+      "UsageLimitId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "UsageLimit",
+            "resourceIdentifier": "UsageLimitId"
+          }
+        ]
+      }
+    },
+    "PauseCluster": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "ClustersClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "PutResourcePolicy": {
+      "ResourceArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ClusterSnapshot",
+            "resourceIdentifier": "SnapshotArn"
+          }
+        ]
+      }
+    },
+    "RejectDataShare": {
+      "DataShareArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DataShare",
+            "resourceIdentifier": "DataShareArn"
+          }
+        ]
+      }
+    },
+    "ResumeCluster": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "ClustersClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "RevokeEndpointAccess": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "ClustersClusterIdentifier"
           }
         ]
       }

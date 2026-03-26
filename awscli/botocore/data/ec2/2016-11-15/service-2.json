@@ -15782,7 +15782,7 @@
         },
         "Lifecycle":{
           "shape":"InstanceLifecycle",
-          "documentation":"<p>Indicates if the instance that could not be launched was a Spot Instance or On-Demand Instance.</p>",
+          "documentation":"<p>Indicates if the instance that could not be launched was a Spot, On-Demand, Capacity Block, or Interruptible Capacity Reservation instance.</p>",
           "locationName":"lifecycle"
         },
         "ErrorCode":{
@@ -15815,7 +15815,7 @@
         },
         "Lifecycle":{
           "shape":"InstanceLifecycle",
-          "documentation":"<p>Indicates if the instance that was launched is a Spot Instance or On-Demand Instance.</p>",
+          "documentation":"<p>Indicates if the instance that was launched is a Spot, On-Demand, Capacity Block, or Interruptible Capacity Reservation instance.</p>",
           "locationName":"lifecycle"
         },
         "InstanceIds":{
@@ -15866,6 +15866,10 @@
         "OnDemandOptions":{
           "shape":"OnDemandOptionsRequest",
           "documentation":"<p>Describes the configuration of On-Demand Instances in an EC2 Fleet.</p>"
+        },
+        "ReservedCapacityOptions":{
+          "shape":"ReservedCapacityOptionsRequest",
+          "documentation":"<p>Defines EC2 Fleet preferences for utilizing reserved capacity when DefaultTargetCapacityType is set to <code>reserved-capacity</code>.</p> <p>Supported only for fleets of type <code>instant</code>.</p>"
         },
         "ExcessCapacityTerminationPolicy":{
           "shape":"FleetExcessCapacityTerminationPolicy",
@@ -20828,6 +20832,27 @@
         "locationName":"item"
       }
     },
+    "DefaultConnectionTrackingConfiguration":{
+      "type":"structure",
+      "members":{
+        "DefaultTcpEstablishedTimeout":{
+          "shape":"DefaultTcpEstablishedTimeout",
+          "documentation":"<p>Default timeout (in seconds) for idle TCP connections in an established state.</p>",
+          "locationName":"defaultTcpEstablishedTimeout"
+        },
+        "DefaultUdpTimeout":{
+          "shape":"DefaultUdpTimeout",
+          "documentation":"<p>Default timeout (in seconds) for idle UDP flows that have seen traffic only in a single direction or a single request-response transaction.</p>",
+          "locationName":"defaultUdpTimeout"
+        },
+        "DefaultUdpStreamTimeout":{
+          "shape":"DefaultUdpStreamTimeout",
+          "documentation":"<p>Default timeout (in seconds) for idle UDP flows classified as streams which have seen more than one request-response transaction.</p>",
+          "locationName":"defaultUdpStreamTimeout"
+        }
+      },
+      "documentation":"<p>Indicates default conntrack information for the instance type. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/security-group-connection-tracking.html#connection-tracking-timeouts\"> Connection tracking timeouts </a> in the Amazon EC2 User Guide. </p>"
+    },
     "DefaultEnaQueueCountPerInterface":{"type":"integer"},
     "DefaultHttpTokensEnforcedState":{
       "type":"string",
@@ -20873,9 +20898,13 @@
       "enum":[
         "spot",
         "on-demand",
-        "capacity-block"
+        "capacity-block",
+        "reserved-capacity"
       ]
     },
+    "DefaultTcpEstablishedTimeout":{"type":"integer"},
+    "DefaultUdpStreamTimeout":{"type":"integer"},
+    "DefaultUdpTimeout":{"type":"integer"},
     "DefaultingDhcpOptionsId":{"type":"string"},
     "DeleteCapacityManagerDataExportRequest":{
       "type":"structure",
@@ -25341,7 +25370,7 @@
         },
         "Lifecycle":{
           "shape":"InstanceLifecycle",
-          "documentation":"<p>Indicates if the instance that could not be launched was a Spot Instance or On-Demand Instance.</p>",
+          "documentation":"<p>Indicates if the instance that could not be launched was a Spot, On-Demand, Capacity Block, or Interruptible Capacity Reservation instance.</p>",
           "locationName":"lifecycle"
         },
         "ErrorCode":{
@@ -25484,7 +25513,7 @@
         },
         "Lifecycle":{
           "shape":"InstanceLifecycle",
-          "documentation":"<p>Indicates if the instance that was launched is a Spot Instance or On-Demand Instance.</p>",
+          "documentation":"<p>Indicates if the instance that was launched is a Spot, On-Demand, Capacity Block, or Interruptible Capacity Reservation instance.</p>",
           "locationName":"lifecycle"
         },
         "InstanceIds":{
@@ -36881,6 +36910,11 @@
           "documentation":"<p>The allocation strategy of On-Demand Instances in an EC2 Fleet.</p>",
           "locationName":"onDemandOptions"
         },
+        "ReservedCapacityOptions":{
+          "shape":"ReservedCapacityOptions",
+          "documentation":"<p>Defines EC2 Fleet preferences for utilizing reserved capacity when DefaultTargetCapacityType is set to <code>reserved-capacity</code>.</p>",
+          "locationName":"reservedCapacityOptions"
+        },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>The tags for an EC2 Fleet resource.</p>",
@@ -37190,6 +37224,10 @@
         "launch",
         "launch-before-terminate"
       ]
+    },
+    "FleetReservationType":{
+      "type":"string",
+      "enum":["interruptible-capacity-reservation"]
     },
     "FleetSet":{
       "type":"list",
@@ -44079,7 +44117,8 @@
       "type":"string",
       "enum":[
         "spot",
-        "on-demand"
+        "on-demand",
+        "interruptible-capacity-reservation"
       ]
     },
     "InstanceLifecycleType":{
@@ -57292,6 +57331,11 @@
           "documentation":"<p>Indicates whether changing the number of ENA queues is supported.</p>",
           "locationName":"flexibleEnaQueuesSupport"
         },
+        "ConnectionTrackingConfiguration":{
+          "shape":"DefaultConnectionTrackingConfiguration",
+          "documentation":"<p>Indicates conntrack information for the instance type</p>",
+          "locationName":"connectionTrackingConfiguration"
+        },
         "SecondaryNetworkSupported":{
           "shape":"SecondaryNetworkSupportedFlag",
           "documentation":"<p>Indicates whether secondary interface attachments from secondary network are supported.</p>",
@@ -62501,6 +62545,20 @@
         "odcr"
       ]
     },
+    "ReservationTypeList":{
+      "type":"list",
+      "member":{
+        "shape":"FleetReservationType",
+        "locationName":"item"
+      }
+    },
+    "ReservationTypeListRequest":{
+      "type":"list",
+      "member":{
+        "shape":"FleetReservationType",
+        "locationName":"ReservationType"
+      }
+    },
     "ReservationValue":{
       "type":"structure",
       "members":{
@@ -62521,6 +62579,28 @@
         }
       },
       "documentation":"<p>The cost associated with the Reserved Instance.</p>"
+    },
+    "ReservedCapacityOptions":{
+      "type":"structure",
+      "members":{
+        "ReservationTypes":{
+          "shape":"ReservationTypeList",
+          "documentation":"<p>The types of Capacity Reservations used for fulfilling the EC2 Fleet request.</p>",
+          "locationName":"reservationTypeSet"
+        }
+      },
+      "documentation":"<p>Defines EC2 Fleet preferences for utilizing reserved capacity when DefaultTargetCapacityType is set to <code>reserved-capacity</code>.</p>"
+    },
+    "ReservedCapacityOptionsRequest":{
+      "type":"structure",
+      "members":{
+        "ReservationTypes":{
+          "shape":"ReservationTypeListRequest",
+          "documentation":"<p>The types of Capacity Reservations to use for fulfilling the EC2 Fleet request.</p>",
+          "locationName":"ReservationType"
+        }
+      },
+      "documentation":"<p>Defines EC2 Fleet preferences for utilizing reserved capacity when DefaultTargetCapacityType is set to <code>reserved-capacity</code>.</p> <note> <p>This configuration can only be used if the EC2 Fleet is of type <code>instant</code>.</p> </note> <p>When you specify <code>ReservedCapacityOptions</code>, you must also set <code>DefaultTargetCapacityType</code> to <code>reserved-capacity</code> in the <code>TargetCapacitySpecification</code>.</p> <p>For more information about Interruptible Capacity Reservations, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-fleet-launch-instances-interruptible-cr-walkthrough.html\">Launch instances into an Interruptible Capacity Reservation</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "ReservedInstanceIdSet":{
       "type":"list",

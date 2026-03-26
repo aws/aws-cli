@@ -2,6 +2,76 @@
 CHANGELOG
 =========
 
+2.34.17
+=======
+
+* api-change:``batch``: Documentation-only update for AWS Batch.
+* api-change:``uxc``: GA release of AccountCustomizations, used to manage account color, visible services, and visible regions settings in the AWS Management Console.
+* api-change:``marketplace-agreement``: The Variable Payments APIs enable AWS Marketplace Sellers to perform manage their payment requests (send, get, list, cancel).
+* api-change:``apigatewayv2``: Added DISABLE IN PROGRESS and DISABLE FAILED Portal statuses.
+* api-change:``application-signals``: This release adds support for creating SLOs on RUM appMonitors, Synthetics canaries and services.
+* api-change:``polly``: Add support for Mu-law and A-law codecs for output format
+
+
+2.34.16
+=======
+
+* api-change:``mediapackagev2``: Reduces the minimum allowed value for startOverWindowSeconds from 60 to 0, allowing customers to effectively disable the start-over window.
+* api-change:``opensearchserverless``: Adds support for updating the vector options field for existing collections.
+* api-change:``gamelift``: Amazon GameLift Servers launches UDP ping beacons in the Beijing and Ningxia (China) Regions to help measure real-time network latency for multiplayer games. The ListLocations API is now available in these regions to provide endpoint domain and port information as part of the locations list.
+* api-change:``bedrock-agentcore-control``: Adds SDK support for 1) Persist session state in AgentCore Runtime via filesystemConfigurations in CreateAgentRuntime, UpdateAgentRuntime, and GetAgentRuntime APIs, 2) Optional name-based filtering on AgentCore ListBrowserProfiles API.
+* api-change:``pcs``: This release adds support for custom slurmdbd and cgroup configuration in AWS PCS. Customers can now specify slurmdbd and cgroup settings to configure database accounting and reporting for their HPC workloads, and control resource allocation and limits for compute jobs.
+* api-change:``rds``: Adds support in Aurora PostgreSQL serverless databases for express configuration based creation through WithExpressConfiguration in CreateDbCluster API, and for restoring clusters using RestoreDBClusterToPointInTime and RestoreDBClusterFromSnapshot APIs.
+
+
+2.34.15
+=======
+
+* api-change:``batch``: AWS Batch AMI Visibility feature support. Adds read-only batchImageStatus to Ec2Configuration to provide visibility on the status of Batch-vended AMIs used by Compute Environments.
+* api-change:``connectcases``: You can now use the UpdateRelatedItem API to update the content of comments and custom related items associated with a case.
+* api-change:``lightsail``: Add support for tagging of ContactMethod resource type
+* api-change:``omics``: Adds support for batch workflow runs in Amazon Omics, enabling users to submit, manage, and monitor multiple runs as a single batch. Includes APIs to create, cancel, and delete batches, track submission statuses and counts, list runs within a batch, and configure default settings.
+
+
+2.34.14
+=======
+
+* api-change:``backup``: Fix Typo for S3Backup Options ( S3BackupACLs to BackupACLs)
+* api-change:``dynamodb``: Adding ReplicaArn to ReplicaDescription of a global table replica
+* api-change:``opensearch``: Added support for Amazon Managed Service for Prometheus (AMP) as a connected data source in OpenSearch UI. Now users can analyze Prometheus metrics in OpenSearch UI without data copy.
+* api-change:``verifiedpermissions``: Adds support for Policy Store Aliases, Policy Names, and Policy Template Names. These are customizable identifiers that can be used in place of Policy Store ids, Policy ids, and Policy Template ids respectively in Amazon Verified Permissions APIs.
+
+
+2.34.13
+=======
+
+* api-change:``bedrock-agentcore-control``: Adds support for the following new features. 1. Enterprise Policies support for AgentCore Browser Tool. 2. Root CA Configuration support for AgentCore Browser Tool and Code Interpreter.
+* api-change:``batch``: AWS Batch now supports quota management, enabling administrators to allocate shared compute resources across teams and projects through quota shares with capacity limits, resource-sharing strategies, and priority-based preemption - currently available for SageMaker Training job queues.
+* api-change:``polly``: Added bi-directional streaming functionality through a new API, StartSpeechSynthesisStream. This API allows streaming input text through inbound events and receiving audio as part of an output stream simultaneously.
+* api-change:``bedrock-agentcore``: This release includes SDK support for the following new features on AgentCore Built In Tools.  1. Enterprise Policies for AgentCore Browser Tool. 2. Root CA Configuration Support for AgentCore Browser Tool and Code Interpreter. 3. API changes to AgentCore Browser Profile APIs
+* api-change:``ec2``: Amazon EC2 Fleet instant mode now supports launching instances into Interruptible Capacity Reservations, enabling customers to use spare capacity shared by Capacity Reservation owners within their AWS Organization.
+* api-change:``observabilityadmin``: Adding a new field in the CreateCentralizationRuleForOrganization, UpdateCentralizationRuleForOrganization API and updating the GetCentralizationRuleForOrganization API response to include the new field
+* enhancement:Python: Upgrade bundled Python interpreter to version 3.14.3
+
+
+2.34.12
+=======
+
+* api-change:``mediaconvert``: This update adds additional bitrate options for Dolby AC-4 audio outputs.
+* enhancement:autocomplete: Adds and updates autocompletion models with additional resources and parameters.
+* api-change:``ec2``: The DescribeInstanceTypes API now returns default connection tracking timeout values for TCP, UDP, and UDP stream via the new connectionTrackingConfiguration field on NetworkInfo.
+
+
+2.34.11
+=======
+
+* enhancement:emr: Add support for S3LoggingConfiguration in --monitoring-configuration parameter of the emr create-cluster command.
+* api-change:``emr``: Add S3LoggingConfiguration to Control LogUploads
+* api-change:``glue``: Provide approval to overwrite existing Lake Formation permissions on all child resources with the default permissions specified in 'CreateTableDefaultPermissions' and 'CreateDatabaseDefaultPermissions' when updating catalog. Allowed values are ["Accept","Deny"] .
+* bugfix:autocomplete: Exclude completion models from final PyInstaller distribution since they're not needed at runtime.
+* api-change:``bedrock-agentcore-control``: Deprecating namespaces field and adding namespaceTemplates.
+
+
 2.34.10
 =======
 

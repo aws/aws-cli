@@ -22,13 +22,18 @@ from tests.unit.botocore.docs import BaseDocsTest
 class TestServiceDocumenter(BaseDocsTest):
     def setUp(self):
         super().setUp()
+        self.setup_documenter()
+
+    def setup_documenter(self):
         self.add_shape_to_params('Biz', 'String')
         self.setup_client()
         with mock.patch(
             'botocore.session.create_loader', return_value=self.loader
         ):
             session = get_session()
-            self.service_documenter = ServiceDocumenter('myservice', session)
+            self.service_documenter = ServiceDocumenter(
+                'myservice', session, self.root_services_path
+            )
 
     def test_document_service(self):
         # Note that not everything will be included as it is just
@@ -47,30 +52,47 @@ class TestServiceDocumenter(BaseDocsTest):
             '  A low-level client representing AWS MyService',
             '  AWS MyService Description',
             '    client = session.create_client(\'myservice\')',
-            '  These are the available methods:',
-            '  *   :py:meth:`~MyService.Client.sample_operation`',
-            '  .. py:method:: sample_operation(**kwargs)',
-            '    **Examples** ',
-            '    Sample Description.',
-            '    ::',
-            '      response = client.sample_operation(',
+            'These are the available methods:',
+            '  myservice/client/sample_operation',
             '=================',
             'Client Exceptions',
             '=================',
+            'Client exceptions are available on a client instance ',
+            'via the ``exceptions`` property. For more detailed instructions ',
+            'and examples on the exact usage of client exceptions, see the ',
+            'error handling ',
             'Client exceptions are available',
             '==========',
             'Paginators',
             '==========',
-            '.. py:class:: MyService.Paginator.SampleOperation',
-            '  .. py:method:: paginate(**kwargs)',
+            'Paginators are available on a client instance',
+            'via the ``get_paginator`` method. For more detailed instructions ',
+            'and examples on the usage of paginators, see the paginators',
+            'The available paginators are:',
+            '  myservice/paginator/SampleOperation',
             '=======',
             'Waiters',
             '=======',
-            '.. py:class:: MyService.Waiter.SampleOperationComplete',
-            '  .. py:method:: wait(**kwargs)',
+            'Waiters are available on a client instance ',
+            'via the ``get_waiter`` method. For more detailed instructions ',
+            'and examples on the usage or waiters, see the waiters',
+            '  myservice/waiter/SampleOperationComplete',
         ]
         for line in lines:
             self.assertIn(line, contents)
+
+        self.assert_contains_lines_in_order(
+            [
+                '.. py:method:: sample_operation(**kwargs)',
+                '  **Examples** ',
+                '  Sample Description.',
+                '  ::',
+                '    response = client.sample_operation(',
+            ],
+            self.get_nested_service_contents(
+                'myservice', 'client', 'sample_operation'
+            ),
+        )
 
     def test_document_service_no_paginator(self):
         os.remove(self.paginator_model_file)
@@ -81,3 +103,22 @@ class TestServiceDocumenter(BaseDocsTest):
         os.remove(self.waiter_model_file)
         contents = self.service_documenter.document_service().decode('utf-8')
         self.assertNotIn('Waiters', contents)
+
+    def test_document_service_no_context_params(self):
+        contents = self.service_documenter.document_service().decode('utf-8')
+        self.assertNotIn('Client Context Parameters', contents)
+
+    def test_document_service_context_params(self):
+        self.json_model['clientContextParams'] = {
+            'ClientContextParam1': {
+                'type': 'string',
+                'documentation': 'A client context param',
+            },
+            'ClientContextParam2': {
+                'type': 'boolean',
+                'documentation': 'A second client context param',
+            },
+        }
+        self.setup_documenter()
+        contents = self.service_documenter.document_service().decode('utf-8')
+        self.assertIn('Client Context Parameters', contents)

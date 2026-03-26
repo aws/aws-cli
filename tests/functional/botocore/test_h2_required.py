@@ -22,6 +22,7 @@ _KNOWN_SERVICES = {
     # Added only to keep a record of this feature being incompatible
     'bedrock-runtime': ['InvokeModelWithBidirectionalStream'],
     'connecthealth': ['StartMedicalScribeListeningSession'],
+    'polly': ['StartSpeechSynthesisStream'],
 }
 
 

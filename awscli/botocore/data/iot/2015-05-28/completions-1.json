@@ -31,7 +31,8 @@
         "jobId": "jobs[].jobId",
         "thingGroupId": "jobs[].thingGroupId",
         "targetSelection": "jobs[].targetSelection",
-        "status": "jobs[].status"
+        "status": "jobs[].status",
+        "jobArn": "jobs[].jobArn"
       }
     },
     "OTAUpdate": {
@@ -91,6 +92,111 @@
       "resourceIdentifier": {
         "logLevel": "logTargetConfigurations[].logLevel"
       }
+    },
+    "ThingGroup": {
+      "operation": "ListThingGroups",
+      "resourceIdentifier": {
+        "groupName": "thingGroups[].groupName",
+        "groupArn": "thingGroups[].groupArn"
+      }
+    },
+    "Package": {
+      "operation": "ListPackages",
+      "resourceIdentifier": {
+        "packageName": "packageSummaries[].packageName"
+      }
+    },
+    "SecurityProfile": {
+      "operation": "ListSecurityProfiles",
+      "resourceIdentifier": {
+        "name": "securityProfileIdentifiers[].name"
+      }
+    },
+    "JobTemplate": {
+      "operation": "ListJobTemplates",
+      "resourceIdentifier": {
+        "jobTemplateId": "jobTemplates[].jobTemplateId",
+        "jobTemplateArn": "jobTemplates[].jobTemplateArn"
+      }
+    },
+    "ProvisioningTemplate": {
+      "operation": "ListProvisioningTemplates",
+      "resourceIdentifier": {
+        "templateName": "templates[].templateName"
+      }
+    },
+    "AuditSuppression": {
+      "operation": "ListAuditSuppressions",
+      "resourceIdentifier": {
+        "checkName": "suppressions[].checkName"
+      }
+    },
+    "ThingType": {
+      "operation": "ListThingTypes",
+      "resourceIdentifier": {
+        "thingTypeName": "thingTypes[].thingTypeName"
+      }
+    },
+    "CertificateProvider": {
+      "operation": "ListCertificateProviders",
+      "resourceIdentifier": {
+        "certificateProviderName": "certificateProviders[].certificateProviderName"
+      }
+    },
+    "Command": {
+      "operation": "ListCommands",
+      "resourceIdentifier": {
+        "commandId": "commands[].commandId",
+        "commandArn": "commands[].commandArn"
+      }
+    },
+    "CommandExecution": {
+      "operation": "ListCommandExecutions",
+      "resourceIdentifier": {
+        "executionId": "commandExecutions[].executionId"
+      }
+    },
+    "CustomMetric": {
+      "operation": "ListCustomMetrics",
+      "resourceIdentifier": {
+        "MetricName": "metricNames[]"
+      }
+    },
+    "Dimension": {
+      "operation": "ListDimensions",
+      "resourceIdentifier": {
+        "DimensionName": "dimensionNames[]"
+      }
+    },
+    "DomainConfiguration": {
+      "operation": "ListDomainConfigurations",
+      "resourceIdentifier": {
+        "domainConfigurationName": "domainConfigurations[].domainConfigurationName"
+      }
+    },
+    "FleetMetric": {
+      "operation": "ListFleetMetrics",
+      "resourceIdentifier": {
+        "metricName": "fleetMetrics[].metricName"
+      }
+    },
+    "MitigationAction": {
+      "operation": "ListMitigationActions",
+      "resourceIdentifier": {
+        "actionName": "actionIdentifiers[].actionName"
+      }
+    },
+    "ScheduledAudit": {
+      "operation": "ListScheduledAudits",
+      "resourceIdentifier": {
+        "scheduledAuditName": "scheduledAudits[].scheduledAuditName"
+      }
+    },
+    "TopicRuleDestination": {
+      "operation": "ListTopicRuleDestinations",
+      "resourceIdentifier": {
+        "arn": "destinationSummaries[].arn"
+      }
     }
   },
   "operations": {
@@ -121,6 +227,24 @@
             "parameters": {},
             "resourceName": "Thing",
             "resourceIdentifier": "thingArn"
+          }
+        ]
+      },
+      "thingGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ThingGroup",
+            "resourceIdentifier": "groupName"
+          }
+        ]
+      },
+      "thingGroupArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ThingGroup",
+            "resourceIdentifier": "groupArn"
           }
         ]
       }
@@ -791,6 +915,15 @@
             "resourceIdentifier": "status"
           }
         ]
+      },
+      "jobId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Job",
+            "resourceIdentifier": "jobId"
+          }
+        ]
       }
     },
     "ListJobs": {
@@ -818,6 +951,15 @@
             "parameters": {},
             "resourceName": "Job",
             "resourceIdentifier": "thingGroupId"
+          }
+        ]
+      },
+      "thingGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ThingGroup",
+            "resourceIdentifier": "groupName"
           }
         ]
       }
@@ -990,6 +1132,24 @@
             "parameters": {},
             "resourceName": "Thing",
             "resourceIdentifier": "thingArn"
+          }
+        ]
+      },
+      "thingGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ThingGroup",
+            "resourceIdentifier": "groupName"
+          }
+        ]
+      },
+      "thingGroupArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ThingGroup",
+            "resourceIdentifier": "groupArn"
           }
         ]
       }
@@ -1202,6 +1362,980 @@
             "parameters": {},
             "resourceName": "Thing",
             "resourceIdentifier": "thingName"
+          }
+        ]
+      },
+      "thingGroupsToAdd": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ThingGroup",
+            "resourceIdentifier": "groupName"
+          }
+        ]
+      },
+      "thingGroupsToRemove": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ThingGroup",
+            "resourceIdentifier": "groupName"
+          }
+        ]
+      }
+    },
+    "AddThingToBillingGroup": {
+      "thingName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Thing",
+            "resourceIdentifier": "thingName"
+          }
+        ]
+      },
+      "thingArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Thing",
+            "resourceIdentifier": "thingArn"
+          }
+        ]
+      }
+    },
+    "AssociateSbomWithPackageVersion": {
+      "packageName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Package",
+            "resourceIdentifier": "packageName"
+          }
+        ]
+      }
+    },
+    "CreateJob": {
+      "jobTemplateArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "JobTemplate",
+            "resourceIdentifier": "jobTemplateArn"
+          }
+        ]
+      }
+    },
+    "CreateJobTemplate": {
+      "jobArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Job",
+            "resourceIdentifier": "jobArn"
+          }
+        ]
+      }
+    },
+    "CreatePackageVersion": {
+      "packageName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Package",
+            "resourceIdentifier": "packageName"
+          }
+        ]
+      }
+    },
+    "CreatePolicyVersion": {
+      "policyName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Policy",
+            "resourceIdentifier": "policyName"
+          }
+        ]
+      }
+    },
+    "CreateProvisioningClaim": {
+      "templateName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ProvisioningTemplate",
+            "resourceIdentifier": "templateName"
+          }
+        ]
+      }
+    },
+    "CreateProvisioningTemplateVersion": {
+      "templateName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ProvisioningTemplate",
+            "resourceIdentifier": "templateName"
+          }
+        ]
+      }
+    },
+    "CreateScheduledAudit": {
+      "targetCheckNames": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "AuditSuppression",
+            "resourceIdentifier": "checkName"
+          }
+        ]
+      }
+    },
+    "CreateThing": {
+      "thingTypeName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ThingType",
+            "resourceIdentifier": "thingTypeName"
+          }
+        ]
+      }
+    },
+    "CreateThingGroup": {
+      "parentGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ThingGroup",
+            "resourceIdentifier": "groupName"
+          }
+        ]
+      }
+    },
+    "DeleteAuditSuppression": {
+      "checkName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "AuditSuppression",
+            "resourceIdentifier": "checkName"
+          }
+        ]
+      }
+    },
+    "DeleteCertificateProvider": {
+      "certificateProviderName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CertificateProvider",
+            "resourceIdentifier": "certificateProviderName"
+          }
+        ]
+      }
+    },
+    "DeleteCommand": {
+      "commandId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Command",
+            "resourceIdentifier": "commandId"
+          }
+        ]
+      }
+    },
+    "DeleteCommandExecution": {
+      "executionId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CommandExecution",
+            "resourceIdentifier": "executionId"
+          }
+        ]
+      }
+    },
+    "DeleteCustomMetric": {
+      "metricName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CustomMetric",
+            "resourceIdentifier": "MetricName"
+          }
+        ]
+      }
+    },
+    "DeleteDimension": {
+      "name": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Dimension",
+            "resourceIdentifier": "DimensionName"
+          }
+        ]
+      }
+    },
+    "DeleteDomainConfiguration": {
+      "domainConfigurationName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DomainConfiguration",
+            "resourceIdentifier": "domainConfigurationName"
+          }
+        ]
+      }
+    },
+    "DeleteDynamicThingGroup": {
+      "thingGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ThingGroup",
+            "resourceIdentifier": "groupName"
+          }
+        ]
+      }
+    },
+    "DeleteFleetMetric": {
+      "metricName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "FleetMetric",
+            "resourceIdentifier": "metricName"
+          }
+        ]
+      }
+    },
+    "DeleteJobTemplate": {
+      "jobTemplateId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "JobTemplate",
+            "resourceIdentifier": "jobTemplateId"
+          }
+        ]
+      }
+    },
+    "DeleteMitigationAction": {
+      "actionName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "MitigationAction",
+            "resourceIdentifier": "actionName"
+          }
+        ]
+      }
+    },
+    "DeletePackage": {
+      "packageName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Package",
+            "resourceIdentifier": "packageName"
+          }
+        ]
+      }
+    },
+    "DeletePackageVersion": {
+      "packageName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Package",
+            "resourceIdentifier": "packageName"
+          }
+        ]
+      }
+    },
+    "DeleteProvisioningTemplate": {
+      "templateName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ProvisioningTemplate",
+            "resourceIdentifier": "templateName"
+          }
+        ]
+      }
+    },
+    "DeleteProvisioningTemplateVersion": {
+      "templateName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ProvisioningTemplate",
+            "resourceIdentifier": "templateName"
+          }
+        ]
+      }
+    },
+    "DeleteScheduledAudit": {
+      "scheduledAuditName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ScheduledAudit",
+            "resourceIdentifier": "scheduledAuditName"
+          }
+        ]
+      }
+    },
+    "DeleteThingGroup": {
+      "thingGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ThingGroup",
+            "resourceIdentifier": "groupName"
+          }
+        ]
+      }
+    },
+    "DeleteTopicRuleDestination": {
+      "arn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TopicRuleDestination",
+            "resourceIdentifier": "arn"
+          }
+        ]
+      }
+    },
+    "DescribeAuditSuppression": {
+      "checkName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "AuditSuppression",
+            "resourceIdentifier": "checkName"
+          }
+        ]
+      }
+    },
+    "DescribeCertificateProvider": {
+      "certificateProviderName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CertificateProvider",
+            "resourceIdentifier": "certificateProviderName"
+          }
+        ]
+      }
+    },
+    "DescribeCustomMetric": {
+      "metricName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CustomMetric",
+            "resourceIdentifier": "MetricName"
+          }
+        ]
+      }
+    },
+    "DescribeDimension": {
+      "name": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Dimension",
+            "resourceIdentifier": "DimensionName"
+          }
+        ]
+      }
+    },
+    "DescribeDomainConfiguration": {
+      "domainConfigurationName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DomainConfiguration",
+            "resourceIdentifier": "domainConfigurationName"
+          }
+        ]
+      }
+    },
+    "DescribeFleetMetric": {
+      "metricName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "FleetMetric",
+            "resourceIdentifier": "metricName"
+          }
+        ]
+      }
+    },
+    "DescribeJobTemplate": {
+      "jobTemplateId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "JobTemplate",
+            "resourceIdentifier": "jobTemplateId"
+          }
+        ]
+      }
+    },
+    "DescribeMitigationAction": {
+      "actionName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "MitigationAction",
+            "resourceIdentifier": "actionName"
+          }
+        ]
+      }
+    },
+    "DescribeProvisioningTemplate": {
+      "templateName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ProvisioningTemplate",
+            "resourceIdentifier": "templateName"
+          }
+        ]
+      }
+    },
+    "DescribeProvisioningTemplateVersion": {
+      "templateName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ProvisioningTemplate",
+            "resourceIdentifier": "templateName"
+          }
+        ]
+      }
+    },
+    "DescribeScheduledAudit": {
+      "scheduledAuditName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ScheduledAudit",
+            "resourceIdentifier": "scheduledAuditName"
+          }
+        ]
+      }
+    },
+    "DescribeThingGroup": {
+      "thingGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ThingGroup",
+            "resourceIdentifier": "groupName"
+          }
+        ]
+      }
+    },
+    "DisassociateSbomFromPackageVersion": {
+      "packageName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Package",
+            "resourceIdentifier": "packageName"
+          }
+        ]
+      }
+    },
+    "GetBehaviorModelTrainingSummaries": {
+      "securityProfileName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "SecurityProfile",
+            "resourceIdentifier": "name"
+          }
+        ]
+      }
+    },
+    "GetCommand": {
+      "commandId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Command",
+            "resourceIdentifier": "commandId"
+          }
+        ]
+      }
+    },
+    "GetCommandExecution": {
+      "executionId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CommandExecution",
+            "resourceIdentifier": "executionId"
+          }
+        ]
+      }
+    },
+    "GetPackage": {
+      "packageName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Package",
+            "resourceIdentifier": "packageName"
+          }
+        ]
+      }
+    },
+    "GetPackageVersion": {
+      "packageName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Package",
+            "resourceIdentifier": "packageName"
+          }
+        ]
+      }
+    },
+    "GetThingConnectivityData": {
+      "thingName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Thing",
+            "resourceIdentifier": "thingName"
+          }
+        ]
+      }
+    },
+    "GetTopicRuleDestination": {
+      "arn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TopicRuleDestination",
+            "resourceIdentifier": "arn"
+          }
+        ]
+      }
+    },
+    "ListAuditSuppressions": {
+      "checkName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "AuditSuppression",
+            "resourceIdentifier": "checkName"
+          }
+        ]
+      }
+    },
+    "ListCACertificates": {
+      "templateName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ProvisioningTemplate",
+            "resourceIdentifier": "templateName"
+          }
+        ]
+      }
+    },
+    "ListCommandExecutions": {
+      "commandArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Command",
+            "resourceIdentifier": "commandArn"
+          }
+        ]
+      }
+    },
+    "ListDetectMitigationActionsExecutions": {
+      "thingName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Thing",
+            "resourceIdentifier": "thingName"
+          }
+        ]
+      }
+    },
+    "ListMetricValues": {
+      "thingName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Thing",
+            "resourceIdentifier": "thingName"
+          }
+        ]
+      },
+      "dimensionName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Dimension",
+            "resourceIdentifier": "DimensionName"
+          }
+        ]
+      }
+    },
+    "ListPackageVersions": {
+      "packageName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Package",
+            "resourceIdentifier": "packageName"
+          }
+        ]
+      }
+    },
+    "ListProvisioningTemplateVersions": {
+      "templateName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ProvisioningTemplate",
+            "resourceIdentifier": "templateName"
+          }
+        ]
+      }
+    },
+    "ListSbomValidationResults": {
+      "packageName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Package",
+            "resourceIdentifier": "packageName"
+          }
+        ]
+      }
+    },
+    "ListSecurityProfiles": {
+      "dimensionName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Dimension",
+            "resourceIdentifier": "DimensionName"
+          }
+        ]
+      },
+      "metricName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CustomMetric",
+            "resourceIdentifier": "MetricName"
+          }
+        ]
+      }
+    },
+    "ListThingGroups": {
+      "parentGroup": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ThingGroup",
+            "resourceIdentifier": "groupName"
+          }
+        ]
+      }
+    },
+    "ListThingPrincipalsV2": {
+      "thingName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Thing",
+            "resourceIdentifier": "thingName"
+          }
+        ]
+      }
+    },
+    "ListThingsInThingGroup": {
+      "thingGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ThingGroup",
+            "resourceIdentifier": "groupName"
+          }
+        ]
+      }
+    },
+    "RemoveThingFromBillingGroup": {
+      "thingName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Thing",
+            "resourceIdentifier": "thingName"
+          }
+        ]
+      },
+      "thingArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Thing",
+            "resourceIdentifier": "thingArn"
+          }
+        ]
+      }
+    },
+    "StartDetectMitigationActionsTask": {
+      "actions": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "MitigationAction",
+            "resourceIdentifier": "actionName"
+          }
+        ]
+      }
+    },
+    "StartOnDemandAuditTask": {
+      "targetCheckNames": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "AuditSuppression",
+            "resourceIdentifier": "checkName"
+          }
+        ]
+      }
+    },
+    "TestAuthorization": {
+      "policyNamesToAdd": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Policy",
+            "resourceIdentifier": "policyName"
+          }
+        ]
+      },
+      "policyNamesToSkip": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Policy",
+            "resourceIdentifier": "policyName"
+          }
+        ]
+      }
+    },
+    "UpdateAuditSuppression": {
+      "checkName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "AuditSuppression",
+            "resourceIdentifier": "checkName"
+          }
+        ]
+      }
+    },
+    "UpdateCertificateProvider": {
+      "certificateProviderName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CertificateProvider",
+            "resourceIdentifier": "certificateProviderName"
+          }
+        ]
+      }
+    },
+    "UpdateCommand": {
+      "commandId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Command",
+            "resourceIdentifier": "commandId"
+          }
+        ]
+      }
+    },
+    "UpdateCustomMetric": {
+      "metricName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CustomMetric",
+            "resourceIdentifier": "MetricName"
+          }
+        ]
+      }
+    },
+    "UpdateDimension": {
+      "name": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Dimension",
+            "resourceIdentifier": "DimensionName"
+          }
+        ]
+      }
+    },
+    "UpdateDomainConfiguration": {
+      "domainConfigurationName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DomainConfiguration",
+            "resourceIdentifier": "domainConfigurationName"
+          }
+        ]
+      }
+    },
+    "UpdateDynamicThingGroup": {
+      "thingGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ThingGroup",
+            "resourceIdentifier": "groupName"
+          }
+        ]
+      }
+    },
+    "UpdateFleetMetric": {
+      "metricName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "FleetMetric",
+            "resourceIdentifier": "metricName"
+          }
+        ]
+      }
+    },
+    "UpdateJob": {
+      "jobId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Job",
+            "resourceIdentifier": "jobId"
+          }
+        ]
+      }
+    },
+    "UpdateMitigationAction": {
+      "actionName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "MitigationAction",
+            "resourceIdentifier": "actionName"
+          }
+        ]
+      }
+    },
+    "UpdatePackage": {
+      "packageName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Package",
+            "resourceIdentifier": "packageName"
+          }
+        ]
+      }
+    },
+    "UpdatePackageVersion": {
+      "packageName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Package",
+            "resourceIdentifier": "packageName"
+          }
+        ]
+      }
+    },
+    "UpdateProvisioningTemplate": {
+      "templateName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ProvisioningTemplate",
+            "resourceIdentifier": "templateName"
+          }
+        ]
+      }
+    },
+    "UpdateScheduledAudit": {
+      "targetCheckNames": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "AuditSuppression",
+            "resourceIdentifier": "checkName"
+          }
+        ]
+      },
+      "scheduledAuditName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ScheduledAudit",
+            "resourceIdentifier": "scheduledAuditName"
+          }
+        ]
+      }
+    },
+    "UpdateThingGroup": {
+      "thingGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ThingGroup",
+            "resourceIdentifier": "groupName"
+          }
+        ]
+      }
+    },
+    "UpdateThingType": {
+      "thingTypeName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ThingType",
+            "resourceIdentifier": "thingTypeName"
+          }
+        ]
+      }
+    },
+    "UpdateTopicRuleDestination": {
+      "arn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TopicRuleDestination",
+            "resourceIdentifier": "arn"
           }
         ]
       }

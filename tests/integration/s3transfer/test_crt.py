@@ -49,7 +49,7 @@ class RecordingSubscriber(BaseSubscriber):
         self.on_done_called = True
 
 
-@requires_crt
+@requires_crt()
 class TestCRTS3Transfers(BaseTransferManagerIntegTest):
     """Tests for the high level s3transfer based on CRT implementation."""
 

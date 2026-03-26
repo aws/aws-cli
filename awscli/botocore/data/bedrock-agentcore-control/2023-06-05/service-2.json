@@ -2257,6 +2257,34 @@
       "type":"string",
       "pattern":"arn:(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:(aws|[0-9]{12}):browser(-custom)?/(aws\\.browser\\.v1|[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10})"
     },
+    "BrowserEnterprisePolicies":{
+      "type":"list",
+      "member":{"shape":"BrowserEnterprisePolicy"},
+      "max":100,
+      "min":0
+    },
+    "BrowserEnterprisePolicy":{
+      "type":"structure",
+      "required":["location"],
+      "members":{
+        "location":{
+          "shape":"ResourceLocation",
+          "documentation":"<p>The location of the enterprise policy file.</p>"
+        },
+        "type":{
+          "shape":"BrowserEnterprisePolicyType",
+          "documentation":"<p>The type of browser enterprise policy. Available values are <code>MANAGED</code> and <code>RECOMMENDED</code>.</p>"
+        }
+      },
+      "documentation":"<p>Browser enterprise policy configuration.</p>"
+    },
+    "BrowserEnterprisePolicyType":{
+      "type":"string",
+      "enum":[
+        "MANAGED",
+        "RECOMMENDED"
+      ]
+    },
     "BrowserId":{
       "type":"string",
       "pattern":"(aws\\.browser\\.v1|[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10})"
@@ -2478,6 +2506,34 @@
         }
       },
       "documentation":"<p>Represents a Cedar policy statement within the AgentCore Policy system. Cedar is a policy language designed for authorization that provides human-readable, analyzable, and high-performance policy evaluation for controlling agent behavior and access decisions. </p>"
+    },
+    "Certificate":{
+      "type":"structure",
+      "required":["location"],
+      "members":{
+        "location":{
+          "shape":"CertificateLocation",
+          "documentation":"<p>The location of the certificate.</p>"
+        }
+      },
+      "documentation":"<p>A certificate to install in the browser or code interpreter.</p>"
+    },
+    "CertificateLocation":{
+      "type":"structure",
+      "members":{
+        "secretsManager":{
+          "shape":"SecretsManagerLocation",
+          "documentation":"<p>The Amazon Web Services Secrets Manager location of the certificate.</p>"
+        }
+      },
+      "documentation":"<p>The location from which to retrieve a certificate.</p>",
+      "union":true
+    },
+    "Certificates":{
+      "type":"list",
+      "member":{"shape":"Certificate"},
+      "max":200,
+      "min":1
     },
     "ClaimMatchOperatorType":{
       "type":"string",
@@ -2894,6 +2950,10 @@
           "shape":"EnvironmentVariablesMap",
           "documentation":"<p>Environment variables to set in the AgentCore Runtime environment.</p>"
         },
+        "filesystemConfigurations":{
+          "shape":"FilesystemConfigurations",
+          "documentation":"<p>The filesystem configurations to mount into the AgentCore Runtime. Use filesystem configurations to provide persistent storage to your AgentCore Runtime sessions.</p>"
+        },
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>A map of tag keys and values to assign to the agent runtime. Tags enable you to categorize your resources in different ways, for example, by purpose, owner, or environment.</p>"
@@ -3060,6 +3120,14 @@
           "shape":"BrowserSigningConfigInput",
           "documentation":"<p>The browser signing configuration that enables cryptographic agent identification using HTTP message signatures for web bot authentication.</p>"
         },
+        "enterprisePolicies":{
+          "shape":"BrowserEnterprisePolicies",
+          "documentation":"<p>A list of enterprise policy files for the browser.</p>"
+        },
+        "certificates":{
+          "shape":"Certificates",
+          "documentation":"<p>A list of certificates to install in the browser.</p>"
+        },
         "clientToken":{
           "shape":"ClientToken",
           "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, Amazon Bedrock AgentCore ignores the request but does not return an error.</p>",
@@ -3120,6 +3188,10 @@
         "networkConfiguration":{
           "shape":"CodeInterpreterNetworkConfiguration",
           "documentation":"<p>The network configuration for the code interpreter. This configuration specifies the network mode for the code interpreter.</p>"
+        },
+        "certificates":{
+          "shape":"Certificates",
+          "documentation":"<p>A list of certificates to install in the code interpreter.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -4167,7 +4239,14 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces associated with the custom memory strategy.</p>"
+          "documentation":"<p>The namespaces associated with the custom memory strategy.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use namespaceTemplates instead",
+          "deprecatedSince":"2026-03-02"
+        },
+        "namespaceTemplates":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaceTemplates associated with the custom memory strategy.</p>"
         },
         "configuration":{
           "shape":"CustomConfigurationInput",
@@ -4974,7 +5053,14 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces for which to create episodes.</p>"
+          "documentation":"<p>The namespaces for which to create episodes.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use namespaceTemplates instead",
+          "deprecatedSince":"2026-03-02"
+        },
+        "namespaceTemplates":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaceTemplates for which to create episodes.</p>"
         },
         "reflectionConfiguration":{
           "shape":"EpisodicReflectionConfigurationInput",
@@ -5054,29 +5140,48 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces to use for episodic reflection. Can be less nested than the episodic namespaces.</p>"
+          "documentation":"<p>The namespaces to use for episodic reflection. Can be less nested than the episodic namespaces.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use namespaceTemplates instead",
+          "deprecatedSince":"2026-03-02"
+        },
+        "namespaceTemplates":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaceTemplates to use for episodic reflection. Can be less nested than the episodic namespaces.</p>"
         }
       },
       "documentation":"<p>Configurations for overriding the reflection step of the episodic memory strategy.</p>"
     },
     "EpisodicReflectionConfiguration":{
       "type":"structure",
-      "required":["namespaces"],
       "members":{
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces for which to create reflections. Can be less nested than the episodic namespaces.</p>"
+          "documentation":"<p>The namespaces for which to create reflections. Can be less nested than the episodic namespaces.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use namespaceTemplates instead",
+          "deprecatedSince":"2026-03-02"
+        },
+        "namespaceTemplates":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaceTemplates for which to create reflections. Can be less nested than the episodic namespaces.</p>"
         }
       },
       "documentation":"<p>The configuration for the reflections created with the episodic memory strategy.</p>"
     },
     "EpisodicReflectionConfigurationInput":{
       "type":"structure",
-      "required":["namespaces"],
       "members":{
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces over which to create reflections. Can be less nested than episode namespaces.</p>"
+          "documentation":"<p>The namespaces over which to create reflections. Can be less nested than episode namespaces.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use namespaceTemplates instead",
+          "deprecatedSince":"2026-03-02"
+        },
+        "namespaceTemplates":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaceTemplates over which to create reflections. Can be less nested than episode namespaces.</p>"
         }
       },
       "documentation":"<p>An episodic reflection configuration input.</p>"
@@ -5098,7 +5203,14 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces over which reflections were created. Can be less nested than the episodic namespaces.</p>"
+          "documentation":"<p>The namespaces over which reflections were created. Can be less nested than the episodic namespaces.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use namespaceTemplates instead",
+          "deprecatedSince":"2026-03-02"
+        },
+        "namespaceTemplates":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaceTemplates over which reflections were created. Can be less nested than the episodic namespaces.</p>"
         }
       },
       "documentation":"<p>Contains configurations to override the default reflection step for the episodic memory strategy.</p>"
@@ -5274,6 +5386,23 @@
       },
       "documentation":"<p>Contains extraction configuration information for a memory strategy.</p>",
       "union":true
+    },
+    "FilesystemConfiguration":{
+      "type":"structure",
+      "members":{
+        "sessionStorage":{
+          "shape":"SessionStorageConfiguration",
+          "documentation":"<p>Configuration for session storage. Session storage provides persistent storage that is preserved across AgentCore Runtime session invocations.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for a filesystem that can be mounted into the AgentCore Runtime.</p>",
+      "union":true
+    },
+    "FilesystemConfigurations":{
+      "type":"list",
+      "member":{"shape":"FilesystemConfiguration"},
+      "max":1,
+      "min":0
     },
     "Filter":{
       "type":"structure",
@@ -5815,6 +5944,10 @@
         "metadataConfiguration":{
           "shape":"RuntimeMetadataConfiguration",
           "documentation":"<p>Configuration for microVM Metadata Service (MMDS) settings for the AgentCore Runtime.</p>"
+        },
+        "filesystemConfigurations":{
+          "shape":"FilesystemConfigurations",
+          "documentation":"<p>The filesystem configurations mounted into the AgentCore Runtime.</p>"
         }
       }
     },
@@ -5975,6 +6108,14 @@
           "shape":"BrowserSigningConfigOutput",
           "documentation":"<p>The browser signing configuration that shows whether cryptographic agent identification is enabled for web bot authentication.</p>"
         },
+        "enterprisePolicies":{
+          "shape":"BrowserEnterprisePolicies",
+          "documentation":"<p>The list of enterprise policy files configured for the browser.</p>"
+        },
+        "certificates":{
+          "shape":"Certificates",
+          "documentation":"<p>The list of certificates configured for the browser.</p>"
+        },
         "status":{
           "shape":"BrowserStatus",
           "documentation":"<p>The current status of the browser.</p>"
@@ -6041,6 +6182,10 @@
         "status":{
           "shape":"CodeInterpreterStatus",
           "documentation":"<p>The current status of the code interpreter.</p>"
+        },
+        "certificates":{
+          "shape":"Certificates",
+          "documentation":"<p>The list of certificates configured for the code interpreter.</p>"
         },
         "failureReason":{
           "shape":"String",
@@ -7318,6 +7463,10 @@
           "documentation":"<p>A token to retrieve the next page of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
+        },
+        "name":{
+          "shape":"BrowserProfileName",
+          "documentation":"<p>The name of the browser profile to filter results by.</p>"
         }
       }
     },
@@ -8062,7 +8211,8 @@
         "strategyId",
         "name",
         "type",
-        "namespaces"
+        "namespaces",
+        "namespaceTemplates"
       ],
       "members":{
         "strategyId":{
@@ -8087,7 +8237,14 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces associated with the memory strategy.</p>"
+          "documentation":"<p>The namespaces associated with the memory strategy.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use namespaceTemplates instead",
+          "deprecatedSince":"2026-03-02"
+        },
+        "namespaceTemplates":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaceTemplates associated with the memory strategy.</p>"
         },
         "createdAt":{
           "shape":"Timestamp",
@@ -8362,7 +8519,14 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The updated namespaces for the memory strategy.</p>"
+          "documentation":"<p>The updated namespaces for the memory strategy.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use namespaceTemplates instead",
+          "deprecatedSince":"2026-03-02"
+        },
+        "namespaceTemplates":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The updated namespaceTemplates for the memory strategy.</p>"
         },
         "configuration":{
           "shape":"ModifyStrategyConfiguration",
@@ -8432,19 +8596,26 @@
       },
       "documentation":"<p>Contains information for modifying a strategy configuration.</p>"
     },
+    "MountPath":{
+      "type":"string",
+      "max":200,
+      "min":6,
+      "pattern":"/mnt/[a-zA-Z0-9._-]+/?"
+    },
     "Name":{
       "type":"string",
       "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,47}"
     },
     "Namespace":{
       "type":"string",
-      "max":1024,
+      "max":512,
       "min":1,
       "pattern":"[a-zA-Z0-9\\-_\\/]*(\\{(actorId|sessionId|memoryStrategyId)\\}[a-zA-Z0-9\\-_\\/]*)*"
     },
     "NamespacesList":{
       "type":"list",
       "member":{"shape":"Namespace"},
+      "max":1,
       "min":1
     },
     "NaturalLanguage":{
@@ -9336,6 +9507,14 @@
       },
       "exception":true
     },
+    "ResourceLocation":{
+      "type":"structure",
+      "members":{
+        "s3":{"shape":"S3Location"}
+      },
+      "documentation":"<p>The location of a resource.</p>",
+      "union":true
+    },
     "ResourceNotFoundException":{
       "type":"structure",
       "members":{
@@ -9603,6 +9782,17 @@
       "type":"string",
       "pattern":"arn:(aws|aws-us-gov):secretsmanager:[A-Za-z0-9-]{1,64}:[0-9]{12}:secret:[a-zA-Z0-9-_/+=.@!]+"
     },
+    "SecretsManagerLocation":{
+      "type":"structure",
+      "required":["secretArn"],
+      "members":{
+        "secretArn":{
+          "shape":"ToolSecretArn",
+          "documentation":"<p>The ARN of the Amazon Web Services Secrets Manager secret containing the certificate.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Web Services Secrets Manager location configuration.</p>"
+    },
     "SecurityGroupId":{
       "type":"string",
       "pattern":"sg-[0-9a-zA-Z]{8,17}"
@@ -9711,7 +9901,14 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces associated with the semantic memory strategy.</p>"
+          "documentation":"<p>The namespaces associated with the semantic memory strategy.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use namespaceTemplates instead",
+          "deprecatedSince":"2026-03-02"
+        },
+        "namespaceTemplates":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaceTemplates associated with the semantic memory strategy.</p>"
         }
       },
       "documentation":"<p>Input for creating a semantic memory strategy.</p>"
@@ -9820,6 +10017,17 @@
       "box":true,
       "max":1440,
       "min":1
+    },
+    "SessionStorageConfiguration":{
+      "type":"structure",
+      "required":["mountPath"],
+      "members":{
+        "mountPath":{
+          "shape":"MountPath",
+          "documentation":"<p>The mount path for the session storage filesystem inside the AgentCore Runtime. The path must be under <code>/mnt</code> with exactly one subdirectory level (for example, <code>/mnt/data</code>).</p>"
+        }
+      },
+      "documentation":"<p>Configuration for a session storage filesystem mounted into the AgentCore Runtime. Session storage provides persistent storage that is preserved across AgentCore Runtime session invocations.</p>"
     },
     "SetTokenVaultCMKRequest":{
       "type":"structure",
@@ -10093,7 +10301,14 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces associated with the summary memory strategy.</p>"
+          "documentation":"<p>The namespaces associated with the summary memory strategy.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use namespaceTemplates instead",
+          "deprecatedSince":"2026-03-02"
+        },
+        "namespaceTemplates":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaceTemplates associated with the summary memory strategy.</p>"
         }
       },
       "documentation":"<p>Input for creating a summary memory strategy.</p>"
@@ -10452,6 +10667,10 @@
       "documentation":"<p>A tool schema for a gateway target. This structure defines the schema for a tool that the target exposes through the Model Context Protocol.</p>",
       "union":true
     },
+    "ToolSecretArn":{
+      "type":"string",
+      "pattern":"arn:aws(-[a-z-]+)?:secretsmanager:[a-z0-9-]+:[0-9]{12}:secret:[a-zA-Z0-9/_+=.@-]+"
+    },
     "TriggerCondition":{
       "type":"structure",
       "members":{
@@ -10662,6 +10881,10 @@
         "environmentVariables":{
           "shape":"EnvironmentVariablesMap",
           "documentation":"<p>Updated environment variables to set in the AgentCore Runtime environment.</p>"
+        },
+        "filesystemConfigurations":{
+          "shape":"FilesystemConfigurations",
+          "documentation":"<p>The updated filesystem configurations to mount into the AgentCore Runtime.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -11473,7 +11696,7 @@
           "documentation":"<p>Represents an optional value that is used to update the human-readable description of the resource. If set to null, it will clear the current description of the resource.</p>"
         }
       },
-      "documentation":"<p>Respresents an optional value that can be provided to update the human-readable description of the resource. If the field is omitted from the request, it will leave the current decription value unchanged.</p>"
+      "documentation":"<p>Wrapper for updating an optional Description field with PATCH semantics. When present in an update request, the description is replaced with optionalValue. When absent, the description is left unchanged. To unset the description, include the wrapper with optionalValue set to null.</p>"
     },
     "UserPreferenceConsolidationOverride":{
       "type":"structure",
@@ -11525,7 +11748,14 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces associated with the user preference memory strategy.</p>"
+          "documentation":"<p>The namespaces associated with the user preference memory strategy.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use namespaceTemplates instead",
+          "deprecatedSince":"2026-03-02"
+        },
+        "namespaceTemplates":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaceTemplates associated with the user preference memory strategy.</p>"
         }
       },
       "documentation":"<p>Input for creating a user preference memory strategy.</p>"

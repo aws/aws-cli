@@ -204,20 +204,6 @@ class FilteredExceptionHandler(BaseExceptionHandler):
     ):
         try:
             error_format = self._resolve_error_format(parsed_globals)
-            modeled_fields = error_info.pop('_modeled_fields', None)
-
-            if modeled_fields is not None:
-                modeled_lower = {f.lower() for f in modeled_fields}
-                for key in list(error_info.keys()):
-                    if key.lower() not in modeled_lower:
-                        del error_info[key]
-            else:
-                # No model info available (e.g. manually constructed
-                # ClientError). Remove all non-standard fields.
-                standard = {'code', 'message'}
-                for key in list(error_info.keys()):
-                    if key.lower() not in standard:
-                        del error_info[key]
 
             if error_format == 'legacy':
                 return False
@@ -293,10 +279,7 @@ class ClientErrorHandler(FilteredExceptionHandler):
     def _extract_error_info(self, exception):
         error_response = self._extract_error_response(exception)
         if error_response and 'Error' in error_response:
-            error_info = error_response['Error']
-            modeled_fields = getattr(exception, 'modeled_fields', None)
-            error_info['_modeled_fields'] = modeled_fields
-            return error_info
+            return error_response['Error']
         return None
 
     @staticmethod
@@ -307,15 +290,23 @@ class ClientErrorHandler(FilteredExceptionHandler):
         if hasattr(exception, 'response') and 'Error' in exception.response:
             error_dict = dict(exception.response['Error'])
 
-            # AWS services return modeled error fields
-            # at the top level of the error response,
-            # not nested under an Error key. Botocore preserves this structure.
-            # Include these fields to provide complete error information.
-            # Exclude response metadata and avoid duplicates.
+            modeled_fields = exception.modeled_fields
+            if modeled_fields is not None:
+                modeled_lower = {f.lower() for f in modeled_fields}
+            else:
+                modeled_lower = {'code', 'message'}
+
+            # Only include fields present in the error shape model.
             excluded_keys = {'Error', 'ResponseMetadata', 'Code', 'Message'}
             for key, value in exception.response.items():
                 if key not in excluded_keys and key not in error_dict:
-                    error_dict[key] = value
+                    if key.lower() in modeled_lower:
+                        error_dict[key] = value
+
+            # Filter fields inside Error dict as well.
+            for key in list(error_dict.keys()):
+                if key.lower() not in modeled_lower:
+                    del error_dict[key]
 
             return {'Error': error_dict}
 

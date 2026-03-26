@@ -342,6 +342,171 @@ class TestSyncCommand(BaseS3TransferCommandTest):
             ]
         )
 
+    def test_s3s3_sync_with_destination_sse_c(self):
+        cmdline = (
+            '%s s3://sourcebucket/ s3://mybucket '
+            '--sse-c AES256 --sse-c-key destination-key' % self.prefix
+        )
+        self.parsed_responses = [
+            self.list_objects_response(['mykey']),
+            self.list_objects_response([]),
+            self.copy_object_response(),
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.list_objects_request('sourcebucket'),
+                self.list_objects_request('mybucket'),
+                self.copy_object_request(
+                    'sourcebucket',
+                    'mykey',
+                    'mybucket',
+                    'mykey',
+                    SSECustomerAlgorithm='AES256',
+                    SSECustomerKey='destination-key',
+                ),
+            ]
+        )
+
+    def test_s3s3_sync_with_destination_sse_c_multipart(self):
+        mp_threshold = 8 * 1024 * 1024
+        cmdline = (
+            '%s s3://sourcebucket/ s3://mybucket '
+            '--sse-c AES256 --sse-c-key destination-key' % self.prefix
+        )
+        self.parsed_responses = [
+            self.list_objects_response(['mykey'], Size=mp_threshold),
+            self.list_objects_response([]),
+            # HeadObject from SetMetadataDirectivePropsSubscriber
+            self.head_object_response(ContentLength=mp_threshold),
+            self.get_object_tagging_response({}),
+        ] + self.mp_copy_responses()
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.list_objects_request('sourcebucket'),
+                self.list_objects_request('mybucket'),
+                self.head_object_request(
+                    'sourcebucket',
+                    'mykey',
+                    # no SSE-C params — source is unencrypted
+                ),
+                self.get_object_tagging_request('sourcebucket', 'mykey'),
+                self.create_mpu_request(
+                    'mybucket',
+                    'mykey',
+                    SSECustomerAlgorithm='AES256',
+                    SSECustomerKey='destination-key',
+                ),
+                self.upload_part_copy_request(
+                    'sourcebucket',
+                    'mykey',
+                    'mybucket',
+                    'mykey',
+                    'upload_id',
+                    PartNumber=mock.ANY,
+                    CopySourceRange=mock.ANY,
+                    CopySourceIfMatch=mock.ANY,
+                    SSECustomerAlgorithm='AES256',
+                    SSECustomerKey='destination-key',
+                ),
+                self.complete_mpu_request(
+                    'mybucket',
+                    'mykey',
+                    'upload_id',
+                    num_parts=1,
+                    SSECustomerAlgorithm='AES256',
+                    SSECustomerKey='destination-key',
+                ),
+            ]
+        )
+
+    def test_s3s3_sync_with_different_sse_c_keys(self):
+        cmdline = (
+            '%s s3://sourcebucket/ s3://mybucket '
+            '--sse-c-copy-source AES256 --sse-c-copy-source-key source-key '
+            '--sse-c AES256 --sse-c-key destination-key' % self.prefix
+        )
+        self.parsed_responses = [
+            self.list_objects_response(['mykey']),
+            self.list_objects_response([]),
+            self.copy_object_response(),
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.list_objects_request('sourcebucket'),
+                self.list_objects_request('mybucket'),
+                self.copy_object_request(
+                    'sourcebucket',
+                    'mykey',
+                    'mybucket',
+                    'mykey',
+                    SSECustomerAlgorithm='AES256',
+                    SSECustomerKey='destination-key',
+                    CopySourceSSECustomerAlgorithm='AES256',
+                    CopySourceSSECustomerKey='source-key',
+                ),
+            ]
+        )
+
+    def test_s3s3_sync_with_different_sse_c_keys_multipart(self):
+        mp_threshold = 8 * 1024 * 1024
+        cmdline = (
+            '%s s3://sourcebucket/ s3://mybucket '
+            '--sse-c-copy-source AES256 --sse-c-copy-source-key source-key '
+            '--sse-c AES256 --sse-c-key destination-key' % self.prefix
+        )
+        self.parsed_responses = [
+            self.list_objects_response(['mykey'], Size=mp_threshold),
+            self.list_objects_response([]),
+            # HeadObject from SetMetadataDirectivePropsSubscriber
+            self.head_object_response(ContentLength=mp_threshold),
+            self.get_object_tagging_response({}),
+        ] + self.mp_copy_responses()
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.list_objects_request('sourcebucket'),
+                self.list_objects_request('mybucket'),
+                self.head_object_request(
+                    'sourcebucket',
+                    'mykey',
+                    SSECustomerAlgorithm='AES256',
+                    SSECustomerKey='source-key',
+                ),
+                self.get_object_tagging_request('sourcebucket', 'mykey'),
+                self.create_mpu_request(
+                    'mybucket',
+                    'mykey',
+                    SSECustomerAlgorithm='AES256',
+                    SSECustomerKey='destination-key',
+                ),
+                self.upload_part_copy_request(
+                    'sourcebucket',
+                    'mykey',
+                    'mybucket',
+                    'mykey',
+                    'upload_id',
+                    PartNumber=mock.ANY,
+                    CopySourceRange=mock.ANY,
+                    CopySourceIfMatch=mock.ANY,
+                    SSECustomerAlgorithm='AES256',
+                    SSECustomerKey='destination-key',
+                    CopySourceSSECustomerAlgorithm='AES256',
+                    CopySourceSSECustomerKey='source-key',
+                ),
+                self.complete_mpu_request(
+                    'mybucket',
+                    'mykey',
+                    'upload_id',
+                    num_parts=1,
+                    SSECustomerAlgorithm='AES256',
+                    SSECustomerKey='destination-key',
+                ),
+            ]
+        )
+
     def test_request_payer_with_deletes(self):
         cmdline = '%s s3://sourcebucket/ s3://mybucket' % self.prefix
         cmdline += ' --request-payer'

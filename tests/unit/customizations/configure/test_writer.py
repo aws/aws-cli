@@ -314,3 +314,39 @@ class TestConfigFileWriter(unittest.TestCase):
             '[new-section]\n'
             'region = us-west-2\n',
         )
+
+    def test_newline_in_value_raises(self):
+        with open(self.config_filename, 'w') as f:
+            f.write('[default]\nfoo = bar\n')
+        with self.assertRaises(ValueError):
+            self.writer.update_config({'foo': 'bad\nvalue'}, self.config_filename)
+
+    def test_carriage_return_in_value_raises(self):
+        with open(self.config_filename, 'w') as f:
+            f.write('[default]\nfoo = bar\n')
+        with self.assertRaises(ValueError):
+            self.writer.update_config({'foo': 'bad\rvalue'}, self.config_filename)
+
+    def test_newline_in_key_raises(self):
+        with open(self.config_filename, 'w') as f:
+            f.write('[default]\nfoo = bar\n')
+        with self.assertRaises(ValueError):
+            self.writer.update_config({'bad\nkey': 'value'}, self.config_filename)
+
+    def test_newline_in_section_name_raises(self):
+        with open(self.config_filename, 'w') as f:
+            f.write('[default]\nfoo = bar\n')
+        with self.assertRaises(ValueError):
+            self.writer.update_config(
+                {'foo': 'value', '__section__': 'bad\nsection'},
+                self.config_filename
+            )
+
+    def test_newline_in_nested_value_raises(self):
+        with open(self.config_filename, 'w') as f:
+            f.write('[default]\n')
+        with self.assertRaises(ValueError):
+            self.writer.update_config(
+                {'__section__': 'default', 's3': {'key': 'bad\nvalue'}},
+                self.config_filename
+            )

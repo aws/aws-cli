@@ -24,6 +24,12 @@ class ConfigFileWriter:
         r'(?P<value>.*)$'
     )  # fmt: skip
 
+    def _validate_no_newlines(self, value, label='value'):
+        if isinstance(value, str) and ('\n' in value or '\r' in value):
+            raise ValueError(
+                f"Invalid {label}: newline characters are not allowed: {value!r}"
+            )
+
     def update_config(self, new_values, config_filename):
         """Update config file with new values.
 
@@ -52,6 +58,15 @@ class ConfigFileWriter:
 
         """
         section_name = new_values.pop('__section__', 'default')
+        self._validate_no_newlines(section_name, 'section name')
+        for k, v in new_values.items():
+            self._validate_no_newlines(k, 'key')
+            if not isinstance(v, dict):
+                self._validate_no_newlines(v, 'value')
+            else:
+                for sk, sv in v.items():
+                    self._validate_no_newlines(sk, 'key')
+                    self._validate_no_newlines(sv, 'value')
         if not os.path.isfile(config_filename):
             self._create_file(config_filename)
             self._write_new_section(section_name, new_values, config_filename)

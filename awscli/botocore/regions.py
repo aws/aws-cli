@@ -49,6 +49,31 @@ DEFAULT_URI_TEMPLATE = '{service}.{region}.{dnsSuffix}'  # noqa
 DEFAULT_SERVICE_DATA = {'endpoints': {}}
 
 
+def build_signing_context_from_ruleset_scheme(scheme):
+    """Build a signing context dict from a single authSchemes entry.
+
+    :type scheme: dict
+    :param scheme: A single entry from an endpoint ruleset's ``authSchemes``
+        list, with the ``sig`` prefix already stripped from ``name`` if needed.
+
+    :rtype: dict
+    :return: Signing context dict for use in ``request_context['signing']``.
+    """
+    signing_context = {}
+    if 'signingRegion' in scheme:
+        signing_context['region'] = scheme['signingRegion']
+    elif 'signingRegionSet' in scheme:
+        if len(scheme['signingRegionSet']) > 0:
+            signing_context['region'] = ','.join(scheme['signingRegionSet'])
+    if 'signingName' in scheme:
+        signing_context['signing_name'] = scheme['signingName']
+    if 'disableDoubleEncoding' in scheme:
+        signing_context['disableDoubleEncoding'] = ensure_boolean(
+            scheme['disableDoubleEncoding']
+        )
+    return signing_context
+
+
 class BaseEndpointResolver:
     """Resolves regions and endpoints. Must be subclassed."""
 
@@ -730,20 +755,7 @@ class EndpointRulesetResolver:
                     signature_version=', '.join(auth_type_options)
                 )
 
-        signing_context = {}
-        if 'signingRegion' in scheme:
-            signing_context['region'] = scheme['signingRegion']
-        elif 'signingRegionSet' in scheme:
-            if len(scheme['signingRegionSet']) > 0:
-                signing_context['region'] = ','.join(
-                    scheme['signingRegionSet']
-                )
-        if 'signingName' in scheme:
-            signing_context.update(signing_name=scheme['signingName'])
-        if 'disableDoubleEncoding' in scheme:
-            signing_context['disableDoubleEncoding'] = ensure_boolean(
-                scheme['disableDoubleEncoding']
-            )
+        signing_context = build_signing_context_from_ruleset_scheme(scheme)
 
         LOG.debug(
             'Selected auth type "%s" as "%s" with signing context params: %s',

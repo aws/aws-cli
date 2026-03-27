@@ -53,7 +53,7 @@ from botocore.exceptions import (
     UnsupportedSignatureVersionError,
     UnsupportedTLSVersionWarning,
 )
-from botocore.regions import EndpointResolverBuiltins
+from botocore.regions import EndpointResolverBuiltins, build_signing_context_from_ruleset_scheme
 from botocore.signers import (
     add_dsql_generate_db_auth_token_methods,
     add_generate_db_auth_token,
@@ -65,7 +65,6 @@ from botocore.utils import (
     SAFE_CHARS,
     SERVICE_NAME_ALIASES,
     ArnParser,
-    ensure_boolean,
     get_token_from_environment,
     hyphenize_service_id,  # noqa
     is_global_accesspoint,  # noqa
@@ -285,19 +284,9 @@ def _resolve_auth_scheme_override(context, signing_name):
         None,
     )
     if chosen_scheme is not None:
-        signing_context = {}
-        if 'signingRegion' in chosen_scheme:
-            signing_context['region'] = chosen_scheme['signingRegion']
-        elif 'signingRegionSet' in chosen_scheme:
-            signing_context['region'] = ','.join(
-                chosen_scheme['signingRegionSet']
-            )
-        if 'signingName' in chosen_scheme:
-            signing_context['signing_name'] = chosen_scheme['signingName']
-        if 'disableDoubleEncoding' in chosen_scheme:
-            signing_context['disableDoubleEncoding'] = ensure_boolean(
-                chosen_scheme['disableDoubleEncoding']
-            )
+        signing_context = build_signing_context_from_ruleset_scheme(
+            chosen_scheme
+        )
         if 'signing' in context:
             context['signing'].update(signing_context)
         else:

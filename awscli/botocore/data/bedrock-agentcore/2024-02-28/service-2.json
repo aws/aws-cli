@@ -1668,7 +1668,7 @@
       "members":{
         "evaluatorId":{
           "shape":"EvaluatorId",
-          "documentation":"<p> The unique identifier of the evaluator to use for scoring. Can be a built-in evaluator (e.g., <code>Builtin.Helpfulness</code>, <code>Builtin.Correctness</code>) or a custom evaluator ARN created through the control plane API. </p>",
+          "documentation":"<p> The unique identifier of the evaluator to use for scoring. Can be a built-in evaluator (e.g., <code>Builtin.Helpfulness</code>, <code>Builtin.Correctness</code>) or a custom evaluator Id created through the control plane API. </p>",
           "location":"uri",
           "locationName":"evaluatorId"
         },
@@ -2964,6 +2964,14 @@
         }
       },
       "payload":"stream"
+    },
+    "LanguageRuntime":{
+      "type":"string",
+      "enum":[
+        "nodejs",
+        "deno",
+        "python"
+      ]
     },
     "LeftExpression":{
       "type":"structure",
@@ -4711,7 +4719,7 @@
         },
         "language":{
           "shape":"ProgrammingLanguage",
-          "documentation":"<p>The programming language of the code to execute. This tells the code interpreter which language runtime to use for execution. Common values include 'python', 'javascript', and 'r'.</p>"
+          "documentation":"<p>The programming language of the code to execute. This tells the code interpreter which language runtime to use for execution.</p>"
         },
         "clearContext":{
           "shape":"Boolean",
@@ -4740,6 +4748,10 @@
         "taskId":{
           "shape":"MaxLenString",
           "documentation":"<p>The identifier of the task for the tool operation.</p>"
+        },
+        "runtime":{
+          "shape":"LanguageRuntime",
+          "documentation":"<p>The runtime environment to use for code execution. If not specified, defaults to <code>deno</code> for JavaScript and TypeScript.</p>"
         }
       },
       "documentation":"<p>The collection of arguments that specify the operation to perform and its parameters when invoking a tool in Amazon Bedrock AgentCore. Different tools require different arguments, and this structure provides a flexible way to pass the appropriate arguments to each tool type.</p>"

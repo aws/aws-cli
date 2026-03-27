@@ -156,7 +156,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p> Creates a custom evaluator for agent quality assessment. Custom evaluators use LLM-as-a-Judge configurations with user-defined prompts, rating scales, and model settings to evaluate agent performance at tool call, trace, or session levels. </p>"
+      "documentation":"<p> Creates a custom evaluator for agent quality assessment. Custom evaluators can use either LLM-as-a-Judge configurations with user-defined prompts, rating scales, and model settings, or code-based configurations with customer-managed Lambda functions to evaluate agent performance at tool call, trace, or session levels. </p>"
     },
     "CreateGateway":{
       "name":"CreateGateway",
@@ -2627,6 +2627,17 @@
       "documentation":"<p>The source code configuration that specifies the location and details of the code to be executed.</p>",
       "union":true
     },
+    "CodeBasedEvaluatorConfig":{
+      "type":"structure",
+      "members":{
+        "lambdaConfig":{
+          "shape":"LambdaEvaluatorConfig",
+          "documentation":"<p> The Lambda function configuration for code-based evaluation. </p>"
+        }
+      },
+      "documentation":"<p> Configuration for a code-based evaluator. Specify the Lambda function to use for evaluation. </p>",
+      "union":true
+    },
     "CodeConfiguration":{
       "type":"structure",
       "required":[
@@ -3254,7 +3265,7 @@
         },
         "evaluatorConfig":{
           "shape":"EvaluatorConfig",
-          "documentation":"<p> The configuration for the evaluator, including LLM-as-a-Judge settings with instructions, rating scale, and model configuration. </p>"
+          "documentation":"<p> The configuration for the evaluator. Specify either LLM-as-a-Judge settings with instructions, rating scale, and model configuration, or code-based settings with a customer-managed Lambda function. </p>"
         },
         "level":{
           "shape":"EvaluatorLevel",
@@ -5236,6 +5247,10 @@
         "llmAsAJudge":{
           "shape":"LlmAsAJudgeEvaluatorConfig",
           "documentation":"<p> The LLM-as-a-Judge configuration that uses a language model to evaluate agent performance based on custom instructions and rating scales. </p>"
+        },
+        "codeBased":{
+          "shape":"CodeBasedEvaluatorConfig",
+          "documentation":"<p> Configuration for a code-based evaluator that uses a customer-managed Lambda function to programmatically assess agent performance. </p>"
         }
       },
       "documentation":"<p> The configuration that defines how an evaluator assesses agent performance, including the evaluation method and parameters. </p>",
@@ -5369,7 +5384,8 @@
       "type":"string",
       "enum":[
         "Builtin",
-        "Custom"
+        "Custom",
+        "CustomCode"
       ]
     },
     "ExceptionLevel":{
@@ -6244,7 +6260,7 @@
         },
         "evaluatorConfig":{
           "shape":"EvaluatorConfig",
-          "documentation":"<p> The configuration of the evaluator, including LLM-as-a-Judge settings for custom evaluators. </p>"
+          "documentation":"<p> The configuration of the evaluator, including LLM-as-a-Judge or code-based settings. </p>"
         },
         "level":{
           "shape":"EvaluatorLevel",
@@ -7241,6 +7257,31 @@
       "max":2048,
       "min":1,
       "pattern":"arn:aws(|-cn|-us-gov):kms:[a-zA-Z0-9-]*:[0-9]{12}:key/[a-zA-Z0-9-]{36}"
+    },
+    "LambdaArn":{
+      "type":"string",
+      "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:([a-z]{2}(-gov)?-[a-z]+-\\d{1}):(\\d{12}):function:([a-zA-Z0-9-_.]+)(:(\\$LATEST|[a-zA-Z0-9-_]+))?"
+    },
+    "LambdaEvaluatorConfig":{
+      "type":"structure",
+      "required":["lambdaArn"],
+      "members":{
+        "lambdaArn":{
+          "shape":"LambdaArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the Lambda function that implements the evaluation logic. </p>"
+        },
+        "lambdaTimeoutInSeconds":{
+          "shape":"LambdaEvaluatorConfigLambdaTimeoutInSecondsInteger",
+          "documentation":"<p> The timeout in seconds for the Lambda function invocation. Defaults to 60. Must be between 1 and 300. </p>"
+        }
+      },
+      "documentation":"<p> Configuration for a Lambda function used as a code-based evaluator. </p>"
+    },
+    "LambdaEvaluatorConfigLambdaTimeoutInSecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":300,
+      "min":1
     },
     "LambdaFunctionArn":{
       "type":"string",
@@ -11004,7 +11045,7 @@
         },
         "evaluatorConfig":{
           "shape":"EvaluatorConfig",
-          "documentation":"<p> The updated configuration for the evaluator, including LLM-as-a-Judge settings with instructions, rating scale, and model configuration. </p>"
+          "documentation":"<p> The updated configuration for the evaluator. Specify either LLM-as-a-Judge settings with instructions, rating scale, and model configuration, or code-based settings with a customer-managed Lambda function. </p>"
         },
         "level":{
           "shape":"EvaluatorLevel",
@@ -11693,10 +11734,10 @@
       "members":{
         "optionalValue":{
           "shape":"Description",
-          "documentation":"<p>Represents an optional value that is used to update the human-readable description of the resource. If set to null, it will clear the current description of the resource.</p>"
+          "documentation":"<p>Represents an optional value that is used to update the human-readable description of the resource. If not specified, it will clear the current description of the resource.</p>"
         }
       },
-      "documentation":"<p>Wrapper for updating an optional Description field with PATCH semantics. When present in an update request, the description is replaced with optionalValue. When absent, the description is left unchanged. To unset the description, include the wrapper with optionalValue set to null.</p>"
+      "documentation":"<p>Wrapper for updating an optional Description field with PATCH semantics. When present in an update request, the description is replaced with optionalValue. When absent, the description is left unchanged. To unset the description, include the wrapper with optionalValue not specified.</p>"
     },
     "UserPreferenceConsolidationOverride":{
       "type":"structure",

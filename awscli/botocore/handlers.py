@@ -50,6 +50,7 @@ from botocore.exceptions import (
     AliasConflictParameterError,
     MissingServiceIdError,  # noqa
     ParamValidationError,
+    UnsupportedSignatureVersionError,
     UnsupportedTLSVersionWarning,
 )
 from botocore.regions import EndpointResolverBuiltins
@@ -64,12 +65,15 @@ from botocore.utils import (
     SAFE_CHARS,
     SERVICE_NAME_ALIASES,
     ArnParser,
+    ensure_boolean,
     get_token_from_environment,
     hyphenize_service_id,  # noqa
     is_global_accesspoint,  # noqa
     percent_encode,
     switch_host_with_param,
 )
+
+from awscli.botocore.auth import resolve_auth_scheme_preference
 
 logger = logging.getLogger(__name__)
 
@@ -167,6 +171,13 @@ def set_operation_specific_signer(context, signing_name, **kwargs):
             return auth_type
 
         if auth_type == 'v4a':
+            # Before committing to sigv4a, check if the user has configured
+            # an auth scheme override. This must be done here because
+            # emit_until_response stops after this function returns non-None,
+            # preventing _set_auth_scheme_preference_signer from running.
+            override = _resolve_auth_scheme_override(context, signing_name)
+            if override is not None:
+                return override
             # If sigv4a is chosen, we must add additional signing config for
             # global signature.
             region = _resolve_sigv4a_region(context)
@@ -190,6 +201,110 @@ def set_operation_specific_signer(context, signing_name, **kwargs):
             signature_version = f's3{signature_version}'
 
         return signature_version
+
+
+def _strip_sig_prefix(auth_name):
+    """Normalize auth type names by removing any 'sig' prefix.
+    Mirrors EndpointRulesetResolver._strip_sig_prefix in regions.py.
+    """
+    return auth_name[3:] if auth_name.startswith('sig') else auth_name
+
+
+def _resolve_auth_scheme_override(context, signing_name):
+    """Return a signature version override if the user has configured one,
+    otherwise return None to proceed with the endpoint-ruleset-chosen scheme.
+
+    Respects two configuration mechanisms in priority order:
+    1. ``signature_version`` set in code (ClientConfigString) — direct
+       override; suppresses auth_scheme_preference.
+    2. ``auth_scheme_preference`` — a priority-ordered list reprioritized
+       against the endpoint's supported schemes; the first supported scheme
+       wins. Unsupported schemes in the preference list are ignored.
+
+    The supported schemes follow the resolution hierarchy:
+    1. Endpoints 2.0 authSchemes (ruleset) — most specific, used when present
+    2. Service trait auth_options (service-2.json metadata) — fallback
+    """
+    client_config = context.get('client_config')
+    if client_config is None:
+        return None
+
+    signature_version = client_config.signature_version
+    auth_scheme_preference = client_config.auth_scheme_preference
+
+    # If signature_version was explicitly set in code, use it as a direct
+    # override and do not consult auth_scheme_preference.
+    if isinstance(signature_version, ClientConfigString):
+        resolved = signature_version
+        if signing_name in S3_SIGNING_NAMES and not resolved.startswith('s3'):
+            resolved = f's3{resolved}'
+        return resolved
+
+    # auth_scheme_preference: reprioritize the endpoint's supported schemes
+    # based on the user's preference list, ignoring unsupported schemes.
+    # Candidates follow the resolution hierarchy: ruleset authSchemes when
+    # present (endpoints 2.0), falling back to service trait auth_options.
+    if not auth_scheme_preference:
+        return None
+    ruleset_schemes = [
+        s['name']
+        for s in context.get('endpoint_properties', {}).get('authSchemes', [])
+    ]
+    candidates = ruleset_schemes or context.get('auth_options') or []
+    if not candidates:
+        return None
+    preferred_schemes = auth_scheme_preference.split(',')
+    try:
+        resolved = resolve_auth_scheme_preference(
+            preferred_schemes, candidates
+        )
+    except UnsupportedSignatureVersionError:
+        return None
+    if resolved == 'v4a':
+        # Preference resolves to the same scheme already chosen; no override.
+        return None
+    sig_version = botocore.UNSIGNED if resolved == 'none' else resolved
+    if (
+        sig_version is not botocore.UNSIGNED
+        and signing_name in S3_SIGNING_NAMES
+        and not sig_version.startswith('s3')
+    ):
+        sig_version = f's3{sig_version}'
+
+    # Re-apply the signing context from the chosen scheme's ruleset entry,
+    # replacing the sigv4a context (region='*') that was written during
+    # endpoint resolution. This ensures signingRegion, signingName, and
+    # disableDoubleEncoding are correct for the overridden scheme.
+    ruleset_auth_schemes = (
+        context.get('endpoint_properties', {}).get('authSchemes', [])
+    )
+    chosen_scheme = next(
+        (
+            s for s in ruleset_auth_schemes
+            if _strip_sig_prefix(s.get('name', '')) == resolved
+        ),
+        None,
+    )
+    if chosen_scheme is not None:
+        signing_context = {}
+        if 'signingRegion' in chosen_scheme:
+            signing_context['region'] = chosen_scheme['signingRegion']
+        elif 'signingRegionSet' in chosen_scheme:
+            signing_context['region'] = ','.join(
+                chosen_scheme['signingRegionSet']
+            )
+        if 'signingName' in chosen_scheme:
+            signing_context['signing_name'] = chosen_scheme['signingName']
+        if 'disableDoubleEncoding' in chosen_scheme:
+            signing_context['disableDoubleEncoding'] = ensure_boolean(
+                chosen_scheme['disableDoubleEncoding']
+            )
+        if 'signing' in context:
+            context['signing'].update(signing_context)
+        else:
+            context['signing'] = signing_context
+
+    return sig_version
 
 
 def _resolve_sigv4a_region(context):

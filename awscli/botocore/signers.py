@@ -234,6 +234,8 @@ class RequestSigner:
             context=context,
         )
 
+        print(f'result: {handler, response}')
+
         if response is not None:
             signature_version = response
             # The suffix needs to be checked again in case we get an improper

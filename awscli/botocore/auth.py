@@ -915,11 +915,14 @@ def resolve_auth_scheme_preference(preference_list, auth_options):
         if scheme in service_supported
     ]
 
+    print(f'prioritized: {prioritized_schemes}')
+
     for scheme in prioritized_schemes:
         if scheme == 'noAuth':
             return AUTH_PREF_TO_SIGNATURE_VERSION[scheme]
         sig_version = AUTH_PREF_TO_SIGNATURE_VERSION.get(scheme)
         if sig_version in AUTH_TYPE_MAPS:
+            print(f'sig version: {sig_version}')
             return sig_version
 
     raise UnsupportedSignatureVersionError(

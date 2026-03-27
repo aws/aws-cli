@@ -239,8 +239,10 @@ def _resolve_auth_scheme_override(context, signing_name):
 
     # auth_scheme_preference: reprioritize the endpoint's supported schemes
     # based on the user's preference list, ignoring unsupported schemes.
-    # Candidates follow the resolution hierarchy: ruleset authSchemes when
-    # present (endpoints 2.0), falling back to service trait auth_options.
+    # Candidates follow the resolution hierarchy:
+    # 1. Ruleset authSchemes (endpoints 2.0) — when present
+    # 2. Operation auth trait — when present (via auth_options)
+    # 3. Service auth trait — fallback (via auth_options)
     if not auth_scheme_preference:
         return None
     ruleset_schemes = [

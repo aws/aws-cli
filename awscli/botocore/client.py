@@ -844,7 +844,7 @@ class BaseClient:
             'has_streaming_input': operation_model.has_streaming_input,
             'auth_type': operation_model.resolved_auth_type,
             'unsigned_payload': operation_model.unsigned_payload,
-            'auth_options': self._service_model.metadata.get('auth'),
+            'auth_options': operation_model.auth or self._service_model.metadata.get('auth'),
         }
 
         api_params = self._emit_api_params(

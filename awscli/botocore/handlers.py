@@ -50,7 +50,6 @@ from botocore.exceptions import (
     AliasConflictParameterError,
     MissingServiceIdError,  # noqa
     ParamValidationError,
-    UnsupportedSignatureVersionError,
     UnsupportedTLSVersionWarning,
 )
 from botocore.regions import EndpointResolverBuiltins, build_signing_context_from_ruleset_scheme
@@ -252,12 +251,9 @@ def _resolve_auth_scheme_override(context, signing_name):
     if not candidates:
         return None
     preferred_schemes = auth_scheme_preference.split(',')
-    try:
-        resolved = resolve_auth_scheme_preference(
-            preferred_schemes, candidates
-        )
-    except UnsupportedSignatureVersionError:
-        return None
+    resolved = resolve_auth_scheme_preference(
+        preferred_schemes, candidates
+    )
     if resolved == _strip_sig_prefix(context.get('auth_type', '')):
         # Preference resolves to the same scheme already chosen; no override.
         return None

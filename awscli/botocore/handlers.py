@@ -161,6 +161,11 @@ def set_operation_specific_signer(context, signing_name, **kwargs):
     if auth_type == 'bearer':
         return 'bearer'
 
+    # Apply auth_scheme_preference override before committing to any signer.
+    override = _resolve_auth_scheme_override(context, signing_name)
+    if override is not None:
+        return override
+
     # If the operation needs an unsigned body, we set additional context
     # allowing the signer to be aware of this.
     if context.get('unsigned_payload') or auth_type == 'v4-unsigned-body':
@@ -171,13 +176,6 @@ def set_operation_specific_signer(context, signing_name, **kwargs):
             return auth_type
 
         if auth_type == 'v4a':
-            # Before committing to sigv4a, check if the user has configured
-            # an auth scheme override. This must be done here because
-            # emit_until_response stops after this function returns non-None,
-            # preventing _set_auth_scheme_preference_signer from running.
-            override = _resolve_auth_scheme_override(context, signing_name)
-            if override is not None:
-                return override
             # If sigv4a is chosen, we must add additional signing config for
             # global signature.
             region = _resolve_sigv4a_region(context)
@@ -201,7 +199,6 @@ def set_operation_specific_signer(context, signing_name, **kwargs):
             signature_version = f's3{signature_version}'
 
         return signature_version
-
 
 def _strip_sig_prefix(auth_name):
     """Normalize auth type names by removing any 'sig' prefix.
@@ -260,7 +257,7 @@ def _resolve_auth_scheme_override(context, signing_name):
         )
     except UnsupportedSignatureVersionError:
         return None
-    if resolved == 'v4a':
+    if resolved == _strip_sig_prefix(context.get('auth_type', '')):
         # Preference resolves to the same scheme already chosen; no override.
         return None
     sig_version = botocore.UNSIGNED if resolved == 'none' else resolved
@@ -1321,10 +1318,10 @@ def _handle_request_validation_mode_member(params, model, **kwargs):
         params.setdefault(mode_member, "ENABLED")
 
 
-def _set_auth_scheme_preference_signer(context, signing_name, **kwargs):
+def _prefer_bearer_auth_if_available(context, signing_name, **kwargs):
     """
-    Determines the appropriate signer to use based on the client configuration,
-    authentication scheme preferences, and the availability of a bearer token.
+    Prefers 'bearer' signature version if a bearer token is available and
+    allowed for this service, and no explicit auth configuration was set in code.
     """
     client_config = context.get('client_config')
     if client_config is None:
@@ -1345,39 +1342,16 @@ def _set_auth_scheme_preference_signer(context, signing_name, **kwargs):
         signature_version_set_in_code or auth_preference_set_in_code
     )
 
-    resolved_signature_version = signature_version
-
-    # If signature version was not set in code, but an auth scheme preference
-    # is available, resolve it based on the preferred schemes and supported auth
-    # options for this service.
-    if (
-        not signature_version_set_in_code
-        and auth_scheme_preference
-        and auth_options
-    ):
-        preferred_schemes = auth_scheme_preference.split(',')
-        resolved = botocore.auth.resolve_auth_scheme_preference(
-            preferred_schemes, auth_options
-        )
-        resolved_signature_version = (
-            botocore.UNSIGNED if resolved == 'none' else resolved
-        )
-
-    # Prefer 'bearer' signature version if a bearer token is available, and it
-    # is allowed for this service. This can override earlier resolution if the
-    # config object didn't explicitly set a signature version.
     if _should_prefer_bearer_auth(
         has_in_code_configuration,
         signing_name,
-        resolved_signature_version,
+        signature_version,
         auth_options,
     ):
         register_feature_id('BEARER_SERVICE_ENV_VARS')
-        resolved_signature_version = 'bearer'
+        return 'bearer'
 
-    if resolved_signature_version == signature_version:
-        return None
-    return resolved_signature_version
+    return None
 
 
 def _should_prefer_bearer_auth(
@@ -1516,7 +1490,7 @@ BUILTIN_HANDLERS = [
     ('choose-signer.sts.AssumeRoleWithSAML', disable_signing),
     ('choose-signer.sts.AssumeRoleWithWebIdentity', disable_signing),
     ('choose-signer', set_operation_specific_signer),
-    ('choose-signer', _set_auth_scheme_preference_signer),
+    ('choose-signer', _prefer_bearer_auth_if_available),
     ('before-parameter-build.s3.HeadObject', sse_md5),
     ('before-parameter-build.s3.GetObject', sse_md5),
     ('before-parameter-build.s3.PutObject', sse_md5),

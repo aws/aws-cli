@@ -438,6 +438,81 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
             self.get_config_file_contents(),
         )
 
+    def test_set_with_subsection_no_name_provided(self):
+        _, stderr, _ = self.run_cmd(
+                [
+                    "configure",
+                    "set",
+                    "--sso-session",
+                    '',
+                    "space",
+                    "test",
+                ],
+                expected_rc=255
+            )
+        self.assertIn("Invalid value for --sso-session", stderr)
+
+    def test_set_deeply_nested_property_in_subsection_results_in_error(self):
+        self.set_config_file_contents(
+            "[services my-services]\n" "ec2 =\n" "    endpoint_url = localhost\n"
+        )
+
+        _, stderr, _ = self.run_cmd(
+            [
+                "configure",
+                "set",
+                "--services",
+                'my-services',
+                "s3.express.endpoint_url",
+                "localhost",
+            ],
+            expected_rc=255
+        )
+        self.assertIn(
+            "Found more than two parts in the property to set.", 
+            stderr
+        )
+
+    def test_set_with_two_subsections_specified_results_in_error(self):
+        _, stderr, _ = self.run_cmd(
+                [
+                    "configure",
+                    "set",
+                    "--sso-session",
+                    'my-sso',
+                    "--services",
+                    'my-services',
+                    "space",
+                    "test",
+                ],
+                expected_rc=255
+            )
+        self.assertIn(
+            "cannot be specified when one of the following keys are also specified:",
+            stderr
+        )
+
+    def test_set_updates_existing_property_in_subsection(self):
+        self.set_config_file_contents(
+            "[sso-session my-sso-session]\n" "sso_region = us-west-2\n"
+        )
+
+        self.run_cmd(
+            [
+                "configure",
+                "set",
+                "--sso-session",
+                'my-sso-session',
+                "sso_region",
+                "eu-central-1",
+            ],
+            expected_rc=0
+        )
+        self.assertEqual(
+            "[sso-session my-sso-session]\n" "sso_region = eu-central-1\n",
+            self.get_config_file_contents(),
+        )
+
 
 class TestConfigureHasArgTable(unittest.TestCase):
     def test_configure_command_has_arg_table(self):

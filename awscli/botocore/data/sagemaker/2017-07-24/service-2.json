@@ -7014,6 +7014,16 @@
       "min":1,
       "pattern":"[a-z]+\\-[0-9a-z\\-]+"
     },
+    "AvailabilityZoneBalanceEnforcementMode":{
+      "type":"string",
+      "enum":["PERMISSIVE"]
+    },
+    "AvailabilityZoneBalanceMaxImbalance":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":0
+    },
     "AvailabilityZoneId":{
       "type":"string",
       "pattern":"[a-z]{3}\\d-az\\d"
@@ -25960,6 +25970,21 @@
       "max":2048,
       "min":20
     },
+    "InferenceComponentAvailabilityZoneBalance":{
+      "type":"structure",
+      "required":["EnforcementMode"],
+      "members":{
+        "EnforcementMode":{
+          "shape":"AvailabilityZoneBalanceEnforcementMode",
+          "documentation":"<p>Determines how strictly the Availability Zone balance constraint is enforced.</p> <dl> <dt>PERMISSIVE</dt> <dd> <p>The endpoint attempts to balance copies across Availability Zones but proceeds with scheduling even if balance can't be achieved due to available capacity or instance distribution across Availability Zones.</p> </dd> </dl>"
+        },
+        "MaxImbalance":{
+          "shape":"AvailabilityZoneBalanceMaxImbalance",
+          "documentation":"<p>The maximum allowed difference in the number of inference component copies between any two Availability Zones. This parameter applies only when the endpoint has instances across two or more Availability Zones. A copy placement is allowed if it reduces imbalance or the resulting imbalance is within this value.</p> <p>Default value: <code>0</code>.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for balancing inference component copies across Availability Zones.</p>"
+    },
     "InferenceComponentCapacitySize":{
       "type":"structure",
       "required":[
@@ -26104,6 +26129,13 @@
       "min":0,
       "pattern":"[a-zA-Z0-9-]+"
     },
+    "InferenceComponentPlacementStrategy":{
+      "type":"string",
+      "enum":[
+        "SPREAD",
+        "BINPACK"
+      ]
+    },
     "InferenceComponentRollingUpdatePolicy":{
       "type":"structure",
       "required":[
@@ -26155,6 +26187,21 @@
       },
       "documentation":"<p>Details about the runtime settings for the model that is deployed with the inference component.</p>"
     },
+    "InferenceComponentSchedulingConfig":{
+      "type":"structure",
+      "required":["PlacementStrategy"],
+      "members":{
+        "PlacementStrategy":{
+          "shape":"InferenceComponentPlacementStrategy",
+          "documentation":"<p>The strategy for placing inference component copies across available instances. If you also set <code>AvailabilityZoneBalance</code>, this strategy applies to placement within each Availability Zone.</p> <dl> <dt>SPREAD</dt> <dd> <p>Distributes copies evenly across available instances for better resilience.</p> </dd> <dt>BINPACK</dt> <dd> <p>Packs copies onto fewer instances to optimize resource utilization.</p> </dd> </dl>"
+        },
+        "AvailabilityZoneBalance":{
+          "shape":"InferenceComponentAvailabilityZoneBalance",
+          "documentation":"<p>Configuration for balancing inference component copies across Availability Zones.</p>"
+        }
+      },
+      "documentation":"<p>The scheduling configuration that determines how inference component copies are placed across available instances when copies are added or removed.</p>"
+    },
     "InferenceComponentSortKey":{
       "type":"string",
       "enum":[
@@ -26189,6 +26236,10 @@
         "DataCacheConfig":{
           "shape":"InferenceComponentDataCacheConfig",
           "documentation":"<p>Settings that affect how the inference component caches data.</p>"
+        },
+        "SchedulingConfig":{
+          "shape":"InferenceComponentSchedulingConfig",
+          "documentation":"<p>The scheduling configuration that determines how inference component copies are placed across available instances when copies are added or removed.</p>"
         }
       },
       "documentation":"<p>Details about the resources to deploy with this inference component, including the model, container, and compute resources.</p>"
@@ -26219,6 +26270,10 @@
         "DataCacheConfig":{
           "shape":"InferenceComponentDataCacheConfigSummary",
           "documentation":"<p>Settings that affect how the inference component caches data.</p>"
+        },
+        "SchedulingConfig":{
+          "shape":"InferenceComponentSchedulingConfig",
+          "documentation":"<p>The scheduling configuration that determines how inference component copies are placed across available instances when copies are added or removed.</p>"
         }
       },
       "documentation":"<p>Details about the resources that are deployed with this inference component.</p>"
@@ -32319,15 +32374,34 @@
       "min":0,
       "pattern":"\\d+\\.\\d+"
     },
+    "ManagedInstanceScalingCooldownInMinutes":{
+      "type":"integer",
+      "box":true,
+      "max":1440,
+      "min":5
+    },
     "ManagedInstanceScalingMaxInstanceCount":{
       "type":"integer",
       "box":true,
+      "min":1
+    },
+    "ManagedInstanceScalingMaximumStepSize":{
+      "type":"integer",
+      "box":true,
+      "max":100,
       "min":1
     },
     "ManagedInstanceScalingMinInstanceCount":{
       "type":"integer",
       "box":true,
       "min":0
+    },
+    "ManagedInstanceScalingScaleInStrategy":{
+      "type":"string",
+      "enum":[
+        "IDLE_RELEASE",
+        "CONSOLIDATION"
+      ]
     },
     "ManagedInstanceScalingStatus":{
       "type":"string",
@@ -38532,9 +38606,32 @@
         "MaxInstanceCount":{
           "shape":"ManagedInstanceScalingMaxInstanceCount",
           "documentation":"<p>The maximum number of instances that the endpoint can provision when it scales up to accommodate an increase in traffic.</p>"
+        },
+        "ScaleInPolicy":{
+          "shape":"ProductionVariantManagedInstanceScalingScaleInPolicy",
+          "documentation":"<p>Configures the scale-in behavior for managed instance scaling.</p>"
         }
       },
       "documentation":"<p>Settings that control the range in the number of instances that the endpoint provisions as it scales up or down to accommodate traffic. </p>"
+    },
+    "ProductionVariantManagedInstanceScalingScaleInPolicy":{
+      "type":"structure",
+      "required":["Strategy"],
+      "members":{
+        "Strategy":{
+          "shape":"ManagedInstanceScalingScaleInStrategy",
+          "documentation":"<p>The strategy for scaling in instances.</p> <dl> <dt>IDLE_RELEASE</dt> <dd> <p>Releases instances that have no hosted inference component copies.</p> </dd> <dt>CONSOLIDATION</dt> <dd> <p>Consolidates inference component copies onto fewer instances to release more instances. Consolidation honors the scheduling configuration of each inference component. For example, if an inference component specifies Availability Zone balance, consolidation only proceeds when the resulting distribution does not increase the imbalance.</p> </dd> </dl>"
+        },
+        "MaximumStepSize":{
+          "shape":"ManagedInstanceScalingMaximumStepSize",
+          "documentation":"<p>The maximum number of instances that the endpoint can terminate at a time during a consolidation scale-in operation.</p> <p>Default value: <code>1</code>.</p>"
+        },
+        "CooldownInMinutes":{
+          "shape":"ManagedInstanceScalingCooldownInMinutes",
+          "documentation":"<p>The cooldown period, in minutes, after the last endpoint operation before the endpoint evaluates consolidation scale-in opportunities.</p> <p>Default value: <code>20</code>.</p>"
+        }
+      },
+      "documentation":"<p>Configures the scale-in behavior for managed instance scaling.</p>"
     },
     "ProductionVariantModelDataDownloadTimeoutInSeconds":{
       "type":"integer",

@@ -573,6 +573,24 @@
       ],
       "documentation":"<p>Lists all the inbound cross-cluster search connections for a destination (remote) Amazon OpenSearch Service domain. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/cross-cluster-search.html\">Cross-cluster search for Amazon OpenSearch Service</a>.</p>"
     },
+    "DescribeInsightDetails":{
+      "name":"DescribeInsightDetails",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2021-01-01/opensearch/insight-details"
+      },
+      "input":{"shape":"DescribeInsightDetailsRequest"},
+      "output":{"shape":"DescribeInsightDetailsResponse"},
+      "errors":[
+        {"shape":"BaseException"},
+        {"shape":"InternalException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"DisabledOperationException"},
+        {"shape":"LimitExceededException"}
+      ],
+      "documentation":"<p>Describes the details of an existing insight for an Amazon OpenSearch Service domain. Returns detailed fields associated with the specified insight, such as text descriptions and metric data.</p>"
+    },
     "DescribeInstanceTypeLimits":{
       "name":"DescribeInstanceTypeLimits",
       "http":{
@@ -982,6 +1000,24 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Lists all Amazon OpenSearch Service domains associated with a given package. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/custom-packages.html\">Custom packages for Amazon OpenSearch Service</a>.</p>"
+    },
+    "ListInsights":{
+      "name":"ListInsights",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2021-01-01/opensearch/insights"
+      },
+      "input":{"shape":"ListInsightsRequest"},
+      "output":{"shape":"ListInsightsResponse"},
+      "errors":[
+        {"shape":"BaseException"},
+        {"shape":"InternalException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"DisabledOperationException"},
+        {"shape":"LimitExceededException"}
+      ],
+      "documentation":"<p>Lists insights for an Amazon OpenSearch Service domain or Amazon Web Services account. Returns a paginated list of insights based on the specified entity, filters, time range, and sort order.</p>"
     },
     "ListInstanceTypeDetails":{
       "name":"ListInstanceTypeDetails",
@@ -3663,6 +3699,39 @@
       },
       "documentation":"<p>Contains a list of connections matching the filter criteria.</p>"
     },
+    "DescribeInsightDetailsRequest":{
+      "type":"structure",
+      "required":[
+        "Entity",
+        "InsightId"
+      ],
+      "members":{
+        "Entity":{
+          "shape":"InsightEntity",
+          "documentation":"<p>The entity for which to retrieve insight details. Specifies the type and value of the entity, such as a domain name or Amazon Web Services account ID.</p>"
+        },
+        "InsightId":{
+          "shape":"GUID",
+          "documentation":"<p>The unique identifier of the insight to describe.</p>"
+        },
+        "ShowHtmlContent":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to show response with HTML content in response or not.</p>"
+        }
+      },
+      "documentation":"<p>Container for the parameters to the <code>DescribeInsightDetails</code> operation.</p>"
+    },
+    "DescribeInsightDetailsResponse":{
+      "type":"structure",
+      "required":["Fields"],
+      "members":{
+        "Fields":{
+          "shape":"InsightFieldList",
+          "documentation":"<p>The list of fields that contain detailed information about the insight.</p>"
+        }
+      },
+      "documentation":"<p>The result of a <code>DescribeInsightDetails</code> request. Contains the detailed fields associated with the specified insight.</p>"
+    },
     "DescribeInstanceTypeLimitsRequest":{
       "type":"structure",
       "required":[
@@ -5460,6 +5529,174 @@
         "SERVICE"
       ]
     },
+    "Insight":{
+      "type":"structure",
+      "members":{
+        "InsightId":{
+          "shape":"GUID",
+          "documentation":"<p>The unique identifier of the insight.</p>"
+        },
+        "DisplayName":{
+          "shape":"String",
+          "documentation":"<p>The display name of the insight.</p>"
+        },
+        "Type":{
+          "shape":"InsightType",
+          "documentation":"<p>The type of the insight. Possible values are <code>EVENT</code> and <code>RECOMMENDATION</code>.</p>"
+        },
+        "Priority":{
+          "shape":"InsightPriorityLevel",
+          "documentation":"<p>The priority level of the insight. Possible values are <code>CRITICAL</code>, <code>HIGH</code>, <code>MEDIUM</code>, and <code>LOW</code>.</p>"
+        },
+        "Status":{
+          "shape":"InsightStatus",
+          "documentation":"<p>The current status of the insight. Possible values are <code>ACTIVE</code>, <code>RESOLVED</code>, and <code>DISMISSED</code>.</p>"
+        },
+        "CreationTime":{
+          "shape":"UpdateTimestamp",
+          "documentation":"<p>The timestamp when the insight was created, in epoch milliseconds.</p>"
+        },
+        "UpdateTime":{
+          "shape":"UpdateTimestamp",
+          "documentation":"<p>The timestamp when the insight was last updated, in epoch milliseconds.</p>"
+        },
+        "IsExperimental":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the insight is experimental.</p>"
+        }
+      },
+      "documentation":"<p>Represents an insight returned by the <code>ListInsights</code> operation. An insight is a notification about a domain event or recommendation that helps you optimize your Amazon OpenSearch Service domain.</p>"
+    },
+    "InsightEntity":{
+      "type":"structure",
+      "required":["Type"],
+      "members":{
+        "Type":{
+          "shape":"InsightEntityType",
+          "documentation":"<p>The type of the entity. Possible values are <code>Account</code> and <code>DomainName</code>.</p>"
+        },
+        "Value":{
+          "shape":"InsightEntityValue",
+          "documentation":"<p>The value of the entity. For <code>DomainName</code>, this is the domain name. For <code>Account</code>, this is the Amazon Web Services account ID.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the entity for which to retrieve insights. An entity can be an Amazon OpenSearch Service domain or an Amazon Web Services account.</p>"
+    },
+    "InsightEntityType":{
+      "type":"string",
+      "documentation":"<p>The type of entity for which to retrieve insights. Possible values are <code>Account</code> and <code>DomainName</code>.</p>",
+      "enum":[
+        "Account",
+        "DomainName"
+      ]
+    },
+    "InsightEntityValue":{
+      "type":"string",
+      "documentation":"<p>The value of the entity, such as a domain name or Amazon Web Services account ID.</p>",
+      "max":28,
+      "min":3,
+      "pattern":"([a-z][a-z0-9\\-]+|\\d{12})"
+    },
+    "InsightField":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Type",
+        "Value"
+      ],
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the insight field.</p>"
+        },
+        "Type":{
+          "shape":"InsightFieldType",
+          "documentation":"<p>The type of the insight field. Possible values are <code>text</code> and <code>metric</code>.</p>"
+        },
+        "Value":{
+          "shape":"String",
+          "documentation":"<p>The value of the insight field.</p>"
+        }
+      },
+      "documentation":"<p>Represents a field in the detailed view of an insight, returned by the <code>DescribeInsightDetails</code> operation.</p>"
+    },
+    "InsightFieldList":{
+      "type":"list",
+      "member":{"shape":"InsightField"},
+      "documentation":"<p>A list of insight fields.</p>"
+    },
+    "InsightFieldType":{
+      "type":"string",
+      "documentation":"<p>The type of an insight field. Possible values are <code>text</code> and <code>metric</code>.</p>",
+      "enum":[
+        "text",
+        "metric"
+      ]
+    },
+    "InsightList":{
+      "type":"list",
+      "member":{"shape":"Insight"},
+      "documentation":"<p>A list of insights.</p>"
+    },
+    "InsightPageSize":{
+      "type":"integer",
+      "documentation":"<p>The maximum number of insights to return per page. Valid values are 1 to 500.</p>",
+      "max":500,
+      "min":1
+    },
+    "InsightPriorityLevel":{
+      "type":"string",
+      "documentation":"<p>The priority level of an insight. Possible values are <code>CRITICAL</code>, <code>HIGH</code>, <code>MEDIUM</code>, and <code>LOW</code>.</p>",
+      "enum":[
+        "CRITICAL",
+        "HIGH",
+        "MEDIUM",
+        "LOW"
+      ]
+    },
+    "InsightSortOrder":{
+      "type":"string",
+      "documentation":"<p>The sort order for listing insights. Possible values are <code>ASC</code> (ascending) and <code>DESC</code> (descending).</p>",
+      "enum":[
+        "ASC",
+        "DESC"
+      ]
+    },
+    "InsightStatus":{
+      "type":"string",
+      "documentation":"<p>The status of an insight. Possible values are <code>ACTIVE</code>, <code>RESOLVED</code>, and <code>DISMISSED</code>.</p>",
+      "enum":[
+        "ACTIVE",
+        "RESOLVED",
+        "DISMISSED"
+      ]
+    },
+    "InsightTimeRange":{
+      "type":"structure",
+      "required":[
+        "From",
+        "To"
+      ],
+      "members":{
+        "From":{
+          "shape":"Long",
+          "documentation":"<p>The start of the time range, in epoch milliseconds.</p>"
+        },
+        "To":{
+          "shape":"Long",
+          "documentation":"<p>The end of the time range, in epoch milliseconds.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the time range for filtering insights.</p>"
+    },
+    "InsightType":{
+      "type":"string",
+      "documentation":"<p>The type of an insight. Possible values are <code>EVENT</code> and <code>RECOMMENDATION</code>.</p>",
+      "enum":[
+        "EVENT",
+        "RECOMMENDATION"
+      ]
+    },
     "InstanceCount":{
       "type":"integer",
       "documentation":"<p>Number of instances in an OpenSearch Service cluster.</p>",
@@ -5869,6 +6106,47 @@
         }
       },
       "documentation":"<p>Container for the response parameters to the <code>ListDomainsForPackage</code> operation.</p>"
+    },
+    "ListInsightsRequest":{
+      "type":"structure",
+      "required":["Entity"],
+      "members":{
+        "Entity":{
+          "shape":"InsightEntity",
+          "documentation":"<p>The entity for which to list insights. Specifies the type and value of the entity, such as a domain name or Amazon Web Services account ID.</p>"
+        },
+        "TimeRange":{
+          "shape":"InsightTimeRange",
+          "documentation":"<p>The time range for filtering insights, specified as epoch millisecond timestamps.</p>"
+        },
+        "SortOrder":{
+          "shape":"InsightSortOrder",
+          "documentation":"<p>The sort order for the results. Possible values are <code>ASC</code> (ascending) and <code>DESC</code> (descending).</p>"
+        },
+        "MaxResults":{
+          "shape":"InsightPageSize",
+          "documentation":"<p>An optional parameter that specifies the maximum number of results to return. You can use <code>NextToken</code> to get the next page of results. Valid values are 1 to 500.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>If your initial <code>ListInsights</code> operation returns a <code>NextToken</code>, include the returned <code>NextToken</code> in subsequent <code>ListInsights</code> operations to retrieve the next page of results.</p>"
+        }
+      },
+      "documentation":"<p>Container for the parameters to the <code>ListInsights</code> operation.</p>"
+    },
+    "ListInsightsResponse":{
+      "type":"structure",
+      "members":{
+        "Insights":{
+          "shape":"InsightList",
+          "documentation":"<p>The list of insights returned for the specified entity.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>When <code>NextToken</code> is returned, there are more results available. The value of <code>NextToken</code> is a unique pagination token for each page. Send the request again using the returned token to retrieve the next page.</p>"
+        }
+      },
+      "documentation":"<p>The result of a <code>ListInsights</code> request. Contains the list of insights and a pagination token for retrieving the next page of results.</p>"
     },
     "ListInstanceTypeDetailsRequest":{
       "type":"structure",

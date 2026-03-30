@@ -24,4 +24,4 @@ Output::
         "Each indent": "Must be 4 spaces"
     }
 
-For more information, see `This is the topic title <https://example.com>`__ in the *Name of your guide*.
+For more information, see `This is the topic title <https://docs.aws.amazon.com>`__ in the *Name of your guide*.

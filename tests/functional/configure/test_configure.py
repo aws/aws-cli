@@ -380,6 +380,9 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
             expected_rc=255,
         )
         self.assertIn("newline", stderr)
+        # To avoid leaking sensitive values,
+        # values should not appear in stderr.
+        self.assertNotIn("us-east-1\nus-west-2", stderr)
 
     def test_set_rejects_carriage_return_in_value(self):
         _, stderr, _ = self.run_cmd(
@@ -387,6 +390,9 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
             expected_rc=255,
         )
         self.assertIn("newline", stderr)
+        # To avoid leaking sensitive values,
+        # values should not appear in stderr.
+        self.assertNotIn("us-east-1\rus-west-2", stderr)
 
     def test_set_rejects_newline_in_nested_value(self):
         _, stderr, _ = self.run_cmd(
@@ -394,6 +400,9 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
             expected_rc=255,
         )
         self.assertIn("newline", stderr)
+        # To avoid leaking sensitive values,
+        # values should not appear in stderr.
+        self.assertNotIn("s3v4\nfoo", stderr)
 
     def test_newline_injection_does_not_write_injected_key_to_file(self):
         # Simulates: aws configure set output $'table\nregion = us-east-1'

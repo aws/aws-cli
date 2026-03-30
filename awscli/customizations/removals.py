@@ -75,6 +75,10 @@ def register_removals(event_handler):
     )
     cmd_remover.remove(on_event='building-command-table.polly',
                         remove_commands=['start-speech-synthesis-stream'])
+    cmd_remover.remove(
+        on_event='building-command-table.devops-agent',
+        remove_commands=['send-message'],
+    )
 
 
 class CommandRemover(object):

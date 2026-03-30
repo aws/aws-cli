@@ -24,11 +24,18 @@ class ConfigFileWriter:
         r'(?P<value>.*)$'
     )  # fmt: skip
 
-    def _validate_no_newlines(self, value, label='value'):
+    def _validate_no_newlines_or_carriage_returns(
+        self,
+        value,
+        label='value',
+        msg_override=None,
+    ):
         if isinstance(value, str) and ('\n' in value or '\r' in value):
-            raise ValueError(
-                f"Invalid {label}: newline characters are not allowed: {value!r}"
+            err_msg = msg_override if msg_override is not None else (
+                f"Invalid {label}: newline "
+                f"characters and carriage returns are not allowed: {value!r}"
             )
+            raise ValueError(err_msg)
 
     def update_config(self, new_values, config_filename):
         """Update config file with new values.
@@ -58,15 +65,38 @@ class ConfigFileWriter:
 
         """
         section_name = new_values.pop('__section__', 'default')
-        self._validate_no_newlines(section_name, 'section name')
+        self._validate_no_newlines_or_carriage_returns(
+            section_name,
+            'section name'
+        )
         for k, v in new_values.items():
-            self._validate_no_newlines(k, 'key')
+            self._validate_no_newlines_or_carriage_returns(k, 'key')
             if not isinstance(v, dict):
-                self._validate_no_newlines(v, 'value')
+                # Override error msg to prevent
+                # leaking sensitive config values to stderr.
+                self._validate_no_newlines_or_carriage_returns(
+                    v,
+                    'value',
+                    msg_override=(
+                        f"Invalid value for key {k}: "
+                        f"newline characters and carriage "
+                        f"returns are not allowed."
+                    )
+                )
             else:
                 for sk, sv in v.items():
-                    self._validate_no_newlines(sk, 'key')
-                    self._validate_no_newlines(sv, 'value')
+                    # Override error msg to prevent
+                    # leaking sensitive config values to stderr.
+                    self._validate_no_newlines_or_carriage_returns(sk, 'key')
+                    self._validate_no_newlines_or_carriage_returns(
+                        sv,
+                        'value',
+                        msg_override=(
+                            f"Invalid value for key {k}: "
+                            f"newline characters and carriage "
+                            f"returns are not allowed."
+                        )
+                    )
         if not os.path.isfile(config_filename):
             self._create_file(config_filename)
             self._write_new_section(section_name, new_values, config_filename)

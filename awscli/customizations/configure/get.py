@@ -97,13 +97,13 @@ class ConfigureGetCommand(BasicCommand):
 
     def _run_main(self, args, parsed_globals):
         varname = args.varname
-        section_type, section_name = self._get_subsection_config_name_from_args(args)
+        section_type, section_name = (
+            self._get_subsection_config_name_from_args(args)
+        )
 
         if section_type:
             value = self._get_subsection_property(
-                section_type.replace("-", "_"),
-                section_name,
-                varname
+                section_type.replace("-", "_"), section_name, varname
             )
         elif '.' not in varname:
             # get_scoped_config() returns the config variables in the config

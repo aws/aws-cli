@@ -73,7 +73,7 @@ class ConfigureSetCommand(BasicCommand):
     ]
 
     def __init__(self, session, config_writer=None):
-        super(ConfigureSetCommand, self).__init__(session)
+        super().__init__(session)
         if config_writer is None:
             config_writer = ConfigFileWriter()
         self._config_writer = config_writer
@@ -87,14 +87,19 @@ class ConfigureSetCommand(BasicCommand):
 
     def _get_subsection_from_args(self, args):
         # Validate mutual exclusivity of sub-section type parameters
-        groups = [[self._subsection_parameter_to_argument_name(key)] for key in SUBSECTION_TYPE_ALLOWLIST.keys()]
+        groups = [
+            [self._subsection_parameter_to_argument_name(key)]
+            for key in SUBSECTION_TYPE_ALLOWLIST.keys()
+        ]
         validate_mutually_exclusive(args, *groups)
 
         subsection_name = None
         subsection_type = None
 
         for section_type in SUBSECTION_TYPE_ALLOWLIST.keys():
-            cli_parameter_name = self._subsection_parameter_to_argument_name(section_type)
+            cli_parameter_name = self._subsection_parameter_to_argument_name(
+                section_type
+            )
             if hasattr(args, cli_parameter_name):
                 subsection_name = getattr(args, cli_parameter_name)
                 if subsection_name is not None:
@@ -107,12 +112,13 @@ class ConfigureSetCommand(BasicCommand):
 
         return (subsection_type, subsection_name)
 
-
-    def _set_subsection_property(self, section_type, section_name, varname, value):
+    def _set_subsection_property(
+        self, section_type, section_name, varname, value
+    ):
         if '.' in varname:
             parts = varname.split('.')
             # Check if there are more than two parts to the property name to set (e.g., aaa.bbb.ccc)
-            # This would result in a deeply nested property, which is not supported. 
+            # This would result in a deeply nested property, which is not supported.
             if len(parts) > 2:
                 raise ParamValidationError(
                     "Found more than two parts in the property to set. "
@@ -120,19 +126,19 @@ class ConfigureSetCommand(BasicCommand):
                 )
             varname = parts[0]
             value = {parts[1]: value}
-        
+
         # Build update dict
         updated_config = {
-            '__section__': get_section_header(section_type, section_name), 
-            varname: value
+            '__section__': get_section_header(section_type, section_name),
+            varname: value,
         }
 
         # Write to config file
         config_filename = self._get_config_file('config_file')
         self._config_writer.update_config(updated_config, config_filename)
-        
+
         return 0
-    
+
     def _run_main(self, args, parsed_globals):
         varname = args.varname
         value = args.value
@@ -140,7 +146,9 @@ class ConfigureSetCommand(BasicCommand):
 
         section_type, section_name = self._get_subsection_from_args(args)
         if section_type is not None:
-            return self._set_subsection_property(section_type, section_name, varname, value)
+            return self._set_subsection_property(
+                section_type, section_name, varname, value
+            )
 
         # Not in a sub-section, continue with previous profile logic.
         # Before handing things off to the config writer,

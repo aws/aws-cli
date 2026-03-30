@@ -2,6 +2,24 @@
 CHANGELOG
 =========
 
+2.34.20
+=======
+
+* api-change:``ecs``: Adding Local Storage support for ECS Managed Instances by introducing a new field "localStorageConfiguration" for CreateCapacityProvider and UpdateCapacityProvider APIs.
+* api-change:``devops-agent``: AWS DevOps Agent General Availability.
+* api-change:``autoscaling``: Adds support for new instance lifecycle states introduced by the instance lifecycle policy and replace root volume features.
+* api-change:``opensearch``: Added Cluster Insights API's In OpenSearch Service SDK.
+* api-change:``sagemaker``: Added support for placement strategy and consolidation for SageMaker inference component endpoints. Customers can now configure how inference component copies are distributed across instances and availability zones (AZs), and enable automatic consolidation to optimizes resource utilization.
+* api-change:``gamelift``: Update CreateScript API documentation.
+* enhancement:``s3``: Added support for opting out of Amazon S3 Express session authentication via the new ``AWS_S3_DISABLE_EXPRESS_SESSION_AUTH`` environment variable, or the ``s3_disable_express_session_auth`` shared configuration setting.
+* api-change:``logs``: Adds Lookup Tables to CloudWatch Logs for log enrichment using CSV key-value data with KMS encryption support.
+* api-change:``appstream``: Add support for URL Redirection
+* api-change:``partnercentral-account``: KYB Supplemental Form enables partners who fail business verification to submit additional details and supporting documentation through a self-service form, triggering an automated re-verification without requiring manual intervention from support teams.
+* api-change:``lakeformation``: Add setSourceIdentity to DataLakeSettings Parameters
+* api-change:``bedrock-agentcore``: Adds Ground Truth support for AgentCore Evaluations (Evaluate)
+* api-change:``deadline``: AWS Deadline Cloud now supports three new fleet auto scaling settings. With scale out rate, you can configure how quickly workers launch. With worker idle duration, you can set how long workers wait before shutting down. With standby worker count, you can keep idle workers ready for fast job start.
+
+
 2.34.19
 =======
 

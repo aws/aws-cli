@@ -18,12 +18,8 @@ PREDEFINED_SECTION_NAMES = 'plugins'
 # A map between the command line parameter name and the name used
 # in the full config object.
 SUBSECTION_TYPE_ALLOWLIST = {
-    'sso-session': {
-        "full_config_name": "sso_sessions"
-    },
-    'services': {
-        "full_config_name": "services"
-    },
+    'sso-session': {"full_config_name": "sso_sessions"},
+    'services': {"full_config_name": "services"},
 }
 _WHITESPACE = ' \t'
 

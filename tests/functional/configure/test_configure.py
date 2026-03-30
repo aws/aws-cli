@@ -83,6 +83,16 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
         )
         self.assertEqual(stdout.strip(), "testing_access_key")
 
+    def test_get_command_with_nonexisting_profile(self):
+        self.set_config_file_contents(
+            "\n[default]\naws_access_key_id=default_access_key\n\n"
+        )
+        _, stderr, _ = self.run_cmd(
+            "configure get --profile doesntexist sso_region",
+            expected_rc=255,
+        )
+        self.assertIn("could not be found", stderr)
+
     def test_get_with_fq_name(self):
         # test get configs with fully qualified name.
         self.set_config_file_contents(
@@ -143,6 +153,60 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
             "configure get preview.emr --profile default",
         )
         self.assertEqual(stdout.strip(), "true")
+
+    def test_get_command_with_subsection(self):
+        self.set_config_file_contents(
+            "\n"
+            "[default]\n"
+            "aws_access_key_id=default_access_key\n"
+            "\n"
+            "[sso-session my-sso-session]\n"
+            "sso_region = us-west-2\n"
+        )
+        stdout, _, _ = self.run_cmd(
+            "configure get --sso-session my-sso-session sso_region",
+        )
+        self.assertEqual(stdout.strip(), "us-west-2")
+
+    def test_get_command_with_subsection_nested_property(self):
+        self.set_config_file_contents(
+            "\n"
+            "[default]\n"
+            "aws_access_key_id=default_access_key\n"
+            "\n"
+            "[services my-services]\n"
+            "ec2 = \n"
+            "    endpoint_url = http://localhost:4567/"
+        )
+        stdout, _, _ = self.run_cmd(
+            "configure get --services my-services ec2.endpoint_url",
+        )
+        self.assertEqual(stdout.strip(), "http://localhost:4567/")
+
+    def test_get_command_with_nonexisting_subsection(self):
+        self.set_config_file_contents(
+            "\n[default]\naws_access_key_id=default_access_key\n\n"
+        )
+        _, stderr, _ = self.run_cmd(
+            "configure get --sso-session my-sso-session sso_region",
+            expected_rc=255,
+        )
+        self.assertIn("could not be found", stderr)
+
+    def test_get_command_with_subsection_set_nonexisting_subsection(self):
+        self.set_config_file_contents(
+            "\n"
+            "[default]\n"
+            "aws_access_key_id=default_access_key\n"
+            "\n"
+            "[sso-session my-sso-session]\n"
+            "sso_region = us-west-2\n"
+        )
+        _, stderr, _ = self.run_cmd(
+            "configure get --services my-services ec2.endpoint_url",
+            expected_rc=255,
+        )
+        self.assertIn("could not be found", stderr)
 
     def test_set_with_config_file_no_exist(self):
         self.run_cmd("configure set region us-west-1")

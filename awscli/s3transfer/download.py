@@ -15,6 +15,10 @@ import logging
 import threading
 
 from botocore.exceptions import ClientError
+from s3transfer.checksums import (
+    FullObjectChecksumCombiner,
+    create_checksum_for_algorithm,
+)
 from s3transfer.compat import seekable
 from s3transfer.exceptions import (
     RetriesExceededError,
@@ -477,11 +481,27 @@ class DownloadSubmissionTask(SubmissionTask):
         # Get any associated tags for the get object task.
         get_object_tag = download_output_manager.get_download_task_tag()
 
+        checksum_combiner = self._create_checksum_combiner(
+            client.meta.config,
+            transfer_future,
+            num_parts,
+        )
+
         # Callback invoker to submit the final io task once all downloads
         # are complete.
+        finalize_callback = self._get_final_io_task_submission_callback(
+            download_output_manager, io_executor
+        )
+        pre_finalize_callbacks = []
+        if checksum_combiner is not None:
+            pre_finalize_callbacks.append(
+                checksum_combiner.combine_and_validate
+            )
         finalize_download_invoker = CountCallbackInvoker(
-            self._get_final_io_task_submission_callback(
-                download_output_manager, io_executor
+            FunctionContainer(
+                self._finalize_download,
+                pre_finalize_callbacks,
+                finalize_callback,
             )
         )
         for i in range(num_parts):
@@ -512,9 +532,11 @@ class DownloadSubmissionTask(SubmissionTask):
                         'callbacks': progress_callbacks,
                         'max_attempts': config.num_download_attempts,
                         'start_index': i * part_size,
+                        'part_index': i,
                         'download_output_manager': download_output_manager,
                         'io_chunksize': config.io_chunksize,
                         'bandwidth_limiter': bandwidth_limiter,
+                        'checksum_combiner': checksum_combiner,
                     },
                     done_callbacks=[finalize_download_invoker.decrement],
                 ),
@@ -522,12 +544,41 @@ class DownloadSubmissionTask(SubmissionTask):
             )
         finalize_download_invoker.finalize()
 
+    def _finalize_download(self, pre_finalize_callbacks, finalize_callback):
+        for callback in pre_finalize_callbacks:
+            try:
+                callback()
+            except Exception as e:
+                self._transfer_coordinator.set_exception(e)
+                self._transfer_coordinator.announce_done()
+                return
+        finalize_callback()
+
     def _get_final_io_task_submission_callback(
         self, download_manager, io_executor
     ):
         final_task = download_manager.get_final_io_task()
         return FunctionContainer(
             self._transfer_coordinator.submit, io_executor, final_task
+        )
+
+    def _create_checksum_combiner(
+        self, client_config, transfer_future, num_parts
+    ):
+        checksum_info = transfer_future.meta.full_object_checksum
+        if checksum_info is None:
+            return None
+        extra_args = transfer_future.meta.call_args.extra_args
+        auto_enabled = (
+            client_config.response_checksum_validation == 'when_supported'
+        )
+        explicitly_enabled = extra_args.get('ChecksumMode') == 'ENABLED'
+        if not auto_enabled and not explicitly_enabled:
+            return None
+        return FullObjectChecksumCombiner(
+            algorithm=checksum_info.algorithm,
+            num_parts=num_parts,
+            expected_b64=checksum_info.expected_b64,
         )
 
     def _calculate_range_param(self, part_size, part_index, num_parts):
@@ -554,7 +605,9 @@ class GetObjectTask(Task):
         download_output_manager,
         io_chunksize,
         start_index=0,
+        part_index=0,
         bandwidth_limiter=None,
+        checksum_combiner=None,
     ):
         """Downloads an object and places content into io queue
 
@@ -571,8 +624,11 @@ class GetObjectTask(Task):
             download stream and queue in the io queue.
         :param start_index: The location in the file to start writing the
             content of the key to.
+        :param part_index: The part number for this ranged download.
         :param bandwidth_limiter: The bandwidth limiter to use when throttling
             the downloading of data in streams.
+        :param checksum_combiner: Optional FullObjectChecksumCombiner for
+            full object checksum validation on multipart downloads.
         """
         last_exception = None
         for i in range(max_attempts):
@@ -595,12 +651,28 @@ class GetObjectTask(Task):
                         )
                     )
 
+                checksum = None
+                part_length = 0
+                # Checking for the `checksum` attribute on the response body
+                # introduces coupling to botocore's `StreamingChecksumBody` but
+                # this is the only viable approach to avoid double-computing
+                # the checksum. There's no per-request mechanism to suppress or
+                # coordinate with botocore's response checksum validation.
+                body_has_checksum = hasattr(response['Body'], 'checksum')
+                if checksum_combiner is not None and not body_has_checksum:
+                    checksum = create_checksum_for_algorithm(
+                        checksum_combiner.algorithm
+                    )
+
                 chunks = DownloadChunkIterator(streaming_body, io_chunksize)
                 for chunk in chunks:
                     # If the transfer is done because of a cancellation
                     # or error somewhere else, stop trying to submit more
                     # data to be written and break out of the download.
                     if not self._transfer_coordinator.done():
+                        if checksum is not None:
+                            checksum.update(chunk)
+                        part_length += len(chunk)
                         self._handle_io(
                             download_output_manager,
                             fileobj,
@@ -610,6 +682,20 @@ class GetObjectTask(Task):
                         current_index += len(chunk)
                     else:
                         return
+
+                # If the body has the `checksum` property, it means
+                # botocore already calculated the checksum value. Reuse
+                # the pre-computed value when available to avoid double
+                # computation.
+                if body_has_checksum:
+                    checksum = response['Body'].checksum
+
+                if checksum_combiner is not None:
+                    checksum_combiner.register_part(
+                        part_index,
+                        checksum,
+                        part_length,
+                    )
                 return
             except ClientError as e:
                 error_code = e.response.get('Error', {}).get('Code')

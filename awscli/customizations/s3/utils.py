@@ -528,6 +528,7 @@ class RequestParamsMapper:
         """Map CLI params to HeadObject request params"""
         cls._set_sse_c_request_params(request_params, cli_params)
         cls._set_request_payer_param(request_params, cli_params)
+        cls._set_checksum_mode_param(request_params, cli_params)
 
     @classmethod
     def map_head_object_params_with_copy_source_sse(

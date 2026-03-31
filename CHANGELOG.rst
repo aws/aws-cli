@@ -2,6 +2,36 @@
 CHANGELOG
 =========
 
+1.44.70
+=======
+
+* api-change:``acm``: Adds support for searching for ACM certificates using the new SearchCertificates API.
+* api-change:``cloudfront``: This release adds bring your own IP (BYOIP) IPv6 support to CloudFront's CreateAnycastIpList and UpdateAnycastIpList API through the IpamCidrConfigs field.
+* api-change:``dataexchange``: Support Tags for AWS Data Exchange resource Assets
+* api-change:``datazone``: Adds environmentConfigurationName field to CreateEnvironmentInput and UpdateEnvironmentInput, so that Domain Owners can now recover orphaned environments by recreating deleted configurations with the same name, and will auto-recover orphaned environments
+* api-change:``devops-agent``: AWS DevOps Agent service General Availability release.
+* api-change:``dms``: To successfully connect to the IBM DB2 LUW database server, you may need to specify additional security parameters that are passed to the JDBC driver. These parameters are EncryptionAlgorithm and SecurityMechanism. Both parameters accept integer values.
+* api-change:``ec2``: This release updates the examples in the documentation for DescribeRegions and DescribeAvailabilityZones.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``geo-maps``: This release expands map customization options with adjustable contour line density, dark mode support for Hybrid and Satellite views, enhanced traffic information across multiple map styles, and transit and truck travel modes for Monochrome and Hybrid map styles.
+* api-change:``kinesisanalyticsv2``: Support for Flink 2.2 in Managed Service for Apache Flink
+* api-change:``mailmanager``: Amazon SES Mail Manager now supports optional TLS policy for accepting unencrypted connections and mTLS authentication for ingress endpoints with configurable trust stores. Two new rule actions are available, Bounce for sending non-delivery reports and Lambda invocation for custom email processing.
+* api-change:``marketplace-agreement``: This release adds 8 new APIs for AWS Marketplace sellers. 4 APIs for Cancellations (Send, List, Get, Cancel action on AgreementCancellationRequest), 3 APIs for Billing Adjustments (BatchCreate, List, Get action on BillingAdjustmentRequest), and 1 API to List Invoices (ListAgreementInvoiceLineItems)
+* api-change:``observabilityadmin``: This release adds the Bedrock and Security Hub resource types for Omnia Enablement launch for March 31.
+* api-change:``odb``: Adds support for EC2 Placement Group integration with ODB Network. The GetOdbNetwork and ListOdbNetworks API responses now include the ec2PlacementGroupIds field.
+* api-change:``opensearch``: Support RegisterCapability, GetCapability, DeregisterCapability API for AI Assistant feature management for OpenSearch UI Applications
+* api-change:``organizations``: Added Path field to Account and OrganizationalUnit objects in AWS Organizations API responses.
+* api-change:``partnercentral-selling``: Adding EURO Currency for MRR Amount
+* api-change:``pinpoint-sms-voice-v2``: This release adds RCS for Business messaging and Notify support. RCS lets you create and manage agents, send and receive messages in the US and Canada via SendTextMessage API, and configure SMS fallback. Notify lets you send templated OTP messages globally in minutes with no phone number required.
+* api-change:``quicksight``: Adds StartAutomationJob and DescribeAutomationJob APIs for automation jobs. Adds three custom permission capabilities that allow admins to control whether users can manage Spaces and chat agents. Adds an OAuthClientCredentials structure to provide OAuth 2.0 client credentials inline to data sources.
+* api-change:``s3``: Add Bucket Metrics configuration support to directory buckets
+* api-change:``s3control``: Adding an optional auditContext parameter to S3 Access Grants credential vending API GetDataAccess to enable job-level audit correlation in S3 CloudTrail logs
+* api-change:``s3tables``: S3 Tables now supports nested types when creating tables. Users can define complex column schemas using struct, list, and map types. These types can be composed together to model complex, hierarchical data structures within table schemas.
+* api-change:``securityagent``: AWS Security Agent is a service that proactively secures applications throughout the development lifecycle with automated security reviews and on-demand penetration testing.
+* api-change:``sustainability``: This is the first release of the AWS Sustainability SDK, which enables customers to access their sustainability impact data via API.
+* bugfix:Configuration: Update ``configure set`` command to return an error when newline or carriage-return characters are specified in the value.
+
+
 1.44.69
 =======
 

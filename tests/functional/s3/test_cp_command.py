@@ -571,7 +571,6 @@ class TestCPCommand(BaseCPCommandTest):
         }
         self.assertDictEqual(self.operations_called[0][1], expected_head_args)
 
-        self.assertEqual(self.operations_called[1][0].name, 'CopyObject')
         expected_args = {
             'Key': 'key.txt', 'Bucket': 'bucket',
             'ContentType': 'text/plain',
@@ -714,14 +713,6 @@ class TestCPCommand(BaseCPCommandTest):
                 % self.prefix
         )
         self.run_cmd(cmdline, expected_rc=0)
-        self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
-        expected_head_args = {
-            'Bucket': 'bucket-one',
-            'Key': 'key.txt',
-            'SSECustomerAlgorithm': 'AES256',
-            'SSECustomerKey': 'source-key',
-        }
-        self.assertDictEqual(self.operations_called[0][1], expected_head_args)
         self.assert_operations_called(
             [
                 self.head_object_request(

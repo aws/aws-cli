@@ -21,6 +21,7 @@ from tests.functional.s3 import BaseS3TransferCommandTest
 from tests.functional.s3.test_sync_command import TestSyncCaseConflict
 from tests import requires_crt
 
+MB = 1024**2
 
 class BufferedBytesIO(BytesIO):
     @property
@@ -33,6 +34,10 @@ class BaseCPCommandTest(BaseS3TransferCommandTest):
 
 
 class TestCPCommand(BaseCPCommandTest):
+    def setUp(self):
+        super().setUp()
+        self.multipart_threshold = 8 * MB
+
     def test_operations_used_in_upload(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
         cmdline = '%s %s s3://bucket/key.txt' % (self.prefix, full_path)
@@ -558,6 +563,13 @@ class TestCPCommand(BaseCPCommandTest):
         self.assertEqual(len(self.operations_called), 2)
         self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
         self.assertEqual(self.operations_called[1][0].name, 'CopyObject')
+        expected_head_args = {
+            'Bucket': 'bucket-one',
+            'Key': 'key.txt',
+            'SSECustomerAlgorithm': 'AES256',
+            'SSECustomerKey': key_contents,
+        }
+        self.assertDictEqual(self.operations_called[0][1], expected_head_args)
 
         expected_args = {
             'Key': 'key.txt', 'Bucket': 'bucket',
@@ -571,6 +583,175 @@ class TestCPCommand(BaseCPCommandTest):
         }
         self.assertDictEqual(self.operations_called[1][1], expected_args)
 
+    def test_s3s3_cp_with_destination_sse_c(self):
+        """S3->S3 copy with an unencrypted source and encrypted destination"""
+        self.parsed_responses = [
+            self.head_object_response(),
+            self.copy_object_response(),
+        ]
+        cmdline = (
+                '%s s3://bucket-one/key.txt s3://bucket/key.txt '
+                '--sse-c --sse-c-key destination-key' % self.prefix
+        )
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 2)
+        self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
+        expected_head_args = {
+            'Bucket': 'bucket-one',
+            'Key': 'key.txt',
+            # don't expect to see SSE-c params for the source
+        }
+        self.assertDictEqual(self.operations_called[0][1], expected_head_args)
+
+        self.assertEqual(self.operations_called[1][0].name, 'CopyObject')
+        expected_copy_args = {
+            'Key': 'key.txt',
+            'Bucket': 'bucket',
+            'ContentType': 'text/plain',
+            'CopySource': {'Bucket': 'bucket-one', 'Key': 'key.txt'},
+            'SSECustomerAlgorithm': 'AES256',
+            'SSECustomerKey': 'destination-key',
+        }
+        self.assertDictEqual(self.operations_called[1][1], expected_copy_args)
+
+    def test_s3s3_cp_with_different_sse_c_keys(self):
+        """S3->S3 copy with different SSE-C keys for source and destination"""
+        self.parsed_responses = [
+            self.head_object_response(),
+            self.copy_object_response(),
+        ]
+        cmdline = (
+                '%s s3://bucket-one/key.txt s3://bucket/key.txt '
+                '--sse-c-copy-source --sse-c-copy-source-key foo --sse-c --sse-c-key bar'
+                % self.prefix
+        )
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 2)
+        self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
+        expected_head_args = {
+            'Bucket': 'bucket-one',
+            'Key': 'key.txt',
+            'SSECustomerAlgorithm': 'AES256',
+            'SSECustomerKey': 'foo',
+        }
+        self.assertDictEqual(self.operations_called[0][1], expected_head_args)
+
+        self.assertEqual(self.operations_called[1][0].name, 'CopyObject')
+        expected_copy_args = {
+            'Key': 'key.txt',
+            'Bucket': 'bucket',
+            'ContentType': 'text/plain',
+            'CopySource': {'Bucket': 'bucket-one', 'Key': 'key.txt'},
+            'SSECustomerAlgorithm': 'AES256',
+            'SSECustomerKey': 'bar',
+            'CopySourceSSECustomerAlgorithm': 'AES256',
+            'CopySourceSSECustomerKey': 'foo',
+        }
+        self.assertDictEqual(self.operations_called[1][1], expected_copy_args)
+
+    def test_s3s3_cp_with_destination_sse_c_multipart(self):
+        """S3->S3 multipart copy with unencrypted source and encrypted destination"""
+        self.parsed_responses = [
+            self.head_object_response(ContentLength=self.multipart_threshold),
+            self.create_mpu_response('upload_id'),
+            self.upload_part_copy_response(),
+            self.complete_mpu_response(),
+        ]
+        cmdline = (
+                '%s s3://bucket-one/key.txt s3://bucket/key.txt '
+                '--sse-c --sse-c-key destination-key' % self.prefix
+        )
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.head_object_request(
+                    'bucket-one',
+                    'key.txt',
+                    # no SSE-C params — source is unencrypted
+                ),
+                self.create_mpu_request(
+                    'bucket',
+                    'key.txt',
+                    ContentType='text/plain',
+                    SSECustomerAlgorithm='AES256',
+                    SSECustomerKey='destination-key',
+                ),
+                self.upload_part_copy_request(
+                    'bucket-one',
+                    'key.txt',
+                    'bucket',
+                    'key.txt',
+                    'upload_id',
+                    PartNumber=mock.ANY,
+                    CopySourceRange=mock.ANY,
+                    CopySourceIfMatch='"foo-1"',
+                    SSECustomerAlgorithm='AES256',
+                    SSECustomerKey='destination-key',
+                ),
+                self.complete_mpu_request(
+                    'bucket',
+                    'key.txt',
+                    'upload_id',
+                    num_parts=1,
+                    SSECustomerAlgorithm='AES256',
+                    SSECustomerKey='destination-key',
+                ),
+            ]
+        )
+
+    def test_s3s3_cp_with_different_sse_c_keys_multipart(self):
+        """S3->S3 multipart copy with different SSE-C keys"""
+        self.parsed_responses = [
+            self.head_object_response(ContentLength=self.multipart_threshold),
+            self.create_mpu_response('upload_id'),
+            self.upload_part_copy_response(),
+            self.complete_mpu_response(),
+        ]
+        cmdline = (
+                '%s s3://bucket-one/key.txt s3://bucket/key.txt '
+                '--sse-c-copy-source --sse-c-copy-source-key source-key --sse-c --sse-c-key destination-key'
+                % self.prefix
+        )
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.head_object_request(
+                    'bucket-one',
+                    'key.txt',
+                    SSECustomerAlgorithm='AES256',
+                    SSECustomerKey='source-key',
+                ),
+                self.create_mpu_request(
+                    'bucket',
+                    'key.txt',
+                    ContentType='text/plain',
+                    SSECustomerAlgorithm='AES256',
+                    SSECustomerKey='destination-key',
+                ),
+                self.upload_part_copy_request(
+                    'bucket-one',
+                    'key.txt',
+                    'bucket',
+                    'key.txt',
+                    'upload_id',
+                    PartNumber=mock.ANY,
+                    CopySourceRange=mock.ANY,
+                    CopySourceIfMatch='"foo-1"',
+                    SSECustomerAlgorithm='AES256',
+                    SSECustomerKey='destination-key',
+                    CopySourceSSECustomerAlgorithm='AES256',
+                    CopySourceSSECustomerKey='source-key',
+                ),
+                self.complete_mpu_request(
+                    'bucket',
+                    'key.txt',
+                    'upload_id',
+                    num_parts=1,
+                    SSECustomerAlgorithm='AES256',
+                    SSECustomerKey='destination-key',
+                ),
+            ]
+        )
 
     # Note ideally the kms sse with a key id would be integration tests
     # However, you cannot delete kms keys so there would be no way to clean

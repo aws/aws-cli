@@ -23,7 +23,9 @@ class TestWaiterDocumenter(BaseDocsTest):
         self.setup_client()
         waiter_model = WaiterModel(self.waiter_json_model)
         self.waiter_documenter = WaiterDocumenter(
-            client=self.client, service_waiter_model=waiter_model
+            client=self.client,
+            service_waiter_model=waiter_model,
+            root_docs_path=self.root_services_path,
         )
 
     def test_document_waiters(self):
@@ -34,7 +36,11 @@ class TestWaiterDocumenter(BaseDocsTest):
                 'Waiters',
                 '=======',
                 'The available waiters are:',
-                '* :py:class:`MyService.Waiter.SampleOperationComplete`',
+                'waiter/SampleOperationComplete',
+            ]
+        )
+        self.assert_contains_lines_in_order(
+            [
                 '.. py:class:: MyService.Waiter.SampleOperationComplete',
                 '  ::',
                 '    waiter = client.get_waiter(\'sample_operation_complete\')',
@@ -65,5 +71,8 @@ class TestWaiterDocumenter(BaseDocsTest):
                 '      - **MaxAttempts** *(integer) --*',
                 '        The maximum number of attempts to be made. Default: 40',
                 '    :returns: None',
-            ]
+            ],
+            self.get_nested_service_contents(
+                'myservice', 'waiter', 'SampleOperationComplete'
+            ),
         )

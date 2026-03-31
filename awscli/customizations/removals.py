@@ -88,8 +88,13 @@ def register_removals(event_handler):
             'retrieve-and-generate-stream',
         ],
     )
-    cmd_remover.remove(on_event='building-command-table.bedrock-agentcore',
-                         remove_commands=['invoke-code-interpreter'])
+    cmd_remover.remove(
+        on_event='building-command-table.bedrock-agentcore',
+        remove_commands=[
+            'invoke-code-interpreter',
+            'invoke-agent-runtime-command',
+        ],
+    )
     cmd_remover.remove(
         on_event='building-command-table.qbusiness', remove_commands=['chat']
     )
@@ -100,6 +105,19 @@ def register_removals(event_handler):
     cmd_remover.remove(
         on_event='building-command-table.logs',
         remove_commands=['get-log-object'],
+    )
+    cmd_remover.remove(
+        on_event='building-command-table.polly',
+        remove_commands=['start-speech-synthesis-stream'],
+    )
+
+    cmd_remover.remove(
+        on_event='building-command-table.connecthealth',
+        remove_commands=['start-medical-scribe-listening-session'],
+    )
+    cmd_remover.remove(
+        on_event='building-command-table.devops-agent',
+        remove_commands=['send-message'],
     )
 
 

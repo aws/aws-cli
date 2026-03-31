@@ -4,7 +4,8 @@
     "Connection": {
       "operation": "DescribeConnections",
       "resourceIdentifier": {
-        "connectionName": "connections[].connectionName"
+        "connectionName": "connections[].connectionName",
+        "connectionId": "connections[].connectionId"
       }
     },
     "Interconnect": {
@@ -30,6 +31,24 @@
         "customerAddress": "virtualInterfaces[].customerAddress",
         "virtualGatewayId": "virtualInterfaces[].virtualGatewayId",
         "directConnectGatewayId": "virtualInterfaces[].directConnectGatewayId"
+      }
+    },
+    "DirectConnectGateway": {
+      "operation": "DescribeDirectConnectGateways",
+      "resourceIdentifier": {
+        "directConnectGatewayId": "directConnectGateways[].directConnectGatewayId"
+      }
+    },
+    "DirectConnectGatewayAssociationProposal": {
+      "operation": "DescribeDirectConnectGatewayAssociationProposals",
+      "resourceIdentifier": {
+        "proposalId": "directConnectGatewayAssociationProposals[].proposalId"
+      }
+    },
+    "DirectConnectGatewayAssociation": {
+      "operation": "DescribeDirectConnectGatewayAssociations",
+      "resourceIdentifier": {
+        "associationId": "directConnectGatewayAssociations[].associationId"
       }
     }
   },
@@ -179,6 +198,15 @@
             "resourceIdentifier": "connectionId"
           }
         ]
+      },
+      "parentConnectionId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Connection",
+            "resourceIdentifier": "connectionId"
+          }
+        ]
       }
     },
     "AssociateVirtualInterface": {
@@ -312,6 +340,15 @@
             "resourceIdentifier": "virtualGatewayId"
           }
         ]
+      },
+      "associationId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DirectConnectGatewayAssociation",
+            "resourceIdentifier": "associationId"
+          }
+        ]
       }
     },
     "DeleteInterconnect": {
@@ -396,6 +433,15 @@
             "parameters": {},
             "resourceName": "VirtualInterface",
             "resourceIdentifier": "virtualGatewayId"
+          }
+        ]
+      },
+      "associationId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DirectConnectGatewayAssociation",
+            "resourceIdentifier": "associationId"
           }
         ]
       }
@@ -542,6 +588,297 @@
             "parameters": {},
             "resourceName": "Lag",
             "resourceIdentifier": "lagName"
+          }
+        ]
+      }
+    },
+    "AcceptDirectConnectGatewayAssociationProposal": {
+      "directConnectGatewayId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DirectConnectGateway",
+            "resourceIdentifier": "directConnectGatewayId"
+          }
+        ]
+      },
+      "proposalId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DirectConnectGatewayAssociationProposal",
+            "resourceIdentifier": "proposalId"
+          }
+        ]
+      }
+    },
+    "AllocateTransitVirtualInterface": {
+      "connectionId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Connection",
+            "resourceIdentifier": "connectionId"
+          }
+        ]
+      }
+    },
+    "AssociateMacSecKey": {
+      "connectionId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Connection",
+            "resourceIdentifier": "connectionId"
+          }
+        ]
+      }
+    },
+    "ConfirmTransitVirtualInterface": {
+      "virtualInterfaceId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "VirtualInterface",
+            "resourceIdentifier": "virtualInterfaceId"
+          }
+        ]
+      },
+      "directConnectGatewayId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DirectConnectGateway",
+            "resourceIdentifier": "directConnectGatewayId"
+          }
+        ]
+      }
+    },
+    "CreateBGPPeer": {
+      "virtualInterfaceId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "VirtualInterface",
+            "resourceIdentifier": "virtualInterfaceId"
+          }
+        ]
+      }
+    },
+    "CreateConnection": {
+      "lagId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Lag",
+            "resourceIdentifier": "lagId"
+          }
+        ]
+      }
+    },
+    "CreateDirectConnectGatewayAssociation": {
+      "directConnectGatewayId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DirectConnectGateway",
+            "resourceIdentifier": "directConnectGatewayId"
+          }
+        ]
+      }
+    },
+    "CreateDirectConnectGatewayAssociationProposal": {
+      "directConnectGatewayId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DirectConnectGateway",
+            "resourceIdentifier": "directConnectGatewayId"
+          }
+        ]
+      }
+    },
+    "CreateInterconnect": {
+      "lagId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Lag",
+            "resourceIdentifier": "lagId"
+          }
+        ]
+      }
+    },
+    "CreateLag": {
+      "connectionId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Connection",
+            "resourceIdentifier": "connectionId"
+          }
+        ]
+      }
+    },
+    "CreatePrivateVirtualInterface": {
+      "connectionId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Connection",
+            "resourceIdentifier": "connectionId"
+          }
+        ]
+      }
+    },
+    "CreatePublicVirtualInterface": {
+      "connectionId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Connection",
+            "resourceIdentifier": "connectionId"
+          }
+        ]
+      }
+    },
+    "CreateTransitVirtualInterface": {
+      "connectionId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Connection",
+            "resourceIdentifier": "connectionId"
+          }
+        ]
+      }
+    },
+    "DeleteDirectConnectGatewayAssociationProposal": {
+      "proposalId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DirectConnectGatewayAssociationProposal",
+            "resourceIdentifier": "proposalId"
+          }
+        ]
+      }
+    },
+    "DescribeDirectConnectGatewayAssociationProposals": {
+      "directConnectGatewayId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DirectConnectGateway",
+            "resourceIdentifier": "directConnectGatewayId"
+          }
+        ]
+      },
+      "proposalId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DirectConnectGatewayAssociationProposal",
+            "resourceIdentifier": "proposalId"
+          }
+        ]
+      }
+    },
+    "DescribeRouterConfiguration": {
+      "virtualInterfaceId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "VirtualInterface",
+            "resourceIdentifier": "virtualInterfaceId"
+          }
+        ]
+      }
+    },
+    "DisassociateMacSecKey": {
+      "connectionId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Connection",
+            "resourceIdentifier": "connectionId"
+          }
+        ]
+      }
+    },
+    "ListVirtualInterfaceTestHistory": {
+      "virtualInterfaceId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "VirtualInterface",
+            "resourceIdentifier": "virtualInterfaceId"
+          }
+        ]
+      }
+    },
+    "StartBgpFailoverTest": {
+      "virtualInterfaceId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "VirtualInterface",
+            "resourceIdentifier": "virtualInterfaceId"
+          }
+        ]
+      }
+    },
+    "StopBgpFailoverTest": {
+      "virtualInterfaceId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "VirtualInterface",
+            "resourceIdentifier": "virtualInterfaceId"
+          }
+        ]
+      }
+    },
+    "UpdateConnection": {
+      "connectionId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Connection",
+            "resourceIdentifier": "connectionId"
+          }
+        ]
+      }
+    },
+    "UpdateDirectConnectGateway": {
+      "directConnectGatewayId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DirectConnectGateway",
+            "resourceIdentifier": "directConnectGatewayId"
+          }
+        ]
+      }
+    },
+    "UpdateDirectConnectGatewayAssociation": {
+      "associationId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DirectConnectGatewayAssociation",
+            "resourceIdentifier": "associationId"
+          }
+        ]
+      }
+    },
+    "UpdateVirtualInterfaceAttributes": {
+      "virtualInterfaceId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "VirtualInterface",
+            "resourceIdentifier": "virtualInterfaceId"
           }
         ]
       }

@@ -404,6 +404,10 @@
           "shape":"String",
           "documentation":"<p>The Amazon Web Services Region for a plan execution.</p>"
         },
+        "recoveryExecutionId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the most recent recovery execution. Required when starting a post-recovery execution.</p>"
+        },
         "actualRecoveryTime":{
           "shape":"Duration",
           "documentation":"<p>The actual recovery time that Region switch calculates for a plan execution. Actual recovery time includes the time for the plan to run added to the time elapsed until the application health alarms that you've specified are healthy again.</p>"
@@ -791,7 +795,7 @@
         },
         "regionToRun":{
           "shape":"RegionToRunIn",
-          "documentation":"<p>The Amazon Web Services Region for the function to run in.</p>"
+          "documentation":"<p>The Amazon Web Services Region for the function to run in. For recovery workflows use <code>activatingRegion</code> or <code>deactivatingRegion</code>. For post-recovery workflows, use <code>activeRegion</code> (the Region with customer traffic) or <code>inactiveRegion</code> (the Region with no customer traffic).</p>"
         },
         "ungraceful":{
           "shape":"LambdaUngraceful",
@@ -1127,7 +1131,8 @@
       "type":"string",
       "enum":[
         "activate",
-        "deactivate"
+        "deactivate",
+        "postRecovery"
       ]
     },
     "ExecutionApprovalConfiguration":{
@@ -1193,7 +1198,15 @@
           "shape":"Route53HealthCheckConfiguration",
           "documentation":"<p>The Amazon Route 53 health check configuration.</p>"
         },
-        "documentDbConfig":{"shape":"DocumentDbConfiguration"}
+        "documentDbConfig":{"shape":"DocumentDbConfiguration"},
+        "rdsPromoteReadReplicaConfig":{
+          "shape":"RdsPromoteReadReplicaConfiguration",
+          "documentation":"<p>An Amazon RDS promote read replica execution block.</p>"
+        },
+        "rdsCreateCrossRegionReadReplicaConfig":{
+          "shape":"RdsCreateCrossRegionReplicaConfiguration",
+          "documentation":"<p>An Amazon RDS create cross-Region replica execution block.</p>"
+        }
       },
       "documentation":"<p>Execution block configurations for a workflow in a Region switch plan. An execution block represents a specific type of action to perform during a Region switch.</p>",
       "union":true
@@ -1211,7 +1224,9 @@
         "ECSServiceScaling",
         "EKSResourceScaling",
         "Route53HealthCheck",
-        "DocumentDb"
+        "DocumentDb",
+        "RdsPromoteReadReplica",
+        "RdsCreateCrossRegionReplica"
       ]
     },
     "ExecutionComment":{
@@ -1499,6 +1514,10 @@
         "executionRegion":{
           "shape":"String",
           "documentation":"<p>The Amazon Web Services Region for a plan execution.</p>"
+        },
+        "recoveryExecutionId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the most recent recovery execution. Required when starting a post-recovery execution.</p>"
         },
         "stepStates":{
           "shape":"StepStates",
@@ -2160,12 +2179,81 @@
       "type":"list",
       "member":{"shape":"ResourceWarning"}
     },
+    "RdsCreateCrossRegionReplicaConfiguration":{
+      "type":"structure",
+      "required":["dbInstanceArnMap"],
+      "members":{
+        "timeoutMinutes":{
+          "shape":"RdsCreateCrossRegionReplicaConfigurationTimeoutMinutesInteger",
+          "documentation":"<p>The timeout value specified for the configuration.</p>"
+        },
+        "crossAccountRole":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The cross-account role for the configuration.</p>"
+        },
+        "externalId":{
+          "shape":"String",
+          "documentation":"<p>The external ID (secret key) for the configuration.</p>"
+        },
+        "dbInstanceArnMap":{
+          "shape":"RdsDbInstanceArnMap",
+          "documentation":"<p>A map of database instance ARNs for each Region in the plan.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for creating an Amazon RDS cross-Region read replica during post-recovery in a Region switch.</p>"
+    },
+    "RdsCreateCrossRegionReplicaConfigurationTimeoutMinutesInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "RdsDbInstanceArn":{
+      "type":"string",
+      "pattern":"arn:aws[a-zA-Z-]*:rds:[a-z0-9-]+:\\d{12}:db:[a-zA-Z][a-zA-Z0-9]*(-[a-zA-Z0-9]+)*"
+    },
+    "RdsDbInstanceArnMap":{
+      "type":"map",
+      "key":{"shape":"Region"},
+      "value":{"shape":"RdsDbInstanceArn"}
+    },
+    "RdsPromoteReadReplicaConfiguration":{
+      "type":"structure",
+      "required":["dbInstanceArnMap"],
+      "members":{
+        "timeoutMinutes":{
+          "shape":"RdsPromoteReadReplicaConfigurationTimeoutMinutesInteger",
+          "documentation":"<p>The timeout value specified for the configuration.</p>"
+        },
+        "crossAccountRole":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The cross-account role for the configuration.</p>"
+        },
+        "externalId":{
+          "shape":"String",
+          "documentation":"<p>The external ID (secret key) for the configuration.</p>"
+        },
+        "dbInstanceArnMap":{
+          "shape":"RdsDbInstanceArnMap",
+          "documentation":"<p>A map of database instance ARNs for each Region in the plan.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for promoting an Amazon RDS read replica to a standalone database instance during a Region switch.</p>"
+    },
+    "RdsPromoteReadReplicaConfigurationTimeoutMinutesInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
     "RecoveryApproach":{
       "type":"string",
       "enum":[
         "activeActive",
         "activePassive"
       ]
+    },
+    "RecoveryExecutionId":{
+      "type":"string",
+      "pattern":"[a-z]{2}(-[a-z]+)+-[0-9]+/[0-9a-fA-F]{16}"
     },
     "Region":{
       "type":"string",
@@ -2205,7 +2293,9 @@
       "type":"string",
       "enum":[
         "activatingRegion",
-        "deactivatingRegion"
+        "deactivatingRegion",
+        "activeRegion",
+        "inactiveRegion"
       ]
     },
     "RegionalScalingResource":{
@@ -2538,6 +2628,10 @@
         "latestVersion":{
           "shape":"String",
           "documentation":"<p>A boolean value indicating whether to use the latest version of the plan. If set to false, you must specify a specific version.</p>"
+        },
+        "recoveryExecutionId":{
+          "shape":"RecoveryExecutionId",
+          "documentation":"<p>The execution identifier of the recovery execution that ran in the opposite region post-recovery is ran in. Required when starting a post-recovery execution.</p>"
         }
       }
     },
@@ -2937,7 +3031,8 @@
       "type":"string",
       "enum":[
         "activate",
-        "deactivate"
+        "deactivate",
+        "postRecovery"
       ]
     }
   },

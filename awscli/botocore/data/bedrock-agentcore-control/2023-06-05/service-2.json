@@ -156,7 +156,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p> Creates a custom evaluator for agent quality assessment. Custom evaluators use LLM-as-a-Judge configurations with user-defined prompts, rating scales, and model settings to evaluate agent performance at tool call, trace, or session levels. </p>"
+      "documentation":"<p> Creates a custom evaluator for agent quality assessment. Custom evaluators can use either LLM-as-a-Judge configurations with user-defined prompts, rating scales, and model settings, or code-based configurations with customer-managed Lambda functions to evaluate agent performance at tool call, trace, or session levels. </p>"
     },
     "CreateGateway":{
       "name":"CreateGateway",
@@ -276,10 +276,10 @@
       "errors":[
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ConflictException"},
         {"shape":"ValidationException"},
-        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Creates a policy within the AgentCore Policy system. Policies provide real-time, deterministic control over agentic interactions with AgentCore Gateway. Using the Cedar policy language, you can define fine-grained policies that specify which interactions with Gateway tools are permitted based on input parameters and OAuth claims, ensuring agents operate within defined boundaries and business rules. The policy is validated during creation against the Cedar schema generated from the Gateway's tools' input schemas, which defines the available tools, their parameters, and expected data types. This is an asynchronous operation. Use the <a href=\"https://docs.aws.amazon.com/bedrock-agentcore-control/latest/APIReference/API_GetPolicy.html\">GetPolicy</a> operation to poll the <code>status</code> field to track completion.</p>"
@@ -573,9 +573,9 @@
       "input":{"shape":"DeletePolicyRequest"},
       "output":{"shape":"DeletePolicyResponse"},
       "errors":[
+        {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"},
-        {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
@@ -593,9 +593,9 @@
       "input":{"shape":"DeletePolicyEngineRequest"},
       "output":{"shape":"DeletePolicyEngineResponse"},
       "errors":[
+        {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"},
-        {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
@@ -886,8 +886,8 @@
       "errors":[
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
-        {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Retrieves detailed information about a specific policy within the AgentCore Policy system. This operation returns the complete policy definition, metadata, and current status, allowing administrators to review and manage policy configurations.</p>",
@@ -905,8 +905,8 @@
       "errors":[
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
-        {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Retrieves detailed information about a specific policy engine within the AgentCore Policy system. This operation returns the complete policy engine configuration, metadata, and current status, allowing administrators to review and manage policy engine settings.</p>",
@@ -924,8 +924,8 @@
       "errors":[
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
-        {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Retrieves information about a policy generation request within the AgentCore Policy system. Policy generation converts natural language descriptions into Cedar policy statements using AI-powered translation, enabling non-technical users to create policies.</p>",
@@ -1242,8 +1242,8 @@
       "errors":[
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
-        {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Retrieves a list of policies within the AgentCore Policy engine. This operation supports pagination and filtering to help administrators manage and discover policies across policy engines. Results can be filtered by policy engine or resource associations.</p>",
@@ -1279,8 +1279,8 @@
       "errors":[
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
-        {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Retrieves a list of generated policy assets from a policy generation request within the AgentCore Policy system. This operation returns the actual Cedar policies and related artifacts produced by the AI-powered policy generation process, allowing users to review and select from multiple generated policy options.</p>",
@@ -1298,8 +1298,8 @@
       "errors":[
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
-        {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Retrieves a list of policy generation requests within the AgentCore Policy system. This operation supports pagination and filtering to help track and manage AI-powered policy generation operations.</p>",
@@ -1659,7 +1659,7 @@
     "UpdatePolicy":{
       "name":"UpdatePolicy",
       "http":{
-        "method":"PUT",
+        "method":"PATCH",
         "requestUri":"/policy-engines/{policyEngineId}/policies/{policyId}",
         "responseCode":202
       },
@@ -1667,10 +1667,10 @@
       "output":{"shape":"UpdatePolicyResponse"},
       "errors":[
         {"shape":"AccessDeniedException"},
-        {"shape":"ConflictException"},
         {"shape":"ValidationException"},
-        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Updates an existing policy within the AgentCore Policy system. This operation allows modification of the policy description and definition while maintaining the policy's identity. The updated policy is validated against the Cedar schema before being applied. This is an asynchronous operation. Use the <code>GetPolicy</code> operation to poll the <code>status</code> field to track completion.</p>",
@@ -1679,7 +1679,7 @@
     "UpdatePolicyEngine":{
       "name":"UpdatePolicyEngine",
       "http":{
-        "method":"PUT",
+        "method":"PATCH",
         "requestUri":"/policy-engines/{policyEngineId}",
         "responseCode":202
       },
@@ -1687,10 +1687,10 @@
       "output":{"shape":"UpdatePolicyEngineResponse"},
       "errors":[
         {"shape":"AccessDeniedException"},
-        {"shape":"ConflictException"},
         {"shape":"ValidationException"},
-        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Updates an existing policy engine within the AgentCore Policy system. This operation allows modification of the policy engine description while maintaining its identity. This is an asynchronous operation. Use the <code>GetPolicyEngine</code> operation to poll the <code>status</code> field to track completion.</p>",
@@ -1746,7 +1746,8 @@
         "PYTHON_3_10",
         "PYTHON_3_11",
         "PYTHON_3_12",
-        "PYTHON_3_13"
+        "PYTHON_3_13",
+        "PYTHON_3_14"
       ]
     },
     "AgentRuntime":{
@@ -2256,6 +2257,34 @@
       "type":"string",
       "pattern":"arn:(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:(aws|[0-9]{12}):browser(-custom)?/(aws\\.browser\\.v1|[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10})"
     },
+    "BrowserEnterprisePolicies":{
+      "type":"list",
+      "member":{"shape":"BrowserEnterprisePolicy"},
+      "max":100,
+      "min":0
+    },
+    "BrowserEnterprisePolicy":{
+      "type":"structure",
+      "required":["location"],
+      "members":{
+        "location":{
+          "shape":"ResourceLocation",
+          "documentation":"<p>The location of the enterprise policy file.</p>"
+        },
+        "type":{
+          "shape":"BrowserEnterprisePolicyType",
+          "documentation":"<p>The type of browser enterprise policy. Available values are <code>MANAGED</code> and <code>RECOMMENDED</code>.</p>"
+        }
+      },
+      "documentation":"<p>Browser enterprise policy configuration.</p>"
+    },
+    "BrowserEnterprisePolicyType":{
+      "type":"string",
+      "enum":[
+        "MANAGED",
+        "RECOMMENDED"
+      ]
+    },
     "BrowserId":{
       "type":"string",
       "pattern":"(aws\\.browser\\.v1|[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10})"
@@ -2478,6 +2507,34 @@
       },
       "documentation":"<p>Represents a Cedar policy statement within the AgentCore Policy system. Cedar is a policy language designed for authorization that provides human-readable, analyzable, and high-performance policy evaluation for controlling agent behavior and access decisions. </p>"
     },
+    "Certificate":{
+      "type":"structure",
+      "required":["location"],
+      "members":{
+        "location":{
+          "shape":"CertificateLocation",
+          "documentation":"<p>The location of the certificate.</p>"
+        }
+      },
+      "documentation":"<p>A certificate to install in the browser or code interpreter.</p>"
+    },
+    "CertificateLocation":{
+      "type":"structure",
+      "members":{
+        "secretsManager":{
+          "shape":"SecretsManagerLocation",
+          "documentation":"<p>The Amazon Web Services Secrets Manager location of the certificate.</p>"
+        }
+      },
+      "documentation":"<p>The location from which to retrieve a certificate.</p>",
+      "union":true
+    },
+    "Certificates":{
+      "type":"list",
+      "member":{"shape":"Certificate"},
+      "max":200,
+      "min":1
+    },
     "ClaimMatchOperatorType":{
       "type":"string",
       "enum":[
@@ -2568,6 +2625,17 @@
         }
       },
       "documentation":"<p>The source code configuration that specifies the location and details of the code to be executed.</p>",
+      "union":true
+    },
+    "CodeBasedEvaluatorConfig":{
+      "type":"structure",
+      "members":{
+        "lambdaConfig":{
+          "shape":"LambdaEvaluatorConfig",
+          "documentation":"<p> The Lambda function configuration for code-based evaluation. </p>"
+        }
+      },
+      "documentation":"<p> Configuration for a code-based evaluator. Specify the Lambda function to use for evaluation. </p>",
       "union":true
     },
     "CodeConfiguration":{
@@ -2740,6 +2808,32 @@
       "documentation":"<p>Represents content input for policy generation operations. This structure encapsulates the natural language descriptions or other content formats that are used as input for AI-powered policy generation.</p>",
       "union":true
     },
+    "ContentConfiguration":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "type":{
+          "shape":"ContentType",
+          "documentation":"<p>Type of content to stream.</p>"
+        },
+        "level":{
+          "shape":"ContentLevel",
+          "documentation":"<p>Level of detail for streamed content.</p>"
+        }
+      },
+      "documentation":"<p>Defines what content to stream and at what level of detail.</p>"
+    },
+    "ContentLevel":{
+      "type":"string",
+      "enum":[
+        "METADATA_ONLY",
+        "FULL_CONTENT"
+      ]
+    },
+    "ContentType":{
+      "type":"string",
+      "enum":["MEMORY_RECORDS"]
+    },
     "CreateAgentRuntimeEndpointRequest":{
       "type":"structure",
       "required":[
@@ -2866,6 +2960,10 @@
         "environmentVariables":{
           "shape":"EnvironmentVariablesMap",
           "documentation":"<p>Environment variables to set in the AgentCore Runtime environment.</p>"
+        },
+        "filesystemConfigurations":{
+          "shape":"FilesystemConfigurations",
+          "documentation":"<p>The filesystem configurations to mount into the AgentCore Runtime. Use filesystem configurations to provide persistent storage to your AgentCore Runtime sessions.</p>"
         },
         "tags":{
           "shape":"TagsMap",
@@ -3033,6 +3131,14 @@
           "shape":"BrowserSigningConfigInput",
           "documentation":"<p>The browser signing configuration that enables cryptographic agent identification using HTTP message signatures for web bot authentication.</p>"
         },
+        "enterprisePolicies":{
+          "shape":"BrowserEnterprisePolicies",
+          "documentation":"<p>A list of enterprise policy files for the browser.</p>"
+        },
+        "certificates":{
+          "shape":"Certificates",
+          "documentation":"<p>A list of certificates to install in the browser.</p>"
+        },
         "clientToken":{
           "shape":"ClientToken",
           "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, Amazon Bedrock AgentCore ignores the request but does not return an error.</p>",
@@ -3093,6 +3199,10 @@
         "networkConfiguration":{
           "shape":"CodeInterpreterNetworkConfiguration",
           "documentation":"<p>The network configuration for the code interpreter. This configuration specifies the network mode for the code interpreter.</p>"
+        },
+        "certificates":{
+          "shape":"Certificates",
+          "documentation":"<p>A list of certificates to install in the code interpreter.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -3155,7 +3265,7 @@
         },
         "evaluatorConfig":{
           "shape":"EvaluatorConfig",
-          "documentation":"<p> The configuration for the evaluator, including LLM-as-a-Judge settings with instructions, rating scale, and model configuration. </p>"
+          "documentation":"<p> The configuration for the evaluator. Specify either LLM-as-a-Judge settings with instructions, rating scale, and model configuration, or code-based settings with a customer-managed Lambda function. </p>"
         },
         "level":{
           "shape":"EvaluatorLevel",
@@ -3489,6 +3599,10 @@
           "shape":"MemoryStrategyInputList",
           "documentation":"<p>The memory strategies to use for this memory. Strategies define how information is extracted, processed, and consolidated.</p>"
         },
+        "streamDeliveryResources":{
+          "shape":"StreamDeliveryResources",
+          "documentation":"<p>Configuration for streaming memory record data to external resources.</p>"
+        },
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>A map of tag keys and values to assign to an AgentCore Memory. Tags enable you to categorize your resources in different ways, for example, by purpose, owner, or environment.</p>"
@@ -3671,6 +3785,14 @@
           "shape":"ClientToken",
           "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you retry a request with the same client token, the service returns the same response without creating a duplicate policy engine.</p>",
           "idempotencyToken":true
+        },
+        "encryptionKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the policy engine data.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of tag keys and values to assign to an AgentCore Policy. Tags enable you to categorize your resources in different ways, for example, by purpose, owner, or environment.</p>"
         }
       }
     },
@@ -3717,6 +3839,10 @@
         "statusReasons":{
           "shape":"PolicyStatusReasons",
           "documentation":"<p>Additional information about the policy engine status. This provides details about any failures or the current state of the policy engine creation process.</p>"
+        },
+        "encryptionKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the policy engine data.</p>"
         }
       }
     },
@@ -4124,7 +4250,14 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces associated with the custom memory strategy.</p>"
+          "documentation":"<p>The namespaces associated with the custom memory strategy.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use namespaceTemplates instead",
+          "deprecatedSince":"2026-03-02"
+        },
+        "namespaceTemplates":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaceTemplates associated with the custom memory strategy.</p>"
         },
         "configuration":{
           "shape":"CustomConfigurationInput",
@@ -4716,6 +4849,10 @@
         "statusReasons":{
           "shape":"PolicyStatusReasons",
           "documentation":"<p>Additional information about the deletion status. This provides details about the deletion process or any issues that may have occurred.</p>"
+        },
+        "encryptionKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the policy engine data.</p>"
         }
       }
     },
@@ -4927,7 +5064,14 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces for which to create episodes.</p>"
+          "documentation":"<p>The namespaces for which to create episodes.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use namespaceTemplates instead",
+          "deprecatedSince":"2026-03-02"
+        },
+        "namespaceTemplates":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaceTemplates for which to create episodes.</p>"
         },
         "reflectionConfiguration":{
           "shape":"EpisodicReflectionConfigurationInput",
@@ -5007,29 +5151,48 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces to use for episodic reflection. Can be less nested than the episodic namespaces.</p>"
+          "documentation":"<p>The namespaces to use for episodic reflection. Can be less nested than the episodic namespaces.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use namespaceTemplates instead",
+          "deprecatedSince":"2026-03-02"
+        },
+        "namespaceTemplates":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaceTemplates to use for episodic reflection. Can be less nested than the episodic namespaces.</p>"
         }
       },
       "documentation":"<p>Configurations for overriding the reflection step of the episodic memory strategy.</p>"
     },
     "EpisodicReflectionConfiguration":{
       "type":"structure",
-      "required":["namespaces"],
       "members":{
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces for which to create reflections. Can be less nested than the episodic namespaces.</p>"
+          "documentation":"<p>The namespaces for which to create reflections. Can be less nested than the episodic namespaces.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use namespaceTemplates instead",
+          "deprecatedSince":"2026-03-02"
+        },
+        "namespaceTemplates":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaceTemplates for which to create reflections. Can be less nested than the episodic namespaces.</p>"
         }
       },
       "documentation":"<p>The configuration for the reflections created with the episodic memory strategy.</p>"
     },
     "EpisodicReflectionConfigurationInput":{
       "type":"structure",
-      "required":["namespaces"],
       "members":{
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces over which to create reflections. Can be less nested than episode namespaces.</p>"
+          "documentation":"<p>The namespaces over which to create reflections. Can be less nested than episode namespaces.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use namespaceTemplates instead",
+          "deprecatedSince":"2026-03-02"
+        },
+        "namespaceTemplates":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaceTemplates over which to create reflections. Can be less nested than episode namespaces.</p>"
         }
       },
       "documentation":"<p>An episodic reflection configuration input.</p>"
@@ -5051,7 +5214,14 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces over which reflections were created. Can be less nested than the episodic namespaces.</p>"
+          "documentation":"<p>The namespaces over which reflections were created. Can be less nested than the episodic namespaces.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use namespaceTemplates instead",
+          "deprecatedSince":"2026-03-02"
+        },
+        "namespaceTemplates":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaceTemplates over which reflections were created. Can be less nested than the episodic namespaces.</p>"
         }
       },
       "documentation":"<p>Contains configurations to override the default reflection step for the episodic memory strategy.</p>"
@@ -5077,6 +5247,10 @@
         "llmAsAJudge":{
           "shape":"LlmAsAJudgeEvaluatorConfig",
           "documentation":"<p> The LLM-as-a-Judge configuration that uses a language model to evaluate agent performance based on custom instructions and rating scales. </p>"
+        },
+        "codeBased":{
+          "shape":"CodeBasedEvaluatorConfig",
+          "documentation":"<p> Configuration for a code-based evaluator that uses a customer-managed Lambda function to programmatically assess agent performance. </p>"
         }
       },
       "documentation":"<p> The configuration that defines how an evaluator assesses agent performance, including the evaluation method and parameters. </p>",
@@ -5210,7 +5384,8 @@
       "type":"string",
       "enum":[
         "Builtin",
-        "Custom"
+        "Custom",
+        "CustomCode"
       ]
     },
     "ExceptionLevel":{
@@ -5227,6 +5402,23 @@
       },
       "documentation":"<p>Contains extraction configuration information for a memory strategy.</p>",
       "union":true
+    },
+    "FilesystemConfiguration":{
+      "type":"structure",
+      "members":{
+        "sessionStorage":{
+          "shape":"SessionStorageConfiguration",
+          "documentation":"<p>Configuration for session storage. Session storage provides persistent storage that is preserved across AgentCore Runtime session invocations.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for a filesystem that can be mounted into the AgentCore Runtime.</p>",
+      "union":true
+    },
+    "FilesystemConfigurations":{
+      "type":"list",
+      "member":{"shape":"FilesystemConfiguration"},
+      "max":1,
+      "min":0
     },
     "Filter":{
       "type":"structure",
@@ -5764,6 +5956,14 @@
         "requestHeaderConfiguration":{
           "shape":"RequestHeaderConfiguration",
           "documentation":"<p>Configuration for HTTP request headers that will be passed through to the runtime.</p>"
+        },
+        "metadataConfiguration":{
+          "shape":"RuntimeMetadataConfiguration",
+          "documentation":"<p>Configuration for microVM Metadata Service (MMDS) settings for the AgentCore Runtime.</p>"
+        },
+        "filesystemConfigurations":{
+          "shape":"FilesystemConfigurations",
+          "documentation":"<p>The filesystem configurations mounted into the AgentCore Runtime.</p>"
         }
       }
     },
@@ -5924,6 +6124,14 @@
           "shape":"BrowserSigningConfigOutput",
           "documentation":"<p>The browser signing configuration that shows whether cryptographic agent identification is enabled for web bot authentication.</p>"
         },
+        "enterprisePolicies":{
+          "shape":"BrowserEnterprisePolicies",
+          "documentation":"<p>The list of enterprise policy files configured for the browser.</p>"
+        },
+        "certificates":{
+          "shape":"Certificates",
+          "documentation":"<p>The list of certificates configured for the browser.</p>"
+        },
         "status":{
           "shape":"BrowserStatus",
           "documentation":"<p>The current status of the browser.</p>"
@@ -5991,6 +6199,10 @@
           "shape":"CodeInterpreterStatus",
           "documentation":"<p>The current status of the code interpreter.</p>"
         },
+        "certificates":{
+          "shape":"Certificates",
+          "documentation":"<p>The list of certificates configured for the code interpreter.</p>"
+        },
         "failureReason":{
           "shape":"String",
           "documentation":"<p>The reason for failure if the code interpreter is in a failed state.</p>"
@@ -6048,7 +6260,7 @@
         },
         "evaluatorConfig":{
           "shape":"EvaluatorConfig",
-          "documentation":"<p> The configuration of the evaluator, including LLM-as-a-Judge settings for custom evaluators. </p>"
+          "documentation":"<p> The configuration of the evaluator, including LLM-as-a-Judge or code-based settings. </p>"
         },
         "level":{
           "shape":"EvaluatorLevel",
@@ -6477,6 +6689,10 @@
         "statusReasons":{
           "shape":"PolicyStatusReasons",
           "documentation":"<p>Additional information about the policy engine status. This provides details about any failures or the current state of the policy engine.</p>"
+        },
+        "encryptionKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the policy engine data.</p>"
         }
       }
     },
@@ -6997,6 +7213,30 @@
         "ServiceManagedKey"
       ]
     },
+    "KinesisResource":{
+      "type":"structure",
+      "required":[
+        "dataStreamArn",
+        "contentConfigurations"
+      ],
+      "members":{
+        "dataStreamArn":{
+          "shape":"Arn",
+          "documentation":"<p>ARN of the Kinesis Data Stream.</p>"
+        },
+        "contentConfigurations":{
+          "shape":"KinesisResourceContentConfigurationsList",
+          "documentation":"<p>Content configurations for stream delivery.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for Kinesis Data Stream delivery.</p>"
+    },
+    "KinesisResourceContentConfigurationsList":{
+      "type":"list",
+      "member":{"shape":"ContentConfiguration"},
+      "max":1,
+      "min":1
+    },
     "KmsConfiguration":{
       "type":"structure",
       "required":["keyType"],
@@ -7017,6 +7257,31 @@
       "max":2048,
       "min":1,
       "pattern":"arn:aws(|-cn|-us-gov):kms:[a-zA-Z0-9-]*:[0-9]{12}:key/[a-zA-Z0-9-]{36}"
+    },
+    "LambdaArn":{
+      "type":"string",
+      "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:([a-z]{2}(-gov)?-[a-z]+-\\d{1}):(\\d{12}):function:([a-zA-Z0-9-_.]+)(:(\\$LATEST|[a-zA-Z0-9-_]+))?"
+    },
+    "LambdaEvaluatorConfig":{
+      "type":"structure",
+      "required":["lambdaArn"],
+      "members":{
+        "lambdaArn":{
+          "shape":"LambdaArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the Lambda function that implements the evaluation logic. </p>"
+        },
+        "lambdaTimeoutInSeconds":{
+          "shape":"LambdaEvaluatorConfigLambdaTimeoutInSecondsInteger",
+          "documentation":"<p> The timeout in seconds for the Lambda function invocation. Defaults to 60. Must be between 1 and 300. </p>"
+        }
+      },
+      "documentation":"<p> Configuration for a Lambda function used as a code-based evaluator. </p>"
+    },
+    "LambdaEvaluatorConfigLambdaTimeoutInSecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":300,
+      "min":1
     },
     "LambdaFunctionArn":{
       "type":"string",
@@ -7239,6 +7504,10 @@
           "documentation":"<p>A token to retrieve the next page of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
+        },
+        "name":{
+          "shape":"BrowserProfileName",
+          "documentation":"<p>The name of the browser profile to filter results by.</p>"
         }
       }
     },
@@ -7945,6 +8214,10 @@
         "strategies":{
           "shape":"MemoryStrategyList",
           "documentation":"<p>The list of memory strategies associated with this memory.</p>"
+        },
+        "streamDeliveryResources":{
+          "shape":"StreamDeliveryResources",
+          "documentation":"<p>Configuration for streaming memory record data to external resources.</p>"
         }
       },
       "documentation":"<p>Contains information about a memory resource.</p>"
@@ -7979,7 +8252,8 @@
         "strategyId",
         "name",
         "type",
-        "namespaces"
+        "namespaces",
+        "namespaceTemplates"
       ],
       "members":{
         "strategyId":{
@@ -8004,7 +8278,14 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces associated with the memory strategy.</p>"
+          "documentation":"<p>The namespaces associated with the memory strategy.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use namespaceTemplates instead",
+          "deprecatedSince":"2026-03-02"
+        },
+        "namespaceTemplates":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaceTemplates associated with the memory strategy.</p>"
         },
         "createdAt":{
           "shape":"Timestamp",
@@ -8279,7 +8560,14 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The updated namespaces for the memory strategy.</p>"
+          "documentation":"<p>The updated namespaces for the memory strategy.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use namespaceTemplates instead",
+          "deprecatedSince":"2026-03-02"
+        },
+        "namespaceTemplates":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The updated namespaceTemplates for the memory strategy.</p>"
         },
         "configuration":{
           "shape":"ModifyStrategyConfiguration",
@@ -8349,19 +8637,26 @@
       },
       "documentation":"<p>Contains information for modifying a strategy configuration.</p>"
     },
+    "MountPath":{
+      "type":"string",
+      "max":200,
+      "min":6,
+      "pattern":"/mnt/[a-zA-Z0-9._-]+/?"
+    },
     "Name":{
       "type":"string",
       "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,47}"
     },
     "Namespace":{
       "type":"string",
-      "max":1024,
+      "max":512,
       "min":1,
       "pattern":"[a-zA-Z0-9\\-_\\/]*(\\{(actorId|sessionId|memoryStrategyId)\\}[a-zA-Z0-9\\-_\\/]*)*"
     },
     "NamespacesList":{
       "type":"list",
       "member":{"shape":"Namespace"},
+      "max":1,
       "min":1
     },
     "NaturalLanguage":{
@@ -8864,6 +9159,10 @@
         "cedar":{
           "shape":"CedarPolicy",
           "documentation":"<p>The Cedar policy definition within the policy definition structure. This contains the Cedar policy statement that defines the authorization logic using Cedar's human-readable, analyzable policy language. Cedar policies specify principals (who can access), actions (what operations are allowed), resources (what can be accessed), and optional conditions for fine-grained control. Cedar provides a formal policy language designed for authorization with deterministic evaluation, making policies testable, reviewable, and auditable. All Cedar policies follow a default-deny model where actions are denied unless explicitly permitted, and forbid policies always override permit policies.</p>"
+        },
+        "policyGeneration":{
+          "shape":"PolicyGenerationDetails",
+          "documentation":"<p>The generated policy asset information within the policy definition structure. This contains information identifying a generated policy asset from the AI-powered policy generation process within the AgentCore Policy system. Each asset contains a Cedar policy statement generated from natural language input, along with associated metadata and analysis findings to help users evaluate and select the most appropriate policy option.</p>"
         }
       },
       "documentation":"<p>Represents the definition structure for policies within the AgentCore Policy system. This structure encapsulates different policy formats and languages that can be used to define access control rules.</p>",
@@ -8912,6 +9211,10 @@
         "statusReasons":{
           "shape":"PolicyStatusReasons",
           "documentation":"<p>Additional information about the policy engine status. This provides details about any failures or the current state of the policy engine lifecycle.</p>"
+        },
+        "encryptionKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the policy engine data.</p>"
         }
       },
       "documentation":"<p>Represents a policy engine resource within the AgentCore Policy system. Policy engines serve as containers for grouping related policies and provide the execution context for policy evaluation and management. Each policy engine can be associated with one Gateway (one engine per Gateway), where it intercepts all agent tool calls and evaluates them against the contained policies before allowing tools to execute. The policy engine maintains the Cedar schema generated from the Gateway's tool manifest, ensuring that policies are validated against the actual tools and parameters available. Policy engines support two enforcement modes that can be configured when associating with a Gateway: log-only mode for testing (evaluates decisions without blocking) and enforce mode for production (actively allows or denies based on policy evaluation).</p>"
@@ -9036,6 +9339,24 @@
     "PolicyGenerationAssets":{
       "type":"list",
       "member":{"shape":"PolicyGenerationAsset"}
+    },
+    "PolicyGenerationDetails":{
+      "type":"structure",
+      "required":[
+        "policyGenerationId",
+        "policyGenerationAssetId"
+      ],
+      "members":{
+        "policyGenerationId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for this policy generation request.</p>"
+        },
+        "policyGenerationAssetId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for this generated policy asset within the policy generation request.</p>"
+        }
+      },
+      "documentation":"<p>Represents the information identifying a generated policy asset from the AI-powered policy generation process within the AgentCore Policy system. Each asset contains a Cedar policy statement generated from natural language input, along with associated metadata and analysis findings to help users evaluate and select the most appropriate policy option.</p>"
     },
     "PolicyGenerationName":{
       "type":"string",
@@ -9227,6 +9548,14 @@
       },
       "exception":true
     },
+    "ResourceLocation":{
+      "type":"structure",
+      "members":{
+        "s3":{"shape":"S3Location"}
+      },
+      "documentation":"<p>The location of a resource.</p>",
+      "union":true
+    },
     "ResourceNotFoundException":{
       "type":"structure",
       "members":{
@@ -9311,7 +9640,18 @@
       "type":"string",
       "max":1024,
       "min":1,
-      "pattern":"([0-9]{12})\\.dkr\\.ecr\\.([a-z0-9-]+)\\.amazonaws\\.com/((?:[a-z0-9]+(?:[._-][a-z0-9]+)*/)*[a-z0-9]+(?:[._-][a-z0-9]+)*)(?::([^:@]{1,300}))?(?:@(.+))?"
+      "pattern":"(([0-9]{12})\\.dkr\\.ecr\\.([a-z0-9-]+)\\.amazonaws\\.com(\\.cn)?|public\\.ecr\\.aws)/((?:[a-z0-9]+(?:[._-][a-z0-9]+)*/)*[a-z0-9]+(?:[._-][a-z0-9]+)*)(?::([^:@]{1,300}))?(?:@(.+))?"
+    },
+    "RuntimeMetadataConfiguration":{
+      "type":"structure",
+      "required":["requireMMDSV2"],
+      "members":{
+        "requireMMDSV2":{
+          "shape":"Boolean",
+          "documentation":"<p>Enables MMDSv2 (microVM Metadata Service Version 2) requirement for the agent runtime. When set to <code>true</code>, the runtime microVM will only accept MMDSv2 requests.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for microVM metadata service settings.</p>"
     },
     "S3BucketUri":{
       "type":"string",
@@ -9483,6 +9823,17 @@
       "type":"string",
       "pattern":"arn:(aws|aws-us-gov):secretsmanager:[A-Za-z0-9-]{1,64}:[0-9]{12}:secret:[a-zA-Z0-9-_/+=.@!]+"
     },
+    "SecretsManagerLocation":{
+      "type":"structure",
+      "required":["secretArn"],
+      "members":{
+        "secretArn":{
+          "shape":"ToolSecretArn",
+          "documentation":"<p>The ARN of the Amazon Web Services Secrets Manager secret containing the certificate.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Web Services Secrets Manager location configuration.</p>"
+    },
     "SecurityGroupId":{
       "type":"string",
       "pattern":"sg-[0-9a-zA-Z]{8,17}"
@@ -9591,7 +9942,14 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces associated with the semantic memory strategy.</p>"
+          "documentation":"<p>The namespaces associated with the semantic memory strategy.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use namespaceTemplates instead",
+          "deprecatedSince":"2026-03-02"
+        },
+        "namespaceTemplates":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaceTemplates associated with the semantic memory strategy.</p>"
         }
       },
       "documentation":"<p>Input for creating a semantic memory strategy.</p>"
@@ -9651,7 +10009,8 @@
       "enum":[
         "MCP",
         "HTTP",
-        "A2A"
+        "A2A",
+        "AGUI"
       ]
     },
     "ServiceException":{
@@ -9699,6 +10058,17 @@
       "box":true,
       "max":1440,
       "min":1
+    },
+    "SessionStorageConfiguration":{
+      "type":"structure",
+      "required":["mountPath"],
+      "members":{
+        "mountPath":{
+          "shape":"MountPath",
+          "documentation":"<p>The mount path for the session storage filesystem inside the AgentCore Runtime. The path must be under <code>/mnt</code> with exactly one subdirectory level (for example, <code>/mnt/data</code>).</p>"
+        }
+      },
+      "documentation":"<p>Configuration for a session storage filesystem mounted into the AgentCore Runtime. Session storage provides persistent storage that is preserved across AgentCore Runtime session invocations.</p>"
     },
     "SetTokenVaultCMKRequest":{
       "type":"structure",
@@ -9861,7 +10231,7 @@
     },
     "Statement":{
       "type":"string",
-      "max":153600,
+      "max":10000,
       "min":35
     },
     "StatusReason":{
@@ -9900,6 +10270,34 @@
         }
       },
       "documentation":"<p>Contains configuration information for a memory strategy.</p>"
+    },
+    "StreamDeliveryResource":{
+      "type":"structure",
+      "members":{
+        "kinesis":{
+          "shape":"KinesisResource",
+          "documentation":"<p>Kinesis Data Stream configuration.</p>"
+        }
+      },
+      "documentation":"<p>Supported stream delivery resource types.</p>",
+      "union":true
+    },
+    "StreamDeliveryResources":{
+      "type":"structure",
+      "required":["resources"],
+      "members":{
+        "resources":{
+          "shape":"StreamDeliveryResourcesList",
+          "documentation":"<p>List of stream delivery resource configurations.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for streaming memory record data to external resources.</p>"
+    },
+    "StreamDeliveryResourcesList":{
+      "type":"list",
+      "member":{"shape":"StreamDeliveryResource"},
+      "max":1,
+      "min":0
     },
     "String":{"type":"string"},
     "SubnetId":{
@@ -9944,7 +10342,14 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces associated with the summary memory strategy.</p>"
+          "documentation":"<p>The namespaces associated with the summary memory strategy.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use namespaceTemplates instead",
+          "deprecatedSince":"2026-03-02"
+        },
+        "namespaceTemplates":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaceTemplates associated with the summary memory strategy.</p>"
         }
       },
       "documentation":"<p>Input for creating a summary memory strategy.</p>"
@@ -10303,6 +10708,10 @@
       "documentation":"<p>A tool schema for a gateway target. This structure defines the schema for a tool that the target exposes through the Model Context Protocol.</p>",
       "union":true
     },
+    "ToolSecretArn":{
+      "type":"string",
+      "pattern":"arn:aws(-[a-z-]+)?:secretsmanager:[a-z0-9-]+:[0-9]{12}:secret:[a-zA-Z0-9/_+=.@-]+"
+    },
     "TriggerCondition":{
       "type":"structure",
       "members":{
@@ -10506,9 +10915,17 @@
           "shape":"LifecycleConfiguration",
           "documentation":"<p>The updated life cycle configuration for the AgentCore Runtime.</p>"
         },
+        "metadataConfiguration":{
+          "shape":"RuntimeMetadataConfiguration",
+          "documentation":"<p>The updated configuration for microVM Metadata Service (MMDS) settings for the AgentCore Runtime.</p>"
+        },
         "environmentVariables":{
           "shape":"EnvironmentVariablesMap",
           "documentation":"<p>Updated environment variables to set in the AgentCore Runtime environment.</p>"
+        },
+        "filesystemConfigurations":{
+          "shape":"FilesystemConfigurations",
+          "documentation":"<p>The updated filesystem configurations to mount into the AgentCore Runtime.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -10628,7 +11045,7 @@
         },
         "evaluatorConfig":{
           "shape":"EvaluatorConfig",
-          "documentation":"<p> The updated configuration for the evaluator, including LLM-as-a-Judge settings with instructions, rating scale, and model configuration. </p>"
+          "documentation":"<p> The updated configuration for the evaluator. Specify either LLM-as-a-Judge settings with instructions, rating scale, and model configuration, or code-based settings with a customer-managed Lambda function. </p>"
         },
         "level":{
           "shape":"EvaluatorLevel",
@@ -10940,6 +11357,10 @@
         "memoryStrategies":{
           "shape":"ModifyMemoryStrategies",
           "documentation":"<p>The memory strategies to add, modify, or delete.</p>"
+        },
+        "streamDeliveryResources":{
+          "shape":"StreamDeliveryResources",
+          "documentation":"<p>Configuration for streaming memory record data to external resources.</p>"
         }
       }
     },
@@ -11119,7 +11540,7 @@
           "locationName":"policyEngineId"
         },
         "description":{
-          "shape":"Description",
+          "shape":"UpdatedDescription",
           "documentation":"<p>The new description for the policy engine.</p>"
         }
       }
@@ -11167,6 +11588,10 @@
         "statusReasons":{
           "shape":"PolicyStatusReasons",
           "documentation":"<p>Additional information about the update status.</p>"
+        },
+        "encryptionKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the policy engine data.</p>"
         }
       }
     },
@@ -11174,8 +11599,7 @@
       "type":"structure",
       "required":[
         "policyEngineId",
-        "policyId",
-        "definition"
+        "policyId"
       ],
       "members":{
         "policyEngineId":{
@@ -11191,7 +11615,7 @@
           "locationName":"policyId"
         },
         "description":{
-          "shape":"Description",
+          "shape":"UpdatedDescription",
           "documentation":"<p>The new human-readable description for the policy. This optional field allows updating the policy's documentation while keeping the same policy logic.</p>"
         },
         "definition":{
@@ -11305,6 +11729,16 @@
         }
       }
     },
+    "UpdatedDescription":{
+      "type":"structure",
+      "members":{
+        "optionalValue":{
+          "shape":"Description",
+          "documentation":"<p>Represents an optional value that is used to update the human-readable description of the resource. If not specified, it will clear the current description of the resource.</p>"
+        }
+      },
+      "documentation":"<p>Wrapper for updating an optional Description field with PATCH semantics. When present in an update request, the description is replaced with optionalValue. When absent, the description is left unchanged. To unset the description, include the wrapper with optionalValue not specified.</p>"
+    },
     "UserPreferenceConsolidationOverride":{
       "type":"structure",
       "required":[
@@ -11355,7 +11789,14 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces associated with the user preference memory strategy.</p>"
+          "documentation":"<p>The namespaces associated with the user preference memory strategy.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use namespaceTemplates instead",
+          "deprecatedSince":"2026-03-02"
+        },
+        "namespaceTemplates":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaceTemplates associated with the user preference memory strategy.</p>"
         }
       },
       "documentation":"<p>Input for creating a user preference memory strategy.</p>"

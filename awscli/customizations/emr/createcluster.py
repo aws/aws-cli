@@ -199,6 +199,10 @@ class CreateCluster(Command):
             'help_text': helptext.STEP_CONCURRENCY_LEVEL,
         },
         {
+            'name': 'step-execution-role-arn',
+            'help_text': helptext.STEP_EXECUTION_ROLE_ARN,
+        },
+        {
             'name': 'managed-scaling-policy',
             'schema': argumentschema.MANAGED_SCALING_POLICY_SCHEMA,
             'help_text': helptext.MANAGED_SCALING_POLICY,
@@ -298,7 +302,7 @@ class CreateCluster(Command):
                     )
                 except ValueError:
                     raise ParamValidationError(
-                        'aws: error: invalid json argument for '
+                        'invalid json argument for '
                         'option --configurations'
                     )
 
@@ -530,6 +534,13 @@ class CreateCluster(Command):
         if parsed_args.step_concurrency_level is not None:
             params['StepConcurrencyLevel'] = parsed_args.step_concurrency_level
 
+        if parsed_args.step_execution_role_arn is not None:
+            emrutils.apply_dict(
+                params,
+                'StepExecutionRoleArn',
+                parsed_args.step_execution_role_arn,
+            )
+
         if parsed_args.extended_support or parsed_args.no_extended_support:
             params['ExtendedSupport'] = emrutils.apply_boolean_options(
                 parsed_args.extended_support,
@@ -564,6 +575,10 @@ class CreateCluster(Command):
                 params,
                 'MonitoringConfiguration',
                 parsed_args.monitoring_configuration,
+            )
+            emrutils.validate_s3_logging_configuration(
+                parsed_args.monitoring_configuration,
+                parsed_args.log_uri
             )
 
         self._validate_required_applications(parsed_args)
@@ -709,7 +724,7 @@ class CreateCluster(Command):
             > constants.MAX_BOOTSTRAP_ACTION_NUMBER
         ):
             raise ParamValidationError(
-                'aws: error: maximum number of '
+                'maximum number of '
                 'bootstrap actions for a cluster exceeded.'
             )
 

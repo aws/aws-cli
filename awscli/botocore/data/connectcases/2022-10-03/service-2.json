@@ -810,6 +810,25 @@
       "documentation":"<p>Updates the attributes of an existing layout.</p> <p>If the action is successful, the service sends back an HTTP 200 response with an empty HTTP body.</p> <p>A <code>ValidationException</code> is returned when you add non-existent <code>fieldIds</code> to a layout.</p> <note> <p>Title and Status fields cannot be part of layouts because they are not configurable.</p> </note>",
       "idempotent":true
     },
+    "UpdateRelatedItem":{
+      "name":"UpdateRelatedItem",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/domains/{domainId}/cases/{caseId}/related-items/{relatedItemId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateRelatedItemRequest"},
+      "output":{"shape":"UpdateRelatedItemResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates the content of a related item associated with a case. The following related item types are supported:</p> <ul> <li> <p> <b>Comment</b> - Update the text content of an existing comment</p> </li> <li> <p> <b>Custom</b> - Update the fields of a custom related item. You can add, modify, and remove fields from a custom related item. There's a quota for the number of fields allowed in a Custom type related item. See <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html#cases-quotas\">Amazon Connect Cases quotas</a>.</p> </li> </ul> <p> <b>Important things to know</b> </p> <ul> <li> <p>When updating a Custom related item, all existing and new fields, and their associated values should be included in the request. Fields not included as part of this request will be removed.</p> </li> <li> <p>If you provide a value for <code>performedBy.userArn</code> you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">DescribeUser</a> permission on the ARN of the user that you provide.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-fields.html#system-case-fields\">System case fields</a> cannot be used in a custom related item.</p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Amazon Connect endpoints and quotas</a>.</p>",
+      "idempotent":true
+    },
     "UpdateTemplate":{
       "name":"UpdateTemplate",
       "http":{
@@ -870,7 +889,7 @@
         },
         "type":{
           "shape":"AuditEventType",
-          "documentation":"<p>The Type of an audit history event.</p>"
+          "documentation":"<p>The type of audit history event.</p> <p>Valid Values: <code>Case.Created</code> | <code>Case.Updated</code> | <code>RelatedItem.Created</code> | <code>RelatedItem.Updated</code> | <code>RelatedItem.Deleted</code> </p>"
         },
         "relatedItemType":{
           "shape":"RelatedItemType",
@@ -924,7 +943,8 @@
     },
     "AuditEventFieldList":{
       "type":"list",
-      "member":{"shape":"AuditEventField"}
+      "member":{"shape":"AuditEventField"},
+      "sparse":true
     },
     "AuditEventFieldValueUnion":{
       "type":"structure",
@@ -977,7 +997,9 @@
       "enum":[
         "Case.Created",
         "Case.Updated",
-        "RelatedItem.Created"
+        "RelatedItem.Created",
+        "RelatedItem.Deleted",
+        "RelatedItem.Updated"
       ]
     },
     "BasicLayout":{
@@ -1167,6 +1189,14 @@
         "notEqualTo":{
           "shape":"BooleanOperands",
           "documentation":"<p>Tests that operandOne is not equal to operandTwo.</p>"
+        },
+        "andAll":{
+          "shape":"CompoundCondition",
+          "documentation":"<p>Combines multiple conditions with AND operator. All conditions must be true for the compound condition to be true.</p>"
+        },
+        "orAll":{
+          "shape":"CompoundCondition",
+          "documentation":"<p>Combines multiple conditions with OR operator. At least one condition must be true for the compound condition to be true.</p>"
         }
       },
       "documentation":"<p>Boolean condition for a rule. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
@@ -1429,6 +1459,35 @@
       "type":"structure",
       "members":{},
       "documentation":"<p>A filter for related items of type <code>Comment</code>.</p>"
+    },
+    "CommentUpdateContent":{
+      "type":"structure",
+      "required":[
+        "body",
+        "contentType"
+      ],
+      "members":{
+        "body":{
+          "shape":"CommentBody",
+          "documentation":"<p>Updated text in the body of a <code>Comment</code> on a case.</p>"
+        },
+        "contentType":{
+          "shape":"CommentBodyTextType",
+          "documentation":"<p>Type of the text in the box of a <code>Comment</code> on a case.</p>"
+        }
+      },
+      "documentation":"<p>Represents the updated content of a <code>Comment</code> related item.</p>"
+    },
+    "CompoundCondition":{
+      "type":"structure",
+      "required":["conditions"],
+      "members":{
+        "conditions":{
+          "shape":"BooleanConditionList",
+          "documentation":"<p>The list of conditions to combine using the logical operator.</p>"
+        }
+      },
+      "documentation":"<p>A compound condition that combines multiple boolean conditions using logical operators. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
     },
     "ConflictException":{
       "type":"structure",
@@ -1955,6 +2014,23 @@
       "documentation":"<p>Represents the content of a <code>Custom</code> related item.</p>"
     },
     "CustomInputContentFieldsList":{
+      "type":"list",
+      "member":{"shape":"FieldValue"},
+      "max":50,
+      "min":1
+    },
+    "CustomUpdateContent":{
+      "type":"structure",
+      "required":["fields"],
+      "members":{
+        "fields":{
+          "shape":"CustomUpdateContentFieldsList",
+          "documentation":"<p>List of updated field values for the <code>Custom</code> related item. All existing and new fields, and their associated values should be included. Fields not included as part of this request will be removed.</p>"
+        }
+      },
+      "documentation":"<p>Represents the updated content of a <code>Custom</code> related item.</p>"
+    },
+    "CustomUpdateContentFieldsList":{
       "type":"list",
       "member":{"shape":"FieldValue"},
       "max":50,
@@ -2631,7 +2707,8 @@
       "type":"list",
       "member":{"shape":"AuditEvent"},
       "max":25,
-      "min":0
+      "min":0,
+      "sparse":true
     },
     "GetCaseEventConfigurationRequest":{
       "type":"structure",
@@ -3737,6 +3814,15 @@
       "documentation":"<p>The list of types of related items and their parameters to use for filtering.</p>",
       "union":true
     },
+    "RelatedItemUpdateContent":{
+      "type":"structure",
+      "members":{
+        "comment":{"shape":"CommentUpdateContent"},
+        "custom":{"shape":"CustomUpdateContent"}
+      },
+      "documentation":"<p>Represents the content of a related item to be updated. This is a union type that can contain either comment content or custom content.</p>",
+      "union":true
+    },
     "RequiredCaseRule":{
       "type":"structure",
       "required":[
@@ -3904,7 +3990,8 @@
       "type":"list",
       "member":{"shape":"SearchAllRelatedItemsResponseItem"},
       "max":25,
-      "min":0
+      "min":0,
+      "sparse":true
     },
     "SearchAllRelatedItemsSort":{
       "type":"structure",
@@ -4012,7 +4099,8 @@
       "type":"list",
       "member":{"shape":"SearchCasesResponseItem"},
       "max":100,
-      "min":0
+      "min":0,
+      "sparse":true
     },
     "SearchCasesResponseItem":{
       "type":"structure",
@@ -4146,7 +4234,8 @@
       "type":"list",
       "member":{"shape":"SearchRelatedItemsResponseItem"},
       "max":25,
-      "min":0
+      "min":0,
+      "sparse":true
     },
     "SearchTagKey":{
       "type":"string",
@@ -4445,7 +4534,8 @@
     "Tags":{
       "type":"map",
       "key":{"shape":"String"},
-      "value":{"shape":"String"}
+      "value":{"shape":"String"},
+      "sparse":true
     },
     "TargetSlaMinutes":{
       "type":"long",
@@ -4733,6 +4823,87 @@
     "UpdateLayoutResponse":{
       "type":"structure",
       "members":{}
+    },
+    "UpdateRelatedItemRequest":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "caseId",
+        "relatedItemId",
+        "content"
+      ],
+      "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The unique identifier of the Cases domain. </p>",
+          "location":"uri",
+          "locationName":"domainId"
+        },
+        "caseId":{
+          "shape":"CaseId",
+          "documentation":"<p>A unique identifier of the case.</p>",
+          "location":"uri",
+          "locationName":"caseId"
+        },
+        "relatedItemId":{
+          "shape":"RelatedItemId",
+          "documentation":"<p>Unique identifier of a related item.</p>",
+          "location":"uri",
+          "locationName":"relatedItemId"
+        },
+        "content":{
+          "shape":"RelatedItemUpdateContent",
+          "documentation":"<p>The content of a related item to be updated.</p>"
+        },
+        "performedBy":{
+          "shape":"UserUnion",
+          "documentation":"<p>Represents the user who performed the update of the related item.</p>"
+        }
+      }
+    },
+    "UpdateRelatedItemResponse":{
+      "type":"structure",
+      "required":[
+        "relatedItemId",
+        "relatedItemArn",
+        "type",
+        "content",
+        "associationTime"
+      ],
+      "members":{
+        "relatedItemId":{
+          "shape":"RelatedItemId",
+          "documentation":"<p>The unique identifier of the updated related item.</p>"
+        },
+        "relatedItemArn":{
+          "shape":"RelatedItemArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the updated related item.</p>"
+        },
+        "type":{
+          "shape":"RelatedItemType",
+          "documentation":"<p>Type of the updated related item.</p>"
+        },
+        "content":{
+          "shape":"RelatedItemContent",
+          "documentation":"<p>Represents the content of the updated related item.</p>"
+        },
+        "associationTime":{
+          "shape":"AssociationTime",
+          "documentation":"<p>Time at which the related item was associated with the case.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>A map of of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
+        },
+        "lastUpdatedUser":{
+          "shape":"UserUnion",
+          "documentation":"<p>Represents the last user that updated the related item.</p>"
+        },
+        "createdBy":{
+          "shape":"UserUnion",
+          "documentation":"<p>Represents the creator of the related item.</p>"
+        }
+      }
     },
     "UpdateTemplateRequest":{
       "type":"structure",

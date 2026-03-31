@@ -389,7 +389,27 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Sends a request to an agent or tool hosted in an Amazon Bedrock AgentCore Runtime and receives responses in real-time. </p> <p>To invoke an agent you must specify the AgentCore Runtime ARN and provide a payload containing your request. You can optionally specify a qualifier to target a specific version or endpoint of the agent.</p> <p>This operation supports streaming responses, allowing you to receive partial responses as they become available. We recommend using pagination to ensure that the operation returns quickly and successfully when processing large responses.</p> <p>For example code, see <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-invoke-agent.html\">Invoke an AgentCore Runtime agent</a>. </p> <p>If you're integrating your agent with OAuth, you can't use the Amazon Web Services SDK to call <code>InvokeAgentRuntime</code>. Instead, make a HTTPS request to <code>InvokeAgentRuntime</code>. For an example, see <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-oauth.html\">Authenticate and authorize with Inbound Auth and Outbound Auth</a>.</p> <p>To use this operation, you must have the <code>bedrock-agentcore:InvokeAgentRuntime</code> permission. If you are making a call to <code>InvokeAgentRuntime</code> on behalf of a user ID with the <code>X-Amzn-Bedrock-AgentCore-Runtime-User-Id</code> header, You require permissions to both actions (<code>bedrock-agentcore:InvokeAgentRuntime</code> and <code>bedrock-agentcore:InvokeAgentRuntimeForUser</code>). </p>"
+      "documentation":"<p>Sends a request to an agent or tool hosted in an Amazon Bedrock AgentCore Runtime and receives responses in real-time. </p> <p>To invoke an agent, you can specify either the AgentCore Runtime ARN or the agent ID with an account ID, and provide a payload containing your request. When you use the agent ID instead of the full ARN, you don't need to URL-encode the identifier. You can optionally specify a qualifier to target a specific endpoint of the agent.</p> <p>This operation supports streaming responses, allowing you to receive partial responses as they become available. We recommend using pagination to ensure that the operation returns quickly and successfully when processing large responses.</p> <p>For example code, see <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-invoke-agent.html\">Invoke an AgentCore Runtime agent</a>. </p> <p>If you're integrating your agent with OAuth, you can't use the Amazon Web Services SDK to call <code>InvokeAgentRuntime</code>. Instead, make a HTTPS request to <code>InvokeAgentRuntime</code>. For an example, see <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-oauth.html\">Authenticate and authorize with Inbound Auth and Outbound Auth</a>.</p> <p>To use this operation, you must have the <code>bedrock-agentcore:InvokeAgentRuntime</code> permission. If you are making a call to <code>InvokeAgentRuntime</code> on behalf of a user ID with the <code>X-Amzn-Bedrock-AgentCore-Runtime-User-Id</code> header, You require permissions to both actions (<code>bedrock-agentcore:InvokeAgentRuntime</code> and <code>bedrock-agentcore:InvokeAgentRuntimeForUser</code>). </p>"
+    },
+    "InvokeAgentRuntimeCommand":{
+      "name":"InvokeAgentRuntimeCommand",
+      "http":{
+        "method":"POST",
+        "requestUri":"/runtimes/{agentRuntimeArn}/commands",
+        "responseCode":200
+      },
+      "input":{"shape":"InvokeAgentRuntimeCommandRequest"},
+      "output":{"shape":"InvokeAgentRuntimeCommandResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RuntimeClientError"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Executes a command in a runtime session container and streams the output back to the caller. This operation allows you to run shell commands within the agent runtime environment and receive real-time streaming responses including standard output and standard error.</p> <p>To invoke a command, you must specify the agent runtime ARN and a runtime session ID. The command execution supports streaming responses, allowing you to receive output as it becomes available through <code>contentStart</code>, <code>contentDelta</code>, and <code>contentStop</code> events.</p> <p>To use this operation, you must have the <code>bedrock-agentcore:InvokeAgentRuntimeCommand</code> permission.</p>"
     },
     "InvokeCodeInterpreter":{
       "name":"InvokeCodeInterpreter",
@@ -1003,6 +1023,35 @@
       "min":1,
       "pattern":"[a-zA-Z0-9][a-zA-Z0-9-_]*"
     },
+    "BrowserEnterprisePolicies":{
+      "type":"list",
+      "member":{"shape":"BrowserEnterprisePolicy"},
+      "max":100,
+      "min":0
+    },
+    "BrowserEnterprisePolicy":{
+      "type":"structure",
+      "required":["location"],
+      "members":{
+        "location":{
+          "shape":"ResourceLocation",
+          "documentation":"<p>The location of the enterprise policy file.</p>"
+        },
+        "type":{
+          "shape":"BrowserEnterprisePolicyType",
+          "documentation":"<p>The enterprise policy type. See BrowserEnterprisePolicyType.</p>"
+        }
+      },
+      "documentation":"<p>Browser enterprise policy configuration.</p>"
+    },
+    "BrowserEnterprisePolicyType":{
+      "type":"string",
+      "documentation":"<p>The type of browser enterprise policy. Available values are <code>MANAGED</code> and <code>RECOMMENDED</code>.</p>",
+      "enum":[
+        "MANAGED",
+        "RECOMMENDED"
+      ]
+    },
     "BrowserExtension":{
       "type":"structure",
       "required":["location"],
@@ -1112,6 +1161,34 @@
       "max":512,
       "min":10
     },
+    "Certificate":{
+      "type":"structure",
+      "required":["location"],
+      "members":{
+        "location":{
+          "shape":"CertificateLocation",
+          "documentation":"<p>The location of the certificate.</p>"
+        }
+      },
+      "documentation":"<p>A certificate to install in the browser or code interpreter session.</p>"
+    },
+    "CertificateLocation":{
+      "type":"structure",
+      "members":{
+        "secretsManager":{
+          "shape":"SecretsManagerLocation",
+          "documentation":"<p>The Amazon Web Services Secrets Manager location of the certificate.</p>"
+        }
+      },
+      "documentation":"<p>The location from which to retrieve a certificate.</p>",
+      "union":true
+    },
+    "Certificates":{
+      "type":"list",
+      "member":{"shape":"Certificate"},
+      "max":200,
+      "min":1
+    },
     "ClientToken":{
       "type":"string",
       "max":256,
@@ -1209,6 +1286,13 @@
       },
       "documentation":"<p>Contains output from a code interpreter stream.</p>",
       "eventstream":true
+    },
+    "CommandExecutionStatus":{
+      "type":"string",
+      "enum":[
+        "COMPLETED",
+        "TIMED_OUT"
+      ]
     },
     "CompleteResourceTokenAuthRequest":{
       "type":"structure",
@@ -1309,6 +1393,43 @@
         "resource",
         "resource_link"
       ]
+    },
+    "ContentDeltaEvent":{
+      "type":"structure",
+      "members":{
+        "stdout":{
+          "shape":"String",
+          "documentation":"<p>The standard output content from the command execution. This field contains the incremental output written to stdout by the executing command.</p>"
+        },
+        "stderr":{
+          "shape":"String",
+          "documentation":"<p>The standard error content from the command execution. This field contains the incremental output written to stderr by the executing command.</p>"
+        }
+      },
+      "documentation":"<p>An event that contains incremental output from a command execution. This event streams standard output and standard error content as it becomes available during command execution.</p>"
+    },
+    "ContentStartEvent":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>An event that signals the start of content streaming from a command execution. This event is sent when the command begins producing output.</p>"
+    },
+    "ContentStopEvent":{
+      "type":"structure",
+      "required":[
+        "exitCode",
+        "status"
+      ],
+      "members":{
+        "exitCode":{
+          "shape":"Integer",
+          "documentation":"<p>The exit code returned by the executed command. An exit code of 0 indicates successful execution, -1 indicates a platform error, and values greater than 0 indicate command-specific errors.</p>"
+        },
+        "status":{
+          "shape":"CommandExecutionStatus",
+          "documentation":"<p>The final status of the command execution. Valid values are <code>COMPLETED</code> for successful completion or <code>TIMED_OUT</code> if the command exceeded the specified timeout.</p>"
+        }
+      },
+      "documentation":"<p>An event that signals the completion of a command execution. This event contains the final status and exit code of the executed command.</p>"
     },
     "ContentTextString":{
       "type":"string",
@@ -1547,7 +1668,7 @@
       "members":{
         "evaluatorId":{
           "shape":"EvaluatorId",
-          "documentation":"<p> The unique identifier of the evaluator to use for scoring. Can be a built-in evaluator (e.g., <code>Builtin.Helpfulness</code>, <code>Builtin.Correctness</code>) or a custom evaluator ARN created through the control plane API. </p>",
+          "documentation":"<p> The unique identifier of the evaluator to use for scoring. Can be a built-in evaluator (e.g., <code>Builtin.Helpfulness</code>, <code>Builtin.Correctness</code>) or a custom evaluator Id created through the control plane API. </p>",
           "location":"uri",
           "locationName":"evaluatorId"
         },
@@ -1558,6 +1679,10 @@
         "evaluationTarget":{
           "shape":"EvaluationTarget",
           "documentation":"<p> The specific trace or span IDs to evaluate within the provided input. Allows targeting evaluation at different levels: individual tool calls, single request-response interactions (traces), or entire conversation sessions. </p>"
+        },
+        "evaluationReferenceInputs":{
+          "shape":"EvaluationReferenceInputs",
+          "documentation":"<p> Ground truth data to compare against agent responses during evaluation. Allows to provide expected responses, assertions, and expected tool trajectories at different evaluation levels. Session-level reference inputs apply to the entire conversation, while trace-level reference inputs target specific request-response interactions identified by trace ID. </p>"
         }
       }
     },
@@ -1571,6 +1696,28 @@
         }
       }
     },
+    "EvaluationContent":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"EvaluationContentTextString",
+          "documentation":"<p> The text content of the ground truth data. Used for expected response text and assertion statements. </p>"
+        }
+      },
+      "documentation":"<p> A content block for ground truth data in evaluation reference inputs. Supports text content for expected responses and assertions. </p>",
+      "union":true
+    },
+    "EvaluationContentList":{
+      "type":"list",
+      "member":{"shape":"EvaluationContent"},
+      "max":100,
+      "min":1
+    },
+    "EvaluationContentTextString":{
+      "type":"string",
+      "max":100000,
+      "min":1
+    },
     "EvaluationErrorCode":{
       "type":"string",
       "max":1024,
@@ -1580,6 +1727,16 @@
       "type":"string",
       "max":2048,
       "min":0
+    },
+    "EvaluationExpectedTrajectory":{
+      "type":"structure",
+      "members":{
+        "toolNames":{
+          "shape":"EvaluationToolNames",
+          "documentation":"<p> The list of tool names representing the expected tool call sequence. </p>"
+        }
+      },
+      "documentation":"<p> The expected tool call trajectory for trajectory-based evaluation. </p>"
     },
     "EvaluationExplanation":{
       "type":"string",
@@ -1597,6 +1754,33 @@
       },
       "documentation":"<p> The input data structure containing agent session spans in OpenTelemetry format. Supports traces from frameworks like Strands (AgentCore Runtime) and LangGraph with OpenInference instrumentation for comprehensive evaluation. </p>",
       "union":true
+    },
+    "EvaluationReferenceInput":{
+      "type":"structure",
+      "required":["context"],
+      "members":{
+        "context":{"shape":"Context"},
+        "expectedResponse":{
+          "shape":"EvaluationContent",
+          "documentation":"<p> The expected response for trace-level evaluation. Built-in evaluators that support this field compare the agent's actual response against this value for assessment. Custom evaluators can access it through the <code>{expected_response}</code> placeholder in their instructions. </p>"
+        },
+        "assertions":{
+          "shape":"EvaluationContentList",
+          "documentation":"<p> A list of assertion statements for session-level evaluation. Each assertion describes an expected behavior or outcome the agent should demonstrate during the session. </p>"
+        },
+        "expectedTrajectory":{
+          "shape":"EvaluationExpectedTrajectory",
+          "documentation":"<p> The expected tool call sequence for session-level trajectory evaluation. Contains a list of tool names representing the tools the agent is expected to invoke. </p>"
+        }
+      },
+      "documentation":"<p> A reference input containing ground truth data for evaluation, scoped to a specific context level (session or trace) through its span context. </p>"
+    },
+    "EvaluationReferenceInputs":{
+      "type":"list",
+      "member":{"shape":"EvaluationReferenceInput"},
+      "max":1000,
+      "min":1,
+      "sensitive":true
     },
     "EvaluationResultContent":{
       "type":"structure",
@@ -1646,6 +1830,10 @@
         "errorCode":{
           "shape":"EvaluationErrorCode",
           "documentation":"<p> The error code indicating the type of failure that occurred during evaluation. Used to programmatically identify and handle different categories of evaluation errors. </p>"
+        },
+        "ignoredReferenceInputFields":{
+          "shape":"IgnoredReferenceInputFields",
+          "documentation":"<p> The list of reference input field names that were provided but not used by the evaluator. Helps identify which ground truth data was not consumed during evaluation. </p>"
         }
       },
       "documentation":"<p> The comprehensive result of an evaluation containing the score, explanation, evaluator metadata, and execution details. Provides both quantitative ratings and qualitative insights about agent performance. </p>"
@@ -1668,6 +1856,17 @@
       },
       "documentation":"<p> The specification of which trace or span IDs to evaluate within the provided input data. Allows precise targeting of evaluation at different levels: tool calls, traces, or sessions. </p>",
       "union":true
+    },
+    "EvaluationToolName":{
+      "type":"string",
+      "max":500,
+      "min":1
+    },
+    "EvaluationToolNames":{
+      "type":"list",
+      "member":{"shape":"EvaluationToolName"},
+      "max":1000,
+      "min":0
     },
     "EvaluatorArn":{
       "type":"string",
@@ -1996,6 +2195,10 @@
           "shape":"BrowserExtensions",
           "documentation":"<p>The list of browser extensions that are configured in the browser session.</p>"
         },
+        "enterprisePolicies":{
+          "shape":"BrowserEnterprisePolicies",
+          "documentation":"<p>A list of files containing enterprise policies for the browser session.</p>"
+        },
         "profileConfiguration":{
           "shape":"BrowserProfileConfiguration",
           "documentation":"<p>The browser profile configuration associated with this session. Contains the profile identifier that links to persistent browser data such as cookies and local storage.</p>"
@@ -2015,6 +2218,10 @@
         "proxyConfiguration":{
           "shape":"ProxyConfiguration",
           "documentation":"<p>The active proxy configuration for this browser session. This field is only present if proxy configuration was provided when the session was started using <code>StartBrowserSession</code>. The configuration includes proxy servers, domain bypass rules and the proxy authentication credentials.</p>"
+        },
+        "certificates":{
+          "shape":"Certificates",
+          "documentation":"<p>The list of certificates installed in the browser session.</p>"
         },
         "sessionReplayArtifact":{
           "shape":"String",
@@ -2078,6 +2285,10 @@
         "status":{
           "shape":"CodeInterpreterSessionStatus",
           "documentation":"<p>The current status of the code interpreter session. Possible values include ACTIVE, STOPPING, and STOPPED.</p>"
+        },
+        "certificates":{
+          "shape":"Certificates",
+          "documentation":"<p>The list of certificates installed in the code interpreter session.</p>"
         }
       }
     },
@@ -2336,6 +2547,17 @@
       "type":"integer",
       "box":true
     },
+    "IgnoredReferenceInputField":{
+      "type":"string",
+      "max":1000,
+      "min":1
+    },
+    "IgnoredReferenceInputFields":{
+      "type":"list",
+      "member":{"shape":"IgnoredReferenceInputField"},
+      "max":100,
+      "min":0
+    },
     "InputContentBlock":{
       "type":"structure",
       "required":["path"],
@@ -2385,6 +2607,203 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "InvokeAgentRuntimeCommandRequest":{
+      "type":"structure",
+      "required":[
+        "agentRuntimeArn",
+        "body"
+      ],
+      "members":{
+        "contentType":{
+          "shape":"MimeType",
+          "documentation":"<p>The MIME type of the input data in the request payload. This tells the agent runtime how to interpret the payload data. Common values include application/json for JSON data.</p>",
+          "location":"header",
+          "locationName":"Content-Type"
+        },
+        "accept":{
+          "shape":"MimeType",
+          "documentation":"<p>The desired MIME type for the response from the agent runtime command. This tells the agent runtime what format to use for the response data. Common values include application/json for JSON data.</p>",
+          "location":"header",
+          "locationName":"Accept"
+        },
+        "runtimeSessionId":{
+          "shape":"SessionType",
+          "documentation":"<p>The unique identifier of the runtime session in which to execute the command. This session ID is used to maintain state and context across multiple command invocations.</p>",
+          "idempotencyToken":true,
+          "location":"header",
+          "locationName":"X-Amzn-Bedrock-AgentCore-Runtime-Session-Id"
+        },
+        "traceId":{
+          "shape":"InvokeAgentRuntimeCommandRequestTraceIdString",
+          "documentation":"<p>The trace identifier for request tracking.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-Trace-Id"
+        },
+        "traceParent":{
+          "shape":"InvokeAgentRuntimeCommandRequestTraceParentString",
+          "documentation":"<p>The parent trace information for distributed tracing.</p>",
+          "location":"header",
+          "locationName":"traceparent"
+        },
+        "traceState":{
+          "shape":"InvokeAgentRuntimeCommandRequestTraceStateString",
+          "documentation":"<p>The trace state information for distributed tracing.</p>",
+          "location":"header",
+          "locationName":"tracestate"
+        },
+        "baggage":{
+          "shape":"InvokeAgentRuntimeCommandRequestBaggageString",
+          "documentation":"<p>Additional context information for distributed tracing.</p>",
+          "location":"header",
+          "locationName":"baggage"
+        },
+        "agentRuntimeArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the agent runtime on which to execute the command. This identifies the specific agent runtime environment where the command will run.</p>",
+          "location":"uri",
+          "locationName":"agentRuntimeArn"
+        },
+        "qualifier":{
+          "shape":"String",
+          "documentation":"<p>The qualifier to use for the agent runtime. This is an endpoint name that points to a specific version. If not specified, Amazon Bedrock AgentCore uses the default endpoint of the agent runtime.</p>",
+          "location":"querystring",
+          "locationName":"qualifier"
+        },
+        "accountId":{
+          "shape":"InvokeAgentRuntimeCommandRequestAccountIdString",
+          "documentation":"<p>The identifier of the Amazon Web Services account for the agent runtime resource. This parameter is required when you specify an agent ID instead of the full ARN for <code>agentRuntimeArn</code>.</p>",
+          "location":"querystring",
+          "locationName":"accountId"
+        },
+        "body":{
+          "shape":"InvokeAgentRuntimeCommandRequestBody",
+          "documentation":"<p>The request body containing the command to execute and optional configuration parameters such as timeout settings.</p>"
+        }
+      },
+      "documentation":"<p>Request for InvokeAgentRuntimeCommand operation.</p>",
+      "payload":"body"
+    },
+    "InvokeAgentRuntimeCommandRequestAccountIdString":{
+      "type":"string",
+      "pattern":"[0-9]{12}"
+    },
+    "InvokeAgentRuntimeCommandRequestBaggageString":{
+      "type":"string",
+      "max":8192,
+      "min":0
+    },
+    "InvokeAgentRuntimeCommandRequestBody":{
+      "type":"structure",
+      "required":["command"],
+      "members":{
+        "command":{
+          "shape":"InvokeAgentRuntimeCommandRequestBodyCommandString",
+          "documentation":"<p>The shell command to execute on the agent runtime. This command is executed in the runtime environment and its output is streamed back to the caller.</p>"
+        },
+        "timeout":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum duration in seconds to wait for the command to complete. If the command execution exceeds this timeout, it will be terminated. Default is 300 seconds. Minimum is 1 second. Maximum is 3600 seconds.</p>"
+        }
+      },
+      "documentation":"<p>The request body structure for the <code>InvokeAgentRuntimeCommand</code> operation, containing the command to execute and optional configuration parameters.</p>"
+    },
+    "InvokeAgentRuntimeCommandRequestBodyCommandString":{
+      "type":"string",
+      "max":65536,
+      "min":1
+    },
+    "InvokeAgentRuntimeCommandRequestTraceIdString":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "InvokeAgentRuntimeCommandRequestTraceParentString":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "InvokeAgentRuntimeCommandRequestTraceStateString":{
+      "type":"string",
+      "max":512,
+      "min":0
+    },
+    "InvokeAgentRuntimeCommandResponse":{
+      "type":"structure",
+      "required":[
+        "contentType",
+        "stream"
+      ],
+      "members":{
+        "runtimeSessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The unique identifier of the runtime session in which the command was executed.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-Bedrock-AgentCore-Runtime-Session-Id"
+        },
+        "traceId":{
+          "shape":"String",
+          "documentation":"<p>The trace identifier for request tracking.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-Trace-Id"
+        },
+        "traceParent":{
+          "shape":"String",
+          "documentation":"<p>The parent trace information for distributed tracing.</p>",
+          "location":"header",
+          "locationName":"traceparent"
+        },
+        "traceState":{
+          "shape":"String",
+          "documentation":"<p>The trace state information for distributed tracing.</p>",
+          "location":"header",
+          "locationName":"tracestate"
+        },
+        "baggage":{
+          "shape":"String",
+          "documentation":"<p>Additional context information for distributed tracing.</p>",
+          "location":"header",
+          "locationName":"baggage"
+        },
+        "contentType":{
+          "shape":"String",
+          "documentation":"<p>The MIME type of the response data. This indicates how to interpret the response data. Common values include application/json for JSON data.</p>",
+          "location":"header",
+          "locationName":"Content-Type"
+        },
+        "statusCode":{
+          "shape":"HttpResponseCode",
+          "documentation":"<p>The HTTP status code of the response. A status code of 200 indicates a successful operation. Other status codes indicate various error conditions.</p>",
+          "location":"statusCode"
+        },
+        "stream":{
+          "shape":"InvokeAgentRuntimeCommandStreamOutput",
+          "documentation":"<p>The streaming output from the command execution. This stream contains events that provide real-time updates including standard output, standard error, and completion status.</p>"
+        }
+      },
+      "documentation":"<p>Response for InvokeAgentRuntimeCommand operation.</p>",
+      "payload":"stream"
+    },
+    "InvokeAgentRuntimeCommandStreamOutput":{
+      "type":"structure",
+      "members":{
+        "chunk":{
+          "shape":"ResponseChunk",
+          "documentation":"<p>A response chunk containing command execution events such as content start, content delta, or content stop events.</p>"
+        },
+        "accessDeniedException":{
+          "shape":"AccessDeniedException",
+          "documentation":"<p>Exception events for error streaming.</p>"
+        },
+        "internalServerException":{"shape":"InternalServerException"},
+        "resourceNotFoundException":{"shape":"ResourceNotFoundException"},
+        "serviceQuotaExceededException":{"shape":"ServiceQuotaExceededException"},
+        "throttlingException":{"shape":"ThrottlingException"},
+        "validationException":{"shape":"ValidationException"},
+        "runtimeClientError":{"shape":"RuntimeClientError"}
+      },
+      "documentation":"<p>The streaming output union for the <code>InvokeAgentRuntimeCommand</code> operation. This union delivers typed events: <code>contentStart</code> (first), <code>contentDelta</code> (middle), and <code>contentStop</code> (last).</p>",
+      "eventstream":true
     },
     "InvokeAgentRuntimeRequest":{
       "type":"structure",
@@ -2456,19 +2875,19 @@
         },
         "agentRuntimeArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Web Services Resource Name (ARN) of the agent runtime to invoke. The ARN uniquely identifies the agent runtime resource in Amazon Bedrock AgentCore.</p>",
+          "documentation":"<p>The identifier of the agent runtime to invoke. You can specify either the full Amazon Web Services Resource Name (ARN) or the agent ID. If you use the agent ID, you must also provide the <code>accountId</code> query parameter.</p>",
           "location":"uri",
           "locationName":"agentRuntimeArn"
         },
         "qualifier":{
           "shape":"String",
-          "documentation":"<p>The qualifier to use for the agent runtime. This can be a version number or an endpoint name that points to a specific version. If not specified, Amazon Bedrock AgentCore uses the default version of the agent runtime.</p>",
+          "documentation":"<p>The qualifier to use for the agent runtime. This is an endpoint name that points to a specific version. If not specified, Amazon Bedrock AgentCore uses the default endpoint of the agent runtime.</p>",
           "location":"querystring",
           "locationName":"qualifier"
         },
         "accountId":{
           "shape":"InvokeAgentRuntimeRequestAccountIdString",
-          "documentation":"<p>The identifier of the Amazon Web Services account for the agent runtime resource.</p>",
+          "documentation":"<p>The identifier of the Amazon Web Services account for the agent runtime resource. This parameter is required when you specify an agent ID instead of the full ARN for <code>agentRuntimeArn</code>.</p>",
           "location":"querystring",
           "locationName":"accountId"
         },
@@ -2634,6 +3053,14 @@
         }
       },
       "payload":"stream"
+    },
+    "LanguageRuntime":{
+      "type":"string",
+      "enum":[
+        "nodejs",
+        "deno",
+        "python"
+      ]
     },
     "LeftExpression":{
       "type":"structure",
@@ -3498,6 +3925,25 @@
       "min":1,
       "pattern":"\\w+:(\\/?\\/?)[^\\s]+"
     },
+    "ResponseChunk":{
+      "type":"structure",
+      "members":{
+        "contentStart":{
+          "shape":"ContentStartEvent",
+          "documentation":"<p>An event indicating the start of content streaming from the command execution. This is the first chunk received.</p>"
+        },
+        "contentDelta":{
+          "shape":"ContentDeltaEvent",
+          "documentation":"<p>An event containing incremental output (stdout or stderr) from the command execution. These are the middle chunks.</p>"
+        },
+        "contentStop":{
+          "shape":"ContentStopEvent",
+          "documentation":"<p>An event indicating the completion of the command execution, including the exit code and final status. This is the last chunk received.</p>"
+        }
+      },
+      "documentation":"<p>A structure representing a response chunk that contains exactly one of the possible event types: <code>contentStart</code>, <code>contentDelta</code>, or <code>contentStop</code>.</p>",
+      "event":true
+    },
     "ResponseStream":{
       "type":"blob",
       "sensitive":true,
@@ -3757,7 +4203,18 @@
     },
     "SecretArn":{
       "type":"string",
-      "pattern":"arn:aws:secretsmanager:[a-z0-9-]+:[0-9]{12}:secret:[a-zA-Z0-9/_+=.@-]+"
+      "pattern":"arn:aws(-[a-z-]+)?:secretsmanager:[a-z0-9-]+:[0-9]{12}:secret:[a-zA-Z0-9/_+=.@-]+"
+    },
+    "SecretsManagerLocation":{
+      "type":"structure",
+      "required":["secretArn"],
+      "members":{
+        "secretArn":{
+          "shape":"SecretArn",
+          "documentation":"<p>The ARN of the Amazon Web Services Secrets Manager secret containing the certificate.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Web Services Secrets Manager location configuration.</p>"
     },
     "ServiceException":{
       "type":"structure",
@@ -3897,7 +4354,7 @@
         },
         "sessionTimeoutSeconds":{
           "shape":"BrowserSessionTimeout",
-          "documentation":"<p>The time in seconds after which the session automatically terminates if there is no activity. The default value is 3600 seconds (1 hour). The minimum allowed value is 60 seconds, and the maximum allowed value is 28800 seconds (8 hours).</p>"
+          "documentation":"<p>The duration in seconds (time-to-live) after which the session automatically terminates, regardless of ongoing activity. Defaults to 3600 seconds (1 hour). Recommended minimum: 60 seconds. Maximum allowed: 28,800 seconds (8 hours).</p>"
         },
         "viewPort":{
           "shape":"ViewPort",
@@ -3914,6 +4371,14 @@
         "proxyConfiguration":{
           "shape":"ProxyConfiguration",
           "documentation":"<p>Optional proxy configuration for routing browser traffic through customer-specified proxy servers. When provided, enables HTTP Basic authentication via Amazon Web Services Secrets Manager and domain-based routing rules. Requires <code>secretsmanager:GetSecretValue</code> IAM permission for the specified secret ARNs.</p>"
+        },
+        "enterprisePolicies":{
+          "shape":"BrowserEnterprisePolicies",
+          "documentation":"<p>A list of files containing enterprise policies for the browser.</p>"
+        },
+        "certificates":{
+          "shape":"Certificates",
+          "documentation":"<p>A list of certificates to install in the browser session.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -3986,7 +4451,11 @@
         },
         "sessionTimeoutSeconds":{
           "shape":"CodeInterpreterSessionTimeout",
-          "documentation":"<p>The time in seconds after which the session automatically terminates if there is no activity. The default value is 900 seconds (15 minutes). The minimum allowed value is 60 seconds, and the maximum allowed value is 28800 seconds (8 hours).</p>"
+          "documentation":"<p>The duration in seconds (time-to-live) after which the session automatically terminates, regardless of ongoing activity. Defaults to 900 seconds (15 minutes). Recommended minimum: 60 seconds. Maximum allowed: 28,800 seconds (8 hours).</p>"
+        },
+        "certificates":{
+          "shape":"Certificates",
+          "documentation":"<p>A list of certificates to install in the code interpreter session.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -4339,7 +4808,7 @@
         },
         "language":{
           "shape":"ProgrammingLanguage",
-          "documentation":"<p>The programming language of the code to execute. This tells the code interpreter which language runtime to use for execution. Common values include 'python', 'javascript', and 'r'.</p>"
+          "documentation":"<p>The programming language of the code to execute. This tells the code interpreter which language runtime to use for execution.</p>"
         },
         "clearContext":{
           "shape":"Boolean",
@@ -4368,6 +4837,10 @@
         "taskId":{
           "shape":"MaxLenString",
           "documentation":"<p>The identifier of the task for the tool operation.</p>"
+        },
+        "runtime":{
+          "shape":"LanguageRuntime",
+          "documentation":"<p>The runtime environment to use for code execution. If not specified, defaults to <code>deno</code> for JavaScript and TypeScript.</p>"
         }
       },
       "documentation":"<p>The collection of arguments that specify the operation to perform and its parameters when invoking a tool in Amazon Bedrock AgentCore. Different tools require different arguments, and this structure provides a flexible way to pass the appropriate arguments to each tool type.</p>"
@@ -4504,7 +4977,7 @@
       "members":{
         "userToken":{
           "shape":"UserTokenType",
-          "documentation":"<p>The OAuth2.0 token issued by the user’s identity provider</p>"
+          "documentation":"<p>The OAuth2.0 token issued by the user’s identity provider that was used to generate the workload access token</p>"
         },
         "userId":{
           "shape":"UserIdType",

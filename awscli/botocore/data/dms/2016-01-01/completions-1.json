@@ -5,7 +5,8 @@
       "operation": "DescribeCertificates",
       "resourceIdentifier": {
         "CertificateIdentifier": "Certificates[].CertificateIdentifier",
-        "CertificatePem": "Certificates[].CertificatePem"
+        "CertificatePem": "Certificates[].CertificatePem",
+        "CertificateArn": "Certificates[].CertificateArn"
       }
     },
     "Endpoint": {
@@ -28,7 +29,8 @@
     "EventSubscription": {
       "operation": "DescribeEventSubscriptions",
       "resourceIdentifier": {
-        "SnsTopicArn": "EventSubscriptionsList[].SnsTopicArn"
+        "SnsTopicArn": "EventSubscriptionsList[].SnsTopicArn",
+        "CustSubscriptionId": "EventSubscriptionsList[].CustSubscriptionId"
       }
     },
     "Event": {
@@ -44,7 +46,8 @@
         "ReplicationInstanceIdentifier": "ReplicationInstances[].ReplicationInstanceIdentifier",
         "ReplicationInstanceClass": "ReplicationInstances[].ReplicationInstanceClass",
         "PreferredMaintenanceWindow": "ReplicationInstances[].PreferredMaintenanceWindow",
-        "EngineVersion": "ReplicationInstances[].EngineVersion"
+        "EngineVersion": "ReplicationInstances[].EngineVersion",
+        "ReplicationInstanceArn": "ReplicationInstances[].ReplicationInstanceArn"
       }
     },
     "ReplicationSubnetGroup": {
@@ -65,6 +68,53 @@
         "CdcStartPosition": "ReplicationTasks[].CdcStartPosition",
         "CdcStopPosition": "ReplicationTasks[].CdcStopPosition",
         "ReplicationTaskArn": "ReplicationTasks[].ReplicationTaskArn"
+      }
+    },
+    "InstanceProfile": {
+      "operation": "DescribeInstanceProfiles",
+      "resourceIdentifier": {
+        "InstanceProfileArn": "InstanceProfiles[].InstanceProfileArn",
+        "InstanceProfileName": "InstanceProfiles[].InstanceProfileName"
+      }
+    },
+    "ReplicationTaskAssessmentRun": {
+      "operation": "DescribeReplicationTaskAssessmentRuns",
+      "resourceIdentifier": {
+        "ReplicationTaskAssessmentRunArn": "ReplicationTaskAssessmentRuns[].ReplicationTaskAssessmentRunArn"
+      }
+    },
+    "MigrationProject": {
+      "operation": "DescribeMigrationProjects",
+      "resourceIdentifier": {
+        "MigrationProjectName": "MigrationProjects[].MigrationProjectName",
+        "MigrationProjectArn": "MigrationProjects[].MigrationProjectArn"
+      }
+    },
+    "DataMigration": {
+      "operation": "DescribeDataMigrations",
+      "resourceIdentifier": {
+        "DataMigrationName": "DataMigrations[].DataMigrationName",
+        "DataMigrationArn": "DataMigrations[].DataMigrationArn"
+      }
+    },
+    "DataProvider": {
+      "operation": "DescribeDataProviders",
+      "resourceIdentifier": {
+        "DataProviderName": "DataProviders[].DataProviderName",
+        "DataProviderArn": "DataProviders[].DataProviderArn"
+      }
+    },
+    "FleetAdvisorCollector": {
+      "operation": "DescribeFleetAdvisorCollectors",
+      "resourceIdentifier": {
+        "CollectorReferencedId": "Collectors[].CollectorReferencedId"
+      }
+    },
+    "ReplicationConfig": {
+      "operation": "DescribeReplicationConfigs",
+      "resourceIdentifier": {
+        "ReplicationConfigIdentifier": "ReplicationConfigs[].ReplicationConfigIdentifier",
+        "ReplicationConfigArn": "ReplicationConfigs[].ReplicationConfigArn"
       }
     }
   },
@@ -358,6 +408,15 @@
             "resourceIdentifier": "SourceType"
           }
         ]
+      },
+      "SubscriptionName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "EventSubscription",
+            "resourceIdentifier": "CustSubscriptionId"
+          }
+        ]
       }
     },
     "ModifyReplicationInstance": {
@@ -601,6 +660,521 @@
             "parameters": {},
             "resourceName": "Endpoint",
             "resourceIdentifier": "EndpointArn"
+          }
+        ]
+      }
+    },
+    "AddTagsToResource": {
+      "ResourceArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "InstanceProfile",
+            "resourceIdentifier": "InstanceProfileArn"
+          }
+        ]
+      }
+    },
+    "ApplyPendingMaintenanceAction": {
+      "ReplicationInstanceArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationInstance",
+            "resourceIdentifier": "ReplicationInstanceArn"
+          }
+        ]
+      }
+    },
+    "CancelReplicationTaskAssessmentRun": {
+      "ReplicationTaskAssessmentRunArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationTaskAssessmentRun",
+            "resourceIdentifier": "ReplicationTaskAssessmentRunArn"
+          }
+        ]
+      }
+    },
+    "CreateDataMigration": {
+      "MigrationProjectIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "MigrationProject",
+            "resourceIdentifier": "MigrationProjectName"
+          }
+        ]
+      }
+    },
+    "CreateEndpoint": {
+      "CertificateArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Certificate",
+            "resourceIdentifier": "CertificateArn"
+          }
+        ]
+      }
+    },
+    "CreateInstanceProfile": {
+      "SubnetGroupIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationSubnetGroup",
+            "resourceIdentifier": "ReplicationSubnetGroupIdentifier"
+          }
+        ]
+      }
+    },
+    "CreateMigrationProject": {
+      "InstanceProfileIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "InstanceProfile",
+            "resourceIdentifier": "InstanceProfileArn"
+          }
+        ]
+      }
+    },
+    "CreateReplicationConfig": {
+      "SourceEndpointArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Endpoint",
+            "resourceIdentifier": "EndpointArn"
+          }
+        ]
+      },
+      "TargetEndpointArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Endpoint",
+            "resourceIdentifier": "EndpointArn"
+          }
+        ]
+      }
+    },
+    "CreateReplicationInstance": {
+      "ReplicationSubnetGroupIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationSubnetGroup",
+            "resourceIdentifier": "ReplicationSubnetGroupIdentifier"
+          }
+        ]
+      }
+    },
+    "CreateReplicationTask": {
+      "SourceEndpointArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Endpoint",
+            "resourceIdentifier": "EndpointArn"
+          }
+        ]
+      },
+      "ReplicationInstanceArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationInstance",
+            "resourceIdentifier": "ReplicationInstanceArn"
+          }
+        ]
+      }
+    },
+    "DeleteConnection": {
+      "EndpointArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Endpoint",
+            "resourceIdentifier": "EndpointArn"
+          }
+        ]
+      },
+      "ReplicationInstanceArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationInstance",
+            "resourceIdentifier": "ReplicationInstanceArn"
+          }
+        ]
+      }
+    },
+    "DeleteDataMigration": {
+      "DataMigrationIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DataMigration",
+            "resourceIdentifier": "DataMigrationName"
+          }
+        ]
+      }
+    },
+    "DeleteDataProvider": {
+      "DataProviderIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DataProvider",
+            "resourceIdentifier": "DataProviderName"
+          }
+        ]
+      }
+    },
+    "DeleteEventSubscription": {
+      "SubscriptionName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "EventSubscription",
+            "resourceIdentifier": "CustSubscriptionId"
+          }
+        ]
+      }
+    },
+    "DeleteFleetAdvisorCollector": {
+      "CollectorReferencedId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "FleetAdvisorCollector",
+            "resourceIdentifier": "CollectorReferencedId"
+          }
+        ]
+      }
+    },
+    "DeleteInstanceProfile": {
+      "InstanceProfileIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "InstanceProfile",
+            "resourceIdentifier": "InstanceProfileArn"
+          }
+        ]
+      }
+    },
+    "DeleteMigrationProject": {
+      "MigrationProjectIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "MigrationProject",
+            "resourceIdentifier": "MigrationProjectName"
+          }
+        ]
+      }
+    },
+    "DeleteReplicationConfig": {
+      "ReplicationConfigArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationConfig",
+            "resourceIdentifier": "ReplicationConfigArn"
+          }
+        ]
+      }
+    },
+    "DeleteReplicationTaskAssessmentRun": {
+      "ReplicationTaskAssessmentRunArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationTaskAssessmentRun",
+            "resourceIdentifier": "ReplicationTaskAssessmentRunArn"
+          }
+        ]
+      }
+    },
+    "DescribeApplicableIndividualAssessments": {
+      "ReplicationTaskArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationTask",
+            "resourceIdentifier": "ReplicationTaskArn"
+          }
+        ]
+      },
+      "ReplicationInstanceArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationInstance",
+            "resourceIdentifier": "ReplicationInstanceArn"
+          }
+        ]
+      },
+      "ReplicationConfigArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationConfig",
+            "resourceIdentifier": "ReplicationConfigArn"
+          }
+        ]
+      }
+    },
+    "DescribeEventSubscriptions": {
+      "SubscriptionName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "EventSubscription",
+            "resourceIdentifier": "CustSubscriptionId"
+          }
+        ]
+      }
+    },
+    "DescribePendingMaintenanceActions": {
+      "ReplicationInstanceArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationInstance",
+            "resourceIdentifier": "ReplicationInstanceArn"
+          }
+        ]
+      }
+    },
+    "DescribeReplicationTableStatistics": {
+      "ReplicationConfigArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationConfig",
+            "resourceIdentifier": "ReplicationConfigArn"
+          }
+        ]
+      }
+    },
+    "ListTagsForResource": {
+      "ResourceArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "InstanceProfile",
+            "resourceIdentifier": "InstanceProfileArn"
+          }
+        ]
+      }
+    },
+    "ModifyDataMigration": {
+      "DataMigrationIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DataMigration",
+            "resourceIdentifier": "DataMigrationArn"
+          }
+        ]
+      }
+    },
+    "ModifyDataProvider": {
+      "DataProviderIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DataProvider",
+            "resourceIdentifier": "DataProviderArn"
+          }
+        ]
+      }
+    },
+    "ModifyInstanceProfile": {
+      "InstanceProfileIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "InstanceProfile",
+            "resourceIdentifier": "InstanceProfileArn"
+          }
+        ]
+      },
+      "InstanceProfileName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "InstanceProfile",
+            "resourceIdentifier": "InstanceProfileName"
+          }
+        ]
+      },
+      "SubnetGroupIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationSubnetGroup",
+            "resourceIdentifier": "ReplicationSubnetGroupIdentifier"
+          }
+        ]
+      }
+    },
+    "ModifyMigrationProject": {
+      "MigrationProjectIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "MigrationProject",
+            "resourceIdentifier": "MigrationProjectArn"
+          }
+        ]
+      },
+      "InstanceProfileIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "InstanceProfile",
+            "resourceIdentifier": "InstanceProfileArn"
+          }
+        ]
+      }
+    },
+    "ModifyReplicationConfig": {
+      "ReplicationConfigArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationConfig",
+            "resourceIdentifier": "ReplicationConfigArn"
+          }
+        ]
+      },
+      "ReplicationConfigIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationConfig",
+            "resourceIdentifier": "ReplicationConfigIdentifier"
+          }
+        ]
+      },
+      "SourceEndpointArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Endpoint",
+            "resourceIdentifier": "EndpointArn"
+          }
+        ]
+      },
+      "TargetEndpointArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Endpoint",
+            "resourceIdentifier": "EndpointArn"
+          }
+        ]
+      }
+    },
+    "MoveReplicationTask": {
+      "ReplicationTaskArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationTask",
+            "resourceIdentifier": "ReplicationTaskArn"
+          }
+        ]
+      },
+      "TargetReplicationInstanceArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationInstance",
+            "resourceIdentifier": "ReplicationInstanceArn"
+          }
+        ]
+      }
+    },
+    "ReloadReplicationTables": {
+      "ReplicationConfigArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationConfig",
+            "resourceIdentifier": "ReplicationConfigArn"
+          }
+        ]
+      }
+    },
+    "RemoveTagsFromResource": {
+      "ResourceArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "InstanceProfile",
+            "resourceIdentifier": "InstanceProfileArn"
+          }
+        ]
+      }
+    },
+    "StartDataMigration": {
+      "DataMigrationIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DataMigration",
+            "resourceIdentifier": "DataMigrationName"
+          }
+        ]
+      }
+    },
+    "StartReplication": {
+      "ReplicationConfigArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationConfig",
+            "resourceIdentifier": "ReplicationConfigArn"
+          }
+        ]
+      }
+    },
+    "StartReplicationTaskAssessmentRun": {
+      "ReplicationTaskArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationTask",
+            "resourceIdentifier": "ReplicationTaskArn"
+          }
+        ]
+      }
+    },
+    "StopDataMigration": {
+      "DataMigrationIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DataMigration",
+            "resourceIdentifier": "DataMigrationName"
+          }
+        ]
+      }
+    },
+    "StopReplication": {
+      "ReplicationConfigArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationConfig",
+            "resourceIdentifier": "ReplicationConfigArn"
           }
         ]
       }

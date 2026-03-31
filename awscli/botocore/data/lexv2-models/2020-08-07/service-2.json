@@ -373,6 +373,23 @@
       ],
       "documentation":"<p>Deletes the specified bot alias.</p>"
     },
+    "DeleteBotAnalyzerRecommendation":{
+      "name":"DeleteBotAnalyzerRecommendation",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/bots/{botId}/botanalyzer/{botAnalyzerRequestId}/",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteBotAnalyzerRecommendationRequest"},
+      "output":{"shape":"DeleteBotAnalyzerRecommendationResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Permanently deletes the recommendations and analysis results for a specific bot analysis request. This operation is provided for GDPR compliance and cannot be undone.</p> <p>After deletion, the analysis results cannot be retrieved. The analysis request ID will still appear in the history list, but attempting to describe the recommendations will return a <code>ResourceNotFoundException</code>.</p>"
+    },
     "DeleteBotLocale":{
       "name":"DeleteBotLocale",
       "http":{
@@ -643,6 +660,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Get information about a specific bot alias.</p>"
+    },
+    "DescribeBotAnalyzerRecommendation":{
+      "name":"DescribeBotAnalyzerRecommendation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/bots/{botId}/botanalyzer/describe/{botAnalyzerRequestId}/",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeBotAnalyzerRecommendationRequest"},
+      "output":{"shape":"DescribeBotAnalyzerRecommendationResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the analysis results and recommendations for bot optimization. The analysis must be in <code>Available</code> status before recommendations can be retrieved.</p> <p>Recommendations are returned with pagination support. Each recommendation includes the issue location, priority level, detailed description, and proposed fix.</p>"
     },
     "DescribeBotLocale":{
       "name":"DescribeBotLocale",
@@ -1015,6 +1049,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Gets a list of aliases for the specified bot.</p>"
+    },
+    "ListBotAnalyzerHistory":{
+      "name":"ListBotAnalyzerHistory",
+      "http":{
+        "method":"POST",
+        "requestUri":"/bots/{botId}/botanalyzer/history/",
+        "responseCode":200
+      },
+      "input":{"shape":"ListBotAnalyzerHistoryRequest"},
+      "output":{"shape":"ListBotAnalyzerHistoryResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves a list of historical bot analysis executions for a specific bot. You can filter the results by locale and bot version.</p> <p>The history includes all analysis executions regardless of their status, allowing you to track past analyses and their outcomes.</p>"
     },
     "ListBotLocales":{
       "name":"ListBotLocales",
@@ -1519,6 +1570,24 @@
       ],
       "documentation":"<p>Search for associated transcripts that meet the specified criteria.</p>"
     },
+    "StartBotAnalyzer":{
+      "name":"StartBotAnalyzer",
+      "http":{
+        "method":"POST",
+        "requestUri":"/bots/{botId}/botanalyzer/",
+        "responseCode":202
+      },
+      "input":{"shape":"StartBotAnalyzerRequest"},
+      "output":{"shape":"StartBotAnalyzerResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Initiates an asynchronous analysis of your bot configuration using AI-powered analysis to identify potential issues and recommend improvements based on AWS best practices.</p> <p>The analysis examines your bot's configuration, including intents, utterances, slots, and conversation flows, to provide actionable recommendations for optimization.</p>"
+    },
     "StartBotRecommendation":{
       "name":"StartBotRecommendation",
       "http":{
@@ -1617,6 +1686,23 @@
       ],
       "documentation":"<p>The action to start the generation of test set.</p>",
       "idempotent":true
+    },
+    "StopBotAnalyzer":{
+      "name":"StopBotAnalyzer",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/bots/{botId}/botanalyzer/{botAnalyzerRequestId}/stop/",
+        "responseCode":200
+      },
+      "input":{"shape":"StopBotAnalyzerRequest"},
+      "output":{"shape":"StopBotAnalyzerResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Cancels an ongoing bot analysis execution. Once stopped, the analysis cannot be resumed and no recommendations will be generated.</p>"
     },
     "StopBotRecommendation":{
       "name":"StopBotRecommendation",
@@ -2057,6 +2143,11 @@
       "type":"string",
       "max":1011,
       "min":1
+    },
+    "AnalysisScope":{
+      "type":"string",
+      "documentation":"<p>The scope of analysis to perform on the bot.</p> <p>Valid values include:</p> <ul> <li> <p> <code>BotLocale</code> </p> </li> </ul>",
+      "enum":["BotLocale"]
     },
     "AnalyticsBinByList":{
       "type":"list",
@@ -3577,6 +3668,75 @@
         }
       },
       "documentation":"<p>The target Amazon S3 location for the test set execution using a bot alias.</p>"
+    },
+    "BotAnalyzerHistoryList":{
+      "type":"list",
+      "member":{"shape":"BotAnalyzerHistorySummary"}
+    },
+    "BotAnalyzerHistorySummary":{
+      "type":"structure",
+      "required":[
+        "botAnalyzerStatus",
+        "botAnalyzerRequestId"
+      ],
+      "members":{
+        "botAnalyzerStatus":{
+          "shape":"BotAnalyzerStatus",
+          "documentation":"<p>The status of the historical analysis execution.</p> <p>Valid Values: <code>Processing | Available | Failed | Stopping | Stopped</code> </p>"
+        },
+        "creationDateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the analysis was initiated.</p>"
+        },
+        "botAnalyzerRequestId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier for the analysis request.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a historical bot analysis execution.</p>"
+    },
+    "BotAnalyzerRecommendation":{
+      "type":"structure",
+      "required":[
+        "issueLocation",
+        "priority",
+        "issueDescription",
+        "proposedFix"
+      ],
+      "members":{
+        "issueLocation":{
+          "shape":"IssueLocation",
+          "documentation":"<p>The location information for the identified issue within the bot configuration.</p>"
+        },
+        "priority":{
+          "shape":"Priority",
+          "documentation":"<p>The priority level of the recommendation.</p> <p>Valid Values: <code>High | Medium | Low</code> </p>"
+        },
+        "issueDescription":{
+          "shape":"Description",
+          "documentation":"<p>A detailed description of the identified configuration issue.</p>"
+        },
+        "proposedFix":{
+          "shape":"Description",
+          "documentation":"<p>The recommended solution to address the identified issue.</p>"
+        }
+      },
+      "documentation":"<p>Contains a recommendation for bot optimization identified by the Bot Analyzer.</p>"
+    },
+    "BotAnalyzerRecommendationList":{
+      "type":"list",
+      "member":{"shape":"BotAnalyzerRecommendation"}
+    },
+    "BotAnalyzerStatus":{
+      "type":"string",
+      "documentation":"<p>The status of the bot analysis execution.</p> <p>Valid values include:</p> <ul> <li> <p> <code>Processing</code> </p> </li> <li> <p> <code>Available</code> </p> </li> <li> <p> <code>Failed</code> </p> </li> <li> <p> <code>Stopping</code> </p> </li> <li> <p> <code>Stopped</code> </p> </li> </ul>",
+      "enum":[
+        "Processing",
+        "Available",
+        "Failed",
+        "Stopping",
+        "Stopped"
+      ]
     },
     "BotExportSpecification":{
       "type":"structure",
@@ -6077,6 +6237,31 @@
         }
       }
     },
+    "DeleteBotAnalyzerRecommendationRequest":{
+      "type":"structure",
+      "required":[
+        "botId",
+        "botAnalyzerRequestId"
+      ],
+      "members":{
+        "botId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the bot.</p>",
+          "location":"uri",
+          "locationName":"botId"
+        },
+        "botAnalyzerRequestId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the analysis request whose recommendations should be deleted.</p>",
+          "location":"uri",
+          "locationName":"botAnalyzerRequestId"
+        }
+      }
+    },
+    "DeleteBotAnalyzerRecommendationResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "DeleteBotLocaleRequest":{
       "type":"structure",
       "required":[
@@ -6645,6 +6830,68 @@
         "parentBotNetworks":{
           "shape":"ParentBotNetworks",
           "documentation":"<p>A list of the networks to which the bot alias you described belongs.</p>"
+        }
+      }
+    },
+    "DescribeBotAnalyzerRecommendationRequest":{
+      "type":"structure",
+      "required":[
+        "botId",
+        "botAnalyzerRequestId"
+      ],
+      "members":{
+        "botId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the bot.</p>",
+          "location":"uri",
+          "locationName":"botId"
+        },
+        "botAnalyzerRequestId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the analysis request.</p>",
+          "location":"uri",
+          "locationName":"botAnalyzerRequestId"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response from a previous request was truncated, the <code>nextToken</code> value is used to retrieve the next page of recommendations.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of recommendations to return in the response. The default is 5.</p>"
+        }
+      }
+    },
+    "DescribeBotAnalyzerRecommendationResponse":{
+      "type":"structure",
+      "members":{
+        "botId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the bot.</p>"
+        },
+        "botVersion":{
+          "shape":"DraftBotVersion",
+          "documentation":"<p>The version of the bot that was analyzed.</p>"
+        },
+        "localeId":{
+          "shape":"LocaleId",
+          "documentation":"<p>The locale identifier of the bot locale that was analyzed.</p>"
+        },
+        "botAnalyzerStatus":{
+          "shape":"BotAnalyzerStatus",
+          "documentation":"<p>The current status of the analysis.</p> <p>Valid Values: <code>Processing | Available | Failed | Stopping | Stopped</code> </p>"
+        },
+        "creationDateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the analysis was initiated.</p>"
+        },
+        "botAnalyzerRecommendationList":{
+          "shape":"BotAnalyzerRecommendationList",
+          "documentation":"<p>A list of recommendations for optimizing your bot configuration. Each recommendation includes the issue location, priority, description, and proposed fix.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response is truncated, this token can be used in a subsequent request to retrieve the next page of recommendations.</p>"
         }
       }
     },
@@ -9149,6 +9396,24 @@
       "type":"list",
       "member":{"shape":"InvokedIntentSample"}
     },
+    "IssueLocation":{
+      "type":"structure",
+      "members":{
+        "botLocale":{
+          "shape":"LocaleId",
+          "documentation":"<p>The locale identifier where the issue was found.</p>"
+        },
+        "intentId":{
+          "shape":"Id",
+          "documentation":"<p>The intent identifier where the issue was found, if applicable.</p>"
+        },
+        "slotId":{
+          "shape":"Id",
+          "documentation":"<p>The slot identifier where the issue was found, if applicable.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the location of an identified issue within the bot configuration.</p>"
+    },
     "ItemId":{
       "type":"string",
       "max":32,
@@ -9400,6 +9665,59 @@
         "botId":{
           "shape":"Id",
           "documentation":"<p>The identifier of the bot associated with the aliases.</p>"
+        }
+      }
+    },
+    "ListBotAnalyzerHistoryRequest":{
+      "type":"structure",
+      "required":["botId"],
+      "members":{
+        "botId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the bot.</p>",
+          "location":"uri",
+          "locationName":"botId"
+        },
+        "localeId":{
+          "shape":"LocaleId",
+          "documentation":"<p>The locale identifier to filter the history. If not specified, returns history for all locales.</p>"
+        },
+        "botVersion":{
+          "shape":"DraftBotVersion",
+          "documentation":"<p>The bot version to filter the history. If not specified, defaults to <code>DRAFT</code>.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response from a previous request was truncated, the <code>nextToken</code> value is used to retrieve the next page of history entries.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of history entries to return in the response. The default is 10.</p>"
+        }
+      }
+    },
+    "ListBotAnalyzerHistoryResponse":{
+      "type":"structure",
+      "members":{
+        "botId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the bot.</p>"
+        },
+        "localeId":{
+          "shape":"LocaleId",
+          "documentation":"<p>The locale identifier used to filter the history.</p>"
+        },
+        "botVersion":{
+          "shape":"DraftBotVersion",
+          "documentation":"<p>The bot version used to filter the history.</p>"
+        },
+        "botAnalyzerHistoryList":{
+          "shape":"BotAnalyzerHistoryList",
+          "documentation":"<p>A list of historical analysis executions, ordered by creation date with the most recent first.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response is truncated, this token can be used in a subsequent request to retrieve the next page of history entries.</p>"
         }
       }
     },
@@ -11350,6 +11668,15 @@
       "type":"list",
       "member":{"shape":"Principal"}
     },
+    "Priority":{
+      "type":"string",
+      "documentation":"<p>The priority level of a recommendation.</p> <p>Valid values include:</p> <ul> <li> <p> <code>High</code> </p> </li> <li> <p> <code>Medium</code> </p> </li> <li> <p> <code>Low</code> </p> </li> </ul>",
+      "enum":[
+        "High",
+        "Medium",
+        "Low"
+      ]
+    },
     "PriorityValue":{
       "type":"integer",
       "max":100,
@@ -12616,6 +12943,62 @@
       },
       "documentation":"<p>Settings that control how Amazon Lex processes and recognizes speech input from users.</p>"
     },
+    "StartBotAnalyzerRequest":{
+      "type":"structure",
+      "required":[
+        "botId",
+        "analysisScope"
+      ],
+      "members":{
+        "botId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the bot to analyze.</p>",
+          "location":"uri",
+          "locationName":"botId"
+        },
+        "analysisScope":{
+          "shape":"AnalysisScope",
+          "documentation":"<p>The scope of analysis to perform. Currently only <code>BotLocale</code> scope is supported.</p> <p>Valid Values: <code>BotLocale</code> </p>"
+        },
+        "localeId":{
+          "shape":"LocaleId",
+          "documentation":"<p>The locale identifier for the bot locale to analyze. Required when <code>analysisScope</code> is <code>BotLocale</code>.</p>"
+        },
+        "botVersion":{
+          "shape":"DraftBotVersion",
+          "documentation":"<p>The version of the bot to analyze. Defaults to <code>DRAFT</code> if not specified.</p>"
+        }
+      }
+    },
+    "StartBotAnalyzerResponse":{
+      "type":"structure",
+      "members":{
+        "botId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the bot being analyzed.</p>"
+        },
+        "botVersion":{
+          "shape":"DraftBotVersion",
+          "documentation":"<p>The version of the bot being analyzed.</p>"
+        },
+        "localeId":{
+          "shape":"LocaleId",
+          "documentation":"<p>The locale identifier of the bot locale being analyzed.</p>"
+        },
+        "botAnalyzerStatus":{
+          "shape":"BotAnalyzerStatus",
+          "documentation":"<p>The current status of the analysis. The initial status is <code>Processing</code>.</p> <p>Valid Values: <code>Processing | Available | Failed | Stopping | Stopped</code> </p>"
+        },
+        "botAnalyzerRequestId":{
+          "shape":"UUID",
+          "documentation":"<p>A unique identifier for this analysis request. Use this identifier to check the status and retrieve results.</p>"
+        },
+        "creationDateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the analysis was initiated.</p>"
+        }
+      }
+    },
     "StartBotRecommendationRequest":{
       "type":"structure",
       "required":[
@@ -12976,6 +13359,52 @@
       "type":"integer",
       "max":900,
       "min":1
+    },
+    "StopBotAnalyzerRequest":{
+      "type":"structure",
+      "required":[
+        "botId",
+        "botAnalyzerRequestId"
+      ],
+      "members":{
+        "botId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the bot.</p>",
+          "location":"uri",
+          "locationName":"botId"
+        },
+        "botAnalyzerRequestId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the analysis request to stop.</p>",
+          "location":"uri",
+          "locationName":"botAnalyzerRequestId"
+        }
+      }
+    },
+    "StopBotAnalyzerResponse":{
+      "type":"structure",
+      "members":{
+        "botId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the bot.</p>"
+        },
+        "botVersion":{
+          "shape":"DraftBotVersion",
+          "documentation":"<p>The version of the bot.</p>"
+        },
+        "localeId":{
+          "shape":"LocaleId",
+          "documentation":"<p>The locale identifier of the bot locale.</p>"
+        },
+        "botAnalyzerStatus":{
+          "shape":"BotAnalyzerStatus",
+          "documentation":"<p>The updated status of the analysis. The status will be <code>Stopping</code> and will eventually transition to <code>Stopped</code>.</p> <p>Valid Values: <code>Processing | Available | Failed | Stopping | Stopped</code> </p>"
+        },
+        "botAnalyzerRequestId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the analysis request.</p>"
+        }
+      }
     },
     "StopBotRecommendationRequest":{
       "type":"structure",
@@ -13836,6 +14265,12 @@
         }
       },
       "documentation":"<p>Contains information about the messages in the turn.</p>"
+    },
+    "UUID":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
     },
     "UnifiedSpeechSettings":{
       "type":"structure",

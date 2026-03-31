@@ -24,26 +24,26 @@ class ECSError(Exception):
 
 
 class MissingPropertyError(ECSError):
-    fmt = "Error: Resource '{resource}' must include property '{prop_name}'"
+    fmt = "Resource '{resource}' must include property '{prop_name}'"
 
 
 class FileLoadError(ECSError):
-    fmt = "Error: Unable to load file at {file_path}: {error}"
+    fmt = "Unable to load file at {file_path}: {error}"
 
 
 class InvalidPlatformError(ECSError):
-    fmt = "Error: {resource} '{name}' must support 'ECS' compute platform"
+    fmt = "{resource} '{name}' must support 'ECS' compute platform"
 
 
 class InvalidProperyError(ECSError):
     fmt = (
-        "Error: deployment group '{dg_name}' does not target "
+        "deployment group '{dg_name}' does not target "
         "ECS {resource} '{resource_name}'"
     )
 
 
 class InvalidServiceError(ECSError):
-    fmt = "Error: Service '{service}' not found in cluster '{cluster}'"
+    fmt = "Service '{service}' not found in cluster '{cluster}'"
 
 
 class ServiceClientError(ECSError):

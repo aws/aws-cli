@@ -289,7 +289,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             'emr-4.0.0 --instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG
         )
         expected_error_msg = (
-            '\naws: error: You cannot specify both --ami-version'
+            '\naws: [ERROR]: An error occurred (ParamValidation): You cannot specify both --ami-version'
             ' and --release-label options together.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -298,7 +298,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_if_ami_version_or_release_label_is_provided(self):
         cmd = self.prefix + ' --instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG
         expected_error_msg = (
-            '\naws: error: Either --ami-version or'
+            '\naws: [ERROR]: An error occurred (ParamValidation): Either --ami-version or'
             ' --release-label is required.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -406,7 +406,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             + '--ec2-attributes InstanceProfile=Ec2_InstanceProfile'
         )
         expected_error_msg = (
-            '\naws: error: You cannot specify both --use-default-roles '
+            '\naws: [ERROR]: An error occurred (ParamValidation): You cannot specify both --use-default-roles '
             'and --ec2-attributes InstanceProfile options together. Either '
             'choose --use-default-roles or use both --service-role <roleName>'
             ' and --ec2-attributes InstanceProfile=<profileName>.\n'
@@ -420,7 +420,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '--ec2-attributes InstanceProfile=Ec2_InstanceProfile'
         )
         expected_error_msg = (
-            '\naws: error: You cannot specify both --use-default-roles '
+            '\naws: [ERROR]: An error occurred (ParamValidation): You cannot specify both --use-default-roles '
             'and --service-role options together. Either choose '
             '--use-default-roles or use both --service-role <roleName> '
             'and --ec2-attributes InstanceProfile=<profileName>.\n'
@@ -479,7 +479,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             + '--auto-terminate --no-auto-terminate'
         )
         expected_error_msg = (
-            '\naws: error: cannot use both --no-auto-terminate and'
+            '\naws: [ERROR]: An error occurred (ParamValidation): cannot use both --no-auto-terminate and'
             ' --auto-terminate options together.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -502,7 +502,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             DEFAULT_CMD + '--termination-protected --no-termination-protected'
         )
         expected_error_msg = (
-            '\naws: error: cannot use both --termination-protected'
+            '\naws: [ERROR]: An error occurred (ParamValidation): cannot use both --termination-protected'
             ' and --no-termination-protected options together.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -532,7 +532,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             + '--unhealthy-node-replacement --no-unhealthy-node-replacement'
         )
         expected_error_msg = (
-            '\naws: error: cannot use both --unhealthy-node-replacement'
+            '\naws: [ERROR]: An error occurred (ParamValidation): cannot use both --unhealthy-node-replacement'
             ' and --no-unhealthy-node-replacement options together.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -551,7 +551,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_visible_to_all_users_and_no_visible_to_all_users(self):
         cmd = DEFAULT_CMD + '--visible-to-all-users --no-visible-to-all-users'
         expected_error_msg = (
-            '\naws: error: cannot use both --visible-to-all-users and '
+            '\naws: [ERROR]: An error occurred (ParamValidation): cannot use both --visible-to-all-users and '
             '--no-visible-to-all-users options together.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -572,7 +572,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_extended_support_and_no_extended_support(self):
         cmd = DEFAULT_CMD + '--extended-support --no-extended-support'
         expected_error_msg = (
-            '\naws: error: cannot use both --extended-support'
+            '\naws: [ERROR]: An error occurred (ParamValidation): cannot use both --extended-support'
             ' and --no-extended-support options together.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -625,7 +625,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_enable_debugging_no_log_uri(self):
         cmd = DEFAULT_CMD + '--enable-debugging'
         expected_error_msg = (
-            '\naws: error: LogUri not specified. You must specify a logUri'
+            '\naws: [ERROR]: An error occurred (ParamValidation): LogUri not specified. You must specify a logUri'
             ' if you enable debugging when creating a cluster.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -638,7 +638,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             + ' --log-uri s3://test/logs'
         )
         expected_error_msg = (
-            '\naws: error: cannot use both --enable-debugging and '
+            '\naws: [ERROR]: An error occurred (ParamValidation): cannot use both --enable-debugging and '
             '--no-enable-debugging options together.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -718,7 +718,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             ' emr-4.0.0 '
         )
         expect_error_msg = (
-            '\naws: error: Must specify either --instance-groups or '
+            '\naws: [ERROR]: An error occurred (ParamValidation): Must specify either --instance-groups or '
             '--instance-type with --instance-count(optional) to '
             'configure instance groups.\n'
         )
@@ -730,7 +730,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '--instance-count 2'
         )
         expect_error_msg = (
-            '\naws: error: Must specify either --instance-groups or '
+            '\naws: [ERROR]: An error occurred (ParamValidation): Must specify either --instance-groups or '
             '--instance-type with --instance-count(optional) to '
             'configure instance groups.\n'
         )
@@ -744,7 +744,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             + DEFAULT_INSTANCE_GROUPS_ARG
         )
         expect_error_msg = (
-            '\naws: error: You may not specify --instance-type '
+            '\naws: [ERROR]: An error occurred (ParamValidation): You may not specify --instance-type '
             'or --instance-count with --instance-groups, '
             'because --instance-type and --instance-count are '
             'shortcut options for --instance-groups.\n'
@@ -758,7 +758,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '--instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG
         )
         expect_error_msg = (
-            '\naws: error: You may not specify --instance-type '
+            '\naws: [ERROR]: An error occurred (ParamValidation): You may not specify --instance-type '
             'or --instance-count with --instance-groups, '
             'because --instance-type and --instance-count are '
             'shortcut options for --instance-groups.\n'
@@ -927,7 +927,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             + 'SubnetId=subnet-123456,AvailabilityZone=us-east-1a'
         )
         expect_error_msg = (
-            '\naws: error: You may not specify both a SubnetId and an Availab'
+            '\naws: [ERROR]: An error occurred (ParamValidation): You may not specify both a SubnetId and an Availab'
             'ilityZone (placement) because ec2SubnetId implies a placement.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -993,7 +993,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             cmd += ba_cmd
 
         expected_error_msg = (
-            '\naws: error: maximum number of '
+            '\naws: [ERROR]: An error occurred (ParamValidation): maximum number of '
             + 'bootstrap actions for a cluster exceeded.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -1006,7 +1006,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         for i in range(1, 20):
             cmd += ba_cmd
         expected_error_msg = (
-            '\naws: error: maximum number of '
+            '\naws: [ERROR]: An error occurred (ParamValidation): maximum number of '
             + 'bootstrap actions for a cluster exceeded.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -1057,7 +1057,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_wrong_step_type_error(self):
         cmd = DEFAULT_CMD + '--steps Type=unknown'
         expected_error_msg = (
-            '\naws: error: The step type unknown is not supported.\n'
+            '\naws: [ERROR]: An error occurred (ParamValidation): The step type unknown is not supported.\n'
         )
         result = self.run_cmd(cmd, 252)
         self.assertEqual(expected_error_msg, result[1])
@@ -1071,7 +1071,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_custom_jar_step_missing_jar(self):
         cmd = DEFAULT_CMD + '--steps Name=CustomJarMissingJar'
         expect_error_msg = (
-            '\naws: error: The following '
+            '\naws: [ERROR]: An error occurred (ParamValidation): The following '
             + 'required parameters are missing for CustomJARStepConfig: Jar.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -1118,7 +1118,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_streaming_step_missing_args(self):
         cmd = DEFAULT_CMD + '--steps Type=Streaming'
         expect_error_msg = (
-            '\naws: error: The following '
+            '\naws: [ERROR]: An error occurred (ParamValidation): The following '
             + 'required parameters are missing for StreamingStepConfig: Args.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -1152,7 +1152,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_hive_step_missing_args(self):
         cmd = DEFAULT_CMD + '--applications Name=Hive --steps Type=Hive'
         expect_error_msg = (
-            '\naws: error: The following '
+            '\naws: [ERROR]: An error occurred (ParamValidation): The following '
             + 'required parameters are missing for HiveStepConfig: Args.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -1183,7 +1183,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_pig_missing_args(self):
         cmd = DEFAULT_CMD + '--applications Name=Pig --steps Type=Pig'
         expect_error_msg = (
-            '\naws: error: The following '
+            '\naws: [ERROR]: An error occurred (ParamValidation): The following '
             + 'required parameters are missing for PigStepConfig: Args.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -1331,7 +1331,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             + CONSTANTS.INSTANCE_GROUPS_WITH_AUTOSCALING_POLICY_ARG
         )
         expected_error_msg = (
-            '\naws: error: Must specify --auto-scaling-role when'
+            '\naws: [ERROR]: An error occurred (ParamValidation): Must specify --auto-scaling-role when'
             ' configuring an AutoScaling policy for an instance group.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -1582,7 +1582,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             + CONSTANTS.INSTANCE_GROUPS_WITH_EBS_VOLUME_ARG
         )
         expected_error_msg = (
-            '\naws: error: You cannot specify both --instance-groups'
+            '\naws: [ERROR]: An error occurred (ParamValidation): You cannot specify both --instance-groups'
             ' and --instance-fleets options together.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -1596,7 +1596,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             + ' --ec2-attributes SubnetId=subnetid-1,SubnetIds=[subnetid-1,subnetid-2]'
         )
         expected_error_msg = (
-            '\naws: error: You cannot specify both SubnetId'
+            '\naws: [ERROR]: An error occurred (ParamValidation): You cannot specify both SubnetId'
             ' and SubnetIds options together.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -1753,6 +1753,26 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         }
         self.assert_params_for_cmd(cmd, result)
 
+    def test_create_cluster_with_step_execution_role_arn(self):
+        cmd = (
+            self.prefix
+            + '--release-label emr-6.7.0 '
+            + '--step-execution-role-arn '
+            + 'arn:aws:iam::123456789012:role/MyStepExecutionRole '
+            + '--instance-groups '
+            + DEFAULT_INSTANCE_GROUPS_ARG
+        )
+        result = {
+            'Name': DEFAULT_CLUSTER_NAME,
+            'Instances': DEFAULT_INSTANCES,
+            'ReleaseLabel': 'emr-6.7.0',
+            'VisibleToAllUsers': True,
+            'Tags': [],
+            'StepExecutionRoleArn':
+                'arn:aws:iam::123456789012:role/MyStepExecutionRole',
+        }
+        self.assert_params_for_cmd(cmd, result)
+
     def test_create_cluster_with_managed_scaling_policy(self):
         cmd = (
             self.prefix
@@ -1860,6 +1880,294 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             },
         }
         self.assert_params_for_cmd(cmd, result)
+
+    def test_create_cluster_with_s3_logging_configuration(self):
+        cmd = (
+            self.prefix
+            + '--release-label emr-7.13.0 '
+            + '--log-uri s3://mybucket/logs '
+            + '--monitoring-configuration '
+            + 'S3LoggingConfiguration={LogTypeUploadPolicy={system-logs=emr-managed,application-logs=on-customer-s3only,persistent-ui-logs=disabled}} '
+            + '--instance-groups '
+            + DEFAULT_INSTANCE_GROUPS_ARG
+        )
+        result = {
+            'Name': DEFAULT_CLUSTER_NAME,
+            'Instances': DEFAULT_INSTANCES,
+            'ReleaseLabel': 'emr-7.13.0',
+            'VisibleToAllUsers': True,
+            'Tags': [],
+            'LogUri': 's3://mybucket/logs',
+            'MonitoringConfiguration': {
+                'S3LoggingConfiguration': {
+                    'LogTypeUploadPolicy': {
+                        'system-logs': 'emr-managed',
+                        'application-logs': 'on-customer-s3only',
+                        'persistent-ui-logs': 'disabled',
+                    },
+                },
+            },
+        }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_create_cluster_with_cloudwatch_and_s3_logging_configuration(self):
+        cmd = (
+            self.prefix
+            + '--release-label emr-7.13.0 '
+            + '--log-uri s3://mybucket/logs '
+            + '--monitoring-configuration '
+            + 'CloudWatchLogConfiguration={Enabled=true,LogGroupName=MyLogGroup,'
+            + 'LogStreamNamePrefix=MyPrefix,LogTypes={STEP_LOGS=[STDOUT,STDERR]}},'
+            + 'S3LoggingConfiguration={LogTypeUploadPolicy={system-logs=emr-managed,application-logs=on-customer-s3only}} '
+            + '--instance-groups '
+            + DEFAULT_INSTANCE_GROUPS_ARG
+        )
+        result = {
+            'Name': DEFAULT_CLUSTER_NAME,
+            'Instances': DEFAULT_INSTANCES,
+            'ReleaseLabel': 'emr-7.13.0',
+            'VisibleToAllUsers': True,
+            'Tags': [],
+            'LogUri': 's3://mybucket/logs',
+            'MonitoringConfiguration': {
+                'CloudWatchLogConfiguration': {
+                    'Enabled': True,
+                    'LogGroupName': 'MyLogGroup',
+                    'LogStreamNamePrefix': 'MyPrefix',
+                    'LogTypes': {
+                        'STEP_LOGS': ['STDOUT', 'STDERR'],
+                    },
+                },
+                'S3LoggingConfiguration': {
+                    'LogTypeUploadPolicy': {
+                        'system-logs': 'emr-managed',
+                        'application-logs': 'on-customer-s3only',
+                    },
+                },
+            },
+        }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_create_cluster_s3_logging_invalid_log_type(self):
+        """Test that invalid log type raises error"""
+        cmd = (
+            self.prefix
+            + '--release-label emr-7.13.0 '
+            + '--log-uri s3://mybucket/logs '
+            + '--monitoring-configuration '
+            + 'S3LoggingConfiguration={LogTypeUploadPolicy={invalid-logs=emr-managed}} '
+            + '--instance-groups '
+            + DEFAULT_INSTANCE_GROUPS_ARG
+        )
+        self.assert_error_msg(cmd, 'InvalidS3LoggingLogTypeError', rc=252)
+
+    def test_create_cluster_s3_logging_invalid_policy(self):
+        """Test that invalid policy raises error"""
+        cmd = (
+            self.prefix
+            + '--release-label emr-7.13.0 '
+            + '--log-uri s3://mybucket/logs '
+            + '--monitoring-configuration '
+            + 'S3LoggingConfiguration={LogTypeUploadPolicy={system-logs=invalid-policy}} '
+            + '--instance-groups '
+            + DEFAULT_INSTANCE_GROUPS_ARG
+        )
+        self.assert_error_msg(cmd, 'InvalidS3LoggingPolicyError', rc=252)
+
+    def test_create_cluster_s3_logging_on_customer_s3only_for_persistent_ui_logs(self):
+        """Test that on-customer-s3only is not allowed for persistent-ui-logs"""
+        cmd = (
+            self.prefix
+            + '--release-label emr-7.13.0 '
+            + '--log-uri s3://mybucket/logs '
+            + '--monitoring-configuration '
+            + 'S3LoggingConfiguration={LogTypeUploadPolicy={persistent-ui-logs=on-customer-s3only}} '
+            + '--instance-groups '
+            + DEFAULT_INSTANCE_GROUPS_ARG
+        )
+        self.assert_error_msg(cmd, 'InvalidS3LoggingPersistentUiLogsPolicyError', rc=252)
+
+    def test_create_cluster_s3_logging_requires_log_uri_for_system_logs(self):
+        """Test that LogUri is required when system-logs uses emr-managed"""
+        cmd = (
+            self.prefix
+            + '--release-label emr-7.13.0 '
+            + '--monitoring-configuration '
+            + 'S3LoggingConfiguration={LogTypeUploadPolicy={system-logs=emr-managed,application-logs=disabled}} '
+            + '--instance-groups '
+            + DEFAULT_INSTANCE_GROUPS_ARG
+        )
+        self.assert_error_msg(cmd, 'S3LoggingConfigurationLogUriRequiredError', rc=252)
+
+    def test_create_cluster_s3_logging_requires_log_uri_for_application_logs(self):
+        """Test that LogUri is required when application-logs uses on-customer-s3only"""
+        cmd = (
+            self.prefix
+            + '--release-label emr-7.13.0 '
+            + '--monitoring-configuration '
+            + 'S3LoggingConfiguration={LogTypeUploadPolicy={system-logs=disabled,application-logs=on-customer-s3only}} '
+            + '--instance-groups '
+            + DEFAULT_INSTANCE_GROUPS_ARG
+        )
+        self.assert_error_msg(cmd, 'S3LoggingConfigurationLogUriRequiredError', rc=252)
+
+    def test_create_cluster_s3_logging_requires_log_uri_for_both_logs(self):
+        """Test that LogUri is required when both system-logs and application-logs use non-disabled policies"""
+        cmd = (
+            self.prefix
+            + '--release-label emr-7.13.0 '
+            + '--monitoring-configuration '
+            + 'S3LoggingConfiguration={LogTypeUploadPolicy={system-logs=emr-managed,application-logs=on-customer-s3only}} '
+            + '--instance-groups '
+            + DEFAULT_INSTANCE_GROUPS_ARG
+        )
+        self.assert_error_msg(cmd, 'S3LoggingConfigurationLogUriRequiredError', rc=252)
+
+    def test_create_cluster_s3_logging_log_uri_not_allowed_when_both_disabled(self):
+        """Test that LogUri is not allowed when both system-logs and application-logs are disabled"""
+        cmd = (
+            self.prefix
+            + '--release-label emr-7.13.0 '
+            + '--log-uri s3://mybucket/logs '
+            + '--monitoring-configuration '
+            + 'S3LoggingConfiguration={LogTypeUploadPolicy={system-logs=disabled,application-logs=disabled}} '
+            + '--instance-groups '
+            + DEFAULT_INSTANCE_GROUPS_ARG
+        )
+        self.assert_error_msg(cmd, 'S3LoggingConfigurationLogUriNotAllowedError', rc=252)
+
+    def test_create_cluster_s3_logging_valid_with_log_uri(self):
+        """Test valid S3LoggingConfiguration with LogUri"""
+        cmd = (
+            self.prefix
+            + '--release-label emr-7.13.0 '
+            + '--log-uri s3://mybucket/logs '
+            + '--monitoring-configuration '
+            + 'S3LoggingConfiguration={LogTypeUploadPolicy={system-logs=emr-managed,application-logs=on-customer-s3only,persistent-ui-logs=disabled}} '
+            + '--instance-groups '
+            + DEFAULT_INSTANCE_GROUPS_ARG
+        )
+        result = {
+            'Name': DEFAULT_CLUSTER_NAME,
+            'Instances': DEFAULT_INSTANCES,
+            'ReleaseLabel': 'emr-7.13.0',
+            'VisibleToAllUsers': True,
+            'Tags': [],
+            'LogUri': 's3://mybucket/logs',
+            'MonitoringConfiguration': {
+                'S3LoggingConfiguration': {
+                    'LogTypeUploadPolicy': {
+                        'system-logs': 'emr-managed',
+                        'application-logs': 'on-customer-s3only',
+                        'persistent-ui-logs': 'disabled',
+                    },
+                },
+            },
+        }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_create_cluster_s3_logging_valid_all_disabled_no_log_uri(self):
+        """Test valid S3LoggingConfiguration with all logs disabled and no LogUri"""
+        cmd = (
+            self.prefix
+            + '--release-label emr-7.13.0 '
+            + '--monitoring-configuration '
+            + 'S3LoggingConfiguration={LogTypeUploadPolicy={system-logs=disabled,application-logs=disabled,persistent-ui-logs=disabled}} '
+            + '--instance-groups '
+            + DEFAULT_INSTANCE_GROUPS_ARG
+        )
+        result = {
+            'Name': DEFAULT_CLUSTER_NAME,
+            'Instances': DEFAULT_INSTANCES,
+            'ReleaseLabel': 'emr-7.13.0',
+            'VisibleToAllUsers': True,
+            'Tags': [],
+            'MonitoringConfiguration': {
+                'S3LoggingConfiguration': {
+                    'LogTypeUploadPolicy': {
+                        'system-logs': 'disabled',
+                        'application-logs': 'disabled',
+                        'persistent-ui-logs': 'disabled',
+                    },
+                },
+            },
+        }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_create_cluster_s3_logging_empty_log_type_upload_policy(self):
+        """Test that empty LogTypeUploadPolicy is treated as no S3LoggingConfiguration.
+
+        Empty dict means no S3LoggingConfiguration, so no validation is performed.
+        """
+        cmd = (
+            self.prefix
+            + '--release-label emr-5.34.0 '
+            + '--monitoring-configuration '
+            + 'S3LoggingConfiguration={LogTypeUploadPolicy={}} '
+            + '--instance-groups '
+            + DEFAULT_INSTANCE_GROUPS_ARG
+        )
+        result = {
+            'Name': DEFAULT_CLUSTER_NAME,
+            'Instances': DEFAULT_INSTANCES,
+            'ReleaseLabel': 'emr-5.34.0',
+            'VisibleToAllUsers': True,
+            'Tags': [],
+            'MonitoringConfiguration': {
+                'S3LoggingConfiguration': {
+                    'LogTypeUploadPolicy': {},
+                },
+            },
+        }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_create_cluster_s3_logging_only_persistent_ui_logs_with_log_uri(self):
+        """Test that specifying only persistent-ui-logs with LogUri succeeds.
+
+        Missing log types (system-logs, application-logs) default to
+        requiring LogUri, so providing LogUri is valid and required.
+        """
+        cmd = (
+            self.prefix
+            + '--release-label emr-5.34.0 '
+            + '--log-uri s3://mybucket/logs '
+            + '--monitoring-configuration '
+            + 'S3LoggingConfiguration={LogTypeUploadPolicy={persistent-ui-logs=emr-managed}} '
+            + '--instance-groups '
+            + DEFAULT_INSTANCE_GROUPS_ARG
+        )
+        result = {
+            'Name': DEFAULT_CLUSTER_NAME,
+            'Instances': DEFAULT_INSTANCES,
+            'ReleaseLabel': 'emr-5.34.0',
+            'LogUri': 's3://mybucket/logs',
+            'VisibleToAllUsers': True,
+            'Tags': [],
+            'MonitoringConfiguration': {
+                'S3LoggingConfiguration': {
+                    'LogTypeUploadPolicy': {
+                        'persistent-ui-logs': 'emr-managed',
+                    },
+                },
+            },
+        }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_create_cluster_s3_logging_only_persistent_ui_logs_no_log_uri(self):
+        """Test S3LoggingConfiguration with only persistent-ui-logs requires LogUri.
+
+        Missing log types (system-logs, application-logs) default to
+        requiring LogUri (they use "default" policy internally, which resolves to "emr-managed").
+        """
+        cmd = (
+            self.prefix
+            + '--release-label emr-5.34.0 '
+            + '--monitoring-configuration '
+            + 'S3LoggingConfiguration={LogTypeUploadPolicy={persistent-ui-logs=emr-managed}} '
+            + '--instance-groups '
+            + DEFAULT_INSTANCE_GROUPS_ARG
+        )
+        self.assert_error_msg(cmd, 'S3LoggingConfigurationLogUriRequiredError', rc=252)
 
     def test_create_cluster_with_log_encryption_kms_key_id(self):
         test_log_uri = 's3://test/logs'

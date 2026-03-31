@@ -501,7 +501,7 @@ class TestDeployCommand(BaseAWSCommandParamsTest):
         )
 
         expected_stderr = (
-            "\nError: Resource 'properties' must "
+            "\naws: [ERROR]: Resource 'properties' must "
             "include property 'taskDefinition'\n"
         )
 
@@ -573,7 +573,7 @@ class TestDeployCommand(BaseAWSCommandParamsTest):
         ]
 
         expected_stderr = (
-            "\nError: Application '"
+            "\naws: [ERROR]: Application '"
             + self.application_name
             + "' must support 'ECS' compute platform\n"
         )

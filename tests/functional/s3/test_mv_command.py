@@ -758,7 +758,8 @@ class TestMvCommandWithValidateSameS3Paths(BaseS3TransferCommandTest):
         ]
         stderr = self.run_cmd(cmdline, expected_rc=252)[1]
         self.assertEqual(
-            "\nCouldn't find multi-region access point with alias foobar.mrap "
+            "\naws: [ERROR]: An error occurred (ParamValidation): "
+            "Couldn't find multi-region access point with alias foobar.mrap "
             "in account 123456789012\n",
             stderr,
         )
@@ -834,7 +835,7 @@ class TestMvCommandWithValidateSameS3Paths(BaseS3TransferCommandTest):
         self.assertEqual(self.operations_called[2][0].name, 'CopyObject')
         self.assertEqual(self.operations_called[3][0].name, 'DeleteObject')
 
-    @requires_crt
+    @requires_crt()
     def test_mv_works_if_mrap_arn_resolves_to_different_bucket(self):
         cmdline = (
             f"{self.prefix} s3://bucket/key "
@@ -910,7 +911,7 @@ class TestMvCommandWithValidateSameS3Paths(BaseS3TransferCommandTest):
         )
         self.assert_runs_mv_without_validation(cmdline)
 
-    @requires_crt
+    @requires_crt()
     def test_skips_validation_if_keys_are_different_mrap_arn(self):
         cmdline = (
             f"{self.prefix} s3://bucket/key "

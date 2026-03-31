@@ -4,7 +4,8 @@
     "CacheParameterGroup": {
       "operation": "DescribeCacheParameterGroups",
       "resourceIdentifier": {
-        "CacheParameterGroupFamily": "CacheParameterGroups[].CacheParameterGroupFamily"
+        "CacheParameterGroupFamily": "CacheParameterGroups[].CacheParameterGroupFamily",
+        "CacheParameterGroupName": "CacheParameterGroups[].CacheParameterGroupName"
       }
     },
     "CacheSecurityGroup": {
@@ -16,7 +17,8 @@
     "CacheSubnetGroup": {
       "operation": "DescribeCacheSubnetGroups",
       "resourceIdentifier": {
-        "CacheSubnetGroupDescription": "CacheSubnetGroups[].CacheSubnetGroupDescription"
+        "CacheSubnetGroupDescription": "CacheSubnetGroups[].CacheSubnetGroupDescription",
+        "CacheSubnetGroupName": "CacheSubnetGroups[].CacheSubnetGroupName"
       }
     },
     "Event": {
@@ -29,7 +31,8 @@
     "ReplicationGroup": {
       "operation": "DescribeReplicationGroups",
       "resourceIdentifier": {
-        "SnapshottingClusterId": "ReplicationGroups[].SnapshottingClusterId"
+        "SnapshottingClusterId": "ReplicationGroups[].SnapshottingClusterId",
+        "ReplicationGroupId": "ReplicationGroups[].ReplicationGroupId"
       }
     },
     "ReservedCacheNode": {
@@ -60,7 +63,44 @@
         "PreferredMaintenanceWindow": "Snapshots[].PreferredMaintenanceWindow",
         "CacheParameterGroupName": "Snapshots[].CacheParameterGroupName",
         "CacheSubnetGroupName": "Snapshots[].CacheSubnetGroupName",
-        "SnapshotWindow": "Snapshots[].SnapshotWindow"
+        "SnapshotWindow": "Snapshots[].SnapshotWindow",
+        "ARN": "Snapshots[].ARN"
+      }
+    },
+    "CacheCluster": {
+      "operation": "DescribeCacheClusters",
+      "resourceIdentifier": {
+        "CacheClusterId": "CacheClusters[].CacheClusterId"
+      }
+    },
+    "ServerlessCacheSnapshot": {
+      "operation": "DescribeServerlessCacheSnapshots",
+      "resourceIdentifier": {
+        "ServerlessCacheSnapshotName": "ServerlessCacheSnapshots[].ServerlessCacheSnapshotName"
+      }
+    },
+    "GlobalReplicationGroup": {
+      "operation": "DescribeGlobalReplicationGroups",
+      "resourceIdentifier": {
+        "GlobalReplicationGroupId": "GlobalReplicationGroups[].GlobalReplicationGroupId"
+      }
+    },
+    "UserGroup": {
+      "operation": "DescribeUserGroups",
+      "resourceIdentifier": {
+        "UserGroupId": "UserGroups[].UserGroupId"
+      }
+    },
+    "ServerlessCache": {
+      "operation": "DescribeServerlessCaches",
+      "resourceIdentifier": {
+        "ServerlessCacheName": "ServerlessCaches[].ServerlessCacheName"
+      }
+    },
+    "User": {
+      "operation": "DescribeUsers",
+      "resourceIdentifier": {
+        "UserId": "Users[].UserId"
       }
     }
   },
@@ -592,6 +632,15 @@
             "resourceIdentifier": "CacheNodeType"
           }
         ]
+      },
+      "PrimaryClusterId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CacheCluster",
+            "resourceIdentifier": "CacheClusterId"
+          }
+        ]
       }
     },
     "ModifyReplicationGroupShardConfiguration": {
@@ -664,6 +713,542 @@
           {
             "parameters": {},
             "resourceName": "Snapshot",
+            "resourceIdentifier": "ReplicationGroupId"
+          }
+        ]
+      }
+    },
+    "BatchApplyUpdateAction": {
+      "ReplicationGroupIds": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationGroup",
+            "resourceIdentifier": "ReplicationGroupId"
+          }
+        ]
+      },
+      "CacheClusterIds": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CacheCluster",
+            "resourceIdentifier": "CacheClusterId"
+          }
+        ]
+      }
+    },
+    "BatchStopUpdateAction": {
+      "ReplicationGroupIds": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationGroup",
+            "resourceIdentifier": "ReplicationGroupId"
+          }
+        ]
+      },
+      "CacheClusterIds": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CacheCluster",
+            "resourceIdentifier": "CacheClusterId"
+          }
+        ]
+      }
+    },
+    "CompleteMigration": {
+      "ReplicationGroupId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationGroup",
+            "resourceIdentifier": "ReplicationGroupId"
+          }
+        ]
+      }
+    },
+    "CopyServerlessCacheSnapshot": {
+      "SourceServerlessCacheSnapshotName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ServerlessCacheSnapshot",
+            "resourceIdentifier": "ServerlessCacheSnapshotName"
+          }
+        ]
+      }
+    },
+    "CopySnapshot": {
+      "SourceSnapshotName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "SnapshotName"
+          }
+        ]
+      }
+    },
+    "CreateCacheCluster": {
+      "ReplicationGroupId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationGroup",
+            "resourceIdentifier": "ReplicationGroupId"
+          }
+        ]
+      },
+      "CacheParameterGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CacheParameterGroup",
+            "resourceIdentifier": "CacheParameterGroupName"
+          }
+        ]
+      },
+      "CacheSubnetGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CacheSubnetGroup",
+            "resourceIdentifier": "CacheSubnetGroupName"
+          }
+        ]
+      },
+      "SnapshotName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "SnapshotName"
+          }
+        ]
+      }
+    },
+    "CreateGlobalReplicationGroup": {
+      "PrimaryReplicationGroupId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationGroup",
+            "resourceIdentifier": "ReplicationGroupId"
+          }
+        ]
+      }
+    },
+    "CreateReplicationGroup": {
+      "GlobalReplicationGroupId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "GlobalReplicationGroup",
+            "resourceIdentifier": "GlobalReplicationGroupId"
+          }
+        ]
+      },
+      "PrimaryClusterId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CacheCluster",
+            "resourceIdentifier": "CacheClusterId"
+          }
+        ]
+      },
+      "CacheParameterGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CacheParameterGroup",
+            "resourceIdentifier": "CacheParameterGroupName"
+          }
+        ]
+      },
+      "CacheSubnetGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CacheSubnetGroup",
+            "resourceIdentifier": "CacheSubnetGroupName"
+          }
+        ]
+      },
+      "SnapshotName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "SnapshotName"
+          }
+        ]
+      },
+      "ServerlessCacheSnapshotName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ServerlessCacheSnapshot",
+            "resourceIdentifier": "ServerlessCacheSnapshotName"
+          }
+        ]
+      }
+    },
+    "CreateServerlessCache": {
+      "UserGroupId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "UserGroup",
+            "resourceIdentifier": "UserGroupId"
+          }
+        ]
+      },
+      "SnapshotArnsToRestore": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "ARN"
+          }
+        ]
+      }
+    },
+    "CreateServerlessCacheSnapshot": {
+      "ServerlessCacheName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ServerlessCache",
+            "resourceIdentifier": "ServerlessCacheName"
+          }
+        ]
+      }
+    },
+    "CreateSnapshot": {
+      "ReplicationGroupId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationGroup",
+            "resourceIdentifier": "ReplicationGroupId"
+          }
+        ]
+      },
+      "CacheClusterId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CacheCluster",
+            "resourceIdentifier": "CacheClusterId"
+          }
+        ]
+      }
+    },
+    "DecreaseNodeGroupsInGlobalReplicationGroup": {
+      "GlobalReplicationGroupId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "GlobalReplicationGroup",
+            "resourceIdentifier": "GlobalReplicationGroupId"
+          }
+        ]
+      }
+    },
+    "DeleteGlobalReplicationGroup": {
+      "GlobalReplicationGroupId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "GlobalReplicationGroup",
+            "resourceIdentifier": "GlobalReplicationGroupId"
+          }
+        ]
+      }
+    },
+    "DeleteServerlessCache": {
+      "ServerlessCacheName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ServerlessCache",
+            "resourceIdentifier": "ServerlessCacheName"
+          }
+        ]
+      }
+    },
+    "DeleteServerlessCacheSnapshot": {
+      "ServerlessCacheSnapshotName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ServerlessCacheSnapshot",
+            "resourceIdentifier": "ServerlessCacheSnapshotName"
+          }
+        ]
+      }
+    },
+    "DeleteUser": {
+      "UserId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "User",
+            "resourceIdentifier": "UserId"
+          }
+        ]
+      }
+    },
+    "DeleteUserGroup": {
+      "UserGroupId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "UserGroup",
+            "resourceIdentifier": "UserGroupId"
+          }
+        ]
+      }
+    },
+    "DescribeGlobalReplicationGroups": {
+      "GlobalReplicationGroupId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "GlobalReplicationGroup",
+            "resourceIdentifier": "GlobalReplicationGroupId"
+          }
+        ]
+      }
+    },
+    "DescribeServerlessCacheSnapshots": {
+      "ServerlessCacheName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ServerlessCache",
+            "resourceIdentifier": "ServerlessCacheName"
+          }
+        ]
+      },
+      "ServerlessCacheSnapshotName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ServerlessCacheSnapshot",
+            "resourceIdentifier": "ServerlessCacheSnapshotName"
+          }
+        ]
+      }
+    },
+    "DescribeServerlessCaches": {
+      "ServerlessCacheName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ServerlessCache",
+            "resourceIdentifier": "ServerlessCacheName"
+          }
+        ]
+      }
+    },
+    "DescribeUpdateActions": {
+      "ReplicationGroupIds": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationGroup",
+            "resourceIdentifier": "ReplicationGroupId"
+          }
+        ]
+      },
+      "CacheClusterIds": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CacheCluster",
+            "resourceIdentifier": "CacheClusterId"
+          }
+        ]
+      }
+    },
+    "DescribeUserGroups": {
+      "UserGroupId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "UserGroup",
+            "resourceIdentifier": "UserGroupId"
+          }
+        ]
+      }
+    },
+    "DescribeUsers": {
+      "UserId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "User",
+            "resourceIdentifier": "UserId"
+          }
+        ]
+      }
+    },
+    "DisassociateGlobalReplicationGroup": {
+      "GlobalReplicationGroupId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "GlobalReplicationGroup",
+            "resourceIdentifier": "GlobalReplicationGroupId"
+          }
+        ]
+      },
+      "ReplicationGroupId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationGroup",
+            "resourceIdentifier": "ReplicationGroupId"
+          }
+        ]
+      }
+    },
+    "ExportServerlessCacheSnapshot": {
+      "ServerlessCacheSnapshotName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ServerlessCacheSnapshot",
+            "resourceIdentifier": "ServerlessCacheSnapshotName"
+          }
+        ]
+      }
+    },
+    "FailoverGlobalReplicationGroup": {
+      "GlobalReplicationGroupId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "GlobalReplicationGroup",
+            "resourceIdentifier": "GlobalReplicationGroupId"
+          }
+        ]
+      },
+      "PrimaryReplicationGroupId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationGroup",
+            "resourceIdentifier": "ReplicationGroupId"
+          }
+        ]
+      }
+    },
+    "IncreaseNodeGroupsInGlobalReplicationGroup": {
+      "GlobalReplicationGroupId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "GlobalReplicationGroup",
+            "resourceIdentifier": "GlobalReplicationGroupId"
+          }
+        ]
+      }
+    },
+    "ModifyGlobalReplicationGroup": {
+      "GlobalReplicationGroupId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "GlobalReplicationGroup",
+            "resourceIdentifier": "GlobalReplicationGroupId"
+          }
+        ]
+      },
+      "CacheParameterGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CacheParameterGroup",
+            "resourceIdentifier": "CacheParameterGroupName"
+          }
+        ]
+      }
+    },
+    "ModifyServerlessCache": {
+      "ServerlessCacheName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ServerlessCache",
+            "resourceIdentifier": "ServerlessCacheName"
+          }
+        ]
+      },
+      "UserGroupId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "UserGroup",
+            "resourceIdentifier": "UserGroupId"
+          }
+        ]
+      }
+    },
+    "ModifyUser": {
+      "UserId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "User",
+            "resourceIdentifier": "UserId"
+          }
+        ]
+      }
+    },
+    "ModifyUserGroup": {
+      "UserGroupId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "UserGroup",
+            "resourceIdentifier": "UserGroupId"
+          }
+        ]
+      }
+    },
+    "RebalanceSlotsInGlobalReplicationGroup": {
+      "GlobalReplicationGroupId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "GlobalReplicationGroup",
+            "resourceIdentifier": "GlobalReplicationGroupId"
+          }
+        ]
+      }
+    },
+    "StartMigration": {
+      "ReplicationGroupId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationGroup",
+            "resourceIdentifier": "ReplicationGroupId"
+          }
+        ]
+      }
+    },
+    "TestMigration": {
+      "ReplicationGroupId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationGroup",
             "resourceIdentifier": "ReplicationGroupId"
           }
         ]

@@ -1,3 +1,5 @@
+import os
+
 from PyInstaller.utils import hooks
 
 hiddenimports = [
@@ -26,7 +28,23 @@ alias_packages_plugins = hooks.collect_submodules(
 ) + hooks.collect_submodules('awscli.s3transfer')
 hiddenimports += alias_packages_plugins
 
-datas = hooks.collect_data_files('awscli')
+
+# Completion model files are only used at build time to generate the
+# ac.index SQLite database. They are not needed at runtime and can be
+# excluded to reduce the size of the PyInstaller distribution.
+EXCLUDED_DATA_FILE_BASENAMES = {
+    'completions-1.json',
+    'completions-1.sdk-extras.json',
+}
+
+
+datas = [
+    (src, dest)
+    for src, dest in hooks.collect_data_files('awscli')
+    if os.path.basename(src) not in EXCLUDED_DATA_FILE_BASENAMES
+]
+
+
 # prompt_toolkit uses its own metadata to determine
 # its version. So we need to bundle the package
 # metadata to avoid runtime errors.

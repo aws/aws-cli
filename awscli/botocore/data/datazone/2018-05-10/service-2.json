@@ -2863,6 +2863,24 @@
       "documentation":"<p>Writes the configuration for the specified environment blueprint in Amazon DataZone.</p>",
       "idempotent":true
     },
+    "QueryGraph":{
+      "name":"QueryGraph",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/domains/{domainIdentifier}/graph/query",
+        "responseCode":200
+      },
+      "input":{"shape":"QueryGraphInput"},
+      "output":{"shape":"QueryGraphOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Queries entities in the graph store.</p>"
+    },
     "RejectPredictions":{
       "name":"RejectPredictions",
       "http":{
@@ -4063,6 +4081,16 @@
         }
       },
       "documentation":"<p>The details of the policy grant.</p>"
+    },
+    "AdditionalAttributes":{
+      "type":"structure",
+      "members":{
+        "formNames":{
+          "shape":"FormNameList",
+          "documentation":"<p>Names of forms on the query entity that can be requested in the response.</p>"
+        }
+      },
+      "documentation":"<p>Additional details on the queried entity that can be requested in the response.</p>"
     },
     "AggregationAttributeDisplayValue":{"type":"string"},
     "AggregationAttributeValue":{"type":"string"},
@@ -10871,6 +10899,30 @@
       "type":"list",
       "member":{"shape":"OwnerPropertiesOutput"}
     },
+    "EntityPattern":{
+      "type":"structure",
+      "required":[
+        "entityType",
+        "identifier"
+      ],
+      "members":{
+        "entityType":{
+          "shape":"GraphEntityType",
+          "documentation":"<p>The type of entity to be matched during the graph query.</p>"
+        },
+        "identifier":{
+          "shape":"EntityPatternIdentifierString",
+          "documentation":"<p>The identifier of the root entity to start traversal from during the graph query.</p>"
+        },
+        "filters":{"shape":"FilterClause"}
+      },
+      "documentation":"<p>The pattern describing the entities to be matched during the graph query.</p>"
+    },
+    "EntityPatternIdentifierString":{
+      "type":"string",
+      "max":2086,
+      "min":1
+    },
     "EntityType":{
       "type":"string",
       "enum":[
@@ -11687,6 +11739,12 @@
       "max":128,
       "min":1,
       "pattern":"(?![0-9_])\\w+$|^_\\w*[a-zA-Z0-9]\\w*"
+    },
+    "FormNameList":{
+      "type":"list",
+      "member":{"shape":"FormName"},
+      "max":10,
+      "min":1
     },
     "FormOutput":{
       "type":"structure",
@@ -15358,6 +15416,10 @@
       "documentation":"<p>The details of a listing for which a subscription is to be granted.</p>",
       "union":true
     },
+    "GraphEntityType":{
+      "type":"string",
+      "enum":["LINEAGE_NODE"]
+    },
     "GreaterThanExpression":{
       "type":"structure",
       "required":[
@@ -15951,6 +16013,81 @@
       "type":"string",
       "max":2086,
       "min":1
+    },
+    "LineageNodeIds":{
+      "type":"list",
+      "member":{"shape":"LineageNodeId"}
+    },
+    "LineageNodeItem":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "id",
+        "typeName"
+      ],
+      "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain of the data lineage node.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the data lineage node.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>The description of the data lineage node.</p>"
+        },
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp at which the data lineage node was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user who created the data lineage node.</p>"
+        },
+        "updatedAt":{
+          "shape":"UpdatedAt",
+          "documentation":"<p>The timestamp at which the data lineage node was updated.</p>"
+        },
+        "updatedBy":{
+          "shape":"UpdatedBy",
+          "documentation":"<p>The user who updated the data lineage node.</p>"
+        },
+        "id":{
+          "shape":"LineageNodeId",
+          "documentation":"<p>The ID of the data lineage node.</p>"
+        },
+        "typeName":{
+          "shape":"String",
+          "documentation":"<p>The name of the type of the data lineage node.</p>"
+        },
+        "typeRevision":{
+          "shape":"Revision",
+          "documentation":"<p>The type of the revision of the data lineage node.</p>"
+        },
+        "sourceIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The alternate ID of the data lineage node.</p>"
+        },
+        "eventTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The event timestamp of the data lineage node.</p>"
+        },
+        "formsOutput":{
+          "shape":"FormOutputList",
+          "documentation":"<p>The forms included in the additional attributes of a data lineage node.</p>"
+        },
+        "upstreamLineageNodeIds":{
+          "shape":"LineageNodeIds",
+          "documentation":"<p>The IDs of the upstream data lineage nodes.</p>"
+        },
+        "downstreamLineageNodeIds":{
+          "shape":"LineageNodeIds",
+          "documentation":"<p>The IDs of the downstream data lineage nodes.</p>"
+        }
+      },
+      "documentation":"<p>The summary and output forms of a LineageNode</p>"
     },
     "LineageNodeReference":{
       "type":"structure",
@@ -18328,6 +18465,27 @@
         "USE_ASSET_TYPE"
       ]
     },
+    "MatchClause":{
+      "type":"structure",
+      "members":{
+        "relationPattern":{
+          "shape":"RelationPattern",
+          "documentation":"<p>The pattern describing the query's relational traversal.</p>"
+        },
+        "entityPattern":{
+          "shape":"EntityPattern",
+          "documentation":"<p>The pattern describing the entities for the query to traverse.</p>"
+        }
+      },
+      "documentation":"<p>A clause to match a query pattern</p>",
+      "union":true
+    },
+    "MatchClauses":{
+      "type":"list",
+      "member":{"shape":"MatchClause"},
+      "max":2,
+      "min":2
+    },
     "MatchCriteria":{
       "type":"list",
       "member":{"shape":"String"},
@@ -19812,6 +19970,54 @@
         }
       }
     },
+    "QueryGraphInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "match"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "match":{
+          "shape":"MatchClauses",
+          "documentation":"<p>List of query match clauses.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of entities to return in a single call to <code>QueryGraph</code>. When the number of entities to be listed is greater than the value of <code>MaxResults</code>, the response contains a <code>NextToken</code> value that you can use in a subsequent call to <code>QueryGraph</code> to list the next set of entities.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of entities is greater than the default value for the <code>MaxResults</code> parameter, or if you explicitly specify a value for <code>MaxResults</code> that is less than the number of entities, the response includes a pagination token named <code>NextToken</code>. You can specify this <code>NextToken</code> value in a subsequent call to <code>QueryGraph</code> to list the next set of entities.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "additionalAttributes":{
+          "shape":"AdditionalAttributes",
+          "documentation":"<p>Additional details on the queried entity that can be requested in the response.</p>"
+        }
+      }
+    },
+    "QueryGraphOutput":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"ResultItemList",
+          "documentation":"<p>The results of the <code>QueryGraph</code> action.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of entities is greater than the default value for the <code>MaxResults</code> parameter, or if you explicitly specify a value for <code>MaxResults</code> that is less than the number of entities, the response includes a pagination token named <code>NextToken</code>. You can specify this <code>NextToken</code> value in a subsequent call to <code>QueryGraph</code> to list the next set of entities.</p>"
+        }
+      }
+    },
     "RecommendationConfiguration":{
       "type":"structure",
       "members":{
@@ -20405,6 +20611,45 @@
       "max":1,
       "min":1
     },
+    "RelationDirection":{
+      "type":"string",
+      "enum":[
+        "IN",
+        "OUT"
+      ]
+    },
+    "RelationPattern":{
+      "type":"structure",
+      "required":[
+        "relationType",
+        "relationDirection"
+      ],
+      "members":{
+        "relationType":{
+          "shape":"RelationType",
+          "documentation":"<p>The type of relation to query.</p>"
+        },
+        "relationDirection":{
+          "shape":"RelationDirection",
+          "documentation":"<p>The direction to query.</p>"
+        },
+        "maxPathLength":{
+          "shape":"RelationPatternMaxPathLengthInteger",
+          "documentation":"<p>The number of hops to query.</p>"
+        }
+      },
+      "documentation":"<p>The pattern describing the query's relational traversal.</p>"
+    },
+    "RelationPatternMaxPathLengthInteger":{
+      "type":"integer",
+      "box":true,
+      "max":5,
+      "min":1
+    },
+    "RelationType":{
+      "type":"string",
+      "enum":["LINEAGE"]
+    },
     "RelationalFilterConfiguration":{
       "type":"structure",
       "required":["databaseName"],
@@ -20648,6 +20893,21 @@
       "member":{"shape":"ResourceTag"},
       "max":25,
       "min":0
+    },
+    "ResultItem":{
+      "type":"structure",
+      "members":{
+        "lineageNode":{
+          "shape":"LineageNodeItem",
+          "documentation":"<p>Resulting data lineage node from the query.</p>"
+        }
+      },
+      "documentation":"<p>Resulting entity from the query.</p>",
+      "union":true
+    },
+    "ResultItemList":{
+      "type":"list",
+      "member":{"shape":"ResultItem"}
     },
     "Revision":{
       "type":"string",

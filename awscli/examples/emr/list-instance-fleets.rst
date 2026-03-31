@@ -13,8 +13,8 @@ Output::
         {
             "Status": {
                 "Timeline": {
-                    "ReadyDateTime": 1488759094.637,
-                    "CreationDateTime": 1488758719.817
+                    "ReadyDateTime": "2017-03-05T19:11:34.637000-0500",
+                    "CreationDateTime": "2017-03-05T19:05:19.817000-0500"
                 },
                 "State": "RUNNING",
                 "StateChangeReason": {
@@ -43,8 +43,8 @@ Output::
         {
             "Status": {
                 "Timeline": {
-                    "ReadyDateTime": 1488759058.598,
-                    "CreationDateTime": 1488758719.811
+                    "ReadyDateTime": "2017-03-05T19:10:58.598000-0500",
+                    "CreationDateTime": "2017-03-05T19:05:19.811000-0500"
                 },
                 "State": "RUNNING",
                 "StateChangeReason": {

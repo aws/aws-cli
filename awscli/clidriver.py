@@ -119,7 +119,7 @@ def create_clidriver(args=None):
         session.full_config.get('plugins', {}),
         event_hooks=session.get_component('event_emitter'),
     )
-    error_handlers_chain = construct_cli_error_handlers_chain()
+    error_handlers_chain = construct_cli_error_handlers_chain(session)
     driver = CLIDriver(
         session=session, error_handler=error_handlers_chain, debug=debug
     )
@@ -246,7 +246,9 @@ class CLIDriver:
             self.session = session
         self._error_handler = error_handler
         if self._error_handler is None:
-            self._error_handler = construct_cli_error_handlers_chain()
+            self._error_handler = construct_cli_error_handlers_chain(
+                self.session
+            )
         if debug:
             self._set_logging(debug)
         self._update_config_chain()
@@ -274,6 +276,9 @@ class CLIDriver:
         )
         config_store.set_config_provider(
             'cli_help_output', self._construct_cli_help_output_chain()
+        )
+        config_store.set_config_provider(
+            'cli_error_format', self._construct_cli_error_format_chain()
         )
 
     def _construct_cli_region_chain(self):
@@ -365,6 +370,20 @@ class CLIDriver:
                 config_var_name='cli_auto_prompt', session=self.session
             ),
             ConstantProvider(value='off'),
+        ]
+        return ChainProvider(providers=providers)
+
+    def _construct_cli_error_format_chain(self):
+        providers = [
+            EnvironmentProvider(
+                name='AWS_CLI_ERROR_FORMAT',
+                env=os.environ,
+            ),
+            ScopedConfigProvider(
+                config_var_name='cli_error_format',
+                session=self.session,
+            ),
+            ConstantProvider(value='enhanced'),
         ]
         return ChainProvider(providers=providers)
 
@@ -516,6 +535,7 @@ class CLIDriver:
         command_table = self._get_command_table()
         parser = self.create_parser(command_table)
         self._add_aliases(command_table, parser)
+        parsed_args = None
         try:
             # Because _handle_top_level_args emits events, it's possible
             # that exceptions can be raised, which should have the same
@@ -538,6 +558,7 @@ class CLIDriver:
                 e,
                 stdout=get_stdout_text_writer(),
                 stderr=get_stderr_text_writer(),
+                parsed_globals=parsed_args,
             )
 
     def _emit_session_event(self, parsed_args):
@@ -818,7 +839,10 @@ class ServiceOperation:
     def __call__(self, args, parsed_globals):
         # Once we know we're trying to call a particular operation
         # of a service we can go ahead and load the parameters.
-        event = f'before-building-argument-table-parser.{self._parent_name}.{self._name}'
+        event = (
+            f'before-building-argument-table-parser.'
+            f'{self._parent_name}.{self._name}'
+        )
         self._emit(
             event,
             argument_table=self.arg_table,
@@ -1028,9 +1052,7 @@ class CLIOperationCaller:
             paginator = client.get_paginator(py_operation_name)
             response = paginator.paginate(**parameters)
         else:
-            response = getattr(client, xform_name(operation_name))(
-                **parameters
-            )
+            response = getattr(client, py_operation_name)(**parameters)
         return response
 
     def _display_response(self, command_name, response, parsed_globals):

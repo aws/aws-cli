@@ -1,0 +1,15 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  Config:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Type: String
+      Value:
+        Fn::Sub:
+          - |
+            template: |
+              {{ define "test.message" }}
+              {{- $a := index .Alerts 0 -}}
+              {{- $queryExpr := reReplaceAll "\\]" "%5D" (reReplaceAll "\\[" "%5B" (reReplaceAll "=" "%3D" (reReplaceAll "\\}" "%7D" (reReplaceAll "\\{" "%7B" $a.Expr)))) }}
+              {{ end }}
+          - {}

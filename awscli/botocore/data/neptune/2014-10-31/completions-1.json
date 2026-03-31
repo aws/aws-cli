@@ -17,7 +17,8 @@
     "DBCluster": {
       "operation": "DescribeDBClusters",
       "resourceIdentifier": {
-        "DatabaseName": "DBClusters[].DatabaseName"
+        "DatabaseName": "DBClusters[].DatabaseName",
+        "DBClustersDBClusterIdentifier": "DBClusters[].DBClusterIdentifier"
       }
     },
     "DBInstance": {
@@ -56,7 +57,8 @@
     "EventSubscription": {
       "operation": "DescribeEventSubscriptions",
       "resourceIdentifier": {
-        "SnsTopicArn": "EventSubscriptionsList[].SnsTopicArn"
+        "SnsTopicArn": "EventSubscriptionsList[].SnsTopicArn",
+        "CustSubscriptionId": "EventSubscriptionsList[].CustSubscriptionId"
       }
     },
     "Event": {
@@ -70,6 +72,18 @@
       "operation": "DescribePendingMaintenanceActions",
       "resourceIdentifier": {
         "ResourceIdentifier": "PendingMaintenanceActions[].ResourceIdentifier"
+      }
+    },
+    "GlobalCluster": {
+      "operation": "DescribeGlobalClusters",
+      "resourceIdentifier": {
+        "GlobalClusterIdentifier": "GlobalClusters[].GlobalClusterIdentifier"
+      }
+    },
+    "DBClusterEndpoint": {
+      "operation": "DescribeDBClusterEndpoints",
+      "resourceIdentifier": {
+        "DBClusterEndpointIdentifier": "DBClusterEndpoints[].DBClusterEndpointIdentifier"
       }
     }
   },
@@ -94,6 +108,15 @@
             "resourceIdentifier": "SourceIdentifier"
           }
         ]
+      },
+      "SubscriptionName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "EventSubscription",
+            "resourceIdentifier": "CustSubscriptionId"
+          }
+        ]
       }
     },
     "ApplyPendingMaintenanceAction": {
@@ -114,6 +137,15 @@
             "parameters": {},
             "resourceName": "DBInstance",
             "resourceIdentifier": "KmsKeyId"
+          }
+        ]
+      },
+      "SourceDBClusterSnapshotIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBClusterSnapshot",
+            "resourceIdentifier": "DBClusterSnapshotIdentifier"
           }
         ]
       }
@@ -452,6 +484,15 @@
             "resourceIdentifier": "DBClusterIdentifier"
           }
         ]
+      },
+      "TargetDBInstanceIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBInstance",
+            "resourceIdentifier": "DBInstanceIdentifier"
+          }
+        ]
       }
     },
     "ModifyDBCluster": {
@@ -506,6 +547,15 @@
             "parameters": {},
             "resourceName": "DBInstance",
             "resourceIdentifier": "EngineVersion"
+          }
+        ]
+      },
+      "DBInstanceParameterGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBParameterGroup",
+            "resourceIdentifier": "DBParameterGroupName"
           }
         ]
       }
@@ -709,6 +759,15 @@
             "resourceIdentifier": "SourceType"
           }
         ]
+      },
+      "SubscriptionName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "EventSubscription",
+            "resourceIdentifier": "CustSubscriptionId"
+          }
+        ]
       }
     },
     "PromoteReadReplicaDBCluster": {
@@ -751,6 +810,15 @@
             "parameters": {},
             "resourceName": "Event",
             "resourceIdentifier": "SourceIdentifier"
+          }
+        ]
+      },
+      "SubscriptionName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "EventSubscription",
+            "resourceIdentifier": "CustSubscriptionId"
           }
         ]
       }
@@ -831,6 +899,24 @@
             "resourceIdentifier": "KmsKeyId"
           }
         ]
+      },
+      "SnapshotIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBClusterSnapshot",
+            "resourceIdentifier": "DBClusterSnapshotIdentifier"
+          }
+        ]
+      },
+      "DBClusterParameterGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBClusterParameterGroup",
+            "resourceIdentifier": "DBClusterParameterGroupName"
+          }
+        ]
       }
     },
     "RestoreDBClusterToPointInTime": {
@@ -858,6 +944,325 @@
             "parameters": {},
             "resourceName": "DBInstance",
             "resourceIdentifier": "KmsKeyId"
+          }
+        ]
+      },
+      "SourceDBClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DBClustersDBClusterIdentifier"
+          }
+        ]
+      },
+      "DBClusterParameterGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBClusterParameterGroup",
+            "resourceIdentifier": "DBClusterParameterGroupName"
+          }
+        ]
+      }
+    },
+    "CopyDBClusterParameterGroup": {
+      "SourceDBClusterParameterGroupIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBClusterParameterGroup",
+            "resourceIdentifier": "DBClusterParameterGroupName"
+          }
+        ]
+      }
+    },
+    "CopyDBParameterGroup": {
+      "SourceDBParameterGroupIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBParameterGroup",
+            "resourceIdentifier": "DBParameterGroupName"
+          }
+        ]
+      }
+    },
+    "CreateDBCluster": {
+      "DBClusterParameterGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBClusterParameterGroup",
+            "resourceIdentifier": "DBClusterParameterGroupName"
+          }
+        ]
+      },
+      "DBSubnetGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBSubnetGroup",
+            "resourceIdentifier": "DBSubnetGroupName"
+          }
+        ]
+      },
+      "ReplicationSourceIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DBClustersDBClusterIdentifier"
+          }
+        ]
+      },
+      "GlobalClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "GlobalCluster",
+            "resourceIdentifier": "GlobalClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "CreateDBClusterEndpoint": {
+      "DBClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DBClustersDBClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "CreateDBClusterSnapshot": {
+      "DBClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DBClustersDBClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "CreateDBInstance": {
+      "DBClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DBClustersDBClusterIdentifier"
+          }
+        ]
+      },
+      "DBParameterGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBParameterGroup",
+            "resourceIdentifier": "DBParameterGroupName"
+          }
+        ]
+      },
+      "DBSubnetGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBSubnetGroup",
+            "resourceIdentifier": "DBSubnetGroupName"
+          }
+        ]
+      }
+    },
+    "CreateGlobalCluster": {
+      "SourceDBClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DBClustersDBClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "DeleteDBClusterEndpoint": {
+      "DBClusterEndpointIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBClusterEndpoint",
+            "resourceIdentifier": "DBClusterEndpointIdentifier"
+          }
+        ]
+      }
+    },
+    "DeleteEventSubscription": {
+      "SubscriptionName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "EventSubscription",
+            "resourceIdentifier": "CustSubscriptionId"
+          }
+        ]
+      }
+    },
+    "DeleteGlobalCluster": {
+      "GlobalClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "GlobalCluster",
+            "resourceIdentifier": "GlobalClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "DescribeDBClusterEndpoints": {
+      "DBClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DBClustersDBClusterIdentifier"
+          }
+        ]
+      },
+      "DBClusterEndpointIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBClusterEndpoint",
+            "resourceIdentifier": "DBClusterEndpointIdentifier"
+          }
+        ]
+      }
+    },
+    "DescribeEventSubscriptions": {
+      "SubscriptionName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "EventSubscription",
+            "resourceIdentifier": "CustSubscriptionId"
+          }
+        ]
+      }
+    },
+    "DescribeGlobalClusters": {
+      "GlobalClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "GlobalCluster",
+            "resourceIdentifier": "GlobalClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "FailoverGlobalCluster": {
+      "GlobalClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "GlobalCluster",
+            "resourceIdentifier": "GlobalClusterIdentifier"
+          }
+        ]
+      },
+      "TargetDbClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DBClustersDBClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "ModifyDBClusterEndpoint": {
+      "DBClusterEndpointIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBClusterEndpoint",
+            "resourceIdentifier": "DBClusterEndpointIdentifier"
+          }
+        ]
+      }
+    },
+    "ModifyGlobalCluster": {
+      "GlobalClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "GlobalCluster",
+            "resourceIdentifier": "GlobalClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "RemoveFromGlobalCluster": {
+      "GlobalClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "GlobalCluster",
+            "resourceIdentifier": "GlobalClusterIdentifier"
+          }
+        ]
+      },
+      "DbClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DBClustersDBClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "StartDBCluster": {
+      "DBClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DBClustersDBClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "StopDBCluster": {
+      "DBClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DBClustersDBClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "SwitchoverGlobalCluster": {
+      "GlobalClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "GlobalCluster",
+            "resourceIdentifier": "GlobalClusterIdentifier"
+          }
+        ]
+      },
+      "TargetDbClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DBClustersDBClusterIdentifier"
           }
         ]
       }

@@ -5600,7 +5600,9 @@
         "PartitionsToGet":{
           "shape":"BatchGetPartitionValueList",
           "documentation":"<p>A list of partition values identifying the partitions to retrieve.</p>"
-        }
+        },
+        "AuditContext":{"shape":"AuditContext"},
+        "QuerySessionContext":{"shape":"QuerySessionContext"}
       }
     },
     "BatchGetPartitionResponse":{
@@ -6559,6 +6561,10 @@
         "AllowFullTableExternalDataAccess":{
           "shape":"AllowFullTableExternalDataAccessEnum",
           "documentation":"<p> Allows third-party engines to access data in Amazon S3 locations that are registered with Lake Formation. </p>"
+        },
+        "OverwriteChildResourcePermissionsWithDefault":{
+          "shape":"OverwriteChildResourcePermissionsWithDefaultEnum",
+          "documentation":"<p> Overwrites existing Amazon Web Services Lake Formation permissions with <code>CatalogInput$CreateTableDefaultPermissions</code> and <code>CatalogInput$CreateDatabaseDefaultPermissions</code> for all child resources. </p>"
         }
       },
       "documentation":"<p>A structure that describes catalog properties.</p>"
@@ -22033,6 +22039,13 @@
         }
       },
       "documentation":"<p>A structure containing other metadata for a schema version belonging to the same metadata key.</p>"
+    },
+    "OverwriteChildResourcePermissionsWithDefaultEnum":{
+      "type":"string",
+      "enum":[
+        "Accept",
+        "Deny"
+      ]
     },
     "PIIDetection":{
       "type":"structure",

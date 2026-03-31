@@ -31,7 +31,7 @@ import docutils.parsers.rst
 import docutils.utils
 import pytest
 
-from awscli.argparser import MainArgParser, ServiceArgParser
+from awscli.argparser import ArgTableArgParser, MainArgParser, ServiceArgParser
 from awscli.testutils import BaseAWSHelpOutputTest, create_clidriver
 
 # Mapping of command names to subcommands that have examples in their help
@@ -319,8 +319,6 @@ class CommandValidator:
             operation_cmd = cmd_table[operation_name]
 
             # Validate all arguments using the operation's argument parser
-            from awscli.argparser import ArgTableArgParser
-
             arg_table = operation_cmd.arg_table
             operation_parser = ArgTableArgParser(arg_table)
 

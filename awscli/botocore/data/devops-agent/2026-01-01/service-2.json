@@ -32,7 +32,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidParameterException"}
       ],
-      "documentation":"<p>Authorize Ingestion Hub subscription operation. Looks to see if the derived accountId from FAS has an AgentSpace.</p>",
+      "documentation":"<p>Authorize Ingestion Hub subscription operation.</p>",
       "endpoint":{"hostPrefix":"cp."}
     },
     "AssociateService":{
@@ -249,30 +249,6 @@
       "endpoint":{"hostPrefix":"cp."},
       "readonly":true
     },
-    "DescribeSupportLevel":{
-      "name":"DescribeSupportLevel",
-      "http":{
-        "method":"POST",
-        "requestUri":"/support/agent-space/{agentSpaceId}/tasks/{taskId}/supportLevel",
-        "responseCode":201
-      },
-      "input":{"shape":"DescribeSupportLevelRequest"},
-      "output":{"shape":"DescribeSupportLevelResponse"},
-      "errors":[
-        {"shape":"ValidationException"},
-        {"shape":"ContentSizeExceededException"},
-        {"shape":"ServiceQuotaExceededException"},
-        {"shape":"ConflictException"},
-        {"shape":"InternalServerException"},
-        {"shape":"AccessDeniedException"},
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"},
-        {"shape":"InvalidParameterException"}
-      ],
-      "documentation":"<p>Describe the support level of a CloudSmith customer account.</p>",
-      "endpoint":{"hostPrefix":"dp."},
-      "idempotent":true
-    },
     "DisableOperatorApp":{
       "name":"DisableOperatorApp",
       "http":{
@@ -344,30 +320,6 @@
       ],
       "documentation":"<p>Enable the Operator App to access the given AgentSpace</p>",
       "endpoint":{"hostPrefix":"cp."}
-    },
-    "EndChatForCase":{
-      "name":"EndChatForCase",
-      "http":{
-        "method":"POST",
-        "requestUri":"/support/agent-space/{agentSpaceId}/tasks/{taskId}/end-chat-for-case",
-        "responseCode":200
-      },
-      "input":{"shape":"EndChatForCaseRequest"},
-      "output":{"shape":"EndChatForCaseResponse"},
-      "errors":[
-        {"shape":"ValidationException"},
-        {"shape":"ContentSizeExceededException"},
-        {"shape":"ServiceQuotaExceededException"},
-        {"shape":"ConflictException"},
-        {"shape":"InternalServerException"},
-        {"shape":"AccessDeniedException"},
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"},
-        {"shape":"InvalidParameterException"}
-      ],
-      "documentation":"<p>End a chat session for a support case in the specified agent space</p>",
-      "endpoint":{"hostPrefix":"dp."},
-      "idempotent":true
     },
     "GetAccountUsage":{
       "name":"GetAccountUsage",
@@ -536,30 +488,6 @@
       "documentation":"<p>Retrieves given service by it's unique identifier</p>",
       "endpoint":{"hostPrefix":"cp."},
       "readonly":true
-    },
-    "InitiateChatForCase":{
-      "name":"InitiateChatForCase",
-      "http":{
-        "method":"POST",
-        "requestUri":"/support/agent-space/{agentSpaceId}/tasks/{taskId}/chats",
-        "responseCode":201
-      },
-      "input":{"shape":"InitiateChatForCaseRequest"},
-      "output":{"shape":"InitiateChatForCaseResponse"},
-      "errors":[
-        {"shape":"ValidationException"},
-        {"shape":"ContentSizeExceededException"},
-        {"shape":"ServiceQuotaExceededException"},
-        {"shape":"ConflictException"},
-        {"shape":"InternalServerException"},
-        {"shape":"AccessDeniedException"},
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"},
-        {"shape":"InvalidParameterException"}
-      ],
-      "documentation":"<p>Initiate a chat for support case in the specified agent space</p>",
-      "endpoint":{"hostPrefix":"dp."},
-      "idempotent":true
     },
     "ListAgentSpaces":{
       "name":"ListAgentSpaces",
@@ -1240,10 +1168,6 @@
         "pagerduty":{
           "shape":"RegisteredPagerDutyDetails",
           "documentation":"<p>Pagerduty service details.</p>"
-        },
-        "mcpserversigv4":{
-          "shape":"RegisteredMCPServerSigV4Details",
-          "documentation":"<p>SigV4-authenticated MCP server-specific service details.</p>"
         }
       },
       "documentation":"<p>Union of service-specific details for different service types.</p>",
@@ -1478,13 +1402,6 @@
         "idp"
       ]
     },
-    "AwsRegion":{
-      "type":"string",
-      "documentation":"<p>AWS region identifier.</p>",
-      "max":50,
-      "min":1,
-      "pattern":"[a-z]{2,4}(-[a-z]+)+-\\d+"
-    },
     "AzureConfiguration":{
       "type":"structure",
       "required":["subscriptionId"],
@@ -1575,29 +1492,6 @@
     "ChatExecutionList":{
       "type":"list",
       "member":{"shape":"ChatExecution"}
-    },
-    "ChatParticipantConnection":{
-      "type":"structure",
-      "required":[
-        "initialContactId",
-        "participantId",
-        "participantToken"
-      ],
-      "members":{
-        "initialContactId":{
-          "shape":"String",
-          "documentation":"<p>The identifier of the contact in this instance of Amazon Connect</p>"
-        },
-        "participantId":{
-          "shape":"String",
-          "documentation":"<p>The identifier for a chat participant</p>"
-        },
-        "participantToken":{
-          "shape":"String",
-          "documentation":"<p>The token used by the chat participant to call CreateParticipantConnection</p>"
-        }
-      },
-      "documentation":"<p>Represents a chat participant connection with all its properties and metadata</p>"
     },
     "ClientId":{
       "type":"string",
@@ -2047,47 +1941,6 @@
       },
       "documentation":"<p>Output containing the Private Connection details.</p>"
     },
-    "DescribeSupportLevelRequest":{
-      "type":"structure",
-      "required":[
-        "agentSpaceId",
-        "taskId"
-      ],
-      "members":{
-        "agentSpaceId":{
-          "shape":"AgentSpaceId",
-          "documentation":"<p>The unique identifier for the agent space containing the task</p>",
-          "location":"uri",
-          "locationName":"agentSpaceId"
-        },
-        "taskId":{
-          "shape":"String",
-          "documentation":"<p>The unique identifier for this task</p>",
-          "location":"uri",
-          "locationName":"taskId"
-        }
-      },
-      "documentation":"<p>Request structure for desribing support level for an account</p>"
-    },
-    "DescribeSupportLevelResponse":{
-      "type":"structure",
-      "required":["supportLevel"],
-      "members":{
-        "supportLevel":{
-          "shape":"SupportLevel",
-          "documentation":"<p>The account's support level</p>"
-        },
-        "mosaicSupportLevel":{
-          "shape":"SupportLevel",
-          "documentation":"<p>The account's Mosaic equivalent support level</p>"
-        },
-        "activeSubscription":{
-          "shape":"Boolean",
-          "documentation":"<p>Whether or not the account's subscription is active</p>"
-        }
-      },
-      "documentation":"<p>Response structure containing detailed support level for an account</p>"
-    },
     "Description":{
       "type":"string",
       "documentation":"<p>Description field</p>",
@@ -2306,60 +2159,6 @@
       },
       "documentation":"<p>Output containing the enabled Operator App configuration.</p>"
     },
-    "EndChatForCaseRequest":{
-      "type":"structure",
-      "required":[
-        "agentSpaceId",
-        "taskId"
-      ],
-      "members":{
-        "agentSpaceId":{
-          "shape":"AgentSpaceId",
-          "documentation":"<p>The unique identifier for the agent space containing the task</p>",
-          "location":"uri",
-          "locationName":"agentSpaceId"
-        },
-        "taskId":{
-          "shape":"String",
-          "documentation":"<p>The unique identifier for the task execution to end</p>",
-          "location":"uri",
-          "locationName":"taskId"
-        },
-        "reason":{
-          "shape":"String",
-          "documentation":"<p>Reason for ending the chat session (optional, defaults to 'Chat Ended by CloudSmith')</p>"
-        },
-        "requester":{
-          "shape":"String",
-          "documentation":"<p>Who initiated the chat end request (optional, defaults to 'CloudSmith')</p>"
-        },
-        "clientToken":{
-          "shape":"String",
-          "documentation":"<p>Client-provided token for idempotent operations</p>",
-          "idempotencyToken":true
-        }
-      },
-      "documentation":"<p>Request structure for ending a chat session</p>"
-    },
-    "EndChatForCaseResponse":{
-      "type":"structure",
-      "required":["isDisconnected"],
-      "members":{
-        "isDisconnected":{
-          "shape":"Boolean",
-          "documentation":"<p>Whether the chat session was successfully ended</p>"
-        },
-        "executionId":{
-          "shape":"String",
-          "documentation":"<p>The execution ID that was ended</p>"
-        },
-        "errorMessage":{
-          "shape":"String",
-          "documentation":"<p>Error message if the disconnect failed</p>"
-        }
-      },
-      "documentation":"<p>Response structure for end chat operation</p>"
-    },
     "EventChannelConfiguration":{
       "type":"structure",
       "members":{},
@@ -2505,6 +2304,10 @@
         "monthlyAccountSystemLearningHours":{
           "shape":"UsageMetric",
           "documentation":"<p>Monthly system learning hours usage and limit for an account</p>"
+        },
+        "monthlyAccountOnDemandHours":{
+          "shape":"UsageMetric",
+          "documentation":"<p>Monthly on-demand hours usage and limit for an account</p>"
         },
         "usagePeriodStartTime":{
           "shape":"DateTime",
@@ -3101,44 +2904,6 @@
       "max":1024,
       "min":1,
       "sensitive":true
-    },
-    "InitiateChatForCaseRequest":{
-      "type":"structure",
-      "required":[
-        "agentSpaceId",
-        "taskId"
-      ],
-      "members":{
-        "agentSpaceId":{
-          "shape":"AgentSpaceId",
-          "documentation":"<p>The unique identifier for the agent space containing the task</p>",
-          "location":"uri",
-          "locationName":"agentSpaceId"
-        },
-        "taskId":{
-          "shape":"String",
-          "documentation":"<p>The unique identifier for this task</p>",
-          "location":"uri",
-          "locationName":"taskId"
-        },
-        "clientToken":{
-          "shape":"String",
-          "documentation":"<p>Client-provided token for idempotent operations</p>",
-          "idempotencyToken":true
-        }
-      },
-      "documentation":"<p>Request structure for initiating a chat for support case</p>"
-    },
-    "InitiateChatForCaseResponse":{
-      "type":"structure",
-      "required":["chatParticipantConnection"],
-      "members":{
-        "chatParticipantConnection":{
-          "shape":"ChatParticipantConnection",
-          "documentation":"<p>The newly created chat participant connection</p>"
-        }
-      },
-      "documentation":"<p>Response structure containing the chat participant connection</p>"
     },
     "Integer":{
       "type":"integer",
@@ -4174,77 +3939,6 @@
       "type":"string",
       "pattern":"https://[a-zA-Z0-9.-]+(?::[0-9]+)?(?:/.*)?"
     },
-    "MCPServerSigV4AuthorizationConfig":{
-      "type":"structure",
-      "required":[
-        "region",
-        "service",
-        "roleArn"
-      ],
-      "members":{
-        "region":{
-          "shape":"AwsRegion",
-          "documentation":"<p>AWS region for SigV4 signing.</p>"
-        },
-        "service":{
-          "shape":"MCPServerSigV4AuthorizationConfigServiceString",
-          "documentation":"<p>AWS service name for SigV4 signing.</p>"
-        },
-        "roleArn":{
-          "shape":"RoleArn",
-          "documentation":"<p>IAM role ARN to assume for SigV4 signing.</p>"
-        }
-      },
-      "documentation":"<p>Authorization configuration for SigV4-authenticated MCP server.</p>"
-    },
-    "MCPServerSigV4AuthorizationConfigServiceString":{
-      "type":"string",
-      "max":100,
-      "min":1
-    },
-    "MCPServerSigV4ServiceDetails":{
-      "type":"structure",
-      "required":[
-        "name",
-        "endpoint",
-        "authorizationConfig"
-      ],
-      "members":{
-        "name":{
-          "shape":"MCPServerSigV4ServiceDetailsNameString",
-          "documentation":"<p>MCP server name.</p>"
-        },
-        "endpoint":{
-          "shape":"MCPServerSigV4ServiceDetailsEndpointString",
-          "documentation":"<p>MCP server endpoint URL.</p>"
-        },
-        "description":{
-          "shape":"MCPServerSigV4ServiceDetailsDescriptionString",
-          "documentation":"<p>Optional description for the MCP server.</p>"
-        },
-        "authorizationConfig":{
-          "shape":"MCPServerSigV4AuthorizationConfig",
-          "documentation":"<p>MCP Server SigV4 authorization configuration.</p>"
-        }
-      },
-      "documentation":"<p>Complete service details for SigV4-authenticated MCP server integration.</p>"
-    },
-    "MCPServerSigV4ServiceDetailsDescriptionString":{
-      "type":"string",
-      "documentation":"<p>Description field</p>",
-      "max":500,
-      "min":0,
-      "pattern":"[\\p{L}\\p{N}\\p{P}\\p{S}\\p{Z}]+",
-      "sensitive":true
-    },
-    "MCPServerSigV4ServiceDetailsEndpointString":{
-      "type":"string",
-      "pattern":"https://[a-zA-Z0-9.-]+(?::[0-9]+)?(?:/.*)?"
-    },
-    "MCPServerSigV4ServiceDetailsNameString":{
-      "type":"string",
-      "pattern":"[a-zA-Z0-9_-]+"
-    },
     "MCPToolsList":{
       "type":"list",
       "member":{"shape":"MCPToolsListMemberString"},
@@ -4253,61 +3947,6 @@
     "MCPToolsListMemberString":{
       "type":"string",
       "pattern":"[a-zA-Z0-9_-]+"
-    },
-    "MSTeamsChannel":{
-      "type":"structure",
-      "required":[
-        "channelName",
-        "channelId"
-      ],
-      "members":{
-        "channelName":{
-          "shape":"String",
-          "documentation":"<p>MS Teams channel name</p>"
-        },
-        "channelId":{
-          "shape":"Guid",
-          "documentation":"<p>MS Teams Channel ID</p>"
-        }
-      },
-      "documentation":"<p>Represents a Teams channel with its ID and name.</p>"
-    },
-    "MSTeamsConfiguration":{
-      "type":"structure",
-      "required":[
-        "teamId",
-        "teamName",
-        "transmissionTarget"
-      ],
-      "members":{
-        "teamId":{
-          "shape":"Guid",
-          "documentation":"<p>Associated MS Teams teams ID</p>"
-        },
-        "teamName":{
-          "shape":"String",
-          "documentation":"<p>Associated MS Teams team name</p>"
-        },
-        "transmissionTarget":{
-          "shape":"MSTeamsTransmissionTarget",
-          "documentation":"<p>Transmission targets for agent notification</p>"
-        }
-      },
-      "documentation":"<p>Configuration for MS Teams workspace integration.</p>"
-    },
-    "MSTeamsTransmissionTarget":{
-      "type":"structure",
-      "members":{
-        "opsOncallTarget":{
-          "shape":"MSTeamsChannel",
-          "documentation":"<p>Destination for On-call Agent(Ops1)</p>"
-        },
-        "opsSRETarget":{
-          "shape":"MSTeamsChannel",
-          "documentation":"<p>Destination for SRE Agent (Ops1.5)</p>"
-        }
-      },
-      "documentation":"<p>Defines MS Teams channels for different types of agent notifications.</p>"
     },
     "MaxIpv4AddressesPerEni":{
       "type":"integer",
@@ -4587,7 +4226,7 @@
     },
     "PortRange":{
       "type":"string",
-      "documentation":"<p>TCP port range expression (single port or range e.g. '443' or '8080-8090'). Valid port values are 0-65535, enforced at runtime.</p>",
+      "documentation":"<p>TCP port range expression (single port or range e.g. '443' or '8080-8090'). Valid port values are 1-65535, enforced at runtime.</p>",
       "min":1,
       "pattern":"((\\d{1,5}\\-\\d{1,5})|(\\d+))"
     },
@@ -4611,8 +4250,7 @@
         "mcpserverdatadog",
         "mcpserver",
         "mcpserversplunk",
-        "azureidentity",
-        "mcpserversigv4"
+        "azureidentity"
       ]
     },
     "Priority":{
@@ -5100,64 +4738,6 @@
         }
       },
       "documentation":"<p>Details specific to a registered MCP (Model Context Protocol) server.</p>"
-    },
-    "RegisteredMCPServerSigV4Details":{
-      "type":"structure",
-      "required":[
-        "name",
-        "endpoint",
-        "region",
-        "service",
-        "roleArn"
-      ],
-      "members":{
-        "name":{
-          "shape":"RegisteredMCPServerSigV4DetailsNameString",
-          "documentation":"<p>MCP server name.</p>"
-        },
-        "endpoint":{
-          "shape":"RegisteredMCPServerSigV4DetailsEndpointString",
-          "documentation":"<p>MCP server endpoint URL.</p>"
-        },
-        "description":{
-          "shape":"RegisteredMCPServerSigV4DetailsDescriptionString",
-          "documentation":"<p>Optional description for the MCP server.</p>"
-        },
-        "region":{
-          "shape":"AwsRegion",
-          "documentation":"<p>AWS region for SigV4 signing.</p>"
-        },
-        "service":{
-          "shape":"RegisteredMCPServerSigV4DetailsServiceString",
-          "documentation":"<p>AWS service name for SigV4 signing.</p>"
-        },
-        "roleArn":{
-          "shape":"RoleArn",
-          "documentation":"<p>IAM role ARN to assume for SigV4 signing.</p>"
-        }
-      },
-      "documentation":"<p>Details specific to a registered SigV4-authenticated MCP server.</p>"
-    },
-    "RegisteredMCPServerSigV4DetailsDescriptionString":{
-      "type":"string",
-      "documentation":"<p>Description field</p>",
-      "max":500,
-      "min":0,
-      "pattern":"[\\p{L}\\p{N}\\p{P}\\p{S}\\p{Z}]+",
-      "sensitive":true
-    },
-    "RegisteredMCPServerSigV4DetailsEndpointString":{
-      "type":"string",
-      "pattern":"https://[a-zA-Z0-9.-]+(?::[0-9]+)?(?:/.*)?"
-    },
-    "RegisteredMCPServerSigV4DetailsNameString":{
-      "type":"string",
-      "pattern":"[a-zA-Z0-9_-]+"
-    },
-    "RegisteredMCPServerSigV4DetailsServiceString":{
-      "type":"string",
-      "max":100,
-      "min":1
     },
     "RegisteredNewRelicDetails":{
       "type":"structure",
@@ -5676,7 +5256,6 @@
         "slack",
         "azure",
         "azuredevops",
-        "msteams",
         "dynatrace",
         "servicenow",
         "pagerduty",
@@ -5687,8 +5266,7 @@
         "mcpserverdatadog",
         "mcpserver",
         "mcpserversplunk",
-        "azureidentity",
-        "mcpserversigv4"
+        "azureidentity"
       ]
     },
     "ServiceConfiguration":{
@@ -5745,10 +5323,6 @@
         "pagerduty":{
           "shape":"PagerDutyConfiguration",
           "documentation":"<p>PagerDuty integration configuration</p>"
-        },
-        "msteams":{
-          "shape":"MSTeamsConfiguration",
-          "documentation":"<p>MS Teams integration configuration</p>"
         }
       },
       "documentation":"<p>Union of all supported service configuration types. Each service has its own specific configuration structure.</p>",
@@ -5800,10 +5374,6 @@
         "azureidentity":{
           "shape":"RegisteredAzureIdentityDetails",
           "documentation":"<p>Azure integration with AWS Outbound Identity Federation specific service details.</p>"
-        },
-        "mcpserversigv4":{
-          "shape":"MCPServerSigV4ServiceDetails",
-          "documentation":"<p>SigV4-authenticated MCP server-specific service details.</p>"
         }
       },
       "documentation":"<p>Union of service-specific configuration details for service registration.</p>",
@@ -6072,24 +5642,6 @@
       "max":24,
       "min":15,
       "pattern":"subnet-(([0-9a-z]{8})|([0-9a-z]{17}))"
-    },
-    "SupportLevel":{
-      "type":"structure",
-      "required":[
-        "code",
-        "name"
-      ],
-      "members":{
-        "code":{
-          "shape":"String",
-          "documentation":"<p>The support level code</p>"
-        },
-        "name":{
-          "shape":"String",
-          "documentation":"<p>The support level name</p>"
-        }
-      },
-      "documentation":"<p>Represents a support level with all its properties and metadata</p>"
     },
     "SyntheticTimestamp_date_time":{
       "type":"timestamp",

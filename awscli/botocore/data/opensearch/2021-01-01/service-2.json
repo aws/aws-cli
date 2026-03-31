@@ -428,6 +428,25 @@
       ],
       "documentation":"<p>Deletes an Amazon OpenSearch Service-managed interface VPC endpoint.</p>"
     },
+    "DeregisterCapability":{
+      "name":"DeregisterCapability",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/2021-01-01/opensearch/application/{ApplicationId}/capability/deregister/{CapabilityName}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeregisterCapabilityRequest"},
+      "output":{"shape":"DeregisterCapabilityResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"DisabledOperationException"}
+      ],
+      "documentation":"<p>Deregisters a capability from an OpenSearch UI application. This operation removes the capability and its associated configuration.</p>"
+    },
     "DescribeDomain":{
       "name":"DescribeDomain",
       "http":{
@@ -742,6 +761,24 @@
         {"shape":"DisabledOperationException"}
       ],
       "documentation":"<p>Retrieves the configuration and status of an existing OpenSearch application.</p>"
+    },
+    "GetCapability":{
+      "name":"GetCapability",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2021-01-01/opensearch/application/{ApplicationId}/capability/{CapabilityName}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetCapabilityRequest"},
+      "output":{"shape":"GetCapabilityResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"DisabledOperationException"}
+      ],
+      "documentation":"<p>Retrieves information about a registered capability for an OpenSearch UI application, including its configuration and current status.</p>"
     },
     "GetCompatibleVersions":{
       "name":"GetCompatibleVersions",
@@ -1183,6 +1220,26 @@
       ],
       "documentation":"<p>Sets the default application to the application with the specified ARN.</p> <p> To remove the default application, use the <code>GetDefaultApplicationSetting</code> operation to get the current default and then call the <code>PutDefaultApplicationSetting</code> with the current applications ARN and the <code>setAsDefault</code> parameter set to <code>false</code>.</p>"
     },
+    "RegisterCapability":{
+      "name":"RegisterCapability",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2021-01-01/opensearch/application/{ApplicationId}/capability/register",
+        "responseCode":200
+      },
+      "input":{"shape":"RegisterCapabilityRequest"},
+      "output":{"shape":"RegisterCapabilityResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"DisabledOperationException"}
+      ],
+      "documentation":"<p>Registers a capability for an OpenSearch UI application. Use this operation to enable specific capabilities, such as AI features, for a given application. The capability configuration defines the type and settings of the capability to register. For more information about the AI features, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/application-ai-assistant.html\">Agentic AI for OpenSearch UI</a>.</p>"
+    },
     "RejectInboundConnection":{
       "name":"RejectInboundConnection",
       "http":{
@@ -1446,6 +1503,11 @@
     }
   },
   "shapes":{
+    "AIConfig":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Configuration settings for AI-powered capabilities of an OpenSearch UI application.</p>"
+    },
     "AIMLOptionsInput":{
       "type":"structure",
       "members":{
@@ -1860,6 +1922,10 @@
       "type":"list",
       "member":{"shape":"AppConfig"},
       "max":200
+    },
+    "ApplicationId":{
+      "type":"string",
+      "pattern":"[a-z0-9]{3,30}"
     },
     "ApplicationName":{
       "type":"string",
@@ -2351,6 +2417,83 @@
     "CancelledChangePropertyList":{
       "type":"list",
       "member":{"shape":"CancelledChangeProperty"}
+    },
+    "CapabilityBaseRequestConfig":{
+      "type":"structure",
+      "members":{
+        "aiConfig":{
+          "shape":"AIConfig",
+          "documentation":"<p>Configuration settings for AI-powered capabilities.</p>"
+        }
+      },
+      "documentation":"<p>The base configuration for registering a capability. Contains capability-specific configuration such as AI settings.</p>",
+      "union":true
+    },
+    "CapabilityBaseResponseConfig":{
+      "type":"structure",
+      "members":{
+        "aiConfig":{
+          "shape":"AIConfig",
+          "documentation":"<p>Configuration settings for AI-powered capabilities.</p>"
+        }
+      },
+      "documentation":"<p>The base configuration returned for a registered capability.</p>",
+      "union":true
+    },
+    "CapabilityExtendedResponseConfig":{
+      "type":"structure",
+      "members":{
+        "aiConfig":{
+          "shape":"AIConfig",
+          "documentation":"<p>Configuration settings for AI-powered capabilities.</p>"
+        }
+      },
+      "documentation":"<p>The extended configuration returned for a registered capability, including additional details beyond the base configuration.</p>",
+      "union":true
+    },
+    "CapabilityFailure":{
+      "type":"structure",
+      "members":{
+        "reason":{
+          "shape":"CapabilityFailureReason",
+          "documentation":"<p>The reason for the capability failure. Possible values: <code>KMS_KEY_INSUFFICIENT_PERMISSION</code>.</p>"
+        },
+        "details":{
+          "shape":"CapabilityFailureDetails",
+          "documentation":"<p>Additional details about the capability failure.</p>"
+        }
+      },
+      "documentation":"<p>Information about a capability failure.</p>"
+    },
+    "CapabilityFailureDetails":{"type":"string"},
+    "CapabilityFailureReason":{
+      "type":"string",
+      "enum":["KMS_KEY_INSUFFICIENT_PERMISSION"]
+    },
+    "CapabilityFailures":{
+      "type":"list",
+      "member":{"shape":"CapabilityFailure"},
+      "documentation":"<p>A list of failures associated with a capability.</p>"
+    },
+    "CapabilityName":{
+      "type":"string",
+      "documentation":"<p>The name of a capability. Must be between 3 and 30 characters and contain only alphanumeric characters and hyphens.</p>",
+      "max":30,
+      "min":3,
+      "pattern":"^[a-zA-Z0-9-]+$"
+    },
+    "CapabilityStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a capability. Possible values: <code>creating</code>, <code>create_failed</code>, <code>active</code>, <code>updating</code>, <code>update_failed</code>, <code>deleting</code>, <code>delete_failed</code>.</p>",
+      "enum":[
+        "creating",
+        "create_failed",
+        "active",
+        "updating",
+        "update_failed",
+        "deleting",
+        "delete_failed"
+      ]
     },
     "ChangeProgressDetails":{
       "type":"structure",
@@ -3393,6 +3536,38 @@
       "type":"string",
       "max":128,
       "min":2
+    },
+    "DeregisterCapabilityRequest":{
+      "type":"structure",
+      "required":[
+        "applicationId",
+        "capabilityName"
+      ],
+      "members":{
+        "applicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The unique identifier of the OpenSearch UI application to deregister the capability from.</p>",
+          "location":"uri",
+          "locationName":"ApplicationId"
+        },
+        "capabilityName":{
+          "shape":"CapabilityName",
+          "documentation":"<p>The name of the capability to deregister.</p>",
+          "location":"uri",
+          "locationName":"CapabilityName"
+        }
+      },
+      "documentation":"<p>Container for the parameters to the <code>DeregisterCapability</code> operation.</p>"
+    },
+    "DeregisterCapabilityResponse":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"CapabilityStatus",
+          "documentation":"<p>The status of the deregistration operation. Returns <code>deleting</code> when the capability is being removed.</p>"
+        }
+      },
+      "documentation":"<p>The result of a <code>DeregisterCapability</code> request.</p>"
     },
     "DescribeDomainAutoTunesRequest":{
       "type":"structure",
@@ -4932,6 +5107,54 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the application's data at rest.</p>"
         }
       }
+    },
+    "GetCapabilityRequest":{
+      "type":"structure",
+      "required":[
+        "applicationId",
+        "capabilityName"
+      ],
+      "members":{
+        "applicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The unique identifier of the OpenSearch UI application.</p>",
+          "location":"uri",
+          "locationName":"ApplicationId"
+        },
+        "capabilityName":{
+          "shape":"CapabilityName",
+          "documentation":"<p>The name of the capability to retrieve information about.</p>",
+          "location":"uri",
+          "locationName":"CapabilityName"
+        }
+      },
+      "documentation":"<p>Container for the parameters to the <code>GetCapability</code> operation.</p>"
+    },
+    "GetCapabilityResponse":{
+      "type":"structure",
+      "members":{
+        "capabilityName":{
+          "shape":"CapabilityName",
+          "documentation":"<p>The name of the capability.</p>"
+        },
+        "applicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The unique identifier of the OpenSearch UI application.</p>"
+        },
+        "status":{
+          "shape":"CapabilityStatus",
+          "documentation":"<p>The current status of the capability. Possible values: <code>creating</code>, <code>create_failed</code>, <code>active</code>, <code>updating</code>, <code>update_failed</code>, <code>deleting</code>, <code>delete_failed</code>.</p>"
+        },
+        "capabilityConfig":{
+          "shape":"CapabilityExtendedResponseConfig",
+          "documentation":"<p>The configuration settings for the capability, including capability-specific settings such as AI configuration.</p>"
+        },
+        "failures":{
+          "shape":"CapabilityFailures",
+          "documentation":"<p>A list of failures associated with the capability, if any. Each failure includes a reason and details about what went wrong.</p>"
+        }
+      },
+      "documentation":"<p>The result of a <code>GetCapability</code> request. Contains details about the capability.</p>"
     },
     "GetCompatibleVersionsRequest":{
       "type":"structure",
@@ -7436,6 +7659,53 @@
       "min":5,
       "pattern":"[a-z][a-z0-9\\-]+"
     },
+    "RegisterCapabilityRequest":{
+      "type":"structure",
+      "required":[
+        "applicationId",
+        "capabilityName",
+        "capabilityConfig"
+      ],
+      "members":{
+        "applicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The unique identifier of the OpenSearch UI application to register the capability for.</p>",
+          "location":"uri",
+          "locationName":"ApplicationId"
+        },
+        "capabilityName":{
+          "shape":"CapabilityName",
+          "documentation":"<p>The name of the capability to register. Must be between 3 and 30 characters and contain only alphanumeric characters and hyphens. This identifies the type of capability being enabled for the application. For registering AI Assistant capability, use <code>ai-capability</code> </p>"
+        },
+        "capabilityConfig":{
+          "shape":"CapabilityBaseRequestConfig",
+          "documentation":"<p>The configuration settings for the capability being registered. This includes capability-specific settings such as AI configuration.</p>"
+        }
+      },
+      "documentation":"<p>Container for the parameters to the <code>RegisterCapability</code> operation.</p>"
+    },
+    "RegisterCapabilityResponse":{
+      "type":"structure",
+      "members":{
+        "capabilityName":{
+          "shape":"CapabilityName",
+          "documentation":"<p>The name of the registered capability.</p>"
+        },
+        "applicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The unique identifier of the OpenSearch UI application.</p>"
+        },
+        "status":{
+          "shape":"CapabilityStatus",
+          "documentation":"<p>The current status of the capability. Possible values: <code>creating</code>, <code>create_failed</code>, <code>active</code>, <code>updating</code>, <code>update_failed</code>, <code>deleting</code>, <code>delete_failed</code>.</p>"
+        },
+        "capabilityConfig":{
+          "shape":"CapabilityBaseResponseConfig",
+          "documentation":"<p>The configuration settings for the registered capability.</p>"
+        }
+      },
+      "documentation":"<p>The result of a <code>RegisterCapability</code> request. Contains details about the registered capability.</p>"
+    },
     "RejectInboundConnectionRequest":{
       "type":"structure",
       "required":["ConnectionId"],
@@ -7925,6 +8195,13 @@
         }
       },
       "documentation":"<p>Configuration for serverless vector acceleration, which provides <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/gpu-acceleration-vector-index.html\">GPU-accelerated</a> vector search capabilities for improved performance on vector workloads.</p>"
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>An exception for when a request would cause a service quota to be exceeded.</p>",
+      "error":{"httpStatusCode":402},
+      "exception":true
     },
     "ServiceSoftwareOptions":{
       "type":"structure",

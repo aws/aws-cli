@@ -299,6 +299,62 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
         )
         self.assertEqual(stdout, "")
 
+    def test_set_rejects_newline_in_value(self):
+        _, stderr, _ = self.run_cmd(
+            ["configure", "set", "region", "us-east-1\nus-west-2"],
+            expected_rc=255,
+        )
+        self.assertIn("newline", stderr)
+        # To avoid leaking sensitive values,
+        # values should not appear in stderr.
+        self.assertNotIn("us-east-1\nus-west-2", stderr)
+
+    def test_set_rejects_carriage_return_in_value(self):
+        _, stderr, _ = self.run_cmd(
+            ["configure", "set", "region", "us-east-1\rus-west-2"],
+            expected_rc=255,
+        )
+        self.assertIn("newline", stderr)
+        # To avoid leaking sensitive values,
+        # values should not appear in stderr.
+        self.assertNotIn("us-east-1\rus-west-2", stderr)
+
+    def test_set_rejects_newline_in_nested_value(self):
+        _, stderr, _ = self.run_cmd(
+            ["configure", "set", "default.s3.signature_version", "s3v4\nfoo"],
+            expected_rc=255,
+        )
+        self.assertIn("newline", stderr)
+        # To avoid leaking sensitive values,
+        # values should not appear in stderr.
+        self.assertNotIn("s3v4\nfoo", stderr)
+
+    def test_newline_injection_does_not_write_injected_key_to_file(self):
+        # Simulates: aws configure set output $'table\nregion = us-east-1'
+        # The injected key must not appear anywhere in the config file.
+        self.set_config_file_contents("[default]\n")
+        self.run_cmd(
+            ["configure", "set", "output", "table\nregion = us-east-1"],
+            expected_rc=255,
+        )
+        contents = self.get_config_file_contents()
+        self.assertNotIn("region", contents)
+
+    def test_newline_injection_does_not_set_injected_key_in_parsed_config(self):
+        # Even if the file were somehow written, the injected key must not be
+        # readable back via 'configure get'.
+        self.set_config_file_contents("[default]\n")
+        self.run_cmd(
+            ["configure", "set", "output", "table\nregion = us-east-1"],
+            expected_rc=255,
+        )
+        # Re-create the driver so it re-reads the (unchanged) config file.
+        self.driver = create_clidriver()
+        stdout, _, _ = self.run_cmd(
+            "configure get region", expected_rc=1
+        )
+        self.assertEqual(stdout.strip(), "")
+
 
 class TestConfigureHasArgTable(unittest.TestCase):
     def test_configure_command_has_arg_table(self):

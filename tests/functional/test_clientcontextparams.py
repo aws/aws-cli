@@ -23,7 +23,7 @@ class TestClientContextParams(BaseAWSCommandParamsTest):
         config = self.driver.session.get_default_client_config()
         self.assertEqual(
             config.client_context_params,
-            {'DisableS3ExpressSessionAuth': True},
+            {'disable_s3_express_session_auth': True},
         )
 
     def test_negative_flag_sets_false(self):
@@ -31,7 +31,7 @@ class TestClientContextParams(BaseAWSCommandParamsTest):
         config = self.driver.session.get_default_client_config()
         self.assertEqual(
             config.client_context_params,
-            {'DisableS3ExpressSessionAuth': False},
+            {'disable_s3_express_session_auth': False},
         )
 
     def test_no_flag_does_not_set_client_context_params(self):

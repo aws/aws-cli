@@ -97,7 +97,7 @@ def _apply_client_context_params(param_defs, session, parsed_args, **kwargs):
         py_name = cli_name.replace('-', '_')
         value = getattr(parsed_args, py_name, None)
         if value is not None:
-            context_params[original_name] = value
+            context_params[xform_name(original_name)] = value
     if not context_params:
         return
     new_config = Config(client_context_params=context_params)

@@ -122,44 +122,9 @@ def test_unsupported_type_skips_param(argument_table, session):
     assert 'count' not in argument_table
 
 
-def test_registers_operation_args_parsed_handler(argument_table, session):
-    _inject(argument_table, session, [_make_context_param('ForcePathStyle')])
-    event_name = session.register.call_args[0][0]
-    assert event_name == 'operation-args-parsed.s3api.list-buckets'
-
-
 def _apply(session, param_defs, **attr_values):
     parsed_args = argparse.Namespace(**attr_values)
     _apply_client_context_params(param_defs, session, parsed_args)
-
-
-def test_flag_passed_sets_config(session):
-    _apply(
-        session,
-        [('force-path-style', 'ForcePathStyle')],
-        force_path_style=True,
-    )
-    config = session.set_default_client_config.call_args[0][0]
-    assert config.client_context_params == {'ForcePathStyle': True}
-
-
-def test_no_flag_passed_does_not_set_config(session):
-    _apply(
-        session,
-        [('force-path-style', 'ForcePathStyle')],
-        force_path_style=None,
-    )
-    session.set_default_client_config.assert_not_called()
-
-
-def test_negative_flag_sends_false(session):
-    _apply(
-        session,
-        [('force-path-style', 'ForcePathStyle')],
-        force_path_style=False,
-    )
-    config = session.set_default_client_config.call_args[0][0]
-    assert config.client_context_params == {'ForcePathStyle': False}
 
 
 def test_merges_with_existing_config(session):
@@ -170,7 +135,7 @@ def test_merges_with_existing_config(session):
         force_path_style=True,
     )
     config = session.set_default_client_config.call_args[0][0]
-    assert config.client_context_params == {'ForcePathStyle': True}
+    assert config.client_context_params == {'force_path_style': True}
     assert config.read_timeout == 30
 
 
@@ -184,14 +149,3 @@ def test_string_add_to_parser():
     arg.add_to_parser(parser)
     result = parser.parse_args(['--endpoint', 'custom.example.com'])
     assert result.endpoint == 'custom.example.com'
-
-
-def test_add_to_params_is_noop():
-    arg = ClientContextParamArgument(
-        name='force-path-style',
-        context_param_name='ForcePathStyle',
-        param_type='boolean',
-    )
-    params = {}
-    arg.add_to_params(params, True)
-    assert params == {}

@@ -193,12 +193,6 @@ def set_operation_specific_signer(context, signing_name, **kwargs):
 
         return signature_version
 
-def _strip_sig_prefix(auth_name):
-    """Normalize auth type names by removing any 'sig' prefix.
-    Mirrors EndpointRulesetResolver._strip_sig_prefix in regions.py.
-    """
-    return auth_name[3:] if auth_name.startswith('sig') else auth_name
-
 
 def _set_auth_scheme_preference_signer(context, signing_name, **kwargs):
     """

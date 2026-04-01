@@ -52,7 +52,7 @@ from botocore.exceptions import (
     ParamValidationError,
     UnsupportedTLSVersionWarning,
 )
-from botocore.regions import EndpointResolverBuiltins, build_signing_context_from_ruleset_scheme
+from botocore.regions import EndpointResolverBuiltins
 from botocore.signers import (
     add_dsql_generate_db_auth_token_methods,
     add_generate_db_auth_token,
@@ -192,66 +192,6 @@ def set_operation_specific_signer(context, signing_name, **kwargs):
             signature_version = f's3{signature_version}'
 
         return signature_version
-
-
-def _set_auth_scheme_preference_signer(context, signing_name, **kwargs):
-    """
-    Determines the appropriate signer to use based on the client configuration,
-    authentication scheme preferences, and the availability of a bearer token.
-    """
-    client_config = context.get('client_config')
-    if client_config is None:
-        return
-
-    signature_version = client_config.signature_version
-    auth_scheme_preference = client_config.auth_scheme_preference
-    auth_options = context.get('auth_options')
-
-    signature_version_set_in_code = (
-        isinstance(signature_version, ClientConfigString)
-        or signature_version is botocore.UNSIGNED
-    )
-    auth_preference_set_in_code = isinstance(
-        auth_scheme_preference, ClientConfigString
-    )
-    has_in_code_configuration = (
-        signature_version_set_in_code or auth_preference_set_in_code
-    )
-
-    resolved_signature_version = signature_version
-
-    # If signature version was not set in code, but an auth scheme preference
-    # is available, resolve it based on the preferred schemes and supported auth
-    # options for this service.
-    if (
-        not signature_version_set_in_code
-        and auth_scheme_preference
-        and auth_options
-    ):
-        preferred_schemes = auth_scheme_preference.split(',')
-        resolved = botocore.auth.resolve_auth_scheme_preference(
-            preferred_schemes, auth_options
-        )
-        print(f'preferred: {preferred_schemes}, auth options: {auth_options}, resolved: {resolved}')
-        resolved_signature_version = (
-            botocore.UNSIGNED if resolved == 'none' else resolved
-        )
-
-    # Prefer 'bearer' signature version if a bearer token is available, and it
-    # is allowed for this service. This can override earlier resolution if the
-    # config object didn't explicitly set a signature version.
-    if _should_prefer_bearer_auth(
-        has_in_code_configuration,
-        signing_name,
-        resolved_signature_version,
-        auth_options,
-    ):
-        register_feature_id('BEARER_SERVICE_ENV_VARS')
-        resolved_signature_version = 'bearer'
-
-    if resolved_signature_version == signature_version:
-        return None
-    return resolved_signature_version
 
 
 def _resolve_sigv4a_region(context):
@@ -1266,6 +1206,65 @@ def _handle_request_validation_mode_member(params, model, **kwargs):
         and response_checksum_validation == "when_supported"
     ):
         params.setdefault(mode_member, "ENABLED")
+
+
+def _set_auth_scheme_preference_signer(context, signing_name, **kwargs):
+    """
+    Determines the appropriate signer to use based on the client configuration,
+    authentication scheme preferences, and the availability of a bearer token.
+    """
+    client_config = context.get('client_config')
+    if client_config is None:
+        return
+
+    signature_version = client_config.signature_version
+    auth_scheme_preference = client_config.auth_scheme_preference
+    auth_options = context.get('auth_options')
+
+    signature_version_set_in_code = (
+        isinstance(signature_version, ClientConfigString)
+        or signature_version is botocore.UNSIGNED
+    )
+    auth_preference_set_in_code = isinstance(
+        auth_scheme_preference, ClientConfigString
+    )
+    has_in_code_configuration = (
+        signature_version_set_in_code or auth_preference_set_in_code
+    )
+
+    resolved_signature_version = signature_version
+
+    # If signature version was not set in code, but an auth scheme preference
+    # is available, resolve it based on the preferred schemes and supported auth
+    # options for this service.
+    if (
+        not signature_version_set_in_code
+        and auth_scheme_preference
+        and auth_options
+    ):
+        preferred_schemes = auth_scheme_preference.split(',')
+        resolved = botocore.auth.resolve_auth_scheme_preference(
+            preferred_schemes, auth_options
+        )
+        resolved_signature_version = (
+            botocore.UNSIGNED if resolved == 'none' else resolved
+        )
+
+    # Prefer 'bearer' signature version if a bearer token is available, and it
+    # is allowed for this service. This can override earlier resolution if the
+    # config object didn't explicitly set a signature version.
+    if _should_prefer_bearer_auth(
+        has_in_code_configuration,
+        signing_name,
+        resolved_signature_version,
+        auth_options,
+    ):
+        register_feature_id('BEARER_SERVICE_ENV_VARS')
+        resolved_signature_version = 'bearer'
+
+    if resolved_signature_version == signature_version:
+        return None
+    return resolved_signature_version
 
 
 def _should_prefer_bearer_auth(

@@ -180,6 +180,14 @@ class ETagProvider:
         future.meta.provide_object_etag(self.etag)
 
 
+class FullObjectChecksumProvider:
+    def __init__(self, full_object_checksum):
+        self.full_object_checksum = full_object_checksum
+
+    def on_queued(self, future, **kwargs):
+        future.meta.provide_full_object_checksum(self.full_object_checksum)
+
+
 class FileCreator:
     def __init__(self):
         self.rootdir = tempfile.mkdtemp()

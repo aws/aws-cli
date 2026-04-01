@@ -630,6 +630,69 @@ class S3FileGeneratorTest(BaseAWSCommandParamsTest):
         )
         self.client.head_object.assert_not_called()
 
+    def test_s3_single_file_sets_checksum_mode_when_supported(self):
+        input_s3_file = {
+            'src': {'path': self.file1, 'type': 's3'},
+            'dest': {'path': 'text1.txt', 'type': 'local'},
+            'dir_op': False,
+            'use_src_name': False,
+        }
+        self.client = mock.Mock()
+        self.client.meta.config.response_checksum_validation = 'when_supported'
+        self.client.head_object.return_value = {
+            'ContentLength': 100,
+            'LastModified': '2014-01-09T20:45:49.000Z',
+            'ETag': '"abcd"',
+        }
+        file_gen = FileGenerator(self.client, '')
+        list(file_gen.call(input_s3_file))
+        call_kwargs = self.client.head_object.call_args[1]
+        self.assertEqual(call_kwargs['ChecksumMode'], 'ENABLED')
+
+    def test_s3_single_file_no_checksum_mode_when_required(self):
+        input_s3_file = {
+            'src': {'path': self.file1, 'type': 's3'},
+            'dest': {'path': 'text1.txt', 'type': 'local'},
+            'dir_op': False,
+            'use_src_name': False,
+        }
+        self.client = mock.Mock()
+        self.client.meta.config.response_checksum_validation = 'when_required'
+        self.client.head_object.return_value = {
+            'ContentLength': 100,
+            'LastModified': '2014-01-09T20:45:49.000Z',
+            'ETag': '"abcd"',
+        }
+        file_gen = FileGenerator(self.client, '')
+        list(file_gen.call(input_s3_file))
+        call_kwargs = self.client.head_object.call_args[1]
+        self.assertNotIn('ChecksumMode', call_kwargs)
+
+    def test_s3_single_file_explicit_checksum_mode_overrides(self):
+        input_s3_file = {
+            'src': {'path': self.file1, 'type': 's3'},
+            'dest': {'path': 'text1.txt', 'type': 'local'},
+            'dir_op': False,
+            'use_src_name': False,
+        }
+        self.client = mock.Mock()
+        self.client.meta.config.response_checksum_validation = 'when_required'
+        self.client.head_object.return_value = {
+            'ContentLength': 100,
+            'LastModified': '2014-01-09T20:45:49.000Z',
+            'ETag': '"abcd"',
+        }
+        file_gen = FileGenerator(
+            self.client,
+            '',
+            request_parameters={
+                'HeadObject': {'ChecksumMode': 'ENABLED'},
+            },
+        )
+        list(file_gen.call(input_s3_file))
+        call_kwargs = self.client.head_object.call_args[1]
+        self.assertEqual(call_kwargs['ChecksumMode'], 'ENABLED')
+
     def test_s3_directory(self):
         """
         Generates s3 files under a common prefix. Also it ensures that

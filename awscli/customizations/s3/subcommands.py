@@ -1287,14 +1287,15 @@ class CommandArchitecture(object):
         # SSE-C key and algorithm. Note the reverse FileGenerator does
         # not need any of these because it is used only for sync operations
         # which only use ListObjects which does not require HeadObject.
-        RequestParamsMapper.map_head_object_params(
-            request_parameters['HeadObject'], self.parameters)
         if paths_type == 's3s3':
+            RequestParamsMapper.map_head_object_params_with_copy_source_sse(
+                request_parameters['HeadObject'],
+                self.parameters,
+            )
+        else:
             RequestParamsMapper.map_head_object_params(
-                request_parameters['HeadObject'], {
-                    'sse_c': self.parameters.get('sse_c_copy_source'),
-                    'sse_c_key': self.parameters.get('sse_c_copy_source_key')
-                }
+                request_parameters['HeadObject'],
+                self.parameters,
             )
 
     def _should_handle_case_conflicts(self):

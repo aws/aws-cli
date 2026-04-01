@@ -39,22 +39,19 @@ class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
         response.update(override_kwargs)
         return response
 
-    def list_objects_response(self, keys):
+    def list_objects_response(self, keys, **override_kwargs):
         contents = []
         for key in keys:
-            contents.append(
-                {
-                    'Key': key,
-                    'LastModified': '00:00:00Z',
-                    'Size': 100,
-                    'ETag': '"foo-1"',
-                }
-            )
-
-        return {
-            'Contents': contents,
-            'CommonPrefixes': []
-        }
+            content = {
+                'Key': key,
+                'LastModified': '00:00:00Z',
+                'Size': 100,
+                'ETag': '"foo-1"',
+            }
+            if override_kwargs:
+                content.update(override_kwargs)
+            contents.append(content)
+        return {'Contents': contents, 'CommonPrefixes': []}
 
     def get_object_response(self):
         return {
@@ -182,3 +179,10 @@ class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
         }
         params.update(override_kwargs)
         return 'CompleteMultipartUpload', params
+
+    def mp_copy_responses(self):
+        return [
+            self.create_mpu_response('upload_id'),
+            self.upload_part_copy_response(),
+            self.complete_mpu_response(),
+        ]

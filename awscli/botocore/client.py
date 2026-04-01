@@ -19,7 +19,11 @@ from botocore import (
     xform_name,
 )
 from botocore.args import ClientArgsCreator
-from botocore.auth import AUTH_TYPE_MAPS, resolve_auth_type
+from botocore.auth import (
+    AUTH_TYPE_MAPS,
+    resolve_auth_scheme_preference,
+    resolve_auth_type,
+)
 from botocore.awsrequest import prepare_request_dict
 from botocore.compress import maybe_compress_request
 
@@ -61,8 +65,6 @@ from botocore.utils import (
     ensure_boolean,
     get_service_module_name,
 )
-
-from awscli.botocore.auth import resolve_auth_scheme_preference
 
 logger = logging.getLogger(__name__)
 history_recorder = get_global_history_recorder()

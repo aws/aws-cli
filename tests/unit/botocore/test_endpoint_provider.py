@@ -80,6 +80,28 @@ ENDPOINT_DICT = {
         ],
     },
 }
+ENDPOINT_AUTH_SCHEMES_DICT = {
+    "url": URL_TEMPLATE,
+    "properties": {
+        "authSchemes": [
+            {
+                "disableDoubleEncoding": True,
+                "name": "foo",
+                "signingName": "s3-outposts",
+                "signingRegionSet": [
+                    "*"
+                ]
+            },
+            {
+                "disableDoubleEncoding": True,
+                "name": "bar",
+                "signingName": "s3-outposts",
+                "signingRegion": REGION_TEMPLATE,
+            },
+        ],
+    },
+    "headers": {},
+}
 
 
 @pytest.fixture(scope="module")
@@ -563,3 +585,70 @@ def test_construct_endpoint_parametrized(
         ):
             result = resolver.construct_endpoint(None, None, None)
             assert result.url == expected_url
+
+
+@pytest.mark.parametrize(
+    "preferred_auth_schemes,expected_auth_scheme_name",
+    [
+        (
+            'foo,bar',
+            'foo',
+        ),
+        (
+            'bar,foo',
+            'bar',
+        ),
+        (
+            'xyz,foo,bar',
+            'foo',
+        ),
+    ],
+)
+def test_auth_scheme_preference(
+    preferred_auth_schemes,
+    expected_auth_scheme_name,
+    monkeypatch
+):
+    conditions = [
+        PARSE_ARN_FUNC,
+        {
+            "fn": "not",
+            "argv": [STRING_EQUALS_FUNC],
+        },
+        {
+            "fn": "aws.partition",
+            "argv": [REGION_REF],
+            "assign": "PartitionResults",
+        },
+    ],
+    resolver = EndpointRulesetResolver(
+        endpoint_ruleset_data={
+            'version': '1.0',
+            'parameters': {},
+            'rules': [
+                {
+                    'conditions': conditions,
+                    'type': 'endpoint',
+                    'endpoint': ENDPOINT_AUTH_SCHEMES_DICT,
+                }
+            ],
+        },
+        partition_data={},
+        service_model=None,
+        builtins={},
+        client_context=None,
+        event_emitter=None,
+        use_ssl=True,
+        requested_auth_scheme=None,
+        preferred_auth_schemes=preferred_auth_schemes,
+    )
+    monkeypatch.setattr(
+        'botocore.regions.AUTH_TYPE_MAPS',
+        {'bar': None, 'foo': None}
+    )
+    auth_schemes = [
+        {'name': 'foo', 'signingName': 's3', 'signingRegion': 'ap-south-1'},
+        {'name': 'bar', 'signingName': 's3', 'signingRegion': 'ap-south-2'},
+    ]
+    name, scheme = resolver.auth_schemes_to_signing_ctx(auth_schemes)
+    assert name == expected_auth_scheme_name

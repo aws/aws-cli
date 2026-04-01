@@ -60,7 +60,7 @@ def apply_boolean_options(
 ):
     if true_option and false_option:
         error_message = (
-            'aws: error: cannot use both '
+            'cannot use both '
             + true_option_name
             + ' and '
             + false_option_name
@@ -308,3 +308,79 @@ def get_release_label(cluster_id, session, region, endpoint_url, verify_ssl):
     )
     if cluster is not None:
         return cluster.get('ReleaseLabel')
+
+def validate_s3_logging_configuration(monitoring_config, log_uri):
+    """
+    Validates S3LoggingConfiguration policies and LogUri requirements.
+
+    Validation rules:
+    1. 'on-customer-s3only' is NOT supported for 'persistent-ui-logs'
+    2. LogUri is MANDATORY when 'system-logs' or 'application-logs' use
+       'emr-managed' or 'on-customer-s3only' policies
+    3. LogUri is NOT ALLOWED when both 'system-logs' and 'application-logs'
+       are 'disabled'
+    4. Valid log types: system-logs, application-logs, persistent-ui-logs
+    5. Valid policies: emr-managed, on-customer-s3only, disabled
+
+    Args:
+        monitoring_config: MonitoringConfiguration dict containing S3LoggingConfiguration
+        log_uri: LogUri value (can be None)
+
+    Raises:
+        InvalidS3LoggingLogTypeError: If invalid log type is specified
+        InvalidS3LoggingPolicyError: If invalid policy is specified
+        InvalidS3LoggingPersistentUiLogsPolicyError: If on-customer-s3only is used for persistent-ui-logs
+        S3LoggingConfigurationLogUriRequiredError: If LogUri is required but not provided
+        S3LoggingConfigurationLogUriNotAllowedError: If LogUri is provided when not allowed
+    """
+    if not monitoring_config:
+        return
+
+    s3_logging_config = monitoring_config.get('S3LoggingConfiguration')
+    if not s3_logging_config:
+        return
+
+    log_type_upload_policy = s3_logging_config.get('LogTypeUploadPolicy')
+    if log_type_upload_policy is None:
+        return
+
+    # Empty LogTypeUploadPolicy is treated as no S3LoggingConfiguration
+    if len(log_type_upload_policy) == 0:
+        return
+
+    # Valid log types and policies
+    valid_log_types = {'system-logs', 'application-logs', 'persistent-ui-logs'}
+    valid_policies = {'emr-managed', 'on-customer-s3only', 'disabled'}
+
+    # Validate each policy entry
+    for log_type, policy in log_type_upload_policy.items():
+        # Validate log type
+        if log_type not in valid_log_types:
+            raise exceptions.InvalidS3LoggingLogTypeError()
+
+        # Validate policy value
+        if policy not in valid_policies:
+            raise exceptions.InvalidS3LoggingPolicyError()
+
+        # Rule 1: 'on-customer-s3only' is NOT supported for 'persistent-ui-logs'
+        if log_type == 'persistent-ui-logs' and policy == 'on-customer-s3only':
+            raise exceptions.InvalidS3LoggingPersistentUiLogsPolicyError()
+
+    # Determine if LogUri is required based on system-logs and application-logs policies
+    system_logs_policy = log_type_upload_policy.get('system-logs')
+    application_logs_policy = log_type_upload_policy.get('application-logs')
+
+    # LogUri is required if either system-logs or application-logs are missing or NOT disabled
+    system_logs_requires_log_uri = system_logs_policy is None or system_logs_policy != 'disabled'
+    application_logs_requires_log_uri = application_logs_policy is None or application_logs_policy != 'disabled'
+    log_uri_required = system_logs_requires_log_uri or application_logs_requires_log_uri
+
+    log_uri_provided = log_uri is not None and log_uri.strip() != ''
+
+    # Rule 2: LogUri is MANDATORY when system-logs or application-logs use non-disabled policies
+    if log_uri_required and not log_uri_provided:
+        raise exceptions.S3LoggingConfigurationLogUriRequiredError()
+
+    # Rule 3: LogUri is NOT ALLOWED when both system-logs and application-logs are disabled
+    if not log_uri_required and log_uri_provided:
+        raise exceptions.S3LoggingConfigurationLogUriNotAllowedError()

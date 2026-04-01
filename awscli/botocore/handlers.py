@@ -998,6 +998,18 @@ def remove_bedrock_runtime_invoke_model_with_bidirectional_stream(
         del class_attributes['invoke_model_with_bidirectional_stream']
 
 
+def remove_connecthealth_start_medical_scribe_listening_session(class_attributes, **kwargs):
+    """Operation requires h2 which is currently unsupported in Python"""
+    if 'start_medical_scribe_listening_session' in class_attributes:
+        del class_attributes['start_medical_scribe_listening_session']
+
+
+def remove_polly_start_speech_synthesis_stream(class_attributes, **kwargs):
+    """Operation requires h2 which is currently unsupported in Python"""
+    if 'start_speech_synthesis_stream' in class_attributes:
+        del class_attributes['start_speech_synthesis_stream']
+
+
 def remove_bucket_from_url_paths_from_model(params, model, context, **kwargs):
     """Strips leading `{Bucket}/` from any operations that have it.
 
@@ -1346,6 +1358,14 @@ BUILTIN_HANDLERS = [
     (
         'creating-client-class.bedrock-runtime',
         remove_bedrock_runtime_invoke_model_with_bidirectional_stream,
+    ),
+    (
+        'creating-client-class.connecthealth',
+        remove_connecthealth_start_medical_scribe_listening_session,
+    ),
+    (
+        'creating-client-class.polly',
+        remove_polly_start_speech_synthesis_stream,
     ),
     ('after-call.iam', json_decode_policies),
     ('after-call.ec2.GetConsoleOutput', decode_console_output),

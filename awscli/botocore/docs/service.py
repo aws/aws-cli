@@ -11,7 +11,11 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from botocore.docs.bcdoc.restdoc import DocumentStructure
-from botocore.docs.client import ClientDocumenter, ClientExceptionsDocumenter
+from botocore.docs.client import (
+    ClientContextParamsDocumenter,
+    ClientDocumenter,
+    ClientExceptionsDocumenter,
+)
 from botocore.docs.paginator import PaginatorDocumenter
 from botocore.docs.utils import get_official_service_name
 from botocore.docs.waiter import WaiterDocumenter
@@ -19,9 +23,10 @@ from botocore.exceptions import DataNotFoundError
 
 
 class ServiceDocumenter:
-    def __init__(self, service_name, session):
+    def __init__(self, service_name, session, root_docs_path):
         self._session = session
         self._service_name = service_name
+        self._root_docs_path = root_docs_path
 
         self._client = self._session.create_client(
             service_name,
@@ -38,6 +43,7 @@ class ServiceDocumenter:
             'client-exceptions',
             'paginator-api',
             'waiter-api',
+            'client-context-params',
         ]
 
     def document_service(self):
@@ -54,6 +60,10 @@ class ServiceDocumenter:
         self.client_exceptions(doc_structure.get_section('client-exceptions'))
         self.paginator_api(doc_structure.get_section('paginator-api'))
         self.waiter_api(doc_structure.get_section('waiter-api'))
+        context_params_section = doc_structure.get_section(
+            'client-context-params'
+        )
+        self.client_context_params(context_params_section)
         return doc_structure.flush_structure()
 
     def title(self, section):
@@ -73,10 +83,14 @@ class ServiceDocumenter:
         except DataNotFoundError:
             pass
 
-        ClientDocumenter(self._client, examples).document_client(section)
+        ClientDocumenter(
+            self._client, self._root_docs_path, examples
+        ).document_client(section)
 
     def client_exceptions(self, section):
-        ClientExceptionsDocumenter(self._client).document_exceptions(section)
+        ClientExceptionsDocumenter(
+            self._client, self._root_docs_path
+        ).document_exceptions(section)
 
     def paginator_api(self, section):
         try:
@@ -85,10 +99,11 @@ class ServiceDocumenter:
             )
         except DataNotFoundError:
             return
-        paginator_documenter = PaginatorDocumenter(
-            self._client, service_paginator_model
-        )
-        paginator_documenter.document_paginators(section)
+        if service_paginator_model._paginator_config:
+            paginator_documenter = PaginatorDocumenter(
+                self._client, service_paginator_model, self._root_docs_path
+            )
+            paginator_documenter.document_paginators(section)
 
     def waiter_api(self, section):
         if self._client.waiter_names:
@@ -96,7 +111,7 @@ class ServiceDocumenter:
                 self._service_name
             )
             waiter_documenter = WaiterDocumenter(
-                self._client, service_waiter_model
+                self._client, service_waiter_model, self._root_docs_path
             )
             waiter_documenter.document_waiters(section)
 
@@ -104,3 +119,17 @@ class ServiceDocumenter:
         loader = self._session.get_component('data_loader')
         examples = loader.load_service_model(service_name, 'examples-1')
         return examples['examples']
+
+    def client_context_params(self, section):
+        omitted_params = ClientContextParamsDocumenter.OMITTED_CONTEXT_PARAMS
+        params_to_omit = omitted_params.get(self._service_name, [])
+        service_model = self._client.meta.service_model
+        raw_context_params = service_model.client_context_parameters
+        context_params = [
+            p for p in raw_context_params if p.name not in params_to_omit
+        ]
+        if context_params:
+            context_param_documenter = ClientContextParamsDocumenter(
+                self._service_name, context_params
+            )
+            context_param_documenter.document_context_params(section)

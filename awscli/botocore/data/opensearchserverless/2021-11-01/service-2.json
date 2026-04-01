@@ -1307,9 +1307,11 @@
       "type":"string",
       "enum":[
         "CREATING",
+        "UPDATING",
         "DELETING",
         "ACTIVE",
-        "FAILED"
+        "FAILED",
+        "UPDATE_FAILED"
       ]
     },
     "CollectionSummaries":{
@@ -1370,7 +1372,7 @@
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p>When creating a resource, thrown when a resource with the same name already exists or is being created.</p>",
+      "documentation":"<p>When creating a resource, thrown when a resource with the same name already exists or is being created. When deleting a resource, thrown when the resource is not in the ACTIVE, FAILED, or UPDATE_FAILED state.</p>",
       "exception":true
     },
     "CreateAccessPolicyRequest":{
@@ -3372,6 +3374,10 @@
           "shape":"String",
           "documentation":"<p>The description of the collection.</p>"
         },
+        "vectorOptions":{
+          "shape":"VectorOptions",
+          "documentation":"<p>Configuration options for vector search capabilities in the collection.</p>"
+        },
         "arn":{
           "shape":"String",
           "documentation":"<p>The Amazon Resource Name (ARN) of the collection.</p>"
@@ -3469,6 +3475,10 @@
         "description":{
           "shape":"UpdateCollectionRequestDescriptionString",
           "documentation":"<p>A description of the collection.</p>"
+        },
+        "vectorOptions":{
+          "shape":"VectorOptions",
+          "documentation":"<p>Configuration options for vector search capabilities in the collection.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",

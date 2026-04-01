@@ -107,6 +107,35 @@ def get_models_with_completions():
     return models
 
 
+def _get_invalid_completion_operations():
+    cases = []
+    for test_data in get_models_with_completions():
+        known_ops = set(test_data.service_model['operations'])
+        for op_name in test_data.completions['operations']:
+            if op_name not in known_ops:
+                cases.append((test_data.service_name, op_name))
+    return cases
+
+
+@pytest.mark.validates_models
+@pytest.mark.parametrize(
+    "service_name, operation_name",
+    _get_invalid_completion_operations(),
+    ids=lambda val: str(val),
+)
+def test_completions_operations_exist_in_model(
+    service_name, operation_name, record_property
+):
+    record_property('aws_service', service_name)
+    record_property('aws_operation', operation_name)
+    pytest.fail(
+        f"Completions file for '{service_name}' references operation "
+        f"'{operation_name}' which does not exist in the service model. "
+        f"The completions-1.json file must be updated to remove or "
+        f"update references to this operation."
+    )
+
+
 @pytest.mark.parametrize(
     "test_data",
     get_models_with_completions(),

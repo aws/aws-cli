@@ -108,11 +108,11 @@
       "members":{
         "shardIterator":{
           "shape":"ShardIterator",
-          "documentation":"<p> The unique identifier of the shard iterator. A shard iterator specifies the position in the shard from which you want to start reading data records sequentially. You obtain this value by calling the <code>GetShardIterator</code> operation. Each shard iterator is valid for 15 minutes after creation. </p>"
+          "documentation":"<p> The unique identifier of the shard iterator. A shard iterator specifies the position in the shard from which you want to start reading data records sequentially. You obtain this value by calling the <code>GetShardIterator </code> operation. Each shard iterator is valid for 15 minutes after creation. </p>"
         },
         "maxResults":{
           "shape":"GetRecordsInputMaxResultsInteger",
-          "documentation":"<p> The maximum number of records to return in a single <code>GetRecords</code> request. Default value is 1000. You can specify a limit between 1 and 1000, but the actual number returned might be less than the specified maximum if the size of the data for the returned records exceeds the internal size limit. </p>"
+          "documentation":"<p> The maximum number of records to return in a single <code>GetRecords</code> request. The default value is 100. You can specify a limit between 1 and 1000, but the actual number returned might be less than the specified maximum if the size of the data for the returned records exceeds the internal size limit. </p>"
         }
       }
     },
@@ -131,7 +131,7 @@
         },
         "nextShardIterator":{
           "shape":"ShardIterator",
-          "documentation":"<p> The next position in the shard from which to start sequentially reading data records. If null, the shard has been closed and the requested iterator doesn't return any more data. </p>"
+          "documentation":"<p> The next position in the shard from which to start sequentially reading data records. If null, the shard has been closed and the requested iterator will not return any more data. </p>"
         }
       }
     },
@@ -153,7 +153,7 @@
         },
         "shardIteratorType":{
           "shape":"ShardIteratorType",
-          "documentation":"<p> Determines how the shard iterator is positioned. Must be one of the following:</p> <ul> <li> <p> <code>TRIM_HORIZON</code> - Start reading at the last untrimmed record in the shard, which is the oldest data record in the shard.</p> </li> <li> <p> <code>AT_SEQUENCE_NUMBER</code> - Start reading exactly from the specified sequence number.</p> </li> <li> <p> <code>AFTER_SEQUENCE_NUMBER</code> - Start reading right after the specified sequence number.</p> </li> <li> <p> <code>LATEST</code> - Start reading just after the most recent record in the shard, so that you always read the most recent data.</p> </li> </ul>"
+          "documentation":"<p> Determines how the shard iterator is positioned. Must be one of the following: </p> <ul> <li> <p> <code>TRIM_HORIZON</code> - Start reading at the last untrimmed record in the shard, which is the oldest data record in the shard.</p> </li> <li> <p> <code>AT_SEQUENCE_NUMBER</code> - Start reading exactly from the specified sequence number.</p> </li> <li> <p> <code>AFTER_SEQUENCE_NUMBER</code> - Start reading right after the specified sequence number. </p> </li> <li> <p> <code>LATEST</code> - Start reading just after the most recent record in the shard, so that you always read the most recent data. </p> </li> </ul>"
         },
         "sequenceNumber":{
           "shape":"SequenceNumber",
@@ -180,15 +180,15 @@
         },
         "maxResults":{
           "shape":"GetStreamInputMaxResultsInteger",
-          "documentation":"<p> The maximum number of shard objects to return in a single <code>GetStream</code> request. Default value is 100. The minimum value is 1 and the maximum value is 100. </p>"
+          "documentation":"<p> The maximum number of shard objects to return in a single <code>GetStream</code> request. The default value is 100. The minimum value is 1 and the maximum value is 100. </p>"
         },
         "shardFilter":{
           "shape":"ShardFilter",
-          "documentation":"<p> Optional filter criteria to apply when retrieving shards. You can filter shards based on their state or other attributes to narrow down the results returned by the <code>GetStream</code> operation. </p>"
+          "documentation":"<p> Optional filter criteria to apply when retrieving shards. You can filter shards based on their parent <code>shardID</code> to get a list of children shards to narrow down the results returned by the <code>GetStream</code> operation. </p>"
         },
         "nextToken":{
           "shape":"ShardIdToken",
-          "documentation":"<p> An optional pagination token provided by a previous <code>GetStream</code> operation. If this parameter is specified, the response includes only records beyond the token, up to the value specified by <code>maxResults</code>. </p>"
+          "documentation":"<p> An optional pagination token provided by a previous <code>GetStream</code> operation. If this parameter is specified, the response includes only records beyond the token, up to the value specified by <code>MaxResults</code>. </p>"
         }
       }
     },
@@ -224,7 +224,7 @@
         },
         "streamViewType":{
           "shape":"StreamViewType",
-          "documentation":"<p> The format of the data records in this stream. Currently, this can be one of the following options:</p> <ul> <li> <p> <code>NEW_AND_OLD_IMAGES</code> - both versions of the row, before and after the change. This is the default.</p> </li> <li> <p> <code>NEW_IMAGE</code> - the version of the row after the change.</p> </li> <li> <p> <code>OLD_IMAGE</code> - the version of the row before the change.</p> </li> <li> <p> <code>KEYS_ONLY</code> - the partition and clustering keys of the row that was changed.</p> </li> </ul>"
+          "documentation":"<p> The format of the data records in this stream. Currently, this can be one of the following options: </p> <ul> <li> <p> <code>NEW_AND_OLD_IMAGES</code> - both versions of the row, before and after the change. This is the default.</p> </li> <li> <p> <code>NEW_IMAGE</code> - the version of the row after the change.</p> </li> <li> <p> <code>OLD_IMAGE</code> - the version of the row before the change.</p> </li> <li> <p> <code>KEYS_ONLY</code> - the partition and clustering keys of the row that was changed.</p> </li> </ul>"
         },
         "creationRequestDateTime":{
           "shape":"Date",
@@ -341,6 +341,10 @@
           "shape":"String",
           "documentation":"<p>A 64-bit double-precision floating point value. </p>"
         },
+        "durationT":{
+          "shape":"String",
+          "documentation":"<p>A duration value with nanosecond precision, representing a period of time encoded as 32-bit months, 32-bit days, and 64-bit nanoseconds. </p>"
+        },
         "floatT":{
           "shape":"String",
           "documentation":"<p>A 32-bit single-precision floating point value. </p>"
@@ -403,7 +407,7 @@
         },
         "varintT":{
           "shape":"String",
-          "documentation":"<p>A variable precision integer value with arbitrary length. </p>"
+          "documentation":"<p>An integer value within the +/-10^38 range. </p>"
         },
         "udtT":{
           "shape":"KeyspacesUdtMap",
@@ -473,7 +477,7 @@
         },
         "maxResults":{
           "shape":"ListStreamsInputMaxResultsInteger",
-          "documentation":"<p> The maximum number of streams to return in a single <code>ListStreams</code> request. Default value is 100. The minimum value is 1 and the maximum value is 100. </p>"
+          "documentation":"<p> The maximum number of streams to return in a single <code>ListStreams</code> request. The default value is 100. The minimum value is 1 and the maximum value is 100. </p>"
         },
         "nextToken":{
           "shape":"StreamArnToken",
@@ -496,7 +500,7 @@
         },
         "nextToken":{
           "shape":"StreamArnToken",
-          "documentation":"<p> A pagination token that can be used in a subsequent <code>ListStreams</code> request. This token is returned if the response contains more streams than can be returned in a single response based on the <code>MaxResults</code> parameter. </p>"
+          "documentation":"<p> A pagination token that can be used in a subsequent <code>ListStreams</code> request. This token is returned if the response contains more streams than can be returned in a single response based on the <code>maxResults</code> parameter. </p>"
         }
       }
     },
@@ -723,7 +727,7 @@
           "documentation":"<p>The request was denied due to request throttling. Reduce the frequency of requests and try again.</p>"
         }
       },
-      "documentation":"<p>The request rate is too high and exceeds the service's throughput limits. </p> <p>This exception occurs when you send too many requests in a short period of time. Implement exponential backoff in your retry strategy to handle this exception. Reducing your request frequency or distributing requests more evenly can help avoid throughput exceptions.</p>",
+      "documentation":"<p>The request rate is too high and exceeds the service's throughput limits. </p> <p>This exception occurs when you send too many requests in a short period of time. Implement exponential backoff in your retry strategy to handle this exception. Reducing your request frequency or distributing requests more evenly can help avoid throughput exceptions.</p> <p>This exception can also occur when more than two processes are reading from the same stream shard at the same time. Ensure that only one process reads from a stream shard at the same time. </p>",
       "exception":true
     },
     "ValidationException":{

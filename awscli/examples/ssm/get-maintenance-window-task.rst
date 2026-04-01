@@ -1,6 +1,6 @@
 **To get information about a maintenance window task**
 
-The following ``get-maintenance-window-task`` example retreives details about the specified maintenance window task. ::
+The following ``get-maintenance-window-task`` example retrieves details about the specified maintenance window task. ::
 
     aws ssm get-maintenance-window-task \
         --window-id mw-0c5ed765acEXAMPLE \

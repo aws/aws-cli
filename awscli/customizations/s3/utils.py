@@ -30,7 +30,7 @@ HUMANIZE_SUFFIXES = ('KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB')
 EPOCH_TIME = datetime(1970, 1, 1, tzinfo=tzutc())
 # Maximum object size allowed in S3.
 # See: http://docs.aws.amazon.com/AmazonS3/latest/dev/qfacts.html
-MAX_UPLOAD_SIZE = 5 * (1024**4)
+MAX_UPLOAD_SIZE = 5 * (1024**3) * 10000
 SIZE_SUFFIX = {
     'kb': 1024,
     'mb': 1024**2,
@@ -530,6 +530,19 @@ class RequestParamsMapper:
         cls._set_request_payer_param(request_params, cli_params)
 
     @classmethod
+    def map_head_object_params_with_copy_source_sse(
+        cls, request_params, cli_params
+    ):
+        """
+        Map CLI params to HeadObject request params,
+        using the SSE-C headers from the copy source
+        """
+        cls._set_sse_c_request_params_with_copy_source_sse(
+            request_params, cli_params
+        )
+        cls._set_request_payer_param(request_params, cli_params)
+
+    @classmethod
     def map_create_multipart_upload_params(cls, request_params, cli_params):
         """Map CLI params to CreateMultipartUpload request params"""
         cls._set_general_object_params(request_params, cli_params)
@@ -661,6 +674,18 @@ class RequestParamsMapper:
         if cli_params.get('sse_c'):
             request_params['SSECustomerAlgorithm'] = cli_params['sse_c']
             request_params['SSECustomerKey'] = cli_params['sse_c_key']
+
+    @classmethod
+    def _set_sse_c_request_params_with_copy_source_sse(
+        cls, request_params, cli_params
+    ):
+        if cli_params.get('sse_c_copy_source'):
+            request_params['SSECustomerAlgorithm'] = cli_params[
+                'sse_c_copy_source'
+            ]
+            request_params['SSECustomerKey'] = cli_params[
+                'sse_c_copy_source_key'
+            ]
 
     @classmethod
     def _set_sse_c_copy_source_request_params(cls, request_params, cli_params):

@@ -1,6 +1,6 @@
 **To unassign a private IP address from your private NAT gateway**
 
-The following ``unassign-private-nat-gateway-address`` example unassigns the specifed IP address from the specified private NAT gateway. ::
+The following ``unassign-private-nat-gateway-address`` example unassigns the specified IP address from the specified private NAT gateway. ::
 
     aws ec2 unassign-private-nat-gateway-address \
         --nat-gateway-id nat-1234567890abcdef0 \

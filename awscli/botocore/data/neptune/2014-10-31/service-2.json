@@ -1026,7 +1026,10 @@
       },
       "errors":[
         {"shape":"GlobalClusterNotFoundFault"},
-        {"shape":"InvalidGlobalClusterStateFault"}
+        {"shape":"GlobalClusterAlreadyExistsFault"},
+        {"shape":"InvalidGlobalClusterStateFault"},
+        {"shape":"InvalidDBClusterStateFault"},
+        {"shape":"InvalidDBInstanceStateFault"}
       ],
       "documentation":"<p>Modify a setting for an Amazon Neptune global cluster. You can change one or more database configuration parameters by specifying these parameters and their new values in the request.</p>"
     },
@@ -2189,6 +2192,14 @@
         "DeletionProtection":{
           "shape":"BooleanOptional",
           "documentation":"<p>The deletion protection setting for the new global database. The global database can't be deleted when deletion protection is enabled.</p>"
+        },
+        "DatabaseName":{
+          "shape":"String",
+          "documentation":"<p>The name for the new global database (up to 64 alpha-numeric characters.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Tags to assign to the global cluster.</p>"
         },
         "StorageEncrypted":{
           "shape":"BooleanOptional",
@@ -4647,6 +4658,10 @@
           "shape":"String",
           "documentation":"<p>The Neptune engine version used by the global database.</p>"
         },
+        "DatabaseName":{
+          "shape":"String",
+          "documentation":"<p>The default database name within the new global database cluster.</p>"
+        },
         "StorageEncrypted":{
           "shape":"BooleanOptional",
           "documentation":"<p>The storage encryption setting for the global database.</p>"
@@ -4662,6 +4677,10 @@
         "FailoverState":{
           "shape":"FailoverState",
           "documentation":"<p>A data object containing all properties for the current state of an in-process or pending switchover or failover process for this global cluster (Neptune global database). This object is empty unless the <code>SwitchoverGlobalCluster</code> or <code>FailoverGlobalCluster</code> operation was called on this global cluster.</p>"
+        },
+        "TagList":{
+          "shape":"TagList",
+          "documentation":"<p>A list of global cluster tags.</p>"
         }
       },
       "documentation":"<p>Contains the details of an Amazon Neptune global database.</p> <p>This data type is used as a response element for the <a>CreateGlobalCluster</a>, <a>DescribeGlobalClusters</a>, <a>ModifyGlobalCluster</a>, <a>DeleteGlobalCluster</a>, <a>FailoverGlobalCluster</a>, and <a>RemoveFromGlobalCluster</a> actions.</p>",

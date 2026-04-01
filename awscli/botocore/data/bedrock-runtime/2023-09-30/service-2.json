@@ -1029,6 +1029,10 @@
         "serviceTier":{
           "shape":"ServiceTier",
           "documentation":"<p>Specifies the processing tier configuration used for serving the request.</p>"
+        },
+        "outputConfig":{
+          "shape":"OutputConfig",
+          "documentation":"<p>Output configuration for a model response.</p>"
         }
       }
     },
@@ -1232,6 +1236,10 @@
         "serviceTier":{
           "shape":"ServiceTier",
           "documentation":"<p>Specifies the processing tier configuration used for serving the request.</p>"
+        },
+        "outputConfig":{
+          "shape":"OutputConfig",
+          "documentation":"<p>Output configuration for a model response.</p>"
         }
       }
     },
@@ -3308,6 +3316,25 @@
       "type":"string",
       "pattern":"(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}::foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2})|(arn:aws(|-us-gov|-cn|-iso|-iso-b):bedrock:(|[0-9a-z-]{1,20}):(|[0-9]{12}):inference-profile/[a-zA-Z0-9-:.]+)"
     },
+    "JsonSchemaDefinition":{
+      "type":"structure",
+      "required":["schema"],
+      "members":{
+        "schema":{
+          "shape":"String",
+          "documentation":"<p> The JSON schema to constrain the model's output. For more information, see <a href=\"https://json-schema.org/understanding-json-schema/reference\">JSON Schema Reference</a>. </p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p> The name of the JSON schema. </p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p> A description of the JSON schema. </p>"
+        }
+      },
+      "documentation":"<p> JSON schema structured output format options. </p>"
+    },
     "KmsKeyId":{
       "type":"string",
       "max":2048,
@@ -3522,6 +3549,51 @@
       "type":"integer",
       "box":true,
       "min":0
+    },
+    "OutputConfig":{
+      "type":"structure",
+      "members":{
+        "textFormat":{
+          "shape":"OutputFormat",
+          "documentation":"<p>Structured output parameters to control the model's text response. </p>"
+        }
+      },
+      "documentation":"<p>Output configuration for a model response in a call to <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html\">Converse</a> or <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html\">ConverseStream</a>.</p>"
+    },
+    "OutputFormat":{
+      "type":"structure",
+      "required":[
+        "type",
+        "structure"
+      ],
+      "members":{
+        "type":{
+          "shape":"OutputFormatType",
+          "documentation":"<p> The type of structured output format. </p>"
+        },
+        "structure":{
+          "shape":"OutputFormatStructure",
+          "documentation":"<p> The structure that the model's output must adhere to. </p>"
+        }
+      },
+      "documentation":"<p> Structured output parameters to control the model's response. </p>"
+    },
+    "OutputFormatStructure":{
+      "type":"structure",
+      "members":{
+        "jsonSchema":{
+          "shape":"JsonSchemaDefinition",
+          "documentation":"<p> A JSON schema structure that the model's output must adhere to. </p>"
+        }
+      },
+      "documentation":"<p> The structure that the model's output must adhere to. </p>",
+      "sensitive":true,
+      "union":true
+    },
+    "OutputFormatType":{
+      "type":"string",
+      "documentation":"<p> The type of structured output format. Available options are: json_schema. </p>",
+      "enum":["json_schema"]
     },
     "PaginationToken":{
       "type":"string",
@@ -4285,6 +4357,10 @@
         "inputSchema":{
           "shape":"ToolInputSchema",
           "documentation":"<p>The input schema for the tool in JSON format.</p>"
+        },
+        "strict":{
+          "shape":"Boolean",
+          "documentation":"<p>Flag to enable structured output enforcement on a tool usage response.</p>"
         }
       },
       "documentation":"<p>The specification for the tool. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Call a tool with the Converse API</a> in the Amazon Bedrock User Guide.</p>"

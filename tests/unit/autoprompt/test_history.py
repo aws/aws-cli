@@ -22,7 +22,7 @@ from prompt_toolkit.formatted_text import FormattedText
 from prompt_toolkit.history import History
 
 from awscli.autoprompt.history import HistoryCompleter, HistoryDriver
-from awscli.testutils import mock, unittest
+from awscli.testutils import mock, skip_if_windows, unittest
 
 
 class TestHistoryCompleter(unittest.TestCase):
@@ -190,3 +190,9 @@ class TestHistoryDriver(unittest.TestCase):
         history_driver = HistoryDriver(self.filename)
         file_history_mock.store_string.side_effect = IOError
         history_driver.store_string('aws dynamodb create-table')
+
+    @skip_if_windows('chmod is not supported on Windows')
+    def test_sets_file_permissions_to_0600(self):
+        self.history_driver.store_string('aws ec2 describe-instances')
+        permissions = os.stat(self.filename).st_mode & 0o777
+        self.assertEqual(permissions, 0o600)

@@ -70,7 +70,7 @@ def assert_dist_info_correctness(dist_info_dir):
     metadata_file = dist_info_dir.join("METADATA")
     assert metadata_file.check()
     metadata_content = metadata_file.read()
-    assert "Metadata-Version: 2.1" in metadata_content
+    assert "Metadata-Version: 2.4" in metadata_content
     assert "Name: awscli" in metadata_content
     assert f"Version: {awscli.__version__}" in metadata_content
 
@@ -246,8 +246,8 @@ def test_get_requires_for_build_wheel(config_settings, repo_root):
     expected_requirements = [
         "colorama",
         "docutils",
-        "ruamel.yaml",
-        "ruamel.yaml.clib",
+        "ruamel_yaml",
+        "ruamel_yaml_clib",
         "prompt-toolkit",
         "distro",
         "awscrt",

@@ -15,7 +15,13 @@ from distutils.dir_util import copy_tree
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from install_deps import install_packages
-from utils import run, save_to_zip, tmp_dir, update_metadata
+from utils import (
+    remove_dist_info_directories,
+    run,
+    save_to_zip,
+    tmp_dir,
+    update_metadata,
+)
 
 ROOT = os.path.dirname(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -26,6 +32,16 @@ ASSETS_DIR = os.path.join(EXE_DIR, 'assets')
 DEFAULT_OUTPUT_ZIP = 'awscli-exe.zip'
 AC_INDEX_INTERNAL_PATH = os.path.join('awscli', 'data', 'ac.index')
 DISTRIBUTION_SOURCE = 'exe'
+
+# List of .dist-info directories to include in the CLI distribution.
+# See also hook-awscli.py in the pyinstaller directory,
+# and constants.py in the custom build backend
+#
+# prompt_toolkit uses its own metadata to determine
+# its version. So we need to bundle the package
+# metadata to avoid runtime errors.
+# https://github.com/aws/aws-cli/issues/9453
+DIST_INFO_DIRECTORIES_TO_KEEP = ['prompt_toolkit']
 
 
 def make_exe(exe_zipfile, cleanup=True, ac_index=None):
@@ -53,6 +69,9 @@ def do_make_exe(workdir, exe_zipfile, ac_index):
     )
     copy_directory_contents_into(aws_complete_exe_build, output_exe_dist_dir)
     copy_directory_contents_into(ASSETS_DIR, exe_dir)
+    remove_dist_info_directories(
+        output_exe_dist_dir, DIST_INFO_DIRECTORIES_TO_KEEP
+    )
     save_to_zip(workdir, exe_zipfile)
 
 

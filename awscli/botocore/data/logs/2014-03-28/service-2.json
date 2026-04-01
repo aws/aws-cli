@@ -132,7 +132,7 @@
         {"shape":"ValidationException"},
         {"shape":"InvalidOperationException"}
       ],
-      "documentation":"<p>Starts an import from a data source to CloudWatch Log and creates a managed log group as the destination for the imported data. Currently, <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/query-event-data-store.html\">CloudTrail Event Data Store</a> is the only supported data source. </p> <p>The import task must satisfy the following constraints:</p> <ul> <li> <p>The specified source must be in an ACTIVE state.</p> </li> <li> <p>The API caller must have permissions to access the data in the provided source and to perform iam:PassRole on the provided import role which has the same permissions, as described below.</p> </li> <li> <p>The provided IAM role must trust the \"cloudtrail.amazonaws.com\" principal and have the following permissions:</p> <ul> <li> <p>cloudtrail:GetEventDataStoreData</p> </li> <li> <p>logs:CreateLogGroup</p> </li> <li> <p>logs:CreateLogStream</p> </li> <li> <p>logs:PutResourcePolicy</p> </li> <li> <p>(If source has an associated AWS KMS Key) kms:Decrypt</p> </li> <li> <p>(If source has an associated AWS KMS Key) kms:GenerateDataKey</p> </li> </ul> <p>Example IAM policy for provided import role:</p> <p> <code>[ { \"Effect\": \"Allow\", \"Action\": \"iam:PassRole\", \"Resource\": \"arn:aws:iam::123456789012:role/apiCallerCredentials\", \"Condition\": { \"StringLike\": { \"iam:AssociatedResourceARN\": \"arn:aws:logs:us-east-1:123456789012:log-group:aws/cloudtrail/f1d45bff-d0e3-4868-b5d9-2eb678aa32fb:*\" } } }, { \"Effect\": \"Allow\", \"Action\": [ \"cloudtrail:GetEventDataStoreData\" ], \"Resource\": [ \"arn:aws:cloudtrail:us-east-1:123456789012:eventdatastore/f1d45bff-d0e3-4868-b5d9-2eb678aa32fb\" ] }, { \"Effect\": \"Allow\", \"Action\": [ \"logs:CreateImportTask\", \"logs:CreateLogGroup\", \"logs:CreateLogStream\", \"logs:PutResourcePolicy\" ], \"Resource\": [ \"arn:aws:logs:us-east-1:123456789012:log-group:/aws/cloudtrail/*\" ] }, { \"Effect\": \"Allow\", \"Action\": [ \"kms:Decrypt\", \"kms:GenerateDataKey\" ], \"Resource\": [ \"arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012\" ] } ]</code> </p> </li> <li> <p>If the import source has a customer managed key, the \"cloudtrail.amazonaws.com\" principal needs permissions to perform kms:Decrypt and kms:GenerateDataKey.</p> </li> <li> <p>There can be no more than 3 active imports per account at a given time.</p> </li> <li> <p>The startEventTime must be less than or equal to endEventTime.</p> </li> <li> <p>The data being imported must be within the specified source's retention period.</p> </li> </ul>"
+      "documentation":"<p>Starts an import from a data source to CloudWatch Log and creates a managed log group as the destination for the imported data. Currently, <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/query-event-data-store.html\">CloudTrail Event Data Store</a> is the only supported data source. </p> <p>The import task must satisfy the following constraints:</p> <ul> <li> <p>The specified source must be in an ACTIVE state.</p> </li> <li> <p>The API caller must have permissions to access the data in the provided source and to perform iam:PassRole on the provided import role which has the same permissions, as described below.</p> </li> <li> <p>The provided IAM role must trust the \"cloudtrail.amazonaws.com\" principal and have the following permissions:</p> <ul> <li> <p>cloudtrail:GetEventDataStoreData</p> </li> <li> <p>logs:CreateLogGroup</p> </li> <li> <p>logs:CreateLogStream</p> </li> <li> <p>logs:PutResourcePolicy</p> </li> <li> <p>(If source has an associated Amazon Web Services KMS Key) kms:Decrypt</p> </li> <li> <p>(If source has an associated Amazon Web Services KMS Key) kms:GenerateDataKey</p> </li> </ul> <p>Example IAM policy for provided import role:</p> <p> <code>[ { \"Effect\": \"Allow\", \"Action\": \"iam:PassRole\", \"Resource\": \"arn:aws:iam::123456789012:role/apiCallerCredentials\", \"Condition\": { \"StringLike\": { \"iam:AssociatedResourceARN\": \"arn:aws:logs:us-east-1:123456789012:log-group:aws/cloudtrail/f1d45bff-d0e3-4868-b5d9-2eb678aa32fb:*\" } } }, { \"Effect\": \"Allow\", \"Action\": [ \"cloudtrail:GetEventDataStoreData\" ], \"Resource\": [ \"arn:aws:cloudtrail:us-east-1:123456789012:eventdatastore/f1d45bff-d0e3-4868-b5d9-2eb678aa32fb\" ] }, { \"Effect\": \"Allow\", \"Action\": [ \"logs:CreateImportTask\", \"logs:CreateLogGroup\", \"logs:CreateLogStream\", \"logs:PutResourcePolicy\" ], \"Resource\": [ \"arn:aws:logs:us-east-1:123456789012:log-group:/aws/cloudtrail/*\" ] }, { \"Effect\": \"Allow\", \"Action\": [ \"kms:Decrypt\", \"kms:GenerateDataKey\" ], \"Resource\": [ \"arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012\" ] } ]</code> </p> </li> <li> <p>If the import source has a customer managed key, the \"cloudtrail.amazonaws.com\" principal needs permissions to perform kms:Decrypt and kms:GenerateDataKey.</p> </li> <li> <p>There can be no more than 3 active imports per account at a given time.</p> </li> <li> <p>The startEventTime must be less than or equal to endEventTime.</p> </li> <li> <p>The data being imported must be within the specified source's retention period.</p> </li> </ul>"
     },
     "CreateLogAnomalyDetector":{
       "name":"CreateLogAnomalyDetector",
@@ -181,6 +181,24 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Creates a log stream for the specified log group. A log stream is a sequence of log events that originate from a single source, such as an application instance or a resource that is being monitored.</p> <p>There is no limit on the number of log streams that you can create for a log group. There is a limit of 50 TPS on <code>CreateLogStream</code> operations, after which transactions are throttled.</p> <p>You must use the following guidelines when naming a log stream:</p> <ul> <li> <p>Log stream names must be unique within the log group.</p> </li> <li> <p>Log stream names can be between 1 and 512 characters long.</p> </li> <li> <p>Don't use ':' (colon) or '*' (asterisk) characters.</p> </li> </ul>"
+    },
+    "CreateLookupTable":{
+      "name":"CreateLookupTable",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateLookupTableRequest"},
+      "output":{"shape":"CreateLookupTableResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceAlreadyExistsException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Creates a lookup table by uploading CSV data. You can use lookup tables to enrich log data in CloudWatch Logs Insights queries with reference data such as user details, application names, or error descriptions.</p> <p>The table name must be unique within your account and Region. The CSV content must include a header row with column names, use UTF-8 encoding, and not exceed 10 MB.</p>"
     },
     "CreateScheduledQuery":{
       "name":"CreateScheduledQuery",
@@ -391,6 +409,21 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Deletes the specified log stream and permanently deletes all the archived log events associated with the log stream.</p>"
+    },
+    "DeleteLookupTable":{
+      "name":"DeleteLookupTable",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteLookupTableRequest"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Deletes a lookup table permanently. This operation cannot be undone.</p> <p>Queries that reference a deleted table will return an error. Before deleting a lookup table, review any saved queries or dashboards that may reference it.</p>"
     },
     "DeleteMetricFilter":{
       "name":"DeleteMetricFilter",
@@ -705,6 +738,22 @@
       ],
       "documentation":"<p>Lists the log streams for the specified log group. You can list all the log streams or filter the results by prefix. You can also control how the results are ordered.</p> <p>You can specify the log group to search by using either <code>logGroupIdentifier</code> or <code>logGroupName</code>. You must include one of these two parameters, but you can't include both. </p> <p>This operation has a limit of 25 transactions per second, after which transactions are throttled.</p> <p>If you are using CloudWatch cross-account observability, you can use this operation in a monitoring account and view data from the linked source accounts. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html\">CloudWatch cross-account observability</a>.</p>"
     },
+    "DescribeLookupTables":{
+      "name":"DescribeLookupTables",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeLookupTablesRequest"},
+      "output":{"shape":"DescribeLookupTablesResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Retrieves metadata about lookup tables in your account. You can optionally filter the results by table name prefix. Results are sorted by table name in ascending order.</p>"
+    },
     "DescribeMetricFilters":{
       "name":"DescribeMetricFilters",
       "http":{
@@ -1000,7 +1049,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"InvalidOperationException"}
       ],
-      "documentation":"<p>Retrieves a large logging object (LLO) and streams it back. This API is used to fetch the content of large portions of log events that have been ingested through the PutOpenTelemetryLogs API. When log events contain fields that would cause the total event size to exceed 1MB, CloudWatch Logs automatically processes up to 10 fields, starting with the largest fields. Each field is truncated as needed to keep the total event size as close to 1MB as possible. The excess portions are stored as Large Log Objects (LLOs) and these fields are processed separately and LLO reference system fields (in the format <code>@ptr.$[path.to.field]</code>) are added. The path in the reference field reflects the original JSON structure where the large field was located. For example, this could be <code>@ptr.$['input']['message']</code>, <code>@ptr.$['AAA']['BBB']['CCC']['DDD']</code>, <code>@ptr.$['AAA']</code>, or any other path matching your log structure.</p>",
+      "documentation":"<p>Retrieves a large logging object (LLO) and streams it back. This API is used to fetch the content of large portions of log events that have been ingested through the PutOpenTelemetryLogs API. When log events contain fields that would cause the total event size to exceed 1MB, CloudWatch Logs automatically processes up to 10 fields, starting with the largest fields. Each field is truncated as needed to keep the total event size as close to 1MB as possible. The excess portions are stored as Large Log Objects (LLOs) and these fields are processed separately and LLO reference system fields (in the format <code>@ptr.$[path.to.field]</code>) are added. The path in the reference field reflects the original JSON structure where the large field was located. For example, this could be <code>@ptr.$['input']['message']</code>, <code>@ptr.$['AAA']['BBB']['CCC']['DDD']</code>, <code>@ptr.$['AAA']</code>, or any other path matching your log structure.</p> <note> <p>The <code>GetLogObject</code> API routes requests using SDK host prefix injection. SDK versions released before April 1, 2026 route to <code>streaming-logs.<i>Region</i>.amazonaws.com</code>, which does not support VPC endpoints. SDK versions released on or after April 1, 2026 route to <code>stream-logs.<i>Region</i>.amazonaws.com</code>, which supports VPC endpoints. To set up a VPC endpoint for this API, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/cloudwatch-logs-and-interface-VPC.html#create-VPC-endpoint-for-CloudWatchLogs\">Creating a VPC endpoint for CloudWatch Logs </a>.</p> </note>",
       "endpoint":{"hostPrefix":"streaming-"}
     },
     "GetLogRecord":{
@@ -1018,6 +1067,22 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Retrieves all of the fields and values of a single log event. All fields are retrieved, even if the original query that produced the <code>logRecordPointer</code> retrieved only a subset of fields. Fields are returned as field name/field value pairs.</p> <p>The full unparsed log event is returned within <code>@message</code>.</p>"
+    },
+    "GetLookupTable":{
+      "name":"GetLookupTable",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetLookupTableRequest"},
+      "output":{"shape":"GetLookupTableResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Retrieves the full content of a lookup table, including the CSV data.</p>"
     },
     "GetQueryResults":{
       "name":"GetQueryResults",
@@ -1253,7 +1318,24 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Creates an account-level data protection policy, subscription filter policy, field index policy, transformer policy, or metric extraction policy that applies to all log groups, a subset of log groups, or a data source name and type combination in the account.</p> <p>For field index policies, you can configure indexed fields as <i>facets</i> to enable interactive exploration of your logs. Facets provide value distributions and counts for indexed fields in the CloudWatch Logs Insights console without requiring query execution. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatchLogs-Facets.html\">Use facets to group and explore logs</a>.</p> <p>To use this operation, you must be signed on with the correct permissions depending on the type of policy that you are creating.</p> <ul> <li> <p>To create a data protection policy, you must have the <code>logs:PutDataProtectionPolicy</code> and <code>logs:PutAccountPolicy</code> permissions.</p> </li> <li> <p>To create a subscription filter policy, you must have the <code>logs:PutSubscriptionFilter</code> and <code>logs:PutAccountPolicy</code> permissions.</p> </li> <li> <p>To create a transformer policy, you must have the <code>logs:PutTransformer</code> and <code>logs:PutAccountPolicy</code> permissions.</p> </li> <li> <p>To create a field index policy, you must have the <code>logs:PutIndexPolicy</code> and <code>logs:PutAccountPolicy</code> permissions.</p> </li> <li> <p>To configure facets for field index policies, you must have the <code>logs:PutIndexPolicy</code> and <code>logs:PutAccountPolicy</code> permissions.</p> </li> <li> <p>To create a metric extraction policy, you must have the <code>logs:PutMetricExtractionPolicy</code> and <code>logs:PutAccountPolicy</code> permissions.</p> </li> </ul> <p> <b>Data protection policy</b> </p> <p>A data protection policy can help safeguard sensitive data that's ingested by your log groups by auditing and masking the sensitive log data. Each account can have only one account-level data protection policy.</p> <important> <p>Sensitive data is detected and masked when it is ingested into a log group. When you set a data protection policy, log events ingested into the log groups before that time are not masked.</p> </important> <p>If you use <code>PutAccountPolicy</code> to create a data protection policy for your whole account, it applies to both existing log groups and all log groups that are created later in this account. The account-level policy is applied to existing log groups with eventual consistency. It might take up to 5 minutes before sensitive data in existing log groups begins to be masked.</p> <p>By default, when a user views a log event that includes masked data, the sensitive data is replaced by asterisks. A user who has the <code>logs:Unmask</code> permission can use a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetLogEvents.html\">GetLogEvents</a> or <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_FilterLogEvents.html\">FilterLogEvents</a> operation with the <code>unmask</code> parameter set to <code>true</code> to view the unmasked log events. Users with the <code>logs:Unmask</code> can also view unmasked data in the CloudWatch Logs console by running a CloudWatch Logs Insights query with the <code>unmask</code> query command.</p> <p>For more information, including a list of types of data that can be audited and masked, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/mask-sensitive-log-data.html\">Protect sensitive log data with masking</a>.</p> <p>To use the <code>PutAccountPolicy</code> operation for a data protection policy, you must be signed on with the <code>logs:PutDataProtectionPolicy</code> and <code>logs:PutAccountPolicy</code> permissions.</p> <p>The <code>PutAccountPolicy</code> operation applies to all log groups in the account. You can use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDataProtectionPolicy.html\">PutDataProtectionPolicy</a> to create a data protection policy that applies to just one log group. If a log group has its own data protection policy and the account also has an account-level data protection policy, then the two policies are cumulative. Any sensitive term specified in either policy is masked.</p> <p> <b>Subscription filter policy</b> </p> <p>A subscription filter policy sets up a real-time feed of log events from CloudWatch Logs to other Amazon Web Services services. Account-level subscription filter policies apply to both existing log groups and log groups that are created later in this account. Supported destinations are Kinesis Data Streams, Firehose, and Lambda. When log events are sent to the receiving service, they are Base64 encoded and compressed with the GZIP format.</p> <p>The following destinations are supported for subscription filters:</p> <ul> <li> <p>An Kinesis Data Streams data stream in the same account as the subscription policy, for same-account delivery.</p> </li> <li> <p>An Firehose data stream in the same account as the subscription policy, for same-account delivery.</p> </li> <li> <p>A Lambda function in the same account as the subscription policy, for same-account delivery.</p> </li> <li> <p>A logical destination in a different account created with <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDestination.html\">PutDestination</a>, for cross-account delivery. Kinesis Data Streams and Firehose are supported as logical destinations.</p> </li> </ul> <p>Each account can have one account-level subscription filter policy per Region. If you are updating an existing filter, you must specify the correct name in <code>PolicyName</code>. To perform a <code>PutAccountPolicy</code> subscription filter operation for any destination except a Lambda function, you must also have the <code>iam:PassRole</code> permission.</p> <p> <b>Transformer policy</b> </p> <p>Creates or updates a <i>log transformer policy</i> for your account. You use log transformers to transform log events into a different format, making them easier for you to process and analyze. You can also transform logs from different sources into standardized formats that contain relevant, source-specific information. After you have created a transformer, CloudWatch Logs performs this transformation at the time of log ingestion. You can then refer to the transformed versions of the logs during operations such as querying with CloudWatch Logs Insights or creating metric filters or subscription filters.</p> <p>You can also use a transformer to copy metadata from metadata keys into the log events themselves. This metadata can include log group name, log stream name, account ID and Region.</p> <p>A transformer for a log group is a series of processors, where each processor applies one type of transformation to the log events ingested into this log group. For more information about the available processors to use in a transformer, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch-Logs-Transformation.html#CloudWatch-Logs-Transformation-Processors\"> Processors that you can use</a>.</p> <p>Having log events in standardized format enables visibility across your applications for your log analysis, reporting, and alarming needs. CloudWatch Logs provides transformation for common log types with out-of-the-box transformation templates for major Amazon Web Services log sources such as VPC flow logs, Lambda, and Amazon RDS. You can use pre-built transformation templates or create custom transformation policies.</p> <p>You can create transformers only for the log groups in the Standard log class.</p> <p>You can have one account-level transformer policy that applies to all log groups in the account. Or you can create as many as 20 account-level transformer policies that are each scoped to a subset of log groups with the <code>selectionCriteria</code> parameter. If you have multiple account-level transformer policies with selection criteria, no two of them can use the same or overlapping log group name prefixes. For example, if you have one policy filtered to log groups that start with <code>my-log</code>, you can't have another transformer policy filtered to <code>my-logpprod</code> or <code>my-logging</code>.</p> <p>You can also set up a transformer at the log-group level. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutTransformer.html\">PutTransformer</a>. If there is both a log-group level transformer created with <code>PutTransformer</code> and an account-level transformer that could apply to the same log group, the log group uses only the log-group level transformer. It ignores the account-level transformer.</p> <p> <b>Field index policy</b> </p> <p>You can use field index policies to create indexes on fields found in log events for a log group or data source name and type combination. Creating field indexes can help lower the scan volume for CloudWatch Logs Insights queries that reference those fields, because these queries attempt to skip the processing of log events that are known to not match the indexed field. Good fields to index are fields that you often need to query for and fields or values that match only a small fraction of the total log events. Common examples of indexes include request ID, session ID, user IDs, or instance IDs. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatchLogs-Field-Indexing.html\">Create field indexes to improve query performance and reduce costs</a> </p> <p>To find the fields that are in your log group events, use the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetLogGroupFields.html\">GetLogGroupFields</a> operation. To find the fields for a data source use the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetLogFields.html\">GetLogFields</a> operation.</p> <p>For example, suppose you have created a field index for <code>requestId</code>. Then, any CloudWatch Logs Insights query on that log group that includes <code>requestId = <i>value</i> </code> or <code>requestId in [<i>value</i>, <i>value</i>, ...]</code> will attempt to process only the log events where the indexed field matches the specified value.</p> <p>Matches of log events to the names of indexed fields are case-sensitive. For example, an indexed field of <code>RequestId</code> won't match a log event containing <code>requestId</code>.</p> <p>You can have one account-level field index policy that applies to all log groups in the account. Or you can create as many as 20 account-level field index policies that are each scoped to a subset of log groups using <code>LogGroupNamePrefix</code> with the <code>selectionCriteria</code> parameter. You can have another 20 account-level field index policies using <code>DataSourceName</code> and <code>DataSourceType</code> for the <code>selectionCriteria</code> parameter. If you have multiple account-level index policies with <code>LogGroupNamePrefix</code> selection criteria, no two of them can use the same or overlapping log group name prefixes. For example, if you have one policy filtered to log groups that start with <i>my-log</i>, you can't have another field index policy filtered to <i>my-logpprod</i> or <i>my-logging</i>. Similarly, if you have multiple account-level index policies with <code>DataSourceName</code> and <code>DataSourceType</code> selection criteria, no two of them can use the same data source name and type combination. For example, if you have one policy filtered to the data source name <code>amazon_vpc</code> and data source type <code>flow</code> you cannot create another policy with this combination.</p> <p>If you create an account-level field index policy in a monitoring account in cross-account observability, the policy is applied only to the monitoring account and not to any source accounts.</p> <p>CloudWatch Logs provides default field indexes for all log groups in the Standard log class. Default field indexes are automatically available for the following fields: </p> <ul> <li> <p> <code>@logStream</code> </p> </li> <li> <p> <code>@aws.region</code> </p> </li> <li> <p> <code>@aws.account</code> </p> </li> <li> <p> <code>@source.log</code> </p> </li> <li> <p> <code>@data_source_name</code> </p> </li> <li> <p> <code>@data_source_type</code> </p> </li> <li> <p> <code>@data_format</code> </p> </li> <li> <p> <code>traceId</code> </p> </li> <li> <p> <code>severityText</code> </p> </li> <li> <p> <code>attributes.session.id</code> </p> </li> </ul> <p>CloudWatch Logs provides default field indexes for certain data source name and type combinations as well. Default field indexes are automatically available for the following data source name and type combinations as identified in the following list:</p> <p> <code>amazon_vpc.flow</code> </p> <ul> <li> <p> <code>action</code> </p> </li> <li> <p> <code>logStatus</code> </p> </li> <li> <p> <code>region</code> </p> </li> <li> <p> <code>flowDirection</code> </p> </li> <li> <p> <code>type</code> </p> </li> </ul> <p> <code>amazon_route53.resolver_query</code> </p> <ul> <li> <p> <code>transport</code> </p> </li> <li> <p> <code>rcode</code> </p> </li> </ul> <p> <code>aws_waf.access</code> </p> <ul> <li> <p> <code>action</code> </p> </li> <li> <p> <code>httpRequest.country</code> </p> </li> </ul> <p> <code>aws_cloudtrail.data</code>, <code>aws_cloudtrail.management</code> </p> <ul> <li> <p> <code>eventSource</code> </p> </li> <li> <p> <code>eventName</code> </p> </li> <li> <p> <code>awsRegion</code> </p> </li> <li> <p> <code>userAgent</code> </p> </li> <li> <p> <code>errorCode</code> </p> </li> <li> <p> <code>eventType</code> </p> </li> <li> <p> <code>managementEvent</code> </p> </li> <li> <p> <code>readOnly</code> </p> </li> <li> <p> <code>eventCategory</code> </p> </li> <li> <p> <code>requestId</code> </p> </li> </ul> <p>Default field indexes are in addition to any custom field indexes you define within your policy. Default field indexes are not counted towards your <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatchLogs-Field-Indexing-Syntax\">field index quota</a>. </p> <p>If you want to create a field index policy for a single log group, you can use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutIndexPolicy.html\">PutIndexPolicy</a> instead of <code>PutAccountPolicy</code>. If you do so, that log group will use that log-group level policy and any account-level policies that match at the data source level; any account-level policy that matches at the log group level (for example, no selection criteria or log group name prefix selection criteria) will be ignored.</p> <p> <b>Metric extraction policy</b> </p> <p>A metric extraction policy controls whether CloudWatch Metrics can be created through the Embedded Metrics Format (EMF) for log groups in your account. By default, EMF metric creation is enabled for all log groups. You can use metric extraction policies to disable EMF metric creation for your entire account or specific log groups.</p> <p>When a policy disables EMF metric creation for a log group, log events in the EMF format are still ingested, but no CloudWatch Metrics are created from them.</p> <important> <p>Creating a policy disables metrics for AWS features that use EMF to create metrics, such as CloudWatch Container Insights and CloudWatch Application Signals. To prevent turning off those features by accident, we recommend that you exclude the underlying log-groups through a selection-criteria such as <code>LogGroupNamePrefix NOT IN [\"/aws/containerinsights\", \"/aws/ecs/containerinsights\", \"/aws/application-signals/data\"]</code>.</p> </important> <p>Each account can have either one account-level metric extraction policy that applies to all log groups, or up to 5 policies that are each scoped to a subset of log groups with the <code>selectionCriteria</code> parameter. The selection criteria supports filtering by <code>LogGroupName</code> and <code>LogGroupNamePrefix</code> using the operators <code>IN</code> and <code>NOT IN</code>. You can specify up to 50 values in each <code>IN</code> or <code>NOT IN</code> list.</p> <p>The selection criteria can be specified in these formats:</p> <p> <code>LogGroupName IN [\"log-group-1\", \"log-group-2\"]</code> </p> <p> <code>LogGroupNamePrefix NOT IN [\"/aws/prefix1\", \"/aws/prefix2\"]</code> </p> <p>If you have multiple account-level metric extraction policies with selection criteria, no two of them can have overlapping criteria. For example, if you have one policy with selection criteria <code>LogGroupNamePrefix IN [\"my-log\"]</code>, you can't have another metric extraction policy with selection criteria <code>LogGroupNamePrefix IN [\"/my-log-prod\"]</code> or <code>LogGroupNamePrefix IN [\"/my-logging\"]</code>, as the set of log groups matching these prefixes would be a subset of the log groups matching the first policy's prefix, creating an overlap.</p> <p>When using <code>NOT IN</code>, only one policy with this operator is allowed per account.</p> <p>When combining policies with <code>IN</code> and <code>NOT IN</code> operators, the overlap check ensures that policies don't have conflicting effects. Two policies with <code>IN</code> and <code>NOT IN</code> operators do not overlap if and only if every value in the <code>IN </code>policy is completely contained within some value in the <code>NOT IN</code> policy. For example:</p> <ul> <li> <p>If you have a <code>NOT IN</code> policy for prefix <code>\"/aws/lambda\"</code>, you can create an <code>IN</code> policy for the exact log group name <code>\"/aws/lambda/function1\"</code> because the set of log groups matching <code>\"/aws/lambda/function1\"</code> is a subset of the log groups matching <code>\"/aws/lambda\"</code>.</p> </li> <li> <p>If you have a <code>NOT IN</code> policy for prefix <code>\"/aws/lambda\"</code>, you cannot create an <code>IN</code> policy for prefix <code>\"/aws\"</code> because the set of log groups matching <code>\"/aws\"</code> is not a subset of the log groups matching <code>\"/aws/lambda\"</code>.</p> </li> </ul>"
+      "documentation":"<p>Creates an account-level data protection policy, subscription filter policy, field index policy, transformer policy, or metric extraction policy that applies to all log groups, a subset of log groups, or a data source name and type combination in the account.</p> <p>For field index policies, you can configure indexed fields as <i>facets</i> to enable interactive exploration of your logs. Facets provide value distributions and counts for indexed fields in the CloudWatch Logs Insights console without requiring query execution. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatchLogs-Facets.html\">Use facets to group and explore logs</a>.</p> <p>To use this operation, you must be signed on with the correct permissions depending on the type of policy that you are creating.</p> <ul> <li> <p>To create a data protection policy, you must have the <code>logs:PutDataProtectionPolicy</code> and <code>logs:PutAccountPolicy</code> permissions.</p> </li> <li> <p>To create a subscription filter policy, you must have the <code>logs:PutSubscriptionFilter</code> and <code>logs:PutAccountPolicy</code> permissions.</p> </li> <li> <p>To create a transformer policy, you must have the <code>logs:PutTransformer</code> and <code>logs:PutAccountPolicy</code> permissions.</p> </li> <li> <p>To create a field index policy, you must have the <code>logs:PutIndexPolicy</code> and <code>logs:PutAccountPolicy</code> permissions.</p> </li> <li> <p>To configure facets for field index policies, you must have the <code>logs:PutIndexPolicy</code> and <code>logs:PutAccountPolicy</code> permissions.</p> </li> <li> <p>To create a metric extraction policy, you must have the <code>logs:PutMetricExtractionPolicy</code> and <code>logs:PutAccountPolicy</code> permissions.</p> </li> </ul> <p> <b>Data protection policy</b> </p> <p>A data protection policy can help safeguard sensitive data that's ingested by your log groups by auditing and masking the sensitive log data. Each account can have only one account-level data protection policy.</p> <important> <p>Sensitive data is detected and masked when it is ingested into a log group. When you set a data protection policy, log events ingested into the log groups before that time are not masked.</p> </important> <p>If you use <code>PutAccountPolicy</code> to create a data protection policy for your whole account, it applies to both existing log groups and all log groups that are created later in this account. The account-level policy is applied to existing log groups with eventual consistency. It might take up to 5 minutes before sensitive data in existing log groups begins to be masked.</p> <p>By default, when a user views a log event that includes masked data, the sensitive data is replaced by asterisks. A user who has the <code>logs:Unmask</code> permission can use a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetLogEvents.html\">GetLogEvents</a> or <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_FilterLogEvents.html\">FilterLogEvents</a> operation with the <code>unmask</code> parameter set to <code>true</code> to view the unmasked log events. Users with the <code>logs:Unmask</code> can also view unmasked data in the CloudWatch Logs console by running a CloudWatch Logs Insights query with the <code>unmask</code> query command.</p> <p>For more information, including a list of types of data that can be audited and masked, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/mask-sensitive-log-data.html\">Protect sensitive log data with masking</a>.</p> <p>To use the <code>PutAccountPolicy</code> operation for a data protection policy, you must be signed on with the <code>logs:PutDataProtectionPolicy</code> and <code>logs:PutAccountPolicy</code> permissions.</p> <p>The <code>PutAccountPolicy</code> operation applies to all log groups in the account. You can use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDataProtectionPolicy.html\">PutDataProtectionPolicy</a> to create a data protection policy that applies to just one log group. If a log group has its own data protection policy and the account also has an account-level data protection policy, then the two policies are cumulative. Any sensitive term specified in either policy is masked.</p> <p> <b>Subscription filter policy</b> </p> <p>A subscription filter policy sets up a real-time feed of log events from CloudWatch Logs to other Amazon Web Services services. Account-level subscription filter policies apply to both existing log groups and log groups that are created later in this account. Supported destinations are Kinesis Data Streams, Firehose, and Lambda. When log events are sent to the receiving service, they are Base64 encoded and compressed with the GZIP format.</p> <p>The following destinations are supported for subscription filters:</p> <ul> <li> <p>An Kinesis Data Streams data stream in the same account as the subscription policy, for same-account delivery.</p> </li> <li> <p>An Firehose data stream in the same account as the subscription policy, for same-account delivery.</p> </li> <li> <p>A Lambda function in the same account as the subscription policy, for same-account delivery.</p> </li> <li> <p>A logical destination in a different account created with <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDestination.html\">PutDestination</a>, for cross-account delivery. Kinesis Data Streams and Firehose are supported as logical destinations.</p> </li> </ul> <p>Each account can have one account-level subscription filter policy per Region. If you are updating an existing filter, you must specify the correct name in <code>PolicyName</code>. To perform a <code>PutAccountPolicy</code> subscription filter operation for any destination except a Lambda function, you must also have the <code>iam:PassRole</code> permission.</p> <p> <b>Transformer policy</b> </p> <p>Creates or updates a <i>log transformer policy</i> for your account. You use log transformers to transform log events into a different format, making them easier for you to process and analyze. You can also transform logs from different sources into standardized formats that contain relevant, source-specific information. After you have created a transformer, CloudWatch Logs performs this transformation at the time of log ingestion. You can then refer to the transformed versions of the logs during operations such as querying with CloudWatch Logs Insights or creating metric filters or subscription filters.</p> <p>You can also use a transformer to copy metadata from metadata keys into the log events themselves. This metadata can include log group name, log stream name, account ID and Region.</p> <p>A transformer for a log group is a series of processors, where each processor applies one type of transformation to the log events ingested into this log group. For more information about the available processors to use in a transformer, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch-Logs-Transformation.html#CloudWatch-Logs-Transformation-Processors\"> Processors that you can use</a>.</p> <p>Having log events in standardized format enables visibility across your applications for your log analysis, reporting, and alarming needs. CloudWatch Logs provides transformation for common log types with out-of-the-box transformation templates for major Amazon Web Services log sources such as VPC flow logs, Lambda, and Amazon RDS. You can use pre-built transformation templates or create custom transformation policies.</p> <p>You can create transformers only for the log groups in the Standard log class.</p> <p>You can have one account-level transformer policy that applies to all log groups in the account. Or you can create as many as 20 account-level transformer policies that are each scoped to a subset of log groups with the <code>selectionCriteria</code> parameter. If you have multiple account-level transformer policies with selection criteria, no two of them can use the same or overlapping log group name prefixes. For example, if you have one policy filtered to log groups that start with <code>my-log</code>, you can't have another transformer policy filtered to <code>my-logpprod</code> or <code>my-logging</code>.</p> <p>You can also set up a transformer at the log-group level. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutTransformer.html\">PutTransformer</a>. If there is both a log-group level transformer created with <code>PutTransformer</code> and an account-level transformer that could apply to the same log group, the log group uses only the log-group level transformer. It ignores the account-level transformer.</p> <p> <b>Field index policy</b> </p> <p>You can use field index policies to create indexes on fields found in log events for a log group or data source name and type combination. Creating field indexes can help lower the scan volume for CloudWatch Logs Insights queries that reference those fields, because these queries attempt to skip the processing of log events that are known to not match the indexed field. Good fields to index are fields that you often need to query for and fields or values that match only a small fraction of the total log events. Common examples of indexes include request ID, session ID, user IDs, or instance IDs. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatchLogs-Field-Indexing.html\">Create field indexes to improve query performance and reduce costs</a> </p> <p>To find the fields that are in your log group events, use the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetLogGroupFields.html\">GetLogGroupFields</a> operation. To find the fields for a data source use the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetLogFields.html\">GetLogFields</a> operation.</p> <p>For example, suppose you have created a field index for <code>requestId</code>. Then, any CloudWatch Logs Insights query on that log group that includes <code>requestId = <i>value</i> </code> or <code>requestId in [<i>value</i>, <i>value</i>, ...]</code> will attempt to process only the log events where the indexed field matches the specified value.</p> <p>Matches of log events to the names of indexed fields are case-sensitive. For example, an indexed field of <code>RequestId</code> won't match a log event containing <code>requestId</code>.</p> <p>You can have one account-level field index policy that applies to all log groups in the account. Or you can create as many as 20 account-level field index policies that are each scoped to a subset of log groups using <code>LogGroupNamePrefix</code> with the <code>selectionCriteria</code> parameter. You can have another 20 account-level field index policies using <code>DataSourceName</code> and <code>DataSourceType</code> for the <code>selectionCriteria</code> parameter. If you have multiple account-level index policies with <code>LogGroupNamePrefix</code> selection criteria, no two of them can use the same or overlapping log group name prefixes. For example, if you have one policy filtered to log groups that start with <i>my-log</i>, you can't have another field index policy filtered to <i>my-logpprod</i> or <i>my-logging</i>. Similarly, if you have multiple account-level index policies with <code>DataSourceName</code> and <code>DataSourceType</code> selection criteria, no two of them can use the same data source name and type combination. For example, if you have one policy filtered to the data source name <code>amazon_vpc</code> and data source type <code>flow</code> you cannot create another policy with this combination.</p> <p>If you create an account-level field index policy in a monitoring account in cross-account observability, the policy is applied only to the monitoring account and not to any source accounts.</p> <p>CloudWatch Logs provides default field indexes for all log groups in the Standard log class. Default field indexes are automatically available for the following fields: </p> <ul> <li> <p> <code>@logStream</code> </p> </li> <li> <p> <code>@aws.region</code> </p> </li> <li> <p> <code>@aws.account</code> </p> </li> <li> <p> <code>@source.log</code> </p> </li> <li> <p> <code>@data_source_name</code> </p> </li> <li> <p> <code>@data_source_type</code> </p> </li> <li> <p> <code>@data_format</code> </p> </li> <li> <p> <code>traceId</code> </p> </li> <li> <p> <code>severityText</code> </p> </li> <li> <p> <code>attributes.session.id</code> </p> </li> </ul> <p>CloudWatch Logs provides default field indexes for certain data source name and type combinations as well. Default field indexes are automatically available for the following data source name and type combinations as identified in the following list:</p> <p> <code>amazon_vpc.flow</code> </p> <ul> <li> <p> <code>action</code> </p> </li> <li> <p> <code>logStatus</code> </p> </li> <li> <p> <code>region</code> </p> </li> <li> <p> <code>flowDirection</code> </p> </li> <li> <p> <code>type</code> </p> </li> </ul> <p> <code>amazon_route53.resolver_query</code> </p> <ul> <li> <p> <code>transport</code> </p> </li> <li> <p> <code>rcode</code> </p> </li> </ul> <p> <code>aws_waf.access</code> </p> <ul> <li> <p> <code>action</code> </p> </li> <li> <p> <code>httpRequest.country</code> </p> </li> </ul> <p> <code>aws_cloudtrail.data</code>, <code>aws_cloudtrail.management</code> </p> <ul> <li> <p> <code>eventSource</code> </p> </li> <li> <p> <code>eventName</code> </p> </li> <li> <p> <code>awsRegion</code> </p> </li> <li> <p> <code>userAgent</code> </p> </li> <li> <p> <code>errorCode</code> </p> </li> <li> <p> <code>eventType</code> </p> </li> <li> <p> <code>managementEvent</code> </p> </li> <li> <p> <code>readOnly</code> </p> </li> <li> <p> <code>eventCategory</code> </p> </li> <li> <p> <code>requestId</code> </p> </li> </ul> <p>Default field indexes are in addition to any custom field indexes you define within your policy. Default field indexes are not counted towards your <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatchLogs-Field-Indexing-Syntax\">field index quota</a>. </p> <p>If you want to create a field index policy for a single log group, you can use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutIndexPolicy.html\">PutIndexPolicy</a> instead of <code>PutAccountPolicy</code>. If you do so, that log group will use that log-group level policy and any account-level policies that match at the data source level; any account-level policy that matches at the log group level (for example, no selection criteria or log group name prefix selection criteria) will be ignored.</p> <p> <b>Metric extraction policy</b> </p> <p>A metric extraction policy controls whether CloudWatch Metrics can be created through the Embedded Metrics Format (EMF) for log groups in your account. By default, EMF metric creation is enabled for all log groups. You can use metric extraction policies to disable EMF metric creation for your entire account or specific log groups.</p> <p>When a policy disables EMF metric creation for a log group, log events in the EMF format are still ingested, but no CloudWatch Metrics are created from them.</p> <important> <p>Creating a policy disables metrics for Amazon Web Services features that use EMF to create metrics, such as CloudWatch Container Insights and CloudWatch Application Signals. To prevent turning off those features by accident, we recommend that you exclude the underlying log-groups through a selection-criteria such as <code>LogGroupNamePrefix NOT IN [\"/aws/containerinsights\", \"/aws/ecs/containerinsights\", \"/aws/application-signals/data\"]</code>.</p> </important> <p>Each account can have either one account-level metric extraction policy that applies to all log groups, or up to 5 policies that are each scoped to a subset of log groups with the <code>selectionCriteria</code> parameter. The selection criteria supports filtering by <code>LogGroupName</code> and <code>LogGroupNamePrefix</code> using the operators <code>IN</code> and <code>NOT IN</code>. You can specify up to 50 values in each <code>IN</code> or <code>NOT IN</code> list.</p> <p>The selection criteria can be specified in these formats:</p> <p> <code>LogGroupName IN [\"log-group-1\", \"log-group-2\"]</code> </p> <p> <code>LogGroupNamePrefix NOT IN [\"/aws/prefix1\", \"/aws/prefix2\"]</code> </p> <p>If you have multiple account-level metric extraction policies with selection criteria, no two of them can have overlapping criteria. For example, if you have one policy with selection criteria <code>LogGroupNamePrefix IN [\"my-log\"]</code>, you can't have another metric extraction policy with selection criteria <code>LogGroupNamePrefix IN [\"/my-log-prod\"]</code> or <code>LogGroupNamePrefix IN [\"/my-logging\"]</code>, as the set of log groups matching these prefixes would be a subset of the log groups matching the first policy's prefix, creating an overlap.</p> <p>When using <code>NOT IN</code>, only one policy with this operator is allowed per account.</p> <p>When combining policies with <code>IN</code> and <code>NOT IN</code> operators, the overlap check ensures that policies don't have conflicting effects. Two policies with <code>IN</code> and <code>NOT IN</code> operators do not overlap if and only if every value in the <code>IN </code>policy is completely contained within some value in the <code>NOT IN</code> policy. For example:</p> <ul> <li> <p>If you have a <code>NOT IN</code> policy for prefix <code>\"/aws/lambda\"</code>, you can create an <code>IN</code> policy for the exact log group name <code>\"/aws/lambda/function1\"</code> because the set of log groups matching <code>\"/aws/lambda/function1\"</code> is a subset of the log groups matching <code>\"/aws/lambda\"</code>.</p> </li> <li> <p>If you have a <code>NOT IN</code> policy for prefix <code>\"/aws/lambda\"</code>, you cannot create an <code>IN</code> policy for prefix <code>\"/aws\"</code> because the set of log groups matching <code>\"/aws\"</code> is not a subset of the log groups matching <code>\"/aws/lambda\"</code>.</p> </li> </ul>"
+    },
+    "PutBearerTokenAuthentication":{
+      "name":"PutBearerTokenAuthentication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutBearerTokenAuthenticationRequest"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"OperationAbortedException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidOperationException"}
+      ],
+      "documentation":"<p>Enables or disables bearer token authentication for the specified log group. When enabled on a log group, bearer token authentication is enabled on operations until it is explicitly disabled.</p> <p>For information about the parameters that are common to all actions, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/CommonParameters.html\">Common Parameters</a>.</p>"
     },
     "PutDataProtectionPolicy":{
       "name":"PutDataProtectionPolicy",
@@ -1535,7 +1617,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"InvalidOperationException"}
       ],
-      "documentation":"<p>Starts a Live Tail streaming session for one or more log groups. A Live Tail session returns a stream of log events that have been recently ingested in the log groups. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatchLogs_LiveTail.html\">Use Live Tail to view logs in near real time</a>. </p> <p>The response to this operation is a response stream, over which the server sends live log events and the client receives them.</p> <p>The following objects are sent over the stream:</p> <ul> <li> <p>A single <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_LiveTailSessionStart.html\">LiveTailSessionStart</a> object is sent at the start of the session.</p> </li> <li> <p>Every second, a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_LiveTailSessionUpdate.html\">LiveTailSessionUpdate</a> object is sent. Each of these objects contains an array of the actual log events.</p> <p>If no new log events were ingested in the past second, the <code>LiveTailSessionUpdate</code> object will contain an empty array.</p> <p>The array of log events contained in a <code>LiveTailSessionUpdate</code> can include as many as 500 log events. If the number of log events matching the request exceeds 500 per second, the log events are sampled down to 500 log events to be included in each <code>LiveTailSessionUpdate</code> object.</p> <p>If your client consumes the log events slower than the server produces them, CloudWatch Logs buffers up to 10 <code>LiveTailSessionUpdate</code> events or 5000 log events, after which it starts dropping the oldest events.</p> </li> <li> <p>A <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_StartLiveTailResponseStream.html#CWL-Type-StartLiveTailResponseStream-SessionStreamingException\">SessionStreamingException</a> object is returned if an unknown error occurs on the server side.</p> </li> <li> <p>A <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_StartLiveTailResponseStream.html#CWL-Type-StartLiveTailResponseStream-SessionTimeoutException\">SessionTimeoutException</a> object is returned when the session times out, after it has been kept open for three hours.</p> </li> </ul> <note> <p>The <code>StartLiveTail</code> API routes requests to <code>streaming-logs.<i>Region</i>.amazonaws.com</code> using SDK host prefix injection. VPC endpoint support is not available for this API.</p> </note> <important> <p>You can end a session before it times out by closing the session stream or by closing the client that is receiving the stream. The session also ends if the established connection between the client and the server breaks.</p> </important> <p>For examples of using an SDK to start a Live Tail session, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/example_cloudwatch-logs_StartLiveTail_section.html\"> Start a Live Tail session using an Amazon Web Services SDK</a>.</p>",
+      "documentation":"<p>Starts a Live Tail streaming session for one or more log groups. A Live Tail session returns a stream of log events that have been recently ingested in the log groups. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatchLogs_LiveTail.html\">Use Live Tail to view logs in near real time</a>. </p> <p>The response to this operation is a response stream, over which the server sends live log events and the client receives them.</p> <p>The following objects are sent over the stream:</p> <ul> <li> <p>A single <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_LiveTailSessionStart.html\">LiveTailSessionStart</a> object is sent at the start of the session.</p> </li> <li> <p>Every second, a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_LiveTailSessionUpdate.html\">LiveTailSessionUpdate</a> object is sent. Each of these objects contains an array of the actual log events.</p> <p>If no new log events were ingested in the past second, the <code>LiveTailSessionUpdate</code> object will contain an empty array.</p> <p>The array of log events contained in a <code>LiveTailSessionUpdate</code> can include as many as 500 log events. If the number of log events matching the request exceeds 500 per second, the log events are sampled down to 500 log events to be included in each <code>LiveTailSessionUpdate</code> object.</p> <p>If your client consumes the log events slower than the server produces them, CloudWatch Logs buffers up to 10 <code>LiveTailSessionUpdate</code> events or 5000 log events, after which it starts dropping the oldest events.</p> </li> <li> <p>A <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_StartLiveTailResponseStream.html#CWL-Type-StartLiveTailResponseStream-SessionStreamingException\">SessionStreamingException</a> object is returned if an unknown error occurs on the server side.</p> </li> <li> <p>A <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_StartLiveTailResponseStream.html#CWL-Type-StartLiveTailResponseStream-SessionTimeoutException\">SessionTimeoutException</a> object is returned when the session times out, after it has been kept open for three hours.</p> </li> </ul> <note> <p>The <code>StartLiveTail</code> API routes requests using SDK host prefix injection. SDK versions released before April 1, 2026 route to <code>streaming-logs.<i>Region</i>.amazonaws.com</code>, which does not support VPC endpoints. SDK versions released on or after April 1, 2026 route to <code>stream-logs.<i>Region</i>.amazonaws.com</code>, which supports VPC endpoints. To set up a VPC endpoint for this API, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/cloudwatch-logs-and-interface-VPC.html#create-VPC-endpoint-for-CloudWatchLogs\">Creating a VPC endpoint for CloudWatch Logs </a>.</p> </note> <important> <p>You can end a session before it times out by closing the session stream or by closing the client that is receiving the stream. The session also ends if the established connection between the client and the server breaks.</p> </important> <p>For examples of using an SDK to start a Live Tail session, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/example_cloudwatch-logs_StartLiveTail_section.html\"> Start a Live Tail session using an Amazon Web Services SDK</a>.</p>",
       "endpoint":{"hostPrefix":"streaming-"}
     },
     "StartQuery":{
@@ -1553,7 +1635,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Starts a query of one or more log groups or data sources using CloudWatch Logs Insights. You specify the log groups or data sources and time range to query and the query string to use. You can query up to 10 data sources in a single query.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax.html\">CloudWatch Logs Insights Query Syntax</a>.</p> <p>After you run a query using <code>StartQuery</code>, the query results are stored by CloudWatch Logs. You can use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetQueryResults.html\">GetQueryResults</a> to retrieve the results of a query, using the <code>queryId</code> that <code>StartQuery</code> returns. </p> <p>Interactive queries started with <code>StartQuery</code> share concurrency limits with automated scheduled query executions. Both types of queries count toward the same regional concurrent query quota, so high scheduled query activity may affect the availability of concurrent slots for interactive queries.</p> <note> <p>To specify the log groups to query, a <code>StartQuery</code> operation must include one of the following:</p> <ul> <li> <p>Either exactly one of the following parameters: <code>logGroupName</code>, <code>logGroupNames</code>, or <code>logGroupIdentifiers</code> </p> </li> <li> <p>Or the <code>queryString</code> must include a <code>SOURCE</code> command to select log groups for the query. The <code>SOURCE</code> command can select log groups based on log group name prefix, account ID, and log class, or select data sources using dataSource syntax in LogsQL, PPL, and SQL. </p> <p>For more information about the <code>SOURCE</code> command, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax-Source.html\">SOURCE</a>.</p> </li> </ul> </note> <p>If you have associated a KMS key with the query results in this account, then <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_StartQuery.html\">StartQuery</a> uses that key to encrypt the results when it stores them. If no key is associated with query results, the query results are encrypted with the default CloudWatch Logs encryption method.</p> <p>Queries time out after 60 minutes of runtime. If your queries are timing out, reduce the time range being searched or partition your query into a number of queries.</p> <p>If you are using CloudWatch cross-account observability, you can use this operation in a monitoring account to start a query in a linked source account. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html\">CloudWatch cross-account observability</a>. For a cross-account <code>StartQuery</code> operation, the query definition must be defined in the monitoring account.</p> <p>You can have up to 30 concurrent CloudWatch Logs insights queries, including queries that have been added to dashboards. </p>"
+      "documentation":"<p>Starts a query of one or more log groups or data sources using CloudWatch Logs Insights. You specify the log groups or data sources and time range to query and the query string to use. You can query up to 10 data sources in a single query.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax.html\">CloudWatch Logs Insights Query Syntax</a>.</p> <p>After you run a query using <code>StartQuery</code>, the query results are stored by CloudWatch Logs. You can use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetQueryResults.html\">GetQueryResults</a> to retrieve the results of a query, using the <code>queryId</code> that <code>StartQuery</code> returns. </p> <p>Interactive queries started with <code>StartQuery</code> share concurrency limits with automated scheduled query executions. Both types of queries count toward the same regional concurrent query quota, so high scheduled query activity may affect the availability of concurrent slots for interactive queries.</p> <note> <p>To specify the log groups to query, a <code>StartQuery</code> operation must include one of the following:</p> <ul> <li> <p>Either exactly one of the following parameters: <code>logGroupName</code>, <code>logGroupNames</code>, or <code>logGroupIdentifiers</code> </p> </li> <li> <p>Or the <code>queryString</code> must include a <code>SOURCE</code> command to select log groups for the query. The <code>SOURCE</code> command can select log groups based on log group name prefix, account ID, and log class, or select data sources using dataSource syntax in LogsQL, PPL, and SQL. </p> <p>For more information about the <code>SOURCE</code> command, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax-Source.html\">SOURCE</a>.</p> </li> </ul> </note> <p>If you have associated a KMS key with the query results in this account, then <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_StartQuery.html\">StartQuery</a> uses that key to encrypt the results when it stores them. If no key is associated with query results, the query results are encrypted with the default CloudWatch Logs encryption method.</p> <p>Queries time out after 60 minutes of runtime. If your queries are timing out, reduce the time range being searched or partition your query into a number of queries.</p> <p>If you are using CloudWatch cross-account observability, you can use this operation in a monitoring account to start a query in a linked source account. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html\">CloudWatch cross-account observability</a>. For a cross-account <code>StartQuery</code> operation, the query definition must be defined in the monitoring account.</p> <p>You can have up to 100 concurrent CloudWatch Logs insights queries, including queries that have been added to dashboards. </p>"
     },
     "StopQuery":{
       "name":"StopQuery",
@@ -1704,6 +1786,23 @@
         {"shape":"OperationAbortedException"}
       ],
       "documentation":"<p>Updates an existing log anomaly detector.</p>"
+    },
+    "UpdateLookupTable":{
+      "name":"UpdateLookupTable",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateLookupTableRequest"},
+      "output":{"shape":"UpdateLookupTableResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Updates an existing lookup table by replacing all of its CSV content. After the update completes, queries that use this table will use the new data.</p> <p>This is a full replacement operation. All existing content is replaced with the new CSV data.</p>"
     },
     "UpdateScheduledQuery":{
       "name":"UpdateScheduledQuery",
@@ -2097,6 +2196,7 @@
       "max":256,
       "min":1
     },
+    "BearerTokenAuthenticationEnabled":{"type":"boolean"},
     "Boolean":{"type":"boolean"},
     "CSV":{
       "type":"structure",
@@ -2514,6 +2614,48 @@
         }
       }
     },
+    "CreateLookupTableRequest":{
+      "type":"structure",
+      "required":[
+        "lookupTableName",
+        "tableBody"
+      ],
+      "members":{
+        "lookupTableName":{
+          "shape":"LookupTableName",
+          "documentation":"<p>The name of the lookup table. The name must be unique within your account and Region. The name can contain only alphanumeric characters and underscores, and can be up to 256 characters long.</p>"
+        },
+        "description":{
+          "shape":"LookupTableDescription",
+          "documentation":"<p>A description of the lookup table. The description can be up to 1024 characters long.</p>"
+        },
+        "tableBody":{
+          "shape":"TableBody",
+          "documentation":"<p>The CSV content of the lookup table. The first row must be a header row with column names. The content must use UTF-8 encoding and not exceed 10 MB.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The ARN of the KMS key to use to encrypt the lookup table data. If you don't specify a key, the data is encrypted with an Amazon Web Services-owned key.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>A list of key-value pairs to associate with the lookup table. You can associate as many as 50 tags with a lookup table. Tags can help you organize and categorize your resources.</p>"
+        }
+      }
+    },
+    "CreateLookupTableResponse":{
+      "type":"structure",
+      "members":{
+        "lookupTableArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the lookup table that was created.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the lookup table was created, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>.</p>"
+        }
+      }
+    },
     "CreateScheduledQueryRequest":{
       "type":"structure",
       "required":[
@@ -2534,7 +2676,7 @@
         },
         "queryLanguage":{
           "shape":"QueryLanguage",
-          "documentation":"<p>The query language to use for the scheduled query. Valid values are <code>LogsQL</code>, <code>PPL</code>, and <code>SQL</code>.</p>"
+          "documentation":"<p>The query language to use for the scheduled query. Valid values are <code>CWLI</code>, <code>PPL</code>, and <code>SQL</code>.</p>"
         },
         "queryString":{
           "shape":"QueryString",
@@ -2855,6 +2997,16 @@
         "logStreamName":{
           "shape":"LogStreamName",
           "documentation":"<p>The name of the log stream.</p>"
+        }
+      }
+    },
+    "DeleteLookupTableRequest":{
+      "type":"structure",
+      "required":["lookupTableArn"],
+      "members":{
+        "lookupTableArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the lookup table to delete.</p>"
         }
       }
     },
@@ -3566,6 +3718,40 @@
           "documentation":"<p>The log streams.</p>"
         },
         "nextToken":{"shape":"NextToken"}
+      }
+    },
+    "DescribeLookupTablesMaxResults":{
+      "type":"integer",
+      "max":100
+    },
+    "DescribeLookupTablesRequest":{
+      "type":"structure",
+      "members":{
+        "lookupTableNamePrefix":{
+          "shape":"LookupTableName",
+          "documentation":"<p>A prefix to filter lookup tables by name. Only tables whose names start with this prefix are returned. If you don't specify a prefix, all tables in the account and Region are returned.</p>"
+        },
+        "maxResults":{
+          "shape":"DescribeLookupTablesMaxResults",
+          "documentation":"<p>The maximum number of lookup tables to return in the response. The default value is 50 and the maximum value is 100.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
+        }
+      }
+    },
+    "DescribeLookupTablesResponse":{
+      "type":"structure",
+      "members":{
+        "lookupTables":{
+          "shape":"LookupTables",
+          "documentation":"<p>An array of structures, where each structure contains metadata about one lookup table.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use when requesting the next set of items.</p>"
+        }
       }
     },
     "DescribeMetricFiltersRequest":{
@@ -4646,6 +4832,49 @@
         }
       }
     },
+    "GetLookupTableRequest":{
+      "type":"structure",
+      "required":["lookupTableArn"],
+      "members":{
+        "lookupTableArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the lookup table to retrieve.</p>"
+        }
+      }
+    },
+    "GetLookupTableResponse":{
+      "type":"structure",
+      "members":{
+        "lookupTableArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the lookup table.</p>"
+        },
+        "lookupTableName":{
+          "shape":"LookupTableName",
+          "documentation":"<p>The name of the lookup table.</p>"
+        },
+        "description":{
+          "shape":"LookupTableDescription",
+          "documentation":"<p>The description of the lookup table.</p>"
+        },
+        "tableBody":{
+          "shape":"TableBody",
+          "documentation":"<p>The full CSV content of the lookup table.</p>"
+        },
+        "sizeBytes":{
+          "shape":"StoredBytes",
+          "documentation":"<p>The size of the lookup table in bytes.</p>"
+        },
+        "lastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the lookup table was last updated, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The ARN of the KMS key used to encrypt the lookup table data, if applicable.</p>"
+        }
+      }
+    },
     "GetQueryResultsRequest":{
       "type":"structure",
       "required":["queryId"],
@@ -4863,10 +5092,10 @@
         },
         "match":{
           "shape":"GrokMatch",
-          "documentation":"<p>The grok pattern to match against the log event. For a list of supported grok patterns, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch-Logs-Transformation-Processors.html#Grok-Patterns\">Supported grok patterns</a>.</p>"
+          "documentation":"<p>The grok pattern to match against the log event. For a list of supported grok patterns, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch-Logs-Transformation-Configurable.html#CloudWatch-Logs-Transformation-Grok\">Supported grok patterns</a>.</p>"
         }
       },
-      "documentation":"<p>This processor uses pattern matching to parse and structure unstructured data. This processor can also extract fields from log messages.</p> <p>For more information about this processor including examples, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch-Logs-Transformation-Processors.html#CloudWatch-Logs-Transformation-Grok\">grok</a> in the <i>CloudWatch Logs User Guide</i>.</p>"
+      "documentation":"<p>This processor uses pattern matching to parse and structure unstructured data. This processor can also extract fields from log messages.</p> <p>For more information about this processor including examples, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch-Logs-Transformation-Configurable.html#CloudWatch-Logs-Transformation-Grok\">grok</a> in the <i>CloudWatch Logs User Guide</i>.</p>"
     },
     "GrokMatch":{
       "type":"string",
@@ -5776,6 +6005,10 @@
         "deletionProtectionEnabled":{
           "shape":"DeletionProtectionEnabled",
           "documentation":"<p>Indicates whether deletion protection is enabled for this log group. When enabled, deletion protection blocks all deletion operations until it is explicitly disabled.</p>"
+        },
+        "bearerTokenAuthenticationEnabled":{
+          "shape":"BearerTokenAuthenticationEnabled",
+          "documentation":"<p>Indicates whether bearer token authentication is enabled for this log group. When enabled, bearer token authentication is allowed on operations until it is explicitly disabled.</p>"
         }
       },
       "documentation":"<p>Represents a log group.</p>"
@@ -5952,6 +6185,59 @@
       "member":{"shape":"LogType"},
       "max":10,
       "min":1
+    },
+    "LookupTable":{
+      "type":"structure",
+      "members":{
+        "lookupTableArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the lookup table.</p>"
+        },
+        "lookupTableName":{
+          "shape":"LookupTableName",
+          "documentation":"<p>The name of the lookup table.</p>"
+        },
+        "description":{
+          "shape":"LookupTableDescription",
+          "documentation":"<p>The description of the lookup table.</p>"
+        },
+        "tableFields":{
+          "shape":"TableFields",
+          "documentation":"<p>The column headers from the first row of the CSV file.</p>"
+        },
+        "recordsCount":{
+          "shape":"RecordsCount",
+          "documentation":"<p>The number of data rows in the lookup table, excluding the header row.</p>"
+        },
+        "sizeBytes":{
+          "shape":"StoredBytes",
+          "documentation":"<p>The size of the lookup table in bytes.</p>"
+        },
+        "lastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the lookup table was last updated, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The ARN of the KMS key used to encrypt the lookup table data, if applicable.</p>"
+        }
+      },
+      "documentation":"<p>Contains metadata about a lookup table returned by <code>DescribeLookupTables</code>.</p>"
+    },
+    "LookupTableDescription":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "LookupTableName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9_]+$"
+    },
+    "LookupTables":{
+      "type":"list",
+      "member":{"shape":"LookupTable"}
     },
     "LowerCaseString":{
       "type":"structure",
@@ -6659,7 +6945,7 @@
     },
     "PolicyDocument":{
       "type":"string",
-      "max":5120,
+      "max":51200,
       "min":1
     },
     "PolicyName":{"type":"string"},
@@ -6827,6 +7113,23 @@
         }
       }
     },
+    "PutBearerTokenAuthenticationRequest":{
+      "type":"structure",
+      "required":[
+        "logGroupIdentifier",
+        "bearerTokenAuthenticationEnabled"
+      ],
+      "members":{
+        "logGroupIdentifier":{
+          "shape":"LogGroupIdentifier",
+          "documentation":"<p>The name or ARN of the log group.</p> <p>Type: String</p> <p>Length Constraints: Minimum length of 1. Maximum length of 512.</p> <p>Pattern: <code>[\\.\\-_/#A-Za-z0-9]+</code> </p> <p>Required: Yes</p>"
+        },
+        "bearerTokenAuthenticationEnabled":{
+          "shape":"BearerTokenAuthenticationEnabled",
+          "documentation":"<p>Whether to enable bearer token authentication.</p> <p>Type: Boolean</p> <p>Required: Yes</p>"
+        }
+      }
+    },
     "PutDataProtectionPolicyRequest":{
       "type":"structure",
       "required":[
@@ -6940,7 +7243,7 @@
         },
         "logType":{
           "shape":"LogType",
-          "documentation":"<p>Defines the type of log that the source is sending.</p> <ul> <li> <p>For Amazon Bedrock Agents, the valid values are <code>APPLICATION_LOGS</code> and <code>EVENT_LOGS</code>.</p> </li> <li> <p>For Amazon Bedrock Knowledge Bases, the valid value is <code>APPLICATION_LOGS</code>.</p> </li> <li> <p>For Amazon Bedrock AgentCore Runtime, the valid values are <code>APPLICATION_LOGS</code>, <code>USAGE_LOGS</code> and <code>TRACES</code>.</p> </li> <li> <p>For Amazon Bedrock AgentCore Tools, the valid values are <code>APPLICATION_LOGS</code>, <code>USAGE_LOGS</code> and <code>TRACES</code>.</p> </li> <li> <p>For Amazon Bedrock AgentCore Identity, the valid values are <code>APPLICATION_LOGS</code> and <code>TRACES</code>.</p> </li> <li> <p>For Amazon Bedrock AgentCore Gateway, the valid values are <code>APPLICATION_LOGS</code> and <code>TRACES</code>.</p> </li> <li> <p>For CloudFront, the valid value is <code>ACCESS_LOGS</code>.</p> </li> <li> <p>For Amazon CodeWhisperer, the valid value is <code>EVENT_LOGS</code>.</p> </li> <li> <p>For Elemental MediaPackage, the valid values are <code>EGRESS_ACCESS_LOGS</code> and <code>INGRESS_ACCESS_LOGS</code>.</p> </li> <li> <p>For Elemental MediaTailor, the valid values are <code>AD_DECISION_SERVER_LOGS</code>, <code>MANIFEST_SERVICE_LOGS</code>, and <code>TRANSCODE_LOGS</code>.</p> </li> <li> <p>For Entity Resolution, the valid value is <code>WORKFLOW_LOGS</code>.</p> </li> <li> <p>For IAM Identity Center, the valid value is <code>ERROR_LOGS</code>.</p> </li> <li> <p>For Network Firewall Proxy, the valid values are <code>ALERT_LOGS</code>, <code>ALLOW_LOGS</code>, and <code>DENY_LOGS</code>.</p> </li> <li> <p>For Network Load Balancer, the valid value is <code>NLB_ACCESS_LOGS</code>.</p> </li> <li> <p>For PCS, the valid values are <code>PCS_SCHEDULER_LOGS</code> and <code>PCS_JOBCOMP_LOGS</code>.</p> </li> <li> <p>For Quick Suite, the valid values are <code>CHAT_LOGS</code> and <code>FEEDBACK_LOGS</code>.</p> </li> <li> <p>For Amazon Web Services RTB Fabric, the valid values is <code>APPLICATION_LOGS</code>.</p> </li> <li> <p>For Amazon Q, the valid values are <code>EVENT_LOGS</code> and <code>SYNC_JOB_LOGS</code>.</p> </li> <li> <p>For Amazon SES mail manager, the valid values are <code>APPLICATION_LOGS</code> and <code>TRAFFIC_POLICY_DEBUG_LOGS</code>.</p> </li> <li> <p>For Amazon WorkMail, the valid values are <code>ACCESS_CONTROL_LOGS</code>, <code>AUTHENTICATION_LOGS</code>, <code>WORKMAIL_AVAILABILITY_PROVIDER_LOGS</code>, <code>WORKMAIL_MAILBOX_ACCESS_LOGS</code>, and <code>WORKMAIL_PERSONAL_ACCESS_TOKEN_LOGS</code>.</p> </li> <li> <p>For Amazon VPC Route Server, the valid value is <code>EVENT_LOGS</code>.</p> </li> </ul>"
+          "documentation":"<p>Defines the type of log that the source is sending.</p> <ul> <li> <p>For Amazon Bedrock Agents, the valid values are <code>APPLICATION_LOGS</code> and <code>EVENT_LOGS</code>.</p> </li> <li> <p>For Amazon Bedrock Knowledge Bases, the valid value is <code>APPLICATION_LOGS</code>.</p> </li> <li> <p>For Amazon Bedrock AgentCore Runtime, the valid values are <code>APPLICATION_LOGS</code>, <code>USAGE_LOGS</code> and <code>TRACES</code>.</p> </li> <li> <p>For Amazon Bedrock AgentCore Tools, the valid values are <code>APPLICATION_LOGS</code>, <code>USAGE_LOGS</code> and <code>TRACES</code>.</p> </li> <li> <p>For Amazon Bedrock AgentCore Identity, the valid values are <code>APPLICATION_LOGS</code> and <code>TRACES</code>.</p> </li> <li> <p>For Amazon Bedrock AgentCore Memory, the valid values are <code>APPLICATION_LOGS</code> and <code>TRACES</code>.</p> </li> <li> <p>For Amazon Bedrock AgentCore Gateway, the valid values are <code>APPLICATION_LOGS</code> and <code>TRACES</code>.</p> </li> <li> <p>For CloudFront, the valid value is <code>ACCESS_LOGS</code>.</p> </li> <li> <p>For Amazon CodeWhisperer, the valid value is <code>EVENT_LOGS</code>.</p> </li> <li> <p>For Elemental MediaPackage, the valid values are <code>EGRESS_ACCESS_LOGS</code> and <code>INGRESS_ACCESS_LOGS</code>.</p> </li> <li> <p>For Elemental MediaTailor, the valid values are <code>AD_DECISION_SERVER_LOGS</code>, <code>MANIFEST_SERVICE_LOGS</code>, and <code>TRANSCODE_LOGS</code>.</p> </li> <li> <p>For Amazon EKS Auto Mode, the valid values are <code>AUTO_MODE_BLOCK_STORAGE_LOGS</code>, <code>AUTO_MODE_COMPUTE_LOGS</code>, <code>AUTO_MODE_IPAM_LOGS</code>, and <code>AUTO_MODE_LOAD_BALANCING_LOGS</code>.</p> </li> <li> <p>For Entity Resolution, the valid value is <code>WORKFLOW_LOGS</code>.</p> </li> <li> <p>For IAM Identity Center, the valid value is <code>ERROR_LOGS</code>.</p> </li> <li> <p>For Network Firewall Proxy, the valid values are <code>ALERT_LOGS</code>, <code>ALLOW_LOGS</code>, and <code>DENY_LOGS</code>.</p> </li> <li> <p>For Network Load Balancer, the valid value is <code>NLB_ACCESS_LOGS</code>.</p> </li> <li> <p>For PCS, the valid values are <code>PCS_SCHEDULER_LOGS</code> and <code>PCS_JOBCOMP_LOGS</code>.</p> </li> <li> <p>For Quick, the valid values are <code>CHAT_LOGS</code> and <code>FEEDBACK_LOGS</code>.</p> </li> <li> <p>For Amazon Web Services RTB Fabric, the valid values is <code>APPLICATION_LOGS</code>.</p> </li> <li> <p>For Amazon Q, the valid values are <code>EVENT_LOGS</code> and <code>SYNC_JOB_LOGS</code>.</p> </li> <li> <p>For Amazon SES mail manager, the valid values are <code>APPLICATION_LOGS</code> and <code>TRAFFIC_POLICY_DEBUG_LOGS</code>.</p> </li> <li> <p>For Amazon WorkMail, the valid values are <code>ACCESS_CONTROL_LOGS</code>, <code>AUTHENTICATION_LOGS</code>, <code>WORKMAIL_AVAILABILITY_PROVIDER_LOGS</code>, <code>WORKMAIL_MAILBOX_ACCESS_LOGS</code>, and <code>WORKMAIL_PERSONAL_ACCESS_TOKEN_LOGS</code>.</p> </li> <li> <p>For Amazon VPC Route Server, the valid value is <code>EVENT_LOGS</code>.</p> </li> </ul>"
         },
         "tags":{
           "shape":"Tags",
@@ -7208,6 +7511,10 @@
           "shape":"ClientToken",
           "documentation":"<p>Used as an idempotency token, to avoid returning an exception if the service receives the same request twice because of a network error.</p>",
           "idempotencyToken":true
+        },
+        "parameters":{
+          "shape":"QueryParameterList",
+          "documentation":"<p>Use this parameter to include specific query parameters as part of your query definition. Query parameters are supported only for Logs Insights QL queries. Query parameters allow you to use placeholder variables in your query string that are substituted with values at execution time. Use the <code>{{parameterName}}</code> syntax in your query string to reference a parameter.</p>"
         }
       }
     },
@@ -7387,6 +7694,10 @@
         "logGroupNames":{
           "shape":"LogGroupNames",
           "documentation":"<p>If this query definition contains a list of log groups that it is limited to, that list appears here.</p>"
+        },
+        "parameters":{
+          "shape":"QueryParameterList",
+          "documentation":"<p>If this query definition contains a list of query parameters that define placeholder variables for the query string, that list appears here.</p>"
         }
       },
       "documentation":"<p>This structure contains details about a saved CloudWatch Logs Insights query definition.</p>"
@@ -7456,6 +7767,44 @@
       "type":"integer",
       "max":1000,
       "min":1
+    },
+    "QueryParameter":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"QueryParameterName",
+          "documentation":"<p>The name of the query parameter. A query parameter name must start with a letter or underscore, and contain only letters, digits, and underscores.</p>"
+        },
+        "defaultValue":{
+          "shape":"QueryParameterDefaultValue",
+          "documentation":"<p>The default value to use for this query parameter if no value is supplied at execution time.</p>"
+        },
+        "description":{
+          "shape":"QueryParameterDescription",
+          "documentation":"<p>A description of the query parameter that explains its purpose or expected values.</p>"
+        }
+      },
+      "documentation":"<p>This structure defines a query parameter for a saved CloudWatch Logs Insights query definition. Query parameters are supported only for Logs Insights QL queries. They are placeholder variables that you can reference in a query string using the <code>{{parameterName}}</code> syntax. Each parameter can include a default value and a description.</p>"
+    },
+    "QueryParameterDefaultValue":{
+      "type":"string",
+      "max":1024
+    },
+    "QueryParameterDescription":{
+      "type":"string",
+      "max":512
+    },
+    "QueryParameterList":{
+      "type":"list",
+      "member":{"shape":"QueryParameter"},
+      "max":20
+    },
+    "QueryParameterName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^[a-zA-Z_][a-zA-Z0-9_]*"
     },
     "QueryResults":{
       "type":"list",
@@ -7531,6 +7880,10 @@
       "type":"list",
       "member":{"shape":"FieldHeader"},
       "max":128,
+      "min":0
+    },
+    "RecordsCount":{
+      "type":"long",
       "min":0
     },
     "RejectedEntityInfo":{
@@ -7726,6 +8079,14 @@
         "roleArn":{
           "shape":"RoleArn",
           "documentation":"<p>The ARN of the IAM role that grants permissions to write query results to the specified Amazon S3 destination.</p>"
+        },
+        "ownerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS accountId for the bucket owning account.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS encryption key. Must belong to the same AWS Region as the destination Amazon S3 bucket.</p>"
         }
       },
       "documentation":"<p>Configuration for Amazon S3 destination where scheduled query results are delivered.</p>"
@@ -8333,6 +8694,15 @@
       ]
     },
     "SystemField":{"type":"string"},
+    "TableBody":{
+      "type":"string",
+      "max":10485760,
+      "min":1
+    },
+    "TableFields":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "TagKey":{
       "type":"string",
       "max":128,
@@ -8747,6 +9117,44 @@
         "enabled":{
           "shape":"Boolean",
           "documentation":"<p>Use this parameter to pause or restart the anomaly detector. </p>"
+        }
+      }
+    },
+    "UpdateLookupTableRequest":{
+      "type":"structure",
+      "required":[
+        "lookupTableArn",
+        "tableBody"
+      ],
+      "members":{
+        "lookupTableArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the lookup table to update.</p>"
+        },
+        "description":{
+          "shape":"LookupTableDescription",
+          "documentation":"<p>An updated description of the lookup table.</p>"
+        },
+        "tableBody":{
+          "shape":"TableBody",
+          "documentation":"<p>The new CSV content to replace the existing data. The first row must be a header row with column names. The content must use UTF-8 encoding and not exceed 10 MB.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The ARN of the KMS key to use to encrypt the lookup table data. You can use this parameter to add, update, or remove the KMS key. To remove the KMS key and use an Amazon Web Services-owned key instead, specify an empty string.</p>"
+        }
+      }
+    },
+    "UpdateLookupTableResponse":{
+      "type":"structure",
+      "members":{
+        "lookupTableArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the lookup table that was updated.</p>"
+        },
+        "lastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the lookup table was last updated, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>.</p>"
         }
       }
     },

@@ -546,6 +546,23 @@
       ],
       "documentation":"<p>Gets detailed information about a specified number of requests--a sample--that WAF randomly selects from among the first 5,000 requests that your Amazon Web Services resource received during a time range that you choose. You can specify a sample size of up to 500 requests, and you can specify any time range in the previous three hours.</p> <p> <code>GetSampledRequests</code> returns a time range, which is usually the time range that you specified. However, if your resource (such as a CloudFront distribution) received 5,000 requests before the specified time range elapsed, <code>GetSampledRequests</code> returns an updated time range. This new time range indicates the actual period during which WAF selected the requests in the sample.</p>"
     },
+    "GetTopPathStatisticsByTraffic":{
+      "name":"GetTopPathStatisticsByTraffic",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetTopPathStatisticsByTrafficRequest"},
+      "output":{"shape":"GetTopPathStatisticsByTrafficResponse"},
+      "errors":[
+        {"shape":"WAFInternalErrorException"},
+        {"shape":"WAFInvalidParameterException"},
+        {"shape":"WAFNonexistentItemException"},
+        {"shape":"WAFInvalidOperationException"},
+        {"shape":"WAFFeatureNotIncludedInPricingPlanException"}
+      ],
+      "documentation":"<p>Retrieves aggregated statistics about the top URI paths accessed by bot traffic for a specified web ACL and time window. You can use this operation to analyze which paths on your web application receive the most bot traffic and identify the specific bots accessing those paths. The operation supports filtering by bot category, organization, or name, and allows you to drill down into specific path prefixes to view detailed URI-level statistics.</p>"
+    },
     "GetWebACL":{
       "name":"GetWebACL",
       "http":{
@@ -1297,6 +1314,33 @@
       ]
     },
     "Boolean":{"type":"boolean"},
+    "BotStatistics":{
+      "type":"structure",
+      "required":[
+        "BotName",
+        "RequestCount",
+        "Percentage"
+      ],
+      "members":{
+        "BotName":{
+          "shape":"FilterString",
+          "documentation":"<p>The name of the bot. For example, <code>gptbot</code> or <code>googlebot</code>.</p>"
+        },
+        "RequestCount":{
+          "shape":"RequestCount",
+          "documentation":"<p>The number of requests from this bot to the associated path within the specified time window.</p>"
+        },
+        "Percentage":{
+          "shape":"PercentageValue",
+          "documentation":"<p>The percentage of total requests to the associated path that came from this bot.</p>"
+        }
+      },
+      "documentation":"<p>Statistics about a specific bot's traffic to a path, including the bot name, request count, and percentage of traffic.</p>"
+    },
+    "BotStatisticsList":{
+      "type":"list",
+      "member":{"shape":"BotStatistics"}
+    },
     "ByteMatchStatement":{
       "type":"structure",
       "required":[
@@ -2781,6 +2825,30 @@
         "MEETS_ANY"
       ]
     },
+    "FilterSource":{
+      "type":"structure",
+      "members":{
+        "BotCategory":{
+          "shape":"FilterString",
+          "documentation":"<p>The bot category that was used to filter the results. For example, <code>ai</code> or <code>search_engine</code>.</p>"
+        },
+        "BotOrganization":{
+          "shape":"FilterString",
+          "documentation":"<p>The bot organization that was used to filter the results. For example, <code>OpenAI</code> or <code>Google</code>.</p>"
+        },
+        "BotName":{
+          "shape":"FilterString",
+          "documentation":"<p>The bot name that was used to filter the results. For example, <code>gptbot</code> or <code>googlebot</code>.</p>"
+        }
+      },
+      "documentation":"<p>Information about the bot filter that was applied to the request. This structure is populated in the response when you filter by bot category, organization, or name.</p>"
+    },
+    "FilterString":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":".*\\S.*"
+    },
     "Filters":{
       "type":"list",
       "member":{"shape":"Filter"},
@@ -3240,6 +3308,83 @@
         "TimeWindow":{
           "shape":"TimeWindow",
           "documentation":"<p>Usually, <code>TimeWindow</code> is the time range that you specified in the <code>GetSampledRequests</code> request. However, if your Amazon Web Services resource received more than 5,000 requests during the time range that you specified in the request, <code>GetSampledRequests</code> returns the time range for the first 5,000 requests. Times are in Coordinated Universal Time (UTC) format.</p>"
+        }
+      }
+    },
+    "GetTopPathStatisticsByTrafficRequest":{
+      "type":"structure",
+      "required":[
+        "WebAclArn",
+        "Scope",
+        "TimeWindow",
+        "Limit",
+        "NumberOfTopTrafficBotsPerPath"
+      ],
+      "members":{
+        "WebAclArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the web ACL for which you want to retrieve path statistics.</p>"
+        },
+        "Scope":{
+          "shape":"Scope",
+          "documentation":"<p>Specifies whether the web ACL is for an Amazon Web Services CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer, an AppSync GraphQL API, an Amazon Cognito user pool, an Amazon Web Services App Runner service, or an Amazon Web Services Verified Access instance.</p>"
+        },
+        "UriPathPrefix":{
+          "shape":"UriPathPrefixString",
+          "documentation":"<p>A URI path prefix to filter the results. When you specify this parameter, the operation returns statistics for individual URIs within the specified path prefix. For example, if you specify <code>/api</code>, the response includes statistics for paths like <code>/api/v1/users</code> and <code>/api/v2/orders</code>. If you don't specify this parameter, the operation returns top-level path statistics.</p>"
+        },
+        "TimeWindow":{
+          "shape":"TimeWindow",
+          "documentation":"<p>The time window for which you want to retrieve path statistics. The time window must be within the data retention period for your web ACL.</p>"
+        },
+        "BotCategory":{
+          "shape":"FilterString",
+          "documentation":"<p>Filters the results to include only traffic from bots in the specified category. For example, you can filter by <code>ai</code> to see only AI crawler traffic, or <code>search_engine</code> to see only search engine bot traffic. When you apply this filter, the <code>Source</code> field is populated in the response.</p>"
+        },
+        "BotOrganization":{
+          "shape":"FilterString",
+          "documentation":"<p>Filters the results to include only traffic from bots belonging to the specified organization. For example, you can filter by <code>openai</code> or <code>google</code>. When you apply this filter, the <code>Source</code> field is populated in the response.</p>"
+        },
+        "BotName":{
+          "shape":"FilterString",
+          "documentation":"<p>Filters the results to include only traffic from the specified bot. For example, you can filter by <code>gptbot</code> or <code>googlebot</code>. When you apply this filter, the <code>Source</code> field is populated in the response.</p>"
+        },
+        "Limit":{
+          "shape":"PathStatisticsLimit",
+          "documentation":"<p>The maximum number of path statistics to return. Valid values are 1 to 100.</p>"
+        },
+        "NumberOfTopTrafficBotsPerPath":{
+          "shape":"NumberOfTopTrafficBotsPerPath",
+          "documentation":"<p>The maximum number of top bots to include in the statistics for each path. Valid values are 1 to 10.</p>"
+        },
+        "NextMarker":{
+          "shape":"NextMarker",
+          "documentation":"<p>When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.</p>"
+        }
+      }
+    },
+    "GetTopPathStatisticsByTrafficResponse":{
+      "type":"structure",
+      "required":[
+        "PathStatistics",
+        "TotalRequestCount"
+      ],
+      "members":{
+        "PathStatistics":{
+          "shape":"PathStatisticsList",
+          "documentation":"<p>The list of path statistics, ordered by request count. Each entry includes the path, request count, percentage of total traffic, and the top bots accessing that path.</p>"
+        },
+        "TotalRequestCount":{
+          "shape":"RequestCount",
+          "documentation":"<p>The total number of requests that match the query criteria within the specified time window.</p>"
+        },
+        "NextMarker":{
+          "shape":"NextMarker",
+          "documentation":"<p>When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.</p>"
+        },
+        "TopCategories":{
+          "shape":"PathStatisticsList",
+          "documentation":"<p>Category-level aggregations for visualizing bot category to path relationships. This field is only populated when no bot filters are applied to the request. Each entry includes the bot category and the paths accessed by bots in that category.</p>"
         }
       }
     },
@@ -4549,6 +4694,11 @@
       },
       "documentation":"<p>A logical rule statement used to negate the results of another rule statement. You provide one <a>Statement</a> within the <code>NotStatement</code>.</p>"
     },
+    "NumberOfTopTrafficBotsPerPath":{
+      "type":"integer",
+      "max":10,
+      "min":1
+    },
     "OnSourceDDoSProtectionConfig":{
       "type":"structure",
       "required":["ALBLowReputationMode"],
@@ -4691,12 +4841,62 @@
       },
       "documentation":"<p>The name of the field in the request payload that contains your customer's password. </p> <p>This data type is used in the <code>RequestInspection</code> and <code>RequestInspectionACFP</code> data types. </p>"
     },
+    "PathStatistics":{
+      "type":"structure",
+      "required":[
+        "Path",
+        "RequestCount",
+        "Percentage"
+      ],
+      "members":{
+        "Source":{
+          "shape":"FilterSource",
+          "documentation":"<p>Information about the bot filter that was applied to generate these statistics. This field is only populated when you filter by bot category, organization, or name.</p>"
+        },
+        "Path":{
+          "shape":"PathString",
+          "documentation":"<p>The URI path. For example, <code>/api/</code> or <code>/api/v1/users</code>.</p>"
+        },
+        "RequestCount":{
+          "shape":"RequestCount",
+          "documentation":"<p>The number of requests to this path within the specified time window.</p>"
+        },
+        "Percentage":{
+          "shape":"PercentageValue",
+          "documentation":"<p>The percentage of total requests that were made to this path.</p>"
+        },
+        "TopBots":{
+          "shape":"BotStatisticsList",
+          "documentation":"<p>The list of top bots accessing this path, ordered by request count. The number of bots included is determined by the <code>NumberOfTopTrafficBotsPerPath</code> parameter in the request.</p>"
+        }
+      },
+      "documentation":"<p>Statistics about bot traffic to a specific URI path, including the path, request count, percentage of total traffic, and the top bots accessing that path.</p>"
+    },
+    "PathStatisticsLimit":{
+      "type":"integer",
+      "max":100,
+      "min":1
+    },
+    "PathStatisticsList":{
+      "type":"list",
+      "member":{"shape":"PathStatistics"}
+    },
+    "PathString":{
+      "type":"string",
+      "max":512,
+      "min":1
+    },
     "PayloadType":{
       "type":"string",
       "enum":[
         "JSON",
         "FORM_ENCODED"
       ]
+    },
+    "PercentageValue":{
+      "type":"double",
+      "max":100.0,
+      "min":0.0
     },
     "PhoneNumberField":{
       "type":"structure",
@@ -5276,6 +5476,10 @@
         }
       },
       "documentation":"<p>Customizes the maximum size of the request body that your protected CloudFront, API Gateway, Amazon Cognito, App Runner, and Verified Access resources forward to WAF for inspection. The default size is 16 KB (16,384 bytes). You can change the setting for any of the available resource types. </p> <note> <p>You are charged additional fees when your protected resources forward body sizes that are larger than the default. For more information, see <a href=\"http://aws.amazon.com/waf/pricing/\">WAF Pricing</a>.</p> </note> <p>Example JSON: <code> { \"API_GATEWAY\": \"KB_48\", \"APP_RUNNER_SERVICE\": \"KB_32\" }</code> </p> <p>For Application Load Balancer and AppSync, the limit is fixed at 8 KB (8,192 bytes).</p> <p>This is used in the <code>AssociationConfig</code> of the web ACL. </p>"
+    },
+    "RequestCount":{
+      "type":"long",
+      "min":0
     },
     "RequestInspection":{
       "type":"structure",
@@ -6516,6 +6720,12 @@
       "type":"structure",
       "members":{},
       "documentation":"<p>Inspect the path component of the URI of the web request. This is the part of the web request that identifies a resource. For example, <code>/images/daily-ad.jpg</code>.</p> <p>This is used in the <a>FieldToMatch</a> specification for some web request component types. </p> <p>JSON specification: <code>\"UriPath\": {}</code> </p>"
+    },
+    "UriPathPrefixString":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"^\\/[^ ]*$"
     },
     "UsageOfAction":{
       "type":"string",

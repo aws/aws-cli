@@ -1718,21 +1718,19 @@ class S3RegionRedirectorv2:
         service_response = response[1]
         response_headers = service_response['ResponseMetadata']['HTTPHeaders']
         if 'x-amz-bucket-region' in response_headers:
-            return response_headers['x-amz-bucket-region']
-
+            region = response_headers['x-amz-bucket-region']
         # Next, check the error body
-        region = service_response.get('Error', {}).get('Region', None)
-        if region is not None:
-            return region
-
-        # Finally, HEAD the bucket. No other choice sadly.
-        try:
-            response = self._client.head_bucket(Bucket=bucket)
-            headers = response['ResponseMetadata']['HTTPHeaders']
-        except ClientError as e:
-            headers = e.response['ResponseMetadata']['HTTPHeaders']
-
-        region = headers.get('x-amz-bucket-region', None)
+        elif r := service_response.get('Error', {}).get('Region', None):
+            region = r
+        else:
+            # Finally, HEAD the bucket. No other choice sadly.
+            try:
+                response = self._client.head_bucket(Bucket=bucket)
+                headers = response['ResponseMetadata']['HTTPHeaders']
+            except ClientError as e:
+                headers = e.response['ResponseMetadata']['HTTPHeaders']
+            region = headers.get('x-amz-bucket-region', None)
+        validate_region_name(region)
         return region
 
     def set_request_url(self, old_url, new_endpoint, **kwargs):
@@ -3119,6 +3117,23 @@ def _is_s3express_request(params):
     return endpoint_properties.get('backend') == 'S3Express'
 
 
+def get_checksum_algorithm_headers(params):
+    """
+    Returns the list of header names from the request which start with
+    "x-amz-checksum-", otherwise returns an empty list.
+    """
+    headers = params['headers']
+    checksum_headers = []
+
+    # If a header matching the x-amz-checksum-* pattern is present, we
+    # extract and return the algorithm name.
+    for header in headers:
+        match = CHECKSUM_HEADER_PATTERN.match(header)
+        if match:
+            checksum_headers.append(header)
+    return checksum_headers
+
+
 def has_checksum_header(params):
     """
     Checks if a header starting with "x-amz-checksum-" is provided in a request.
@@ -3126,15 +3141,7 @@ def has_checksum_header(params):
     This function is considered private and subject to abrupt breaking changes or
     removal without prior announcement. Please do not use it directly.
     """
-    headers = params['headers']
-
-    # If a header matching the x-amz-checksum-* pattern is present, we
-    # assume a checksum has already been provided by the user.
-    for header in headers:
-        if CHECKSUM_HEADER_PATTERN.match(header):
-            return True
-
-    return False
+    return bool(get_checksum_algorithm_headers(params))
 
 
 def conditionally_calculate_checksum(params, **kwargs):
@@ -3398,6 +3405,7 @@ class SSOTokenFetcher(BaseSSOTokenFetcher):
             'verificationUri': response['verificationUri'],
             'verificationUriComplete': response['verificationUriComplete'],
             'expiresAt': self._time_fetcher() + expires_in,
+            'cross_device_flag': None,
         }
         if 'interval' in response:
             authorization['interval'] = response['interval']
@@ -3675,6 +3683,7 @@ class SSOTokenFetcherAuth(BaseSSOTokenFetcher):
             'verificationUri': authorization_uri,
             'verificationUriComplete': authorization_uri,
             'userCode': None,
+            'cross_device_flag': '--use-device-code',
         }
 
         # Open/display the link, then block until the redirect uri is hit and

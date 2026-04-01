@@ -19,7 +19,12 @@ import pytest
 from botocore.paginate import PageIterator
 
 from awscli.compat import StringIO, contextlib
-from awscli.formatter import JSONFormatter, StreamedYAMLFormatter, YAMLDumper
+from awscli.formatter import (
+    JSONFormatter,
+    OffFormatter,
+    StreamedYAMLFormatter,
+    YAMLDumper,
+)
 from awscli.testutils import mock, unittest
 
 
@@ -180,3 +185,28 @@ class TestJSONFormatter:
                 '}\n'
             ).encode()
         )
+
+
+class TestOffFormatter:
+    def setup_method(self):
+        self.args = Namespace(query=None)
+        self.formatter = OffFormatter(self.args)
+        self.output = StringIO()
+
+    def test_suppresses_response(self):
+        response = {'Key': 'Value'}
+        self.formatter('test-command', response, self.output)
+        assert self.output.getvalue() == ''
+
+    def test_suppresses_paginated_response(self):
+        response = FakePageIterator([
+            {'Items': ['Item1']},
+            {'Items': ['Item2']}
+        ])
+        self.formatter('test-command', response, self.output)
+        assert self.output.getvalue() == ''
+
+    def test_works_without_stream(self):
+        response = {'Key': 'Value'}
+        # Should not raise an exception
+        self.formatter('test-command', response, None)

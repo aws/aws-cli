@@ -56,7 +56,15 @@ def attach_history_handler(session, parsed_args, **kwargs):
         if not os.path.isdir(os.path.dirname(history_filename)):
             os.makedirs(os.path.dirname(history_filename))
 
-        connection = DatabaseConnection(history_filename)
+        try:
+            connection = DatabaseConnection(history_filename)
+        except Exception as e:
+            LOG.debug('Unable to open history database: %s', e)
+            sys.stderr.write(
+                'Warning: Unable to record CLI history. '
+                'Check file permissions for %s\n' % history_filename
+            )
+            return
         writer = DatabaseRecordWriter(connection)
         record_builder = RecordBuilder()
         db_handler = DatabaseHistoryHandler(writer, record_builder)

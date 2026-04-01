@@ -35,4 +35,4 @@ Output::
         }
     }
 
-For more infomration, see `Create and Register an AWS IoT Device Certificate <https://docs.aws.amazon.com/iot/latest/developerguide/device-certs-create.html>`__ in the **AWS IoT Developer Guide**.
+For more information, see `Create and Register an AWS IoT Device Certificate <https://docs.aws.amazon.com/iot/latest/developerguide/device-certs-create.html>`__ in the **AWS IoT Developer Guide**.

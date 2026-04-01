@@ -157,7 +157,7 @@ class DetailedFormatter(Formatter):
         self._colorize = colorize
         self._value_pformatter = SectionValuePrettyFormatter()
         if self._colorize:
-            colorama.init(**COLORAMA_KWARGS)
+            colorama.init(**COLORAMA_KWARGS)  # noqa
 
     def _display(self, event_record):
         section_definition = self._SECTIONS.get(event_record['event_type'])

@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import logging
+import os
 
 from botocore.compat import OrderedDict
 from botocore.docs.bcdoc.docstringparser import DocStringParser
@@ -219,3 +220,15 @@ class DocumentStructure(ReSTDocument):
 
     def clear_text(self):
         self._writes = []
+
+    def add_title_section(self, title):
+        title_section = self.add_new_section('title')
+        title_section.style.h1(title)
+        return title_section
+
+    def write_to_file(self, full_path, file_name):
+        if not os.path.exists(full_path):
+            os.makedirs(full_path)
+        sub_resource_file_path = os.path.join(full_path, f'{file_name}.rst')
+        with open(sub_resource_file_path, 'wb') as f:
+            f.write(self.flush_structure())

@@ -51,6 +51,7 @@ def ordered_yaml_dump(to_dump, stream=None):
     """
     yaml = ruamel.yaml.YAML(typ="safe", pure=True)
     yaml.default_flow_style = False
+    yaml.width = float('inf')
     yaml.Representer.add_representer(OrderedDict, _ordered_representer)
 
     if stream is None:

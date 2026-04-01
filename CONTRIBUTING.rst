@@ -28,7 +28,7 @@ contributions as well:
 * Code should follow `pep 8 <https://www.python.org/dev/peps/pep-0008/>`__,
   although if you are modifying an existing module, it is more important
   for the code to be consistent if there are any discrepancies.
-* Code must work on ``python2.7``, and ``python3.5`` and higher.
+* Code must work on ``python3.9`` and higher.
 * The AWS CLI is cross platform and code must work on at least Linux, Windows,
   and Mac OS X.  Avoid platform specific behavior.
 * If you would like to implement support for a significant feature that is not
@@ -43,19 +43,19 @@ Git Commits and Workflow
 
 When sending a pull request, please follow these guidelines:
 
-* The PR should target the ``develop`` branch.  If you send a PR to the
-  ``master`` branch, the travis CI jobs will fail.
-* Your PR branch should be based off a recent commit of the ``develop`` branch.
+* Your PR branch should be based off a recent commit of the ``v2`` branch.
   Preferably the base commit for the PR should use the latest commit of
-  ``develop`` at the time the PR was created.  This helps to ensure there are
-  no merge conflicts or test failures when the PR is merged back to the develop
+  ``v2`` at the time the PR was created.  This helps to ensure there are
+  no merge conflicts or test failures when the PR is merged back to the v2
   branch.
+* The PR should target the ``v2`` branch. A PR against the
+  ``master`` or ``develop`` branch will fail.
 * Make separate commits for logically separate changes.  Avoid commits such as
   "update", "fix typo again", "more updates".  Rebase your commits before
   submitting your PR to ensure they represent a logical change.
 * Avoid merge commits in your PRs.  If you want to pull in the latest changes
-  from the ``develop`` branch, rebase on top of the ``develop`` branch instead
-  of merging the ``develop`` branch into your feature branch.
+  from the ``v2`` branch, rebase on top of the ``v2`` branch instead
+  of merging the ``v2`` branch into your feature branch.
 
 Also, ensure your commit messages match this format::
 
@@ -96,7 +96,7 @@ can run these commands::
     $ cd aws-cli
     $ git remote add upstream https://github.com/aws/aws-cli.git
     $ git fetch upstream
-    $ git merge upstream/develop
+    $ git merge upstream/v2
 
     # Now to create a feature branch:
     $ git checkout -b my-branch-name
@@ -111,7 +111,7 @@ can run these commands::
     # If we want to sync with the latest upstream changes before
     # sending our pull request we can run:
     $ git fetch upstream
-    $ git rebase upstream/develop
+    $ git rebase upstream/v2
 
     # When you're ready to send a PR, make sure you push your commits
     # to your fork:

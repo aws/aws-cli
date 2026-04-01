@@ -121,6 +121,12 @@ class TestExe:
                 os.path.join("workspace", "aws", "dist"),
                 {"distribution_source": "source-exe"},
             ),
+            (
+                "glob",
+                "**/*.dist-info",
+                os.path.join("workspace", "aws", "dist"),
+                True,
+            ),
         ]
 
     def test_build(self, fake_aws_cli_venv):

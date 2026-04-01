@@ -1,0 +1,134 @@
+{
+    "version": "1.0",
+    "parameters": {
+        "Region": {
+            "required": true,
+            "type": "String",
+            "builtIn": "AWS::Region",
+            "documentation": "The AWS region used to dispatch the request."
+        },
+        "UseFIPS": {
+            "required": true,
+            "type": "Boolean",
+            "builtIn": "AWS::UseFIPS",
+            "default": false,
+            "documentation": "When true, send this request to the FIPS-compliant regional endpoint."
+        },
+        "UseDualStack": {
+            "required": true,
+            "type": "Boolean",
+            "builtIn": "AWS::UseDualStack",
+            "default": false,
+            "documentation": "When true, use the dual-stack endpoint."
+        },
+        "Endpoint": {
+            "required": false,
+            "type": "String",
+            "builtIn": "SDK::Endpoint",
+            "documentation": "Override the endpoint used to send this request."
+        }
+    },
+    "rules": [
+        {
+            "type": "endpoint",
+            "conditions": [
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "Endpoint"
+                        }
+                    ]
+                }
+            ],
+            "endpoint": {
+                "url": {
+                    "ref": "Endpoint"
+                }
+            }
+        },
+        {
+            "type": "tree",
+            "conditions": [
+                {
+                    "fn": "aws.partition",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ],
+                    "assign": "PartitionResult"
+                }
+            ],
+            "rules": [
+                {
+                    "type": "endpoint",
+                    "conditions": [
+                        {
+                            "fn": "booleanEquals",
+                            "argv": [
+                                {
+                                    "ref": "UseFIPS"
+                                },
+                                true
+                            ]
+                        },
+                        {
+                            "fn": "booleanEquals",
+                            "argv": [
+                                {
+                                    "ref": "UseDualStack"
+                                },
+                                true
+                            ]
+                        }
+                    ],
+                    "endpoint": {
+                        "url": "https://data-signer-fips.{Region}.{PartitionResult#dualStackDnsSuffix}"
+                    }
+                },
+                {
+                    "type": "endpoint",
+                    "conditions": [
+                        {
+                            "fn": "booleanEquals",
+                            "argv": [
+                                {
+                                    "ref": "UseFIPS"
+                                },
+                                true
+                            ]
+                        }
+                    ],
+                    "endpoint": {
+                        "url": "https://data-signer-fips.{Region}.{PartitionResult#dnsSuffix}"
+                    }
+                },
+                {
+                    "type": "endpoint",
+                    "conditions": [
+                        {
+                            "fn": "booleanEquals",
+                            "argv": [
+                                {
+                                    "ref": "UseDualStack"
+                                },
+                                true
+                            ]
+                        }
+                    ],
+                    "endpoint": {
+                        "url": "https://data-signer.{Region}.{PartitionResult#dualStackDnsSuffix}"
+                    }
+                },
+                {
+                    "type": "endpoint",
+                    "conditions": [],
+                    "endpoint": {
+                        "url": "https://data-signer.{Region}.{PartitionResult#dnsSuffix}"
+                    }
+                }
+            ]
+        }
+    ]
+}

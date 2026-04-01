@@ -1,0 +1,170 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2017-08-25",
+    "auth":["aws.auth#sigv4"],
+    "endpointPrefix":"data-signer",
+    "protocol":"rest-json",
+    "protocols":["rest-json"],
+    "serviceFullName":"AWS Signer Data Plane",
+    "serviceId":"Signer Data",
+    "signatureVersion":"v4",
+    "signingName":"signer",
+    "uid":"signer-data-2017-08-25"
+  },
+  "operations":{
+    "GetRevocationStatus":{
+      "name":"GetRevocationStatus",
+      "http":{
+        "method":"GET",
+        "requestUri":"/revocations",
+        "responseCode":200
+      },
+      "input":{"shape":"GetRevocationStatusRequest"},
+      "output":{"shape":"GetRevocationStatusResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InternalServiceErrorException"}
+      ],
+      "documentation":"<p>Retrieves the revocation status for a signed artifact by checking if the signing profile, job, or certificate has been revoked.</p>",
+      "readonly":true
+    }
+  },
+  "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"},
+        "code":{"shape":"String"}
+      },
+      "documentation":"<p>You do not have sufficient permissions to perform this action.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "Arn":{
+      "type":"string",
+      "max":2048,
+      "min":20
+    },
+    "CertificateHash":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "CertificateHashes":{
+      "type":"list",
+      "member":{"shape":"CertificateHash"}
+    },
+    "GetRevocationStatusRequest":{
+      "type":"structure",
+      "required":[
+        "signatureTimestamp",
+        "platformId",
+        "profileVersionArn",
+        "jobArn",
+        "certificateHashes"
+      ],
+      "members":{
+        "signatureTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the artifact was signed, in ISO 8601 format.</p>",
+          "location":"querystring",
+          "locationName":"signatureTimestamp"
+        },
+        "platformId":{
+          "shape":"PlatformId",
+          "documentation":"<p>The platform identifier for the signing platform used.</p>",
+          "location":"querystring",
+          "locationName":"platformId"
+        },
+        "profileVersionArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the signing profile version used to sign the artifact.</p>",
+          "location":"querystring",
+          "locationName":"profileVersionArn"
+        },
+        "jobArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the signing job that produced the signature.</p>",
+          "location":"querystring",
+          "locationName":"jobArn"
+        },
+        "certificateHashes":{
+          "shape":"CertificateHashes",
+          "documentation":"<p>List of certificate hashes to check for revocation.</p>",
+          "location":"querystring",
+          "locationName":"certificateHashes"
+        }
+      },
+      "documentation":"<p>Request structure for checking revocation status.</p>"
+    },
+    "GetRevocationStatusResponse":{
+      "type":"structure",
+      "members":{
+        "revokedEntities":{
+          "shape":"RevokedEntities",
+          "documentation":"<p>List of entity identifiers that have been revoked. Empty if no revocations found.</p>"
+        }
+      },
+      "documentation":"<p>Response containing the list of revoked entities.</p>"
+    },
+    "InternalServiceErrorException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"},
+        "code":{"shape":"String"}
+      },
+      "documentation":"<p>An internal service error occurred.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true
+    },
+    "PlatformId":{
+      "type":"string",
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "RevokedEntities":{
+      "type":"list",
+      "member":{"shape":"RevokedEntity"}
+    },
+    "RevokedEntity":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "String":{"type":"string"},
+    "Timestamp":{"type":"timestamp"},
+    "TooManyRequestsException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"},
+        "code":{"shape":"String"}
+      },
+      "documentation":"<p>The request was denied due to request throttling.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ValidationException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"},
+        "code":{"shape":"String"}
+      },
+      "documentation":"<p>The request contains invalid parameters or is malformed.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    }
+  },
+  "documentation":"<p>AWS Signer Data Plane service provides APIs for checking revocation status of signed artifacts.</p>"
+}

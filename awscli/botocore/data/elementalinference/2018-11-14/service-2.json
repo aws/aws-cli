@@ -1,0 +1,966 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2018-11-14",
+    "auth":["aws.auth#sigv4"],
+    "endpointPrefix":"elemental-inference",
+    "protocol":"rest-json",
+    "protocols":["rest-json"],
+    "serviceFullName":"AWS Elemental Inference",
+    "serviceId":"ElementalInference",
+    "signatureVersion":"v4",
+    "signingName":"elemental-inference",
+    "uid":"elementalinference-2018-11-14"
+  },
+  "operations":{
+    "AssociateFeed":{
+      "name":"AssociateFeed",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/feed/{id}/associate",
+        "responseCode":200
+      },
+      "input":{"shape":"AssociateFeedRequest"},
+      "output":{"shape":"AssociateFeedResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Associates a resource with the feed. The resource provides the input that Elemental Inference needs needs in order to perform an Elemental Inference feature, such as cropping video. You always provide the resource by associating it with a feed. You can associate only one resource with each feed.</p>",
+      "idempotent":true
+    },
+    "CreateFeed":{
+      "name":"CreateFeed",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/feed",
+        "responseCode":202
+      },
+      "input":{"shape":"CreateFeedRequest"},
+      "output":{"shape":"CreateFeedResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a feed. The feed is the target for live streams being sent by the calling application. An example of a calling application is AWS Elemental MediaLive. After you create the feed, you can associate a resource with the feed.</p>",
+      "idempotent":true
+    },
+    "DeleteFeed":{
+      "name":"DeleteFeed",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v1/feed/{id}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteFeedRequest"},
+      "output":{"shape":"DeleteFeedResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes the specified feed. The feed can be deleted at any time.</p>",
+      "idempotent":true
+    },
+    "DisassociateFeed":{
+      "name":"DisassociateFeed",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/feed/{id}/disassociate",
+        "responseCode":200
+      },
+      "input":{"shape":"DisassociateFeedRequest"},
+      "output":{"shape":"DisassociateFeedResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Releases the resource (for example, an MediaLive channel) that is associated with this feed. The outputs in the feed become disabled.</p>",
+      "idempotent":true
+    },
+    "GetFeed":{
+      "name":"GetFeed",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/feed/{id}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetFeedRequest"},
+      "output":{"shape":"GetFeedResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestException"}
+      ],
+      "documentation":"<p>Retrieves information about the specified feed.</p>",
+      "readonly":true
+    },
+    "ListFeeds":{
+      "name":"ListFeeds",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/feeds",
+        "responseCode":200
+      },
+      "input":{"shape":"ListFeedsRequest"},
+      "output":{"shape":"ListFeedsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestException"}
+      ],
+      "documentation":"<p>Displays a list of feeds that belong to this AWS account.</p>",
+      "readonly":true
+    },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/tags/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestException"}
+      ],
+      "documentation":"<p>List all tags that are on an Elemental Inference resource in the current region.</p>",
+      "readonly":true
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/tags/{resourceArn}",
+        "responseCode":204
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Associates the specified tags to the resource identified by the specified resourceArn in the current region. If existing tags on a resource are not specified in the request parameters, they are not changed. When a resource is deleted, the tags associated with that resource are also deleted.</p>",
+      "idempotent":true
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v1/tags/{resourceArn}",
+        "responseCode":204
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes specified tags from the specified resource in the current region.</p>",
+      "idempotent":true
+    },
+    "UpdateFeed":{
+      "name":"UpdateFeed",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v1/feed/{id}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateFeedRequest"},
+      "output":{"shape":"UpdateFeedResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Updates the name and/or outputs in a feed. </p>",
+      "idempotent":true
+    }
+  },
+  "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>You do not have sufficient access to perform this action.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "AssociateFeedRequest":{
+      "type":"structure",
+      "required":[
+        "id",
+        "associatedResourceName",
+        "outputs"
+      ],
+      "members":{
+        "id":{
+          "shape":"FeedId",
+          "documentation":"<p>The ID of the feed.</p>",
+          "location":"uri",
+          "locationName":"id"
+        },
+        "associatedResourceName":{
+          "shape":"AssociatedResourceName",
+          "documentation":"<p>An identifier for the resource. If the resource is from an AWS service, this identifier must be the full ARN of that resource. Otherwise, the identifier is a name that you assign and that is appropriate for the application that owns the resource. This name must not resemble an ARN.</p>",
+          "idempotencyToken":true
+        },
+        "outputs":{
+          "shape":"CreateOutputList",
+          "documentation":"<p>The outputs to add to this feed. You must specify at least one output. You can later use the UpdateFeed action to change the list of outputs.</p>"
+        },
+        "dryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Set to true if you want to do a dry run of the associate action.</p>"
+        }
+      }
+    },
+    "AssociateFeedResponse":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "id"
+      ],
+      "members":{
+        "arn":{
+          "shape":"FeedArn",
+          "documentation":"<p>The AWS ARN for this association.</p>"
+        },
+        "id":{
+          "shape":"FeedId",
+          "documentation":"<p>An ID for this response. It is unique in Elemental Inference for this AWS account.</p>"
+        }
+      }
+    },
+    "AssociatedResourceName":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"[\\w \\-\\.',@:;/]*"
+    },
+    "Boolean":{
+      "type":"boolean",
+      "box":true
+    },
+    "ClippingConfig":{
+      "type":"structure",
+      "members":{
+        "callbackMetadata":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The metadata that is the result of the clip request to Elemental Inference. </p>"
+        }
+      },
+      "documentation":"<p>A type of OutputConfig, used when the output in a feed is for the clip feature.</p>"
+    },
+    "ConflictException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request could not be completed due to a conflict.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true,
+      "retryable":{"throttling":false}
+    },
+    "CreateFeedRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "outputs"
+      ],
+      "members":{
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>A name for this feed.</p>"
+        },
+        "outputs":{
+          "shape":"CreateOutputList",
+          "documentation":"<p>An array of outputs for this feed. Each output represents a specific Elemental Inference feature. For example, an output might represent the crop feature. </p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>If you want to include tags, add them now. You won't be able to add them later.</p>"
+        }
+      }
+    },
+    "CreateFeedResponse":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "name",
+        "id",
+        "dataEndpoints",
+        "outputs",
+        "status"
+      ],
+      "members":{
+        "arn":{
+          "shape":"FeedArn",
+          "documentation":"<p>A unique ARN that Elemental Inference assigns to the feed.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name that you specified.</p>"
+        },
+        "id":{
+          "shape":"FeedId",
+          "documentation":"<p>A unique ID that Elemental Inference assigns to the feed.</p>"
+        },
+        "dataEndpoints":{
+          "shape":"StringList",
+          "documentation":"<p>A unique ARN that Elemental Inference assigns to the feed.</p>"
+        },
+        "outputs":{
+          "shape":"GetOutputList",
+          "documentation":"<p>Data endpoints that Elemental Inference assigns to the feed.</p>"
+        },
+        "status":{
+          "shape":"FeedStatus",
+          "documentation":"<p>The current status of the feed. After creation of the feed has succeeded, the status will be AVAILABLE.</p>"
+        },
+        "association":{
+          "shape":"FeedAssociation",
+          "documentation":"<p>The association for this feed. When you create the feed, this property is empty. You must associate a resource with the feed using AssociateFeed.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>Any tags that you included when you created the feed.</p>"
+        }
+      }
+    },
+    "CreateOutput":{
+      "type":"structure",
+      "required":[
+        "name",
+        "outputConfig",
+        "status"
+      ],
+      "members":{
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>A name for the output.</p>"
+        },
+        "outputConfig":{
+          "shape":"OutputConfig",
+          "documentation":"<p>A typed property for an output in a feed. It is used in the CreateFeed and AssociateFeed actions. It identifies the action for Elemental Inference to perform. It also provides a repository for the results of that action. For example, CroppingConfig output will contain the metadata for the crop feature. </p>"
+        },
+        "status":{
+          "shape":"OutputStatus",
+          "documentation":"<p>The status to assign to the output.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>A description for the output.</p>"
+        }
+      },
+      "documentation":"<p>Contains configuration information about one output in a feed. It is used in the AssociateFeed and the CreateFeed actions.</p>"
+    },
+    "CreateOutputList":{
+      "type":"list",
+      "member":{"shape":"CreateOutput"}
+    },
+    "CroppingConfig":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>A type of OutputConfig, used when the output in a feed is for the crop feature.</p>"
+    },
+    "DeleteFeedRequest":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"FeedId",
+          "documentation":"<p>The ID of the feed.</p>",
+          "location":"uri",
+          "locationName":"id"
+        }
+      }
+    },
+    "DeleteFeedResponse":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "id",
+        "status"
+      ],
+      "members":{
+        "arn":{
+          "shape":"FeedArn",
+          "documentation":"<p>The ARN of the deleted feed.</p>"
+        },
+        "id":{
+          "shape":"FeedId",
+          "documentation":"<p>The ID of the deleted feed.</p>"
+        },
+        "status":{
+          "shape":"FeedStatus",
+          "documentation":"<p>The current status of the feed. When deletion of the feed has succeeded, the status will be DELETED.</p>"
+        }
+      }
+    },
+    "DisassociateFeedRequest":{
+      "type":"structure",
+      "required":[
+        "id",
+        "associatedResourceName"
+      ],
+      "members":{
+        "id":{
+          "shape":"FeedId",
+          "documentation":"<p>The ID of the feed where you want to release the resource.</p>",
+          "location":"uri",
+          "locationName":"id"
+        },
+        "associatedResourceName":{
+          "shape":"AssociatedResourceName",
+          "documentation":"<p>The name of the resource currently associated with the feed'.</p>",
+          "idempotencyToken":true
+        },
+        "dryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Set to true if you want to do a dry run of the disassociate action.</p>"
+        }
+      }
+    },
+    "DisassociateFeedResponse":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "id"
+      ],
+      "members":{
+        "arn":{
+          "shape":"FeedArn",
+          "documentation":"<p>The ID of the feed where you deleted the associated resource.</p>"
+        },
+        "id":{
+          "shape":"FeedId",
+          "documentation":"<p>The ARN of the resource that you deleted.</p>"
+        }
+      }
+    },
+    "FeedArn":{"type":"string"},
+    "FeedAssociation":{
+      "type":"structure",
+      "required":["associatedResourceName"],
+      "members":{
+        "associatedResourceName":{
+          "shape":"AssociatedResourceName",
+          "documentation":"<p>The name of the associated resource.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the resource that is associated with a feed. It is used in the FeedSummary that is used in the response of a ListFeeds action.</p>"
+    },
+    "FeedId":{
+      "type":"string",
+      "pattern":"[a-z0-9]{19}"
+    },
+    "FeedStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "AVAILABLE",
+        "ACTIVE",
+        "UPDATING",
+        "DELETING",
+        "DELETED",
+        "ARCHIVED"
+      ]
+    },
+    "FeedSummary":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "id",
+        "name",
+        "status"
+      ],
+      "members":{
+        "arn":{
+          "shape":"FeedArn",
+          "documentation":"<p>The ARN of the feed.</p>"
+        },
+        "id":{
+          "shape":"FeedId",
+          "documentation":"<p>The ID of the feed.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the feed</p>"
+        },
+        "association":{
+          "shape":"FeedAssociation",
+          "documentation":"<p>The resource, if any, associated with the feed.</p>"
+        },
+        "status":{
+          "shape":"FeedStatus",
+          "documentation":"<p>The status of the feed.</p>"
+        }
+      },
+      "documentation":"<p>Contains configuration information about a feed. It is used in the ListFeeds action.</p>"
+    },
+    "FeedSummaryList":{
+      "type":"list",
+      "member":{"shape":"FeedSummary"}
+    },
+    "GetFeedRequest":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"FeedId",
+          "documentation":"<p>The ID of the feed to query.</p>",
+          "location":"uri",
+          "locationName":"id"
+        }
+      }
+    },
+    "GetFeedResponse":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "name",
+        "id",
+        "dataEndpoints",
+        "outputs",
+        "status"
+      ],
+      "members":{
+        "arn":{
+          "shape":"FeedArn",
+          "documentation":"<p>The ARN of the feed.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the feed being queried.</p>"
+        },
+        "id":{
+          "shape":"FeedId",
+          "documentation":"<p>The ID of the feed being queried.</p>"
+        },
+        "dataEndpoints":{
+          "shape":"StringList",
+          "documentation":"<p>The dataEndpoints of the feed being queried.</p>"
+        },
+        "outputs":{
+          "shape":"GetOutputList",
+          "documentation":"<p>An array of the outputs in the feed being queried.</p>"
+        },
+        "status":{
+          "shape":"FeedStatus",
+          "documentation":"<p>The status of the feed being queried.</p>"
+        },
+        "association":{
+          "shape":"FeedAssociation",
+          "documentation":"<p>Information about the resource, if any, associated with the feed being queried.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>A list of the tags, if any, for the feed being queried.</p>"
+        }
+      }
+    },
+    "GetOutput":{
+      "type":"structure",
+      "required":[
+        "name",
+        "outputConfig",
+        "status"
+      ],
+      "members":{
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The ARN of the output.</p>"
+        },
+        "outputConfig":{
+          "shape":"OutputConfig",
+          "documentation":"<p>A typed property for an output in a feed. It is used in the GetFeed action. It identifies the action for Elemental Inference to perform. It also provides a repository for the results of that action. For example, CroppingConfig output will contain the metadata for the crop feature. </p>"
+        },
+        "status":{
+          "shape":"OutputStatus",
+          "documentation":"<p>The status of the output.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the output.</p>"
+        },
+        "fromAssociation":{
+          "shape":"Boolean",
+          "documentation":"<p>True means that the output was originally created in the feed by the AssociateFeed operation. False means it was created using CreateFeed or UpdateFeed. You will need this value if you use the UpdateFeed operation to modify the list of outputs in the feed.</p>"
+        }
+      },
+      "documentation":"<p>Contains configuration information about one output in a feed. It is used in the GetFeed action.</p>"
+    },
+    "GetOutputList":{
+      "type":"list",
+      "member":{"shape":"GetOutput"}
+    },
+    "InternalServerErrorException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>An internal server error occurred. This is a temporary condition and the request can be retried. If the problem persists, contact AWS Support.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true,
+      "retryable":{"throttling":false}
+    },
+    "ListFeedsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"ListFeedsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return per API request.</p> <p>For example, you submit a list request with MaxResults set at 5. Although 20 items match your request, the service returns no more than the first 5 items. (The service also returns a NextToken value that you can use to fetch the next batch of results.)</p> <p>The service might return fewer results than the MaxResults value. If MaxResults is not included in the request, the service defaults to pagination with a maximum of 10 results per page.</p> <p>Valid Range: Minimum value of 1. Maximum value of 1000.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token that identifies the batch of results that you want to see.</p> <p>For example, you submit a ListBridges request with MaxResults set at 5. The service returns the first batch of results (up to 5) and a NextToken value. To see the next batch of results, you can submit the ListBridges request a second time and specify the NextToken value.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListFeedsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListFeedsResponse":{
+      "type":"structure",
+      "required":["feeds"],
+      "members":{
+        "feeds":{
+          "shape":"FeedSummaryList",
+          "documentation":"<p>A list of feed summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token that identifies the batch of results that you want to see. For example, you submit a list request with MaxResults set at 5. The service returns the first batch of results (up to 5) and a NextToken value. To see the next batch of results, you can submit the list request a second time and specify the NextToken value.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the resource whose tags you want to query. </p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "members":{
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>A list of the tags that belong to this resource.</p>"
+        }
+      }
+    },
+    "OutputConfig":{
+      "type":"structure",
+      "members":{
+        "cropping":{
+          "shape":"CroppingConfig",
+          "documentation":"<p>The output config type that applies to the cropping feature.</p>"
+        },
+        "clipping":{
+          "shape":"ClippingConfig",
+          "documentation":"<p>The output config type that applies to the clipping feature.</p>"
+        }
+      },
+      "documentation":"<p>Contains one typed output. It is used in the CreateOutput, GetOutput, and Update Output structures. </p>",
+      "union":true
+    },
+    "OutputStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "ResourceArn":{"type":"string"},
+    "ResourceDescription":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "pattern":"[\\w \\-\\.',@:;]*"
+    },
+    "ResourceName":{
+      "type":"string",
+      "pattern":"[a-zA-Z0-9]([a-zA-Z0-9-_]{0,126}[a-zA-Z0-9])?"
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The resource specified in the action doesn't exist.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request was rejected because it would exceed one or more service quotas for your account. Review your service quotas and either delete unused resources or request a quota increase.</p>",
+      "error":{
+        "httpStatusCode":402,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "String":{"type":"string"},
+    "StringList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "TagKeyList":{
+      "type":"list",
+      "member":{"shape":"TagKey"}
+    },
+    "TagMap":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"}
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tags"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the resource where you want to add tags. </p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>A list of tags to add to the resource.</p>"
+        }
+      }
+    },
+    "TagValue":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "TooManyRequestException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request was denied due to request throttling. Too many requests have been made within a given time period. Reduce the frequency of requests and use exponential backoff when retrying.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true,
+      "retryable":{"throttling":false}
+    },
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tagKeys"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the resource where you want to delete one or more tags.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tagKeys":{
+          "shape":"TagKeyList",
+          "documentation":"<p>The keys of the tags to delete.</p>",
+          "location":"querystring",
+          "locationName":"tagKeys"
+        }
+      }
+    },
+    "UpdateFeedRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "id",
+        "outputs"
+      ],
+      "members":{
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>Required. You can specify the existing name (to leave it unchanged) or a new name.</p>"
+        },
+        "id":{
+          "shape":"FeedId",
+          "documentation":"<p>The ID of the feed to update.</p>",
+          "location":"uri",
+          "locationName":"id"
+        },
+        "outputs":{
+          "shape":"UpdateOutputList",
+          "documentation":"<p>Required. You can specify the existing array of outputs (to leave outputs unchanged) or you can specify a new array. </p>"
+        }
+      }
+    },
+    "UpdateFeedResponse":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "name",
+        "id",
+        "dataEndpoints",
+        "outputs",
+        "status"
+      ],
+      "members":{
+        "arn":{
+          "shape":"FeedArn",
+          "documentation":"<p>The ARN of the feed.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The updated or original name of the feed.</p>"
+        },
+        "id":{
+          "shape":"FeedId",
+          "documentation":"<p>The ID of the feed.</p>"
+        },
+        "dataEndpoints":{
+          "shape":"StringList",
+          "documentation":"<p>The data endpoints of the feed.</p>"
+        },
+        "outputs":{
+          "shape":"GetOutputList",
+          "documentation":"<p>The array of outputs in the feed. You might have left this array unchanged, or you might have changed it.</p>"
+        },
+        "status":{
+          "shape":"FeedStatus",
+          "documentation":"<p>The status of the output.</p>"
+        },
+        "association":{
+          "shape":"FeedAssociation",
+          "documentation":"<p>True means that the output was originally created in the feed by the AssociateFeed operation. False means it was created using CreateFeed or UpdateFeed. You will need this value if you use the UpdateFeed operation to modify the list of outputs in the feed.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The name of the resource currently associated with the feed, if any.</p>"
+        }
+      }
+    },
+    "UpdateOutput":{
+      "type":"structure",
+      "required":[
+        "name",
+        "outputConfig",
+        "status"
+      ],
+      "members":{
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name start here</p>"
+        },
+        "outputConfig":{
+          "shape":"OutputConfig",
+          "documentation":"<p>A typed property for an output in a feed. It is used in the UpdateFeed action. It identifies the action for Elemental Inference to perform. It also provides a repository for the results of that action. For example, CroppingConfig output will contain the metadata for the crop feature. </p>"
+        },
+        "status":{
+          "shape":"OutputStatus",
+          "documentation":"<p>The status of the output.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>A description of the output.</p>"
+        },
+        "fromAssociation":{
+          "shape":"Boolean",
+          "documentation":"<p>This property is set by the service when you add the output to the feed, and indicates how you added the output. True means that you used the AssociateFeed operation. False means that you used the CreateFeed or UpdateFeed operation. Use GetFeed to obtain the value. If the value is True, include this field here with a value of True. If the value is False, omit the field here.</p>"
+        }
+      },
+      "documentation":"<p>Contains configuration information about one output in a feed. It is used in the UpdateFeed action.</p>"
+    },
+    "UpdateOutputList":{
+      "type":"list",
+      "member":{"shape":"UpdateOutput"}
+    },
+    "ValidationException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The input fails to satisfy the constraints specified by the service. Check the error message for details about which parameter or field is invalid and correct the request before retrying.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    }
+  },
+  "documentation":"<p>This is the AWS Elemental Inference REST API Reference. It provides information on the URL, request contents, and response contents of each AWS Elemental Inference REST operation. </p> <p>We assume that you have the IAM permissions that you need to use AWS Elemental Inference via the REST API. We also assume that you are familiar with the features and operations of AWS Elemental Inference as described in <i>AWS Elemental Inference User Guide</i>. </p>"
+}

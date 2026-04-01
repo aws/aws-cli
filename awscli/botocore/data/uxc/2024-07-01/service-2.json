@@ -1,0 +1,281 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2024-07-01",
+    "auth":["aws.auth#sigv4"],
+    "endpointPrefix":"uxc",
+    "protocol":"rest-json",
+    "protocols":["rest-json"],
+    "serviceFullName":"AWS User Experience Customization",
+    "serviceId":"uxc",
+    "signatureVersion":"v4",
+    "signingName":"uxc",
+    "uid":"uxc-2024-07-01"
+  },
+  "operations":{
+    "GetAccountCustomizations":{
+      "name":"GetAccountCustomizations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/account-customizations",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAccountCustomizationsInput"},
+      "output":{"shape":"GetAccountCustomizationsOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns the current account customization settings, including account color, visible services, and visible Regions. Settings that you have not configured return their default values: visible Regions and visible services return `null`, and account color returns `none`.</p> <note> <p>The <code>visibleServices</code> and <code>visibleRegions</code> settings control only the appearance of services and Regions in the Amazon Web Services Management Console. They do not restrict access through the CLI, SDKs, or other APIs.</p> </note>",
+      "readonly":true
+    },
+    "ListServices":{
+      "name":"ListServices",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/services",
+        "responseCode":200
+      },
+      "input":{"shape":"ListServicesInput"},
+      "output":{"shape":"ListServicesOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns a paginated list of Amazon Web Services service identifiers that you can use as values for the <code>visibleServices</code> setting in <a href=\"https://docs.aws.amazon.com/awsconsolehelpdocs/latest/APIReference/API_UpdateAccountCustomizations.html\">UpdateAccountCustomizations</a>. The available services vary by Amazon Web Services partition. Use pagination to retrieve all results.</p> <note> <p>The <code>visibleServices</code> setting controls only the appearance of services in the Amazon Web Services Management Console. It does not restrict access through the CLI, SDKs, or other APIs.</p> </note>",
+      "readonly":true
+    },
+    "UpdateAccountCustomizations":{
+      "name":"UpdateAccountCustomizations",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/v1/account-customizations",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateAccountCustomizationsInput"},
+      "output":{"shape":"UpdateAccountCustomizationsOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates one or more account customization settings. You can update account color, visible services, and visible Regions in a single request. Only the settings that you include in the request body are modified. Omitted settings remain unchanged. To reset a setting to its default behavior, set the value to <code>null</code> for visible Regions and visible services, or <code>none</code> for account color. This operation is idempotent.</p> <note> <p>The <code>visibleServices</code> and <code>visibleRegions</code> settings control only the appearance of services and Regions in the Amazon Web Services Management Console. They do not restrict access through the CLI, SDKs, or other APIs.</p> </note>",
+      "idempotent":true
+    }
+  },
+  "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>You don't have sufficient access to perform this operation. Verify that your IAM policy includes the required <code>uxc:</code> permissions for the operation that you are calling. For more information on IAM permissions, see <a href=\"https://docs.aws.amazon.com/awsconsolehelpdocs/latest/gsg/security-iam-awsmanpol.html\">Amazon Web Services managed policies for Amazon Web Services Management Console</a>.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "AccountColor":{
+      "type":"string",
+      "enum":[
+        "none",
+        "pink",
+        "purple",
+        "darkBlue",
+        "lightBlue",
+        "teal",
+        "green",
+        "yellow",
+        "orange",
+        "red"
+      ]
+    },
+    "GetAccountCustomizationsInput":{
+      "type":"structure",
+      "members":{}
+    },
+    "GetAccountCustomizationsOutput":{
+      "type":"structure",
+      "members":{
+        "accountColor":{
+          "shape":"AccountColor",
+          "documentation":"<p>The account color preference. A value of <code>none</code> indicates that you have not set a color.</p>"
+        },
+        "visibleServices":{
+          "shape":"ServiceList",
+          "documentation":"<p>The list of Amazon Web Services service identifiers that are visible to the account in the Amazon Web Services Management Console. A value of <code>null</code> indicates that you have not configured this feature and all services are visible. For valid service identifiers, call <a href=\"https://docs.aws.amazon.com/awsconsolehelpdocs/latest/APIReference/API_ListServices.html\">ListServices</a>.</p>"
+        },
+        "visibleRegions":{
+          "shape":"RegionsList",
+          "documentation":"<p>The list of Amazon Web Services Region codes that are visible to the account in the Amazon Web Services Management Console. A value of <code>null</code> indicates that you have not configured this feature and all Regions are visible. For a list of valid Region codes, see <a href=\"https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html\">Amazon Web Services Regions</a>.</p>"
+        }
+      }
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The service encountered an internal error. Try your request again later.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true
+    },
+    "ListServicesInput":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for retrieving the next page of results. Use the <code>nextToken</code> value from a previous response.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListServicesOutput":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for retrieving the next page of results. This value is <code>null</code> when no more results are available.</p>"
+        },
+        "services":{
+          "shape":"ServiceList",
+          "documentation":"<p>The list of available Amazon Web Services service identifiers.</p>"
+        }
+      }
+    },
+    "MaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "NextToken":{
+      "type":"string",
+      "max":512,
+      "min":32,
+      "pattern":"[-A-Za-z0-9+/_]+=*"
+    },
+    "Region":{
+      "type":"string",
+      "pattern":"[a-z]{2}(-[a-z]{1,10}){1,2}-[1-9]"
+    },
+    "RegionsList":{
+      "type":"list",
+      "member":{"shape":"Region"},
+      "max":100,
+      "min":0
+    },
+    "Service":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-z0-9]+(-[a-z0-9]+)*"
+    },
+    "ServiceList":{
+      "type":"list",
+      "member":{"shape":"Service"},
+      "max":500,
+      "min":0
+    },
+    "String":{"type":"string"},
+    "ThrottlingException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request was denied because of request throttling. Reduce the frequency of your requests.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "UpdateAccountCustomizationsInput":{
+      "type":"structure",
+      "members":{
+        "accountColor":{
+          "shape":"AccountColor",
+          "documentation":"<p>The account color preference to set. Set to <code>none</code> to reset to the default (no color).</p>"
+        },
+        "visibleServices":{
+          "shape":"ServiceList",
+          "documentation":"<p>The list of Amazon Web Services service identifiers to make visible in the Amazon Web Services Management Console. Set to <code>null</code> to reset to the default, which makes all services visible. For valid service identifiers, call <a href=\"https://docs.aws.amazon.com/awsconsolehelpdocs/latest/APIReference/API_ListServices.html\">ListServices</a>.</p>"
+        },
+        "visibleRegions":{
+          "shape":"RegionsList",
+          "documentation":"<p>The list of Amazon Web Services Region codes to make visible in the Amazon Web Services Management Console. Set to <code>null</code> to reset to the default, which makes all Regions visible. For a list of valid Region codes, see <a href=\"https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html\">Amazon Web Services Regions</a>.</p>"
+        }
+      }
+    },
+    "UpdateAccountCustomizationsOutput":{
+      "type":"structure",
+      "members":{
+        "accountColor":{
+          "shape":"AccountColor",
+          "documentation":"<p>The current account color preference after the update.</p>"
+        },
+        "visibleServices":{
+          "shape":"ServiceList",
+          "documentation":"<p>The current list of visible service identifiers after the update.</p>"
+        },
+        "visibleRegions":{
+          "shape":"RegionsList",
+          "documentation":"<p>The current list of visible Region codes after the update.</p>"
+        }
+      }
+    },
+    "ValidationException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"},
+        "fieldList":{
+          "shape":"ValidationExceptionFieldList",
+          "documentation":"<p>The list of fields that are invalid.</p>"
+        }
+      },
+      "documentation":"<p>The input fails to satisfy the constraints specified by an Amazon Web Services service.</p>",
+      "exception":true
+    },
+    "ValidationExceptionField":{
+      "type":"structure",
+      "required":[
+        "path",
+        "message"
+      ],
+      "members":{
+        "path":{
+          "shape":"String",
+          "documentation":"<p>The field name with the validation exception.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A message describing the validation exception.</p>"
+        }
+      },
+      "documentation":"<p>Describes a validation exception for a specific field.</p>"
+    },
+    "ValidationExceptionFieldList":{
+      "type":"list",
+      "member":{"shape":"ValidationExceptionField"}
+    }
+  },
+  "documentation":"<p>This is the Amazon Web Services User Experience Customization (UXC) API Reference. Amazon Web Services User Experience Customization (UXC) is a utility that provides programmatic access to enable account administrators to customize the visual appearance of the Amazon Web Services Management Console and manage these settings at the account level.</p> <note> <p>The <code>visibleServices</code> and <code>visibleRegions</code> settings control only the appearance of services and Regions in the Amazon Web Services Management Console. They do not restrict access through the CLI, SDKs, or other APIs.</p> </note> <p>For more information about UXC features and console procedures, see <a href=\"https://docs.aws.amazon.com/awsconsolehelpdocs/latest/gsg/getting-started-uxc.html\">Getting started with Amazon Web Services User Experience Customization</a>. For information about required permissions, see <a href=\"https://docs.aws.amazon.com/awsconsolehelpdocs/latest/gsg/security_iam.html\">Identity and access management for Amazon Web Services Management Console</a>.</p>"
+}

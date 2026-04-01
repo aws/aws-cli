@@ -210,7 +210,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves detailed information about a specific browser session in Amazon Bedrock. This operation returns the session's configuration, current status, associated streams, and metadata.</p> <p>To get a browser session, you must specify both the browser identifier and the session ID. The response includes information about the session's viewport configuration, timeout settings, and stream endpoints.</p> <p>The following operations are related to <code>GetBrowserSession</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StartBrowserSession.html\">StartBrowserSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ListBrowserSessions.html\">ListBrowserSessions</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StopBrowserSession.html\">StopBrowserSession</a> </p> </li> </ul>",
+      "documentation":"<p>Retrieves detailed information about a specific browser session in Amazon Bedrock AgentCore. This operation returns the session's configuration, current status, associated streams, and metadata.</p> <p>To get a browser session, you must specify both the browser identifier and the session ID. The response includes information about the session's viewport configuration, timeout settings, and stream endpoints.</p> <p>The following operations are related to <code>GetBrowserSession</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StartBrowserSession.html\">StartBrowserSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ListBrowserSessions.html\">ListBrowserSessions</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StopBrowserSession.html\">StopBrowserSession</a> </p> </li> </ul>",
       "readonly":true
     },
     "GetCodeInterpreterSession":{
@@ -229,7 +229,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves detailed information about a specific code interpreter session in Amazon Bedrock. This operation returns the session's configuration, current status, and metadata.</p> <p>To get a code interpreter session, you must specify both the code interpreter identifier and the session ID. The response includes information about the session's timeout settings and current status.</p> <p>The following operations are related to <code>GetCodeInterpreterSession</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StartCodeInterpreterSession.html\">StartCodeInterpreterSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ListCodeInterpreterSessions.html\">ListCodeInterpreterSessions</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StopCodeInterpreterSession.html\">StopCodeInterpreterSession</a> </p> </li> </ul>",
+      "documentation":"<p>Retrieves detailed information about a specific code interpreter session in Amazon Bedrock AgentCore. This operation returns the session's configuration, current status, and metadata.</p> <p>To get a code interpreter session, you must specify both the code interpreter identifier and the session ID. The response includes information about the session's timeout settings and current status.</p> <p>The following operations are related to <code>GetCodeInterpreterSession</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StartCodeInterpreterSession.html\">StartCodeInterpreterSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ListCodeInterpreterSessions.html\">ListCodeInterpreterSessions</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StopCodeInterpreterSession.html\">StopCodeInterpreterSession</a> </p> </li> </ul>",
       "readonly":true
     },
     "GetEvent":{
@@ -389,7 +389,27 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Sends a request to an agent or tool hosted in an Amazon Bedrock AgentCore Runtime and receives responses in real-time. </p> <p>To invoke an agent you must specify the AgentCore Runtime ARN and provide a payload containing your request. You can optionally specify a qualifier to target a specific version or endpoint of the agent.</p> <p>This operation supports streaming responses, allowing you to receive partial responses as they become available. We recommend using pagination to ensure that the operation returns quickly and successfully when processing large responses.</p> <p>For example code, see <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-invoke-agent.html\">Invoke an AgentCore Runtime agent</a>. </p> <p>If you're integrating your agent with OAuth, you can't use the Amazon Web Services SDK to call <code>InvokeAgentRuntime</code>. Instead, make a HTTPS request to <code>InvokeAgentRuntime</code>. For an example, see <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-oauth.html\">Authenticate and authorize with Inbound Auth and Outbound Auth</a>.</p> <p>To use this operation, you must have the <code>bedrock-agentcore:InvokeAgentRuntime</code> permission. If you are making a call to <code>InvokeAgentRuntime</code> on behalf of a user ID with the <code>X-Amzn-Bedrock-AgentCore-Runtime-User-Id</code> header, You require permissions to both actions (<code>bedrock-agentcore:InvokeAgentRuntime</code> and <code>bedrock-agentcore:InvokeAgentRuntimeForUser</code>). </p>"
+      "documentation":"<p>Sends a request to an agent or tool hosted in an Amazon Bedrock AgentCore Runtime and receives responses in real-time. </p> <p>To invoke an agent, you can specify either the AgentCore Runtime ARN or the agent ID with an account ID, and provide a payload containing your request. When you use the agent ID instead of the full ARN, you don't need to URL-encode the identifier. You can optionally specify a qualifier to target a specific endpoint of the agent.</p> <p>This operation supports streaming responses, allowing you to receive partial responses as they become available. We recommend using pagination to ensure that the operation returns quickly and successfully when processing large responses.</p> <p>For example code, see <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-invoke-agent.html\">Invoke an AgentCore Runtime agent</a>. </p> <p>If you're integrating your agent with OAuth, you can't use the Amazon Web Services SDK to call <code>InvokeAgentRuntime</code>. Instead, make a HTTPS request to <code>InvokeAgentRuntime</code>. For an example, see <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-oauth.html\">Authenticate and authorize with Inbound Auth and Outbound Auth</a>.</p> <p>To use this operation, you must have the <code>bedrock-agentcore:InvokeAgentRuntime</code> permission. If you are making a call to <code>InvokeAgentRuntime</code> on behalf of a user ID with the <code>X-Amzn-Bedrock-AgentCore-Runtime-User-Id</code> header, You require permissions to both actions (<code>bedrock-agentcore:InvokeAgentRuntime</code> and <code>bedrock-agentcore:InvokeAgentRuntimeForUser</code>). </p>"
+    },
+    "InvokeAgentRuntimeCommand":{
+      "name":"InvokeAgentRuntimeCommand",
+      "http":{
+        "method":"POST",
+        "requestUri":"/runtimes/{agentRuntimeArn}/commands",
+        "responseCode":200
+      },
+      "input":{"shape":"InvokeAgentRuntimeCommandRequest"},
+      "output":{"shape":"InvokeAgentRuntimeCommandResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RuntimeClientError"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Executes a command in a runtime session container and streams the output back to the caller. This operation allows you to run shell commands within the agent runtime environment and receive real-time streaming responses including standard output and standard error.</p> <p>To invoke a command, you must specify the agent runtime ARN and a runtime session ID. The command execution supports streaming responses, allowing you to receive output as it becomes available through <code>contentStart</code>, <code>contentDelta</code>, and <code>contentStop</code> events.</p> <p>To use this operation, you must have the <code>bedrock-agentcore:InvokeAgentRuntimeCommand</code> permission.</p>"
     },
     "InvokeCodeInterpreter":{
       "name":"InvokeCodeInterpreter",
@@ -409,7 +429,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Executes code within an active code interpreter session in Amazon Bedrock. This operation processes the provided code, runs it in a secure environment, and returns the execution results including output, errors, and generated visualizations.</p> <p>To execute code, you must specify the code interpreter identifier, session ID, and the code to run in the arguments parameter. The operation returns a stream containing the execution results, which can include text output, error messages, and data visualizations.</p> <p>This operation is subject to request rate limiting based on your account's service quotas.</p> <p>The following operations are related to <code>InvokeCodeInterpreter</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StartCodeInterpreterSession.html\">StartCodeInterpreterSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetCodeInterpreterSession.html\">GetCodeInterpreterSession</a> </p> </li> </ul>"
+      "documentation":"<p>Executes code within an active code interpreter session in Amazon Bedrock AgentCore. This operation processes the provided code, runs it in a secure environment, and returns the execution results including output, errors, and generated visualizations.</p> <p>To execute code, you must specify the code interpreter identifier, session ID, and the code to run in the arguments parameter. The operation returns a stream containing the execution results, which can include text output, error messages, and data visualizations.</p> <p>This operation is subject to request rate limiting based on your account's service quotas.</p> <p>The following operations are related to <code>InvokeCodeInterpreter</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StartCodeInterpreterSession.html\">StartCodeInterpreterSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetCodeInterpreterSession.html\">GetCodeInterpreterSession</a> </p> </li> </ul>"
     },
     "ListActors":{
       "name":"ListActors",
@@ -448,7 +468,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves a list of browser sessions in Amazon Bedrock that match the specified criteria. This operation returns summary information about each session, including identifiers, status, and timestamps.</p> <p>You can filter the results by browser identifier and session status. The operation supports pagination to handle large result sets efficiently.</p> <p>We recommend using pagination to ensure that the operation returns quickly and successfully when retrieving large numbers of sessions.</p> <p>The following operations are related to <code>ListBrowserSessions</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StartBrowserSession.html\">StartBrowserSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetBrowserSession.html\">GetBrowserSession</a> </p> </li> </ul>",
+      "documentation":"<p>Retrieves a list of browser sessions in Amazon Bedrock AgentCore that match the specified criteria. This operation returns summary information about each session, including identifiers, status, and timestamps.</p> <p>You can filter the results by browser identifier and session status. The operation supports pagination to handle large result sets efficiently.</p> <p>We recommend using pagination to ensure that the operation returns quickly and successfully when retrieving large numbers of sessions.</p> <p>The following operations are related to <code>ListBrowserSessions</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StartBrowserSession.html\">StartBrowserSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetBrowserSession.html\">GetBrowserSession</a> </p> </li> </ul>",
       "readonly":true
     },
     "ListCodeInterpreterSessions":{
@@ -467,7 +487,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves a list of code interpreter sessions in Amazon Bedrock that match the specified criteria. This operation returns summary information about each session, including identifiers, status, and timestamps.</p> <p>You can filter the results by code interpreter identifier and session status. The operation supports pagination to handle large result sets efficiently.</p> <p>We recommend using pagination to ensure that the operation returns quickly and successfully when retrieving large numbers of sessions.</p> <p>The following operations are related to <code>ListCodeInterpreterSessions</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StartCodeInterpreterSession.html\">StartCodeInterpreterSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetCodeInterpreterSession.html\">GetCodeInterpreterSession</a> </p> </li> </ul>",
+      "documentation":"<p>Retrieves a list of code interpreter sessions in Amazon Bedrock AgentCore that match the specified criteria. This operation returns summary information about each session, including identifiers, status, and timestamps.</p> <p>You can filter the results by code interpreter identifier and session status. The operation supports pagination to handle large result sets efficiently.</p> <p>We recommend using pagination to ensure that the operation returns quickly and successfully when retrieving large numbers of sessions.</p> <p>The following operations are related to <code>ListCodeInterpreterSessions</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StartCodeInterpreterSession.html\">StartCodeInterpreterSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetCodeInterpreterSession.html\">GetCodeInterpreterSession</a> </p> </li> </ul>",
       "readonly":true
     },
     "ListEvents":{
@@ -572,6 +592,26 @@
       ],
       "documentation":"<p>Searches for and retrieves memory records from an AgentCore Memory resource based on specified search criteria. We recommend using pagination to ensure that the operation returns quickly and successfully.</p> <p>To use this operation, you must have the <code>bedrock-agentcore:RetrieveMemoryRecords</code> permission.</p>"
     },
+    "SaveBrowserSessionProfile":{
+      "name":"SaveBrowserSessionProfile",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/browser-profiles/{profileIdentifier}/save",
+        "responseCode":200
+      },
+      "input":{"shape":"SaveBrowserSessionProfileRequest"},
+      "output":{"shape":"SaveBrowserSessionProfileResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Saves the current state of a browser session as a reusable profile in Amazon Bedrock AgentCore. A browser profile captures persistent browser data such as cookies and local storage from an active session, enabling you to reuse this data in future browser sessions.</p> <p>To save a browser session profile, you must specify the profile identifier, browser identifier, and session ID. The session must be active when saving the profile. Once saved, the profile can be used with the <code>StartBrowserSession</code> operation to initialize new sessions with the stored browser state.</p> <p>Browser profiles are useful for scenarios that require persistent authentication, maintaining user preferences across sessions, or continuing tasks that depend on previously stored browser data.</p> <p>The following operations are related to <code>SaveBrowserSessionProfile</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StartBrowserSession.html\">StartBrowserSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetBrowserSession.html\">GetBrowserSession</a> </p> </li> </ul>",
+      "idempotent":true
+    },
     "StartBrowserSession":{
       "name":"StartBrowserSession",
       "http":{
@@ -590,7 +630,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates and initializes a browser session in Amazon Bedrock. The session enables agents to navigate and interact with web content, extract information from websites, and perform web-based tasks as part of their response generation.</p> <p>To create a session, you must specify a browser identifier and a name. You can also configure the viewport dimensions to control the visible area of web content. The session remains active until it times out or you explicitly stop it using the <code>StopBrowserSession</code> operation.</p> <p>The following operations are related to <code>StartBrowserSession</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetBrowserSession.html\">GetBrowserSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_UpdateBrowserStream.html\">UpdateBrowserStream</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StopBrowserSession.html\">StopBrowserSession</a> </p> </li> </ul>",
+      "documentation":"<p>Creates and initializes a browser session in Amazon Bedrock AgentCore. The session enables agents to navigate and interact with web content, extract information from websites, and perform web-based tasks as part of their response generation.</p> <p>To create a session, you must specify a browser identifier and a name. You can also configure the viewport dimensions to control the visible area of web content. The session remains active until it times out or you explicitly stop it using the <code>StopBrowserSession</code> operation.</p> <p>The following operations are related to <code>StartBrowserSession</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetBrowserSession.html\">GetBrowserSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_UpdateBrowserStream.html\">UpdateBrowserStream</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_SaveBrowserSessionProfile.html\">SaveBrowserSessionProfile</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StopBrowserSession.html\">StopBrowserSession</a> </p> </li> </ul>",
       "idempotent":true
     },
     "StartCodeInterpreterSession":{
@@ -611,7 +651,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates and initializes a code interpreter session in Amazon Bedrock. The session enables agents to execute code as part of their response generation, supporting programming languages such as Python for data analysis, visualization, and computation tasks.</p> <p>To create a session, you must specify a code interpreter identifier and a name. The session remains active until it times out or you explicitly stop it using the <code>StopCodeInterpreterSession</code> operation.</p> <p>The following operations are related to <code>StartCodeInterpreterSession</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_InvokeCodeInterpreter.html\">InvokeCodeInterpreter</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetCodeInterpreterSession.html\">GetCodeInterpreterSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StopCodeInterpreterSession.html\">StopCodeInterpreterSession</a> </p> </li> </ul>",
+      "documentation":"<p>Creates and initializes a code interpreter session in Amazon Bedrock AgentCore. The session enables agents to execute code as part of their response generation, supporting programming languages such as Python for data analysis, visualization, and computation tasks.</p> <p>To create a session, you must specify a code interpreter identifier and a name. The session remains active until it times out or you explicitly stop it using the <code>StopCodeInterpreterSession</code> operation.</p> <p>The following operations are related to <code>StartCodeInterpreterSession</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_InvokeCodeInterpreter.html\">InvokeCodeInterpreter</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetCodeInterpreterSession.html\">GetCodeInterpreterSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StopCodeInterpreterSession.html\">StopCodeInterpreterSession</a> </p> </li> </ul>",
       "idempotent":true
     },
     "StartMemoryExtractionJob":{
@@ -652,7 +692,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Terminates an active browser session in Amazon Bedrock. This operation stops the session, releases associated resources, and makes the session unavailable for further use.</p> <p>To stop a browser session, you must specify both the browser identifier and the session ID. Once stopped, a session cannot be restarted; you must create a new session using <code>StartBrowserSession</code>.</p> <p>The following operations are related to <code>StopBrowserSession</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StartBrowserSession.html\">StartBrowserSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetBrowserSession.html\">GetBrowserSession</a> </p> </li> </ul>",
+      "documentation":"<p>Terminates an active browser session in Amazon Bedrock AgentCore. This operation stops the session, releases associated resources, and makes the session unavailable for further use.</p> <p>To stop a browser session, you must specify both the browser identifier and the session ID. Once stopped, a session cannot be restarted; you must create a new session using <code>StartBrowserSession</code>.</p> <p>The following operations are related to <code>StopBrowserSession</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StartBrowserSession.html\">StartBrowserSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetBrowserSession.html\">GetBrowserSession</a> </p> </li> </ul>",
       "idempotent":true
     },
     "StopCodeInterpreterSession":{
@@ -673,7 +713,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Terminates an active code interpreter session in Amazon Bedrock. This operation stops the session, releases associated resources, and makes the session unavailable for further use.</p> <p>To stop a code interpreter session, you must specify both the code interpreter identifier and the session ID. Once stopped, a session cannot be restarted; you must create a new session using <code>StartCodeInterpreterSession</code>.</p> <p>The following operations are related to <code>StopCodeInterpreterSession</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StartCodeInterpreterSession.html\">StartCodeInterpreterSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetCodeInterpreterSession.html\">GetCodeInterpreterSession</a> </p> </li> </ul>",
+      "documentation":"<p>Terminates an active code interpreter session in Amazon Bedrock AgentCore. This operation stops the session, releases associated resources, and makes the session unavailable for further use.</p> <p>To stop a code interpreter session, you must specify both the code interpreter identifier and the session ID. Once stopped, a session cannot be restarted; you must create a new session using <code>StartCodeInterpreterSession</code>.</p> <p>The following operations are related to <code>StopCodeInterpreterSession</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StartCodeInterpreterSession.html\">StartCodeInterpreterSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetCodeInterpreterSession.html\">GetCodeInterpreterSession</a> </p> </li> </ul>",
       "idempotent":true
     },
     "StopRuntimeSession":{
@@ -793,7 +833,7 @@
           "documentation":"<p>The current status of the automation stream. This indicates whether the stream is available for use. Possible values include ACTIVE, CONNECTING, and DISCONNECTED.</p>"
         }
       },
-      "documentation":"<p>The configuration for a stream that enables programmatic control of a browser session in Amazon Bedrock. This stream provides a bidirectional communication channel for sending commands to the browser and receiving responses, allowing agents to automate web interactions such as navigation, form filling, and element clicking.</p>"
+      "documentation":"<p>The configuration for a stream that enables programmatic control of a browser session in Amazon Bedrock AgentCore. This stream provides a bidirectional communication channel for sending commands to the browser and receiving responses, allowing agents to automate web interactions such as navigation, form filling, and element clicking.</p>"
     },
     "AutomationStreamStatus":{
       "type":"string",
@@ -811,6 +851,17 @@
         }
       },
       "documentation":"<p>Contains information about an update to an automation stream.</p>"
+    },
+    "BasicAuth":{
+      "type":"structure",
+      "required":["secretArn"],
+      "members":{
+        "secretArn":{
+          "shape":"SecretArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager secret containing proxy credentials. The secret must be a JSON object with <code>username</code> and <code>password</code> string fields that meet validation requirements. The caller must have <code>secretsmanager:GetSecretValue</code> permission for this ARN. Example secret format: <code>{\"username\": \"proxy_user\", \"password\": \"secure_password\"}</code> </p>"
+        }
+      },
+      "documentation":"<p>Configuration for HTTP Basic Authentication using credentials stored in Amazon Web Services Secrets Manager. The secret must contain a JSON object with <code>username</code> and <code>password</code> string fields. Username allows alphanumeric characters and <code>@._+=-</code> symbols (pattern: <code>^[a-zA-Z0-9@._+=\\-]+$</code>). Password allows alphanumeric characters and <code>@._+=-!#$%&amp;*</code> symbols (pattern: <code>^[a-zA-Z0-9@._+=\\-!#$%&amp;*]+$</code>). Both fields have a maximum length of 256 characters.</p>"
     },
     "BatchCreateMemoryRecordsInput":{
       "type":"structure",
@@ -972,6 +1023,35 @@
       "min":1,
       "pattern":"[a-zA-Z0-9][a-zA-Z0-9-_]*"
     },
+    "BrowserEnterprisePolicies":{
+      "type":"list",
+      "member":{"shape":"BrowserEnterprisePolicy"},
+      "max":100,
+      "min":0
+    },
+    "BrowserEnterprisePolicy":{
+      "type":"structure",
+      "required":["location"],
+      "members":{
+        "location":{
+          "shape":"ResourceLocation",
+          "documentation":"<p>The location of the enterprise policy file.</p>"
+        },
+        "type":{
+          "shape":"BrowserEnterprisePolicyType",
+          "documentation":"<p>The enterprise policy type. See BrowserEnterprisePolicyType.</p>"
+        }
+      },
+      "documentation":"<p>Browser enterprise policy configuration.</p>"
+    },
+    "BrowserEnterprisePolicyType":{
+      "type":"string",
+      "documentation":"<p>The type of browser enterprise policy. Available values are <code>MANAGED</code> and <code>RECOMMENDED</code>.</p>",
+      "enum":[
+        "MANAGED",
+        "RECOMMENDED"
+      ]
+    },
     "BrowserExtension":{
       "type":"structure",
       "required":["location"],
@@ -988,6 +1068,21 @@
       "member":{"shape":"BrowserExtension"},
       "max":10,
       "min":1
+    },
+    "BrowserProfileConfiguration":{
+      "type":"structure",
+      "required":["profileIdentifier"],
+      "members":{
+        "profileIdentifier":{
+          "shape":"BrowserProfileId",
+          "documentation":"<p>The unique identifier of the browser profile. This identifier is used to reference the profile when starting new browser sessions or saving session data to the profile.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a browser profile in Amazon Bedrock AgentCore. A browser profile contains persistent browser data such as cookies and local storage that can be saved from one browser session and reused in subsequent sessions. Browser profiles enable continuity for tasks that require authentication, maintain user preferences, or depend on previously stored browser state.</p>"
+    },
+    "BrowserProfileId":{
+      "type":"string",
+      "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10}"
     },
     "BrowserSessionId":{
       "type":"string",
@@ -1013,7 +1108,7 @@
           "documentation":"<p>The stream that provides a visual representation of the browser content. This stream allows agents to observe the current state of the browser, including rendered web pages and visual elements.</p>"
         }
       },
-      "documentation":"<p>The collection of streams associated with a browser session in Amazon Bedrock. These streams provide different ways to interact with and observe the browser session, including programmatic control and visual representation of the browser content.</p>"
+      "documentation":"<p>The collection of streams associated with a browser session in Amazon Bedrock AgentCore. These streams provide different ways to interact with and observe the browser session, including programmatic control and visual representation of the browser content.</p>"
     },
     "BrowserSessionSummaries":{
       "type":"list",
@@ -1053,7 +1148,7 @@
           "documentation":"<p>The timestamp when the browser session was last updated. This value is in ISO 8601 format.</p>"
         }
       },
-      "documentation":"<p>A condensed representation of a browser session in Amazon Bedrock. This structure contains key information about a browser session, including identifiers, status, and timestamps, without the full details of the session configuration and streams.</p>"
+      "documentation":"<p>A condensed representation of a browser session in Amazon Bedrock AgentCore. This structure contains key information about a browser session, including identifiers, status, and timestamps, without the full details of the session configuration and streams.</p>"
     },
     "BrowserSessionTimeout":{
       "type":"integer",
@@ -1065,6 +1160,34 @@
       "type":"string",
       "max":512,
       "min":10
+    },
+    "Certificate":{
+      "type":"structure",
+      "required":["location"],
+      "members":{
+        "location":{
+          "shape":"CertificateLocation",
+          "documentation":"<p>The location of the certificate.</p>"
+        }
+      },
+      "documentation":"<p>A certificate to install in the browser or code interpreter session.</p>"
+    },
+    "CertificateLocation":{
+      "type":"structure",
+      "members":{
+        "secretsManager":{
+          "shape":"SecretsManagerLocation",
+          "documentation":"<p>The Amazon Web Services Secrets Manager location of the certificate.</p>"
+        }
+      },
+      "documentation":"<p>The location from which to retrieve a certificate.</p>",
+      "union":true
+    },
+    "Certificates":{
+      "type":"list",
+      "member":{"shape":"Certificate"},
+      "max":200,
+      "min":1
     },
     "ClientToken":{
       "type":"string",
@@ -1089,7 +1212,7 @@
           "documentation":"<p>Indicates whether the result represents an error. If true, the content contains error messages or exception information. If false, the content contains successful execution results.</p>"
         }
       },
-      "documentation":"<p>The output produced by executing code in a code interpreter session in Amazon Bedrock. This structure contains the results of code execution, including textual output, structured data, and error information. Agents use these results to generate responses that incorporate computation, data analysis, and visualization.</p>",
+      "documentation":"<p>The output produced by executing code in a code interpreter session in Amazon Bedrock AgentCore. This structure contains the results of code execution, including textual output, structured data, and error information. Agents use these results to generate responses that incorporate computation, data analysis, and visualization.</p>",
       "event":true
     },
     "CodeInterpreterSessionId":{
@@ -1141,7 +1264,7 @@
           "documentation":"<p>The timestamp when the code interpreter session was last updated. This value is in ISO 8601 format.</p>"
         }
       },
-      "documentation":"<p>A condensed representation of a code interpreter session in Amazon Bedrock. This structure contains key information about a code interpreter session, including identifiers, status, and timestamps, without the full details of the session configuration.</p>"
+      "documentation":"<p>A condensed representation of a code interpreter session in Amazon Bedrock AgentCore. This structure contains key information about a code interpreter session, including identifiers, status, and timestamps, without the full details of the session configuration.</p>"
     },
     "CodeInterpreterSessionTimeout":{
       "type":"integer",
@@ -1163,6 +1286,13 @@
       },
       "documentation":"<p>Contains output from a code interpreter stream.</p>",
       "eventstream":true
+    },
+    "CommandExecutionStatus":{
+      "type":"string",
+      "enum":[
+        "COMPLETED",
+        "TIMED_OUT"
+      ]
     },
     "CompleteResourceTokenAuthRequest":{
       "type":"structure",
@@ -1263,6 +1393,43 @@
         "resource",
         "resource_link"
       ]
+    },
+    "ContentDeltaEvent":{
+      "type":"structure",
+      "members":{
+        "stdout":{
+          "shape":"String",
+          "documentation":"<p>The standard output content from the command execution. This field contains the incremental output written to stdout by the executing command.</p>"
+        },
+        "stderr":{
+          "shape":"String",
+          "documentation":"<p>The standard error content from the command execution. This field contains the incremental output written to stderr by the executing command.</p>"
+        }
+      },
+      "documentation":"<p>An event that contains incremental output from a command execution. This event streams standard output and standard error content as it becomes available during command execution.</p>"
+    },
+    "ContentStartEvent":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>An event that signals the start of content streaming from a command execution. This event is sent when the command begins producing output.</p>"
+    },
+    "ContentStopEvent":{
+      "type":"structure",
+      "required":[
+        "exitCode",
+        "status"
+      ],
+      "members":{
+        "exitCode":{
+          "shape":"Integer",
+          "documentation":"<p>The exit code returned by the executed command. An exit code of 0 indicates successful execution, -1 indicates a platform error, and values greater than 0 indicate command-specific errors.</p>"
+        },
+        "status":{
+          "shape":"CommandExecutionStatus",
+          "documentation":"<p>The final status of the command execution. Valid values are <code>COMPLETED</code> for successful completion or <code>TIMED_OUT</code> if the command exceeded the specified timeout.</p>"
+        }
+      },
+      "documentation":"<p>An event that signals the completion of a command execution. This event contains the final status and exit code of the executed command.</p>"
     },
     "ContentTextString":{
       "type":"string",
@@ -1464,6 +1631,18 @@
       "document":true,
       "sensitive":true
     },
+    "DomainPattern":{
+      "type":"string",
+      "max":253,
+      "min":1,
+      "pattern":"(\\.)?[a-zA-Z0-9]([a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9])?)*"
+    },
+    "DomainPatterns":{
+      "type":"list",
+      "member":{"shape":"DomainPattern"},
+      "max":100,
+      "min":1
+    },
     "Double":{
       "type":"double",
       "box":true
@@ -1489,7 +1668,7 @@
       "members":{
         "evaluatorId":{
           "shape":"EvaluatorId",
-          "documentation":"<p> The unique identifier of the evaluator to use for scoring. Can be a built-in evaluator (e.g., <code>Builtin.Helpfulness</code>, <code>Builtin.Correctness</code>) or a custom evaluator ARN created through the control plane API. </p>",
+          "documentation":"<p> The unique identifier of the evaluator to use for scoring. Can be a built-in evaluator (e.g., <code>Builtin.Helpfulness</code>, <code>Builtin.Correctness</code>) or a custom evaluator Id created through the control plane API. </p>",
           "location":"uri",
           "locationName":"evaluatorId"
         },
@@ -1500,6 +1679,10 @@
         "evaluationTarget":{
           "shape":"EvaluationTarget",
           "documentation":"<p> The specific trace or span IDs to evaluate within the provided input. Allows targeting evaluation at different levels: individual tool calls, single request-response interactions (traces), or entire conversation sessions. </p>"
+        },
+        "evaluationReferenceInputs":{
+          "shape":"EvaluationReferenceInputs",
+          "documentation":"<p> Ground truth data to compare against agent responses during evaluation. Allows to provide expected responses, assertions, and expected tool trajectories at different evaluation levels. Session-level reference inputs apply to the entire conversation, while trace-level reference inputs target specific request-response interactions identified by trace ID. </p>"
         }
       }
     },
@@ -1513,6 +1696,28 @@
         }
       }
     },
+    "EvaluationContent":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"EvaluationContentTextString",
+          "documentation":"<p> The text content of the ground truth data. Used for expected response text and assertion statements. </p>"
+        }
+      },
+      "documentation":"<p> A content block for ground truth data in evaluation reference inputs. Supports text content for expected responses and assertions. </p>",
+      "union":true
+    },
+    "EvaluationContentList":{
+      "type":"list",
+      "member":{"shape":"EvaluationContent"},
+      "max":100,
+      "min":1
+    },
+    "EvaluationContentTextString":{
+      "type":"string",
+      "max":100000,
+      "min":1
+    },
     "EvaluationErrorCode":{
       "type":"string",
       "max":1024,
@@ -1522,6 +1727,16 @@
       "type":"string",
       "max":2048,
       "min":0
+    },
+    "EvaluationExpectedTrajectory":{
+      "type":"structure",
+      "members":{
+        "toolNames":{
+          "shape":"EvaluationToolNames",
+          "documentation":"<p> The list of tool names representing the expected tool call sequence. </p>"
+        }
+      },
+      "documentation":"<p> The expected tool call trajectory for trajectory-based evaluation. </p>"
     },
     "EvaluationExplanation":{
       "type":"string",
@@ -1539,6 +1754,33 @@
       },
       "documentation":"<p> The input data structure containing agent session spans in OpenTelemetry format. Supports traces from frameworks like Strands (AgentCore Runtime) and LangGraph with OpenInference instrumentation for comprehensive evaluation. </p>",
       "union":true
+    },
+    "EvaluationReferenceInput":{
+      "type":"structure",
+      "required":["context"],
+      "members":{
+        "context":{"shape":"Context"},
+        "expectedResponse":{
+          "shape":"EvaluationContent",
+          "documentation":"<p> The expected response for trace-level evaluation. Built-in evaluators that support this field compare the agent's actual response against this value for assessment. Custom evaluators can access it through the <code>{expected_response}</code> placeholder in their instructions. </p>"
+        },
+        "assertions":{
+          "shape":"EvaluationContentList",
+          "documentation":"<p> A list of assertion statements for session-level evaluation. Each assertion describes an expected behavior or outcome the agent should demonstrate during the session. </p>"
+        },
+        "expectedTrajectory":{
+          "shape":"EvaluationExpectedTrajectory",
+          "documentation":"<p> The expected tool call sequence for session-level trajectory evaluation. Contains a list of tool names representing the tools the agent is expected to invoke. </p>"
+        }
+      },
+      "documentation":"<p> A reference input containing ground truth data for evaluation, scoped to a specific context level (session or trace) through its span context. </p>"
+    },
+    "EvaluationReferenceInputs":{
+      "type":"list",
+      "member":{"shape":"EvaluationReferenceInput"},
+      "max":1000,
+      "min":1,
+      "sensitive":true
     },
     "EvaluationResultContent":{
       "type":"structure",
@@ -1588,6 +1830,10 @@
         "errorCode":{
           "shape":"EvaluationErrorCode",
           "documentation":"<p> The error code indicating the type of failure that occurred during evaluation. Used to programmatically identify and handle different categories of evaluation errors. </p>"
+        },
+        "ignoredReferenceInputFields":{
+          "shape":"IgnoredReferenceInputFields",
+          "documentation":"<p> The list of reference input field names that were provided but not used by the evaluator. Helps identify which ground truth data was not consumed during evaluation. </p>"
         }
       },
       "documentation":"<p> The comprehensive result of an evaluation containing the score, explanation, evaluator metadata, and execution details. Provides both quantitative ratings and qualitative insights about agent performance. </p>"
@@ -1610,6 +1856,17 @@
       },
       "documentation":"<p> The specification of which trace or span IDs to evaluate within the provided input data. Allows precise targeting of evaluation at different levels: tool calls, traces, or sessions. </p>",
       "union":true
+    },
+    "EvaluationToolName":{
+      "type":"string",
+      "max":500,
+      "min":1
+    },
+    "EvaluationToolNames":{
+      "type":"list",
+      "member":{"shape":"EvaluationToolName"},
+      "max":1000,
+      "min":0
     },
     "EvaluatorArn":{
       "type":"string",
@@ -1703,6 +1960,38 @@
       "type":"list",
       "member":{"shape":"EventMetadataFilterExpression"},
       "max":5,
+      "min":1
+    },
+    "ExternalProxy":{
+      "type":"structure",
+      "required":[
+        "server",
+        "port"
+      ],
+      "members":{
+        "server":{
+          "shape":"HostName",
+          "documentation":"<p>The hostname of the proxy server. Must be a valid DNS hostname (maximum 253 characters).</p>"
+        },
+        "port":{
+          "shape":"ExternalProxyPortInteger",
+          "documentation":"<p>The port number of the proxy server. Valid range: 1-65535.</p>"
+        },
+        "domainPatterns":{
+          "shape":"DomainPatterns",
+          "documentation":"<p>Optional array of domain patterns that should route through this specific proxy. Supports <code>.example.com</code> for subdomain matching (matches any subdomain of example.com) or <code>example.com</code> for exact domain matching. If omitted, this proxy acts as a catch-all for domains not matched by other proxies. Maximum 100 patterns per proxy, each up to 253 characters.</p>"
+        },
+        "credentials":{
+          "shape":"ProxyCredentials",
+          "documentation":"<p>Optional authentication credentials for the proxy server. If omitted, the proxy is accessed without authentication (useful for IP-allowlisted proxies).</p>"
+        }
+      },
+      "documentation":"<p>Configuration for a customer-managed external proxy server. Includes server location, optional domain-based routing patterns, and authentication credentials.</p>"
+    },
+    "ExternalProxyPortInteger":{
+      "type":"integer",
+      "box":true,
+      "max":65535,
       "min":1
     },
     "ExtractionJob":{
@@ -1906,6 +2195,14 @@
           "shape":"BrowserExtensions",
           "documentation":"<p>The list of browser extensions that are configured in the browser session.</p>"
         },
+        "enterprisePolicies":{
+          "shape":"BrowserEnterprisePolicies",
+          "documentation":"<p>A list of files containing enterprise policies for the browser session.</p>"
+        },
+        "profileConfiguration":{
+          "shape":"BrowserProfileConfiguration",
+          "documentation":"<p>The browser profile configuration associated with this session. Contains the profile identifier that links to persistent browser data such as cookies and local storage.</p>"
+        },
         "sessionTimeoutSeconds":{
           "shape":"BrowserSessionTimeout",
           "documentation":"<p>The timeout period for the browser session in seconds.</p>"
@@ -1917,6 +2214,14 @@
         "streams":{
           "shape":"BrowserSessionStream",
           "documentation":"<p>The streams associated with this browser session. These include the automation stream and live view stream.</p>"
+        },
+        "proxyConfiguration":{
+          "shape":"ProxyConfiguration",
+          "documentation":"<p>The active proxy configuration for this browser session. This field is only present if proxy configuration was provided when the session was started using <code>StartBrowserSession</code>. The configuration includes proxy servers, domain bypass rules and the proxy authentication credentials.</p>"
+        },
+        "certificates":{
+          "shape":"Certificates",
+          "documentation":"<p>The list of certificates installed in the browser session.</p>"
         },
         "sessionReplayArtifact":{
           "shape":"String",
@@ -1980,6 +2285,10 @@
         "status":{
           "shape":"CodeInterpreterSessionStatus",
           "documentation":"<p>The current status of the code interpreter session. Possible values include ACTIVE, STOPPING, and STOPPED.</p>"
+        },
+        "certificates":{
+          "shape":"Certificates",
+          "documentation":"<p>The list of certificates installed in the code interpreter session.</p>"
         }
       }
     },
@@ -2228,9 +2537,26 @@
         }
       }
     },
+    "HostName":{
+      "type":"string",
+      "max":253,
+      "min":1,
+      "pattern":"[a-zA-Z0-9]([a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9])?)*"
+    },
     "HttpResponseCode":{
       "type":"integer",
       "box":true
+    },
+    "IgnoredReferenceInputField":{
+      "type":"string",
+      "max":1000,
+      "min":1
+    },
+    "IgnoredReferenceInputFields":{
+      "type":"list",
+      "member":{"shape":"IgnoredReferenceInputField"},
+      "max":100,
+      "min":0
     },
     "InputContentBlock":{
       "type":"structure",
@@ -2281,6 +2607,203 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "InvokeAgentRuntimeCommandRequest":{
+      "type":"structure",
+      "required":[
+        "agentRuntimeArn",
+        "body"
+      ],
+      "members":{
+        "contentType":{
+          "shape":"MimeType",
+          "documentation":"<p>The MIME type of the input data in the request payload. This tells the agent runtime how to interpret the payload data. Common values include application/json for JSON data.</p>",
+          "location":"header",
+          "locationName":"Content-Type"
+        },
+        "accept":{
+          "shape":"MimeType",
+          "documentation":"<p>The desired MIME type for the response from the agent runtime command. This tells the agent runtime what format to use for the response data. Common values include application/json for JSON data.</p>",
+          "location":"header",
+          "locationName":"Accept"
+        },
+        "runtimeSessionId":{
+          "shape":"SessionType",
+          "documentation":"<p>The unique identifier of the runtime session in which to execute the command. This session ID is used to maintain state and context across multiple command invocations.</p>",
+          "idempotencyToken":true,
+          "location":"header",
+          "locationName":"X-Amzn-Bedrock-AgentCore-Runtime-Session-Id"
+        },
+        "traceId":{
+          "shape":"InvokeAgentRuntimeCommandRequestTraceIdString",
+          "documentation":"<p>The trace identifier for request tracking.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-Trace-Id"
+        },
+        "traceParent":{
+          "shape":"InvokeAgentRuntimeCommandRequestTraceParentString",
+          "documentation":"<p>The parent trace information for distributed tracing.</p>",
+          "location":"header",
+          "locationName":"traceparent"
+        },
+        "traceState":{
+          "shape":"InvokeAgentRuntimeCommandRequestTraceStateString",
+          "documentation":"<p>The trace state information for distributed tracing.</p>",
+          "location":"header",
+          "locationName":"tracestate"
+        },
+        "baggage":{
+          "shape":"InvokeAgentRuntimeCommandRequestBaggageString",
+          "documentation":"<p>Additional context information for distributed tracing.</p>",
+          "location":"header",
+          "locationName":"baggage"
+        },
+        "agentRuntimeArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the agent runtime on which to execute the command. This identifies the specific agent runtime environment where the command will run.</p>",
+          "location":"uri",
+          "locationName":"agentRuntimeArn"
+        },
+        "qualifier":{
+          "shape":"String",
+          "documentation":"<p>The qualifier to use for the agent runtime. This is an endpoint name that points to a specific version. If not specified, Amazon Bedrock AgentCore uses the default endpoint of the agent runtime.</p>",
+          "location":"querystring",
+          "locationName":"qualifier"
+        },
+        "accountId":{
+          "shape":"InvokeAgentRuntimeCommandRequestAccountIdString",
+          "documentation":"<p>The identifier of the Amazon Web Services account for the agent runtime resource. This parameter is required when you specify an agent ID instead of the full ARN for <code>agentRuntimeArn</code>.</p>",
+          "location":"querystring",
+          "locationName":"accountId"
+        },
+        "body":{
+          "shape":"InvokeAgentRuntimeCommandRequestBody",
+          "documentation":"<p>The request body containing the command to execute and optional configuration parameters such as timeout settings.</p>"
+        }
+      },
+      "documentation":"<p>Request for InvokeAgentRuntimeCommand operation.</p>",
+      "payload":"body"
+    },
+    "InvokeAgentRuntimeCommandRequestAccountIdString":{
+      "type":"string",
+      "pattern":"[0-9]{12}"
+    },
+    "InvokeAgentRuntimeCommandRequestBaggageString":{
+      "type":"string",
+      "max":8192,
+      "min":0
+    },
+    "InvokeAgentRuntimeCommandRequestBody":{
+      "type":"structure",
+      "required":["command"],
+      "members":{
+        "command":{
+          "shape":"InvokeAgentRuntimeCommandRequestBodyCommandString",
+          "documentation":"<p>The shell command to execute on the agent runtime. This command is executed in the runtime environment and its output is streamed back to the caller.</p>"
+        },
+        "timeout":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum duration in seconds to wait for the command to complete. If the command execution exceeds this timeout, it will be terminated. Default is 300 seconds. Minimum is 1 second. Maximum is 3600 seconds.</p>"
+        }
+      },
+      "documentation":"<p>The request body structure for the <code>InvokeAgentRuntimeCommand</code> operation, containing the command to execute and optional configuration parameters.</p>"
+    },
+    "InvokeAgentRuntimeCommandRequestBodyCommandString":{
+      "type":"string",
+      "max":65536,
+      "min":1
+    },
+    "InvokeAgentRuntimeCommandRequestTraceIdString":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "InvokeAgentRuntimeCommandRequestTraceParentString":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "InvokeAgentRuntimeCommandRequestTraceStateString":{
+      "type":"string",
+      "max":512,
+      "min":0
+    },
+    "InvokeAgentRuntimeCommandResponse":{
+      "type":"structure",
+      "required":[
+        "contentType",
+        "stream"
+      ],
+      "members":{
+        "runtimeSessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The unique identifier of the runtime session in which the command was executed.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-Bedrock-AgentCore-Runtime-Session-Id"
+        },
+        "traceId":{
+          "shape":"String",
+          "documentation":"<p>The trace identifier for request tracking.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-Trace-Id"
+        },
+        "traceParent":{
+          "shape":"String",
+          "documentation":"<p>The parent trace information for distributed tracing.</p>",
+          "location":"header",
+          "locationName":"traceparent"
+        },
+        "traceState":{
+          "shape":"String",
+          "documentation":"<p>The trace state information for distributed tracing.</p>",
+          "location":"header",
+          "locationName":"tracestate"
+        },
+        "baggage":{
+          "shape":"String",
+          "documentation":"<p>Additional context information for distributed tracing.</p>",
+          "location":"header",
+          "locationName":"baggage"
+        },
+        "contentType":{
+          "shape":"String",
+          "documentation":"<p>The MIME type of the response data. This indicates how to interpret the response data. Common values include application/json for JSON data.</p>",
+          "location":"header",
+          "locationName":"Content-Type"
+        },
+        "statusCode":{
+          "shape":"HttpResponseCode",
+          "documentation":"<p>The HTTP status code of the response. A status code of 200 indicates a successful operation. Other status codes indicate various error conditions.</p>",
+          "location":"statusCode"
+        },
+        "stream":{
+          "shape":"InvokeAgentRuntimeCommandStreamOutput",
+          "documentation":"<p>The streaming output from the command execution. This stream contains events that provide real-time updates including standard output, standard error, and completion status.</p>"
+        }
+      },
+      "documentation":"<p>Response for InvokeAgentRuntimeCommand operation.</p>",
+      "payload":"stream"
+    },
+    "InvokeAgentRuntimeCommandStreamOutput":{
+      "type":"structure",
+      "members":{
+        "chunk":{
+          "shape":"ResponseChunk",
+          "documentation":"<p>A response chunk containing command execution events such as content start, content delta, or content stop events.</p>"
+        },
+        "accessDeniedException":{
+          "shape":"AccessDeniedException",
+          "documentation":"<p>Exception events for error streaming.</p>"
+        },
+        "internalServerException":{"shape":"InternalServerException"},
+        "resourceNotFoundException":{"shape":"ResourceNotFoundException"},
+        "serviceQuotaExceededException":{"shape":"ServiceQuotaExceededException"},
+        "throttlingException":{"shape":"ThrottlingException"},
+        "validationException":{"shape":"ValidationException"},
+        "runtimeClientError":{"shape":"RuntimeClientError"}
+      },
+      "documentation":"<p>The streaming output union for the <code>InvokeAgentRuntimeCommand</code> operation. This union delivers typed events: <code>contentStart</code> (first), <code>contentDelta</code> (middle), and <code>contentStop</code> (last).</p>",
+      "eventstream":true
     },
     "InvokeAgentRuntimeRequest":{
       "type":"structure",
@@ -2352,19 +2875,19 @@
         },
         "agentRuntimeArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Web Services Resource Name (ARN) of the agent runtime to invoke. The ARN uniquely identifies the agent runtime resource in Amazon Bedrock.</p>",
+          "documentation":"<p>The identifier of the agent runtime to invoke. You can specify either the full Amazon Web Services Resource Name (ARN) or the agent ID. If you use the agent ID, you must also provide the <code>accountId</code> query parameter.</p>",
           "location":"uri",
           "locationName":"agentRuntimeArn"
         },
         "qualifier":{
           "shape":"String",
-          "documentation":"<p>The qualifier to use for the agent runtime. This can be a version number or an endpoint name that points to a specific version. If not specified, Amazon Bedrock uses the default version of the agent runtime.</p>",
+          "documentation":"<p>The qualifier to use for the agent runtime. This is an endpoint name that points to a specific version. If not specified, Amazon Bedrock AgentCore uses the default endpoint of the agent runtime.</p>",
           "location":"querystring",
           "locationName":"qualifier"
         },
         "accountId":{
           "shape":"InvokeAgentRuntimeRequestAccountIdString",
-          "documentation":"<p>The identifier of the Amazon Web Services account for the agent runtime resource.</p>",
+          "documentation":"<p>The identifier of the Amazon Web Services account for the agent runtime resource. This parameter is required when you specify an agent ID instead of the full ARN for <code>agentRuntimeArn</code>.</p>",
           "location":"querystring",
           "locationName":"accountId"
         },
@@ -2531,6 +3054,14 @@
       },
       "payload":"stream"
     },
+    "LanguageRuntime":{
+      "type":"string",
+      "enum":[
+        "nodejs",
+        "deno",
+        "python"
+      ]
+    },
     "LeftExpression":{
       "type":"structure",
       "members":{
@@ -2592,7 +3123,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results. If not specified, Amazon Bedrock returns the first page of results.</p>"
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results. If not specified, Amazon Bedrock AgentCore returns the first page of results.</p>"
         },
         "status":{
           "shape":"BrowserSessionStatus",
@@ -2630,7 +3161,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results. If not specified, Amazon Bedrock returns the first page of results.</p>"
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results. If not specified, Amazon Bedrock AgentCore returns the first page of results.</p>"
         },
         "status":{
           "shape":"CodeInterpreterSessionStatus",
@@ -2769,7 +3300,7 @@
         },
         "namespace":{
           "shape":"Namespace",
-          "documentation":"<p>The namespace to filter memory records by. If specified, only memory records in this namespace are returned.</p>"
+          "documentation":"<p>The namespace prefix to filter memory records by. Returns all memory records in namespaces that start with the provided prefix.</p>"
         },
         "memoryStrategyId":{
           "shape":"MemoryStrategyId",
@@ -2850,7 +3381,7 @@
           "documentation":"<p>The endpoint URL for the live view stream. This URL is used to establish a connection to receive visual updates from the browser session.</p>"
         }
       },
-      "documentation":"<p>The configuration for a stream that provides a visual representation of a browser session in Amazon Bedrock. This stream enables agents to observe the current state of the browser, including rendered web pages, visual elements, and the results of interactions.</p>"
+      "documentation":"<p>The configuration for a stream that provides a visual representation of a browser session in Amazon Bedrock AgentCore. This stream enables agents to observe the current state of the browser, including rendered web pages, visual elements, and the results of interactions.</p>"
     },
     "Long":{
       "type":"long",
@@ -3266,6 +3797,59 @@
         "typescript"
       ]
     },
+    "Proxy":{
+      "type":"structure",
+      "members":{
+        "externalProxy":{
+          "shape":"ExternalProxy",
+          "documentation":"<p>Configuration for an external customer-managed proxy server.</p>"
+        }
+      },
+      "documentation":"<p>Union type representing different proxy configurations. Currently supports external customer-managed proxies.</p>",
+      "union":true
+    },
+    "ProxyBypass":{
+      "type":"structure",
+      "members":{
+        "domainPatterns":{
+          "shape":"DomainPatterns",
+          "documentation":"<p>Array of domain patterns that should bypass the proxy. Supports <code>.amazonaws.com</code> for subdomain matching or <code>amazonaws.com</code> for exact domain matching. Requests to these domains connect directly without using any proxy. Maximum 253 characters per pattern.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for domains that should bypass all proxies and connect directly to the internet. These bypass rules take precedence over all proxy routing rules.</p>"
+    },
+    "ProxyConfiguration":{
+      "type":"structure",
+      "required":["proxies"],
+      "members":{
+        "proxies":{
+          "shape":"ProxyConfigurationProxiesList",
+          "documentation":"<p>An array of 1-5 proxy server configurations for domain-based routing. Each proxy can specify which domains it handles via <code>domainPatterns</code>, enabling flexible routing of different traffic through different proxies based on destination domain.</p>"
+        },
+        "bypass":{
+          "shape":"ProxyBypass",
+          "documentation":"<p>Optional configuration for domains that should bypass all proxies and connect directly to their destination, like the internet. Takes precedence over all proxy routing rules.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for routing browser traffic through customer-managed proxy servers. Supports 1-5 proxy servers for domain-based routing and proxy bypass rules.</p>"
+    },
+    "ProxyConfigurationProxiesList":{
+      "type":"list",
+      "member":{"shape":"Proxy"},
+      "max":5,
+      "min":1
+    },
+    "ProxyCredentials":{
+      "type":"structure",
+      "members":{
+        "basicAuth":{
+          "shape":"BasicAuth",
+          "documentation":"<p>HTTP Basic Authentication credentials (username and password) stored in Amazon Web Services Secrets Manager.</p>"
+        }
+      },
+      "documentation":"<p>Union type representing different proxy authentication methods. Currently supports HTTP Basic Authentication (username and password).</p>",
+      "union":true
+    },
     "RequestIdentifier":{
       "type":"string",
       "max":80,
@@ -3341,6 +3925,25 @@
       "min":1,
       "pattern":"\\w+:(\\/?\\/?)[^\\s]+"
     },
+    "ResponseChunk":{
+      "type":"structure",
+      "members":{
+        "contentStart":{
+          "shape":"ContentStartEvent",
+          "documentation":"<p>An event indicating the start of content streaming from the command execution. This is the first chunk received.</p>"
+        },
+        "contentDelta":{
+          "shape":"ContentDeltaEvent",
+          "documentation":"<p>An event containing incremental output (stdout or stderr) from the command execution. These are the middle chunks.</p>"
+        },
+        "contentStop":{
+          "shape":"ContentStopEvent",
+          "documentation":"<p>An event indicating the completion of the command execution, including the exit code and final status. This is the last chunk received.</p>"
+        }
+      },
+      "documentation":"<p>A structure representing a response chunk that contains exactly one of the possible event types: <code>contentStart</code>, <code>contentDelta</code>, or <code>contentStop</code>.</p>",
+      "event":true
+    },
     "ResponseStream":{
       "type":"blob",
       "sensitive":true,
@@ -3362,7 +3965,7 @@
         },
         "namespace":{
           "shape":"Namespace",
-          "documentation":"<p>The namespace to filter memory records by.</p>"
+          "documentation":"<p>The namespace prefix to filter memory records by. Searches for memory records in namespaces that start with the provided prefix.</p>"
         },
         "searchCriteria":{
           "shape":"SearchCriteria",
@@ -3476,6 +4079,84 @@
       "max":1024,
       "min":1
     },
+    "SaveBrowserSessionProfileRequest":{
+      "type":"structure",
+      "required":[
+        "profileIdentifier",
+        "browserIdentifier",
+        "sessionId"
+      ],
+      "members":{
+        "traceId":{
+          "shape":"SaveBrowserSessionProfileRequestTraceIdString",
+          "documentation":"<p>The trace identifier for request tracking.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-Trace-Id"
+        },
+        "traceParent":{
+          "shape":"SaveBrowserSessionProfileRequestTraceParentString",
+          "documentation":"<p>The parent trace information for distributed tracing.</p>",
+          "location":"header",
+          "locationName":"traceparent"
+        },
+        "profileIdentifier":{
+          "shape":"BrowserProfileId",
+          "documentation":"<p>The unique identifier for the browser profile. This identifier is used to reference the profile when starting new browser sessions. The identifier must follow the pattern of an alphanumeric name (up to 48 characters) followed by a hyphen and a 10-character alphanumeric suffix.</p>",
+          "location":"uri",
+          "locationName":"profileIdentifier"
+        },
+        "browserIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the browser associated with the session from which to save the profile.</p>"
+        },
+        "sessionId":{
+          "shape":"BrowserSessionId",
+          "documentation":"<p>The unique identifier of the browser session from which to save the profile. The session must be active when saving the profile.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, Amazon Bedrock AgentCore ignores the request, but does not return an error.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "SaveBrowserSessionProfileRequestTraceIdString":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "SaveBrowserSessionProfileRequestTraceParentString":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "SaveBrowserSessionProfileResponse":{
+      "type":"structure",
+      "required":[
+        "profileIdentifier",
+        "browserIdentifier",
+        "sessionId",
+        "lastUpdatedAt"
+      ],
+      "members":{
+        "profileIdentifier":{
+          "shape":"BrowserProfileId",
+          "documentation":"<p>The unique identifier of the saved browser profile.</p>"
+        },
+        "browserIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the browser associated with the session from which the profile was saved.</p>"
+        },
+        "sessionId":{
+          "shape":"BrowserSessionId",
+          "documentation":"<p>The unique identifier of the browser session from which the profile was saved.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the browser profile was last updated. This value is in ISO 8601 format.</p>"
+        }
+      }
+    },
     "ScopeType":{
       "type":"string",
       "max":128,
@@ -3519,6 +4200,21 @@
       "box":true,
       "max":100,
       "min":1
+    },
+    "SecretArn":{
+      "type":"string",
+      "pattern":"arn:aws(-[a-z-]+)?:secretsmanager:[a-z0-9-]+:[0-9]{12}:secret:[a-zA-Z0-9/_+=.@-]+"
+    },
+    "SecretsManagerLocation":{
+      "type":"structure",
+      "required":["secretArn"],
+      "members":{
+        "secretArn":{
+          "shape":"SecretArn",
+          "documentation":"<p>The ARN of the Amazon Web Services Secrets Manager secret containing the certificate.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Web Services Secrets Manager location configuration.</p>"
     },
     "ServiceException":{
       "type":"structure",
@@ -3658,19 +4354,35 @@
         },
         "sessionTimeoutSeconds":{
           "shape":"BrowserSessionTimeout",
-          "documentation":"<p>The time in seconds after which the session automatically terminates if there is no activity. The default value is 3600 seconds (1 hour). The minimum allowed value is 60 seconds, and the maximum allowed value is 28800 seconds (8 hours).</p>"
+          "documentation":"<p>The duration in seconds (time-to-live) after which the session automatically terminates, regardless of ongoing activity. Defaults to 3600 seconds (1 hour). Recommended minimum: 60 seconds. Maximum allowed: 28,800 seconds (8 hours).</p>"
         },
         "viewPort":{
           "shape":"ViewPort",
-          "documentation":"<p>The dimensions of the browser viewport for this session. This determines the visible area of the web content and affects how web pages are rendered. If not specified, Amazon Bedrock uses a default viewport size.</p>"
+          "documentation":"<p>The dimensions of the browser viewport for this session. This determines the visible area of the web content and affects how web pages are rendered. If not specified, Amazon Bedrock AgentCore uses a default viewport size.</p>"
         },
         "extensions":{
           "shape":"BrowserExtensions",
           "documentation":"<p>A list of browser extensions to load into the browser session.</p>"
         },
+        "profileConfiguration":{
+          "shape":"BrowserProfileConfiguration",
+          "documentation":"<p>The browser profile configuration to use for this session. A browser profile contains persistent data such as cookies and local storage that can be reused across multiple browser sessions. If specified, the session initializes with the profile's stored data, enabling continuity for tasks that require authentication or personalized settings.</p>"
+        },
+        "proxyConfiguration":{
+          "shape":"ProxyConfiguration",
+          "documentation":"<p>Optional proxy configuration for routing browser traffic through customer-specified proxy servers. When provided, enables HTTP Basic authentication via Amazon Web Services Secrets Manager and domain-based routing rules. Requires <code>secretsmanager:GetSecretValue</code> IAM permission for the specified secret ARNs.</p>"
+        },
+        "enterprisePolicies":{
+          "shape":"BrowserEnterprisePolicies",
+          "documentation":"<p>A list of files containing enterprise policies for the browser.</p>"
+        },
+        "certificates":{
+          "shape":"Certificates",
+          "documentation":"<p>A list of certificates to install in the browser session.</p>"
+        },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, Amazon Bedrock ignores the request, but does not return an error. This parameter helps prevent the creation of duplicate sessions if there are temporary network issues.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, Amazon Bedrock AgentCore ignores the request, but does not return an error. This parameter helps prevent the creation of duplicate sessions if there are temporary network issues.</p>",
           "idempotencyToken":true
         }
       }
@@ -3739,11 +4451,15 @@
         },
         "sessionTimeoutSeconds":{
           "shape":"CodeInterpreterSessionTimeout",
-          "documentation":"<p>The time in seconds after which the session automatically terminates if there is no activity. The default value is 900 seconds (15 minutes). The minimum allowed value is 60 seconds, and the maximum allowed value is 28800 seconds (8 hours).</p>"
+          "documentation":"<p>The duration in seconds (time-to-live) after which the session automatically terminates, regardless of ongoing activity. Defaults to 900 seconds (15 minutes). Recommended minimum: 60 seconds. Maximum allowed: 28,800 seconds (8 hours).</p>"
+        },
+        "certificates":{
+          "shape":"Certificates",
+          "documentation":"<p>A list of certificates to install in the code interpreter session.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, Amazon Bedrock ignores the request, but does not return an error. This parameter helps prevent the creation of duplicate sessions if there are temporary network issues.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, Amazon Bedrock AgentCore ignores the request, but does not return an error. This parameter helps prevent the creation of duplicate sessions if there are temporary network issues.</p>",
           "idempotencyToken":true
         }
       }
@@ -3853,7 +4569,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, Amazon Bedrock ignores the request, but does not return an error.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, Amazon Bedrock AgentCore ignores the request, but does not return an error.</p>",
           "idempotencyToken":true
         }
       }
@@ -3923,7 +4639,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, Amazon Bedrock ignores the request, but does not return an error.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, Amazon Bedrock AgentCore ignores the request, but does not return an error.</p>",
           "idempotencyToken":true
         }
       }
@@ -4092,7 +4808,7 @@
         },
         "language":{
           "shape":"ProgrammingLanguage",
-          "documentation":"<p>The programming language of the code to execute. This tells the code interpreter which language runtime to use for execution. Common values include 'python', 'javascript', and 'r'.</p>"
+          "documentation":"<p>The programming language of the code to execute. This tells the code interpreter which language runtime to use for execution.</p>"
         },
         "clearContext":{
           "shape":"Boolean",
@@ -4121,9 +4837,13 @@
         "taskId":{
           "shape":"MaxLenString",
           "documentation":"<p>The identifier of the task for the tool operation.</p>"
+        },
+        "runtime":{
+          "shape":"LanguageRuntime",
+          "documentation":"<p>The runtime environment to use for code execution. If not specified, defaults to <code>deno</code> for JavaScript and TypeScript.</p>"
         }
       },
-      "documentation":"<p>The collection of arguments that specify the operation to perform and its parameters when invoking a tool in Amazon Bedrock. Different tools require different arguments, and this structure provides a flexible way to pass the appropriate arguments to each tool type.</p>"
+      "documentation":"<p>The collection of arguments that specify the operation to perform and its parameters when invoking a tool in Amazon Bedrock AgentCore. Different tools require different arguments, and this structure provides a flexible way to pass the appropriate arguments to each tool type.</p>"
     },
     "ToolName":{
       "type":"string",
@@ -4257,7 +4977,7 @@
       "members":{
         "userToken":{
           "shape":"UserTokenType",
-          "documentation":"<p>The OAuth2.0 token issued by the user’s identity provider</p>"
+          "documentation":"<p>The OAuth2.0 token issued by the user’s identity provider that was used to generate the workload access token</p>"
         },
         "userId":{
           "shape":"UserIdType",

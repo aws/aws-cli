@@ -548,7 +548,8 @@
       "type":"string",
       "enum":[
         "internalError",
-        "accessDenied"
+        "accessDenied",
+        "sourceModified"
       ]
     },
     "ApplicationSummary":{
@@ -1364,6 +1365,16 @@
       "fault":true,
       "retryable":{"throttling":false}
     },
+    "Ipv4CidrBlock":{
+      "type":"string",
+      "pattern":"(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])/([0-9]|[1-2][0-9]|3[0-2])"
+    },
+    "Ipv4CidrBlockList":{
+      "type":"list",
+      "member":{"shape":"Ipv4CidrBlock"},
+      "max":5,
+      "min":1
+    },
     "ListApplicationsInput":{
       "type":"structure",
       "members":{
@@ -1562,6 +1573,10 @@
         "MaximumCapacity":{
           "shape":"MaximumCapacity",
           "documentation":"<p>This indicates the maximum capacity that the service can allocate for you. Newly created streams may take a few minutes to start. Capacity is released back to the service when idle. You pay for capacity that is allocated to you until it is released.</p>"
+        },
+        "VpcTransitConfiguration":{
+          "shape":"VpcTransitConfiguration",
+          "documentation":"<p>Configuration for connecting the stream group to resources in your Amazon VPC using AWS Transit Gateway. This setting is optional. If specified, Amazon GameLift Streams creates a Transit Gateway to enable private network connectivity between the service VPC and your VPC. The VPC ID cannot be changed after the stream group is created, but you can update the CIDR blocks by calling <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_UpdateStreamGroup.html\">UpdateStreamGroup</a>.</p>"
         }
       },
       "documentation":"<p>Configuration settings that define a stream group's stream capacity for a location. When configuring a location for the first time, you must specify a numeric value for at least one of the two capacity types. To update the capacity for an existing stream group, call <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_UpdateStreamGroup.html\">UpdateStreamGroup</a>. To add a new location and specify its capacity, call <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_AddStreamGroupLocations.html\">AddStreamGroupLocations</a>.</p>"
@@ -1621,6 +1636,14 @@
         "IdleCapacity":{
           "shape":"CapacityValue",
           "documentation":"<p>This value is the amount of allocated capacity that is not currently streaming. It represents the stream group's ability to respond immediately to new stream requests with near-instant startup time.</p>"
+        },
+        "InternalVpcIpv4CidrBlock":{
+          "shape":"Ipv4CidrBlock",
+          "documentation":"<p>The CIDR block of the service VPC for this location. Add this CIDR block to your VPC route table to enable traffic routing through the Transit Gateway.</p>"
+        },
+        "VpcTransitConfiguration":{
+          "shape":"VpcTransitConfigurationResponse",
+          "documentation":"<p>The VPC transit configuration for this location, including the Transit Gateway details needed to complete the VPC attachment setup.</p>"
         }
       },
       "documentation":"<p>Represents a location and its corresponding stream capacity and status.</p>"
@@ -1966,7 +1989,11 @@
         "gen6n_ultra",
         "gen6n_ultra_win2022",
         "gen6n_pro",
-        "gen6n_pro_win2022"
+        "gen6n_pro_win2022",
+        "gen6n_small_win2022",
+        "gen6n_medium_win2022",
+        "gen6e_pro",
+        "gen6e_pro_win2022"
       ]
     },
     "StreamGroupLocationStatus":{
@@ -2423,6 +2450,51 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "VpcId":{
+      "type":"string",
+      "max":32,
+      "min":1
+    },
+    "VpcTransitConfiguration":{
+      "type":"structure",
+      "required":[
+        "VpcId",
+        "Ipv4CidrBlocks"
+      ],
+      "members":{
+        "VpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>The ID of the Amazon VPC that you want to connect to the stream group. The VPC must be in the same Amazon Web Services account as the stream group. This value cannot be changed after the stream group is created.</p>"
+        },
+        "Ipv4CidrBlocks":{
+          "shape":"Ipv4CidrBlockList",
+          "documentation":"<p>A list of IPv4 CIDR blocks in your VPC that you want the stream group to be able to access. You can specify up to 5 CIDR blocks. The CIDR blocks must be valid subsets of the VPC's CIDR blocks and cannot overlap with the service VPC CIDR block.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for connecting a stream group location to resources in your Amazon VPC using AWS Transit Gateway. When you specify a VPC transit configuration, Amazon GameLift Streams creates a Transit Gateway and shares it with your account using AWS Resource Access Manager. After the stream group is active, you must complete the setup by accepting the resource share, creating a VPC attachment, and configuring routing.</p>"
+    },
+    "VpcTransitConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "VpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>The ID of the Amazon VPC that is connected to the stream group.</p>"
+        },
+        "Ipv4CidrBlocks":{
+          "shape":"Ipv4CidrBlockList",
+          "documentation":"<p>The IPv4 CIDR blocks in your VPC that the stream group can access.</p>"
+        },
+        "TransitGatewayId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Transit Gateway that Amazon GameLift Streams created for this VPC connection. Use this ID when creating your VPC attachment.</p>"
+        },
+        "TransitGatewayResourceShareArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the AWS Resource Access Manager resource share for the Transit Gateway. You must accept this resource share before you can create a VPC attachment.</p>"
+        }
+      },
+      "documentation":"<p>The VPC transit configuration details for a stream group location, including the Transit Gateway information needed to complete the VPC attachment setup.</p>"
     },
     "WebSdkProtocolUrl":{"type":"string"}
   },

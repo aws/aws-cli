@@ -120,6 +120,10 @@ class Config:
           * path -- Addressing style is always by path. Endpoints will be
             addressed as such: s3.amazonaws.com/mybucket
 
+        * ``disable_s3_express_session_auth`` -- Refers to whether to use S3
+          Express session authentication. The value must be a boolean. If True, the
+          client will NOT use S3 Express session authentication.
+
     :type retries: dict
     :param retries: A dictionary for retry specific configurations.
         Valid keys are:
@@ -193,6 +197,15 @@ class Config:
 
         Defaults to None.
 
+    :type client_context_params: dict
+    :param client_context_params: A dictionary of parameters specific to
+        individual services. If available, valid parameters can be found in
+        the ``Client Context Parameters`` section of the service client's
+        documentation. Invalid parameters or ones that are not used by the
+        specified service will be ignored.
+
+        Defaults to None.
+
     :type sigv4a_signing_region_set: string
     :param sigv4a_signing_region_set: A set of AWS regions to apply the signature for
         when using SigV4a for signing. Set to ``*`` to represent all regions.
@@ -263,6 +276,7 @@ class Config:
             ('proxies', None),
             ('proxies_config', None),
             ('s3', None),
+            ('s3_disable_express_session_auth', None),
             ('retries', None),
             ('client_cert', None),
             ('inject_host_prefix', None),
@@ -272,6 +286,7 @@ class Config:
             ('ignore_configured_endpoint_urls', None),
             ('request_min_compression_size_bytes', None),
             ('disable_request_compression', None),
+            ('client_context_params', None),
             ('sigv4a_signing_region_set', None),
             ('request_checksum_calculation', None),
             ('response_checksum_validation', None),

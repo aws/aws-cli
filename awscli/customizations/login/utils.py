@@ -85,6 +85,7 @@ class BaseLoginTokenFetcher:
             'verificationUri': authorization_uri,
             'verificationUriComplete': authorization_uri,
             'userCode': None,
+            'cross_device_flag': '--remote',
         }
 
     def _exchange_auth_code_for_access_token(

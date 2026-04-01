@@ -93,7 +93,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores will no longer be open to new customers starting November 7, 2025. If you would like to use variant stores or annotation stores, sign up prior to that date. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Cancels an annotation import job.</p></p>",
+      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores are no longer open to new customers. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Cancels an annotation import job.</p></p>",
       "endpoint":{"hostPrefix":"analytics-"},
       "idempotent":true
     },
@@ -118,6 +118,28 @@
       "documentation":"<p>Cancels a run using its ID and returns a response with no body if the operation is successful. To confirm that the run has been cancelled, use the <code>ListRuns</code> API operation to check that it is no longer listed.</p>",
       "endpoint":{"hostPrefix":"workflows-"}
     },
+    "CancelRunBatch":{
+      "name":"CancelRunBatch",
+      "http":{
+        "method":"POST",
+        "requestUri":"/runBatch/cancel",
+        "responseCode":202
+      },
+      "input":{"shape":"CancelRunBatchRequest"},
+      "output":{"shape":"CancelRunBatchResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RequestTimeoutException"}
+      ],
+      "documentation":"<p>Cancels all runs within a specified batch. This operation prevents not-yet-submitted runs from starting and submits <code>CancelRun</code> requests for runs that have already started.</p> <p>Cancel is only allowed on batches in <code>PENDING</code>, <code>SUBMITTING</code>, or <code>INPROGRESS</code> state. Cancel operations are non-atomic and may be partially successful. Use <code>GetBatch</code> to review <code>successfulCancelSubmissionCount</code> and <code>failedCancelSubmissionCount</code> in the <code>submissionSummary</code>. Only one cancel or delete operation per batch is allowed at a time.</p>",
+      "endpoint":{"hostPrefix":"workflows-"}
+    },
     "CancelVariantImportJob":{
       "name":"CancelVariantImportJob",
       "http":{
@@ -134,7 +156,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores will no longer be open to new customers starting November 7, 2025. If you would like to use variant stores or annotation stores, sign up prior to that date. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Cancels a variant import job.</p></p>",
+      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores are no longer open to new customers. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Cancels a variant import job.</p></p>",
       "endpoint":{"hostPrefix":"analytics-"},
       "idempotent":true
     },
@@ -178,7 +200,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores will no longer be open to new customers starting November 7, 2025. If you would like to use variant stores or annotation stores, sign up prior to that date. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Creates an annotation store.</p></p>",
+      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores are no longer open to new customers. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Creates an annotation store.</p></p>",
       "endpoint":{"hostPrefix":"analytics-"}
     },
     "CreateAnnotationStoreVersion":{
@@ -201,6 +223,29 @@
       ],
       "documentation":"<p> Creates a new version of an annotation store. </p>",
       "endpoint":{"hostPrefix":"analytics-"}
+    },
+    "CreateConfiguration":{
+      "name":"CreateConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/configuration",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateConfigurationRequest"},
+      "output":{"shape":"CreateConfigurationResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RequestTimeoutException"}
+      ],
+      "documentation":"<p>Create a new configuration.</p>",
+      "endpoint":{"hostPrefix":"workflows-"},
+      "idempotent":true
     },
     "CreateMultipartReadSetUpload":{
       "name":"CreateMultipartReadSetUpload",
@@ -347,7 +392,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores will no longer be open to new customers starting November 7, 2025. If you would like to use variant stores or annotation stores, sign up prior to that date. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Creates a variant store.</p></p>",
+      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores are no longer open to new customers. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Creates a variant store.</p></p>",
       "endpoint":{"hostPrefix":"analytics-"}
     },
     "CreateWorkflow":{
@@ -412,7 +457,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores will no longer be open to new customers starting November 7, 2025. If you would like to use variant stores or annotation stores, sign up prior to that date. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Deletes an annotation store.</p></p>",
+      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores are no longer open to new customers. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Deletes an annotation store.</p></p>",
       "endpoint":{"hostPrefix":"analytics-"},
       "idempotent":true
     },
@@ -435,6 +480,50 @@
       ],
       "documentation":"<p> Deletes one or multiple versions of an annotation store. </p>",
       "endpoint":{"hostPrefix":"analytics-"},
+      "idempotent":true
+    },
+    "DeleteBatch":{
+      "name":"DeleteBatch",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/runBatch/{batchId}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteBatchRequest"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RequestTimeoutException"}
+      ],
+      "documentation":"<p>Deletes a run batch resource and its associated metadata. This operation does not delete the individual workflow runs. To delete the runs, call <code>DeleteRunBatch</code> before calling <code>DeleteBatch</code>.</p> <p> <code>DeleteBatch</code> requires the batch to be in a terminal state: <code>PROCESSED</code>, <code>FAILED</code>, <code>CANCELLED</code>, or <code>RUNS_DELETED</code>. After <code>DeleteBatch</code> completes, the batch metadata is no longer accessible. You cannot call <code>GetBatch</code>, <code>ListRunsInBatch</code>, <code>DeleteRunBatch</code>, or <code>CancelRunBatch</code> on a deleted batch.</p>",
+      "endpoint":{"hostPrefix":"workflows-"},
+      "idempotent":true
+    },
+    "DeleteConfiguration":{
+      "name":"DeleteConfiguration",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/configuration/{name}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteConfigurationRequest"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RequestTimeoutException"}
+      ],
+      "documentation":"<p>Delete an existing configuration.</p>",
+      "endpoint":{"hostPrefix":"workflows-"},
       "idempotent":true
     },
     "DeleteReference":{
@@ -503,6 +592,28 @@
       "endpoint":{"hostPrefix":"workflows-"},
       "idempotent":true
     },
+    "DeleteRunBatch":{
+      "name":"DeleteRunBatch",
+      "http":{
+        "method":"POST",
+        "requestUri":"/runBatch/delete",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteRunBatchRequest"},
+      "output":{"shape":"DeleteRunBatchResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RequestTimeoutException"}
+      ],
+      "documentation":"<p>Deletes the individual workflow runs within a batch. This operation is separate from <code>DeleteBatch</code>, which removes the batch metadata.</p> <p>Delete is only allowed on batches in <code>PROCESSED</code> or <code>CANCELLED</code> state. Delete operations are non-atomic and may be partially successful. Use <code>GetBatch</code> to review <code>successfulDeleteSubmissionCount</code> and <code>failedDeleteSubmissionCount</code> in the <code>submissionSummary</code>. Only one cancel or delete operation per batch is allowed at a time.</p>",
+      "endpoint":{"hostPrefix":"workflows-"}
+    },
     "DeleteRunCache":{
       "name":"DeleteRunCache",
       "http":{
@@ -557,8 +668,8 @@
       "input":{"shape":"DeleteS3AccessPolicyRequest"},
       "output":{"shape":"DeleteS3AccessPolicyResponse"},
       "errors":[
-        {"shape":"NotSupportedOperationException"},
         {"shape":"InternalServerException"},
+        {"shape":"NotSupportedOperationException"},
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"},
@@ -630,7 +741,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores will no longer be open to new customers starting November 7, 2025. If you would like to use variant stores or annotation stores, sign up prior to that date. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Deletes a variant store.</p></p>",
+      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores are no longer open to new customers. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Deletes a variant store.</p></p>",
       "endpoint":{"hostPrefix":"analytics-"},
       "idempotent":true
     },
@@ -694,8 +805,9 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores will no longer be open to new customers starting November 7, 2025. If you would like to use variant stores or annotation stores, sign up prior to that date. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Gets information about an annotation import job.</p></p>",
-      "endpoint":{"hostPrefix":"analytics-"}
+      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores are no longer open to new customers. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Gets information about an annotation import job.</p></p>",
+      "endpoint":{"hostPrefix":"analytics-"},
+      "readonly":true
     },
     "GetAnnotationStore":{
       "name":"GetAnnotationStore",
@@ -713,8 +825,9 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores will no longer be open to new customers starting November 7, 2025. If you would like to use variant stores or annotation stores, sign up prior to that date. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Gets information about an annotation store.</p></p>",
-      "endpoint":{"hostPrefix":"analytics-"}
+      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores are no longer open to new customers. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Gets information about an annotation store.</p></p>",
+      "endpoint":{"hostPrefix":"analytics-"},
+      "readonly":true
     },
     "GetAnnotationStoreVersion":{
       "name":"GetAnnotationStoreVersion",
@@ -733,7 +846,52 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p> Retrieves the metadata for an annotation store version. </p>",
-      "endpoint":{"hostPrefix":"analytics-"}
+      "endpoint":{"hostPrefix":"analytics-"},
+      "readonly":true
+    },
+    "GetBatch":{
+      "name":"GetBatch",
+      "http":{
+        "method":"GET",
+        "requestUri":"/runBatch/{batchId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetBatchRequest"},
+      "output":{"shape":"GetBatchResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RequestTimeoutException"}
+      ],
+      "documentation":"<p>Retrieves details and current status for a specific run batch, including submission progress and run execution counts.</p>",
+      "endpoint":{"hostPrefix":"workflows-"},
+      "readonly":true
+    },
+    "GetConfiguration":{
+      "name":"GetConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/configuration/{name}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetConfigurationRequest"},
+      "output":{"shape":"GetConfigurationResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RequestTimeoutException"}
+      ],
+      "documentation":"<p>Retrieve configuration details for specified name.</p>",
+      "endpoint":{"hostPrefix":"workflows-"},
+      "readonly":true
     },
     "GetReadSet":{
       "name":"GetReadSet",
@@ -755,7 +913,8 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Retrieves detailed information from parts of a read set and returns the read set in the same format that it was uploaded. You must have read sets uploaded to your sequence store in order to run this operation.</p>",
-      "endpoint":{"hostPrefix":"storage-"}
+      "endpoint":{"hostPrefix":"storage-"},
+      "readonly":true
     },
     "GetReadSetActivationJob":{
       "name":"GetReadSetActivationJob",
@@ -775,7 +934,8 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Returns detailed information about the status of a read set activation job in JSON format.</p>",
-      "endpoint":{"hostPrefix":"control-storage-"}
+      "endpoint":{"hostPrefix":"control-storage-"},
+      "readonly":true
     },
     "GetReadSetExportJob":{
       "name":"GetReadSetExportJob",
@@ -795,7 +955,8 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Retrieves status information about a read set export job and returns the data in JSON format. Use this operation to actively monitor the progress of an export job.</p>",
-      "endpoint":{"hostPrefix":"control-storage-"}
+      "endpoint":{"hostPrefix":"control-storage-"},
+      "readonly":true
     },
     "GetReadSetImportJob":{
       "name":"GetReadSetImportJob",
@@ -815,7 +976,8 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Gets detailed and status information about a read set import job and returns the data in JSON format.</p>",
-      "endpoint":{"hostPrefix":"control-storage-"}
+      "endpoint":{"hostPrefix":"control-storage-"},
+      "readonly":true
     },
     "GetReadSetMetadata":{
       "name":"GetReadSetMetadata",
@@ -835,7 +997,8 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Retrieves the metadata for a read set from a sequence store in JSON format. This operation does not return tags. To retrieve the list of tags for a read set, use the <code>ListTagsForResource</code> API operation.</p>",
-      "endpoint":{"hostPrefix":"control-storage-"}
+      "endpoint":{"hostPrefix":"control-storage-"},
+      "readonly":true
     },
     "GetReference":{
       "name":"GetReference",
@@ -856,7 +1019,8 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Downloads parts of data from a reference genome and returns the reference file in the same format that it was uploaded.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/create-reference-store.html\">Creating a HealthOmics reference store</a> in the <i>Amazon Web Services HealthOmics User Guide</i>.</p>",
-      "endpoint":{"hostPrefix":"storage-"}
+      "endpoint":{"hostPrefix":"storage-"},
+      "readonly":true
     },
     "GetReferenceImportJob":{
       "name":"GetReferenceImportJob",
@@ -876,7 +1040,8 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Monitors the status of a reference import job. This operation can be called after calling the <code>StartReferenceImportJob</code> operation.</p>",
-      "endpoint":{"hostPrefix":"control-storage-"}
+      "endpoint":{"hostPrefix":"control-storage-"},
+      "readonly":true
     },
     "GetReferenceMetadata":{
       "name":"GetReferenceMetadata",
@@ -896,7 +1061,8 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Retrieves metadata for a reference genome. This operation returns the number of parts, part size, and MD5 of an entire file. This operation does not return tags. To retrieve the list of tags for a read set, use the <code>ListTagsForResource</code> API operation.</p>",
-      "endpoint":{"hostPrefix":"control-storage-"}
+      "endpoint":{"hostPrefix":"control-storage-"},
+      "readonly":true
     },
     "GetReferenceStore":{
       "name":"GetReferenceStore",
@@ -916,7 +1082,8 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Gets information about a reference store.</p>",
-      "endpoint":{"hostPrefix":"control-storage-"}
+      "endpoint":{"hostPrefix":"control-storage-"},
+      "readonly":true
     },
     "GetRun":{
       "name":"GetRun",
@@ -938,7 +1105,8 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Gets detailed information about a specific run using its ID.</p> <p>Amazon Web Services HealthOmics stores a configurable number of runs, as determined by service limits, that are available to the console and API. If <code>GetRun</code> does not return the requested run, you can find all run logs in the CloudWatch logs. For more information about viewing the run logs, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/monitoring-cloudwatch-logs.html\">CloudWatch logs</a> in the <i>Amazon Web Services HealthOmics User Guide</i>.</p>",
-      "endpoint":{"hostPrefix":"workflows-"}
+      "endpoint":{"hostPrefix":"workflows-"},
+      "readonly":true
     },
     "GetRunCache":{
       "name":"GetRunCache",
@@ -960,7 +1128,8 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Retrieves detailed information about the specified run cache using its ID.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/workflows-call-caching.html\">Call caching for Amazon Web Services HealthOmics runs</a> in the <i>Amazon Web Services HealthOmics User Guide</i>.</p>",
-      "endpoint":{"hostPrefix":"workflows-"}
+      "endpoint":{"hostPrefix":"workflows-"},
+      "readonly":true
     },
     "GetRunGroup":{
       "name":"GetRunGroup",
@@ -982,7 +1151,8 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Gets information about a run group and returns its metadata.</p>",
-      "endpoint":{"hostPrefix":"workflows-"}
+      "endpoint":{"hostPrefix":"workflows-"},
+      "readonly":true
     },
     "GetRunTask":{
       "name":"GetRunTask",
@@ -1004,7 +1174,8 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Gets detailed information about a run task using its ID.</p>",
-      "endpoint":{"hostPrefix":"workflows-"}
+      "endpoint":{"hostPrefix":"workflows-"},
+      "readonly":true
     },
     "GetS3AccessPolicy":{
       "name":"GetS3AccessPolicy",
@@ -1016,8 +1187,8 @@
       "input":{"shape":"GetS3AccessPolicyRequest"},
       "output":{"shape":"GetS3AccessPolicyResponse"},
       "errors":[
-        {"shape":"NotSupportedOperationException"},
         {"shape":"InternalServerException"},
+        {"shape":"NotSupportedOperationException"},
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"},
@@ -1026,7 +1197,8 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Retrieves details about an access policy on a given store.</p>",
-      "endpoint":{"hostPrefix":"control-storage-"}
+      "endpoint":{"hostPrefix":"control-storage-"},
+      "readonly":true
     },
     "GetSequenceStore":{
       "name":"GetSequenceStore",
@@ -1046,7 +1218,8 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Retrieves metadata for a sequence store using its ID and returns it in JSON format.</p>",
-      "endpoint":{"hostPrefix":"control-storage-"}
+      "endpoint":{"hostPrefix":"control-storage-"},
+      "readonly":true
     },
     "GetShare":{
       "name":"GetShare",
@@ -1067,7 +1240,8 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Retrieves the metadata for the specified resource share.</p>",
-      "endpoint":{"hostPrefix":"analytics-"}
+      "endpoint":{"hostPrefix":"analytics-"},
+      "readonly":true
     },
     "GetVariantImportJob":{
       "name":"GetVariantImportJob",
@@ -1085,8 +1259,9 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores will no longer be open to new customers starting November 7, 2025. If you would like to use variant stores or annotation stores, sign up prior to that date. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Gets information about a variant import job.</p></p>",
-      "endpoint":{"hostPrefix":"analytics-"}
+      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores are no longer open to new customers. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Gets information about a variant import job.</p></p>",
+      "endpoint":{"hostPrefix":"analytics-"},
+      "readonly":true
     },
     "GetVariantStore":{
       "name":"GetVariantStore",
@@ -1104,8 +1279,9 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores will no longer be open to new customers starting November 7, 2025. If you would like to use variant stores or annotation stores, sign up prior to that date. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Gets information about a variant store.</p></p>",
-      "endpoint":{"hostPrefix":"analytics-"}
+      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores are no longer open to new customers. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Gets information about a variant store.</p></p>",
+      "endpoint":{"hostPrefix":"analytics-"},
+      "readonly":true
     },
     "GetWorkflow":{
       "name":"GetWorkflow",
@@ -1127,7 +1303,8 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Gets all information about a workflow using its ID.</p> <p>If a workflow is shared with you, you cannot export the workflow.</p> <p>For more information about your workflow status, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/using-get-workflow.html\">Verify the workflow status</a> in the <i>Amazon Web Services HealthOmics User Guide</i>.</p>",
-      "endpoint":{"hostPrefix":"workflows-"}
+      "endpoint":{"hostPrefix":"workflows-"},
+      "readonly":true
     },
     "GetWorkflowVersion":{
       "name":"GetWorkflowVersion",
@@ -1149,7 +1326,8 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Gets information about a workflow version. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/workflow-versions.html\">Workflow versioning in Amazon Web Services HealthOmics</a> in the <i>Amazon Web Services HealthOmics User Guide</i>.</p>",
-      "endpoint":{"hostPrefix":"workflows-"}
+      "endpoint":{"hostPrefix":"workflows-"},
+      "readonly":true
     },
     "ListAnnotationImportJobs":{
       "name":"ListAnnotationImportJobs",
@@ -1167,8 +1345,9 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores will no longer be open to new customers starting November 7, 2025. If you would like to use variant stores or annotation stores, sign up prior to that date. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Retrieves a list of annotation import jobs.</p></p>",
-      "endpoint":{"hostPrefix":"analytics-"}
+      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores are no longer open to new customers. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Retrieves a list of annotation import jobs.</p></p>",
+      "endpoint":{"hostPrefix":"analytics-"},
+      "readonly":true
     },
     "ListAnnotationStoreVersions":{
       "name":"ListAnnotationStoreVersions",
@@ -1187,7 +1366,8 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p> Lists the versions of an annotation store. </p>",
-      "endpoint":{"hostPrefix":"analytics-"}
+      "endpoint":{"hostPrefix":"analytics-"},
+      "readonly":true
     },
     "ListAnnotationStores":{
       "name":"ListAnnotationStores",
@@ -1205,8 +1385,52 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores will no longer be open to new customers starting November 7, 2025. If you would like to use variant stores or annotation stores, sign up prior to that date. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Retrieves a list of annotation stores.</p></p>",
-      "endpoint":{"hostPrefix":"analytics-"}
+      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores are no longer open to new customers. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Retrieves a list of annotation stores.</p></p>",
+      "endpoint":{"hostPrefix":"analytics-"},
+      "readonly":true
+    },
+    "ListBatch":{
+      "name":"ListBatch",
+      "http":{
+        "method":"GET",
+        "requestUri":"/runBatch",
+        "responseCode":200
+      },
+      "input":{"shape":"ListBatchRequest"},
+      "output":{"shape":"ListBatchResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RequestTimeoutException"}
+      ],
+      "documentation":"<p>Returns a list of run batches in your account, with optional filtering by status, name, or run group. Results are paginated. Only one filter per call is supported.</p>",
+      "endpoint":{"hostPrefix":"workflows-"},
+      "readonly":true
+    },
+    "ListConfigurations":{
+      "name":"ListConfigurations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/configuration",
+        "responseCode":200
+      },
+      "input":{"shape":"ListConfigurationsRequest"},
+      "output":{"shape":"ListConfigurationsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RequestTimeoutException"}
+      ],
+      "documentation":"<p>List all configurations for the account.</p>",
+      "endpoint":{"hostPrefix":"workflows-"},
+      "readonly":true
     },
     "ListMultipartReadSetUploads":{
       "name":"ListMultipartReadSetUploads",
@@ -1228,7 +1452,8 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Lists in-progress multipart read set uploads for a sequence store and returns it in a JSON formatted output. Multipart read set uploads are initiated by the <code>CreateMultipartReadSetUploads</code> API operation. This operation returns a response with no body when the upload is complete. </p>",
-      "endpoint":{"hostPrefix":"control-storage-"}
+      "endpoint":{"hostPrefix":"control-storage-"},
+      "readonly":true
     },
     "ListReadSetActivationJobs":{
       "name":"ListReadSetActivationJobs",
@@ -1248,7 +1473,8 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Retrieves a list of read set activation jobs and returns the metadata in a JSON formatted output. To extract metadata from a read set activation job, use the <code>GetReadSetActivationJob</code> API operation.</p>",
-      "endpoint":{"hostPrefix":"control-storage-"}
+      "endpoint":{"hostPrefix":"control-storage-"},
+      "readonly":true
     },
     "ListReadSetExportJobs":{
       "name":"ListReadSetExportJobs",
@@ -1268,7 +1494,8 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Retrieves a list of read set export jobs in a JSON formatted response. This API operation is used to check the status of a read set export job initiated by the <code>StartReadSetExportJob</code> API operation.</p>",
-      "endpoint":{"hostPrefix":"control-storage-"}
+      "endpoint":{"hostPrefix":"control-storage-"},
+      "readonly":true
     },
     "ListReadSetImportJobs":{
       "name":"ListReadSetImportJobs",
@@ -1288,7 +1515,8 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Retrieves a list of read set import jobs and returns the data in JSON format.</p>",
-      "endpoint":{"hostPrefix":"control-storage-"}
+      "endpoint":{"hostPrefix":"control-storage-"},
+      "readonly":true
     },
     "ListReadSetUploadParts":{
       "name":"ListReadSetUploadParts",
@@ -1310,7 +1538,8 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Lists all parts in a multipart read set upload for a sequence store and returns the metadata in a JSON formatted output.</p>",
-      "endpoint":{"hostPrefix":"control-storage-"}
+      "endpoint":{"hostPrefix":"control-storage-"},
+      "readonly":true
     },
     "ListReadSets":{
       "name":"ListReadSets",
@@ -1330,7 +1559,8 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Retrieves a list of read sets from a sequence store ID and returns the metadata in JSON format.</p>",
-      "endpoint":{"hostPrefix":"control-storage-"}
+      "endpoint":{"hostPrefix":"control-storage-"},
+      "readonly":true
     },
     "ListReferenceImportJobs":{
       "name":"ListReferenceImportJobs",
@@ -1350,7 +1580,8 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Retrieves the metadata of one or more reference import jobs for a reference store.</p>",
-      "endpoint":{"hostPrefix":"control-storage-"}
+      "endpoint":{"hostPrefix":"control-storage-"},
+      "readonly":true
     },
     "ListReferenceStores":{
       "name":"ListReferenceStores",
@@ -1369,7 +1600,8 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Retrieves a list of reference stores linked to your account and returns their metadata in JSON format.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/create-reference-store.html\">Creating a reference store</a> in the <i>Amazon Web Services HealthOmics User Guide</i>.</p>",
-      "endpoint":{"hostPrefix":"control-storage-"}
+      "endpoint":{"hostPrefix":"control-storage-"},
+      "readonly":true
     },
     "ListReferences":{
       "name":"ListReferences",
@@ -1389,7 +1621,8 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Retrieves the metadata of one or more reference genomes in a reference store.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/create-reference-store.html\">Creating a reference store</a> in the <i>Amazon Web Services HealthOmics User Guide</i>.</p>",
-      "endpoint":{"hostPrefix":"control-storage-"}
+      "endpoint":{"hostPrefix":"control-storage-"},
+      "readonly":true
     },
     "ListRunCaches":{
       "name":"ListRunCaches",
@@ -1411,7 +1644,8 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Retrieves a list of your run caches and the metadata for each cache.</p>",
-      "endpoint":{"hostPrefix":"workflows-"}
+      "endpoint":{"hostPrefix":"workflows-"},
+      "readonly":true
     },
     "ListRunGroups":{
       "name":"ListRunGroups",
@@ -1433,7 +1667,8 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Retrieves a list of all run groups and returns the metadata for each run group.</p>",
-      "endpoint":{"hostPrefix":"workflows-"}
+      "endpoint":{"hostPrefix":"workflows-"},
+      "readonly":true
     },
     "ListRunTasks":{
       "name":"ListRunTasks",
@@ -1455,7 +1690,8 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Returns a list of tasks and status information within their specified run. Use this operation to monitor runs and to identify which specific tasks have failed.</p>",
-      "endpoint":{"hostPrefix":"workflows-"}
+      "endpoint":{"hostPrefix":"workflows-"},
+      "readonly":true
     },
     "ListRuns":{
       "name":"ListRuns",
@@ -1477,7 +1713,31 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Retrieves a list of runs and returns each run's metadata and status.</p> <p>Amazon Web Services HealthOmics stores a configurable number of runs, as determined by service limits, that are available to the console and API. If the <code>ListRuns</code> response doesn't include specific runs that you expected, you can find all run logs in the CloudWatch logs. For more information about viewing the run logs, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/monitoring-cloudwatch-logs.html\">CloudWatch logs</a> in the <i>Amazon Web Services HealthOmics User Guide</i>.</p>",
-      "endpoint":{"hostPrefix":"workflows-"}
+      "endpoint":{"hostPrefix":"workflows-"},
+      "readonly":true
+    },
+    "ListRunsInBatch":{
+      "name":"ListRunsInBatch",
+      "http":{
+        "method":"GET",
+        "requestUri":"/runBatch/{batchId}/run",
+        "responseCode":200
+      },
+      "input":{"shape":"ListRunsInBatchRequest"},
+      "output":{"shape":"ListRunsInBatchResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RequestTimeoutException"}
+      ],
+      "documentation":"<p>Returns a paginated list of individual workflow runs within a specific batch. Use this operation to map each <code>runSettingId</code> to its HealthOmics-generated <code>runId</code>, and to check the submission status of each run. Only one filter per call is supported.</p>",
+      "endpoint":{"hostPrefix":"workflows-"},
+      "readonly":true
     },
     "ListSequenceStores":{
       "name":"ListSequenceStores",
@@ -1496,7 +1756,8 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Retrieves a list of sequence stores and returns each sequence store's metadata.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/create-sequence-store.html\">Creating a HealthOmics sequence store</a> in the <i>Amazon Web Services HealthOmics User Guide</i>.</p>",
-      "endpoint":{"hostPrefix":"control-storage-"}
+      "endpoint":{"hostPrefix":"control-storage-"},
+      "readonly":true
     },
     "ListShares":{
       "name":"ListShares",
@@ -1517,7 +1778,8 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Retrieves the resource shares associated with an account. Use the filter parameter to retrieve a specific subset of the shares.</p>",
-      "endpoint":{"hostPrefix":"analytics-"}
+      "endpoint":{"hostPrefix":"analytics-"},
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -1539,7 +1801,8 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Retrieves a list of tags for a resource.</p>",
-      "endpoint":{"hostPrefix":"tags-"}
+      "endpoint":{"hostPrefix":"tags-"},
+      "readonly":true
     },
     "ListVariantImportJobs":{
       "name":"ListVariantImportJobs",
@@ -1557,8 +1820,9 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores will no longer be open to new customers starting November 7, 2025. If you would like to use variant stores or annotation stores, sign up prior to that date. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Retrieves a list of variant import jobs.</p></p>",
-      "endpoint":{"hostPrefix":"analytics-"}
+      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores are no longer open to new customers. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Retrieves a list of variant import jobs.</p></p>",
+      "endpoint":{"hostPrefix":"analytics-"},
+      "readonly":true
     },
     "ListVariantStores":{
       "name":"ListVariantStores",
@@ -1576,8 +1840,9 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores will no longer be open to new customers starting November 7, 2025. If you would like to use variant stores or annotation stores, sign up prior to that date. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Retrieves a list of variant stores.</p></p>",
-      "endpoint":{"hostPrefix":"analytics-"}
+      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores are no longer open to new customers. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Retrieves a list of variant stores.</p></p>",
+      "endpoint":{"hostPrefix":"analytics-"},
+      "readonly":true
     },
     "ListWorkflowVersions":{
       "name":"ListWorkflowVersions",
@@ -1599,7 +1864,8 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Lists the workflow versions for the specified workflow. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/workflow-versions.html\">Workflow versioning in Amazon Web Services HealthOmics</a> in the <i>Amazon Web Services HealthOmics User Guide</i>.</p>",
-      "endpoint":{"hostPrefix":"workflows-"}
+      "endpoint":{"hostPrefix":"workflows-"},
+      "readonly":true
     },
     "ListWorkflows":{
       "name":"ListWorkflows",
@@ -1621,7 +1887,8 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Retrieves a list of existing workflows. You can filter for specific workflows by their name and type. Using the type parameter, specify <code>PRIVATE</code> to retrieve a list of private workflows or specify <code>READY2RUN</code> for a list of all Ready2Run workflows. If you do not specify the type of workflow, this operation returns a list of existing workflows.</p>",
-      "endpoint":{"hostPrefix":"workflows-"}
+      "endpoint":{"hostPrefix":"workflows-"},
+      "readonly":true
     },
     "PutS3AccessPolicy":{
       "name":"PutS3AccessPolicy",
@@ -1633,8 +1900,8 @@
       "input":{"shape":"PutS3AccessPolicyRequest"},
       "output":{"shape":"PutS3AccessPolicyResponse"},
       "errors":[
-        {"shape":"NotSupportedOperationException"},
         {"shape":"InternalServerException"},
+        {"shape":"NotSupportedOperationException"},
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"},
@@ -1661,7 +1928,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores will no longer be open to new customers starting November 7, 2025. If you would like to use variant stores or annotation stores, sign up prior to that date. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Starts an annotation import job.</p></p>",
+      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores are no longer open to new customers. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Starts an annotation import job.</p></p>",
       "endpoint":{"hostPrefix":"analytics-"}
     },
     "StartReadSetActivationJob":{
@@ -1770,6 +2037,28 @@
       "documentation":"<p>Starts a new run and returns details about the run, or duplicates an existing run. A run is a single invocation of a workflow. If you provide request IDs, Amazon Web Services HealthOmics identifies duplicate requests and starts the run only once. Monitor the progress of the run by calling the <code>GetRun</code> API operation.</p> <p>To start a new run, the following inputs are required:</p> <ul> <li> <p>A service role ARN (<code>roleArn</code>).</p> </li> <li> <p>The run's workflow ID (<code>workflowId</code>, not the <code>uuid</code> or <code>runId</code>).</p> </li> <li> <p>An Amazon S3 location (<code>outputUri</code>) where the run outputs will be saved.</p> </li> <li> <p>All required workflow parameters (<code>parameter</code>), which can include optional parameters from the parameter template. The run cannot include any parameters that are not defined in the parameter template. To see all possible parameters, use the <code>GetRun</code> API operation. </p> </li> <li> <p>For runs with a <code>STATIC</code> (default) storage type, specify the required storage capacity (in gibibytes). A storage capacity value is not required for runs that use <code>DYNAMIC</code> storage.</p> </li> </ul> <p> <code>StartRun</code> can also duplicate an existing run using the run's default values. You can modify these default values and/or add other optional inputs. To duplicate a run, the following inputs are required:</p> <ul> <li> <p>A service role ARN (<code>roleArn</code>).</p> </li> <li> <p>The ID of the run to duplicate (<code>runId</code>).</p> </li> <li> <p>An Amazon S3 location where the run outputs will be saved (<code>outputUri</code>).</p> </li> </ul> <p>To learn more about the optional parameters for <code>StartRun</code>, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/starting-a-run.html\">Starting a run</a> in the <i>Amazon Web Services HealthOmics User Guide</i>.</p> <p>Use the <code>retentionMode</code> input to control how long the metadata for each run is stored in CloudWatch. There are two retention modes:</p> <ul> <li> <p>Specify <code>REMOVE</code> to automatically remove the oldest runs when you reach the maximum service retention limit for runs. It is recommended that you use the <code>REMOVE</code> mode to initiate major run requests so that your runs do not fail when you reach the limit.</p> </li> <li> <p>The <code>retentionMode</code> is set to the <code>RETAIN</code> mode by default, which allows you to manually remove runs after reaching the maximum service retention limit. Under this setting, you cannot create additional runs until you remove the excess runs.</p> </li> </ul> <p>To learn more about the retention modes, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/run-retention.html\">Run retention mode</a> in the <i>Amazon Web Services HealthOmics User Guide</i>.</p> <p>You can use Amazon Q CLI to analyze run logs and make performance optimization recommendations. To get started, see the <a href=\"https://github.com/awslabs/mcp/tree/main/src/aws-healthomics-mcp-server\">Amazon Web Services HealthOmics MCP server</a> on GitHub.</p>",
       "endpoint":{"hostPrefix":"workflows-"}
     },
+    "StartRunBatch":{
+      "name":"StartRunBatch",
+      "http":{
+        "method":"POST",
+        "requestUri":"/runBatch",
+        "responseCode":201
+      },
+      "input":{"shape":"StartRunBatchRequest"},
+      "output":{"shape":"StartRunBatchResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RequestTimeoutException"}
+      ],
+      "documentation":"<p>Starts a batch of workflow runs. You can group up to 100,000 runs into a single batch that share a common configuration defined in <code>defaultRunSetting</code>. Per-run overrides can be provided either inline via <code>inlineSettings</code> (up to 100 runs) or via a JSON file stored in Amazon S3 via <code>s3UriSettings</code> (up to 100,000 runs).</p> <p> <code>StartRunBatch</code> validates common fields synchronously and returns immediately with a batch ID and status <code>PENDING</code>. Runs are submitted gradually and asynchronously at a rate governed by your <code>StartRun</code> throughput quota.</p>",
+      "endpoint":{"hostPrefix":"workflows-"}
+    },
     "StartVariantImportJob":{
       "name":"StartVariantImportJob",
       "http":{
@@ -1787,7 +2076,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores will no longer be open to new customers starting November 7, 2025. If you would like to use variant stores or annotation stores, sign up prior to that date. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Starts a variant import job.</p></p>",
+      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores are no longer open to new customers. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Starts a variant import job.</p></p>",
       "endpoint":{"hostPrefix":"analytics-"}
     },
     "TagResource":{
@@ -1851,7 +2140,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores will no longer be open to new customers starting November 7, 2025. If you would like to use variant stores or annotation stores, sign up prior to that date. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Updates an annotation store.</p></p>",
+      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores are no longer open to new customers. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Updates an annotation store.</p></p>",
       "endpoint":{"hostPrefix":"analytics-"}
     },
     "UpdateAnnotationStoreVersion":{
@@ -1952,7 +2241,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores will no longer be open to new customers starting November 7, 2025. If you would like to use variant stores or annotation stores, sign up prior to that date. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Updates a variant store.</p></p>",
+      "documentation":"<p><important> <p>Amazon Web Services HealthOmics variant stores and annotation stores are no longer open to new customers. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/variant-store-availability-change.html\"> Amazon Web Services HealthOmics variant store and annotation store availability change</a>.</p> </important> <p>Updates a variant store.</p></p>",
       "endpoint":{"hostPrefix":"analytics-"}
     },
     "UpdateWorkflow":{
@@ -2046,8 +2335,7 @@
     },
     "AbortMultipartReadSetUploadResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "Accelerators":{
       "type":"string",
@@ -2462,6 +2750,12 @@
       "min":12,
       "pattern":"[0-9]+"
     },
+    "BatchArn":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"arn:.+"
+    },
     "BatchDeleteReadSetRequest":{
       "type":"structure",
       "required":[
@@ -2489,6 +2783,99 @@
           "documentation":"<p>Errors returned by individual delete operations.</p>"
         }
       }
+    },
+    "BatchId":{
+      "type":"string",
+      "max":18,
+      "min":1,
+      "pattern":"[0-9]+"
+    },
+    "BatchList":{
+      "type":"list",
+      "member":{"shape":"BatchListItem"}
+    },
+    "BatchListItem":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"BatchId",
+          "documentation":"<p>The batch identifier.</p>"
+        },
+        "name":{
+          "shape":"BatchName",
+          "documentation":"<p>The batch name.</p>"
+        },
+        "status":{
+          "shape":"BatchStatus",
+          "documentation":"<p>The current batch status.</p>"
+        },
+        "createdAt":{
+          "shape":"BatchTimestamp",
+          "documentation":"<p>The timestamp when the batch was created.</p>"
+        },
+        "totalRuns":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of runs in the batch.</p>"
+        },
+        "workflowId":{
+          "shape":"WorkflowId",
+          "documentation":"<p>The identifier of the workflow used for the batch.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a batch returned by <code>ListBatch</code>.</p>"
+    },
+    "BatchName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+"
+    },
+    "BatchRequestId":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+"
+    },
+    "BatchRunSettings":{
+      "type":"structure",
+      "members":{
+        "inlineSettings":{
+          "shape":"InlineSettings",
+          "documentation":"<p>A list of per-run configurations provided inline in the request. Each entry must include a unique <code>runSettingId</code>. Supports up to 100 entries. For batches with more than 100 runs, use <code>s3UriSettings</code>.</p>"
+        },
+        "s3UriSettings":{
+          "shape":"S3UriSettings",
+          "documentation":"<p>An Amazon S3 URI pointing to a JSON file containing per-run configurations. The file must be a JSON array in the same format as <code>inlineSettings</code>. Supports up to 100,000 run configurations. The maximum file size is 6 GB.</p> <p>The IAM service role in <code>roleArn</code> must have read access to this S3 object. HealthOmics validates access to the file during the synchronous API call and records the file's ETag. If the file is modified after submission, the batch fails.</p>"
+        }
+      },
+      "documentation":"<p>A union type representing per-run configurations for the batch. Specify exactly one of the following members.</p>",
+      "union":true
+    },
+    "BatchStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "SUBMITTING",
+        "INPROGRESS",
+        "STOPPING",
+        "CANCELLED",
+        "FAILED",
+        "PROCESSED",
+        "RUNS_DELETING",
+        "RUNS_DELETED"
+      ],
+      "max":64,
+      "min":1
+    },
+    "BatchTimestamp":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
+    "BatchUuid":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+"
     },
     "Blob":{"type":"blob"},
     "Boolean":{
@@ -2518,8 +2905,21 @@
     },
     "CancelAnnotationImportResponse":{
       "type":"structure",
+      "members":{}
+    },
+    "CancelRunBatchRequest":{
+      "type":"structure",
+      "required":["batchId"],
       "members":{
+        "batchId":{
+          "shape":"BatchId",
+          "documentation":"<p>The identifier portion of the run batch ARN.</p>"
+        }
       }
+    },
+    "CancelRunBatchResponse":{
+      "type":"structure",
+      "members":{}
     },
     "CancelRunRequest":{
       "type":"structure",
@@ -2547,8 +2947,7 @@
     },
     "CancelVariantImportResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "ClientToken":{
       "type":"string",
@@ -2639,6 +3038,105 @@
     "CompletionTime":{
       "type":"timestamp",
       "timestampFormat":"iso8601"
+    },
+    "ConfigurationArn":{
+      "type":"string",
+      "max":190,
+      "min":1,
+      "pattern":"arn:.+"
+    },
+    "ConfigurationDescription":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+"
+    },
+    "ConfigurationDetails":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"ConfigurationName",
+          "documentation":"<p>User-friendly name for the configuration.</p>"
+        },
+        "arn":{
+          "shape":"ConfigurationArn",
+          "documentation":"<p>Unique resource identifier for the configuration.</p>"
+        },
+        "uuid":{
+          "shape":"ConfigurationUuid",
+          "documentation":"<p>Unique identifier for the configuration.</p>"
+        }
+      },
+      "documentation":"<p>Minimal details for a configuration resource.</p>"
+    },
+    "ConfigurationList":{
+      "type":"list",
+      "member":{"shape":"ConfigurationListItem"}
+    },
+    "ConfigurationListItem":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"ConfigurationArn",
+          "documentation":"<p>Unique resource identifier for the configuration.</p>"
+        },
+        "name":{
+          "shape":"ConfigurationName",
+          "documentation":"<p>User-friendly name for the configuration.</p>"
+        },
+        "description":{
+          "shape":"ConfigurationDescription",
+          "documentation":"<p>Description for the configuration.</p>"
+        },
+        "status":{
+          "shape":"ConfigurationStatus",
+          "documentation":"<p>Current configuration status.</p>"
+        },
+        "creationTime":{
+          "shape":"ConfigurationTimestamp",
+          "documentation":"<p>Configuration creation timestamp.</p>"
+        }
+      },
+      "documentation":"<p>Configuration list item with summary information.</p>"
+    },
+    "ConfigurationListToken":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+"
+    },
+    "ConfigurationName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[A-Za-z0-9][A-Za-z0-9\\-\\._]*"
+    },
+    "ConfigurationRequestId":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+"
+    },
+    "ConfigurationStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "ACTIVE",
+        "UPDATING",
+        "DELETING",
+        "DELETED",
+        "FAILED"
+      ]
+    },
+    "ConfigurationTimestamp":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
+    "ConfigurationUuid":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+"
     },
     "ConflictException":{
       "type":"structure",
@@ -2824,6 +3322,74 @@
         "creationTime":{
           "shape":"CreationTime",
           "documentation":"<p> The time stamp for the creation of an annotation store version. </p>"
+        }
+      }
+    },
+    "CreateConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "runConfigurations",
+        "requestId"
+      ],
+      "members":{
+        "name":{
+          "shape":"ConfigurationName",
+          "documentation":"<p>User-friendly name for the configuration.</p>"
+        },
+        "description":{
+          "shape":"ConfigurationDescription",
+          "documentation":"<p>Optional description for the configuration.</p>"
+        },
+        "runConfigurations":{
+          "shape":"RunConfigurations",
+          "documentation":"<p>Required run-specific configurations.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>Optional tags for the configuration.</p>"
+        },
+        "requestId":{
+          "shape":"ConfigurationRequestId",
+          "documentation":"<p>Optional request idempotency token. If not specified, a universally unique identifier (UUID) will be automatically generated for the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"ConfigurationArn",
+          "documentation":"<p>Unique resource identifier for the configuration.</p>"
+        },
+        "uuid":{
+          "shape":"ConfigurationUuid",
+          "documentation":"<p>Unique identifier for the configuration.</p>"
+        },
+        "name":{
+          "shape":"ConfigurationName",
+          "documentation":"<p>User-friendly name for the configuration.</p>"
+        },
+        "description":{
+          "shape":"ConfigurationDescription",
+          "documentation":"<p>Description for the configuration.</p>"
+        },
+        "runConfigurations":{
+          "shape":"RunConfigurationsResponse",
+          "documentation":"<p>Run-specific configurations.</p>"
+        },
+        "status":{
+          "shape":"ConfigurationStatus",
+          "documentation":"<p>Current configuration status.</p>"
+        },
+        "creationTime":{
+          "shape":"ConfigurationTimestamp",
+          "documentation":"<p>Configuration creation timestamp.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>Tags for the configuration.</p>"
         }
       }
     },
@@ -3341,7 +3907,7 @@
         },
         "engine":{
           "shape":"WorkflowEngine",
-          "documentation":"<p>The workflow engine for the workflow. This is only required if you have workflow definition files from more than one engine in your zip file. Otherwise, the service can detect the engine automatically from your workflow definition.</p>"
+          "documentation":"<p>The workflow engine for the workflow. By default, Amazon Web Services HealthOmics detects the engine automatically from your workflow definition. Provide a value if you have workflow definition files from more than one engine in your zip file, or to use WDL lenient.</p> <p>WDL lenient is designed to handle workflows migrated from Cromwell. It supports customer Cromwell directives and some non-conformant logic. For details, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/workflow-wdl-type-conversion.html\">Implicit type conversion in WDL lenient</a> in the <i>Amazon Web Services HealthOmics User Guide</i>.</p>"
         },
         "definitionZip":{
           "shape":"Blob",
@@ -3594,6 +4160,100 @@
         "UPLOAD"
       ]
     },
+    "DefaultRunSetting":{
+      "type":"structure",
+      "required":[
+        "workflowId",
+        "roleArn"
+      ],
+      "members":{
+        "workflowId":{
+          "shape":"WorkflowId",
+          "documentation":"<p>The identifier of the workflow to run.</p>"
+        },
+        "workflowType":{
+          "shape":"WorkflowType",
+          "documentation":"<p>The type of the originating workflow. Batch runs are not supported with <code>READY2RUN</code> workflows.</p>"
+        },
+        "roleArn":{
+          "shape":"RunRoleArn",
+          "documentation":"<p>The IAM role ARN that grants HealthOmics permissions to access required AWS resources such as Amazon S3 and CloudWatch. The role must have the same permissions required for individual <code>StartRun</code> calls.</p>"
+        },
+        "name":{
+          "shape":"RunName",
+          "documentation":"<p>An optional user-friendly name applied to each workflow run. Can be overridden per run.</p>"
+        },
+        "cacheId":{
+          "shape":"NumericIdInArn",
+          "documentation":"<p>The identifier of the run cache to associate with the runs.</p>"
+        },
+        "cacheBehavior":{
+          "shape":"CacheBehavior",
+          "documentation":"<p>The cache behavior for the runs. Requires <code>cacheId</code> to be set.</p>"
+        },
+        "runGroupId":{
+          "shape":"RunGroupId",
+          "documentation":"<p>The ID of the run group to contain all workflow runs in the batch.</p>"
+        },
+        "priority":{
+          "shape":"DefaultRunSettingPriorityInteger",
+          "documentation":"<p>An integer priority for the workflow runs. Higher values correspond to higher priority. A value of 0 corresponds to the lowest priority. Can be overridden per run.</p>"
+        },
+        "parameters":{
+          "shape":"RunParameters",
+          "documentation":"<p>Workflow parameter names and values shared across all runs. Merged with per-run parameters; run-specific values take precedence when keys overlap. Can be overridden per run.</p>"
+        },
+        "storageCapacity":{
+          "shape":"DefaultRunSettingStorageCapacityInteger",
+          "documentation":"<p>The filesystem size in gibibytes (GiB) provisioned for each workflow run and shared by all tasks in that run. Defaults to 1200 GiB if not specified.</p>"
+        },
+        "outputUri":{
+          "shape":"RunOutputUri",
+          "documentation":"<p>The destination S3 URI for workflow outputs. Must begin with <code>s3://</code>. The <code>roleArn</code> must grant write permissions to this bucket. Can be overridden per run.</p>"
+        },
+        "logLevel":{
+          "shape":"RunLogLevel",
+          "documentation":"<p>The verbosity level for CloudWatch Logs emitted during each run.</p>"
+        },
+        "runTags":{
+          "shape":"TagMap",
+          "documentation":"<p>AWS tags to associate with each workflow run. Merged with per-run <code>runTags</code>; run-specific values take precedence when keys overlap.</p>"
+        },
+        "retentionMode":{
+          "shape":"RunRetentionMode",
+          "documentation":"<p>The retention behavior for runs after completion.</p>"
+        },
+        "storageType":{
+          "shape":"StorageType",
+          "documentation":"<p>The storage type for the workflow runs.</p>"
+        },
+        "workflowOwnerId":{
+          "shape":"WorkflowOwnerId",
+          "documentation":"<p>The AWS account ID of the workflow owner, used for cross-account workflow sharing.</p>"
+        },
+        "outputBucketOwnerId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The expected AWS account ID of the owner of the output S3 bucket. Can be overridden per run.</p>"
+        },
+        "workflowVersionName":{
+          "shape":"WorkflowVersionName",
+          "documentation":"<p>The version name of the specified workflow.</p>"
+        }
+      },
+      "documentation":"<p>Shared configuration applied to all runs in a batch. Fields specified in a per-run <code>InlineSetting</code> entry override the corresponding fields in this object for that run. The <code>parameters</code> and <code>runTags</code> fields are merged rather than replaced — run-specific values take precedence when keys overlap.</p>"
+    },
+    "DefaultRunSettingPriorityInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100000,
+      "min":0
+    },
+    "DefaultRunSettingStorageCapacityInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100000,
+      "min":0
+    },
     "DefinitionRepository":{
       "type":"structure",
       "required":[
@@ -3708,6 +4368,30 @@
         }
       }
     },
+    "DeleteBatchRequest":{
+      "type":"structure",
+      "required":["batchId"],
+      "members":{
+        "batchId":{
+          "shape":"BatchId",
+          "documentation":"<p>The identifier portion of the run batch ARN.</p>",
+          "location":"uri",
+          "locationName":"batchId"
+        }
+      }
+    },
+    "DeleteConfigurationRequest":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"ConfigurationName",
+          "documentation":"<p>Configuration name to delete.</p>",
+          "location":"uri",
+          "locationName":"name"
+        }
+      }
+    },
     "DeleteReferenceRequest":{
       "type":"structure",
       "required":[
@@ -3731,8 +4415,7 @@
     },
     "DeleteReferenceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteReferenceStoreRequest":{
       "type":"structure",
@@ -3748,8 +4431,21 @@
     },
     "DeleteReferenceStoreResponse":{
       "type":"structure",
+      "members":{}
+    },
+    "DeleteRunBatchRequest":{
+      "type":"structure",
+      "required":["batchId"],
       "members":{
+        "batchId":{
+          "shape":"BatchId",
+          "documentation":"<p>The identifier portion of the run batch ARN.</p>"
+        }
       }
+    },
+    "DeleteRunBatchResponse":{
+      "type":"structure",
+      "members":{}
     },
     "DeleteRunCacheRequest":{
       "type":"structure",
@@ -3801,8 +4497,7 @@
     },
     "DeleteS3AccessPolicyResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteSequenceStoreRequest":{
       "type":"structure",
@@ -3818,8 +4513,7 @@
     },
     "DeleteSequenceStoreResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteShareRequest":{
       "type":"structure",
@@ -4463,6 +5157,132 @@
         "versionSizeBytes":{
           "shape":"Long",
           "documentation":"<p> The size of the annotation store version in Bytes. </p>"
+        }
+      }
+    },
+    "GetBatchRequest":{
+      "type":"structure",
+      "required":["batchId"],
+      "members":{
+        "batchId":{
+          "shape":"BatchId",
+          "documentation":"<p>The identifier portion of the run batch ARN.</p>",
+          "location":"uri",
+          "locationName":"batchId"
+        }
+      }
+    },
+    "GetBatchResponse":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"BatchId",
+          "documentation":"<p>The identifier portion of the run batch ARN.</p>"
+        },
+        "arn":{
+          "shape":"BatchArn",
+          "documentation":"<p>The unique ARN of the run batch.</p>"
+        },
+        "uuid":{
+          "shape":"BatchUuid",
+          "documentation":"<p>The universally unique identifier (UUID) for the run batch.</p>"
+        },
+        "name":{
+          "shape":"BatchName",
+          "documentation":"<p>The optional user-friendly name of the batch.</p>"
+        },
+        "status":{
+          "shape":"BatchStatus",
+          "documentation":"<p>The current status of the run batch.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>AWS tags associated with the run batch.</p>"
+        },
+        "totalRuns":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of runs in the batch.</p>"
+        },
+        "defaultRunSetting":{
+          "shape":"DefaultRunSetting",
+          "documentation":"<p>The shared configuration applied to all runs in the batch. See <code>DefaultRunSetting</code>.</p>"
+        },
+        "submissionSummary":{
+          "shape":"SubmissionSummary",
+          "documentation":"<p>A summary of run submission outcomes. See <code>SubmissionSummary</code>.</p>"
+        },
+        "runSummary":{
+          "shape":"RunSummary",
+          "documentation":"<p>A summary of run execution states. Run execution counts are eventually consistent and may lag behind actual run states. Final counts are accurate once the batch reaches <code>PROCESSED</code> status. See <code>RunSummary</code>.</p>"
+        },
+        "creationTime":{
+          "shape":"BatchTimestamp",
+          "documentation":"<p>The timestamp when the batch was created.</p>"
+        },
+        "submittedTime":{
+          "shape":"BatchTimestamp",
+          "documentation":"<p>The timestamp when all run submissions completed.</p>"
+        },
+        "processedTime":{
+          "shape":"BatchTimestamp",
+          "documentation":"<p>The timestamp when all run executions completed.</p>"
+        },
+        "failedTime":{
+          "shape":"BatchTimestamp",
+          "documentation":"<p>The timestamp when the batch transitioned to a <code>FAILED</code> status.</p>"
+        },
+        "failureReason":{
+          "shape":"String",
+          "documentation":"<p>A description of the batch failure. Present only when status is <code>FAILED</code>.</p>"
+        }
+      }
+    },
+    "GetConfigurationRequest":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"ConfigurationName",
+          "documentation":"<p>Configuration name to retrieve.</p>",
+          "location":"uri",
+          "locationName":"name"
+        }
+      }
+    },
+    "GetConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"ConfigurationArn",
+          "documentation":"<p>Unique resource identifier for the configuration.</p>"
+        },
+        "uuid":{
+          "shape":"ConfigurationUuid",
+          "documentation":"<p>Unique identifier for the configuration.</p>"
+        },
+        "name":{
+          "shape":"ConfigurationName",
+          "documentation":"<p>User-friendly name for the configuration.</p>"
+        },
+        "description":{
+          "shape":"ConfigurationDescription",
+          "documentation":"<p>Description for the configuration.</p>"
+        },
+        "runConfigurations":{
+          "shape":"RunConfigurationsResponse",
+          "documentation":"<p>Run-specific configurations.</p>"
+        },
+        "status":{
+          "shape":"ConfigurationStatus",
+          "documentation":"<p>Current configuration status.</p>"
+        },
+        "creationTime":{
+          "shape":"ConfigurationTimestamp",
+          "documentation":"<p>Configuration creation timestamp.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>Tags for the configuration.</p>"
         }
       }
     },
@@ -5262,6 +6082,10 @@
           "shape":"RunGroupId",
           "documentation":"<p>The run's group ID.</p>"
         },
+        "batchId":{
+          "shape":"BatchId",
+          "documentation":"<p>The run's batch ID.</p>"
+        },
         "priority":{
           "shape":"GetRunResponsePriorityInteger",
           "documentation":"<p>The run's priority.</p>"
@@ -5357,6 +6181,18 @@
         "workflowUuid":{
           "shape":"WorkflowUuid",
           "documentation":"<p>The universally unique identifier (UUID) value for the workflow.</p>"
+        },
+        "networkingMode":{
+          "shape":"NetworkingMode",
+          "documentation":"<p>Configuration for run networking behavior. If absent, this will default to RESTRICTED.</p>"
+        },
+        "configuration":{
+          "shape":"ConfigurationDetails",
+          "documentation":"<p>Configuration details for the workflow run.</p>"
+        },
+        "vpcConfig":{
+          "shape":"VpcConfigResponse",
+          "documentation":"<p>VPC configuration for the workflow run.</p>"
         }
       }
     },
@@ -6306,6 +7142,53 @@
       "type":"list",
       "member":{"shape":"ImportReferenceSourceItem"}
     },
+    "InlineSetting":{
+      "type":"structure",
+      "required":["runSettingId"],
+      "members":{
+        "runSettingId":{
+          "shape":"RunSettingId",
+          "documentation":"<p>A customer-provided unique identifier for this run configuration within the batch. After submission, use <code>ListRunsInBatch</code> to map each <code>runSettingId</code> to the HealthOmics-generated <code>runId</code>.</p>"
+        },
+        "name":{
+          "shape":"RunName",
+          "documentation":"<p>An optional user-friendly name for this run.</p>"
+        },
+        "outputUri":{
+          "shape":"RunOutputUri",
+          "documentation":"<p>Override the destination S3 URI for this run's outputs.</p>"
+        },
+        "priority":{
+          "shape":"InlineSettingPriorityInteger",
+          "documentation":"<p>Override the priority for this run.</p>"
+        },
+        "parameters":{
+          "shape":"RunParameters",
+          "documentation":"<p>Per-run workflow parameters. Merged with <code>defaultRunSetting.parameters</code>; values in this object take precedence when keys overlap.</p>"
+        },
+        "outputBucketOwnerId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The expected AWS account ID of the owner of the output S3 bucket for this run.</p>"
+        },
+        "runTags":{
+          "shape":"TagMap",
+          "documentation":"<p>Per-run AWS tags. Merged with <code>defaultRunSetting.runTags</code>; values in this object take precedence when keys overlap.</p>"
+        }
+      },
+      "documentation":"<p>A per-run configuration that overrides or merges with fields from <code>DefaultRunSetting</code> for a specific run.</p>"
+    },
+    "InlineSettingPriorityInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100000,
+      "min":0
+    },
+    "InlineSettings":{
+      "type":"list",
+      "member":{"shape":"InlineSetting"},
+      "max":100,
+      "min":1
+    },
     "Integer":{
       "type":"integer",
       "box":true
@@ -6538,6 +7421,96 @@
         "nextToken":{
           "shape":"String",
           "documentation":"<p>A pagination token that's included if more results are available.</p>"
+        }
+      }
+    },
+    "ListBatchRequest":{
+      "type":"structure",
+      "members":{
+        "maxItems":{
+          "shape":"ListBatchRequestMaxItemsInteger",
+          "documentation":"<p>The maximum number of batches to return. If not specified, defaults to 100.</p>",
+          "location":"querystring",
+          "locationName":"maxItems"
+        },
+        "startingToken":{
+          "shape":"ListToken",
+          "documentation":"<p>A pagination token returned from a prior <code>ListBatch</code> call.</p>",
+          "location":"querystring",
+          "locationName":"startingToken"
+        },
+        "status":{
+          "shape":"BatchStatus",
+          "documentation":"<p>Filter batches by status.</p>",
+          "location":"querystring",
+          "locationName":"status"
+        },
+        "name":{
+          "shape":"BatchName",
+          "documentation":"<p>Filter batches by name.</p>",
+          "location":"querystring",
+          "locationName":"name"
+        },
+        "runGroupId":{
+          "shape":"RunGroupId",
+          "documentation":"<p>Filter batches by run group ID.</p>",
+          "location":"querystring",
+          "locationName":"runGroupId"
+        }
+      }
+    },
+    "ListBatchRequestMaxItemsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListBatchResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"BatchList",
+          "documentation":"<p>A list of batch summary objects. See <code>BatchListItem</code>.</p>"
+        },
+        "nextToken":{
+          "shape":"ListToken",
+          "documentation":"<p>A pagination token to retrieve the next page of results. Absent when no further results are available.</p>"
+        }
+      }
+    },
+    "ListConfigurationsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"ListConfigurationsRequestMaxResultsInteger",
+          "documentation":"<p>Maximum number of results to return.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "startingToken":{
+          "shape":"ConfigurationListToken",
+          "documentation":"<p>Pagination token for retrieving next page of results.</p>",
+          "location":"querystring",
+          "locationName":"startingToken"
+        }
+      }
+    },
+    "ListConfigurationsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":10,
+      "min":1
+    },
+    "ListConfigurationsResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"ConfigurationList",
+          "documentation":"<p>List of configuration items.</p>"
+        },
+        "nextToken":{
+          "shape":"ConfigurationListToken",
+          "documentation":"<p>Token for retrieving next page of results.</p>"
         }
       }
     },
@@ -7097,6 +8070,67 @@
         }
       }
     },
+    "ListRunsInBatchRequest":{
+      "type":"structure",
+      "required":["batchId"],
+      "members":{
+        "batchId":{
+          "shape":"BatchId",
+          "documentation":"<p>The identifier portion of the run batch ARN.</p>",
+          "location":"uri",
+          "locationName":"batchId"
+        },
+        "maxItems":{
+          "shape":"ListRunsInBatchRequestMaxItemsInteger",
+          "documentation":"<p>The maximum number of runs to return.</p>",
+          "location":"querystring",
+          "locationName":"maxItems"
+        },
+        "startingToken":{
+          "shape":"ListToken",
+          "documentation":"<p>A pagination token returned from a prior <code>ListRunsInBatch</code> call.</p>",
+          "location":"querystring",
+          "locationName":"startingToken"
+        },
+        "submissionStatus":{
+          "shape":"SubmissionStatus",
+          "documentation":"<p>Filter runs by submission status.</p>",
+          "location":"querystring",
+          "locationName":"submissionStatus"
+        },
+        "runSettingId":{
+          "shape":"String",
+          "documentation":"<p>Filter runs by the customer-provided run setting ID.</p>",
+          "location":"querystring",
+          "locationName":"runSettingId"
+        },
+        "runId":{
+          "shape":"String",
+          "documentation":"<p>Filter runs by the HealthOmics-generated run ID.</p>",
+          "location":"querystring",
+          "locationName":"runId"
+        }
+      }
+    },
+    "ListRunsInBatchRequestMaxItemsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListRunsInBatchResponse":{
+      "type":"structure",
+      "members":{
+        "runs":{
+          "shape":"RunBatchList",
+          "documentation":"<p>A list of run entries in the batch. See <code>RunBatchListItem</code>.</p>"
+        },
+        "nextToken":{
+          "shape":"ListToken",
+          "documentation":"<p>A pagination token to retrieve the next page of results. Absent when the last run has been returned.</p>"
+        }
+      }
+    },
     "ListRunsRequest":{
       "type":"structure",
       "members":{
@@ -7111,6 +8145,12 @@
           "documentation":"<p>Filter the list by run group ID.</p>",
           "location":"querystring",
           "locationName":"runGroupId"
+        },
+        "batchId":{
+          "shape":"BatchId",
+          "documentation":"<p>Filter by batch ID.</p>",
+          "location":"querystring",
+          "locationName":"batchId"
         },
         "startingToken":{
           "shape":"RunListToken",
@@ -7570,6 +8610,13 @@
         }
       },
       "documentation":"<p> Part of the response to ListMultipartReadSetUploads, excluding completed and aborted multipart uploads. </p>"
+    },
+    "NetworkingMode":{
+      "type":"string",
+      "enum":[
+        "RESTRICTED",
+        "VPC"
+      ]
     },
     "NextToken":{
       "type":"string",
@@ -8436,6 +9483,44 @@
       "min":1,
       "pattern":"arn:.+"
     },
+    "RunBatchList":{
+      "type":"list",
+      "member":{"shape":"RunBatchListItem"}
+    },
+    "RunBatchListItem":{
+      "type":"structure",
+      "members":{
+        "runSettingId":{
+          "shape":"RunSettingId",
+          "documentation":"<p>The customer-provided identifier for the run configuration. Use this to correlate results back to the input configuration provided in <code>inlineSettings</code> or <code>s3UriSettings</code>.</p>"
+        },
+        "runId":{
+          "shape":"RunId",
+          "documentation":"<p>The HealthOmics-generated identifier for the workflow run. Empty if submission failed.</p>"
+        },
+        "runInternalUuid":{
+          "shape":"RunUuid",
+          "documentation":"<p>The universally unique identifier (UUID) for the run.</p>"
+        },
+        "runArn":{
+          "shape":"RunArn",
+          "documentation":"<p>The unique ARN of the workflow run.</p>"
+        },
+        "submissionStatus":{
+          "shape":"SubmissionStatus",
+          "documentation":"<p>The submission outcome for this run.</p>"
+        },
+        "submissionFailureReason":{
+          "shape":"SubmissionFailureReason",
+          "documentation":"<p>The error category for a failed submission. See the run-level failure table in the HealthOmics User Guide for details on each value.</p>"
+        },
+        "submissionFailureMessage":{
+          "shape":"SubmissionFailureMessage",
+          "documentation":"<p>A detailed message describing the submission failure.</p>"
+        }
+      },
+      "documentation":"<p>A single run entry returned by <code>ListRunsInBatch</code>.</p>"
+    },
     "RunCacheArn":{
       "type":"string",
       "max":128,
@@ -8505,6 +9590,26 @@
     "RunCacheTimestamp":{
       "type":"timestamp",
       "timestampFormat":"iso8601"
+    },
+    "RunConfigurations":{
+      "type":"structure",
+      "members":{
+        "vpcConfig":{
+          "shape":"VpcConfig",
+          "documentation":"<p>VPC configuration for workflow runs.</p>"
+        }
+      },
+      "documentation":"<p>Run-specific configuration settings.</p>"
+    },
+    "RunConfigurationsResponse":{
+      "type":"structure",
+      "members":{
+        "vpcConfig":{
+          "shape":"VpcConfigResponse",
+          "documentation":"<p>VPC configuration for workflow runs with computed VPC ID.</p>"
+        }
+      },
+      "documentation":"<p>Run-specific configuration settings with computed values.</p>"
     },
     "RunExport":{
       "type":"string",
@@ -8654,6 +9759,10 @@
           "shape":"WorkflowId",
           "documentation":"<p>The run's workflow ID.</p>"
         },
+        "batchId":{
+          "shape":"BatchId",
+          "documentation":"<p>The run's batch ID.</p>"
+        },
         "name":{
           "shape":"RunName",
           "documentation":"<p>The run's name.</p>"
@@ -8750,8 +9859,7 @@
     },
     "RunParameters":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "document":true
     },
     "RunRequestId":{
@@ -8792,6 +9900,12 @@
       "min":1,
       "pattern":"arn:.+"
     },
+    "RunSettingId":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+"
+    },
     "RunStartedBy":{
       "type":"string",
       "max":128,
@@ -8815,6 +9929,44 @@
     "RunStatusMessage":{
       "type":"string",
       "pattern":"[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+"
+    },
+    "RunSummary":{
+      "type":"structure",
+      "members":{
+        "pendingRunCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of pending runs.</p>"
+        },
+        "startingRunCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of starting runs.</p>"
+        },
+        "runningRunCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of running runs.</p>"
+        },
+        "stoppingRunCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of stopping runs.</p>"
+        },
+        "completedRunCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of completed runs.</p>"
+        },
+        "deletedRunCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of deleted runs.</p>"
+        },
+        "failedRunCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of failed runs.</p>"
+        },
+        "cancelledRunCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of cancelled runs.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the runs in a batch.</p>"
     },
     "RunTimestamp":{
       "type":"timestamp",
@@ -8864,6 +10016,12 @@
       "type":"string",
       "pattern":"s3://([a-z0-9][a-z0-9-.]{1,61}[a-z0-9])/((.{1,1024}))"
     },
+    "S3UriSettings":{
+      "type":"string",
+      "max":750,
+      "min":1,
+      "pattern":"[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+"
+    },
     "SampleId":{
       "type":"string",
       "max":127,
@@ -8891,6 +10049,16 @@
         "DOUBLE",
         "BOOLEAN"
       ]
+    },
+    "SecurityGroupId":{
+      "type":"string",
+      "max":128,
+      "min":4,
+      "pattern":"sg-[0-9a-f]+"
+    },
+    "SecurityGroupIds":{
+      "type":"list",
+      "member":{"shape":"SecurityGroupId"}
     },
     "Separator":{
       "type":"string",
@@ -9609,6 +10777,62 @@
       },
       "documentation":"<p>A source for a reference import job.</p>"
     },
+    "StartRunBatchRequest":{
+      "type":"structure",
+      "required":[
+        "requestId",
+        "defaultRunSetting",
+        "batchRunSettings"
+      ],
+      "members":{
+        "batchName":{
+          "shape":"BatchName",
+          "documentation":"<p>An optional user-friendly name for the run batch.</p>"
+        },
+        "requestId":{
+          "shape":"BatchRequestId",
+          "documentation":"<p>A client token used to deduplicate retry requests and prevent duplicate batches from being created.</p>",
+          "idempotencyToken":true
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>AWS tags to associate with the batch resource. These tags are not inherited by individual runs. To tag individual runs, use <code>defaultRunSetting.runTags</code>.</p>"
+        },
+        "defaultRunSetting":{
+          "shape":"DefaultRunSetting",
+          "documentation":"<p>Shared configuration applied to all runs in the batch. See <code>DefaultRunSetting</code>.</p>"
+        },
+        "batchRunSettings":{
+          "shape":"BatchRunSettings",
+          "documentation":"<p>The individual run configurations. Specify exactly one of <code>inlineSettings</code> or <code>s3UriSettings</code>. See <code>BatchRunSettings</code>.</p>"
+        }
+      }
+    },
+    "StartRunBatchResponse":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"BatchId",
+          "documentation":"<p>The identifier portion of the run batch ARN.</p>"
+        },
+        "arn":{
+          "shape":"BatchArn",
+          "documentation":"<p>The unique ARN of the run batch.</p>"
+        },
+        "status":{
+          "shape":"BatchStatus",
+          "documentation":"<p>The initial status of the run batch.</p>"
+        },
+        "uuid":{
+          "shape":"BatchUuid",
+          "documentation":"<p>The universally unique identifier (UUID) for the run batch.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>AWS tags associated with the run batch.</p>"
+        }
+      }
+    },
     "StartRunRequest":{
       "type":"structure",
       "required":[
@@ -9693,6 +10917,14 @@
         "workflowVersionName":{
           "shape":"WorkflowVersionName",
           "documentation":"<p>The name of the workflow version. Use workflow versions to track and organize changes to the workflow. If your workflow has multiple versions, the run uses the default version unless you specify a version name. To learn more, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/workflow-versions.html\">Workflow versioning</a> in the <i>Amazon Web Services HealthOmics User Guide</i>.</p>"
+        },
+        "networkingMode":{
+          "shape":"NetworkingMode",
+          "documentation":"<p>Optional configuration for run networking behavior. If not specified, this will default to RESTRICTED.</p>"
+        },
+        "configurationName":{
+          "shape":"ConfigurationName",
+          "documentation":"<p>Optional configuration name to use for the workflow run.</p>"
         }
       }
     },
@@ -9734,6 +10966,14 @@
         "runOutputUri":{
           "shape":"RunOutputUri",
           "documentation":"<p>The destination for workflow outputs.</p>"
+        },
+        "configuration":{
+          "shape":"ConfigurationDetails",
+          "documentation":"<p>Configuration details for the workflow run.</p>"
+        },
+        "networkingMode":{
+          "shape":"String",
+          "documentation":"<p>Networking mode for the workflow run.</p>"
         }
       }
     },
@@ -9852,6 +11092,73 @@
       "min":1,
       "pattern":"[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+"
     },
+    "SubmissionFailureMessage":{
+      "type":"string",
+      "pattern":"[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+"
+    },
+    "SubmissionFailureReason":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+"
+    },
+    "SubmissionStatus":{
+      "type":"string",
+      "enum":[
+        "SUCCESS",
+        "FAILED",
+        "CANCEL_SUCCESS",
+        "CANCEL_FAILED",
+        "DELETE_SUCCESS",
+        "DELETE_FAILED"
+      ],
+      "max":64,
+      "min":1
+    },
+    "SubmissionSummary":{
+      "type":"structure",
+      "members":{
+        "successfulStartSubmissionCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of successful start submissions.</p>"
+        },
+        "failedStartSubmissionCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of failed start submissions.</p>"
+        },
+        "pendingStartSubmissionCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of pending start submissions.</p>"
+        },
+        "successfulCancelSubmissionCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of successful cancel submissions.</p>"
+        },
+        "failedCancelSubmissionCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of failed cancel submissions.</p>"
+        },
+        "successfulDeleteSubmissionCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of successful delete submissions.</p>"
+        },
+        "failedDeleteSubmissionCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of failed delete submissions.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the submissions in a batch.</p>"
+    },
+    "SubnetId":{
+      "type":"string",
+      "max":128,
+      "min":8,
+      "pattern":"subnet-[0-9a-f]+"
+    },
+    "SubnetIds":{
+      "type":"list",
+      "member":{"shape":"SubnetId"}
+    },
     "SyntheticTimestamp_date_time":{
       "type":"timestamp",
       "timestampFormat":"iso8601"
@@ -9906,8 +11213,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -10147,8 +11453,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateAnnotationStoreRequest":{
       "type":"structure",
@@ -10937,6 +12242,56 @@
         "FAILED"
       ]
     },
+    "VpcConfig":{
+      "type":"structure",
+      "members":{
+        "securityGroupIds":{
+          "shape":"VpcConfigSecurityGroupIdsList",
+          "documentation":"<p>List of security group IDs. Maximum of 5 security groups allowed.</p>"
+        },
+        "subnetIds":{
+          "shape":"VpcConfigSubnetIdsList",
+          "documentation":"<p>List of subnet IDs. Maximum of 16 subnets allowed.</p>"
+        }
+      },
+      "documentation":"<p>VPC configuration for workflow runs.</p>"
+    },
+    "VpcConfigResponse":{
+      "type":"structure",
+      "members":{
+        "securityGroupIds":{
+          "shape":"SecurityGroupIds",
+          "documentation":"<p>List of security group IDs.</p>"
+        },
+        "subnetIds":{
+          "shape":"SubnetIds",
+          "documentation":"<p>List of subnet IDs.</p>"
+        },
+        "vpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>VPC ID computed from the provided subnet IDs.</p>"
+        }
+      },
+      "documentation":"<p>VPC configuration for workflow runs with computed VPC ID.</p>"
+    },
+    "VpcConfigSecurityGroupIdsList":{
+      "type":"list",
+      "member":{"shape":"SecurityGroupId"},
+      "max":5,
+      "min":0
+    },
+    "VpcConfigSubnetIdsList":{
+      "type":"list",
+      "member":{"shape":"SubnetId"},
+      "max":16,
+      "min":0
+    },
+    "VpcId":{
+      "type":"string",
+      "max":128,
+      "min":5,
+      "pattern":"vpc-[0-9a-f]+"
+    },
     "WorkflowArn":{
       "type":"string",
       "max":128,
@@ -11105,7 +12460,7 @@
       "type":"map",
       "key":{"shape":"WorkflowParameterName"},
       "value":{"shape":"WorkflowParameter"},
-      "max":1000,
+      "max":2000,
       "min":1
     },
     "WorkflowRequestId":{

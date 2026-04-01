@@ -2099,6 +2099,586 @@
                 "OperationType": "data",
                 "ResourceARN": "arn:aws-iso-b:kinesis:us-isob-east-1:123:stream/test-stream/consumer/test-consumer:1525898737"
             }
+        },
+        {
+            "documentation": "StreamId test: OperationType not set with StreamId",
+            "expect": {
+                "error": "Operation Type is not set. Please contact service team for resolution."
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "StreamId": "af4lwng4k01746835071-xyz"
+            }
+        },
+        {
+            "documentation": "StreamId test: Stream endpoint targeting control operation type",
+            "expect": {
+                "endpoint": {
+                    "url": "https://af4lwng4k01746835071.xyz.control-kinesis.us-east-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "StreamId": "af4lwng4k01746835071-xyz",
+                "StreamARN": "arn:aws:kinesis:us-east-1:123:stream/test-stream"
+            }
+        },
+        {
+            "documentation": "StreamId test: Stream endpoint targeting data operation type",
+            "expect": {
+                "endpoint": {
+                    "url": "https://af4lwng4k01746835071.xyz.data-kinesis.us-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1"
+                    },
+                    "operationName": "GetShardIterator",
+                    "operationParams": {
+                        "ShardId": "shardId-000000000001",
+                        "ShardIteratorType": "LATEST",
+                        "StreamId": "af4lwng4k01746835071-xyz"
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "data",
+                "StreamId": "af4lwng4k01746835071-xyz",
+                "StreamARN": "arn:aws:kinesis:us-east-1:123:stream/test-stream"
+            }
+        },
+        {
+            "documentation": "StreamId test: Stream endpoint with fips targeting data operation type",
+            "expect": {
+                "endpoint": {
+                    "url": "https://af4lwng4k01746835071.xyz.data-kinesis-fips.us-east-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "OperationType": "data",
+                "StreamId": "af4lwng4k01746835071-xyz",
+                "StreamARN": "arn:aws:kinesis:us-east-1:123:stream/test-stream"
+            }
+        },
+        {
+            "documentation": "StreamId test: Stream endpoint with fips targeting control operation type",
+            "expect": {
+                "endpoint": {
+                    "url": "https://af4lwng4k01746835071.xyz.control-kinesis-fips.us-east-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "StreamId": "af4lwng4k01746835071-xyz",
+                "StreamARN": "arn:aws:kinesis:us-east-1:123:stream/test-stream"
+            }
+        },
+        {
+            "documentation": "StreamId test: Stream endpoint with Dual Stack and FIPS enabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://af4lwng4k01746835071.xyz.control-kinesis-fips.us-east-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "OperationType": "control",
+                "StreamId": "af4lwng4k01746835071-xyz",
+                "StreamARN": "arn:aws:kinesis:us-east-1:123:stream/test-stream"
+            }
+        },
+        {
+            "documentation": "StreamId test: Stream endpoint with Dual Stack enabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://af4lwng4k01746835071.xyz.data-kinesis.us-west-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-west-1",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "OperationType": "data",
+                "StreamId": "af4lwng4k01746835071-xyz",
+                "StreamARN": "arn:aws:kinesis:us-west-1:123:stream/test-stream"
+            }
+        },
+        {
+            "documentation": "StreamId test: Stream endpoint with FIPS and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://af4lwng4k01746835071.xyz.control-kinesis.us-west-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-west-1"
+                    },
+                    "operationName": "ListShards",
+                    "operationParams": {
+                        "StreamId": "af4lwng4k01746835071-xyz"
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-west-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "StreamId": "af4lwng4k01746835071-xyz",
+                "StreamARN": "arn:aws:kinesis:us-west-1:123:stream/test-stream"
+            }
+        },
+        {
+            "documentation": "StreamId test: Stream endpoint FIPS and DualStack disabled with endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://af4lwng4k01746835071.xyz.control-kinesis-pod1.us-east-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "StreamId": "af4lwng4k01746835071-xyz",
+                "Endpoint": "kinesis-pod1.us-east-1.amazonaws.com"
+            }
+        },
+        {
+            "documentation": "StreamId test: Stream endpoint targeting data operation type with endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://af4lwng4k01746835071.xyz.data-kinesis-pod1.us-east-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "data",
+                "StreamId": "af4lwng4k01746835071-xyz",
+                "Endpoint": "kinesis-pod1.us-east-1.amazonaws.com"
+            }
+        },
+        {
+            "documentation": "StreamId test: Stream endpoint with fips targeting data operation type with endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://af4lwng4k01746835071.xyz.data-kinesis-pod1-fips.us-east-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "OperationType": "data",
+                "StreamId": "af4lwng4k01746835071-xyz",
+                "Endpoint": "kinesis-pod1.us-east-1.amazonaws.com"
+            }
+        },
+        {
+            "documentation": "StreamId test: Stream endpoint with fips targeting control operation type with endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://af4lwng4k01746835071.xyz.control-kinesis-pod1-fips.us-east-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "StreamId": "af4lwng4k01746835071-xyz",
+                "Endpoint": "kinesis-pod1.us-east-1.amazonaws.com"
+            }
+        },
+        {
+            "documentation": "StreamId test: Stream endpoint with Dual Stack and FIPS enabled with endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://af4lwng4k01746835071.xyz.control-kinesis-pod1-fips.us-east-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "OperationType": "control",
+                "StreamId": "af4lwng4k01746835071-xyz",
+                "Endpoint": "kinesis-pod1.us-east-1.amazonaws.com"
+            }
+        },
+        {
+            "documentation": "StreamId test: Stream endpoint with Dual Stack enabled with endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://af4lwng4k01746835071.xyz.data-kinesis-pod1.us-east-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "OperationType": "data",
+                "StreamId": "af4lwng4k01746835071-xyz",
+                "Endpoint": "kinesis-pod1.us-east-1.amazonaws.com"
+            }
+        },
+        {
+            "documentation": "StreamId test: Stream endpoint targeting data operation type with https endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://af4lwng4k01746835071.xyz.data-kinesis-pod1.us-east-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "data",
+                "StreamId": "af4lwng4k01746835071-xyz",
+                "Endpoint": "https://kinesis-pod1.us-east-1.amazonaws.com"
+            }
+        },
+        {
+            "documentation": "StreamId test: HTTPS endpoint with FIPS enabled targeting control operation type",
+            "expect": {
+                "endpoint": {
+                    "url": "https://af4lwng4k01746835071.xyz.control-kinesis-pod1-fips.us-east-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "StreamId": "af4lwng4k01746835071-xyz",
+                "Endpoint": "https://kinesis-pod1.us-east-1.amazonaws.com"
+            }
+        },
+        {
+            "documentation": "StreamId test: HTTPS endpoint with FIPS enabled targeting data operation type",
+            "expect": {
+                "endpoint": {
+                    "url": "https://af4lwng4k01746835071.xyz.data-kinesis-pod1-fips.us-east-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "OperationType": "data",
+                "StreamId": "af4lwng4k01746835071-xyz",
+                "Endpoint": "https://kinesis-pod1.us-east-1.amazonaws.com"
+            }
+        },
+        {
+            "documentation": "StreamId test: HTTPS endpoint with DualStack enabled targeting control operation type",
+            "expect": {
+                "endpoint": {
+                    "url": "https://af4lwng4k01746835071.xyz.control-kinesis-pod1.us-east-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "OperationType": "control",
+                "StreamId": "af4lwng4k01746835071-xyz",
+                "Endpoint": "https://kinesis-pod1.us-east-1.amazonaws.com"
+            }
+        },
+        {
+            "documentation": "StreamId test: HTTPS endpoint with DualStack enabled targeting data operation type",
+            "expect": {
+                "endpoint": {
+                    "url": "https://af4lwng4k01746835071.xyz.data-kinesis-pod1.us-east-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "OperationType": "data",
+                "StreamId": "af4lwng4k01746835071-xyz",
+                "Endpoint": "https://kinesis-pod1.us-east-1.amazonaws.com"
+            }
+        },
+        {
+            "documentation": "StreamId test: HTTPS endpoint with FIPS and DualStack enabled targeting control operation type",
+            "expect": {
+                "endpoint": {
+                    "url": "https://af4lwng4k01746835071.xyz.control-kinesis-pod1-fips.us-east-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "OperationType": "control",
+                "StreamId": "af4lwng4k01746835071-xyz",
+                "Endpoint": "https://kinesis-pod1.us-east-1.amazonaws.com"
+            }
+        },
+        {
+            "documentation": "StreamId test: HTTPS endpoint with FIPS and DualStack enabled targeting data operation type",
+            "expect": {
+                "endpoint": {
+                    "url": "https://af4lwng4k01746835071.xyz.data-kinesis-pod1-fips.us-east-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "OperationType": "data",
+                "StreamId": "af4lwng4k01746835071-xyz",
+                "Endpoint": "https://kinesis-pod1.us-east-1.amazonaws.com"
+            }
+        },
+        {
+            "documentation": "StreamId test: HTTPS endpoint with FIPS enabled in different region",
+            "expect": {
+                "endpoint": {
+                    "url": "https://af4lwng4k01746835071.xyz.data-kinesis-pod2-fips.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "OperationType": "data",
+                "StreamId": "af4lwng4k01746835071-xyz",
+                "Endpoint": "https://kinesis-pod2.us-west-2.amazonaws.com"
+            }
+        },
+        {
+            "documentation": "StreamId test: HTTPS endpoint with DualStack enabled in different region",
+            "expect": {
+                "endpoint": {
+                    "url": "https://af4lwng4k01746835071.xyz.control-kinesis-pod2.us-west-2.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "OperationType": "control",
+                "StreamId": "af4lwng4k01746835071-xyz",
+                "Endpoint": "https://kinesis-pod2.us-west-2.amazonaws.com"
+            }
+        },
+        {
+            "documentation": "StreamId test: Stream endpoint with ConsumerARN targeting control operation type",
+            "expect": {
+                "endpoint": {
+                    "url": "https://af4lwng4k01746835071.xyz.control-kinesis.us-east-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "StreamId": "af4lwng4k01746835071-xyz",
+                "ConsumerARN": "arn:aws:kinesis:us-east-1:123:stream/test-stream/consumer/test-consumer:1525898737"
+            }
+        },
+        {
+            "documentation": "StreamId test: Stream endpoint with ConsumerARN targeting data operation type",
+            "expect": {
+                "endpoint": {
+                    "url": "https://af4lwng4k01746835071.xyz.data-kinesis.us-east-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "data",
+                "StreamId": "af4lwng4k01746835071-xyz",
+                "ConsumerARN": "arn:aws:kinesis:us-east-1:123:stream/test-stream/consumer/test-consumer:1525898737"
+            }
+        },
+        {
+            "documentation": "StreamId test: Stream endpoint with ResourceARN targeting control operation type",
+            "expect": {
+                "endpoint": {
+                    "url": "https://af4lwng4k01746835071.xyz.control-kinesis.us-east-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "StreamId": "af4lwng4k01746835071-xyz",
+                "ResourceARN": "arn:aws:kinesis:us-east-1:123:stream/test-stream"
+            }
+        },
+        {
+            "documentation": "StreamId test: Stream endpoint with ResourceARN targeting data operation type",
+            "expect": {
+                "endpoint": {
+                    "url": "https://af4lwng4k01746835071.xyz.data-kinesis.us-east-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "data",
+                "StreamId": "af4lwng4k01746835071-xyz",
+                "ResourceARN": "arn:aws:kinesis:us-east-1:123:stream/test-stream"
+            }
+        },
+        {
+            "documentation": "StreamId test: Invalid StreamId with ARN",
+            "expect": {
+                "endpoint": {
+                    "url": "https://123.data-kinesis.us-east-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "data",
+                "StreamId": "af4lwng4k01746835071=xyz",
+                "ResourceARN": "arn:aws:kinesis:us-east-1:123:stream/test-stream"
+            }
+        },
+        {
+            "documentation": "StreamId test: Invalid streamId with custom endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis-pod2.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "StreamId": "af4lwng4k01746835071=xyz",
+                "Endpoint": "https://kinesis-pod2.us-west-2.amazonaws.com"
+            }
+        },
+        {
+            "documentation": "StreamId test: Invalid streamId",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "StreamId": "af4lwng4k01746835071=xyz"
+            }
+        },
+        {
+            "documentation": "StreamId test: Invalid streamId with custom endpoint and ARN",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis-pod2.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "StreamId": "af4lwng4k01746835071=xyz",
+                "Endpoint": "https://kinesis-pod2.us-west-2.amazonaws.com",
+                "ResourceARN": "arn:aws:kinesis:us-east-1:123:stream/test-stream"
+            }
+        },
+        {
+            "documentation": "StreamId test: Invalid streamId with longer prefix",
+            "expect": {
+                "endpoint": {
+                    "url": "https://123.control-kinesis.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "StreamId": "af4lwng4k0174683507123-xyz",
+                "ResourceARN": "arn:aws:kinesis:us-east-1:123:stream/test-stream"
+            }
+        },
+        {
+            "documentation": "StreamId test: Invalid streamId with shorter prefix",
+            "expect": {
+                "endpoint": {
+                    "url": "https://123.control-kinesis.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "StreamId": "af4lwng4k01746835-xyz",
+                "ResourceARN": "arn:aws:kinesis:us-east-1:123:stream/test-stream"
+            }
+        },
+        {
+            "documentation": "StreamId test: Invalid streamId with longer suffix",
+            "expect": {
+                "endpoint": {
+                    "url": "https://123.control-kinesis.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "StreamId": "af4lwng4k01746835071-wxyz",
+                "ResourceARN": "arn:aws:kinesis:us-east-1:123:stream/test-stream"
+            }
+        },
+        {
+            "documentation": "StreamId test: Invalid streamId with shorter suffix",
+            "expect": {
+                "endpoint": {
+                    "url": "https://123.control-kinesis.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "StreamId": "af4lwng4k01746835071-yz",
+                "ResourceARN": "arn:aws:kinesis:us-east-1:123:stream/test-stream"
+            }
         }
     ],
     "version": "1.0"

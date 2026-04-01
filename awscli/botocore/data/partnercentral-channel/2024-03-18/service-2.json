@@ -1633,17 +1633,6 @@
         "SOLUTION_PROVIDER"
       ]
     },
-    "ResoldBusiness":{
-      "type":"structure",
-      "required":["coverage"],
-      "members":{
-        "coverage":{
-          "shape":"Coverage",
-          "documentation":"<p>The coverage level for resold business support.</p>"
-        }
-      },
-      "documentation":"<p>Configuration for resold business support plans.</p>"
-    },
     "ResoldEnterprise":{
       "type":"structure",
       "required":[
@@ -1665,6 +1654,28 @@
         }
       },
       "documentation":"<p>Configuration for resold enterprise support plans.</p>"
+    },
+    "ResoldUnifiedOperations":{
+      "type":"structure",
+      "required":[
+        "coverage",
+        "tamLocation"
+      ],
+      "members":{
+        "coverage":{
+          "shape":"Coverage",
+          "documentation":"<p>The coverage level for resold unified operations support.</p>"
+        },
+        "tamLocation":{
+          "shape":"String",
+          "documentation":"<p>The location of the Technical Account Manager (TAM).</p>"
+        },
+        "chargeAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID to charge for the support plan.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for resold unified operations support plans.</p>"
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -1913,10 +1924,6 @@
     "SupportPlan":{
       "type":"structure",
       "members":{
-        "resoldBusiness":{
-          "shape":"ResoldBusiness",
-          "documentation":"<p>Configuration for resold business support plans.</p>"
-        },
         "resoldEnterprise":{
           "shape":"ResoldEnterprise",
           "documentation":"<p>Configuration for resold enterprise support plans.</p>"
@@ -1924,6 +1931,10 @@
         "partnerLedSupport":{
           "shape":"PartnerLedSupport",
           "documentation":"<p>Configuration for partner-led support plans.</p>"
+        },
+        "resoldUnifiedOperations":{
+          "shape":"ResoldUnifiedOperations",
+          "documentation":"<p>Configuration for resold unified operations support plans.</p>"
         }
       },
       "documentation":"<p>Configuration for different types of support plans.</p>",

@@ -265,7 +265,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"IllegalArgumentException"}
       ],
-      "documentation":"<p>Starts the execution of a Region switch plan. You can execute a plan in either PRACTICE or RECOVERY mode.</p> <p>In PRACTICE mode, the execution simulates the steps without making actual changes to your application's traffic routing. In RECOVERY mode, the execution performs actual changes to shift traffic between Regions.</p>"
+      "documentation":"<p>Starts the execution of a Region switch plan. You can execute a plan in either <code>graceful</code> or <code>ungraceful</code> mode.</p> <p>Specifing <code>ungraceful</code> mode either changes the behavior of the execution blocks in a workflow or skips specific execution blocks.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -390,7 +390,7 @@
         },
         "mode":{
           "shape":"ExecutionMode",
-          "documentation":"<p>The plan execution mode. Valid values are <code>Practice</code>, for testing without making actual changes, or <code>Recovery</code>, for actual traffic shifting and application recovery.</p>"
+          "documentation":"<p>The plan execution mode. Valid values are <code>graceful</code>, for graceful executions, or <code>ungraceful</code>, for ungraceful executions.</p>"
         },
         "executionState":{
           "shape":"ExecutionState",
@@ -398,11 +398,15 @@
         },
         "executionAction":{
           "shape":"ExecutionAction",
-          "documentation":"<p>The plan execution action. Valid values are <code>Activate</code>, to activate an Amazon Web Services Region, or <code>Deactivate</code>, to deactivate a Region.</p>"
+          "documentation":"<p>The plan execution action. Valid values are <code>activate</code>, to activate an Amazon Web Services Region, or <code>deactivate</code>, to deactivate a Region.</p>"
         },
         "executionRegion":{
           "shape":"String",
           "documentation":"<p>The Amazon Web Services Region for a plan execution.</p>"
+        },
+        "recoveryExecutionId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the most recent recovery execution. Required when starting a post-recovery execution.</p>"
         },
         "actualRecoveryTime":{
           "shape":"Duration",
@@ -664,7 +668,10 @@
       "key":{"shape":"String"},
       "value":{"shape":"AssociatedAlarm"}
     },
-    "AuroraClusterArn":{"type":"string"},
+    "AuroraClusterArn":{
+      "type":"string",
+      "pattern":"arn:aws[a-zA-Z-]*:rds:[a-z0-9-]+:\\d{12}:cluster:[A-Za-z][0-9A-Za-z-:._]*"
+    },
     "AuroraClusterArns":{
       "type":"list",
       "member":{"shape":"AuroraClusterArn"}
@@ -788,7 +795,7 @@
         },
         "regionToRun":{
           "shape":"RegionToRunIn",
-          "documentation":"<p>The Amazon Web Services Region for the function to run in.</p>"
+          "documentation":"<p>The Amazon Web Services Region for the function to run in. For recovery workflows use <code>activatingRegion</code> or <code>deactivatingRegion</code>. For post-recovery workflows, use <code>activeRegion</code> (the Region with customer traffic) or <code>inactiveRegion</code> (the Region with no customer traffic).</p>"
         },
         "ungraceful":{
           "shape":"LambdaUngraceful",
@@ -1124,7 +1131,8 @@
       "type":"string",
       "enum":[
         "activate",
-        "deactivate"
+        "deactivate",
+        "postRecovery"
       ]
     },
     "ExecutionApprovalConfiguration":{
@@ -1190,7 +1198,15 @@
           "shape":"Route53HealthCheckConfiguration",
           "documentation":"<p>The Amazon Route 53 health check configuration.</p>"
         },
-        "documentDbConfig":{"shape":"DocumentDbConfiguration"}
+        "documentDbConfig":{"shape":"DocumentDbConfiguration"},
+        "rdsPromoteReadReplicaConfig":{
+          "shape":"RdsPromoteReadReplicaConfiguration",
+          "documentation":"<p>An Amazon RDS promote read replica execution block.</p>"
+        },
+        "rdsCreateCrossRegionReadReplicaConfig":{
+          "shape":"RdsCreateCrossRegionReplicaConfiguration",
+          "documentation":"<p>An Amazon RDS create cross-Region replica execution block.</p>"
+        }
       },
       "documentation":"<p>Execution block configurations for a workflow in a Region switch plan. An execution block represents a specific type of action to perform during a Region switch.</p>",
       "union":true
@@ -1208,7 +1224,9 @@
         "ECSServiceScaling",
         "EKSResourceScaling",
         "Route53HealthCheck",
-        "DocumentDb"
+        "DocumentDb",
+        "RdsPromoteReadReplica",
+        "RdsCreateCrossRegionReplica"
       ]
     },
     "ExecutionComment":{
@@ -1483,7 +1501,7 @@
         },
         "mode":{
           "shape":"ExecutionMode",
-          "documentation":"<p>The plan execution mode. Valid values are <code>Practice</code>, for testing without making actual changes, or <code>Recovery</code>, for actual traffic shifting and application recovery.</p>"
+          "documentation":"<p>The plan execution mode. Valid values are <code>graceful</code>, for graceful executions, or <code>ungraceful</code>, for ungraceful executions.</p>"
         },
         "executionState":{
           "shape":"ExecutionState",
@@ -1491,11 +1509,15 @@
         },
         "executionAction":{
           "shape":"ExecutionAction",
-          "documentation":"<p>The plan execution action. Valid values are <code>Activate</code>, to activate an Amazon Web Services Region, or <code>Deactivate</code>, to deactivate a Region.</p>"
+          "documentation":"<p>The plan execution action. Valid values are <code>activate</code>, to activate an Amazon Web Services Region, or <code>deactivate</code>, to deactivate a Region.</p>"
         },
         "executionRegion":{
           "shape":"String",
           "documentation":"<p>The Amazon Web Services Region for a plan execution.</p>"
+        },
+        "recoveryExecutionId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the most recent recovery execution. Required when starting a post-recovery execution.</p>"
         },
         "stepStates":{
           "shape":"StepStates",
@@ -1628,7 +1650,12 @@
       "type":"string",
       "enum":["failover"]
     },
-    "GlobalClusterIdentifier":{"type":"string"},
+    "GlobalClusterIdentifier":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[A-Za-z][0-9A-Za-z-:._]*"
+    },
     "IamRoleArn":{
       "type":"string",
       "pattern":"arn:aws[a-zA-Z0-9-]*:iam::[0-9]{12}:role/.+"
@@ -2152,12 +2179,81 @@
       "type":"list",
       "member":{"shape":"ResourceWarning"}
     },
+    "RdsCreateCrossRegionReplicaConfiguration":{
+      "type":"structure",
+      "required":["dbInstanceArnMap"],
+      "members":{
+        "timeoutMinutes":{
+          "shape":"RdsCreateCrossRegionReplicaConfigurationTimeoutMinutesInteger",
+          "documentation":"<p>The timeout value specified for the configuration.</p>"
+        },
+        "crossAccountRole":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The cross-account role for the configuration.</p>"
+        },
+        "externalId":{
+          "shape":"String",
+          "documentation":"<p>The external ID (secret key) for the configuration.</p>"
+        },
+        "dbInstanceArnMap":{
+          "shape":"RdsDbInstanceArnMap",
+          "documentation":"<p>A map of database instance ARNs for each Region in the plan.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for creating an Amazon RDS cross-Region read replica during post-recovery in a Region switch.</p>"
+    },
+    "RdsCreateCrossRegionReplicaConfigurationTimeoutMinutesInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "RdsDbInstanceArn":{
+      "type":"string",
+      "pattern":"arn:aws[a-zA-Z-]*:rds:[a-z0-9-]+:\\d{12}:db:[a-zA-Z][a-zA-Z0-9]*(-[a-zA-Z0-9]+)*"
+    },
+    "RdsDbInstanceArnMap":{
+      "type":"map",
+      "key":{"shape":"Region"},
+      "value":{"shape":"RdsDbInstanceArn"}
+    },
+    "RdsPromoteReadReplicaConfiguration":{
+      "type":"structure",
+      "required":["dbInstanceArnMap"],
+      "members":{
+        "timeoutMinutes":{
+          "shape":"RdsPromoteReadReplicaConfigurationTimeoutMinutesInteger",
+          "documentation":"<p>The timeout value specified for the configuration.</p>"
+        },
+        "crossAccountRole":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The cross-account role for the configuration.</p>"
+        },
+        "externalId":{
+          "shape":"String",
+          "documentation":"<p>The external ID (secret key) for the configuration.</p>"
+        },
+        "dbInstanceArnMap":{
+          "shape":"RdsDbInstanceArnMap",
+          "documentation":"<p>A map of database instance ARNs for each Region in the plan.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for promoting an Amazon RDS read replica to a standalone database instance during a Region switch.</p>"
+    },
+    "RdsPromoteReadReplicaConfigurationTimeoutMinutesInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
     "RecoveryApproach":{
       "type":"string",
       "enum":[
         "activeActive",
         "activePassive"
       ]
+    },
+    "RecoveryExecutionId":{
+      "type":"string",
+      "pattern":"[a-z]{2}(-[a-z]+)+-[0-9]+/[0-9a-fA-F]{16}"
     },
     "Region":{
       "type":"string",
@@ -2197,7 +2293,9 @@
       "type":"string",
       "enum":[
         "activatingRegion",
-        "deactivatingRegion"
+        "deactivatingRegion",
+        "activeRegion",
+        "inactiveRegion"
       ]
     },
     "RegionalScalingResource":{
@@ -2517,11 +2615,11 @@
         },
         "action":{
           "shape":"ExecutionAction",
-          "documentation":"<p>The action to perform. Valid values are ACTIVATE (to shift traffic to the target Region) or DEACTIVATE (to shift traffic away from the target Region).</p>"
+          "documentation":"<p>The action to perform. Valid values are <code>activate</code> (to shift traffic to the target Region) or <code>deactivate</code> (to shift traffic away from the target Region).</p>"
         },
         "mode":{
           "shape":"ExecutionMode",
-          "documentation":"<p>The plan execution mode. Valid values are <code>Practice</code>, for testing without making actual changes, or <code>Recovery</code>, for actual traffic shifting and application recovery.</p>"
+          "documentation":"<p>The plan execution mode. Valid values are <code>graceful</code>, for starting the execution in graceful mode, or <code>ungraceful</code>, for starting the execution in ungraceful mode.</p>"
         },
         "comment":{
           "shape":"ExecutionComment",
@@ -2530,6 +2628,10 @@
         "latestVersion":{
           "shape":"String",
           "documentation":"<p>A boolean value indicating whether to use the latest version of the plan. If set to false, you must specify a specific version.</p>"
+        },
+        "recoveryExecutionId":{
+          "shape":"RecoveryExecutionId",
+          "documentation":"<p>The execution identifier of the recovery execution that ran in the opposite region post-recovery is ran in. Required when starting a post-recovery execution.</p>"
         }
       }
     },
@@ -2697,7 +2799,7 @@
         },
         "action":{
           "shape":"WorkflowTargetAction",
-          "documentation":"<p>The action to perform when the trigger fires. Valid values include ACTIVATE and DEACTIVATE.</p>"
+          "documentation":"<p>The action to perform when the trigger fires. Valid values include <code>activate</code> and <code>deactivate</code>.</p>"
         },
         "conditions":{
           "shape":"TriggerConditionList",
@@ -2723,7 +2825,7 @@
         },
         "condition":{
           "shape":"AlarmCondition",
-          "documentation":"<p>The condition that must be met. Valid values include ALARM and OK.</p>"
+          "documentation":"<p>The condition that must be met. Valid values include <code>green</code> and <code>red</code>.</p>"
         }
       },
       "documentation":"<p>Defines a condition that must be met for a trigger to fire.</p>"
@@ -2908,7 +3010,7 @@
         },
         "workflowTargetAction":{
           "shape":"WorkflowTargetAction",
-          "documentation":"<p>The action that the workflow performs. Valid values include ACTIVATE and DEACTIVATE.</p>"
+          "documentation":"<p>The action that the workflow performs. Valid values include <code>activate</code> and <code>deactivate</code>.</p>"
         },
         "workflowTargetRegion":{
           "shape":"Region",
@@ -2929,9 +3031,10 @@
       "type":"string",
       "enum":[
         "activate",
-        "deactivate"
+        "deactivate",
+        "postRecovery"
       ]
     }
   },
-  "documentation":"<p>Amazon Application Recovery Controller (ARC) Region switch helps you to quickly and reliably shift traffic away from an impaired Amazon Web Services Region to a healthy Region. With Region switch, you can create plans that define the steps to shift traffic for your application from one Amazon Web Services Region to another. You can test your plans in practice mode before using them in a real recovery scenario.</p> <p>Region switch provides a structured approach to multi-Region failover, helping you to meet your recovery time objectives (RTOs) and maintain business continuity during regional disruptions.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/region-switch.html\">Region switch in ARC</a> in the <i>Amazon Application Recovery Controller User Guide</i>.</p>"
+  "documentation":"<p>Amazon Application Recovery Controller (ARC) Region switch helps you to quickly and reliably shift traffic away from an impaired Amazon Web Services Region to a healthy Region. With Region switch, you can create plans that define the steps to shift traffic for your application from one Amazon Web Services Region to another.</p> <p>Region switch provides a structured approach to multi-Region failover, helping you to meet your recovery time objectives (RTOs) and maintain business continuity during regional disruptions.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/region-switch.html\">Region switch in ARC</a> in the <i>Amazon Application Recovery Controller User Guide</i>.</p>"
 }

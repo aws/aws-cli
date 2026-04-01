@@ -673,6 +673,18 @@ NO_OVERWRITE = {
     ),
 }
 
+TAGS = {
+    'name': 'tags',
+    'synopsis': '--tags <key> <value>',
+    'action': 'append',
+    'nargs': 2,
+    'help_text': (
+        'This flag specifies tags to be added to the bucket in the format of '
+        '``--tags key value``. You can specify this flag multiple times, '
+        'once for each tag.'
+    ),
+}
+
 
 CASE_CONFLICT = {
     'name': 'case-conflict',
@@ -1206,7 +1218,16 @@ class MbCommand(S3Command):
     NAME = 'mb'
     DESCRIPTION = "Creates an S3 bucket."
     USAGE = "<S3Uri>"
-    ARG_TABLE = [{'name': 'path', 'positional_arg': True, 'synopsis': USAGE}]
+    ARG_TABLE = (
+        [
+            {
+                'name': 'path',
+                'positional_arg': True,
+                'synopsis': USAGE,
+            }
+        ]
+        + [TAGS]
+    )
 
     def _run_main(self, parsed_args, parsed_globals):
         super(MbCommand, self)._run_main(parsed_args, parsed_globals)
@@ -1222,9 +1243,17 @@ class MbCommand(S3Command):
                 "Cannot use mb command with a directory bucket."
             )
 
-        bucket_config = {'LocationConstraint': self.client.meta.region_name}
         params = {'Bucket': bucket}
+        bucket_config = {}
+        bucket_tags = self._create_bucket_tags(parsed_args)
+
+        # Only set LocationConstraint when the region name is not us-east-1.
+        # Sending LocationConstraint with value us-east-1 results in an error.
         if self.client.meta.region_name != 'us-east-1':
+            bucket_config['LocationConstraint'] = self.client.meta.region_name
+        if bucket_tags:
+            bucket_config['Tags'] = bucket_tags
+        if bucket_config:
             params['CreateBucketConfiguration'] = bucket_config
 
         # TODO: Consolidate how we handle return codes and errors
@@ -1238,6 +1267,11 @@ class MbCommand(S3Command):
                 sys.stderr,
             )
             return 1
+
+    def _create_bucket_tags(self, parsed_args):
+        if parsed_args.tags is not None:
+            return [{'Key': tag[0], 'Value': tag[1]} for tag in parsed_args.tags]
+        return []
 
 
 class RbCommand(S3Command):
@@ -1574,16 +1608,15 @@ class CommandArchitecture:
         # SSE-C key and algorithm. Note the reverse FileGenerator does
         # not need any of these because it is used only for sync operations
         # which only use ListObjects which does not require HeadObject.
-        RequestParamsMapper.map_head_object_params(
-            request_parameters['HeadObject'], self.parameters
-        )
         if paths_type == 's3s3':
+            RequestParamsMapper.map_head_object_params_with_copy_source_sse(
+                request_parameters['HeadObject'],
+                self.parameters,
+            )
+        else:
             RequestParamsMapper.map_head_object_params(
                 request_parameters['HeadObject'],
-                {
-                    'sse_c': self.parameters.get('sse_c_copy_source'),
-                    'sse_c_key': self.parameters.get('sse_c_copy_source_key'),
-                },
+                self.parameters,
             )
 
     def _get_s3_handler_params(self):

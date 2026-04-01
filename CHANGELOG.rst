@@ -2,6 +2,22 @@
 CHANGELOG
 =========
 
+2.34.22
+=======
+
+* api-change:``es``: Adding Policy-Min-TLS-1-2-RFC9151-FIPS-2024-08 as TLS Policy in Supported Regions
+* api-change:``bedrock``: Adds support for Bedrock Batch Inference Job Progress Monitoring
+* enhancement:SSO: Add suggestion to use ``--use-device-code`` for ``aws sso login`` and ``--remote`` for ``aws login`` for users who are unable to open the URL on the same device
+* api-change:``ecs``: Amazon ECS now supports Managed Daemons with dedicated APIs for registering daemon task definitions, creating daemons, and managing daemon deployments.
+* enhancement:``configure``: Add ability to configure sub-sections in the shared configuration file (fixes `#7835 <https://github.com/aws/aws-cli/issues/7835>`__)
+* api-change:``bedrock-agentcore-control``: Adds support for VPC egress private endpoints for Amazon Bedrock AgentCore gateway targets, enabling private connectivity through managed VPC Lattice resources. Also adds IAM credential provider for gateway targets, enabling IAM-based authentication to target endpoints
+* api-change:``medical-imaging``: Added new boolean flag to persist metadata updates to all primary image sets in the same study as the requested image set.
+* api-change:``bedrock-agentcore``: Added the ability to filter out empty sessions when listing sessions. Customers can now retrieve only sessions that still contain events, eliminating the need to check each session individually. No changes required for existing integrations.
+* api-change:``elasticache``: Updated SnapshotRetentionLimit documentation for ServerlessCache to correctly describe the parameter as number of days (max 35) instead of number of snapshots.
+* api-change:``geo-routes``: This release makes RoutingBoundary optional in CalculateRouteMatrix, set StopDuration with a maximum value of 49999 for CalculateRoutes, set TrailerCount with a maximum value of 4, and introduces region restrictions for Grab Maps users.
+* api-change:``opensearch``: Adding Policy-Min-TLS-1-2-RFC9151-FIPS-2024-08 as TLS Policy in Supported Regions
+
+
 2.34.21
 =======
 

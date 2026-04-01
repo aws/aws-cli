@@ -116,6 +116,7 @@ class ClientArgsCreator:
         signing_region = endpoint_config['signing_region']
         endpoint_region_name = endpoint_config['region_name']
         account_id_endpoint_mode = config_kwargs['account_id_endpoint_mode']
+        preferred_auth_schemes = config_kwargs['auth_scheme_preference']
 
         event_emitter = copy.copy(self._event_emitter)
         signer = RequestSigner(
@@ -165,6 +166,7 @@ class ClientArgsCreator:
             event_emitter,
             credentials,
             account_id_endpoint_mode,
+            preferred_auth_schemes,
         )
 
         # Copy the session's user agent factory and adds client configuration.
@@ -550,6 +552,7 @@ class ClientArgsCreator:
         event_emitter,
         credentials,
         account_id_endpoint_mode,
+        preferred_auth_schemes,
     ):
         if endpoints_ruleset_data is None:
             return None
@@ -599,6 +602,7 @@ class ClientArgsCreator:
             event_emitter=event_emitter,
             use_ssl=is_secure,
             requested_auth_scheme=sig_version,
+            preferred_auth_schemes=preferred_auth_schemes,
         )
 
     def compute_endpoint_resolver_builtin_defaults(

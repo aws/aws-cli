@@ -491,6 +491,7 @@ class EndpointRulesetResolver:
         event_emitter,
         use_ssl=True,
         requested_auth_scheme=None,
+        preferred_auth_schemes=None,
     ):
         self._provider = EndpointProvider(
             ruleset_data=endpoint_ruleset_data,
@@ -503,6 +504,7 @@ class EndpointRulesetResolver:
         self._event_emitter = event_emitter
         self._use_ssl = use_ssl
         self._requested_auth_scheme = requested_auth_scheme
+        self._preferred_auth_schemes = preferred_auth_schemes
         self._instance_cache = {}
 
     def construct_endpoint(
@@ -717,6 +719,26 @@ class EndpointRulesetResolver:
 
         if self._requested_auth_scheme == UNSIGNED:
             return 'none', {}
+
+        # if a preferred auth schemes list is provided, reorder the auth schemes
+        # list based on the preferred ordering.
+        if self._preferred_auth_schemes is not None:
+            self._preferred_auth_schemes = (
+                self._preferred_auth_schemes.split(',')
+            )
+            new_schemes_list = []
+            for preferred_scheme in self._preferred_auth_schemes:
+                for candidate_scheme in auth_schemes:
+                    if preferred_scheme == candidate_scheme['name']:
+                        new_schemes_list.append(candidate_scheme)
+            
+            # Add remaining auth schemes that weren't in the preference list.
+            new_schemes_list.extend([
+                s for s in auth_schemes if (
+                    s['name'] not in self._preferred_auth_schemes
+                )
+            ])
+            auth_schemes = new_schemes_list
 
         auth_schemes = [
             {**scheme, 'name': self._strip_sig_prefix(scheme['name'])}

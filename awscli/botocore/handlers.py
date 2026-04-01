@@ -159,11 +159,6 @@ def set_operation_specific_signer(context, signing_name, **kwargs):
     if auth_type == 'bearer':
         return 'bearer'
 
-    # Apply auth_scheme_preference override before committing to any signer.
-    override = _resolve_auth_scheme_override(context, signing_name)
-    if override is not None:
-        return override
-
     # If the operation needs an unsigned body, we set additional context
     # allowing the signer to be aware of this.
     if context.get('unsigned_payload') or auth_type == 'v4-unsigned-body':
@@ -205,90 +200,64 @@ def _strip_sig_prefix(auth_name):
     return auth_name[3:] if auth_name.startswith('sig') else auth_name
 
 
-def _resolve_auth_scheme_override(context, signing_name):
-    """Return a signature version override if the user has configured one,
-    otherwise return None to proceed with the endpoint-ruleset-chosen scheme.
-
-    Respects two configuration mechanisms in priority order:
-    1. ``signature_version`` set in code (ClientConfigString) — direct
-       override; suppresses auth_scheme_preference.
-    2. ``auth_scheme_preference`` — a priority-ordered list reprioritized
-       against the endpoint's supported schemes; the first supported scheme
-       wins. Unsupported schemes in the preference list are ignored.
-
-    The supported schemes follow the resolution hierarchy:
-    1. Endpoints 2.0 authSchemes (ruleset) — most specific, used when present
-    2. Service trait auth_options (service-2.json metadata) — fallback
+def _set_auth_scheme_preference_signer(context, signing_name, **kwargs):
+    """
+    Determines the appropriate signer to use based on the client configuration,
+    authentication scheme preferences, and the availability of a bearer token.
     """
     client_config = context.get('client_config')
     if client_config is None:
-        return None
+        return
 
     signature_version = client_config.signature_version
     auth_scheme_preference = client_config.auth_scheme_preference
+    auth_options = context.get('auth_options')
 
-    # If signature_version was explicitly set in code, use it as a direct
-    # override and do not consult auth_scheme_preference.
-    if isinstance(signature_version, ClientConfigString):
-        resolved = signature_version
-        if signing_name in S3_SIGNING_NAMES and not resolved.startswith('s3'):
-            resolved = f's3{resolved}'
-        return resolved
-
-    # auth_scheme_preference: reprioritize the endpoint's supported schemes
-    # based on the user's preference list, ignoring unsupported schemes.
-    # Candidates follow the resolution hierarchy:
-    # 1. Ruleset authSchemes (endpoints 2.0) — when present
-    # 2. Operation auth trait — when present (via auth_options)
-    # 3. Service auth trait — fallback (via auth_options)
-    if not auth_scheme_preference:
-        return None
-    ruleset_schemes = [
-        s['name']
-        for s in context.get('endpoint_properties', {}).get('authSchemes', [])
-    ]
-    candidates = ruleset_schemes or context.get('auth_options') or []
-    if not candidates:
-        return None
-    preferred_schemes = auth_scheme_preference.split(',')
-    resolved = resolve_auth_scheme_preference(
-        preferred_schemes, candidates
+    signature_version_set_in_code = (
+        isinstance(signature_version, ClientConfigString)
+        or signature_version is botocore.UNSIGNED
     )
-    if resolved == _strip_sig_prefix(context.get('auth_type', '')):
-        # Preference resolves to the same scheme already chosen; no override.
-        return None
-    sig_version = botocore.UNSIGNED if resolved == 'none' else resolved
+    auth_preference_set_in_code = isinstance(
+        auth_scheme_preference, ClientConfigString
+    )
+    has_in_code_configuration = (
+        signature_version_set_in_code or auth_preference_set_in_code
+    )
+
+    resolved_signature_version = signature_version
+
+    # If signature version was not set in code, but an auth scheme preference
+    # is available, resolve it based on the preferred schemes and supported auth
+    # options for this service.
     if (
-        sig_version is not botocore.UNSIGNED
-        and signing_name in S3_SIGNING_NAMES
-        and not sig_version.startswith('s3')
+        not signature_version_set_in_code
+        and auth_scheme_preference
+        and auth_options
     ):
-        sig_version = f's3{sig_version}'
-
-    # Re-apply the signing context from the chosen scheme's ruleset entry,
-    # replacing the sigv4a context (region='*') that was written during
-    # endpoint resolution. This ensures signingRegion, signingName, and
-    # disableDoubleEncoding are correct for the overridden scheme.
-    ruleset_auth_schemes = (
-        context.get('endpoint_properties', {}).get('authSchemes', [])
-    )
-    chosen_scheme = next(
-        (
-            s for s in ruleset_auth_schemes
-            if _strip_sig_prefix(s.get('name', '')) == resolved
-        ),
-        None,
-    )
-    if chosen_scheme is not None:
-        signing_context = build_signing_context_from_ruleset_scheme(
-            chosen_scheme
+        preferred_schemes = auth_scheme_preference.split(',')
+        resolved = botocore.auth.resolve_auth_scheme_preference(
+            preferred_schemes, auth_options
         )
-        if 'signing' in context:
-            context['signing'].update(signing_context)
-        else:
-            context['signing'] = signing_context
+        print(f'preferred: {preferred_schemes}, auth options: {auth_options}, resolved: {resolved}')
+        resolved_signature_version = (
+            botocore.UNSIGNED if resolved == 'none' else resolved
+        )
 
-    return sig_version
+    # Prefer 'bearer' signature version if a bearer token is available, and it
+    # is allowed for this service. This can override earlier resolution if the
+    # config object didn't explicitly set a signature version.
+    if _should_prefer_bearer_auth(
+        has_in_code_configuration,
+        signing_name,
+        resolved_signature_version,
+        auth_options,
+    ):
+        register_feature_id('BEARER_SERVICE_ENV_VARS')
+        resolved_signature_version = 'bearer'
+
+    if resolved_signature_version == signature_version:
+        return None
+    return resolved_signature_version
 
 
 def _resolve_sigv4a_region(context):
@@ -1305,42 +1274,6 @@ def _handle_request_validation_mode_member(params, model, **kwargs):
         params.setdefault(mode_member, "ENABLED")
 
 
-def _prefer_bearer_auth_if_available(context, signing_name, **kwargs):
-    """
-    Prefers 'bearer' signature version if a bearer token is available and
-    allowed for this service, and no explicit auth configuration was set in code.
-    """
-    client_config = context.get('client_config')
-    if client_config is None:
-        return
-
-    signature_version = client_config.signature_version
-    auth_scheme_preference = client_config.auth_scheme_preference
-    auth_options = context.get('auth_options')
-
-    signature_version_set_in_code = (
-        isinstance(signature_version, ClientConfigString)
-        or signature_version is botocore.UNSIGNED
-    )
-    auth_preference_set_in_code = isinstance(
-        auth_scheme_preference, ClientConfigString
-    )
-    has_in_code_configuration = (
-        signature_version_set_in_code or auth_preference_set_in_code
-    )
-
-    if _should_prefer_bearer_auth(
-        has_in_code_configuration,
-        signing_name,
-        signature_version,
-        auth_options,
-    ):
-        register_feature_id('BEARER_SERVICE_ENV_VARS')
-        return 'bearer'
-
-    return None
-
-
 def _should_prefer_bearer_auth(
     has_in_code_configuration,
     signing_name,
@@ -1477,7 +1410,7 @@ BUILTIN_HANDLERS = [
     ('choose-signer.sts.AssumeRoleWithSAML', disable_signing),
     ('choose-signer.sts.AssumeRoleWithWebIdentity', disable_signing),
     ('choose-signer', set_operation_specific_signer),
-    ('choose-signer', _prefer_bearer_auth_if_available),
+    ('choose-signer', _set_auth_scheme_preference_signer),
     ('before-parameter-build.s3.HeadObject', sse_md5),
     ('before-parameter-build.s3.GetObject', sse_md5),
     ('before-parameter-build.s3.PutObject', sse_md5),

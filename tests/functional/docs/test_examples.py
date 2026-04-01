@@ -302,6 +302,9 @@ class CommandValidator:
 
             # Create the service parser
             cmd_table = service_cmd.create_help_command().command_table
+            if not cmd_table:
+                # Top-level commands without sub-operations (e.g. login)
+                return
             service_parser = ServiceArgParser(
                 operations_table=cmd_table, service_name=service_name
             )

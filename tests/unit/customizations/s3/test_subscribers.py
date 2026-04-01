@@ -19,6 +19,7 @@ import tempfile
 
 import pytest
 from dateutil.tz import tzlocal
+from s3transfer.checksums import FullObjectChecksum
 from s3transfer.crt import CRTTransferFuture, CRTTransferMeta
 from s3transfer.futures import TransferFuture, TransferMeta
 from s3transfer.manager import TransferConfig
@@ -37,6 +38,7 @@ from awscli.customizations.s3.subscribers import (
     DirectoryCreatorSubscriber,
     OnDoneFilteredSubscriber,
     ProvideETagSubscriber,
+    ProvideFullObjectChecksumSubscriber,
     ProvideLastModifiedTimeSubscriber,
     ProvideSizeSubscriber,
     ProvideUploadContentTypeSubscriber,
@@ -100,6 +102,30 @@ class TestProvideEtagSubscriber:
         assert not hasattr(crt_transfer_future.meta, 'etag')
 
         assert "Not providing object ETag." in caplog.text
+
+
+class TestProvideFullObjectChecksumSubscriber:
+    def test_checksum_set(self):
+        transfer_meta = TransferMeta()
+        transfer_future = mock.Mock(spec=TransferFuture)
+        transfer_future.meta = transfer_meta
+        checksum_info = FullObjectChecksum('crc32', 'abc123==')
+
+        subscriber = ProvideFullObjectChecksumSubscriber(checksum_info)
+        subscriber.on_queued(transfer_future)
+        assert transfer_meta.full_object_checksum == checksum_info
+
+    def test_does_not_try_to_set_on_crt_transfer_future(self, caplog):
+        caplog.set_level(logging.DEBUG)
+        crt_transfer_future = mock.Mock(spec=CRTTransferFuture)
+        crt_transfer_future.meta = CRTTransferMeta()
+
+        subscriber = ProvideFullObjectChecksumSubscriber(
+            FullObjectChecksum('crc32', 'abc123==')
+        )
+        subscriber.on_queued(crt_transfer_future)
+        assert not hasattr(crt_transfer_future.meta, 'full_object_checksum')
+        assert "Not providing full object checksum." in caplog.text
 
 
 class OnDoneFilteredRecordingSubscriber(OnDoneFilteredSubscriber):

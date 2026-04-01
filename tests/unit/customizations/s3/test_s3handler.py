@@ -45,6 +45,7 @@ from awscli.customizations.s3.subscribers import (
     DeleteSourceObjectSubscriber,
     DirectoryCreatorSubscriber,
     ProvideETagSubscriber,
+    ProvideFullObjectChecksumSubscriber,
     ProvideLastModifiedTimeSubscriber,
     ProvideSizeSubscriber,
     ProvideUploadContentTypeSubscriber,
@@ -711,6 +712,42 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.assertIs(self.transfer_manager.download.return_value, future)
         # And download should have happened
         self.assertEqual(len(self.transfer_manager.download.call_args_list), 1)
+
+    def test_submit_with_full_object_checksum(self):
+        fileinfo = self.create_file_info(
+            self.key,
+            associated_response_data={
+                'ChecksumType': 'FULL_OBJECT',
+                'ChecksumCRC32': 'abc123==',
+            },
+        )
+        self.transfer_request_submitter.submit(fileinfo)
+        download_call_kwargs = self.transfer_manager.download.call_args[1]
+        actual_subscribers = download_call_kwargs['subscribers']
+        subscriber_types = [type(s) for s in actual_subscribers]
+        self.assertIn(ProvideFullObjectChecksumSubscriber, subscriber_types)
+
+    def test_submit_without_full_object_checksum(self):
+        fileinfo = self.create_file_info(self.key)
+        self.transfer_request_submitter.submit(fileinfo)
+        download_call_kwargs = self.transfer_manager.download.call_args[1]
+        actual_subscribers = download_call_kwargs['subscribers']
+        subscriber_types = [type(s) for s in actual_subscribers]
+        self.assertNotIn(ProvideFullObjectChecksumSubscriber, subscriber_types)
+
+    def test_submit_with_composite_checksum_does_not_add_subscriber(self):
+        fileinfo = self.create_file_info(
+            self.key,
+            associated_response_data={
+                'ChecksumType': 'COMPOSITE',
+                'ChecksumCRC32': 'abc123==-5',
+            },
+        )
+        self.transfer_request_submitter.submit(fileinfo)
+        download_call_kwargs = self.transfer_manager.download.call_args[1]
+        actual_subscribers = download_call_kwargs['subscribers']
+        subscriber_types = [type(s) for s in actual_subscribers]
+        self.assertNotIn(ProvideFullObjectChecksumSubscriber, subscriber_types)
 
 
 class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):

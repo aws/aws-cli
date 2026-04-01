@@ -536,6 +536,7 @@ class TestCPCommand(BaseCPCommandTest):
                     {
                         'Bucket': 'bucket',
                         'Key': 'key.txt',
+                        'ChecksumMode': 'ENABLED',
                     },
                 )
             ]
@@ -577,6 +578,7 @@ class TestCPCommand(BaseCPCommandTest):
                     {
                         'Bucket': 'bucket',
                         'Key': 'key.txt',
+                        'ChecksumMode': 'ENABLED',
                     },
                 )
             ]
@@ -1744,7 +1746,10 @@ class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
         self.assert_operations_called(
             [
                 self.head_object_request(
-                    'mybucket', 'mykey', RequestPayer='requester'
+                    'mybucket',
+                    'mykey',
+                    RequestPayer='requester',
+                    ChecksumMode='ENABLED',
                 ),
                 self.get_object_request(
                     'mybucket', 'mykey', RequestPayer='requester'
@@ -1767,7 +1772,10 @@ class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
         self.assert_operations_called(
             [
                 self.head_object_request(
-                    'mybucket', 'mykey', RequestPayer='requester'
+                    'mybucket',
+                    'mykey',
+                    RequestPayer='requester',
+                    ChecksumMode='ENABLED',
                 ),
                 self.get_object_request(
                     'mybucket',
@@ -1819,7 +1827,10 @@ class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
         self.assert_operations_called(
             [
                 self.head_object_request(
-                    'sourcebucket', 'sourcekey', RequestPayer='requester'
+                    'sourcebucket',
+                    'sourcekey',
+                    RequestPayer='requester',
+                    ChecksumMode='ENABLED',
                 ),
                 self.copy_object_request(
                     'sourcebucket',
@@ -1848,7 +1859,10 @@ class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
         self.assert_operations_called(
             [
                 self.head_object_request(
-                    'sourcebucket', 'sourcekey', RequestPayer='requester'
+                    'sourcebucket',
+                    'sourcekey',
+                    RequestPayer='requester',
+                    ChecksumMode='ENABLED',
                 ),
                 self.create_mpu_request(
                     'mybucket', 'mykey', RequestPayer='requester'
@@ -2017,7 +2031,11 @@ class TestAccesspointCPCommand(BaseCPCommandTest):
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_operations_called(
             [
-                self.head_object_request(self.accesspoint_arn, 'mykey'),
+                self.head_object_request(
+                    self.accesspoint_arn,
+                    'mykey',
+                    ChecksumMode='ENABLED',
+                ),
                 self.get_object_request(self.accesspoint_arn, 'mykey'),
             ]
         )
@@ -2051,7 +2069,11 @@ class TestAccesspointCPCommand(BaseCPCommandTest):
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_operations_called(
             [
-                self.head_object_request(self.accesspoint_arn, 'mykey'),
+                self.head_object_request(
+                    self.accesspoint_arn,
+                    'mykey',
+                    ChecksumMode='ENABLED',
+                ),
                 self.copy_object_request(
                     self.accesspoint_arn,
                     'mykey',

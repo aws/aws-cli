@@ -1926,6 +1926,11 @@
       },
       "documentation":"<p>Contains information about an event in an AgentCore Memory resource.</p>"
     },
+    "EventFilterCondition":{
+      "type":"string",
+      "documentation":"<p>The condition to use for filtering sessions by events.</p>",
+      "enum":["HAS_EVENTS"]
+    },
     "EventId":{
       "type":"string",
       "pattern":"[0-9]+#[a-fA-F0-9]+"
@@ -3356,6 +3361,10 @@
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
+        },
+        "filter":{
+          "shape":"SessionFilter",
+          "documentation":"<p>Filter criteria to apply when listing sessions.</p>"
         }
       }
     },
@@ -4238,6 +4247,16 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "SessionFilter":{
+      "type":"structure",
+      "members":{
+        "eventFilter":{
+          "shape":"EventFilterCondition",
+          "documentation":"<p>The event filter condition to apply. Use this to filter sessions based on event presence.</p>"
+        }
+      },
+      "documentation":"<p>Contains filter criteria for listing sessions.</p>"
     },
     "SessionId":{
       "type":"string",

@@ -52,6 +52,25 @@
       ],
       "documentation":"<p>Creates a new Amazon ECS cluster. By default, your account receives a <code>default</code> cluster when you launch your first container instance. However, you can create your own cluster with a unique name.</p> <note> <p>When you call the <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_CreateCluster.html\">CreateCluster</a> API operation, Amazon ECS attempts to create the Amazon ECS service-linked role for your account. This is so that it can manage required resources in other Amazon Web Services services on your behalf. However, if the user that makes the call doesn't have permissions to create the service-linked role, it isn't created. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using-service-linked-roles.html\">Using service-linked roles for Amazon ECS</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </note>"
     },
+    "CreateDaemon":{
+      "name":"CreateDaemon",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateDaemonRequest"},
+      "output":{"shape":"CreateDaemonResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"PlatformUnknownException"},
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"},
+        {"shape":"UnsupportedFeatureException"}
+      ],
+      "documentation":"<p>Creates a new daemon in the specified cluster and capacity providers. A daemon deploys cross-cutting software agents such as security monitoring, telemetry, and logging independently across your Amazon ECS infrastructure.</p> <p>Amazon ECS deploys exactly one daemon task on each container instance of the specified capacity providers. When a container instance registers with the cluster, Amazon ECS automatically starts daemon tasks. Amazon ECS starts a daemon task before scheduling other tasks.</p> <p>Daemons are essential for instance health - if a daemon task stops, Amazon ECS automatically drains and replaces that container instance.</p> <note> <p>ECS Managed Daemons is only supported for Amazon ECS Managed Instances Capacity Providers.</p> </note>"
+    },
     "CreateExpressGatewayService":{
       "name":"CreateExpressGatewayService",
       "http":{
@@ -185,6 +204,43 @@
       ],
       "documentation":"<p>Deletes the specified cluster. The cluster transitions to the <code>INACTIVE</code> state. Clusters with an <code>INACTIVE</code> status might remain discoverable in your account for a period of time. However, this behavior is subject to change in the future. We don't recommend that you rely on <code>INACTIVE</code> clusters persisting.</p> <p>You must deregister all container instances from this cluster before you may delete it. You can list the container instances in a cluster with <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ListContainerInstances.html\">ListContainerInstances</a> and deregister them with <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DeregisterContainerInstance.html\">DeregisterContainerInstance</a>.</p>",
       "idempotent":true
+    },
+    "DeleteDaemon":{
+      "name":"DeleteDaemon",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteDaemonRequest"},
+      "output":{"shape":"DeleteDaemonResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"DaemonNotFoundException"},
+        {"shape":"DaemonNotActiveException"},
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"},
+        {"shape":"UnsupportedFeatureException"}
+      ],
+      "documentation":"<p>Deletes the specified daemon. The daemon must be in an <code>ACTIVE</code> state to be deleted. Deleting a daemon stops all running daemon tasks on the associated container instances. Amazon ECS drains existing container instances and provisions new instances without the deleted daemon. Amazon ECS automatically launches replacement tasks for your Amazon ECS services.</p> <note> <p>ECS Managed Daemons is only supported for Amazon ECS Managed Instances Capacity Providers.</p> </note>",
+      "idempotent":true
+    },
+    "DeleteDaemonTaskDefinition":{
+      "name":"DeleteDaemonTaskDefinition",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteDaemonTaskDefinitionRequest"},
+      "output":{"shape":"DeleteDaemonTaskDefinitionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"}
+      ],
+      "documentation":"<p>Deletes the specified daemon task definition. After a daemon task definition is deleted, no new daemons can be created using this definition. Existing daemons that reference the deleted daemon task definition continue to run.</p> <p>A daemon task definition must be in an <code>ACTIVE</code> state to be deleted.</p>"
     },
     "DeleteExpressGatewayService":{
       "name":"DeleteExpressGatewayService",
@@ -342,6 +398,81 @@
         {"shape":"ClusterNotFoundException"}
       ],
       "documentation":"<p>Describes one or more container instances. Returns metadata about each container instance requested.</p>",
+      "readonly":true
+    },
+    "DescribeDaemon":{
+      "name":"DescribeDaemon",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeDaemonRequest"},
+      "output":{"shape":"DescribeDaemonResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"DaemonNotFoundException"},
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"},
+        {"shape":"UnsupportedFeatureException"}
+      ],
+      "documentation":"<p>Describes the specified daemon.</p>",
+      "readonly":true
+    },
+    "DescribeDaemonDeployments":{
+      "name":"DescribeDaemonDeployments",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeDaemonDeploymentsRequest"},
+      "output":{"shape":"DescribeDaemonDeploymentsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"},
+        {"shape":"UnsupportedFeatureException"}
+      ],
+      "documentation":"<p>Describes one or more of your daemon deployments.</p> <p>A daemon deployment orchestrates the progressive rollout of daemon task updates across container instances managed by the daemon's capacity providers. Each deployment includes circuit breaker and alarm-based rollback capabilities.</p>",
+      "readonly":true
+    },
+    "DescribeDaemonRevisions":{
+      "name":"DescribeDaemonRevisions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeDaemonRevisionsRequest"},
+      "output":{"shape":"DescribeDaemonRevisionsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"},
+        {"shape":"UnsupportedFeatureException"}
+      ],
+      "documentation":"<p>Describes one or more of your daemon revisions.</p> <p>A daemon revision is a snapshot of a daemon's configuration at the time a deployment was initiated. It captures the daemon task definition, container images, tag propagation, and execute command settings. Daemon revisions are immutable.</p>",
+      "readonly":true
+    },
+    "DescribeDaemonTaskDefinition":{
+      "name":"DescribeDaemonTaskDefinition",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeDaemonTaskDefinitionRequest"},
+      "output":{"shape":"DescribeDaemonTaskDefinitionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"}
+      ],
+      "documentation":"<p>Describes a daemon task definition. You can specify a <code>family</code> and <code>revision</code> to find information about a specific daemon task definition, or you can simply specify the family to find the latest <code>ACTIVE</code> revision in that family.</p>",
       "readonly":true
     },
     "DescribeExpressGatewayService":{
@@ -591,6 +722,61 @@
       "documentation":"<p>Returns a list of container instances in a specified cluster. You can filter the results of a <code>ListContainerInstances</code> operation with cluster query language statements inside the <code>filter</code> parameter. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cluster-query-language.html\">Cluster Query Language</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>",
       "readonly":true
     },
+    "ListDaemonDeployments":{
+      "name":"ListDaemonDeployments",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListDaemonDeploymentsRequest"},
+      "output":{"shape":"ListDaemonDeploymentsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"},
+        {"shape":"UnsupportedFeatureException"}
+      ],
+      "documentation":"<p>Returns a list of daemon deployments for a specified daemon. You can filter the results by status or creation time.</p>",
+      "readonly":true
+    },
+    "ListDaemonTaskDefinitions":{
+      "name":"ListDaemonTaskDefinitions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListDaemonTaskDefinitionsRequest"},
+      "output":{"shape":"ListDaemonTaskDefinitionsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"}
+      ],
+      "documentation":"<p>Returns a list of daemon task definitions that are registered to your account. You can filter the results by family name, status, or both to find daemon task definitions that match your criteria.</p>",
+      "readonly":true
+    },
+    "ListDaemons":{
+      "name":"ListDaemons",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListDaemonsRequest"},
+      "output":{"shape":"ListDaemonsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"},
+        {"shape":"UnsupportedFeatureException"}
+      ],
+      "documentation":"<p>Returns a list of daemons. You can filter the results by cluster or capacity provider.</p>",
+      "readonly":true
+    },
     "ListServiceDeployments":{
       "name":"ListServiceDeployments",
       "http":{
@@ -789,6 +975,23 @@
         {"shape":"ClientException"}
       ],
       "documentation":"<p><note> <p>This action is only used by the Amazon ECS agent, and it is not intended for use outside of the agent.</p> </note> <p>Registers an EC2 instance into the specified cluster. This instance becomes available to place containers on.</p></p>"
+    },
+    "RegisterDaemonTaskDefinition":{
+      "name":"RegisterDaemonTaskDefinition",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RegisterDaemonTaskDefinitionRequest"},
+      "output":{"shape":"RegisterDaemonTaskDefinitionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"}
+      ],
+      "documentation":"<p>Registers a new daemon task definition from the supplied <code>family</code> and <code>containerDefinitions</code>. Optionally, you can add data volumes to your containers with the <code>volumes</code> parameter. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/daemon-task-definitions.html\">Daemon task definitions</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>A daemon task definition is a template that describes the containers that form a daemon. Daemons deploy cross-cutting software agents such as security monitoring, telemetry, and logging across your Amazon ECS infrastructure.</p> <p>Each time you call <code>RegisterDaemonTaskDefinition</code>, a new revision of the daemon task definition is created. You can't modify a revision after you register it.</p>"
     },
     "RegisterTaskDefinition":{
       "name":"RegisterTaskDefinition",
@@ -1045,6 +1248,27 @@
       ],
       "documentation":"<p>Modifies the status of an Amazon ECS container instance.</p> <p>Once a container instance has reached an <code>ACTIVE</code> state, you can change the status of a container instance to <code>DRAINING</code> to manually remove an instance from a cluster, for example to perform system updates, update the Docker daemon, or scale down the cluster size.</p> <important> <p>A container instance can't be changed to <code>DRAINING</code> until it has reached an <code>ACTIVE</code> status. If the instance is in any other status, an error will be received.</p> </important> <p>When you set a container instance to <code>DRAINING</code>, Amazon ECS prevents new tasks from being scheduled for placement on the container instance and replacement service tasks are started on other container instances in the cluster if the resources are available. Service tasks on the container instance that are in the <code>PENDING</code> state are stopped immediately.</p> <p>Service tasks on the container instance that are in the <code>RUNNING</code> state are stopped and replaced according to the service's deployment configuration parameters, <code>minimumHealthyPercent</code> and <code>maximumPercent</code>. You can change the deployment configuration of your service using <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_UpdateService.html\">UpdateService</a>.</p> <ul> <li> <p>If <code>minimumHealthyPercent</code> is below 100%, the scheduler can ignore <code>desiredCount</code> temporarily during task replacement. For example, <code>desiredCount</code> is four tasks, a minimum of 50% allows the scheduler to stop two existing tasks before starting two new tasks. If the minimum is 100%, the service scheduler can't remove existing tasks until the replacement tasks are considered healthy. Tasks for services that do not use a load balancer are considered healthy if they're in the <code>RUNNING</code> state. Tasks for services that use a load balancer are considered healthy if they're in the <code>RUNNING</code> state and are reported as healthy by the load balancer.</p> </li> <li> <p>The <code>maximumPercent</code> parameter represents an upper limit on the number of running tasks during task replacement. You can use this to define the replacement batch size. For example, if <code>desiredCount</code> is four tasks, a maximum of 200% starts four new tasks before stopping the four tasks to be drained, provided that the cluster resources required to do this are available. If the maximum is 100%, then replacement tasks can't start until the draining tasks have stopped.</p> </li> </ul> <p>Any <code>PENDING</code> or <code>RUNNING</code> tasks that do not belong to a service aren't affected. You must wait for them to finish or stop them manually.</p> <p>A container instance has completed draining when it has no more <code>RUNNING</code> tasks. You can verify this using <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ListTasks.html\">ListTasks</a>.</p> <p>When a container instance has been drained, you can set a container instance to <code>ACTIVE</code> status and once it has reached that status the Amazon ECS scheduler can begin scheduling tasks on the instance again.</p>"
     },
+    "UpdateDaemon":{
+      "name":"UpdateDaemon",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateDaemonRequest"},
+      "output":{"shape":"UpdateDaemonResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"DaemonNotFoundException"},
+        {"shape":"PlatformUnknownException"},
+        {"shape":"DaemonNotActiveException"},
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"},
+        {"shape":"UnsupportedFeatureException"}
+      ],
+      "documentation":"<p>Updates the specified daemon. When you update a daemon, a new deployment is triggered that progressively rolls out the changes to the container instances associated with the daemon's capacity providers. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/daemon-deployments.html\">Daemon deployments</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>Amazon ECS drains existing container instances and provisions new instances with the updated daemon. Amazon ECS automatically launches replacement tasks for your services.</p> <important> <p>Updating a daemon triggers a rolling deployment that drains and replaces container instances. Plan updates during maintenance windows to minimize impact on running services.</p> </important> <note> <p>ECS Managed Daemons is only supported for Amazon ECS Managed Instances Capacity Providers.</p> </note>"
+    },
     "UpdateExpressGatewayService":{
       "name":"UpdateExpressGatewayService",
       "http":{
@@ -1228,7 +1452,12 @@
     },
     "AccessDeniedException":{
       "type":"structure",
-      "members":{},
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p> Message that describes the cause of the exception.</p>"
+        }
+      },
       "documentation":"<p>You don't have authorization to perform the requested action.</p>",
       "exception":true
     },
@@ -1376,7 +1605,12 @@
     },
     "AttributeLimitExceededException":{
       "type":"structure",
-      "members":{},
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p> Message that describes the cause of the exception.</p>"
+        }
+      },
       "documentation":"<p>You can apply up to 10 custom attributes for each resource. You can view the attributes of a resource with <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ListAttributes.html\">ListAttributes</a>. You can remove existing attributes on a resource with <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DeleteAttributes.html\">DeleteAttributes</a>.</p>",
       "exception":true
     },
@@ -1475,7 +1709,12 @@
     },
     "BlockedException":{
       "type":"structure",
-      "members":{},
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p> Message that describes the cause of the exception.</p>"
+        }
+      },
       "documentation":"<p>Your Amazon Web Services account was blocked. For more information, contact <a href=\"http://aws.amazon.com/contact-us/\"> Amazon Web Services Support</a>.</p>",
       "exception":true
     },
@@ -1773,25 +2012,45 @@
     },
     "ClusterContainsCapacityProviderException":{
       "type":"structure",
-      "members":{},
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p> Message that describes the cause of the exception.</p>"
+        }
+      },
       "documentation":"<p>The cluster contains one or more capacity providers that prevent the requested operation. This exception occurs when you try to delete a cluster that still has active capacity providers, including Amazon ECS Managed Instances capacity providers. You must first delete all capacity providers from the cluster before you can delete the cluster itself.</p>",
       "exception":true
     },
     "ClusterContainsContainerInstancesException":{
       "type":"structure",
-      "members":{},
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p> Message that describes the cause of the exception.</p>"
+        }
+      },
       "documentation":"<p>You can't delete a cluster that has registered container instances. First, deregister the container instances before you can delete the cluster. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DeregisterContainerInstance.html\">DeregisterContainerInstance</a>.</p>",
       "exception":true
     },
     "ClusterContainsServicesException":{
       "type":"structure",
-      "members":{},
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p> Message that describes the cause of the exception.</p>"
+        }
+      },
       "documentation":"<p>You can't delete a cluster that contains services. First, update the service to reduce its desired task count to 0, and then delete the service. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_UpdateService.html\">UpdateService</a> and <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DeleteService.html\">DeleteService</a>.</p>",
       "exception":true
     },
     "ClusterContainsTasksException":{
       "type":"structure",
-      "members":{},
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p> Message that describes the cause of the exception.</p>"
+        }
+      },
       "documentation":"<p>You can't delete a cluster that has active tasks.</p>",
       "exception":true
     },
@@ -1811,7 +2070,12 @@
     },
     "ClusterNotFoundException":{
       "type":"structure",
-      "members":{},
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p> Message that describes the cause of the exception.</p>"
+        }
+      },
       "documentation":"<p>The specified cluster wasn't found. You can view your available clusters with <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ListClusters.html\">ListClusters</a>. Amazon ECS clusters are Region specific.</p>",
       "exception":true
     },
@@ -1881,6 +2145,10 @@
         "resourceIds":{
           "shape":"ResourceIds",
           "documentation":"<p>The existing task ARNs which are already associated with the <code>clientToken</code>.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p> Message that describes the cause of the exception.</p>"
         }
       },
       "documentation":"<p>The request could not be processed because of conflict in the current state of the resource. </p>",
@@ -2509,6 +2777,77 @@
       },
       "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
+    "CreateDaemonRequest":{
+      "type":"structure",
+      "required":[
+        "daemonName",
+        "daemonTaskDefinitionArn",
+        "capacityProviderArns"
+      ],
+      "members":{
+        "daemonName":{
+          "shape":"String",
+          "documentation":"<p>The name of the daemon. Up to 255 letters (uppercase and lowercase), numbers, underscores, and hyphens are allowed.</p>"
+        },
+        "clusterArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the cluster to create the daemon in.</p>"
+        },
+        "daemonTaskDefinitionArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the daemon task definition to use for the daemon.</p>"
+        },
+        "capacityProviderArns":{
+          "shape":"StringList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the capacity providers to associate with the daemon. The daemon deploys tasks on container instances managed by these capacity providers.</p>"
+        },
+        "deploymentConfiguration":{
+          "shape":"DaemonDeploymentConfiguration",
+          "documentation":"<p>Optional deployment parameters that control how the daemon rolls out updates, including the drain percentage, alarm-based rollback, and bake time.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The metadata that you apply to the daemon to help you categorize and organize them. Each tag consists of a key and an optional value. You define both of them.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case-sensitive.</p> </li> <li> <p>Do not use <code>aws:</code>, <code>AWS:</code>, or any upper or lowercase combination of such as a prefix for either keys or values as it is reserved for Amazon Web Services use. You cannot edit or delete tag keys or values with this prefix. Tags with this prefix do not count against your tags per resource limit.</p> </li> </ul>"
+        },
+        "propagateTags":{
+          "shape":"DaemonPropagateTags",
+          "documentation":"<p>Specifies whether to propagate the tags from the daemon to the daemon tasks. If you don't specify a value, the tags aren't propagated. You can only propagate tags to daemon tasks during task creation. To add tags to a task after task creation, use the <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_TagResource.html\">TagResource</a> API action.</p>"
+        },
+        "enableECSManagedTags":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to turn on Amazon ECS managed tags for the tasks in the daemon. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-using-tags.html\">Tagging your Amazon ECS resources</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
+        },
+        "enableExecuteCommand":{
+          "shape":"Boolean",
+          "documentation":"<p>Determines whether the execute command functionality is turned on for the daemon. If <code>true</code>, the execute command functionality is turned on for all tasks in the daemon.</p>"
+        },
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>An identifier that you provide to ensure the idempotency of the request. It must be unique and is case sensitive. Up to 36 ASCII characters in the range of 33-126 (inclusive) are allowed.</p>"
+        }
+      }
+    },
+    "CreateDaemonResponse":{
+      "type":"structure",
+      "members":{
+        "daemonArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the daemon.</p>"
+        },
+        "status":{
+          "shape":"DaemonStatus",
+          "documentation":"<p>The status of the daemon.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for the time when the daemon was created.</p>"
+        },
+        "deploymentArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the initial daemon deployment. This deployment places daemon tasks on each container instance of the specified capacity providers.</p>"
+        }
+      }
+    },
     "CreateExpressGatewayServiceRequest":{
       "type":"structure",
       "required":[
@@ -2808,6 +3147,765 @@
       },
       "documentation":"<p>The optional filter to narrow the <code>ListServiceDeployment</code> results.</p> <p> If you do not specify a value, service deployments that were created before the current time are included in the result.</p>"
     },
+    "DaemonAlarmConfiguration":{
+      "type":"structure",
+      "members":{
+        "alarmNames":{
+          "shape":"StringList",
+          "documentation":"<p>The CloudWatch alarm names to monitor during a daemon deployment.</p>"
+        },
+        "enable":{
+          "shape":"Boolean",
+          "documentation":"<p>Determines whether to use the CloudWatch alarm option in the daemon deployment process. The default value is <code>false</code>.</p>"
+        }
+      },
+      "documentation":"<p>The CloudWatch alarm configuration for a daemon. When enabled, CloudWatch alarms determine whether a daemon deployment has failed.</p>"
+    },
+    "DaemonCapacityProvider":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the capacity provider.</p>"
+        },
+        "runningCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of daemon tasks running on this capacity provider.</p>"
+        }
+      },
+      "documentation":"<p>Information about a capacity provider associated with a daemon revision.</p>"
+    },
+    "DaemonCapacityProviderList":{
+      "type":"list",
+      "member":{"shape":"DaemonCapacityProvider"}
+    },
+    "DaemonCircuitBreaker":{
+      "type":"structure",
+      "members":{
+        "failureCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of times the circuit breaker detected a daemon deployment failure.</p>"
+        },
+        "status":{
+          "shape":"DaemonDeploymentRollbackMonitorsStatus",
+          "documentation":"<p>The circuit breaker status. Amazon ECS is not using the circuit breaker for daemon deployment failures when the status is <code>DISABLED</code>.</p>"
+        },
+        "threshold":{
+          "shape":"Integer",
+          "documentation":"<p>The threshold which determines that the daemon deployment failed.</p>"
+        }
+      },
+      "documentation":"<p>Information about the circuit breaker used to determine when a daemon deployment has failed.</p>"
+    },
+    "DaemonContainerDefinition":{
+      "type":"structure",
+      "required":["image"],
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the container. Up to 255 letters (uppercase and lowercase), numbers, underscores, and hyphens are allowed.</p>"
+        },
+        "image":{
+          "shape":"String",
+          "documentation":"<p>The image used to start the container. This string is passed directly to the Docker daemon. Images in the Docker Hub registry are available by default. Other repositories are specified with either <code> <i>repository-url</i>/<i>image</i>:<i>tag</i> </code> or <code> <i>repository-url</i>/<i>image</i>@<i>digest</i> </code>.</p>"
+        },
+        "memory":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The amount (in MiB) of memory to present to the container. If the container attempts to exceed the memory specified here, the container is killed.</p>"
+        },
+        "memoryReservation":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The soft limit (in MiB) of memory to reserve for the container.</p>"
+        },
+        "repositoryCredentials":{
+          "shape":"RepositoryCredentials",
+          "documentation":"<p>The private repository authentication credentials to use.</p>"
+        },
+        "healthCheck":{
+          "shape":"HealthCheck",
+          "documentation":"<p>The container health check command and associated configuration parameters for the container.</p>"
+        },
+        "cpu":{
+          "shape":"Integer",
+          "documentation":"<p>The number of <code>cpu</code> units reserved for the container.</p>"
+        },
+        "essential":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>If the <code>essential</code> parameter of a container is marked as <code>true</code>, and that container fails or stops for any reason, all other containers that are part of the task are stopped.</p>"
+        },
+        "entryPoint":{
+          "shape":"StringList",
+          "documentation":"<p>The entry point that's passed to the container.</p>"
+        },
+        "command":{
+          "shape":"StringList",
+          "documentation":"<p>The command that's passed to the container.</p>"
+        },
+        "workingDirectory":{
+          "shape":"String",
+          "documentation":"<p>The working directory to run commands inside the container in.</p>"
+        },
+        "environmentFiles":{
+          "shape":"EnvironmentFiles",
+          "documentation":"<p>A list of files containing the environment variables to pass to a container.</p>"
+        },
+        "environment":{
+          "shape":"EnvironmentVariables",
+          "documentation":"<p>The environment variables to pass to a container.</p>"
+        },
+        "secrets":{
+          "shape":"SecretList",
+          "documentation":"<p>The secrets to pass to the container.</p>"
+        },
+        "readonlyRootFilesystem":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>When this parameter is true, the container is given read-only access to its root file system.</p>"
+        },
+        "mountPoints":{
+          "shape":"MountPointList",
+          "documentation":"<p>The mount points for data volumes in your container.</p>"
+        },
+        "logConfiguration":{
+          "shape":"LogConfiguration",
+          "documentation":"<p>The log configuration specification for the container.</p>"
+        },
+        "firelensConfiguration":{
+          "shape":"FirelensConfiguration",
+          "documentation":"<p>The FireLens configuration for the container. This is used to specify and configure a log router for container logs.</p>"
+        },
+        "privileged":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>When this parameter is true, the container is given elevated privileges on the host container instance (similar to the <code>root</code> user).</p>"
+        },
+        "user":{
+          "shape":"String",
+          "documentation":"<p>The user to use inside the container.</p>"
+        },
+        "ulimits":{
+          "shape":"UlimitList",
+          "documentation":"<p>A list of <code>ulimits</code> to set in the container.</p>"
+        },
+        "linuxParameters":{
+          "shape":"DaemonLinuxParameters",
+          "documentation":"<p>Linux-specific modifications that are applied to the container configuration, such as Linux kernel capabilities.</p>"
+        },
+        "dependsOn":{
+          "shape":"ContainerDependencies",
+          "documentation":"<p>The dependencies defined for container startup and shutdown. A container can contain multiple dependencies on other containers in a task definition.</p>"
+        },
+        "startTimeout":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>Time duration (in seconds) to wait before giving up on resolving dependencies for a container.</p>"
+        },
+        "stopTimeout":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>Time duration (in seconds) to wait before the container is forcefully killed if it doesn't exit normally on its own.</p>"
+        },
+        "systemControls":{
+          "shape":"SystemControls",
+          "documentation":"<p>A list of namespaced kernel parameters to set in the container.</p>"
+        },
+        "interactive":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>When this parameter is <code>true</code>, you can deploy containerized applications that require <code>stdin</code> or a <code>tty</code> to be allocated.</p>"
+        },
+        "pseudoTerminal":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>When this parameter is <code>true</code>, a TTY is allocated.</p>"
+        },
+        "restartPolicy":{
+          "shape":"ContainerRestartPolicy",
+          "documentation":"<p>The restart policy for the container. When you set up a restart policy, Amazon ECS can restart the container without needing to replace the task.</p>"
+        }
+      },
+      "documentation":"<p>A container definition for a daemon task. Daemon container definitions describe the containers that run as part of a daemon task on container instances managed by capacity providers.</p>"
+    },
+    "DaemonContainerDefinitionList":{
+      "type":"list",
+      "member":{"shape":"DaemonContainerDefinition"}
+    },
+    "DaemonContainerImage":{
+      "type":"structure",
+      "members":{
+        "containerName":{
+          "shape":"String",
+          "documentation":"<p>The name of the container.</p>"
+        },
+        "imageDigest":{
+          "shape":"String",
+          "documentation":"<p>The container image digest.</p>"
+        },
+        "image":{
+          "shape":"String",
+          "documentation":"<p>The container image.</p>"
+        }
+      },
+      "documentation":"<p>The details about the container image a daemon revision uses.</p>"
+    },
+    "DaemonContainerImages":{
+      "type":"list",
+      "member":{"shape":"DaemonContainerImage"}
+    },
+    "DaemonDeployment":{
+      "type":"structure",
+      "members":{
+        "daemonDeploymentArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the daemon deployment.</p>"
+        },
+        "clusterArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the cluster that hosts the daemon.</p>"
+        },
+        "status":{
+          "shape":"DaemonDeploymentStatus",
+          "documentation":"<p>The status of the daemon deployment.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>Information about why the daemon deployment is in the current status.</p>"
+        },
+        "targetDaemonRevision":{
+          "shape":"DaemonDeploymentRevisionDetail",
+          "documentation":"<p>The daemon revision being deployed.</p>"
+        },
+        "sourceDaemonRevisions":{
+          "shape":"DaemonDeploymentRevisionDetailList",
+          "documentation":"<p>The currently deployed daemon revisions that are being replaced.</p>"
+        },
+        "circuitBreaker":{
+          "shape":"DaemonCircuitBreaker",
+          "documentation":"<p>The circuit breaker configuration that determines when a daemon deployment has failed.</p>"
+        },
+        "alarms":{
+          "shape":"DaemonDeploymentAlarms",
+          "documentation":"<p>The CloudWatch alarms that determine when a daemon deployment fails.</p>"
+        },
+        "rollback":{
+          "shape":"DaemonRollback",
+          "documentation":"<p>The rollback options for the daemon deployment.</p>"
+        },
+        "deploymentConfiguration":{
+          "shape":"DaemonDeploymentConfiguration",
+          "documentation":"<p>The deployment configuration used for this daemon deployment.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the daemon deployment was created. The format is yyyy-MM-dd HH:mm:ss.SSSSSS.</p>"
+        },
+        "startedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the daemon deployment started. The format is yyyy-MM-dd HH:mm:ss.SSSSSS.</p>"
+        },
+        "stoppedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the daemon deployment stopped. The format is yyyy-MM-dd HH:mm:ss.SSSSSS.</p>"
+        },
+        "finishedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the daemon deployment finished. The format is yyyy-MM-dd HH:mm:ss.SSSSSS.</p>"
+        }
+      },
+      "documentation":"<p>Information about a daemon deployment. A daemon deployment orchestrates the progressive rollout of daemon task updates across container instances.</p>"
+    },
+    "DaemonDeploymentAlarms":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"DaemonDeploymentRollbackMonitorsStatus",
+          "documentation":"<p>The status of the alarms check. Amazon ECS is not using alarms for daemon deployment failures when the status is <code>DISABLED</code>.</p>"
+        },
+        "alarmNames":{
+          "shape":"StringList",
+          "documentation":"<p>The name of the CloudWatch alarms that determine when a daemon deployment failed.</p>"
+        },
+        "triggeredAlarmNames":{
+          "shape":"StringList",
+          "documentation":"<p>One or more CloudWatch alarm names that have been triggered during the daemon deployment.</p>"
+        }
+      },
+      "documentation":"<p>The CloudWatch alarms used to determine a daemon deployment failed.</p>"
+    },
+    "DaemonDeploymentCapacityProvider":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the capacity provider.</p>"
+        },
+        "runningInstanceCount":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The number of instances running daemon tasks on this capacity provider.</p>"
+        },
+        "drainingInstanceCount":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The number of instances being drained on this capacity provider during the deployment.</p>"
+        }
+      },
+      "documentation":"<p>Information about a capacity provider during a daemon deployment.</p>"
+    },
+    "DaemonDeploymentCapacityProviderList":{
+      "type":"list",
+      "member":{"shape":"DaemonDeploymentCapacityProvider"}
+    },
+    "DaemonDeploymentConfiguration":{
+      "type":"structure",
+      "members":{
+        "drainPercent":{
+          "shape":"DaemonDrainPercent",
+          "documentation":"<p>The percentage of container instances to drain simultaneously during a daemon deployment. Valid values are between 0.0 and 100.0.</p>"
+        },
+        "alarms":{
+          "shape":"DaemonAlarmConfiguration",
+          "documentation":"<p>The CloudWatch alarm configuration for the daemon deployment. When alarms are triggered during a deployment, the deployment can be automatically rolled back.</p>"
+        },
+        "bakeTimeInMinutes":{
+          "shape":"Integer",
+          "documentation":"<p>The amount of time (in minutes) to wait after a successful deployment step before proceeding. This allows time to monitor for issues before continuing. The default value is 0.</p>"
+        }
+      },
+      "documentation":"<p>Optional deployment parameters that control how a daemon rolls out updates across container instances.</p>"
+    },
+    "DaemonDeploymentList":{
+      "type":"list",
+      "member":{"shape":"DaemonDeployment"}
+    },
+    "DaemonDeploymentRevisionDetail":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the daemon revision.</p>"
+        },
+        "capacityProviders":{
+          "shape":"DaemonDeploymentCapacityProviderList",
+          "documentation":"<p>The capacity providers associated with this daemon revision during the deployment.</p>"
+        },
+        "totalRunningInstanceCount":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The total number of instances running daemon tasks for this revision.</p>"
+        },
+        "totalDrainingInstanceCount":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The total number of instances being drained for this revision during the deployment.</p>"
+        }
+      },
+      "documentation":"<p>Details about a daemon revision during a deployment, including running and draining instance counts per capacity provider.</p>"
+    },
+    "DaemonDeploymentRevisionDetailList":{
+      "type":"list",
+      "member":{"shape":"DaemonDeploymentRevisionDetail"}
+    },
+    "DaemonDeploymentRollbackMonitorsStatus":{
+      "type":"string",
+      "enum":[
+        "TRIGGERED",
+        "MONITORING",
+        "MONITORING_COMPLETE",
+        "DISABLED"
+      ]
+    },
+    "DaemonDeploymentStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "SUCCESSFUL",
+        "STOPPED",
+        "STOP_REQUESTED",
+        "IN_PROGRESS",
+        "ROLLBACK_IN_PROGRESS",
+        "ROLLBACK_SUCCESSFUL",
+        "ROLLBACK_FAILED"
+      ]
+    },
+    "DaemonDeploymentStatusList":{
+      "type":"list",
+      "member":{"shape":"DaemonDeploymentStatus"}
+    },
+    "DaemonDeploymentSummary":{
+      "type":"structure",
+      "members":{
+        "daemonDeploymentArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the daemon deployment.</p>"
+        },
+        "daemonArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the daemon.</p>"
+        },
+        "clusterArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the cluster that hosts the daemon.</p>"
+        },
+        "status":{
+          "shape":"DaemonDeploymentStatus",
+          "documentation":"<p>The status of the daemon deployment.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>Information about why the daemon deployment is in the current status.</p>"
+        },
+        "targetDaemonRevisionArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the daemon revision being deployed.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the daemon deployment was created.</p>"
+        },
+        "startedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the daemon deployment started.</p>"
+        },
+        "stoppedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the daemon deployment stopped.</p>"
+        },
+        "finishedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the daemon deployment finished.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a daemon deployment.</p>"
+    },
+    "DaemonDeploymentSummaryList":{
+      "type":"list",
+      "member":{"shape":"DaemonDeploymentSummary"}
+    },
+    "DaemonDetail":{
+      "type":"structure",
+      "members":{
+        "daemonArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the daemon.</p>"
+        },
+        "clusterArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the cluster that the daemon is running in.</p>"
+        },
+        "status":{
+          "shape":"DaemonStatus",
+          "documentation":"<p>The status of the daemon.</p>"
+        },
+        "currentRevisions":{
+          "shape":"DaemonRevisionDetailList",
+          "documentation":"<p>The current daemon revision details, including the running task counts per capacity provider.</p>"
+        },
+        "deploymentArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the most recent daemon deployment.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for the time when the daemon was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for the time when the daemon was last updated.</p>"
+        }
+      },
+      "documentation":"<p>The detailed information about a daemon.</p>"
+    },
+    "DaemonDrainPercent":{
+      "type":"double",
+      "box":true,
+      "max":100.0,
+      "min":0.0
+    },
+    "DaemonLinuxParameters":{
+      "type":"structure",
+      "members":{
+        "capabilities":{
+          "shape":"KernelCapabilities",
+          "documentation":"<p>The Linux capabilities for the container that are added to or dropped from the default configuration provided by Docker.</p>"
+        },
+        "devices":{
+          "shape":"DevicesList",
+          "documentation":"<p>Any host devices to expose to the container.</p>"
+        },
+        "initProcessEnabled":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Run an <code>init</code> process inside the container that forwards signals and reaps processes.</p>"
+        },
+        "tmpfs":{
+          "shape":"TmpfsList",
+          "documentation":"<p>The container path, mount options, and size (in MiB) of the tmpfs mount.</p>"
+        }
+      },
+      "documentation":"<p>The Linux-specific options that are applied to the daemon container, such as Linux kernel capabilities.</p>"
+    },
+    "DaemonNotActiveException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The specified daemon isn't active. You can't update a daemon that's inactive. If you have previously deleted a daemon, you can re-create it with <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_CreateDaemon.html\">CreateDaemon</a>.</p>",
+      "exception":true
+    },
+    "DaemonNotFoundException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The specified daemon wasn't found. You can view your available daemons with <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ListDaemons.html\">ListDaemons</a>. Amazon ECS daemons are cluster specific and Region specific.</p>",
+      "exception":true
+    },
+    "DaemonPropagateTags":{
+      "type":"string",
+      "enum":[
+        "DAEMON",
+        "NONE"
+      ]
+    },
+    "DaemonRevision":{
+      "type":"structure",
+      "members":{
+        "daemonRevisionArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the daemon revision.</p>"
+        },
+        "clusterArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the cluster that hosts the daemon.</p>"
+        },
+        "daemonArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the daemon for this revision.</p>"
+        },
+        "daemonTaskDefinitionArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the daemon task definition used by this revision.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for the time when the daemon revision was created.</p>"
+        },
+        "containerImages":{
+          "shape":"DaemonContainerImages",
+          "documentation":"<p>The container images used by the daemon revision.</p>"
+        },
+        "propagateTags":{
+          "shape":"DaemonPropagateTags",
+          "documentation":"<p>Specifies whether tags are propagated from the daemon to the daemon tasks.</p>"
+        },
+        "enableECSManagedTags":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Specifies whether Amazon ECS managed tags are turned on for the daemon tasks.</p>"
+        },
+        "enableExecuteCommand":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Specifies whether the execute command functionality is turned on for the daemon tasks.</p>"
+        }
+      },
+      "documentation":"<p>Information about a daemon revision. A daemon revision is a snapshot of the daemon's configuration at the time a deployment was initiated.</p>"
+    },
+    "DaemonRevisionDetail":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the daemon revision.</p>"
+        },
+        "capacityProviders":{
+          "shape":"DaemonCapacityProviderList",
+          "documentation":"<p>The capacity providers associated with this daemon revision.</p>"
+        },
+        "totalRunningCount":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of daemon tasks running for this revision.</p>"
+        }
+      },
+      "documentation":"<p>Details about a daemon revision, including the running task counts per capacity provider.</p>"
+    },
+    "DaemonRevisionDetailList":{
+      "type":"list",
+      "member":{"shape":"DaemonRevisionDetail"}
+    },
+    "DaemonRevisions":{
+      "type":"list",
+      "member":{"shape":"DaemonRevision"}
+    },
+    "DaemonRollback":{
+      "type":"structure",
+      "members":{
+        "reason":{
+          "shape":"String",
+          "documentation":"<p>The reason the rollback happened. For example, the circuit breaker initiated the rollback operation.</p>"
+        },
+        "startedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the rollback started. The format is yyyy-MM-dd HH:mm:ss.SSSSSS.</p>"
+        },
+        "rollbackTargetDaemonRevisionArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the daemon revision deployed as part of the rollback.</p>"
+        },
+        "rollbackCapacityProviders":{
+          "shape":"StringList",
+          "documentation":"<p>The capacity providers involved in the rollback.</p>"
+        }
+      },
+      "documentation":"<p>Information about a daemon deployment rollback.</p>"
+    },
+    "DaemonStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "DELETE_IN_PROGRESS"
+      ]
+    },
+    "DaemonSummariesList":{
+      "type":"list",
+      "member":{"shape":"DaemonSummary"}
+    },
+    "DaemonSummary":{
+      "type":"structure",
+      "members":{
+        "daemonArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the daemon.</p>"
+        },
+        "status":{
+          "shape":"DaemonStatus",
+          "documentation":"<p>The status of the daemon.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for the time when the daemon was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for the time when the daemon was last updated.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a daemon.</p>"
+    },
+    "DaemonTaskDefinition":{
+      "type":"structure",
+      "members":{
+        "daemonTaskDefinitionArn":{
+          "shape":"String",
+          "documentation":"<p>The full Amazon Resource Name (ARN) of the daemon task definition.</p>"
+        },
+        "family":{
+          "shape":"String",
+          "documentation":"<p>The name of a family that this daemon task definition is registered to.</p>"
+        },
+        "revision":{
+          "shape":"Integer",
+          "documentation":"<p>The revision of the daemon task in a particular family. The revision is a version number of a daemon task definition in a family. When you register a daemon task definition for the first time, the revision is <code>1</code>. Each time that you register a new revision of a daemon task definition in the same family, the revision value always increases by one.</p>"
+        },
+        "taskRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The short name or full Amazon Resource Name (ARN) of the IAM role that grants containers in the daemon task permission to call Amazon Web Services APIs on your behalf.</p>"
+        },
+        "executionRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the task execution role that grants the Amazon ECS container agent permission to make Amazon Web Services API calls on your behalf.</p>"
+        },
+        "containerDefinitions":{
+          "shape":"DaemonContainerDefinitionList",
+          "documentation":"<p>A list of container definitions in JSON format that describe the containers that make up the daemon task.</p>"
+        },
+        "volumes":{
+          "shape":"DaemonVolumeList",
+          "documentation":"<p>The list of data volume definitions for the daemon task.</p>"
+        },
+        "cpu":{
+          "shape":"String",
+          "documentation":"<p>The number of CPU units used by the daemon task.</p>"
+        },
+        "memory":{
+          "shape":"String",
+          "documentation":"<p>The amount of memory (in MiB) used by the daemon task.</p>"
+        },
+        "status":{
+          "shape":"DaemonTaskDefinitionStatus",
+          "documentation":"<p>The status of the daemon task definition. The valid values are <code>ACTIVE</code>, <code>DELETE_IN_PROGRESS</code>, and <code>DELETED</code>.</p>"
+        },
+        "registeredAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for the time when the daemon task definition was registered.</p>"
+        },
+        "deleteRequestedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for the time when the daemon task definition delete was requested.</p>"
+        },
+        "registeredBy":{
+          "shape":"String",
+          "documentation":"<p>The principal that registered the daemon task definition.</p>"
+        }
+      },
+      "documentation":"<p>The details of a daemon task definition. A daemon task definition is a template that describes the containers that form a daemon. Daemons deploy cross-cutting software agents independently across your Amazon ECS infrastructure.</p>"
+    },
+    "DaemonTaskDefinitionRevisionFilter":{
+      "type":"string",
+      "enum":["LAST_REGISTERED"]
+    },
+    "DaemonTaskDefinitionStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "DELETE_IN_PROGRESS",
+        "DELETED"
+      ]
+    },
+    "DaemonTaskDefinitionStatusFilter":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "DELETE_IN_PROGRESS",
+        "ALL"
+      ]
+    },
+    "DaemonTaskDefinitionSummaries":{
+      "type":"list",
+      "member":{"shape":"DaemonTaskDefinitionSummary"}
+    },
+    "DaemonTaskDefinitionSummary":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the daemon task definition.</p>"
+        },
+        "registeredAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for the time when the daemon task definition was registered.</p>"
+        },
+        "registeredBy":{
+          "shape":"String",
+          "documentation":"<p>The principal that registered the daemon task definition.</p>"
+        },
+        "deleteRequestedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for the time when the daemon task definition delete was requested.</p>"
+        },
+        "status":{
+          "shape":"DaemonTaskDefinitionStatus",
+          "documentation":"<p>The status of the daemon task definition.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a daemon task definition.</p>"
+    },
+    "DaemonVolume":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the volume. Up to 255 letters (uppercase and lowercase), numbers, underscores, and hyphens are allowed.</p>"
+        },
+        "host":{
+          "shape":"HostVolumeProperties",
+          "documentation":"<p>The contents of the <code>host</code> parameter determine whether your bind mount host volume persists on the host container instance and where it's stored.</p>"
+        }
+      },
+      "documentation":"<p>A data volume definition for a daemon task.</p>"
+    },
+    "DaemonVolumeList":{
+      "type":"list",
+      "member":{"shape":"DaemonVolume"}
+    },
     "DeleteAccountSettingRequest":{
       "type":"structure",
       "required":["name"],
@@ -2899,6 +3997,60 @@
         }
       },
       "documentation":"<zonbook></zonbook><xhtml></xhtml>"
+    },
+    "DeleteDaemonRequest":{
+      "type":"structure",
+      "required":["daemonArn"],
+      "members":{
+        "daemonArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the daemon to delete.</p>"
+        }
+      }
+    },
+    "DeleteDaemonResponse":{
+      "type":"structure",
+      "members":{
+        "daemonArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the daemon.</p>"
+        },
+        "status":{
+          "shape":"DaemonStatus",
+          "documentation":"<p>The status of the daemon. After you call <code>DeleteDaemon</code>, the status changes to <code>DELETE_IN_PROGRESS</code>.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for the time when the daemon was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for the time when the daemon was last updated.</p>"
+        },
+        "deploymentArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the daemon deployment that was triggered by the delete operation. This deployment drains existing daemon tasks from the container instances.</p>"
+        }
+      }
+    },
+    "DeleteDaemonTaskDefinitionRequest":{
+      "type":"structure",
+      "required":["daemonTaskDefinition"],
+      "members":{
+        "daemonTaskDefinition":{
+          "shape":"String",
+          "documentation":"<p>The <code>family</code> and <code>revision</code> (<code>family:revision</code>) or full Amazon Resource Name (ARN) of the daemon task definition to delete.</p>"
+        }
+      }
+    },
+    "DeleteDaemonTaskDefinitionResponse":{
+      "type":"structure",
+      "members":{
+        "daemonTaskDefinitionArn":{
+          "shape":"String",
+          "documentation":"<p>The full Amazon Resource Name (ARN) of the deleted daemon task definition.</p>"
+        }
+      }
     },
     "DeleteExpressGatewayServiceRequest":{
       "type":"structure",
@@ -3423,6 +4575,90 @@
         }
       },
       "documentation":"<zonbook></zonbook><xhtml></xhtml>"
+    },
+    "DescribeDaemonDeploymentsRequest":{
+      "type":"structure",
+      "required":["daemonDeploymentArns"],
+      "members":{
+        "daemonDeploymentArns":{
+          "shape":"StringList",
+          "documentation":"<p>The ARN of the daemon deployments to describe. You can specify up to 20 ARNs.</p>"
+        }
+      }
+    },
+    "DescribeDaemonDeploymentsResponse":{
+      "type":"structure",
+      "members":{
+        "failures":{
+          "shape":"Failures",
+          "documentation":"<p>Any failures associated with the call.</p>"
+        },
+        "daemonDeployments":{
+          "shape":"DaemonDeploymentList",
+          "documentation":"<p>The list of daemon deployments.</p>"
+        }
+      }
+    },
+    "DescribeDaemonRequest":{
+      "type":"structure",
+      "required":["daemonArn"],
+      "members":{
+        "daemonArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the daemon to describe.</p>"
+        }
+      }
+    },
+    "DescribeDaemonResponse":{
+      "type":"structure",
+      "members":{
+        "daemon":{
+          "shape":"DaemonDetail",
+          "documentation":"<p>The full description of the daemon, including the current revisions, deployment ARN, cluster, and status information.</p>"
+        }
+      }
+    },
+    "DescribeDaemonRevisionsRequest":{
+      "type":"structure",
+      "required":["daemonRevisionArns"],
+      "members":{
+        "daemonRevisionArns":{
+          "shape":"StringList",
+          "documentation":"<p>The ARN of the daemon revisions to describe. You can specify up to 20 ARNs.</p>"
+        }
+      }
+    },
+    "DescribeDaemonRevisionsResponse":{
+      "type":"structure",
+      "members":{
+        "daemonRevisions":{
+          "shape":"DaemonRevisions",
+          "documentation":"<p>The list of daemon revisions.</p>"
+        },
+        "failures":{
+          "shape":"Failures",
+          "documentation":"<p>Any failures associated with the call.</p>"
+        }
+      }
+    },
+    "DescribeDaemonTaskDefinitionRequest":{
+      "type":"structure",
+      "required":["daemonTaskDefinition"],
+      "members":{
+        "daemonTaskDefinition":{
+          "shape":"String",
+          "documentation":"<p>The <code>family</code> for the latest <code>ACTIVE</code> revision, <code>family</code> and <code>revision</code> (<code>family:revision</code>) for a specific revision in the family, or full Amazon Resource Name (ARN) of the daemon task definition to describe.</p>"
+        }
+      }
+    },
+    "DescribeDaemonTaskDefinitionResponse":{
+      "type":"structure",
+      "members":{
+        "daemonTaskDefinition":{
+          "shape":"DaemonTaskDefinition",
+          "documentation":"<p>The full daemon task definition description.</p>"
+        }
+      }
     },
     "DescribeExpressGatewayServiceRequest":{
       "type":"structure",
@@ -4566,7 +5802,11 @@
     },
     "InstanceHealthCheckType":{
       "type":"string",
-      "enum":["CONTAINER_RUNTIME"]
+      "enum":[
+        "CONTAINER_RUNTIME",
+        "ACCELERATED_COMPUTE",
+        "DAEMON"
+      ]
     },
     "InstanceLaunchTemplate":{
       "type":"structure",
@@ -4609,7 +5849,7 @@
         },
         "fipsEnabled":{
           "shape":"BoxedBoolean",
-          "documentation":"<p>Determines whether to enable FIPS 140-2 validated cryptographic modules on EC2 instances launched by the capacity provider. If <code>true</code>, instances use FIPS-compliant cryptographic algorithms and modules for enhanced security compliance. If <code>false</code>, instances use standard cryptographic implementations.</p> <p>If not specified, instances are launched with FIPS enabled in AWS GovCloud (US) regions and FIPS disabled in other regions.</p>"
+          "documentation":"<p>Determines whether to enable FIPS 140-2 validated cryptographic modules on EC2 instances launched by the capacity provider. If <code>true</code>, instances use FIPS-compliant cryptographic algorithms and modules for enhanced security compliance. If <code>false</code>, instances use standard cryptographic implementations.</p> <p>If not specified, instances are launched with FIPS enabled in Amazon Web Services GovCloud (US) regions and FIPS disabled in other regions.</p>"
         },
         "capacityReservations":{
           "shape":"CapacityReservationRequest",
@@ -4769,7 +6009,12 @@
     },
     "InvalidParameterException":{
       "type":"structure",
-      "members":{},
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p> Message that describes the cause of the exception.</p>"
+        }
+      },
       "documentation":"<p>The specified parameter isn't valid. Review the available parameters for the API request.</p> <p>For more information about service event errors, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-event-messages-list.html\">Amazon ECS service event messages</a>. </p>",
       "exception":true
     },
@@ -4820,7 +6065,12 @@
     },
     "LimitExceededException":{
       "type":"structure",
-      "members":{},
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p> Message that describes the cause of the exception.</p>"
+        }
+      },
       "documentation":"<p>The limit for the resource was exceeded.</p>",
       "exception":true
     },
@@ -5027,6 +6277,125 @@
         }
       },
       "documentation":"<zonbook></zonbook><xhtml></xhtml>"
+    },
+    "ListDaemonDeploymentsRequest":{
+      "type":"structure",
+      "required":["daemonArn"],
+      "members":{
+        "daemonArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the daemon to list deployments for.</p>"
+        },
+        "status":{
+          "shape":"DaemonDeploymentStatusList",
+          "documentation":"<p>An optional filter to narrow the <code>ListDaemonDeployments</code> results by deployment status. If you don't specify a status, all deployments are returned.</p>"
+        },
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>An optional filter to narrow the <code>ListDaemonDeployments</code> results by creation time. If you don't specify a time range, all deployments are returned.</p>"
+        },
+        "maxResults":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The maximum number of daemon deployment results that <code>ListDaemonDeployments</code> returned in paginated output. When this parameter is used, <code>ListDaemonDeployments</code> only returns <code>maxResults</code> results in a single page along with a <code>nextToken</code> response element. The remaining results of the initial request can be seen by sending another <code>ListDaemonDeployments</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 100. If this parameter isn't used, then <code>ListDaemonDeployments</code> returns up to 20 results and a <code>nextToken</code> value if applicable.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value returned from a <code>ListDaemonDeployments</code> request indicating that more results are available to fulfill the request and further calls will be needed. If <code>maxResults</code> was provided, it's possible for the number of results to be fewer than <code>maxResults</code>.</p> <note> <p>This token should be treated as an opaque identifier that is only used to retrieve the next items in a list and not for other programmatic purposes.</p> </note>"
+        }
+      }
+    },
+    "ListDaemonDeploymentsResponse":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value to include in a future <code>ListDaemonDeployments</code> request. When the results of a <code>ListDaemonDeployments</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results.</p>"
+        },
+        "daemonDeployments":{
+          "shape":"DaemonDeploymentSummaryList",
+          "documentation":"<p>The list of daemon deployment summaries.</p>"
+        }
+      }
+    },
+    "ListDaemonTaskDefinitionsRequest":{
+      "type":"structure",
+      "members":{
+        "familyPrefix":{
+          "shape":"String",
+          "documentation":"<p>The full family name to filter the <code>ListDaemonTaskDefinitions</code> results with. Specifying a <code>familyPrefix</code> limits the listed daemon task definitions to daemon task definition families that start with the <code>familyPrefix</code> string.</p>"
+        },
+        "family":{
+          "shape":"String",
+          "documentation":"<p>The exact name of the daemon task definition family to filter results with.</p>"
+        },
+        "revision":{
+          "shape":"DaemonTaskDefinitionRevisionFilter",
+          "documentation":"<p>The revision filter to apply. Specify <code>LAST_REGISTERED</code> to return only the last registered revision for each daemon task definition family.</p>"
+        },
+        "status":{
+          "shape":"DaemonTaskDefinitionStatusFilter",
+          "documentation":"<p>The daemon task definition status to filter the <code>ListDaemonTaskDefinitions</code> results with. By default, only <code>ACTIVE</code> daemon task definitions are listed. If you set this parameter to <code>DELETE_IN_PROGRESS</code>, only daemon task definitions that are in the process of being deleted are listed. If you set this parameter to <code>ALL</code>, all daemon task definitions are listed regardless of status.</p>"
+        },
+        "sort":{
+          "shape":"SortOrder",
+          "documentation":"<p>The order to sort the results. Valid values are <code>ASC</code> and <code>DESC</code>. By default (<code>ASC</code>), daemon task definitions are listed in ascending order by family name and revision number.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value returned from a <code>ListDaemonTaskDefinitions</code> request indicating that more results are available to fulfill the request and further calls will be needed. If <code>maxResults</code> was provided, it's possible for the number of results to be fewer than <code>maxResults</code>.</p> <note> <p>This token should be treated as an opaque identifier that is only used to retrieve the next items in a list and not for other programmatic purposes.</p> </note>"
+        },
+        "maxResults":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The maximum number of daemon task definition results that <code>ListDaemonTaskDefinitions</code> returned in paginated output. When this parameter is used, <code>ListDaemonTaskDefinitions</code> only returns <code>maxResults</code> results in a single page along with a <code>nextToken</code> response element. The remaining results of the initial request can be seen by sending another <code>ListDaemonTaskDefinitions</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 100. If this parameter isn't used, then <code>ListDaemonTaskDefinitions</code> returns up to 100 results and a <code>nextToken</code> value if applicable.</p>"
+        }
+      }
+    },
+    "ListDaemonTaskDefinitionsResponse":{
+      "type":"structure",
+      "members":{
+        "daemonTaskDefinitions":{
+          "shape":"DaemonTaskDefinitionSummaries",
+          "documentation":"<p>The list of daemon task definition summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value to include in a future <code>ListDaemonTaskDefinitions</code> request. When the results of a <code>ListDaemonTaskDefinitions</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results.</p>"
+        }
+      }
+    },
+    "ListDaemonsRequest":{
+      "type":"structure",
+      "members":{
+        "clusterArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the cluster to filter daemons by. If not specified, daemons from all clusters are returned.</p>"
+        },
+        "capacityProviderArns":{
+          "shape":"StringList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the capacity providers to filter daemons by. Only daemons associated with the specified capacity providers are returned.</p>"
+        },
+        "maxResults":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The maximum number of daemon results that <code>ListDaemons</code> returned in paginated output. When this parameter is used, <code>ListDaemons</code> only returns <code>maxResults</code> results in a single page along with a <code>nextToken</code> response element. The remaining results of the initial request can be seen by sending another <code>ListDaemons</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 100. If this parameter isn't used, then <code>ListDaemons</code> returns up to 100 results and a <code>nextToken</code> value if applicable.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value returned from a <code>ListDaemons</code> request indicating that more results are available to fulfill the request and further calls will be needed. If <code>maxResults</code> was provided, it's possible for the number of results to be fewer than <code>maxResults</code>.</p> <note> <p>This token should be treated as an opaque identifier that is only used to retrieve the next items in a list and not for other programmatic purposes.</p> </note>"
+        }
+      }
+    },
+    "ListDaemonsResponse":{
+      "type":"structure",
+      "members":{
+        "daemonSummariesList":{
+          "shape":"DaemonSummariesList",
+          "documentation":"<p>The list of daemon summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value to include in a future <code>ListDaemons</code> request. When the results of a <code>ListDaemons</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results.</p>"
+        }
+      }
     },
     "ListServiceDeploymentsRequest":{
       "type":"structure",
@@ -5279,6 +6648,10 @@
         "launchType":{
           "shape":"LaunchType",
           "documentation":"<p>The launch type to use when filtering the <code>ListTasks</code> results.</p>"
+        },
+        "daemonName":{
+          "shape":"String",
+          "documentation":"<p>The name of the daemon to use when filtering the <code>ListTasks</code> results. Specifying a <code>daemonName</code> limits the results to tasks that belong to that daemon.</p>"
         }
       },
       "documentation":"<zonbook></zonbook><xhtml></xhtml>"
@@ -6031,7 +7404,12 @@
     },
     "MissingVersionException":{
       "type":"structure",
-      "members":{},
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p> Message that describes the cause of the exception.</p>"
+        }
+      },
       "documentation":"<p>Amazon ECS can't determine the current version of the Amazon ECS container agent on the container instance and doesn't have enough information to proceed with an update. This could be because the agent running on the container instance is a previous or custom version that doesn't use our version information.</p>",
       "exception":true
     },
@@ -6059,7 +7437,12 @@
     },
     "NamespaceNotFoundException":{
       "type":"structure",
-      "members":{},
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p> Message that describes the cause of the exception.</p>"
+        }
+      },
       "documentation":"<p>The specified namespace wasn't found.</p>",
       "exception":true
     },
@@ -6168,7 +7551,12 @@
     },
     "NoUpdateAvailableException":{
       "type":"structure",
-      "members":{},
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p> Message that describes the cause of the exception.</p>"
+        }
+      },
       "documentation":"<p>There's no update available for this Amazon ECS container agent. This might be because the agent is already running the latest version or because it's so old that there's no update path to the current version.</p>",
       "exception":true
     },
@@ -6273,13 +7661,23 @@
     },
     "PlatformTaskDefinitionIncompatibilityException":{
       "type":"structure",
-      "members":{},
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p> Message that describes the cause of the exception.</p>"
+        }
+      },
       "documentation":"<p>The specified platform version doesn't satisfy the required capabilities of the task definition.</p>",
       "exception":true
     },
     "PlatformUnknownException":{
       "type":"structure",
-      "members":{},
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p> Message that describes the cause of the exception.</p>"
+        }
+      },
       "documentation":"<p>The specified platform version doesn't exist.</p>",
       "exception":true
     },
@@ -6551,6 +7949,56 @@
       },
       "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
+    "RegisterDaemonTaskDefinitionRequest":{
+      "type":"structure",
+      "required":[
+        "family",
+        "containerDefinitions"
+      ],
+      "members":{
+        "family":{
+          "shape":"String",
+          "documentation":"<p>You must specify a <code>family</code> for a daemon task definition. This family is used as a name for your daemon task definition. Up to 255 letters (uppercase and lowercase), numbers, underscores, and hyphens are allowed.</p>"
+        },
+        "taskRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The short name or full Amazon Resource Name (ARN) of the IAM role that containers in this daemon task can assume. All containers in this daemon task are granted the permissions that are specified in this role.</p>"
+        },
+        "executionRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the task execution role that grants the Amazon ECS container agent permission to make Amazon Web Services API calls on your behalf. The task execution role is required for daemon tasks that pull container images from Amazon ECR or send container logs to CloudWatch.</p>"
+        },
+        "containerDefinitions":{
+          "shape":"DaemonContainerDefinitionList",
+          "documentation":"<p>A list of container definitions in JSON format that describe the containers that make up your daemon task.</p>"
+        },
+        "cpu":{
+          "shape":"String",
+          "documentation":"<p>The number of CPU units used by the daemon task. It can be expressed as an integer using CPU units (for example, <code>1024</code>).</p>"
+        },
+        "memory":{
+          "shape":"String",
+          "documentation":"<p>The amount of memory (in MiB) used by the daemon task. It can be expressed as an integer using MiB (for example, <code>1024</code>).</p>"
+        },
+        "volumes":{
+          "shape":"DaemonVolumeList",
+          "documentation":"<p>A list of volume definitions in JSON format that containers in your daemon task can use.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The metadata that you apply to the daemon task definition to help you categorize and organize them. Each tag consists of a key and an optional value. You define both of them.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case-sensitive.</p> </li> <li> <p>Do not use <code>aws:</code>, <code>AWS:</code>, or any upper or lowercase combination of such as a prefix for either keys or values as it is reserved for Amazon Web Services use. You cannot edit or delete tag keys or values with this prefix. Tags with this prefix do not count against your tags per resource limit.</p> </li> </ul>"
+        }
+      }
+    },
+    "RegisterDaemonTaskDefinitionResponse":{
+      "type":"structure",
+      "members":{
+        "daemonTaskDefinitionArn":{
+          "shape":"String",
+          "documentation":"<p>The full Amazon Resource Name (ARN) of the registered daemon task definition.</p>"
+        }
+      }
+    },
     "RegisterTaskDefinitionRequest":{
       "type":"structure",
       "required":[
@@ -6656,7 +8104,8 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the secret containing the private repository credentials.</p> <note> <p>When you use the Amazon ECS API, CLI, or Amazon Web Services SDK, if the secret exists in the same Region as the task that you're launching then you can use either the full ARN or the name of the secret. When you use the Amazon Web Services Management Console, you must specify the full ARN of the secret.</p> </note>"
         }
       },
-      "documentation":"<p>The repository credentials for private registry authentication.</p>"
+      "documentation":"<p>The repository credentials for private registry authentication.</p>",
+      "sensitive":true
     },
     "RequiresAttributes":{
       "type":"list",
@@ -6708,7 +8157,12 @@
     },
     "ResourceInUseException":{
       "type":"structure",
-      "members":{},
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p> Message that describes the cause of the exception.</p>"
+        }
+      },
       "documentation":"<p>The specified resource is in-use and can't be removed.</p>",
       "exception":true
     },
@@ -6721,7 +8175,12 @@
     },
     "ResourceNotFoundException":{
       "type":"structure",
-      "members":{},
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p> Message that describes the cause of the exception.</p>"
+        }
+      },
       "documentation":"<p>The specified resource wasn't found.</p>",
       "exception":true
     },
@@ -7493,7 +8952,12 @@
     },
     "ServiceDeploymentNotFoundException":{
       "type":"structure",
-      "members":{},
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p> Message that describes the cause of the exception.</p>"
+        }
+      },
       "documentation":"<p>The service deploy ARN that you specified in the <code>StopServiceDeployment</code> doesn't exist. You can use <code>ListServiceDeployments</code> to retrieve the service deployment ARNs.</p>",
       "exception":true
     },
@@ -7615,13 +9079,23 @@
     },
     "ServiceNotActiveException":{
       "type":"structure",
-      "members":{},
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p> Message that describes the cause of the exception.</p>"
+        }
+      },
       "documentation":"<p>The specified service isn't active. You can't update a service that's inactive. If you have previously deleted a service, you can re-create it with <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_CreateService.html\">CreateService</a>.</p>",
       "exception":true
     },
     "ServiceNotFoundException":{
       "type":"structure",
-      "members":{},
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p> Message that describes the cause of the exception.</p>"
+        }
+      },
       "documentation":"<p>The specified service wasn't found. You can view your available services with <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ListServices.html\">ListServices</a>. Amazon ECS services are cluster specific and Region specific.</p>",
       "exception":true
     },
@@ -8243,13 +9717,23 @@
     },
     "TargetNotConnectedException":{
       "type":"structure",
-      "members":{},
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p> Message that describes the cause of the exception.</p>"
+        }
+      },
       "documentation":"<p>The execute command cannot run. This error can be caused by any of the following configuration issues:</p> <ul> <li> <p>Incorrect IAM permissions</p> </li> <li> <p>The SSM agent is not installed or is not running</p> </li> <li> <p> There is an interface Amazon VPC endpoint for Amazon ECS, but there is not one for Systems Manager Session Manager</p> </li> </ul> <p>For information about how to troubleshoot the issues, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-exec.html\">Troubleshooting issues with ECS Exec</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>",
       "exception":true
     },
     "TargetNotFoundException":{
       "type":"structure",
-      "members":{},
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p> Message that describes the cause of the exception.</p>"
+        }
+      },
       "documentation":"<p>The specified target wasn't found. You can view your available container instances with <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ListContainerInstances.html\">ListContainerInstances</a>. Amazon ECS container instances are cluster-specific and Region-specific.</p>",
       "exception":true
     },
@@ -8501,6 +9985,10 @@
         "deregisteredAt":{
           "shape":"Timestamp",
           "documentation":"<p>The Unix timestamp for the time when the task definition was deregistered.</p>"
+        },
+        "deleteRequestedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for the time when the task definition delete was requested.</p>"
         },
         "registeredBy":{
           "shape":"String",
@@ -8814,7 +10302,12 @@
     },
     "TaskSetNotFoundException":{
       "type":"structure",
-      "members":{},
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p> Message that describes the cause of the exception.</p>"
+        }
+      },
       "documentation":"<p>The specified task set wasn't found. You can view your available task sets with <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DescribeTaskSets.html\">DescribeTaskSets</a>. Task sets are specific to each cluster, service and Region.</p>",
       "exception":true
     },
@@ -8972,7 +10465,12 @@
     },
     "UnsupportedFeatureException":{
       "type":"structure",
-      "members":{},
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p> Message that describes the cause of the exception.</p>"
+        }
+      },
       "documentation":"<p>The specified task isn't supported in this Region.</p>",
       "exception":true
     },
@@ -9146,6 +10644,69 @@
       },
       "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
+    "UpdateDaemonRequest":{
+      "type":"structure",
+      "required":[
+        "daemonArn",
+        "daemonTaskDefinitionArn",
+        "capacityProviderArns"
+      ],
+      "members":{
+        "daemonArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the daemon to update.</p>"
+        },
+        "daemonTaskDefinitionArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the daemon task definition to use for the updated daemon.</p>"
+        },
+        "capacityProviderArns":{
+          "shape":"StringList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the capacity providers to associate with the daemon.</p>"
+        },
+        "deploymentConfiguration":{
+          "shape":"DaemonDeploymentConfiguration",
+          "documentation":"<p>Optional deployment parameters that control how the daemon rolls out updates, including the drain percentage, alarm-based rollback, and bake time.</p>"
+        },
+        "propagateTags":{
+          "shape":"DaemonPropagateTags",
+          "documentation":"<p>Specifies whether to propagate the tags from the daemon to the daemon tasks. If you don't specify a value, the tags aren't propagated. You can only propagate tags to daemon tasks during task creation.</p>"
+        },
+        "enableECSManagedTags":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to turn on Amazon ECS managed tags for the tasks in the daemon. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-using-tags.html\">Tagging your Amazon ECS resources</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
+        },
+        "enableExecuteCommand":{
+          "shape":"Boolean",
+          "documentation":"<p>If <code>true</code>, the execute command functionality is turned on for all tasks in the daemon. If <code>false</code>, the execute command functionality is turned off.</p>"
+        }
+      }
+    },
+    "UpdateDaemonResponse":{
+      "type":"structure",
+      "members":{
+        "daemonArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the daemon.</p>"
+        },
+        "status":{
+          "shape":"DaemonStatus",
+          "documentation":"<p>The status of the daemon.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for the time when the daemon was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for the time when the daemon was last updated.</p>"
+        },
+        "deploymentArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the daemon deployment that was triggered by the update.</p>"
+        }
+      }
+    },
     "UpdateExpressGatewayServiceRequest":{
       "type":"structure",
       "required":["serviceArn"],
@@ -9199,7 +10760,12 @@
     },
     "UpdateInProgressException":{
       "type":"structure",
-      "members":{},
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p> Message that describes the cause of the exception.</p>"
+        }
+      },
       "documentation":"<p>There's already a current Amazon ECS container agent update in progress on the container instance that's specified. If the container agent becomes disconnected while it's in a transitional stage, such as <code>PENDING</code> or <code>STAGING</code>, the update process can get stuck in that state. However, when the agent reconnects, it resumes where it stopped previously.</p>",
       "exception":true
     },

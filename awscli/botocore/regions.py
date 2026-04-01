@@ -698,22 +698,13 @@ class EndpointRulesetResolver:
         # if a preferred auth schemes list is provided, reorder the auth schemes
         # list based on the preferred ordering.
         if self._preferred_auth_schemes is not None:
-            self._preferred_auth_schemes = (
-                self._preferred_auth_schemes.split(',')
-            )
-            new_schemes_list = []
-            for preferred_scheme in self._preferred_auth_schemes:
-                for candidate_scheme in auth_schemes:
-                    if preferred_scheme == candidate_scheme['name']:
-                        new_schemes_list.append(candidate_scheme)
-            
-            # Add remaining auth schemes that weren't in the preference list.
-            new_schemes_list.extend([
-                s for s in auth_schemes if (
-                    s['name'] not in self._preferred_auth_schemes
-                )
-            ])
-            auth_schemes = new_schemes_list
+            prefs = self._preferred_auth_schemes.split(',')
+            by_name = {s['name']: s for s in auth_schemes}
+            auth_schemes = [
+                by_name[p] for p in prefs if p in by_name
+            ] + [
+                s for s in auth_schemes if s['name'] not in prefs
+            ]
 
         auth_schemes = [
             {**scheme, 'name': self._strip_sig_prefix(scheme['name'])}

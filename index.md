@@ -9,6 +9,7 @@ getting_started
 documentation
 contribution_process
 testing
+automated_tools
 support
 reporting
 ```
@@ -24,6 +25,7 @@ This guide covers the following topics:
 * Proposing and discussing new features or improvements
 * Updating documentation and adding/updating examples
 * Making code changes
+* Guidelines for using [automated tools](automated_tools.md) (AI)
 * Support requests and bug reports
 
 This project has adopted the [Amazon Open Source Code of Conduct](https://aws.github.io/code-of-conduct), and this extends to the contribution process. For more information, please see the [Code of Conduct FAQ](https://aws.github.io/code-of-conduct-faq).

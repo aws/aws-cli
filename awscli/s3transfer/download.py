@@ -15,6 +15,7 @@ import logging
 import threading
 
 from botocore.exceptions import ClientError
+from botocore.httpchecksum import StreamingChecksumBody
 from s3transfer.checksums import (
     FullObjectChecksumCombiner,
     create_checksum_for_algorithm,
@@ -641,9 +642,25 @@ class GetObjectTask(Task):
                     extra_args.get('Range'),
                     response.get('ContentRange'),
                 )
-                streaming_body = StreamReaderProgress(
-                    response['Body'], callbacks
-                )
+                # When doing full object checksum combining and botocore
+                # hasn't already wrapped the body with a checksum
+                # calculator, wrap it in StreamingChecksumBody ourselves
+                # so the CRC is computed as data is read. We pass
+                # expected=None since we validate at the full object
+                # level, not per-part.
+                body = response['Body']
+                if checksum_combiner is not None and not hasattr(
+                    body, 'checksum'
+                ):
+                    body = StreamingChecksumBody(
+                        body,
+                        response.get('ContentLength'),
+                        create_checksum_for_algorithm(
+                            checksum_combiner.algorithm
+                        ),
+                        expected=None,
+                    )
+                streaming_body = StreamReaderProgress(body, callbacks)
                 if bandwidth_limiter:
                     streaming_body = (
                         bandwidth_limiter.get_bandwith_limited_stream(
@@ -651,27 +668,13 @@ class GetObjectTask(Task):
                         )
                     )
 
-                checksum = None
                 part_length = 0
-                # Checking for the `checksum` attribute on the response body
-                # introduces coupling to botocore's `StreamingChecksumBody` but
-                # this is the only viable approach to avoid double-computing
-                # the checksum. There's no per-request mechanism to suppress or
-                # coordinate with botocore's response checksum validation.
-                body_has_checksum = hasattr(response['Body'], 'checksum')
-                if checksum_combiner is not None and not body_has_checksum:
-                    checksum = create_checksum_for_algorithm(
-                        checksum_combiner.algorithm
-                    )
-
                 chunks = DownloadChunkIterator(streaming_body, io_chunksize)
                 for chunk in chunks:
                     # If the transfer is done because of a cancellation
                     # or error somewhere else, stop trying to submit more
                     # data to be written and break out of the download.
                     if not self._transfer_coordinator.done():
-                        if checksum is not None:
-                            checksum.update(chunk)
                         part_length += len(chunk)
                         self._handle_io(
                             download_output_manager,
@@ -683,17 +686,10 @@ class GetObjectTask(Task):
                     else:
                         return
 
-                # If the body has the `checksum` property, it means
-                # botocore already calculated the checksum value. Reuse
-                # the pre-computed value when available to avoid double
-                # computation.
-                if body_has_checksum:
-                    checksum = response['Body'].checksum
-
                 if checksum_combiner is not None:
                     checksum_combiner.register_part(
                         part_index,
-                        checksum,
+                        body.checksum,
                         part_length,
                     )
                 return

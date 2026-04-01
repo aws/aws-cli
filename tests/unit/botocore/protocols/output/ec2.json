@@ -2,13 +2,26 @@
     {
         "description": "Test cases for DatetimeOffsets operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsec2",
             "protocol": "ec2",
             "protocols": [
                 "ec2"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsEc2",
+            "serviceId": "EC2 Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsEc2",
+            "uid": "ec2-protocol-2020-01-08"
         },
         "shapes": {
+            "DateTime": {
+                "type": "timestamp",
+                "timestampFormat": "iso8601"
+            },
             "DatetimeOffsetsOutput": {
                 "type": "structure",
                 "members": {
@@ -16,15 +29,12 @@
                         "shape": "DateTime"
                     }
                 }
-            },
-            "DateTime": {
-                "type": "timestamp",
-                "timestampFormat": "iso8601"
             }
         },
         "cases": [
             {
                 "id": "Ec2QueryDateTimeWithNegativeOffset",
+                "description": "Ensures that clients can correctly parse datetime (timestamps) with offsets",
                 "given": {
                     "name": "DatetimeOffsets",
                     "http": {
@@ -35,7 +45,6 @@
                         "shape": "DatetimeOffsetsOutput"
                     }
                 },
-                "description": "Ensures that clients can correctly parse datetime (timestamps) with offsets",
                 "result": {
                     "datetime": 1576540098
                 },
@@ -49,6 +58,7 @@
             },
             {
                 "id": "Ec2QueryDateTimeWithPositiveOffset",
+                "description": "Ensures that clients can correctly parse datetime (timestamps) with offsets",
                 "given": {
                     "name": "DatetimeOffsets",
                     "http": {
@@ -59,7 +69,6 @@
                         "shape": "DatetimeOffsetsOutput"
                     }
                 },
-                "description": "Ensures that clients can correctly parse datetime (timestamps) with offsets",
                 "result": {
                     "datetime": 1576540098
                 },
@@ -76,11 +85,20 @@
     {
         "description": "Test cases for EmptyInputAndEmptyOutput operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsec2",
             "protocol": "ec2",
             "protocols": [
                 "ec2"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsEc2",
+            "serviceId": "EC2 Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsEc2",
+            "uid": "ec2-protocol-2020-01-08"
         },
         "shapes": {
             "EmptyInputAndEmptyOutputOutput": {
@@ -91,6 +109,7 @@
         "cases": [
             {
                 "id": "Ec2QueryEmptyInputAndEmptyOutput",
+                "description": "Empty output",
                 "given": {
                     "name": "EmptyInputAndEmptyOutput",
                     "http": {
@@ -102,7 +121,6 @@
                     },
                     "documentation": "<p>The example tests how requests and responses are serialized when there's no request or response members.</p> <p>While this should be rare, code generators must support this.</p>"
                 },
-                "description": "Empty output",
                 "result": {},
                 "response": {
                     "status_code": 200,
@@ -117,13 +135,26 @@
     {
         "description": "Test cases for FractionalSeconds operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsec2",
             "protocol": "ec2",
             "protocols": [
                 "ec2"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsEc2",
+            "serviceId": "EC2 Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsEc2",
+            "uid": "ec2-protocol-2020-01-08"
         },
         "shapes": {
+            "DateTime": {
+                "type": "timestamp",
+                "timestampFormat": "iso8601"
+            },
             "FractionalSecondsOutput": {
                 "type": "structure",
                 "members": {
@@ -131,15 +162,12 @@
                         "shape": "DateTime"
                     }
                 }
-            },
-            "DateTime": {
-                "type": "timestamp",
-                "timestampFormat": "iso8601"
             }
         },
         "cases": [
             {
                 "id": "Ec2QueryDateTimeWithFractionalSeconds",
+                "description": "Ensures that clients can correctly parse datetime timestamps with fractional seconds",
                 "given": {
                     "name": "FractionalSeconds",
                     "http": {
@@ -150,7 +178,6 @@
                         "shape": "FractionalSecondsOutput"
                     }
                 },
-                "description": "Ensures that clients can correctly parse datetime timestamps with fractional seconds",
                 "result": {
                     "datetime": 9.46845296123E8
                 },
@@ -167,11 +194,20 @@
     {
         "description": "Test cases for GreetingWithErrors operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsec2",
             "protocol": "ec2",
             "protocols": [
                 "ec2"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsEc2",
+            "serviceId": "EC2 Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsEc2",
+            "uid": "ec2-protocol-2020-01-08"
         },
         "shapes": {
             "GreetingWithErrorsOutput": {
@@ -189,6 +225,7 @@
         "cases": [
             {
                 "id": "Ec2GreetingWithErrors",
+                "description": "Ensures that operations with errors successfully know how to deserialize the successful response",
                 "given": {
                     "name": "GreetingWithErrors",
                     "http": {
@@ -200,7 +237,6 @@
                     },
                     "documentation": "<p>This operation has three possible return values:</p> <ol> <li>A successful response in the form of GreetingWithErrorsOutput</li> <li>An InvalidGreeting error.</li> <li>A BadRequest error.</li> </ol>"
                 },
-                "description": "Ensures that operations with errors successfully know how to deserialize the successful response",
                 "result": {
                     "greeting": "Hello"
                 },
@@ -217,11 +253,20 @@
     {
         "description": "Test cases for GreetingWithErrors operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsec2",
             "protocol": "ec2",
             "protocols": [
                 "ec2"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsEc2",
+            "serviceId": "EC2 Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsEc2",
+            "uid": "ec2-protocol-2020-01-08"
         },
         "shapes": {
             "InvalidGreeting": {
@@ -241,6 +286,7 @@
         "cases": [
             {
                 "id": "Ec2InvalidGreetingError",
+                "description": "Parses simple XML errors",
                 "given": {
                     "name": "GreetingWithErrors",
                     "http": {
@@ -254,7 +300,6 @@
                         }
                     ]
                 },
-                "description": "Parses simple XML errors",
                 "errorCode": "InvalidGreeting",
                 "errorMessage": "Hi",
                 "error": {
@@ -273,11 +318,20 @@
     {
         "description": "Test cases for GreetingWithErrors operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsec2",
             "protocol": "ec2",
             "protocols": [
                 "ec2"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsEc2",
+            "serviceId": "EC2 Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsEc2",
+            "uid": "ec2-protocol-2020-01-08"
         },
         "shapes": {
             "ComplexError": {
@@ -293,9 +347,6 @@
                 "documentation": "<p>This error is thrown when a request is invalid.</p>",
                 "exception": true
             },
-            "String": {
-                "type": "string"
-            },
             "ComplexNestedErrorData": {
                 "type": "structure",
                 "members": {
@@ -303,6 +354,9 @@
                         "shape": "String"
                     }
                 }
+            },
+            "String": {
+                "type": "string"
             }
         },
         "cases": [
@@ -341,11 +395,20 @@
     {
         "description": "Test cases for IgnoresWrappingXmlName operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsec2",
             "protocol": "ec2",
             "protocols": [
                 "ec2"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsEc2",
+            "serviceId": "EC2 Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsEc2",
+            "uid": "ec2-protocol-2020-01-08"
         },
         "shapes": {
             "IgnoresWrappingXmlNameOutput": {
@@ -364,6 +427,7 @@
         "cases": [
             {
                 "id": "Ec2IgnoresWrappingXmlName",
+                "description": "The xmlName trait on the output structure is ignored in the ec2 protocol",
                 "given": {
                     "name": "IgnoresWrappingXmlName",
                     "http": {
@@ -375,7 +439,6 @@
                     },
                     "documentation": "<p>The xmlName trait on the output structure is ignored in AWS Query.</p> <p>The wrapping element is always operation name + &quot;Response&quot;.</p>"
                 },
-                "description": "The xmlName trait on the output structure is ignored in the ec2 protocol",
                 "result": {
                     "foo": "bar"
                 },
@@ -392,11 +455,20 @@
     {
         "description": "Test cases for NoInputAndOutput operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsec2",
             "protocol": "ec2",
             "protocols": [
                 "ec2"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsEc2",
+            "serviceId": "EC2 Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsEc2",
+            "uid": "ec2-protocol-2020-01-08"
         },
         "shapes": {
             "NoInputAndOutputOutput": {
@@ -407,6 +479,7 @@
         "cases": [
             {
                 "id": "Ec2QueryNoInputAndOutput",
+                "description": "Empty output",
                 "given": {
                     "name": "NoInputAndOutput",
                     "http": {
@@ -418,7 +491,6 @@
                     },
                     "documentation": "<p>The example tests how requests and responses are serialized when there's no request payload or response members.</p> <p>While this should be rare, code generators must support this.</p>"
                 },
-                "description": "Empty output",
                 "result": {},
                 "response": {
                     "status_code": 200,
@@ -433,11 +505,20 @@
     {
         "description": "Test cases for RecursiveXmlShapes operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsec2",
             "protocol": "ec2",
             "protocols": [
                 "ec2"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsEc2",
+            "serviceId": "EC2 Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsEc2",
+            "uid": "ec2-protocol-2020-01-08"
         },
         "shapes": {
             "RecursiveXmlShapesOutput": {
@@ -459,9 +540,6 @@
                     }
                 }
             },
-            "String": {
-                "type": "string"
-            },
             "RecursiveXmlShapesOutputNested2": {
                 "type": "structure",
                 "members": {
@@ -472,11 +550,15 @@
                         "shape": "RecursiveXmlShapesOutputNested1"
                     }
                 }
+            },
+            "String": {
+                "type": "string"
             }
         },
         "cases": [
             {
                 "id": "Ec2RecursiveShapes",
+                "description": "Serializes recursive structures",
                 "given": {
                     "name": "RecursiveXmlShapes",
                     "http": {
@@ -488,7 +570,6 @@
                     },
                     "documentation": "<p>Recursive shapes</p>"
                 },
-                "description": "Serializes recursive structures",
                 "result": {
                     "nested": {
                         "foo": "Foo1",
@@ -516,13 +597,42 @@
     {
         "description": "Test cases for SimpleScalarXmlProperties operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsec2",
             "protocol": "ec2",
             "protocols": [
                 "ec2"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsEc2",
+            "serviceId": "EC2 Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsEc2",
+            "uid": "ec2-protocol-2020-01-08"
         },
         "shapes": {
+            "Boolean": {
+                "type": "boolean",
+                "box": true
+            },
+            "Double": {
+                "type": "double",
+                "box": true
+            },
+            "Float": {
+                "type": "float",
+                "box": true
+            },
+            "Integer": {
+                "type": "integer",
+                "box": true
+            },
+            "Long": {
+                "type": "long",
+                "box": true
+            },
             "SimpleScalarXmlPropertiesOutput": {
                 "type": "structure",
                 "members": {
@@ -561,31 +671,12 @@
             },
             "String": {
                 "type": "string"
-            },
-            "Boolean": {
-                "type": "boolean",
-                "box": true
-            },
-            "Integer": {
-                "type": "integer",
-                "box": true
-            },
-            "Long": {
-                "type": "long",
-                "box": true
-            },
-            "Float": {
-                "type": "float",
-                "box": true
-            },
-            "Double": {
-                "type": "double",
-                "box": true
             }
         },
         "cases": [
             {
                 "id": "Ec2SimpleScalarProperties",
+                "description": "Serializes simple scalar properties",
                 "given": {
                     "name": "SimpleScalarXmlProperties",
                     "http": {
@@ -596,7 +687,6 @@
                         "shape": "SimpleScalarXmlPropertiesOutput"
                     }
                 },
-                "description": "Serializes simple scalar properties",
                 "result": {
                     "stringValue": "string",
                     "emptyStringValue": "",
@@ -619,6 +709,7 @@
             },
             {
                 "id": "Ec2QuerySupportsNaNFloatOutputs",
+                "description": "Supports handling NaN float values.",
                 "given": {
                     "name": "SimpleScalarXmlProperties",
                     "http": {
@@ -629,7 +720,6 @@
                         "shape": "SimpleScalarXmlPropertiesOutput"
                     }
                 },
-                "description": "Supports handling NaN float values.",
                 "result": {
                     "floatValue": "NaN",
                     "doubleValue": "NaN"
@@ -644,6 +734,7 @@
             },
             {
                 "id": "Ec2QuerySupportsInfinityFloatOutputs",
+                "description": "Supports handling Infinity float values.",
                 "given": {
                     "name": "SimpleScalarXmlProperties",
                     "http": {
@@ -654,7 +745,6 @@
                         "shape": "SimpleScalarXmlPropertiesOutput"
                     }
                 },
-                "description": "Supports handling Infinity float values.",
                 "result": {
                     "floatValue": "Infinity",
                     "doubleValue": "Infinity"
@@ -669,6 +759,7 @@
             },
             {
                 "id": "Ec2QuerySupportsNegativeInfinityFloatOutputs",
+                "description": "Supports handling -Infinity float values.",
                 "given": {
                     "name": "SimpleScalarXmlProperties",
                     "http": {
@@ -679,7 +770,6 @@
                         "shape": "SimpleScalarXmlPropertiesOutput"
                     }
                 },
-                "description": "Supports handling -Infinity float values.",
                 "result": {
                     "floatValue": "-Infinity",
                     "doubleValue": "-Infinity"
@@ -697,13 +787,25 @@
     {
         "description": "Test cases for XmlBlobs operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsec2",
             "protocol": "ec2",
             "protocols": [
                 "ec2"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsEc2",
+            "serviceId": "EC2 Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsEc2",
+            "uid": "ec2-protocol-2020-01-08"
         },
         "shapes": {
+            "Blob": {
+                "type": "blob"
+            },
             "XmlBlobsOutput": {
                 "type": "structure",
                 "members": {
@@ -711,14 +813,12 @@
                         "shape": "Blob"
                     }
                 }
-            },
-            "Blob": {
-                "type": "blob"
             }
         },
         "cases": [
             {
                 "id": "Ec2XmlBlobs",
+                "description": "Blobs are base64 encoded",
                 "given": {
                     "name": "XmlBlobs",
                     "http": {
@@ -730,7 +830,6 @@
                     },
                     "documentation": "<p>Blobs are base64 encoded</p>"
                 },
-                "description": "Blobs are base64 encoded",
                 "result": {
                     "data": "value"
                 },
@@ -747,13 +846,25 @@
     {
         "description": "Test cases for XmlEmptyBlobs operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsec2",
             "protocol": "ec2",
             "protocols": [
                 "ec2"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsEc2",
+            "serviceId": "EC2 Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsEc2",
+            "uid": "ec2-protocol-2020-01-08"
         },
         "shapes": {
+            "Blob": {
+                "type": "blob"
+            },
             "XmlBlobsOutput": {
                 "type": "structure",
                 "members": {
@@ -761,14 +872,12 @@
                         "shape": "Blob"
                     }
                 }
-            },
-            "Blob": {
-                "type": "blob"
             }
         },
         "cases": [
             {
                 "id": "Ec2XmlEmptyBlobs",
+                "description": "Empty blobs are deserialized as empty string",
                 "given": {
                     "name": "XmlEmptyBlobs",
                     "http": {
@@ -779,7 +888,6 @@
                         "shape": "XmlBlobsOutput"
                     }
                 },
-                "description": "Empty blobs are deserialized as empty string",
                 "result": {
                     "data": ""
                 },
@@ -793,6 +901,7 @@
             },
             {
                 "id": "Ec2XmlEmptySelfClosedBlobs",
+                "description": "Empty self closed blobs are deserialized as empty string",
                 "given": {
                     "name": "XmlEmptyBlobs",
                     "http": {
@@ -803,7 +912,6 @@
                         "shape": "XmlBlobsOutput"
                     }
                 },
-                "description": "Empty self closed blobs are deserialized as empty string",
                 "result": {
                     "data": ""
                 },
@@ -820,13 +928,141 @@
     {
         "description": "Test cases for XmlEmptyLists operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsec2",
             "protocol": "ec2",
             "protocols": [
                 "ec2"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsEc2",
+            "serviceId": "EC2 Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsEc2",
+            "uid": "ec2-protocol-2020-01-08"
         },
         "shapes": {
+            "Boolean": {
+                "type": "boolean",
+                "box": true
+            },
+            "BooleanList": {
+                "type": "list",
+                "member": {
+                    "shape": "Boolean"
+                }
+            },
+            "FooEnum": {
+                "type": "string",
+                "enum": [
+                    "Foo",
+                    "Baz",
+                    "Bar",
+                    "1",
+                    "0"
+                ]
+            },
+            "FooEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "FooEnum"
+                }
+            },
+            "Integer": {
+                "type": "integer",
+                "box": true
+            },
+            "IntegerEnum": {
+                "type": "integer",
+                "box": true
+            },
+            "IntegerEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "IntegerEnum"
+                }
+            },
+            "IntegerList": {
+                "type": "list",
+                "member": {
+                    "shape": "Integer"
+                }
+            },
+            "ListWithMemberNamespace": {
+                "type": "list",
+                "member": {
+                    "shape": "String",
+                    "xmlNamespace": "https://xml-member.example.com"
+                },
+                "xmlNamespace": "https://xml-list.example.com"
+            },
+            "ListWithNamespace": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                },
+                "xmlNamespace": "https://xml-list.example.com"
+            },
+            "NestedStringList": {
+                "type": "list",
+                "member": {
+                    "shape": "StringList"
+                },
+                "documentation": "<p>A list of lists of strings.</p>"
+            },
+            "RenamedListMembers": {
+                "type": "list",
+                "member": {
+                    "shape": "String",
+                    "locationName": "item"
+                }
+            },
+            "String": {
+                "type": "string"
+            },
+            "StringList": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                }
+            },
+            "StringSet": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                }
+            },
+            "StructureList": {
+                "type": "list",
+                "member": {
+                    "shape": "StructureListMember",
+                    "locationName": "item"
+                }
+            },
+            "StructureListMember": {
+                "type": "structure",
+                "members": {
+                    "a": {
+                        "shape": "String",
+                        "locationName": "value"
+                    },
+                    "b": {
+                        "shape": "String",
+                        "locationName": "other"
+                    }
+                }
+            },
+            "Timestamp": {
+                "type": "timestamp"
+            },
+            "TimestampList": {
+                "type": "list",
+                "member": {
+                    "shape": "Timestamp"
+                }
+            },
             "XmlListsOutput": {
                 "type": "structure",
                 "members": {
@@ -880,130 +1116,12 @@
                         "locationName": "myStructureList"
                     }
                 }
-            },
-            "StringList": {
-                "type": "list",
-                "member": {
-                    "shape": "String"
-                }
-            },
-            "StringSet": {
-                "type": "list",
-                "member": {
-                    "shape": "String"
-                }
-            },
-            "IntegerList": {
-                "type": "list",
-                "member": {
-                    "shape": "Integer"
-                }
-            },
-            "BooleanList": {
-                "type": "list",
-                "member": {
-                    "shape": "Boolean"
-                }
-            },
-            "TimestampList": {
-                "type": "list",
-                "member": {
-                    "shape": "Timestamp"
-                }
-            },
-            "FooEnumList": {
-                "type": "list",
-                "member": {
-                    "shape": "FooEnum"
-                }
-            },
-            "IntegerEnumList": {
-                "type": "list",
-                "member": {
-                    "shape": "IntegerEnum"
-                }
-            },
-            "NestedStringList": {
-                "type": "list",
-                "member": {
-                    "shape": "StringList"
-                },
-                "documentation": "<p>A list of lists of strings.</p>"
-            },
-            "RenamedListMembers": {
-                "type": "list",
-                "member": {
-                    "shape": "String",
-                    "locationName": "item"
-                }
-            },
-            "ListWithMemberNamespace": {
-                "type": "list",
-                "member": {
-                    "shape": "String",
-                    "xmlNamespace": "https://xml-member.example.com"
-                },
-                "xmlNamespace": "https://xml-list.example.com"
-            },
-            "ListWithNamespace": {
-                "type": "list",
-                "member": {
-                    "shape": "String"
-                },
-                "xmlNamespace": "https://xml-list.example.com"
-            },
-            "StructureList": {
-                "type": "list",
-                "member": {
-                    "shape": "StructureListMember",
-                    "locationName": "item"
-                }
-            },
-            "StructureListMember": {
-                "type": "structure",
-                "members": {
-                    "a": {
-                        "shape": "String",
-                        "locationName": "value"
-                    },
-                    "b": {
-                        "shape": "String",
-                        "locationName": "other"
-                    }
-                }
-            },
-            "String": {
-                "type": "string"
-            },
-            "IntegerEnum": {
-                "type": "integer",
-                "box": true
-            },
-            "FooEnum": {
-                "type": "string",
-                "enum": [
-                    "Foo",
-                    "Baz",
-                    "Bar",
-                    "1",
-                    "0"
-                ]
-            },
-            "Timestamp": {
-                "type": "timestamp"
-            },
-            "Boolean": {
-                "type": "boolean",
-                "box": true
-            },
-            "Integer": {
-                "type": "integer",
-                "box": true
             }
         },
         "cases": [
             {
                 "id": "Ec2XmlEmptyLists",
+                "description": "Deserializes empty XML lists",
                 "given": {
                     "name": "XmlEmptyLists",
                     "http": {
@@ -1014,7 +1132,6 @@
                         "shape": "XmlListsOutput"
                     }
                 },
-                "description": "Deserializes empty XML lists",
                 "result": {
                     "stringList": [],
                     "stringSet": []
@@ -1032,13 +1149,56 @@
     {
         "description": "Test cases for XmlEnums operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsec2",
             "protocol": "ec2",
             "protocols": [
                 "ec2"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsEc2",
+            "serviceId": "EC2 Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsEc2",
+            "uid": "ec2-protocol-2020-01-08"
         },
         "shapes": {
+            "FooEnum": {
+                "type": "string",
+                "enum": [
+                    "Foo",
+                    "Baz",
+                    "Bar",
+                    "1",
+                    "0"
+                ]
+            },
+            "FooEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "FooEnum"
+                }
+            },
+            "FooEnumMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "FooEnum"
+                }
+            },
+            "FooEnumSet": {
+                "type": "list",
+                "member": {
+                    "shape": "FooEnum"
+                }
+            },
+            "String": {
+                "type": "string"
+            },
             "XmlEnumsOutput": {
                 "type": "structure",
                 "members": {
@@ -1061,45 +1221,12 @@
                         "shape": "FooEnumMap"
                     }
                 }
-            },
-            "FooEnum": {
-                "type": "string",
-                "enum": [
-                    "Foo",
-                    "Baz",
-                    "Bar",
-                    "1",
-                    "0"
-                ]
-            },
-            "FooEnumList": {
-                "type": "list",
-                "member": {
-                    "shape": "FooEnum"
-                }
-            },
-            "FooEnumSet": {
-                "type": "list",
-                "member": {
-                    "shape": "FooEnum"
-                }
-            },
-            "FooEnumMap": {
-                "type": "map",
-                "key": {
-                    "shape": "String"
-                },
-                "value": {
-                    "shape": "FooEnum"
-                }
-            },
-            "String": {
-                "type": "string"
             }
         },
         "cases": [
             {
                 "id": "Ec2XmlEnums",
+                "description": "Serializes simple scalar properties",
                 "given": {
                     "name": "XmlEnums",
                     "http": {
@@ -1111,7 +1238,6 @@
                     },
                     "documentation": "<p>This example serializes enums as top level properties, in lists, sets, and maps.</p>"
                 },
-                "description": "Serializes simple scalar properties",
                 "result": {
                     "fooEnum1": "Foo",
                     "fooEnum2": "0",
@@ -1142,13 +1268,50 @@
     {
         "description": "Test cases for XmlIntEnums operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsec2",
             "protocol": "ec2",
             "protocols": [
                 "ec2"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsEc2",
+            "serviceId": "EC2 Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsEc2",
+            "uid": "ec2-protocol-2020-01-08"
         },
         "shapes": {
+            "IntegerEnum": {
+                "type": "integer",
+                "box": true
+            },
+            "IntegerEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "IntegerEnum"
+                }
+            },
+            "IntegerEnumMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "IntegerEnum"
+                }
+            },
+            "IntegerEnumSet": {
+                "type": "list",
+                "member": {
+                    "shape": "IntegerEnum"
+                }
+            },
+            "String": {
+                "type": "string"
+            },
             "XmlIntEnumsOutput": {
                 "type": "structure",
                 "members": {
@@ -1171,39 +1334,12 @@
                         "shape": "IntegerEnumMap"
                     }
                 }
-            },
-            "IntegerEnum": {
-                "type": "integer",
-                "box": true
-            },
-            "IntegerEnumList": {
-                "type": "list",
-                "member": {
-                    "shape": "IntegerEnum"
-                }
-            },
-            "IntegerEnumSet": {
-                "type": "list",
-                "member": {
-                    "shape": "IntegerEnum"
-                }
-            },
-            "IntegerEnumMap": {
-                "type": "map",
-                "key": {
-                    "shape": "String"
-                },
-                "value": {
-                    "shape": "IntegerEnum"
-                }
-            },
-            "String": {
-                "type": "string"
             }
         },
         "cases": [
             {
                 "id": "Ec2XmlIntEnums",
+                "description": "Serializes simple scalar properties",
                 "given": {
                     "name": "XmlIntEnums",
                     "http": {
@@ -1215,7 +1351,6 @@
                     },
                     "documentation": "<p>This example serializes intEnums as top level properties, in lists, sets, and maps.</p>"
                 },
-                "description": "Serializes simple scalar properties",
                 "result": {
                     "intEnum1": 1,
                     "intEnum2": 2,
@@ -1246,13 +1381,141 @@
     {
         "description": "Test cases for XmlLists operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsec2",
             "protocol": "ec2",
             "protocols": [
                 "ec2"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsEc2",
+            "serviceId": "EC2 Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsEc2",
+            "uid": "ec2-protocol-2020-01-08"
         },
         "shapes": {
+            "Boolean": {
+                "type": "boolean",
+                "box": true
+            },
+            "BooleanList": {
+                "type": "list",
+                "member": {
+                    "shape": "Boolean"
+                }
+            },
+            "FooEnum": {
+                "type": "string",
+                "enum": [
+                    "Foo",
+                    "Baz",
+                    "Bar",
+                    "1",
+                    "0"
+                ]
+            },
+            "FooEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "FooEnum"
+                }
+            },
+            "Integer": {
+                "type": "integer",
+                "box": true
+            },
+            "IntegerEnum": {
+                "type": "integer",
+                "box": true
+            },
+            "IntegerEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "IntegerEnum"
+                }
+            },
+            "IntegerList": {
+                "type": "list",
+                "member": {
+                    "shape": "Integer"
+                }
+            },
+            "ListWithMemberNamespace": {
+                "type": "list",
+                "member": {
+                    "shape": "String",
+                    "xmlNamespace": "https://xml-member.example.com"
+                },
+                "xmlNamespace": "https://xml-list.example.com"
+            },
+            "ListWithNamespace": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                },
+                "xmlNamespace": "https://xml-list.example.com"
+            },
+            "NestedStringList": {
+                "type": "list",
+                "member": {
+                    "shape": "StringList"
+                },
+                "documentation": "<p>A list of lists of strings.</p>"
+            },
+            "RenamedListMembers": {
+                "type": "list",
+                "member": {
+                    "shape": "String",
+                    "locationName": "item"
+                }
+            },
+            "String": {
+                "type": "string"
+            },
+            "StringList": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                }
+            },
+            "StringSet": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                }
+            },
+            "StructureList": {
+                "type": "list",
+                "member": {
+                    "shape": "StructureListMember",
+                    "locationName": "item"
+                }
+            },
+            "StructureListMember": {
+                "type": "structure",
+                "members": {
+                    "a": {
+                        "shape": "String",
+                        "locationName": "value"
+                    },
+                    "b": {
+                        "shape": "String",
+                        "locationName": "other"
+                    }
+                }
+            },
+            "Timestamp": {
+                "type": "timestamp"
+            },
+            "TimestampList": {
+                "type": "list",
+                "member": {
+                    "shape": "Timestamp"
+                }
+            },
             "XmlListsOutput": {
                 "type": "structure",
                 "members": {
@@ -1306,130 +1569,12 @@
                         "locationName": "myStructureList"
                     }
                 }
-            },
-            "StringList": {
-                "type": "list",
-                "member": {
-                    "shape": "String"
-                }
-            },
-            "StringSet": {
-                "type": "list",
-                "member": {
-                    "shape": "String"
-                }
-            },
-            "IntegerList": {
-                "type": "list",
-                "member": {
-                    "shape": "Integer"
-                }
-            },
-            "BooleanList": {
-                "type": "list",
-                "member": {
-                    "shape": "Boolean"
-                }
-            },
-            "TimestampList": {
-                "type": "list",
-                "member": {
-                    "shape": "Timestamp"
-                }
-            },
-            "FooEnumList": {
-                "type": "list",
-                "member": {
-                    "shape": "FooEnum"
-                }
-            },
-            "IntegerEnumList": {
-                "type": "list",
-                "member": {
-                    "shape": "IntegerEnum"
-                }
-            },
-            "NestedStringList": {
-                "type": "list",
-                "member": {
-                    "shape": "StringList"
-                },
-                "documentation": "<p>A list of lists of strings.</p>"
-            },
-            "RenamedListMembers": {
-                "type": "list",
-                "member": {
-                    "shape": "String",
-                    "locationName": "item"
-                }
-            },
-            "ListWithMemberNamespace": {
-                "type": "list",
-                "member": {
-                    "shape": "String",
-                    "xmlNamespace": "https://xml-member.example.com"
-                },
-                "xmlNamespace": "https://xml-list.example.com"
-            },
-            "ListWithNamespace": {
-                "type": "list",
-                "member": {
-                    "shape": "String"
-                },
-                "xmlNamespace": "https://xml-list.example.com"
-            },
-            "StructureList": {
-                "type": "list",
-                "member": {
-                    "shape": "StructureListMember",
-                    "locationName": "item"
-                }
-            },
-            "StructureListMember": {
-                "type": "structure",
-                "members": {
-                    "a": {
-                        "shape": "String",
-                        "locationName": "value"
-                    },
-                    "b": {
-                        "shape": "String",
-                        "locationName": "other"
-                    }
-                }
-            },
-            "String": {
-                "type": "string"
-            },
-            "IntegerEnum": {
-                "type": "integer",
-                "box": true
-            },
-            "FooEnum": {
-                "type": "string",
-                "enum": [
-                    "Foo",
-                    "Baz",
-                    "Bar",
-                    "1",
-                    "0"
-                ]
-            },
-            "Timestamp": {
-                "type": "timestamp"
-            },
-            "Boolean": {
-                "type": "boolean",
-                "box": true
-            },
-            "Integer": {
-                "type": "integer",
-                "box": true
             }
         },
         "cases": [
             {
                 "id": "Ec2XmlLists",
+                "description": "Tests for XML list serialization",
                 "given": {
                     "name": "XmlLists",
                     "http": {
@@ -1441,7 +1586,6 @@
                     },
                     "documentation": "<p>This test case serializes XML lists for the following cases for both input and output:</p> <ol> <li>Normal XML lists.</li> <li>Normal XML sets.</li> <li>XML lists of lists.</li> <li>XML lists with @xmlName on its members</li> <li>Flattened XML lists.</li> <li>Flattened XML lists with @xmlName.</li> <li>Flattened XML lists with @xmlNamespace.</li> <li>Lists of structures.</li> </ol>"
                 },
-                "description": "Tests for XML list serialization",
                 "result": {
                     "stringList": [
                         "foo",
@@ -1525,21 +1669,24 @@
     {
         "description": "Test cases for XmlNamespaces operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsec2",
             "protocol": "ec2",
             "protocols": [
                 "ec2"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsEc2",
+            "serviceId": "EC2 Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsEc2",
+            "uid": "ec2-protocol-2020-01-08"
         },
         "shapes": {
-            "XmlNamespacesOutput": {
-                "type": "structure",
-                "members": {
-                    "nested": {
-                        "shape": "XmlNamespaceNested"
-                    }
-                },
-                "xmlNamespace": "http://foo.com"
+            "String": {
+                "type": "string"
             },
             "XmlNamespaceNested": {
                 "type": "structure",
@@ -1558,20 +1705,27 @@
                 },
                 "xmlNamespace": "http://foo.com"
             },
-            "String": {
-                "type": "string"
-            },
             "XmlNamespacedList": {
                 "type": "list",
                 "member": {
                     "shape": "String",
                     "xmlNamespace": "http://bux.com"
                 }
+            },
+            "XmlNamespacesOutput": {
+                "type": "structure",
+                "members": {
+                    "nested": {
+                        "shape": "XmlNamespaceNested"
+                    }
+                },
+                "xmlNamespace": "http://foo.com"
             }
         },
         "cases": [
             {
                 "id": "Ec2XmlNamespaces",
+                "description": "Serializes XML namespaces",
                 "given": {
                     "name": "XmlNamespaces",
                     "http": {
@@ -1582,7 +1736,6 @@
                         "shape": "XmlNamespacesOutput"
                     }
                 },
-                "description": "Serializes XML namespaces",
                 "result": {
                     "nested": {
                         "foo": "Foo",
@@ -1605,13 +1758,49 @@
     {
         "description": "Test cases for XmlTimestamps operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsec2",
             "protocol": "ec2",
             "protocols": [
                 "ec2"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsEc2",
+            "serviceId": "EC2 Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsEc2",
+            "uid": "ec2-protocol-2020-01-08"
         },
         "shapes": {
+            "DateTime": {
+                "type": "timestamp",
+                "timestampFormat": "iso8601"
+            },
+            "EpochSeconds": {
+                "type": "timestamp",
+                "timestampFormat": "unixTimestamp"
+            },
+            "HttpDate": {
+                "type": "timestamp",
+                "timestampFormat": "rfc822"
+            },
+            "SyntheticTimestamp_date_time": {
+                "type": "timestamp",
+                "timestampFormat": "iso8601"
+            },
+            "SyntheticTimestamp_epoch_seconds": {
+                "type": "timestamp",
+                "timestampFormat": "unixTimestamp"
+            },
+            "SyntheticTimestamp_http_date": {
+                "type": "timestamp",
+                "timestampFormat": "rfc822"
+            },
+            "Timestamp": {
+                "type": "timestamp"
+            },
             "XmlTimestampsOutput": {
                 "type": "structure",
                 "members": {
@@ -1637,38 +1826,12 @@
                         "shape": "HttpDate"
                     }
                 }
-            },
-            "Timestamp": {
-                "type": "timestamp"
-            },
-            "SyntheticTimestamp_date_time": {
-                "type": "timestamp",
-                "timestampFormat": "iso8601"
-            },
-            "DateTime": {
-                "type": "timestamp",
-                "timestampFormat": "iso8601"
-            },
-            "SyntheticTimestamp_epoch_seconds": {
-                "type": "timestamp",
-                "timestampFormat": "unixTimestamp"
-            },
-            "EpochSeconds": {
-                "type": "timestamp",
-                "timestampFormat": "unixTimestamp"
-            },
-            "SyntheticTimestamp_http_date": {
-                "type": "timestamp",
-                "timestampFormat": "rfc822"
-            },
-            "HttpDate": {
-                "type": "timestamp",
-                "timestampFormat": "rfc822"
             }
         },
         "cases": [
             {
                 "id": "Ec2XmlTimestamps",
+                "description": "Tests how normal timestamps are serialized",
                 "given": {
                     "name": "XmlTimestamps",
                     "http": {
@@ -1680,7 +1843,6 @@
                     },
                     "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
                 },
-                "description": "Tests how normal timestamps are serialized",
                 "result": {
                     "normal": 1398796238
                 },
@@ -1694,6 +1856,7 @@
             },
             {
                 "id": "Ec2XmlTimestampsWithDateTimeFormat",
+                "description": "Ensures that the timestampFormat of date-time works like normal timestamps",
                 "given": {
                     "name": "XmlTimestamps",
                     "http": {
@@ -1705,7 +1868,6 @@
                     },
                     "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
                 },
-                "description": "Ensures that the timestampFormat of date-time works like normal timestamps",
                 "result": {
                     "dateTime": 1398796238
                 },
@@ -1719,6 +1881,7 @@
             },
             {
                 "id": "Ec2XmlTimestampsWithDateTimeOnTargetFormat",
+                "description": "Ensures that the timestampFormat of date-time on the target shape works like normal timestamps",
                 "given": {
                     "name": "XmlTimestamps",
                     "http": {
@@ -1730,7 +1893,6 @@
                     },
                     "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
                 },
-                "description": "Ensures that the timestampFormat of date-time on the target shape works like normal timestamps",
                 "result": {
                     "dateTimeOnTarget": 1398796238
                 },
@@ -1744,6 +1906,7 @@
             },
             {
                 "id": "Ec2XmlTimestampsWithEpochSecondsFormat",
+                "description": "Ensures that the timestampFormat of epoch-seconds works",
                 "given": {
                     "name": "XmlTimestamps",
                     "http": {
@@ -1755,7 +1918,6 @@
                     },
                     "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
                 },
-                "description": "Ensures that the timestampFormat of epoch-seconds works",
                 "result": {
                     "epochSeconds": 1398796238
                 },
@@ -1769,6 +1931,7 @@
             },
             {
                 "id": "Ec2XmlTimestampsWithEpochSecondsOnTargetFormat",
+                "description": "Ensures that the timestampFormat of epoch-seconds on the target shape works",
                 "given": {
                     "name": "XmlTimestamps",
                     "http": {
@@ -1780,7 +1943,6 @@
                     },
                     "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
                 },
-                "description": "Ensures that the timestampFormat of epoch-seconds on the target shape works",
                 "result": {
                     "epochSecondsOnTarget": 1398796238
                 },
@@ -1794,6 +1956,7 @@
             },
             {
                 "id": "Ec2XmlTimestampsWithHttpDateFormat",
+                "description": "Ensures that the timestampFormat of http-date works",
                 "given": {
                     "name": "XmlTimestamps",
                     "http": {
@@ -1805,7 +1968,6 @@
                     },
                     "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
                 },
-                "description": "Ensures that the timestampFormat of http-date works",
                 "result": {
                     "httpDate": 1398796238
                 },
@@ -1819,6 +1981,7 @@
             },
             {
                 "id": "Ec2XmlTimestampsWithHttpDateOnTargetFormat",
+                "description": "Ensures that the timestampFormat of http-date on the target shape works",
                 "given": {
                     "name": "XmlTimestamps",
                     "http": {
@@ -1830,7 +1993,6 @@
                     },
                     "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
                 },
-                "description": "Ensures that the timestampFormat of http-date on the target shape works",
                 "result": {
                     "httpDateOnTarget": 1398796238
                 },

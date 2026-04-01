@@ -2,11 +2,20 @@
     {
         "description": "Test cases for AllQueryStringTypes operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
             "AllQueryStringTypesInput": {
@@ -118,44 +127,15 @@
                     }
                 }
             },
-            "String": {
-                "type": "string"
-            },
-            "StringList": {
-                "type": "list",
-                "member": {
-                    "shape": "String"
-                }
-            },
-            "StringSet": {
-                "type": "list",
-                "member": {
-                    "shape": "String"
-                }
-            },
-            "Integer": {
-                "type": "integer",
+            "Boolean": {
+                "type": "boolean",
                 "box": true
             },
-            "IntegerList": {
+            "BooleanList": {
                 "type": "list",
                 "member": {
-                    "shape": "Integer"
+                    "shape": "Boolean"
                 }
-            },
-            "IntegerSet": {
-                "type": "list",
-                "member": {
-                    "shape": "Integer"
-                }
-            },
-            "Long": {
-                "type": "long",
-                "box": true
-            },
-            "Float": {
-                "type": "float",
-                "box": true
             },
             "Double": {
                 "type": "double",
@@ -167,24 +147,9 @@
                     "shape": "Double"
                 }
             },
-            "Boolean": {
-                "type": "boolean",
+            "Float": {
+                "type": "float",
                 "box": true
-            },
-            "BooleanList": {
-                "type": "list",
-                "member": {
-                    "shape": "Boolean"
-                }
-            },
-            "Timestamp": {
-                "type": "timestamp"
-            },
-            "TimestampList": {
-                "type": "list",
-                "member": {
-                    "shape": "Timestamp"
-                }
             },
             "FooEnum": {
                 "type": "string",
@@ -202,6 +167,10 @@
                     "shape": "FooEnum"
                 }
             },
+            "Integer": {
+                "type": "integer",
+                "box": true
+            },
             "IntegerEnum": {
                 "type": "integer",
                 "box": true
@@ -212,6 +181,31 @@
                     "shape": "IntegerEnum"
                 }
             },
+            "IntegerList": {
+                "type": "list",
+                "member": {
+                    "shape": "Integer"
+                }
+            },
+            "IntegerSet": {
+                "type": "list",
+                "member": {
+                    "shape": "Integer"
+                }
+            },
+            "Long": {
+                "type": "long",
+                "box": true
+            },
+            "String": {
+                "type": "string"
+            },
+            "StringList": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                }
+            },
             "StringMap": {
                 "type": "map",
                 "key": {
@@ -220,11 +214,27 @@
                 "value": {
                     "shape": "String"
                 }
+            },
+            "StringSet": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                }
+            },
+            "Timestamp": {
+                "type": "timestamp"
+            },
+            "TimestampList": {
+                "type": "list",
+                "member": {
+                    "shape": "Timestamp"
+                }
             }
         },
         "cases": [
             {
                 "id": "AllQueryStringTypes",
+                "description": "Serializes query string parameters with all supported types",
                 "given": {
                     "name": "AllQueryStringTypes",
                     "http": {
@@ -235,9 +245,9 @@
                     "input": {
                         "shape": "AllQueryStringTypesInput"
                     },
-                    "documentation": "<p>This example uses all query string types.</p>"
+                    "documentation": "<p>This example uses all query string types.</p>",
+                    "readonly": true
                 },
-                "description": "Serializes query string parameters with all supported types",
                 "params": {
                     "queryString": "Hello there",
                     "queryStringList": [
@@ -303,6 +313,7 @@
             },
             {
                 "id": "RestXmlQueryStringMap",
+                "description": "Handles query string maps",
                 "given": {
                     "name": "AllQueryStringTypes",
                     "http": {
@@ -313,9 +324,9 @@
                     "input": {
                         "shape": "AllQueryStringTypesInput"
                     },
-                    "documentation": "<p>This example uses all query string types.</p>"
+                    "documentation": "<p>This example uses all query string types.</p>",
+                    "readonly": true
                 },
-                "description": "Handles query string maps",
                 "params": {
                     "queryParamsMapOfStrings": {
                         "QueryParamsStringKeyA": "Foo",
@@ -330,6 +341,7 @@
             },
             {
                 "id": "RestXmlQueryStringEscaping",
+                "description": "Handles escaping all required characters in the query string.",
                 "given": {
                     "name": "AllQueryStringTypes",
                     "http": {
@@ -340,9 +352,9 @@
                     "input": {
                         "shape": "AllQueryStringTypesInput"
                     },
-                    "documentation": "<p>This example uses all query string types.</p>"
+                    "documentation": "<p>This example uses all query string types.</p>",
+                    "readonly": true
                 },
-                "description": "Handles escaping all required characters in the query string.",
                 "params": {
                     "queryString": " %:/?#[]@!$&'()*+,;=😹"
                 },
@@ -354,6 +366,7 @@
             },
             {
                 "id": "RestXmlSupportsNaNFloatQueryValues",
+                "description": "Supports handling NaN float query values.",
                 "given": {
                     "name": "AllQueryStringTypes",
                     "http": {
@@ -364,9 +377,9 @@
                     "input": {
                         "shape": "AllQueryStringTypesInput"
                     },
-                    "documentation": "<p>This example uses all query string types.</p>"
+                    "documentation": "<p>This example uses all query string types.</p>",
+                    "readonly": true
                 },
-                "description": "Supports handling NaN float query values.",
                 "params": {
                     "queryFloat": "NaN",
                     "queryDouble": "NaN"
@@ -379,6 +392,7 @@
             },
             {
                 "id": "RestXmlSupportsInfinityFloatQueryValues",
+                "description": "Supports handling Infinity float query values.",
                 "given": {
                     "name": "AllQueryStringTypes",
                     "http": {
@@ -389,9 +403,9 @@
                     "input": {
                         "shape": "AllQueryStringTypesInput"
                     },
-                    "documentation": "<p>This example uses all query string types.</p>"
+                    "documentation": "<p>This example uses all query string types.</p>",
+                    "readonly": true
                 },
-                "description": "Supports handling Infinity float query values.",
                 "params": {
                     "queryFloat": "Infinity",
                     "queryDouble": "Infinity"
@@ -404,6 +418,7 @@
             },
             {
                 "id": "RestXmlSupportsNegativeInfinityFloatQueryValues",
+                "description": "Supports handling -Infinity float query values.",
                 "given": {
                     "name": "AllQueryStringTypes",
                     "http": {
@@ -414,9 +429,9 @@
                     "input": {
                         "shape": "AllQueryStringTypesInput"
                     },
-                    "documentation": "<p>This example uses all query string types.</p>"
+                    "documentation": "<p>This example uses all query string types.</p>",
+                    "readonly": true
                 },
-                "description": "Supports handling -Infinity float query values.",
                 "params": {
                     "queryFloat": "-Infinity",
                     "queryDouble": "-Infinity"
@@ -429,6 +444,7 @@
             },
             {
                 "id": "RestXmlZeroAndFalseQueryValues",
+                "description": "Query values of 0 and false are serialized",
                 "given": {
                     "name": "AllQueryStringTypes",
                     "http": {
@@ -439,9 +455,9 @@
                     "input": {
                         "shape": "AllQueryStringTypesInput"
                     },
-                    "documentation": "<p>This example uses all query string types.</p>"
+                    "documentation": "<p>This example uses all query string types.</p>",
+                    "readonly": true
                 },
-                "description": "Query values of 0 and false are serialized",
                 "params": {
                     "queryInteger": 0,
                     "queryBoolean": false
@@ -457,11 +473,20 @@
     {
         "description": "Test cases for BodyWithXmlName operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
             "BodyWithXmlNameInputOutput": {
@@ -489,6 +514,7 @@
         "cases": [
             {
                 "id": "BodyWithXmlName",
+                "description": "Serializes a payload using a wrapper name based on the xmlName",
                 "given": {
                     "name": "BodyWithXmlName",
                     "http": {
@@ -503,7 +529,6 @@
                     "documentation": "<p>The following example serializes a body that uses an XML name, changing the wrapper name.</p>",
                     "idempotent": true
                 },
-                "description": "Serializes a payload using a wrapper name based on the xmlName",
                 "params": {
                     "nested": {
                         "name": "Phreddy"
@@ -526,11 +551,20 @@
     {
         "description": "Test cases for ConstantAndVariableQueryString operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
             "ConstantAndVariableQueryStringInput": {
@@ -555,6 +589,7 @@
         "cases": [
             {
                 "id": "ConstantAndVariableQueryStringMissingOneValue",
+                "description": "Mixes constant and variable query string parameters",
                 "given": {
                     "name": "ConstantAndVariableQueryString",
                     "http": {
@@ -565,9 +600,9 @@
                     "input": {
                         "shape": "ConstantAndVariableQueryStringInput"
                     },
-                    "documentation": "<p>This example uses fixed query string params and variable query string params. The fixed query string parameters and variable parameters must both be serialized (implementations may need to merge them together).</p>"
+                    "documentation": "<p>This example uses fixed query string params and variable query string params. The fixed query string parameters and variable parameters must both be serialized (implementations may need to merge them together).</p>",
+                    "readonly": true
                 },
-                "description": "Mixes constant and variable query string parameters",
                 "params": {
                     "baz": "bam"
                 },
@@ -579,6 +614,7 @@
             },
             {
                 "id": "ConstantAndVariableQueryStringAllValues",
+                "description": "Mixes constant and variable query string parameters",
                 "given": {
                     "name": "ConstantAndVariableQueryString",
                     "http": {
@@ -589,9 +625,9 @@
                     "input": {
                         "shape": "ConstantAndVariableQueryStringInput"
                     },
-                    "documentation": "<p>This example uses fixed query string params and variable query string params. The fixed query string parameters and variable parameters must both be serialized (implementations may need to merge them together).</p>"
+                    "documentation": "<p>This example uses fixed query string params and variable query string params. The fixed query string parameters and variable parameters must both be serialized (implementations may need to merge them together).</p>",
+                    "readonly": true
                 },
-                "description": "Mixes constant and variable query string parameters",
                 "params": {
                     "baz": "bam",
                     "maybeSet": "yes"
@@ -607,11 +643,20 @@
     {
         "description": "Test cases for ConstantQueryString operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
             "ConstantQueryStringInput": {
@@ -634,6 +679,7 @@
         "cases": [
             {
                 "id": "ConstantQueryString",
+                "description": "Includes constant query string parameters",
                 "given": {
                     "name": "ConstantQueryString",
                     "http": {
@@ -644,9 +690,9 @@
                     "input": {
                         "shape": "ConstantQueryStringInput"
                     },
-                    "documentation": "<p>This example uses a constant query string parameters and a label. This simply tests that labels and query string parameters are compatible. The fixed query string parameter named &quot;hello&quot; should in no way conflict with the label, <code>{hello}</code>.</p>"
+                    "documentation": "<p>This example uses a constant query string parameters and a label. This simply tests that labels and query string parameters are compatible. The fixed query string parameter named &quot;hello&quot; should in no way conflict with the label, <code>{hello}</code>.</p>",
+                    "readonly": true
                 },
-                "description": "Includes constant query string parameters",
                 "params": {
                     "hello": "hi"
                 },
@@ -661,11 +707,20 @@
     {
         "description": "Test cases for EmptyInputAndEmptyOutput operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
             "EmptyInputAndEmptyOutputInput": {
@@ -676,6 +731,7 @@
         "cases": [
             {
                 "id": "EmptyInputAndEmptyOutput",
+                "description": "Empty input serializes no payload",
                 "given": {
                     "name": "EmptyInputAndEmptyOutput",
                     "http": {
@@ -688,7 +744,6 @@
                     },
                     "documentation": "<p>The example tests how requests and responses are serialized when there's no request or response payload because the operation has an empty input and empty output structure that reuses the same shape. While this should be rare, code generators must support this.</p>"
                 },
-                "description": "Empty input serializes no payload",
                 "params": {},
                 "serialized": {
                     "method": "POST",
@@ -700,17 +755,28 @@
     },
     {
         "description": "Test cases for EndpointOperation operation",
+        "clientEndpoint": "https://example.com",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {},
         "cases": [
             {
                 "id": "RestXmlEndpointTrait",
+                "description": "Operations can prepend to the given host if they define the\nendpoint trait.",
                 "given": {
                     "name": "EndpointOperation",
                     "http": {
@@ -722,7 +788,6 @@
                         "hostPrefix": "foo."
                     }
                 },
-                "description": "Operations can prepend to the given host if they define the\nendpoint trait.",
                 "params": {},
                 "serialized": {
                     "method": "POST",
@@ -731,17 +796,26 @@
                     "host": "foo.example.com"
                 }
             }
-        ],
-        "clientEndpoint": "https://example.com"
+        ]
     },
     {
         "description": "Test cases for EndpointWithHostLabelHeaderOperation operation",
+        "clientEndpoint": "https://example.com",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
             "HostLabelHeaderInput": {
@@ -765,6 +839,7 @@
         "cases": [
             {
                 "id": "RestXmlEndpointTraitWithHostLabelAndHttpBinding",
+                "description": "Operations can prepend to the given host if they define the\nendpoint trait, and can use the host label trait to define\nfurther customization based on user input. The label must also\nbe serialized in into any other location it is bound to, such\nas the body or in this case an http header.",
                 "given": {
                     "name": "EndpointWithHostLabelHeaderOperation",
                     "http": {
@@ -779,7 +854,6 @@
                         "hostPrefix": "{accountId}."
                     }
                 },
-                "description": "Operations can prepend to the given host if they define the\nendpoint trait, and can use the host label trait to define\nfurther customization based on user input. The label must also\nbe serialized in into any other location it is bound to, such\nas the body or in this case an http header.",
                 "params": {
                     "accountId": "bar"
                 },
@@ -787,23 +861,32 @@
                     "method": "POST",
                     "uri": "/EndpointWithHostLabelHeaderOperation",
                     "body": "",
+                    "host": "bar.example.com",
                     "headers": {
                         "X-Amz-Account-Id": "bar"
-                    },
-                    "host": "bar.example.com"
+                    }
                 }
             }
-        ],
-        "clientEndpoint": "https://example.com"
+        ]
     },
     {
         "description": "Test cases for EndpointWithHostLabelOperation operation",
+        "clientEndpoint": "https://example.com",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
             "EndpointWithHostLabelOperationRequest": {
@@ -825,6 +908,7 @@
         "cases": [
             {
                 "id": "RestXmlEndpointTraitWithHostLabel",
+                "description": "Operations can prepend to the given host if they define the\nendpoint trait, and can use the host label trait to define\nfurther customization based on user input.",
                 "given": {
                     "name": "EndpointWithHostLabelOperation",
                     "http": {
@@ -840,7 +924,6 @@
                         "hostPrefix": "foo.{label}."
                     }
                 },
-                "description": "Operations can prepend to the given host if they define the\nendpoint trait, and can use the host label trait to define\nfurther customization based on user input.",
                 "params": {
                     "label": "bar"
                 },
@@ -851,17 +934,25 @@
                     "host": "foo.bar.example.com"
                 }
             }
-        ],
-        "clientEndpoint": "https://example.com"
+        ]
     },
     {
         "description": "Test cases for FlattenedXmlMap operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
             "FlattenedXmlMapRequest": {
@@ -871,15 +962,6 @@
                         "shape": "FooEnumMap",
                         "flattened": true
                     }
-                }
-            },
-            "FooEnumMap": {
-                "type": "map",
-                "key": {
-                    "shape": "String"
-                },
-                "value": {
-                    "shape": "FooEnum"
                 }
             },
             "FooEnum": {
@@ -892,6 +974,15 @@
                     "0"
                 ]
             },
+            "FooEnumMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "FooEnum"
+                }
+            },
             "String": {
                 "type": "string"
             }
@@ -899,6 +990,7 @@
         "cases": [
             {
                 "id": "FlattenedXmlMap",
+                "description": "Serializes flattened XML maps in requests",
                 "given": {
                     "name": "FlattenedXmlMap",
                     "http": {
@@ -912,7 +1004,6 @@
                     },
                     "documentation": "<p>Flattened maps</p>"
                 },
-                "description": "Serializes flattened XML maps in requests",
                 "params": {
                     "myMap": {
                         "foo": "Foo",
@@ -933,23 +1024,22 @@
     {
         "description": "Test cases for FlattenedXmlMapWithXmlName operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
-            "FlattenedXmlMapWithXmlNameRequest": {
-                "type": "structure",
-                "members": {
-                    "myMap": {
-                        "shape": "FlattenedXmlMapWithXmlNameInputOutputMap",
-                        "flattened": true,
-                        "locationName": "KVP"
-                    }
-                }
-            },
             "FlattenedXmlMapWithXmlNameInputOutputMap": {
                 "type": "map",
                 "key": {
@@ -961,6 +1051,16 @@
                     "locationName": "V"
                 }
             },
+            "FlattenedXmlMapWithXmlNameRequest": {
+                "type": "structure",
+                "members": {
+                    "myMap": {
+                        "shape": "FlattenedXmlMapWithXmlNameInputOutputMap",
+                        "flattened": true,
+                        "locationName": "KVP"
+                    }
+                }
+            },
             "String": {
                 "type": "string"
             }
@@ -968,6 +1068,7 @@
         "cases": [
             {
                 "id": "FlattenedXmlMapWithXmlName",
+                "description": "Serializes flattened XML maps in requests that have xmlName on members",
                 "given": {
                     "name": "FlattenedXmlMapWithXmlName",
                     "http": {
@@ -981,7 +1082,6 @@
                     },
                     "documentation": "<p>Flattened maps with @xmlName</p>"
                 },
-                "description": "Serializes flattened XML maps in requests that have xmlName on members",
                 "params": {
                     "myMap": {
                         "a": "A",
@@ -1000,13 +1100,105 @@
         ]
     },
     {
-        "description": "Test cases for HttpEnumPayload operation",
+        "description": "Test cases for HttpEmptyPrefixHeaders operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
+        },
+        "shapes": {
+            "HttpEmptyPrefixHeadersInput": {
+                "type": "structure",
+                "members": {
+                    "prefixHeaders": {
+                        "shape": "StringMap",
+                        "location": "headers",
+                        "locationName": ""
+                    },
+                    "specificHeader": {
+                        "shape": "String",
+                        "location": "header",
+                        "locationName": "hello"
+                    }
+                }
+            },
+            "String": {
+                "type": "string"
+            },
+            "StringMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "String"
+                }
+            }
+        },
+        "cases": [
+            {
+                "id": "HttpEmptyPrefixHeadersRequestClient",
+                "description": "Serializes all request headers, using specific when present",
+                "given": {
+                    "name": "HttpEmptyPrefixHeaders",
+                    "http": {
+                        "method": "GET",
+                        "requestUri": "/HttpEmptyPrefixHeaders",
+                        "responseCode": 200
+                    },
+                    "input": {
+                        "shape": "HttpEmptyPrefixHeadersInput"
+                    },
+                    "documentation": "<p>Clients that perform this test extract all headers from the response.</p>",
+                    "readonly": true
+                },
+                "params": {
+                    "prefixHeaders": {
+                        "x-foo": "Foo",
+                        "hello": "Hello"
+                    },
+                    "specificHeader": "There"
+                },
+                "serialized": {
+                    "method": "GET",
+                    "uri": "/HttpEmptyPrefixHeaders",
+                    "body": "",
+                    "headers": {
+                        "x-foo": "Foo",
+                        "hello": "There"
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for HttpEnumPayload operation",
+        "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
             "EnumPayloadInput": {
@@ -1056,13 +1248,25 @@
     {
         "description": "Test cases for HttpPayloadTraits operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
+            "Blob": {
+                "type": "blob"
+            },
             "HttpPayloadTraitsInputOutput": {
                 "type": "structure",
                 "members": {
@@ -1079,14 +1283,12 @@
             },
             "String": {
                 "type": "string"
-            },
-            "Blob": {
-                "type": "blob"
             }
         },
         "cases": [
             {
                 "id": "HttpPayloadTraitsWithBlob",
+                "description": "Serializes a blob in the HTTP payload",
                 "given": {
                     "name": "HttpPayloadTraits",
                     "http": {
@@ -1099,7 +1301,6 @@
                     },
                     "documentation": "<p>This example serializes a blob shape in the payload.</p> <p>In this example, no XML document is synthesized because the payload is not a structure or a union type.</p>"
                 },
-                "description": "Serializes a blob in the HTTP payload",
                 "params": {
                     "foo": "Foo",
                     "blob": "blobby blob blob"
@@ -1118,6 +1319,7 @@
             },
             {
                 "id": "HttpPayloadTraitsWithNoBlobBody",
+                "description": "Serializes an empty blob in the HTTP payload",
                 "given": {
                     "name": "HttpPayloadTraits",
                     "http": {
@@ -1130,7 +1332,6 @@
                     },
                     "documentation": "<p>This example serializes a blob shape in the payload.</p> <p>In this example, no XML document is synthesized because the payload is not a structure or a union type.</p>"
                 },
-                "description": "Serializes an empty blob in the HTTP payload",
                 "params": {
                     "foo": "Foo"
                 },
@@ -1148,11 +1349,20 @@
     {
         "description": "Test cases for HttpPayloadWithMemberXmlName operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
             "HttpPayloadWithMemberXmlNameInputOutput": {
@@ -1181,6 +1391,7 @@
         "cases": [
             {
                 "id": "HttpPayloadWithMemberXmlName",
+                "description": "Serializes a structure in the payload using a wrapper name based on member xmlName",
                 "given": {
                     "name": "HttpPayloadWithMemberXmlName",
                     "http": {
@@ -1194,7 +1405,6 @@
                     "documentation": "<p>The following example serializes a payload that uses an XML name on the member, changing the wrapper name.</p>",
                     "idempotent": true
                 },
-                "description": "Serializes a structure in the payload using a wrapper name based on member xmlName",
                 "params": {
                     "nested": {
                         "name": "Phreddy"
@@ -1217,11 +1427,20 @@
     {
         "description": "Test cases for HttpPayloadWithStructure operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
             "HttpPayloadWithStructureInputOutput": {
@@ -1252,6 +1471,7 @@
         "cases": [
             {
                 "id": "HttpPayloadWithStructure",
+                "description": "Serializes a structure in the payload",
                 "given": {
                     "name": "HttpPayloadWithStructure",
                     "http": {
@@ -1265,7 +1485,6 @@
                     "documentation": "<p>This example serializes a structure in the payload.</p> <p>Note that serializing a structure changes the wrapper element name to match the targeted structure.</p>",
                     "idempotent": true
                 },
-                "description": "Serializes a structure in the payload",
                 "params": {
                     "nested": {
                         "greeting": "hello",
@@ -1289,11 +1508,20 @@
     {
         "description": "Test cases for HttpPayloadWithUnion operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
             "HttpPayloadWithUnionInputOutput": {
@@ -1306,6 +1534,9 @@
                 },
                 "payload": "nested"
             },
+            "String": {
+                "type": "string"
+            },
             "UnionPayload": {
                 "type": "structure",
                 "members": {
@@ -1314,14 +1545,12 @@
                     }
                 },
                 "union": true
-            },
-            "String": {
-                "type": "string"
             }
         },
         "cases": [
             {
                 "id": "RestXmlHttpPayloadWithUnion",
+                "description": "Serializes a union in the payload.",
                 "given": {
                     "name": "HttpPayloadWithUnion",
                     "http": {
@@ -1335,7 +1564,6 @@
                     "documentation": "<p>This example serializes a union in the payload.</p>",
                     "idempotent": true
                 },
-                "description": "Serializes a union in the payload.",
                 "params": {
                     "nested": {
                         "greeting": "hello"
@@ -1355,6 +1583,7 @@
             },
             {
                 "id": "RestXmlHttpPayloadWithUnsetUnion",
+                "description": "No payload is sent if the union has no value.",
                 "given": {
                     "name": "HttpPayloadWithUnion",
                     "http": {
@@ -1368,7 +1597,6 @@
                     "documentation": "<p>This example serializes a union in the payload.</p>",
                     "idempotent": true
                 },
-                "description": "No payload is sent if the union has no value.",
                 "params": {},
                 "serialized": {
                     "method": "PUT",
@@ -1381,11 +1609,20 @@
     {
         "description": "Test cases for HttpPayloadWithXmlName operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
             "HttpPayloadWithXmlNameInputOutput": {
@@ -1414,6 +1651,7 @@
         "cases": [
             {
                 "id": "HttpPayloadWithXmlName",
+                "description": "Serializes a structure in the payload using a wrapper name based on xmlName",
                 "given": {
                     "name": "HttpPayloadWithXmlName",
                     "http": {
@@ -1427,7 +1665,6 @@
                     "documentation": "<p>The following example serializes a payload that uses an XML name, changing the wrapper name.</p>",
                     "idempotent": true
                 },
-                "description": "Serializes a structure in the payload using a wrapper name based on xmlName",
                 "params": {
                     "nested": {
                         "name": "Phreddy"
@@ -1450,11 +1687,20 @@
     {
         "description": "Test cases for HttpPayloadWithXmlNamespace operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
             "HttpPayloadWithXmlNamespaceInputOutput": {
@@ -1483,6 +1729,7 @@
         "cases": [
             {
                 "id": "HttpPayloadWithXmlNamespace",
+                "description": "Serializes a structure in the payload using a wrapper with an XML namespace",
                 "given": {
                     "name": "HttpPayloadWithXmlNamespace",
                     "http": {
@@ -1496,7 +1743,6 @@
                     "documentation": "<p>The following example serializes a payload that uses an XML namespace.</p>",
                     "idempotent": true
                 },
-                "description": "Serializes a structure in the payload using a wrapper with an XML namespace",
                 "params": {
                     "nested": {
                         "name": "Phreddy"
@@ -1519,11 +1765,20 @@
     {
         "description": "Test cases for HttpPayloadWithXmlNamespaceAndPrefix operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
             "HttpPayloadWithXmlNamespaceAndPrefixInputOutput": {
@@ -1555,6 +1810,7 @@
         "cases": [
             {
                 "id": "HttpPayloadWithXmlNamespaceAndPrefix",
+                "description": "Serializes a structure in the payload using a wrapper with an XML namespace",
                 "given": {
                     "name": "HttpPayloadWithXmlNamespaceAndPrefix",
                     "http": {
@@ -1568,7 +1824,6 @@
                     "documentation": "<p>The following example serializes a payload that uses an XML namespace.</p>",
                     "idempotent": true
                 },
-                "description": "Serializes a structure in the payload using a wrapper with an XML namespace",
                 "params": {
                     "nested": {
                         "name": "Phreddy"
@@ -1591,13 +1846,31 @@
     {
         "description": "Test cases for HttpPrefixHeaders operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
+            "FooPrefixHeaders": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "String"
+                }
+            },
             "HttpPrefixHeadersInputOutput": {
                 "type": "structure",
                 "members": {
@@ -1615,20 +1888,12 @@
             },
             "String": {
                 "type": "string"
-            },
-            "FooPrefixHeaders": {
-                "type": "map",
-                "key": {
-                    "shape": "String"
-                },
-                "value": {
-                    "shape": "String"
-                }
             }
         },
         "cases": [
             {
                 "id": "HttpPrefixHeadersArePresent",
+                "description": "Adds headers by prefix",
                 "given": {
                     "name": "HttpPrefixHeaders",
                     "http": {
@@ -1639,9 +1904,9 @@
                     "input": {
                         "shape": "HttpPrefixHeadersInputOutput"
                     },
-                    "documentation": "<p>This examples adds headers to the input of a request and response by prefix.</p>"
+                    "documentation": "<p>This examples adds headers to the input of a request and response by prefix.</p>",
+                    "readonly": true
                 },
-                "description": "Adds headers by prefix",
                 "params": {
                     "foo": "Foo",
                     "fooMap": {
@@ -1655,13 +1920,14 @@
                     "body": "",
                     "headers": {
                         "x-foo": "Foo",
-                        "x-foo-abc": "Abc value",
-                        "x-foo-def": "Def value"
+                        "x-foo-def": "Def value",
+                        "x-foo-abc": "Abc value"
                     }
                 }
             },
             {
                 "id": "HttpPrefixHeadersAreNotPresent",
+                "description": "No prefix headers are serialized because the value is not present",
                 "given": {
                     "name": "HttpPrefixHeaders",
                     "http": {
@@ -1672,9 +1938,9 @@
                     "input": {
                         "shape": "HttpPrefixHeadersInputOutput"
                     },
-                    "documentation": "<p>This examples adds headers to the input of a request and response by prefix.</p>"
+                    "documentation": "<p>This examples adds headers to the input of a request and response by prefix.</p>",
+                    "readonly": true
                 },
-                "description": "No prefix headers are serialized because the value is not present",
                 "params": {
                     "foo": "Foo",
                     "fooMap": {}
@@ -1690,6 +1956,7 @@
             },
             {
                 "id": "HttpPrefixEmptyHeaders",
+                "description": "Serialize prefix headers were the value is present but empty",
                 "given": {
                     "name": "HttpPrefixHeaders",
                     "http": {
@@ -1700,9 +1967,9 @@
                     "input": {
                         "shape": "HttpPrefixHeadersInputOutput"
                     },
-                    "documentation": "<p>This examples adds headers to the input of a request and response by prefix.</p>"
+                    "documentation": "<p>This examples adds headers to the input of a request and response by prefix.</p>",
+                    "readonly": true
                 },
-                "description": "Serialize prefix headers were the value is present but empty",
                 "params": {
                     "fooMap": {
                         "abc": ""
@@ -1722,13 +1989,30 @@
     {
         "description": "Test cases for HttpRequestWithFloatLabels operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
+            "Double": {
+                "type": "double",
+                "box": true
+            },
+            "Float": {
+                "type": "float",
+                "box": true
+            },
             "HttpRequestWithFloatLabelsInput": {
                 "type": "structure",
                 "required": [
@@ -1747,19 +2031,12 @@
                         "locationName": "double"
                     }
                 }
-            },
-            "Float": {
-                "type": "float",
-                "box": true
-            },
-            "Double": {
-                "type": "double",
-                "box": true
             }
         },
         "cases": [
             {
                 "id": "RestXmlSupportsNaNFloatLabels",
+                "description": "Supports handling NaN float label values.",
                 "given": {
                     "name": "HttpRequestWithFloatLabels",
                     "http": {
@@ -1769,9 +2046,9 @@
                     },
                     "input": {
                         "shape": "HttpRequestWithFloatLabelsInput"
-                    }
+                    },
+                    "readonly": true
                 },
-                "description": "Supports handling NaN float label values.",
                 "params": {
                     "float": "NaN",
                     "double": "NaN"
@@ -1784,6 +2061,7 @@
             },
             {
                 "id": "RestXmlSupportsInfinityFloatLabels",
+                "description": "Supports handling Infinity float label values.",
                 "given": {
                     "name": "HttpRequestWithFloatLabels",
                     "http": {
@@ -1793,9 +2071,9 @@
                     },
                     "input": {
                         "shape": "HttpRequestWithFloatLabelsInput"
-                    }
+                    },
+                    "readonly": true
                 },
-                "description": "Supports handling Infinity float label values.",
                 "params": {
                     "float": "Infinity",
                     "double": "Infinity"
@@ -1808,6 +2086,7 @@
             },
             {
                 "id": "RestXmlSupportsNegativeInfinityFloatLabels",
+                "description": "Supports handling -Infinity float label values.",
                 "given": {
                     "name": "HttpRequestWithFloatLabels",
                     "http": {
@@ -1817,9 +2096,9 @@
                     },
                     "input": {
                         "shape": "HttpRequestWithFloatLabelsInput"
-                    }
+                    },
+                    "readonly": true
                 },
-                "description": "Supports handling -Infinity float label values.",
                 "params": {
                     "float": "-Infinity",
                     "double": "-Infinity"
@@ -1835,11 +2114,20 @@
     {
         "description": "Test cases for HttpRequestWithGreedyLabelInPath operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
             "HttpRequestWithGreedyLabelInPathInput": {
@@ -1868,6 +2156,7 @@
         "cases": [
             {
                 "id": "HttpRequestWithGreedyLabelInPath",
+                "description": "Serializes greedy labels and normal labels",
                 "given": {
                     "name": "HttpRequestWithGreedyLabelInPath",
                     "http": {
@@ -1877,9 +2166,9 @@
                     },
                     "input": {
                         "shape": "HttpRequestWithGreedyLabelInPathInput"
-                    }
+                    },
+                    "readonly": true
                 },
-                "description": "Serializes greedy labels and normal labels",
                 "params": {
                     "foo": "hello",
                     "baz": "there/guy"
@@ -1895,13 +2184,34 @@
     {
         "description": "Test cases for HttpRequestWithLabels operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
+            "Boolean": {
+                "type": "boolean",
+                "box": true
+            },
+            "Double": {
+                "type": "double",
+                "box": true
+            },
+            "Float": {
+                "type": "float",
+                "box": true
+            },
             "HttpRequestWithLabelsInput": {
                 "type": "structure",
                 "required": [
@@ -1959,9 +2269,6 @@
                     }
                 }
             },
-            "String": {
-                "type": "string"
-            },
             "Integer": {
                 "type": "integer",
                 "box": true
@@ -1970,17 +2277,8 @@
                 "type": "long",
                 "box": true
             },
-            "Float": {
-                "type": "float",
-                "box": true
-            },
-            "Double": {
-                "type": "double",
-                "box": true
-            },
-            "Boolean": {
-                "type": "boolean",
-                "box": true
+            "String": {
+                "type": "string"
             },
             "Timestamp": {
                 "type": "timestamp"
@@ -1989,6 +2287,7 @@
         "cases": [
             {
                 "id": "InputWithHeadersAndAllParams",
+                "description": "Sends a GET request that uses URI label bindings",
                 "given": {
                     "name": "HttpRequestWithLabels",
                     "http": {
@@ -1999,9 +2298,9 @@
                     "input": {
                         "shape": "HttpRequestWithLabelsInput"
                     },
-                    "documentation": "<p>The example tests how requests are serialized when there's no input payload but there are HTTP labels.</p>"
+                    "documentation": "<p>The example tests how requests are serialized when there's no input payload but there are HTTP labels.</p>",
+                    "readonly": true
                 },
-                "description": "Sends a GET request that uses URI label bindings",
                 "params": {
                     "string": "string",
                     "short": 1,
@@ -2020,6 +2319,7 @@
             },
             {
                 "id": "HttpRequestLabelEscaping",
+                "description": "Sends a GET request that uses URI label bindings",
                 "given": {
                     "name": "HttpRequestWithLabels",
                     "http": {
@@ -2030,9 +2330,9 @@
                     "input": {
                         "shape": "HttpRequestWithLabelsInput"
                     },
-                    "documentation": "<p>The example tests how requests are serialized when there's no input payload but there are HTTP labels.</p>"
+                    "documentation": "<p>The example tests how requests are serialized when there's no input payload but there are HTTP labels.</p>",
+                    "readonly": true
                 },
-                "description": "Sends a GET request that uses URI label bindings",
                 "params": {
                     "string": " %:/?#[]@!$&'()*+,;=😹",
                     "short": 1,
@@ -2054,13 +2354,34 @@
     {
         "description": "Test cases for HttpRequestWithLabelsAndTimestampFormat operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
+            "DateTime": {
+                "type": "timestamp",
+                "timestampFormat": "iso8601"
+            },
+            "EpochSeconds": {
+                "type": "timestamp",
+                "timestampFormat": "unixTimestamp"
+            },
+            "HttpDate": {
+                "type": "timestamp",
+                "timestampFormat": "rfc822"
+            },
             "HttpRequestWithLabelsAndTimestampFormatInput": {
                 "type": "structure",
                 "required": [
@@ -2110,6 +2431,10 @@
                     }
                 }
             },
+            "SyntheticTimestamp_date_time": {
+                "type": "timestamp",
+                "timestampFormat": "iso8601"
+            },
             "SyntheticTimestamp_epoch_seconds": {
                 "type": "timestamp",
                 "timestampFormat": "unixTimestamp"
@@ -2118,29 +2443,14 @@
                 "type": "timestamp",
                 "timestampFormat": "rfc822"
             },
-            "SyntheticTimestamp_date_time": {
-                "type": "timestamp",
-                "timestampFormat": "iso8601"
-            },
             "Timestamp": {
                 "type": "timestamp"
-            },
-            "EpochSeconds": {
-                "type": "timestamp",
-                "timestampFormat": "unixTimestamp"
-            },
-            "HttpDate": {
-                "type": "timestamp",
-                "timestampFormat": "rfc822"
-            },
-            "DateTime": {
-                "type": "timestamp",
-                "timestampFormat": "iso8601"
             }
         },
         "cases": [
             {
                 "id": "HttpRequestWithLabelsAndTimestampFormat",
+                "description": "Serializes different timestamp formats in URI labels",
                 "given": {
                     "name": "HttpRequestWithLabelsAndTimestampFormat",
                     "http": {
@@ -2151,9 +2461,9 @@
                     "input": {
                         "shape": "HttpRequestWithLabelsAndTimestampFormatInput"
                     },
-                    "documentation": "<p>The example tests how requests serialize different timestamp formats in the URI path.</p>"
+                    "documentation": "<p>The example tests how requests serialize different timestamp formats in the URI path.</p>",
+                    "readonly": true
                 },
-                "description": "Serializes different timestamp formats in URI labels",
                 "params": {
                     "memberEpochSeconds": 1576540098,
                     "memberHttpDate": 1576540098,
@@ -2174,13 +2484,25 @@
     {
         "description": "Test cases for HttpStringPayload operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
+            "String": {
+                "type": "string"
+            },
             "StringPayloadInput": {
                 "type": "structure",
                 "members": {
@@ -2189,9 +2511,6 @@
                     }
                 },
                 "payload": "payload"
-            },
-            "String": {
-                "type": "string"
             }
         },
         "cases": [
@@ -2225,13 +2544,56 @@
     {
         "description": "Test cases for InputAndOutputWithHeaders operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
+            "Boolean": {
+                "type": "boolean",
+                "box": true
+            },
+            "BooleanList": {
+                "type": "list",
+                "member": {
+                    "shape": "Boolean"
+                }
+            },
+            "Double": {
+                "type": "double",
+                "box": true
+            },
+            "Float": {
+                "type": "float",
+                "box": true
+            },
+            "FooEnum": {
+                "type": "string",
+                "enum": [
+                    "Foo",
+                    "Baz",
+                    "Bar",
+                    "1",
+                    "0"
+                ]
+            },
+            "FooEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "FooEnum"
+                }
+            },
             "InputAndOutputWithHeadersIO": {
                 "type": "structure",
                 "members": {
@@ -2317,28 +2679,22 @@
                     }
                 }
             },
-            "String": {
-                "type": "string"
-            },
             "Integer": {
                 "type": "integer",
                 "box": true
+            },
+            "IntegerList": {
+                "type": "list",
+                "member": {
+                    "shape": "Integer"
+                }
             },
             "Long": {
                 "type": "long",
                 "box": true
             },
-            "Float": {
-                "type": "float",
-                "box": true
-            },
-            "Double": {
-                "type": "double",
-                "box": true
-            },
-            "Boolean": {
-                "type": "boolean",
-                "box": true
+            "String": {
+                "type": "string"
             },
             "StringList": {
                 "type": "list",
@@ -2352,47 +2708,20 @@
                     "shape": "String"
                 }
             },
-            "IntegerList": {
-                "type": "list",
-                "member": {
-                    "shape": "Integer"
-                }
-            },
-            "BooleanList": {
-                "type": "list",
-                "member": {
-                    "shape": "Boolean"
-                }
+            "Timestamp": {
+                "type": "timestamp"
             },
             "TimestampList": {
                 "type": "list",
                 "member": {
                     "shape": "Timestamp"
                 }
-            },
-            "FooEnum": {
-                "type": "string",
-                "enum": [
-                    "Foo",
-                    "Baz",
-                    "Bar",
-                    "1",
-                    "0"
-                ]
-            },
-            "FooEnumList": {
-                "type": "list",
-                "member": {
-                    "shape": "FooEnum"
-                }
-            },
-            "Timestamp": {
-                "type": "timestamp"
             }
         },
         "cases": [
             {
                 "id": "InputAndOutputWithStringHeaders",
+                "description": "Tests requests with string header bindings",
                 "given": {
                     "name": "InputAndOutputWithHeaders",
                     "http": {
@@ -2405,7 +2734,6 @@
                     },
                     "documentation": "<p>The example tests how requests and responses are serialized when there is no input or output payload but there are HTTP header bindings.</p>"
                 },
-                "description": "Tests requests with string header bindings",
                 "params": {
                     "headerString": "Hello",
                     "headerStringList": [
@@ -2424,14 +2752,15 @@
                     "uri": "/InputAndOutputWithHeaders",
                     "body": "",
                     "headers": {
-                        "X-String": "Hello",
                         "X-StringList": "a, b, c",
+                        "X-String": "Hello",
                         "X-StringSet": "a, b, c"
                     }
                 }
             },
             {
                 "id": "InputAndOutputWithNumericHeaders",
+                "description": "Tests requests with numeric header bindings",
                 "given": {
                     "name": "InputAndOutputWithHeaders",
                     "http": {
@@ -2444,7 +2773,6 @@
                     },
                     "documentation": "<p>The example tests how requests and responses are serialized when there is no input or output payload but there are HTTP header bindings.</p>"
                 },
-                "description": "Tests requests with numeric header bindings",
                 "params": {
                     "headerByte": 1,
                     "headerShort": 123,
@@ -2463,18 +2791,19 @@
                     "uri": "/InputAndOutputWithHeaders",
                     "body": "",
                     "headers": {
+                        "X-Integer": "123",
+                        "X-Short": "123",
                         "X-Byte": "1",
+                        "X-Long": "123",
                         "X-Double": "1.1",
                         "X-Float": "1.1",
-                        "X-Integer": "123",
-                        "X-IntegerList": "1, 2, 3",
-                        "X-Long": "123",
-                        "X-Short": "123"
+                        "X-IntegerList": "1, 2, 3"
                     }
                 }
             },
             {
                 "id": "InputAndOutputWithBooleanHeaders",
+                "description": "Tests requests with boolean header bindings",
                 "given": {
                     "name": "InputAndOutputWithHeaders",
                     "http": {
@@ -2487,7 +2816,6 @@
                     },
                     "documentation": "<p>The example tests how requests and responses are serialized when there is no input or output payload but there are HTTP header bindings.</p>"
                 },
-                "description": "Tests requests with boolean header bindings",
                 "params": {
                     "headerTrueBool": true,
                     "headerFalseBool": false,
@@ -2502,14 +2830,15 @@
                     "uri": "/InputAndOutputWithHeaders",
                     "body": "",
                     "headers": {
+                        "X-BooleanList": "true, false, true",
                         "X-Boolean1": "true",
-                        "X-Boolean2": "false",
-                        "X-BooleanList": "true, false, true"
+                        "X-Boolean2": "false"
                     }
                 }
             },
             {
                 "id": "InputAndOutputWithTimestampHeaders",
+                "description": "Tests requests with timestamp header bindings",
                 "given": {
                     "name": "InputAndOutputWithHeaders",
                     "http": {
@@ -2522,7 +2851,6 @@
                     },
                     "documentation": "<p>The example tests how requests and responses are serialized when there is no input or output payload but there are HTTP header bindings.</p>"
                 },
-                "description": "Tests requests with timestamp header bindings",
                 "params": {
                     "headerTimestampList": [
                         1576540098,
@@ -2540,6 +2868,7 @@
             },
             {
                 "id": "InputAndOutputWithEnumHeaders",
+                "description": "Tests requests with enum header bindings",
                 "given": {
                     "name": "InputAndOutputWithHeaders",
                     "http": {
@@ -2552,7 +2881,6 @@
                     },
                     "documentation": "<p>The example tests how requests and responses are serialized when there is no input or output payload but there are HTTP header bindings.</p>"
                 },
-                "description": "Tests requests with enum header bindings",
                 "params": {
                     "headerEnum": "Foo",
                     "headerEnumList": [
@@ -2566,13 +2894,14 @@
                     "uri": "/InputAndOutputWithHeaders",
                     "body": "",
                     "headers": {
-                        "X-Enum": "Foo",
-                        "X-EnumList": "Foo, Bar, Baz"
+                        "X-EnumList": "Foo, Bar, Baz",
+                        "X-Enum": "Foo"
                     }
                 }
             },
             {
                 "id": "RestXmlSupportsNaNFloatHeaderInputs",
+                "description": "Supports handling NaN float header values.",
                 "given": {
                     "name": "InputAndOutputWithHeaders",
                     "http": {
@@ -2585,7 +2914,6 @@
                     },
                     "documentation": "<p>The example tests how requests and responses are serialized when there is no input or output payload but there are HTTP header bindings.</p>"
                 },
-                "description": "Supports handling NaN float header values.",
                 "params": {
                     "headerFloat": "NaN",
                     "headerDouble": "NaN"
@@ -2595,13 +2923,14 @@
                     "uri": "/InputAndOutputWithHeaders",
                     "body": "",
                     "headers": {
-                        "X-Double": "NaN",
-                        "X-Float": "NaN"
+                        "X-Float": "NaN",
+                        "X-Double": "NaN"
                     }
                 }
             },
             {
                 "id": "RestXmlSupportsInfinityFloatHeaderInputs",
+                "description": "Supports handling Infinity float header values.",
                 "given": {
                     "name": "InputAndOutputWithHeaders",
                     "http": {
@@ -2614,7 +2943,6 @@
                     },
                     "documentation": "<p>The example tests how requests and responses are serialized when there is no input or output payload but there are HTTP header bindings.</p>"
                 },
-                "description": "Supports handling Infinity float header values.",
                 "params": {
                     "headerFloat": "Infinity",
                     "headerDouble": "Infinity"
@@ -2624,13 +2952,14 @@
                     "uri": "/InputAndOutputWithHeaders",
                     "body": "",
                     "headers": {
-                        "X-Double": "Infinity",
-                        "X-Float": "Infinity"
+                        "X-Float": "Infinity",
+                        "X-Double": "Infinity"
                     }
                 }
             },
             {
                 "id": "RestXmlSupportsNegativeInfinityFloatHeaderInputs",
+                "description": "Supports handling -Infinity float header values.",
                 "given": {
                     "name": "InputAndOutputWithHeaders",
                     "http": {
@@ -2643,7 +2972,6 @@
                     },
                     "documentation": "<p>The example tests how requests and responses are serialized when there is no input or output payload but there are HTTP header bindings.</p>"
                 },
-                "description": "Supports handling -Infinity float header values.",
                 "params": {
                     "headerFloat": "-Infinity",
                     "headerDouble": "-Infinity"
@@ -2653,8 +2981,8 @@
                     "uri": "/InputAndOutputWithHeaders",
                     "body": "",
                     "headers": {
-                        "X-Double": "-Infinity",
-                        "X-Float": "-Infinity"
+                        "X-Float": "-Infinity",
+                        "X-Double": "-Infinity"
                     }
                 }
             }
@@ -2663,13 +2991,50 @@
     {
         "description": "Test cases for NestedXmlMaps operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
+            "FooEnum": {
+                "type": "string",
+                "enum": [
+                    "Foo",
+                    "Baz",
+                    "Bar",
+                    "1",
+                    "0"
+                ]
+            },
+            "FooEnumMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "FooEnum"
+                }
+            },
+            "NestedMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "FooEnumMap"
+                }
+            },
             "NestedXmlMapsRequest": {
                 "type": "structure",
                 "members": {
@@ -2682,34 +3047,6 @@
                     }
                 }
             },
-            "NestedMap": {
-                "type": "map",
-                "key": {
-                    "shape": "String"
-                },
-                "value": {
-                    "shape": "FooEnumMap"
-                }
-            },
-            "FooEnumMap": {
-                "type": "map",
-                "key": {
-                    "shape": "String"
-                },
-                "value": {
-                    "shape": "FooEnum"
-                }
-            },
-            "FooEnum": {
-                "type": "string",
-                "enum": [
-                    "Foo",
-                    "Baz",
-                    "Bar",
-                    "1",
-                    "0"
-                ]
-            },
             "String": {
                 "type": "string"
             }
@@ -2717,6 +3054,7 @@
         "cases": [
             {
                 "id": "NestedXmlMapRequest",
+                "description": "Tests requests with nested maps.",
                 "given": {
                     "name": "NestedXmlMaps",
                     "http": {
@@ -2729,7 +3067,6 @@
                         "locationName": "NestedXmlMapsRequest"
                     }
                 },
-                "description": "Tests requests with nested maps.",
                 "params": {
                     "nestedMap": {
                         "foo": {
@@ -2748,6 +3085,7 @@
             },
             {
                 "id": "FlatNestedXmlMapRequest",
+                "description": "Tests requests with nested flat maps. Since maps can only be\nflattened when they're structure members, only the outer map is flat.",
                 "given": {
                     "name": "NestedXmlMaps",
                     "http": {
@@ -2760,7 +3098,6 @@
                         "locationName": "NestedXmlMapsRequest"
                     }
                 },
-                "description": "Tests requests with nested flat maps. Since maps can only be\nflattened when they're structure members, only the outer map is flat.",
                 "params": {
                     "flatNestedMap": {
                         "foo": {
@@ -2782,19 +3119,31 @@
     {
         "description": "Test cases for NestedXmlMapWithXmlName operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
-            "NestedXmlMapWithXmlNameRequest": {
-                "type": "structure",
-                "members": {
-                    "nestedXmlMapWithXmlNameMap": {
-                        "shape": "NestedXmlMapWithXmlNameMap"
-                    }
+            "NestedXmlMapWithXmlNameInnerMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String",
+                    "locationName": "InnerKey"
+                },
+                "value": {
+                    "shape": "String",
+                    "locationName": "InnerValue"
                 }
             },
             "NestedXmlMapWithXmlNameMap": {
@@ -2807,15 +3156,12 @@
                     "shape": "NestedXmlMapWithXmlNameInnerMap"
                 }
             },
-            "NestedXmlMapWithXmlNameInnerMap": {
-                "type": "map",
-                "key": {
-                    "shape": "String",
-                    "locationName": "InnerKey"
-                },
-                "value": {
-                    "shape": "String",
-                    "locationName": "InnerValue"
+            "NestedXmlMapWithXmlNameRequest": {
+                "type": "structure",
+                "members": {
+                    "nestedXmlMapWithXmlNameMap": {
+                        "shape": "NestedXmlMapWithXmlNameMap"
+                    }
                 }
             },
             "String": {
@@ -2825,6 +3171,7 @@
         "cases": [
             {
                 "id": "NestedXmlMapWithXmlNameSerializes",
+                "description": "Serializes nested XML Maps in requests that have xmlName on members",
                 "given": {
                     "name": "NestedXmlMapWithXmlName",
                     "http": {
@@ -2838,7 +3185,6 @@
                     },
                     "documentation": "<p>Nested Xml Maps with key/values with @xmlName</p>"
                 },
-                "description": "Serializes nested XML Maps in requests that have xmlName on members",
                 "params": {
                     "nestedXmlMapWithXmlNameMap": {
                         "foo": {
@@ -2865,16 +3211,26 @@
     {
         "description": "Test cases for NoInputAndNoOutput operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {},
         "cases": [
             {
                 "id": "NoInputAndNoOutput",
+                "description": "No input serializes no payload",
                 "given": {
                     "name": "NoInputAndNoOutput",
                     "http": {
@@ -2884,7 +3240,6 @@
                     },
                     "documentation": "<p>The example tests how requests and responses are serialized when there's no request or response payload because the operation has no input or output. While this should be rare, code generators must support this.</p>"
                 },
-                "description": "No input serializes no payload",
                 "params": {},
                 "serialized": {
                     "method": "POST",
@@ -2897,16 +3252,26 @@
     {
         "description": "Test cases for NoInputAndOutput operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {},
         "cases": [
             {
                 "id": "NoInputAndOutput",
+                "description": "No input serializes no payload",
                 "given": {
                     "name": "NoInputAndOutput",
                     "http": {
@@ -2916,7 +3281,6 @@
                     },
                     "documentation": "<p>The example tests how requests and responses are serialized when there's no request or response payload because the operation has no input and the output is empty. While this should be rare, code generators must support this.</p>"
                 },
-                "description": "No input serializes no payload",
                 "params": {},
                 "serialized": {
                     "method": "POST",
@@ -2929,11 +3293,20 @@
     {
         "description": "Test cases for NullAndEmptyHeadersClient operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
             "NullAndEmptyHeadersIO": {
@@ -2969,6 +3342,7 @@
         "cases": [
             {
                 "id": "NullAndEmptyHeaders",
+                "description": "Do not send null values, but do send empty strings and empty lists over the wire in headers",
                 "given": {
                     "name": "NullAndEmptyHeadersClient",
                     "http": {
@@ -2979,9 +3353,9 @@
                     "input": {
                         "shape": "NullAndEmptyHeadersIO"
                     },
-                    "documentation": "<p>Null headers are not sent over the wire, empty headers are serialized to &quot;&quot;</p>"
+                    "documentation": "<p>Null headers are not sent over the wire, empty headers are serialized to &quot;&quot;</p>",
+                    "readonly": true
                 },
-                "description": "Do not send null values, but do send empty strings and empty lists over the wire in headers",
                 "params": {
                     "a": null,
                     "b": "",
@@ -3005,11 +3379,20 @@
     {
         "description": "Test cases for OmitsNullSerializesEmptyString operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
             "OmitsNullSerializesEmptyStringInput": {
@@ -3034,6 +3417,7 @@
         "cases": [
             {
                 "id": "RestXmlOmitsNullQuery",
+                "description": "Omits null query values",
                 "given": {
                     "name": "OmitsNullSerializesEmptyString",
                     "http": {
@@ -3044,9 +3428,9 @@
                     "input": {
                         "shape": "OmitsNullSerializesEmptyStringInput"
                     },
-                    "documentation": "<p>Omits null, but serializes empty string value.</p>"
+                    "documentation": "<p>Omits null, but serializes empty string value.</p>",
+                    "readonly": true
                 },
-                "description": "Omits null query values",
                 "params": {
                     "nullValue": null
                 },
@@ -3058,6 +3442,7 @@
             },
             {
                 "id": "RestXmlSerializesEmptyString",
+                "description": "Serializes empty query strings",
                 "given": {
                     "name": "OmitsNullSerializesEmptyString",
                     "http": {
@@ -3068,9 +3453,9 @@
                     "input": {
                         "shape": "OmitsNullSerializesEmptyStringInput"
                     },
-                    "documentation": "<p>Omits null, but serializes empty string value.</p>"
+                    "documentation": "<p>Omits null, but serializes empty string value.</p>",
+                    "readonly": true
                 },
-                "description": "Serializes empty query strings",
                 "params": {
                     "emptyString": ""
                 },
@@ -3085,11 +3470,20 @@
     {
         "description": "Test cases for PutWithContentEncoding operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
             "PutWithContentEncodingInput": {
@@ -3112,6 +3506,7 @@
         "cases": [
             {
                 "id": "SDKAppliedContentEncoding_restXml",
+                "description": "Compression algorithm encoding is appended to the Content-Encoding header.",
                 "given": {
                     "name": "PutWithContentEncoding",
                     "http": {
@@ -3129,7 +3524,6 @@
                         ]
                     }
                 },
-                "description": "Compression algorithm encoding is appended to the Content-Encoding header.",
                 "params": {
                     "data": "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\n"
                 },
@@ -3143,6 +3537,7 @@
             },
             {
                 "id": "SDKAppendedGzipAfterProvidedEncoding_restXml",
+                "description": "Compression algorithm encoding is appended to the Content-Encoding header, and the\nuser-provided content-encoding is in the Content-Encoding header before the\nrequest compression encoding from the HTTP binding.\n",
                 "given": {
                     "name": "PutWithContentEncoding",
                     "http": {
@@ -3160,7 +3555,6 @@
                         ]
                     }
                 },
-                "description": "Compression algorithm encoding is appended to the Content-Encoding header, and the\nuser-provided content-encoding is in the Content-Encoding header before the\nrequest compression encoding from the HTTP binding.\n",
                 "params": {
                     "encoding": "custom",
                     "data": "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\n"
@@ -3178,11 +3572,20 @@
     {
         "description": "Test cases for QueryIdempotencyTokenAutoFill operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
             "QueryIdempotencyTokenAutoFillInput": {
@@ -3203,6 +3606,7 @@
         "cases": [
             {
                 "id": "QueryIdempotencyTokenAutoFill",
+                "description": "Automatically adds idempotency token when not set",
                 "given": {
                     "name": "QueryIdempotencyTokenAutoFill",
                     "http": {
@@ -3215,7 +3619,6 @@
                     },
                     "documentation": "<p>Automatically adds idempotency tokens.</p>"
                 },
-                "description": "Automatically adds idempotency token when not set",
                 "params": {},
                 "serialized": {
                     "method": "POST",
@@ -3225,6 +3628,7 @@
             },
             {
                 "id": "QueryIdempotencyTokenAutoFillIsSet",
+                "description": "Uses the given idempotency token as-is",
                 "given": {
                     "name": "QueryIdempotencyTokenAutoFill",
                     "http": {
@@ -3237,7 +3641,6 @@
                     },
                     "documentation": "<p>Automatically adds idempotency tokens.</p>"
                 },
-                "description": "Uses the given idempotency token as-is",
                 "params": {
                     "token": "00000000-0000-4000-8000-000000000000"
                 },
@@ -3252,11 +3655,20 @@
     {
         "description": "Test cases for QueryParamsAsStringListMap operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
             "QueryParamsAsStringListMapInput": {
@@ -3276,6 +3688,12 @@
             "String": {
                 "type": "string"
             },
+            "StringList": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                }
+            },
             "StringListMap": {
                 "type": "map",
                 "key": {
@@ -3284,17 +3702,12 @@
                 "value": {
                     "shape": "StringList"
                 }
-            },
-            "StringList": {
-                "type": "list",
-                "member": {
-                    "shape": "String"
-                }
             }
         },
         "cases": [
             {
                 "id": "RestXmlQueryParamsStringListMap",
+                "description": "Serialize query params from map of list strings",
                 "given": {
                     "name": "QueryParamsAsStringListMap",
                     "http": {
@@ -3306,7 +3719,6 @@
                         "shape": "QueryParamsAsStringListMapInput"
                     }
                 },
-                "description": "Serialize query params from map of list strings",
                 "params": {
                     "qux": "named",
                     "foo": {
@@ -3327,11 +3739,20 @@
     {
         "description": "Test cases for QueryPrecedence operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
             "QueryPrecedenceInput": {
@@ -3364,6 +3785,7 @@
         "cases": [
             {
                 "id": "RestXmlQueryPrecedence",
+                "description": "Prefer named query parameters when serializing",
                 "given": {
                     "name": "QueryPrecedence",
                     "http": {
@@ -3375,7 +3797,6 @@
                         "shape": "QueryPrecedenceInput"
                     }
                 },
-                "description": "Prefer named query parameters when serializing",
                 "params": {
                     "foo": "named",
                     "baz": {
@@ -3394,21 +3815,22 @@
     {
         "description": "Test cases for RecursiveShapes operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
-            "RecursiveShapesRequest": {
-                "type": "structure",
-                "members": {
-                    "nested": {
-                        "shape": "RecursiveShapesInputOutputNested1"
-                    }
-                }
-            },
             "RecursiveShapesInputOutputNested1": {
                 "type": "structure",
                 "members": {
@@ -3420,9 +3842,6 @@
                     }
                 }
             },
-            "String": {
-                "type": "string"
-            },
             "RecursiveShapesInputOutputNested2": {
                 "type": "structure",
                 "members": {
@@ -3433,11 +3852,23 @@
                         "shape": "RecursiveShapesInputOutputNested1"
                     }
                 }
+            },
+            "RecursiveShapesRequest": {
+                "type": "structure",
+                "members": {
+                    "nested": {
+                        "shape": "RecursiveShapesInputOutputNested1"
+                    }
+                }
+            },
+            "String": {
+                "type": "string"
             }
         },
         "cases": [
             {
                 "id": "RecursiveShapes",
+                "description": "Serializes recursive structures",
                 "given": {
                     "name": "RecursiveShapes",
                     "http": {
@@ -3452,7 +3883,6 @@
                     "documentation": "<p>Recursive shapes</p>",
                     "idempotent": true
                 },
-                "description": "Serializes recursive structures",
                 "params": {
                     "nested": {
                         "foo": "Foo1",
@@ -3481,13 +3911,42 @@
     {
         "description": "Test cases for SimpleScalarProperties operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
+            "Boolean": {
+                "type": "boolean",
+                "box": true
+            },
+            "Double": {
+                "type": "double",
+                "box": true
+            },
+            "Float": {
+                "type": "float",
+                "box": true
+            },
+            "Integer": {
+                "type": "integer",
+                "box": true
+            },
+            "Long": {
+                "type": "long",
+                "box": true
+            },
             "SimpleScalarPropertiesRequest": {
                 "type": "structure",
                 "members": {
@@ -3528,31 +3987,12 @@
             },
             "String": {
                 "type": "string"
-            },
-            "Boolean": {
-                "type": "boolean",
-                "box": true
-            },
-            "Integer": {
-                "type": "integer",
-                "box": true
-            },
-            "Long": {
-                "type": "long",
-                "box": true
-            },
-            "Float": {
-                "type": "float",
-                "box": true
-            },
-            "Double": {
-                "type": "double",
-                "box": true
             }
         },
         "cases": [
             {
                 "id": "SimpleScalarProperties",
+                "description": "Serializes simple scalar properties",
                 "given": {
                     "name": "SimpleScalarProperties",
                     "http": {
@@ -3566,7 +4006,6 @@
                     },
                     "idempotent": true
                 },
-                "description": "Serializes simple scalar properties",
                 "params": {
                     "foo": "Foo",
                     "stringValue": "string",
@@ -3584,13 +4023,14 @@
                     "uri": "/SimpleScalarProperties",
                     "body": "<SimpleScalarPropertiesRequest>\n    <stringValue>string</stringValue>\n    <trueBooleanValue>true</trueBooleanValue>\n    <falseBooleanValue>false</falseBooleanValue>\n    <byteValue>1</byteValue>\n    <shortValue>2</shortValue>\n    <integerValue>3</integerValue>\n    <longValue>4</longValue>\n    <floatValue>5.5</floatValue>\n    <DoubleDribble>6.5</DoubleDribble>\n</SimpleScalarPropertiesRequest>\n",
                     "headers": {
-                        "Content-Type": "application/xml",
-                        "X-Foo": "Foo"
+                        "X-Foo": "Foo",
+                        "Content-Type": "application/xml"
                     }
                 }
             },
             {
                 "id": "SimpleScalarPropertiesWithEscapedCharacter",
+                "description": "Serializes string with escaping",
                 "given": {
                     "name": "SimpleScalarProperties",
                     "http": {
@@ -3604,7 +4044,6 @@
                     },
                     "idempotent": true
                 },
-                "description": "Serializes string with escaping",
                 "params": {
                     "foo": "Foo",
                     "stringValue": "<string>"
@@ -3614,13 +4053,14 @@
                     "uri": "/SimpleScalarProperties",
                     "body": "<SimpleScalarPropertiesRequest>\n    <stringValue>&lt;string&gt;</stringValue>\n</SimpleScalarPropertiesRequest>\n",
                     "headers": {
-                        "Content-Type": "application/xml",
-                        "X-Foo": "Foo"
+                        "X-Foo": "Foo",
+                        "Content-Type": "application/xml"
                     }
                 }
             },
             {
                 "id": "SimpleScalarPropertiesWithWhiteSpace",
+                "description": "Serializes string containing white space",
                 "given": {
                     "name": "SimpleScalarProperties",
                     "http": {
@@ -3634,7 +4074,6 @@
                     },
                     "idempotent": true
                 },
-                "description": "Serializes string containing white space",
                 "params": {
                     "foo": "Foo",
                     "stringValue": "  string with white    space  "
@@ -3644,13 +4083,14 @@
                     "uri": "/SimpleScalarProperties",
                     "body": "<SimpleScalarPropertiesRequest>\n    <stringValue>  string with white    space  </stringValue>\n</SimpleScalarPropertiesRequest>\n",
                     "headers": {
-                        "Content-Type": "application/xml",
-                        "X-Foo": "Foo"
+                        "X-Foo": "Foo",
+                        "Content-Type": "application/xml"
                     }
                 }
             },
             {
                 "id": "SimpleScalarPropertiesPureWhiteSpace",
+                "description": "Serializes string containing exclusively whitespace",
                 "given": {
                     "name": "SimpleScalarProperties",
                     "http": {
@@ -3664,7 +4104,6 @@
                     },
                     "idempotent": true
                 },
-                "description": "Serializes string containing exclusively whitespace",
                 "params": {
                     "foo": "Foo",
                     "stringValue": "   "
@@ -3674,13 +4113,14 @@
                     "uri": "/SimpleScalarProperties",
                     "body": "<SimpleScalarPropertiesRequest>\n    <stringValue>   </stringValue>\n</SimpleScalarPropertiesRequest>\n",
                     "headers": {
-                        "Content-Type": "application/xml",
-                        "X-Foo": "Foo"
+                        "X-Foo": "Foo",
+                        "Content-Type": "application/xml"
                     }
                 }
             },
             {
                 "id": "RestXmlSupportsNaNFloatInputs",
+                "description": "Supports handling NaN float values.",
                 "given": {
                     "name": "SimpleScalarProperties",
                     "http": {
@@ -3694,7 +4134,6 @@
                     },
                     "idempotent": true
                 },
-                "description": "Supports handling NaN float values.",
                 "params": {
                     "floatValue": "NaN",
                     "doubleValue": "NaN"
@@ -3710,6 +4149,7 @@
             },
             {
                 "id": "RestXmlSupportsInfinityFloatInputs",
+                "description": "Supports handling Infinity float values.",
                 "given": {
                     "name": "SimpleScalarProperties",
                     "http": {
@@ -3723,7 +4163,6 @@
                     },
                     "idempotent": true
                 },
-                "description": "Supports handling Infinity float values.",
                 "params": {
                     "floatValue": "Infinity",
                     "doubleValue": "Infinity"
@@ -3739,6 +4178,7 @@
             },
             {
                 "id": "RestXmlSupportsNegativeInfinityFloatInputs",
+                "description": "Supports handling -Infinity float values.",
                 "given": {
                     "name": "SimpleScalarProperties",
                     "http": {
@@ -3752,7 +4192,6 @@
                     },
                     "idempotent": true
                 },
-                "description": "Supports handling -Infinity float values.",
                 "params": {
                     "floatValue": "-Infinity",
                     "doubleValue": "-Infinity"
@@ -3771,13 +4210,49 @@
     {
         "description": "Test cases for TimestampFormatHeaders operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
+            "DateTime": {
+                "type": "timestamp",
+                "timestampFormat": "iso8601"
+            },
+            "EpochSeconds": {
+                "type": "timestamp",
+                "timestampFormat": "unixTimestamp"
+            },
+            "HttpDate": {
+                "type": "timestamp",
+                "timestampFormat": "rfc822"
+            },
+            "SyntheticTimestamp_date_time": {
+                "type": "timestamp",
+                "timestampFormat": "iso8601"
+            },
+            "SyntheticTimestamp_epoch_seconds": {
+                "type": "timestamp",
+                "timestampFormat": "unixTimestamp"
+            },
+            "SyntheticTimestamp_http_date": {
+                "type": "timestamp",
+                "timestampFormat": "rfc822"
+            },
+            "Timestamp": {
+                "type": "timestamp"
+            },
             "TimestampFormatHeadersIO": {
                 "type": "structure",
                 "members": {
@@ -3817,38 +4292,12 @@
                         "locationName": "X-targetDateTime"
                     }
                 }
-            },
-            "SyntheticTimestamp_epoch_seconds": {
-                "type": "timestamp",
-                "timestampFormat": "unixTimestamp"
-            },
-            "SyntheticTimestamp_http_date": {
-                "type": "timestamp",
-                "timestampFormat": "rfc822"
-            },
-            "SyntheticTimestamp_date_time": {
-                "type": "timestamp",
-                "timestampFormat": "iso8601"
-            },
-            "Timestamp": {
-                "type": "timestamp"
-            },
-            "EpochSeconds": {
-                "type": "timestamp",
-                "timestampFormat": "unixTimestamp"
-            },
-            "HttpDate": {
-                "type": "timestamp",
-                "timestampFormat": "rfc822"
-            },
-            "DateTime": {
-                "type": "timestamp",
-                "timestampFormat": "iso8601"
             }
         },
         "cases": [
             {
                 "id": "TimestampFormatHeaders",
+                "description": "Tests how timestamp request headers are serialized",
                 "given": {
                     "name": "TimestampFormatHeaders",
                     "http": {
@@ -3861,7 +4310,6 @@
                     },
                     "documentation": "<p>The example tests how timestamp request and response headers are serialized.</p>"
                 },
-                "description": "Tests how timestamp request headers are serialized",
                 "params": {
                     "memberEpochSeconds": 1576540098,
                     "memberHttpDate": 1576540098,
@@ -3876,13 +4324,13 @@
                     "uri": "/TimestampFormatHeaders",
                     "body": "",
                     "headers": {
-                        "X-defaultFormat": "Mon, 16 Dec 2019 23:48:18 GMT",
                         "X-memberDateTime": "2019-12-16T23:48:18Z",
-                        "X-memberEpochSeconds": "1576540098",
+                        "X-targetHttpDate": "Mon, 16 Dec 2019 23:48:18 GMT",
                         "X-memberHttpDate": "Mon, 16 Dec 2019 23:48:18 GMT",
                         "X-targetDateTime": "2019-12-16T23:48:18Z",
                         "X-targetEpochSeconds": "1576540098",
-                        "X-targetHttpDate": "Mon, 16 Dec 2019 23:48:18 GMT"
+                        "X-memberEpochSeconds": "1576540098",
+                        "X-defaultFormat": "Mon, 16 Dec 2019 23:48:18 GMT"
                     }
                 }
             }
@@ -3891,13 +4339,25 @@
     {
         "description": "Test cases for XmlAttributes operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
+            "String": {
+                "type": "string"
+            },
             "XmlAttributesRequest": {
                 "type": "structure",
                 "members": {
@@ -3910,14 +4370,12 @@
                         "xmlAttribute": true
                     }
                 }
-            },
-            "String": {
-                "type": "string"
             }
         },
         "cases": [
             {
                 "id": "XmlAttributes",
+                "description": "Serializes XML attributes on the synthesized document",
                 "given": {
                     "name": "XmlAttributes",
                     "http": {
@@ -3932,7 +4390,6 @@
                     "documentation": "<p>This example serializes an XML attributes on synthesized document.</p>",
                     "idempotent": true
                 },
-                "description": "Serializes XML attributes on the synthesized document",
                 "params": {
                     "foo": "hi",
                     "attr": "test"
@@ -3948,6 +4405,7 @@
             },
             {
                 "id": "XmlAttributesWithEscaping",
+                "description": "Serializes XML attributes with escaped characters on the synthesized document",
                 "given": {
                     "name": "XmlAttributes",
                     "http": {
@@ -3962,7 +4420,6 @@
                     "documentation": "<p>This example serializes an XML attributes on synthesized document.</p>",
                     "idempotent": true
                 },
-                "description": "Serializes XML attributes with escaped characters on the synthesized document",
                 "params": {
                     "foo": "hi",
                     "attr": "<test&mock>"
@@ -3979,15 +4436,111 @@
         ]
     },
     {
-        "description": "Test cases for XmlAttributesOnPayload operation",
+        "description": "Test cases for XmlAttributesInMiddle operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
+            "String": {
+                "type": "string"
+            },
+            "XmlAttributesInMiddlePayloadRequest": {
+                "type": "structure",
+                "members": {
+                    "foo": {
+                        "shape": "String"
+                    },
+                    "attr": {
+                        "shape": "String",
+                        "locationName": "test",
+                        "xmlAttribute": true
+                    },
+                    "baz": {
+                        "shape": "String"
+                    }
+                }
+            },
+            "XmlAttributesInMiddleRequest": {
+                "type": "structure",
+                "members": {
+                    "payload": {
+                        "shape": "XmlAttributesInMiddlePayloadRequest",
+                        "locationName": "payload"
+                    }
+                },
+                "payload": "payload"
+            }
+        },
+        "cases": [
+            {
+                "id": "XmlAttributesInMiddle",
+                "description": "Serializes XML attributes on a payload when the xmlAttribute trait targets a member in the middle of the member list",
+                "given": {
+                    "name": "XmlAttributesInMiddle",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/XmlAttributesInMiddle",
+                        "responseCode": 200
+                    },
+                    "input": {
+                        "shape": "XmlAttributesInMiddleRequest"
+                    },
+                    "documentation": "<p>This example serializes an XML attribute on a payload when it's defined in the middle of the member list. This tests that implementations correctly write attributes immediately after the element start tag, which is critical for languages like C# where attribute writing must happen before child elements.</p>",
+                    "idempotent": true
+                },
+                "params": {
+                    "payload": {
+                        "foo": "Foo",
+                        "attr": "attributeValue",
+                        "baz": "Baz"
+                    }
+                },
+                "serialized": {
+                    "method": "PUT",
+                    "uri": "/XmlAttributesInMiddle",
+                    "body": "<XmlAttributesInMiddlePayloadRequest test=\"attributeValue\">\n    <foo>Foo</foo>\n    <baz>Baz</baz>\n</XmlAttributesInMiddlePayloadRequest>\n",
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for XmlAttributesOnPayload operation",
+        "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
+        },
+        "shapes": {
+            "String": {
+                "type": "string"
+            },
             "XmlAttributesOnPayloadRequest": {
                 "type": "structure",
                 "members": {
@@ -4010,14 +4563,12 @@
                         "xmlAttribute": true
                     }
                 }
-            },
-            "String": {
-                "type": "string"
             }
         },
         "cases": [
             {
                 "id": "XmlAttributesOnPayload",
+                "description": "Serializes XML attributes on the synthesized document",
                 "given": {
                     "name": "XmlAttributesOnPayload",
                     "http": {
@@ -4031,7 +4582,6 @@
                     "documentation": "<p>This example serializes an XML attributes on a document targeted by httpPayload.</p>",
                     "idempotent": true
                 },
-                "description": "Serializes XML attributes on the synthesized document",
                 "params": {
                     "payload": {
                         "foo": "hi",
@@ -4052,13 +4602,25 @@
     {
         "description": "Test cases for XmlBlobs operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
+            "Blob": {
+                "type": "blob"
+            },
             "XmlBlobsRequest": {
                 "type": "structure",
                 "members": {
@@ -4066,14 +4628,12 @@
                         "shape": "Blob"
                     }
                 }
-            },
-            "Blob": {
-                "type": "blob"
             }
         },
         "cases": [
             {
                 "id": "XmlBlobs",
+                "description": "Blobs are base64 encoded",
                 "given": {
                     "name": "XmlBlobs",
                     "http": {
@@ -4087,7 +4647,6 @@
                     },
                     "documentation": "<p>Blobs are base64 encoded</p>"
                 },
-                "description": "Blobs are base64 encoded",
                 "params": {
                     "data": "value"
                 },
@@ -4105,13 +4664,141 @@
     {
         "description": "Test cases for XmlEmptyLists operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
+            "Boolean": {
+                "type": "boolean",
+                "box": true
+            },
+            "BooleanList": {
+                "type": "list",
+                "member": {
+                    "shape": "Boolean"
+                }
+            },
+            "FooEnum": {
+                "type": "string",
+                "enum": [
+                    "Foo",
+                    "Baz",
+                    "Bar",
+                    "1",
+                    "0"
+                ]
+            },
+            "FooEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "FooEnum"
+                }
+            },
+            "Integer": {
+                "type": "integer",
+                "box": true
+            },
+            "IntegerEnum": {
+                "type": "integer",
+                "box": true
+            },
+            "IntegerEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "IntegerEnum"
+                }
+            },
+            "IntegerList": {
+                "type": "list",
+                "member": {
+                    "shape": "Integer"
+                }
+            },
+            "ListWithMemberNamespace": {
+                "type": "list",
+                "member": {
+                    "shape": "String",
+                    "xmlNamespace": "https://xml-member.example.com"
+                },
+                "xmlNamespace": "https://xml-list.example.com"
+            },
+            "ListWithNamespace": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                },
+                "xmlNamespace": "https://xml-list.example.com"
+            },
+            "NestedStringList": {
+                "type": "list",
+                "member": {
+                    "shape": "StringList"
+                },
+                "documentation": "<p>A list of lists of strings.</p>"
+            },
+            "RenamedListMembers": {
+                "type": "list",
+                "member": {
+                    "shape": "String",
+                    "locationName": "item"
+                }
+            },
+            "String": {
+                "type": "string"
+            },
+            "StringList": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                }
+            },
+            "StringSet": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                }
+            },
+            "StructureList": {
+                "type": "list",
+                "member": {
+                    "shape": "StructureListMember",
+                    "locationName": "item"
+                }
+            },
+            "StructureListMember": {
+                "type": "structure",
+                "members": {
+                    "a": {
+                        "shape": "String",
+                        "locationName": "value"
+                    },
+                    "b": {
+                        "shape": "String",
+                        "locationName": "other"
+                    }
+                }
+            },
+            "Timestamp": {
+                "type": "timestamp"
+            },
+            "TimestampList": {
+                "type": "list",
+                "member": {
+                    "shape": "Timestamp"
+                }
+            },
             "XmlEmptyListsRequest": {
                 "type": "structure",
                 "members": {
@@ -4169,130 +4856,12 @@
                         "flattened": true
                     }
                 }
-            },
-            "StringList": {
-                "type": "list",
-                "member": {
-                    "shape": "String"
-                }
-            },
-            "StringSet": {
-                "type": "list",
-                "member": {
-                    "shape": "String"
-                }
-            },
-            "IntegerList": {
-                "type": "list",
-                "member": {
-                    "shape": "Integer"
-                }
-            },
-            "BooleanList": {
-                "type": "list",
-                "member": {
-                    "shape": "Boolean"
-                }
-            },
-            "TimestampList": {
-                "type": "list",
-                "member": {
-                    "shape": "Timestamp"
-                }
-            },
-            "FooEnumList": {
-                "type": "list",
-                "member": {
-                    "shape": "FooEnum"
-                }
-            },
-            "IntegerEnumList": {
-                "type": "list",
-                "member": {
-                    "shape": "IntegerEnum"
-                }
-            },
-            "NestedStringList": {
-                "type": "list",
-                "member": {
-                    "shape": "StringList"
-                },
-                "documentation": "<p>A list of lists of strings.</p>"
-            },
-            "RenamedListMembers": {
-                "type": "list",
-                "member": {
-                    "shape": "String",
-                    "locationName": "item"
-                }
-            },
-            "ListWithMemberNamespace": {
-                "type": "list",
-                "member": {
-                    "shape": "String",
-                    "xmlNamespace": "https://xml-member.example.com"
-                },
-                "xmlNamespace": "https://xml-list.example.com"
-            },
-            "ListWithNamespace": {
-                "type": "list",
-                "member": {
-                    "shape": "String"
-                },
-                "xmlNamespace": "https://xml-list.example.com"
-            },
-            "StructureList": {
-                "type": "list",
-                "member": {
-                    "shape": "StructureListMember",
-                    "locationName": "item"
-                }
-            },
-            "StructureListMember": {
-                "type": "structure",
-                "members": {
-                    "a": {
-                        "shape": "String",
-                        "locationName": "value"
-                    },
-                    "b": {
-                        "shape": "String",
-                        "locationName": "other"
-                    }
-                }
-            },
-            "String": {
-                "type": "string"
-            },
-            "IntegerEnum": {
-                "type": "integer",
-                "box": true
-            },
-            "FooEnum": {
-                "type": "string",
-                "enum": [
-                    "Foo",
-                    "Baz",
-                    "Bar",
-                    "1",
-                    "0"
-                ]
-            },
-            "Timestamp": {
-                "type": "timestamp"
-            },
-            "Boolean": {
-                "type": "boolean",
-                "box": true
-            },
-            "Integer": {
-                "type": "integer",
-                "box": true
             }
         },
         "cases": [
             {
                 "id": "XmlEmptyLists",
+                "description": "Serializes Empty XML lists",
                 "given": {
                     "name": "XmlEmptyLists",
                     "http": {
@@ -4306,7 +4875,6 @@
                     },
                     "idempotent": true
                 },
-                "description": "Serializes Empty XML lists",
                 "params": {
                     "stringList": [],
                     "stringSet": []
@@ -4325,13 +4893,33 @@
     {
         "description": "Test cases for XmlEmptyMaps operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
+            "GreetingStruct": {
+                "type": "structure",
+                "members": {
+                    "hi": {
+                        "shape": "String"
+                    }
+                }
+            },
+            "String": {
+                "type": "string"
+            },
             "XmlEmptyMapsRequest": {
                 "type": "structure",
                 "members": {
@@ -4348,22 +4936,12 @@
                 "value": {
                     "shape": "GreetingStruct"
                 }
-            },
-            "GreetingStruct": {
-                "type": "structure",
-                "members": {
-                    "hi": {
-                        "shape": "String"
-                    }
-                }
-            },
-            "String": {
-                "type": "string"
             }
         },
         "cases": [
             {
                 "id": "XmlEmptyMaps",
+                "description": "Serializes Empty XML maps",
                 "given": {
                     "name": "XmlEmptyMaps",
                     "http": {
@@ -4376,7 +4954,6 @@
                         "locationName": "XmlEmptyMapsRequest"
                     }
                 },
-                "description": "Serializes Empty XML maps",
                 "params": {
                     "myMap": {}
                 },
@@ -4394,13 +4971,25 @@
     {
         "description": "Test cases for XmlEmptyStrings operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
+            "String": {
+                "type": "string"
+            },
             "XmlEmptyStringsRequest": {
                 "type": "structure",
                 "members": {
@@ -4408,14 +4997,12 @@
                         "shape": "String"
                     }
                 }
-            },
-            "String": {
-                "type": "string"
             }
         },
         "cases": [
             {
                 "id": "XmlEmptyStrings",
+                "description": "Serializes xml empty strings",
                 "given": {
                     "name": "XmlEmptyStrings",
                     "http": {
@@ -4429,7 +5016,6 @@
                     },
                     "idempotent": true
                 },
-                "description": "Serializes xml empty strings",
                 "params": {
                     "emptyString": ""
                 },
@@ -4447,13 +5033,56 @@
     {
         "description": "Test cases for XmlEnums operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
+            "FooEnum": {
+                "type": "string",
+                "enum": [
+                    "Foo",
+                    "Baz",
+                    "Bar",
+                    "1",
+                    "0"
+                ]
+            },
+            "FooEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "FooEnum"
+                }
+            },
+            "FooEnumMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "FooEnum"
+                }
+            },
+            "FooEnumSet": {
+                "type": "list",
+                "member": {
+                    "shape": "FooEnum"
+                }
+            },
+            "String": {
+                "type": "string"
+            },
             "XmlEnumsRequest": {
                 "type": "structure",
                 "members": {
@@ -4476,45 +5105,12 @@
                         "shape": "FooEnumMap"
                     }
                 }
-            },
-            "FooEnum": {
-                "type": "string",
-                "enum": [
-                    "Foo",
-                    "Baz",
-                    "Bar",
-                    "1",
-                    "0"
-                ]
-            },
-            "FooEnumList": {
-                "type": "list",
-                "member": {
-                    "shape": "FooEnum"
-                }
-            },
-            "FooEnumSet": {
-                "type": "list",
-                "member": {
-                    "shape": "FooEnum"
-                }
-            },
-            "FooEnumMap": {
-                "type": "map",
-                "key": {
-                    "shape": "String"
-                },
-                "value": {
-                    "shape": "FooEnum"
-                }
-            },
-            "String": {
-                "type": "string"
             }
         },
         "cases": [
             {
                 "id": "XmlEnums",
+                "description": "Serializes simple scalar properties",
                 "given": {
                     "name": "XmlEnums",
                     "http": {
@@ -4529,7 +5125,6 @@
                     "documentation": "<p>This example serializes enums as top level properties, in lists, sets, and maps.</p>",
                     "idempotent": true
                 },
-                "description": "Serializes simple scalar properties",
                 "params": {
                     "fooEnum1": "Foo",
                     "fooEnum2": "0",
@@ -4561,13 +5156,50 @@
     {
         "description": "Test cases for XmlIntEnums operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
+            "IntegerEnum": {
+                "type": "integer",
+                "box": true
+            },
+            "IntegerEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "IntegerEnum"
+                }
+            },
+            "IntegerEnumMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "IntegerEnum"
+                }
+            },
+            "IntegerEnumSet": {
+                "type": "list",
+                "member": {
+                    "shape": "IntegerEnum"
+                }
+            },
+            "String": {
+                "type": "string"
+            },
             "XmlIntEnumsRequest": {
                 "type": "structure",
                 "members": {
@@ -4590,39 +5222,12 @@
                         "shape": "IntegerEnumMap"
                     }
                 }
-            },
-            "IntegerEnum": {
-                "type": "integer",
-                "box": true
-            },
-            "IntegerEnumList": {
-                "type": "list",
-                "member": {
-                    "shape": "IntegerEnum"
-                }
-            },
-            "IntegerEnumSet": {
-                "type": "list",
-                "member": {
-                    "shape": "IntegerEnum"
-                }
-            },
-            "IntegerEnumMap": {
-                "type": "map",
-                "key": {
-                    "shape": "String"
-                },
-                "value": {
-                    "shape": "IntegerEnum"
-                }
-            },
-            "String": {
-                "type": "string"
             }
         },
         "cases": [
             {
                 "id": "XmlIntEnums",
+                "description": "Serializes simple scalar properties",
                 "given": {
                     "name": "XmlIntEnums",
                     "http": {
@@ -4637,7 +5242,6 @@
                     "documentation": "<p>This example serializes enums as top level properties, in lists, sets, and maps.</p>",
                     "idempotent": true
                 },
-                "description": "Serializes simple scalar properties",
                 "params": {
                     "intEnum1": 1,
                     "intEnum2": 2,
@@ -4669,13 +5273,141 @@
     {
         "description": "Test cases for XmlLists operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
+            "Boolean": {
+                "type": "boolean",
+                "box": true
+            },
+            "BooleanList": {
+                "type": "list",
+                "member": {
+                    "shape": "Boolean"
+                }
+            },
+            "FooEnum": {
+                "type": "string",
+                "enum": [
+                    "Foo",
+                    "Baz",
+                    "Bar",
+                    "1",
+                    "0"
+                ]
+            },
+            "FooEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "FooEnum"
+                }
+            },
+            "Integer": {
+                "type": "integer",
+                "box": true
+            },
+            "IntegerEnum": {
+                "type": "integer",
+                "box": true
+            },
+            "IntegerEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "IntegerEnum"
+                }
+            },
+            "IntegerList": {
+                "type": "list",
+                "member": {
+                    "shape": "Integer"
+                }
+            },
+            "ListWithMemberNamespace": {
+                "type": "list",
+                "member": {
+                    "shape": "String",
+                    "xmlNamespace": "https://xml-member.example.com"
+                },
+                "xmlNamespace": "https://xml-list.example.com"
+            },
+            "ListWithNamespace": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                },
+                "xmlNamespace": "https://xml-list.example.com"
+            },
+            "NestedStringList": {
+                "type": "list",
+                "member": {
+                    "shape": "StringList"
+                },
+                "documentation": "<p>A list of lists of strings.</p>"
+            },
+            "RenamedListMembers": {
+                "type": "list",
+                "member": {
+                    "shape": "String",
+                    "locationName": "item"
+                }
+            },
+            "String": {
+                "type": "string"
+            },
+            "StringList": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                }
+            },
+            "StringSet": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                }
+            },
+            "StructureList": {
+                "type": "list",
+                "member": {
+                    "shape": "StructureListMember",
+                    "locationName": "item"
+                }
+            },
+            "StructureListMember": {
+                "type": "structure",
+                "members": {
+                    "a": {
+                        "shape": "String",
+                        "locationName": "value"
+                    },
+                    "b": {
+                        "shape": "String",
+                        "locationName": "other"
+                    }
+                }
+            },
+            "Timestamp": {
+                "type": "timestamp"
+            },
+            "TimestampList": {
+                "type": "list",
+                "member": {
+                    "shape": "Timestamp"
+                }
+            },
             "XmlListsRequest": {
                 "type": "structure",
                 "members": {
@@ -4733,130 +5465,12 @@
                         "flattened": true
                     }
                 }
-            },
-            "StringList": {
-                "type": "list",
-                "member": {
-                    "shape": "String"
-                }
-            },
-            "StringSet": {
-                "type": "list",
-                "member": {
-                    "shape": "String"
-                }
-            },
-            "IntegerList": {
-                "type": "list",
-                "member": {
-                    "shape": "Integer"
-                }
-            },
-            "BooleanList": {
-                "type": "list",
-                "member": {
-                    "shape": "Boolean"
-                }
-            },
-            "TimestampList": {
-                "type": "list",
-                "member": {
-                    "shape": "Timestamp"
-                }
-            },
-            "FooEnumList": {
-                "type": "list",
-                "member": {
-                    "shape": "FooEnum"
-                }
-            },
-            "IntegerEnumList": {
-                "type": "list",
-                "member": {
-                    "shape": "IntegerEnum"
-                }
-            },
-            "NestedStringList": {
-                "type": "list",
-                "member": {
-                    "shape": "StringList"
-                },
-                "documentation": "<p>A list of lists of strings.</p>"
-            },
-            "RenamedListMembers": {
-                "type": "list",
-                "member": {
-                    "shape": "String",
-                    "locationName": "item"
-                }
-            },
-            "ListWithMemberNamespace": {
-                "type": "list",
-                "member": {
-                    "shape": "String",
-                    "xmlNamespace": "https://xml-member.example.com"
-                },
-                "xmlNamespace": "https://xml-list.example.com"
-            },
-            "ListWithNamespace": {
-                "type": "list",
-                "member": {
-                    "shape": "String"
-                },
-                "xmlNamespace": "https://xml-list.example.com"
-            },
-            "StructureList": {
-                "type": "list",
-                "member": {
-                    "shape": "StructureListMember",
-                    "locationName": "item"
-                }
-            },
-            "StructureListMember": {
-                "type": "structure",
-                "members": {
-                    "a": {
-                        "shape": "String",
-                        "locationName": "value"
-                    },
-                    "b": {
-                        "shape": "String",
-                        "locationName": "other"
-                    }
-                }
-            },
-            "String": {
-                "type": "string"
-            },
-            "IntegerEnum": {
-                "type": "integer",
-                "box": true
-            },
-            "FooEnum": {
-                "type": "string",
-                "enum": [
-                    "Foo",
-                    "Baz",
-                    "Bar",
-                    "1",
-                    "0"
-                ]
-            },
-            "Timestamp": {
-                "type": "timestamp"
-            },
-            "Boolean": {
-                "type": "boolean",
-                "box": true
-            },
-            "Integer": {
-                "type": "integer",
-                "box": true
             }
         },
         "cases": [
             {
                 "id": "XmlLists",
+                "description": "Tests for XML list serialization",
                 "given": {
                     "name": "XmlLists",
                     "http": {
@@ -4871,7 +5485,6 @@
                     "documentation": "<p>This test case serializes XML lists for the following cases for both input and output:</p> <ol> <li>Normal XML lists.</li> <li>Normal XML sets.</li> <li>XML lists of lists.</li> <li>XML lists with @xmlName on its members</li> <li>Flattened XML lists.</li> <li>Flattened XML lists with @xmlName.</li> <li>Flattened XML lists with @xmlNamespace.</li> <li>Lists of structures.</li> <li>Flattened XML list of structures</li> </ol>",
                     "idempotent": true
                 },
-                "description": "Tests for XML list serialization",
                 "params": {
                     "stringList": [
                         "foo",
@@ -4958,30 +5571,22 @@
     {
         "description": "Test cases for XmlMaps operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
-            "XmlMapsRequest": {
-                "type": "structure",
-                "members": {
-                    "myMap": {
-                        "shape": "XmlMapsInputOutputMap"
-                    }
-                }
-            },
-            "XmlMapsInputOutputMap": {
-                "type": "map",
-                "key": {
-                    "shape": "String"
-                },
-                "value": {
-                    "shape": "GreetingStruct"
-                }
-            },
             "GreetingStruct": {
                 "type": "structure",
                 "members": {
@@ -4992,11 +5597,29 @@
             },
             "String": {
                 "type": "string"
+            },
+            "XmlMapsInputOutputMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "GreetingStruct"
+                }
+            },
+            "XmlMapsRequest": {
+                "type": "structure",
+                "members": {
+                    "myMap": {
+                        "shape": "XmlMapsInputOutputMap"
+                    }
+                }
             }
         },
         "cases": [
             {
                 "id": "XmlMaps",
+                "description": "Tests for XML map serialization",
                 "given": {
                     "name": "XmlMaps",
                     "http": {
@@ -5010,7 +5633,6 @@
                     },
                     "documentation": "<p>The example tests basic map serialization.</p>"
                 },
-                "description": "Tests for XML map serialization",
                 "params": {
                     "myMap": {
                         "foo": {
@@ -5035,20 +5657,32 @@
     {
         "description": "Test cases for XmlMapsXmlName operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
-            "XmlMapsXmlNameRequest": {
+            "GreetingStruct": {
                 "type": "structure",
                 "members": {
-                    "myMap": {
-                        "shape": "XmlMapsXmlNameInputOutputMap"
+                    "hi": {
+                        "shape": "String"
                     }
                 }
+            },
+            "String": {
+                "type": "string"
             },
             "XmlMapsXmlNameInputOutputMap": {
                 "type": "map",
@@ -5061,21 +5695,19 @@
                     "locationName": "Setting"
                 }
             },
-            "GreetingStruct": {
+            "XmlMapsXmlNameRequest": {
                 "type": "structure",
                 "members": {
-                    "hi": {
-                        "shape": "String"
+                    "myMap": {
+                        "shape": "XmlMapsXmlNameInputOutputMap"
                     }
                 }
-            },
-            "String": {
-                "type": "string"
             }
         },
         "cases": [
             {
                 "id": "XmlMapsXmlName",
+                "description": "Serializes XML maps that have xmlName on members",
                 "given": {
                     "name": "XmlMapsXmlName",
                     "http": {
@@ -5088,7 +5720,6 @@
                         "locationName": "XmlMapsXmlNameRequest"
                     }
                 },
-                "description": "Serializes XML maps that have xmlName on members",
                 "params": {
                     "myMap": {
                         "foo": {
@@ -5113,22 +5744,24 @@
     {
         "description": "Test cases for XmlMapWithXmlNamespace operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
-            "XmlMapWithXmlNamespaceRequest": {
-                "type": "structure",
-                "members": {
-                    "myMap": {
-                        "shape": "XmlMapWithXmlNamespaceInputOutputMap",
-                        "locationName": "KVP",
-                        "xmlNamespace": "https://the-member.example.com"
-                    }
-                }
+            "String": {
+                "type": "string"
             },
             "XmlMapWithXmlNamespaceInputOutputMap": {
                 "type": "map",
@@ -5143,13 +5776,21 @@
                     "xmlNamespace": "https://the-value.example.com"
                 }
             },
-            "String": {
-                "type": "string"
+            "XmlMapWithXmlNamespaceRequest": {
+                "type": "structure",
+                "members": {
+                    "myMap": {
+                        "shape": "XmlMapWithXmlNamespaceInputOutputMap",
+                        "locationName": "KVP",
+                        "xmlNamespace": "https://the-member.example.com"
+                    }
+                }
             }
         },
         "cases": [
             {
                 "id": "RestXmlXmlMapWithXmlNamespace",
+                "description": "Serializes XML maps in requests that have xmlNamespace and xmlName on members",
                 "given": {
                     "name": "XmlMapWithXmlNamespace",
                     "http": {
@@ -5163,7 +5804,6 @@
                     },
                     "documentation": "<p>Maps with @xmlNamespace and @xmlName</p>"
                 },
-                "description": "Serializes XML maps in requests that have xmlNamespace and xmlName on members",
                 "params": {
                     "myMap": {
                         "a": "A",
@@ -5184,21 +5824,24 @@
     {
         "description": "Test cases for XmlNamespaces operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
-            "XmlNamespacesRequest": {
-                "type": "structure",
-                "members": {
-                    "nested": {
-                        "shape": "XmlNamespaceNested"
-                    }
-                },
-                "xmlNamespace": "http://foo.com"
+            "String": {
+                "type": "string"
             },
             "XmlNamespaceNested": {
                 "type": "structure",
@@ -5217,20 +5860,27 @@
                 },
                 "xmlNamespace": "http://foo.com"
             },
-            "String": {
-                "type": "string"
-            },
             "XmlNamespacedList": {
                 "type": "list",
                 "member": {
                     "shape": "String",
                     "xmlNamespace": "http://bux.com"
                 }
+            },
+            "XmlNamespacesRequest": {
+                "type": "structure",
+                "members": {
+                    "nested": {
+                        "shape": "XmlNamespaceNested"
+                    }
+                },
+                "xmlNamespace": "http://foo.com"
             }
         },
         "cases": [
             {
                 "id": "XmlNamespaces",
+                "description": "Serializes XML namespaces",
                 "given": {
                     "name": "XmlNamespaces",
                     "http": {
@@ -5243,7 +5893,6 @@
                         "locationName": "XmlNamespacesRequest"
                     }
                 },
-                "description": "Serializes XML namespaces",
                 "params": {
                     "nested": {
                         "foo": "Foo",
@@ -5267,13 +5916,49 @@
     {
         "description": "Test cases for XmlTimestamps operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
+            "DateTime": {
+                "type": "timestamp",
+                "timestampFormat": "iso8601"
+            },
+            "EpochSeconds": {
+                "type": "timestamp",
+                "timestampFormat": "unixTimestamp"
+            },
+            "HttpDate": {
+                "type": "timestamp",
+                "timestampFormat": "rfc822"
+            },
+            "SyntheticTimestamp_date_time": {
+                "type": "timestamp",
+                "timestampFormat": "iso8601"
+            },
+            "SyntheticTimestamp_epoch_seconds": {
+                "type": "timestamp",
+                "timestampFormat": "unixTimestamp"
+            },
+            "SyntheticTimestamp_http_date": {
+                "type": "timestamp",
+                "timestampFormat": "rfc822"
+            },
+            "Timestamp": {
+                "type": "timestamp"
+            },
             "XmlTimestampsRequest": {
                 "type": "structure",
                 "members": {
@@ -5299,38 +5984,12 @@
                         "shape": "HttpDate"
                     }
                 }
-            },
-            "Timestamp": {
-                "type": "timestamp"
-            },
-            "SyntheticTimestamp_date_time": {
-                "type": "timestamp",
-                "timestampFormat": "iso8601"
-            },
-            "DateTime": {
-                "type": "timestamp",
-                "timestampFormat": "iso8601"
-            },
-            "SyntheticTimestamp_epoch_seconds": {
-                "type": "timestamp",
-                "timestampFormat": "unixTimestamp"
-            },
-            "EpochSeconds": {
-                "type": "timestamp",
-                "timestampFormat": "unixTimestamp"
-            },
-            "SyntheticTimestamp_http_date": {
-                "type": "timestamp",
-                "timestampFormat": "rfc822"
-            },
-            "HttpDate": {
-                "type": "timestamp",
-                "timestampFormat": "rfc822"
             }
         },
         "cases": [
             {
                 "id": "XmlTimestamps",
+                "description": "Tests how normal timestamps are serialized",
                 "given": {
                     "name": "XmlTimestamps",
                     "http": {
@@ -5344,7 +6003,6 @@
                     },
                     "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
                 },
-                "description": "Tests how normal timestamps are serialized",
                 "params": {
                     "normal": 1398796238
                 },
@@ -5359,6 +6017,7 @@
             },
             {
                 "id": "XmlTimestampsWithDateTimeFormat",
+                "description": "Ensures that the timestampFormat of date-time works like normal timestamps",
                 "given": {
                     "name": "XmlTimestamps",
                     "http": {
@@ -5372,7 +6031,6 @@
                     },
                     "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
                 },
-                "description": "Ensures that the timestampFormat of date-time works like normal timestamps",
                 "params": {
                     "dateTime": 1398796238
                 },
@@ -5387,6 +6045,7 @@
             },
             {
                 "id": "XmlTimestampsWithDateTimeOnTargetFormat",
+                "description": "Ensures that the timestampFormat of date-time on the target shape works like normal timestamps",
                 "given": {
                     "name": "XmlTimestamps",
                     "http": {
@@ -5400,7 +6059,6 @@
                     },
                     "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
                 },
-                "description": "Ensures that the timestampFormat of date-time on the target shape works like normal timestamps",
                 "params": {
                     "dateTimeOnTarget": 1398796238
                 },
@@ -5415,6 +6073,7 @@
             },
             {
                 "id": "XmlTimestampsWithEpochSecondsFormat",
+                "description": "Ensures that the timestampFormat of epoch-seconds works",
                 "given": {
                     "name": "XmlTimestamps",
                     "http": {
@@ -5428,7 +6087,6 @@
                     },
                     "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
                 },
-                "description": "Ensures that the timestampFormat of epoch-seconds works",
                 "params": {
                     "epochSeconds": 1398796238
                 },
@@ -5443,6 +6101,7 @@
             },
             {
                 "id": "XmlTimestampsWithEpochSecondsOnTargetFormat",
+                "description": "Ensures that the timestampFormat of epoch-seconds on the target shape works",
                 "given": {
                     "name": "XmlTimestamps",
                     "http": {
@@ -5456,7 +6115,6 @@
                     },
                     "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
                 },
-                "description": "Ensures that the timestampFormat of epoch-seconds on the target shape works",
                 "params": {
                     "epochSecondsOnTarget": 1398796238
                 },
@@ -5471,6 +6129,7 @@
             },
             {
                 "id": "XmlTimestampsWithHttpDateFormat",
+                "description": "Ensures that the timestampFormat of http-date works",
                 "given": {
                     "name": "XmlTimestamps",
                     "http": {
@@ -5484,7 +6143,6 @@
                     },
                     "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
                 },
-                "description": "Ensures that the timestampFormat of http-date works",
                 "params": {
                     "httpDate": 1398796238
                 },
@@ -5499,6 +6157,7 @@
             },
             {
                 "id": "XmlTimestampsWithHttpDateOnTargetFormat",
+                "description": "Ensures that the timestampFormat of http-date on the target shape works",
                 "given": {
                     "name": "XmlTimestamps",
                     "http": {
@@ -5512,7 +6171,6 @@
                     },
                     "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
                 },
-                "description": "Ensures that the timestampFormat of http-date on the target shape works",
                 "params": {
                     "httpDateOnTarget": 1398796238
                 },
@@ -5530,18 +6188,71 @@
     {
         "description": "Test cases for XmlUnions operation",
         "metadata": {
+            "apiVersion": "2019-12-16",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "restxml",
             "protocol": "rest-xml",
             "protocols": [
                 "rest-xml"
             ],
-            "apiVersion": "2019-12-16"
+            "serviceFullName": "RestXml",
+            "serviceId": "Rest Xml Protocol",
+            "signatureVersion": "v4",
+            "signingName": "RestXml",
+            "uid": "rest-xml-protocol-2019-12-16"
         },
         "shapes": {
-            "XmlUnionsRequest": {
+            "Boolean": {
+                "type": "boolean",
+                "box": true
+            },
+            "Double": {
+                "type": "double",
+                "box": true
+            },
+            "Float": {
+                "type": "float",
+                "box": true
+            },
+            "Integer": {
+                "type": "integer",
+                "box": true
+            },
+            "Long": {
+                "type": "long",
+                "box": true
+            },
+            "String": {
+                "type": "string"
+            },
+            "XmlNestedUnionStruct": {
                 "type": "structure",
                 "members": {
-                    "unionValue": {
-                        "shape": "XmlUnionShape"
+                    "stringValue": {
+                        "shape": "String"
+                    },
+                    "booleanValue": {
+                        "shape": "Boolean"
+                    },
+                    "byteValue": {
+                        "shape": "Integer"
+                    },
+                    "shortValue": {
+                        "shape": "Integer"
+                    },
+                    "integerValue": {
+                        "shape": "Integer"
+                    },
+                    "longValue": {
+                        "shape": "Long"
+                    },
+                    "floatValue": {
+                        "shape": "Float"
+                    },
+                    "doubleValue": {
+                        "shape": "Double"
                     }
                 }
             },
@@ -5581,55 +6292,11 @@
                 },
                 "union": true
             },
-            "String": {
-                "type": "string"
-            },
-            "Boolean": {
-                "type": "boolean",
-                "box": true
-            },
-            "Integer": {
-                "type": "integer",
-                "box": true
-            },
-            "Long": {
-                "type": "long",
-                "box": true
-            },
-            "Float": {
-                "type": "float",
-                "box": true
-            },
-            "Double": {
-                "type": "double",
-                "box": true
-            },
-            "XmlNestedUnionStruct": {
+            "XmlUnionsRequest": {
                 "type": "structure",
                 "members": {
-                    "stringValue": {
-                        "shape": "String"
-                    },
-                    "booleanValue": {
-                        "shape": "Boolean"
-                    },
-                    "byteValue": {
-                        "shape": "Integer"
-                    },
-                    "shortValue": {
-                        "shape": "Integer"
-                    },
-                    "integerValue": {
-                        "shape": "Integer"
-                    },
-                    "longValue": {
-                        "shape": "Long"
-                    },
-                    "floatValue": {
-                        "shape": "Float"
-                    },
-                    "doubleValue": {
-                        "shape": "Double"
+                    "unionValue": {
+                        "shape": "XmlUnionShape"
                     }
                 }
             }
@@ -5637,6 +6304,7 @@
         "cases": [
             {
                 "id": "XmlUnionsWithStructMember",
+                "description": "Serializes union struct member",
                 "given": {
                     "name": "XmlUnions",
                     "http": {
@@ -5650,7 +6318,6 @@
                     },
                     "idempotent": true
                 },
-                "description": "Serializes union struct member",
                 "params": {
                     "unionValue": {
                         "structValue": {
@@ -5676,6 +6343,7 @@
             },
             {
                 "id": "XmlUnionsWithStringMember",
+                "description": "serialize union string member",
                 "given": {
                     "name": "XmlUnions",
                     "http": {
@@ -5689,7 +6357,6 @@
                     },
                     "idempotent": true
                 },
-                "description": "serialize union string member",
                 "params": {
                     "unionValue": {
                         "stringValue": "some string"
@@ -5706,6 +6373,7 @@
             },
             {
                 "id": "XmlUnionsWithBooleanMember",
+                "description": "Serializes union boolean member",
                 "given": {
                     "name": "XmlUnions",
                     "http": {
@@ -5719,7 +6387,6 @@
                     },
                     "idempotent": true
                 },
-                "description": "Serializes union boolean member",
                 "params": {
                     "unionValue": {
                         "booleanValue": true
@@ -5736,6 +6403,7 @@
             },
             {
                 "id": "XmlUnionsWithUnionMember",
+                "description": "Serializes union member",
                 "given": {
                     "name": "XmlUnions",
                     "http": {
@@ -5749,7 +6417,6 @@
                     },
                     "idempotent": true
                 },
-                "description": "Serializes union member",
                 "params": {
                     "unionValue": {
                         "unionValue": {

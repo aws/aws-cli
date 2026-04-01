@@ -1,15 +1,27 @@
-
 [
     {
         "description": "Test cases for DatetimeOffsets operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsquery",
             "protocol": "query",
             "protocols": [
                 "query"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsQuery",
+            "serviceId": "Query Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsQuery",
+            "uid": "query-protocol-2020-01-08"
         },
         "shapes": {
+            "DateTime": {
+                "type": "timestamp",
+                "timestampFormat": "iso8601"
+            },
             "DatetimeOffsetsOutput": {
                 "type": "structure",
                 "members": {
@@ -17,15 +29,12 @@
                         "shape": "DateTime"
                     }
                 }
-            },
-            "DateTime": {
-                "type": "timestamp",
-                "timestampFormat": "iso8601"
             }
         },
         "cases": [
             {
                 "id": "AwsQueryDateTimeWithNegativeOffset",
+                "description": "Ensures that clients can correctly parse datetime (timestamps) with offsets",
                 "given": {
                     "name": "DatetimeOffsets",
                     "http": {
@@ -33,10 +42,10 @@
                         "requestUri": "/"
                     },
                     "output": {
-                        "shape": "DatetimeOffsetsOutput"
+                        "shape": "DatetimeOffsetsOutput",
+                        "resultWrapper": "DatetimeOffsetsResult"
                     }
                 },
-                "description": "Ensures that clients can correctly parse datetime (timestamps) with offsets",
                 "result": {
                     "datetime": 1576540098
                 },
@@ -50,6 +59,7 @@
             },
             {
                 "id": "AwsQueryDateTimeWithPositiveOffset",
+                "description": "Ensures that clients can correctly parse datetime (timestamps) with offsets",
                 "given": {
                     "name": "DatetimeOffsets",
                     "http": {
@@ -57,10 +67,10 @@
                         "requestUri": "/"
                     },
                     "output": {
-                        "shape": "DatetimeOffsetsOutput"
+                        "shape": "DatetimeOffsetsOutput",
+                        "resultWrapper": "DatetimeOffsetsResult"
                     }
                 },
-                "description": "Ensures that clients can correctly parse datetime (timestamps) with offsets",
                 "result": {
                     "datetime": 1576540098
                 },
@@ -77,11 +87,20 @@
     {
         "description": "Test cases for EmptyInputAndEmptyOutput operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsquery",
             "protocol": "query",
             "protocols": [
                 "query"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsQuery",
+            "serviceId": "Query Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsQuery",
+            "uid": "query-protocol-2020-01-08"
         },
         "shapes": {
             "EmptyInputAndEmptyOutputOutput": {
@@ -92,6 +111,7 @@
         "cases": [
             {
                 "id": "QueryEmptyInputAndEmptyOutput",
+                "description": "Empty output",
                 "given": {
                     "name": "EmptyInputAndEmptyOutput",
                     "http": {
@@ -99,11 +119,11 @@
                         "requestUri": "/"
                     },
                     "output": {
-                        "shape": "EmptyInputAndEmptyOutputOutput"
+                        "shape": "EmptyInputAndEmptyOutputOutput",
+                        "resultWrapper": "EmptyInputAndEmptyOutputResult"
                     },
                     "documentation": "<p>The example tests how requests and responses are serialized when there's no request or response members.</p> <p>While this should be rare, code generators must support this.</p>"
                 },
-                "description": "Empty output",
                 "result": {},
                 "response": {
                     "status_code": 200
@@ -114,11 +134,20 @@
     {
         "description": "Test cases for FlattenedXmlMap operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsquery",
             "protocol": "query",
             "protocols": [
                 "query"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsQuery",
+            "serviceId": "Query Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsQuery",
+            "uid": "query-protocol-2020-01-08"
         },
         "shapes": {
             "FlattenedXmlMapOutput": {
@@ -128,15 +157,6 @@
                         "shape": "FooEnumMap",
                         "flattened": true
                     }
-                }
-            },
-            "FooEnumMap": {
-                "type": "map",
-                "key": {
-                    "shape": "String"
-                },
-                "value": {
-                    "shape": "FooEnum"
                 }
             },
             "FooEnum": {
@@ -149,6 +169,15 @@
                     "0"
                 ]
             },
+            "FooEnumMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "FooEnum"
+                }
+            },
             "String": {
                 "type": "string"
             }
@@ -156,6 +185,7 @@
         "cases": [
             {
                 "id": "QueryQueryFlattenedXmlMap",
+                "description": "Serializes flattened XML maps in responses",
                 "given": {
                     "name": "FlattenedXmlMap",
                     "http": {
@@ -163,11 +193,11 @@
                         "requestUri": "/"
                     },
                     "output": {
-                        "shape": "FlattenedXmlMapOutput"
+                        "shape": "FlattenedXmlMapOutput",
+                        "resultWrapper": "FlattenedXmlMapResult"
                     },
                     "documentation": "<p>Flattened maps</p>"
                 },
-                "description": "Serializes flattened XML maps in responses",
                 "result": {
                     "myMap": {
                         "foo": "Foo",
@@ -187,11 +217,20 @@
     {
         "description": "Test cases for FlattenedXmlMapWithXmlName operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsquery",
             "protocol": "query",
             "protocols": [
                 "query"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsQuery",
+            "serviceId": "Query Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsQuery",
+            "uid": "query-protocol-2020-01-08"
         },
         "shapes": {
             "FlattenedXmlMapWithXmlNameOutput": {
@@ -222,6 +261,7 @@
         "cases": [
             {
                 "id": "QueryQueryFlattenedXmlMapWithXmlName",
+                "description": "Serializes flattened XML maps in responses that have xmlName on members",
                 "given": {
                     "name": "FlattenedXmlMapWithXmlName",
                     "http": {
@@ -229,11 +269,11 @@
                         "requestUri": "/"
                     },
                     "output": {
-                        "shape": "FlattenedXmlMapWithXmlNameOutput"
+                        "shape": "FlattenedXmlMapWithXmlNameOutput",
+                        "resultWrapper": "FlattenedXmlMapWithXmlNameResult"
                     },
                     "documentation": "<p>Flattened maps with @xmlName</p>"
                 },
-                "description": "Serializes flattened XML maps in responses that have xmlName on members",
                 "result": {
                     "myMap": {
                         "a": "A",
@@ -253,11 +293,20 @@
     {
         "description": "Test cases for FlattenedXmlMapWithXmlNamespace operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsquery",
             "protocol": "query",
             "protocols": [
                 "query"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsQuery",
+            "serviceId": "Query Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsQuery",
+            "uid": "query-protocol-2020-01-08"
         },
         "shapes": {
             "FlattenedXmlMapWithXmlNamespaceOutput": {
@@ -291,6 +340,7 @@
         "cases": [
             {
                 "id": "QueryQueryFlattenedXmlMapWithXmlNamespace",
+                "description": "Serializes flattened XML maps in responses that have xmlNamespace and xmlName on members",
                 "given": {
                     "name": "FlattenedXmlMapWithXmlNamespace",
                     "http": {
@@ -298,11 +348,11 @@
                         "requestUri": "/"
                     },
                     "output": {
-                        "shape": "FlattenedXmlMapWithXmlNamespaceOutput"
+                        "shape": "FlattenedXmlMapWithXmlNamespaceOutput",
+                        "resultWrapper": "FlattenedXmlMapWithXmlNamespaceResult"
                     },
                     "documentation": "<p>Flattened maps with @xmlNamespace and @xmlName</p>"
                 },
-                "description": "Serializes flattened XML maps in responses that have xmlNamespace and xmlName on members",
                 "result": {
                     "myMap": {
                         "a": "A",
@@ -322,13 +372,26 @@
     {
         "description": "Test cases for FractionalSeconds operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsquery",
             "protocol": "query",
             "protocols": [
                 "query"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsQuery",
+            "serviceId": "Query Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsQuery",
+            "uid": "query-protocol-2020-01-08"
         },
         "shapes": {
+            "DateTime": {
+                "type": "timestamp",
+                "timestampFormat": "iso8601"
+            },
             "FractionalSecondsOutput": {
                 "type": "structure",
                 "members": {
@@ -336,15 +399,12 @@
                         "shape": "DateTime"
                     }
                 }
-            },
-            "DateTime": {
-                "type": "timestamp",
-                "timestampFormat": "iso8601"
             }
         },
         "cases": [
             {
                 "id": "AwsQueryDateTimeWithFractionalSeconds",
+                "description": "Ensures that clients can correctly parse datetime timestamps with fractional seconds",
                 "given": {
                     "name": "FractionalSeconds",
                     "http": {
@@ -352,10 +412,10 @@
                         "requestUri": "/"
                     },
                     "output": {
-                        "shape": "FractionalSecondsOutput"
+                        "shape": "FractionalSecondsOutput",
+                        "resultWrapper": "FractionalSecondsResult"
                     }
                 },
-                "description": "Ensures that clients can correctly parse datetime timestamps with fractional seconds",
                 "result": {
                     "datetime": 9.46845296123E8
                 },
@@ -372,11 +432,20 @@
     {
         "description": "Test cases for GreetingWithErrors operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsquery",
             "protocol": "query",
             "protocols": [
                 "query"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsQuery",
+            "serviceId": "Query Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsQuery",
+            "uid": "query-protocol-2020-01-08"
         },
         "shapes": {
             "GreetingWithErrorsOutput": {
@@ -394,6 +463,7 @@
         "cases": [
             {
                 "id": "QueryGreetingWithErrors",
+                "description": "Ensures that operations with errors successfully know how to deserialize the successful response",
                 "given": {
                     "name": "GreetingWithErrors",
                     "http": {
@@ -401,11 +471,11 @@
                         "requestUri": "/"
                     },
                     "output": {
-                        "shape": "GreetingWithErrorsOutput"
+                        "shape": "GreetingWithErrorsOutput",
+                        "resultWrapper": "GreetingWithErrorsResult"
                     },
                     "documentation": "<p>This operation has three possible return values:</p> <ol> <li>A successful response in the form of GreetingWithErrorsOutput</li> <li>An InvalidGreeting error.</li> <li>A BadRequest error.</li> </ol>"
                 },
-                "description": "Ensures that operations with errors successfully know how to deserialize the successful response",
                 "result": {
                     "greeting": "Hello"
                 },
@@ -422,11 +492,20 @@
     {
         "description": "Test cases for GreetingWithErrors operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsquery",
             "protocol": "query",
             "protocols": [
                 "query"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsQuery",
+            "serviceId": "Query Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsQuery",
+            "uid": "query-protocol-2020-01-08"
         },
         "shapes": {
             "InvalidGreeting": {
@@ -446,6 +525,7 @@
         "cases": [
             {
                 "id": "QueryInvalidGreetingError",
+                "description": "Parses simple XML errors",
                 "given": {
                     "name": "GreetingWithErrors",
                     "http": {
@@ -459,7 +539,6 @@
                         }
                     ]
                 },
-                "description": "Parses simple XML errors",
                 "errorCode": "InvalidGreeting",
                 "errorMessage": "Hi",
                 "error": {
@@ -478,71 +557,20 @@
     {
         "description": "Test cases for GreetingWithErrors operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsquery",
             "protocol": "query",
             "protocols": [
                 "query"
             ],
-            "apiVersion": "2020-01-08"
-        },
-        "shapes": {
-            "CustomCodeError": {
-                "type": "structure",
-                "members": {
-                    "Message": {
-                        "shape": "String"
-                    }
-                },
-                "error": {
-                    "code": "Customized",
-                    "httpStatusCode": 402,
-                    "senderFault": true
-                },
-                "exception": true
-            },
-            "String": {
-                "type": "string"
-            }
-        },
-        "cases": [
-            {
-                "id": "QueryCustomizedError",
-                "given": {
-                    "name": "GreetingWithErrors",
-                    "http": {
-                        "method": "POST",
-                        "requestUri": "/"
-                    },
-                    "documentation": "<p>This operation has three possible return values:</p> <ol> <li>A successful response in the form of GreetingWithErrorsOutput</li> <li>An InvalidGreeting error.</li> <li>A BadRequest error.</li> </ol>",
-                    "errors": [
-                        {
-                            "shape": "CustomCodeError"
-                        }
-                    ]
-                },
-                "description": "Parses customized XML errors",
-                "errorCode": "Customized",
-                "errorMessage": "Hi",
-                "error": {
-                    "Message": "Hi"
-                },
-                "response": {
-                    "status_code": 402,
-                    "headers": {
-                        "Content-Type": "text/xml"
-                    },
-                    "body": "<ErrorResponse>\n   <Error>\n      <Type>Sender</Type>\n      <Code>Customized</Code>\n      <Message>Hi</Message>\n   </Error>\n   <RequestId>foo-id</RequestId>\n</ErrorResponse>\n"
-                }
-            }
-        ]
-    },
-    {
-        "description": "Test cases for GreetingWithErrors operation",
-        "metadata": {
-            "protocol": "query",
-            "protocols": [
-                "query"
-            ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsQuery",
+            "serviceId": "Query Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsQuery",
+            "uid": "query-protocol-2020-01-08"
         },
         "shapes": {
             "ComplexError": {
@@ -558,9 +586,6 @@
                 "documentation": "<p>This error is thrown when a request is invalid.</p>",
                 "exception": true
             },
-            "String": {
-                "type": "string"
-            },
             "ComplexNestedErrorData": {
                 "type": "structure",
                 "members": {
@@ -568,6 +593,9 @@
                         "shape": "String"
                     }
                 }
+            },
+            "String": {
+                "type": "string"
             }
         },
         "cases": [
@@ -604,13 +632,91 @@
         ]
     },
     {
-        "description": "Test cases for IgnoresWrappingXmlName operation",
+        "description": "Test cases for GreetingWithErrors operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsquery",
             "protocol": "query",
             "protocols": [
                 "query"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsQuery",
+            "serviceId": "Query Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsQuery",
+            "uid": "query-protocol-2020-01-08"
+        },
+        "shapes": {
+            "CustomCodeError": {
+                "type": "structure",
+                "members": {
+                    "Message": {
+                        "shape": "String"
+                    }
+                },
+                "error": {
+                    "code": "Customized",
+                    "httpStatusCode": 402,
+                    "senderFault": true
+                },
+                "exception": true
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "QueryCustomizedError",
+                "description": "Parses customized XML errors",
+                "given": {
+                    "name": "GreetingWithErrors",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "documentation": "<p>This operation has three possible return values:</p> <ol> <li>A successful response in the form of GreetingWithErrorsOutput</li> <li>An InvalidGreeting error.</li> <li>A BadRequest error.</li> </ol>",
+                    "errors": [
+                        {
+                            "shape": "CustomCodeError"
+                        }
+                    ]
+                },
+                "errorCode": "Customized",
+                "errorMessage": "Hi",
+                "error": {
+                    "Message": "Hi"
+                },
+                "response": {
+                    "status_code": 402,
+                    "headers": {
+                        "Content-Type": "text/xml"
+                    },
+                    "body": "<ErrorResponse>\n   <Error>\n      <Type>Sender</Type>\n      <Code>Customized</Code>\n      <Message>Hi</Message>\n   </Error>\n   <RequestId>foo-id</RequestId>\n</ErrorResponse>\n"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for IgnoresWrappingXmlName operation",
+        "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsquery",
+            "protocol": "query",
+            "protocols": [
+                "query"
+            ],
+            "serviceFullName": "AwsQuery",
+            "serviceId": "Query Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsQuery",
+            "uid": "query-protocol-2020-01-08"
         },
         "shapes": {
             "IgnoresWrappingXmlNameOutput": {
@@ -629,6 +735,7 @@
         "cases": [
             {
                 "id": "QueryIgnoresWrappingXmlName",
+                "description": "The xmlName trait on the output structure is ignored in AWS Query",
                 "given": {
                     "name": "IgnoresWrappingXmlName",
                     "http": {
@@ -636,11 +743,11 @@
                         "requestUri": "/"
                     },
                     "output": {
-                        "shape": "IgnoresWrappingXmlNameOutput"
+                        "shape": "IgnoresWrappingXmlNameOutput",
+                        "resultWrapper": "IgnoresWrappingXmlNameResult"
                     },
                     "documentation": "<p>The xmlName trait on the output structure is ignored in AWS Query.</p> <p>The wrapping element is always operation name + &quot;Response&quot;, and inside of that wrapper is another wrapper named operation name + &quot;Result&quot;.</p>"
                 },
-                "description": "The xmlName trait on the output structure is ignored in AWS Query",
                 "result": {
                     "foo": "bar"
                 },
@@ -657,16 +764,26 @@
     {
         "description": "Test cases for NoInputAndNoOutput operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsquery",
             "protocol": "query",
             "protocols": [
                 "query"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsQuery",
+            "serviceId": "Query Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsQuery",
+            "uid": "query-protocol-2020-01-08"
         },
         "shapes": {},
         "cases": [
             {
                 "id": "QueryNoInputAndNoOutput",
+                "description": "Empty output. Note that no assertion is made on the output body itself.",
                 "given": {
                     "name": "NoInputAndNoOutput",
                     "http": {
@@ -675,7 +792,6 @@
                     },
                     "documentation": "<p>The example tests how requests and responses are serialized when there's no request or response payload because the operation has no input or output.</p> <p>While this should be rare, code generators must support this.</p>"
                 },
-                "description": "Empty output. Note that no assertion is made on the output body itself.",
                 "result": {},
                 "response": {
                     "status_code": 200
@@ -686,11 +802,20 @@
     {
         "description": "Test cases for NoInputAndOutput operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsquery",
             "protocol": "query",
             "protocols": [
                 "query"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsQuery",
+            "serviceId": "Query Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsQuery",
+            "uid": "query-protocol-2020-01-08"
         },
         "shapes": {
             "NoInputAndOutputOutput": {
@@ -701,6 +826,7 @@
         "cases": [
             {
                 "id": "QueryNoInputAndOutput",
+                "description": "Empty output",
                 "given": {
                     "name": "NoInputAndOutput",
                     "http": {
@@ -708,11 +834,11 @@
                         "requestUri": "/"
                     },
                     "output": {
-                        "shape": "NoInputAndOutputOutput"
+                        "shape": "NoInputAndOutputOutput",
+                        "resultWrapper": "NoInputAndOutputResult"
                     },
                     "documentation": "<p>The example tests how requests and responses are serialized when there's no request payload or response members.</p> <p>While this should be rare, code generators must support this.</p>"
                 },
-                "description": "Empty output",
                 "result": {},
                 "response": {
                     "status_code": 200
@@ -723,11 +849,20 @@
     {
         "description": "Test cases for RecursiveXmlShapes operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsquery",
             "protocol": "query",
             "protocols": [
                 "query"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsQuery",
+            "serviceId": "Query Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsQuery",
+            "uid": "query-protocol-2020-01-08"
         },
         "shapes": {
             "RecursiveXmlShapesOutput": {
@@ -749,9 +884,6 @@
                     }
                 }
             },
-            "String": {
-                "type": "string"
-            },
             "RecursiveXmlShapesOutputNested2": {
                 "type": "structure",
                 "members": {
@@ -762,11 +894,15 @@
                         "shape": "RecursiveXmlShapesOutputNested1"
                     }
                 }
+            },
+            "String": {
+                "type": "string"
             }
         },
         "cases": [
             {
                 "id": "QueryRecursiveShapes",
+                "description": "Serializes recursive structures",
                 "given": {
                     "name": "RecursiveXmlShapes",
                     "http": {
@@ -774,11 +910,11 @@
                         "requestUri": "/"
                     },
                     "output": {
-                        "shape": "RecursiveXmlShapesOutput"
+                        "shape": "RecursiveXmlShapesOutput",
+                        "resultWrapper": "RecursiveXmlShapesResult"
                     },
                     "documentation": "<p>Recursive shapes</p>"
                 },
-                "description": "Serializes recursive structures",
                 "result": {
                     "nested": {
                         "foo": "Foo1",
@@ -806,13 +942,42 @@
     {
         "description": "Test cases for SimpleScalarXmlProperties operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsquery",
             "protocol": "query",
             "protocols": [
                 "query"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsQuery",
+            "serviceId": "Query Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsQuery",
+            "uid": "query-protocol-2020-01-08"
         },
         "shapes": {
+            "Boolean": {
+                "type": "boolean",
+                "box": true
+            },
+            "Double": {
+                "type": "double",
+                "box": true
+            },
+            "Float": {
+                "type": "float",
+                "box": true
+            },
+            "Integer": {
+                "type": "integer",
+                "box": true
+            },
+            "Long": {
+                "type": "long",
+                "box": true
+            },
             "SimpleScalarXmlPropertiesOutput": {
                 "type": "structure",
                 "members": {
@@ -851,31 +1016,12 @@
             },
             "String": {
                 "type": "string"
-            },
-            "Boolean": {
-                "type": "boolean",
-                "box": true
-            },
-            "Integer": {
-                "type": "integer",
-                "box": true
-            },
-            "Long": {
-                "type": "long",
-                "box": true
-            },
-            "Float": {
-                "type": "float",
-                "box": true
-            },
-            "Double": {
-                "type": "double",
-                "box": true
             }
         },
         "cases": [
             {
                 "id": "QuerySimpleScalarProperties",
+                "description": "Serializes simple scalar properties",
                 "given": {
                     "name": "SimpleScalarXmlProperties",
                     "http": {
@@ -883,10 +1029,10 @@
                         "requestUri": "/"
                     },
                     "output": {
-                        "shape": "SimpleScalarXmlPropertiesOutput"
+                        "shape": "SimpleScalarXmlPropertiesOutput",
+                        "resultWrapper": "SimpleScalarXmlPropertiesResult"
                     }
                 },
-                "description": "Serializes simple scalar properties",
                 "result": {
                     "stringValue": "string",
                     "emptyStringValue": "",
@@ -909,6 +1055,7 @@
             },
             {
                 "id": "AwsQuerySupportsNaNFloatOutputs",
+                "description": "Supports handling NaN float values.",
                 "given": {
                     "name": "SimpleScalarXmlProperties",
                     "http": {
@@ -916,10 +1063,10 @@
                         "requestUri": "/"
                     },
                     "output": {
-                        "shape": "SimpleScalarXmlPropertiesOutput"
+                        "shape": "SimpleScalarXmlPropertiesOutput",
+                        "resultWrapper": "SimpleScalarXmlPropertiesResult"
                     }
                 },
-                "description": "Supports handling NaN float values.",
                 "result": {
                     "floatValue": "NaN",
                     "doubleValue": "NaN"
@@ -934,6 +1081,7 @@
             },
             {
                 "id": "AwsQuerySupportsInfinityFloatOutputs",
+                "description": "Supports handling Infinity float values.",
                 "given": {
                     "name": "SimpleScalarXmlProperties",
                     "http": {
@@ -941,10 +1089,10 @@
                         "requestUri": "/"
                     },
                     "output": {
-                        "shape": "SimpleScalarXmlPropertiesOutput"
+                        "shape": "SimpleScalarXmlPropertiesOutput",
+                        "resultWrapper": "SimpleScalarXmlPropertiesResult"
                     }
                 },
-                "description": "Supports handling Infinity float values.",
                 "result": {
                     "floatValue": "Infinity",
                     "doubleValue": "Infinity"
@@ -959,6 +1107,7 @@
             },
             {
                 "id": "AwsQuerySupportsNegativeInfinityFloatOutputs",
+                "description": "Supports handling -Infinity float values.",
                 "given": {
                     "name": "SimpleScalarXmlProperties",
                     "http": {
@@ -966,10 +1115,10 @@
                         "requestUri": "/"
                     },
                     "output": {
-                        "shape": "SimpleScalarXmlPropertiesOutput"
+                        "shape": "SimpleScalarXmlPropertiesOutput",
+                        "resultWrapper": "SimpleScalarXmlPropertiesResult"
                     }
                 },
-                "description": "Supports handling -Infinity float values.",
                 "result": {
                     "floatValue": "-Infinity",
                     "doubleValue": "-Infinity"
@@ -987,13 +1136,25 @@
     {
         "description": "Test cases for XmlBlobs operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsquery",
             "protocol": "query",
             "protocols": [
                 "query"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsQuery",
+            "serviceId": "Query Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsQuery",
+            "uid": "query-protocol-2020-01-08"
         },
         "shapes": {
+            "Blob": {
+                "type": "blob"
+            },
             "XmlBlobsOutput": {
                 "type": "structure",
                 "members": {
@@ -1001,14 +1162,12 @@
                         "shape": "Blob"
                     }
                 }
-            },
-            "Blob": {
-                "type": "blob"
             }
         },
         "cases": [
             {
                 "id": "QueryXmlBlobs",
+                "description": "Blobs are base64 encoded",
                 "given": {
                     "name": "XmlBlobs",
                     "http": {
@@ -1016,11 +1175,11 @@
                         "requestUri": "/"
                     },
                     "output": {
-                        "shape": "XmlBlobsOutput"
+                        "shape": "XmlBlobsOutput",
+                        "resultWrapper": "XmlBlobsResult"
                     },
                     "documentation": "<p>Blobs are base64 encoded</p>"
                 },
-                "description": "Blobs are base64 encoded",
                 "result": {
                     "data": "value"
                 },
@@ -1037,13 +1196,25 @@
     {
         "description": "Test cases for XmlEmptyBlobs operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsquery",
             "protocol": "query",
             "protocols": [
                 "query"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsQuery",
+            "serviceId": "Query Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsQuery",
+            "uid": "query-protocol-2020-01-08"
         },
         "shapes": {
+            "Blob": {
+                "type": "blob"
+            },
             "XmlBlobsOutput": {
                 "type": "structure",
                 "members": {
@@ -1051,14 +1222,12 @@
                         "shape": "Blob"
                     }
                 }
-            },
-            "Blob": {
-                "type": "blob"
             }
         },
         "cases": [
             {
                 "id": "QueryXmlEmptyBlobs",
+                "description": "Empty blobs are deserialized as empty string",
                 "given": {
                     "name": "XmlEmptyBlobs",
                     "http": {
@@ -1066,10 +1235,10 @@
                         "requestUri": "/"
                     },
                     "output": {
-                        "shape": "XmlBlobsOutput"
+                        "shape": "XmlBlobsOutput",
+                        "resultWrapper": "XmlEmptyBlobsResult"
                     }
                 },
-                "description": "Empty blobs are deserialized as empty string",
                 "result": {
                     "data": ""
                 },
@@ -1083,6 +1252,7 @@
             },
             {
                 "id": "QueryXmlEmptySelfClosedBlobs",
+                "description": "Empty self closed blobs are deserialized as empty string",
                 "given": {
                     "name": "XmlEmptyBlobs",
                     "http": {
@@ -1090,10 +1260,10 @@
                         "requestUri": "/"
                     },
                     "output": {
-                        "shape": "XmlBlobsOutput"
+                        "shape": "XmlBlobsOutput",
+                        "resultWrapper": "XmlEmptyBlobsResult"
                     }
                 },
-                "description": "Empty self closed blobs are deserialized as empty string",
                 "result": {
                     "data": ""
                 },
@@ -1110,13 +1280,141 @@
     {
         "description": "Test cases for XmlEmptyLists operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsquery",
             "protocol": "query",
             "protocols": [
                 "query"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsQuery",
+            "serviceId": "Query Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsQuery",
+            "uid": "query-protocol-2020-01-08"
         },
         "shapes": {
+            "Boolean": {
+                "type": "boolean",
+                "box": true
+            },
+            "BooleanList": {
+                "type": "list",
+                "member": {
+                    "shape": "Boolean"
+                }
+            },
+            "FooEnum": {
+                "type": "string",
+                "enum": [
+                    "Foo",
+                    "Baz",
+                    "Bar",
+                    "1",
+                    "0"
+                ]
+            },
+            "FooEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "FooEnum"
+                }
+            },
+            "Integer": {
+                "type": "integer",
+                "box": true
+            },
+            "IntegerEnum": {
+                "type": "integer",
+                "box": true
+            },
+            "IntegerEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "IntegerEnum"
+                }
+            },
+            "IntegerList": {
+                "type": "list",
+                "member": {
+                    "shape": "Integer"
+                }
+            },
+            "ListWithMemberNamespace": {
+                "type": "list",
+                "member": {
+                    "shape": "String",
+                    "xmlNamespace": "https://xml-member.example.com"
+                },
+                "xmlNamespace": "https://xml-list.example.com"
+            },
+            "ListWithNamespace": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                },
+                "xmlNamespace": "https://xml-list.example.com"
+            },
+            "NestedStringList": {
+                "type": "list",
+                "member": {
+                    "shape": "StringList"
+                },
+                "documentation": "<p>A list of lists of strings.</p>"
+            },
+            "RenamedListMembers": {
+                "type": "list",
+                "member": {
+                    "shape": "String",
+                    "locationName": "item"
+                }
+            },
+            "String": {
+                "type": "string"
+            },
+            "StringList": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                }
+            },
+            "StringSet": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                }
+            },
+            "StructureList": {
+                "type": "list",
+                "member": {
+                    "shape": "StructureListMember",
+                    "locationName": "item"
+                }
+            },
+            "StructureListMember": {
+                "type": "structure",
+                "members": {
+                    "a": {
+                        "shape": "String",
+                        "locationName": "value"
+                    },
+                    "b": {
+                        "shape": "String",
+                        "locationName": "other"
+                    }
+                }
+            },
+            "Timestamp": {
+                "type": "timestamp"
+            },
+            "TimestampList": {
+                "type": "list",
+                "member": {
+                    "shape": "Timestamp"
+                }
+            },
             "XmlListsOutput": {
                 "type": "structure",
                 "members": {
@@ -1170,130 +1468,12 @@
                         "locationName": "myStructureList"
                     }
                 }
-            },
-            "StringList": {
-                "type": "list",
-                "member": {
-                    "shape": "String"
-                }
-            },
-            "StringSet": {
-                "type": "list",
-                "member": {
-                    "shape": "String"
-                }
-            },
-            "IntegerList": {
-                "type": "list",
-                "member": {
-                    "shape": "Integer"
-                }
-            },
-            "BooleanList": {
-                "type": "list",
-                "member": {
-                    "shape": "Boolean"
-                }
-            },
-            "TimestampList": {
-                "type": "list",
-                "member": {
-                    "shape": "Timestamp"
-                }
-            },
-            "FooEnumList": {
-                "type": "list",
-                "member": {
-                    "shape": "FooEnum"
-                }
-            },
-            "IntegerEnumList": {
-                "type": "list",
-                "member": {
-                    "shape": "IntegerEnum"
-                }
-            },
-            "NestedStringList": {
-                "type": "list",
-                "member": {
-                    "shape": "StringList"
-                },
-                "documentation": "<p>A list of lists of strings.</p>"
-            },
-            "RenamedListMembers": {
-                "type": "list",
-                "member": {
-                    "shape": "String",
-                    "locationName": "item"
-                }
-            },
-            "ListWithMemberNamespace": {
-                "type": "list",
-                "member": {
-                    "shape": "String",
-                    "xmlNamespace": "https://xml-member.example.com"
-                },
-                "xmlNamespace": "https://xml-list.example.com"
-            },
-            "ListWithNamespace": {
-                "type": "list",
-                "member": {
-                    "shape": "String"
-                },
-                "xmlNamespace": "https://xml-list.example.com"
-            },
-            "StructureList": {
-                "type": "list",
-                "member": {
-                    "shape": "StructureListMember",
-                    "locationName": "item"
-                }
-            },
-            "StructureListMember": {
-                "type": "structure",
-                "members": {
-                    "a": {
-                        "shape": "String",
-                        "locationName": "value"
-                    },
-                    "b": {
-                        "shape": "String",
-                        "locationName": "other"
-                    }
-                }
-            },
-            "String": {
-                "type": "string"
-            },
-            "IntegerEnum": {
-                "type": "integer",
-                "box": true
-            },
-            "FooEnum": {
-                "type": "string",
-                "enum": [
-                    "Foo",
-                    "Baz",
-                    "Bar",
-                    "1",
-                    "0"
-                ]
-            },
-            "Timestamp": {
-                "type": "timestamp"
-            },
-            "Boolean": {
-                "type": "boolean",
-                "box": true
-            },
-            "Integer": {
-                "type": "integer",
-                "box": true
             }
         },
         "cases": [
             {
                 "id": "QueryXmlEmptyLists",
+                "description": "Deserializes empty XML lists",
                 "given": {
                     "name": "XmlEmptyLists",
                     "http": {
@@ -1301,10 +1481,10 @@
                         "requestUri": "/"
                     },
                     "output": {
-                        "shape": "XmlListsOutput"
+                        "shape": "XmlListsOutput",
+                        "resultWrapper": "XmlEmptyListsResult"
                     }
                 },
-                "description": "Deserializes empty XML lists",
                 "result": {
                     "stringList": [],
                     "stringSet": []
@@ -1322,13 +1502,33 @@
     {
         "description": "Test cases for XmlEmptyMaps operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsquery",
             "protocol": "query",
             "protocols": [
                 "query"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsQuery",
+            "serviceId": "Query Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsQuery",
+            "uid": "query-protocol-2020-01-08"
         },
         "shapes": {
+            "GreetingStruct": {
+                "type": "structure",
+                "members": {
+                    "hi": {
+                        "shape": "String"
+                    }
+                }
+            },
+            "String": {
+                "type": "string"
+            },
             "XmlMapsOutput": {
                 "type": "structure",
                 "members": {
@@ -1345,22 +1545,12 @@
                 "value": {
                     "shape": "GreetingStruct"
                 }
-            },
-            "GreetingStruct": {
-                "type": "structure",
-                "members": {
-                    "hi": {
-                        "shape": "String"
-                    }
-                }
-            },
-            "String": {
-                "type": "string"
             }
         },
         "cases": [
             {
                 "id": "QueryXmlEmptyMaps",
+                "description": "Deserializes Empty XML maps",
                 "given": {
                     "name": "XmlEmptyMaps",
                     "http": {
@@ -1368,10 +1558,10 @@
                         "requestUri": "/"
                     },
                     "output": {
-                        "shape": "XmlMapsOutput"
+                        "shape": "XmlMapsOutput",
+                        "resultWrapper": "XmlEmptyMapsResult"
                     }
                 },
-                "description": "Deserializes Empty XML maps",
                 "result": {
                     "myMap": {}
                 },
@@ -1385,6 +1575,7 @@
             },
             {
                 "id": "QueryXmlEmptySelfClosedMaps",
+                "description": "Deserializes Self-Closed XML maps",
                 "given": {
                     "name": "XmlEmptyMaps",
                     "http": {
@@ -1392,10 +1583,10 @@
                         "requestUri": "/"
                     },
                     "output": {
-                        "shape": "XmlMapsOutput"
+                        "shape": "XmlMapsOutput",
+                        "resultWrapper": "XmlEmptyMapsResult"
                     }
                 },
-                "description": "Deserializes Self-Closed XML maps",
                 "result": {
                     "myMap": {}
                 },
@@ -1412,13 +1603,56 @@
     {
         "description": "Test cases for XmlEnums operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsquery",
             "protocol": "query",
             "protocols": [
                 "query"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsQuery",
+            "serviceId": "Query Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsQuery",
+            "uid": "query-protocol-2020-01-08"
         },
         "shapes": {
+            "FooEnum": {
+                "type": "string",
+                "enum": [
+                    "Foo",
+                    "Baz",
+                    "Bar",
+                    "1",
+                    "0"
+                ]
+            },
+            "FooEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "FooEnum"
+                }
+            },
+            "FooEnumMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "FooEnum"
+                }
+            },
+            "FooEnumSet": {
+                "type": "list",
+                "member": {
+                    "shape": "FooEnum"
+                }
+            },
+            "String": {
+                "type": "string"
+            },
             "XmlEnumsOutput": {
                 "type": "structure",
                 "members": {
@@ -1441,45 +1675,12 @@
                         "shape": "FooEnumMap"
                     }
                 }
-            },
-            "FooEnum": {
-                "type": "string",
-                "enum": [
-                    "Foo",
-                    "Baz",
-                    "Bar",
-                    "1",
-                    "0"
-                ]
-            },
-            "FooEnumList": {
-                "type": "list",
-                "member": {
-                    "shape": "FooEnum"
-                }
-            },
-            "FooEnumSet": {
-                "type": "list",
-                "member": {
-                    "shape": "FooEnum"
-                }
-            },
-            "FooEnumMap": {
-                "type": "map",
-                "key": {
-                    "shape": "String"
-                },
-                "value": {
-                    "shape": "FooEnum"
-                }
-            },
-            "String": {
-                "type": "string"
             }
         },
         "cases": [
             {
                 "id": "QueryXmlEnums",
+                "description": "Serializes simple scalar properties",
                 "given": {
                     "name": "XmlEnums",
                     "http": {
@@ -1487,11 +1688,11 @@
                         "requestUri": "/"
                     },
                     "output": {
-                        "shape": "XmlEnumsOutput"
+                        "shape": "XmlEnumsOutput",
+                        "resultWrapper": "XmlEnumsResult"
                     },
                     "documentation": "<p>This example serializes enums as top level properties, in lists, sets, and maps.</p>"
                 },
-                "description": "Serializes simple scalar properties",
                 "result": {
                     "fooEnum1": "Foo",
                     "fooEnum2": "0",
@@ -1522,13 +1723,50 @@
     {
         "description": "Test cases for XmlIntEnums operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsquery",
             "protocol": "query",
             "protocols": [
                 "query"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsQuery",
+            "serviceId": "Query Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsQuery",
+            "uid": "query-protocol-2020-01-08"
         },
         "shapes": {
+            "IntegerEnum": {
+                "type": "integer",
+                "box": true
+            },
+            "IntegerEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "IntegerEnum"
+                }
+            },
+            "IntegerEnumMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "IntegerEnum"
+                }
+            },
+            "IntegerEnumSet": {
+                "type": "list",
+                "member": {
+                    "shape": "IntegerEnum"
+                }
+            },
+            "String": {
+                "type": "string"
+            },
             "XmlIntEnumsOutput": {
                 "type": "structure",
                 "members": {
@@ -1551,39 +1789,12 @@
                         "shape": "IntegerEnumMap"
                     }
                 }
-            },
-            "IntegerEnum": {
-                "type": "integer",
-                "box": true
-            },
-            "IntegerEnumList": {
-                "type": "list",
-                "member": {
-                    "shape": "IntegerEnum"
-                }
-            },
-            "IntegerEnumSet": {
-                "type": "list",
-                "member": {
-                    "shape": "IntegerEnum"
-                }
-            },
-            "IntegerEnumMap": {
-                "type": "map",
-                "key": {
-                    "shape": "String"
-                },
-                "value": {
-                    "shape": "IntegerEnum"
-                }
-            },
-            "String": {
-                "type": "string"
             }
         },
         "cases": [
             {
                 "id": "QueryXmlIntEnums",
+                "description": "Serializes simple scalar properties",
                 "given": {
                     "name": "XmlIntEnums",
                     "http": {
@@ -1591,11 +1802,11 @@
                         "requestUri": "/"
                     },
                     "output": {
-                        "shape": "XmlIntEnumsOutput"
+                        "shape": "XmlIntEnumsOutput",
+                        "resultWrapper": "XmlIntEnumsResult"
                     },
                     "documentation": "<p>This example serializes enums as top level properties, in lists, sets, and maps.</p>"
                 },
-                "description": "Serializes simple scalar properties",
                 "result": {
                     "intEnum1": 1,
                     "intEnum2": 2,
@@ -1626,13 +1837,141 @@
     {
         "description": "Test cases for XmlLists operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsquery",
             "protocol": "query",
             "protocols": [
                 "query"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsQuery",
+            "serviceId": "Query Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsQuery",
+            "uid": "query-protocol-2020-01-08"
         },
         "shapes": {
+            "Boolean": {
+                "type": "boolean",
+                "box": true
+            },
+            "BooleanList": {
+                "type": "list",
+                "member": {
+                    "shape": "Boolean"
+                }
+            },
+            "FooEnum": {
+                "type": "string",
+                "enum": [
+                    "Foo",
+                    "Baz",
+                    "Bar",
+                    "1",
+                    "0"
+                ]
+            },
+            "FooEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "FooEnum"
+                }
+            },
+            "Integer": {
+                "type": "integer",
+                "box": true
+            },
+            "IntegerEnum": {
+                "type": "integer",
+                "box": true
+            },
+            "IntegerEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "IntegerEnum"
+                }
+            },
+            "IntegerList": {
+                "type": "list",
+                "member": {
+                    "shape": "Integer"
+                }
+            },
+            "ListWithMemberNamespace": {
+                "type": "list",
+                "member": {
+                    "shape": "String",
+                    "xmlNamespace": "https://xml-member.example.com"
+                },
+                "xmlNamespace": "https://xml-list.example.com"
+            },
+            "ListWithNamespace": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                },
+                "xmlNamespace": "https://xml-list.example.com"
+            },
+            "NestedStringList": {
+                "type": "list",
+                "member": {
+                    "shape": "StringList"
+                },
+                "documentation": "<p>A list of lists of strings.</p>"
+            },
+            "RenamedListMembers": {
+                "type": "list",
+                "member": {
+                    "shape": "String",
+                    "locationName": "item"
+                }
+            },
+            "String": {
+                "type": "string"
+            },
+            "StringList": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                }
+            },
+            "StringSet": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                }
+            },
+            "StructureList": {
+                "type": "list",
+                "member": {
+                    "shape": "StructureListMember",
+                    "locationName": "item"
+                }
+            },
+            "StructureListMember": {
+                "type": "structure",
+                "members": {
+                    "a": {
+                        "shape": "String",
+                        "locationName": "value"
+                    },
+                    "b": {
+                        "shape": "String",
+                        "locationName": "other"
+                    }
+                }
+            },
+            "Timestamp": {
+                "type": "timestamp"
+            },
+            "TimestampList": {
+                "type": "list",
+                "member": {
+                    "shape": "Timestamp"
+                }
+            },
             "XmlListsOutput": {
                 "type": "structure",
                 "members": {
@@ -1686,130 +2025,12 @@
                         "locationName": "myStructureList"
                     }
                 }
-            },
-            "StringList": {
-                "type": "list",
-                "member": {
-                    "shape": "String"
-                }
-            },
-            "StringSet": {
-                "type": "list",
-                "member": {
-                    "shape": "String"
-                }
-            },
-            "IntegerList": {
-                "type": "list",
-                "member": {
-                    "shape": "Integer"
-                }
-            },
-            "BooleanList": {
-                "type": "list",
-                "member": {
-                    "shape": "Boolean"
-                }
-            },
-            "TimestampList": {
-                "type": "list",
-                "member": {
-                    "shape": "Timestamp"
-                }
-            },
-            "FooEnumList": {
-                "type": "list",
-                "member": {
-                    "shape": "FooEnum"
-                }
-            },
-            "IntegerEnumList": {
-                "type": "list",
-                "member": {
-                    "shape": "IntegerEnum"
-                }
-            },
-            "NestedStringList": {
-                "type": "list",
-                "member": {
-                    "shape": "StringList"
-                },
-                "documentation": "<p>A list of lists of strings.</p>"
-            },
-            "RenamedListMembers": {
-                "type": "list",
-                "member": {
-                    "shape": "String",
-                    "locationName": "item"
-                }
-            },
-            "ListWithMemberNamespace": {
-                "type": "list",
-                "member": {
-                    "shape": "String",
-                    "xmlNamespace": "https://xml-member.example.com"
-                },
-                "xmlNamespace": "https://xml-list.example.com"
-            },
-            "ListWithNamespace": {
-                "type": "list",
-                "member": {
-                    "shape": "String"
-                },
-                "xmlNamespace": "https://xml-list.example.com"
-            },
-            "StructureList": {
-                "type": "list",
-                "member": {
-                    "shape": "StructureListMember",
-                    "locationName": "item"
-                }
-            },
-            "StructureListMember": {
-                "type": "structure",
-                "members": {
-                    "a": {
-                        "shape": "String",
-                        "locationName": "value"
-                    },
-                    "b": {
-                        "shape": "String",
-                        "locationName": "other"
-                    }
-                }
-            },
-            "String": {
-                "type": "string"
-            },
-            "IntegerEnum": {
-                "type": "integer",
-                "box": true
-            },
-            "FooEnum": {
-                "type": "string",
-                "enum": [
-                    "Foo",
-                    "Baz",
-                    "Bar",
-                    "1",
-                    "0"
-                ]
-            },
-            "Timestamp": {
-                "type": "timestamp"
-            },
-            "Boolean": {
-                "type": "boolean",
-                "box": true
-            },
-            "Integer": {
-                "type": "integer",
-                "box": true
             }
         },
         "cases": [
             {
                 "id": "QueryXmlLists",
+                "description": "Tests for XML list serialization",
                 "given": {
                     "name": "XmlLists",
                     "http": {
@@ -1817,11 +2038,11 @@
                         "requestUri": "/"
                     },
                     "output": {
-                        "shape": "XmlListsOutput"
+                        "shape": "XmlListsOutput",
+                        "resultWrapper": "XmlListsResult"
                     },
                     "documentation": "<p>This test case serializes XML lists for the following cases for both input and output:</p> <ol> <li>Normal XML lists.</li> <li>Normal XML sets.</li> <li>XML lists of lists.</li> <li>XML lists with @xmlName on its members</li> <li>Flattened XML lists.</li> <li>Flattened XML lists with @xmlName.</li> <li>Lists of structures.</li> </ol>"
                 },
-                "description": "Tests for XML list serialization",
                 "result": {
                     "stringList": [
                         "foo",
@@ -1905,13 +2126,33 @@
     {
         "description": "Test cases for XmlMaps operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsquery",
             "protocol": "query",
             "protocols": [
                 "query"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsQuery",
+            "serviceId": "Query Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsQuery",
+            "uid": "query-protocol-2020-01-08"
         },
         "shapes": {
+            "GreetingStruct": {
+                "type": "structure",
+                "members": {
+                    "hi": {
+                        "shape": "String"
+                    }
+                }
+            },
+            "String": {
+                "type": "string"
+            },
             "XmlMapsOutput": {
                 "type": "structure",
                 "members": {
@@ -1928,22 +2169,12 @@
                 "value": {
                     "shape": "GreetingStruct"
                 }
-            },
-            "GreetingStruct": {
-                "type": "structure",
-                "members": {
-                    "hi": {
-                        "shape": "String"
-                    }
-                }
-            },
-            "String": {
-                "type": "string"
             }
         },
         "cases": [
             {
                 "id": "QueryXmlMaps",
+                "description": "Tests for XML map serialization",
                 "given": {
                     "name": "XmlMaps",
                     "http": {
@@ -1951,11 +2182,11 @@
                         "requestUri": "/"
                     },
                     "output": {
-                        "shape": "XmlMapsOutput"
+                        "shape": "XmlMapsOutput",
+                        "resultWrapper": "XmlMapsResult"
                     },
                     "documentation": "<p>The example tests basic map serialization.</p>"
                 },
-                "description": "Tests for XML map serialization",
                 "result": {
                     "myMap": {
                         "foo": {
@@ -1979,13 +2210,33 @@
     {
         "description": "Test cases for XmlMapsXmlName operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsquery",
             "protocol": "query",
             "protocols": [
                 "query"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsQuery",
+            "serviceId": "Query Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsQuery",
+            "uid": "query-protocol-2020-01-08"
         },
         "shapes": {
+            "GreetingStruct": {
+                "type": "structure",
+                "members": {
+                    "hi": {
+                        "shape": "String"
+                    }
+                }
+            },
+            "String": {
+                "type": "string"
+            },
             "XmlMapsXmlNameOutput": {
                 "type": "structure",
                 "members": {
@@ -2004,22 +2255,12 @@
                     "shape": "GreetingStruct",
                     "locationName": "Setting"
                 }
-            },
-            "GreetingStruct": {
-                "type": "structure",
-                "members": {
-                    "hi": {
-                        "shape": "String"
-                    }
-                }
-            },
-            "String": {
-                "type": "string"
             }
         },
         "cases": [
             {
                 "id": "QueryQueryXmlMapsXmlName",
+                "description": "Serializes XML lists",
                 "given": {
                     "name": "XmlMapsXmlName",
                     "http": {
@@ -2027,10 +2268,10 @@
                         "requestUri": "/"
                     },
                     "output": {
-                        "shape": "XmlMapsXmlNameOutput"
+                        "shape": "XmlMapsXmlNameOutput",
+                        "resultWrapper": "XmlMapsXmlNameResult"
                     }
                 },
-                "description": "Serializes XML lists",
                 "result": {
                     "myMap": {
                         "foo": {
@@ -2054,21 +2295,24 @@
     {
         "description": "Test cases for XmlNamespaces operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsquery",
             "protocol": "query",
             "protocols": [
                 "query"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsQuery",
+            "serviceId": "Query Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsQuery",
+            "uid": "query-protocol-2020-01-08"
         },
         "shapes": {
-            "XmlNamespacesOutput": {
-                "type": "structure",
-                "members": {
-                    "nested": {
-                        "shape": "XmlNamespaceNested"
-                    }
-                },
-                "xmlNamespace": "http://foo.com"
+            "String": {
+                "type": "string"
             },
             "XmlNamespaceNested": {
                 "type": "structure",
@@ -2087,20 +2331,27 @@
                 },
                 "xmlNamespace": "http://boo.com"
             },
-            "String": {
-                "type": "string"
-            },
             "XmlNamespacedList": {
                 "type": "list",
                 "member": {
                     "shape": "String",
                     "xmlNamespace": "http://bux.com"
                 }
+            },
+            "XmlNamespacesOutput": {
+                "type": "structure",
+                "members": {
+                    "nested": {
+                        "shape": "XmlNamespaceNested"
+                    }
+                },
+                "xmlNamespace": "http://foo.com"
             }
         },
         "cases": [
             {
                 "id": "QueryXmlNamespaces",
+                "description": "Serializes XML namespaces",
                 "given": {
                     "name": "XmlNamespaces",
                     "http": {
@@ -2108,10 +2359,10 @@
                         "requestUri": "/"
                     },
                     "output": {
-                        "shape": "XmlNamespacesOutput"
+                        "shape": "XmlNamespacesOutput",
+                        "resultWrapper": "XmlNamespacesResult"
                     }
                 },
-                "description": "Serializes XML namespaces",
                 "result": {
                     "nested": {
                         "foo": "Foo",
@@ -2134,13 +2385,49 @@
     {
         "description": "Test cases for XmlTimestamps operation",
         "metadata": {
+            "apiVersion": "2020-01-08",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "awsquery",
             "protocol": "query",
             "protocols": [
                 "query"
             ],
-            "apiVersion": "2020-01-08"
+            "serviceFullName": "AwsQuery",
+            "serviceId": "Query Protocol",
+            "signatureVersion": "v4",
+            "signingName": "AwsQuery",
+            "uid": "query-protocol-2020-01-08"
         },
         "shapes": {
+            "DateTime": {
+                "type": "timestamp",
+                "timestampFormat": "iso8601"
+            },
+            "EpochSeconds": {
+                "type": "timestamp",
+                "timestampFormat": "unixTimestamp"
+            },
+            "HttpDate": {
+                "type": "timestamp",
+                "timestampFormat": "rfc822"
+            },
+            "SyntheticTimestamp_date_time": {
+                "type": "timestamp",
+                "timestampFormat": "iso8601"
+            },
+            "SyntheticTimestamp_epoch_seconds": {
+                "type": "timestamp",
+                "timestampFormat": "unixTimestamp"
+            },
+            "SyntheticTimestamp_http_date": {
+                "type": "timestamp",
+                "timestampFormat": "rfc822"
+            },
+            "Timestamp": {
+                "type": "timestamp"
+            },
             "XmlTimestampsOutput": {
                 "type": "structure",
                 "members": {
@@ -2166,38 +2453,12 @@
                         "shape": "HttpDate"
                     }
                 }
-            },
-            "Timestamp": {
-                "type": "timestamp"
-            },
-            "SyntheticTimestamp_date_time": {
-                "type": "timestamp",
-                "timestampFormat": "iso8601"
-            },
-            "DateTime": {
-                "type": "timestamp",
-                "timestampFormat": "iso8601"
-            },
-            "SyntheticTimestamp_epoch_seconds": {
-                "type": "timestamp",
-                "timestampFormat": "unixTimestamp"
-            },
-            "EpochSeconds": {
-                "type": "timestamp",
-                "timestampFormat": "unixTimestamp"
-            },
-            "SyntheticTimestamp_http_date": {
-                "type": "timestamp",
-                "timestampFormat": "rfc822"
-            },
-            "HttpDate": {
-                "type": "timestamp",
-                "timestampFormat": "rfc822"
             }
         },
         "cases": [
             {
                 "id": "QueryXmlTimestamps",
+                "description": "Tests how normal timestamps are serialized",
                 "given": {
                     "name": "XmlTimestamps",
                     "http": {
@@ -2205,11 +2466,11 @@
                         "requestUri": "/"
                     },
                     "output": {
-                        "shape": "XmlTimestampsOutput"
+                        "shape": "XmlTimestampsOutput",
+                        "resultWrapper": "XmlTimestampsResult"
                     },
                     "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
                 },
-                "description": "Tests how normal timestamps are serialized",
                 "result": {
                     "normal": 1398796238
                 },
@@ -2223,6 +2484,7 @@
             },
             {
                 "id": "QueryXmlTimestampsWithDateTimeFormat",
+                "description": "Ensures that the timestampFormat of date-time works like normal timestamps",
                 "given": {
                     "name": "XmlTimestamps",
                     "http": {
@@ -2230,11 +2492,11 @@
                         "requestUri": "/"
                     },
                     "output": {
-                        "shape": "XmlTimestampsOutput"
+                        "shape": "XmlTimestampsOutput",
+                        "resultWrapper": "XmlTimestampsResult"
                     },
                     "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
                 },
-                "description": "Ensures that the timestampFormat of date-time works like normal timestamps",
                 "result": {
                     "dateTime": 1398796238
                 },
@@ -2248,6 +2510,7 @@
             },
             {
                 "id": "QueryXmlTimestampsWithDateTimeOnTargetFormat",
+                "description": "Ensures that the timestampFormat of date-time on the target shape works like normal timestamps",
                 "given": {
                     "name": "XmlTimestamps",
                     "http": {
@@ -2255,11 +2518,11 @@
                         "requestUri": "/"
                     },
                     "output": {
-                        "shape": "XmlTimestampsOutput"
+                        "shape": "XmlTimestampsOutput",
+                        "resultWrapper": "XmlTimestampsResult"
                     },
                     "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
                 },
-                "description": "Ensures that the timestampFormat of date-time on the target shape works like normal timestamps",
                 "result": {
                     "dateTimeOnTarget": 1398796238
                 },
@@ -2273,6 +2536,7 @@
             },
             {
                 "id": "QueryXmlTimestampsWithEpochSecondsFormat",
+                "description": "Ensures that the timestampFormat of epoch-seconds works",
                 "given": {
                     "name": "XmlTimestamps",
                     "http": {
@@ -2280,11 +2544,11 @@
                         "requestUri": "/"
                     },
                     "output": {
-                        "shape": "XmlTimestampsOutput"
+                        "shape": "XmlTimestampsOutput",
+                        "resultWrapper": "XmlTimestampsResult"
                     },
                     "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
                 },
-                "description": "Ensures that the timestampFormat of epoch-seconds works",
                 "result": {
                     "epochSeconds": 1398796238
                 },
@@ -2298,6 +2562,7 @@
             },
             {
                 "id": "QueryXmlTimestampsWithEpochSecondsOnTargetFormat",
+                "description": "Ensures that the timestampFormat of epoch-seconds on the target shape works",
                 "given": {
                     "name": "XmlTimestamps",
                     "http": {
@@ -2305,11 +2570,11 @@
                         "requestUri": "/"
                     },
                     "output": {
-                        "shape": "XmlTimestampsOutput"
+                        "shape": "XmlTimestampsOutput",
+                        "resultWrapper": "XmlTimestampsResult"
                     },
                     "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
                 },
-                "description": "Ensures that the timestampFormat of epoch-seconds on the target shape works",
                 "result": {
                     "epochSecondsOnTarget": 1398796238
                 },
@@ -2323,6 +2588,7 @@
             },
             {
                 "id": "QueryXmlTimestampsWithHttpDateFormat",
+                "description": "Ensures that the timestampFormat of http-date works",
                 "given": {
                     "name": "XmlTimestamps",
                     "http": {
@@ -2330,11 +2596,11 @@
                         "requestUri": "/"
                     },
                     "output": {
-                        "shape": "XmlTimestampsOutput"
+                        "shape": "XmlTimestampsOutput",
+                        "resultWrapper": "XmlTimestampsResult"
                     },
                     "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
                 },
-                "description": "Ensures that the timestampFormat of http-date works",
                 "result": {
                     "httpDate": 1398796238
                 },
@@ -2348,6 +2614,7 @@
             },
             {
                 "id": "QueryXmlTimestampsWithHttpDateOnTargetFormat",
+                "description": "Ensures that the timestampFormat of http-date on the target shape works",
                 "given": {
                     "name": "XmlTimestamps",
                     "http": {
@@ -2355,11 +2622,11 @@
                         "requestUri": "/"
                     },
                     "output": {
-                        "shape": "XmlTimestampsOutput"
+                        "shape": "XmlTimestampsOutput",
+                        "resultWrapper": "XmlTimestampsResult"
                     },
                     "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
                 },
-                "description": "Ensures that the timestampFormat of http-date on the target shape works",
                 "result": {
                     "httpDateOnTarget": 1398796238
                 },

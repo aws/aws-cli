@@ -987,6 +987,7 @@ class TestCPCommand(BaseCPCommandTest):
         expected_head_args = {
             'Bucket': 'bucket-one',
             'Key': 'key.txt',
+            'ChecksumMode': 'ENABLED',
             'SSECustomerAlgorithm': 'AES256',
             'SSECustomerKey': key_contents,
         }
@@ -1018,6 +1019,7 @@ class TestCPCommand(BaseCPCommandTest):
         expected_head_args = {
             'Bucket': 'bucket-one',
             'Key': 'key.txt',
+            'ChecksumMode': 'ENABLED',
             # don't expect to see SSE-c params for the source
         }
         self.assertDictEqual(self.operations_called[0][1], expected_head_args)
@@ -1049,6 +1051,7 @@ class TestCPCommand(BaseCPCommandTest):
         expected_head_args = {
             'Bucket': 'bucket-one',
             'Key': 'key.txt',
+            'ChecksumMode': 'ENABLED',
             'SSECustomerAlgorithm': 'AES256',
             'SSECustomerKey': 'foo',
         }
@@ -1085,6 +1088,7 @@ class TestCPCommand(BaseCPCommandTest):
                 self.head_object_request(
                     'bucket-one',
                     'key.txt',
+                    ChecksumMode='ENABLED',
                     # no SSE-C params — source is unencrypted
                 ),
                 ('GetObjectTagging', mock.ANY),
@@ -1136,6 +1140,7 @@ class TestCPCommand(BaseCPCommandTest):
         expected_head_args = {
             'Bucket': 'bucket-one',
             'Key': 'key.txt',
+            'ChecksumMode': 'ENABLED',
             'SSECustomerAlgorithm': 'AES256',
             'SSECustomerKey': 'source-key',
         }
@@ -1145,6 +1150,7 @@ class TestCPCommand(BaseCPCommandTest):
                 self.head_object_request(
                     'bucket-one',
                     'key.txt',
+                    ChecksumMode='ENABLED',
                     SSECustomerAlgorithm='AES256',
                     SSECustomerKey='source-key',
                 ),

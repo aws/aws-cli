@@ -303,7 +303,7 @@ class ClientErrorHandler(FilteredExceptionHandler):
                     if key.lower() in modeled_lower:
                         error_dict[key] = value
 
-            # Filter fields inside Error dict as well.
+            # Unmodeled fields can contain data that shouldn't be displayed.
             for key in list(error_dict.keys()):
                 if key.lower() not in modeled_lower:
                     del error_dict[key]

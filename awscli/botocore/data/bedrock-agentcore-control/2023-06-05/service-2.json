@@ -500,7 +500,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Deletes a gateway target.</p>",
+      "documentation":"<p>Deletes a gateway target.</p> <p>You cannot delete a target that is in a pending authorization state (<code>CREATE_PENDING_AUTH</code>, <code>UPDATE_PENDING_AUTH</code>, or <code>SYNCHRONIZE_PENDING_AUTH</code>). Wait for the authorization to complete or fail before deleting the target.</p>",
       "idempotent":true
     },
     "DeleteMemory":{
@@ -1421,7 +1421,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>The gateway targets.</p>",
+      "documentation":"<p>Synchronizes the gateway targets by fetching the latest tool definitions from the target endpoints.</p> <p>You cannot synchronize a target that is in a pending authorization state (<code>CREATE_PENDING_AUTH</code>, <code>UPDATE_PENDING_AUTH</code>, or <code>SYNCHRONIZE_PENDING_AUTH</code>). Wait for the authorization to complete or fail before synchronizing.</p> <p>You cannot synchronize a target that has a static tool schema (<code>mcpToolSchema</code>) configured. Remove the static schema through an <code>UpdateGatewayTarget</code> call to enable dynamic tool synchronization.</p>",
       "idempotent":true
     },
     "TagResource":{
@@ -1588,7 +1588,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Updates an existing gateway target.</p>",
+      "documentation":"<p>Updates an existing gateway target.</p> <p>You cannot update a target that is in a pending authorization state (<code>CREATE_PENDING_AUTH</code>, <code>UPDATE_PENDING_AUTH</code>, or <code>SYNCHRONIZE_PENDING_AUTH</code>). Wait for the authorization to complete or fail before updating the target.</p>",
       "idempotent":true
     },
     "UpdateMemory":{
@@ -2182,6 +2182,17 @@
         }
       },
       "documentation":"<p>The configuration details returned for an Atlassian OAuth2 provider, including the client ID and OAuth2 discovery information.</p>"
+    },
+    "AuthorizationData":{
+      "type":"structure",
+      "members":{
+        "oauth2":{
+          "shape":"OAuth2AuthorizationData",
+          "documentation":"<p>OAuth2 authorization data for the gateway target.</p>"
+        }
+      },
+      "documentation":"<p>Contains the authorization data that is returned when a gateway target requires user authorization through an authorization code grant type.</p>",
+      "union":true
     },
     "AuthorizationEndpointType":{"type":"string"},
     "AuthorizerConfiguration":{
@@ -3572,6 +3583,10 @@
         "privateEndpointManagedResources":{
           "shape":"PrivateEndpointManagedResources",
           "documentation":"<p>The managed resources created by the gateway for private endpoint connectivity.</p>"
+        },
+        "authorizationData":{
+          "shape":"AuthorizationData",
+          "documentation":"<p>OAuth2 authorization data for the created gateway target. This data is returned when the target requires user authorization through an authorization code grant type.</p>"
         }
       }
     },
@@ -5792,6 +5807,10 @@
         "privateEndpointManagedResources":{
           "shape":"PrivateEndpointManagedResources",
           "documentation":"<p>A list of managed resources created by the gateway for private endpoint connectivity. These resources are created in your account when you use a managed VPC Lattice resource configuration.</p>"
+        },
+        "authorizationData":{
+          "shape":"AuthorizationData",
+          "documentation":"<p>OAuth2 authorization data for the gateway target. This data is returned when a target is configured with a credential provider with authorization code grant type and requires user federation.</p>"
         }
       },
       "documentation":"<p>The gateway target.</p>"
@@ -6499,6 +6518,10 @@
         "privateEndpointManagedResources":{
           "shape":"PrivateEndpointManagedResources",
           "documentation":"<p>The managed resources created by the gateway for private endpoint connectivity.</p>"
+        },
+        "authorizationData":{
+          "shape":"AuthorizationData",
+          "documentation":"<p>OAuth2 authorization data for the gateway target. This data is returned when the target requires user authorization through an authorization code grant type.</p>"
         }
       }
     },
@@ -8232,6 +8255,10 @@
         "endpoint":{
           "shape":"McpServerTargetConfigurationEndpointString",
           "documentation":"<p>The endpoint for the MCP server target configuration.</p>"
+        },
+        "mcpToolSchema":{
+          "shape":"McpToolSchemaConfiguration",
+          "documentation":"<p>The tool schema configuration for the MCP server target. Supported only when the credential provider is configured with an authorization code grant type. Dynamic tool discovery/synchronization will be disabled when target is configured with mcpToolSchema.</p>"
         }
       },
       "documentation":"<p>The target configuration for the MCP server.</p>"
@@ -8269,6 +8296,21 @@
         }
       },
       "documentation":"<p>The Model Context Protocol (MCP) configuration for a target. This structure defines how the gateway uses MCP to communicate with the target.</p>",
+      "union":true
+    },
+    "McpToolSchemaConfiguration":{
+      "type":"structure",
+      "members":{
+        "s3":{
+          "shape":"S3Configuration",
+          "documentation":"<p>The Amazon S3 location of the tool schema. This location contains the schema definition file.</p>"
+        },
+        "inlinePayload":{
+          "shape":"InlinePayload",
+          "documentation":"<p>The inline payload containing the MCP tool schema definition.</p>"
+        }
+      },
+      "documentation":"<p>The MCP tool schema configuration for an MCP server target. The tool schema must be aligned with the MCP specification.</p>",
       "union":true
     },
     "McpVersion":{"type":"string"},
@@ -8853,6 +8895,30 @@
     "NumericalScaleDefinitions":{
       "type":"list",
       "member":{"shape":"NumericalScaleDefinition"}
+    },
+    "OAuth2AuthorizationData":{
+      "type":"structure",
+      "required":["authorizationUrl"],
+      "members":{
+        "authorizationUrl":{
+          "shape":"OAuth2AuthorizationDataAuthorizationUrlString",
+          "documentation":"<p>The URL to initiate the authorization process. This URL is provided when the OAuth2 access token requires user authorization.</p>"
+        },
+        "userId":{
+          "shape":"OAuth2AuthorizationDataUserIdString",
+          "documentation":"<p>The user identifier associated with the OAuth2 authorization session that is defined by AgentCore Gateway.</p>"
+        }
+      },
+      "documentation":"<p>OAuth2-specific authorization data, including the authorization URL and user identifier for the authorization session.</p>"
+    },
+    "OAuth2AuthorizationDataAuthorizationUrlString":{
+      "type":"string",
+      "min":1
+    },
+    "OAuth2AuthorizationDataUserIdString":{
+      "type":"string",
+      "max":128,
+      "min":1
     },
     "OAuthCredentialProvider":{
       "type":"structure",
@@ -10699,7 +10765,10 @@
         "READY",
         "FAILED",
         "SYNCHRONIZING",
-        "SYNCHRONIZE_UNSUCCESSFUL"
+        "SYNCHRONIZE_UNSUCCESSFUL",
+        "CREATE_PENDING_AUTH",
+        "UPDATE_PENDING_AUTH",
+        "SYNCHRONIZE_PENDING_AUTH"
       ]
     },
     "TargetSummaries":{
@@ -11517,6 +11586,10 @@
         "privateEndpointManagedResources":{
           "shape":"PrivateEndpointManagedResources",
           "documentation":"<p>The managed resources created by the gateway for private endpoint connectivity.</p>"
+        },
+        "authorizationData":{
+          "shape":"AuthorizationData",
+          "documentation":"<p>OAuth2 authorization data for the updated gateway target. This data is returned when the target requires user authorization through an authorization code grant type.</p>"
         }
       }
     },

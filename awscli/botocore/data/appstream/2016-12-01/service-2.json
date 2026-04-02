@@ -1005,6 +1005,21 @@
       ],
       "documentation":"<p>Removes license included application(s) association(s) from an image builder instance.</p>"
     },
+    "DrainSessionInstance":{
+      "name":"DrainSessionInstance",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DrainSessionInstanceRequest"},
+      "output":{"shape":"DrainSessionInstanceResult"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"OperationNotPermittedException"}
+      ],
+      "documentation":"<p>Drains the instance hosting the specified streaming session. The instance stops accepting new sessions while existing sessions continue uninterrupted. Once all sessions end, the instance is reclaimed and replaced. This only applies to multi-session fleets.</p>"
+    },
     "EnableUser":{
       "name":"EnableUser",
       "http":{
@@ -2178,6 +2193,18 @@
         "ActualUserSessions":{
           "shape":"Integer",
           "documentation":"<p>The total number of session slots that are available for streaming or are currently streaming.</p> <p>ActualUserSessionCapacity = AvailableUserSessionCapacity + ActiveUserSessions</p> <p>This only applies to multi-session fleets.</p>"
+        },
+        "Draining":{
+          "shape":"Integer",
+          "documentation":"<p>The number of instances in drain mode. This only applies to multi-session fleets.</p>"
+        },
+        "DrainModeActiveUserSessions":{
+          "shape":"Integer",
+          "documentation":"<p>The number of active user sessions on instances in drain mode. This only applies to multi-session fleets.</p>"
+        },
+        "DrainModeUnusedUserSessions":{
+          "shape":"Integer",
+          "documentation":"<p>The number of unused session slots on instances in drain mode that cannot be used for user session provisioning. This only applies to multi-session fleets.</p>"
         }
       },
       "documentation":"<p>Describes the capacity status for a fleet.</p>"
@@ -4106,6 +4133,20 @@
       "member":{"shape":"Domain"},
       "max":50
     },
+    "DrainSessionInstanceRequest":{
+      "type":"structure",
+      "required":["SessionId"],
+      "members":{
+        "SessionId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the streaming session.</p>"
+        }
+      }
+    },
+    "DrainSessionInstanceResult":{
+      "type":"structure",
+      "members":{}
+    },
     "DryRunOperationException":{
       "type":"structure",
       "members":{
@@ -4944,6 +4985,15 @@
       "documentation":"<p>The image can't be updated because it's not compatible for updates.</p>",
       "exception":true
     },
+    "InstanceDrainStatus":{
+      "type":"string",
+      "documentation":"<p>Possible values for the drain status of a streaming instance.</p>",
+      "enum":[
+        "ACTIVE",
+        "DRAINING",
+        "NOT_APPLICABLE"
+      ]
+    },
     "InstanceType":{
       "type":"string",
       "pattern":"^[a-zA-Z0-9-]+(\\.[a-z0-9-]+)+\\.(small|medium|large|xlarge|\\d+xlarge|metal)$"
@@ -5471,6 +5521,10 @@
         "InstanceId":{
           "shape":"String",
           "documentation":"<p>The identifier for the instance hosting the session.</p>"
+        },
+        "InstanceDrainStatus":{
+          "shape":"InstanceDrainStatus",
+          "documentation":"<p>The drain status of the instance hosting the streaming session. This only applies to multi-session fleets.</p>"
         }
       },
       "documentation":"<p>Describes a streaming session.</p>"

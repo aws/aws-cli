@@ -4002,6 +4002,10 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p>Each tag consists of a tag key and a tag value. Tag keys and values are both required, but tag values can be empty strings.</p>"
+        },
+        "schedulingConfiguration":{
+          "shape":"SchedulingConfiguration",
+          "documentation":"<p>The scheduling configuration for the queue. This configuration determines how workers are assigned to jobs in the queue.</p> <p>If not specified, the queue defaults to the <code>priorityFifo</code> scheduling configuration.</p>"
         }
       },
       "documentation":"<p>Shared displayName + description for Create operations where both are present. displayName is @required here - this mixin is Create-only by design (Update has optional displayName).</p>"
@@ -4131,18 +4135,18 @@
       "members":{
         "standbyWorkerCount":{
           "shape":"MinZeroMaxInteger",
-          "documentation":"<p>The number of standby workers to maintain for the fleet.</p>"
+          "documentation":"<p>The number of idle workers maintained and ready to process incoming tasks. The default is 0.</p>"
         },
         "workerIdleDurationSeconds":{
           "shape":"MinZeroMaxInteger",
-          "documentation":"<p>The duration in seconds that a worker can be idle before it is scaled down.</p>"
+          "documentation":"<p>The number of seconds that a worker can remain idle before it is shut down. The default is 300 seconds (5 minutes).</p>"
         },
         "scaleOutWorkersPerMinute":{
           "shape":"MinOneMaxInteger",
-          "documentation":"<p>The number of workers that can be scaled out per minute.</p>"
+          "documentation":"<p>The number of workers that can be added per minute to the fleet. The default is a service-defined value that balances efficiency with cost.</p>"
         }
       },
-      "documentation":"<p>The auto scaling configuration options for a customer managed fleet.</p>"
+      "documentation":"<p>The auto scaling configuration settings for a customer managed fleet.</p>"
     },
     "CustomerManagedFleetConfiguration":{
       "type":"structure",
@@ -4157,7 +4161,7 @@
         },
         "autoScalingConfiguration":{
           "shape":"CustomerManagedAutoScalingConfiguration",
-          "documentation":"<p>The auto scaling configuration options for the customer managed fleet.</p>"
+          "documentation":"<p>The auto scaling configuration settings for the customer managed fleet.</p>"
         },
         "workerCapabilities":{
           "shape":"CustomerManagedWorkerCapabilities",
@@ -6332,6 +6336,10 @@
         "jobRunAsUser":{
           "shape":"JobRunAsUser",
           "documentation":"<p>The jobs in the queue ran as this specified POSIX user.</p>"
+        },
+        "schedulingConfiguration":{
+          "shape":"SchedulingConfiguration",
+          "documentation":"<p>The scheduling configuration for the queue. This configuration determines how workers are assigned to jobs in the queue.</p>"
         }
       },
       "documentation":"<p>Mixin that adds an optional ARN field to response structures. Apply to SummaryMixins (flows into Get, Summary, and BatchGet) and Create outputs.</p>"
@@ -9762,6 +9770,21 @@
       "max":10000,
       "min":0
     },
+    "PriorityBalancedSchedulingConfiguration":{
+      "type":"structure",
+      "members":{
+        "renderingTaskBuffer":{
+          "shape":"SchedulingRenderingTaskBuffer",
+          "documentation":"<p>The rendering task buffer controls worker stickiness. A worker only switches from its current job to another job at the same priority if the other job has fewer rendering tasks by more than this buffer value. Higher values make workers stickier to their current jobs. The default value is <code>1</code>.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for priority balanced scheduling. Workers are distributed evenly across all jobs at the highest priority level.</p>"
+    },
+    "PriorityFifoSchedulingConfiguration":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Configuration for priority first-in, first-out (FIFO) scheduling. Workers are assigned to the highest-priority job first. When multiple jobs share the same priority, the job submitted earliest receives workers first.</p>"
+    },
     "ProcessExitCode":{
       "type":"integer",
       "box":true,
@@ -10167,6 +10190,92 @@
       "max":63,
       "min":1,
       "pattern":"[a-zA-Z0-9-_/]+"
+    },
+    "SchedulingConfiguration":{
+      "type":"structure",
+      "members":{
+        "priorityFifo":{
+          "shape":"PriorityFifoSchedulingConfiguration",
+          "documentation":"<p>Workers are assigned to the highest-priority job first. When multiple jobs share the same priority, the job submitted earliest receives workers first. This is the default scheduling configuration for new queues.</p>"
+        },
+        "priorityBalanced":{
+          "shape":"PriorityBalancedSchedulingConfiguration",
+          "documentation":"<p>Workers are distributed evenly across all jobs at the highest priority level. When workers cannot be evenly divided, the extra workers are assigned to the jobs submitted earliest. If a job has fewer remaining tasks than its share of workers, the surplus workers are redistributed to other jobs at the same priority level.</p>"
+        },
+        "weightedBalanced":{
+          "shape":"WeightedBalancedSchedulingConfiguration",
+          "documentation":"<p>Workers are assigned to jobs based on a weighted formula that considers job priority, error count, submission time, and the number of tasks currently rendering. Each factor has a configurable weight that determines its influence on scheduling decisions.</p>"
+        }
+      },
+      "documentation":"<p>The scheduling configuration for a queue. Defines the strategy used to assign workers to jobs.</p>",
+      "union":true
+    },
+    "SchedulingErrorWeight":{
+      "type":"double",
+      "documentation":"<p>The weight applied to the number of errors on a job in the weighted balanced scheduling formula.</p>",
+      "box":true,
+      "max":10000,
+      "min":-10000
+    },
+    "SchedulingMaxPriorityOverride":{
+      "type":"structure",
+      "members":{
+        "alwaysScheduleFirst":{
+          "shape":"SchedulingMaxPriorityOverrideAlwaysScheduleFirst",
+          "documentation":"<p>Jobs at the maximum priority (100) are always scheduled before other jobs, regardless of the weighted scheduling formula. If multiple jobs have priority 100, ties are broken using the standard weighted formula.</p>"
+        }
+      },
+      "documentation":"<p>Defines the override behavior for jobs at the maximum priority (100) in weighted balanced scheduling.</p>",
+      "union":true
+    },
+    "SchedulingMaxPriorityOverrideAlwaysScheduleFirst":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Specifies that jobs at the maximum priority (100) are always scheduled first.</p>"
+    },
+    "SchedulingMinPriorityOverride":{
+      "type":"structure",
+      "members":{
+        "alwaysScheduleLast":{
+          "shape":"SchedulingMinPriorityOverrideAlwaysScheduleLast",
+          "documentation":"<p>Jobs at the minimum priority (0) are always scheduled after all other jobs, regardless of the weighted scheduling formula. If multiple jobs have priority 0, ties are broken using the standard weighted formula.</p>"
+        }
+      },
+      "documentation":"<p>Defines the override behavior for jobs at the minimum priority (0) in weighted balanced scheduling.</p>",
+      "union":true
+    },
+    "SchedulingMinPriorityOverrideAlwaysScheduleLast":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Specifies that jobs at the minimum priority (0) are always scheduled last.</p>"
+    },
+    "SchedulingPriorityWeight":{
+      "type":"double",
+      "documentation":"<p>The weight applied to job priority in the weighted balanced scheduling formula.</p>",
+      "box":true,
+      "max":10000,
+      "min":0
+    },
+    "SchedulingRenderingTaskBuffer":{
+      "type":"integer",
+      "documentation":"<p>The rendering task buffer used in balanced scheduling.</p>",
+      "box":true,
+      "max":1000,
+      "min":0
+    },
+    "SchedulingRenderingTaskWeight":{
+      "type":"double",
+      "documentation":"<p>The weight applied to the number of rendering tasks in the weighted balanced scheduling formula.</p>",
+      "box":true,
+      "max":10000,
+      "min":-10000
+    },
+    "SchedulingSubmissionTimeWeight":{
+      "type":"double",
+      "documentation":"<p>The weight applied to job submission time in the weighted balanced scheduling formula.</p>",
+      "box":true,
+      "max":10000,
+      "min":0
     },
     "SearchFilterExpression":{
       "type":"structure",
@@ -10604,18 +10713,18 @@
       "members":{
         "standbyWorkerCount":{
           "shape":"MinZeroMaxInteger",
-          "documentation":"<p>The number of standby workers to maintain for the fleet.</p>"
+          "documentation":"<p>The number of idle workers maintained and ready to process incoming tasks. The default is 0.</p>"
         },
         "workerIdleDurationSeconds":{
           "shape":"ServiceManagedEc2WorkerIdleDurationSeconds",
-          "documentation":"<p>The duration in seconds that a worker can be idle before it is scaled down.</p>"
+          "documentation":"<p>The number of seconds that a worker can remain idle before it is shut down. The default is 300 seconds (5 minutes).</p>"
         },
         "scaleOutWorkersPerMinute":{
           "shape":"MinOneMaxInteger",
-          "documentation":"<p>The number of workers that can be scaled out per minute.</p>"
+          "documentation":"<p>The number of workers that can be added per minute to the fleet. The default is a service-defined value that balances efficiency with cost.</p>"
         }
       },
-      "documentation":"<p>The auto scaling configuration options for a service managed EC2 fleet.</p>"
+      "documentation":"<p>The auto scaling configuration settings for a service managed EC2 fleet.</p>"
     },
     "ServiceManagedEc2FleetConfiguration":{
       "type":"structure",
@@ -10642,7 +10751,7 @@
         },
         "autoScalingConfiguration":{
           "shape":"ServiceManagedEc2AutoScalingConfiguration",
-          "documentation":"<p>The auto scaling configuration options for the service managed EC2 fleet.</p>"
+          "documentation":"<p>The auto scaling configuration settings for the service managed EC2 fleet.</p>"
         }
       },
       "documentation":"<p>The configuration details for a service managed EC2 fleet.</p>"
@@ -12678,6 +12787,10 @@
         "allowedStorageProfileIdsToRemove":{
           "shape":"AllowedStorageProfileIds",
           "documentation":"<p>The storage profile ID to remove.</p>"
+        },
+        "schedulingConfiguration":{
+          "shape":"SchedulingConfiguration",
+          "documentation":"<p>The scheduling configuration for the queue. This configuration determines how workers are assigned to jobs in the queue.</p> <p>When updating the scheduling configuration, the entire configuration is replaced.</p> <p>In-progress tasks run to completion before the new scheduling configuration takes effect.</p>"
         }
       }
     },
@@ -13229,6 +13342,40 @@
       "member":{"shape":"VpcResourceConfigurationArn"},
       "max":10,
       "min":0
+    },
+    "WeightedBalancedSchedulingConfiguration":{
+      "type":"structure",
+      "members":{
+        "priorityWeight":{
+          "shape":"SchedulingPriorityWeight",
+          "documentation":"<p>The weight applied to job priority in the scheduling formula. Higher values give more influence to job priority. A value of <code>0</code> means priority is ignored. The default value is <code>100.0</code>.</p>"
+        },
+        "errorWeight":{
+          "shape":"SchedulingErrorWeight",
+          "documentation":"<p>The weight applied to the number of errors on a job. A negative value means jobs without errors are scheduled first. A value of <code>0</code> means errors are ignored. The default value is <code>-10.0</code>.</p>"
+        },
+        "submissionTimeWeight":{
+          "shape":"SchedulingSubmissionTimeWeight",
+          "documentation":"<p>The weight applied to job submission time. A positive value means earlier jobs are scheduled first. A value of <code>0</code> means submission time is ignored. The default value is <code>3.0</code>.</p>"
+        },
+        "renderingTaskWeight":{
+          "shape":"SchedulingRenderingTaskWeight",
+          "documentation":"<p>The weight applied to the number of tasks currently rendering on a job. A negative value means jobs that are not already rendering are scheduled next. A value of <code>0</code> means the rendering state is ignored. The default value is <code>-100.0</code>.</p>"
+        },
+        "renderingTaskBuffer":{
+          "shape":"SchedulingRenderingTaskBuffer",
+          "documentation":"<p>The rendering task buffer is subtracted from the number of rendering tasks before applying the rendering task weight. This creates a stickiness effect where workers prefer to stay with their current job. Higher values make workers stickier. The default value is <code>1</code>. The buffer is only applied in the weight calculation for a job if the worker is currently assigned to that job.</p>"
+        },
+        "maxPriorityOverride":{
+          "shape":"SchedulingMaxPriorityOverride",
+          "documentation":"<p>Overrides the weighted scheduling formula for jobs at the maximum priority (100). When set, jobs with priority 100 are always scheduled first regardless of their calculated weight. When absent, maximum priority jobs use the standard weighted formula.</p>"
+        },
+        "minPriorityOverride":{
+          "shape":"SchedulingMinPriorityOverride",
+          "documentation":"<p>Overrides the weighted scheduling formula for jobs at the minimum priority (0). When set, jobs with priority 0 are always scheduled last regardless of their calculated weight. When absent, minimum priority jobs use the standard weighted formula.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for weighted balanced scheduling. Workers are assigned to jobs based on a weighted formula:</p> <p> <code>weight = (priority * priorityWeight) + (errors * errorWeight) + ((currentTime - submissionTime) * submissionTimeWeight) + ((renderingTasks - renderingTaskBuffer) * renderingTaskWeight)</code> </p> <p>The job with the highest calculated weight is scheduled first. Workers are distributed evenly amongst jobs with the same weight.</p>"
     },
     "WindowsUser":{
       "type":"structure",

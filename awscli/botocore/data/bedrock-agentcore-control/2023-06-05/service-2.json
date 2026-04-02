@@ -156,7 +156,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p> Creates a custom evaluator for agent quality assessment. Custom evaluators use LLM-as-a-Judge configurations with user-defined prompts, rating scales, and model settings to evaluate agent performance at tool call, trace, or session levels. </p>"
+      "documentation":"<p> Creates a custom evaluator for agent quality assessment. Custom evaluators can use either LLM-as-a-Judge configurations with user-defined prompts, rating scales, and model settings, or code-based configurations with customer-managed Lambda functions to evaluate agent performance at tool call, trace, or session levels. </p>"
     },
     "CreateGateway":{
       "name":"CreateGateway",
@@ -2627,6 +2627,17 @@
       "documentation":"<p>The source code configuration that specifies the location and details of the code to be executed.</p>",
       "union":true
     },
+    "CodeBasedEvaluatorConfig":{
+      "type":"structure",
+      "members":{
+        "lambdaConfig":{
+          "shape":"LambdaEvaluatorConfig",
+          "documentation":"<p> The Lambda function configuration for code-based evaluation. </p>"
+        }
+      },
+      "documentation":"<p> Configuration for a code-based evaluator. Specify the Lambda function to use for evaluation. </p>",
+      "union":true
+    },
     "CodeConfiguration":{
       "type":"structure",
       "required":[
@@ -2950,6 +2961,10 @@
           "shape":"EnvironmentVariablesMap",
           "documentation":"<p>Environment variables to set in the AgentCore Runtime environment.</p>"
         },
+        "filesystemConfigurations":{
+          "shape":"FilesystemConfigurations",
+          "documentation":"<p>The filesystem configurations to mount into the AgentCore Runtime. Use filesystem configurations to provide persistent storage to your AgentCore Runtime sessions.</p>"
+        },
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>A map of tag keys and values to assign to the agent runtime. Tags enable you to categorize your resources in different ways, for example, by purpose, owner, or environment.</p>"
@@ -3250,7 +3265,7 @@
         },
         "evaluatorConfig":{
           "shape":"EvaluatorConfig",
-          "documentation":"<p> The configuration for the evaluator, including LLM-as-a-Judge settings with instructions, rating scale, and model configuration. </p>"
+          "documentation":"<p> The configuration for the evaluator. Specify either LLM-as-a-Judge settings with instructions, rating scale, and model configuration, or code-based settings with a customer-managed Lambda function. </p>"
         },
         "level":{
           "shape":"EvaluatorLevel",
@@ -3482,6 +3497,10 @@
         "metadataConfiguration":{
           "shape":"MetadataConfiguration",
           "documentation":"<p>Optional configuration for HTTP header and query parameter propagation to and from the gateway target.</p>"
+        },
+        "privateEndpoint":{
+          "shape":"PrivateEndpoint",
+          "documentation":"<p>The private endpoint configuration for the gateway target. Use this to connect the gateway to private resources in your VPC.</p>"
         }
       }
     },
@@ -3545,6 +3564,14 @@
         "metadataConfiguration":{
           "shape":"MetadataConfiguration",
           "documentation":"<p>The metadata configuration that was applied to the created gateway target.</p>"
+        },
+        "privateEndpoint":{
+          "shape":"PrivateEndpoint",
+          "documentation":"<p>The private endpoint configuration for the gateway target.</p>"
+        },
+        "privateEndpointManagedResources":{
+          "shape":"PrivateEndpointManagedResources",
+          "documentation":"<p>The managed resources created by the gateway for private endpoint connectivity.</p>"
         }
       }
     },
@@ -3973,6 +4000,10 @@
         "apiKeyCredentialProvider":{
           "shape":"ApiKeyCredentialProvider",
           "documentation":"<p>The API key credential provider. This provider uses an API key to authenticate with the target endpoint.</p>"
+        },
+        "iamCredentialProvider":{
+          "shape":"IamCredentialProvider",
+          "documentation":"<p>The IAM credential provider. This provider uses IAM authentication with SigV4 signing to access the target endpoint.</p>"
         }
       },
       "documentation":"<p>A credential provider for gateway authentication. This structure contains the configuration for authenticating with the target endpoint.</p>",
@@ -4959,6 +4990,7 @@
       "type":"string",
       "pattern":".+/\\.well-known/openid-configuration"
     },
+    "DomainName":{"type":"string"},
     "Double":{
       "type":"double",
       "box":true
@@ -4975,6 +5007,13 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "EndpointIpAddressType":{
+      "type":"string",
+      "enum":[
+        "IPV4",
+        "IPV6"
+      ]
     },
     "EndpointName":{
       "type":"string",
@@ -5232,6 +5271,10 @@
         "llmAsAJudge":{
           "shape":"LlmAsAJudgeEvaluatorConfig",
           "documentation":"<p> The LLM-as-a-Judge configuration that uses a language model to evaluate agent performance based on custom instructions and rating scales. </p>"
+        },
+        "codeBased":{
+          "shape":"CodeBasedEvaluatorConfig",
+          "documentation":"<p> Configuration for a code-based evaluator that uses a customer-managed Lambda function to programmatically assess agent performance. </p>"
         }
       },
       "documentation":"<p> The configuration that defines how an evaluator assesses agent performance, including the evaluation method and parameters. </p>",
@@ -5365,7 +5408,8 @@
       "type":"string",
       "enum":[
         "Builtin",
-        "Custom"
+        "Custom",
+        "CustomCode"
       ]
     },
     "ExceptionLevel":{
@@ -5382,6 +5426,23 @@
       },
       "documentation":"<p>Contains extraction configuration information for a memory strategy.</p>",
       "union":true
+    },
+    "FilesystemConfiguration":{
+      "type":"structure",
+      "members":{
+        "sessionStorage":{
+          "shape":"SessionStorageConfiguration",
+          "documentation":"<p>Configuration for session storage. Session storage provides persistent storage that is preserved across AgentCore Runtime session invocations.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for a filesystem that can be mounted into the AgentCore Runtime.</p>",
+      "union":true
+    },
+    "FilesystemConfigurations":{
+      "type":"list",
+      "member":{"shape":"FilesystemConfiguration"},
+      "max":1,
+      "min":0
     },
     "Filter":{
       "type":"structure",
@@ -5726,6 +5787,11 @@
         "metadataConfiguration":{
           "shape":"MetadataConfiguration",
           "documentation":"<p>The metadata configuration for HTTP header and query parameter propagation to and from this gateway target.</p>"
+        },
+        "privateEndpoint":{"shape":"PrivateEndpoint"},
+        "privateEndpointManagedResources":{
+          "shape":"PrivateEndpointManagedResources",
+          "documentation":"<p>A list of managed resources created by the gateway for private endpoint connectivity. These resources are created in your account when you use a managed VPC Lattice resource configuration.</p>"
         }
       },
       "documentation":"<p>The gateway target.</p>"
@@ -5923,6 +5989,10 @@
         "metadataConfiguration":{
           "shape":"RuntimeMetadataConfiguration",
           "documentation":"<p>Configuration for microVM Metadata Service (MMDS) settings for the AgentCore Runtime.</p>"
+        },
+        "filesystemConfigurations":{
+          "shape":"FilesystemConfigurations",
+          "documentation":"<p>The filesystem configurations mounted into the AgentCore Runtime.</p>"
         }
       }
     },
@@ -6219,7 +6289,7 @@
         },
         "evaluatorConfig":{
           "shape":"EvaluatorConfig",
-          "documentation":"<p> The configuration of the evaluator, including LLM-as-a-Judge settings for custom evaluators. </p>"
+          "documentation":"<p> The configuration of the evaluator, including LLM-as-a-Judge or code-based settings. </p>"
         },
         "level":{
           "shape":"EvaluatorLevel",
@@ -6421,6 +6491,14 @@
         "metadataConfiguration":{
           "shape":"MetadataConfiguration",
           "documentation":"<p>The metadata configuration for HTTP header and query parameter propagation for the retrieved gateway target.</p>"
+        },
+        "privateEndpoint":{
+          "shape":"PrivateEndpoint",
+          "documentation":"<p>The private endpoint configuration for the gateway target.</p>"
+        },
+        "privateEndpointManagedResources":{
+          "shape":"PrivateEndpointManagedResources",
+          "documentation":"<p>The managed resources created by the gateway for private endpoint connectivity.</p>"
         }
       }
     },
@@ -6984,6 +7062,33 @@
       "max":40,
       "min":1
     },
+    "IamCredentialProvider":{
+      "type":"structure",
+      "required":["service"],
+      "members":{
+        "service":{
+          "shape":"IamCredentialProviderServiceString",
+          "documentation":"<p>The target Amazon Web Services service name used for SigV4 signing. This value identifies the service that the gateway authenticates with when making requests to the target endpoint.</p>"
+        },
+        "region":{
+          "shape":"IamCredentialProviderRegionString",
+          "documentation":"<p>The Amazon Web Services Region used for SigV4 signing. If not specified, defaults to the gateway's Region.</p>"
+        }
+      },
+      "documentation":"<p>An IAM credential provider for gateway authentication. This structure contains the configuration for authenticating with the target endpoint using IAM credentials and SigV4 signing.</p>"
+    },
+    "IamCredentialProviderRegionString":{
+      "type":"string",
+      "max":32,
+      "min":1,
+      "pattern":"[a-zA-Z0-9-]+"
+    },
+    "IamCredentialProviderServiceString":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9._-]+"
+    },
     "InboundTokenClaimNameType":{
       "type":"string",
       "max":255,
@@ -7217,6 +7322,31 @@
       "min":1,
       "pattern":"arn:aws(|-cn|-us-gov):kms:[a-zA-Z0-9-]*:[0-9]{12}:key/[a-zA-Z0-9-]{36}"
     },
+    "LambdaArn":{
+      "type":"string",
+      "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:([a-z]{2}(-gov)?-[a-z]+-\\d{1}):(\\d{12}):function:([a-zA-Z0-9-_.]+)(:(\\$LATEST|[a-zA-Z0-9-_]+))?"
+    },
+    "LambdaEvaluatorConfig":{
+      "type":"structure",
+      "required":["lambdaArn"],
+      "members":{
+        "lambdaArn":{
+          "shape":"LambdaArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the Lambda function that implements the evaluation logic. </p>"
+        },
+        "lambdaTimeoutInSeconds":{
+          "shape":"LambdaEvaluatorConfigLambdaTimeoutInSecondsInteger",
+          "documentation":"<p> The timeout in seconds for the Lambda function invocation. Defaults to 60. Must be between 1 and 300. </p>"
+        }
+      },
+      "documentation":"<p> Configuration for a Lambda function used as a code-based evaluator. </p>"
+    },
+    "LambdaEvaluatorConfigLambdaTimeoutInSecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":300,
+      "min":1
+    },
     "LambdaFunctionArn":{
       "type":"string",
       "max":170,
@@ -7438,6 +7568,10 @@
           "documentation":"<p>A token to retrieve the next page of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
+        },
+        "name":{
+          "shape":"BrowserProfileName",
+          "documentation":"<p>The name of the browser profile to filter results by.</p>"
         }
       }
     },
@@ -7997,6 +8131,59 @@
         }
       },
       "documentation":"<p>The configuration for a Model Context Protocol (MCP) gateway. This structure defines how the gateway implements the MCP protocol.</p>"
+    },
+    "ManagedLatticeResource":{
+      "type":"structure",
+      "required":[
+        "vpcIdentifier",
+        "subnetIds",
+        "endpointIpAddressType"
+      ],
+      "members":{
+        "vpcIdentifier":{
+          "shape":"VpcIdentifier",
+          "documentation":"<p>The ID of the VPC that contains your private resource.</p>"
+        },
+        "subnetIds":{
+          "shape":"SubnetIds",
+          "documentation":"<p>The subnet IDs within the VPC where the VPC Lattice resource gateway is placed.</p>"
+        },
+        "endpointIpAddressType":{
+          "shape":"EndpointIpAddressType",
+          "documentation":"<p>The IP address type for the resource configuration endpoint.</p>"
+        },
+        "securityGroupIds":{
+          "shape":"SecurityGroupIds",
+          "documentation":"<p>The security group IDs to associate with the VPC Lattice resource gateway. If not specified, the default security group for the VPC is used.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Tags to apply to the managed VPC Lattice resource gateway.</p>"
+        },
+        "routingDomain":{
+          "shape":"RoutingDomain",
+          "documentation":"<p>An intermediate publicly resolvable domain used as the VPC Lattice resource configuration endpoint. Required when your private endpoint uses a domain that is not publicly resolvable.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for a managed VPC Lattice resource. The gateway creates and manages the VPC Lattice resource gateway and resource configuration on your behalf using a service-linked role.</p>"
+    },
+    "ManagedResourceDetails":{
+      "type":"structure",
+      "members":{
+        "domain":{
+          "shape":"DomainName",
+          "documentation":"<p>The domain associated with this managed resource.</p>"
+        },
+        "resourceGatewayArn":{
+          "shape":"ResourceGatewayArn",
+          "documentation":"<p>The ARN of the VPC Lattice resource gateway created in your account.</p>"
+        },
+        "resourceAssociationArn":{
+          "shape":"ResourceAssociationArn",
+          "documentation":"<p>The ARN of the service network resource association.</p>"
+        }
+      },
+      "documentation":"<p>Details of a resource created and managed by the gateway for private endpoint connectivity.</p>"
     },
     "MatchValueString":{
       "type":"string",
@@ -8566,6 +8753,12 @@
         }
       },
       "documentation":"<p>Contains information for modifying a strategy configuration.</p>"
+    },
+    "MountPath":{
+      "type":"string",
+      "max":200,
+      "min":6,
+      "pattern":"/mnt/[a-zA-Z0-9._-]+/?"
     },
     "Name":{
       "type":"string",
@@ -9332,6 +9525,26 @@
         "IGNORE_ALL_FINDINGS"
       ]
     },
+    "PrivateEndpoint":{
+      "type":"structure",
+      "members":{
+        "selfManagedLatticeResource":{
+          "shape":"SelfManagedLatticeResource",
+          "documentation":"<p>Configuration for connecting to a private resource using a self-managed VPC Lattice resource configuration.</p>"
+        },
+        "managedLatticeResource":{
+          "shape":"ManagedLatticeResource",
+          "documentation":"<p>Configuration for connecting to a private resource using a managed VPC Lattice resource. The gateway creates and manages the VPC Lattice resources on your behalf.</p>"
+        }
+      },
+      "documentation":"<p>The private endpoint configuration for a gateway target. Defines how the gateway connects to private resources in your VPC.</p>",
+      "union":true
+    },
+    "PrivateEndpointManagedResources":{
+      "type":"list",
+      "member":{"shape":"ManagedResourceDetails"},
+      "documentation":"<p>A list of managed resources created by the gateway for private endpoint connectivity.</p>"
+    },
     "Prompt":{
       "type":"string",
       "max":30000,
@@ -9454,6 +9667,20 @@
       "documentation":"<p>Represents a resource within the AgentCore Policy system. Resources are the targets of policy evaluation. Currently, only AgentCore Gateways are supported as resources for policy enforcement.</p>",
       "union":true
     },
+    "ResourceAssociationArn":{
+      "type":"string",
+      "pattern":"arn:[a-z0-9\\-]+:vpc-lattice:[a-zA-Z0-9\\-]+:\\d{12}:servicenetworkresourceassociation/snra-[0-9a-f]{17}"
+    },
+    "ResourceConfigurationIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"((rcfg-[0-9a-z]{17})|(arn:[a-z0-9\\-]+:vpc-lattice:[a-zA-Z0-9\\-]+:\\d{12}:resourceconfiguration/rcfg-[0-9a-z]{17}))"
+    },
+    "ResourceGatewayArn":{
+      "type":"string",
+      "pattern":"arn:[a-z0-9\\-]+:vpc-lattice:[a-zA-Z0-9\\-]+:\\d{12}:resourcegateway/rgw-[0-9a-z]{17}"
+    },
     "ResourceId":{
       "type":"string",
       "max":59,
@@ -9540,6 +9767,11 @@
       "max":2048,
       "min":1,
       "pattern":"arn:aws(-[^:]+)?:iam::([0-9]{12})?:role/.+"
+    },
+    "RoutingDomain":{
+      "type":"string",
+      "max":255,
+      "min":3
     },
     "Rule":{
       "type":"structure",
@@ -9762,6 +9994,16 @@
       "type":"string",
       "pattern":"sg-[0-9a-zA-Z]{8,17}"
     },
+    "SecurityGroupIdentifier":{
+      "type":"string",
+      "pattern":"sg-(([0-9a-z]{8})|([0-9a-z]{17}))"
+    },
+    "SecurityGroupIds":{
+      "type":"list",
+      "member":{"shape":"SecurityGroupIdentifier"},
+      "max":5,
+      "min":0
+    },
     "SecurityGroups":{
       "type":"list",
       "member":{"shape":"SecurityGroupId"},
@@ -9815,6 +10057,17 @@
       "box":true,
       "max":50,
       "min":0
+    },
+    "SelfManagedLatticeResource":{
+      "type":"structure",
+      "members":{
+        "resourceConfigurationIdentifier":{
+          "shape":"ResourceConfigurationIdentifier",
+          "documentation":"<p>The ARN or ID of the VPC Lattice resource configuration.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for a self-managed VPC Lattice resource. You create and manage the VPC Lattice resource gateway and resource configuration, then provide the resource configuration identifier.</p>",
+      "union":true
     },
     "SemanticConsolidationOverride":{
       "type":"structure",
@@ -9982,6 +10235,17 @@
       "box":true,
       "max":1440,
       "min":1
+    },
+    "SessionStorageConfiguration":{
+      "type":"structure",
+      "required":["mountPath"],
+      "members":{
+        "mountPath":{
+          "shape":"MountPath",
+          "documentation":"<p>The mount path for the session storage filesystem inside the AgentCore Runtime. The path must be under <code>/mnt</code> with exactly one subdirectory level (for example, <code>/mnt/data</code>).</p>"
+        }
+      },
+      "documentation":"<p>Configuration for a session storage filesystem mounted into the AgentCore Runtime. Session storage provides persistent storage that is preserved across AgentCore Runtime session invocations.</p>"
     },
     "SetTokenVaultCMKRequest":{
       "type":"structure",
@@ -10216,6 +10480,10 @@
     "SubnetId":{
       "type":"string",
       "pattern":"subnet-[0-9a-zA-Z]{8,17}"
+    },
+    "SubnetIds":{
+      "type":"list",
+      "member":{"shape":"SubnetId"}
     },
     "Subnets":{
       "type":"list",
@@ -10836,6 +11104,10 @@
           "shape":"EnvironmentVariablesMap",
           "documentation":"<p>Updated environment variables to set in the AgentCore Runtime environment.</p>"
         },
+        "filesystemConfigurations":{
+          "shape":"FilesystemConfigurations",
+          "documentation":"<p>The updated filesystem configurations to mount into the AgentCore Runtime.</p>"
+        },
         "clientToken":{
           "shape":"ClientToken",
           "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency of the request.</p>",
@@ -10954,7 +11226,7 @@
         },
         "evaluatorConfig":{
           "shape":"EvaluatorConfig",
-          "documentation":"<p> The updated configuration for the evaluator, including LLM-as-a-Judge settings with instructions, rating scale, and model configuration. </p>"
+          "documentation":"<p> The updated configuration for the evaluator. Specify either LLM-as-a-Judge settings with instructions, rating scale, and model configuration, or code-based settings with a customer-managed Lambda function. </p>"
         },
         "level":{
           "shape":"EvaluatorLevel",
@@ -11173,6 +11445,10 @@
         "metadataConfiguration":{
           "shape":"MetadataConfiguration",
           "documentation":"<p>Configuration for HTTP header and query parameter propagation to the gateway target.</p>"
+        },
+        "privateEndpoint":{
+          "shape":"PrivateEndpoint",
+          "documentation":"<p>The private endpoint configuration for the gateway target. Use this to connect the gateway to private resources in your VPC.</p>"
         }
       }
     },
@@ -11233,6 +11509,14 @@
         "metadataConfiguration":{
           "shape":"MetadataConfiguration",
           "documentation":"<p>The metadata configuration that was applied to the gateway target.</p>"
+        },
+        "privateEndpoint":{
+          "shape":"PrivateEndpoint",
+          "documentation":"<p>The private endpoint configuration for the gateway target.</p>"
+        },
+        "privateEndpointManagedResources":{
+          "shape":"PrivateEndpointManagedResources",
+          "documentation":"<p>The managed resources created by the gateway for private endpoint connectivity.</p>"
         }
       }
     },
@@ -11643,10 +11927,10 @@
       "members":{
         "optionalValue":{
           "shape":"Description",
-          "documentation":"<p>Represents an optional value that is used to update the human-readable description of the resource. If set to null, it will clear the current description of the resource.</p>"
+          "documentation":"<p>Represents an optional value that is used to update the human-readable description of the resource. If not specified, it will clear the current description of the resource.</p>"
         }
       },
-      "documentation":"<p>Respresents an optional value that can be provided to update the human-readable description of the resource. If the field is omitted from the request, it will leave the current decription value unchanged.</p>"
+      "documentation":"<p>Wrapper for updating an optional Description field with PATCH semantics. When present in an update request, the description is replaced with optionalValue. When absent, the description is left unchanged. To unset the description, include the wrapper with optionalValue not specified.</p>"
     },
     "UserPreferenceConsolidationOverride":{
       "type":"structure",
@@ -11827,6 +12111,10 @@
         }
       },
       "documentation":"<p>VpcConfig for the Agent.</p>"
+    },
+    "VpcIdentifier":{
+      "type":"string",
+      "pattern":"vpc-(([0-9a-z]{8})|([0-9a-z]{17}))"
     },
     "WorkloadIdentityArn":{
       "type":"string",

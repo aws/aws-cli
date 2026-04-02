@@ -1422,7 +1422,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p> <b>This API works with the following fleet types:</b> Anywhere</p> <p>Lists all custom and Amazon Web Services locations where Amazon GameLift Servers can host game servers. </p> <p>Note that if you call this API using a location that doesn't have a service endpoint, such as one that can only be a remote location in a multi-location fleet, the API returns an error.</p> <p>Consult the table of supported locations in <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-regions.html\">Amazon GameLift Servers service locations</a> to identify home Regions that support single and multi-location fleets.</p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-regions.html\">Service locations</a> </p>"
+      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Anywhere, Container</p> <p>Lists all custom and Amazon Web Services locations where Amazon GameLift Servers can host game servers. This operation also returns UDP ping beacon information for locations, which you can use to measure network latency between player devices and potential hosting locations.</p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-regions.html\">Service locations</a> </p>"
     },
     "ListScripts":{
       "name":"ListScripts",
@@ -3729,7 +3729,7 @@
         },
         "NodeJsVersion":{
           "shape":"NodeJsVersion",
-          "documentation":"<p>The Node.js version used for execution of your Realtime script. The valid values are <code>10.x | 24.x</code>. By default, <code>NodeJsVersion</code> is <code>10.x</code>. This value cannot be updated later. </p>"
+          "documentation":"<p>The Node.js version used for execution of your Realtime script. The valid values are <code>10.x | 24.x</code>. By default, <code>NodeJsVersion</code> is <code>10.x</code>. This value cannot be updated later. </p> <note> <p>Node.js 10 will reach end of support on September 30, 2026. See more details in the <a href=\"http://aws.amazon.com/gamelift/faq/nodejs10/\">Node.js 10 FAQs</a>. For migration guidance, see <a href=\"https://docs.aws.amazon.com/gamelift/latest/realtimeguide/realtime-script.html#realtime-script-nodejs-migration\"> Migrating from Node.js 10 to 24</a>.</p> </note>"
         }
       }
     },
@@ -7968,7 +7968,7 @@
         },
         "PingBeacon":{
           "shape":"PingBeacon",
-          "documentation":"<p>Information about the UDP ping beacon for this location. </p>"
+          "documentation":"<p>Information about the UDP ping beacon for this location. Ping beacons are fixed endpoints that you can use to measure network latency between a player device and an Amazon GameLift Servers hosting location.</p>"
         }
       },
       "documentation":"<p>Properties of a location, which can include its name, ARN (for custom locations), and ping beacon information.</p>"
@@ -8085,7 +8085,7 @@
         },
         "PlayerSessionId":{
           "shape":"PlayerSessionId",
-          "documentation":"<p>A unique identifier for a player session</p>"
+          "documentation":"<p>A unique identifier for a player session. PlayerSessionId will only be populated for player sessions that are in ACTIVE or RESERVED status when the ticket is completed.</p>"
         }
       },
       "documentation":"<p>Represents a new player session that is created as a result of a successful FlexMatch match. A successful match automatically creates new player sessions for every player ID in the original matchmaking request. </p> <p>When players connect to the match's game session, they must include both player ID and player session ID in order to claim their assigned player slot.</p>"
@@ -8450,7 +8450,7 @@
       "members":{
         "UDPEndpoint":{
           "shape":"UDPEndpoint",
-          "documentation":"<p>The domain name and port of the UDP ping beacon. </p>"
+          "documentation":"<p>The domain name and port of the UDP ping beacon. Your game client can send UDP messages to this endpoint and receive responses to measure network latency.</p>"
         }
       },
       "documentation":"<p>Information about a UDP ping beacon that can be used to measure network latency between a player device and an Amazon GameLift Servers hosting location.</p>"
@@ -9250,7 +9250,7 @@
         },
         "NodeJsVersion":{
           "shape":"NodeJsVersion",
-          "documentation":"<p>The Node.js version used for execution of your Realtime script. The valid values are <code>10.x | 24.x</code>. By default, <code>NodeJsVersion</code> is <code>10.x</code>. This value cannot be updated later. </p>"
+          "documentation":"<p>The Node.js version used for execution of your Realtime script. The valid values are <code>10.x | 24.x</code>. By default, <code>NodeJsVersion</code> is <code>10.x</code>. This value cannot be updated later. </p> <note> <p>Node.js 10 will reach end of support on September 30, 2026. See more details in the <a href=\"http://aws.amazon.com/gamelift/faq/nodejs10/\">Node.js 10 FAQs</a>. For migration guidance, see <a href=\"https://docs.aws.amazon.com/gamelift/latest/realtimeguide/realtime-script.html#realtime-script-nodejs-migration\"> Migrating from Node.js 10 to 24</a>.</p> </note>"
         }
       },
       "documentation":"<p>Properties describing a Realtime script.</p> <p> <b>Related actions</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets\">All APIs by task</a> </p>"
@@ -9871,11 +9871,11 @@
       "members":{
         "Domain":{
           "shape":"NonZeroAndMaxString",
-          "documentation":"<p>The domain name of the UDP endpoint. </p>"
+          "documentation":"<p>The domain name of the UDP endpoint.</p>"
         },
         "Port":{
           "shape":"PositiveInteger",
-          "documentation":"<p>The port number of the UDP endpoint. </p>"
+          "documentation":"<p>The port number of the UDP endpoint. For Amazon GameLift Servers ping beacons, this is typically port 7770.</p>"
         }
       },
       "documentation":"<p>The domain name and port information for a UDP endpoint.</p>"

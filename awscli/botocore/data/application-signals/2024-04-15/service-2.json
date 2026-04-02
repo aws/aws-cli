@@ -1671,6 +1671,10 @@
           "location":"querystring",
           "locationName":"NextToken"
         },
+        "MetricSourceTypes":{
+          "shape":"MetricSourceTypes",
+          "documentation":"<p>Use this optional field to only include SLOs with the specified metric source types in the output. Supported types are:</p> <ul> <li> <p>Service operation</p> </li> <li> <p>Service dependency</p> </li> <li> <p>Service</p> </li> <li> <p>CloudWatch metric</p> </li> <li> <p>AppMonitor</p> </li> <li> <p>Canary</p> </li> </ul>"
+        },
         "IncludeLinkedAccounts":{
           "shape":"Boolean",
           "documentation":"<p>If you are using this operation in a monitoring account, specify <code>true</code> to include SLO from source accounts in the returned data. </p> <p>When you are monitoring an account, you can use Amazon Web Services account ID in <code>KeyAttribute</code> filter for service source account and <code>SloOwnerawsaccountID</code> for SLO source account with <code>IncludeLinkedAccounts</code> to filter the returned data to only a single source account. </p>",
@@ -1683,9 +1687,9 @@
           "location":"querystring",
           "locationName":"SloOwnerAwsAccountId"
         },
-        "MetricSourceTypes":{
-          "shape":"MetricSourceTypes",
-          "documentation":"<p>Use this optional field to only include SLOs with the specified metric source types in the output. Supported types are:</p> <ul> <li> <p>Service operation</p> </li> <li> <p>Service dependency</p> </li> <li> <p>CloudWatch metric</p> </li> </ul>"
+        "MetricSource":{
+          "shape":"MetricSource",
+          "documentation":"<p>Identifies the metric source to filter SLOs by.</p>"
         }
       }
     },
@@ -2074,12 +2078,30 @@
       "type":"list",
       "member":{"shape":"MetricReference"}
     },
+    "MetricSource":{
+      "type":"structure",
+      "required":["MetricSourceKeyAttributes"],
+      "members":{
+        "MetricSourceKeyAttributes":{
+          "shape":"Attributes",
+          "documentation":"<p>Key attributes that identify the metric source.</p>"
+        },
+        "MetricSourceAttributes":{
+          "shape":"Attributes",
+          "documentation":"<p>Additional attributes for the metric source.</p>"
+        }
+      },
+      "documentation":"<p>Identifies the metric source for SLOs on resources other than Application Signals services.</p>"
+    },
     "MetricSourceType":{
       "type":"string",
       "enum":[
         "ServiceOperation",
         "CloudWatchMetric",
-        "ServiceDependency"
+        "ServiceDependency",
+        "AppMonitor",
+        "Canary",
+        "Service"
       ]
     },
     "MetricSourceTypes":{
@@ -2295,6 +2317,10 @@
         "DependencyConfig":{
           "shape":"DependencyConfig",
           "documentation":"<p>Identifies the dependency using the <code>DependencyKeyAttributes</code> and <code>DependencyOperationName</code>. </p>"
+        },
+        "MetricSource":{
+          "shape":"MetricSource",
+          "documentation":"<p>Identifies the metric source for SLOs on resources other than Application Signals services.</p>"
         }
       },
       "documentation":"<p>This structure contains the information about the metric that is used for a request-based SLO.</p>"
@@ -2325,6 +2351,14 @@
         "DependencyConfig":{
           "shape":"DependencyConfig",
           "documentation":"<p>Identifies the dependency using the <code>DependencyKeyAttributes</code> and <code>DependencyOperationName</code>. </p>"
+        },
+        "MetricSource":{
+          "shape":"MetricSource",
+          "documentation":"<p>Identifies the metric source for SLOs on resources other than Application Signals services.</p>"
+        },
+        "MetricName":{
+          "shape":"MetricName",
+          "documentation":"<p>The name of the metric for SLOs on resources other than Application Signals services.</p>"
         }
       },
       "documentation":"<p>Use this structure to specify the information for the metric that a period-based SLO will monitor.</p>"
@@ -2618,6 +2652,10 @@
         "DependencyConfig":{
           "shape":"DependencyConfig",
           "documentation":"<p>Identifies the dependency using the <code>DependencyKeyAttributes</code> and <code>DependencyOperationName</code>. </p>"
+        },
+        "MetricSource":{
+          "shape":"MetricSource",
+          "documentation":"<p>Identifies the metric source for SLOs on resources other than Application Signals services.</p>"
         }
       },
       "documentation":"<p>This structure contains the information about the metric that is used for a period-based SLO.</p>"
@@ -2648,6 +2686,10 @@
         "PeriodSeconds":{
           "shape":"SLIPeriodSeconds",
           "documentation":"<p>The number of seconds to use as the period for SLO evaluation. Your application's performance is compared to the SLI during each period. For each period, the application is determined to have either achieved or not achieved the necessary performance.</p>"
+        },
+        "MetricSource":{
+          "shape":"MetricSource",
+          "documentation":"<p>Identifies the metric source for SLOs on resources other than Application Signals services.</p>"
         },
         "MetricDataQueries":{
           "shape":"MetricDataQueries",
@@ -2726,7 +2768,7 @@
         },
         "MetricSourceType":{
           "shape":"MetricSourceType",
-          "documentation":"<p>Displays the SLI metric source type for this SLO. Supported types are:</p> <ul> <li> <p>Service operation</p> </li> <li> <p>Service dependency</p> </li> <li> <p>CloudWatch metric</p> </li> </ul>"
+          "documentation":"<p>Displays the SLI metric source type for this SLO. Supported types are:</p> <ul> <li> <p>Service operation</p> </li> <li> <p>Service dependency</p> </li> <li> <p>Service</p> </li> <li> <p>CloudWatch metric</p> </li> <li> <p>AppMonitor</p> </li> <li> <p>Canary</p> </li> </ul>"
         }
       },
       "documentation":"<p>A structure containing information about one service level objective (SLO) that has been created in Application Signals. Creating SLOs can help you ensure your services are performing to the level that you expect. SLOs help you set and track a specific target level for the reliability and availability of your applications and services. Each SLO uses a service level indicator (SLI), which is a key performance metric, to calculate how much underperformance can be tolerated before the goal that you set for the SLO is not achieved.</p>"
@@ -2915,7 +2957,11 @@
         },
         "MetricSourceType":{
           "shape":"MetricSourceType",
-          "documentation":"<p>Displays the SLI metric source type for this SLO. Supported types are:</p> <ul> <li> <p>Service operation</p> </li> <li> <p>Service dependency</p> </li> <li> <p>CloudWatch metric</p> </li> </ul>"
+          "documentation":"<p>Displays the SLI metric source type for this SLO. Supported types are:</p> <ul> <li> <p>Service operation</p> </li> <li> <p>Service dependency</p> </li> <li> <p>Service</p> </li> <li> <p>CloudWatch metric</p> </li> <li> <p>AppMonitor</p> </li> <li> <p>Canary</p> </li> </ul>"
+        },
+        "MetricSource":{
+          "shape":"MetricSource",
+          "documentation":"<p>Identifies the metric source for SLOs on resources other than Application Signals services.</p>"
         }
       },
       "documentation":"<p>A structure that contains information about one service level objective (SLO) created in Application Signals.</p>"

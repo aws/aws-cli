@@ -29,7 +29,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"ConflictException"},
         {"shape":"ValidationException"},
-        {"shape":"InternalServerException"}
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Accepts a connection invitation from another partner, establishing a formal partnership connection between the two parties.</p>"
     },
@@ -120,7 +121,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"ConflictException"},
         {"shape":"ValidationException"},
-        {"shape":"InternalServerException"}
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Creates a new connection invitation to establish a partnership with another organization.</p>"
     },
@@ -744,6 +746,14 @@
         "BusinessVerificationDetails":{
           "shape":"BusinessVerificationDetails",
           "documentation":"<p>The business verification details that were processed and verified, potentially including additional information discovered during the verification process.</p>"
+        },
+        "CompletionUrl":{
+          "shape":"CompletionUrl",
+          "documentation":"<p>A secure URL where the registrant can complete additional verification steps, such as document upload or identity confirmation through a third-party verification service.</p>"
+        },
+        "CompletionUrlExpiresAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The timestamp when the completion URL expires and is no longer valid for accessing the verification workflow.</p>"
         }
       },
       "documentation":"<p>Contains the response information and results from a business verification process, including any verification-specific data returned by the verification service.</p>"
@@ -850,7 +860,7 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"[\\u0020-\\u007E\\u00A0-\\uD7FF\\uE000-\\uFFFD]+"
+      "pattern":"[\\u0020-\\u007E\\u00A0-\\uD7FF\\uE000-\\uFFFD\\n]+"
     },
     "CancelConnectionRequest":{
       "type":"structure",
@@ -1363,7 +1373,7 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"[\\u0020-\\u007E\\u00A0-\\uD7FF\\uE000-\\uFFFD]+"
+      "pattern":"[\\u0020-\\u007E\\u00A0-\\uD7FF\\uE000-\\uFFFD\\n]+"
     },
     "CreateConnectionInvitationResponse":{
       "type":"structure",
@@ -1444,7 +1454,7 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"[\\u0020-\\u007E\\u00A0-\\uD7FF\\uE000-\\uFFFD]+"
+      "pattern":"[\\u0020-\\u007E\\u00A0-\\uD7FF\\uE000-\\uFFFD\\n]+"
     },
     "CreatePartnerRequest":{
       "type":"structure",
@@ -1791,7 +1801,7 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"[\\u0020-\\u007E\\u00A0-\\uD7FF\\uE000-\\uFFFD]+"
+      "pattern":"[\\u0020-\\u007E\\u00A0-\\uD7FF\\uE000-\\uFFFD\\n]+"
     },
     "GetConnectionPreferencesRequest":{
       "type":"structure",
@@ -2215,7 +2225,7 @@
           "documentation":"<p>The maximum number of connection invitations to return in a single response.</p>"
         },
         "OtherParticipantIdentifiers":{
-          "shape":"ParticipantIdentifierList",
+          "shape":"ListConnectionInvitationsRequestOtherParticipantIdentifiersList",
           "documentation":"<p>Filter results by specific participant identifiers.</p>"
         },
         "ParticipantType":{
@@ -2227,6 +2237,12 @@
           "documentation":"<p>Filter results by invitation status (pending, accepted, rejected, canceled, expired).</p>"
         }
       }
+    },
+    "ListConnectionInvitationsRequestOtherParticipantIdentifiersList":{
+      "type":"list",
+      "member":{"shape":"ParticipantIdentifier"},
+      "max":100,
+      "min":0
     },
     "ListConnectionInvitationsResponse":{
       "type":"structure",
@@ -2263,10 +2279,16 @@
           "documentation":"<p>The maximum number of connections to return in a single response.</p>"
         },
         "OtherParticipantIdentifiers":{
-          "shape":"ParticipantIdentifierList",
+          "shape":"ListConnectionsRequestOtherParticipantIdentifiersList",
           "documentation":"<p>Filter results by specific participant identifiers.</p>"
         }
       }
+    },
+    "ListConnectionsRequestOtherParticipantIdentifiersList":{
+      "type":"list",
+      "member":{"shape":"ParticipantIdentifier"},
+      "max":100,
+      "min":0
     },
     "ListConnectionsResponse":{
       "type":"structure",
@@ -2886,7 +2908,7 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"[\\u0020-\\u007E\\u00A0-\\uD7FF\\uE000-\\uFFFD]+"
+      "pattern":"[\\u0020-\\u007E\\u00A0-\\uD7FF\\uE000-\\uFFFD\\n]+"
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -2994,7 +3016,10 @@
       "type":"string",
       "enum":[
         "LIMIT_EXCEEDED_NUMBER_OF_EMAIL",
-        "LIMIT_EXCEEDED_NUMBER_OF_DOMAIN"
+        "LIMIT_EXCEEDED_NUMBER_OF_DOMAIN",
+        "LIMIT_EXCEEDED_NUMBER_OF_CONNECTION_INVITATION_PER_DAY",
+        "LIMIT_EXCEEDED_NUMBER_OF_ACTIVE_CONNECTION",
+        "LIMIT_EXCEEDED_NUMBER_OF_OPEN_CONNECTION_INVITATION"
       ]
     },
     "StartProfileUpdateTaskRequest":{

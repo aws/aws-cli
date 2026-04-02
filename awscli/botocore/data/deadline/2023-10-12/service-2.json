@@ -2121,7 +2121,8 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Updates the queue environment.</p>",
-      "endpoint":{"hostPrefix":"management."}
+      "endpoint":{"hostPrefix":"management."},
+      "idempotent":true
     },
     "UpdateQueueFleetAssociation":{
       "name":"UpdateQueueFleetAssociation",
@@ -2576,10 +2577,10 @@
       "type":"structure",
       "required":[
         "farmId",
-        "principalId",
         "principalType",
         "identityStoreId",
-        "membershipLevel"
+        "membershipLevel",
+        "principalId"
       ],
       "members":{
         "farmId":{
@@ -2587,12 +2588,6 @@
           "documentation":"<p>The ID of the farm to associate with the member.</p>",
           "location":"uri",
           "locationName":"farmId"
-        },
-        "principalId":{
-          "shape":"IdentityCenterPrincipalId",
-          "documentation":"<p>The member's principal ID to associate with the farm.</p>",
-          "location":"uri",
-          "locationName":"principalId"
         },
         "principalType":{
           "shape":"PrincipalType",
@@ -2605,8 +2600,15 @@
         "membershipLevel":{
           "shape":"MembershipLevel",
           "documentation":"<p>The principal's membership level for the associated farm.</p>"
+        },
+        "principalId":{
+          "shape":"IdentityCenterPrincipalId",
+          "documentation":"<p>The member's principal ID to associate with the farm.</p>",
+          "location":"uri",
+          "locationName":"principalId"
         }
-      }
+      },
+      "documentation":"<p>Shared member fields for Associate inputs and {Resource}Member response structures. principalId is excluded because it has @httpLabel on inputs but not on responses.</p>"
     },
     "AssociateMemberToFarmResponse":{
       "type":"structure",
@@ -2617,10 +2619,10 @@
       "required":[
         "farmId",
         "fleetId",
-        "principalId",
         "principalType",
         "identityStoreId",
-        "membershipLevel"
+        "membershipLevel",
+        "principalId"
       ],
       "members":{
         "farmId":{
@@ -2635,12 +2637,6 @@
           "location":"uri",
           "locationName":"fleetId"
         },
-        "principalId":{
-          "shape":"IdentityCenterPrincipalId",
-          "documentation":"<p>The member's principal ID to associate with a fleet.</p>",
-          "location":"uri",
-          "locationName":"principalId"
-        },
         "principalType":{
           "shape":"PrincipalType",
           "documentation":"<p>The member's principal type to associate with the fleet.</p>"
@@ -2652,8 +2648,15 @@
         "membershipLevel":{
           "shape":"MembershipLevel",
           "documentation":"<p>The principal's membership level for the associated fleet.</p>"
+        },
+        "principalId":{
+          "shape":"IdentityCenterPrincipalId",
+          "documentation":"<p>The member's principal ID to associate with a fleet.</p>",
+          "location":"uri",
+          "locationName":"principalId"
         }
-      }
+      },
+      "documentation":"<p>Shared member fields for Associate inputs and {Resource}Member response structures. principalId is excluded because it has @httpLabel on inputs but not on responses.</p>"
     },
     "AssociateMemberToFleetResponse":{
       "type":"structure",
@@ -2665,10 +2668,10 @@
         "farmId",
         "queueId",
         "jobId",
-        "principalId",
         "principalType",
         "identityStoreId",
-        "membershipLevel"
+        "membershipLevel",
+        "principalId"
       ],
       "members":{
         "farmId":{
@@ -2689,12 +2692,6 @@
           "location":"uri",
           "locationName":"jobId"
         },
-        "principalId":{
-          "shape":"IdentityCenterPrincipalId",
-          "documentation":"<p>The member's principal ID to associate with the job.</p>",
-          "location":"uri",
-          "locationName":"principalId"
-        },
         "principalType":{
           "shape":"PrincipalType",
           "documentation":"<p>The member's principal type to associate with the job.</p>"
@@ -2706,8 +2703,15 @@
         "membershipLevel":{
           "shape":"MembershipLevel",
           "documentation":"<p>The principal's membership level for the associated job.</p>"
+        },
+        "principalId":{
+          "shape":"IdentityCenterPrincipalId",
+          "documentation":"<p>The member's principal ID to associate with the job.</p>",
+          "location":"uri",
+          "locationName":"principalId"
         }
-      }
+      },
+      "documentation":"<p>Shared member fields for Associate inputs and {Resource}Member response structures. principalId is excluded because it has @httpLabel on inputs but not on responses.</p>"
     },
     "AssociateMemberToJobResponse":{
       "type":"structure",
@@ -2718,10 +2722,10 @@
       "required":[
         "farmId",
         "queueId",
-        "principalId",
         "principalType",
         "identityStoreId",
-        "membershipLevel"
+        "membershipLevel",
+        "principalId"
       ],
       "members":{
         "farmId":{
@@ -2736,12 +2740,6 @@
           "location":"uri",
           "locationName":"queueId"
         },
-        "principalId":{
-          "shape":"IdentityCenterPrincipalId",
-          "documentation":"<p>The member's principal ID to associate with the queue.</p>",
-          "location":"uri",
-          "locationName":"principalId"
-        },
         "principalType":{
           "shape":"PrincipalType",
           "documentation":"<p>The member's principal type to associate with the queue.</p>"
@@ -2753,8 +2751,15 @@
         "membershipLevel":{
           "shape":"MembershipLevel",
           "documentation":"<p>The principal's membership level for the associated queue.</p>"
+        },
+        "principalId":{
+          "shape":"IdentityCenterPrincipalId",
+          "documentation":"<p>The member's principal ID to associate with the queue.</p>",
+          "location":"uri",
+          "locationName":"principalId"
         }
-      }
+      },
+      "documentation":"<p>Shared member fields for Associate inputs and {Resource}Member response structures. principalId is excluded because it has @httpLabel on inputs but not on responses.</p>"
     },
     "AssociateMemberToQueueResponse":{
       "type":"structure",
@@ -2790,6 +2795,7 @@
           "documentation":"<p>The credentials for the fleet role.</p>"
         }
       },
+      "documentation":"<p>Shared response body for AssumeRole operations where credentials are required. AssumeQueueRoleForWorkerResponse is excluded because credentials is optional there because Queue.roleArn is optional, so the mixin's @required trait would be incorrect.</p>",
       "sensitive":true
     },
     "AssumeFleetRoleForWorkerRequest":{
@@ -2829,6 +2835,7 @@
           "documentation":"<p>The credentials for the worker.</p>"
         }
       },
+      "documentation":"<p>Shared response body for AssumeRole operations where credentials are required. AssumeQueueRoleForWorkerResponse is excluded because credentials is optional there because Queue.roleArn is optional, so the mixin's @required trait would be incorrect.</p>",
       "sensitive":true
     },
     "AssumeQueueRoleForReadRequest":{
@@ -2861,6 +2868,7 @@
           "documentation":"<p>The credentials for the queue role.</p>"
         }
       },
+      "documentation":"<p>Shared response body for AssumeRole operations where credentials are required. AssumeQueueRoleForWorkerResponse is excluded because credentials is optional there because Queue.roleArn is optional, so the mixin's @required trait would be incorrect.</p>",
       "sensitive":true
     },
     "AssumeQueueRoleForUserRequest":{
@@ -2893,6 +2901,7 @@
           "documentation":"<p>The credentials for the queue role that a user has access to.</p>"
         }
       },
+      "documentation":"<p>Shared response body for AssumeRole operations where credentials are required. AssumeQueueRoleForWorkerResponse is excluded because credentials is optional there because Queue.roleArn is optional, so the mixin's @required trait would be incorrect.</p>",
       "sensitive":true
     },
     "AssumeQueueRoleForWorkerRequest":{
@@ -3196,12 +3205,6 @@
           "shape":"ResourceName",
           "documentation":"<p>The display name of the budget summary to update.</p> <important> <p>This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.</p> </important>"
         },
-        "description":{
-          "shape":"Description",
-          "documentation":"<p>The description of the budget summary.</p> <important> <p>This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.</p> </important>",
-          "deprecated":true,
-          "deprecatedMessage":"ListBudgets no longer supports description. Use GetBudget if description is needed."
-        },
         "approximateDollarLimit":{
           "shape":"ConsumedUsageLimit",
           "documentation":"<p>The approximate dollar limit of the budget.</p>"
@@ -3225,6 +3228,12 @@
         "updatedAt":{
           "shape":"UpdatedAt",
           "documentation":"<p>The date and time the resource was updated.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the budget summary.</p> <important> <p>This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.</p> </important>",
+          "deprecated":true,
+          "deprecatedMessage":"ListBudgets no longer supports description. Use GetBudget if description is needed."
         }
       },
       "documentation":"<p>The budget summary.</p>"
@@ -3331,8 +3340,8 @@
       "type":"structure",
       "required":[
         "farmId",
-        "jobId",
         "queueId",
+        "jobId",
         "targetS3Location"
       ],
       "members":{
@@ -3342,17 +3351,17 @@
           "location":"uri",
           "locationName":"farmId"
         },
-        "jobId":{
-          "shape":"JobId",
-          "documentation":"<p>The job ID to copy.</p>",
-          "location":"uri",
-          "locationName":"jobId"
-        },
         "queueId":{
           "shape":"QueueId",
           "documentation":"<p>The queue ID to copy.</p>",
           "location":"uri",
           "locationName":"queueId"
+        },
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The job ID to copy.</p>",
+          "location":"uri",
+          "locationName":"jobId"
         },
         "targetS3Location":{
           "shape":"S3Location",
@@ -3388,29 +3397,18 @@
       "type":"structure",
       "required":[
         "farmId",
-        "usageTrackingResource",
         "displayName",
+        "usageTrackingResource",
         "approximateDollarLimit",
         "actions",
         "schedule"
       ],
       "members":{
-        "clientToken":{
-          "shape":"ClientToken",
-          "documentation":"<p>The unique token which the server uses to recognize retries of the same request.</p>",
-          "idempotencyToken":true,
-          "location":"header",
-          "locationName":"X-Amz-Client-Token"
-        },
         "farmId":{
           "shape":"FarmId",
           "documentation":"<p>The farm ID to include in this budget.</p>",
           "location":"uri",
           "locationName":"farmId"
-        },
-        "usageTrackingResource":{
-          "shape":"UsageTrackingResource",
-          "documentation":"<p>The queue ID provided to this budget to track usage.</p>"
         },
         "displayName":{
           "shape":"ResourceName",
@@ -3419,6 +3417,17 @@
         "description":{
           "shape":"Description",
           "documentation":"<p>The description of the budget.</p> <important> <p>This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.</p> </important>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The unique token which the server uses to recognize retries of the same request.</p>",
+          "idempotencyToken":true,
+          "location":"header",
+          "locationName":"X-Amz-Client-Token"
+        },
+        "usageTrackingResource":{
+          "shape":"UsageTrackingResource",
+          "documentation":"<p>The queue ID provided to this budget to track usage.</p>"
         },
         "approximateDollarLimit":{
           "shape":"ConsumedUsageLimit",
@@ -3436,7 +3445,8 @@
           "shape":"Tags",
           "documentation":"<p>Each tag consists of a tag key and a tag value. Tag keys and values are both required, but tag values can be empty strings.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared displayName + description for Create operations where both are present. displayName is @required here - this mixin is Create-only by design (Update has optional displayName).</p>"
     },
     "CreateBudgetResponse":{
       "type":"structure",
@@ -3446,7 +3456,8 @@
           "shape":"BudgetId",
           "documentation":"<p>The budget ID.</p>"
         }
-      }
+      },
+      "documentation":"<p>Mixin that adds an optional ARN field to response structures. Apply to SummaryMixins (flows into Get, Summary, and BatchGet) and Create outputs.</p>"
     },
     "CreateFarmRequest":{
       "type":"structure",
@@ -3473,13 +3484,14 @@
         },
         "costScaleFactor":{
           "shape":"CostScaleFactor",
-          "documentation":"<p>The cost scale factor to apply on the farm.</p>"
+          "documentation":"<p>A multiplier applied to the farm's calculated costs for usage data and budget tracking. A value less than 1 represents a discount, a value greater than 1 represents a premium, and a value of 1 represents no adjustment. The default value is 1.</p>"
         },
         "tags":{
           "shape":"Tags",
           "documentation":"<p>The tags to add to your farm. Each tag consists of a tag key and a tag value. Tag keys and values are both required, but tag values can be empty strings.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared displayName + description for Create operations where both are present. displayName is @required here - this mixin is Create-only by design (Update has optional displayName).</p>"
     },
     "CreateFarmResponse":{
       "type":"structure",
@@ -3489,7 +3501,8 @@
           "shape":"FarmId",
           "documentation":"<p>The farm ID.</p>"
         }
-      }
+      },
+      "documentation":"<p>Mixin that adds an optional ARN field to response structures. Apply to SummaryMixins (flows into Get, Summary, and BatchGet) and Create outputs.</p>"
     },
     "CreateFleetRequest":{
       "type":"structure",
@@ -3501,18 +3514,18 @@
         "configuration"
       ],
       "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID of the farm to connect to the fleet.</p>",
+          "location":"uri",
+          "locationName":"farmId"
+        },
         "clientToken":{
           "shape":"ClientToken",
           "documentation":"<p>The unique token which the server uses to recognize retries of the same request.</p>",
           "idempotencyToken":true,
           "location":"header",
           "locationName":"X-Amz-Client-Token"
-        },
-        "farmId":{
-          "shape":"FarmId",
-          "documentation":"<p>The farm ID of the farm to connect to the fleet.</p>",
-          "location":"uri",
-          "locationName":"farmId"
         },
         "displayName":{
           "shape":"ResourceName",
@@ -3546,7 +3559,8 @@
           "shape":"HostConfiguration",
           "documentation":"<p>Provides a script that runs as a worker is starting up that you can use to provide additional configuration for workers in your fleet.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared displayName + description for Create operations where both are present. displayName is @required here - this mixin is Create-only by design (Update has optional displayName).</p>"
     },
     "CreateFleetResponse":{
       "type":"structure",
@@ -3556,7 +3570,8 @@
           "shape":"FleetId",
           "documentation":"<p>The fleet ID.</p>"
         }
-      }
+      },
+      "documentation":"<p>Mixin that adds an optional ARN field to response structures. Apply to SummaryMixins (flows into Get, Summary, and BatchGet) and Create outputs.</p>"
     },
     "CreateJobRequest":{
       "type":"structure",
@@ -3651,7 +3666,8 @@
           "shape":"JobId",
           "documentation":"<p>The job ID.</p>"
         }
-      }
+      },
+      "documentation":"<p>Mixin that adds an optional ARN field to response structures. Apply to SummaryMixins (flows into Get, Summary, and BatchGet) and Create outputs.</p>"
     },
     "CreateJobTargetTaskRunStatus":{
       "type":"string",
@@ -3713,17 +3729,24 @@
           "shape":"LicenseEndpointId",
           "documentation":"<p>The license endpoint ID.</p>"
         }
-      }
+      },
+      "documentation":"<p>Mixin that adds an optional ARN field to response structures. Apply to SummaryMixins (flows into Get, Summary, and BatchGet) and Create outputs.</p>"
     },
     "CreateLimitRequest":{
       "type":"structure",
       "required":[
+        "farmId",
         "displayName",
         "amountRequirementName",
-        "maxCount",
-        "farmId"
+        "maxCount"
       ],
       "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID of the farm that contains the limit.</p>",
+          "location":"uri",
+          "locationName":"farmId"
+        },
         "clientToken":{
           "shape":"ClientToken",
           "documentation":"<p>The unique token which the server uses to recognize retries of the same request.</p>",
@@ -3742,12 +3765,6 @@
         "maxCount":{
           "shape":"MaxCount",
           "documentation":"<p>The maximum number of resources constrained by this limit. When all of the resources are in use, steps that require the limit won't be scheduled until the resource is available.</p> <p>The <code>maxCount</code> must not be 0. If the value is -1, there is no restriction on the number of resources that can be acquired for this limit.</p>"
-        },
-        "farmId":{
-          "shape":"FarmId",
-          "documentation":"<p>The farm ID of the farm that contains the limit.</p>",
-          "location":"uri",
-          "locationName":"farmId"
         },
         "description":{
           "shape":"Description",
@@ -3818,7 +3835,8 @@
           "shape":"IdentityCenterApplicationArn",
           "documentation":"<p>The Amazon Resource Name that IAM Identity Center assigns to the monitor.</p>"
         }
-      }
+      },
+      "documentation":"<p>Mixin that adds an optional ARN field to response structures. Apply to SummaryMixins (flows into Get, Summary, and BatchGet) and Create outputs.</p>"
     },
     "CreateQueueEnvironmentRequest":{
       "type":"structure",
@@ -3830,13 +3848,6 @@
         "template"
       ],
       "members":{
-        "clientToken":{
-          "shape":"ClientToken",
-          "documentation":"<p>The unique token which the server uses to recognize retries of the same request.</p>",
-          "idempotencyToken":true,
-          "location":"header",
-          "locationName":"X-Amz-Client-Token"
-        },
         "farmId":{
           "shape":"FarmId",
           "documentation":"<p>The farm ID of the farm to connect to the environment.</p>",
@@ -3848,6 +3859,13 @@
           "documentation":"<p>The queue ID to connect the queue and environment.</p>",
           "location":"uri",
           "locationName":"queueId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The unique token which the server uses to recognize retries of the same request.</p>",
+          "idempotencyToken":true,
+          "location":"header",
+          "locationName":"X-Amz-Client-Token"
         },
         "priority":{
           "shape":"Priority",
@@ -3936,18 +3954,18 @@
         "displayName"
       ],
       "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID of the farm to connect to the queue.</p>",
+          "location":"uri",
+          "locationName":"farmId"
+        },
         "clientToken":{
           "shape":"ClientToken",
           "documentation":"<p>The unique token which the server uses to recognize retries of the same request.</p>",
           "idempotencyToken":true,
           "location":"header",
           "locationName":"X-Amz-Client-Token"
-        },
-        "farmId":{
-          "shape":"FarmId",
-          "documentation":"<p>The farm ID of the farm to connect to the queue.</p>",
-          "location":"uri",
-          "locationName":"farmId"
         },
         "displayName":{
           "shape":"ResourceName",
@@ -3985,7 +4003,8 @@
           "shape":"Tags",
           "documentation":"<p>Each tag consists of a tag key and a tag value. Tag keys and values are both required, but tag values can be empty strings.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared displayName + description for Create operations where both are present. displayName is @required here - this mixin is Create-only by design (Update has optional displayName).</p>"
     },
     "CreateQueueResponse":{
       "type":"structure",
@@ -3995,7 +4014,8 @@
           "shape":"QueueId",
           "documentation":"<p>The queue ID.</p>"
         }
-      }
+      },
+      "documentation":"<p>Mixin that adds an optional ARN field to response structures. Apply to SummaryMixins (flows into Get, Summary, and BatchGet) and Create outputs.</p>"
     },
     "CreateStorageProfileRequest":{
       "type":"structure",
@@ -4005,18 +4025,18 @@
         "osFamily"
       ],
       "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID of the farm to connect to the storage profile.</p>",
+          "location":"uri",
+          "locationName":"farmId"
+        },
         "clientToken":{
           "shape":"ClientToken",
           "documentation":"<p>The unique token which the server uses to recognize retries of the same request.</p>",
           "idempotencyToken":true,
           "location":"header",
           "locationName":"X-Amz-Client-Token"
-        },
-        "farmId":{
-          "shape":"FarmId",
-          "documentation":"<p>The farm ID of the farm to connect to the storage profile.</p>",
-          "location":"uri",
-          "locationName":"farmId"
         },
         "displayName":{
           "shape":"ResourceName",
@@ -4086,7 +4106,8 @@
           "shape":"WorkerId",
           "documentation":"<p>The worker ID.</p>"
         }
-      }
+      },
+      "documentation":"<p>Mixin that adds an optional ARN field to response structures. Apply to SummaryMixins (flows into Get, Summary, and BatchGet) and Create outputs.</p>"
     },
     "CreatedAt":{
       "type":"timestamp",
@@ -4105,6 +4126,24 @@
       "max":15,
       "min":1
     },
+    "CustomerManagedAutoScalingConfiguration":{
+      "type":"structure",
+      "members":{
+        "standbyWorkerCount":{
+          "shape":"MinZeroMaxInteger",
+          "documentation":"<p>The number of standby workers to maintain for the fleet.</p>"
+        },
+        "workerIdleDurationSeconds":{
+          "shape":"MinZeroMaxInteger",
+          "documentation":"<p>The duration in seconds that a worker can be idle before it is scaled down.</p>"
+        },
+        "scaleOutWorkersPerMinute":{
+          "shape":"MinOneMaxInteger",
+          "documentation":"<p>The number of workers that can be scaled out per minute.</p>"
+        }
+      },
+      "documentation":"<p>The auto scaling configuration options for a customer managed fleet.</p>"
+    },
     "CustomerManagedFleetConfiguration":{
       "type":"structure",
       "required":[
@@ -4115,6 +4154,10 @@
         "mode":{
           "shape":"AutoScalingMode",
           "documentation":"<p>The Auto Scaling mode for the customer managed fleet.</p>"
+        },
+        "autoScalingConfiguration":{
+          "shape":"CustomerManagedAutoScalingConfiguration",
+          "documentation":"<p>The auto scaling configuration options for the customer managed fleet.</p>"
         },
         "workerCapabilities":{
           "shape":"CustomerManagedWorkerCapabilities",
@@ -4272,13 +4315,6 @@
         "fleetId"
       ],
       "members":{
-        "clientToken":{
-          "shape":"ClientToken",
-          "documentation":"<p>The unique token which the server uses to recognize retries of the same request.</p>",
-          "idempotencyToken":true,
-          "location":"header",
-          "locationName":"X-Amz-Client-Token"
-        },
         "farmId":{
           "shape":"FarmId",
           "documentation":"<p>The farm ID of the farm to remove from the fleet.</p>",
@@ -4290,6 +4326,13 @@
           "documentation":"<p>The fleet ID of the fleet to delete.</p>",
           "location":"uri",
           "locationName":"fleetId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The unique token which the server uses to recognize retries of the same request.</p>",
+          "idempotencyToken":true,
+          "location":"header",
+          "locationName":"X-Amz-Client-Token"
         }
       }
     },
@@ -4437,7 +4480,8 @@
           "location":"uri",
           "locationName":"fleetId"
         }
-      }
+      },
+      "documentation":"<p>Identifier mixin for queue-fleet association operations. Composes QueueIdentifierMixin (farmId + queueId) and adds fleetId.</p>"
     },
     "DeleteQueueFleetAssociationResponse":{
       "type":"structure",
@@ -5358,10 +5402,10 @@
         "displayName",
         "approximateDollarLimit",
         "usages",
-        "actions",
-        "schedule",
         "createdBy",
-        "createdAt"
+        "createdAt",
+        "actions",
+        "schedule"
       ],
       "members":{
         "budgetId":{
@@ -5380,10 +5424,6 @@
           "shape":"ResourceName",
           "documentation":"<p>The display name of the budget.</p> <important> <p>This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.</p> </important>"
         },
-        "description":{
-          "shape":"Description",
-          "documentation":"<p>The description of the budget.</p> <important> <p>This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.</p> </important>"
-        },
         "approximateDollarLimit":{
           "shape":"ConsumedUsageLimit",
           "documentation":"<p>The consumed usage limit for the budget.</p>"
@@ -5391,14 +5431,6 @@
         "usages":{
           "shape":"ConsumedUsages",
           "documentation":"<p>The usages of the budget.</p>"
-        },
-        "actions":{
-          "shape":"ResponseBudgetActionList",
-          "documentation":"<p>The budget actions for the budget.</p>"
-        },
-        "schedule":{
-          "shape":"BudgetSchedule",
-          "documentation":"<p>The budget schedule.</p>"
         },
         "createdBy":{
           "shape":"CreatedBy",
@@ -5416,11 +5448,24 @@
           "shape":"UpdatedAt",
           "documentation":"<p>The date and time the resource was updated.</p>"
         },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the budget.</p> <important> <p>This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.</p> </important>"
+        },
+        "actions":{
+          "shape":"ResponseBudgetActionList",
+          "documentation":"<p>The budget actions for the budget.</p>"
+        },
+        "schedule":{
+          "shape":"BudgetSchedule",
+          "documentation":"<p>The budget schedule.</p>"
+        },
         "queueStoppedAt":{
           "shape":"UpdatedAt",
           "documentation":"<p>The date and time the queue stopped.</p>"
         }
-      }
+      },
+      "documentation":"<p>Mixin that adds an optional ARN field to response structures. Apply to SummaryMixins (flows into Get, Summary, and BatchGet) and Create outputs.</p>"
     },
     "GetFarmRequest":{
       "type":"structure",
@@ -5439,9 +5484,9 @@
       "required":[
         "farmId",
         "displayName",
-        "costScaleFactor",
         "createdAt",
-        "createdBy"
+        "createdBy",
+        "costScaleFactor"
       ],
       "members":{
         "farmId":{
@@ -5452,17 +5497,9 @@
           "shape":"ResourceName",
           "documentation":"<p>The display name of the farm.</p> <important> <p>This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.</p> </important>"
         },
-        "description":{
-          "shape":"Description",
-          "documentation":"<p>The description of the farm.</p> <important> <p>This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.</p> </important>"
-        },
         "kmsKeyArn":{
           "shape":"KmsKeyArn",
           "documentation":"<p>The ARN of the KMS key used on the farm.</p>"
-        },
-        "costScaleFactor":{
-          "shape":"CostScaleFactor",
-          "documentation":"<p>The cost scale factor applied on the farm.</p>"
         },
         "createdAt":{
           "shape":"CreatedAt",
@@ -5479,8 +5516,17 @@
         "updatedBy":{
           "shape":"UpdatedBy",
           "documentation":"<p>The user or system that updated this resource.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the farm.</p> <important> <p>This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.</p> </important>"
+        },
+        "costScaleFactor":{
+          "shape":"CostScaleFactor",
+          "documentation":"<p>A multiplier applied to the farm's calculated costs for usage data and budget tracking. A value less than 1 represents a discount, a value greater than 1 represents a premium, and a value of 1 represents no adjustment.</p>"
         }
-      }
+      },
+      "documentation":"<p>Mixin that adds an optional ARN field to response structures. Apply to SummaryMixins (flows into Get, Summary, and BatchGet) and Create outputs.</p>"
     },
     "GetFleetRequest":{
       "type":"structure",
@@ -5514,9 +5560,9 @@
         "minWorkerCount",
         "maxWorkerCount",
         "configuration",
-        "roleArn",
         "createdAt",
-        "createdBy"
+        "createdBy",
+        "roleArn"
       ],
       "members":{
         "fleetId":{
@@ -5530,10 +5576,6 @@
         "displayName":{
           "shape":"ResourceName",
           "documentation":"<p>The display name of the fleet.</p> <important> <p>This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.</p> </important>"
-        },
-        "description":{
-          "shape":"Description",
-          "documentation":"<p>The description of the fleet.</p> <important> <p>This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.</p> </important>"
         },
         "status":{
           "shape":"FleetStatus",
@@ -5567,18 +5609,6 @@
           "shape":"FleetConfiguration",
           "documentation":"<p>The configuration setting for the fleet.</p>"
         },
-        "hostConfiguration":{
-          "shape":"HostConfiguration",
-          "documentation":"<p>The script that runs as a worker is starting up that you can use to provide additional configuration for workers in your fleet.</p>"
-        },
-        "capabilities":{
-          "shape":"FleetCapabilities",
-          "documentation":"<p>Outlines what the fleet is capable of for minimums, maximums, and naming, in addition to attribute names and values.</p>"
-        },
-        "roleArn":{
-          "shape":"IamRoleArn",
-          "documentation":"<p>The IAM role ARN.</p>"
-        },
         "createdAt":{
           "shape":"CreatedAt",
           "documentation":"<p>The date and time the resource was created.</p>"
@@ -5594,8 +5624,25 @@
         "updatedBy":{
           "shape":"UpdatedBy",
           "documentation":"<p>The user or system that updated this resource.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the fleet.</p> <important> <p>This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.</p> </important>"
+        },
+        "hostConfiguration":{
+          "shape":"HostConfiguration",
+          "documentation":"<p>The script that runs as a worker is starting up that you can use to provide additional configuration for workers in your fleet.</p>"
+        },
+        "capabilities":{
+          "shape":"FleetCapabilities",
+          "documentation":"<p>Outlines what the fleet is capable of for minimums, maximums, and naming, in addition to attribute names and values.</p>"
+        },
+        "roleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The IAM role ARN.</p>"
         }
-      }
+      },
+      "documentation":"<p>Mixin that adds an optional ARN field to response structures. Apply to SummaryMixins (flows into Get, Summary, and BatchGet) and Create outputs.</p>"
     },
     "GetJobEntityError":{
       "type":"structure",
@@ -5752,7 +5799,8 @@
           "shape":"JobId",
           "documentation":"<p>The job ID for the source job.</p>"
         }
-      }
+      },
+      "documentation":"<p>Mixin that adds an optional ARN field to response structures. Apply to SummaryMixins (flows into Get, Summary, and BatchGet) and Create outputs.</p>"
     },
     "GetLicenseEndpointRequest":{
       "type":"structure",
@@ -5802,7 +5850,8 @@
           "shape":"GetLicenseEndpointResponseSecurityGroupIdsList",
           "documentation":"<p>The security group IDs for the license endpoint.</p>"
         }
-      }
+      },
+      "documentation":"<p>Mixin that adds an optional ARN field to response structures. Apply to SummaryMixins (flows into Get, Summary, and BatchGet) and Create outputs.</p>"
     },
     "GetLicenseEndpointResponseSecurityGroupIdsList":{
       "type":"list",
@@ -5840,27 +5889,27 @@
     "GetLimitResponse":{
       "type":"structure",
       "required":[
-        "displayName",
-        "amountRequirementName",
-        "maxCount",
-        "createdAt",
-        "createdBy",
         "farmId",
         "limitId",
-        "currentCount"
+        "currentCount",
+        "createdAt",
+        "createdBy",
+        "displayName",
+        "amountRequirementName",
+        "maxCount"
       ],
       "members":{
-        "displayName":{
-          "shape":"ResourceName",
-          "documentation":"<p>The display name of the limit.</p> <important> <p>This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.</p> </important>"
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The unique identifier of the farm that contains the limit.</p>"
         },
-        "amountRequirementName":{
-          "shape":"AmountRequirementName",
-          "documentation":"<p>The value that you specify as the <code>name</code> in the <code>amounts</code> field of the <code>hostRequirements</code> in a step of a job template to declare the limit requirement.</p>"
+        "limitId":{
+          "shape":"LimitId",
+          "documentation":"<p>The unique identifier of the limit.</p>"
         },
-        "maxCount":{
-          "shape":"MaxCount",
-          "documentation":"<p>The maximum number of resources constrained by this limit. When all of the resources are in use, steps that require the limit won't be scheduled until the resource is available.</p> <p>The <code>maxValue</code> must not be 0. If the value is -1, there is no restriction on the number of resources that can be acquired for this limit.</p>"
+        "currentCount":{
+          "shape":"MinZeroMaxInteger",
+          "documentation":"<p>The number of resources from the limit that are being used by jobs. The result is delayed and may not be the count at the time that you called the operation.</p>"
         },
         "createdAt":{
           "shape":"CreatedAt",
@@ -5878,23 +5927,24 @@
           "shape":"UpdatedBy",
           "documentation":"<p>The user identifier of the person that last updated the limit.</p>"
         },
-        "farmId":{
-          "shape":"FarmId",
-          "documentation":"<p>The unique identifier of the farm that contains the limit.</p>"
+        "displayName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The display name of the limit.</p> <important> <p>This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.</p> </important>"
         },
-        "limitId":{
-          "shape":"LimitId",
-          "documentation":"<p>The unique identifier of the limit.</p>"
+        "amountRequirementName":{
+          "shape":"AmountRequirementName",
+          "documentation":"<p>The value that you specify as the <code>name</code> in the <code>amounts</code> field of the <code>hostRequirements</code> in a step of a job template to declare the limit requirement.</p>"
         },
-        "currentCount":{
-          "shape":"MinZeroMaxInteger",
-          "documentation":"<p>The number of resources from the limit that are being used by jobs. The result is delayed and may not be the count at the time that you called the operation.</p>"
+        "maxCount":{
+          "shape":"MaxCount",
+          "documentation":"<p>The maximum number of resources constrained by this limit. When all of the resources are in use, steps that require the limit won't be scheduled until the resource is available.</p> <p>The <code>maxValue</code> must not be 0. If the value is -1, there is no restriction on the number of resources that can be acquired for this limit.</p>"
         },
         "description":{
           "shape":"Description",
           "documentation":"<p>The description of the limit that helps identify what the limit is used for.</p> <important> <p>This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.</p> </important>"
         }
-      }
+      },
+      "documentation":"<p>Domain fields for Limit summary/response shapes, ordered before timestamps.</p>"
     },
     "GetMonitorRequest":{
       "type":"structure",
@@ -5966,7 +6016,8 @@
           "shape":"UpdatedBy",
           "documentation":"<p>The user name of the person that last updated the monitor.</p>"
         }
-      }
+      },
+      "documentation":"<p>Mixin that adds an optional ARN field to response structures. Apply to SummaryMixins (flows into Get, Summary, and BatchGet) and Create outputs.</p>"
     },
     "GetQueueEnvironmentRequest":{
       "type":"structure",
@@ -6072,7 +6123,8 @@
           "location":"uri",
           "locationName":"fleetId"
         }
-      }
+      },
+      "documentation":"<p>Identifier mixin for queue-fleet association operations. Composes QueueIdentifierMixin (farmId + queueId) and adds fleetId.</p>"
     },
     "GetQueueFleetAssociationResponse":{
       "type":"structure",
@@ -6112,7 +6164,8 @@
           "shape":"UpdatedBy",
           "documentation":"<p>The user or system that updated this resource.</p>"
         }
-      }
+      },
+      "documentation":"<p>Domain fields for QueueFleetAssociation summary/response shapes, ordered before timestamps.</p>"
     },
     "GetQueueLimitAssociationRequest":{
       "type":"structure",
@@ -6145,13 +6198,25 @@
     "GetQueueLimitAssociationResponse":{
       "type":"structure",
       "required":[
-        "createdAt",
-        "createdBy",
         "queueId",
         "limitId",
-        "status"
+        "status",
+        "createdAt",
+        "createdBy"
       ],
       "members":{
+        "queueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The unique identifier of the queue associated with the limit.</p>"
+        },
+        "limitId":{
+          "shape":"LimitId",
+          "documentation":"<p>The unique identifier of the limit associated with the queue.</p>"
+        },
+        "status":{
+          "shape":"QueueLimitAssociationStatus",
+          "documentation":"<p>The current status of the limit.</p>"
+        },
         "createdAt":{
           "shape":"CreatedAt",
           "documentation":"<p>The Unix timestamp of the date and time that the association was created.</p>"
@@ -6167,20 +6232,9 @@
         "updatedBy":{
           "shape":"UpdatedBy",
           "documentation":"<p>The user identifier of the person that last updated the association.</p>"
-        },
-        "queueId":{
-          "shape":"QueueId",
-          "documentation":"<p>The unique identifier of the queue associated with the limit.</p>"
-        },
-        "limitId":{
-          "shape":"LimitId",
-          "documentation":"<p>The unique identifier of the limit associated with the queue.</p>"
-        },
-        "status":{
-          "shape":"QueueLimitAssociationStatus",
-          "documentation":"<p>The current status of the limit.</p>"
         }
-      }
+      },
+      "documentation":"<p>Domain fields for QueueLimitAssociation summary/response shapes, ordered before timestamps.</p>"
     },
     "GetQueueRequest":{
       "type":"structure",
@@ -6206,15 +6260,19 @@
     "GetQueueResponse":{
       "type":"structure",
       "required":[
+        "farmId",
         "queueId",
         "displayName",
-        "farmId",
         "status",
         "defaultBudgetAction",
         "createdAt",
         "createdBy"
       ],
       "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID for the queue.</p>"
+        },
         "queueId":{
           "shape":"QueueId",
           "documentation":"<p>The queue ID.</p>"
@@ -6222,14 +6280,6 @@
         "displayName":{
           "shape":"ResourceName",
           "documentation":"<p>The display name of the queue.</p> <important> <p>This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.</p> </important>"
-        },
-        "description":{
-          "shape":"Description",
-          "documentation":"<p>The description of the queue.</p> <important> <p>This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.</p> </important>"
-        },
-        "farmId":{
-          "shape":"FarmId",
-          "documentation":"<p>The farm ID for the queue.</p>"
         },
         "status":{
           "shape":"QueueStatus",
@@ -6242,6 +6292,26 @@
         "blockedReason":{
           "shape":"QueueBlockedReason",
           "documentation":"<p>The reason the queue was blocked.</p>"
+        },
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The date and time the resource was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user or system that created this resource.</p>"
+        },
+        "updatedAt":{
+          "shape":"UpdatedAt",
+          "documentation":"<p>The date and time the resource was updated.</p>"
+        },
+        "updatedBy":{
+          "shape":"UpdatedBy",
+          "documentation":"<p>The user or system that updated this resource.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the queue.</p> <important> <p>This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.</p> </important>"
         },
         "jobAttachmentSettings":{
           "shape":"JobAttachmentSettings",
@@ -6262,24 +6332,9 @@
         "jobRunAsUser":{
           "shape":"JobRunAsUser",
           "documentation":"<p>The jobs in the queue ran as this specified POSIX user.</p>"
-        },
-        "createdAt":{
-          "shape":"CreatedAt",
-          "documentation":"<p>The date and time the resource was created.</p>"
-        },
-        "createdBy":{
-          "shape":"CreatedBy",
-          "documentation":"<p>The user or system that created this resource.</p>"
-        },
-        "updatedAt":{
-          "shape":"UpdatedAt",
-          "documentation":"<p>The date and time the resource was updated.</p>"
-        },
-        "updatedBy":{
-          "shape":"UpdatedBy",
-          "documentation":"<p>The user or system that updated this resource.</p>"
         }
-      }
+      },
+      "documentation":"<p>Mixin that adds an optional ARN field to response structures. Apply to SummaryMixins (flows into Get, Summary, and BatchGet) and Create outputs.</p>"
     },
     "GetSessionActionRequest":{
       "type":"structure",
@@ -6349,6 +6404,10 @@
           "shape":"SessionActionProgressPercent",
           "documentation":"<p>The percentage completed for a session action.</p>"
         },
+        "manifests":{
+          "shape":"TaskRunManifestPropertiesListResponse",
+          "documentation":"<p>The list of manifest properties that describe file attachments for the task run.</p>"
+        },
         "sessionId":{
           "shape":"SessionId",
           "documentation":"<p>The session ID for the session action.</p>"
@@ -6361,17 +6420,13 @@
           "shape":"SessionActionProgressMessage",
           "documentation":"<p>The message that communicates the progress of the session action.</p>"
         },
-        "definition":{
-          "shape":"SessionActionDefinition",
-          "documentation":"<p>The session action definition.</p>"
-        },
         "acquiredLimits":{
           "shape":"AcquiredLimits",
           "documentation":"<p>The limits and their amounts acquired during a session action. If no limits were acquired during the session, this field isn't returned.</p>"
         },
-        "manifests":{
-          "shape":"TaskRunManifestPropertiesListResponse",
-          "documentation":"<p>The list of manifest properties that describe file attachments for the task run.</p>"
+        "definition":{
+          "shape":"SessionActionDefinition",
+          "documentation":"<p>The session action definition.</p>"
         }
       }
     },
@@ -6417,8 +6472,8 @@
         "fleetId",
         "workerId",
         "startedAt",
-        "log",
-        "lifecycleStatus"
+        "lifecycleStatus",
+        "log"
       ],
       "members":{
         "sessionId":{
@@ -6437,10 +6492,6 @@
           "shape":"StartedAt",
           "documentation":"<p>The date and time the resource started running.</p>"
         },
-        "log":{
-          "shape":"LogConfiguration",
-          "documentation":"<p>The session log.</p>"
-        },
         "lifecycleStatus":{
           "shape":"SessionLifecycleStatus",
           "documentation":"<p>The life cycle status of the session.</p>"
@@ -6448,6 +6499,10 @@
         "endedAt":{
           "shape":"EndedAt",
           "documentation":"<p>The date and time the resource ended running.</p>"
+        },
+        "targetLifecycleStatus":{
+          "shape":"SessionLifecycleTargetStatus",
+          "documentation":"<p>The life cycle status with which the session started.</p>"
         },
         "updatedAt":{
           "shape":"UpdatedAt",
@@ -6457,9 +6512,9 @@
           "shape":"UpdatedBy",
           "documentation":"<p>The user or system that updated this resource.</p>"
         },
-        "targetLifecycleStatus":{
-          "shape":"SessionLifecycleTargetStatus",
-          "documentation":"<p>The life cycle status with which the session started.</p>"
+        "log":{
+          "shape":"LogConfiguration",
+          "documentation":"<p>The session log.</p>"
         },
         "hostProperties":{
           "shape":"HostPropertiesResponse",
@@ -6469,7 +6524,8 @@
           "shape":"LogConfiguration",
           "documentation":"<p>The worker log for the session.</p>"
         }
-      }
+      },
+      "documentation":"<p>Session lifecycle/status fields, ordered after IDs in session shapes.</p>"
     },
     "GetSessionsStatisticsAggregationRequest":{
       "type":"structure",
@@ -6484,11 +6540,11 @@
           "location":"uri",
           "locationName":"farmId"
         },
-        "aggregationId":{
-          "shape":"AggregationId",
-          "documentation":"<p>The identifier returned by the <code>StartSessionsStatisticsAggregation</code> operation that identifies the aggregated statistics.</p>",
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results, or <code>null</code> to start from the beginning.</p>",
           "location":"querystring",
-          "locationName":"aggregationId"
+          "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
@@ -6496,13 +6552,14 @@
           "location":"querystring",
           "locationName":"maxResults"
         },
-        "nextToken":{
-          "shape":"NextToken",
-          "documentation":"<p>The token for the next set of results, or <code>null</code> to start from the beginning.</p>",
+        "aggregationId":{
+          "shape":"AggregationId",
+          "documentation":"<p>The identifier returned by the <code>StartSessionsStatisticsAggregation</code> operation that identifies the aggregated statistics.</p>",
           "location":"querystring",
-          "locationName":"nextToken"
+          "locationName":"aggregationId"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination fields for List operation inputs (nextToken + maxResults).</p>"
     },
     "GetSessionsStatisticsAggregationResponse":{
       "type":"structure",
@@ -6512,10 +6569,6 @@
           "shape":"StatisticsList",
           "documentation":"<p>The statistics for the specified fleets or queues.</p>"
         },
-        "nextToken":{
-          "shape":"NextToken",
-          "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
-        },
         "status":{
           "shape":"SessionsStatisticsAggregationStatus",
           "documentation":"<p>The status of the aggregated results. An aggregation may fail or time out if the results are too large. If this happens, you can call the <code>StartSessionsStatisticsAggregation</code> operation after you reduce the aggregation time frame, reduce the number of queues or fleets in the aggregation, or increase the period length.</p> <p>If you call the <code>StartSessionsStatisticsAggregation </code> operation when the status is <code>IN_PROGRESS</code>, you will receive a <code>ThrottlingException</code>.</p>"
@@ -6523,8 +6576,13 @@
         "statusMessage":{
           "shape":"String",
           "documentation":"<p>A message that describes the status.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination field for List operation outputs (nextToken).</p>"
     },
     "GetStepRequest":{
       "type":"structure",
@@ -6841,10 +6899,6 @@
           "shape":"TaskRetryCount",
           "documentation":"<p>The number of times that the task failed and was retried.</p>"
         },
-        "parameters":{
-          "shape":"TaskParameters",
-          "documentation":"<p>The parameters for the task.</p>"
-        },
         "startedAt":{
           "shape":"StartedAt",
           "documentation":"<p>The date and time the resource started running.</p>"
@@ -6864,6 +6918,10 @@
         "latestSessionActionId":{
           "shape":"SessionActionId",
           "documentation":"<p>The latest session action ID for the task.</p>"
+        },
+        "parameters":{
+          "shape":"TaskParameters",
+          "documentation":"<p>The parameters for the task.</p>"
         }
       }
     },
@@ -6946,7 +7004,8 @@
           "shape":"UpdatedBy",
           "documentation":"<p>The user or system that updated this resource.</p>"
         }
-      }
+      },
+      "documentation":"<p>Mixin that adds an optional ARN field to response structures. Apply to SummaryMixins (flows into Get, Summary, and BatchGet) and Create outputs.</p>"
     },
     "HostConfiguration":{
       "type":"structure",
@@ -7741,27 +7800,27 @@
     "LimitSummary":{
       "type":"structure",
       "required":[
-        "displayName",
-        "amountRequirementName",
-        "maxCount",
-        "createdAt",
-        "createdBy",
         "farmId",
         "limitId",
-        "currentCount"
+        "currentCount",
+        "createdAt",
+        "createdBy",
+        "displayName",
+        "amountRequirementName",
+        "maxCount"
       ],
       "members":{
-        "displayName":{
-          "shape":"ResourceName",
-          "documentation":"<p>The name of the limit used in lists to identify the limit.</p> <important> <p>This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.</p> </important>"
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The unique identifier of the farm that contains the limit.</p>"
         },
-        "amountRequirementName":{
-          "shape":"AmountRequirementName",
-          "documentation":"<p>The value that you specify as the <code>name</code> in the <code>amounts</code> field of the <code>hostRequirements</code> in a step of a job template to declare the limit requirement.</p>"
+        "limitId":{
+          "shape":"LimitId",
+          "documentation":"<p>The unique identifier of the limit.</p>"
         },
-        "maxCount":{
-          "shape":"MaxCount",
-          "documentation":"<p>The maximum number of resources constrained by this limit. When all of the resources are in use, steps that require the limit won't be scheduled until the resource is available.</p> <p>The <code>maxValue</code> must not be 0. If the value is -1, there is no restriction on the number of resources that can be acquired for this limit.</p>"
+        "currentCount":{
+          "shape":"MinZeroMaxInteger",
+          "documentation":"<p>The number of resources from the limit that are being used by jobs. The result is delayed and may not be the count at the time that you called the operation.</p>"
         },
         "createdAt":{
           "shape":"CreatedAt",
@@ -7779,17 +7838,17 @@
           "shape":"UpdatedBy",
           "documentation":"<p>The user identifier of the person that last updated the limit.</p>"
         },
-        "farmId":{
-          "shape":"FarmId",
-          "documentation":"<p>The unique identifier of the farm that contains the limit.</p>"
+        "displayName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the limit used in lists to identify the limit.</p> <important> <p>This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.</p> </important>"
         },
-        "limitId":{
-          "shape":"LimitId",
-          "documentation":"<p>The unique identifier of the limit.</p>"
+        "amountRequirementName":{
+          "shape":"AmountRequirementName",
+          "documentation":"<p>The value that you specify as the <code>name</code> in the <code>amounts</code> field of the <code>hostRequirements</code> in a step of a job template to declare the limit requirement.</p>"
         },
-        "currentCount":{
-          "shape":"MinZeroMaxInteger",
-          "documentation":"<p>The number of resources from the limit that are being used by jobs. The result is delayed and may not be the count at the time that you called the operation.</p>"
+        "maxCount":{
+          "shape":"MaxCount",
+          "documentation":"<p>The maximum number of resources constrained by this limit. When all of the resources are in use, steps that require the limit won't be scheduled until the resource is available.</p> <p>The <code>maxValue</code> must not be 0. If the value is -1, there is no restriction on the number of resources that can be acquired for this limit.</p>"
         }
       },
       "documentation":"<p>Provides information about a specific limit.</p>"
@@ -7813,7 +7872,8 @@
           "location":"querystring",
           "locationName":"maxResults"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination fields for List operation inputs (nextToken + maxResults).</p>"
     },
     "ListAvailableMeteredProductsResponse":{
       "type":"structure",
@@ -7827,23 +7887,24 @@
           "shape":"NextToken",
           "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination field for List operation outputs (nextToken).</p>"
     },
     "ListBudgetsRequest":{
       "type":"structure",
       "required":["farmId"],
       "members":{
-        "nextToken":{
-          "shape":"NextToken",
-          "documentation":"<p>The token for the next set of results, or <code>null</code> to start from the beginning.</p>",
-          "location":"querystring",
-          "locationName":"nextToken"
-        },
         "farmId":{
           "shape":"FarmId",
           "documentation":"<p>The farm ID associated with the budgets.</p>",
           "location":"uri",
           "locationName":"farmId"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results, or <code>null</code> to start from the beginning.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
@@ -7857,21 +7918,23 @@
           "location":"querystring",
           "locationName":"status"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination fields for List operation inputs (nextToken + maxResults).</p>"
     },
     "ListBudgetsResponse":{
       "type":"structure",
       "required":["budgets"],
       "members":{
-        "nextToken":{
-          "shape":"NextToken",
-          "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
-        },
         "budgets":{
           "shape":"BudgetSummaries",
           "documentation":"<p>The budgets to include on the list.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination field for List operation outputs (nextToken).</p>"
     },
     "ListFarmMembersRequest":{
       "type":"structure",
@@ -7895,7 +7958,8 @@
           "location":"querystring",
           "locationName":"maxResults"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination fields for List operation inputs (nextToken + maxResults).</p>"
     },
     "ListFarmMembersResponse":{
       "type":"structure",
@@ -7909,7 +7973,8 @@
           "shape":"NextToken",
           "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination field for List operation outputs (nextToken).</p>"
     },
     "ListFarmsRequest":{
       "type":"structure",
@@ -7920,33 +7985,35 @@
           "location":"querystring",
           "locationName":"nextToken"
         },
-        "principalId":{
-          "shape":"IdentityCenterPrincipalId",
-          "documentation":"<p>The principal ID of the member to list on the farm.</p>",
-          "location":"querystring",
-          "locationName":"principalId"
-        },
         "maxResults":{
           "shape":"MaxResults",
           "documentation":"<p>The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.</p>",
           "location":"querystring",
           "locationName":"maxResults"
+        },
+        "principalId":{
+          "shape":"IdentityCenterPrincipalId",
+          "documentation":"<p>The principal ID of the member to list on the farm.</p>",
+          "location":"querystring",
+          "locationName":"principalId"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination fields for List operation inputs (nextToken + maxResults).</p>"
     },
     "ListFarmsResponse":{
       "type":"structure",
       "required":["farms"],
       "members":{
-        "nextToken":{
-          "shape":"NextToken",
-          "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
-        },
         "farms":{
           "shape":"FarmSummaries",
           "documentation":"<p>Farms on the list.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination field for List operation outputs (nextToken).</p>"
     },
     "ListFleetMembersRequest":{
       "type":"structure",
@@ -7979,7 +8046,8 @@
           "location":"querystring",
           "locationName":"maxResults"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination fields for List operation inputs (nextToken + maxResults).</p>"
     },
     "ListFleetMembersResponse":{
       "type":"structure",
@@ -7993,7 +8061,8 @@
           "shape":"NextToken",
           "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination field for List operation outputs (nextToken).</p>"
     },
     "ListFleetsRequest":{
       "type":"structure",
@@ -8004,6 +8073,18 @@
           "documentation":"<p>The farm ID of the fleets.</p>",
           "location":"uri",
           "locationName":"farmId"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results, or <code>null</code> to start from the beginning.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
         },
         "principalId":{
           "shape":"IdentityCenterPrincipalId",
@@ -8022,20 +8103,9 @@
           "documentation":"<p>The status of the fleet.</p>",
           "location":"querystring",
           "locationName":"status"
-        },
-        "nextToken":{
-          "shape":"NextToken",
-          "documentation":"<p>The token for the next set of results, or <code>null</code> to start from the beginning.</p>",
-          "location":"querystring",
-          "locationName":"nextToken"
-        },
-        "maxResults":{
-          "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.</p>",
-          "location":"querystring",
-          "locationName":"maxResults"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination fields for List operation inputs (nextToken + maxResults).</p>"
     },
     "ListFleetsResponse":{
       "type":"structure",
@@ -8049,7 +8119,8 @@
           "shape":"NextToken",
           "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination field for List operation outputs (nextToken).</p>"
     },
     "ListJobMembersRequest":{
       "type":"structure",
@@ -8089,7 +8160,8 @@
           "location":"querystring",
           "locationName":"maxResults"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination fields for List operation inputs (nextToken + maxResults).</p>"
     },
     "ListJobMembersResponse":{
       "type":"structure",
@@ -8103,14 +8175,15 @@
           "shape":"NextToken",
           "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination field for List operation outputs (nextToken).</p>"
     },
     "ListJobParameterDefinitionsRequest":{
       "type":"structure",
       "required":[
         "farmId",
-        "jobId",
-        "queueId"
+        "queueId",
+        "jobId"
       ],
       "members":{
         "farmId":{
@@ -8119,17 +8192,17 @@
           "location":"uri",
           "locationName":"farmId"
         },
-        "jobId":{
-          "shape":"JobId",
-          "documentation":"<p>The job ID to include on the list.</p>",
-          "location":"uri",
-          "locationName":"jobId"
-        },
         "queueId":{
           "shape":"QueueId",
           "documentation":"<p>The queue ID to include on the list.</p>",
           "location":"uri",
           "locationName":"queueId"
+        },
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The job ID to include on the list.</p>",
+          "location":"uri",
+          "locationName":"jobId"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -8143,7 +8216,8 @@
           "location":"querystring",
           "locationName":"maxResults"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination fields for List operation inputs (nextToken + maxResults).</p>"
     },
     "ListJobParameterDefinitionsResponse":{
       "type":"structure",
@@ -8157,7 +8231,8 @@
           "shape":"NextToken",
           "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination field for List operation outputs (nextToken).</p>"
     },
     "ListJobsRequest":{
       "type":"structure",
@@ -8171,12 +8246,6 @@
           "documentation":"<p>The farm ID for the jobs.</p>",
           "location":"uri",
           "locationName":"farmId"
-        },
-        "principalId":{
-          "shape":"IdentityCenterPrincipalId",
-          "documentation":"<p>The principal ID of the members on the jobs.</p>",
-          "location":"querystring",
-          "locationName":"principalId"
         },
         "queueId":{
           "shape":"QueueId",
@@ -8195,8 +8264,15 @@
           "documentation":"<p>The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.</p>",
           "location":"querystring",
           "locationName":"maxResults"
+        },
+        "principalId":{
+          "shape":"IdentityCenterPrincipalId",
+          "documentation":"<p>The principal ID of the members on the jobs.</p>",
+          "location":"querystring",
+          "locationName":"principalId"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination fields for List operation inputs (nextToken + maxResults).</p>"
     },
     "ListJobsResponse":{
       "type":"structure",
@@ -8210,7 +8286,8 @@
           "shape":"NextToken",
           "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination field for List operation outputs (nextToken).</p>"
     },
     "ListLicenseEndpointsRequest":{
       "type":"structure",
@@ -8227,7 +8304,8 @@
           "location":"querystring",
           "locationName":"maxResults"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination fields for List operation inputs (nextToken + maxResults).</p>"
     },
     "ListLicenseEndpointsResponse":{
       "type":"structure",
@@ -8241,7 +8319,8 @@
           "shape":"NextToken",
           "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination field for List operation outputs (nextToken).</p>"
     },
     "ListLimitsRequest":{
       "type":"structure",
@@ -8265,7 +8344,8 @@
           "location":"querystring",
           "locationName":"maxResults"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination fields for List operation inputs (nextToken + maxResults).</p>"
     },
     "ListLimitsResponse":{
       "type":"structure",
@@ -8279,7 +8359,8 @@
           "shape":"NextToken",
           "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination field for List operation outputs (nextToken).</p>"
     },
     "ListMeteredProductsRequest":{
       "type":"structure",
@@ -8303,7 +8384,8 @@
           "location":"querystring",
           "locationName":"maxResults"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination fields for List operation inputs (nextToken + maxResults).</p>"
     },
     "ListMeteredProductsResponse":{
       "type":"structure",
@@ -8317,7 +8399,8 @@
           "shape":"NextToken",
           "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination field for List operation outputs (nextToken).</p>"
     },
     "ListMonitorsRequest":{
       "type":"structure",
@@ -8334,21 +8417,23 @@
           "location":"querystring",
           "locationName":"maxResults"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination fields for List operation inputs (nextToken + maxResults).</p>"
     },
     "ListMonitorsResponse":{
       "type":"structure",
       "required":["monitors"],
       "members":{
-        "nextToken":{
-          "shape":"NextToken",
-          "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
-        },
         "monitors":{
           "shape":"MonitorSummaries",
           "documentation":"<p>A list of <code>MonitorSummary</code> objects that describe your monitors in the Deadline Cloud.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination field for List operation outputs (nextToken).</p>"
     },
     "ListQueueEnvironmentsRequest":{
       "type":"structure",
@@ -8381,7 +8466,8 @@
           "location":"querystring",
           "locationName":"maxResults"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination fields for List operation inputs (nextToken + maxResults).</p>"
     },
     "ListQueueEnvironmentsResponse":{
       "type":"structure",
@@ -8395,7 +8481,8 @@
           "shape":"NextToken",
           "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination field for List operation outputs (nextToken).</p>"
     },
     "ListQueueFleetAssociationsRequest":{
       "type":"structure",
@@ -8406,18 +8493,6 @@
           "documentation":"<p>The farm ID for the queue-fleet association list.</p>",
           "location":"uri",
           "locationName":"farmId"
-        },
-        "queueId":{
-          "shape":"QueueId",
-          "documentation":"<p>The queue ID for the queue-fleet association list.</p>",
-          "location":"querystring",
-          "locationName":"queueId"
-        },
-        "fleetId":{
-          "shape":"FleetId",
-          "documentation":"<p>The fleet ID for the queue-fleet association list.</p>",
-          "location":"querystring",
-          "locationName":"fleetId"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -8430,8 +8505,21 @@
           "documentation":"<p>The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.</p>",
           "location":"querystring",
           "locationName":"maxResults"
+        },
+        "queueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The queue ID for the queue-fleet association list.</p>",
+          "location":"querystring",
+          "locationName":"queueId"
+        },
+        "fleetId":{
+          "shape":"FleetId",
+          "documentation":"<p>The fleet ID for the queue-fleet association list.</p>",
+          "location":"querystring",
+          "locationName":"fleetId"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination fields for List operation inputs (nextToken + maxResults).</p>"
     },
     "ListQueueFleetAssociationsResponse":{
       "type":"structure",
@@ -8445,7 +8533,8 @@
           "shape":"NextToken",
           "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination field for List operation outputs (nextToken).</p>"
     },
     "ListQueueLimitAssociationsRequest":{
       "type":"structure",
@@ -8456,18 +8545,6 @@
           "documentation":"<p>The unique identifier of the farm that contains the limits and associations.</p>",
           "location":"uri",
           "locationName":"farmId"
-        },
-        "queueId":{
-          "shape":"QueueId",
-          "documentation":"<p>Specifies that the operation should return only the queue limit associations for the specified queue. If you specify both the <code>queueId</code> and the <code>limitId</code>, only the specified limit is returned if it exists.</p>",
-          "location":"querystring",
-          "locationName":"queueId"
-        },
-        "limitId":{
-          "shape":"LimitId",
-          "documentation":"<p>Specifies that the operation should return only the queue limit associations for the specified limit. If you specify both the <code>queueId</code> and the <code>limitId</code>, only the specified limit is returned if it exists.</p>",
-          "location":"querystring",
-          "locationName":"limitId"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -8480,8 +8557,21 @@
           "documentation":"<p>The maximum number of associations to return in each page of results.</p>",
           "location":"querystring",
           "locationName":"maxResults"
+        },
+        "queueId":{
+          "shape":"QueueId",
+          "documentation":"<p>Specifies that the operation should return only the queue limit associations for the specified queue. If you specify both the <code>queueId</code> and the <code>limitId</code>, only the specified limit is returned if it exists.</p>",
+          "location":"querystring",
+          "locationName":"queueId"
+        },
+        "limitId":{
+          "shape":"LimitId",
+          "documentation":"<p>Specifies that the operation should return only the queue limit associations for the specified limit. If you specify both the <code>queueId</code> and the <code>limitId</code>, only the specified limit is returned if it exists.</p>",
+          "location":"querystring",
+          "locationName":"limitId"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination fields for List operation inputs (nextToken + maxResults).</p>"
     },
     "ListQueueLimitAssociationsResponse":{
       "type":"structure",
@@ -8495,7 +8585,8 @@
           "shape":"NextToken",
           "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination field for List operation outputs (nextToken).</p>"
     },
     "ListQueueMembersRequest":{
       "type":"structure",
@@ -8528,7 +8619,8 @@
           "location":"querystring",
           "locationName":"maxResults"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination fields for List operation inputs (nextToken + maxResults).</p>"
     },
     "ListQueueMembersResponse":{
       "type":"structure",
@@ -8542,7 +8634,8 @@
           "shape":"NextToken",
           "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination field for List operation outputs (nextToken).</p>"
     },
     "ListQueuesRequest":{
       "type":"structure",
@@ -8553,18 +8646,6 @@
           "documentation":"<p>The farm ID of the queue.</p>",
           "location":"uri",
           "locationName":"farmId"
-        },
-        "principalId":{
-          "shape":"IdentityCenterPrincipalId",
-          "documentation":"<p>The principal IDs to include in the list of queues.</p>",
-          "location":"querystring",
-          "locationName":"principalId"
-        },
-        "status":{
-          "shape":"QueueStatus",
-          "documentation":"<p>The status of the queues listed.</p> <ul> <li> <p> <code>ACTIVE</code>–The queues are active.</p> </li> <li> <p> <code>SCHEDULING</code>–The queues are scheduling.</p> </li> <li> <p> <code>SCHEDULING_BLOCKED</code>–The queue scheduling is blocked for these queues.</p> </li> </ul>",
-          "location":"querystring",
-          "locationName":"status"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -8577,8 +8658,21 @@
           "documentation":"<p>The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.</p>",
           "location":"querystring",
           "locationName":"maxResults"
+        },
+        "principalId":{
+          "shape":"IdentityCenterPrincipalId",
+          "documentation":"<p>The principal IDs to include in the list of queues.</p>",
+          "location":"querystring",
+          "locationName":"principalId"
+        },
+        "status":{
+          "shape":"QueueStatus",
+          "documentation":"<p>The status of the queues listed.</p> <ul> <li> <p> <code>ACTIVE</code>–The queues are active.</p> </li> <li> <p> <code>SCHEDULING</code>–The queues are scheduling.</p> </li> <li> <p> <code>SCHEDULING_BLOCKED</code>–The queue scheduling is blocked for these queues.</p> </li> </ul>",
+          "location":"querystring",
+          "locationName":"status"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination fields for List operation inputs (nextToken + maxResults).</p>"
     },
     "ListQueuesResponse":{
       "type":"structure",
@@ -8592,7 +8686,8 @@
           "shape":"NextToken",
           "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination field for List operation outputs (nextToken).</p>"
     },
     "ListSessionActionsRequest":{
       "type":"structure",
@@ -8620,18 +8715,6 @@
           "location":"uri",
           "locationName":"jobId"
         },
-        "sessionId":{
-          "shape":"SessionId",
-          "documentation":"<p>The session ID to include on the sessions action list.</p>",
-          "location":"querystring",
-          "locationName":"sessionId"
-        },
-        "taskId":{
-          "shape":"TaskId",
-          "documentation":"<p>The task ID for the session actions list.</p>",
-          "location":"querystring",
-          "locationName":"taskId"
-        },
         "nextToken":{
           "shape":"NextToken",
           "documentation":"<p>The token for the next set of results, or <code>null</code> to start from the beginning.</p>",
@@ -8643,8 +8726,21 @@
           "documentation":"<p>The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.</p>",
           "location":"querystring",
           "locationName":"maxResults"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The session ID to include on the sessions action list.</p>",
+          "location":"querystring",
+          "locationName":"sessionId"
+        },
+        "taskId":{
+          "shape":"TaskId",
+          "documentation":"<p>The task ID for the session actions list.</p>",
+          "location":"querystring",
+          "locationName":"taskId"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination fields for List operation inputs (nextToken + maxResults).</p>"
     },
     "ListSessionActionsResponse":{
       "type":"structure",
@@ -8658,7 +8754,8 @@
           "shape":"NextToken",
           "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination field for List operation outputs (nextToken).</p>"
     },
     "ListSessionsForWorkerRequest":{
       "type":"structure",
@@ -8698,7 +8795,8 @@
           "location":"querystring",
           "locationName":"maxResults"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination fields for List operation inputs (nextToken + maxResults).</p>"
     },
     "ListSessionsForWorkerResponse":{
       "type":"structure",
@@ -8712,7 +8810,8 @@
           "shape":"NextToken",
           "documentation":"<p>The token for the next set of results, or <code>null</code> to start from the beginning.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination field for List operation outputs (nextToken).</p>"
     },
     "ListSessionsForWorkerSummaries":{
       "type":"list",
@@ -8756,7 +8855,8 @@
           "location":"querystring",
           "locationName":"maxResults"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination fields for List operation inputs (nextToken + maxResults).</p>"
     },
     "ListSessionsResponse":{
       "type":"structure",
@@ -8770,7 +8870,8 @@
           "shape":"NextToken",
           "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination field for List operation outputs (nextToken).</p>"
     },
     "ListStepConsumersRequest":{
       "type":"structure",
@@ -8837,7 +8938,8 @@
           "shape":"NextToken",
           "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination field for List operation outputs (nextToken).</p>"
     },
     "ListStepDependenciesRequest":{
       "type":"structure",
@@ -8904,7 +9006,8 @@
           "shape":"NextToken",
           "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination field for List operation outputs (nextToken).</p>"
     },
     "ListStepsRequest":{
       "type":"structure",
@@ -8944,7 +9047,8 @@
           "location":"querystring",
           "locationName":"maxResults"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination fields for List operation inputs (nextToken + maxResults).</p>"
     },
     "ListStepsResponse":{
       "type":"structure",
@@ -8958,7 +9062,8 @@
           "shape":"NextToken",
           "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination field for List operation outputs (nextToken).</p>"
     },
     "ListStorageProfilesForQueueRequest":{
       "type":"structure",
@@ -8991,7 +9096,8 @@
           "location":"querystring",
           "locationName":"maxResults"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination fields for List operation inputs (nextToken + maxResults).</p>"
     },
     "ListStorageProfilesForQueueResponse":{
       "type":"structure",
@@ -9005,7 +9111,8 @@
           "shape":"NextToken",
           "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination field for List operation outputs (nextToken).</p>"
     },
     "ListStorageProfilesRequest":{
       "type":"structure",
@@ -9029,7 +9136,8 @@
           "location":"querystring",
           "locationName":"maxResults"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination fields for List operation inputs (nextToken + maxResults).</p>"
     },
     "ListStorageProfilesResponse":{
       "type":"structure",
@@ -9043,7 +9151,8 @@
           "shape":"NextToken",
           "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination field for List operation outputs (nextToken).</p>"
     },
     "ListTagsForResourceRequest":{
       "type":"structure",
@@ -9111,7 +9220,8 @@
           "location":"querystring",
           "locationName":"maxResults"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination fields for List operation inputs (nextToken + maxResults).</p>"
     },
     "ListTasksResponse":{
       "type":"structure",
@@ -9125,7 +9235,8 @@
           "shape":"NextToken",
           "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination field for List operation outputs (nextToken).</p>"
     },
     "ListWorkersRequest":{
       "type":"structure",
@@ -9158,21 +9269,23 @@
           "location":"querystring",
           "locationName":"maxResults"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination fields for List operation inputs (nextToken + maxResults).</p>"
     },
     "ListWorkersResponse":{
       "type":"structure",
       "required":["workers"],
       "members":{
-        "nextToken":{
-          "shape":"NextToken",
-          "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
-        },
         "workers":{
           "shape":"WorkerSummaries",
           "documentation":"<p>The workers on the list.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared pagination field for List operation outputs (nextToken).</p>"
     },
     "LogConfiguration":{
       "type":"structure",
@@ -9792,13 +9905,25 @@
     "QueueLimitAssociationSummary":{
       "type":"structure",
       "required":[
-        "createdAt",
-        "createdBy",
         "queueId",
         "limitId",
-        "status"
+        "status",
+        "createdAt",
+        "createdBy"
       ],
       "members":{
+        "queueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The unique identifier of the queue in the association.</p>"
+        },
+        "limitId":{
+          "shape":"LimitId",
+          "documentation":"<p>The unique identifier of the limit in the association.</p>"
+        },
+        "status":{
+          "shape":"QueueLimitAssociationStatus",
+          "documentation":"<p>The status of task scheduling in the queue-limit association.</p> <ul> <li> <p> <code>ACTIVE</code> - Association is active.</p> </li> <li> <p> <code>STOP_LIMIT_USAGE_AND_COMPLETE_TASKS</code> - Association has stopped scheduling new tasks and is completing current tasks.</p> </li> <li> <p> <code>STOP_LIMIT_USAGE_AND_CANCEL_TASKS</code> - Association has stopped scheduling new tasks and is canceling current tasks.</p> </li> <li> <p> <code>STOPPED</code> - Association has been stopped.</p> </li> </ul>"
+        },
         "createdAt":{
           "shape":"CreatedAt",
           "documentation":"<p>The Unix timestamp of the date and time that the association was created.</p>"
@@ -9814,18 +9939,6 @@
         "updatedBy":{
           "shape":"UpdatedBy",
           "documentation":"<p>The user identifier of the person that updated the association.</p>"
-        },
-        "queueId":{
-          "shape":"QueueId",
-          "documentation":"<p>The unique identifier of the queue in the association.</p>"
-        },
-        "limitId":{
-          "shape":"LimitId",
-          "documentation":"<p>The unique identifier of the limit in the association.</p>"
-        },
-        "status":{
-          "shape":"QueueLimitAssociationStatus",
-          "documentation":"<p>The status of task scheduling in the queue-limit association.</p> <ul> <li> <p> <code>ACTIVE</code> - Association is active.</p> </li> <li> <p> <code>STOP_LIMIT_USAGE_AND_COMPLETE_TASKS</code> - Association has stopped scheduling new tasks and is completing current tasks.</p> </li> <li> <p> <code>STOP_LIMIT_USAGE_AND_CANCEL_TASKS</code> - Association has stopped scheduling new tasks and is canceling current tasks.</p> </li> <li> <p> <code>STOPPED</code> - Association has been stopped.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Provides information about the association between a queue and a limit.</p>"
@@ -10114,8 +10227,8 @@
       "type":"structure",
       "required":[
         "farmId",
-        "queueIds",
-        "itemOffset"
+        "itemOffset",
+        "queueIds"
       ],
       "members":{
         "farmId":{
@@ -10123,10 +10236,6 @@
           "documentation":"<p>The farm ID of the job.</p>",
           "location":"uri",
           "locationName":"farmId"
-        },
-        "queueIds":{
-          "shape":"SearchJobsRequestQueueIdsList",
-          "documentation":"<p>The queue ID to use in the job search.</p>"
         },
         "filterExpressions":{
           "shape":"SearchGroupedFilterExpressions",
@@ -10143,8 +10252,13 @@
         "pageSize":{
           "shape":"SearchJobsRequestPageSizeInteger",
           "documentation":"<p>Specifies the number of results to return.</p>"
+        },
+        "queueIds":{
+          "shape":"SearchJobsRequestQueueIdsList",
+          "documentation":"<p>The queue ID to use in the job search.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared input fields for all Search operations (filterExpressions, sortExpressions, itemOffset, pageSize).</p>"
     },
     "SearchJobsRequestItemOffsetInteger":{
       "type":"integer",
@@ -10183,7 +10297,8 @@
           "shape":"TotalResults",
           "documentation":"<p>The total number of results in the search.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared output fields for all Search operations (nextItemOffset, totalResults).</p>"
     },
     "SearchSortExpression":{
       "type":"structure",
@@ -10214,8 +10329,8 @@
       "type":"structure",
       "required":[
         "farmId",
-        "queueIds",
-        "itemOffset"
+        "itemOffset",
+        "queueIds"
       ],
       "members":{
         "farmId":{
@@ -10223,14 +10338,6 @@
           "documentation":"<p>The farm ID to use for the step search.</p>",
           "location":"uri",
           "locationName":"farmId"
-        },
-        "queueIds":{
-          "shape":"SearchStepsRequestQueueIdsList",
-          "documentation":"<p>The queue IDs in the step search.</p>"
-        },
-        "jobId":{
-          "shape":"JobId",
-          "documentation":"<p>The job ID to use in the step search.</p>"
         },
         "filterExpressions":{
           "shape":"SearchGroupedFilterExpressions",
@@ -10247,8 +10354,17 @@
         "pageSize":{
           "shape":"SearchStepsRequestPageSizeInteger",
           "documentation":"<p>Specifies the number of results to return.</p>"
+        },
+        "queueIds":{
+          "shape":"SearchStepsRequestQueueIdsList",
+          "documentation":"<p>The queue IDs in the step search.</p>"
+        },
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The job ID to use in the step search.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared input fields for all Search operations (filterExpressions, sortExpressions, itemOffset, pageSize).</p>"
     },
     "SearchStepsRequestItemOffsetInteger":{
       "type":"integer",
@@ -10287,14 +10403,15 @@
           "shape":"TotalResults",
           "documentation":"<p>The total number of results in the search.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared output fields for all Search operations (nextItemOffset, totalResults).</p>"
     },
     "SearchTasksRequest":{
       "type":"structure",
       "required":[
         "farmId",
-        "queueIds",
-        "itemOffset"
+        "itemOffset",
+        "queueIds"
       ],
       "members":{
         "farmId":{
@@ -10302,14 +10419,6 @@
           "documentation":"<p>The farm ID of the task.</p>",
           "location":"uri",
           "locationName":"farmId"
-        },
-        "queueIds":{
-          "shape":"SearchTasksRequestQueueIdsList",
-          "documentation":"<p>The queue IDs to include in the search.</p>"
-        },
-        "jobId":{
-          "shape":"JobId",
-          "documentation":"<p>The job ID for the task search.</p>"
         },
         "filterExpressions":{
           "shape":"SearchGroupedFilterExpressions",
@@ -10326,8 +10435,17 @@
         "pageSize":{
           "shape":"SearchTasksRequestPageSizeInteger",
           "documentation":"<p>Specifies the number of results to return.</p>"
+        },
+        "queueIds":{
+          "shape":"SearchTasksRequestQueueIdsList",
+          "documentation":"<p>The queue IDs to include in the search.</p>"
+        },
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The job ID for the task search.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared input fields for all Search operations (filterExpressions, sortExpressions, itemOffset, pageSize).</p>"
     },
     "SearchTasksRequestItemOffsetInteger":{
       "type":"integer",
@@ -10366,7 +10484,8 @@
           "shape":"TotalResults",
           "documentation":"<p>The total number of results in the search.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared output fields for all Search operations (nextItemOffset, totalResults).</p>"
     },
     "SearchTerm":{
       "type":"string",
@@ -10399,8 +10518,8 @@
       "type":"structure",
       "required":[
         "farmId",
-        "fleetIds",
-        "itemOffset"
+        "itemOffset",
+        "fleetIds"
       ],
       "members":{
         "farmId":{
@@ -10408,10 +10527,6 @@
           "documentation":"<p>The farm ID in the workers search.</p>",
           "location":"uri",
           "locationName":"farmId"
-        },
-        "fleetIds":{
-          "shape":"SearchWorkersRequestFleetIdsList",
-          "documentation":"<p>The fleet ID of the workers to search for.</p>"
         },
         "filterExpressions":{
           "shape":"SearchGroupedFilterExpressions",
@@ -10428,8 +10543,13 @@
         "pageSize":{
           "shape":"SearchWorkersRequestPageSizeInteger",
           "documentation":"<p>Specifies the number of results to return.</p>"
+        },
+        "fleetIds":{
+          "shape":"SearchWorkersRequestFleetIdsList",
+          "documentation":"<p>The fleet ID of the workers to search for.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared input fields for all Search operations (filterExpressions, sortExpressions, itemOffset, pageSize).</p>"
     },
     "SearchWorkersRequestFleetIdsList":{
       "type":"list",
@@ -10468,7 +10588,8 @@
           "shape":"TotalResults",
           "documentation":"<p>The total number of results in the search.</p>"
         }
-      }
+      },
+      "documentation":"<p>Shared output fields for all Search operations (nextItemOffset, totalResults).</p>"
     },
     "SecretAccessKey":{
       "type":"string",
@@ -10477,6 +10598,24 @@
     "SecurityGroupId":{
       "type":"string",
       "pattern":"sg-[\\w]{1,120}"
+    },
+    "ServiceManagedEc2AutoScalingConfiguration":{
+      "type":"structure",
+      "members":{
+        "standbyWorkerCount":{
+          "shape":"MinZeroMaxInteger",
+          "documentation":"<p>The number of standby workers to maintain for the fleet.</p>"
+        },
+        "workerIdleDurationSeconds":{
+          "shape":"ServiceManagedEc2WorkerIdleDurationSeconds",
+          "documentation":"<p>The duration in seconds that a worker can be idle before it is scaled down.</p>"
+        },
+        "scaleOutWorkersPerMinute":{
+          "shape":"MinOneMaxInteger",
+          "documentation":"<p>The number of workers that can be scaled out per minute.</p>"
+        }
+      },
+      "documentation":"<p>The auto scaling configuration options for a service managed EC2 fleet.</p>"
     },
     "ServiceManagedEc2FleetConfiguration":{
       "type":"structure",
@@ -10500,6 +10639,10 @@
         "storageProfileId":{
           "shape":"StorageProfileId",
           "documentation":"<p>The storage profile ID for the service managed EC2 fleet.</p>"
+        },
+        "autoScalingConfiguration":{
+          "shape":"ServiceManagedEc2AutoScalingConfiguration",
+          "documentation":"<p>The auto scaling configuration options for the service managed EC2 fleet.</p>"
         }
       },
       "documentation":"<p>The configuration details for a service managed EC2 fleet.</p>"
@@ -10566,6 +10709,13 @@
         }
       },
       "documentation":"<p>The details of the Amazon EC2 instance market options for a service managed fleet.</p>"
+    },
+    "ServiceManagedEc2WorkerIdleDurationSeconds":{
+      "type":"integer",
+      "documentation":"<p>The duration in seconds that a service managed EC2 worker can be idle before it is scaled down.</p>",
+      "box":true,
+      "max":86400,
+      "min":0
     },
     "ServiceManagedFleetOperatingSystemFamily":{
       "type":"string",
@@ -10745,13 +10895,13 @@
           "shape":"SessionActionProgressPercent",
           "documentation":"<p>The completion percentage for the session action.</p>"
         },
-        "definition":{
-          "shape":"SessionActionDefinitionSummary",
-          "documentation":"<p>The session action definition.</p>"
-        },
         "manifests":{
           "shape":"TaskRunManifestPropertiesListResponse",
           "documentation":"<p>The list of manifest properties that describe file attachments for the task run.</p>"
+        },
+        "definition":{
+          "shape":"SessionActionDefinitionSummary",
+          "documentation":"<p>The session action definition.</p>"
         }
       },
       "documentation":"<p>The details of a session action.</p>"
@@ -10812,6 +10962,10 @@
           "shape":"EndedAt",
           "documentation":"<p>The date and time the resource ended running.</p>"
         },
+        "targetLifecycleStatus":{
+          "shape":"SessionLifecycleTargetStatus",
+          "documentation":"<p>The target life cycle status for the session.</p>"
+        },
         "updatedAt":{
           "shape":"UpdatedAt",
           "documentation":"<p>The date and time the resource was updated.</p>"
@@ -10819,10 +10973,6 @@
         "updatedBy":{
           "shape":"UpdatedBy",
           "documentation":"<p>The user or system that updated this resource.</p>"
-        },
-        "targetLifecycleStatus":{
-          "shape":"SessionLifecycleTargetStatus",
-          "documentation":"<p>The target life cycle status for the session.</p>"
         }
       },
       "documentation":"<p>The summary of a session.</p>"
@@ -11916,10 +12066,6 @@
           "shape":"TaskRetryCount",
           "documentation":"<p>The number of times that the task failed and was retried.</p>"
         },
-        "parameters":{
-          "shape":"TaskParameters",
-          "documentation":"<p>The task parameters.</p>"
-        },
         "startedAt":{
           "shape":"StartedAt",
           "documentation":"<p>The date and time the resource started running.</p>"
@@ -11939,6 +12085,10 @@
         "latestSessionActionId":{
           "shape":"SessionActionId",
           "documentation":"<p>The latest session action ID for the task.</p>"
+        },
+        "parameters":{
+          "shape":"TaskParameters",
+          "documentation":"<p>The task parameters.</p>"
         }
       },
       "documentation":"<p>The details of a task.</p>"
@@ -12040,13 +12190,6 @@
         "budgetId"
       ],
       "members":{
-        "clientToken":{
-          "shape":"ClientToken",
-          "documentation":"<p>The unique token which the server uses to recognize retries of the same request.</p>",
-          "idempotencyToken":true,
-          "location":"header",
-          "locationName":"X-Amz-Client-Token"
-        },
         "farmId":{
           "shape":"FarmId",
           "documentation":"<p>The farm ID of the budget to update.</p>",
@@ -12058,6 +12201,13 @@
           "documentation":"<p>The budget ID to update.</p>",
           "location":"uri",
           "locationName":"budgetId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The unique token which the server uses to recognize retries of the same request.</p>",
+          "idempotencyToken":true,
+          "location":"header",
+          "locationName":"X-Amz-Client-Token"
         },
         "displayName":{
           "shape":"ResourceName",
@@ -12113,7 +12263,7 @@
         },
         "costScaleFactor":{
           "shape":"CostScaleFactor",
-          "documentation":"<p>The cost scale factor of the farm to update.</p>"
+          "documentation":"<p>A multiplier applied to the farm's calculated costs for usage data and budget tracking. A value less than 1 represents a discount, a value greater than 1 represents a premium, and a value of 1 represents no adjustment.</p>"
         }
       }
     },
@@ -12128,13 +12278,6 @@
         "fleetId"
       ],
       "members":{
-        "clientToken":{
-          "shape":"ClientToken",
-          "documentation":"<p>The unique token which the server uses to recognize retries of the same request.</p>",
-          "idempotencyToken":true,
-          "location":"header",
-          "locationName":"X-Amz-Client-Token"
-        },
         "farmId":{
           "shape":"FarmId",
           "documentation":"<p>The farm ID to update.</p>",
@@ -12146,6 +12289,13 @@
           "documentation":"<p>The fleet ID to update.</p>",
           "location":"uri",
           "locationName":"fleetId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The unique token which the server uses to recognize retries of the same request.</p>",
+          "idempotencyToken":true,
+          "location":"header",
+          "locationName":"X-Amz-Client-Token"
         },
         "displayName":{
           "shape":"ResourceName",
@@ -12193,6 +12343,24 @@
         "jobId"
       ],
       "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID of the job to update.</p>",
+          "location":"uri",
+          "locationName":"farmId"
+        },
+        "queueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The queue ID of the job to update.</p>",
+          "location":"uri",
+          "locationName":"queueId"
+        },
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The job ID to update.</p>",
+          "location":"uri",
+          "locationName":"jobId"
+        },
         "clientToken":{
           "shape":"ClientToken",
           "documentation":"<p>The unique token which the server uses to recognize retries of the same request.</p>",
@@ -12231,24 +12399,6 @@
         "description":{
           "shape":"JobDescriptionOverride",
           "documentation":"<p>The updated job description.</p>"
-        },
-        "farmId":{
-          "shape":"FarmId",
-          "documentation":"<p>The farm ID of the job to update.</p>",
-          "location":"uri",
-          "locationName":"farmId"
-        },
-        "queueId":{
-          "shape":"QueueId",
-          "documentation":"<p>The queue ID of the job to update.</p>",
-          "location":"uri",
-          "locationName":"queueId"
-        },
-        "jobId":{
-          "shape":"JobId",
-          "documentation":"<p>The job ID to update.</p>",
-          "location":"uri",
-          "locationName":"jobId"
         }
       }
     },
@@ -12329,13 +12479,6 @@
         "queueEnvironmentId"
       ],
       "members":{
-        "clientToken":{
-          "shape":"ClientToken",
-          "documentation":"<p>The unique token which the server uses to recognize retries of the same request.</p>",
-          "idempotencyToken":true,
-          "location":"header",
-          "locationName":"X-Amz-Client-Token"
-        },
         "farmId":{
           "shape":"FarmId",
           "documentation":"<p>The farm ID of the queue environment to update.</p>",
@@ -12353,6 +12496,13 @@
           "documentation":"<p>The queue environment ID to update.</p>",
           "location":"uri",
           "locationName":"queueEnvironmentId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The unique token which the server uses to recognize retries of the same request.</p>",
+          "idempotencyToken":true,
+          "location":"header",
+          "locationName":"X-Amz-Client-Token"
         },
         "priority":{
           "shape":"Priority",
@@ -12403,7 +12553,8 @@
           "shape":"UpdateQueueFleetAssociationStatus",
           "documentation":"<p>The status to update.</p>"
         }
-      }
+      },
+      "documentation":"<p>Identifier mixin for queue-fleet association operations. Composes QueueIdentifierMixin (farmId + queueId) and adds fleetId.</p>"
     },
     "UpdateQueueFleetAssociationResponse":{
       "type":"structure",
@@ -12469,13 +12620,6 @@
         "queueId"
       ],
       "members":{
-        "clientToken":{
-          "shape":"ClientToken",
-          "documentation":"<p>The idempotency token to update in the queue.</p>",
-          "idempotencyToken":true,
-          "location":"header",
-          "locationName":"X-Amz-Client-Token"
-        },
         "farmId":{
           "shape":"FarmId",
           "documentation":"<p>The farm ID to update in the queue.</p>",
@@ -12487,6 +12631,13 @@
           "documentation":"<p>The queue ID to update.</p>",
           "location":"uri",
           "locationName":"queueId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The idempotency token to update in the queue.</p>",
+          "idempotencyToken":true,
+          "location":"header",
+          "locationName":"X-Amz-Client-Token"
         },
         "displayName":{
           "shape":"ResourceName",
@@ -12537,24 +12688,13 @@
     "UpdateSessionRequest":{
       "type":"structure",
       "required":[
-        "targetLifecycleStatus",
         "farmId",
         "queueId",
         "jobId",
-        "sessionId"
+        "sessionId",
+        "targetLifecycleStatus"
       ],
       "members":{
-        "clientToken":{
-          "shape":"ClientToken",
-          "documentation":"<p>The unique token which the server uses to recognize retries of the same request.</p>",
-          "idempotencyToken":true,
-          "location":"header",
-          "locationName":"X-Amz-Client-Token"
-        },
-        "targetLifecycleStatus":{
-          "shape":"SessionLifecycleTargetStatus",
-          "documentation":"<p>The life cycle status to update in the session.</p>"
-        },
         "farmId":{
           "shape":"FarmId",
           "documentation":"<p>The farm ID to update in the session.</p>",
@@ -12578,6 +12718,17 @@
           "documentation":"<p>The session ID to update.</p>",
           "location":"uri",
           "locationName":"sessionId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The unique token which the server uses to recognize retries of the same request.</p>",
+          "idempotencyToken":true,
+          "location":"header",
+          "locationName":"X-Amz-Client-Token"
+        },
+        "targetLifecycleStatus":{
+          "shape":"SessionLifecycleTargetStatus",
+          "documentation":"<p>The life cycle status to update in the session.</p>"
         }
       }
     },
@@ -12588,24 +12739,13 @@
     "UpdateStepRequest":{
       "type":"structure",
       "required":[
-        "targetTaskRunStatus",
         "farmId",
         "queueId",
         "jobId",
-        "stepId"
+        "stepId",
+        "targetTaskRunStatus"
       ],
       "members":{
-        "targetTaskRunStatus":{
-          "shape":"StepTargetTaskRunStatus",
-          "documentation":"<p>The task status to update the step's tasks to.</p>"
-        },
-        "clientToken":{
-          "shape":"ClientToken",
-          "documentation":"<p>The unique token which the server uses to recognize retries of the same request.</p>",
-          "idempotencyToken":true,
-          "location":"header",
-          "locationName":"X-Amz-Client-Token"
-        },
         "farmId":{
           "shape":"FarmId",
           "documentation":"<p>The farm ID to update.</p>",
@@ -12629,6 +12769,17 @@
           "documentation":"<p>The step ID to update.</p>",
           "location":"uri",
           "locationName":"stepId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The unique token which the server uses to recognize retries of the same request.</p>",
+          "idempotencyToken":true,
+          "location":"header",
+          "locationName":"X-Amz-Client-Token"
+        },
+        "targetTaskRunStatus":{
+          "shape":"StepTargetTaskRunStatus",
+          "documentation":"<p>The task status to update the step's tasks to.</p>"
         }
       }
     },
@@ -12643,13 +12794,6 @@
         "storageProfileId"
       ],
       "members":{
-        "clientToken":{
-          "shape":"ClientToken",
-          "documentation":"<p>The unique token which the server uses to recognize retries of the same request.</p>",
-          "idempotencyToken":true,
-          "location":"header",
-          "locationName":"X-Amz-Client-Token"
-        },
         "farmId":{
           "shape":"FarmId",
           "documentation":"<p>The farm ID to update.</p>",
@@ -12661,6 +12805,13 @@
           "documentation":"<p>The storage profile ID to update.</p>",
           "location":"uri",
           "locationName":"storageProfileId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The unique token which the server uses to recognize retries of the same request.</p>",
+          "idempotencyToken":true,
+          "location":"header",
+          "locationName":"X-Amz-Client-Token"
         },
         "displayName":{
           "shape":"ResourceName",
@@ -12687,25 +12838,14 @@
     "UpdateTaskRequest":{
       "type":"structure",
       "required":[
-        "targetRunStatus",
         "farmId",
         "queueId",
         "jobId",
         "stepId",
-        "taskId"
+        "taskId",
+        "targetRunStatus"
       ],
       "members":{
-        "clientToken":{
-          "shape":"ClientToken",
-          "documentation":"<p>The unique token which the server uses to recognize retries of the same request.</p>",
-          "idempotencyToken":true,
-          "location":"header",
-          "locationName":"X-Amz-Client-Token"
-        },
-        "targetRunStatus":{
-          "shape":"TaskTargetRunStatus",
-          "documentation":"<p>The run status with which to start the task.</p>"
-        },
         "farmId":{
           "shape":"FarmId",
           "documentation":"<p>The farm ID to update.</p>",
@@ -12735,6 +12875,17 @@
           "documentation":"<p>The task ID to update.</p>",
           "location":"uri",
           "locationName":"taskId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The unique token which the server uses to recognize retries of the same request.</p>",
+          "idempotencyToken":true,
+          "location":"header",
+          "locationName":"X-Amz-Client-Token"
+        },
+        "targetRunStatus":{
+          "shape":"TaskTargetRunStatus",
+          "documentation":"<p>The run status with which to start the task.</p>"
         }
       }
     },
@@ -13282,18 +13433,14 @@
     "WorkerSummary":{
       "type":"structure",
       "required":[
-        "workerId",
         "farmId",
         "fleetId",
+        "workerId",
         "status",
         "createdAt",
         "createdBy"
       ],
       "members":{
-        "workerId":{
-          "shape":"WorkerId",
-          "documentation":"<p>The worker ID.</p>"
-        },
         "farmId":{
           "shape":"FarmId",
           "documentation":"<p>The farm ID.</p>"
@@ -13302,13 +13449,17 @@
           "shape":"FleetId",
           "documentation":"<p>The fleet ID.</p>"
         },
-        "status":{
-          "shape":"WorkerStatus",
-          "documentation":"<p>The status of the worker.</p>"
+        "workerId":{
+          "shape":"WorkerId",
+          "documentation":"<p>The worker ID.</p>"
         },
         "hostProperties":{
           "shape":"HostPropertiesResponse",
           "documentation":"<p>The host properties of the worker.</p>"
+        },
+        "status":{
+          "shape":"WorkerStatus",
+          "documentation":"<p>The status of the worker.</p>"
         },
         "log":{
           "shape":"LogConfiguration",

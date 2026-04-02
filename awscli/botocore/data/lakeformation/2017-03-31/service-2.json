@@ -585,7 +585,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Allows a user or application in a secure environment to access data in a specific Amazon S3 location registered with Lake Formation by providing temporary scoped credentials that are limited to the requested data location and the caller's authorized access level.</p> <p> The API operation returns an error in the following scenarios:</p> <ul> <li> <p>The data location is not registered with Lake Formation. </p> </li> <li> <p>No Glue table is associated with the data location.</p> </li> <li> <p>The caller doesn't have required permissions on the associated table. The caller must have <code>SELECT</code> or <code>SUPER</code> permissions on the associated table, and credential vending for full table access must be enabled in the data lake settings. </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/lake-formation/latest/dg/full-table-credential-vending.html\">Application integration for full table access</a>.</p> </li> <li> <p>The data location is in a different Amazon Web Services Region. Lake Formation doesn't support cross-Region access when vending credentials for a data location. Lake Formation only supports Amazon S3 paths registered within the same Region as the API call. </p> </li> </ul>"
+      "documentation":"<p>Allows a user or application in a secure environment to access data in a specific Amazon S3 location registered with Lake Formation by providing temporary scoped credentials that are limited to the requested data location and the caller's authorized access level.</p> <p> <code>GetDataAccess</code> is logged in CloudTrail whenever a principal requests temporary data location credentials to access data in a data lake location that is registered with Lake Formation.</p> <p> The API operation returns an error in the following scenarios:</p> <ul> <li> <p>The data location is not registered with Lake Formation. </p> </li> <li> <p>No Glue table is associated with the data location.</p> </li> <li> <p>The caller doesn't have required permissions on the associated table. The caller must have <code>SELECT</code> or <code>SUPER</code> permissions on the associated table, and credential vending for full table access must be enabled in the data lake settings. </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/lake-formation/latest/dg/full-table-credential-vending.html\">Application integration for full table access</a>.</p> </li> <li> <p>The data location is in a different Amazon Web Services Region. Lake Formation doesn't support cross-Region access when vending credentials for a data location. Lake Formation only supports Amazon S3 paths registered within the same Region as the API call. </p> </li> </ul>"
     },
     "GetTemporaryGluePartitionCredentials":{
       "name":"GetTemporaryGluePartitionCredentials",
@@ -1732,7 +1732,7 @@
         },
         "Parameters":{
           "shape":"ParametersMap",
-          "documentation":"<p>A key-value map that provides an additional configuration on your data lake. CROSS_ACCOUNT_VERSION is the key you can configure in the Parameters field. Accepted values for the CrossAccountVersion key are 1, 2, 3, 4 and 5.</p>"
+          "documentation":"<p>A key-value map that provides an additional configuration on your data lake. The following key-value pairs are supported:</p> <ul> <li> <p> <code>CROSS_ACCOUNT_VERSION</code> - Accepted values are 1, 2, 3, 4, and 5.</p> </li> <li> <p> <code>SET_SOURCE_IDENTITY</code> - Accepted values are <code>TRUE</code> and <code>FALSE</code>. When set to <code>TRUE</code>, Lake Formation includes the IAM role identifier that was used to query in the S3 data event CloudTrail logs for <code>s3:GetObject</code> calls. For more information, see <a href=\"https://docs.aws.amazon.com/lake-formation/latest/dg/cloudtrail-logging.html#source-identity-cloudtrail\">Tracking query engine IAM roles in S3 data events</a>.</p> </li> </ul>"
         },
         "TrustedResourceOwners":{
           "shape":"TrustedResourceOwners",
@@ -3364,7 +3364,8 @@
     "ParametersMap":{
       "type":"map",
       "key":{"shape":"KeyString"},
-      "value":{"shape":"ParametersMapValue"}
+      "value":{"shape":"ParametersMapValue"},
+      "documentation":"<p>A key-value map that provides additional configuration for Lake Formation. Supported keys include:</p> <ul> <li><code>CROSS_ACCOUNT_VERSION</code> - Specifies the cross-account access version.</li> <li><code>SET_SOURCE_IDENTITY</code> - When set to \"TRUE\", enables inclusion of the IAM role identifier that was used to query(sourceIdentity) in CloudTrail logs for S3 data access events. This helps track which IAM role (such as Athena or EMR job role) accessed table data. Requires the <code>sts:SetSourceIdentity</code> permission in the trust policy of the IAM role used to register S3 buckets with Lake Formation. Default is \"FALSE\".</li> </ul>"
     },
     "ParametersMapValue":{
       "type":"string",

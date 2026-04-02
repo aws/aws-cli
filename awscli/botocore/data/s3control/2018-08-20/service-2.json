@@ -2074,6 +2074,12 @@
       },
       "documentation":"<p>A container for the response details that are returned when querying about an asynchronous request.</p>"
     },
+    "AuditContext":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
+    },
     "AwsLambdaTransformation":{
       "type":"structure",
       "required":["FunctionArn"],
@@ -4344,6 +4350,12 @@
           "documentation":"<p>The type of <code>Target</code>. The only possible value is <code>Object</code>. Pass this value if the target data that you would like to access is a path to an object. Do not pass this value if the target data is a bucket or a bucket and a prefix. </p>",
           "location":"querystring",
           "locationName":"targetType"
+        },
+        "AuditContext":{
+          "shape":"AuditContext",
+          "documentation":"<p>The context to identify the job or query associated with the credential request. This information will be displayed in CloudTrail log in your account.</p>",
+          "location":"querystring",
+          "locationName":"auditContext"
         }
       }
     },

@@ -50,6 +50,7 @@ class LoginCommand(BasicCommand):
         'temporary credentials with the ``AWS_LOGIN_CACHE_DIRECTORY`` '
         'environment variable.'
     )
+    EXAMPLES = BasicCommand.FROM_FILE()
     ARG_TABLE = [
         {
             'name': 'remote',

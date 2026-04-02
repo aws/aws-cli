@@ -1342,6 +1342,10 @@
           "shape":"AccountState",
           "documentation":"<p>Each state represents a specific phase in the account lifecycle. Use this information to manage account access, automate workflows, or trigger actions based on account state changes.</p> <p>For more information about account states and their implications, see <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_account_state.html\">Monitor the state of your Amazon Web Services accounts </a> in the <i>Organizations User Guide</i>.</p>"
         },
+        "Paths":{
+          "shape":"Paths",
+          "documentation":"<p>The paths in the organization where the account exists.</p>"
+        },
         "JoinedMethod":{
           "shape":"AccountJoinedMethod",
           "documentation":"<p>The method by which the account joined the organization.</p>"
@@ -3524,6 +3528,10 @@
         "Name":{
           "shape":"OrganizationalUnitName",
           "documentation":"<p>The friendly name of this OU.</p> <p>The <a href=\"http://wikipedia.org/wiki/regex\">regex pattern</a> that is used to validate this parameter is a string of any of the characters in the ASCII character range.</p>"
+        },
+        "Path":{
+          "shape":"Path",
+          "documentation":"<p>The path in the organization where this OU exists.</p>"
         }
       },
       "documentation":"<p>Contains details about an organizational unit (OU). An OU is a container of Amazon Web Services accounts within a root of an organization. Policies that are attached to an OU apply to all accounts contained in that OU and in any child OUs.</p>"
@@ -3606,6 +3614,10 @@
       "pattern":"^(o-[a-z0-9]{10,32}\\/r-[0-9a-z]{4,32}(\\/ou\\-[0-9a-z]{4,32}-[a-z0-9]{8,32})*(\\/\\d{12})*)\\/"
     },
     "PathToError":{"type":"string"},
+    "Paths":{
+      "type":"list",
+      "member":{"shape":"Path"}
+    },
     "Policies":{
       "type":"list",
       "member":{"shape":"PolicySummary"}

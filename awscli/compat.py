@@ -261,13 +261,14 @@ def compat_input(prompt):
         # This is unused directly when the user pastes the cross-device
         # verification code, which may be longer than some terminal's buffers
         import readline  # noqa: F401
+
         return raw_input()
     except ImportError:
         LOG.debug('readline module not available')
         return raw_input()
 
 
-def compat_shell_quote(s, platform=None):
+def compat_shell_quote(s, platform=None, shell=False):
     """Return a shell-escaped version of the string *s*
 
     Unfortunately `shlex.quote` doesn't support Windows, so this method
@@ -277,13 +278,15 @@ def compat_shell_quote(s, platform=None):
         platform = sys.platform
 
     if platform == "win32":
-        return _windows_shell_quote(s)
+        if shell:
+            return _windows_cmd_shell_quote(s)
+        return _windows_argv_quote(s)
     else:
         return shlex.quote(s)
 
 
-def _windows_shell_quote(s):
-    """Return a Windows shell-escaped version of the string *s*
+def _windows_argv_quote(s):
+    """Return a Windows argv-escaped version of the string *s*
 
     Windows has potentially bizarre rules depending on where you look. When
     spawning a process via the Windows C runtime the rules are as follows:
@@ -343,6 +346,52 @@ def _windows_shell_quote(s):
         # quoted.
         return '"%s"' % new_s
     return new_s
+
+
+def _windows_cmd_shell_quote(s):
+    """Return a Windows shell-escaped version of the string *s* that is
+    safe to pass through cmd.exe
+
+    Handles two interpretation layers:
+      1. cmd.exe metacharacters - neutralized by always double-quoting,
+         which prevents interpretation of &, |, >, <, ^, (, and ).
+      2. MSVC C runtime argv parsing - backslash/double-quote escaping
+         so the target process receives the correct argument.
+
+    Note: cmd.exe %VAR% expansion and !VAR! delayed expansion
+    cannot be reliably escaped inside double quotes on the
+    command line and are not handled here.
+
+    :param s: A string to escape
+    :return: An escaped string
+    """
+    if not s:
+        return '""'
+
+    buff = []
+    num_backspaces = 0
+    for character in s:
+        if character == '\\':
+            num_backspaces += 1
+        elif character == '"':
+            if num_backspaces > 0:
+                buff.append('\\' * (num_backspaces * 2))
+                num_backspaces = 0
+            buff.append('\\"')
+        else:
+            if num_backspaces > 0:
+                buff.append('\\' * num_backspaces)
+                num_backspaces = 0
+            buff.append(character)
+
+    # Trailing backslashes must be doubled because we always append
+    # a closing double quote. Without doubling, a trailing backslash
+    # would escape the closing quote.
+    if num_backspaces > 0:
+        buff.append('\\' * (num_backspaces * 2))
+
+    inner = ''.join(buff)
+    return f'"{inner}"'
 
 
 def get_popen_kwargs_for_pager_cmd(pager_cmd=None):

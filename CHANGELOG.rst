@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.44.73
+=======
+
+* api-change:``bedrock``: Amazon Bedrock Guardrails enforcement configuration APIs now support selective guarding controls for system prompts as well as user and assistant messages, along with SDK support for Amazon Bedrock resource policy APIs.
+* api-change:``bedrock-agent``: Added strict parameter to ToolSpecification to allow users to enforce strict JSON schema adherence for tool input schemas.
+* api-change:``bedrock-agentcore-control``: Documentation Update for Adds support for three-legged (Authorization Code grant type) OAuth along with predefined MCP tool schema configuration for Amazon Bedrock AgentCore gateway MCP server targets.
+* api-change:``imagebuilder``: Updated pagination token validation for ListContainerRecipes API to support maximum size of 65K characters
+* api-change:``lightsail``: Add support for tagging of Alarm resource type
+* api-change:``logs``: Added queryDuration, bytesScanned, and userIdentity fields to the QueryInfo response object returned by DescribeQueries. Customers can now view detailed query cost information including who ran the query, how long it took, and the volume of data scanned.
+* api-change:``medialive``: AWS Elemental MediaLive released a new features that allows customers to use HLG 2020 as a color space for AV1 video codec.
+* api-change:``organizations``: Updates close Account quota for member accounts in an Organization.
+* api-change:``payment-cryptography``: Adds optional support to retrieve previously generated import and export tokens to simplify import and export functions
+
+
 1.44.72
 =======
 

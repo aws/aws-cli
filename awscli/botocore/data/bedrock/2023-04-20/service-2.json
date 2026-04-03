@@ -688,6 +688,25 @@
       "documentation":"<p>Deletes a Provisioned Throughput. You can't delete a Provisioned Throughput before the commitment term is over. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html\">Provisioned Throughput</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>",
       "idempotent":true
     },
+    "DeleteResourcePolicy":{
+      "name":"DeleteResourcePolicy",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/resource-policy/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteResourcePolicyRequest"},
+      "output":{"shape":"DeleteResourcePolicyResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes a previously created Bedrock resource policy.</p>",
+      "idempotent":true
+    },
     "DeregisterMarketplaceModelEndpoint":{
       "name":"DeregisterMarketplaceModelEndpoint",
       "http":{
@@ -1161,6 +1180,25 @@
       "documentation":"<p>Returns details for a Provisioned Throughput. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html\">Provisioned Throughput</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>",
       "readonly":true
     },
+    "GetResourcePolicy":{
+      "name":"GetResourcePolicy",
+      "http":{
+        "method":"GET",
+        "requestUri":"/resource-policy/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetResourcePolicyRequest"},
+      "output":{"shape":"GetResourcePolicyResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Gets the resource policy document for a Bedrock resource</p>",
+      "readonly":true
+    },
     "GetUseCaseForModelAccess":{
       "name":"GetUseCaseForModelAccess",
       "http":{
@@ -1605,6 +1643,25 @@
       "documentation":"<p>Set the configuration values for model invocation logging.</p>",
       "idempotent":true
     },
+    "PutResourcePolicy":{
+      "name":"PutResourcePolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/resource-policy",
+        "responseCode":201
+      },
+      "input":{"shape":"PutResourcePolicyRequest"},
+      "output":{"shape":"PutResourcePolicyResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Adds a resource policy for a Bedrock resource.</p>",
+      "idempotent":true
+    },
     "PutUseCaseForModelAccess":{
       "name":"PutUseCaseForModelAccess",
       "http":{
@@ -1939,8 +1996,7 @@
       "type":"structure",
       "required":[
         "guardrailIdentifier",
-        "guardrailVersion",
-        "inputTags"
+        "guardrailVersion"
       ],
       "members":{
         "guardrailIdentifier":{
@@ -1951,9 +2007,9 @@
           "shape":"GuardrailNumericalVersion",
           "documentation":"<p>Numerical guardrail version.</p>"
         },
-        "inputTags":{
-          "shape":"InputTags",
-          "documentation":"<p>Whether to honor or ignore input tags at runtime.</p>"
+        "selectiveContentGuarding":{
+          "shape":"SelectiveContentGuarding",
+          "documentation":"<p>Selective content guarding controls for enforced guardrails.</p>"
         },
         "modelEnforcement":{
           "shape":"ModelEnforcement",
@@ -1979,7 +2035,14 @@
         },
         "inputTags":{
           "shape":"InputTags",
-          "documentation":"<p>Whether to honor or ignore input tags at runtime.</p>"
+          "documentation":"<p>Whether to honor or ignore input tags at runtime.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This field is being deprecated and will be removed once customers transition their existing policies to the new schema.",
+          "deprecatedSince":"2026-04-03"
+        },
+        "selectiveContentGuarding":{
+          "shape":"SelectiveContentGuarding",
+          "documentation":"<p>Selective content guarding controls for enforced guardrails.</p>"
         },
         "guardrailVersion":{
           "shape":"GuardrailNumericalVersion",
@@ -6054,6 +6117,22 @@
       "type":"structure",
       "members":{}
     },
+    "DeleteResourcePolicyRequest":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourcePolicyResourceArn",
+          "documentation":"<p>The ARN of the Bedrock resource to which this resource policy applies.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "DeleteResourcePolicyResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "DeregisterMarketplaceModelEndpointRequest":{
       "type":"structure",
       "required":["endpointArn"],
@@ -8386,6 +8465,27 @@
         "commitmentExpirationTime":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp for when the commitment term for the Provisioned Throughput expires.</p>"
+        }
+      }
+    },
+    "GetResourcePolicyRequest":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourcePolicyResourceArn",
+          "documentation":"<p>The ARN of the Bedrock resource to which this resource policy applies.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "GetResourcePolicyResponse":{
+      "type":"structure",
+      "members":{
+        "resourcePolicy":{
+          "shape":"ResourcePolicyDocument",
+          "documentation":"<p>The JSON string representing the Bedrock resource policy.</p>"
         }
       }
     },
@@ -12351,6 +12451,32 @@
       "type":"structure",
       "members":{}
     },
+    "PutResourcePolicyRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "resourcePolicy"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourcePolicyResourceArn",
+          "documentation":"<p>The ARN of the Bedrock resource to which this resource policy applies.</p>"
+        },
+        "resourcePolicy":{
+          "shape":"ResourcePolicyDocument",
+          "documentation":"<p>The JSON string representing the Bedrock resource policy.</p>"
+        }
+      }
+    },
+    "PutResourcePolicyResponse":{
+      "type":"structure",
+      "members":{
+        "resourceArn":{
+          "shape":"ResourcePolicyResourceArn",
+          "documentation":"<p>The ARN of the Bedrock resource to which this resource policy applies.</p>"
+        }
+      }
+    },
     "PutUseCaseForModelAccessRequest":{
       "type":"structure",
       "required":["formData"],
@@ -12702,6 +12828,17 @@
       },
       "exception":true
     },
+    "ResourcePolicyDocument":{
+      "type":"string",
+      "max":20480,
+      "min":1,
+      "pattern":"[    -ÿ]+"
+    },
+    "ResourcePolicyResourceArn":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
     "RetrievalFilter":{
       "type":"structure",
       "members":{
@@ -12936,6 +13073,27 @@
       "member":{"shape":"SecurityGroupId"},
       "max":5,
       "min":1
+    },
+    "SelectiveContentGuarding":{
+      "type":"structure",
+      "members":{
+        "system":{
+          "shape":"SelectiveGuardingMode",
+          "documentation":"<p>Selective guarding mode for system prompts.\"</p>"
+        },
+        "messages":{
+          "shape":"SelectiveGuardingMode",
+          "documentation":"<p>Selective guarding mode for user messages.</p>"
+        }
+      },
+      "documentation":"<p>Selective content guarding controls for enforced guardrails.</p>"
+    },
+    "SelectiveGuardingMode":{
+      "type":"string",
+      "enum":[
+        "SELECTIVE",
+        "COMPREHENSIVE"
+      ]
     },
     "ServiceQuotaExceededException":{
       "type":"structure",

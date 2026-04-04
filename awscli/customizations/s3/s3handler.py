@@ -348,8 +348,26 @@ class UploadRequestSubmitter(BaseTransferRequestSubmitter):
     REQUEST_MAPPER_METHOD = RequestParamsMapper.map_put_object_params
     RESULT_SUBSCRIBER_CLASS = UploadResultSubscriber
 
+    def __init__(self, transfer_manager, result_queue, cli_params):
+        super().__init__(transfer_manager, result_queue, cli_params)
+        self._dryrun_validated_buckets = set()
+
     def can_submit(self, fileinfo):
         return fileinfo.operation_name == 'upload'
+
+    def _submit_dryrun(self, fileinfo):
+        bucket, key = find_bucket_key(fileinfo.dest)
+        # Validate bucket access before reporting dryrun success.
+        # This ensures dryrun fails if the bucket doesn't exist or the user
+        # lacks basic access permissions, providing behavior consistent with
+        # download operations which call HeadObject during file discovery.
+        # Note: head_bucket checks bucket existence and basic access but does
+        # not specifically validate s3:PutObject permission.
+        if bucket not in self._dryrun_validated_buckets:
+            client = self._transfer_manager.client
+            client.head_bucket(Bucket=bucket)
+            self._dryrun_validated_buckets.add(bucket)
+        super()._submit_dryrun(fileinfo)
 
     def _add_additional_subscribers(self, subscribers, fileinfo):
         subscribers.append(ProvideSizeSubscriber(fileinfo.size))

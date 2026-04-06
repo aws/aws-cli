@@ -71,8 +71,6 @@ from botocore.utils import (
     switch_host_with_param,
 )
 
-from awscli.botocore.auth import resolve_auth_scheme_preference
-
 logger = logging.getLogger(__name__)
 
 REGISTER_FIRST = object()

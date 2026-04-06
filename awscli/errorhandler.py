@@ -95,8 +95,12 @@ class EnhancedErrorFormatter:
         return str(value)
 
     def _get_additional_fields(self, error_info):
-        standard_keys = {'Code', 'Message'}
-        return {k: v for k, v in error_info.items() if k not in standard_keys}
+        standard_keys = {'code', 'message'}
+        return {
+            k: v
+            for k, v in error_info.items()
+            if k.lower() not in standard_keys
+        }
 
 
 def construct_entry_point_handlers_chain():
@@ -286,15 +290,23 @@ class ClientErrorHandler(FilteredExceptionHandler):
         if hasattr(exception, 'response') and 'Error' in exception.response:
             error_dict = dict(exception.response['Error'])
 
-            # AWS services return modeled error fields
-            # at the top level of the error response,
-            # not nested under an Error key. Botocore preserves this structure.
-            # Include these fields to provide complete error information.
-            # Exclude response metadata and avoid duplicates.
+            modeled_fields = exception.modeled_fields
+            if modeled_fields is not None:
+                modeled_lower = {f.lower() for f in modeled_fields}
+            else:
+                modeled_lower = {'code', 'message'}
+
+            # Only include fields present in the error shape model.
             excluded_keys = {'Error', 'ResponseMetadata', 'Code', 'Message'}
             for key, value in exception.response.items():
                 if key not in excluded_keys and key not in error_dict:
-                    error_dict[key] = value
+                    if key.lower() in modeled_lower:
+                        error_dict[key] = value
+
+            # Unmodeled fields can contain data that shouldn't be displayed.
+            for key in list(error_dict.keys()):
+                if key.lower() not in modeled_lower:
+                    del error_dict[key]
 
             return {'Error': error_dict}
 

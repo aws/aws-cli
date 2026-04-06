@@ -115,6 +115,10 @@ def register_removals(event_handler):
         on_event='building-command-table.connecthealth',
         remove_commands=['start-medical-scribe-listening-session'],
     )
+    cmd_remover.remove(
+        on_event='building-command-table.devops-agent',
+        remove_commands=['send-message'],
+    )
 
 
 class CommandRemover:

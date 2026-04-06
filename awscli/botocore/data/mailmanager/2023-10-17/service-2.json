@@ -43,7 +43,8 @@
       "errors":[
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"},
-        {"shape":"ConflictException"}
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Creates a subscription for an Add On representing the acceptance of its terms of use and additional pricing. The subscription can then be used to create an instance for use in rule sets or traffic policies.</p>",
       "idempotent":true
@@ -204,6 +205,7 @@
       "input":{"shape":"DeleteAddressListRequest"},
       "output":{"shape":"DeleteAddressListResponse"},
       "errors":[
+        {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"},
         {"shape":"ThrottlingException"}
@@ -302,6 +304,7 @@
       "errors":[
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
@@ -756,6 +759,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
@@ -1401,6 +1405,61 @@
       "type":"boolean",
       "box":true
     },
+    "BounceAction":{
+      "type":"structure",
+      "required":[
+        "RoleArn",
+        "Sender",
+        "StatusCode",
+        "SmtpReplyCode",
+        "DiagnosticMessage"
+      ],
+      "members":{
+        "ActionFailurePolicy":{
+          "shape":"ActionFailurePolicy",
+          "documentation":"<p>A policy that states what to do in the case of failure. The action will fail if there are configuration errors. For example, the caller does not have the permissions to call the SendBounce API.</p>"
+        },
+        "RoleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role to use to send the bounce message.</p>"
+        },
+        "Sender":{
+          "shape":"EmailAddress",
+          "documentation":"<p>The sender email address of the bounce message.</p>"
+        },
+        "StatusCode":{
+          "shape":"StatusCode",
+          "documentation":"<p>The enhanced status code for the bounce, in the format of x.y.z (e.g. 5.1.1).</p>"
+        },
+        "SmtpReplyCode":{
+          "shape":"SmtpReplyCode",
+          "documentation":"<p>The SMTP reply code for the bounce, as defined by RFC 5321.</p>"
+        },
+        "DiagnosticMessage":{
+          "shape":"DiagnosticMessage",
+          "documentation":"<p>The diagnostic message included in the Diagnostic-Code header of the bounce.</p>"
+        },
+        "Message":{
+          "shape":"BounceMessage",
+          "documentation":"<p>The human-readable text to include in the bounce message.</p>"
+        }
+      },
+      "documentation":"<p>The action to send a bounce response for the email. When executed, this action generates a non-delivery report (bounce) back to the sender.</p>"
+    },
+    "BounceMessage":{
+      "type":"string",
+      "max":500,
+      "min":1,
+      "pattern":"[\\r\\n\\x20-\\x7e]+",
+      "sensitive":true
+    },
+    "CAContent":{
+      "type":"string",
+      "max":500000,
+      "min":1,
+      "pattern":"[\\P{C}\\s]*",
+      "sensitive":true
+    },
     "ConflictException":{
       "type":"structure",
       "members":{
@@ -1617,6 +1676,10 @@
           "shape":"NetworkConfiguration",
           "documentation":"<p>Specifies the network configuration for the ingress point. This allows you to create an IPv4-only, Dual-Stack, or PrivateLink type of ingress point. If not specified, the default network type is IPv4-only. </p>"
         },
+        "TlsPolicy":{
+          "shape":"TlsPolicy",
+          "documentation":"<p>The Transport Layer Security (TLS) policy for the ingress point. The FIPS value is only valid in US and Canada regions.</p>"
+        },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>The tags used to organize, track, or control access for the resource. For example, { \"tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
@@ -1759,6 +1822,13 @@
           "documentation":"<p>The identifier of the traffic policy resource.</p>"
         }
       }
+    },
+    "CrlContent":{
+      "type":"string",
+      "max":500000,
+      "min":1,
+      "pattern":"[\\P{C}\\s]*",
+      "sensitive":true
     },
     "DeleteAddonInstanceRequest":{
       "type":"structure",
@@ -1943,6 +2013,13 @@
     "DeregisterMemberFromAddressListResponse":{
       "type":"structure",
       "members":{}
+    },
+    "DiagnosticMessage":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[\\x20-\\x7e]+",
+      "sensitive":true
     },
     "Double":{
       "type":"double",
@@ -2446,6 +2523,10 @@
         "IngressPointId":{
           "shape":"IngressPointId",
           "documentation":"<p>The identifier of an ingress endpoint.</p>"
+        },
+        "IncludeTrustStoreContents":{
+          "shape":"TrustStoreResponseOption",
+          "documentation":"<p>Whether to include the trust store contents in the response. Use INCLUDE to retrieve trust store certificate and CRL contents.</p>"
         }
       }
     },
@@ -2495,6 +2576,10 @@
         "NetworkConfiguration":{
           "shape":"NetworkConfiguration",
           "documentation":"<p>The network configuration for the ingress point.</p>"
+        },
+        "TlsPolicy":{
+          "shape":"TlsPolicy",
+          "documentation":"<p>The selected Transport Layer Security (TLS) policy of the ingress point.</p>"
         },
         "CreatedTimestamp":{
           "shape":"Timestamp",
@@ -3022,6 +3107,10 @@
         "SecretArn":{
           "shape":"SecretArn",
           "documentation":"<p>The ingress endpoint SecretsManager::Secret ARN configuration for the ingress endpoint resource.</p>"
+        },
+        "TlsAuthConfiguration":{
+          "shape":"TlsAuthConfiguration",
+          "documentation":"<p>The mutual TLS authentication configuration for the ingress endpoint resource.</p>"
         }
       },
       "documentation":"<p>The authentication configuration for the ingress endpoint resource.</p>"
@@ -3036,6 +3125,10 @@
         "SecretArn":{
           "shape":"SecretArn",
           "documentation":"<p>The SecretsManager::Secret ARN of the ingress endpoint resource.</p>"
+        },
+        "TlsAuthConfiguration":{
+          "shape":"TlsAuthConfiguration",
+          "documentation":"<p>The mutual TLS authentication configuration of the ingress endpoint resource.</p>"
         }
       },
       "documentation":"<p>The configuration of the ingress endpoint resource.</p>",
@@ -3078,7 +3171,8 @@
         "UPDATING",
         "ACTIVE",
         "CLOSED",
-        "FAILED"
+        "FAILED",
+        "ASSOCIATED_VPC_ENDPOINT_DOES_NOT_EXIST"
       ]
     },
     "IngressPointStatusToUpdate":{
@@ -3092,7 +3186,8 @@
       "type":"string",
       "enum":[
         "OPEN",
-        "AUTH"
+        "AUTH",
+        "MTLS"
       ]
     },
     "IngressPointsList":{
@@ -3207,6 +3302,37 @@
       "type":"integer",
       "box":true
     },
+    "InvokeLambdaAction":{
+      "type":"structure",
+      "required":[
+        "FunctionArn",
+        "InvocationType",
+        "RoleArn"
+      ],
+      "members":{
+        "ActionFailurePolicy":{
+          "shape":"ActionFailurePolicy",
+          "documentation":"<p>A policy that states what to do in the case of failure. The action will fail if there are configuration errors. For example, the Amazon Web Services Lambda function no longer exists.</p>"
+        },
+        "FunctionArn":{
+          "shape":"LambdaFunctionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Lambda function to invoke.</p>"
+        },
+        "InvocationType":{
+          "shape":"LambdaInvocationType",
+          "documentation":"<p>The invocation type of the Lambda function. Use EVENT for asynchronous invocation or REQUEST_RESPONSE for synchronous invocation.</p>"
+        },
+        "RoleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role to use to invoke the Lambda function.</p>"
+        },
+        "RetryTimeMinutes":{
+          "shape":"LambdaRetryTimeMinutes",
+          "documentation":"<p>The maximum time in minutes that the email processing can be retried if the Lambda invocation fails. The maximum value is 2160 minutes (36 hours).</p>"
+        }
+      },
+      "documentation":"<p>The action to invoke an Amazon Web Services Lambda function for processing the email.</p>"
+    },
     "IpType":{
       "type":"string",
       "enum":[
@@ -3257,6 +3383,25 @@
       "max":2048,
       "min":20,
       "pattern":"[a-zA-Z0-9-:/]+"
+    },
+    "LambdaFunctionArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"[a-zA-Z0-9:_/+=,@.#-]+"
+    },
+    "LambdaInvocationType":{
+      "type":"string",
+      "enum":[
+        "EVENT",
+        "REQUEST_RESPONSE"
+      ]
+    },
+    "LambdaRetryTimeMinutes":{
+      "type":"integer",
+      "box":true,
+      "max":2160,
+      "min":0
     },
     "ListAddonInstancesRequest":{
       "type":"structure",
@@ -4151,6 +4296,14 @@
         "PublishToSns":{
           "shape":"SnsAction",
           "documentation":"<p>This action publishes the email content to an Amazon SNS topic.</p>"
+        },
+        "Bounce":{
+          "shape":"BounceAction",
+          "documentation":"<p>This action sends a bounce response for the email.</p>"
+        },
+        "InvokeLambda":{
+          "shape":"InvokeLambdaAction",
+          "documentation":"<p>This action invokes an Amazon Web Services Lambda function to process the email.</p>"
         }
       },
       "documentation":"<p>The action for a rule to take. Only one of the contained actions can be set.</p>",
@@ -4230,6 +4383,20 @@
       },
       "documentation":"<p>The union type representing the allowed types of operands for a boolean condition.</p>",
       "union":true
+    },
+    "RuleClientCertificateAttribute":{
+      "type":"string",
+      "documentation":"<p>The client certificate attribute to evaluate in a rule condition. These attributes are extracted from the client certificate presented during mutual TLS authentication.</p>",
+      "enum":[
+        "CN",
+        "SAN_RFC822_NAME",
+        "SAN_DNS_NAME",
+        "SAN_DIRECTORY_NAME",
+        "SAN_UNIFORM_RESOURCE_IDENTIFIER",
+        "SAN_IP_ADDRESS",
+        "SAN_REGISTERED_ID",
+        "SERIAL_NUMBER"
+      ]
     },
     "RuleCondition":{
       "type":"structure",
@@ -4537,6 +4704,10 @@
         "Analysis":{
           "shape":"Analysis",
           "documentation":"<p>The Add On ARN and its returned value to evaluate in a string condition expression.</p>"
+        },
+        "ClientCertificateAttribute":{
+          "shape":"RuleClientCertificateAttribute",
+          "documentation":"<p>The client certificate attribute to evaluate in a string condition expression.</p>"
         }
       },
       "documentation":"<p>The string to evaluate in a string condition expression.</p>",
@@ -4545,7 +4716,8 @@
     "RuleStringValue":{
       "type":"string",
       "max":4096,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "RuleVerdict":{
       "type":"string",
@@ -4798,6 +4970,12 @@
       "pattern":"[A-Za-z0-9!@#$%^&*()_+\\-=\\[\\]{}|.,?]+",
       "sensitive":true
     },
+    "SmtpReplyCode":{
+      "type":"string",
+      "max":3,
+      "min":3,
+      "pattern":"[45][0-9][0-9]"
+    },
     "SnsAction":{
       "type":"structure",
       "required":[
@@ -4954,6 +5132,12 @@
       },
       "documentation":"<p>The response from initiating an archive search.</p>"
     },
+    "StatusCode":{
+      "type":"string",
+      "max":9,
+      "min":5,
+      "pattern":"[45]\\.[0-9]{1,3}\\.[0-9]{1,3}"
+    },
     "StopAddressListImportJobRequest":{
       "type":"structure",
       "required":["JobId"],
@@ -5094,6 +5278,24 @@
       "exception":true
     },
     "Timestamp":{"type":"timestamp"},
+    "TlsAuthConfiguration":{
+      "type":"structure",
+      "members":{
+        "TrustStore":{
+          "shape":"TrustStore",
+          "documentation":"<p>The trust store configuration for mutual TLS authentication.</p>"
+        }
+      },
+      "documentation":"<p>The mutual TLS authentication configuration for an ingress endpoint.</p>"
+    },
+    "TlsPolicy":{
+      "type":"string",
+      "enum":[
+        "REQUIRED",
+        "OPTIONAL",
+        "FIPS"
+      ]
+    },
     "TrafficPolicy":{
       "type":"structure",
       "required":[
@@ -5132,6 +5334,33 @@
       "max":63,
       "min":3,
       "pattern":"[A-Za-z0-9_\\-]+"
+    },
+    "TrustStore":{
+      "type":"structure",
+      "required":["CAContent"],
+      "members":{
+        "CAContent":{
+          "shape":"CAContent",
+          "documentation":"<p>The PEM-encoded certificate authority (CA) certificates bundle for the trust store.</p>"
+        },
+        "CrlContent":{
+          "shape":"CrlContent",
+          "documentation":"<p>The PEM-encoded certificate revocation lists (CRLs) for the trust store. There can be one CRL per certificate authority (CA) in the trust store.</p>"
+        },
+        "KmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the trust store contents.</p>"
+        }
+      },
+      "documentation":"<p>The trust store used for mutual TLS authentication. It contains the certificate authority (CA) certificates and optional certificate revocation list (CRL).</p>"
+    },
+    "TrustStoreResponseOption":{
+      "type":"string",
+      "documentation":"<p>Specifies whether to include trust store contents in the GetIngressPoint response.</p>",
+      "enum":[
+        "EXCLUDE",
+        "INCLUDE"
+      ]
     },
     "UntagResourceRequest":{
       "type":"structure",
@@ -5205,6 +5434,10 @@
         "IngressPointConfiguration":{
           "shape":"IngressPointConfiguration",
           "documentation":"<p>If you choose an Authenticated ingress endpoint, you must configure either an SMTP password or a secret ARN.</p>"
+        },
+        "TlsPolicy":{
+          "shape":"TlsPolicy",
+          "documentation":"<p>The Transport Layer Security (TLS) policy for the ingress point. Valid values are REQUIRED, OPTIONAL. Only ingress endpoints using REQUIRED or OPTIONAL as TlsPolicy can be updated.</p>"
         }
       }
     },

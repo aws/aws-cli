@@ -150,7 +150,9 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"NotAcceptableException"},
+        {"shape":"BadRequestException"}
       ],
       "documentation":"<p>Get an image frame (pixel data) for an image set.</p>",
       "endpoint":{"hostPrefix":"runtime-"},
@@ -400,6 +402,19 @@
       "max":12,
       "min":12,
       "pattern":"\\d+"
+    },
+    "BadRequestException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request is invalid or malformed.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
     },
     "Boolean":{
       "type":"boolean",
@@ -665,13 +680,13 @@
     },
     "DICOMAccessionNumber":{
       "type":"string",
-      "max":256,
+      "max":512,
       "min":0,
       "sensitive":true
     },
     "DICOMAttribute":{
       "type":"blob",
-      "max":10000,
+      "max":30000,
       "min":1,
       "sensitive":true
     },
@@ -790,19 +805,19 @@
     },
     "DICOMPatientBirthDate":{
       "type":"string",
-      "max":18,
+      "max":36,
       "min":0,
       "sensitive":true
     },
     "DICOMPatientId":{
       "type":"string",
-      "max":256,
+      "max":512,
       "min":0,
       "sensitive":true
     },
     "DICOMPatientName":{
       "type":"string",
-      "max":256,
+      "max":512,
       "min":0,
       "sensitive":true
     },
@@ -814,20 +829,20 @@
     },
     "DICOMSeriesBodyPart":{
       "type":"string",
-      "max":64,
+      "max":128,
       "min":0,
       "sensitive":true
     },
     "DICOMSeriesInstanceUID":{
       "type":"string",
-      "max":256,
+      "max":512,
       "min":0,
-      "pattern":"(?:[0-9][0-9]*|0)(\\.(?:[0-9][0-9]*|0))*",
+      "pattern":"[0-9.]+",
       "sensitive":true
     },
     "DICOMSeriesModality":{
       "type":"string",
-      "max":16,
+      "max":32,
       "min":0,
       "sensitive":true
     },
@@ -840,7 +855,7 @@
     },
     "DICOMStudyDate":{
       "type":"string",
-      "max":18,
+      "max":36,
       "min":0,
       "sensitive":true
     },
@@ -861,26 +876,26 @@
     },
     "DICOMStudyDescription":{
       "type":"string",
-      "max":256,
+      "max":512,
       "min":0,
       "sensitive":true
     },
     "DICOMStudyId":{
       "type":"string",
-      "max":256,
+      "max":512,
       "min":0,
       "sensitive":true
     },
     "DICOMStudyInstanceUID":{
       "type":"string",
-      "max":256,
+      "max":512,
       "min":0,
-      "pattern":"(?:[0-9][0-9]*|0)(\\.(?:[0-9][0-9]*|0))*",
+      "pattern":"[0-9.]+",
       "sensitive":true
     },
     "DICOMStudyTime":{
       "type":"string",
-      "max":28,
+      "max":56,
       "min":0,
       "sensitive":true
     },
@@ -1242,7 +1257,7 @@
         },
         "contentType":{
           "shape":"String",
-          "documentation":"<p>The format in which the image frame information is returned to the customer. Default is <code>application/octet-stream</code>.</p> <note> <ul> <li> <p>If the stored transfer syntax is <code>1.2.840.10008.1.2.1</code>, the returned <code>contentType</code> is <code>application/octet-stream</code>.</p> </li> </ul> <ul> <li> <p>If the stored transfer syntax is <code>1.2.840.10008.1.2.4.50</code>, the returned <code>contentType</code> is <code>image/jpeg</code>.</p> </li> </ul> <ul> <li> <p>If the stored transfer syntax is <code>1.2.840.10008.1.2.4.91</code>, the returned <code>contentType</code> is <code>image/j2c</code>.</p> </li> </ul> <ul> <li> <p>If the stored transfer syntax is MPEG2, <code>1.2.840.10008.1.2.4.100</code>, <code>1.2.840.10008.1.2.4.100.1</code>, <code>1.2.840.10008.1.2.4.101</code>, or <code>1.2.840.10008.1.2.4.101.1</code>, the returned <code>contentType</code> is <code>video/mpeg</code>.</p> </li> </ul> <ul> <li> <p>If the stored transfer syntax is MPEG-4 AVC/H.264, UID <code>1.2.840.10008.1.2.4.102</code>, <code>1.2.840.10008.1.2.4.102.1</code>, <code>1.2.840.10008.1.2.4.103</code>, <code>1.2.840.10008.1.2.4.103.1</code>, <code>1.2.840.10008.1.2.4.104</code>, <code>1.2.840.10008.1.2.4.104.1</code>, <code>1.2.840.10008.1.2.4.105</code>, <code>1.2.840.10008.1.2.4.105.1</code>, <code>1.2.840.10008.1.2.4.106</code>, or <code>1.2.840.10008.1.2.4.106.1</code>, the returned <code>contentType</code> is <code>video/mp4</code>.</p> </li> </ul> <ul> <li> <p>If the stored transfer syntax is HEVC/H.265, UID <code>1.2.840.10008.1.2.4.107</code> or <code>1.2.840.10008.1.2.4.108</code>, the returned <code>contentType</code> is <code>video/H256</code>.</p> </li> </ul> <ul> <li> <p>If the stored transfer syntax is <code>1.2.840.10008.1.2.4.202</code> or if the stored transfer syntax is <i>missing</i>, the returned <code>contentType</code> is <code>image/jph</code>.</p> </li> </ul> <ul> <li> <p>If the stored transfer syntax is <code>1.2.840.10008.1.2.4.203</code>, the returned contentType is <code>image/jphc</code>.</p> </li> </ul> </note>",
+          "documentation":"<p>The format in which the image frame information is returned to the customer. Default is <code>application/octet-stream</code>.</p> <note> <ul> <li> <p>If the stored transfer syntax is <code>1.2.840.10008.1.2.1</code>, the returned <code>contentType</code> is <code>application/octet-stream</code>.</p> </li> </ul> <ul> <li> <p>If the stored transfer syntax is <code>1.2.840.10008.1.2.4.50</code>, the returned <code>contentType</code> is <code>image/jpeg</code>.</p> </li> </ul> <ul> <li> <p>If the stored transfer syntax is <code>1.2.840.10008.1.2.4.91</code>, the returned <code>contentType</code> is <code>image/j2c</code>.</p> </li> </ul> <ul> <li> <p>If the stored transfer syntax is MPEG2, <code>1.2.840.10008.1.2.4.100</code>, <code>1.2.840.10008.1.2.4.100.1</code>, <code>1.2.840.10008.1.2.4.101</code>, or <code>1.2.840.10008.1.2.4.101.1</code>, the returned <code>contentType</code> is <code>video/mpeg</code>.</p> </li> </ul> <ul> <li> <p>If the stored transfer syntax is MPEG-4 AVC/H.264, UID <code>1.2.840.10008.1.2.4.102</code>, <code>1.2.840.10008.1.2.4.102.1</code>, <code>1.2.840.10008.1.2.4.103</code>, <code>1.2.840.10008.1.2.4.103.1</code>, <code>1.2.840.10008.1.2.4.104</code>, <code>1.2.840.10008.1.2.4.104.1</code>, <code>1.2.840.10008.1.2.4.105</code>, <code>1.2.840.10008.1.2.4.105.1</code>, <code>1.2.840.10008.1.2.4.106</code>, or <code>1.2.840.10008.1.2.4.106.1</code>, the returned <code>contentType</code> is <code>video/mp4</code>.</p> </li> </ul> <ul> <li> <p>If the stored transfer syntax is HEVC/H.265, UID <code>1.2.840.10008.1.2.4.107</code> or <code>1.2.840.10008.1.2.4.108</code>, the returned <code>contentType</code> is <code>video/H256</code>.</p> </li> </ul> <ul> <li> <p>If the stored transfer syntax is <code>1.2.840.10008.1.2.4.202</code> or if the stored transfer syntax is <i>missing</i>, the returned <code>contentType</code> is <code>image/jph</code>.</p> </li> </ul> <ul> <li> <p>If the stored transfer syntax is <code>1.2.840.10008.1.2.4.203</code>, the returned contentType is <code>image/jphc</code>.</p> </li> <li> <p>If the stored transfer syntax is <code>1.2.840.10008.1.2.4.112</code> the returned <code>contentType</code> is <code>image/jxl</code>.</p> </li> </ul> </note>",
           "location":"header",
           "locationName":"Content-Type"
         }
@@ -1492,6 +1507,7 @@
         "COPYING_WITH_READ_ONLY_ACCESS",
         "COPY_FAILED",
         "UPDATING",
+        "UPDATING_FOR_STUDY_CONSISTENCY",
         "UPDATED",
         "UPDATE_FAILED",
         "DELETING",
@@ -1769,7 +1785,7 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"[\\w -:]+"
+      "pattern":"[\\w -:`]+"
     },
     "MetadataCopies":{
       "type":"structure",
@@ -1802,6 +1818,19 @@
       "max":8192,
       "min":1,
       "pattern":"\\p{ASCII}{0,8192}"
+    },
+    "NotAcceptableException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request content type or accept header is not supported.</p>",
+      "error":{
+        "httpStatusCode":406,
+        "senderFault":true
+      },
+      "exception":true
     },
     "Operator":{
       "type":"string",
@@ -2230,6 +2259,12 @@
           "documentation":"<p>Setting this flag will force the <code>UpdateImageSetMetadata</code> operation for the following attributes:</p> <ul> <li> <p> <code>Tag.StudyInstanceUID</code>, <code>Tag.SeriesInstanceUID</code>, <code>Tag.SOPInstanceUID</code>, and <code>Tag.StudyID</code> </p> </li> <li> <p>Adding, removing, or updating private tags for an individual SOP Instance</p> </li> </ul>",
           "location":"querystring",
           "locationName":"force"
+        },
+        "includeStudyImageSets":{
+          "shape":"Boolean",
+          "documentation":"<p>Flag to apply the metadata updates to all image sets in the same Study as the requested image set ID.</p>",
+          "location":"querystring",
+          "locationName":"includeStudyImageSets"
         },
         "updateImageSetMetadataUpdates":{
           "shape":"MetadataUpdates",

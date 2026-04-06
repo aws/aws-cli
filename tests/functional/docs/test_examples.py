@@ -283,6 +283,10 @@ class CommandValidator:
         # We know the service is good.  Parse the operation.
         cmd = self._service_command_table[parsed_args.command]
         cmd_table = cmd.create_help_command().command_table
+        if (
+            not cmd_table
+        ):  # skip top-level commands without subcommands like 'aws login'
+            return
         service_parser = ServiceArgParser(
             operations_table=cmd_table, service_name=parsed_args.command
         )

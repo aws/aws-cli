@@ -136,7 +136,12 @@ def open_browser_with_original_ld_path(url):
 
 class BaseAuthorizationhandler:
     def __call__(
-        self, userCode, verificationUri, verificationUriComplete, **kwargs
+        self,
+        userCode,
+        verificationUri,
+        verificationUriComplete,
+        cross_device_flag,
+        **kwargs,
     ):
         # Pending authorization handlers should always take **kwargs in case
         # the API begins to return new values.
@@ -177,7 +182,12 @@ class OpenBrowserHandler(BaseAuthorizationhandler):
         self._open_browser = open_browser
 
     def __call__(
-        self, userCode, verificationUri, verificationUriComplete, **kwargs
+        self,
+        userCode,
+        verificationUri,
+        verificationUriComplete,
+        cross_device_flag,
+        **kwargs,
     ):
         if userCode:  # only the device code flow supports different devices
             opening_msg = (
@@ -189,10 +199,11 @@ class OpenBrowserHandler(BaseAuthorizationhandler):
             )
         else:
             opening_msg = (
-                f'Attempting to open your default browser.\n'
-                f'If the browser does not open, open '
-                f'the following URL:\n'
-                f'\n{verificationUri}\n'
+                f'Attempting to open your default browser. '
+                f'If the browser does not open, open the following URL.\n'
+                f'If you are unable to open the URL on this device, '
+                f'run this command again with the \'{cross_device_flag}\' option.\n'
+                f'\n{verificationUri}\n\n'
             )
 
         user_code_msg = f'\nThen enter the code:\n\n{userCode}\n'

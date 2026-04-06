@@ -224,6 +224,29 @@
       "documentation":"<p> Creates a new version of an annotation store. </p>",
       "endpoint":{"hostPrefix":"analytics-"}
     },
+    "CreateConfiguration":{
+      "name":"CreateConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/configuration",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateConfigurationRequest"},
+      "output":{"shape":"CreateConfigurationResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RequestTimeoutException"}
+      ],
+      "documentation":"<p>Create a new configuration.</p>",
+      "endpoint":{"hostPrefix":"workflows-"},
+      "idempotent":true
+    },
     "CreateMultipartReadSetUpload":{
       "name":"CreateMultipartReadSetUpload",
       "http":{
@@ -478,6 +501,28 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Deletes a run batch resource and its associated metadata. This operation does not delete the individual workflow runs. To delete the runs, call <code>DeleteRunBatch</code> before calling <code>DeleteBatch</code>.</p> <p> <code>DeleteBatch</code> requires the batch to be in a terminal state: <code>PROCESSED</code>, <code>FAILED</code>, <code>CANCELLED</code>, or <code>RUNS_DELETED</code>. After <code>DeleteBatch</code> completes, the batch metadata is no longer accessible. You cannot call <code>GetBatch</code>, <code>ListRunsInBatch</code>, <code>DeleteRunBatch</code>, or <code>CancelRunBatch</code> on a deleted batch.</p>",
+      "endpoint":{"hostPrefix":"workflows-"},
+      "idempotent":true
+    },
+    "DeleteConfiguration":{
+      "name":"DeleteConfiguration",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/configuration/{name}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteConfigurationRequest"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RequestTimeoutException"}
+      ],
+      "documentation":"<p>Delete an existing configuration.</p>",
       "endpoint":{"hostPrefix":"workflows-"},
       "idempotent":true
     },
@@ -822,6 +867,29 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Retrieves details and current status for a specific run batch, including submission progress and run execution counts.</p>",
+      "endpoint":{"hostPrefix":"workflows-"},
+      "readonly":true
+    },
+    "GetConfiguration":{
+      "name":"GetConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/configuration/{name}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetConfigurationRequest"},
+      "output":{"shape":"GetConfigurationResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RequestTimeoutException"}
+      ],
+      "documentation":"<p>Retrieve configuration details for specified name.</p>",
       "endpoint":{"hostPrefix":"workflows-"},
       "readonly":true
     },
@@ -1338,6 +1406,29 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Returns a list of run batches in your account, with optional filtering by status, name, or run group. Results are paginated. Only one filter per call is supported.</p>",
+      "endpoint":{"hostPrefix":"workflows-"},
+      "readonly":true
+    },
+    "ListConfigurations":{
+      "name":"ListConfigurations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/configuration",
+        "responseCode":200
+      },
+      "input":{"shape":"ListConfigurationsRequest"},
+      "output":{"shape":"ListConfigurationsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RequestTimeoutException"}
+      ],
+      "documentation":"<p>List all configurations for the account.</p>",
       "endpoint":{"hostPrefix":"workflows-"},
       "readonly":true
     },
@@ -2948,6 +3039,105 @@
       "type":"timestamp",
       "timestampFormat":"iso8601"
     },
+    "ConfigurationArn":{
+      "type":"string",
+      "max":190,
+      "min":1,
+      "pattern":"arn:.+"
+    },
+    "ConfigurationDescription":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+"
+    },
+    "ConfigurationDetails":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"ConfigurationName",
+          "documentation":"<p>User-friendly name for the configuration.</p>"
+        },
+        "arn":{
+          "shape":"ConfigurationArn",
+          "documentation":"<p>Unique resource identifier for the configuration.</p>"
+        },
+        "uuid":{
+          "shape":"ConfigurationUuid",
+          "documentation":"<p>Unique identifier for the configuration.</p>"
+        }
+      },
+      "documentation":"<p>Minimal details for a configuration resource.</p>"
+    },
+    "ConfigurationList":{
+      "type":"list",
+      "member":{"shape":"ConfigurationListItem"}
+    },
+    "ConfigurationListItem":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"ConfigurationArn",
+          "documentation":"<p>Unique resource identifier for the configuration.</p>"
+        },
+        "name":{
+          "shape":"ConfigurationName",
+          "documentation":"<p>User-friendly name for the configuration.</p>"
+        },
+        "description":{
+          "shape":"ConfigurationDescription",
+          "documentation":"<p>Description for the configuration.</p>"
+        },
+        "status":{
+          "shape":"ConfigurationStatus",
+          "documentation":"<p>Current configuration status.</p>"
+        },
+        "creationTime":{
+          "shape":"ConfigurationTimestamp",
+          "documentation":"<p>Configuration creation timestamp.</p>"
+        }
+      },
+      "documentation":"<p>Configuration list item with summary information.</p>"
+    },
+    "ConfigurationListToken":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+"
+    },
+    "ConfigurationName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[A-Za-z0-9][A-Za-z0-9\\-\\._]*"
+    },
+    "ConfigurationRequestId":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+"
+    },
+    "ConfigurationStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "ACTIVE",
+        "UPDATING",
+        "DELETING",
+        "DELETED",
+        "FAILED"
+      ]
+    },
+    "ConfigurationTimestamp":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
+    "ConfigurationUuid":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+"
+    },
     "ConflictException":{
       "type":"structure",
       "required":["message"],
@@ -3132,6 +3322,74 @@
         "creationTime":{
           "shape":"CreationTime",
           "documentation":"<p> The time stamp for the creation of an annotation store version. </p>"
+        }
+      }
+    },
+    "CreateConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "runConfigurations",
+        "requestId"
+      ],
+      "members":{
+        "name":{
+          "shape":"ConfigurationName",
+          "documentation":"<p>User-friendly name for the configuration.</p>"
+        },
+        "description":{
+          "shape":"ConfigurationDescription",
+          "documentation":"<p>Optional description for the configuration.</p>"
+        },
+        "runConfigurations":{
+          "shape":"RunConfigurations",
+          "documentation":"<p>Required run-specific configurations.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>Optional tags for the configuration.</p>"
+        },
+        "requestId":{
+          "shape":"ConfigurationRequestId",
+          "documentation":"<p>Optional request idempotency token. If not specified, a universally unique identifier (UUID) will be automatically generated for the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"ConfigurationArn",
+          "documentation":"<p>Unique resource identifier for the configuration.</p>"
+        },
+        "uuid":{
+          "shape":"ConfigurationUuid",
+          "documentation":"<p>Unique identifier for the configuration.</p>"
+        },
+        "name":{
+          "shape":"ConfigurationName",
+          "documentation":"<p>User-friendly name for the configuration.</p>"
+        },
+        "description":{
+          "shape":"ConfigurationDescription",
+          "documentation":"<p>Description for the configuration.</p>"
+        },
+        "runConfigurations":{
+          "shape":"RunConfigurationsResponse",
+          "documentation":"<p>Run-specific configurations.</p>"
+        },
+        "status":{
+          "shape":"ConfigurationStatus",
+          "documentation":"<p>Current configuration status.</p>"
+        },
+        "creationTime":{
+          "shape":"ConfigurationTimestamp",
+          "documentation":"<p>Configuration creation timestamp.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>Tags for the configuration.</p>"
         }
       }
     },
@@ -4122,6 +4380,18 @@
         }
       }
     },
+    "DeleteConfigurationRequest":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"ConfigurationName",
+          "documentation":"<p>Configuration name to delete.</p>",
+          "location":"uri",
+          "locationName":"name"
+        }
+      }
+    },
     "DeleteReferenceRequest":{
       "type":"structure",
       "required":[
@@ -4964,6 +5234,55 @@
         "failureReason":{
           "shape":"String",
           "documentation":"<p>A description of the batch failure. Present only when status is <code>FAILED</code>.</p>"
+        }
+      }
+    },
+    "GetConfigurationRequest":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"ConfigurationName",
+          "documentation":"<p>Configuration name to retrieve.</p>",
+          "location":"uri",
+          "locationName":"name"
+        }
+      }
+    },
+    "GetConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"ConfigurationArn",
+          "documentation":"<p>Unique resource identifier for the configuration.</p>"
+        },
+        "uuid":{
+          "shape":"ConfigurationUuid",
+          "documentation":"<p>Unique identifier for the configuration.</p>"
+        },
+        "name":{
+          "shape":"ConfigurationName",
+          "documentation":"<p>User-friendly name for the configuration.</p>"
+        },
+        "description":{
+          "shape":"ConfigurationDescription",
+          "documentation":"<p>Description for the configuration.</p>"
+        },
+        "runConfigurations":{
+          "shape":"RunConfigurationsResponse",
+          "documentation":"<p>Run-specific configurations.</p>"
+        },
+        "status":{
+          "shape":"ConfigurationStatus",
+          "documentation":"<p>Current configuration status.</p>"
+        },
+        "creationTime":{
+          "shape":"ConfigurationTimestamp",
+          "documentation":"<p>Configuration creation timestamp.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>Tags for the configuration.</p>"
         }
       }
     },
@@ -5862,6 +6181,18 @@
         "workflowUuid":{
           "shape":"WorkflowUuid",
           "documentation":"<p>The universally unique identifier (UUID) value for the workflow.</p>"
+        },
+        "networkingMode":{
+          "shape":"NetworkingMode",
+          "documentation":"<p>Configuration for run networking behavior. If absent, this will default to RESTRICTED.</p>"
+        },
+        "configuration":{
+          "shape":"ConfigurationDetails",
+          "documentation":"<p>Configuration details for the workflow run.</p>"
+        },
+        "vpcConfig":{
+          "shape":"VpcConfigResponse",
+          "documentation":"<p>VPC configuration for the workflow run.</p>"
         }
       }
     },
@@ -7147,6 +7478,42 @@
         }
       }
     },
+    "ListConfigurationsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"ListConfigurationsRequestMaxResultsInteger",
+          "documentation":"<p>Maximum number of results to return.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "startingToken":{
+          "shape":"ConfigurationListToken",
+          "documentation":"<p>Pagination token for retrieving next page of results.</p>",
+          "location":"querystring",
+          "locationName":"startingToken"
+        }
+      }
+    },
+    "ListConfigurationsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":10,
+      "min":1
+    },
+    "ListConfigurationsResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"ConfigurationList",
+          "documentation":"<p>List of configuration items.</p>"
+        },
+        "nextToken":{
+          "shape":"ConfigurationListToken",
+          "documentation":"<p>Token for retrieving next page of results.</p>"
+        }
+      }
+    },
     "ListMultipartReadSetUploadsRequest":{
       "type":"structure",
       "required":["sequenceStoreId"],
@@ -8244,6 +8611,13 @@
       },
       "documentation":"<p> Part of the response to ListMultipartReadSetUploads, excluding completed and aborted multipart uploads. </p>"
     },
+    "NetworkingMode":{
+      "type":"string",
+      "enum":[
+        "RESTRICTED",
+        "VPC"
+      ]
+    },
     "NextToken":{
       "type":"string",
       "max":6144,
@@ -9217,6 +9591,26 @@
       "type":"timestamp",
       "timestampFormat":"iso8601"
     },
+    "RunConfigurations":{
+      "type":"structure",
+      "members":{
+        "vpcConfig":{
+          "shape":"VpcConfig",
+          "documentation":"<p>VPC configuration for workflow runs.</p>"
+        }
+      },
+      "documentation":"<p>Run-specific configuration settings.</p>"
+    },
+    "RunConfigurationsResponse":{
+      "type":"structure",
+      "members":{
+        "vpcConfig":{
+          "shape":"VpcConfigResponse",
+          "documentation":"<p>VPC configuration for workflow runs with computed VPC ID.</p>"
+        }
+      },
+      "documentation":"<p>Run-specific configuration settings with computed values.</p>"
+    },
     "RunExport":{
       "type":"string",
       "enum":["DEFINITION"],
@@ -9655,6 +10049,16 @@
         "DOUBLE",
         "BOOLEAN"
       ]
+    },
+    "SecurityGroupId":{
+      "type":"string",
+      "max":128,
+      "min":4,
+      "pattern":"sg-[0-9a-f]+"
+    },
+    "SecurityGroupIds":{
+      "type":"list",
+      "member":{"shape":"SecurityGroupId"}
     },
     "Separator":{
       "type":"string",
@@ -10513,6 +10917,14 @@
         "workflowVersionName":{
           "shape":"WorkflowVersionName",
           "documentation":"<p>The name of the workflow version. Use workflow versions to track and organize changes to the workflow. If your workflow has multiple versions, the run uses the default version unless you specify a version name. To learn more, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/workflow-versions.html\">Workflow versioning</a> in the <i>Amazon Web Services HealthOmics User Guide</i>.</p>"
+        },
+        "networkingMode":{
+          "shape":"NetworkingMode",
+          "documentation":"<p>Optional configuration for run networking behavior. If not specified, this will default to RESTRICTED.</p>"
+        },
+        "configurationName":{
+          "shape":"ConfigurationName",
+          "documentation":"<p>Optional configuration name to use for the workflow run.</p>"
         }
       }
     },
@@ -10554,6 +10966,14 @@
         "runOutputUri":{
           "shape":"RunOutputUri",
           "documentation":"<p>The destination for workflow outputs.</p>"
+        },
+        "configuration":{
+          "shape":"ConfigurationDetails",
+          "documentation":"<p>Configuration details for the workflow run.</p>"
+        },
+        "networkingMode":{
+          "shape":"String",
+          "documentation":"<p>Networking mode for the workflow run.</p>"
         }
       }
     },
@@ -10728,6 +11148,16 @@
         }
       },
       "documentation":"<p>A summary of the submissions in a batch.</p>"
+    },
+    "SubnetId":{
+      "type":"string",
+      "max":128,
+      "min":8,
+      "pattern":"subnet-[0-9a-f]+"
+    },
+    "SubnetIds":{
+      "type":"list",
+      "member":{"shape":"SubnetId"}
     },
     "SyntheticTimestamp_date_time":{
       "type":"timestamp",
@@ -11812,6 +12242,56 @@
         "FAILED"
       ]
     },
+    "VpcConfig":{
+      "type":"structure",
+      "members":{
+        "securityGroupIds":{
+          "shape":"VpcConfigSecurityGroupIdsList",
+          "documentation":"<p>List of security group IDs. Maximum of 5 security groups allowed.</p>"
+        },
+        "subnetIds":{
+          "shape":"VpcConfigSubnetIdsList",
+          "documentation":"<p>List of subnet IDs. Maximum of 16 subnets allowed.</p>"
+        }
+      },
+      "documentation":"<p>VPC configuration for workflow runs.</p>"
+    },
+    "VpcConfigResponse":{
+      "type":"structure",
+      "members":{
+        "securityGroupIds":{
+          "shape":"SecurityGroupIds",
+          "documentation":"<p>List of security group IDs.</p>"
+        },
+        "subnetIds":{
+          "shape":"SubnetIds",
+          "documentation":"<p>List of subnet IDs.</p>"
+        },
+        "vpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>VPC ID computed from the provided subnet IDs.</p>"
+        }
+      },
+      "documentation":"<p>VPC configuration for workflow runs with computed VPC ID.</p>"
+    },
+    "VpcConfigSecurityGroupIdsList":{
+      "type":"list",
+      "member":{"shape":"SecurityGroupId"},
+      "max":5,
+      "min":0
+    },
+    "VpcConfigSubnetIdsList":{
+      "type":"list",
+      "member":{"shape":"SubnetId"},
+      "max":16,
+      "min":0
+    },
+    "VpcId":{
+      "type":"string",
+      "max":128,
+      "min":5,
+      "pattern":"vpc-[0-9a-f]+"
+    },
     "WorkflowArn":{
       "type":"string",
       "max":128,
@@ -11980,7 +12460,7 @@
       "type":"map",
       "key":{"shape":"WorkflowParameterName"},
       "value":{"shape":"WorkflowParameter"},
-      "max":1000,
+      "max":2000,
       "min":1
     },
     "WorkflowRequestId":{

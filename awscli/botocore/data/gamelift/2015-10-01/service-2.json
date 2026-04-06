@@ -3729,7 +3729,7 @@
         },
         "NodeJsVersion":{
           "shape":"NodeJsVersion",
-          "documentation":"<p>The Node.js version used for execution of your Realtime script. The valid values are <code>10.x | 24.x</code>. By default, <code>NodeJsVersion</code> is <code>10.x</code>. This value cannot be updated later. </p>"
+          "documentation":"<p>The Node.js version used for execution of your Realtime script. The valid values are <code>10.x | 24.x</code>. By default, <code>NodeJsVersion</code> is <code>10.x</code>. This value cannot be updated later. </p> <note> <p>Node.js 10 will reach end of support on September 30, 2026. See more details in the <a href=\"http://aws.amazon.com/gamelift/faq/nodejs10/\">Node.js 10 FAQs</a>. For migration guidance, see <a href=\"https://docs.aws.amazon.com/gamelift/latest/realtimeguide/realtime-script.html#realtime-script-nodejs-migration\"> Migrating from Node.js 10 to 24</a>.</p> </note>"
         }
       }
     },
@@ -6701,6 +6701,10 @@
           "shape":"LocationStringModel",
           "documentation":"<p>The fleet location where the game session is running. This value might specify the fleet's home Region or a remote location. Location is expressed as an Amazon Web Services Region code such as <code>us-west-2</code>. </p>"
         },
+        "ComputeName":{
+          "shape":"ComputeName",
+          "documentation":"<p>A descriptive label for the compute resource. The compute resource that is hosting the game session. For EC2 fleets, this is the EC2 instance ID. For Container fleets, each game server container group on a fleet instance is assigned a compute name. For Anywhere fleets, this is the custom compute name.</p>"
+        },
         "PlayerGatewayStatus":{
           "shape":"PlayerGatewayStatus",
           "documentation":"<p>Indicates whether player gateway is available for use for this game session. Note, even if a fleet has PlayerGatewayMode configured as <code>ENABLED</code>, player gateway might not be available in a specific location. For more information about locations where player gateway is supported, see <a href=\"https://docs.aws.amazon.com/gameliftservers/latest/developerguide/gamelift-regions.html\">Amazon GameLift Servers service locations</a>.</p> <p>Possible values include:</p> <ul> <li> <p> <code>ENABLED</code> -- Player gateway is available for routing player connections for this game session.</p> </li> <li> <p> <code>DISABLED</code> -- Player gateway is not available for this game session.</p> </li> </ul>"
@@ -8085,7 +8089,7 @@
         },
         "PlayerSessionId":{
           "shape":"PlayerSessionId",
-          "documentation":"<p>A unique identifier for a player session</p>"
+          "documentation":"<p>A unique identifier for a player session. PlayerSessionId will only be populated for player sessions that are in ACTIVE or RESERVED status when the ticket is completed.</p>"
         }
       },
       "documentation":"<p>Represents a new player session that is created as a result of a successful FlexMatch match. A successful match automatically creates new player sessions for every player ID in the original matchmaking request. </p> <p>When players connect to the match's game session, they must include both player ID and player session ID in order to claim their assigned player slot.</p>"
@@ -8372,7 +8376,7 @@
     "NodeJsVersion":{
       "type":"string",
       "max":16,
-      "pattern":"^\\d+\\.[x0-9]+$"
+      "pattern":"^[0-9]+\\.(?:x|[0-9]+)$"
     },
     "NonBlankAndLengthConstraintString":{
       "type":"string",
@@ -9250,7 +9254,7 @@
         },
         "NodeJsVersion":{
           "shape":"NodeJsVersion",
-          "documentation":"<p>The Node.js version used for execution of your Realtime script. The valid values are <code>10.x | 24.x</code>. By default, <code>NodeJsVersion</code> is <code>10.x</code>. This value cannot be updated later. </p>"
+          "documentation":"<p>The Node.js version used for execution of your Realtime script. The valid values are <code>10.x | 24.x</code>. By default, <code>NodeJsVersion</code> is <code>10.x</code>. This value cannot be updated later. </p> <note> <p>Node.js 10 will reach end of support on September 30, 2026. See more details in the <a href=\"http://aws.amazon.com/gamelift/faq/nodejs10/\">Node.js 10 FAQs</a>. For migration guidance, see <a href=\"https://docs.aws.amazon.com/gamelift/latest/realtimeguide/realtime-script.html#realtime-script-nodejs-migration\"> Migrating from Node.js 10 to 24</a>.</p> </note>"
         }
       },
       "documentation":"<p>Properties describing a Realtime script.</p> <p> <b>Related actions</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets\">All APIs by task</a> </p>"

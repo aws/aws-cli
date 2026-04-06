@@ -1383,6 +1383,25 @@
       ],
       "documentation":"<p>Describes an existing import job.</p> <p>Poll job descriptions after starting a job to know when it has succeeded or failed. Job descriptions are available for 14 days after job starts.</p>"
     },
+    "DescribeAutomationJob":{
+      "name":"DescribeAutomationJob",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/automation-groups/{AutomationGroupId}/automations/{AutomationId}/jobs/{JobId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeAutomationJobRequest"},
+      "output":{"shape":"DescribeAutomationJobResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves the status and details of a specified automation job, including its status and outputs.</p>",
+      "readonly":true
+    },
     "DescribeBrand":{
       "name":"DescribeBrand",
       "http":{
@@ -3309,6 +3328,25 @@
       ],
       "documentation":"<p>Starts an Asset Bundle import job.</p> <p>An Asset Bundle import job imports specified Amazon Quick Sight assets into an Amazon Quick Sight account. You can also choose to import a naming prefix and specified configuration overrides. The assets that are contained in the bundle file that you provide are used to create or update a new or existing asset in your Amazon Quick Sight account. Each Amazon Quick Sight account can run up to 5 import jobs concurrently.</p> <p>The API caller must have the necessary <code>\"create\"</code>, <code>\"describe\"</code>, and <code>\"update\"</code> permissions in their IAM role to access each resource type that is contained in the bundle file before the resources can be imported.</p>"
     },
+    "StartAutomationJob":{
+      "name":"StartAutomationJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/automation-groups/{AutomationGroupId}/automations/{AutomationId}/jobs",
+        "responseCode":200
+      },
+      "input":{"shape":"StartAutomationJobRequest"},
+      "output":{"shape":"StartAutomationJobResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Starts a new job for a specified automation. The job runs the automation with the provided input payload.</p>"
+    },
     "StartDashboardSnapshotJob":{
       "name":"StartDashboardSnapshotJob",
       "http":{
@@ -5073,6 +5111,10 @@
         "Sheets":{
           "shape":"SheetDefinitionList",
           "documentation":"<p>An array of sheet definitions for an analysis. Each <code>SheetDefinition</code> provides detailed information about a sheet within this analysis.</p>"
+        },
+        "TooltipSheets":{
+          "shape":"TooltipSheetDefinitionList",
+          "documentation":"<p>An array of tooltip sheet definitions for an analysis. Each <code>TooltipSheetDefinition</code> provides detailed information about a tooltip sheet within this analysis.</p>"
         },
         "CalculatedFields":{
           "shape":"CalculatedFields",
@@ -7040,6 +7082,7 @@
       "type":"string",
       "enum":[
         "PASSWORD",
+        "KEYPAIR",
         "TOKEN",
         "X509"
       ]
@@ -7155,6 +7198,20 @@
     "AuthorizedTargetsList":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "AutomateId":{
+      "type":"string",
+      "pattern":"[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}"
+    },
+    "AutomationJobStatus":{
+      "type":"string",
+      "enum":[
+        "FAILED",
+        "RUNNING",
+        "SUCCEEDED",
+        "QUEUED",
+        "STOPPED"
+      ]
     },
     "AwsAccountId":{
       "type":"string",
@@ -9313,6 +9370,14 @@
           "shape":"CapabilityState",
           "documentation":"<p>The ability to perform space-related actions.</p>"
         },
+        "CreateSpaces":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to create spaces.</p>"
+        },
+        "ShareSpaces":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to share spaces with other users and groups.</p>"
+        },
         "ChatAgent":{
           "shape":"CapabilityState",
           "documentation":"<p>The ability to perform chat-related actions.</p>"
@@ -9320,6 +9385,10 @@
         "CreateChatAgents":{
           "shape":"CapabilityState",
           "documentation":"<p>The ability to create chat agents.</p>"
+        },
+        "ShareChatAgents":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to share chat agents with other users and groups.</p>"
         },
         "Research":{
           "shape":"CapabilityState",
@@ -13404,6 +13473,10 @@
           "shape":"SheetDefinitionList",
           "documentation":"<p>An array of sheet definitions for a dashboard.</p>"
         },
+        "TooltipSheets":{
+          "shape":"TooltipSheetDefinitionList",
+          "documentation":"<p>An array of tooltip sheet definitions for a dashboard.</p>"
+        },
         "CalculatedFields":{
           "shape":"CalculatedFields",
           "documentation":"<p>An array of calculated field definitions for the dashboard.</p>"
@@ -14700,6 +14773,10 @@
         "WebProxyCredentials":{
           "shape":"WebProxyCredentials",
           "documentation":"<p>The credentials for connecting through a web proxy server.</p>"
+        },
+        "OAuthClientCredentials":{
+          "shape":"OAuthClientCredentials",
+          "documentation":"<p>The OAuth client credentials for connecting to a data source using OAuth 2.0 client credentials (2LO) authentication. For more information, see <code> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_OAuthClientCredentials.html\">OAuthClientCredentials</a> </code>.</p>"
         }
       },
       "documentation":"<p>Data source credentials. This is a variant type structure. For this structure to be valid, only one of the attributes can be non-null.</p>",
@@ -17930,6 +18007,94 @@
         "Warnings":{
           "shape":"AssetBundleImportJobWarningList",
           "documentation":"<p>An array of warning records that describe all permitted errors that are encountered during the import job.</p>"
+        }
+      }
+    },
+    "DescribeAutomationJobRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "AutomationGroupId",
+        "AutomationId",
+        "JobId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the automation job.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "AutomationGroupId":{
+          "shape":"AutomateId",
+          "documentation":"<p>The ID of the automation group that contains the automation.</p>",
+          "location":"uri",
+          "locationName":"AutomationGroupId"
+        },
+        "AutomationId":{
+          "shape":"AutomateId",
+          "documentation":"<p>The ID of the automation that the job belongs to.</p>",
+          "location":"uri",
+          "locationName":"AutomationId"
+        },
+        "IncludeInputPayload":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean value that indicates whether to include the input payload in the response. If set to <code>true</code>, the input payload will be included. If set to <code>false</code>, the input payload will be returned as <code>null</code>.</p>",
+          "location":"querystring",
+          "locationName":"includeInputPayload"
+        },
+        "IncludeOutputPayload":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean value that indicates whether to include the output payload in the response. If set to <code>true</code>, the output payload will be included. If set to <code>false</code>, the output payload will be returned as <code>null</code>.</p>",
+          "location":"querystring",
+          "locationName":"includeOutputPayload"
+        },
+        "JobId":{
+          "shape":"AutomateId",
+          "documentation":"<p>The ID of the automation job to describe.</p>",
+          "location":"uri",
+          "locationName":"JobId"
+        }
+      }
+    },
+    "DescribeAutomationJobResponse":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "JobStatus"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the automation job.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the automation job was created.</p>"
+        },
+        "StartedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the automation job started running.</p>"
+        },
+        "EndedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the automation job finished running.</p>"
+        },
+        "JobStatus":{
+          "shape":"AutomationJobStatus",
+          "documentation":"<p>The current status of the automation job.</p>"
+        },
+        "InputPayload":{
+          "shape":"SensitiveIOPayload",
+          "documentation":"<p>The input payload that was provided when the automation job was started. This field is only included when <code>IncludeInputPayload</code> is set to <code>true</code> in the request.</p>"
+        },
+        "OutputPayload":{
+          "shape":"SensitiveIOPayload",
+          "documentation":"<p>The output payload that was generated by the automation job. This field is only included when <code>IncludeOutputPayload</code> is set to <code>true</code> in the request.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
         }
       }
     },
@@ -29607,6 +29772,36 @@
       },
       "documentation":"<p>The measure type field with numerical type columns.</p>"
     },
+    "OAuthClientCredentials":{
+      "type":"structure",
+      "members":{
+        "ClientId":{
+          "shape":"OAuthClientId",
+          "documentation":"<p>The client ID of the OAuth 2.0 application that is registered with the data source provider.</p>"
+        },
+        "ClientSecret":{
+          "shape":"OAuthClientSecret",
+          "documentation":"<p>The client secret of the OAuth 2.0 application that is registered with the data source provider.</p>"
+        },
+        "Username":{
+          "shape":"OAuthUsername",
+          "documentation":"<p>The username of the account that is used for OAuth 2.0 client credentials authentication with the data source provider.</p>"
+        }
+      },
+      "documentation":"<p>The OAuth 2.0 client credentials used for authenticating a data source connection. Use this structure to provide a client ID, client secret, and username directly instead of referencing a secret stored in Amazon Secrets Manager. This structure supports data sources that use two-legged OAuth (2LO) authentication, such as Snowflake.</p>"
+    },
+    "OAuthClientId":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "sensitive":true
+    },
+    "OAuthClientSecret":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "sensitive":true
+    },
     "OAuthParameters":{
       "type":"structure",
       "required":["TokenProviderUrl"],
@@ -29631,6 +29826,12 @@
       "type":"string",
       "max":128,
       "min":1
+    },
+    "OAuthUsername":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "sensitive":true
     },
     "OnClause":{
       "type":"string",
@@ -30780,6 +30981,7 @@
           "shape":"PivotTablePaginatedReportOptions",
           "documentation":"<p>The paginated report options for a pivot table visual.</p>"
         },
+        "Tooltip":{"shape":"TooltipOptions"},
         "DashboardCustomizationVisualOptions":{
           "shape":"DashboardCustomizationVisualOptions",
           "documentation":"<p>The options that define customizations available to dashboard readers for a specific visual</p>"
@@ -34587,7 +34789,8 @@
       "type":"string",
       "enum":[
         "BASIC",
-        "DETAILED"
+        "DETAILED",
+        "SHEET"
       ]
     },
     "SelfUpgradeAdminAction":{
@@ -34777,6 +34980,13 @@
     },
     "SensitiveDoubleObject":{
       "type":"double",
+      "sensitive":true
+    },
+    "SensitiveIOPayload":{
+      "type":"string",
+      "max":7000000,
+      "min":1,
+      "pattern":"[\\s\\S]*[{\\[].*[}\\]]\\s*",
       "sensitive":true
     },
     "SensitiveLong":{
@@ -35420,6 +35630,16 @@
       "max":1024,
       "min":1
     },
+    "SheetTooltip":{
+      "type":"structure",
+      "members":{
+        "SheetId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The sheet ID of the tooltip sheet that is used by the tooltip.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of the sheet tooltip.</p>"
+    },
     "SheetVisualScopingConfiguration":{
       "type":"structure",
       "required":[
@@ -36033,6 +36253,54 @@
       },
       "documentation":"<p>The parameters for Spark.</p>"
     },
+    "SparklineAxisBehavior":{
+      "type":"string",
+      "enum":[
+        "SHARED",
+        "INDEPENDENT"
+      ]
+    },
+    "SparklineVisualType":{
+      "type":"string",
+      "enum":[
+        "LINE",
+        "AREA_LINE"
+      ]
+    },
+    "SparklinesOptions":{
+      "type":"structure",
+      "required":[
+        "FieldId",
+        "XAxisField"
+      ],
+      "members":{
+        "FieldId":{
+          "shape":"FieldId",
+          "documentation":"<p>The field ID of the value column that the sparkline is applied to.</p>"
+        },
+        "XAxisField":{"shape":"DimensionField"},
+        "YAxisBehavior":{
+          "shape":"SparklineAxisBehavior",
+          "documentation":"<p>Determines whether the Y axis is shared across all sparklines or independent for each sparkline.</p>"
+        },
+        "VisualType":{
+          "shape":"SparklineVisualType",
+          "documentation":"<p>The type of the sparkline. Valid values are <code>LINE</code> and <code>AREA_LINE</code>.</p>"
+        },
+        "LineColor":{
+          "shape":"HexColor",
+          "documentation":"<p>The color of the sparkline line.</p>"
+        },
+        "LineInterpolation":{
+          "shape":"LineInterpolation",
+          "documentation":"<p>The interpolation style for the sparkline line.</p>"
+        },
+        "AllPointsMarker":{"shape":"LineChartMarkerStyleSettings"},
+        "MaxValueMarker":{"shape":"LineChartMarkerStyleSettings"},
+        "MinValueMarker":{"shape":"LineChartMarkerStyleSettings"}
+      },
+      "documentation":"<p>The options for sparklines in a table.</p>"
+    },
     "SpatialStaticFile":{
       "type":"structure",
       "required":["StaticFileId"],
@@ -36288,6 +36556,64 @@
           "shape":"StatusCode",
           "documentation":"<p>The HTTP status of the response.</p>",
           "location":"statusCode"
+        }
+      }
+    },
+    "StartAutomationJobRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "AutomationGroupId",
+        "AutomationId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the automation.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "AutomationGroupId":{
+          "shape":"AutomateId",
+          "documentation":"<p>The ID of the automation group that contains the automation to run.</p>",
+          "location":"uri",
+          "locationName":"AutomationGroupId"
+        },
+        "AutomationId":{
+          "shape":"AutomateId",
+          "documentation":"<p>The ID of the automation to run.</p>",
+          "location":"uri",
+          "locationName":"AutomationId"
+        },
+        "InputPayload":{
+          "shape":"SensitiveIOPayload",
+          "documentation":"<p>The input payload for the automation job, provided as a JSON string.</p>"
+        }
+      }
+    },
+    "StartAutomationJobResponse":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "JobId"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the automation job.</p>"
+        },
+        "JobId":{
+          "shape":"AutomateId",
+          "documentation":"<p>The ID of the automation job that was started.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
         }
       }
     },
@@ -36907,6 +37233,7 @@
           "shape":"TableInlineVisualizationList",
           "documentation":"<p>A collection of inline visualizations to display within a chart.</p>"
         },
+        "Tooltip":{"shape":"TooltipOptions"},
         "DashboardCustomizationVisualOptions":{
           "shape":"DashboardCustomizationVisualOptions",
           "documentation":"<p>The options that define customizations available to dashboard readers for a specific visual</p>"
@@ -37088,6 +37415,10 @@
         "DataBars":{
           "shape":"DataBarsOptions",
           "documentation":"<p>The configuration of the inline visualization of the data bars within a chart.</p>"
+        },
+        "Sparklines":{
+          "shape":"SparklinesOptions",
+          "documentation":"<p>The configuration of the inline visualization of the sparklines within a chart.</p>"
         }
       },
       "documentation":"<p>The inline visualization of a specific type to display within a chart.</p>"
@@ -37641,6 +37972,10 @@
         "Sheets":{
           "shape":"SheetDefinitionList",
           "documentation":"<p>An array of sheet definitions for a template.</p>"
+        },
+        "TooltipSheets":{
+          "shape":"TooltipSheetDefinitionList",
+          "documentation":"<p>An array of tooltip sheet definitions for a template.</p>"
         },
         "CalculatedFields":{
           "shape":"CalculatedFields",
@@ -38354,9 +38689,61 @@
         "FieldBasedTooltip":{
           "shape":"FieldBasedTooltip",
           "documentation":"<p>The setup for the detailed tooltip. The tooltip setup is always saved. The display type is decided based on the tooltip type.</p>"
-        }
+        },
+        "SheetTooltip":{"shape":"SheetTooltip"}
       },
       "documentation":"<p>The display options for the visual tooltip.</p>"
+    },
+    "TooltipSheetDefinition":{
+      "type":"structure",
+      "required":["SheetId"],
+      "members":{
+        "SheetId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The unique identifier of a tooltip sheet.</p>"
+        },
+        "Name":{
+          "shape":"SheetName",
+          "documentation":"<p>The name of the tooltip sheet. This name is displayed on the sheet's tab in the Quick console.</p>"
+        },
+        "Visuals":{
+          "shape":"TooltipSheetVisualList",
+          "documentation":"<p>A list of the visuals that are on a tooltip sheet.</p>"
+        },
+        "TextBoxes":{
+          "shape":"TooltipSheetTextBoxList",
+          "documentation":"<p>The text boxes that are on a tooltip sheet.</p>"
+        },
+        "Images":{
+          "shape":"TooltipSheetImageList",
+          "documentation":"<p>A list of images on a tooltip sheet.</p>"
+        },
+        "Layouts":{
+          "shape":"LayoutList",
+          "documentation":"<p>Layouts define how the components of a tooltip sheet are arranged.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/types-of-layout.html\">Types of layout</a> in the <i>Amazon Quick Suite User Guide</i>.</p>"
+        }
+      },
+      "documentation":"<p>A tooltip sheet is an object that contains a set of visuals that are used as a tooltip. Every analysis and dashboard must contain at least one non-tooltip sheet.</p>"
+    },
+    "TooltipSheetDefinitionList":{
+      "type":"list",
+      "member":{"shape":"TooltipSheetDefinition"},
+      "max":50
+    },
+    "TooltipSheetImageList":{
+      "type":"list",
+      "member":{"shape":"SheetImage"},
+      "max":5
+    },
+    "TooltipSheetTextBoxList":{
+      "type":"list",
+      "member":{"shape":"SheetTextBox"},
+      "max":5
+    },
+    "TooltipSheetVisualList":{
+      "type":"list",
+      "member":{"shape":"Visual"},
+      "max":5
     },
     "TooltipTarget":{
       "type":"string",

@@ -1005,6 +1005,21 @@
       ],
       "documentation":"<p>Removes license included application(s) association(s) from an image builder instance.</p>"
     },
+    "DrainSessionInstance":{
+      "name":"DrainSessionInstance",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DrainSessionInstanceRequest"},
+      "output":{"shape":"DrainSessionInstanceResult"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"OperationNotPermittedException"}
+      ],
+      "documentation":"<p>Drains the instance hosting the specified streaming session. The instance stops accepting new sessions while existing sessions continue uninterrupted. Once all sessions end, the instance is reclaimed and replaced. This only applies to multi-session fleets.</p>"
+    },
     "EnableUser":{
       "name":"EnableUser",
       "http":{
@@ -2178,6 +2193,18 @@
         "ActualUserSessions":{
           "shape":"Integer",
           "documentation":"<p>The total number of session slots that are available for streaming or are currently streaming.</p> <p>ActualUserSessionCapacity = AvailableUserSessionCapacity + ActiveUserSessions</p> <p>This only applies to multi-session fleets.</p>"
+        },
+        "Draining":{
+          "shape":"Integer",
+          "documentation":"<p>The number of instances in drain mode. This only applies to multi-session fleets.</p>"
+        },
+        "DrainModeActiveUserSessions":{
+          "shape":"Integer",
+          "documentation":"<p>The number of active user sessions on instances in drain mode. This only applies to multi-session fleets.</p>"
+        },
+        "DrainModeUnusedUserSessions":{
+          "shape":"Integer",
+          "documentation":"<p>The number of unused session slots on instances in drain mode that cannot be used for user session provisioning. This only applies to multi-session fleets.</p>"
         }
       },
       "documentation":"<p>Describes the capacity status for a fleet.</p>"
@@ -2189,6 +2216,16 @@
       },
       "documentation":"<p>An API error occurred. Wait a few minutes and try again.</p>",
       "exception":true
+    },
+    "ContentRedirection":{
+      "type":"structure",
+      "members":{
+        "HostToClient":{
+          "shape":"UrlRedirectionConfig",
+          "documentation":"<p>Configuration for redirecting URLs from the remote desktop to the local client browser.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for bidirectional URL redirection between the streaming session and the local client. Use HostToClient to redirect URLs from the remote desktop to the local browser.</p>"
     },
     "CopyImageRequest":{
       "type":"structure",
@@ -2873,7 +2910,8 @@
         "StreamingExperienceSettings":{
           "shape":"StreamingExperienceSettings",
           "documentation":"<p>The streaming protocol you want your stack to prefer. This can be UDP or TCP. Currently, UDP is only supported in the Windows native client.</p>"
-        }
+        },
+        "ContentRedirection":{"shape":"ContentRedirection"}
       }
     },
     "CreateStackResult":{
@@ -4095,6 +4133,20 @@
       "member":{"shape":"Domain"},
       "max":50
     },
+    "DrainSessionInstanceRequest":{
+      "type":"structure",
+      "required":["SessionId"],
+      "members":{
+        "SessionId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the streaming session.</p>"
+        }
+      }
+    },
+    "DrainSessionInstanceResult":{
+      "type":"structure",
+      "members":{}
+    },
     "DryRunOperationException":{
       "type":"structure",
       "members":{
@@ -4933,6 +4985,15 @@
       "documentation":"<p>The image can't be updated because it's not compatible for updates.</p>",
       "exception":true
     },
+    "InstanceDrainStatus":{
+      "type":"string",
+      "documentation":"<p>Possible values for the drain status of a streaming instance.</p>",
+      "enum":[
+        "ACTIVE",
+        "DRAINING",
+        "NOT_APPLICABLE"
+      ]
+    },
     "InstanceType":{
       "type":"string",
       "pattern":"^[a-zA-Z0-9-]+(\\.[a-z0-9-]+)+\\.(small|medium|large|xlarge|\\d+xlarge|metal)$"
@@ -5460,6 +5521,10 @@
         "InstanceId":{
           "shape":"String",
           "documentation":"<p>The identifier for the instance hosting the session.</p>"
+        },
+        "InstanceDrainStatus":{
+          "shape":"InstanceDrainStatus",
+          "documentation":"<p>The drain status of the instance hosting the streaming session. This only applies to multi-session fleets.</p>"
         }
       },
       "documentation":"<p>Describes a streaming session.</p>"
@@ -5604,6 +5669,10 @@
         "StreamingExperienceSettings":{
           "shape":"StreamingExperienceSettings",
           "documentation":"<p>The streaming protocol you want your stack to prefer. This can be UDP or TCP. Currently, UDP is only supported in the Windows native client.</p>"
+        },
+        "ContentRedirection":{
+          "shape":"ContentRedirection",
+          "documentation":"<p>Configuration for bidirectional URL redirection between the streaming session and the local client. Use HostToClient to redirect URLs from the remote desktop to the local browser.</p>"
         }
       },
       "documentation":"<p>Describes a stack.</p>"
@@ -5622,7 +5691,8 @@
         "EMBED_HOST_DOMAINS",
         "IAM_ROLE_ARN",
         "ACCESS_ENDPOINTS",
-        "STREAMING_EXPERIENCE_SETTINGS"
+        "STREAMING_EXPERIENCE_SETTINGS",
+        "CONTENT_REDIRECTION"
       ]
     },
     "StackAttributes":{
@@ -6446,6 +6516,38 @@
           "documentation":"<p> The theme object that contains the metadata of the custom branding.</p>"
         }
       }
+    },
+    "UrlPattern":{
+      "type":"string",
+      "documentation":"<p>A glob pattern using wildcards (* for zero or more characters, ? for exactly one character) to match URLs for redirection rules. Patterns do not include a protocol prefix; HTTPS is enforced automatically. Valid examples: *, *.example.com, github.com/myorg/*, api?.example.com Invalid examples: https://example.com (no protocol), empty string</p>",
+      "max":2048,
+      "min":1,
+      "pattern":"^(\\*|https?://[^\\s,;]+)$"
+    },
+    "UrlPatternList":{
+      "type":"list",
+      "member":{"shape":"UrlPattern"},
+      "max":100,
+      "min":0
+    },
+    "UrlRedirectionConfig":{
+      "type":"structure",
+      "required":["Enabled"],
+      "members":{
+        "Enabled":{
+          "shape":"BooleanObject",
+          "documentation":"<p>Whether URL redirection is enabled for this direction.</p>"
+        },
+        "AllowedUrls":{
+          "shape":"UrlPatternList",
+          "documentation":"<p>List of URL patterns that are allowed to be redirected. URLs matching these patterns will be redirected unless they also match a pattern in the denied list.</p>"
+        },
+        "DeniedUrls":{
+          "shape":"UrlPatternList",
+          "documentation":"<p>List of URL patterns that are denied from redirection. This list takes precedence over the allowed list.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for URL redirection in a specific direction (host-to-client or client-to-host). When enabled, URLs matching the allowed or denied patterns are redirected accordingly. The denied list takes precedence over the allowed list.</p>"
     },
     "UsageReportExecutionErrorCode":{
       "type":"string",

@@ -49,7 +49,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Deletes a certificate and its associated private key. If this action succeeds, the certificate no longer appears in the list that can be displayed by calling the <a>ListCertificates</a> action or be retrieved by calling the <a>GetCertificate</a> action. The certificate will not be available for use by Amazon Web Services services integrated with ACM. </p> <note> <p>You cannot delete an ACM certificate that is being used by another Amazon Web Services service. To delete a certificate that is in use, the certificate association must first be removed.</p> </note>"
+      "documentation":"<p>Deletes a certificate and its associated private key. If this action succeeds, the certificate is not available for use by Amazon Web Services services integrated with ACM. Deleting a certificate is eventually consistent. The may be a short delay before the certificate no longer appears in the list that can be displayed by calling the <a>ListCertificates</a> action or be retrieved by calling the <a>GetCertificate</a> action.</p> <note> <p>You cannot delete an ACM certificate that is being used by another Amazon Web Services service. To delete a certificate that is in use, you must first remove the certificate association using the console or the CLI for the associated service.</p> <p>Deleting a certificate issued by a private certificate authority (CA) has no effect on the CA. You will continue to be charged for the CA until it is deleted. For more information, see <a href=\"https://docs.aws.amazon.com/privateca/latest/userguide/PCADeleteCA.html\"> Deleting Your Private CA</a> in the <i>Private Certificate Authority User Guide</i>.</p> </note> <p>Deleting a certificate issued by a private certificate authority (CA) has no effect on the CA. You will continue to be charged for the CA until it is deleted. For more information, see <a href=\"https://docs.aws.amazon.com/privateca/latest/userguide/PCADeleteCA.html\">Deleting your private CA</a> in the <i>Amazon Web Services Private Certificate Authority User Guide</i>.</p>"
     },
     "DescribeCertificate":{
       "name":"DescribeCertificate",
@@ -75,10 +75,11 @@
       "output":{"shape":"ExportCertificateResponse"},
       "errors":[
         {"shape":"InvalidArnException"},
+        {"shape":"ThrottlingException"},
         {"shape":"RequestInProgressException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Exports a private certificate issued by a private certificate authority (CA) or public certificate for use anywhere. The exported file contains the certificate, the certificate chain, and the encrypted private key associated with the public key that is embedded in the certificate. For security, you must assign a passphrase for the private key when exporting it. </p> <p>For information about exporting and formatting a certificate using the ACM console or CLI, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/export-private.html\">Export a private certificate</a> and <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/export-public-certificate\">Export a public certificate</a>.</p>"
+      "documentation":"<p>Exports a private certificate issued by a private certificate authority (CA) or a public certificate for use anywhere. The exported file contains the certificate, the certificate chain, and the encrypted private key associated with the public key that is embedded in the certificate. For security, you must assign a passphrase for the private key when exporting it. </p> <p>For information about exporting and formatting a certificate using the ACM console or CLI, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/export-private.html\">Export a private certificate</a> and <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/export-public-certificate\">Export a public certificate</a>.</p> <note> <p>ACM public certificates created prior to June 17, 2025 cannot be exported.</p> </note>"
     },
     "GetAccountConfiguration":{
       "name":"GetAccountConfiguration",
@@ -122,6 +123,7 @@
         {"shape":"TooManyTagsException"},
         {"shape":"InvalidArnException"},
         {"shape":"InvalidTagException"},
+        {"shape":"ConflictException"},
         {"shape":"LimitExceededException"},
         {"shape":"ResourceNotFoundException"}
       ],
@@ -199,7 +201,7 @@
         {"shape":"RequestInProgressException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Renews an <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/managed-renewal.html\">eligible ACM certificate</a>. In order to renew your Amazon Web Services Private CA certificates with ACM, you must first <a href=\"https://docs.aws.amazon.com/privateca/latest/userguide/PcaPermissions.html\">grant the ACM service principal permission to do so</a>. For more information, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/manual-renewal.html\">Testing Managed Renewal</a> in the ACM User Guide.</p>"
+      "documentation":"<p>Renews an <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/managed-renewal.html\">eligible ACM certificate</a>. In order to renew your Amazon Web Services Private CA certificates with ACM, you must first <a href=\"https://docs.aws.amazon.com/privateca/latest/userguide/assign-permissions.html#PcaPermissions\">grant the ACM service principal permission to do so</a>. For more information, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/managed-renewal.html\">Testing Managed Renewal</a> in the ACM User Guide.</p>"
     },
     "RequestCertificate":{
       "name":"RequestCertificate",
@@ -251,7 +253,22 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Revokes a public ACM certificate. You can only revoke certificates that have been previously exported.</p>"
+      "documentation":"<p>Revokes a public ACM certificate. You can only revoke certificates that have been previously exported.</p> <important> <p>Once a certificate is revoked, you cannot reuse the certificate. Revoking a certificate is permanent.</p> </important>"
+    },
+    "SearchCertificates":{
+      "name":"SearchCertificates",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"SearchCertificatesRequest"},
+      "output":{"shape":"SearchCertificatesResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves a list of certificates matching search criteria. You can filter certificates by X.509 attributes and ACM specific properties like certificate status, type and renewal eligibility. This operation provides more flexible filtering than <a>ListCertificates</a> by supporting complex filter statements.</p>"
     },
     "UpdateCertificateOptions":{
       "name":"UpdateCertificateOptions",
@@ -277,6 +294,103 @@
       },
       "documentation":"<p>You do not have access required to perform this action.</p>",
       "exception":true
+    },
+    "AcmCertificateMetadata":{
+      "type":"structure",
+      "members":{
+        "CreatedAt":{
+          "shape":"TStamp",
+          "documentation":"<p>The time at which the certificate was requested.</p>"
+        },
+        "Exported":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Indicates whether the certificate has been exported.</p>"
+        },
+        "ImportedAt":{
+          "shape":"TStamp",
+          "documentation":"<p>The date and time when the certificate was imported. This value exists only when the certificate type is <code>IMPORTED</code>. </p>"
+        },
+        "InUse":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Indicates whether the certificate is currently in use by an Amazon Web Services service.</p>"
+        },
+        "IssuedAt":{
+          "shape":"TStamp",
+          "documentation":"<p>The time at which the certificate was issued. This value exists only when the certificate type is <code>AMAZON_ISSUED</code>. </p>"
+        },
+        "RenewalEligibility":{
+          "shape":"RenewalEligibility",
+          "documentation":"<p>Specifies whether the certificate is eligible for renewal. At this time, only exported private certificates can be renewed with the <a>RenewCertificate</a> command.</p>"
+        },
+        "RevokedAt":{
+          "shape":"TStamp",
+          "documentation":"<p>The time at which the certificate was revoked. This value exists only when the certificate status is <code>REVOKED</code>. </p>"
+        },
+        "Status":{
+          "shape":"CertificateStatus",
+          "documentation":"<p>The status of the certificate.</p> <p>A certificate enters status PENDING_VALIDATION upon being requested, unless it fails for any of the reasons given in the troubleshooting topic <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/troubleshooting-failed.html\">Certificate request fails</a>. ACM makes repeated attempts to validate a certificate for 72 hours and then times out. If a certificate shows status FAILED or VALIDATION_TIMED_OUT, delete the request, correct the issue with <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/dns-validation.html\">DNS validation</a> or <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/email-validation.html\">Email validation</a>, and try again. If validation succeeds, the certificate enters status ISSUED. </p>"
+        },
+        "RenewalStatus":{
+          "shape":"RenewalStatus",
+          "documentation":"<p>The renewal status of the certificate.</p>"
+        },
+        "Type":{
+          "shape":"CertificateType",
+          "documentation":"<p>The source of the certificate. For certificates provided by ACM, this value is <code>AMAZON_ISSUED</code>. For certificates that you imported with <a>ImportCertificate</a>, this value is <code>IMPORTED</code>. ACM does not provide <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/acm-renewal.html\">managed renewal</a> for imported certificates. For more information about the differences between certificates that you import and those that ACM provides, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/import-certificate.html\">Importing Certificates</a> in the <i>Certificate Manager User Guide</i>. </p>"
+        },
+        "ExportOption":{
+          "shape":"CertificateExport",
+          "documentation":"<p>Indicates whether the certificate can be exported.</p>"
+        },
+        "ManagedBy":{
+          "shape":"CertificateManagedBy",
+          "documentation":"<p>Identifies the Amazon Web Services service that manages the certificate issued by ACM.</p>"
+        },
+        "ValidationMethod":{
+          "shape":"ValidationMethod",
+          "documentation":"<p>Specifies the domain validation method.</p>"
+        }
+      },
+      "documentation":"<p>Contains ACM-specific metadata about a certificate.</p>"
+    },
+    "AcmCertificateMetadataFilter":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"CertificateStatus",
+          "documentation":"<p>Filter by certificate status.</p>"
+        },
+        "RenewalStatus":{
+          "shape":"RenewalStatus",
+          "documentation":"<p>Filter by certificate renewal status.</p>"
+        },
+        "Type":{
+          "shape":"CertificateType",
+          "documentation":"<p>Filter by certificate type.</p>"
+        },
+        "InUse":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Filter by whether the certificate is in use.</p>"
+        },
+        "Exported":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Filter by whether the certificate has been exported.</p>"
+        },
+        "ExportOption":{
+          "shape":"CertificateExport",
+          "documentation":"<p>Filter by certificate export option.</p>"
+        },
+        "ManagedBy":{
+          "shape":"CertificateManagedBy",
+          "documentation":"<p>Filter by the entity that manages the certificate.</p>"
+        },
+        "ValidationMethod":{
+          "shape":"ValidationMethod",
+          "documentation":"<p>Filter by validation method.</p>"
+        }
+      },
+      "documentation":"<p>Filters certificates by ACM metadata.</p>",
+      "union":true
     },
     "AddTagsToCertificateRequest":{
       "type":"structure",
@@ -445,9 +559,69 @@
         "DISABLED"
       ]
     },
+    "CertificateFilter":{
+      "type":"structure",
+      "members":{
+        "CertificateArn":{
+          "shape":"Arn",
+          "documentation":"<p>Filter by certificate ARN.</p>"
+        },
+        "X509AttributeFilter":{
+          "shape":"X509AttributeFilter",
+          "documentation":"<p>Filter by X.509 certificate attributes.</p>"
+        },
+        "AcmCertificateMetadataFilter":{
+          "shape":"AcmCertificateMetadataFilter",
+          "documentation":"<p>Filter by ACM certificate metadata.</p>"
+        }
+      },
+      "documentation":"<p>Defines a filter for searching certificates by ARN, X.509 attributes, or ACM metadata.</p>",
+      "union":true
+    },
+    "CertificateFilterStatement":{
+      "type":"structure",
+      "members":{
+        "And":{
+          "shape":"CertificateFilterStatementList",
+          "documentation":"<p>A list of filter statements that must all be true.</p>"
+        },
+        "Or":{
+          "shape":"CertificateFilterStatementList",
+          "documentation":"<p>A list of filter statements where at least one must be true.</p>"
+        },
+        "Not":{
+          "shape":"CertificateFilterStatement",
+          "documentation":"<p>A filter statement that must not be true.</p>"
+        },
+        "Filter":{
+          "shape":"CertificateFilter",
+          "documentation":"<p>A single certificate filter.</p>"
+        }
+      },
+      "documentation":"<p>A filter statement used to search for certificates. Can contain AND, OR, NOT logical operators or a single filter.</p>",
+      "union":true
+    },
+    "CertificateFilterStatementList":{
+      "type":"list",
+      "member":{"shape":"CertificateFilterStatement"},
+      "documentation":"<p>A list of <code>CertificateFilterStatement</code> objects.</p>",
+      "max":15,
+      "min":1
+    },
     "CertificateManagedBy":{
       "type":"string",
       "enum":["CLOUDFRONT"]
+    },
+    "CertificateMetadata":{
+      "type":"structure",
+      "members":{
+        "AcmCertificateMetadata":{
+          "shape":"AcmCertificateMetadata",
+          "documentation":"<p>Metadata for an ACM certificate.</p>"
+        }
+      },
+      "documentation":"<p>Contains metadata about a certificate. Currently supports ACM certificate metadata.</p>",
+      "union":true
     },
     "CertificateOptions":{
       "type":"structure",
@@ -458,10 +632,33 @@
         },
         "Export":{
           "shape":"CertificateExport",
-          "documentation":"<p>You can opt in to allow the export of your certificates by specifying <code>ENABLED</code>.</p>"
+          "documentation":"<p>You can opt in to allow the export of your certificates by specifying <code>ENABLED</code>. You cannot update the value of <code>Export</code> after the the certificate is created.</p>"
         }
       },
       "documentation":"<p>Structure that contains options for your certificate. You can use this structure to specify whether to opt in to or out of certificate transparency logging and export your certificate. </p> <p>Some browsers require that public certificates issued for your domain be recorded in a log. Certificates that are not logged typically generate a browser error. Transparency makes it possible for you to detect SSL/TLS certificates that have been mistakenly or maliciously issued for your domain. For general information, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/acm-concepts.html#concept-transparency\">Certificate Transparency Logging</a>.</p> <p>You can export public ACM certificates to use with Amazon Web Services services as well as outside Amazon Web Services Cloud. For more information, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/acm-exportable-certificates.html\">Certificate Manager exportable public certificate</a>.</p>"
+    },
+    "CertificateSearchResult":{
+      "type":"structure",
+      "members":{
+        "CertificateArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the certificate.</p>"
+        },
+        "X509Attributes":{
+          "shape":"X509Attributes",
+          "documentation":"<p>X.509 certificate attributes such as subject, issuer, and validity period.</p>"
+        },
+        "CertificateMetadata":{
+          "shape":"CertificateMetadata",
+          "documentation":"<p>ACM-specific metadata about the certificate.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a certificate returned by the <a>SearchCertificates</a> action. This structure includes the certificate ARN, X.509 attributes, and ACM metadata.</p>"
+    },
+    "CertificateSearchResultList":{
+      "type":"list",
+      "member":{"shape":"CertificateSearchResult"},
+      "documentation":"<p>A list of <code>CertificateSearchResult</code> objects.</p>"
     },
     "CertificateStatus":{
       "type":"string",
@@ -492,11 +689,11 @@
         },
         "SubjectAlternativeNameSummaries":{
           "shape":"DomainList",
-          "documentation":"<p>One or more domain names (subject alternative names) included in the certificate. This list contains the domain names that are bound to the public key that is contained in the certificate. The subject alternative names include the canonical domain name (CN) of the certificate and additional domain names that can be used to connect to the website. </p> <p>When called by <a href=\"https://docs.aws.amazon.com/acm/latestAPIReference/API_ListCertificates.html\">ListCertificates</a>, this parameter will only return the first 100 subject alternative names included in the certificate. To display the full list of subject alternative names, use <a href=\"https://docs.aws.amazon.com/acm/latestAPIReference/API_DescribeCertificate.html\">DescribeCertificate</a>.</p>"
+          "documentation":"<p>One or more domain names (subject alternative names) included in the certificate. This list contains the domain names that are bound to the public key that is contained in the certificate. The subject alternative names include the canonical domain name (CN) of the certificate and additional domain names that can be used to connect to the website. </p> <p>When called by <a href=\"https://docs.aws.amazon.com/acm/latest/APIReference/API_ListCertificates.html\">ListCertificates</a>, this parameter will only return the first 100 subject alternative names included in the certificate. To display the full list of subject alternative names, use <a href=\"https://docs.aws.amazon.com/acm/latest/APIReference/API_DescribeCertificate.html\">DescribeCertificate</a>.</p>"
         },
         "HasAdditionalSubjectAlternativeNames":{
           "shape":"NullableBoolean",
-          "documentation":"<p>When called by <a href=\"https://docs.aws.amazon.com/acm/latestAPIReference/API_ListCertificates.html\">ListCertificates</a>, indicates whether the full list of subject alternative names has been included in the response. If false, the response includes all of the subject alternative names included in the certificate. If true, the response only includes the first 100 subject alternative names included in the certificate. To display the full list of subject alternative names, use <a href=\"https://docs.aws.amazon.com/acm/latestAPIReference/API_DescribeCertificate.html\">DescribeCertificate</a>.</p>"
+          "documentation":"<p>When called by <a href=\"https://docs.aws.amazon.com/acm/latest/APIReference/API_ListCertificates.html\">ListCertificates</a>, indicates whether the full list of subject alternative names has been included in the response. If false, the response includes all of the subject alternative names included in the certificate. If true, the response only includes the first 100 subject alternative names included in the certificate. To display the full list of subject alternative names, use <a href=\"https://docs.aws.amazon.com/acm/latest/APIReference/API_DescribeCertificate.html\">DescribeCertificate</a>.</p>"
         },
         "Status":{
           "shape":"CertificateStatus",
@@ -584,6 +781,32 @@
         "PRIVATE"
       ]
     },
+    "CommonNameFilter":{
+      "type":"structure",
+      "required":[
+        "Value",
+        "ComparisonOperator"
+      ],
+      "members":{
+        "Value":{
+          "shape":"FilterString",
+          "documentation":"<p>The value to match against.</p>"
+        },
+        "ComparisonOperator":{
+          "shape":"ComparisonOperator",
+          "documentation":"<p>The comparison operator to use.</p>"
+        }
+      },
+      "documentation":"<p>Filters certificates by common name.</p>"
+    },
+    "ComparisonOperator":{
+      "type":"string",
+      "documentation":"<p>The comparison operator to use for string filters. Valid values are <code>CONTAINS</code> and <code>EQUALS</code>.</p>",
+      "enum":[
+        "CONTAINS",
+        "EQUALS"
+      ]
+    },
     "ConflictException":{
       "type":"structure",
       "members":{
@@ -591,6 +814,27 @@
       },
       "documentation":"<p>You are trying to update a resource or configuration that is already being created or updated. Wait for the previous operation to finish and try again.</p>",
       "exception":true
+    },
+    "CoralAvailabilityThrottledResource":{"type":"string"},
+    "CoralAvailabilityThrottlingReason":{"type":"string"},
+    "CustomAttribute":{
+      "type":"structure",
+      "members":{
+        "ObjectIdentifier":{
+          "shape":"String",
+          "documentation":"<p>Specifies the object identifier (OID) of the attribute type of the relative distinguished name (RDN).</p>"
+        },
+        "Value":{
+          "shape":"String",
+          "documentation":"<p>Specifies the attribute value of relative distinguished name (RDN).</p>"
+        }
+      },
+      "documentation":"<p>Defines the X.500 relative distinguished name (RDN).</p>"
+    },
+    "CustomAttributeList":{
+      "type":"list",
+      "member":{"shape":"CustomAttribute"},
+      "documentation":"<p>A list of <code>CustomAttribute</code> objects.</p>"
     },
     "DeleteCertificateRequest":{
       "type":"structure",
@@ -620,6 +864,99 @@
           "documentation":"<p>Metadata about an ACM certificate.</p>"
         }
       }
+    },
+    "DistinguishedName":{
+      "type":"structure",
+      "members":{
+        "CommonName":{
+          "shape":"String",
+          "documentation":"<p>The common name (CN) attribute.</p>"
+        },
+        "DomainComponents":{
+          "shape":"DomainComponentList",
+          "documentation":"<p>The domain component attributes.</p>"
+        },
+        "Country":{
+          "shape":"String",
+          "documentation":"<p>The country (C) attribute.</p>"
+        },
+        "CustomAttributes":{
+          "shape":"CustomAttributeList",
+          "documentation":"<p>A list of custom attributes in the distinguished name. Each custom attribute contains an object identifier (OID) and its corresponding value.</p>"
+        },
+        "DistinguishedNameQualifier":{
+          "shape":"String",
+          "documentation":"<p>The distinguished name qualifier attribute.</p>"
+        },
+        "GenerationQualifier":{
+          "shape":"String",
+          "documentation":"<p>The generation qualifier attribute.</p>"
+        },
+        "GivenName":{
+          "shape":"String",
+          "documentation":"<p>The given name attribute.</p>"
+        },
+        "Initials":{
+          "shape":"String",
+          "documentation":"<p>The initials attribute.</p>"
+        },
+        "Locality":{
+          "shape":"String",
+          "documentation":"<p>The locality (L) attribute.</p>"
+        },
+        "Organization":{
+          "shape":"String",
+          "documentation":"<p>The organization (O) attribute.</p>"
+        },
+        "OrganizationalUnit":{
+          "shape":"String",
+          "documentation":"<p>The organizational unit (OU) attribute.</p>"
+        },
+        "Pseudonym":{
+          "shape":"String",
+          "documentation":"<p>The pseudonym attribute.</p>"
+        },
+        "SerialNumber":{
+          "shape":"String",
+          "documentation":"<p>The serial number attribute.</p>"
+        },
+        "State":{
+          "shape":"String",
+          "documentation":"<p>The state or province (ST) attribute.</p>"
+        },
+        "Surname":{
+          "shape":"String",
+          "documentation":"<p>The surname attribute.</p>"
+        },
+        "Title":{
+          "shape":"String",
+          "documentation":"<p>The title attribute.</p>"
+        }
+      },
+      "documentation":"<p>Contains X.500 distinguished name information.</p>"
+    },
+    "DnsNameFilter":{
+      "type":"structure",
+      "required":[
+        "Value",
+        "ComparisonOperator"
+      ],
+      "members":{
+        "Value":{
+          "shape":"FilterString",
+          "documentation":"<p>The DNS name value to match against.</p>"
+        },
+        "ComparisonOperator":{
+          "shape":"ComparisonOperator",
+          "documentation":"<p>The comparison operator to use.</p>"
+        }
+      },
+      "documentation":"<p>Filters certificates by DNS name.</p>"
+    },
+    "DomainComponentList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "documentation":"<p>A list of domain component strings.</p>"
     },
     "DomainList":{
       "type":"list",
@@ -815,6 +1152,11 @@
         "OTHER"
       ]
     },
+    "FilterString":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
     "Filters":{
       "type":"structure",
       "members":{
@@ -840,6 +1182,46 @@
         }
       },
       "documentation":"<p>This structure can be used in the <a>ListCertificates</a> action to filter the output of the certificate list. </p>"
+    },
+    "GeneralName":{
+      "type":"structure",
+      "members":{
+        "DirectoryName":{
+          "shape":"DistinguishedName",
+          "documentation":"<p>Contains information about the certificate subject. The <code>Subject</code> field in the certificate identifies the entity that owns or controls the public key in the certificate. The entity can be a user, computer, device, or service. The <code>Subject</code> must contain an X.500 distinguished name (DN). A DN is a sequence of relative distinguished names (RDNs). The RDNs are separated by commas in the certificate.</p>"
+        },
+        "DnsName":{
+          "shape":"String",
+          "documentation":"<p>Represents <code>GeneralName</code> as a DNS name.</p>"
+        },
+        "IpAddress":{
+          "shape":"String",
+          "documentation":"<p>Represents <code>GeneralName</code> as an IPv4 or IPv6 address.</p>"
+        },
+        "OtherName":{
+          "shape":"OtherName",
+          "documentation":"<p>Represents <code>GeneralName</code> using an <code>OtherName</code> object.</p>"
+        },
+        "RegisteredId":{
+          "shape":"String",
+          "documentation":"<p>Represents <code>GeneralName</code> as an object identifier (OID).</p>"
+        },
+        "Rfc822Name":{
+          "shape":"String",
+          "documentation":"<p>Represents <code>GeneralName</code> as an <a href=\"https://datatracker.ietf.org/doc/html/rfc822\">RFC 822</a> email address.</p>"
+        },
+        "UniformResourceIdentifier":{
+          "shape":"String",
+          "documentation":"<p>Represents <code>GeneralName</code> as a URI.</p>"
+        }
+      },
+      "documentation":"<p>Describes an ASN.1 X.400 <code>GeneralName</code> as defined in <a href=\"https://datatracker.ietf.org/doc/html/rfc5280\">RFC 5280</a>. Only one of the following naming options should be provided.</p>",
+      "union":true
+    },
+    "GeneralNameList":{
+      "type":"list",
+      "member":{"shape":"GeneralName"},
+      "documentation":"<p>A list of <code>GeneralName</code> objects representing subject alternative names.</p>"
     },
     "GetAccountConfigurationResponse":{
       "type":"structure",
@@ -1122,6 +1504,20 @@
       "type":"boolean",
       "box":true
     },
+    "OtherName":{
+      "type":"structure",
+      "members":{
+        "ObjectIdentifier":{
+          "shape":"String",
+          "documentation":"<p>Specifies an OID.</p>"
+        },
+        "Value":{
+          "shape":"String",
+          "documentation":"<p>Specifies an OID value.</p>"
+        }
+      },
+      "documentation":"<p>Defines a custom ASN.1 X.400 <code>GeneralName</code> using an object identifier (OID) and value. For more information, see NIST's definition of <a href=\"https://csrc.nist.gov/glossary/term/Object_Identifier\">Object Identifier (OID)</a>.</p>"
+    },
     "PassphraseBlob":{
       "type":"blob",
       "max":128,
@@ -1278,7 +1674,7 @@
         },
         "KeyAlgorithm":{
           "shape":"KeyAlgorithm",
-          "documentation":"<p>Specifies the algorithm of the public and private key pair that your certificate uses to encrypt data. RSA is the default key algorithm for ACM certificates. Elliptic Curve Digital Signature Algorithm (ECDSA) keys are smaller, offering security comparable to RSA keys but with greater computing efficiency. However, ECDSA is not supported by all network clients. Some Amazon Web Services services may require RSA keys, or only support ECDSA keys of a particular size, while others allow the use of either RSA and ECDSA keys to ensure that compatibility is not broken. Check the requirements for the Amazon Web Services service where you plan to deploy your certificate. For more information about selecting an algorithm, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/acm-certificate.html#algorithms\">Key algorithms</a>.</p> <note> <p>Algorithms supported for an ACM certificate request include: </p> <ul> <li> <p> <code>RSA_2048</code> </p> </li> <li> <p> <code>EC_prime256v1</code> </p> </li> <li> <p> <code>EC_secp384r1</code> </p> </li> </ul> <p>Other listed algorithms are for imported certificates only. </p> </note> <note> <p>When you request a private PKI certificate signed by a CA from Amazon Web Services Private CA, the specified signing algorithm family (RSA or ECDSA) must match the algorithm family of the CA's secret key.</p> </note> <p>Default: RSA_2048</p>"
+          "documentation":"<p>Specifies the algorithm of the public and private key pair that your certificate uses to encrypt data. RSA is the default key algorithm for ACM certificates. Elliptic Curve Digital Signature Algorithm (ECDSA) keys are smaller, offering security comparable to RSA keys but with greater computing efficiency. However, ECDSA is not supported by all network clients. Some Amazon Web Services services may require RSA keys, or only support ECDSA keys of a particular size, while others allow the use of either RSA and ECDSA keys to ensure that compatibility is not broken. Check the requirements for the Amazon Web Services service where you plan to deploy your certificate. For more information about selecting an algorithm, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/acm-certificate-characteristics.html#algorithms-term\">Key algorithms</a>.</p> <note> <p>Algorithms supported for an ACM certificate request include: </p> <ul> <li> <p> <code>RSA_2048</code> </p> </li> <li> <p> <code>EC_prime256v1</code> </p> </li> <li> <p> <code>EC_secp384r1</code> </p> </li> </ul> <p>Other listed algorithms are for imported certificates only. </p> </note> <note> <p>When you request a private PKI certificate signed by a CA from Amazon Web Services Private CA, the specified signing algorithm family (RSA or ECDSA) must match the algorithm family of the CA's secret key.</p> </note> <p>Default: RSA_2048</p>"
         },
         "ManagedBy":{
           "shape":"CertificateManagedBy",
@@ -1321,7 +1717,7 @@
         },
         "ValidationDomain":{
           "shape":"DomainNameString",
-          "documentation":"<p>The base validation domain that will act as the suffix of the email addresses that are used to send the emails. This must be the same as the <code>Domain</code> value or a superdomain of the <code>Domain</code> value. For example, if you requested a certificate for <code>site.subdomain.example.com</code> and specify a <b>ValidationDomain</b> of <code>subdomain.example.com</code>, ACM sends email to the domain registrant, technical contact, and administrative contact in WHOIS and the following five addresses:</p> <ul> <li> <p>admin@subdomain.example.com</p> </li> <li> <p>administrator@subdomain.example.com</p> </li> <li> <p>hostmaster@subdomain.example.com</p> </li> <li> <p>postmaster@subdomain.example.com</p> </li> <li> <p>webmaster@subdomain.example.com</p> </li> </ul>"
+          "documentation":"<p>The base validation domain that will act as the suffix of the email addresses that are used to send the emails. This must be the same as the <code>Domain</code> value or a superdomain of the <code>Domain</code> value. For example, if you requested a certificate for <code>site.subdomain.example.com</code> and specify a <b>ValidationDomain</b> of <code>subdomain.example.com</code>, ACM sends email to the the following five addresses:</p> <ul> <li> <p>admin@subdomain.example.com</p> </li> <li> <p>administrator@subdomain.example.com</p> </li> <li> <p>hostmaster@subdomain.example.com</p> </li> <li> <p>postmaster@subdomain.example.com</p> </li> <li> <p>webmaster@subdomain.example.com</p> </li> </ul>"
         }
       }
     },
@@ -1406,6 +1802,88 @@
         }
       }
     },
+    "SearchCertificatesRequest":{
+      "type":"structure",
+      "members":{
+        "FilterStatement":{
+          "shape":"CertificateFilterStatement",
+          "documentation":"<p>A filter statement that defines the search criteria. You can combine multiple filters using AND, OR, and NOT logical operators to create complex queries.</p>"
+        },
+        "MaxResults":{
+          "shape":"SearchMaxResults",
+          "documentation":"<p>The maximum number of results to return in the response. Default is 100.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Use this parameter only when paginating results and only in a subsequent request after you receive a response with truncated results. Set it to the value of <code>NextToken</code> from the response you just received.</p>"
+        },
+        "SortBy":{
+          "shape":"SearchCertificatesSortBy",
+          "documentation":"<p>Specifies the field to sort results by. Valid values are CREATED_AT, NOT_AFTER, STATUS, RENEWAL_STATUS, EXPORTED, IN_USE, NOT_BEFORE, KEY_ALGORITHM, TYPE, CERTIFICATE_ARN, COMMON_NAME, REVOKED_AT, RENEWAL_ELIGIBILITY, ISSUED_AT, MANAGED_BY, EXPORT_OPTION, VALIDATION_METHOD, and IMPORTED_AT.</p>"
+        },
+        "SortOrder":{
+          "shape":"SearchCertificatesSortOrder",
+          "documentation":"<p>Specifies the order of sorted results. Valid values are ASCENDING or DESCENDING.</p>"
+        }
+      }
+    },
+    "SearchCertificatesResponse":{
+      "type":"structure",
+      "members":{
+        "Results":{
+          "shape":"CertificateSearchResultList",
+          "documentation":"<p>A list of certificate search results containing certificate ARNs, X.509 attributes, and ACM metadata.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>When the list is truncated, this value is present and contains the value to use for the <code>NextToken</code> parameter in a subsequent pagination request.</p>"
+        }
+      }
+    },
+    "SearchCertificatesSortBy":{
+      "type":"string",
+      "documentation":"<p>The field to sort search results by.</p>",
+      "enum":[
+        "CREATED_AT",
+        "NOT_AFTER",
+        "STATUS",
+        "RENEWAL_STATUS",
+        "EXPORTED",
+        "IN_USE",
+        "NOT_BEFORE",
+        "KEY_ALGORITHM",
+        "TYPE",
+        "CERTIFICATE_ARN",
+        "COMMON_NAME",
+        "REVOKED_AT",
+        "RENEWAL_ELIGIBILITY",
+        "ISSUED_AT",
+        "MANAGED_BY",
+        "EXPORT_OPTION",
+        "VALIDATION_METHOD",
+        "IMPORTED_AT"
+      ]
+    },
+    "SearchCertificatesSortOrder":{
+      "type":"string",
+      "documentation":"<p>The order to sort search results.</p>",
+      "enum":[
+        "ASCENDING",
+        "DESCENDING"
+      ]
+    },
+    "SearchMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":500,
+      "min":1
+    },
+    "SerialNumber":{
+      "type":"string",
+      "max":59,
+      "min":2,
+      "pattern":"[0-9a-f]{2}(:[0-9a-f]{2}){1,19}"
+    },
     "ServiceErrorMessage":{"type":"string"},
     "SortBy":{
       "type":"string",
@@ -1419,6 +1897,28 @@
       ]
     },
     "String":{"type":"string"},
+    "SubjectAlternativeNameFilter":{
+      "type":"structure",
+      "members":{
+        "DnsName":{
+          "shape":"DnsNameFilter",
+          "documentation":"<p>Filter by DNS name in subject alternative names.</p>"
+        }
+      },
+      "documentation":"<p>Filters certificates by subject alternative name attributes.</p>",
+      "union":true
+    },
+    "SubjectFilter":{
+      "type":"structure",
+      "members":{
+        "CommonName":{
+          "shape":"CommonNameFilter",
+          "documentation":"<p>Filter by common name in the subject.</p>"
+        }
+      },
+      "documentation":"<p>Filters certificates by subject attributes.</p>",
+      "union":true
+    },
     "TStamp":{"type":"timestamp"},
     "Tag":{
       "type":"structure",
@@ -1464,10 +1964,46 @@
     "ThrottlingException":{
       "type":"structure",
       "members":{
-        "message":{"shape":"AvailabilityErrorMessage"}
+        "message":{"shape":"AvailabilityErrorMessage"},
+        "throttlingReasons":{
+          "shape":"ThrottlingReasonList",
+          "documentation":"<p>One or more reasons why the request was throttled.</p>"
+        }
       },
       "documentation":"<p>The request was denied because it exceeded a quota.</p>",
       "exception":true
+    },
+    "ThrottlingReason":{
+      "type":"structure",
+      "members":{
+        "reason":{
+          "shape":"CoralAvailabilityThrottlingReason",
+          "documentation":"<p>A description of why a request was throttled.</p>"
+        },
+        "resource":{
+          "shape":"CoralAvailabilityThrottledResource",
+          "documentation":"<p>The resource that causes the request to be throttled.</p>"
+        }
+      },
+      "documentation":"<p>A description of why a request was throttled.</p>"
+    },
+    "ThrottlingReasonList":{
+      "type":"list",
+      "member":{"shape":"ThrottlingReason"}
+    },
+    "TimestampRange":{
+      "type":"structure",
+      "members":{
+        "Start":{
+          "shape":"TStamp",
+          "documentation":"<p>The start of the time range. This value is inclusive.</p>"
+        },
+        "End":{
+          "shape":"TStamp",
+          "documentation":"<p>The end of the time range. This value is inclusive.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a time range for filtering certificates.</p>"
     },
     "TooManyTagsException":{
       "type":"structure",
@@ -1514,6 +2050,87 @@
         "DNS",
         "HTTP"
       ]
+    },
+    "X509AttributeFilter":{
+      "type":"structure",
+      "members":{
+        "Subject":{
+          "shape":"SubjectFilter",
+          "documentation":"<p>Filter by certificate subject.</p>"
+        },
+        "SubjectAlternativeName":{
+          "shape":"SubjectAlternativeNameFilter",
+          "documentation":"<p>Filter by subject alternative names.</p>"
+        },
+        "ExtendedKeyUsage":{
+          "shape":"ExtendedKeyUsageName",
+          "documentation":"<p>Filter by extended key usage.</p>"
+        },
+        "KeyUsage":{
+          "shape":"KeyUsageName",
+          "documentation":"<p>Filter by key usage.</p>"
+        },
+        "KeyAlgorithm":{
+          "shape":"KeyAlgorithm",
+          "documentation":"<p>Filter by key algorithm.</p>"
+        },
+        "SerialNumber":{
+          "shape":"SerialNumber",
+          "documentation":"<p>Filter by serial number.</p>"
+        },
+        "NotAfter":{
+          "shape":"TimestampRange",
+          "documentation":"<p>Filter by certificate expiration date. The start date is inclusive.</p>"
+        },
+        "NotBefore":{
+          "shape":"TimestampRange",
+          "documentation":"<p>Filter by certificate validity start date. The start date is inclusive.</p>"
+        }
+      },
+      "documentation":"<p>Filters certificates by X.509 attributes.</p>",
+      "union":true
+    },
+    "X509Attributes":{
+      "type":"structure",
+      "members":{
+        "Issuer":{
+          "shape":"DistinguishedName",
+          "documentation":"<p>The distinguished name of the certificate issuer.</p>"
+        },
+        "Subject":{
+          "shape":"DistinguishedName",
+          "documentation":"<p>The distinguished name of the certificate subject.</p>"
+        },
+        "SubjectAlternativeNames":{
+          "shape":"GeneralNameList",
+          "documentation":"<p>One or more domain names (subject alternative names) included in the certificate. This list contains the domain names that are bound to the public key that is contained in the certificate. The subject alternative names include the canonical domain name (CN) of the certificate and additional domain names that can be used to connect to the website. </p>"
+        },
+        "ExtendedKeyUsages":{
+          "shape":"ExtendedKeyUsageNames",
+          "documentation":"<p>Contains a list of Extended Key Usage X.509 v3 extension objects. Each object specifies a purpose for which the certificate public key can be used and consists of a name and an object identifier (OID). </p>"
+        },
+        "KeyAlgorithm":{
+          "shape":"KeyAlgorithm",
+          "documentation":"<p>The algorithm that was used to generate the public-private key pair.</p>"
+        },
+        "KeyUsages":{
+          "shape":"KeyUsageNames",
+          "documentation":"<p>A list of Key Usage X.509 v3 extension objects. Each object is a string value that identifies the purpose of the public key contained in the certificate. Possible extension values include DIGITAL_SIGNATURE, KEY_ENCHIPHERMENT, NON_REPUDIATION, and more.</p>"
+        },
+        "SerialNumber":{
+          "shape":"SerialNumber",
+          "documentation":"<p>The serial number assigned by the certificate authority.</p>"
+        },
+        "NotAfter":{
+          "shape":"TStamp",
+          "documentation":"<p>The time after which the certificate is not valid.</p>"
+        },
+        "NotBefore":{
+          "shape":"TStamp",
+          "documentation":"<p>The time before which the certificate is not valid.</p>"
+        }
+      },
+      "documentation":"<p>Contains X.509 certificate attributes extracted from the certificate.</p>"
     }
   },
   "documentation":"<p><fullname>Certificate Manager</fullname> <p>You can use Certificate Manager (ACM) to manage SSL/TLS certificates for your Amazon Web Services-based websites and applications. For more information about using ACM, see the <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/\">Certificate Manager User Guide</a>.</p></p>"

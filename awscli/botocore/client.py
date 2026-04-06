@@ -903,8 +903,17 @@ class BaseClient:
 
         if http.status_code >= 300:
             error_code = parsed_response.get("Error", {}).get("Code")
+            # Lookup is a cached dict access; only runs on error path.
+            error_shape = self._service_model.shape_for_error_code(
+                error_code
+            )
+            modeled_fields = {'Code', 'Message'}
+            if error_shape:
+                modeled_fields |= set(error_shape.members.keys())
             error_class = self.exceptions.from_code(error_code)
-            raise error_class(parsed_response, operation_name)
+            error = error_class(parsed_response, operation_name)
+            error.modeled_fields = modeled_fields
+            raise error
         else:
             return parsed_response
 

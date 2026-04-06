@@ -194,6 +194,25 @@
       "documentation":"<p>Allows a worker to assume a queue role.</p>",
       "endpoint":{"hostPrefix":"scheduling."}
     },
+    "BatchGetJob":{
+      "name":"BatchGetJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2023-10-12/batch-get-job",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchGetJobRequest"},
+      "output":{"shape":"BatchGetJobResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieves multiple jobs in a single request. This is a batch version of the <code>GetJob</code> API.</p> <p>The result of getting each job is reported individually in the response. Because the batch request can result in a combination of successful and unsuccessful actions, you should check for batch errors even when the call returns an HTTP status code of 200.</p>",
+      "endpoint":{"hostPrefix":"management."},
+      "readonly":true
+    },
     "BatchGetJobEntity":{
       "name":"BatchGetJobEntity",
       "http":{
@@ -213,6 +232,139 @@
       "documentation":"<p>Get batched job details for a worker.</p>",
       "endpoint":{"hostPrefix":"scheduling."},
       "readonly":true
+    },
+    "BatchGetSession":{
+      "name":"BatchGetSession",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2023-10-12/batch-get-session",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchGetSessionRequest"},
+      "output":{"shape":"BatchGetSessionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieves multiple sessions in a single request. This is a batch version of the <code>GetSession</code> API.</p> <p>The result of getting each session is reported individually in the response. Because the batch request can result in a combination of successful and unsuccessful actions, you should check for batch errors even when the call returns an HTTP status code of 200.</p>",
+      "endpoint":{"hostPrefix":"management."},
+      "readonly":true
+    },
+    "BatchGetSessionAction":{
+      "name":"BatchGetSessionAction",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2023-10-12/batch-get-session-action",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchGetSessionActionRequest"},
+      "output":{"shape":"BatchGetSessionActionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieves multiple session actions in a single request. This is a batch version of the <code>GetSessionAction</code> API.</p> <p>The result of getting each session action is reported individually in the response. Because the batch request can result in a combination of successful and unsuccessful actions, you should check for batch errors even when the call returns an HTTP status code of 200.</p>",
+      "endpoint":{"hostPrefix":"management."},
+      "readonly":true
+    },
+    "BatchGetStep":{
+      "name":"BatchGetStep",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2023-10-12/batch-get-step",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchGetStepRequest"},
+      "output":{"shape":"BatchGetStepResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieves multiple steps in a single request. This is a batch version of the <code>GetStep</code> API.</p> <p>The result of getting each step is reported individually in the response. Because the batch request can result in a combination of successful and unsuccessful actions, you should check for batch errors even when the call returns an HTTP status code of 200.</p>",
+      "endpoint":{"hostPrefix":"management."},
+      "readonly":true
+    },
+    "BatchGetTask":{
+      "name":"BatchGetTask",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2023-10-12/batch-get-task",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchGetTaskRequest"},
+      "output":{"shape":"BatchGetTaskResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieves multiple tasks in a single request. This is a batch version of the <code>GetTask</code> API.</p> <p>The result of getting each task is reported individually in the response. Because the batch request can result in a combination of successful and unsuccessful actions, you should check for batch errors even when the call returns an HTTP status code of 200.</p>",
+      "endpoint":{"hostPrefix":"management."},
+      "readonly":true
+    },
+    "BatchGetWorker":{
+      "name":"BatchGetWorker",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2023-10-12/batch-get-worker",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchGetWorkerRequest"},
+      "output":{"shape":"BatchGetWorkerResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieves multiple workers in a single request. This is a batch version of the <code>GetWorker</code> API.</p> <p>The result of getting each worker is reported individually in the response. Because the batch request can result in a combination of successful and unsuccessful actions, you should check for batch errors even when the call returns an HTTP status code of 200.</p>",
+      "endpoint":{"hostPrefix":"management."},
+      "readonly":true
+    },
+    "BatchUpdateJob":{
+      "name":"BatchUpdateJob",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/2023-10-12/batch-update-job",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchUpdateJobRequest"},
+      "output":{"shape":"BatchUpdateJobResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Updates multiple jobs in a single request. This is a batch version of the <code>UpdateJob</code> API.</p> <p>The result of updating each job is reported individually in the response. Because the batch request can result in a combination of successful and unsuccessful actions, you should check for batch errors even when the call returns an HTTP status code of 200.</p> <p>When you change the status of a job to <code>ARCHIVED</code>, the job can't be scheduled or archived.</p> <important> <p>An archived job and its steps and tasks are deleted after 120 days. The job can't be recovered.</p> </important>",
+      "endpoint":{"hostPrefix":"management."},
+      "idempotent":true
+    },
+    "BatchUpdateTask":{
+      "name":"BatchUpdateTask",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/2023-10-12/batch-update-task",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchUpdateTaskRequest"},
+      "output":{"shape":"BatchUpdateTaskResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Updates multiple tasks in a single request. This is a batch version of the <code>UpdateTask</code> API.</p> <p>The result of updating each task is reported individually in the response. Because the batch request can result in a combination of successful and unsuccessful actions, you should check for batch errors even when the call returns an HTTP status code of 200.</p>",
+      "endpoint":{"hostPrefix":"management."},
+      "idempotent":true
     },
     "CopyJobTemplate":{
       "name":"CopyJobTemplate",
@@ -3086,6 +3238,1462 @@
         }
       }
     },
+    "BatchGetJobError":{
+      "type":"structure",
+      "required":[
+        "farmId",
+        "queueId",
+        "jobId",
+        "code",
+        "message"
+      ],
+      "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID of the job that could not be retrieved.</p>"
+        },
+        "queueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The queue ID of the job that could not be retrieved.</p>"
+        },
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The job ID of the job that could not be retrieved.</p>"
+        },
+        "code":{
+          "shape":"BatchGetJobErrorCode",
+          "documentation":"<p>The error code.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The error message.</p>"
+        }
+      },
+      "documentation":"<p>The error details for a job that could not be retrieved in a batch get operation.</p>"
+    },
+    "BatchGetJobErrorCode":{
+      "type":"string",
+      "enum":[
+        "InternalServerErrorException",
+        "ResourceNotFoundException",
+        "ValidationException",
+        "AccessDeniedException",
+        "ThrottlingException"
+      ]
+    },
+    "BatchGetJobErrors":{
+      "type":"list",
+      "member":{"shape":"BatchGetJobError"}
+    },
+    "BatchGetJobIdentifier":{
+      "type":"structure",
+      "required":[
+        "farmId",
+        "queueId",
+        "jobId"
+      ],
+      "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID of the job.</p>"
+        },
+        "queueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The queue ID of the job.</p>"
+        },
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The job ID.</p>"
+        }
+      },
+      "documentation":"<p>The identifiers for a job.</p>"
+    },
+    "BatchGetJobIdentifiers":{
+      "type":"list",
+      "member":{"shape":"BatchGetJobIdentifier"},
+      "max":100,
+      "min":1
+    },
+    "BatchGetJobItem":{
+      "type":"structure",
+      "required":[
+        "farmId",
+        "queueId",
+        "jobId",
+        "name",
+        "lifecycleStatus",
+        "lifecycleStatusMessage",
+        "priority",
+        "createdAt",
+        "createdBy"
+      ],
+      "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID of the job.</p>"
+        },
+        "queueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The queue ID of the job.</p>"
+        },
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The job ID.</p>"
+        },
+        "name":{
+          "shape":"JobName",
+          "documentation":"<p>The name of the job.</p>"
+        },
+        "lifecycleStatus":{
+          "shape":"JobLifecycleStatus",
+          "documentation":"<p>The life cycle status of the job.</p>"
+        },
+        "lifecycleStatusMessage":{
+          "shape":"String",
+          "documentation":"<p>A message that communicates the status of the life cycle.</p>"
+        },
+        "priority":{
+          "shape":"JobPriority",
+          "documentation":"<p>The job priority.</p>"
+        },
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The date and time the resource was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user or system that created this resource.</p>"
+        },
+        "updatedAt":{
+          "shape":"UpdatedAt",
+          "documentation":"<p>The date and time the resource was updated.</p>"
+        },
+        "updatedBy":{
+          "shape":"UpdatedBy",
+          "documentation":"<p>The user or system that updated this resource.</p>"
+        },
+        "startedAt":{
+          "shape":"StartedAt",
+          "documentation":"<p>The date and time the resource started running.</p>"
+        },
+        "endedAt":{
+          "shape":"EndedAt",
+          "documentation":"<p>The date and time the resource ended running.</p>"
+        },
+        "taskRunStatus":{
+          "shape":"TaskRunStatus",
+          "documentation":"<p>The task run status for the job.</p>"
+        },
+        "targetTaskRunStatus":{
+          "shape":"JobTargetTaskRunStatus",
+          "documentation":"<p>The task status to start with on the job.</p>"
+        },
+        "taskRunStatusCounts":{
+          "shape":"TaskRunStatusCounts",
+          "documentation":"<p>The number of tasks for each run status for the job.</p>"
+        },
+        "taskFailureRetryCount":{
+          "shape":"TaskFailureRetryCount",
+          "documentation":"<p>The number of times that tasks failed and were retried.</p>"
+        },
+        "storageProfileId":{
+          "shape":"StorageProfileId",
+          "documentation":"<p>The storage profile ID associated with the job.</p>"
+        },
+        "maxFailedTasksCount":{
+          "shape":"MaxFailedTasksCount",
+          "documentation":"<p>The number of task failures before the job stops running and is marked as <code>FAILED</code>.</p>"
+        },
+        "maxRetriesPerTask":{
+          "shape":"MaxRetriesPerTask",
+          "documentation":"<p>The maximum number of retries per failed tasks.</p>"
+        },
+        "parameters":{
+          "shape":"JobParameters",
+          "documentation":"<p>The parameters for the job.</p>"
+        },
+        "attachments":{
+          "shape":"Attachments",
+          "documentation":"<p>The attachments for the job.</p>"
+        },
+        "description":{
+          "shape":"JobDescription",
+          "documentation":"<p>The description of the job.</p>"
+        },
+        "maxWorkerCount":{
+          "shape":"MaxWorkerCount",
+          "documentation":"<p>The maximum number of worker hosts that can concurrently process a job.</p>"
+        },
+        "sourceJobId":{
+          "shape":"JobId",
+          "documentation":"<p>The job ID for the source job.</p>"
+        }
+      },
+      "documentation":"<p>The details of a job returned in a batch get operation.</p>"
+    },
+    "BatchGetJobItems":{
+      "type":"list",
+      "member":{"shape":"BatchGetJobItem"}
+    },
+    "BatchGetJobRequest":{
+      "type":"structure",
+      "required":["identifiers"],
+      "members":{
+        "identifiers":{
+          "shape":"BatchGetJobIdentifiers",
+          "documentation":"<p>The list of job identifiers to retrieve. You can specify up to 100 identifiers per request.</p>"
+        }
+      }
+    },
+    "BatchGetJobResponse":{
+      "type":"structure",
+      "required":[
+        "jobs",
+        "errors"
+      ],
+      "members":{
+        "jobs":{
+          "shape":"BatchGetJobItems",
+          "documentation":"<p>A list of jobs that were successfully retrieved.</p>"
+        },
+        "errors":{
+          "shape":"BatchGetJobErrors",
+          "documentation":"<p>A list of errors for jobs that could not be retrieved.</p>"
+        }
+      }
+    },
+    "BatchGetSessionActionError":{
+      "type":"structure",
+      "required":[
+        "farmId",
+        "queueId",
+        "jobId",
+        "sessionActionId",
+        "code",
+        "message"
+      ],
+      "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID of the session action that could not be retrieved.</p>"
+        },
+        "queueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The queue ID of the session action that could not be retrieved.</p>"
+        },
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The job ID of the session action that could not be retrieved.</p>"
+        },
+        "sessionActionId":{
+          "shape":"SessionActionId",
+          "documentation":"<p>The session action ID of the session action that could not be retrieved.</p>"
+        },
+        "code":{
+          "shape":"BatchGetSessionActionErrorCode",
+          "documentation":"<p>The error code.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The error message.</p>"
+        }
+      },
+      "documentation":"<p>The error details for a session action that could not be retrieved in a batch get operation.</p>"
+    },
+    "BatchGetSessionActionErrorCode":{
+      "type":"string",
+      "enum":[
+        "InternalServerErrorException",
+        "ResourceNotFoundException",
+        "ValidationException"
+      ]
+    },
+    "BatchGetSessionActionErrors":{
+      "type":"list",
+      "member":{"shape":"BatchGetSessionActionError"}
+    },
+    "BatchGetSessionActionIdentifier":{
+      "type":"structure",
+      "required":[
+        "farmId",
+        "queueId",
+        "jobId",
+        "sessionActionId"
+      ],
+      "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID of the session action.</p>"
+        },
+        "queueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The queue ID of the session action.</p>"
+        },
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The job ID of the session action.</p>"
+        },
+        "sessionActionId":{
+          "shape":"SessionActionId",
+          "documentation":"<p>The session action ID.</p>"
+        }
+      },
+      "documentation":"<p>The identifiers for a session action.</p>"
+    },
+    "BatchGetSessionActionIdentifiers":{
+      "type":"list",
+      "member":{"shape":"BatchGetSessionActionIdentifier"},
+      "max":100,
+      "min":1
+    },
+    "BatchGetSessionActionItem":{
+      "type":"structure",
+      "required":[
+        "farmId",
+        "queueId",
+        "jobId",
+        "sessionActionId",
+        "status",
+        "sessionId",
+        "definition"
+      ],
+      "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID of the session action.</p>"
+        },
+        "queueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The queue ID of the session action.</p>"
+        },
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The job ID of the session action.</p>"
+        },
+        "sessionActionId":{
+          "shape":"SessionActionId",
+          "documentation":"<p>The session action ID.</p>"
+        },
+        "status":{
+          "shape":"SessionActionStatus",
+          "documentation":"<p>The status of the session action.</p>"
+        },
+        "startedAt":{
+          "shape":"StartedAt",
+          "documentation":"<p>The date and time the resource started running.</p>"
+        },
+        "endedAt":{
+          "shape":"EndedAt",
+          "documentation":"<p>The date and time the resource ended running.</p>"
+        },
+        "workerUpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time the resource was updated by a worker.</p>"
+        },
+        "progressPercent":{
+          "shape":"SessionActionProgressPercent",
+          "documentation":"<p>The completion percentage for the session action.</p>"
+        },
+        "manifests":{
+          "shape":"TaskRunManifestPropertiesListResponse",
+          "documentation":"<p>The manifests for the session action.</p>"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The session ID for the session action.</p>"
+        },
+        "processExitCode":{
+          "shape":"ProcessExitCode",
+          "documentation":"<p>The exit code to apply to the session action.</p>"
+        },
+        "progressMessage":{
+          "shape":"SessionActionProgressMessage",
+          "documentation":"<p>The message that communicates the progress of the session action.</p>"
+        },
+        "acquiredLimits":{
+          "shape":"AcquiredLimits",
+          "documentation":"<p>The limits that were acquired for the session action.</p>"
+        },
+        "definition":{
+          "shape":"SessionActionDefinition",
+          "documentation":"<p>The session action definition.</p>"
+        }
+      },
+      "documentation":"<p>The details of a session action returned in a batch get operation.</p>"
+    },
+    "BatchGetSessionActionItems":{
+      "type":"list",
+      "member":{"shape":"BatchGetSessionActionItem"}
+    },
+    "BatchGetSessionActionRequest":{
+      "type":"structure",
+      "required":["identifiers"],
+      "members":{
+        "identifiers":{
+          "shape":"BatchGetSessionActionIdentifiers",
+          "documentation":"<p>The list of session action identifiers to retrieve. You can specify up to 100 identifiers per request.</p>"
+        }
+      }
+    },
+    "BatchGetSessionActionResponse":{
+      "type":"structure",
+      "required":[
+        "sessionActions",
+        "errors"
+      ],
+      "members":{
+        "sessionActions":{
+          "shape":"BatchGetSessionActionItems",
+          "documentation":"<p>A list of session actions that were successfully retrieved.</p>"
+        },
+        "errors":{
+          "shape":"BatchGetSessionActionErrors",
+          "documentation":"<p>A list of errors for session actions that could not be retrieved.</p>"
+        }
+      }
+    },
+    "BatchGetSessionError":{
+      "type":"structure",
+      "required":[
+        "farmId",
+        "queueId",
+        "jobId",
+        "sessionId",
+        "code",
+        "message"
+      ],
+      "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID of the session that could not be retrieved.</p>"
+        },
+        "queueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The queue ID of the session that could not be retrieved.</p>"
+        },
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The job ID of the session that could not be retrieved.</p>"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The session ID of the session that could not be retrieved.</p>"
+        },
+        "code":{
+          "shape":"BatchGetSessionErrorCode",
+          "documentation":"<p>The error code.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The error message.</p>"
+        }
+      },
+      "documentation":"<p>The error details for a session that could not be retrieved in a batch get operation.</p>"
+    },
+    "BatchGetSessionErrorCode":{
+      "type":"string",
+      "enum":[
+        "InternalServerErrorException",
+        "ResourceNotFoundException",
+        "ValidationException"
+      ]
+    },
+    "BatchGetSessionErrors":{
+      "type":"list",
+      "member":{"shape":"BatchGetSessionError"}
+    },
+    "BatchGetSessionIdentifier":{
+      "type":"structure",
+      "required":[
+        "farmId",
+        "queueId",
+        "jobId",
+        "sessionId"
+      ],
+      "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID of the session.</p>"
+        },
+        "queueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The queue ID of the session.</p>"
+        },
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The job ID of the session.</p>"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The session ID.</p>"
+        }
+      },
+      "documentation":"<p>The identifiers for a session.</p>"
+    },
+    "BatchGetSessionIdentifiers":{
+      "type":"list",
+      "member":{"shape":"BatchGetSessionIdentifier"},
+      "max":100,
+      "min":1
+    },
+    "BatchGetSessionItem":{
+      "type":"structure",
+      "required":[
+        "farmId",
+        "queueId",
+        "jobId",
+        "sessionId",
+        "fleetId",
+        "workerId",
+        "startedAt",
+        "lifecycleStatus",
+        "log"
+      ],
+      "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID of the session.</p>"
+        },
+        "queueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The queue ID of the session.</p>"
+        },
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The job ID of the session.</p>"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The session ID.</p>"
+        },
+        "fleetId":{
+          "shape":"FleetId",
+          "documentation":"<p>The fleet ID of the session.</p>"
+        },
+        "workerId":{
+          "shape":"WorkerId",
+          "documentation":"<p>The worker ID of the session.</p>"
+        },
+        "startedAt":{
+          "shape":"StartedAt",
+          "documentation":"<p>The date and time the resource started running.</p>"
+        },
+        "lifecycleStatus":{
+          "shape":"SessionLifecycleStatus",
+          "documentation":"<p>The life cycle status of the session.</p>"
+        },
+        "endedAt":{
+          "shape":"EndedAt",
+          "documentation":"<p>The date and time the resource ended running.</p>"
+        },
+        "targetLifecycleStatus":{
+          "shape":"SessionLifecycleTargetStatus",
+          "documentation":"<p>The target life cycle status for the session.</p>"
+        },
+        "updatedAt":{
+          "shape":"UpdatedAt",
+          "documentation":"<p>The date and time the resource was updated.</p>"
+        },
+        "updatedBy":{
+          "shape":"UpdatedBy",
+          "documentation":"<p>The user or system that updated this resource.</p>"
+        },
+        "log":{
+          "shape":"LogConfiguration",
+          "documentation":"<p>The session log.</p>"
+        },
+        "hostProperties":{
+          "shape":"HostPropertiesResponse",
+          "documentation":"<p>The host properties for the session.</p>"
+        },
+        "workerLog":{
+          "shape":"LogConfiguration",
+          "documentation":"<p>The worker log for the session.</p>"
+        }
+      },
+      "documentation":"<p>The details of a session returned in a batch get operation.</p>"
+    },
+    "BatchGetSessionItems":{
+      "type":"list",
+      "member":{"shape":"BatchGetSessionItem"}
+    },
+    "BatchGetSessionRequest":{
+      "type":"structure",
+      "required":["identifiers"],
+      "members":{
+        "identifiers":{
+          "shape":"BatchGetSessionIdentifiers",
+          "documentation":"<p>The list of session identifiers to retrieve. You can specify up to 100 identifiers per request.</p>"
+        }
+      }
+    },
+    "BatchGetSessionResponse":{
+      "type":"structure",
+      "required":[
+        "sessions",
+        "errors"
+      ],
+      "members":{
+        "sessions":{
+          "shape":"BatchGetSessionItems",
+          "documentation":"<p>A list of sessions that were successfully retrieved.</p>"
+        },
+        "errors":{
+          "shape":"BatchGetSessionErrors",
+          "documentation":"<p>A list of errors for sessions that could not be retrieved.</p>"
+        }
+      }
+    },
+    "BatchGetStepError":{
+      "type":"structure",
+      "required":[
+        "farmId",
+        "queueId",
+        "jobId",
+        "stepId",
+        "code",
+        "message"
+      ],
+      "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID of the step that could not be retrieved.</p>"
+        },
+        "queueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The queue ID of the step that could not be retrieved.</p>"
+        },
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The job ID of the step that could not be retrieved.</p>"
+        },
+        "stepId":{
+          "shape":"StepId",
+          "documentation":"<p>The step ID of the step that could not be retrieved.</p>"
+        },
+        "code":{
+          "shape":"BatchGetStepErrorCode",
+          "documentation":"<p>The error code.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The error message.</p>"
+        }
+      },
+      "documentation":"<p>The error details for a step that could not be retrieved in a batch get operation.</p>"
+    },
+    "BatchGetStepErrorCode":{
+      "type":"string",
+      "enum":[
+        "InternalServerErrorException",
+        "ResourceNotFoundException",
+        "ValidationException",
+        "AccessDeniedException",
+        "ThrottlingException"
+      ]
+    },
+    "BatchGetStepErrors":{
+      "type":"list",
+      "member":{"shape":"BatchGetStepError"}
+    },
+    "BatchGetStepIdentifier":{
+      "type":"structure",
+      "required":[
+        "farmId",
+        "queueId",
+        "jobId",
+        "stepId"
+      ],
+      "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID of the step.</p>"
+        },
+        "queueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The queue ID of the step.</p>"
+        },
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The job ID of the step.</p>"
+        },
+        "stepId":{
+          "shape":"StepId",
+          "documentation":"<p>The step ID.</p>"
+        }
+      },
+      "documentation":"<p>The identifiers for a step.</p>"
+    },
+    "BatchGetStepIdentifiers":{
+      "type":"list",
+      "member":{"shape":"BatchGetStepIdentifier"},
+      "max":100,
+      "min":1
+    },
+    "BatchGetStepItem":{
+      "type":"structure",
+      "required":[
+        "farmId",
+        "queueId",
+        "jobId",
+        "stepId",
+        "name",
+        "lifecycleStatus",
+        "taskRunStatus",
+        "taskRunStatusCounts",
+        "createdAt",
+        "createdBy"
+      ],
+      "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID of the step.</p>"
+        },
+        "queueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The queue ID of the step.</p>"
+        },
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The job ID of the step.</p>"
+        },
+        "stepId":{
+          "shape":"StepId",
+          "documentation":"<p>The step ID.</p>"
+        },
+        "name":{
+          "shape":"StepName",
+          "documentation":"<p>The name of the step.</p>"
+        },
+        "lifecycleStatus":{
+          "shape":"StepLifecycleStatus",
+          "documentation":"<p>The life cycle status of the step.</p>"
+        },
+        "lifecycleStatusMessage":{
+          "shape":"String",
+          "documentation":"<p>A message that communicates the status of the life cycle.</p>"
+        },
+        "taskRunStatus":{
+          "shape":"TaskRunStatus",
+          "documentation":"<p>The task run status for the step.</p>"
+        },
+        "taskRunStatusCounts":{
+          "shape":"TaskRunStatusCounts",
+          "documentation":"<p>The number of tasks for each run status for the step.</p>"
+        },
+        "taskFailureRetryCount":{
+          "shape":"TaskFailureRetryCount",
+          "documentation":"<p>The number of times that tasks failed and were retried.</p>"
+        },
+        "targetTaskRunStatus":{
+          "shape":"StepTargetTaskRunStatus",
+          "documentation":"<p>The task status to start with on the step.</p>"
+        },
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The date and time the resource was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user or system that created this resource.</p>"
+        },
+        "updatedAt":{
+          "shape":"UpdatedAt",
+          "documentation":"<p>The date and time the resource was updated.</p>"
+        },
+        "updatedBy":{
+          "shape":"UpdatedBy",
+          "documentation":"<p>The user or system that updated this resource.</p>"
+        },
+        "startedAt":{
+          "shape":"StartedAt",
+          "documentation":"<p>The date and time the resource started running.</p>"
+        },
+        "endedAt":{
+          "shape":"EndedAt",
+          "documentation":"<p>The date and time the resource ended running.</p>"
+        },
+        "dependencyCounts":{
+          "shape":"DependencyCounts",
+          "documentation":"<p>The number of dependencies for the step.</p>"
+        },
+        "requiredCapabilities":{
+          "shape":"StepRequiredCapabilities",
+          "documentation":"<p>The required capabilities for the step.</p>"
+        },
+        "parameterSpace":{
+          "shape":"ParameterSpace",
+          "documentation":"<p>The parameter space for the step.</p>"
+        },
+        "description":{
+          "shape":"StepDescription",
+          "documentation":"<p>The description of the step.</p>"
+        }
+      },
+      "documentation":"<p>The details of a step returned in a batch get operation.</p>"
+    },
+    "BatchGetStepItems":{
+      "type":"list",
+      "member":{"shape":"BatchGetStepItem"}
+    },
+    "BatchGetStepRequest":{
+      "type":"structure",
+      "required":["identifiers"],
+      "members":{
+        "identifiers":{
+          "shape":"BatchGetStepIdentifiers",
+          "documentation":"<p>The list of step identifiers to retrieve. You can specify up to 100 identifiers per request.</p>"
+        }
+      }
+    },
+    "BatchGetStepResponse":{
+      "type":"structure",
+      "required":[
+        "steps",
+        "errors"
+      ],
+      "members":{
+        "steps":{
+          "shape":"BatchGetStepItems",
+          "documentation":"<p>A list of steps that were successfully retrieved.</p>"
+        },
+        "errors":{
+          "shape":"BatchGetStepErrors",
+          "documentation":"<p>A list of errors for steps that could not be retrieved.</p>"
+        }
+      }
+    },
+    "BatchGetTaskError":{
+      "type":"structure",
+      "required":[
+        "farmId",
+        "queueId",
+        "jobId",
+        "stepId",
+        "taskId",
+        "code",
+        "message"
+      ],
+      "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID of the task that could not be retrieved.</p>"
+        },
+        "queueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The queue ID of the task that could not be retrieved.</p>"
+        },
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The job ID of the task that could not be retrieved.</p>"
+        },
+        "stepId":{
+          "shape":"StepId",
+          "documentation":"<p>The step ID of the task that could not be retrieved.</p>"
+        },
+        "taskId":{
+          "shape":"TaskId",
+          "documentation":"<p>The task ID of the task that could not be retrieved.</p>"
+        },
+        "code":{
+          "shape":"BatchGetTaskErrorCode",
+          "documentation":"<p>The error code.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The error message.</p>"
+        }
+      },
+      "documentation":"<p>The error details for a task that could not be retrieved in a batch get operation.</p>"
+    },
+    "BatchGetTaskErrorCode":{
+      "type":"string",
+      "enum":[
+        "InternalServerErrorException",
+        "ResourceNotFoundException",
+        "ValidationException",
+        "AccessDeniedException",
+        "ThrottlingException"
+      ]
+    },
+    "BatchGetTaskErrors":{
+      "type":"list",
+      "member":{"shape":"BatchGetTaskError"}
+    },
+    "BatchGetTaskIdentifier":{
+      "type":"structure",
+      "required":[
+        "farmId",
+        "queueId",
+        "jobId",
+        "stepId",
+        "taskId"
+      ],
+      "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID of the task.</p>"
+        },
+        "queueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The queue ID of the task.</p>"
+        },
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The job ID of the task.</p>"
+        },
+        "stepId":{
+          "shape":"StepId",
+          "documentation":"<p>The step ID of the task.</p>"
+        },
+        "taskId":{
+          "shape":"TaskId",
+          "documentation":"<p>The task ID.</p>"
+        }
+      },
+      "documentation":"<p>The identifiers for a task.</p>"
+    },
+    "BatchGetTaskIdentifiers":{
+      "type":"list",
+      "member":{"shape":"BatchGetTaskIdentifier"},
+      "max":100,
+      "min":1
+    },
+    "BatchGetTaskItem":{
+      "type":"structure",
+      "required":[
+        "farmId",
+        "queueId",
+        "jobId",
+        "stepId",
+        "taskId",
+        "createdAt",
+        "createdBy",
+        "runStatus"
+      ],
+      "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID of the task.</p>"
+        },
+        "queueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The queue ID of the task.</p>"
+        },
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The job ID of the task.</p>"
+        },
+        "stepId":{
+          "shape":"StepId",
+          "documentation":"<p>The step ID of the task.</p>"
+        },
+        "taskId":{
+          "shape":"TaskId",
+          "documentation":"<p>The task ID.</p>"
+        },
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The date and time the resource was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user or system that created this resource.</p>"
+        },
+        "runStatus":{
+          "shape":"TaskRunStatus",
+          "documentation":"<p>The run status of the task.</p>"
+        },
+        "targetRunStatus":{
+          "shape":"TaskTargetRunStatus",
+          "documentation":"<p>The run status with which to start the task.</p>"
+        },
+        "failureRetryCount":{
+          "shape":"TaskRetryCount",
+          "documentation":"<p>The number of times the task failed and was retried.</p>"
+        },
+        "startedAt":{
+          "shape":"StartedAt",
+          "documentation":"<p>The date and time the resource started running.</p>"
+        },
+        "endedAt":{
+          "shape":"EndedAt",
+          "documentation":"<p>The date and time the resource ended running.</p>"
+        },
+        "updatedAt":{
+          "shape":"UpdatedAt",
+          "documentation":"<p>The date and time the resource was updated.</p>"
+        },
+        "updatedBy":{
+          "shape":"UpdatedBy",
+          "documentation":"<p>The user or system that updated this resource.</p>"
+        },
+        "latestSessionActionId":{
+          "shape":"SessionActionId",
+          "documentation":"<p>The latest session action for the task.</p>"
+        },
+        "parameters":{
+          "shape":"TaskParameters",
+          "documentation":"<p>The parameters for the task.</p>"
+        }
+      },
+      "documentation":"<p>The details of a task returned in a batch get operation.</p>"
+    },
+    "BatchGetTaskItems":{
+      "type":"list",
+      "member":{"shape":"BatchGetTaskItem"}
+    },
+    "BatchGetTaskRequest":{
+      "type":"structure",
+      "required":["identifiers"],
+      "members":{
+        "identifiers":{
+          "shape":"BatchGetTaskIdentifiers",
+          "documentation":"<p>The list of task identifiers to retrieve. You can specify up to 100 identifiers per request.</p>"
+        }
+      }
+    },
+    "BatchGetTaskResponse":{
+      "type":"structure",
+      "required":[
+        "tasks",
+        "errors"
+      ],
+      "members":{
+        "tasks":{
+          "shape":"BatchGetTaskItems",
+          "documentation":"<p>A list of tasks that were successfully retrieved.</p>"
+        },
+        "errors":{
+          "shape":"BatchGetTaskErrors",
+          "documentation":"<p>A list of errors for tasks that could not be retrieved.</p>"
+        }
+      }
+    },
+    "BatchGetWorkerError":{
+      "type":"structure",
+      "required":[
+        "farmId",
+        "fleetId",
+        "workerId",
+        "code",
+        "message"
+      ],
+      "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID of the worker that could not be retrieved.</p>"
+        },
+        "fleetId":{
+          "shape":"FleetId",
+          "documentation":"<p>The fleet ID of the worker that could not be retrieved.</p>"
+        },
+        "workerId":{
+          "shape":"WorkerId",
+          "documentation":"<p>The worker ID of the worker that could not be retrieved.</p>"
+        },
+        "code":{
+          "shape":"BatchGetWorkerErrorCode",
+          "documentation":"<p>The error code.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The error message.</p>"
+        }
+      },
+      "documentation":"<p>The error details for a worker that could not be retrieved in a batch get operation.</p>"
+    },
+    "BatchGetWorkerErrorCode":{
+      "type":"string",
+      "enum":[
+        "InternalServerErrorException",
+        "ResourceNotFoundException",
+        "ValidationException"
+      ]
+    },
+    "BatchGetWorkerErrors":{
+      "type":"list",
+      "member":{"shape":"BatchGetWorkerError"}
+    },
+    "BatchGetWorkerIdentifier":{
+      "type":"structure",
+      "required":[
+        "farmId",
+        "fleetId",
+        "workerId"
+      ],
+      "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID of the worker.</p>"
+        },
+        "fleetId":{
+          "shape":"FleetId",
+          "documentation":"<p>The fleet ID of the worker.</p>"
+        },
+        "workerId":{
+          "shape":"WorkerId",
+          "documentation":"<p>The worker ID.</p>"
+        }
+      },
+      "documentation":"<p>The identifiers for a worker.</p>"
+    },
+    "BatchGetWorkerIdentifiers":{
+      "type":"list",
+      "member":{"shape":"BatchGetWorkerIdentifier"},
+      "max":100,
+      "min":1
+    },
+    "BatchGetWorkerItem":{
+      "type":"structure",
+      "required":[
+        "farmId",
+        "fleetId",
+        "workerId",
+        "status",
+        "createdAt",
+        "createdBy"
+      ],
+      "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID of the worker.</p>"
+        },
+        "fleetId":{
+          "shape":"FleetId",
+          "documentation":"<p>The fleet ID of the worker.</p>"
+        },
+        "workerId":{
+          "shape":"WorkerId",
+          "documentation":"<p>The worker ID.</p>"
+        },
+        "hostProperties":{
+          "shape":"HostPropertiesResponse",
+          "documentation":"<p>The host properties for the worker.</p>"
+        },
+        "status":{
+          "shape":"WorkerStatus",
+          "documentation":"<p>The status of the worker.</p>"
+        },
+        "log":{
+          "shape":"LogConfiguration",
+          "documentation":"<p>The log configuration for the worker.</p>"
+        },
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The date and time the resource was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user or system that created this resource.</p>"
+        },
+        "updatedAt":{
+          "shape":"UpdatedAt",
+          "documentation":"<p>The date and time the resource was updated.</p>"
+        },
+        "updatedBy":{
+          "shape":"UpdatedBy",
+          "documentation":"<p>The user or system that updated this resource.</p>"
+        }
+      },
+      "documentation":"<p>The details of a worker returned in a batch get operation.</p>"
+    },
+    "BatchGetWorkerItems":{
+      "type":"list",
+      "member":{"shape":"BatchGetWorkerItem"}
+    },
+    "BatchGetWorkerRequest":{
+      "type":"structure",
+      "required":["identifiers"],
+      "members":{
+        "identifiers":{
+          "shape":"BatchGetWorkerIdentifiers",
+          "documentation":"<p>The list of worker identifiers to retrieve. You can specify up to 100 identifiers per request.</p>"
+        }
+      }
+    },
+    "BatchGetWorkerResponse":{
+      "type":"structure",
+      "required":[
+        "workers",
+        "errors"
+      ],
+      "members":{
+        "workers":{
+          "shape":"BatchGetWorkerItems",
+          "documentation":"<p>A list of workers that were successfully retrieved.</p>"
+        },
+        "errors":{
+          "shape":"BatchGetWorkerErrors",
+          "documentation":"<p>A list of errors for workers that could not be retrieved.</p>"
+        }
+      }
+    },
+    "BatchUpdateJobError":{
+      "type":"structure",
+      "required":[
+        "farmId",
+        "queueId",
+        "jobId",
+        "code",
+        "message"
+      ],
+      "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID of the job that could not be updated.</p>"
+        },
+        "queueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The queue ID of the job that could not be updated.</p>"
+        },
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The job ID of the job that could not be updated.</p>"
+        },
+        "code":{
+          "shape":"BatchUpdateJobErrorCode",
+          "documentation":"<p>The error code.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The error message.</p>"
+        }
+      },
+      "documentation":"<p>The error details for a job that could not be updated in a batch update operation.</p>"
+    },
+    "BatchUpdateJobErrorCode":{
+      "type":"string",
+      "enum":[
+        "ConflictException",
+        "InternalServerErrorException",
+        "ResourceNotFoundException",
+        "ValidationException",
+        "AccessDeniedException",
+        "ThrottlingException"
+      ]
+    },
+    "BatchUpdateJobErrors":{
+      "type":"list",
+      "member":{"shape":"BatchUpdateJobError"}
+    },
+    "BatchUpdateJobItem":{
+      "type":"structure",
+      "required":[
+        "farmId",
+        "queueId",
+        "jobId"
+      ],
+      "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID of the job to update.</p>"
+        },
+        "queueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The queue ID of the job to update.</p>"
+        },
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The job ID of the job to update.</p>"
+        },
+        "targetTaskRunStatus":{
+          "shape":"JobTargetTaskRunStatus",
+          "documentation":"<p>The task status to update the job's tasks to.</p>"
+        },
+        "priority":{
+          "shape":"JobPriority",
+          "documentation":"<p>The job priority to update.</p>"
+        },
+        "maxFailedTasksCount":{
+          "shape":"MaxFailedTasksCount",
+          "documentation":"<p>The number of task failures before the job stops running and is marked as <code>FAILED</code>.</p>"
+        },
+        "maxRetriesPerTask":{
+          "shape":"MaxRetriesPerTask",
+          "documentation":"<p>The maximum number of retries per failed tasks.</p>"
+        },
+        "lifecycleStatus":{
+          "shape":"UpdateJobLifecycleStatus",
+          "documentation":"<p>The status of a job in its lifecycle. When you change the status of the job to <code>ARCHIVED</code>, the job can't be scheduled or archived.</p> <important> <p>An archived job and its steps and tasks are deleted after 120 days. The job can't be recovered.</p> </important>"
+        },
+        "maxWorkerCount":{
+          "shape":"MaxWorkerCount",
+          "documentation":"<p>The maximum number of worker hosts that can concurrently process a job.</p>"
+        },
+        "name":{
+          "shape":"JobName",
+          "documentation":"<p>The name of the job to update.</p>"
+        },
+        "description":{
+          "shape":"JobDescriptionOverride",
+          "documentation":"<p>The description of the job to update.</p>"
+        }
+      },
+      "documentation":"<p>The details of a job to update in a batch update operation.</p>"
+    },
+    "BatchUpdateJobItems":{
+      "type":"list",
+      "member":{"shape":"BatchUpdateJobItem"},
+      "max":100,
+      "min":1
+    },
+    "BatchUpdateJobRequest":{
+      "type":"structure",
+      "required":["jobs"],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The unique token which the server uses to recognize retries of the same request.</p>",
+          "idempotencyToken":true,
+          "location":"header",
+          "locationName":"X-Amz-Client-Token"
+        },
+        "jobs":{
+          "shape":"BatchUpdateJobItems",
+          "documentation":"<p>The list of jobs to update. You can specify up to 100 jobs per request.</p>"
+        }
+      }
+    },
+    "BatchUpdateJobResponse":{
+      "type":"structure",
+      "required":["errors"],
+      "members":{
+        "errors":{
+          "shape":"BatchUpdateJobErrors",
+          "documentation":"<p>A list of errors for jobs that could not be updated.</p>"
+        }
+      }
+    },
+    "BatchUpdateTaskError":{
+      "type":"structure",
+      "required":[
+        "farmId",
+        "queueId",
+        "jobId",
+        "stepId",
+        "taskId",
+        "code",
+        "message"
+      ],
+      "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID of the task that could not be updated.</p>"
+        },
+        "queueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The queue ID of the task that could not be updated.</p>"
+        },
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The job ID of the task that could not be updated.</p>"
+        },
+        "stepId":{
+          "shape":"StepId",
+          "documentation":"<p>The step ID of the task that could not be updated.</p>"
+        },
+        "taskId":{
+          "shape":"TaskId",
+          "documentation":"<p>The task ID of the task that could not be updated.</p>"
+        },
+        "code":{
+          "shape":"BatchUpdateTaskErrorCode",
+          "documentation":"<p>The error code.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The error message.</p>"
+        }
+      },
+      "documentation":"<p>The error details for a task that could not be updated in a batch update operation.</p>"
+    },
+    "BatchUpdateTaskErrorCode":{
+      "type":"string",
+      "enum":[
+        "ConflictException",
+        "InternalServerErrorException",
+        "ResourceNotFoundException",
+        "ValidationException",
+        "AccessDeniedException",
+        "ThrottlingException"
+      ]
+    },
+    "BatchUpdateTaskErrors":{
+      "type":"list",
+      "member":{"shape":"BatchUpdateTaskError"}
+    },
+    "BatchUpdateTaskItem":{
+      "type":"structure",
+      "required":[
+        "farmId",
+        "queueId",
+        "jobId",
+        "stepId",
+        "taskId",
+        "targetRunStatus"
+      ],
+      "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID of the task to update.</p>"
+        },
+        "queueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The queue ID of the task to update.</p>"
+        },
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The job ID of the task to update.</p>"
+        },
+        "stepId":{
+          "shape":"StepId",
+          "documentation":"<p>The step ID of the task to update.</p>"
+        },
+        "taskId":{
+          "shape":"TaskId",
+          "documentation":"<p>The task ID of the task to update.</p>"
+        },
+        "targetRunStatus":{
+          "shape":"TaskTargetRunStatus",
+          "documentation":"<p>The run status with which to start the task.</p>"
+        }
+      },
+      "documentation":"<p>The details of a task to update in a batch update operation.</p>"
+    },
+    "BatchUpdateTaskItems":{
+      "type":"list",
+      "member":{"shape":"BatchUpdateTaskItem"},
+      "max":100,
+      "min":1
+    },
+    "BatchUpdateTaskRequest":{
+      "type":"structure",
+      "required":["tasks"],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The unique token which the server uses to recognize retries of the same request.</p>",
+          "idempotencyToken":true,
+          "location":"header",
+          "locationName":"X-Amz-Client-Token"
+        },
+        "tasks":{
+          "shape":"BatchUpdateTaskItems",
+          "documentation":"<p>The list of tasks to update. You can specify up to 100 tasks per request.</p>"
+        }
+      }
+    },
+    "BatchUpdateTaskResponse":{
+      "type":"structure",
+      "required":["errors"],
+      "members":{
+        "errors":{
+          "shape":"BatchUpdateTaskErrors",
+          "documentation":"<p>A list of errors for tasks that could not be updated.</p>"
+        }
+      }
+    },
     "BoundedString":{
       "type":"string",
       "max":64,
@@ -3805,6 +5413,10 @@
         "identityCenterInstanceArn":{
           "shape":"IdentityCenterInstanceArn",
           "documentation":"<p>The Amazon Resource Name of the IAM Identity Center instance that authenticates monitor users.</p>"
+        },
+        "identityCenterRegion":{
+          "shape":"Region",
+          "documentation":"<p>The AWS region where IAM Identity Center is enabled. Required when Identity Center is in a different region than the monitor.</p>"
         },
         "subdomain":{
           "shape":"Subdomain",
@@ -5999,6 +7611,10 @@
         "identityCenterInstanceArn":{
           "shape":"IdentityCenterInstanceArn",
           "documentation":"<p>The Amazon Resource Name of the IAM Identity Center instance responsible for authenticating monitor users.</p>"
+        },
+        "identityCenterRegion":{
+          "shape":"Region",
+          "documentation":"<p>The AWS region where IAM Identity Center is enabled.</p>"
         },
         "identityCenterApplicationArn":{
           "shape":"IdentityCenterApplicationArn",
@@ -9561,6 +11177,10 @@
           "shape":"IdentityCenterInstanceArn",
           "documentation":"<p>The Amazon Resource Name of the IAM Identity Center instance responsible for authenticating monitor users.</p>"
         },
+        "identityCenterRegion":{
+          "shape":"Region",
+          "documentation":"<p>The AWS region where IAM Identity Center is enabled.</p>"
+        },
         "identityCenterApplicationArn":{
           "shape":"IdentityCenterApplicationArn",
           "documentation":"<p>The Amazon Resource Name that the IAM Identity Center assigned to the monitor when it was created.</p>"
@@ -10081,6 +11701,12 @@
         "CONTIGUOUS",
         "NONCONTIGUOUS"
       ]
+    },
+    "Region":{
+      "type":"string",
+      "max":25,
+      "min":1,
+      "pattern":"[a-z0-9-]+"
     },
     "RequiredFileSystemLocationNames":{
       "type":"list",

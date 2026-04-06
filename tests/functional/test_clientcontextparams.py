@@ -17,6 +17,7 @@ class TestClientContextParams(BaseAWSCommandParamsTest):
     def setUp(self):
         super().setUp()
         self.parsed_responses = [{'Buckets': [], 'Owner': {}}]
+        self.driver.session.set_default_client_config(None)
 
     def test_boolean_flag_sets_client_context_params(self):
         self.run_cmd('s3api list-buckets --disable-s3-express-session-auth')
@@ -39,3 +40,11 @@ class TestClientContextParams(BaseAWSCommandParamsTest):
         config = self.driver.session.get_default_client_config()
         if config is not None:
             self.assertIsNone(config.client_context_params)
+
+    def test_params_use_snake_case_keys(self):
+        self.run_cmd('s3api list-buckets --disable-s3-express-session-auth')
+        config = self.driver.session.get_default_client_config()
+        # Keys must be snake_case to match what the endpoint resolver
+        # looks up.
+        for key in config.client_context_params:
+            self.assertEqual(key, key.lower())

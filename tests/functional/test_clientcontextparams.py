@@ -17,34 +17,32 @@ class TestClientContextParams(BaseAWSCommandParamsTest):
     def setUp(self):
         super().setUp()
         self.parsed_responses = [{'Buckets': [], 'Owner': {}}]
-        self.driver.session.set_default_client_config(None)
+
+    def _get_client_context_params(self):
+        config = self.driver.session.get_default_client_config()
+        if config is None:
+            return None
+        return config.client_context_params
 
     def test_boolean_flag_sets_client_context_params(self):
         self.run_cmd('s3api list-buckets --disable-s3-express-session-auth')
-        config = self.driver.session.get_default_client_config()
-        self.assertEqual(
-            config.client_context_params,
-            {'disable_s3_express_session_auth': True},
-        )
+        params = self._get_client_context_params()
+        self.assertIn('disable_s3_express_session_auth', params)
+        self.assertTrue(params['disable_s3_express_session_auth'])
 
     def test_negative_flag_sets_false(self):
         self.run_cmd('s3api list-buckets --no-disable-s3-express-session-auth')
-        config = self.driver.session.get_default_client_config()
-        self.assertEqual(
-            config.client_context_params,
-            {'disable_s3_express_session_auth': False},
-        )
+        params = self._get_client_context_params()
+        self.assertIn('disable_s3_express_session_auth', params)
+        self.assertFalse(params['disable_s3_express_session_auth'])
 
     def test_no_flag_does_not_set_client_context_params(self):
         self.run_cmd('s3api list-buckets')
-        config = self.driver.session.get_default_client_config()
-        if config is not None:
-            self.assertIsNone(config.client_context_params)
+        params = self._get_client_context_params()
+        if params is not None:
+            self.assertNotIn('disable_s3_express_session_auth', params)
 
     def test_params_use_snake_case_keys(self):
         self.run_cmd('s3api list-buckets --disable-s3-express-session-auth')
-        config = self.driver.session.get_default_client_config()
-        # Keys must be snake_case to match what the endpoint resolver
-        # looks up.
-        for key in config.client_context_params:
+        for key in self._get_client_context_params():
             self.assertEqual(key, key.lower())

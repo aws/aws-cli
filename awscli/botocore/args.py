@@ -536,12 +536,10 @@ class ClientArgsCreator:
                 's3_disable_express_session_auth'
             )
 
-        # Raise an error if the value does not represent a boolean.
         if disable_express is not None:
             self._validate_s3_disable_express_session_auth(disable_express)
-        config_kwargs['s3_disable_express_session_auth'] = ensure_boolean(
-            disable_express
-        )
+            disable_express = ensure_boolean(disable_express)
+        config_kwargs['s3_disable_express_session_auth'] = disable_express
 
     def _validate_min_compression_size(self, min_size):
         min_allowed_min_size = 1

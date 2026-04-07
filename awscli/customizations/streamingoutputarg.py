@@ -109,7 +109,7 @@ class StreamingOutputArgument(BaseCLIArgument):
         fd = os.open(
             self._output_file, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600
         )
-        os.fchmod(fd, 0o600)
+        os.chmod(self._output_file, 0o600)
         with os.fdopen(fd, 'wb') as fp:
             data = body.read(buffer_size)
             while data:

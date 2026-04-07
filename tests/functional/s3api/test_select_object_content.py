@@ -15,7 +15,11 @@ import os
 import shutil
 import tempfile
 
-from awscli.testutils import BaseAWSCommandParamsTest, BaseAWSHelpOutputTest
+from awscli.testutils import (
+    BaseAWSCommandParamsTest,
+    BaseAWSHelpOutputTest,
+    skip_if_windows,
+)
 
 
 class TestGetObject(BaseAWSCommandParamsTest):
@@ -82,6 +86,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
             contents = f.read()
             self.assertEqual(contents, ('a,b,c,d\n' 'e,f,g,h\n'))
 
+    @skip_if_windows('chmod is not supported on Windows')
     def test_output_file_permissions(self):
         filename = os.path.join(self._tempdir, 'outfile_perms')
         cmdline = self.prefix + [

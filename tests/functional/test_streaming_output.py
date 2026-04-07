@@ -14,7 +14,11 @@
 import os
 
 from awscli.compat import BytesIO
-from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
+from awscli.testutils import (
+    BaseAWSCommandParamsTest,
+    FileCreator,
+    skip_if_windows,
+)
 
 
 class TestStreamingOutput(BaseAWSCommandParamsTest):
@@ -44,6 +48,7 @@ class TestStreamingOutput(BaseAWSCommandParamsTest):
         with open(outpath, 'rb') as outfile:
             self.assertEqual(outfile.read(), b'testbody')
 
+    @skip_if_windows('chmod is not supported on Windows')
     def test_streaming_output_file_permissions(self):
         cmdline = (
             'kinesis-video-media get-media --stream-name test-stream '

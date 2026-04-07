@@ -8347,6 +8347,29 @@
       },
       "documentation":"<p>Information about the platform for the Amazon ECS service or task.</p> <p>For more information about <code>RuntimePlatform</code>, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#runtime-platform\">RuntimePlatform</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
     },
+    "S3FilesVolumeConfiguration":{
+      "type":"structure",
+      "required":["fileSystemArn"],
+      "members":{
+        "fileSystemArn":{
+          "shape":"String",
+          "documentation":"<p>The full ARN of the S3 Files file system to mount.</p>"
+        },
+        "rootDirectory":{
+          "shape":"String",
+          "documentation":"<p>The directory within the Amazon S3 Files file system to mount as the root directory. If this parameter is omitted, the root of the Amazon S3 Files file system will be used. Specifying <code>/</code> will have the same effect as omitting this parameter.</p> <important> <p>If a S3 Files access point is specified in the <code>accessPointArn</code>, the root directory parameter must either be omitted or set to <code>/</code> which will enforce the path set on the S3 Files access point.</p> </important>"
+        },
+        "transitEncryptionPort":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The port to use for sending encrypted data between the ECS host and the S3 Files file system. If you do not specify a transit encryption port, it will use the port selection strategy that the Amazon S3 Files mount helper uses. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-files-mounting.html\">S3 Files mount helper</a>.</p>"
+        },
+        "accessPointArn":{
+          "shape":"String",
+          "documentation":"<p>The full ARN of the S3 Files access point to use. If an access point is specified, the root directory value specified in the <code>S3FilesVolumeConfiguration</code> must either be omitted or set to <code>/</code> which will enforce the path set on the S3 Files access point. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-files-access-points-creating.html\">Creating S3 Files access points</a>.</p>"
+        }
+      },
+      "documentation":"<p>This parameter is specified when you're using an Amazon S3 Files file system for task storage. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/s3files-volumes.html\">Amazon S3 Files volumes</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <important> <p>Your task definition must include a Task IAM Role. See <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-files-prereq-policies.html#s3-files-prereq-iam-compute-role\"> IAM role for attaching your file system to AWS compute resources</a> for required permissions.</p> </important>"
+    },
     "Scale":{
       "type":"structure",
       "members":{
@@ -11082,7 +11105,7 @@
       "members":{
         "name":{
           "shape":"String",
-          "documentation":"<p>The name of the volume. Up to 255 letters (uppercase and lowercase), numbers, underscores, and hyphens are allowed.</p> <p>When using a volume configured at launch, the <code>name</code> is required and must also be specified as the volume name in the <code>ServiceVolumeConfiguration</code> or <code>TaskVolumeConfiguration</code> parameter when creating your service or standalone task.</p> <p>For all other types of volumes, this name is referenced in the <code>sourceVolume</code> parameter of the <code>mountPoints</code> object in the container definition.</p> <p>When a volume is using the <code>efsVolumeConfiguration</code>, the name is required.</p>"
+          "documentation":"<p>The name of the volume. Up to 255 letters (uppercase and lowercase), numbers, underscores, and hyphens are allowed.</p> <p>When using a volume configured at launch, the <code>name</code> is required and must also be specified as the volume name in the <code>ServiceVolumeConfiguration</code> or <code>TaskVolumeConfiguration</code> parameter when creating your service or standalone task.</p> <p>For all other types of volumes, this name is referenced in the <code>sourceVolume</code> parameter of the <code>mountPoints</code> object in the container definition.</p> <p>When a volume is using the <code>efsVolumeConfiguration</code>, the name is required.</p> <p>When a volume is using the <code>s3filesVolumeConfiguration</code>, the name is required.</p>"
         },
         "host":{
           "shape":"HostVolumeProperties",
@@ -11096,6 +11119,10 @@
           "shape":"EFSVolumeConfiguration",
           "documentation":"<p>This parameter is specified when you use an Amazon Elastic File System file system for task storage.</p>"
         },
+        "s3filesVolumeConfiguration":{
+          "shape":"S3FilesVolumeConfiguration",
+          "documentation":"<p>This parameter is specified when you use an Amazon S3 Files file system for task storage.</p>"
+        },
         "fsxWindowsFileServerVolumeConfiguration":{
           "shape":"FSxWindowsFileServerVolumeConfiguration",
           "documentation":"<p>This parameter is specified when you use Amazon FSx for Windows File Server file system for task storage.</p>"
@@ -11105,7 +11132,7 @@
           "documentation":"<p>Indicates whether the volume should be configured at launch time. This is used to create Amazon EBS volumes for standalone tasks or tasks created as part of a service. Each task definition revision may only have one volume configured at launch in the volume configuration.</p> <p>To configure a volume at launch time, use this task definition revision and specify a <code>volumeConfigurations</code> object when calling the <code>CreateService</code>, <code>UpdateService</code>, <code>RunTask</code> or <code>StartTask</code> APIs.</p>"
         }
       },
-      "documentation":"<p>The data volume configuration for tasks launched using this task definition. Specifying a volume configuration in a task definition is optional. The volume configuration may contain multiple volumes but only one volume configured at launch is supported. Each volume defined in the volume configuration may only specify a <code>name</code> and one of either <code>configuredAtLaunch</code>, <code>dockerVolumeConfiguration</code>, <code>efsVolumeConfiguration</code>, <code>fsxWindowsFileServerVolumeConfiguration</code>, or <code>host</code>. If an empty volume configuration is specified, by default Amazon ECS uses a host volume. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_data_volumes.html\">Using data volumes in tasks</a>.</p>"
+      "documentation":"<p>The data volume configuration for tasks launched using this task definition. Specifying a volume configuration in a task definition is optional. The volume configuration may contain multiple volumes but only one volume configured at launch is supported. Each volume defined in the volume configuration may only specify a <code>name</code> and one of either <code>configuredAtLaunch</code>, <code>dockerVolumeConfiguration</code>, <code>efsVolumeConfiguration</code>, <code>s3filesVolumeConfiguration</code>, <code>fsxWindowsFileServerVolumeConfiguration</code>, or <code>host</code>. If an empty volume configuration is specified, by default Amazon ECS uses a host volume. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_data_volumes.html\">Using data volumes in tasks</a>.</p>"
     },
     "VolumeFrom":{
       "type":"structure",

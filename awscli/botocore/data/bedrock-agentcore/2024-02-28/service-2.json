@@ -411,6 +411,25 @@
       ],
       "documentation":"<p>Executes a command in a runtime session container and streams the output back to the caller. This operation allows you to run shell commands within the agent runtime environment and receive real-time streaming responses including standard output and standard error.</p> <p>To invoke a command, you must specify the agent runtime ARN and a runtime session ID. The command execution supports streaming responses, allowing you to receive output as it becomes available through <code>contentStart</code>, <code>contentDelta</code>, and <code>contentStop</code> events.</p> <p>To use this operation, you must have the <code>bedrock-agentcore:InvokeAgentRuntimeCommand</code> permission.</p>"
     },
+    "InvokeBrowser":{
+      "name":"InvokeBrowser",
+      "http":{
+        "method":"POST",
+        "requestUri":"/browsers/{browserIdentifier}/sessions/invoke",
+        "responseCode":200
+      },
+      "input":{"shape":"InvokeBrowserRequest"},
+      "output":{"shape":"InvokeBrowserResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Invokes an operating system-level action on a browser session in Amazon Bedrock AgentCore. This operation provides direct OS-level control over browser sessions, enabling mouse actions, keyboard input, and screenshots that the WebSocket-based Chrome DevTools Protocol (CDP) cannot handle — such as interacting with print dialogs, context menus, and JavaScript alerts.</p> <p>You send a request with exactly one action in the <code>BrowserAction</code> union, and receive a corresponding result in the <code>BrowserActionResult</code> union.</p> <p>The following operations are related to <code>InvokeBrowser</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StartBrowserSession.html\">StartBrowserSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetBrowserSession.html\">GetBrowserSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StopBrowserSession.html\">StopBrowserSession</a> </p> </li> </ul>"
+    },
     "InvokeCodeInterpreter":{
       "name":"InvokeCodeInterpreter",
       "http":{
@@ -569,7 +588,7 @@
         {"shape":"InvalidInputException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Lists sessions in an AgentCore Memory resource based on specified criteria. We recommend using pagination to ensure that the operation returns quickly and successfully.</p> <p>To use this operation, you must have the <code>bedrock-agentcore:ListSessions</code> permission.</p>",
+      "documentation":"<p>Lists sessions in an AgentCore Memory resource based on specified criteria. We recommend using pagination to ensure that the operation returns quickly and successfully.</p> <p>Empty sessions are automatically deleted after one day.</p> <p>To use this operation, you must have the <code>bedrock-agentcore:ListSessions</code> permission.</p>",
       "readonly":true
     },
     "RetrieveMemoryRecords":{
@@ -630,7 +649,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates and initializes a browser session in Amazon Bedrock AgentCore. The session enables agents to navigate and interact with web content, extract information from websites, and perform web-based tasks as part of their response generation.</p> <p>To create a session, you must specify a browser identifier and a name. You can also configure the viewport dimensions to control the visible area of web content. The session remains active until it times out or you explicitly stop it using the <code>StopBrowserSession</code> operation.</p> <p>The following operations are related to <code>StartBrowserSession</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetBrowserSession.html\">GetBrowserSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_UpdateBrowserStream.html\">UpdateBrowserStream</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_SaveBrowserSessionProfile.html\">SaveBrowserSessionProfile</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StopBrowserSession.html\">StopBrowserSession</a> </p> </li> </ul>",
+      "documentation":"<p>Creates and initializes a browser session in Amazon Bedrock AgentCore. The session enables agents to navigate and interact with web content, extract information from websites, and perform web-based tasks as part of their response generation.</p> <p>To create a session, you must specify a browser identifier and a name. You can also configure the viewport dimensions to control the visible area of web content. The session remains active until it times out or you explicitly stop it using the <code>StopBrowserSession</code> operation.</p> <p>The following operations are related to <code>StartBrowserSession</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetBrowserSession.html\">GetBrowserSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_UpdateBrowserStream.html\">UpdateBrowserStream</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_SaveBrowserSessionProfile.html\">SaveBrowserSessionProfile</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StopBrowserSession.html\">StopBrowserSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_InvokeBrowser.html\">InvokeBrowser</a> </p> </li> </ul>",
       "idempotent":true
     },
     "StartCodeInterpreterSession":{
@@ -1022,6 +1041,92 @@
       "max":100,
       "min":1,
       "pattern":"[a-zA-Z0-9][a-zA-Z0-9-_]*"
+    },
+    "BrowserAction":{
+      "type":"structure",
+      "members":{
+        "mouseClick":{
+          "shape":"MouseClickArguments",
+          "documentation":"<p>Click at the specified coordinates.</p>"
+        },
+        "mouseMove":{
+          "shape":"MouseMoveArguments",
+          "documentation":"<p>Move the cursor to the specified coordinates.</p>"
+        },
+        "mouseDrag":{
+          "shape":"MouseDragArguments",
+          "documentation":"<p>Drag from a start position to an end position.</p>"
+        },
+        "mouseScroll":{
+          "shape":"MouseScrollArguments",
+          "documentation":"<p>Scroll at the specified position.</p>"
+        },
+        "keyType":{
+          "shape":"KeyTypeArguments",
+          "documentation":"<p>Type a string of text.</p>"
+        },
+        "keyPress":{
+          "shape":"KeyPressArguments",
+          "documentation":"<p>Press a key one or more times.</p>"
+        },
+        "keyShortcut":{
+          "shape":"KeyShortcutArguments",
+          "documentation":"<p>Press a key combination.</p>"
+        },
+        "screenshot":{
+          "shape":"ScreenshotArguments",
+          "documentation":"<p>Capture a full-screen screenshot.</p>"
+        }
+      },
+      "documentation":"<p>The browser action to perform. Exactly one member must be set per request.</p>",
+      "union":true
+    },
+    "BrowserActionResult":{
+      "type":"structure",
+      "members":{
+        "mouseClick":{
+          "shape":"MouseClickResult",
+          "documentation":"<p>The result of a mouse click action.</p>"
+        },
+        "mouseMove":{
+          "shape":"MouseMoveResult",
+          "documentation":"<p>The result of a mouse move action.</p>"
+        },
+        "mouseDrag":{
+          "shape":"MouseDragResult",
+          "documentation":"<p>The result of a mouse drag action.</p>"
+        },
+        "mouseScroll":{
+          "shape":"MouseScrollResult",
+          "documentation":"<p>The result of a mouse scroll action.</p>"
+        },
+        "keyType":{
+          "shape":"KeyTypeResult",
+          "documentation":"<p>The result of a key type action.</p>"
+        },
+        "keyPress":{
+          "shape":"KeyPressResult",
+          "documentation":"<p>The result of a key press action.</p>"
+        },
+        "keyShortcut":{
+          "shape":"KeyShortcutResult",
+          "documentation":"<p>The result of a key shortcut action.</p>"
+        },
+        "screenshot":{
+          "shape":"ScreenshotResult",
+          "documentation":"<p>The result of a screenshot action.</p>"
+        }
+      },
+      "documentation":"<p>The result of a browser action execution. Exactly one member is set, matching the action that was performed.</p>",
+      "union":true
+    },
+    "BrowserActionStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a browser action execution.</p>",
+      "enum":[
+        "SUCCESS",
+        "FAILED"
+      ]
     },
     "BrowserEnterprisePolicies":{
       "type":"list",
@@ -2991,6 +3096,53 @@
       },
       "payload":"response"
     },
+    "InvokeBrowserRequest":{
+      "type":"structure",
+      "required":[
+        "browserIdentifier",
+        "sessionId",
+        "action"
+      ],
+      "members":{
+        "browserIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the browser associated with the session. This must match the identifier used when creating the session with <code>StartBrowserSession</code>.</p>",
+          "location":"uri",
+          "locationName":"browserIdentifier"
+        },
+        "sessionId":{
+          "shape":"BrowserSessionId",
+          "documentation":"<p>The unique identifier of the browser session on which to perform the action. This must be an active session created with <code>StartBrowserSession</code>.</p>",
+          "location":"header",
+          "locationName":"x-amzn-browser-session-id"
+        },
+        "action":{
+          "shape":"BrowserAction",
+          "documentation":"<p>The browser action to perform. Exactly one member of the <code>BrowserAction</code> union must be set per request.</p>"
+        }
+      },
+      "documentation":"<p>Request for the InvokeBrowser operation.</p>"
+    },
+    "InvokeBrowserResponse":{
+      "type":"structure",
+      "required":[
+        "result",
+        "sessionId"
+      ],
+      "members":{
+        "result":{
+          "shape":"BrowserActionResult",
+          "documentation":"<p>The result of the browser action. The member set in the result corresponds to the action that was performed.</p>"
+        },
+        "sessionId":{
+          "shape":"BrowserSessionId",
+          "documentation":"<p>The unique identifier of the browser session on which the action was performed.</p>",
+          "location":"header",
+          "locationName":"x-amzn-browser-session-id"
+        }
+      },
+      "documentation":"<p>Response for the InvokeBrowser operation.</p>"
+    },
     "InvokeCodeInterpreterRequest":{
       "type":"structure",
       "required":[
@@ -3058,6 +3210,106 @@
         }
       },
       "payload":"stream"
+    },
+    "KeyList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "documentation":"<p>A list of key names for keyboard shortcuts.</p>",
+      "max":5,
+      "min":1
+    },
+    "KeyPressArguments":{
+      "type":"structure",
+      "required":["key"],
+      "members":{
+        "key":{
+          "shape":"String",
+          "documentation":"<p>The key name to press (for example, <code>enter</code>, <code>tab</code>, <code>escape</code>).</p>"
+        },
+        "presses":{
+          "shape":"KeyPressArgumentsPressesInteger",
+          "documentation":"<p>The number of times to press the key. Valid range: 1–100. Defaults to 1.</p>"
+        }
+      },
+      "documentation":"<p>Arguments for a key press action.</p>"
+    },
+    "KeyPressArgumentsPressesInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "KeyPressResult":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"BrowserActionStatus",
+          "documentation":"<p>The status of the action execution.</p>"
+        },
+        "error":{
+          "shape":"String",
+          "documentation":"<p>The error message. Present only when the action failed.</p>"
+        }
+      },
+      "documentation":"<p>The result of a key press action.</p>"
+    },
+    "KeyShortcutArguments":{
+      "type":"structure",
+      "required":["keys"],
+      "members":{
+        "keys":{
+          "shape":"KeyList",
+          "documentation":"<p>The key combination to press (for example, <code>[\"ctrl\", \"s\"]</code>). Maximum 5 keys.</p>"
+        }
+      },
+      "documentation":"<p>Arguments for a key shortcut action.</p>"
+    },
+    "KeyShortcutResult":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"BrowserActionStatus",
+          "documentation":"<p>The status of the action execution.</p>"
+        },
+        "error":{
+          "shape":"String",
+          "documentation":"<p>The error message. Present only when the action failed.</p>"
+        }
+      },
+      "documentation":"<p>The result of a key shortcut action.</p>"
+    },
+    "KeyTypeArguments":{
+      "type":"structure",
+      "required":["text"],
+      "members":{
+        "text":{
+          "shape":"KeyTypeArgumentsTextString",
+          "documentation":"<p>The text string to type. Maximum length: 10,000 characters.</p>"
+        }
+      },
+      "documentation":"<p>Arguments for a key type action.</p>"
+    },
+    "KeyTypeArgumentsTextString":{
+      "type":"string",
+      "max":10000,
+      "min":0
+    },
+    "KeyTypeResult":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"BrowserActionStatus",
+          "documentation":"<p>The status of the action execution.</p>"
+        },
+        "error":{
+          "shape":"String",
+          "documentation":"<p>The error message. Present only when the action failed.</p>"
+        }
+      },
+      "documentation":"<p>The result of a key type action.</p>"
     },
     "LanguageRuntime":{
       "type":"string",
@@ -3734,6 +3986,195 @@
       "max":256,
       "min":1
     },
+    "MouseButton":{
+      "type":"string",
+      "documentation":"<p>The mouse button to use for a browser mouse action.</p>",
+      "enum":[
+        "LEFT",
+        "RIGHT",
+        "MIDDLE"
+      ]
+    },
+    "MouseClickArguments":{
+      "type":"structure",
+      "required":[
+        "x",
+        "y"
+      ],
+      "members":{
+        "x":{
+          "shape":"Integer",
+          "documentation":"<p>The X coordinate on screen where the click occurs.</p>"
+        },
+        "y":{
+          "shape":"Integer",
+          "documentation":"<p>The Y coordinate on screen where the click occurs.</p>"
+        },
+        "button":{
+          "shape":"MouseButton",
+          "documentation":"<p>The mouse button to use. Defaults to <code>LEFT</code>.</p>"
+        },
+        "clickCount":{
+          "shape":"MouseClickArgumentsClickCountInteger",
+          "documentation":"<p>The number of clicks to perform. Valid range: 1–10. Defaults to 1.</p>"
+        }
+      },
+      "documentation":"<p>Arguments for a mouse click action.</p>"
+    },
+    "MouseClickArgumentsClickCountInteger":{
+      "type":"integer",
+      "box":true,
+      "max":10,
+      "min":1
+    },
+    "MouseClickResult":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"BrowserActionStatus",
+          "documentation":"<p>The status of the action execution.</p>"
+        },
+        "error":{
+          "shape":"String",
+          "documentation":"<p>The error message. Present only when the action failed.</p>"
+        }
+      },
+      "documentation":"<p>The result of a mouse click action.</p>"
+    },
+    "MouseDragArguments":{
+      "type":"structure",
+      "required":[
+        "endX",
+        "endY",
+        "startX",
+        "startY"
+      ],
+      "members":{
+        "endX":{
+          "shape":"Integer",
+          "documentation":"<p>The ending X coordinate for the drag.</p>"
+        },
+        "endY":{
+          "shape":"Integer",
+          "documentation":"<p>The ending Y coordinate for the drag.</p>"
+        },
+        "startX":{
+          "shape":"Integer",
+          "documentation":"<p>The starting X coordinate for the drag.</p>"
+        },
+        "startY":{
+          "shape":"Integer",
+          "documentation":"<p>The starting Y coordinate for the drag.</p>"
+        },
+        "button":{
+          "shape":"MouseButton",
+          "documentation":"<p>The mouse button to use for the drag. Defaults to <code>LEFT</code>.</p>"
+        }
+      },
+      "documentation":"<p>Arguments for a mouse drag action.</p>"
+    },
+    "MouseDragResult":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"BrowserActionStatus",
+          "documentation":"<p>The status of the action execution.</p>"
+        },
+        "error":{
+          "shape":"String",
+          "documentation":"<p>The error message. Present only when the action failed.</p>"
+        }
+      },
+      "documentation":"<p>The result of a mouse drag action.</p>"
+    },
+    "MouseMoveArguments":{
+      "type":"structure",
+      "required":[
+        "x",
+        "y"
+      ],
+      "members":{
+        "x":{
+          "shape":"Integer",
+          "documentation":"<p>The target X coordinate on screen.</p>"
+        },
+        "y":{
+          "shape":"Integer",
+          "documentation":"<p>The target Y coordinate on screen.</p>"
+        }
+      },
+      "documentation":"<p>Arguments for a mouse move action.</p>"
+    },
+    "MouseMoveResult":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"BrowserActionStatus",
+          "documentation":"<p>The status of the action execution.</p>"
+        },
+        "error":{
+          "shape":"String",
+          "documentation":"<p>The error message. Present only when the action failed.</p>"
+        }
+      },
+      "documentation":"<p>The result of a mouse move action.</p>"
+    },
+    "MouseScrollArguments":{
+      "type":"structure",
+      "required":[
+        "x",
+        "y"
+      ],
+      "members":{
+        "x":{
+          "shape":"Integer",
+          "documentation":"<p>The X coordinate on screen where the scroll occurs.</p>"
+        },
+        "y":{
+          "shape":"Integer",
+          "documentation":"<p>The Y coordinate on screen where the scroll occurs.</p>"
+        },
+        "deltaX":{
+          "shape":"MouseScrollArgumentsDeltaXInteger",
+          "documentation":"<p>The horizontal scroll delta. Valid range: -1000 to 1000.</p>"
+        },
+        "deltaY":{
+          "shape":"MouseScrollArgumentsDeltaYInteger",
+          "documentation":"<p>The vertical scroll delta. Valid range: -1000 to 1000. Negative values scroll down.</p>"
+        }
+      },
+      "documentation":"<p>Arguments for a mouse scroll action.</p>"
+    },
+    "MouseScrollArgumentsDeltaXInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":-1000
+    },
+    "MouseScrollArgumentsDeltaYInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":-1000
+    },
+    "MouseScrollResult":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"BrowserActionStatus",
+          "documentation":"<p>The status of the action execution.</p>"
+        },
+        "error":{
+          "shape":"String",
+          "documentation":"<p>The error message. Present only when the action failed.</p>"
+        }
+      },
+      "documentation":"<p>The result of a mouse scroll action.</p>"
+    },
     "Name":{
       "type":"string",
       "max":100,
@@ -4174,6 +4615,40 @@
     "ScopesListType":{
       "type":"list",
       "member":{"shape":"ScopeType"}
+    },
+    "ScreenshotArguments":{
+      "type":"structure",
+      "members":{
+        "format":{
+          "shape":"ScreenshotFormat",
+          "documentation":"<p>The image format for the screenshot. Defaults to <code>PNG</code>.</p>"
+        }
+      },
+      "documentation":"<p>Arguments for a screenshot action.</p>"
+    },
+    "ScreenshotFormat":{
+      "type":"string",
+      "documentation":"<p>The image format for a browser screenshot.</p>",
+      "enum":["PNG"]
+    },
+    "ScreenshotResult":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"BrowserActionStatus",
+          "documentation":"<p>The status of the action execution.</p>"
+        },
+        "error":{
+          "shape":"String",
+          "documentation":"<p>The error message. Present only when the action failed.</p>"
+        },
+        "data":{
+          "shape":"Blob",
+          "documentation":"<p>The base64-encoded image data. Present only when the action succeeded.</p>"
+        }
+      },
+      "documentation":"<p>The result of a screenshot action.</p>"
     },
     "SearchCriteria":{
       "type":"structure",

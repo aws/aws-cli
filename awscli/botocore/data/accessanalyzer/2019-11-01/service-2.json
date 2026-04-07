@@ -49,25 +49,6 @@
       "documentation":"<p>Cancels the requested policy generation.</p>",
       "idempotent":true
     },
-    "CancelPolicyPreviewJob":{
-      "name":"CancelPolicyPreviewJob",
-      "http":{
-        "method":"PUT",
-        "requestUri":"/policy/preview/{jobId}",
-        "responseCode":200
-      },
-      "input":{"shape":"CancelPolicyPreviewJobRequest"},
-      "output":{"shape":"CancelPolicyPreviewJobResponse"},
-      "errors":[
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"InternalServerException"},
-        {"shape":"ValidationException"},
-        {"shape":"ThrottlingException"},
-        {"shape":"AccessDeniedException"}
-      ],
-      "documentation":"<p>Cancels an in-progress policy preview job. Jobs that are already completed, failed, or canceled cannot be canceled.</p>",
-      "idempotent":true
-    },
     "CheckAccessNotGranted":{
       "name":"CheckAccessNotGranted",
       "http":{
@@ -189,26 +170,6 @@
       "documentation":"<p>Creates an archive rule for the specified analyzer. Archive rules automatically archive new findings that meet the criteria you define when you create the rule.</p> <p>To learn about filter keys that you can use to create an archive rule, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-reference-filter-keys.html\">IAM Access Analyzer filter keys</a> in the <b>IAM User Guide</b>.</p>",
       "idempotent":true
     },
-    "CreatePolicyPreviewConfiguration":{
-      "name":"CreatePolicyPreviewConfiguration",
-      "http":{
-        "method":"PUT",
-        "requestUri":"/policy/preview-configuration",
-        "responseCode":200
-      },
-      "input":{"shape":"CreatePolicyPreviewConfigurationRequest"},
-      "output":{"shape":"CreatePolicyPreviewConfigurationResponse"},
-      "errors":[
-        {"shape":"ConflictException"},
-        {"shape":"InternalServerException"},
-        {"shape":"ValidationException"},
-        {"shape":"ServiceQuotaExceededException"},
-        {"shape":"ThrottlingException"},
-        {"shape":"AccessDeniedException"}
-      ],
-      "documentation":"<p>Creates a policy preview configuration for your account. The configuration enables IAM Access Analyzer to collect and store CloudTrail authorization events needed for policy preview analysis.</p>",
-      "idempotent":true
-    },
     "DeleteAnalyzer":{
       "name":"DeleteAnalyzer",
       "http":{
@@ -243,25 +204,6 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Deletes the specified archive rule.</p>",
-      "idempotent":true
-    },
-    "DeletePolicyPreviewConfiguration":{
-      "name":"DeletePolicyPreviewConfiguration",
-      "http":{
-        "method":"DELETE",
-        "requestUri":"/policy/preview-configuration",
-        "responseCode":200
-      },
-      "input":{"shape":"DeletePolicyPreviewConfigurationRequest"},
-      "output":{"shape":"DeletePolicyPreviewConfigurationResponse"},
-      "errors":[
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"InternalServerException"},
-        {"shape":"ValidationException"},
-        {"shape":"ThrottlingException"},
-        {"shape":"AccessDeniedException"}
-      ],
-      "documentation":"<p>Deletes the policy preview configuration for your account. After deletion, IAM Access Analyzer will stop collecting CloudTrail authorization events for policy preview analysis.</p>",
       "idempotent":true
     },
     "GenerateFindingRecommendation":{
@@ -450,44 +392,6 @@
       "documentation":"<p>Retrieves the policy that was generated using <code>StartPolicyGeneration</code>. </p>",
       "readonly":true
     },
-    "GetPolicyPreviewConfiguration":{
-      "name":"GetPolicyPreviewConfiguration",
-      "http":{
-        "method":"GET",
-        "requestUri":"/policy/preview-configuration",
-        "responseCode":200
-      },
-      "input":{"shape":"GetPolicyPreviewConfigurationRequest"},
-      "output":{"shape":"GetPolicyPreviewConfigurationResponse"},
-      "errors":[
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"InternalServerException"},
-        {"shape":"ValidationException"},
-        {"shape":"ThrottlingException"},
-        {"shape":"AccessDeniedException"}
-      ],
-      "documentation":"<p>Retrieves the policy preview configuration for your account.</p>",
-      "readonly":true
-    },
-    "GetPolicyPreviewJob":{
-      "name":"GetPolicyPreviewJob",
-      "http":{
-        "method":"GET",
-        "requestUri":"/policy/preview/{jobId}",
-        "responseCode":200
-      },
-      "input":{"shape":"GetPolicyPreviewJobRequest"},
-      "output":{"shape":"GetPolicyPreviewJobResponse"},
-      "errors":[
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"InternalServerException"},
-        {"shape":"ValidationException"},
-        {"shape":"ThrottlingException"},
-        {"shape":"AccessDeniedException"}
-      ],
-      "documentation":"<p>Retrieves the metadata, parameters, and status for a policy preview job. Use this operation to monitor job progress and retrieve the Amazon S3 location of the completed analysis report.</p> <note> <p>Job data has a time-to-live (TTL) of 14 days and will be deleted after expiration.</p> </note>",
-      "readonly":true
-    },
     "ListAccessPreviewFindings":{
       "name":"ListAccessPreviewFindings",
       "http":{
@@ -638,24 +542,6 @@
       "documentation":"<p>Lists all of the policy generations requested in the last seven days.</p>",
       "readonly":true
     },
-    "ListPolicyPreviewJobs":{
-      "name":"ListPolicyPreviewJobs",
-      "http":{
-        "method":"GET",
-        "requestUri":"/policy/preview",
-        "responseCode":200
-      },
-      "input":{"shape":"ListPolicyPreviewJobsRequest"},
-      "output":{"shape":"ListPolicyPreviewJobsResponse"},
-      "errors":[
-        {"shape":"InternalServerException"},
-        {"shape":"ValidationException"},
-        {"shape":"ThrottlingException"},
-        {"shape":"AccessDeniedException"}
-      ],
-      "documentation":"<p>Lists all policy preview jobs with optional filtering by job status or target ID. Results are paginated for efficient retrieval of large result sets.</p>",
-      "readonly":true
-    },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
       "http":{
@@ -693,26 +579,6 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Starts the policy generation request.</p>",
-      "idempotent":true
-    },
-    "StartPolicyPreviewJob":{
-      "name":"StartPolicyPreviewJob",
-      "http":{
-        "method":"PUT",
-        "requestUri":"/policy/preview",
-        "responseCode":200
-      },
-      "input":{"shape":"StartPolicyPreviewJobRequest"},
-      "output":{"shape":"StartPolicyPreviewJobResponse"},
-      "errors":[
-        {"shape":"ConflictException"},
-        {"shape":"InternalServerException"},
-        {"shape":"ValidationException"},
-        {"shape":"ServiceQuotaExceededException"},
-        {"shape":"ThrottlingException"},
-        {"shape":"AccessDeniedException"}
-      ],
-      "documentation":"<p>Creates a policy preview analysis job to evaluate the impact of Service Control Policies (SCPs) before deployment. The analysis uses historical CloudTrail authorization events to identify potential access denials, helping you prevent service disruptions.</p> <p>The job analyzes CloudTrail events within a specified time window and generates a report identifying which events would be denied by the proposed policy. The report is stored in the specified Amazon S3 location.</p>",
       "idempotent":true
     },
     "StartResourceScan":{
@@ -1431,22 +1297,6 @@
       "type":"structure",
       "members":{}
     },
-    "CancelPolicyPreviewJobRequest":{
-      "type":"structure",
-      "required":["jobId"],
-      "members":{
-        "jobId":{
-          "shape":"PolicyPreviewJobId",
-          "documentation":"<p>The unique identifier of the policy preview job to cancel.</p>",
-          "location":"uri",
-          "locationName":"jobId"
-        }
-      }
-    },
-    "CancelPolicyPreviewJobResponse":{
-      "type":"structure",
-      "members":{}
-    },
     "CheckAccessNotGrantedRequest":{
       "type":"structure",
       "required":[
@@ -1846,30 +1696,6 @@
       },
       "documentation":"<p>Creates an archive rule.</p>"
     },
-    "CreatePolicyPreviewConfigurationRequest":{
-      "type":"structure",
-      "members":{
-        "clientToken":{
-          "shape":"String",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, subsequent retries with the same client token return the result from the original successful request and have no additional effect.</p>",
-          "idempotencyToken":true
-        },
-        "scope":{
-          "shape":"PolicyPreviewScope",
-          "documentation":"<p>The scope of the policy preview configuration. Currently only <code>GLOBAL</code> is supported.</p>"
-        }
-      }
-    },
-    "CreatePolicyPreviewConfigurationResponse":{
-      "type":"structure",
-      "required":["status"],
-      "members":{
-        "status":{
-          "shape":"PolicyPreviewStatus",
-          "documentation":"<p>The status of the policy preview configuration after creation. The status is <code>PENDING_CREATION</code> until the configuration is fully provisioned and becomes <code>ACTIVE</code>. If provisioning fails, the status is <code>FAILED</code>.</p>"
-        }
-      }
-    },
     "Criterion":{
       "type":"structure",
       "members":{
@@ -1940,22 +1766,6 @@
         }
       },
       "documentation":"<p>Deletes an archive rule.</p>"
-    },
-    "DeletePolicyPreviewConfigurationRequest":{
-      "type":"structure",
-      "members":{
-        "clientToken":{
-          "shape":"String",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, subsequent retries with the same client token return the result from the original successful request and have no additional effect.</p>",
-          "idempotencyToken":true,
-          "location":"querystring",
-          "locationName":"clientToken"
-        }
-      }
-    },
-    "DeletePolicyPreviewConfigurationResponse":{
-      "type":"structure",
-      "members":{}
     },
     "DynamodbStreamConfiguration":{
       "type":"structure",
@@ -2936,56 +2746,6 @@
         }
       }
     },
-    "GetPolicyPreviewConfigurationRequest":{
-      "type":"structure",
-      "members":{}
-    },
-    "GetPolicyPreviewConfigurationResponse":{
-      "type":"structure",
-      "members":{
-        "policyPreviewConfigurations":{
-          "shape":"PolicyPreviewConfigurationList",
-          "documentation":"<p>A list of policy preview configurations for the account.</p>"
-        }
-      }
-    },
-    "GetPolicyPreviewJobRequest":{
-      "type":"structure",
-      "required":["jobId"],
-      "members":{
-        "jobId":{
-          "shape":"PolicyPreviewJobId",
-          "documentation":"<p>The unique identifier of the policy preview job to retrieve. This is the job ID returned by <code>StartPolicyPreviewJob</code>.</p>",
-          "location":"uri",
-          "locationName":"jobId"
-        }
-      }
-    },
-    "GetPolicyPreviewJobResponse":{
-      "type":"structure",
-      "required":[
-        "jobId",
-        "outputS3Uri"
-      ],
-      "members":{
-        "jobId":{
-          "shape":"PolicyPreviewJobId",
-          "documentation":"<p>The unique identifier of the policy preview job.</p>"
-        },
-        "jobParameters":{
-          "shape":"PolicyPreviewJobParameters",
-          "documentation":"<p>The original parameters used to create the policy preview job, including the analysis time window and policy configurations.</p>"
-        },
-        "jobDetails":{
-          "shape":"PolicyPreviewJobDetails",
-          "documentation":"<p>Details about the job execution, including current status, submission time, start time, completion time, and any errors that occurred.</p>"
-        },
-        "outputS3Uri":{
-          "shape":"S3Uri",
-          "documentation":"<p>The Amazon S3 URI where the analysis report is stored. The report contains metadata for CloudTrail events that would be denied by the proposed policy.</p>"
-        }
-      }
-    },
     "GranteePrincipal":{"type":"string"},
     "IamRoleConfiguration":{
       "type":"structure",
@@ -2998,22 +2758,6 @@
       "documentation":"<p>The proposed access control configuration for an IAM role. You can propose a configuration for a new IAM role or an existing IAM role that you own by specifying the trust policy. If the configuration is for a new IAM role, you must specify the trust policy. If the configuration is for an existing IAM role that you own and you do not propose the trust policy, the access preview uses the existing trust policy for the role. The proposed trust policy cannot be an empty string. For more information about role trust policy limits, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_iam-quotas.html\">IAM and STS quotas</a>.</p>"
     },
     "IamTrustPolicy":{"type":"string"},
-    "ImpactAnalysisJobStatus":{
-      "type":"string",
-      "documentation":"<p>The status of a policy preview job.</p>",
-      "enum":[
-        "SUBMITTED",
-        "IN_PROGRESS",
-        "COMPLETED",
-        "FAILED",
-        "CANCELED"
-      ]
-    },
-    "ImpactAnalysisJobType":{
-      "type":"string",
-      "documentation":"<p>The type of impact analysis job. Currently only <code>SCP</code> (Service Control Policy) analysis is supported.</p>",
-      "enum":["SCP"]
-    },
     "InlineArchiveRule":{
       "type":"structure",
       "required":[
@@ -3269,16 +3013,7 @@
         "AUTHORIZATION_ERROR",
         "RESOURCE_NOT_FOUND_ERROR",
         "SERVICE_QUOTA_EXCEEDED_ERROR",
-        "SERVICE_ERROR",
-        "CANCELED_JOB_ERROR",
-        "INVALID_SERVICE_LINKED_ROLE",
-        "INSUFFICIENT_PERMISSIONS_ERROR",
-        "ORGANIZATION_ACCESS_DENIED_ERROR",
-        "INVALID_TARGET_ERROR",
-        "INVALID_POLICY_PREVIEW_CONFIGURATION",
-        "INVALID_ORGANIZATION_CONFIGURATION",
-        "S3_BUCKET_NOT_FOUND_ERROR",
-        "S3_BUCKET_PERMISSION_ERROR"
+        "SERVICE_ERROR"
       ]
     },
     "JobId":{"type":"string"},
@@ -3712,47 +3447,6 @@
         }
       }
     },
-    "ListPolicyPreviewJobsRequest":{
-      "type":"structure",
-      "members":{
-        "filters":{
-          "shape":"PolicyPreviewJobFiltersMap",
-          "documentation":"<p>Optional filter criteria to narrow the list of returned jobs. You can filter by job status or target ID. Maximum of one filter can be specified.</p>",
-          "location":"querystring"
-        },
-        "maxResults":{
-          "shape":"ListPolicyPreviewJobsRequestMaxResultsInteger",
-          "documentation":"<p>The maximum number of results to return in a single page. Minimum value is 1.</p>",
-          "location":"querystring",
-          "locationName":"maxResults"
-        },
-        "nextToken":{
-          "shape":"Token",
-          "documentation":"<p>A token used for pagination of results. Use the token returned in the previous response to retrieve the next page of results.</p>",
-          "location":"querystring",
-          "locationName":"nextToken"
-        }
-      }
-    },
-    "ListPolicyPreviewJobsRequestMaxResultsInteger":{
-      "type":"integer",
-      "box":true,
-      "min":1
-    },
-    "ListPolicyPreviewJobsResponse":{
-      "type":"structure",
-      "required":["analysisReports"],
-      "members":{
-        "analysisReports":{
-          "shape":"PolicyPreviewAnalysisReports",
-          "documentation":"<p>A list of policy preview job summaries that match the specified filter criteria.</p>"
-        },
-        "nextToken":{
-          "shape":"Token",
-          "documentation":"<p>A token used for pagination. If present, indicates there are more results available. Pass this token to the next request to retrieve the next page.</p>"
-        }
-      }
-    },
     "ListTagsForResourceRequest":{
       "type":"structure",
       "required":["resourceArn"],
@@ -3865,38 +3559,7 @@
       "type":"list",
       "member":{"shape":"PathElement"}
     },
-    "PolicyConfiguration":{
-      "type":"structure",
-      "required":[
-        "jobType",
-        "targetId",
-        "policyDocumentsList"
-      ],
-      "members":{
-        "jobType":{
-          "shape":"ImpactAnalysisJobType",
-          "documentation":"<p>The type of impact analysis job. Currently only <code>SCP</code> (Service Control Policy) is supported.</p>"
-        },
-        "targetId":{
-          "shape":"PolicyPreviewTargetId",
-          "documentation":"<p>The identifier of the target resource for the policy analysis. This can be an Amazon Web Services account ID (12-digit number), an organization root ID (format: <code>r-[0-9a-z]{4,32}</code>), or an organizational unit ID (format: <code>ou-[0-9a-z]{4,32}-[a-z0-9]{8,32}</code>).</p>"
-        },
-        "policyDocumentsList":{
-          "shape":"PolicyDocumentList",
-          "documentation":"<p>A list of SCP policy documents to test. Each policy document is a JSON string with a maximum length of 5,120 characters. The analysis evaluates how these policies would affect access to resources.</p>"
-        }
-      },
-      "documentation":"<p>Specifies the configuration for a policy preview analysis, including the type of analysis, the target resource, and the policy documents to evaluate.</p>"
-    },
-    "PolicyConfigurationsList":{
-      "type":"list",
-      "member":{"shape":"PolicyConfiguration"}
-    },
     "PolicyDocument":{"type":"string"},
-    "PolicyDocumentList":{
-      "type":"list",
-      "member":{"shape":"String"}
-    },
     "PolicyGeneration":{
       "type":"structure",
       "required":[
@@ -3945,167 +3608,6 @@
       "member":{"shape":"PolicyGeneration"}
     },
     "PolicyName":{"type":"string"},
-    "PolicyPreviewAnalysisReport":{
-      "type":"structure",
-      "required":[
-        "jobId",
-        "status",
-        "submittedAt",
-        "outputS3Uri"
-      ],
-      "members":{
-        "jobId":{
-          "shape":"PolicyPreviewJobId",
-          "documentation":"<p>The unique identifier of the policy preview job.</p>"
-        },
-        "status":{
-          "shape":"ImpactAnalysisJobStatus",
-          "documentation":"<p>The current status of the job.</p>"
-        },
-        "submittedAt":{
-          "shape":"Timestamp",
-          "documentation":"<p>The time at which the job was submitted.</p>"
-        },
-        "startedAt":{
-          "shape":"Timestamp",
-          "documentation":"<p>The time at which the job execution started.</p>"
-        },
-        "completedAt":{
-          "shape":"Timestamp",
-          "documentation":"<p>The time at which the job completed.</p>"
-        },
-        "outputS3Uri":{
-          "shape":"S3Uri",
-          "documentation":"<p>The Amazon S3 URI where the analysis report is stored.</p>"
-        }
-      },
-      "documentation":"<p>Contains summary information about a policy preview job.</p>"
-    },
-    "PolicyPreviewAnalysisReports":{
-      "type":"list",
-      "member":{"shape":"PolicyPreviewAnalysisReport"}
-    },
-    "PolicyPreviewConfiguration":{
-      "type":"structure",
-      "required":[
-        "scope",
-        "status",
-        "createdAt"
-      ],
-      "members":{
-        "scope":{
-          "shape":"PolicyPreviewScope",
-          "documentation":"<p>The scope of the policy preview configuration. Currently only <code>GLOBAL</code> is supported.</p>"
-        },
-        "status":{
-          "shape":"PolicyPreviewStatus",
-          "documentation":"<p>The status of the policy preview configuration. A value of <code>ACTIVE</code> indicates the configuration is enabled and CloudTrail authorization events are being collected.</p>"
-        },
-        "createdAt":{
-          "shape":"Timestamp",
-          "documentation":"<p>The time at which the policy preview configuration was created.</p>"
-        },
-        "updatedAt":{
-          "shape":"Timestamp",
-          "documentation":"<p>The time at which the policy preview configuration was last updated.</p>"
-        }
-      },
-      "documentation":"<p>Contains the configuration details for policy preview, including the scope, status, and timestamps.</p>"
-    },
-    "PolicyPreviewConfigurationList":{
-      "type":"list",
-      "member":{"shape":"PolicyPreviewConfiguration"}
-    },
-    "PolicyPreviewJobDetails":{
-      "type":"structure",
-      "required":[
-        "jobStatus",
-        "submittedAt"
-      ],
-      "members":{
-        "jobStatus":{
-          "shape":"ImpactAnalysisJobStatus",
-          "documentation":"<p>The current status of the job. Possible values are:</p> <ul> <li> <p> <code>SUBMITTED</code> - The job has been submitted but not yet started.</p> </li> <li> <p> <code>IN_PROGRESS</code> - The job is currently executing.</p> </li> <li> <p> <code>COMPLETED</code> - The job completed successfully.</p> </li> <li> <p> <code>FAILED</code> - The job failed with an error.</p> </li> <li> <p> <code>CANCELED</code> - The job was canceled by the user.</p> </li> </ul>"
-        },
-        "submittedAt":{
-          "shape":"Timestamp",
-          "documentation":"<p>The time at which the job was submitted.</p>"
-        },
-        "startedAt":{
-          "shape":"Timestamp",
-          "documentation":"<p>The time at which the job execution started. This field is not populated until the job begins processing.</p>"
-        },
-        "completedAt":{
-          "shape":"Timestamp",
-          "documentation":"<p>The time at which the job completed. This field is populated only when the job reaches a terminal state (COMPLETED, FAILED, or CANCELED).</p>"
-        },
-        "jobError":{
-          "shape":"JobError",
-          "documentation":"<p>Detailed information about the error that caused the job to fail. This field is populated only when the job status is FAILED.</p>"
-        }
-      },
-      "documentation":"<p>Contains details about the execution of a policy preview job.</p>"
-    },
-    "PolicyPreviewJobFilterName":{
-      "type":"string",
-      "documentation":"<p>The name of the filter to apply when listing policy preview jobs. Valid values are <code>jobStatus</code> to filter by job status, or <code>targetId</code> to filter by the target resource ID.</p>",
-      "enum":[
-        "jobStatus",
-        "targetId"
-      ]
-    },
-    "PolicyPreviewJobFiltersMap":{
-      "type":"map",
-      "key":{"shape":"PolicyPreviewJobFilterName"},
-      "value":{"shape":"String"},
-      "max":1,
-      "min":0
-    },
-    "PolicyPreviewJobId":{
-      "type":"string",
-      "documentation":"<p>A unique identifier for a policy preview job.</p>",
-      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
-    },
-    "PolicyPreviewJobParameters":{
-      "type":"structure",
-      "required":[
-        "startTime",
-        "endTime",
-        "policyConfigurations"
-      ],
-      "members":{
-        "startTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>The start of the CloudTrail event analysis window.</p>"
-        },
-        "endTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>The end of the CloudTrail event analysis window.</p>"
-        },
-        "policyConfigurations":{
-          "shape":"PolicyConfigurationsList",
-          "documentation":"<p>The list of policy configurations that were analyzed.</p>"
-        }
-      },
-      "documentation":"<p>Contains the parameters used to create a policy preview job.</p>"
-    },
-    "PolicyPreviewScope":{
-      "type":"string",
-      "enum":["GLOBAL"]
-    },
-    "PolicyPreviewStatus":{
-      "type":"string",
-      "enum":[
-        "ACTIVE",
-        "PENDING_CREATION",
-        "FAILED"
-      ]
-    },
-    "PolicyPreviewTargetId":{
-      "type":"string",
-      "documentation":"<p>The identifier of the target resource for policy analysis. Must be an Amazon Web Services account ID, organization root ID, or organizational unit ID.</p>",
-      "pattern":"(r-[0-9a-z]{4,32})|([0-9]{12})|(ou-[0-9a-z]{4,32}-[a-z0-9]{8,32})"
-    },
     "PolicyType":{
       "type":"string",
       "enum":[
@@ -4529,10 +4031,6 @@
       },
       "documentation":"<p>The <code>PublicAccessBlock</code> configuration to apply to this Amazon S3 bucket. If the proposed configuration is for an existing Amazon S3 bucket and the configuration is not specified, the access preview uses the existing setting. If the proposed configuration is for a new bucket and the configuration is not specified, the access preview uses <code>false</code>. If the proposed configuration is for a new access point or multi-region access point and the access point BPA configuration is not specified, the access preview uses <code>true</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-s3-bucket-publicaccessblockconfiguration.html\">PublicAccessBlockConfiguration</a>. </p>"
     },
-    "S3Uri":{
-      "type":"string",
-      "pattern":"s3://[a-z0-9][-.a-z0-9]{1,61}[a-z0-9](/.*)?"
-    },
     "SecretsManagerSecretConfiguration":{
       "type":"structure",
       "members":{
@@ -4671,47 +4169,6 @@
         "jobId":{
           "shape":"JobId",
           "documentation":"<p>The <code>JobId</code> that is returned by the <code>StartPolicyGeneration</code> operation. The <code>JobId</code> can be used with <code>GetGeneratedPolicy</code> to retrieve the generated policies or used with <code>CancelPolicyGeneration</code> to cancel the policy generation request.</p>"
-        }
-      }
-    },
-    "StartPolicyPreviewJobRequest":{
-      "type":"structure",
-      "required":[
-        "policyConfigurations",
-        "startTime",
-        "outputS3Uri"
-      ],
-      "members":{
-        "policyConfigurations":{
-          "shape":"PolicyConfigurationsList",
-          "documentation":"<p>A list of policy configurations to analyze. Currently limited to one configuration per request. Each configuration specifies the job type, target ID, and policy documents to test.</p>"
-        },
-        "startTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>The start of the CloudTrail event analysis window. The analysis will evaluate events from this time forward.</p>"
-        },
-        "endTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>The end of the analysis window. If not specified, defaults to the time of the request. The analysis will evaluate CloudTrail events up to this time.</p>"
-        },
-        "outputS3Uri":{
-          "shape":"S3Uri",
-          "documentation":"<p>The Amazon S3 URI where the completed analysis report will be stored. The Amazon S3 bucket must grant access to the IAM Access Analyzer service principal in its resource policy. The report will be stored at the path: <code>outputS3Uri/jobId/timestamp/</code>.</p>"
-        },
-        "clientToken":{
-          "shape":"String",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, subsequent retries with the same client token return the result from the original successful request and have no additional effect.</p>",
-          "idempotencyToken":true
-        }
-      }
-    },
-    "StartPolicyPreviewJobResponse":{
-      "type":"structure",
-      "required":["jobId"],
-      "members":{
-        "jobId":{
-          "shape":"PolicyPreviewJobId",
-          "documentation":"<p>The unique identifier for the created policy preview job. Use this ID with <code>GetPolicyPreviewJob</code> to retrieve job status and details, or with <code>CancelPolicyPreviewJob</code> to cancel the job.</p>"
         }
       }
     },

@@ -1,0 +1,1982 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2025-05-05",
+    "auth":["aws.auth#sigv4"],
+    "endpointPrefix":"s3files",
+    "protocol":"rest-json",
+    "protocols":["rest-json"],
+    "serviceFullName":"Amazon S3 Files",
+    "serviceId":"S3Files",
+    "signatureVersion":"v4",
+    "signingName":"s3files",
+    "uid":"s3files-2025-05-05"
+  },
+  "operations":{
+    "CreateAccessPoint":{
+      "name":"CreateAccessPoint",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/access-points",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateAccessPointRequest"},
+      "output":{"shape":"CreateAccessPointResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Creates an S3 File System Access Point for application-specific access with POSIX user identity and root directory enforcement. Access points provide a way to manage access to shared datasets in multi-tenant scenarios.</p>",
+      "idempotent":true
+    },
+    "CreateFileSystem":{
+      "name":"CreateFileSystem",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/file-systems",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateFileSystemRequest"},
+      "output":{"shape":"CreateFileSystemResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Creates an S3 File System resource scoped to a bucket or prefix within a bucket, enabling file system access to S3 data. To create a file system, you need an S3 bucket and an IAM role that grants the service permission to access the bucket.</p>",
+      "idempotent":true
+    },
+    "CreateMountTarget":{
+      "name":"CreateMountTarget",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/mount-targets",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateMountTargetRequest"},
+      "output":{"shape":"CreateMountTargetResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Creates a mount target resource as an endpoint for mounting the S3 File System from compute resources in a specific Availability Zone and VPC. Mount targets provide network access to the file system.</p>",
+      "idempotent":true
+    },
+    "DeleteAccessPoint":{
+      "name":"DeleteAccessPoint",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/access-points/{accessPointId}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteAccessPointRequest"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes an S3 File System Access Point. This operation is irreversible.</p>",
+      "idempotent":true
+    },
+    "DeleteFileSystem":{
+      "name":"DeleteFileSystem",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/file-systems/{fileSystemId}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteFileSystemRequest"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes an S3 File System. You can optionally force deletion of a file system that has pending export data.</p>",
+      "idempotent":true
+    },
+    "DeleteFileSystemPolicy":{
+      "name":"DeleteFileSystemPolicy",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/file-systems/{fileSystemId}/policy",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteFileSystemPolicyRequest"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Deletes the IAM resource policy of an S3 File System.</p>",
+      "idempotent":true
+    },
+    "DeleteMountTarget":{
+      "name":"DeleteMountTarget",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/mount-targets/{mountTargetId}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteMountTargetRequest"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes the specified mount target. This operation is irreversible.</p>",
+      "idempotent":true
+    },
+    "GetAccessPoint":{
+      "name":"GetAccessPoint",
+      "http":{
+        "method":"GET",
+        "requestUri":"/access-points/{accessPointId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAccessPointRequest"},
+      "output":{"shape":"GetAccessPointResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Returns resource information for an S3 File System Access Point.</p>",
+      "readonly":true
+    },
+    "GetFileSystem":{
+      "name":"GetFileSystem",
+      "http":{
+        "method":"GET",
+        "requestUri":"/file-systems/{fileSystemId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetFileSystemRequest"},
+      "output":{"shape":"GetFileSystemResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Returns resource information for the specified S3 File System including status, configuration, and metadata.</p>",
+      "readonly":true
+    },
+    "GetFileSystemPolicy":{
+      "name":"GetFileSystemPolicy",
+      "http":{
+        "method":"GET",
+        "requestUri":"/file-systems/{fileSystemId}/policy",
+        "responseCode":200
+      },
+      "input":{"shape":"GetFileSystemPolicyRequest"},
+      "output":{"shape":"GetFileSystemPolicyResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Returns the IAM resource policy of an S3 File System.</p>",
+      "readonly":true
+    },
+    "GetMountTarget":{
+      "name":"GetMountTarget",
+      "http":{
+        "method":"GET",
+        "requestUri":"/mount-targets/{mountTargetId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetMountTargetRequest"},
+      "output":{"shape":"GetMountTargetResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Returns detailed resource information for the specified mount target including network configuration.</p>",
+      "readonly":true
+    },
+    "GetSynchronizationConfiguration":{
+      "name":"GetSynchronizationConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/file-systems/{fileSystemId}/synchronization-configuration",
+        "responseCode":200
+      },
+      "input":{"shape":"GetSynchronizationConfigurationRequest"},
+      "output":{"shape":"GetSynchronizationConfigurationResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Returns the synchronization configuration for the specified S3 File System, including import data rules and expiration data rules.</p>",
+      "readonly":true
+    },
+    "ListAccessPoints":{
+      "name":"ListAccessPoints",
+      "http":{
+        "method":"GET",
+        "requestUri":"/access-points",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAccessPointsRequest"},
+      "output":{"shape":"ListAccessPointsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Returns resource information for all S3 File System Access Points associated with the specified S3 File System.</p>",
+      "readonly":true
+    },
+    "ListFileSystems":{
+      "name":"ListFileSystems",
+      "http":{
+        "method":"GET",
+        "requestUri":"/file-systems",
+        "responseCode":200
+      },
+      "input":{"shape":"ListFileSystemsRequest"},
+      "output":{"shape":"ListFileSystemsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Returns a list of all S3 File Systems owned by the account with optional filtering by bucket.</p>",
+      "readonly":true
+    },
+    "ListMountTargets":{
+      "name":"ListMountTargets",
+      "http":{
+        "method":"GET",
+        "requestUri":"/mount-targets",
+        "responseCode":200
+      },
+      "input":{"shape":"ListMountTargetsRequest"},
+      "output":{"shape":"ListMountTargetsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Returns resource information for all mount targets with optional filtering by file system, access point, and VPC.</p>",
+      "readonly":true
+    },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/resource-tags/{resourceId}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists all tags for S3 Files resources.</p>",
+      "readonly":true
+    },
+    "PutFileSystemPolicy":{
+      "name":"PutFileSystemPolicy",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/file-systems/{fileSystemId}/policy",
+        "responseCode":200
+      },
+      "input":{"shape":"PutFileSystemPolicyRequest"},
+      "output":{"shape":"PutFileSystemPolicyResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Creates or replaces the IAM resource policy for an S3 File System to control access permissions.</p>",
+      "idempotent":true
+    },
+    "PutSynchronizationConfiguration":{
+      "name":"PutSynchronizationConfiguration",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/file-systems/{fileSystemId}/synchronization-configuration",
+        "responseCode":200
+      },
+      "input":{"shape":"PutSynchronizationConfigurationRequest"},
+      "output":{"shape":"PutSynchronizationConfigurationResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Creates or updates the synchronization configuration for the specified S3 File System, including import data rules and expiration data rules.</p>",
+      "idempotent":true
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/resource-tags/{resourceId}",
+        "responseCode":200
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Creates tags for S3 Files resources using standard Amazon Web Services tagging APIs.</p>"
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/resource-tags/{resourceId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Removes tags from S3 Files resources.</p>",
+      "idempotent":true
+    },
+    "UpdateMountTarget":{
+      "name":"UpdateMountTarget",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/mount-targets/{mountTargetId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateMountTargetRequest"},
+      "output":{"shape":"UpdateMountTargetResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Updates the mount target resource, specifically security group configurations.</p>",
+      "idempotent":true
+    }
+  },
+  "shapes":{
+    "AccessPointArn":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"arn:aws[-a-z]*:s3files:[0-9a-z-:]+:file-system/fs-[0-9a-f]{17,40}/access-point/fsap-[0-9a-f]{17,40}"
+    },
+    "AccessPointId":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"(arn:aws[-a-z]*:s3files:[0-9a-z-:]+:file-system/fs-[0-9a-f]{17,40}/access-point/fsap-[0-9a-f]{17,40}|fsap-[0-9a-f]{17,40})"
+    },
+    "AccessPoints":{
+      "type":"list",
+      "member":{"shape":"ListAccessPointsDescription"}
+    },
+    "AvailabilityZoneId":{"type":"string"},
+    "AwsAccountId":{
+      "type":"string",
+      "max":12,
+      "min":0,
+      "pattern":"(\\d{12})|(\\d{4}-{4}-\\d{4})"
+    },
+    "Boolean":{
+      "type":"boolean",
+      "box":true
+    },
+    "BucketArn":{
+      "type":"string",
+      "pattern":"(arn:aws[a-zA-Z0-9-]*:s3:::.+)"
+    },
+    "ClientToken":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"(.+)"
+    },
+    "ConflictException":{
+      "type":"structure",
+      "required":["errorCode"],
+      "members":{
+        "errorCode":{
+          "shape":"ErrorCode",
+          "documentation":"<p>The error code associated with the exception.</p>"
+        },
+        "message":{"shape":"String"},
+        "resourceId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the resource that caused the conflict.</p>"
+        },
+        "resourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of the resource that caused the conflict.</p>"
+        }
+      },
+      "documentation":"<p>The request conflicts with the current state of the resource. This can occur when trying to create a resource that already exists or delete a resource that is in use.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "CreateAccessPointRequest":{
+      "type":"structure",
+      "required":["fileSystemId"],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, Amazon Web Services ignores the request, but does not return an error.</p>",
+          "idempotencyToken":true
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of key-value pairs to apply to the access point for resource tagging.</p>"
+        },
+        "fileSystemId":{
+          "shape":"FileSystemId",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the S3 File System.</p>"
+        },
+        "posixUser":{
+          "shape":"PosixUser",
+          "documentation":"<p>The POSIX identity with uid, gid, and secondary group IDs for user enforcement when accessing the file system through this access point.</p>"
+        },
+        "rootDirectory":{
+          "shape":"RootDirectory",
+          "documentation":"<p>The root directory path for the access point, with optional creation permissions for newly created directories.</p>"
+        }
+      }
+    },
+    "CreateAccessPointResponse":{
+      "type":"structure",
+      "required":[
+        "accessPointArn",
+        "accessPointId",
+        "clientToken",
+        "fileSystemId",
+        "status",
+        "ownerId"
+      ],
+      "members":{
+        "accessPointArn":{
+          "shape":"AccessPointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the access point.</p>"
+        },
+        "accessPointId":{
+          "shape":"AccessPointId",
+          "documentation":"<p>The ID of the access point.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The client token that was provided in the request.</p>"
+        },
+        "fileSystemId":{
+          "shape":"FileSystemId",
+          "documentation":"<p>The ID of the S3 File System.</p>"
+        },
+        "status":{
+          "shape":"LifeCycleState",
+          "documentation":"<p>The current status of the access point.</p>"
+        },
+        "ownerId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID of the access point owner.</p>"
+        },
+        "posixUser":{
+          "shape":"PosixUser",
+          "documentation":"<p>The POSIX identity configured for this access point.</p>"
+        },
+        "rootDirectory":{
+          "shape":"RootDirectory",
+          "documentation":"<p>The root directory configuration for this access point.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags associated with the access point.</p>"
+        },
+        "name":{
+          "shape":"TagValue",
+          "documentation":"<p>The name of the access point.</p>"
+        }
+      }
+    },
+    "CreateFileSystemRequest":{
+      "type":"structure",
+      "required":[
+        "bucket",
+        "roleArn"
+      ],
+      "members":{
+        "bucket":{
+          "shape":"BucketArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the S3 bucket that will be accessible through the file system. The bucket must exist and be in the same Amazon Web Services Region as the file system.</p>"
+        },
+        "prefix":{
+          "shape":"CreateFileSystemRequestPrefixString",
+          "documentation":"<p>An optional prefix within the S3 bucket to scope the file system access. If specified, the file system provides access only to objects with keys that begin with this prefix. If not specified, the file system provides access to the entire bucket.</p>"
+        },
+        "clientToken":{
+          "shape":"CreationToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure idempotent creation. Up to 64 ASCII characters are allowed. If you don't specify a client token, the Amazon Web Services SDK automatically generates one.</p>",
+          "idempotencyToken":true
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The ARN, key ID, or alias of the KMS key to use for encryption. If not specified, the service uses a service-owned key for encryption. You can specify a KMS key using the following formats: key ID, ARN, key alias, or key alias ARN. If you use <code>KmsKeyId</code>, the file system will be encrypted.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the IAM role that grants the S3 Files service permission to read and write data between the file system and the S3 bucket. This role must have the necessary permissions to access the specified bucket and prefix.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of key-value pairs to apply as tags to the file system resource. Each tag is a user-defined key-value pair. You can use tags to categorize and manage your file systems. Each key must be unique for the resource.</p>"
+        },
+        "acceptBucketWarning":{
+          "shape":"Boolean",
+          "documentation":"<p>Set to true to acknowledge and accept any warnings about the bucket configuration. If not specified, the operation may fail if there are bucket configuration warnings.</p>"
+        }
+      }
+    },
+    "CreateFileSystemRequestPrefixString":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "pattern":"(|.*/)"
+    },
+    "CreateFileSystemResponse":{
+      "type":"structure",
+      "members":{
+        "creationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the file system was created, in seconds since 1970-01-01T00:00:00Z (Unix epoch time).</p>"
+        },
+        "fileSystemArn":{
+          "shape":"FileSystemArn",
+          "documentation":"<p>The ARN for the S3 file system, in the format <code>arn:aws:s3files:region:account-id:file-system/file-system-id</code>.</p>"
+        },
+        "fileSystemId":{
+          "shape":"FileSystemId",
+          "documentation":"<p>The ID of the file system, assigned by S3 Files. This ID is used to reference the file system in subsequent API calls.</p>"
+        },
+        "bucket":{
+          "shape":"BucketArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the S3 bucket associated with the file system.</p>"
+        },
+        "prefix":{
+          "shape":"String",
+          "documentation":"<p>The prefix within the S3 bucket that scopes the file system access.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The client token used for idempotency.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The ARN or alias of the KMS key used for encryption.</p>"
+        },
+        "status":{
+          "shape":"LifeCycleState",
+          "documentation":"<p>The lifecycle state of the file system. Valid values are: <code>AVAILABLE</code> (the file system is available for use), <code>CREATING</code> (the file system is being created), <code>DELETING</code> (the file system is being deleted), <code>DELETED</code> (the file system has been deleted), <code>ERROR</code> (the file system is in an error state), or <code>UPDATING</code> (the file system is being updated).</p>"
+        },
+        "statusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p>Additional information about the file system status. This field provides more details when the status is <code>ERROR</code>, or during state transitions.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the IAM role used for S3 access.</p>"
+        },
+        "ownerId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID of the file system owner.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags associated with the file system.</p>"
+        },
+        "name":{
+          "shape":"TagValue",
+          "documentation":"<p>The name of the file system, derived from the <code>Name</code> tag if present.</p>"
+        }
+      }
+    },
+    "CreateMountTargetRequest":{
+      "type":"structure",
+      "required":[
+        "fileSystemId",
+        "subnetId"
+      ],
+      "members":{
+        "fileSystemId":{
+          "shape":"FileSystemId",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the S3 File System to create the mount target for.</p>"
+        },
+        "subnetId":{
+          "shape":"SubnetId",
+          "documentation":"<p>The ID of the subnet where the mount target will be created. The subnet must be in the same Amazon Web Services Region as the file system. For file systems with regional availability, you can create mount targets in any subnet within the Region. The subnet determines the Availability Zone where the mount target will be located.</p>"
+        },
+        "ipv4Address":{
+          "shape":"Ipv4Address",
+          "documentation":"<p>A specific IPv4 address to assign to the mount target. If not specified and the IP address type supports IPv4, an address is automatically assigned from the subnet's available IPv4 address range. The address must be within the subnet's CIDR block and not already in use.</p>"
+        },
+        "ipv6Address":{
+          "shape":"Ipv6Address",
+          "documentation":"<p>A specific IPv6 address to assign to the mount target. If not specified and the IP address type supports IPv6, an address is automatically assigned from the subnet's available IPv6 address range. The address must be within the subnet's IPv6 CIDR block and not already in use.</p>"
+        },
+        "ipAddressType":{
+          "shape":"IpAddressType",
+          "documentation":"<p>The IP address type for the mount target. If not specified, <code>IPV4_ONLY</code> is used. The IP address type must match the IP configuration of the specified subnet.</p>"
+        },
+        "securityGroups":{
+          "shape":"SecurityGroups",
+          "documentation":"<p>An array of VPC security group IDs to associate with the mount target's network interface. These security groups control network access to the mount target. If not specified, the default security group for the subnet's VPC is used. All security groups must belong to the same VPC as the subnet.</p>"
+        }
+      }
+    },
+    "CreateMountTargetResponse":{
+      "type":"structure",
+      "required":[
+        "ownerId",
+        "mountTargetId",
+        "subnetId"
+      ],
+      "members":{
+        "availabilityZoneId":{
+          "shape":"AvailabilityZoneId",
+          "documentation":"<p>The unique and consistent identifier of the Availability Zone where the mount target is located. For example, <code>use1-az1</code> is an Availability Zone ID for the <code>us-east-1</code> Amazon Web Services Region, and it has the same location in every Amazon Web Services account.</p>"
+        },
+        "ownerId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID of the mount target owner.</p>"
+        },
+        "mountTargetId":{
+          "shape":"MountTargetId",
+          "documentation":"<p>The ID of the mount target, assigned by S3 Files. This ID is used to reference the mount target in subsequent API calls.</p>"
+        },
+        "fileSystemId":{
+          "shape":"FileSystemId",
+          "documentation":"<p>The ID of the S3 File System associated with the mount target.</p>"
+        },
+        "subnetId":{
+          "shape":"SubnetId",
+          "documentation":"<p>The ID of the subnet where the mount target is located.</p>"
+        },
+        "ipv4Address":{
+          "shape":"Ipv4Address",
+          "documentation":"<p>The IPv4 address assigned to the mount target.</p>"
+        },
+        "ipv6Address":{
+          "shape":"Ipv6Address",
+          "documentation":"<p>The IPv6 address assigned to the mount target.</p>"
+        },
+        "networkInterfaceId":{
+          "shape":"NetworkInterfaceId",
+          "documentation":"<p>The ID of the network interface that S3 Files created when it created the mount target. This network interface is managed by the service.</p>"
+        },
+        "vpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>The ID of the VPC where the mount target is located.</p>"
+        },
+        "securityGroups":{
+          "shape":"SecurityGroups",
+          "documentation":"<p>The security groups associated with the mount target's network interface.</p>"
+        },
+        "status":{
+          "shape":"LifeCycleState",
+          "documentation":"<p>The lifecycle state of the mount target. Valid values are: <code>AVAILABLE</code> (the mount target is available for use), <code>CREATING</code> (the mount target is being created), <code>DELETING</code> (the mount target is being deleted), <code>DELETED</code> (the mount target has been deleted), or <code>ERROR</code> (the mount target is in an error state), or <code>UPDATING</code> (the mount target is being updated).</p>"
+        },
+        "statusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p>Additional information about the mount target status. This field provides more details when the status is <code>ERROR</code>, or during state transitions.</p>"
+        }
+      }
+    },
+    "CreationPermissions":{
+      "type":"structure",
+      "required":[
+        "ownerUid",
+        "ownerGid",
+        "permissions"
+      ],
+      "members":{
+        "ownerUid":{
+          "shape":"OwnerUid",
+          "documentation":"<p>The POSIX user ID to assign to newly created directories.</p>"
+        },
+        "ownerGid":{
+          "shape":"OwnerGid",
+          "documentation":"<p>The POSIX group ID to assign to newly created directories.</p>"
+        },
+        "permissions":{
+          "shape":"Permissions",
+          "documentation":"<p>The octal permissions to assign to newly created directories.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the permissions to set on newly created directories within the file system.</p>"
+    },
+    "CreationToken":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"(.+)"
+    },
+    "DeleteAccessPointRequest":{
+      "type":"structure",
+      "required":["accessPointId"],
+      "members":{
+        "accessPointId":{
+          "shape":"AccessPointId",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the access point to delete.</p>",
+          "location":"uri",
+          "locationName":"accessPointId"
+        }
+      }
+    },
+    "DeleteFileSystemPolicyRequest":{
+      "type":"structure",
+      "required":["fileSystemId"],
+      "members":{
+        "fileSystemId":{
+          "shape":"FileSystemId",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the S3 File System whose resource policy to delete.</p>",
+          "location":"uri",
+          "locationName":"fileSystemId"
+        }
+      }
+    },
+    "DeleteFileSystemRequest":{
+      "type":"structure",
+      "required":["fileSystemId"],
+      "members":{
+        "fileSystemId":{
+          "shape":"FileSystemId",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the S3 File System to delete.</p>",
+          "location":"uri",
+          "locationName":"fileSystemId"
+        },
+        "forceDelete":{
+          "shape":"Boolean",
+          "documentation":"<p>If true, allows deletion of a file system that contains data pending export to S3. If false (the default), the deletion will fail if there is data that has not yet been exported to the S3 bucket. Use this parameter with caution as it may result in data loss.</p>",
+          "location":"querystring",
+          "locationName":"forceDelete"
+        }
+      }
+    },
+    "DeleteMountTargetRequest":{
+      "type":"structure",
+      "required":["mountTargetId"],
+      "members":{
+        "mountTargetId":{
+          "shape":"MountTargetId",
+          "documentation":"<p>The ID of the mount target to delete.</p>",
+          "location":"uri",
+          "locationName":"mountTargetId"
+        }
+      }
+    },
+    "ErrorCode":{
+      "type":"string",
+      "min":1
+    },
+    "ExpirationDataRule":{
+      "type":"structure",
+      "required":["daysAfterLastAccess"],
+      "members":{
+        "daysAfterLastAccess":{
+          "shape":"ExpirationDataRuleDaysAfterLastAccessInteger",
+          "documentation":"<p>The number of days after last access before cached data expires from the file system.</p>",
+          "locationName":"daysAfterLastAccess"
+        }
+      },
+      "documentation":"<p>Specifies a rule that controls when cached data expires from the file system based on last access time.</p>"
+    },
+    "ExpirationDataRuleDaysAfterLastAccessInteger":{
+      "type":"integer",
+      "box":true,
+      "max":365,
+      "min":1
+    },
+    "FileSystemArn":{
+      "type":"string",
+      "pattern":"(arn:aws[-a-z]*:s3files:[0-9a-z-:]+:file-system/fs-[0-9a-f]{17,40})"
+    },
+    "FileSystemId":{
+      "type":"string",
+      "max":128,
+      "min":0,
+      "pattern":"(arn:aws[-a-z]*:s3files:[0-9a-z-:]+:file-system/fs-[0-9a-f]{17,40}|fs-[0-9a-f]{17,40})"
+    },
+    "FileSystems":{
+      "type":"list",
+      "member":{"shape":"ListFileSystemsDescription"}
+    },
+    "GetAccessPointRequest":{
+      "type":"structure",
+      "required":["accessPointId"],
+      "members":{
+        "accessPointId":{
+          "shape":"AccessPointId",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the access point to retrieve information for.</p>",
+          "location":"uri",
+          "locationName":"accessPointId"
+        }
+      }
+    },
+    "GetAccessPointResponse":{
+      "type":"structure",
+      "required":[
+        "accessPointArn",
+        "accessPointId",
+        "clientToken",
+        "fileSystemId",
+        "status",
+        "ownerId"
+      ],
+      "members":{
+        "accessPointArn":{
+          "shape":"AccessPointArn",
+          "documentation":"<p>The ARN of the access point.</p>"
+        },
+        "accessPointId":{
+          "shape":"AccessPointId",
+          "documentation":"<p>The ID of the access point.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The client token used for idempotency when the access point was created.</p>"
+        },
+        "fileSystemId":{
+          "shape":"FileSystemId",
+          "documentation":"<p>The ID of the S3 File System.</p>"
+        },
+        "status":{
+          "shape":"LifeCycleState",
+          "documentation":"<p>The current status of the access point.</p>"
+        },
+        "ownerId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID of the access point owner.</p>"
+        },
+        "posixUser":{
+          "shape":"PosixUser",
+          "documentation":"<p>The POSIX identity configured for this access point.</p>"
+        },
+        "rootDirectory":{
+          "shape":"RootDirectory",
+          "documentation":"<p>The root directory configuration for this access point.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags associated with the access point.</p>"
+        },
+        "name":{
+          "shape":"TagValue",
+          "documentation":"<p>The name of the access point.</p>"
+        }
+      }
+    },
+    "GetFileSystemPolicyRequest":{
+      "type":"structure",
+      "required":["fileSystemId"],
+      "members":{
+        "fileSystemId":{
+          "shape":"FileSystemId",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the S3 File System whose resource policy to retrieve.</p>",
+          "location":"uri",
+          "locationName":"fileSystemId"
+        }
+      }
+    },
+    "GetFileSystemPolicyResponse":{
+      "type":"structure",
+      "required":[
+        "fileSystemId",
+        "policy"
+      ],
+      "members":{
+        "fileSystemId":{
+          "shape":"FileSystemId",
+          "documentation":"<p>The ID of the file system.</p>"
+        },
+        "policy":{
+          "shape":"String",
+          "documentation":"<p>The JSON-formatted resource policy for the file system.</p>",
+          "locationName":"policy"
+        }
+      }
+    },
+    "GetFileSystemRequest":{
+      "type":"structure",
+      "required":["fileSystemId"],
+      "members":{
+        "fileSystemId":{
+          "shape":"FileSystemId",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the S3 File System to retrieve information for.</p>",
+          "location":"uri",
+          "locationName":"fileSystemId"
+        }
+      }
+    },
+    "GetFileSystemResponse":{
+      "type":"structure",
+      "members":{
+        "creationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the file system was created.</p>"
+        },
+        "fileSystemArn":{
+          "shape":"FileSystemArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the file system.</p>"
+        },
+        "fileSystemId":{
+          "shape":"FileSystemId",
+          "documentation":"<p>The ID of the file system.</p>"
+        },
+        "bucket":{
+          "shape":"BucketArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the S3 bucket.</p>"
+        },
+        "prefix":{
+          "shape":"String",
+          "documentation":"<p>The prefix in the S3 bucket that the file system provides access to.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The client token used for idempotency when the file system was created.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services KMS key used for encryption.</p>"
+        },
+        "status":{
+          "shape":"LifeCycleState",
+          "documentation":"<p>The current status of the file system.</p>"
+        },
+        "statusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p>Additional information about the file system status.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role used for S3 access.</p>"
+        },
+        "ownerId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID of the file system owner.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags associated with the file system.</p>"
+        },
+        "name":{
+          "shape":"TagValue",
+          "documentation":"<p>The name of the file system.</p>"
+        }
+      }
+    },
+    "GetMountTargetRequest":{
+      "type":"structure",
+      "required":["mountTargetId"],
+      "members":{
+        "mountTargetId":{
+          "shape":"MountTargetId",
+          "documentation":"<p>The ID of the mount target to retrieve information for.</p>",
+          "location":"uri",
+          "locationName":"mountTargetId"
+        }
+      }
+    },
+    "GetMountTargetResponse":{
+      "type":"structure",
+      "required":[
+        "ownerId",
+        "mountTargetId",
+        "subnetId"
+      ],
+      "members":{
+        "availabilityZoneId":{
+          "shape":"AvailabilityZoneId",
+          "documentation":"<p>The Availability Zone ID where the mount target is located.</p>"
+        },
+        "ownerId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID of the mount target owner.</p>"
+        },
+        "mountTargetId":{
+          "shape":"MountTargetId",
+          "documentation":"<p>The ID of the mount target.</p>"
+        },
+        "fileSystemId":{
+          "shape":"FileSystemId",
+          "documentation":"<p>The ID of the file system.</p>"
+        },
+        "subnetId":{
+          "shape":"SubnetId",
+          "documentation":"<p>The ID of the subnet where the mount target is located.</p>"
+        },
+        "ipv4Address":{
+          "shape":"Ipv4Address",
+          "documentation":"<p>The IPv4 address of the mount target.</p>"
+        },
+        "ipv6Address":{
+          "shape":"Ipv6Address",
+          "documentation":"<p>The IPv6 address of the mount target.</p>"
+        },
+        "networkInterfaceId":{
+          "shape":"NetworkInterfaceId",
+          "documentation":"<p>The ID of the network interface associated with the mount target.</p>"
+        },
+        "vpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>The ID of the VPC where the mount target is located.</p>"
+        },
+        "securityGroups":{
+          "shape":"SecurityGroups",
+          "documentation":"<p>The security groups associated with the mount target.</p>"
+        },
+        "status":{
+          "shape":"LifeCycleState",
+          "documentation":"<p>The current status of the mount target.</p>"
+        },
+        "statusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p>Additional information about the mount target status.</p>"
+        }
+      }
+    },
+    "GetSynchronizationConfigurationRequest":{
+      "type":"structure",
+      "required":["fileSystemId"],
+      "members":{
+        "fileSystemId":{
+          "shape":"FileSystemId",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the S3 File System to retrieve the synchronization configuration for.</p>",
+          "location":"uri",
+          "locationName":"fileSystemId"
+        }
+      }
+    },
+    "GetSynchronizationConfigurationResponse":{
+      "type":"structure",
+      "required":[
+        "importDataRules",
+        "expirationDataRules"
+      ],
+      "members":{
+        "latestVersionNumber":{
+          "shape":"Integer",
+          "documentation":"<p>The version number of the synchronization configuration. Use this value with <code>PutSynchronizationConfiguration</code> to ensure optimistic concurrency control.</p>",
+          "locationName":"latestVersionNumber"
+        },
+        "importDataRules":{
+          "shape":"GetSynchronizationConfigurationResponseImportDataRulesList",
+          "documentation":"<p>An array of import data rules that control how data is imported from S3 into the file system.</p>",
+          "locationName":"importDataRules"
+        },
+        "expirationDataRules":{
+          "shape":"GetSynchronizationConfigurationResponseExpirationDataRulesList",
+          "documentation":"<p>An array of expiration data rules that control when cached data expires from the file system.</p>",
+          "locationName":"expirationDataRules"
+        }
+      }
+    },
+    "GetSynchronizationConfigurationResponseExpirationDataRulesList":{
+      "type":"list",
+      "member":{"shape":"ExpirationDataRule"},
+      "max":1,
+      "min":1
+    },
+    "GetSynchronizationConfigurationResponseImportDataRulesList":{
+      "type":"list",
+      "member":{"shape":"ImportDataRule"},
+      "max":10,
+      "min":1
+    },
+    "Gid":{
+      "type":"long",
+      "box":true,
+      "max":4294967295,
+      "min":0
+    },
+    "ImportDataRule":{
+      "type":"structure",
+      "required":[
+        "prefix",
+        "trigger",
+        "sizeLessThan"
+      ],
+      "members":{
+        "prefix":{
+          "shape":"ImportDataRulePrefixString",
+          "documentation":"<p>The S3 key prefix that scopes this import rule. Only objects with keys beginning with this prefix are subject to the rule.</p>",
+          "locationName":"prefix"
+        },
+        "trigger":{
+          "shape":"ImportTrigger",
+          "documentation":"<p>The event that triggers data import. Valid values are <code>ON_DIRECTORY_FIRST_ACCESS</code> (import when a directory is first accessed) and <code>ON_FILE_ACCESS</code> (import when a file is accessed).</p>",
+          "locationName":"trigger"
+        },
+        "sizeLessThan":{
+          "shape":"ImportDataRuleSizeLessThanLong",
+          "documentation":"<p>The upper size limit in bytes for this import rule. Only objects with a size strictly less than this value will have data imported into the file system.</p>",
+          "locationName":"sizeLessThan"
+        }
+      },
+      "documentation":"<p>Specifies a rule that controls how data is imported from S3 into the file system.</p>"
+    },
+    "ImportDataRulePrefixString":{
+      "type":"string",
+      "pattern":"(|.*/)"
+    },
+    "ImportDataRuleSizeLessThanLong":{
+      "type":"long",
+      "box":true,
+      "max":52673613135872,
+      "min":0
+    },
+    "ImportTrigger":{
+      "type":"string",
+      "enum":[
+        "ON_DIRECTORY_FIRST_ACCESS",
+        "ON_FILE_ACCESS"
+      ]
+    },
+    "Integer":{
+      "type":"integer",
+      "box":true
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "required":["errorCode"],
+      "members":{
+        "errorCode":{
+          "shape":"ErrorCode",
+          "documentation":"<p>The error code associated with the exception.</p>"
+        },
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>An internal server error occurred. Retry your request.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true
+    },
+    "IpAddressType":{
+      "type":"string",
+      "enum":[
+        "IPV4_ONLY",
+        "IPV6_ONLY",
+        "DUAL_STACK"
+      ]
+    },
+    "Ipv4Address":{
+      "type":"string",
+      "max":15,
+      "min":7,
+      "pattern":"[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}"
+    },
+    "Ipv6Address":{
+      "type":"string",
+      "max":39,
+      "min":3
+    },
+    "KmsKeyId":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|mrk-[0-9a-f]{32}|alias/[a-zA-Z0-9/_-]+|(arn:aws[-a-z]*:kms:[a-z0-9-]+:\\d{12}:((key/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})|(key/mrk-[0-9a-f]{32})|(alias/[a-zA-Z0-9/_-]+))))"
+    },
+    "LifeCycleState":{
+      "type":"string",
+      "enum":[
+        "available",
+        "creating",
+        "deleting",
+        "deleted",
+        "error",
+        "updating"
+      ]
+    },
+    "ListAccessPointsDescription":{
+      "type":"structure",
+      "required":[
+        "accessPointArn",
+        "accessPointId",
+        "fileSystemId",
+        "status",
+        "ownerId"
+      ],
+      "members":{
+        "accessPointArn":{
+          "shape":"AccessPointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the access point.</p>"
+        },
+        "accessPointId":{
+          "shape":"AccessPointId",
+          "documentation":"<p>The ID of the access point.</p>"
+        },
+        "fileSystemId":{
+          "shape":"FileSystemId",
+          "documentation":"<p>The ID of the S3 File System.</p>"
+        },
+        "status":{
+          "shape":"LifeCycleState",
+          "documentation":"<p>The current status of the access point.</p>"
+        },
+        "ownerId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID of the access point owner.</p>"
+        },
+        "posixUser":{
+          "shape":"PosixUser",
+          "documentation":"<p>The POSIX identity configured for this access point.</p>"
+        },
+        "rootDirectory":{
+          "shape":"RootDirectory",
+          "documentation":"<p>The root directory configuration for this access point.</p>"
+        },
+        "name":{
+          "shape":"TagValue",
+          "documentation":"<p>The name of the access point.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about an S3 File System Access Point returned in list operations.</p>"
+    },
+    "ListAccessPointsRequest":{
+      "type":"structure",
+      "required":["fileSystemId"],
+      "members":{
+        "fileSystemId":{
+          "shape":"FileSystemId",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the S3 File System to list access points for.</p>",
+          "location":"querystring",
+          "locationName":"fileSystemId"
+        },
+        "maxResults":{
+          "shape":"ListAccessPointsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of access points to return in a single response.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token returned from a previous call to continue listing access points.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListAccessPointsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "ListAccessPointsResponse":{
+      "type":"structure",
+      "required":["accessPoints"],
+      "members":{
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token to use in a subsequent request if more results are available.</p>"
+        },
+        "accessPoints":{
+          "shape":"AccessPoints",
+          "documentation":"<p>An array of access point descriptions.</p>"
+        }
+      }
+    },
+    "ListFileSystemsDescription":{
+      "type":"structure",
+      "required":[
+        "creationTime",
+        "fileSystemArn",
+        "fileSystemId",
+        "bucket",
+        "status",
+        "roleArn",
+        "ownerId"
+      ],
+      "members":{
+        "creationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the file system was created.</p>"
+        },
+        "fileSystemArn":{
+          "shape":"FileSystemArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the file system.</p>"
+        },
+        "fileSystemId":{
+          "shape":"FileSystemId",
+          "documentation":"<p>The ID of the file system.</p>"
+        },
+        "name":{
+          "shape":"TagValue",
+          "documentation":"<p>The name of the file system.</p>"
+        },
+        "bucket":{
+          "shape":"BucketArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the S3 bucket.</p>"
+        },
+        "status":{
+          "shape":"LifeCycleState",
+          "documentation":"<p>The current status of the file system.</p>"
+        },
+        "statusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p>Additional information about the file system status.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role used for S3 access.</p>"
+        },
+        "ownerId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID of the file system owner.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about an S3 File System returned in list operations.</p>"
+    },
+    "ListFileSystemsRequest":{
+      "type":"structure",
+      "members":{
+        "bucket":{
+          "shape":"BucketArn",
+          "documentation":"<p>Optional filter to list only file systems associated with the specified S3 bucket Amazon Resource Name (ARN). If provided, only file systems that provide access to this bucket will be returned in the response.</p>",
+          "location":"querystring",
+          "locationName":"bucket"
+        },
+        "maxResults":{
+          "shape":"ListFileSystemsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of file systems to return in a single response. If not specified, up to 100 file systems are returned.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token returned from a previous call to continue listing file systems.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListFileSystemsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListFileSystemsResponse":{
+      "type":"structure",
+      "required":["fileSystems"],
+      "members":{
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token to use in a subsequent request if more results are available.</p>"
+        },
+        "fileSystems":{
+          "shape":"FileSystems",
+          "documentation":"<p>An array of file system descriptions.</p>"
+        }
+      }
+    },
+    "ListMountTargetsDescription":{
+      "type":"structure",
+      "required":[
+        "mountTargetId",
+        "ownerId",
+        "subnetId"
+      ],
+      "members":{
+        "availabilityZoneId":{
+          "shape":"AvailabilityZoneId",
+          "documentation":"<p>The Availability Zone ID where the mount target is located.</p>"
+        },
+        "fileSystemId":{
+          "shape":"FileSystemId",
+          "documentation":"<p>The ID of the S3 File System.</p>"
+        },
+        "ipv4Address":{
+          "shape":"Ipv4Address",
+          "documentation":"<p>The IPv4 address of the mount target.</p>"
+        },
+        "ipv6Address":{
+          "shape":"Ipv6Address",
+          "documentation":"<p>The IPv6 address of the mount target.</p>"
+        },
+        "status":{
+          "shape":"LifeCycleState",
+          "documentation":"<p>The current status of the mount target.</p>"
+        },
+        "statusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p>Additional information about the mount target status.</p>"
+        },
+        "mountTargetId":{
+          "shape":"MountTargetId",
+          "documentation":"<p>The ID of the mount target.</p>"
+        },
+        "networkInterfaceId":{
+          "shape":"NetworkInterfaceId",
+          "documentation":"<p>The ID of the network interface associated with the mount target.</p>"
+        },
+        "ownerId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID of the mount target owner.</p>"
+        },
+        "subnetId":{
+          "shape":"SubnetId",
+          "documentation":"<p>The ID of the subnet where the mount target is located.</p>"
+        },
+        "vpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>The ID of the VPC where the mount target is located.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a mount target returned in list operations.</p>"
+    },
+    "ListMountTargetsRequest":{
+      "type":"structure",
+      "members":{
+        "fileSystemId":{
+          "shape":"FileSystemId",
+          "documentation":"<p>Optional filter to list only mount targets associated with the specified S3 File System ID or Amazon Resource Name (ARN). If provided, only mount targets for this file system will be returned in the response.</p>",
+          "location":"querystring",
+          "locationName":"fileSystemId"
+        },
+        "accessPointId":{
+          "shape":"AccessPointId",
+          "documentation":"<p>Optional filter to list only mount targets associated with the specified access point ID or Amazon Resource Name (ARN).</p>",
+          "location":"querystring",
+          "locationName":"accessPointId"
+        },
+        "maxResults":{
+          "shape":"ListMountTargetsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of mount targets to return in a single response.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token returned from a previous call to continue listing mount targets.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListMountTargetsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListMountTargetsResponse":{
+      "type":"structure",
+      "required":["mountTargets"],
+      "members":{
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token to use in a subsequent request if more results are available.</p>"
+        },
+        "mountTargets":{
+          "shape":"MountTargets",
+          "documentation":"<p>An array of mount target descriptions.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["resourceId"],
+      "members":{
+        "resourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the resource to list tags for.</p>",
+          "location":"uri",
+          "locationName":"resourceId"
+        },
+        "maxResults":{
+          "shape":"ListTagsForResourceRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of tags to return in a single response.</p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token returned from a previous call to continue listing tags.</p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        }
+      }
+    },
+    "ListTagsForResourceRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":50,
+      "min":1
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "members":{
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of tags associated with the resource.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token to use in a subsequent request if more results are available.</p>"
+        }
+      }
+    },
+    "MountTargetId":{
+      "type":"string",
+      "max":45,
+      "min":22,
+      "pattern":"fsmt-[0-9a-f]{17,40}"
+    },
+    "MountTargets":{
+      "type":"list",
+      "member":{"shape":"ListMountTargetsDescription"}
+    },
+    "NetworkInterfaceId":{"type":"string"},
+    "OwnerGid":{
+      "type":"long",
+      "box":true,
+      "max":4294967295,
+      "min":0
+    },
+    "OwnerUid":{
+      "type":"long",
+      "box":true,
+      "max":4294967295,
+      "min":0
+    },
+    "Path":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"(\\/|(\\/(?!\\.)+[^$#<>;;`|&?{}^*/\\n]+){1,4})"
+    },
+    "Permissions":{
+      "type":"string",
+      "max":4,
+      "min":3,
+      "pattern":"[0-7]{3,4}"
+    },
+    "PosixUser":{
+      "type":"structure",
+      "required":[
+        "uid",
+        "gid"
+      ],
+      "members":{
+        "uid":{
+          "shape":"Uid",
+          "documentation":"<p>The POSIX user ID.</p>"
+        },
+        "gid":{
+          "shape":"Gid",
+          "documentation":"<p>The POSIX group ID.</p>"
+        },
+        "secondaryGids":{
+          "shape":"SecondaryGids",
+          "documentation":"<p>An array of secondary POSIX group IDs.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the POSIX identity with uid, gid, and secondary group IDs for user enforcement.</p>"
+    },
+    "PutFileSystemPolicyRequest":{
+      "type":"structure",
+      "required":[
+        "fileSystemId",
+        "policy"
+      ],
+      "members":{
+        "fileSystemId":{
+          "shape":"FileSystemId",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the S3 File System to apply the resource policy to.</p>",
+          "location":"uri",
+          "locationName":"fileSystemId"
+        },
+        "policy":{
+          "shape":"String",
+          "documentation":"<p>The JSON-formatted resource policy to apply to the file system. The policy defines the permissions for accessing the file system. The policy must be a valid JSON document that follows IAM policy syntax.</p>",
+          "locationName":"policy"
+        }
+      }
+    },
+    "PutFileSystemPolicyResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "PutSynchronizationConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "fileSystemId",
+        "importDataRules",
+        "expirationDataRules"
+      ],
+      "members":{
+        "fileSystemId":{
+          "shape":"FileSystemId",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the S3 File System to configure synchronization for.</p>",
+          "location":"uri",
+          "locationName":"fileSystemId"
+        },
+        "latestVersionNumber":{
+          "shape":"Integer",
+          "documentation":"<p>The version number of the current synchronization configuration. Omit this value when creating a synchronization configuration for the first time. For subsequent updates, provide this value for optimistic concurrency control. If the version number does not match the current configuration, the request fails with a <code>ConflictException</code>.</p>",
+          "locationName":"latestVersionNumber"
+        },
+        "importDataRules":{
+          "shape":"PutSynchronizationConfigurationRequestImportDataRulesList",
+          "documentation":"<p>An array of import data rules that control how data is imported from S3 into the file system.</p>",
+          "locationName":"importDataRules"
+        },
+        "expirationDataRules":{
+          "shape":"PutSynchronizationConfigurationRequestExpirationDataRulesList",
+          "documentation":"<p>An array of expiration data rules that control when cached data expires from the file system.</p>",
+          "locationName":"expirationDataRules"
+        }
+      }
+    },
+    "PutSynchronizationConfigurationRequestExpirationDataRulesList":{
+      "type":"list",
+      "member":{"shape":"ExpirationDataRule"},
+      "max":1,
+      "min":1
+    },
+    "PutSynchronizationConfigurationRequestImportDataRulesList":{
+      "type":"list",
+      "member":{"shape":"ImportDataRule"},
+      "max":10,
+      "min":1
+    },
+    "PutSynchronizationConfigurationResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "ResourceId":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"(arn:aws[-a-z]*:s3files:[0-9a-z-:]+:file-system/fs-[0-9a-f]{17,40}(/access-point/fsap-[0-9a-f]{17,40})?|fs(ap)?-[0-9a-f]{17,40})"
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "required":["errorCode"],
+      "members":{
+        "errorCode":{
+          "shape":"ErrorCode",
+          "documentation":"<p>The error code associated with the exception.</p>"
+        },
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The specified resource was not found. Verify that the resource exists and that you have permission to access it.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "RoleArn":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"arn:(aws[a-zA-Z-]*)?:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+"
+    },
+    "RootDirectory":{
+      "type":"structure",
+      "members":{
+        "path":{
+          "shape":"Path",
+          "documentation":"<p>The path to use as the root directory for the access point.</p>"
+        },
+        "creationPermissions":{
+          "shape":"CreationPermissions",
+          "documentation":"<p>The permissions to set on newly created directories.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the root directory path and optional creation permissions for newly created directories.</p>"
+    },
+    "SecondaryGids":{
+      "type":"list",
+      "member":{"shape":"Gid"}
+    },
+    "SecurityGroup":{
+      "type":"string",
+      "max":43,
+      "min":11,
+      "pattern":"(sg-[0-9a-f]{8,40})"
+    },
+    "SecurityGroups":{
+      "type":"list",
+      "member":{"shape":"SecurityGroup"},
+      "max":100,
+      "min":0
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "required":["errorCode"],
+      "members":{
+        "errorCode":{
+          "shape":"ErrorCode",
+          "documentation":"<p>The error code associated with the exception.</p>"
+        },
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request would exceed a service quota. Review your service quotas and either delete resources or request a quota increase.</p>",
+      "error":{
+        "httpStatusCode":402,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "StatusMessage":{"type":"string"},
+    "String":{"type":"string"},
+    "SubnetId":{
+      "type":"string",
+      "max":47,
+      "min":15,
+      "pattern":"subnet-[0-9a-f]{8,40}"
+    },
+    "Tag":{
+      "type":"structure",
+      "required":[
+        "key",
+        "value"
+      ],
+      "members":{
+        "key":{
+          "shape":"TagKey",
+          "documentation":"<p>The tag key. The key can't start with <code>aws:</code>.</p>"
+        },
+        "value":{
+          "shape":"TagValue",
+          "documentation":"<p>The tag value.</p>"
+        }
+      },
+      "documentation":"<p>A key-value pair for resource tagging.</p>"
+    },
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]+)"
+    },
+    "TagKeys":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "max":50,
+      "min":1
+    },
+    "TagList":{
+      "type":"list",
+      "member":{"shape":"Tag"},
+      "max":50,
+      "min":1
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceId",
+        "tags"
+      ],
+      "members":{
+        "resourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the resource to add tags to.</p>",
+          "location":"uri",
+          "locationName":"resourceId"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of key-value pairs to add as tags to the resource.</p>"
+        }
+      }
+    },
+    "TagValue":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)"
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "required":["errorCode"],
+      "members":{
+        "errorCode":{
+          "shape":"ErrorCode",
+          "documentation":"<p>The error code associated with the exception.</p>"
+        },
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request was throttled. Retry your request using exponential backoff.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "Timestamp":{"type":"timestamp"},
+    "Uid":{
+      "type":"long",
+      "box":true,
+      "max":4294967295,
+      "min":0
+    },
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceId",
+        "tagKeys"
+      ],
+      "members":{
+        "resourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the resource to remove tags from.</p>",
+          "location":"uri",
+          "locationName":"resourceId"
+        },
+        "tagKeys":{
+          "shape":"TagKeys",
+          "documentation":"<p>An array of tag keys to remove from the resource.</p>",
+          "location":"querystring",
+          "locationName":"tagKeys"
+        }
+      }
+    },
+    "UpdateMountTargetRequest":{
+      "type":"structure",
+      "required":[
+        "mountTargetId",
+        "securityGroups"
+      ],
+      "members":{
+        "mountTargetId":{
+          "shape":"MountTargetId",
+          "documentation":"<p>The ID of the mount target to update.</p>",
+          "location":"uri",
+          "locationName":"mountTargetId"
+        },
+        "securityGroups":{
+          "shape":"SecurityGroups",
+          "documentation":"<p>An array of VPC security group IDs to associate with the mount target's network interface. This replaces the existing security groups. All security groups must belong to the same VPC as the mount target's subnet.</p>"
+        }
+      }
+    },
+    "UpdateMountTargetResponse":{
+      "type":"structure",
+      "required":[
+        "ownerId",
+        "mountTargetId",
+        "subnetId"
+      ],
+      "members":{
+        "availabilityZoneId":{
+          "shape":"AvailabilityZoneId",
+          "documentation":"<p>The Availability Zone ID where the mount target is located.</p>"
+        },
+        "ownerId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID of the mount target owner.</p>"
+        },
+        "mountTargetId":{
+          "shape":"MountTargetId",
+          "documentation":"<p>The ID of the mount target.</p>"
+        },
+        "fileSystemId":{
+          "shape":"FileSystemId",
+          "documentation":"<p>The ID of the S3 File System.</p>"
+        },
+        "subnetId":{
+          "shape":"SubnetId",
+          "documentation":"<p>The ID of the subnet where the mount target is located.</p>"
+        },
+        "ipv4Address":{
+          "shape":"Ipv4Address",
+          "documentation":"<p>The IPv4 address of the mount target.</p>"
+        },
+        "ipv6Address":{
+          "shape":"Ipv6Address",
+          "documentation":"<p>The IPv6 address of the mount target.</p>"
+        },
+        "networkInterfaceId":{
+          "shape":"NetworkInterfaceId",
+          "documentation":"<p>The ID of the network interface associated with the mount target.</p>"
+        },
+        "vpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>The ID of the VPC where the mount target is located.</p>"
+        },
+        "securityGroups":{
+          "shape":"SecurityGroups",
+          "documentation":"<p>The security groups associated with the mount target.</p>"
+        },
+        "status":{
+          "shape":"LifeCycleState",
+          "documentation":"<p>The current status of the mount target.</p>"
+        },
+        "statusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p>Additional information about the mount target status.</p>"
+        }
+      }
+    },
+    "ValidationException":{
+      "type":"structure",
+      "required":["errorCode"],
+      "members":{
+        "errorCode":{
+          "shape":"ErrorCode",
+          "documentation":"<p>The error code associated with the exception.</p>"
+        },
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The input parameters are not valid. Check the parameter values and try again.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "VpcId":{"type":"string"}
+  },
+  "documentation":"<p>S3 Files makes S3 buckets accessible as high-performance file systems powered by EFS. This service enables file system interface access to S3 data with sub-millisecond latencies through mount targets, supporting AI/ML workloads, media processing, and hybrid storage workflows that require both file system and object storage access to the same data.</p>"
+}

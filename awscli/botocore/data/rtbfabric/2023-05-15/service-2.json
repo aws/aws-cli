@@ -569,6 +569,10 @@
         "logSettings":{
           "shape":"LinkLogSettings",
           "documentation":"<p>Settings for the application logs.</p>"
+        },
+        "timeoutInMillis":{
+          "shape":"LinkTimeoutInMillis",
+          "documentation":"<p>The timeout value in milliseconds.</p>"
         }
       }
     },
@@ -619,6 +623,11 @@
           "shape":"LinkAttributes",
           "documentation":"<p>Attributes of the link.</p>"
         },
+        "logSettings":{"shape":"LinkLogSettings"},
+        "connectivityType":{
+          "shape":"ConnectivityType",
+          "documentation":"<p>The connectivity type of the link.</p>"
+        },
         "linkId":{
           "shape":"LinkId",
           "documentation":"<p>The unique identifier of the link.</p>"
@@ -653,7 +662,11 @@
       "documentation":"<p>Describes a bid action.</p>",
       "union":true
     },
-    "AutoScalingGroupName":{"type":"string"},
+    "AutoScalingGroupName":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
     "AutoScalingGroupNameList":{
       "type":"list",
       "member":{"shape":"AutoScalingGroupName"}
@@ -670,11 +683,15 @@
           "documentation":"<p>The names of the auto scaling group.</p>"
         },
         "roleArn":{
-          "shape":"String",
+          "shape":"AutoScalingGroupsConfigurationRoleArnString",
           "documentation":"<p>The role ARN of the auto scaling group.</p>"
         }
       },
       "documentation":"<p>Describes the configuration of an auto scaling group.</p>"
+    },
+    "AutoScalingGroupsConfigurationRoleArnString":{
+      "type":"string",
+      "pattern":"arn:aws:iam::[0-9]{12}:role/.{1,2048}"
     },
     "Base64EncodedCertificateChain":{
       "type":"string",
@@ -705,6 +722,16 @@
       },
       "exception":true
     },
+    "ConnectivityType":{
+      "type":"string",
+      "documentation":"<p>The connectivity type for a link or gateway.</p>",
+      "enum":[
+        "DEFAULT",
+        "PUBLIC_INGRESS",
+        "PUBLIC_EGRESS",
+        "EXTERNAL_INBOUND"
+      ]
+    },
     "CreateInboundExternalLinkRequest":{
       "type":"structure",
       "required":[
@@ -728,7 +755,10 @@
           "shape":"LinkAttributes",
           "documentation":"<p>Attributes of the link.</p>"
         },
-        "logSettings":{"shape":"LinkLogSettings"},
+        "logSettings":{
+          "shape":"LinkLogSettings",
+          "documentation":"<p>Settings for the application logs.</p>"
+        },
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>A map of the key-value pairs of the tag or tags to assign to the resource.</p>"
@@ -795,6 +825,10 @@
         "logSettings":{
           "shape":"LinkLogSettings",
           "documentation":"<p>Settings for the application logs.</p>"
+        },
+        "timeoutInMillis":{
+          "shape":"LinkTimeoutInMillis",
+          "documentation":"<p>The timeout value in milliseconds.</p>"
         }
       }
     },
@@ -845,6 +879,11 @@
           "shape":"LinkAttributes",
           "documentation":"<p>Attributes of the link.</p>"
         },
+        "logSettings":{"shape":"LinkLogSettings"},
+        "connectivityType":{
+          "shape":"ConnectivityType",
+          "documentation":"<p>The connectivity type of the link.</p>"
+        },
         "linkId":{
           "shape":"LinkId",
           "documentation":"<p>The unique identifier of the link.</p>"
@@ -879,12 +918,18 @@
           "location":"uri",
           "locationName":"gatewayId"
         },
-        "attributes":{"shape":"LinkAttributes"},
+        "attributes":{
+          "shape":"LinkAttributes",
+          "documentation":"<p>Attributes of the link.</p>"
+        },
         "publicEndpoint":{
           "shape":"URL",
           "documentation":"<p>The public endpoint of the link.</p>"
         },
-        "logSettings":{"shape":"LinkLogSettings"},
+        "logSettings":{
+          "shape":"LinkLogSettings",
+          "documentation":"<p>Settings for the application logs.</p>"
+        },
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>A map of the key-value pairs of the tag or tags to assign to the resource.</p>"
@@ -951,7 +996,9 @@
     },
     "CreateRequesterGatewayRequestDescriptionString":{
       "type":"string",
-      "pattern":"[A-Za-z0-9 ]+"
+      "max":255,
+      "min":0,
+      "pattern":"([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)"
     },
     "CreateRequesterGatewayRequestSecurityGroupIdsList":{
       "type":"list",
@@ -1020,6 +1067,7 @@
           "shape":"Protocol",
           "documentation":"<p>The networking protocol to use.</p>"
         },
+        "listenerConfig":{"shape":"ListenerConfig"},
         "trustStoreConfiguration":{
           "shape":"TrustStoreConfiguration",
           "documentation":"<p>The configuration of the trust store.</p>"
@@ -1040,12 +1088,18 @@
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>A map of the key-value pairs of the tag or tags to assign to the resource.</p>"
+        },
+        "gatewayType":{
+          "shape":"GatewayType",
+          "documentation":"<p>The type of gateway. Valid values are <code>EXTERNAL</code> or <code>INTERNAL</code>.</p>"
         }
       }
     },
     "CreateResponderGatewayRequestDescriptionString":{
       "type":"string",
-      "pattern":"[A-Za-z0-9 ]+"
+      "max":255,
+      "min":0,
+      "pattern":"([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)"
     },
     "CreateResponderGatewayRequestPortInteger":{
       "type":"integer",
@@ -1077,6 +1131,14 @@
         "status":{
           "shape":"ResponderGatewayStatus",
           "documentation":"<p>The status of the request.</p>"
+        },
+        "listenerConfig":{
+          "shape":"ListenerConfig",
+          "documentation":"<p>The listener configuration for the responder gateway.</p>"
+        },
+        "externalInboundEndpoint":{
+          "shape":"DomainName",
+          "documentation":"<p>The external inbound endpoint for the responder gateway.</p>"
         }
       }
     },
@@ -1262,7 +1324,7 @@
       "type":"string",
       "max":255,
       "min":1,
-      "pattern":"(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)(?:\\.(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?))+"
+      "pattern":"(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+"
     },
     "EksEndpointsConfiguration":{
       "type":"structure",
@@ -1296,11 +1358,15 @@
           "documentation":"<p>The name of the cluster.</p>"
         },
         "roleArn":{
-          "shape":"String",
+          "shape":"EksEndpointsConfigurationRoleArnString",
           "documentation":"<p>The role ARN for the cluster.</p>"
         }
       },
       "documentation":"<p>Describes the configuration of an Amazon Elastic Kubernetes Service endpoint.</p>"
+    },
+    "EksEndpointsConfigurationRoleArnString":{
+      "type":"string",
+      "pattern":"arn:aws:iam::[0-9]{12}:role/.{1,2048}"
     },
     "Filter":{
       "type":"structure",
@@ -1367,11 +1433,21 @@
     },
     "GatewayId":{
       "type":"string",
+      "max":32,
+      "min":8,
       "pattern":"rtb-gw-[a-z0-9-]{1,25}"
     },
     "GatewayIdList":{
       "type":"list",
       "member":{"shape":"GatewayId"}
+    },
+    "GatewayType":{
+      "type":"string",
+      "documentation":"<p>The type of gateway.</p>",
+      "enum":[
+        "EXTERNAL",
+        "INTERNAL"
+      ]
     },
     "GetInboundExternalLinkRequest":{
       "type":"structure",
@@ -1443,7 +1519,14 @@
           "shape":"TagsMap",
           "documentation":"<p>A map of the key-value pairs for the tag or tags assigned to the specified resource.</p>"
         },
-        "logSettings":{"shape":"LinkLogSettings"}
+        "logSettings":{
+          "shape":"LinkLogSettings",
+          "documentation":"<p>Settings for the application logs.</p>"
+        },
+        "connectivityType":{
+          "shape":"ConnectivityType",
+          "documentation":"<p>The connectivity type of the link.</p>"
+        }
       }
     },
     "GetLinkRequest":{
@@ -1514,6 +1597,14 @@
           "shape":"LinkAttributes",
           "documentation":"<p>Attributes of the link.</p>"
         },
+        "logSettings":{
+          "shape":"LinkLogSettings",
+          "documentation":"<p>Settings for the application logs.</p>"
+        },
+        "connectivityType":{
+          "shape":"ConnectivityType",
+          "documentation":"<p>The connectivity type of the link.</p>"
+        },
         "linkId":{
           "shape":"LinkId",
           "documentation":"<p>The unique identifier of the link.</p>"
@@ -1522,9 +1613,13 @@
           "shape":"TagsMap",
           "documentation":"<p>A map of the key-value pairs for the tag or tags assigned to the specified resource.</p>"
         },
-        "logSettings":{
-          "shape":"LinkLogSettings",
-          "documentation":"<p>Settings for the application logs.</p>"
+        "httpResponderAllowed":{
+          "shape":"Boolean",
+          "documentation":"<p>Boolean to specify if an HTTP responder is allowed.</p>"
+        },
+        "timeoutInMillis":{
+          "shape":"LinkTimeoutInMillis",
+          "documentation":"<p>The timeout value in milliseconds.</p>"
         }
       }
     },
@@ -1574,6 +1669,15 @@
           "shape":"URL",
           "documentation":"<p>The public endpoint for the link.</p>"
         },
+        "flowModules":{
+          "shape":"ModuleConfigurationList",
+          "documentation":"<p>The configuration of flow modules.</p>"
+        },
+        "pendingFlowModules":{
+          "shape":"ModuleConfigurationList",
+          "documentation":"<p>The configuration of pending flow modules.</p>"
+        },
+        "attributes":{"shape":"LinkAttributes"},
         "createdAt":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp of when the outbound external link was created.</p>"
@@ -1586,7 +1690,14 @@
           "shape":"TagsMap",
           "documentation":"<p>A map of the key-value pairs for the tag or tags assigned to the specified resource.</p>"
         },
-        "logSettings":{"shape":"LinkLogSettings"}
+        "logSettings":{
+          "shape":"LinkLogSettings",
+          "documentation":"<p>Settings for the application logs.</p>"
+        },
+        "connectivityType":{
+          "shape":"ConnectivityType",
+          "documentation":"<p>The connectivity type of the link.</p>"
+        }
       }
     },
     "GetRequesterGatewayRequest":{
@@ -1740,6 +1851,10 @@
           "shape":"Protocol",
           "documentation":"<p>The networking protocol.</p>"
         },
+        "listenerConfig":{
+          "shape":"ListenerConfig",
+          "documentation":"<p>The listener configuration for the responder gateway.</p>"
+        },
         "trustStoreConfiguration":{
           "shape":"TrustStoreConfiguration",
           "documentation":"<p>The configuration of the trust store.</p>"
@@ -1767,6 +1882,14 @@
         "inboundLinksCount":{
           "shape":"Integer",
           "documentation":"<p>The count of inbound links for the responder gateway.</p>"
+        },
+        "gatewayType":{
+          "shape":"GatewayType",
+          "documentation":"<p>The type of gateway. Valid values are <code>EXTERNAL</code> or <code>INTERNAL</code>.</p>"
+        },
+        "externalInboundEndpoint":{
+          "shape":"DomainName",
+          "documentation":"<p>The external inbound endpoint for the responder gateway.</p>"
         }
       }
     },
@@ -1826,14 +1949,20 @@
     },
     "KubernetesClusterName":{
       "type":"string",
+      "max":63,
+      "min":2,
       "pattern":"[A-Za-z0-9][A-Za-z0-9-]{0,61}[A-Za-z0-9]"
     },
     "KubernetesEndpointsResourceName":{
       "type":"string",
+      "max":63,
+      "min":2,
       "pattern":"[A-Za-z0-9][A-Za-z0-9-]{0,61}[A-Za-z0-9]"
     },
     "KubernetesNamespace":{
       "type":"string",
+      "max":63,
+      "min":2,
       "pattern":"[A-Za-z0-9][A-Za-z0-9-]{0,61}[A-Za-z0-9]"
     },
     "LinkApplicationLogConfiguration":{
@@ -1900,6 +2029,8 @@
     },
     "LinkId":{
       "type":"string",
+      "max":30,
+      "min":6,
       "pattern":"link-[a-z0-9-]{1,25}"
     },
     "LinkList":{
@@ -1934,6 +2065,12 @@
         "ISOLATED",
         "PENDING_RESTORATION"
       ]
+    },
+    "LinkTimeoutInMillis":{
+      "type":"long",
+      "box":true,
+      "max":5000,
+      "min":100
     },
     "ListLinksRequest":{
       "type":"structure",
@@ -2019,6 +2156,11 @@
           "shape":"LinkAttributes",
           "documentation":"<p>Describes attributes of a link.</p>"
         },
+        "logSettings":{"shape":"LinkLogSettings"},
+        "connectivityType":{
+          "shape":"ConnectivityType",
+          "documentation":"<p>The connectivity type of the link.</p>"
+        },
         "linkId":{
           "shape":"LinkId",
           "documentation":"<p>The unique identifier of the link.</p>"
@@ -2026,6 +2168,10 @@
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>A map of the key-value pairs of the tag or tags to assign to the resource.</p>"
+        },
+        "publicEndpoint":{
+          "shape":"URL",
+          "documentation":"<p>The public endpoint of the outbound link.</p>"
         }
       },
       "documentation":"<p>Describes a link.</p>"
@@ -2122,6 +2268,17 @@
           "documentation":"<p>A map of the key-value pairs for the tag or tags assigned to the specified resource.</p>"
         }
       }
+    },
+    "ListenerConfig":{
+      "type":"structure",
+      "required":["protocols"],
+      "members":{
+        "protocols":{
+          "shape":"ProtocolList",
+          "documentation":"<p>The protocol for connections from clients to the gateway</p>"
+        }
+      },
+      "documentation":"<p>Listener configuration for the protocols (HTTP, HTTPS, or both) accepted by the gateway.</p>"
     },
     "ManagedEndpointConfiguration":{
       "type":"structure",
@@ -2276,6 +2433,12 @@
         "HTTPS"
       ]
     },
+    "ProtocolList":{
+      "type":"list",
+      "member":{"shape":"Protocol"},
+      "max":2,
+      "min":1
+    },
     "RateLimiterModuleParameters":{
       "type":"structure",
       "members":{
@@ -2353,6 +2516,11 @@
         "attributes":{
           "shape":"LinkAttributes",
           "documentation":"<p>Attributes of the link.</p>"
+        },
+        "logSettings":{"shape":"LinkLogSettings"},
+        "connectivityType":{
+          "shape":"ConnectivityType",
+          "documentation":"<p>The connectivity type of the link.</p>"
         },
         "linkId":{
           "shape":"LinkId",
@@ -2471,10 +2639,12 @@
       "type":"string",
       "max":1600,
       "min":1,
-      "pattern":"arn:aws:rtbfabric:[a-zA-Z0-9_-]+:[0-9]{12}:gateway/[a-zA-Z0-9-]+(/link/[a-zA-Z0-9-]+)?"
+      "pattern":"arn:aws:rtbfabric:[a-zA-Z0-9_-]+:[0-9]{12}:gateway/[a-zA-Z0-9-]+(/link/[a-zA-Z0-9-]+(/routing-rule/[a-zA-Z0-9-]+)?)?"
     },
     "SecurityGroupId":{
       "type":"string",
+      "max":43,
+      "min":11,
       "pattern":"sg-[0-9a-f]{8,40}"
     },
     "ServiceQuotaExceededException":{
@@ -2493,6 +2663,8 @@
     "String":{"type":"string"},
     "SubnetId":{
       "type":"string",
+      "max":24,
+      "min":15,
       "pattern":"subnet-\\w{8,17}"
     },
     "TagKey":{
@@ -2679,6 +2851,10 @@
         "logSettings":{
           "shape":"LinkLogSettings",
           "documentation":"<p>Settings for the application logs.</p>"
+        },
+        "timeoutInMillis":{
+          "shape":"LinkTimeoutInMillis",
+          "documentation":"<p>The timeout value in milliseconds.</p>"
         }
       }
     },
@@ -2765,6 +2941,10 @@
           "shape":"Protocol",
           "documentation":"<p>The networking protocol to use.</p>"
         },
+        "listenerConfig":{
+          "shape":"ListenerConfig",
+          "documentation":"<p>The listener configuration for the responder gateway.</p>"
+        },
         "trustStoreConfiguration":{
           "shape":"TrustStoreConfiguration",
           "documentation":"<p>The configuration of the trust store.</p>"
@@ -2832,10 +3012,14 @@
     },
     "Version":{
       "type":"string",
+      "max":25,
+      "min":1,
       "pattern":"[a-z0-9-]{1,25}"
     },
     "VpcId":{
       "type":"string",
+      "max":21,
+      "min":12,
       "pattern":"vpc-[a-f0-9]{8,17}"
     }
   },

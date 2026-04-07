@@ -2,6 +2,26 @@
 CHANGELOG
 =========
 
+1.44.75
+=======
+
+* api-change:``accessanalyzer``: Revert previous additions of API changes.
+* api-change:``bedrock-agentcore``: This release includes support for 1) InvokeBrowser API, enabling OS-level control of AgentCore Browser Tool sessions through mouse actions, keyboard input, and screenshots. 2) Added documentation noting that empty sessions are automatically deleted after one day in the ListSessions API.
+* api-change:``braket``: Added support for t3, g6, and g6e instance types for Hybrid Jobs.
+* api-change:``connect``: The voice enhancement mode used by the agent can now be viewed on the contact record via the DescribeContact api.
+* api-change:``datasync``: Allow IAM role ARNs with IAM Paths for "SecretAccessRoleArn" field in "CustomSecretConfig"
+* api-change:``datazone``: Update Configurations and registerS3AccessGrantLocation as public attributes for cfn
+* api-change:``ec2``: EC2 Capacity Manager adds new dimensions for grouping and filtering capacity metrics, including tag-based dimensions and Account Name.
+* api-change:``ecs``: This release provides the functionality of mounting Amazon S3 Files to Amazon ECS tasks by adding support for the new S3FilesVolumeConfiguration parameter in ECS RegisterTaskDefinition API.
+* api-change:``eks``: EKS MNG WarmPool feature to support ASG WarmPool feature.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``lambda``: Launching Lambda integration with S3 Files as a new file system configuration.
+* api-change:``outposts``: This change allows listAssets to surface pending and non-compute asset information. Adds the INSTALLING asset state enum and the STORAGE, POWERSHELF, SWITCH, and NETWORKING AssetTypes.
+* api-change:``rtbfabric``: AWS RTB Fabric External Responder gateways now support HTTP in addition to HTTPS for inbound external links. Gateways can accept bid requests on port 80 or serve both protocols simultaneously via listener configuration, giving customers flexible transport options for their bidding infrastructure
+* api-change:``s3``: Updated list of the valid AWS Region values for the LocationConstraint parameter for general purpose buckets.
+* api-change:``s3files``: Support for S3 Files, a new shared file system that connects any AWS compute directly with your data in Amazon S3. It provides fast, direct access to all of your S3 data as files with full file system semantics and low-latency performance, without your data ever leaving S3.
+
+
 1.44.74
 =======
 

@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+2.34.27
+=======
+
+* bugfix:auth: Fix ``sigv4a_signing_region_set`` config being ignored when SigV4a is selected via ``auth_scheme_preference``. The configured region set is now correctly applied to the signing context regardless of how SigV4a is resolved.
+* bugfix:``iam``: Tighten file permissions for virtual MFA bootstrap output
+* api-change:``drs``: This changes adds support for modifying the replication configuration to support data replication using IPv6.
+* api-change:``marketplace-discovery``: AWS Marketplace Discovery API provides an interface that enables programmatic access to the AWS Marketplace catalog, including searching and browsing listings, retrieving product details and fulfillment options, and accessing public and private offer pricing and terms.
+* api-change:``ecr``: Add UnableToListUpstreamImageReferrersException in ListImageReferrers
+* api-change:``ivs-realtime``: Adds support for Amazon IVS real-time streaming redundant ingest.
+* api-change:``backup``: Adding EKS specific backup vault notification types for AWS Backup.
+* bugfix:CodeArtifact: Tighten file permissions when writing credentials in CodeArtifact login
+* api-change:``medialive``: MediaLive is adding support for MediaConnect Router by supporting a new output type called MEDIACONNECT ROUTER. This new output type will provide seamless encrypted transport between your MediaLive channel and MediaConnect Router.
+* api-change:``outposts``: Add AWS Outposts APIs to view renewal pricing options and submit renewal requests for Outpost contracts
+
+
 2.34.26
 =======
 

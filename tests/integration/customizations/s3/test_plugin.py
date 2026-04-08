@@ -87,6 +87,21 @@ def setup_module():
     s3.delete_public_access_block(
         Bucket=_SHARED_BUCKET
     )
+    s3.put_bucket_encryption(
+        Bucket=_SHARED_BUCKET,
+        ServerSideEncryptionConfiguration={
+            'Rules': [
+                {
+                    'ApplyServerSideEncryptionByDefault': {
+                        'SSEAlgorithm': 'AES256',
+                    },
+                    'BlockedEncryptionTypes': {
+                        'EncryptionType': ['NONE'],
+                    },
+                }
+            ],
+        },
+    )
 
     # Validate that "_NON_EXISTENT_BUCKET" doesn't exist.
     waiter = s3.get_waiter('bucket_not_exists')

@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+1.44.76
+=======
+
+* api-change:``backup``: Adding EKS specific backup vault notification types for AWS Backup.
+* api-change:``drs``: This changes adds support for modifying the replication configuration to support data replication using IPv6.
+* api-change:``ecr``: Add UnableToListUpstreamImageReferrersException in ListImageReferrers
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``ivs-realtime``: Adds support for Amazon IVS real-time streaming redundant ingest.
+* api-change:``marketplace-discovery``: AWS Marketplace Discovery API provides an interface that enables programmatic access to the AWS Marketplace catalog, including searching and browsing listings, retrieving product details and fulfillment options, and accessing public and private offer pricing and terms.
+* api-change:``medialive``: MediaLive is adding support for MediaConnect Router by supporting a new output type called MEDIACONNECT ROUTER. This new output type will provide seamless encrypted transport between your MediaLive channel and MediaConnect Router.
+* api-change:``outposts``: Add AWS Outposts APIs to view renewal pricing options and submit renewal requests for Outpost contracts
+* bugfix:CodeArtifact: Tighten file permissions when writing credentials in CodeArtifact login
+* bugfix:``iam``: Tighten file permissions for virtual MFA bootstrap output
+
+
 1.44.75
 =======
 

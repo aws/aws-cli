@@ -640,7 +640,7 @@ def test_auth_scheme_preference(
         event_emitter=None,
         use_ssl=True,
         requested_auth_scheme=None,
-        preferred_auth_schemes=preferred_auth_schemes,
+        auth_scheme_preference=preferred_auth_schemes,
     )
     monkeypatch.setattr(
         'botocore.regions.AUTH_TYPE_MAPS',

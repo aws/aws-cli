@@ -17,6 +17,7 @@ import shutil
 
 from awscli.testutils import BaseAWSCommandParamsTest
 from awscli.testutils import BaseAWSHelpOutputTest
+from awscli.testutils import skip_if_windows
 
 
 class TestGetObject(BaseAWSCommandParamsTest):
@@ -73,6 +74,20 @@ class TestGetObject(BaseAWSCommandParamsTest):
                 'a,b,c,d\n'
                 'e,f,g,h\n'
             ))
+
+    @skip_if_windows('chmod is not supported on Windows')
+    def test_output_file_permissions(self):
+        filename = os.path.join(self._tempdir, 'outfile_perms')
+        cmdline = self.prefix + [
+            '--bucket', 'mybucket', '--key', 'mykey',
+            '--expression', 'SELECT * FROM S3Object',
+            '--expression-type', 'SQL',
+            '--input-serialization', '{"CSV": {}}',
+            '--output-serialization', '{"CSV": {}}',
+            filename,
+        ]
+        self.assert_params_for_cmd(cmdline, ignore_params=True)
+        self.assertEqual(os.stat(filename).st_mode & 0o777, 0o600)
 
     def test_errors_are_propagated(self):
         self.http_response.status_code = 400

@@ -3,12 +3,13 @@ name: Closed Issue Update
 on:
   issues:
     types: [closed]
-permissions:
-  issues: write
+permissions: {}
 
 jobs:
   unlabel:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
     if: contains(toJson(github.event.issue.labels), 'needs-triage')
     steps:
     - uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
@@ -22,6 +23,8 @@ jobs:
           })      
   auto_comment:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
     steps:
     - uses: aws-actions/closed-issue-message@10aaf6366131b673a7c8b7742f8b3849f1d44f18 # v2
       with:

@@ -79,11 +79,12 @@ jobs:
           echo "PLATFORMS=macOS and Linux" >> $GITHUB_ENV
       - name: git commit and push updated lock files
         if: github.event.inputs.dry-run == 'no' && env.CHANGES
+        shell: bash
         run: |
           git config --global user.name "Github Actions"
           git config --global user.email "<>"
           git fetch
           git add requirements
-          git commit -m "Regenerate lock files for ${{ env.PLATFORMS }}"
+          git commit -m "Regenerate lock files for ${PLATFORMS}"
           git pull --rebase
           git push

@@ -25,8 +25,9 @@ jobs:
     - name: Manage regression label
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        STEPS_CHECK_REGRESSION_OUTPUTS_IS_REGRESSION: ${{ steps.check_regression.outputs.is_regression }}
       run: |
-        if [ "${{ steps.check_regression.outputs.is_regression }}" == "true" ]; then
+        if [ "${STEPS_CHECK_REGRESSION_OUTPUTS_IS_REGRESSION}" == "true" ]; then
           gh issue edit ${{ github.event.issue.number }} --add-label "potential-regression" -R ${{ github.repository }}
         else
           gh issue edit ${{ github.event.issue.number }} --remove-label "potential-regression" -R ${{ github.repository }}

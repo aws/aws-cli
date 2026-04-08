@@ -14,6 +14,7 @@
 import json
 import logging
 import os
+from unittest import mock
 
 import pytest
 
@@ -588,7 +589,7 @@ def test_construct_endpoint_parametrized(
 
 
 @pytest.mark.parametrize(
-    "preferred_auth_schemes,expected_auth_scheme_name",
+    "auth_scheme_preference,expected_auth_scheme_name",
     [
         (
             'foo,bar',
@@ -605,7 +606,7 @@ def test_construct_endpoint_parametrized(
     ],
 )
 def test_auth_scheme_preference(
-    preferred_auth_schemes,
+    auth_scheme_preference,
     expected_auth_scheme_name,
     monkeypatch
 ):
@@ -640,15 +641,23 @@ def test_auth_scheme_preference(
         event_emitter=None,
         use_ssl=True,
         requested_auth_scheme=None,
-        auth_scheme_preference=preferred_auth_schemes,
-    )
-    monkeypatch.setattr(
-        'botocore.regions.AUTH_TYPE_MAPS',
-        {'bar': None, 'foo': None}
+        auth_scheme_preference=auth_scheme_preference,
     )
     auth_schemes = [
         {'name': 'foo', 'signingName': 's3', 'signingRegion': 'ap-south-1'},
         {'name': 'bar', 'signingName': 's3', 'signingRegion': 'ap-south-2'},
     ]
-    name, scheme = resolver.auth_schemes_to_signing_ctx(auth_schemes)
+    with (
+        mock.patch.dict(
+            'botocore.auth.AUTH_TYPE_MAPS',
+            {'bar': None, 'foo': None},
+            clear=True
+        ),
+        mock.patch.dict(
+            'botocore.auth.AUTH_PREF_TO_SIGNATURE_VERSION',
+            {'bar': 'bar', 'foo': 'foo'},
+            clear=True
+        )
+    ):
+        name, scheme = resolver.auth_schemes_to_signing_ctx(auth_schemes)
     assert name == expected_auth_scheme_name

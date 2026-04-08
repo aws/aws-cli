@@ -700,6 +700,9 @@ class EndpointRulesetResolver:
         if self._requested_auth_scheme == UNSIGNED:
             return 'none', {}
 
+        available_ruleset_names = [
+            s['name'].split('#')[-1] for s in auth_schemes
+        ]
         auth_schemes = [
             {**scheme, 'name': self._strip_sig_prefix(scheme['name'])}
             for scheme in auth_schemes
@@ -723,8 +726,10 @@ class EndpointRulesetResolver:
                 return None, {}
         elif self._auth_scheme_preference is not None:
             prefs = self._auth_scheme_preference.split(',')
-            available_ruleset_names = [s['name'].split('#')[-1] for s in auth_schemes]
-            auth_schemes_by_auth_type = {s['name'].split('#')[-1]: s for s in auth_schemes}
+            auth_schemes_by_auth_type = {
+                self._strip_sig_prefix(s['name'].split('#')[-1]): s
+                for s in auth_schemes
+            }
             name = resolve_auth_scheme_preference(prefs, available_ruleset_names)
             scheme = auth_schemes_by_auth_type[name]
         else:

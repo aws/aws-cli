@@ -33,5 +33,6 @@ class TestCreateBucket(BaseCLIDriverTest):
                         </Error>''',
                 ),
                 mock.Mock(status_code=200, headers={}, content=b''),
+                mock.Mock(status_code=200, headers={}, content=b''),
             ]
             self.assertEqual(create_bucket(self.session, 'bucket'), 'bucket')

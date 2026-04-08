@@ -10623,8 +10623,17 @@
         "metadata":{
           "shape":"MessageMetadata",
           "documentation":"<p>Additional metadata for the message.</p>"
+        },
+        "originRequestId":{
+          "shape":"SendMessageRequestOriginRequestIdString",
+          "documentation":"<p>Request identifier from the origin system, used for end-to-end tracing across spans.</p>"
         }
       }
+    },
+    "SendMessageRequestOriginRequestIdString":{
+      "type":"string",
+      "max":256,
+      "min":1
     },
     "SendMessageResponse":{
       "type":"structure",
@@ -10880,6 +10889,10 @@
         "requestId":{
           "shape":"Uuid",
           "documentation":"<p>The service request ID that initiated the operation</p>"
+        },
+        "originRequestId":{
+          "shape":"SpanOriginRequestIdString",
+          "documentation":"<p>The origin request identifier for end-to-end tracing.</p>"
         },
         "attributes":{
           "shape":"SpanAttributes",
@@ -11137,6 +11150,11 @@
       "type":"list",
       "member":{"shape":"SpanMessageValue"},
       "max":10,
+      "min":1
+    },
+    "SpanOriginRequestIdString":{
+      "type":"string",
+      "max":256,
       "min":1
     },
     "SpanStatus":{

@@ -819,12 +819,25 @@
       "enum":[
         "ACTIVE",
         "RETIRING",
-        "ISOLATED"
+        "ISOLATED",
+        "INSTALLING"
       ]
     },
     "AssetType":{
       "type":"string",
-      "enum":["COMPUTE"]
+      "enum":[
+        "COMPUTE",
+        "STORAGE",
+        "POWERSHELF",
+        "SWITCH",
+        "NETWORKING"
+      ]
+    },
+    "AssetTypeList":{
+      "type":"list",
+      "member":{"shape":"AssetType"},
+      "max":5,
+      "min":1
     },
     "AvailabilityZone":{
       "type":"string",
@@ -1110,7 +1123,8 @@
       "enum":[
         "ACTIVE",
         "ISOLATED",
-        "RETIRING"
+        "RETIRING",
+        "INSTALLING"
       ]
     },
     "ComputeAttributes":{
@@ -1122,7 +1136,7 @@
         },
         "State":{
           "shape":"ComputeAssetState",
-          "documentation":"<p>The state.</p> <ul> <li> <p>ACTIVE - The asset is available and can provide capacity for new compute resources.</p> </li> <li> <p>ISOLATED - The asset is undergoing maintenance and can't provide capacity for new compute resources. Existing compute resources on the asset are not affected.</p> </li> <li> <p>RETIRING - The underlying hardware for the asset is degraded. Capacity for new compute resources is reduced. Amazon Web Services sends notifications for resources that must be stopped before the asset can be replaced.</p> </li> </ul>"
+          "documentation":"<p>The state.</p> <ul> <li> <p>ACTIVE - The asset is available and can provide capacity for new compute resources.</p> </li> <li> <p>ISOLATED - The asset is undergoing maintenance and can't provide capacity for new compute resources. Existing compute resources on the asset are not affected.</p> </li> <li> <p>RETIRING - The underlying hardware for the asset is degraded. Capacity for new compute resources is reduced. Amazon Web Services sends notifications for resources that must be stopped before the asset can be replaced.</p> </li> <li> <p>INSTALLING - The asset is being installed and can't yet provide capacity for new compute resources.</p> </li> </ul>"
         },
         "InstanceFamilies":{
           "shape":"InstanceFamilies",
@@ -2049,6 +2063,12 @@
           "documentation":"<p>Filters the results by state.</p>",
           "location":"querystring",
           "locationName":"StatusFilter"
+        },
+        "AssetTypeFilter":{
+          "shape":"AssetTypeList",
+          "documentation":"<p>Filters the results by asset type.</p> <ul> <li> <p>COMPUTE - Server asset used for customer compute </p> </li> <li> <p>STORAGE - Server asset used by storage services </p> </li> <li> <p>POWERSHELF - Powershelf assets </p> </li> <li> <p>SWITCH - Switch assets </p> </li> <li> <p>NETWORKING - Asset managed by Amazon Web Services for networking purposes </p> </li> </ul>",
+          "location":"querystring",
+          "locationName":"AssetTypeFilter"
         }
       }
     },
@@ -2990,7 +3010,7 @@
     "StatusList":{
       "type":"list",
       "member":{"shape":"AssetState"},
-      "max":3,
+      "max":5,
       "min":1
     },
     "String":{

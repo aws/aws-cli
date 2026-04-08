@@ -2,6 +2,87 @@
 CHANGELOG
 =========
 
+2.34.26
+=======
+
+* api-change:``lambda``: Launching Lambda integration with S3 Files as a new file system configuration.
+* api-change:``accessanalyzer``: Revert previous additions of API changes.
+* api-change:``bedrock-agentcore``: This release includes support for 1) InvokeBrowser API, enabling OS-level control of AgentCore Browser Tool sessions through mouse actions, keyboard input, and screenshots. 2) Added documentation noting that empty sessions are automatically deleted after one day in the ListSessions API.
+* api-change:``ec2``: EC2 Capacity Manager adds new dimensions for grouping and filtering capacity metrics, including tag-based dimensions and Account Name.
+* api-change:``eks``: EKS MNG WarmPool feature to support ASG WarmPool feature.
+* api-change:``s3``: Updated list of the valid AWS Region values for the LocationConstraint parameter for general purpose buckets.
+* api-change:``datasync``: Allow IAM role ARNs with IAM Paths for "SecretAccessRoleArn" field in "CustomSecretConfig"
+* api-change:``ecs``: This release provides the functionality of mounting Amazon S3 Files to Amazon ECS tasks by adding support for the new S3FilesVolumeConfiguration parameter in ECS RegisterTaskDefinition API.
+* api-change:``datazone``: Update Configurations and registerS3AccessGrantLocation as public attributes for cfn
+* api-change:``braket``: Added support for t3, g6, and g6e instance types for Hybrid Jobs.
+* api-change:``outposts``: This change allows listAssets to surface pending and non-compute asset information. Adds the INSTALLING asset state enum and the STORAGE, POWERSHELF, SWITCH, and NETWORKING AssetTypes.
+* api-change:``connect``: The voice enhancement mode used by the agent can now be viewed on the contact record via the DescribeContact api.
+* api-change:``s3files``: Support for S3 Files, a new shared file system that connects any AWS compute directly with your data in Amazon S3. It provides fast, direct access to all of your S3 data as files with full file system semantics and low-latency performance, without your data ever leaving S3.
+* api-change:``rtbfabric``: AWS RTB Fabric External Responder gateways now support HTTP in addition to HTTPS for inbound external links. Gateways can accept bid requests on port 80 or serve both protocols simultaneously via listener configuration, giving customers flexible transport options for their bidding infrastructure
+
+
+2.34.25
+=======
+
+* api-change:``mediatailor``: This change adds support for Tagging the resource types Programs and Prefetch Schedules
+* api-change:``geo-maps``: This release updates API reference documentation for Amazon Location Service Maps APIs to reflect regional restrictions for Grab Maps users
+* api-change:``lightsail``: This release adds support for the Asia Pacific (Malaysia) (ap-southeast-5) Region.
+* api-change:``guardduty``: Migrated to Smithy. No functional changes
+* bugfix:error formatting: Error output now only displays modeled error fields in the 'Additional error details' section.
+* api-change:``dlm``: This release adds support for Fast Snapshot Restore AvailabilityZone Ids in Amazon Data Lifecycle Manager EBS snapshot lifecycle policies.
+* api-change:``qconnect``: Added optional originRequestId parameter to SendMessageRequest and ListSpans response in Amazon Q in Connect to support request tracing across service boundaries.
+* api-change:``deadline``: Added 8 batch APIs (BatchGetJob, BatchGetStep, BatchGetTask, BatchGetSession, BatchGetSessionAction, BatchGetWorker, BatchUpdateJob, BatchUpdateTask) for bulk operations. Monitors can now use an Identity Center instance in a different region via the identityCenterRegion parameter.
+* api-change:``accessanalyzer``: Brookie helps customers preview the impact of SCPs before deployment using historical access activity. It evaluates attached policies and proposed policy updates using collected access activity through CloudTrail authorization events and reports where currently allowed access will be denied.
+* api-change:``transfer``: AWS Transfer Family Connectors now support IPv6 connectivity, enabling outbound connections to remote SFTP or AS2 servers using IPv4-only or dual-stack (IPv4 and IPv6) configurations based on network requirements.
+
+
+2.34.24
+=======
+
+* api-change:``imagebuilder``: Updated pagination token validation for ListContainerRecipes API to support maximum size of 65K characters
+* api-change:``payment-cryptography``: Adds optional support to retrieve previously generated import and export tokens to simplify import and export functions
+* api-change:``organizations``: Updates close Account quota for member accounts in an Organization.
+* api-change:``bedrock-agent``: Added strict parameter to ToolSpecification to allow users to enforce strict JSON schema adherence for tool input schemas.
+* api-change:``medialive``: AWS Elemental MediaLive released a new features that allows customers to use HLG 2020 as a color space for AV1 video codec.
+* enhancement:``sso configure``: Add sorting to accounts and roles `#6108 <https://github.com/aws/aws-cli/issues/6108>`__
+* api-change:``logs``: Added queryDuration, bytesScanned, and userIdentity fields to the QueryInfo response object returned by DescribeQueries. Customers can now view detailed query cost information including who ran the query, how long it took, and the volume of data scanned.
+* api-change:``lightsail``: Add support for tagging of Alarm resource type
+* api-change:``bedrock``: Amazon Bedrock Guardrails enforcement configuration APIs now support selective guarding controls for system prompts as well as user and assistant messages, along with SDK support for Amazon Bedrock resource policy APIs.
+* api-change:``bedrock-agentcore-control``: Documentation Update for Adds support for three-legged (Authorization Code grant type) OAuth along with predefined MCP tool schema configuration for Amazon Bedrock AgentCore gateway MCP server targets.
+
+
+2.34.23
+=======
+
+* api-change:``pricing``: This release increases the MaxResults parameter of the GetAttributeValues API from 100 to 10000.
+* api-change:``deadline``: AWS Deadline Cloud now supports configurable scheduling on each queue. The scheduling configuration controls how workers are distributed across jobs.
+* api-change:``gamelift``: Amazon GameLift Servers now includes a ComputeName field in game session API responses, making it easier to identify which compute is hosting a game session without cross-referencing IP addresses.
+* api-change:``appstream``: Amazon WorkSpaces Applications now supports drain mode for instances in multi-session fleets. This capability allows administrators to instruct individual fleet instances to stop accepting new user sessions while allowing existing sessions to continue uninterrupted.
+* api-change:``cloudwatch``: CloudWatch now supports OTel enrichment to make vended metrics for supported AWS resources queryable via PromQL with resource ARN and tag labels, and PromQL alarms for metrics ingested via the OTLP endpoint with multi-contributor evaluation.
+* api-change:``logs``: We are pleased to announce that our logs transformation csv processor now has a destination field, allowing you to specify under which parent node parsed columns be placed under.
+* api-change:``bedrock-runtime``: Relax ToolUseId pattern to allow dots and colons
+* api-change:``geo-places``: This release updates API reference documentation for Amazon Location Service Places APIs to reflect regional restrictions for Grab Maps users in ReverseGeocode, Suggest, SearchText, and GetPlace operations
+* api-change:``connect``: Include CUSTOMER to evaluation target and participant role. Support Korean, Japanese and Simplified Chinese in evaluation forms.
+* api-change:``bedrock-agentcore-control``: Adds support for three-legged (Authorization Code grant type) OAuth along with predefined MCP tool schema configuration for Amazon Bedrock AgentCore gateway MCP server targets.
+* api-change:``bedrock-data-automation``: Data Automation Library is a BDA capability that lets you create reusable entity resources to improve extraction accuracy. Libraries support Custom Vocabulary entities that enhance speech recognition for audio and video content with domain-specific terminology shared across projects
+
+
+2.34.22
+=======
+
+* api-change:``es``: Adding Policy-Min-TLS-1-2-RFC9151-FIPS-2024-08 as TLS Policy in Supported Regions
+* api-change:``bedrock``: Adds support for Bedrock Batch Inference Job Progress Monitoring
+* enhancement:SSO: Add suggestion to use ``--use-device-code`` for ``aws sso login`` and ``--remote`` for ``aws login`` for users who are unable to open the URL on the same device
+* api-change:``ecs``: Amazon ECS now supports Managed Daemons with dedicated APIs for registering daemon task definitions, creating daemons, and managing daemon deployments.
+* enhancement:``configure``: Add ability to configure sub-sections in the shared configuration file (fixes `#7835 <https://github.com/aws/aws-cli/issues/7835>`__)
+* api-change:``bedrock-agentcore-control``: Adds support for VPC egress private endpoints for Amazon Bedrock AgentCore gateway targets, enabling private connectivity through managed VPC Lattice resources. Also adds IAM credential provider for gateway targets, enabling IAM-based authentication to target endpoints
+* api-change:``medical-imaging``: Added new boolean flag to persist metadata updates to all primary image sets in the same study as the requested image set.
+* api-change:``bedrock-agentcore``: Added the ability to filter out empty sessions when listing sessions. Customers can now retrieve only sessions that still contain events, eliminating the need to check each session individually. No changes required for existing integrations.
+* api-change:``elasticache``: Updated SnapshotRetentionLimit documentation for ServerlessCache to correctly describe the parameter as number of days (max 35) instead of number of snapshots.
+* api-change:``geo-routes``: This release makes RoutingBoundary optional in CalculateRouteMatrix, set StopDuration with a maximum value of 49999 for CalculateRoutes, set TrailerCount with a maximum value of 4, and introduces region restrictions for Grab Maps users.
+* api-change:``opensearch``: Adding Policy-Min-TLS-1-2-RFC9151-FIPS-2024-08 as TLS Policy in Supported Regions
+
+
 2.34.21
 =======
 

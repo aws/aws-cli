@@ -32,6 +32,27 @@
         "expected" : "ISOLATED"
       } ]
     },
+    "InboundExternalLinkDeleted" : {
+      "delay" : 30,
+      "maxAttempts" : 5,
+      "operation" : "GetInboundExternalLink",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "success",
+        "expected" : "DELETED"
+      }, {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "failure",
+        "expected" : "FAILED"
+      }, {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "failure",
+        "expected" : "REJECTED"
+      } ]
+    },
     "LinkAccepted" : {
       "delay" : 30,
       "maxAttempts" : 5,
@@ -84,6 +105,27 @@
         "expected" : "DELETED"
       } ]
     },
+    "LinkDeleted" : {
+      "delay" : 30,
+      "maxAttempts" : 5,
+      "operation" : "GetLink",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "success",
+        "expected" : "DELETED"
+      }, {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "failure",
+        "expected" : "FAILED"
+      }, {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "failure",
+        "expected" : "REJECTED"
+      } ]
+    },
     "OutboundExternalLinkActive" : {
       "delay" : 30,
       "maxAttempts" : 5,
@@ -113,6 +155,27 @@
         "argument" : "status",
         "state" : "failure",
         "expected" : "ISOLATED"
+      } ]
+    },
+    "OutboundExternalLinkDeleted" : {
+      "delay" : 30,
+      "maxAttempts" : 5,
+      "operation" : "GetOutboundExternalLink",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "success",
+        "expected" : "DELETED"
+      }, {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "failure",
+        "expected" : "FAILED"
+      }, {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "failure",
+        "expected" : "REJECTED"
       } ]
     },
     "RequesterGatewayActive" : {
@@ -145,6 +208,10 @@
         "argument" : "status",
         "state" : "success",
         "expected" : "DELETED"
+      }, {
+        "matcher" : "error",
+        "state" : "success",
+        "expected" : "ResourceNotFoundException"
       }, {
         "matcher" : "path",
         "argument" : "status",
@@ -182,6 +249,10 @@
         "argument" : "status",
         "state" : "success",
         "expected" : "DELETED"
+      }, {
+        "matcher" : "error",
+        "state" : "success",
+        "expected" : "ResourceNotFoundException"
       }, {
         "matcher" : "path",
         "argument" : "status",

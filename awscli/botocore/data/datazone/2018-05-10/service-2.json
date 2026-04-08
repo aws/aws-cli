@@ -5593,12 +5593,36 @@
       },
       "documentation":"<p>The configurable action of a Amazon DataZone environment.</p>"
     },
+    "Configuration":{
+      "type":"structure",
+      "members":{
+        "classification":{
+          "shape":"ConfigurationClassificationString",
+          "documentation":"<p>The classification of the connection configuration.</p>"
+        },
+        "properties":{
+          "shape":"PropertyMap",
+          "documentation":"<p>The properties of the connection configuration.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of a connection.</p>"
+    },
+    "ConfigurationClassificationString":{
+      "type":"string",
+      "max":64,
+      "min":0,
+      "pattern":"[\\w][\\w\\.\\-\\_]*"
+    },
     "ConfigurationStatus":{
       "type":"string",
       "enum":[
         "COMPLETED",
         "FAILED"
       ]
+    },
+    "Configurations":{
+      "type":"list",
+      "member":{"shape":"Configuration"}
     },
     "ConflictException":{
       "type":"structure",
@@ -5840,6 +5864,10 @@
         "type"
       ],
       "members":{
+        "configurations":{
+          "shape":"Configurations",
+          "documentation":"<p>The configurations of a connection summary.</p>"
+        },
         "connectionId":{
           "shape":"ConnectionId",
           "documentation":"<p>The ID of a connection.</p>"
@@ -6521,6 +6549,10 @@
           "documentation":"<p>A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.</p>",
           "idempotencyToken":true
         },
+        "configurations":{
+          "shape":"Configurations",
+          "documentation":"<p>The configurations of the connection.</p>"
+        },
         "description":{
           "shape":"CreateConnectionInputDescriptionString",
           "documentation":"<p>A connection description.</p>"
@@ -6573,6 +6605,10 @@
         "connectionId":{
           "shape":"ConnectionId",
           "documentation":"<p>The ID of the connection.</p>"
+        },
+        "configurations":{
+          "shape":"Configurations",
+          "documentation":"<p>The configurations of the connection.</p>"
         },
         "description":{
           "shape":"Description",
@@ -12292,6 +12328,10 @@
           "shape":"ConnectionCredentials",
           "documentation":"<p>Connection credentials.</p>"
         },
+        "configurations":{
+          "shape":"Configurations",
+          "documentation":"<p>The configurations of the connection.</p>"
+        },
         "connectionId":{
           "shape":"ConnectionId",
           "documentation":"<p>The ID of the connection.</p>"
@@ -15176,6 +15216,17 @@
     "GlueConnectionInputNameString":{
       "type":"string",
       "max":255,
+      "min":1
+    },
+    "GlueConnectionName":{
+      "type":"string",
+      "max":64,
+      "min":0
+    },
+    "GlueConnectionNames":{
+      "type":"list",
+      "member":{"shape":"GlueConnectionName"},
+      "max":16,
       "min":1
     },
     "GlueConnectionPatch":{
@@ -19297,6 +19348,10 @@
           "shape":"String",
           "documentation":"<p>The Amazon Web Services Glue connection name.</p>"
         },
+        "glueConnectionNames":{
+          "shape":"GlueConnectionNames",
+          "documentation":"<p>The Amazon Web Services Glue connection names in the physical endpoint.</p>"
+        },
         "glueConnection":{
           "shape":"GlueConnection",
           "documentation":"<p>The Amazon Web Services Glue connection.</p>"
@@ -21328,6 +21383,10 @@
         "s3AccessGrantLocationId":{
           "shape":"S3AccessGrantLocationId",
           "documentation":"<p>The Amazon S3 Access Grant location ID that's part of the Amazon S3 properties of a connection.</p>"
+        },
+        "registerS3AccessGrantLocation":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to register the Amazon S3 Access Grant location.</p>"
         }
       },
       "documentation":"<p>The Amazon S3 properties of a connection.</p>"
@@ -21343,6 +21402,10 @@
         "s3AccessGrantLocationId":{
           "shape":"S3AccessGrantLocationId",
           "documentation":"<p>The Amazon S3 Access Grant location ID that's part of the Amazon S3 properties of a connection.</p>"
+        },
+        "registerS3AccessGrantLocation":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to register the Amazon S3 Access Grant location.</p>"
         },
         "status":{
           "shape":"ConnectionStatus",
@@ -21366,6 +21429,10 @@
         "s3AccessGrantLocationId":{
           "shape":"S3AccessGrantLocationId",
           "documentation":"<p>The Amazon S3 Access Grant location ID that's part of the Amazon S3 properties patch of a connection.</p>"
+        },
+        "registerS3AccessGrantLocation":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to register the Amazon S3 Access Grant location.</p>"
         }
       },
       "documentation":"<p>The Amazon S3 properties patch of a connection.</p>"
@@ -22243,7 +22310,11 @@
         },
         "glueConnectionName":{
           "shape":"SparkGluePropertiesInputGlueConnectionNameString",
-          "documentation":"<p>The Amazon Web Services Glue connection name in the Spark Amazon Web Services Glue properties.</p>"
+          "documentation":"<p>The Amazon Web Services Glue connection name in the Spark Amazon Web Services Glue properties. Specify either <code>glueConnectionName</code> or <code>glueConnectionNames</code>, but not both.</p>"
+        },
+        "glueConnectionNames":{
+          "shape":"GlueConnectionNames",
+          "documentation":"<p>The Amazon Web Services Glue connection names in the Spark Amazon Web Services Glue properties. Specify either <code>glueConnectionName</code> or <code>glueConnectionNames</code>, but not both.</p>"
         },
         "glueVersion":{
           "shape":"SparkGluePropertiesInputGlueVersionString",
@@ -22307,6 +22378,10 @@
         "glueConnectionName":{
           "shape":"String",
           "documentation":"<p>The Amazon Web Services Glue connection name in the Spark Amazon Web Services Glue properties. </p>"
+        },
+        "glueConnectionNames":{
+          "shape":"GlueConnectionNames",
+          "documentation":"<p>The Amazon Web Services Glue connection names in the Spark Amazon Web Services Glue properties.</p>"
         },
         "glueVersion":{
           "shape":"String",
@@ -23937,6 +24012,10 @@
         "identifier"
       ],
       "members":{
+        "configurations":{
+          "shape":"Configurations",
+          "documentation":"<p>The configurations of the connection.</p>"
+        },
         "domainIdentifier":{
           "shape":"DomainId",
           "documentation":"<p>The ID of the domain where a connection is to be updated.</p>",
@@ -23980,6 +24059,10 @@
         "type"
       ],
       "members":{
+        "configurations":{
+          "shape":"Configurations",
+          "documentation":"<p>The configurations of the connection.</p>"
+        },
         "connectionId":{
           "shape":"ConnectionId",
           "documentation":"<p>The ID of the connection.</p>"

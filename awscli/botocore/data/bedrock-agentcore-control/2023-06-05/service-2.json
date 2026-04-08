@@ -500,7 +500,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Deletes a gateway target.</p>",
+      "documentation":"<p>Deletes a gateway target.</p> <p>You cannot delete a target that is in a pending authorization state (<code>CREATE_PENDING_AUTH</code>, <code>UPDATE_PENDING_AUTH</code>, or <code>SYNCHRONIZE_PENDING_AUTH</code>). Wait for the authorization to complete or fail before deleting the target.</p>",
       "idempotent":true
     },
     "DeleteMemory":{
@@ -1421,7 +1421,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>The gateway targets.</p>",
+      "documentation":"<p>Synchronizes the gateway targets by fetching the latest tool definitions from the target endpoints.</p> <p>You cannot synchronize a target that is in a pending authorization state (<code>CREATE_PENDING_AUTH</code>, <code>UPDATE_PENDING_AUTH</code>, or <code>SYNCHRONIZE_PENDING_AUTH</code>). Wait for the authorization to complete or fail before synchronizing.</p> <p>You cannot synchronize a target that has a static tool schema (<code>mcpToolSchema</code>) configured. Remove the static schema through an <code>UpdateGatewayTarget</code> call to enable dynamic tool synchronization.</p>",
       "idempotent":true
     },
     "TagResource":{
@@ -1588,7 +1588,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Updates an existing gateway target.</p>",
+      "documentation":"<p>Updates an existing gateway target.</p> <p>You cannot update a target that is in a pending authorization state (<code>CREATE_PENDING_AUTH</code>, <code>UPDATE_PENDING_AUTH</code>, or <code>SYNCHRONIZE_PENDING_AUTH</code>). Wait for the authorization to complete or fail before updating the target.</p>",
       "idempotent":true
     },
     "UpdateMemory":{
@@ -2182,6 +2182,17 @@
         }
       },
       "documentation":"<p>The configuration details returned for an Atlassian OAuth2 provider, including the client ID and OAuth2 discovery information.</p>"
+    },
+    "AuthorizationData":{
+      "type":"structure",
+      "members":{
+        "oauth2":{
+          "shape":"OAuth2AuthorizationData",
+          "documentation":"<p>OAuth2 authorization data for the gateway target.</p>"
+        }
+      },
+      "documentation":"<p>Contains the authorization data that is returned when a gateway target is configured with a credential provider with authorization code grant type and requires user federation.</p>",
+      "union":true
     },
     "AuthorizationEndpointType":{"type":"string"},
     "AuthorizerConfiguration":{
@@ -3497,6 +3508,10 @@
         "metadataConfiguration":{
           "shape":"MetadataConfiguration",
           "documentation":"<p>Optional configuration for HTTP header and query parameter propagation to and from the gateway target.</p>"
+        },
+        "privateEndpoint":{
+          "shape":"PrivateEndpoint",
+          "documentation":"<p>The private endpoint configuration for the gateway target. Use this to connect the gateway to private resources in your VPC.</p>"
         }
       }
     },
@@ -3560,6 +3575,18 @@
         "metadataConfiguration":{
           "shape":"MetadataConfiguration",
           "documentation":"<p>The metadata configuration that was applied to the created gateway target.</p>"
+        },
+        "privateEndpoint":{
+          "shape":"PrivateEndpoint",
+          "documentation":"<p>The private endpoint configuration for the gateway target.</p>"
+        },
+        "privateEndpointManagedResources":{
+          "shape":"PrivateEndpointManagedResources",
+          "documentation":"<p>The managed resources created by the gateway for private endpoint connectivity.</p>"
+        },
+        "authorizationData":{
+          "shape":"AuthorizationData",
+          "documentation":"<p>OAuth2 authorization data for the created gateway target. This data is returned when a target is configured with a credential provider with authorization code grant type and requires user federation.</p>"
         }
       }
     },
@@ -3988,6 +4015,10 @@
         "apiKeyCredentialProvider":{
           "shape":"ApiKeyCredentialProvider",
           "documentation":"<p>The API key credential provider. This provider uses an API key to authenticate with the target endpoint.</p>"
+        },
+        "iamCredentialProvider":{
+          "shape":"IamCredentialProvider",
+          "documentation":"<p>The IAM credential provider. This provider uses IAM authentication with SigV4 signing to access the target endpoint.</p>"
         }
       },
       "documentation":"<p>A credential provider for gateway authentication. This structure contains the configuration for authenticating with the target endpoint.</p>",
@@ -4974,6 +5005,7 @@
       "type":"string",
       "pattern":".+/\\.well-known/openid-configuration"
     },
+    "DomainName":{"type":"string"},
     "Double":{
       "type":"double",
       "box":true
@@ -4990,6 +5022,13 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "EndpointIpAddressType":{
+      "type":"string",
+      "enum":[
+        "IPV4",
+        "IPV6"
+      ]
     },
     "EndpointName":{
       "type":"string",
@@ -5763,6 +5802,15 @@
         "metadataConfiguration":{
           "shape":"MetadataConfiguration",
           "documentation":"<p>The metadata configuration for HTTP header and query parameter propagation to and from this gateway target.</p>"
+        },
+        "privateEndpoint":{"shape":"PrivateEndpoint"},
+        "privateEndpointManagedResources":{
+          "shape":"PrivateEndpointManagedResources",
+          "documentation":"<p>A list of managed resources created by the gateway for private endpoint connectivity. These resources are created in your account when you use a managed VPC Lattice resource configuration.</p>"
+        },
+        "authorizationData":{
+          "shape":"AuthorizationData",
+          "documentation":"<p>OAuth2 authorization data for the gateway target. This data is returned when a target is configured with a credential provider with authorization code grant type and requires user federation.</p>"
         }
       },
       "documentation":"<p>The gateway target.</p>"
@@ -6462,6 +6510,18 @@
         "metadataConfiguration":{
           "shape":"MetadataConfiguration",
           "documentation":"<p>The metadata configuration for HTTP header and query parameter propagation for the retrieved gateway target.</p>"
+        },
+        "privateEndpoint":{
+          "shape":"PrivateEndpoint",
+          "documentation":"<p>The private endpoint configuration for the gateway target.</p>"
+        },
+        "privateEndpointManagedResources":{
+          "shape":"PrivateEndpointManagedResources",
+          "documentation":"<p>The managed resources created by the gateway for private endpoint connectivity.</p>"
+        },
+        "authorizationData":{
+          "shape":"AuthorizationData",
+          "documentation":"<p>OAuth2 authorization data for the gateway target. This data is returned when a target is configured with a credential provider with authorization code grant type and requires user federation.</p>"
         }
       }
     },
@@ -7024,6 +7084,33 @@
       "type":"string",
       "max":40,
       "min":1
+    },
+    "IamCredentialProvider":{
+      "type":"structure",
+      "required":["service"],
+      "members":{
+        "service":{
+          "shape":"IamCredentialProviderServiceString",
+          "documentation":"<p>The target Amazon Web Services service name used for SigV4 signing. This value identifies the service that the gateway authenticates with when making requests to the target endpoint.</p>"
+        },
+        "region":{
+          "shape":"IamCredentialProviderRegionString",
+          "documentation":"<p>The Amazon Web Services Region used for SigV4 signing. If not specified, defaults to the gateway's Region.</p>"
+        }
+      },
+      "documentation":"<p>An IAM credential provider for gateway authentication. This structure contains the configuration for authenticating with the target endpoint using IAM credentials and SigV4 signing.</p>"
+    },
+    "IamCredentialProviderRegionString":{
+      "type":"string",
+      "max":32,
+      "min":1,
+      "pattern":"[a-zA-Z0-9-]+"
+    },
+    "IamCredentialProviderServiceString":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9._-]+"
     },
     "InboundTokenClaimNameType":{
       "type":"string",
@@ -8068,6 +8155,59 @@
       },
       "documentation":"<p>The configuration for a Model Context Protocol (MCP) gateway. This structure defines how the gateway implements the MCP protocol.</p>"
     },
+    "ManagedLatticeResource":{
+      "type":"structure",
+      "required":[
+        "vpcIdentifier",
+        "subnetIds",
+        "endpointIpAddressType"
+      ],
+      "members":{
+        "vpcIdentifier":{
+          "shape":"VpcIdentifier",
+          "documentation":"<p>The ID of the VPC that contains your private resource.</p>"
+        },
+        "subnetIds":{
+          "shape":"SubnetIds",
+          "documentation":"<p>The subnet IDs within the VPC where the VPC Lattice resource gateway is placed.</p>"
+        },
+        "endpointIpAddressType":{
+          "shape":"EndpointIpAddressType",
+          "documentation":"<p>The IP address type for the resource configuration endpoint.</p>"
+        },
+        "securityGroupIds":{
+          "shape":"SecurityGroupIds",
+          "documentation":"<p>The security group IDs to associate with the VPC Lattice resource gateway. If not specified, the default security group for the VPC is used.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Tags to apply to the managed VPC Lattice resource gateway.</p>"
+        },
+        "routingDomain":{
+          "shape":"RoutingDomain",
+          "documentation":"<p>An intermediate publicly resolvable domain used as the VPC Lattice resource configuration endpoint. Required when your private endpoint uses a domain that is not publicly resolvable.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for a managed VPC Lattice resource. The gateway creates and manages the VPC Lattice resource gateway and resource configuration on your behalf using a service-linked role.</p>"
+    },
+    "ManagedResourceDetails":{
+      "type":"structure",
+      "members":{
+        "domain":{
+          "shape":"DomainName",
+          "documentation":"<p>The domain associated with this managed resource.</p>"
+        },
+        "resourceGatewayArn":{
+          "shape":"ResourceGatewayArn",
+          "documentation":"<p>The ARN of the VPC Lattice resource gateway created in your account.</p>"
+        },
+        "resourceAssociationArn":{
+          "shape":"ResourceAssociationArn",
+          "documentation":"<p>The ARN of the service network resource association.</p>"
+        }
+      },
+      "documentation":"<p>Details of a resource created and managed by the gateway for private endpoint connectivity.</p>"
+    },
     "MatchValueString":{
       "type":"string",
       "max":255,
@@ -8115,6 +8255,10 @@
         "endpoint":{
           "shape":"McpServerTargetConfigurationEndpointString",
           "documentation":"<p>The endpoint for the MCP server target configuration.</p>"
+        },
+        "mcpToolSchema":{
+          "shape":"McpToolSchemaConfiguration",
+          "documentation":"<p>The tool schema configuration for the MCP server target. Supported only when the credential provider is configured with an authorization code grant type. Dynamic tool discovery/synchronization will be disabled when target is configured with mcpToolSchema.</p>"
         }
       },
       "documentation":"<p>The target configuration for the MCP server.</p>"
@@ -8152,6 +8296,21 @@
         }
       },
       "documentation":"<p>The Model Context Protocol (MCP) configuration for a target. This structure defines how the gateway uses MCP to communicate with the target.</p>",
+      "union":true
+    },
+    "McpToolSchemaConfiguration":{
+      "type":"structure",
+      "members":{
+        "s3":{
+          "shape":"S3Configuration",
+          "documentation":"<p>The Amazon S3 location of the tool schema. This location contains the schema definition file.</p>"
+        },
+        "inlinePayload":{
+          "shape":"InlinePayload",
+          "documentation":"<p>The inline payload containing the MCP tool schema definition.</p>"
+        }
+      },
+      "documentation":"<p>The MCP tool schema configuration for an MCP server target. The tool schema must be aligned with the MCP specification.</p>",
       "union":true
     },
     "McpVersion":{"type":"string"},
@@ -8736,6 +8895,30 @@
     "NumericalScaleDefinitions":{
       "type":"list",
       "member":{"shape":"NumericalScaleDefinition"}
+    },
+    "OAuth2AuthorizationData":{
+      "type":"structure",
+      "required":["authorizationUrl"],
+      "members":{
+        "authorizationUrl":{
+          "shape":"OAuth2AuthorizationDataAuthorizationUrlString",
+          "documentation":"<p>The URL to initiate the authorization process. This URL is provided when the OAuth2 access token requires user authorization.</p>"
+        },
+        "userId":{
+          "shape":"OAuth2AuthorizationDataUserIdString",
+          "documentation":"<p>The user identifier associated with the OAuth2 authorization session that is defined by AgentCore Gateway.</p>"
+        }
+      },
+      "documentation":"<p>OAuth2-specific authorization data, including the authorization URL and user identifier for the authorization session.</p>"
+    },
+    "OAuth2AuthorizationDataAuthorizationUrlString":{
+      "type":"string",
+      "min":1
+    },
+    "OAuth2AuthorizationDataUserIdString":{
+      "type":"string",
+      "max":128,
+      "min":1
     },
     "OAuthCredentialProvider":{
       "type":"structure",
@@ -9408,6 +9591,26 @@
         "IGNORE_ALL_FINDINGS"
       ]
     },
+    "PrivateEndpoint":{
+      "type":"structure",
+      "members":{
+        "selfManagedLatticeResource":{
+          "shape":"SelfManagedLatticeResource",
+          "documentation":"<p>Configuration for connecting to a private resource using a self-managed VPC Lattice resource configuration.</p>"
+        },
+        "managedLatticeResource":{
+          "shape":"ManagedLatticeResource",
+          "documentation":"<p>Configuration for connecting to a private resource using a managed VPC Lattice resource. The gateway creates and manages the VPC Lattice resources on your behalf.</p>"
+        }
+      },
+      "documentation":"<p>The private endpoint configuration for a gateway target. Defines how the gateway connects to private resources in your VPC.</p>",
+      "union":true
+    },
+    "PrivateEndpointManagedResources":{
+      "type":"list",
+      "member":{"shape":"ManagedResourceDetails"},
+      "documentation":"<p>A list of managed resources created by the gateway for private endpoint connectivity.</p>"
+    },
     "Prompt":{
       "type":"string",
       "max":30000,
@@ -9530,6 +9733,20 @@
       "documentation":"<p>Represents a resource within the AgentCore Policy system. Resources are the targets of policy evaluation. Currently, only AgentCore Gateways are supported as resources for policy enforcement.</p>",
       "union":true
     },
+    "ResourceAssociationArn":{
+      "type":"string",
+      "pattern":"arn:[a-z0-9\\-]+:vpc-lattice:[a-zA-Z0-9\\-]+:\\d{12}:servicenetworkresourceassociation/snra-[0-9a-f]{17}"
+    },
+    "ResourceConfigurationIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"((rcfg-[0-9a-z]{17})|(arn:[a-z0-9\\-]+:vpc-lattice:[a-zA-Z0-9\\-]+:\\d{12}:resourceconfiguration/rcfg-[0-9a-z]{17}))"
+    },
+    "ResourceGatewayArn":{
+      "type":"string",
+      "pattern":"arn:[a-z0-9\\-]+:vpc-lattice:[a-zA-Z0-9\\-]+:\\d{12}:resourcegateway/rgw-[0-9a-z]{17}"
+    },
     "ResourceId":{
       "type":"string",
       "max":59,
@@ -9616,6 +9833,11 @@
       "max":2048,
       "min":1,
       "pattern":"arn:aws(-[^:]+)?:iam::([0-9]{12})?:role/.+"
+    },
+    "RoutingDomain":{
+      "type":"string",
+      "max":255,
+      "min":3
     },
     "Rule":{
       "type":"structure",
@@ -9838,6 +10060,16 @@
       "type":"string",
       "pattern":"sg-[0-9a-zA-Z]{8,17}"
     },
+    "SecurityGroupIdentifier":{
+      "type":"string",
+      "pattern":"sg-(([0-9a-z]{8})|([0-9a-z]{17}))"
+    },
+    "SecurityGroupIds":{
+      "type":"list",
+      "member":{"shape":"SecurityGroupIdentifier"},
+      "max":5,
+      "min":0
+    },
     "SecurityGroups":{
       "type":"list",
       "member":{"shape":"SecurityGroupId"},
@@ -9891,6 +10123,17 @@
       "box":true,
       "max":50,
       "min":0
+    },
+    "SelfManagedLatticeResource":{
+      "type":"structure",
+      "members":{
+        "resourceConfigurationIdentifier":{
+          "shape":"ResourceConfigurationIdentifier",
+          "documentation":"<p>The ARN or ID of the VPC Lattice resource configuration.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for a self-managed VPC Lattice resource. You create and manage the VPC Lattice resource gateway and resource configuration, then provide the resource configuration identifier.</p>",
+      "union":true
     },
     "SemanticConsolidationOverride":{
       "type":"structure",
@@ -10304,6 +10547,10 @@
       "type":"string",
       "pattern":"subnet-[0-9a-zA-Z]{8,17}"
     },
+    "SubnetIds":{
+      "type":"list",
+      "member":{"shape":"SubnetId"}
+    },
     "Subnets":{
       "type":"list",
       "member":{"shape":"SubnetId"},
@@ -10518,7 +10765,10 @@
         "READY",
         "FAILED",
         "SYNCHRONIZING",
-        "SYNCHRONIZE_UNSUCCESSFUL"
+        "SYNCHRONIZE_UNSUCCESSFUL",
+        "CREATE_PENDING_AUTH",
+        "UPDATE_PENDING_AUTH",
+        "SYNCHRONIZE_PENDING_AUTH"
       ]
     },
     "TargetSummaries":{
@@ -11264,6 +11514,10 @@
         "metadataConfiguration":{
           "shape":"MetadataConfiguration",
           "documentation":"<p>Configuration for HTTP header and query parameter propagation to the gateway target.</p>"
+        },
+        "privateEndpoint":{
+          "shape":"PrivateEndpoint",
+          "documentation":"<p>The private endpoint configuration for the gateway target. Use this to connect the gateway to private resources in your VPC.</p>"
         }
       }
     },
@@ -11324,6 +11578,18 @@
         "metadataConfiguration":{
           "shape":"MetadataConfiguration",
           "documentation":"<p>The metadata configuration that was applied to the gateway target.</p>"
+        },
+        "privateEndpoint":{
+          "shape":"PrivateEndpoint",
+          "documentation":"<p>The private endpoint configuration for the gateway target.</p>"
+        },
+        "privateEndpointManagedResources":{
+          "shape":"PrivateEndpointManagedResources",
+          "documentation":"<p>The managed resources created by the gateway for private endpoint connectivity.</p>"
+        },
+        "authorizationData":{
+          "shape":"AuthorizationData",
+          "documentation":"<p>OAuth2 authorization data for the updated gateway target. This data is returned when a target is configured with a credential provider with authorization code grant type and requires user federation.</p>"
         }
       }
     },
@@ -11918,6 +12184,10 @@
         }
       },
       "documentation":"<p>VpcConfig for the Agent.</p>"
+    },
+    "VpcIdentifier":{
+      "type":"string",
+      "pattern":"vpc-(([0-9a-z]{8})|([0-9a-z]{17}))"
     },
     "WorkloadIdentityArn":{
       "type":"string",

@@ -524,6 +524,7 @@ class ClientError(Exception):
         super().__init__(msg)
         self.response = error_response
         self.operation_name = operation_name
+        self.modeled_fields = None
 
     def _get_retry_info(self, response):
         retry_info = ''

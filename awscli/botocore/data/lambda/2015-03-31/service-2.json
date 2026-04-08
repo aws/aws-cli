@@ -791,6 +791,7 @@
         {"shape":"RequestTooLargeException"},
         {"shape":"KMSDisabledException"},
         {"shape":"UnsupportedMediaTypeException"},
+        {"shape":"S3FilesMountConnectivityException"},
         {"shape":"SerializedRequestEntityTooLargeException"},
         {"shape":"InvalidRuntimeException"},
         {"shape":"NoPublishedVersionException"},
@@ -807,7 +808,9 @@
         {"shape":"ServiceException"},
         {"shape":"SnapStartException"},
         {"shape":"RecursiveInvocationException"},
+        {"shape":"S3FilesMountFailureException"},
         {"shape":"EFSMountTimeoutException"},
+        {"shape":"S3FilesMountTimeoutException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestContentException"},
         {"shape":"DurableExecutionAlreadyStartedException"},
@@ -856,6 +859,7 @@
         {"shape":"RequestTooLargeException"},
         {"shape":"KMSDisabledException"},
         {"shape":"UnsupportedMediaTypeException"},
+        {"shape":"S3FilesMountConnectivityException"},
         {"shape":"SerializedRequestEntityTooLargeException"},
         {"shape":"InvalidRuntimeException"},
         {"shape":"NoPublishedVersionException"},
@@ -872,7 +876,9 @@
         {"shape":"ServiceException"},
         {"shape":"SnapStartException"},
         {"shape":"RecursiveInvocationException"},
+        {"shape":"S3FilesMountFailureException"},
         {"shape":"EFSMountTimeoutException"},
+        {"shape":"S3FilesMountTimeoutException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestContentException"},
         {"shape":"InvalidZipFileException"},
@@ -2921,7 +2927,7 @@
         },
         "FileSystemConfigs":{
           "shape":"FileSystemConfigList",
-          "documentation":"<p>Connection settings for an Amazon EFS file system.</p>"
+          "documentation":"<p>Connection settings for an Amazon EFS file system or an Amazon S3 Files file system.</p>"
         },
         "ImageConfig":{
           "shape":"ImageConfig",
@@ -4108,9 +4114,9 @@
     "ExecutionTimestamp":{"type":"timestamp"},
     "FileSystemArn":{
       "type":"string",
-      "max":200,
+      "max":256,
       "min":0,
-      "pattern":"arn:aws[a-zA-Z-]*:elasticfilesystem:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}:\\d{12}:access-point/fsap-[a-f0-9]{17}"
+      "pattern":"arn:aws[a-zA-Z-]*:elasticfilesystem:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}:\\d{12}:access-point/fsap-[a-f0-9]{17}$|^arn:aws[-a-z]*:s3files:[0-9a-z-:]+:file-system/fs-[0-9a-f]{17,40}/access-point/fsap-[0-9a-f]{17,40}"
     },
     "FileSystemConfig":{
       "type":"structure",
@@ -4121,14 +4127,14 @@
       "members":{
         "Arn":{
           "shape":"FileSystemArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon EFS access point that provides access to the file system.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon EFS or Amazon S3 Files access point that provides access to the file system.</p>"
         },
         "LocalMountPath":{
           "shape":"LocalMountPath",
           "documentation":"<p>The path where the function can access the file system, starting with <code>/mnt/</code>.</p>"
         }
       },
-      "documentation":"<p>Details about the connection between a Lambda function and an <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-filesystem.html\">Amazon EFS file system</a>.</p>"
+      "documentation":"<p>Details about the connection between a Lambda function and an <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-filesystem.html\">Amazon EFS file system</a> or an <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-filesystem.html\">Amazon S3 Files file system</a>.</p>"
     },
     "FileSystemConfigList":{
       "type":"list",
@@ -4368,7 +4374,7 @@
         },
         "FileSystemConfigs":{
           "shape":"FileSystemConfigList",
-          "documentation":"<p>Connection settings for an <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-filesystem.html\">Amazon EFS file system</a>.</p>"
+          "documentation":"<p>Connection settings for an <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-filesystem.html\">Amazon EFS file system</a> or an <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-filesystem.html\">Amazon S3 Files file system</a>.</p>"
         },
         "PackageType":{
           "shape":"PackageType",
@@ -6324,7 +6330,7 @@
         },
         "DurableExecutionName":{
           "shape":"DurableExecutionName",
-          "documentation":"<p>Filter executions by name. Only executions with names that contain this string are returned.</p>",
+          "documentation":"<p>Filter executions by name. Only executions with names that matches this string are returned.</p>",
           "location":"querystring",
           "locationName":"DurableExecutionName"
         },
@@ -8082,6 +8088,63 @@
       "min":3,
       "pattern":"[0-9A-Za-z\\.\\-_]*(?<!\\.)"
     },
+    "S3FilesMountConnectivityException":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The exception type.</p>"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>The exception message.</p>"
+        }
+      },
+      "documentation":"<p>The Lambda function couldn't make a network connection to the configured S3 Files access point.</p>",
+      "error":{
+        "httpStatusCode":408,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "S3FilesMountFailureException":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The exception type.</p>"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>The exception message.</p>"
+        }
+      },
+      "documentation":"<p>The Lambda function couldn't mount the configured S3 Files access point due to a permission or configuration issue.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "S3FilesMountTimeoutException":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The exception type.</p>"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>The exception message.</p>"
+        }
+      },
+      "documentation":"<p>The Lambda function made a network connection to the configured S3 Files access point, but the mount operation timed out.</p>",
+      "error":{
+        "httpStatusCode":408,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "S3Key":{
       "type":"string",
       "max":1024,
@@ -9123,7 +9186,7 @@
         },
         "FileSystemConfigs":{
           "shape":"FileSystemConfigList",
-          "documentation":"<p>Connection settings for an Amazon EFS file system.</p>"
+          "documentation":"<p>Connection settings for an Amazon EFS file system or an Amazon S3 Files file system.</p>"
         },
         "ImageConfig":{
           "shape":"ImageConfig",

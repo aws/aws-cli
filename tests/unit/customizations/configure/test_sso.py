@@ -37,6 +37,7 @@ from awscli.customizations.configure.sso import (
     SSOSessionConfigurationPrompter,
     StartUrlValidator,
     display_account,
+    get_account_sorting_key,
 )
 from awscli.customizations.sso.utils import (
     PrintOnlyHandler,
@@ -359,16 +360,55 @@ def account_id_select(account_id):
     }
     return SelectMenu(
         answer=selected_account,
-        expected_choices=[
-            selected_account,
-            {"accountId": "1234567890", "emailAddress": "account2@site.com"},
-        ],
+        expected_choices=sorted(
+            [
+                selected_account,
+                {"accountId": "1234567890", "emailAddress": "account2@site.com"},
+            ],
+            key=get_account_sorting_key,
+        )
     )
-
 
 @pytest.fixture
 def role_name_select(role_name):
     return SelectMenu(answer=role_name, expected_choices=[role_name, "roleB"])
+
+
+@pytest.fixture
+def stub_account_sorting_flow(
+    ptk_stubber,
+    stub_sso_list_accounts,
+    stub_sso_list_roles,
+    start_url_prompt,
+    sso_region_prompt,
+    region_prompt,
+    output_prompt,
+    profile_prompt,
+    account_id,
+    role_name,
+):
+    def _stub(accounts, expected_sorted_accounts, selected_account):
+        account_select = SelectMenu(
+            answer=selected_account,
+            expected_choices=expected_sorted_accounts,
+        )
+        ptk_stubber.user_inputs = UserInputs(
+            session_prompt=RecommendedSessionPrompt(answer=""),
+            start_url_prompt=start_url_prompt,
+            sso_region_prompt=sso_region_prompt,
+            account_id_select=account_select,
+            role_name_select=None,
+            region_prompt=region_prompt,
+            output_prompt=output_prompt,
+            profile_prompt=profile_prompt,
+        )
+        stub_sso_list_accounts(accounts)
+        stub_sso_list_roles(
+            [role_name],
+            expected_account_id=account_id,
+        )
+
+    return _stub
 
 
 @pytest.fixture
@@ -1524,6 +1564,146 @@ class TestConfigureSSOCommand:
             ],
         )
 
+    def test_account_list_sorted_by_name(
+        self,
+        sso_cmd,
+        stub_account_sorting_flow,
+        args,
+        parsed_globals,
+        account_id,
+    ):
+        selected = {
+            'accountId': account_id,
+            'accountName': 'Charlie',
+            'emailAddress': 'charlie@example.com',
+        }
+        first = {
+            'accountId': '1111111111',
+            'accountName': 'Alpha',
+            'emailAddress': 'alpha@example.com',
+        }
+        second = {
+            'accountId': '2222222222',
+            'accountName': 'Bravo',
+            'emailAddress': 'bravo@example.com',
+        }
+        third = {
+            'accountId': '3333333333',
+            'accountName': 'Delta',
+            'emailAddress': 'delta@example.com',
+        }
+        stub_account_sorting_flow(
+            accounts=[selected, second, third, first],
+            expected_sorted_accounts=[first, second, selected, third],
+            selected_account=selected,
+        )
+        assert sso_cmd(args, parsed_globals) == 0
+
+    def test_account_list_sorted_by_email(
+        self,
+        sso_cmd,
+        stub_account_sorting_flow,
+        args,
+        parsed_globals,
+        account_id,
+    ):
+        selected = {
+            'accountId': account_id,
+            'emailAddress': 'charlie@example.com',
+        }
+        first = {
+            'accountId': '1111111111',
+            'emailAddress': 'alpha@example.com',
+        }
+        second = {
+            'accountId': '2222222222',
+            'emailAddress': 'bravo@example.com',
+        }
+        third = {
+            'accountId': '3333333333',
+            'emailAddress': 'delta@example.com',
+        }
+        stub_account_sorting_flow(
+            accounts=[selected, third, first, second],
+            expected_sorted_accounts=[first, second, selected, third],
+            selected_account=selected,
+        )
+        assert sso_cmd(args, parsed_globals) == 0
+
+    def test_account_list_sorted_by_account_id(
+        self,
+        sso_cmd,
+        stub_account_sorting_flow,
+        args,
+        parsed_globals,
+        account_id,
+    ):
+        selected = {'accountId': account_id}
+        first = {'accountId': '1111111111'}
+        second = {'accountId': '2222222222'}
+        third = {'accountId': '3333333333'}
+        stub_account_sorting_flow(
+            accounts=[third, selected, first, second],
+            expected_sorted_accounts=[selected, first, second, third],
+            selected_account=selected,
+        )
+        assert sso_cmd(args, parsed_globals) == 0
+
+    def test_role_list_sorted_by_name(
+        self,
+        sso_cmd,
+        ptk_stubber,
+        stub_sso_list_accounts,
+        stub_sso_list_roles,
+        args,
+        parsed_globals,
+        start_url_prompt,
+        sso_region_prompt,
+        region_prompt,
+        output_prompt,
+        profile_prompt,
+        account_id,
+    ):
+        selected_account = {
+            'accountId': account_id,
+            'emailAddress': 'account@example.com',
+        }
+        role_names_unsorted = [
+            'DataScientist',
+            'SystemAdministrator',
+            'AdministratorAccess',
+        ]
+        expected_roles = [
+            'AdministratorAccess',
+            'DataScientist',
+            'SystemAdministrator',
+        ]
+        account_select = None
+        role_select = SelectMenu(
+            answer='AdministratorAccess',
+            expected_choices=expected_roles,
+        )
+        role_profile_prompt = ProfilePrompt(
+            answer="dev",
+            expected_default=f"AdministratorAccess-{account_id}",
+        )
+        ptk_stubber.user_inputs = UserInputs(
+            session_prompt=RecommendedSessionPrompt(answer=""),
+            start_url_prompt=start_url_prompt,
+            sso_region_prompt=sso_region_prompt,
+            account_id_select=account_select,
+            role_name_select=role_select,
+            region_prompt=region_prompt,
+            output_prompt=output_prompt,
+            profile_prompt=role_profile_prompt,
+        )
+        stub_sso_list_accounts([selected_account])
+        stub_sso_list_roles(
+            role_names_unsorted,
+            expected_account_id=account_id,
+        )
+        assert sso_cmd(args, parsed_globals) == 0
+
 
 class TestPrintConclusion:
     def test_print_conclusion_default_profile_with_credentials(
@@ -2059,6 +2239,8 @@ def passes_validator(validator, text):
         (ScopesValidator, "value-1, value-2 value3", None, False),
     ],
 )
+
+
 def test_validators(validator_cls, input_value, default, is_valid):
     validator = validator_cls(default)
     assert passes_validator(validator, input_value) == is_valid

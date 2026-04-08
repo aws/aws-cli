@@ -24,7 +24,7 @@ from enum import Enum
 
 import jmespath
 from botocore import UNSIGNED, xform_name
-from botocore.auth import AUTH_TYPE_MAPS
+from botocore.auth import AUTH_TYPE_MAPS, resolve_auth_scheme_preference
 from botocore.endpoint_provider import EndpointProvider
 from botocore.exceptions import (
     EndpointProviderError,
@@ -732,6 +732,12 @@ class EndpointRulesetResolver:
                 # exception, instead default to the logic in botocore
                 # customizations.
                 return None, {}
+        elif self._auth_scheme_preference is not None:
+            prefs = self._auth_scheme_preference.split(',')
+            available_ruleset_names = [s['name'].split('#')[-1] for s in auth_schemes]
+            auth_schemes_by_auth_type = {s['name'].split('#')[-1]: s for s in auth_schemes}
+            name = resolve_auth_scheme_preference(prefs, available_ruleset_names)
+            scheme = auth_schemes_by_auth_type[name]
         else:
             try:
                 name, scheme = next(

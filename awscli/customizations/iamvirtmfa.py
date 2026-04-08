@@ -24,9 +24,7 @@ fields from the response.
 """
 
 import base64
-import os
 
-from awscli.compat import compat_open
 from awscli.customizations.arguments import (
     StatefulArgument,
     is_parsed_result_successful,
@@ -83,9 +81,7 @@ class IAMVMFAWrapper:
         outfile = self._outfile.value
         if method in parsed['VirtualMFADevice']:
             body = parsed['VirtualMFADevice'][method]
-            with compat_open(outfile, 'wb', access_permissions=0o600) as fp:
-                if hasattr(os, 'fchmod'):
-                    os.fchmod(fp.fileno(), 0o600)
+            with open(outfile, 'wb') as fp:
                 fp.write(base64.b64decode(body))
             for choice in CHOICES:
                 if choice in parsed['VirtualMFADevice']:

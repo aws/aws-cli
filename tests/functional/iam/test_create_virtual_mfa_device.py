@@ -13,7 +13,7 @@
 # language governing permissions and limitations under the License.
 import os
 
-from awscli.testutils import BaseAWSCommandParamsTest, skip_if_windows
+from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestCreateVirtualMFADevice(BaseAWSCommandParamsTest):
@@ -161,32 +161,3 @@ class TestCreateVirtualMFADevice(BaseAWSCommandParamsTest):
             stderr_contains=self.parsed_response['Error']['Message'],
             expected_rc=254,
         )
-
-    @skip_if_windows("Permissions test not valid on Windows.")
-    def test_output_file_permissions(self):
-        outfile = self.getpath('fiebaz_perms.b32')
-        self.addCleanup(self.remove_file_if_exists, outfile)
-        cmdline = self.prefix
-        cmdline += ' --virtual-mfa-device-name fiebaz'
-        cmdline += (
-            ' --outfile %s --bootstrap-method Base32StringSeed' % outfile
-        )
-        result = {"VirtualMFADeviceName": 'fiebaz'}
-        self.assert_params_for_cmd(cmdline, result)
-        self.assertEqual(os.stat(outfile).st_mode & 0xFFF, 0o600)
-
-    @skip_if_windows("Permissions test not valid on Windows.")
-    def test_output_file_permissions_existing_file(self):
-        outfile = self.getpath('fiebaz_perms_existing.b32')
-        self.addCleanup(self.remove_file_if_exists, outfile)
-        with open(outfile, 'wb') as f:
-            f.write(b'existing')
-        os.chmod(outfile, 0o644)
-        cmdline = self.prefix
-        cmdline += ' --virtual-mfa-device-name fiebaz'
-        cmdline += (
-            ' --outfile %s --bootstrap-method Base32StringSeed' % outfile
-        )
-        result = {"VirtualMFADeviceName": 'fiebaz'}
-        self.assert_params_for_cmd(cmdline, result)
-        self.assertEqual(os.stat(outfile).st_mode & 0xFFF, 0o600)

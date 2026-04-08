@@ -700,17 +700,6 @@ class EndpointRulesetResolver:
         if self._requested_auth_scheme == UNSIGNED:
             return 'none', {}
 
-        # if a preferred auth schemes list is provided, reorder the auth schemes
-        # list based on the preferred ordering.
-        if self._auth_scheme_preference is not None:
-            prefs = self._auth_scheme_preference.split(',')
-            by_name = {s['name']: s for s in auth_schemes}
-            auth_schemes = [
-                by_name[p] for p in prefs if p in by_name
-            ] + [
-                s for s in auth_schemes if s['name'] not in prefs
-            ]
-
         auth_schemes = [
             {**scheme, 'name': self._strip_sig_prefix(scheme['name'])}
             for scheme in auth_schemes

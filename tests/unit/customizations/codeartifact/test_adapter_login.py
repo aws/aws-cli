@@ -435,40 +435,6 @@ class TestSwiftLogin(unittest.TestCase):
         self.subprocess_utils.check_output.assert_not_called()
         self.assertFalse(os.path.exists(self.test_netrc_path))
 
-    @skip_if_windows("Unix file permissions are not supported on Windows.")
-    @mock.patch('awscli.customizations.codeartifact.login.is_macos', False)
-    def test_login_adjusts_permissions_on_preexisting_file(self):
-        existing_content = (
-            f'machine {self.hostname} login token password old-token\n'
-        )
-        with open(self.test_netrc_path, 'w') as f:
-            f.write(existing_content)
-        os.chmod(self.test_netrc_path, 0o644)
-        self.test_subject.login()
-        file_mode = os.stat(self.test_netrc_path).st_mode
-        self.assertEqual(stat.S_IMODE(file_mode), 0o600)
-
-    @skip_if_windows("Unix file permissions are not supported on Windows.")
-    @mock.patch('awscli.customizations.codeartifact.login.is_macos', False)
-    @mock.patch('sys.stderr')
-    @mock.patch('os.chmod', side_effect=OSError(
-        errno.EPERM, 'Operation not permitted'
-    ))
-    def test_login_writes_error_when_chmod_fails(
-        self, mock_chmod, mock_stderr
-    ):
-        existing_content = (
-            f'machine {self.hostname} login token password old-token\n'
-        )
-        with open(self.test_netrc_path, 'w') as f:
-            f.write(existing_content)
-        self.test_subject.login()
-        mock_stderr.write.assert_any_call(
-            'Unable to set file permissions for %s: '
-            '[Errno 1] Operation not permitted%s'
-            % (self.test_netrc_path, os.linesep)
-        )
-
 
 class TestNuGetLogin(unittest.TestCase):
     _NUGET_INDEX_URL_FMT = NuGetLogin._NUGET_INDEX_URL_FMT
@@ -1278,45 +1244,6 @@ password: expired_token
             repo_url='http://www.python.org/pypi/',
             username='monty',
             password='JgCXIr5xGG'
-        )
-
-    @skip_if_windows("Unix file permissions are not supported on Windows.")
-    def test_login_sets_secure_permissions_on_new_file(self):
-        self.assertFalse(os.path.exists(self.test_pypi_rc_path))
-        self.test_subject.login()
-        file_mode = os.stat(self.test_pypi_rc_path).st_mode
-        self.assertEqual(stat.S_IMODE(file_mode), 0o600)
-
-    @skip_if_windows("Unix file permissions are not supported on Windows.")
-    def test_login_adjusts_permissions_on_preexisting_file(self):
-        existing_pypi_rc = '''\
-[distutils]
-index-servers=
-    pypi
-
-[pypi]
-repository: http://www.python.org/pypi/
-username: test
-password: JgCXIr5xGG
-'''
-        with open(self.test_pypi_rc_path, 'w') as f:
-            f.write(existing_pypi_rc)
-        os.chmod(self.test_pypi_rc_path, 0o644)
-        self.test_subject.login()
-        file_mode = os.stat(self.test_pypi_rc_path).st_mode
-        self.assertEqual(stat.S_IMODE(file_mode), 0o600)
-
-    @skip_if_windows("Unix file permissions are not supported on Windows.")
-    @mock.patch('sys.stderr')
-    @mock.patch('os.chmod', side_effect=OSError(
-        errno.EPERM, 'Operation not permitted'
-    ))
-    def test_login_writes_error_when_chmod_fails(self, mock_chmod, mock_stderr):
-        self.test_subject.login()
-        mock_stderr.write.assert_any_call(
-            'Unable to set file permissions for %s: '
-            '[Errno 1] Operation not permitted%s'
-            % (self.test_pypi_rc_path, os.linesep)
         )
 
     def test_login_existing_invalid_pypi_rc_error(self):

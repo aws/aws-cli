@@ -60,4 +60,5 @@ class TestStreamingOutput(BaseAWSCommandParamsTest):
         }
         outpath = self.files.full_path('outfile')
         self.assert_params_for_cmd(cmdline % outpath, ignore_params=True)
+        # Mask file type bits to isolate permission bits (rwxrwxrwx)
         self.assertEqual(os.stat(outpath).st_mode & 0o777, 0o600)

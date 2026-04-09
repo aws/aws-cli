@@ -105,6 +105,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
             filename,
         ]
         self.assert_params_for_cmd(cmdline, ignore_params=True)
+        # Mask file type bits to isolate permission bits (rwxrwxrwx)
         self.assertEqual(os.stat(filename).st_mode & 0o777, 0o600)
 
     def test_errors_are_propagated(self):

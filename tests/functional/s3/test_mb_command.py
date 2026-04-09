@@ -90,6 +90,31 @@ class TestMBCommand(BaseAWSCommandParamsTest):
         }
         self.assert_params_for_cmd(command, expected_params)
 
+    def test_account_regional_namespace_bucket(self):
+        bucket = 'amzn-s3-demo-bucket-111122223333-us-west-2-an'
+        command = self.prefix + 's3://%s --region us-west-2' % bucket
+        self.parsed_responses = [{'Location': 'us-west-2'}]
+        expected_params = {
+            'Bucket': bucket,
+            'BucketNamespace': 'account-regional',
+            'CreateBucketConfiguration': {'LocationConstraint': 'us-west-2'},
+        }
+        self.assert_params_for_cmd(command, expected_params)
+
+    def test_account_regional_namespace_bucket_us_east_1(self):
+        bucket = 'my-bucket-111122223333-us-east-1-an'
+        command = self.prefix + 's3://%s --region us-east-1' % bucket
+        expected_params = {
+            'Bucket': bucket,
+            'BucketNamespace': 'account-regional',
+        }
+        self.assert_params_for_cmd(command, expected_params)
+
+    def test_regular_bucket_no_namespace(self):
+        command = self.prefix + 's3://my-regular-bucket --region us-east-1'
+        expected_params = {'Bucket': 'my-regular-bucket'}
+        self.assert_params_for_cmd(command, expected_params)
+
     def test_tags_with_three_arguments_fails(self):
         command = self.prefix + 's3://bucket --tags Key1 Value1 ExtraArg'
         self.assert_params_for_cmd(

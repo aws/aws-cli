@@ -31,7 +31,7 @@ from awscli.customizations.s3.s3handler import S3TransferHandlerFactory
 from awscli.customizations.s3.utils import find_bucket_key, AppendFilter, \
     find_dest_path_comp_key, human_readable_size, \
     RequestParamsMapper, split_s3_bucket_key, block_unsupported_resources, \
-    S3PathResolver
+    S3PathResolver, is_account_regional_namespace_bucket
 from awscli.customizations.utils import uni_print
 from awscli.customizations.s3.syncstrategy.base import MissingFileSync, \
     SizeAndLastModifiedSync, NeverSync, AlwaysSync
@@ -909,6 +909,9 @@ class MbCommand(S3Command):
         params = {'Bucket': bucket}
         bucket_config = {}
         bucket_tags = self._create_bucket_tags(parsed_args)
+
+        if is_account_regional_namespace_bucket(bucket):
+            params['BucketNamespace'] = 'account-regional'
 
         # Only set LocationConstraint when the region name is not us-east-1.
         # Sending LocationConstraint with value us-east-1 results in an error.

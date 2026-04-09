@@ -10,6 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
+
 from botocore.model import Shape
 
 from awscli.arguments import BaseCLIArgument
@@ -92,7 +94,7 @@ class StreamingOutputArgument(BaseCLIArgument):
         service_id = self._operation_model.service_model.service_id.hyphenize()
         operation_name = self._operation_model.name
         self._session.register(
-            'after-call.%s.%s' % (service_id, operation_name), self.save_file
+            f'after-call.{service_id}.{operation_name}', self.save_file
         )
 
     def save_file(self, parsed, **kwargs):
@@ -104,7 +106,11 @@ class StreamingOutputArgument(BaseCLIArgument):
             return
         body = parsed[self._response_key]
         buffer_size = self._buffer_size
-        with open(self._output_file, 'wb') as fp:
+        fd = os.open(
+            self._output_file, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600
+        )
+        os.chmod(self._output_file, 0o600)
+        with os.fdopen(fd, 'wb') as fp:
             data = body.read(buffer_size)
             while data:
                 fp.write(data)

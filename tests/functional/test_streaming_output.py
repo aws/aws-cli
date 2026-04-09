@@ -11,17 +11,23 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
+
 from awscli.compat import BytesIO
-from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
+from awscli.testutils import (
+    BaseAWSCommandParamsTest,
+    FileCreator,
+    skip_if_windows,
+)
 
 
 class TestStreamingOutput(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(TestStreamingOutput, self).setUp()
+        super().setUp()
         self.files = FileCreator()
 
     def tearDown(self):
-        super(TestStreamingOutput, self).tearDown()
+        super().tearDown()
         self.files.remove_all()
 
     def test_get_media_streaming_output(self):
@@ -41,3 +47,18 @@ class TestStreamingOutput(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(cmdline % outpath, params)
         with open(outpath, 'rb') as outfile:
             self.assertEqual(outfile.read(), b'testbody')
+
+    @skip_if_windows('chmod is not supported on Windows')
+    def test_streaming_output_file_permissions(self):
+        cmdline = (
+            'kinesis-video-media get-media --stream-name test-stream '
+            '--start-selector StartSelectorType=EARLIEST %s'
+        )
+        self.parsed_response = {
+            'ContentType': 'video/webm',
+            'Payload': BytesIO(b'testbody'),
+        }
+        outpath = self.files.full_path('outfile')
+        self.assert_params_for_cmd(cmdline % outpath, ignore_params=True)
+        # Mask file type bits to isolate permission bits (rwxrwxrwx)
+        self.assertEqual(os.stat(outpath).st_mode & 0o777, 0o600)

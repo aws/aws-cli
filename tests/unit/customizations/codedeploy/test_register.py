@@ -55,12 +55,22 @@ class TestRegister(unittest.TestCase):
         self.globals.endpoint_url = self.endpoint_url
         self.globals.verify_ssl = False
 
-        self.open_patcher = mock.patch(
-            'awscli.customizations.codedeploy.register.open',
-            mock.mock_open(),
-            create=True,
+        self.os_open_patcher = mock.patch(
+            'awscli.customizations.codedeploy.register.os.open',
+            return_value=3,
         )
-        self.open = self.open_patcher.start()
+        self.os_open = self.os_open_patcher.start()
+
+        self.os_fdopen_patcher = mock.patch(
+            'awscli.customizations.codedeploy.register.os.fdopen',
+            mock.mock_open(),
+        )
+        self.os_fdopen = self.os_fdopen_patcher.start()
+
+        self.os_chmod_patcher = mock.patch(
+            'awscli.customizations.codedeploy.register.os.chmod'
+        )
+        self.os_chmod = self.os_chmod_patcher.start()
 
         self.codedeploy = mock.MagicMock()
 
@@ -80,7 +90,9 @@ class TestRegister(unittest.TestCase):
         self.register = Register(self.session)
 
     def tearDown(self):
-        self.open_patcher.stop()
+        self.os_open_patcher.stop()
+        self.os_fdopen_patcher.stop()
+        self.os_chmod_patcher.stop()
 
     def test_register_throws_on_invalid_region(self):
         self.globals.region = None
@@ -149,8 +161,13 @@ class TestRegister(unittest.TestCase):
         self.assertEqual(self.policy_name, self.args.policy_name)
         self.assertIn('policy_document', self.args)
         self.assertEqual(self.policy_document, self.args.policy_document)
-        self.open.assert_called_with(self.config_file, 'w')
-        self.open().write.assert_called_with(
+        self.os_open.assert_called_with(
+            self.config_file,
+            mock.ANY,
+            0o600,
+        )
+        self.os_fdopen.assert_called_with(3, 'w')
+        self.os_fdopen().write.assert_called_with(
             '---\n'
             f'region: {self.region}\n'
             f'iam_user_arn: {self.iam_user_arn}\n'
@@ -167,7 +184,7 @@ class TestRegister(unittest.TestCase):
         self.assertFalse(self.register.iam.create_user.called)
         self.assertFalse(self.register.iam.create_access_key.called)
         self.assertFalse(self.register.iam.put_user_policy.called)
-        self.assertFalse(self.open.called)
+        self.assertFalse(self.os_open.called)
         self.register.codedeploy.register_on_premises_instance.assert_called_with(
             instanceName=self.instance_name, iamUserArn=self.iam_user_arn
         )
@@ -191,6 +208,36 @@ class TestRegister(unittest.TestCase):
         self.register.codedeploy.add_tags_to_on_premises_instances.assert_called_with(
             tags=self.tags, instanceNames=[self.instance_name]
         )
+
+    def test_create_config_raises_runtime_error_on_open_failure(self):
+        self.args.iam_user_arn = None
+        self.os_open.side_effect = OSError('permission denied')
+        with self.assertRaisesRegex(
+            RuntimeError, 'Failed to create config file'
+        ):
+            self.register._create_config(self.args)
+
+    def test_create_config_raises_runtime_error_on_chmod_failure(self):
+        self.args.iam_user_arn = None
+        self.os_chmod.side_effect = OSError('permission denied')
+        with self.assertRaisesRegex(
+            RuntimeError, 'Failed to create config file'
+        ):
+            self.register._create_config(self.args)
+
+    def test_create_config_uses_restricted_permissions(self):
+        self.args.iam_user_arn = None
+        self.register._run_main(self.args, self.globals)
+        self.os_open.assert_called_with(
+            self.config_file,
+            mock.ANY,
+            0o600,
+        )
+
+    def test_create_config_chmods_existing_file(self):
+        self.args.iam_user_arn = None
+        self.register._run_main(self.args, self.globals)
+        self.os_chmod.assert_called_with(self.config_file, 0o600)
 
 
 if __name__ == "__main__":

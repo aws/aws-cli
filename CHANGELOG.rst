@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.34.28
+=======
+
+* bugfix:s3, streaming output: Output files created by S3 Select and streaming output commands are now created with owner-only permissions (0600). Existing files are also tightened to 0600 when overwritten.
+* api-change:``bedrock-agentcore``: Introducing support for SearchRegistryRecords API on AgentCoreRegistry
+* api-change:``bedrock-agentcore-control``: Initial release for CRUDL in AgentCore Registry Service
+* api-change:``redshift-data``: The BatchExecuteStatement API now supports named SQL parameters, enabling secure batch queries with parameterized values. This enhancement helps prevent SQL injection vulnerabilities and improves query reusability.
+* api-change:``mediaconnect``: Adds support for MediaLive Channel-type Router Inputs.
+* api-change:``sagemaker``: Release support for g7e instance types for SageMaker HyperPod
+* api-change:``bcm-dashboards``: Scheduled email reports of Billing and Cost Management Dashboards
+
+
 2.34.27
 =======
 

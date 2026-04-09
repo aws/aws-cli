@@ -4075,10 +4075,6 @@
     "FailoverRouterInputProtocolConfiguration":{
       "type":"structure",
       "members":{
-        "Rtp":{
-          "shape":"RtpRouterInputConfiguration",
-          "locationName":"rtp"
-        },
         "Rist":{
           "shape":"RistRouterInputConfiguration",
           "locationName":"rist"
@@ -4090,6 +4086,10 @@
         "SrtCaller":{
           "shape":"SrtCallerRouterInputConfiguration",
           "locationName":"srtCaller"
+        },
+        "Rtp":{
+          "shape":"RtpRouterInputConfiguration",
+          "locationName":"rtp"
         }
       },
       "documentation":"<p>Protocol configuration settings for failover router inputs.</p>",
@@ -5951,6 +5951,48 @@
       "members":{},
       "documentation":"<p>Configuration details for a MediaConnect flow when used as a router output destination.</p>"
     },
+    "MediaLiveChannelArn":{
+      "type":"string",
+      "pattern":"arn:(aws[a-zA-Z-]*):medialive:[a-z0-9-]+:[0-9]{12}:channel:[a-zA-Z0-9]+"
+    },
+    "MediaLiveChannelPipelineId":{
+      "type":"string",
+      "enum":[
+        "PIPELINE_0",
+        "PIPELINE_1"
+      ]
+    },
+    "MediaLiveChannelRouterInputConfiguration":{
+      "type":"structure",
+      "required":["SourceTransitDecryption"],
+      "members":{
+        "MediaLiveChannelArn":{
+          "shape":"MediaLiveChannelArn",
+          "documentation":"<p>The ARN of the MediaLive channel to connect to this router input.</p>",
+          "locationName":"mediaLiveChannelArn"
+        },
+        "MediaLivePipelineId":{
+          "shape":"MediaLiveChannelPipelineId",
+          "documentation":"<p>The index of the MediaLive pipeline to connect to this router input.</p>",
+          "locationName":"mediaLivePipelineId"
+        },
+        "MediaLiveChannelOutputName":{
+          "shape":"String",
+          "documentation":"<p>The name of the MediaLive channel output to connect to this router input.</p>",
+          "locationName":"mediaLiveChannelOutputName"
+        },
+        "SourceTransitDecryption":{
+          "shape":"MediaLiveTransitEncryption",
+          "locationName":"sourceTransitDecryption"
+        }
+      },
+      "documentation":"<p>Configuration settings for connecting a router input to a MediaLive channel output.</p>"
+    },
+    "MediaLiveChannelRouterInputStreamDetails":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Configuration details for a MediaLive channel when used as a router input source.</p>"
+    },
     "MediaLiveInputArn":{
       "type":"string",
       "pattern":"arn:(aws[a-zA-Z-]*):medialive:[a-z0-9-]+:[0-9]{12}:input:[a-zA-Z0-9]+"
@@ -7413,7 +7455,7 @@
       "type":"integer",
       "box":true,
       "max":65535,
-      "min":0
+      "min":1024
     },
     "RoleArn":{
       "type":"string",
@@ -7579,17 +7621,21 @@
           "shape":"StandardRouterInputConfiguration",
           "locationName":"standard"
         },
+        "MediaLiveChannel":{
+          "shape":"MediaLiveChannelRouterInputConfiguration",
+          "locationName":"mediaLiveChannel"
+        },
         "Failover":{
           "shape":"FailoverRouterInputConfiguration",
           "locationName":"failover"
         },
-        "Merge":{
-          "shape":"MergeRouterInputConfiguration",
-          "locationName":"merge"
-        },
         "MediaConnectFlow":{
           "shape":"MediaConnectFlowRouterInputConfiguration",
           "locationName":"mediaConnectFlow"
+        },
+        "Merge":{
+          "shape":"MergeRouterInputConfiguration",
+          "locationName":"merge"
         }
       },
       "documentation":"<p>The configuration settings for a router input.</p>",
@@ -7598,20 +7644,15 @@
     "RouterInputFilter":{
       "type":"structure",
       "members":{
-        "RegionNames":{
-          "shape":"StringList",
-          "documentation":"<p>The AWS Regions of the router inputs to include in the filter.</p>",
-          "locationName":"regionNames"
-        },
-        "InputTypes":{
-          "shape":"RouterInputTypeList",
-          "documentation":"<p>The types of router inputs to include in the filter.</p>",
-          "locationName":"inputTypes"
-        },
         "NameContains":{
           "shape":"StringList",
           "documentation":"<p>The names of the router inputs to include in the filter.</p>",
           "locationName":"nameContains"
+        },
+        "RegionNames":{
+          "shape":"StringList",
+          "documentation":"<p>The AWS Regions of the router inputs to include in the filter.</p>",
+          "locationName":"regionNames"
         },
         "NetworkInterfaceArns":{
           "shape":"RouterNetworkInterfaceArnList",
@@ -7622,6 +7663,11 @@
           "shape":"RoutingScopeList",
           "documentation":"<p>Filter criteria to list router inputs based on their routing scope (REGIONAL or GLOBAL).</p>",
           "locationName":"routingScopes"
+        },
+        "InputTypes":{
+          "shape":"RouterInputTypeList",
+          "documentation":"<p>The types of router inputs to include in the filter.</p>",
+          "locationName":"inputTypes"
         }
       },
       "documentation":"<p>A filter that can be used to retrieve a list of router inputs.</p>",
@@ -7682,10 +7728,6 @@
     "RouterInputProtocolConfiguration":{
       "type":"structure",
       "members":{
-        "Rtp":{
-          "shape":"RtpRouterInputConfiguration",
-          "locationName":"rtp"
-        },
         "Rist":{
           "shape":"RistRouterInputConfiguration",
           "locationName":"rist"
@@ -7697,6 +7739,10 @@
         "SrtCaller":{
           "shape":"SrtCallerRouterInputConfiguration",
           "locationName":"srtCaller"
+        },
+        "Rtp":{
+          "shape":"RtpRouterInputConfiguration",
+          "locationName":"rtp"
         }
       },
       "documentation":"<p>The protocol configuration settings for a router input.</p>",
@@ -7765,17 +7811,21 @@
           "shape":"StandardRouterInputStreamDetails",
           "locationName":"standard"
         },
+        "MediaLiveChannel":{
+          "shape":"MediaLiveChannelRouterInputStreamDetails",
+          "locationName":"mediaLiveChannel"
+        },
         "Failover":{
           "shape":"FailoverRouterInputStreamDetails",
           "locationName":"failover"
         },
-        "Merge":{
-          "shape":"MergeRouterInputStreamDetails",
-          "locationName":"merge"
-        },
         "MediaConnectFlow":{
           "shape":"MediaConnectFlowRouterInputStreamDetails",
           "locationName":"mediaConnectFlow"
+        },
+        "Merge":{
+          "shape":"MergeRouterInputStreamDetails",
+          "locationName":"merge"
         }
       },
       "documentation":"<p>Configuration details for the router input stream.</p>",
@@ -7861,7 +7911,8 @@
         "STANDARD",
         "FAILOVER",
         "MERGE",
-        "MEDIACONNECT_FLOW"
+        "MEDIACONNECT_FLOW",
+        "MEDIALIVE_CHANNEL"
       ]
     },
     "RouterInputTypeList":{
@@ -8209,30 +8260,30 @@
           "documentation":"<p>The AWS Regions of the router outputs to include in the filter.</p>",
           "locationName":"regionNames"
         },
-        "OutputTypes":{
-          "shape":"RouterOutputTypeList",
-          "documentation":"<p>The types of router outputs to include in the filter.</p>",
-          "locationName":"outputTypes"
-        },
-        "NameContains":{
-          "shape":"StringList",
-          "documentation":"<p>The names of the router outputs to include in the filter.</p>",
-          "locationName":"nameContains"
-        },
         "NetworkInterfaceArns":{
           "shape":"RouterNetworkInterfaceArnList",
           "documentation":"<p>The Amazon Resource Names (ARNs) of the network interfaces associated with the router outputs to include in the filter.</p>",
           "locationName":"networkInterfaceArns"
+        },
+        "RoutingScopes":{
+          "shape":"RoutingScopeList",
+          "documentation":"<p>Filter criteria to list router outputs based on their routing scope.</p>",
+          "locationName":"routingScopes"
+        },
+        "OutputTypes":{
+          "shape":"RouterOutputTypeList",
+          "documentation":"<p>The types of router outputs to include in the filter.</p>",
+          "locationName":"outputTypes"
         },
         "RoutedInputArns":{
           "shape":"RouterInputArnList",
           "documentation":"<p>The ARNs of the router inputs associated with the router outputs to include in the filter.</p>",
           "locationName":"routedInputArns"
         },
-        "RoutingScopes":{
-          "shape":"RoutingScopeList",
-          "documentation":"<p>Filter criteria to list router outputs based on their routing scope.</p>",
-          "locationName":"routingScopes"
+        "NameContains":{
+          "shape":"StringList",
+          "documentation":"<p>The names of the router outputs to include in the filter.</p>",
+          "locationName":"nameContains"
         }
       },
       "documentation":"<p>A filter that can be used to retrieve a list of router outputs.</p>",
@@ -8282,10 +8333,6 @@
     "RouterOutputProtocolConfiguration":{
       "type":"structure",
       "members":{
-        "Rtp":{
-          "shape":"RtpRouterOutputConfiguration",
-          "locationName":"rtp"
-        },
         "Rist":{
           "shape":"RistRouterOutputConfiguration",
           "locationName":"rist"
@@ -8297,6 +8344,10 @@
         "SrtCaller":{
           "shape":"SrtCallerRouterOutputConfiguration",
           "locationName":"srtCaller"
+        },
+        "Rtp":{
+          "shape":"RtpRouterOutputConfiguration",
+          "locationName":"rtp"
         }
       },
       "documentation":"<p>The protocol configuration settings for a router output.</p>",
@@ -8443,7 +8494,7 @@
       "type":"integer",
       "box":true,
       "max":65531,
-      "min":0
+      "min":1024
     },
     "ScanMode":{
       "type":"string",
@@ -8823,7 +8874,7 @@
       "type":"integer",
       "box":true,
       "max":65535,
-      "min":0
+      "min":1024
     },
     "SrtCallerRouterOutputConfiguration":{
       "type":"structure",
@@ -8865,7 +8916,7 @@
       "type":"integer",
       "box":true,
       "max":65535,
-      "min":0
+      "min":1024
     },
     "SrtCallerRouterOutputConfigurationMinimumLatencyMillisecondsLong":{
       "type":"long",

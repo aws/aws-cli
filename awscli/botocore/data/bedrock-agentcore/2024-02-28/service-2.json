@@ -631,6 +631,25 @@
       "documentation":"<p>Saves the current state of a browser session as a reusable profile in Amazon Bedrock AgentCore. A browser profile captures persistent browser data such as cookies and local storage from an active session, enabling you to reuse this data in future browser sessions.</p> <p>To save a browser session profile, you must specify the profile identifier, browser identifier, and session ID. The session must be active when saving the profile. Once saved, the profile can be used with the <code>StartBrowserSession</code> operation to initialize new sessions with the stored browser state.</p> <p>Browser profiles are useful for scenarios that require persistent authentication, maintaining user preferences across sessions, or continuing tasks that depend on previously stored browser data.</p> <p>The following operations are related to <code>SaveBrowserSessionProfile</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StartBrowserSession.html\">StartBrowserSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetBrowserSession.html\">GetBrowserSession</a> </p> </li> </ul>",
       "idempotent":true
     },
+    "SearchRegistryRecords":{
+      "name":"SearchRegistryRecords",
+      "http":{
+        "method":"POST",
+        "requestUri":"/registry-records/search",
+        "responseCode":200
+      },
+      "input":{"shape":"SearchRegistryRecordsRequest"},
+      "output":{"shape":"SearchRegistryRecordsResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Searches for registry records using semantic, lexical, or hybrid queries. Returns metadata for matching records ordered by relevance within the specified registry.</p>"
+    },
     "StartBrowserSession":{
       "name":"StartBrowserSession",
       "http":{
@@ -781,6 +800,17 @@
     }
   },
   "shapes":{
+    "A2aDescriptor":{
+      "type":"structure",
+      "required":["agentCard"],
+      "members":{
+        "agentCard":{
+          "shape":"AgentCardDefinition",
+          "documentation":"<p> The agent card definition that describes the agent's capabilities and interface.</p>"
+        }
+      },
+      "documentation":"<p> The A2A (Agent-to-Agent) descriptor configuration for a registry record.</p>"
+    },
     "AccessDeniedException":{
       "type":"structure",
       "members":{
@@ -824,6 +854,35 @@
       "type":"structure",
       "members":{},
       "document":true
+    },
+    "AgentCardDefinition":{
+      "type":"structure",
+      "members":{
+        "schemaVersion":{
+          "shape":"SchemaVersion",
+          "documentation":"<p> The schema version of the agent card definition.</p>"
+        },
+        "inlineContent":{
+          "shape":"InlineContent",
+          "documentation":"<p> The inline content of the agent card definition.</p>"
+        }
+      },
+      "documentation":"<p> The agent card definition for A2A descriptors, including the schema version and inline content that describes the agent's capabilities.</p>"
+    },
+    "AgentSkillsDescriptor":{
+      "type":"structure",
+      "required":["skillMd"],
+      "members":{
+        "skillMd":{
+          "shape":"SkillMdDefinition",
+          "documentation":"<p> The skill description in markdown format.</p>"
+        },
+        "skillDefinition":{
+          "shape":"SkillDefinition",
+          "documentation":"<p> The structured skill definition with a schema version and content.</p>"
+        }
+      },
+      "documentation":"<p> The agent skills descriptor configuration for a registry record.</p>"
     },
     "ApiKeyType":{
       "type":"string",
@@ -1633,6 +1692,16 @@
       "min":1,
       "pattern":"[a-zA-Z0-9\\-_]+"
     },
+    "CustomDescriptor":{
+      "type":"structure",
+      "members":{
+        "inlineContent":{
+          "shape":"InlineContent",
+          "documentation":"<p> The inline content of the custom descriptor.</p>"
+        }
+      },
+      "documentation":"<p> A custom descriptor configuration for a registry record.</p>"
+    },
     "CustomRequestKeyType":{
       "type":"string",
       "max":256,
@@ -1729,6 +1798,44 @@
           "documentation":"<p>The identifier of the memory record that was deleted.</p>"
         }
       }
+    },
+    "Description":{
+      "type":"string",
+      "max":4096,
+      "min":1,
+      "sensitive":true
+    },
+    "DescriptorType":{
+      "type":"string",
+      "documentation":"<p> The type of descriptor associated with a registry record.</p>",
+      "enum":[
+        "MCP",
+        "A2A",
+        "CUSTOM",
+        "AGENT_SKILLS"
+      ]
+    },
+    "Descriptors":{
+      "type":"structure",
+      "members":{
+        "mcp":{
+          "shape":"McpDescriptor",
+          "documentation":"<p> The MCP (Model Context Protocol) descriptor configuration. Populated when the record's <code>descriptorType</code> is <code>MCP</code>.</p>"
+        },
+        "a2a":{
+          "shape":"A2aDescriptor",
+          "documentation":"<p> The A2A (Agent-to-Agent) descriptor configuration. Populated when the record's <code>descriptorType</code> is <code>A2A</code>.</p>"
+        },
+        "custom":{
+          "shape":"CustomDescriptor",
+          "documentation":"<p> The custom descriptor configuration. Populated when the record's <code>descriptorType</code> is <code>CUSTOM</code>.</p>"
+        },
+        "agentSkills":{
+          "shape":"AgentSkillsDescriptor",
+          "documentation":"<p> The agent skills descriptor configuration. Populated when the record's <code>descriptorType</code> is <code>AGENT_SKILLS</code>.</p>"
+        }
+      },
+      "documentation":"<p> Contains the descriptor configuration for a registry record. Only the field that matches the record's <code>descriptorType</code> is populated.</p>"
     },
     "Document":{
       "type":"structure",
@@ -2667,6 +2774,11 @@
       "member":{"shape":"IgnoredReferenceInputField"},
       "max":100,
       "min":0
+    },
+    "InlineContent":{
+      "type":"string",
+      "max":409600,
+      "min":1
     },
     "InputContentBlock":{
       "type":"structure",
@@ -3659,6 +3771,24 @@
       "max":100,
       "min":1
     },
+    "McpDescriptor":{
+      "type":"structure",
+      "required":[
+        "server",
+        "tools"
+      ],
+      "members":{
+        "server":{
+          "shape":"ServerDefinition",
+          "documentation":"<p> The MCP server definition that describes the server configuration.</p>"
+        },
+        "tools":{
+          "shape":"ToolsDefinition",
+          "documentation":"<p> The MCP tools definition that describes the available tools.</p>"
+        }
+      },
+      "documentation":"<p> The MCP (Model Context Protocol) descriptor configuration for a registry record. Contains the server definition and tools definition.</p>"
+    },
     "MemoryContent":{
       "type":"structure",
       "members":{
@@ -3950,6 +4080,12 @@
     "MessagesList":{
       "type":"list",
       "member":{"shape":"MessageMetadata"}
+    },
+    "MetadataFilterExpression":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p> A JSON document that represents a structured metadata filter expression. Supports field-level operators (<code>$eq</code>, <code>$ne</code>, <code>$in</code>) and logical operators (<code>$and</code>, <code>$or</code>) on filterable fields (<code>name</code>, <code>descriptorType</code>, <code>version</code>).</p>",
+      "document":true
     },
     "MetadataKey":{
       "type":"string",
@@ -4300,6 +4436,119 @@
       "documentation":"<p>Union type representing different proxy authentication methods. Currently supports HTTP Basic Authentication (username and password).</p>",
       "union":true
     },
+    "RegistryArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:registry/[a-zA-Z0-9]{12,16}"
+    },
+    "RegistryIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"(arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:registry/)?[a-zA-Z0-9]{12,16}"
+    },
+    "RegistryRecordArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:registry/[a-zA-Z0-9]{12,16}/record/[a-zA-Z0-9]{12}"
+    },
+    "RegistryRecordId":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"[a-zA-Z0-9]{12}"
+    },
+    "RegistryRecordName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[a-zA-Z0-9][a-zA-Z0-9_\\-\\.\\/]*"
+    },
+    "RegistryRecordStatus":{
+      "type":"string",
+      "documentation":"<p> The status of a registry record in its lifecycle.</p>",
+      "enum":[
+        "DRAFT",
+        "PENDING_APPROVAL",
+        "APPROVED",
+        "REJECTED",
+        "DEPRECATED"
+      ]
+    },
+    "RegistryRecordSummary":{
+      "type":"structure",
+      "required":[
+        "registryArn",
+        "recordArn",
+        "recordId",
+        "name",
+        "descriptorType",
+        "descriptors",
+        "version",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "registryArn":{
+          "shape":"RegistryArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the registry that this record belongs to.</p>"
+        },
+        "recordArn":{
+          "shape":"RegistryRecordArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the registry record.</p>"
+        },
+        "recordId":{
+          "shape":"RegistryRecordId",
+          "documentation":"<p> The unique identifier of the registry record.</p>"
+        },
+        "name":{
+          "shape":"RegistryRecordName",
+          "documentation":"<p> The name of the registry record.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p> A description of the registry record.</p>"
+        },
+        "descriptorType":{
+          "shape":"DescriptorType",
+          "documentation":"<p> The type of descriptor associated with this registry record.</p>"
+        },
+        "descriptors":{
+          "shape":"Descriptors",
+          "documentation":"<p> The descriptor configurations for this registry record.</p>"
+        },
+        "version":{
+          "shape":"RegistryRecordVersion",
+          "documentation":"<p> The version of the registry record.</p>"
+        },
+        "status":{
+          "shape":"RegistryRecordStatus",
+          "documentation":"<p> The current status of the registry record.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p> The date and time when the registry record was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p> The date and time when the registry record was last updated.</p>"
+        }
+      },
+      "documentation":"<p> Summary information about a registry record.</p>"
+    },
+    "RegistryRecordSummaryList":{
+      "type":"list",
+      "member":{"shape":"RegistryRecordSummary"}
+    },
+    "RegistryRecordVersion":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[a-zA-Z0-9.-]+"
+    },
     "RequestIdentifier":{
       "type":"string",
       "max":80,
@@ -4607,6 +4856,11 @@
         }
       }
     },
+    "SchemaVersion":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
     "ScopeType":{
       "type":"string",
       "max":128,
@@ -4685,6 +4939,58 @@
       "max":100,
       "min":1
     },
+    "SearchRegistryRecordsRequest":{
+      "type":"structure",
+      "required":[
+        "searchQuery",
+        "registryIds"
+      ],
+      "members":{
+        "searchQuery":{
+          "shape":"SearchRegistryRecordsRequestSearchQueryString",
+          "documentation":"<p> The search query to find matching registry records.</p>"
+        },
+        "registryIds":{
+          "shape":"SearchRegistryRecordsRequestRegistryIdsList",
+          "documentation":"<p> The list of registry identifiers to search within. Currently, you can specify exactly one registry identifier. You can provide either the full Amazon Web Services Resource Name (ARN) or the 12-character alphanumeric registry ID.</p>"
+        },
+        "maxResults":{
+          "shape":"SearchRegistryRecordsRequestMaxResultsInteger",
+          "documentation":"<p> The maximum number of records to return in a single call. Valid values are 1 through 20. The default value is 10.</p>"
+        },
+        "filters":{
+          "shape":"MetadataFilterExpression",
+          "documentation":"<p> A metadata filter expression to narrow search results. Uses structured JSON operators including field-level operators (<code>$eq</code>, <code>$ne</code>, <code>$in</code>) and logical operators (<code>$and</code>, <code>$or</code>) on filterable fields (<code>name</code>, <code>descriptorType</code>, <code>version</code>). For example, to filter by descriptor type: <code>{\"descriptorType\": {\"$eq\": \"MCP\"}}</code>. To combine filters: <code>{\"$and\": [{\"descriptorType\": {\"$eq\": \"MCP\"}}, {\"name\": {\"$eq\": \"my-tool\"}}]}</code>.</p>"
+        }
+      }
+    },
+    "SearchRegistryRecordsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":20,
+      "min":1
+    },
+    "SearchRegistryRecordsRequestRegistryIdsList":{
+      "type":"list",
+      "member":{"shape":"RegistryIdentifier"},
+      "max":1,
+      "min":1
+    },
+    "SearchRegistryRecordsRequestSearchQueryString":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "SearchRegistryRecordsResponse":{
+      "type":"structure",
+      "required":["registryRecords"],
+      "members":{
+        "registryRecords":{
+          "shape":"RegistryRecordSummaryList",
+          "documentation":"<p> The list of registry records that match the search query, ordered by relevance.</p>"
+        }
+      }
+    },
     "SecretArn":{
       "type":"string",
       "pattern":"arn:aws(-[a-z-]+)?:secretsmanager:[a-z0-9-]+:[0-9]{12}:secret:[a-zA-Z0-9/_+=.@-]+"
@@ -4699,6 +5005,20 @@
         }
       },
       "documentation":"<p>The Amazon Web Services Secrets Manager location configuration.</p>"
+    },
+    "ServerDefinition":{
+      "type":"structure",
+      "members":{
+        "schemaVersion":{
+          "shape":"SchemaVersion",
+          "documentation":"<p> The schema version of the MCP server configuration. The schema version identifies the format of the server definition content.</p>"
+        },
+        "inlineContent":{
+          "shape":"InlineContent",
+          "documentation":"<p> The inline content of the server definition.</p>"
+        }
+      },
+      "documentation":"<p> The MCP server definition with a schema version and inline content. The <code>schemaVersion</code> identifies the version of the MCP server configuration schema.</p>"
     },
     "ServiceException":{
       "type":"structure",
@@ -4777,6 +5097,30 @@
       "type":"string",
       "max":256,
       "min":33
+    },
+    "SkillDefinition":{
+      "type":"structure",
+      "members":{
+        "schemaVersion":{
+          "shape":"SchemaVersion",
+          "documentation":"<p> The schema version of the skill definition. If you don't specify a version, the service detects it automatically.</p>"
+        },
+        "inlineContent":{
+          "shape":"InlineContent",
+          "documentation":"<p> The inline content of the skill definition.</p>"
+        }
+      },
+      "documentation":"<p> The structured skill definition with a schema version and inline content.</p>"
+    },
+    "SkillMdDefinition":{
+      "type":"structure",
+      "members":{
+        "inlineContent":{
+          "shape":"InlineContent",
+          "documentation":"<p> The inline markdown content of the skill definition.</p>"
+        }
+      },
+      "documentation":"<p> The skill markdown definition for agent skills descriptors.</p>"
     },
     "Span":{
       "type":"structure",
@@ -5382,6 +5726,20 @@
         }
       },
       "documentation":"<p>Contains structured content from a tool result.</p>"
+    },
+    "ToolsDefinition":{
+      "type":"structure",
+      "members":{
+        "protocolVersion":{
+          "shape":"SchemaVersion",
+          "documentation":"<p> The MCP protocol version that the tools conform to. This differs from the <code>schemaVersion</code> field in the server definition, which identifies the server configuration schema format.</p>"
+        },
+        "inlineContent":{
+          "shape":"InlineContent",
+          "documentation":"<p> The inline content of the tools definition.</p>"
+        }
+      },
+      "documentation":"<p> The MCP tools definition with a protocol version and inline content. The <code>protocolVersion</code> identifies the MCP protocol version that the tools conform to. This differs from <code>schemaVersion</code> in the server definition, which identifies the server configuration schema format.</p>"
     },
     "TraceId":{
       "type":"string",

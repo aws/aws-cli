@@ -303,6 +303,47 @@
       ],
       "documentation":"<p>Creates a new policy engine within the AgentCore Policy system. A policy engine is a collection of policies that evaluates and authorizes agent tool calls. When associated with Gateways (each Gateway can be associated with at most one policy engine, but multiple Gateways can be associated with the same engine), the policy engine intercepts all agent requests and determines whether to allow or deny each action based on the defined policies. This is an asynchronous operation. Use the <a href=\"https://docs.aws.amazon.com/bedrock-agentcore-control/latest/APIReference/API_GetPolicyEngine.html\">GetPolicyEngine</a> operation to poll the <code>status</code> field to track completion.</p>"
     },
+    "CreateRegistry":{
+      "name":"CreateRegistry",
+      "http":{
+        "method":"POST",
+        "requestUri":"/registries",
+        "responseCode":202
+      },
+      "input":{"shape":"CreateRegistryRequest"},
+      "output":{"shape":"CreateRegistryResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a new registry in your Amazon Web Services account. A registry serves as a centralized catalog for organizing and managing registry records, including MCP servers, A2A agents, agent skills, and custom resource types.</p> <p>If you specify <code>CUSTOM_JWT</code> as the <code>authorizerType</code>, you must provide an <code>authorizerConfiguration</code>.</p>",
+      "idempotent":true
+    },
+    "CreateRegistryRecord":{
+      "name":"CreateRegistryRecord",
+      "http":{
+        "method":"POST",
+        "requestUri":"/registries/{registryId}/records",
+        "responseCode":202
+      },
+      "input":{"shape":"CreateRegistryRecordRequest"},
+      "output":{"shape":"CreateRegistryRecordResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a new registry record within the specified registry. A registry record represents an individual AI resource's metadata in the registry. This could be an MCP server (and associated tools), A2A agent, agent skill, or a custom resource with a custom schema.</p> <p>The record is processed asynchronously and returns HTTP 202 Accepted.</p>",
+      "idempotent":true
+    },
     "CreateWorkloadIdentity":{
       "name":"CreateWorkloadIdentity",
       "http":{
@@ -601,6 +642,46 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Deletes an existing policy engine from the AgentCore Policy system. The policy engine must not have any associated policies before deletion. Once deleted, the policy engine and all its configurations become unavailable for policy management and evaluation. This is an asynchronous operation. Use the <code>GetPolicyEngine</code> operation to poll the <code>status</code> field to track completion.</p>",
+      "idempotent":true
+    },
+    "DeleteRegistry":{
+      "name":"DeleteRegistry",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/registries/{registryId}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteRegistryRequest"},
+      "output":{"shape":"DeleteRegistryResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes a registry. The registry must contain zero records before it can be deleted. This operation initiates the deletion process asynchronously.</p>",
+      "idempotent":true
+    },
+    "DeleteRegistryRecord":{
+      "name":"DeleteRegistryRecord",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/registries/{registryId}/records/{recordId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteRegistryRecordRequest"},
+      "output":{"shape":"DeleteRegistryRecordResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes a registry record. The record's status transitions to <code>DELETING</code> and the record is removed asynchronously.</p>",
       "idempotent":true
     },
     "DeleteResourcePolicy":{
@@ -929,6 +1010,45 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Retrieves information about a policy generation request within the AgentCore Policy system. Policy generation converts natural language descriptions into Cedar policy statements using AI-powered translation, enabling non-technical users to create policies.</p>",
+      "readonly":true
+    },
+    "GetRegistry":{
+      "name":"GetRegistry",
+      "http":{
+        "method":"GET",
+        "requestUri":"/registries/{registryId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetRegistryRequest"},
+      "output":{"shape":"GetRegistryResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves information about a specific registry.</p>",
+      "readonly":true
+    },
+    "GetRegistryRecord":{
+      "name":"GetRegistryRecord",
+      "http":{
+        "method":"GET",
+        "requestUri":"/registries/{registryId}/records/{recordId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetRegistryRecordRequest"},
+      "output":{"shape":"GetRegistryRecordResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves information about a specific registry record.</p>",
       "readonly":true
     },
     "GetResourcePolicy":{
@@ -1305,6 +1425,44 @@
       "documentation":"<p>Retrieves a list of policy generation requests within the AgentCore Policy system. This operation supports pagination and filtering to help track and manage AI-powered policy generation operations.</p>",
       "readonly":true
     },
+    "ListRegistries":{
+      "name":"ListRegistries",
+      "http":{
+        "method":"GET",
+        "requestUri":"/registries",
+        "responseCode":200
+      },
+      "input":{"shape":"ListRegistriesRequest"},
+      "output":{"shape":"ListRegistriesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists all registries in the account. You can optionally filter results by status using the <code>status</code> parameter.</p>",
+      "readonly":true
+    },
+    "ListRegistryRecords":{
+      "name":"ListRegistryRecords",
+      "http":{
+        "method":"GET",
+        "requestUri":"/registries/{registryId}/records",
+        "responseCode":200
+      },
+      "input":{"shape":"ListRegistryRecordsRequest"},
+      "output":{"shape":"ListRegistryRecordsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists registry records within a registry. You can optionally filter results using the <code>name</code>, <code>status</code>, and <code>descriptorType</code> parameters. When multiple filters are specified, they are combined using AND logic.</p>",
+      "readonly":true
+    },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
       "http":{
@@ -1402,6 +1560,25 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Initiates the AI-powered generation of Cedar policies from natural language descriptions within the AgentCore Policy system. This feature enables both technical and non-technical users to create policies by describing their authorization requirements in plain English, which is then automatically translated into formal Cedar policy statements. The generation process analyzes the natural language input along with the Gateway's tool context to produce validated policy options. Generated policy assets are automatically deleted after 7 days, so you should review and create policies from the generated assets within this timeframe. Once created, policies are permanent and not subject to this expiration. Generated policies should be reviewed and tested in log-only mode before deploying to production. Use this when you want to describe policy intent naturally rather than learning Cedar syntax, though generated policies may require refinement for complex scenarios.</p>"
+    },
+    "SubmitRegistryRecordForApproval":{
+      "name":"SubmitRegistryRecordForApproval",
+      "http":{
+        "method":"POST",
+        "requestUri":"/registries/{registryId}/records/{recordId}/submit-for-approval",
+        "responseCode":202
+      },
+      "input":{"shape":"SubmitRegistryRecordForApprovalRequest"},
+      "output":{"shape":"SubmitRegistryRecordForApprovalResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Submits a registry record for approval. This transitions the record from <code>DRAFT</code> status to <code>PENDING_APPROVAL</code> status. If the registry has auto-approval enabled, the record is automatically approved.</p>"
     },
     "SynchronizeGatewayTargets":{
       "name":"SynchronizeGatewayTargets",
@@ -1696,6 +1873,64 @@
       "documentation":"<p>Updates an existing policy engine within the AgentCore Policy system. This operation allows modification of the policy engine description while maintaining its identity. This is an asynchronous operation. Use the <code>GetPolicyEngine</code> operation to poll the <code>status</code> field to track completion.</p>",
       "idempotent":true
     },
+    "UpdateRegistry":{
+      "name":"UpdateRegistry",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/registries/{registryId}",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdateRegistryRequest"},
+      "output":{"shape":"UpdateRegistryResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates an existing registry. This operation uses PATCH semantics, so you only need to specify the fields you want to change.</p>"
+    },
+    "UpdateRegistryRecord":{
+      "name":"UpdateRegistryRecord",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/registries/{registryId}/records/{recordId}",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdateRegistryRecordRequest"},
+      "output":{"shape":"UpdateRegistryRecordResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates an existing registry record. This operation uses PATCH semantics, so you only need to specify the fields you want to change. The update is processed asynchronously and returns HTTP 202 Accepted.</p>"
+    },
+    "UpdateRegistryRecordStatus":{
+      "name":"UpdateRegistryRecordStatus",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/registries/{registryId}/records/{recordId}/status",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdateRegistryRecordStatusRequest"},
+      "output":{"shape":"UpdateRegistryRecordStatusResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates the status of a registry record. Use this operation to approve, reject, or deprecate a registry record.</p>"
+    },
     "UpdateWorkloadIdentity":{
       "name":"UpdateWorkloadIdentity",
       "http":{
@@ -1718,6 +1953,16 @@
     }
   },
   "shapes":{
+    "A2aDescriptor":{
+      "type":"structure",
+      "members":{
+        "agentCard":{
+          "shape":"AgentCardDefinition",
+          "documentation":"<p>The agent card definition for the A2A agent, as defined by the A2A protocol specification.</p>"
+        }
+      },
+      "documentation":"<p>The Agent-to-Agent (A2A) protocol descriptor for a registry record. Contains the agent card definition as defined by the A2A protocol specification.</p>"
+    },
     "AccessDeniedException":{
       "type":"structure",
       "members":{
@@ -1734,6 +1979,20 @@
       "type":"structure",
       "members":{},
       "document":true
+    },
+    "AgentCardDefinition":{
+      "type":"structure",
+      "members":{
+        "schemaVersion":{
+          "shape":"SchemaVersion",
+          "documentation":"<p>The schema version of the agent card based on the A2A protocol specification.</p>"
+        },
+        "inlineContent":{
+          "shape":"InlineContent",
+          "documentation":"<p>The JSON content containing the A2A agent card definition, conforming to the A2A protocol specification.</p>"
+        }
+      },
+      "documentation":"<p>The agent card definition for an A2A descriptor. Contains the schema version and inline content for the agent card.</p>"
     },
     "AgentEndpointDescription":{
       "type":"string",
@@ -1918,6 +2177,20 @@
     "AgentRuntimes":{
       "type":"list",
       "member":{"shape":"AgentRuntime"}
+    },
+    "AgentSkillsDescriptor":{
+      "type":"structure",
+      "members":{
+        "skillMd":{
+          "shape":"SkillMdDefinition",
+          "documentation":"<p>The optional skill markdown definition describing the agent's skills in a human-readable format.</p>"
+        },
+        "skillDefinition":{
+          "shape":"SkillDefinition",
+          "documentation":"<p>The structured skill definition with schema version and content.</p>"
+        }
+      },
+      "documentation":"<p>The agent skills descriptor for a registry record. Contains an optional skill markdown definition in human-readable format and an optional structured skill definition.</p>"
     },
     "AllowedAudience":{"type":"string"},
     "AllowedAudienceList":{
@@ -2148,6 +2421,16 @@
       },
       "documentation":"<p>Configuration for API schema.</p>",
       "union":true
+    },
+    "ApprovalConfiguration":{
+      "type":"structure",
+      "members":{
+        "autoApproval":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether registry records are auto-approved. When set to <code>true</code>, records are automatically approved upon creation. When set to <code>false</code> (the default), records require explicit approval for security purposes.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for the registry record approval workflow. Controls whether records added to the registry require explicit approval before becoming active.</p>"
     },
     "Arn":{
       "type":"string",
@@ -3966,6 +4249,113 @@
         }
       }
     },
+    "CreateRegistryRecordRequest":{
+      "type":"structure",
+      "required":[
+        "registryId",
+        "name",
+        "descriptorType"
+      ],
+      "members":{
+        "registryId":{
+          "shape":"RegistryIdentifier",
+          "documentation":"<p>The identifier of the registry where the record will be created. You can specify either the Amazon Resource Name (ARN) or the ID of the registry.</p>",
+          "location":"uri",
+          "locationName":"registryId"
+        },
+        "name":{
+          "shape":"RegistryRecordName",
+          "documentation":"<p>The name of the registry record.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the registry record.</p>"
+        },
+        "descriptorType":{
+          "shape":"DescriptorType",
+          "documentation":"<p>The descriptor type of the registry record.</p> <ul> <li> <p> <code>MCP</code> - Model Context Protocol descriptor for MCP-compatible servers and tools.</p> </li> <li> <p> <code>A2A</code> - Agent-to-Agent protocol descriptor.</p> </li> <li> <p> <code>CUSTOM</code> - Custom descriptor type for resources such as APIs, Lambda functions, or servers not conforming to a standard protocol.</p> </li> <li> <p> <code>AGENT_SKILLS</code> - Agent skills descriptor for defining agent skill definitions.</p> </li> </ul>"
+        },
+        "descriptors":{
+          "shape":"Descriptors",
+          "documentation":"<p>The descriptor-type-specific configuration containing the resource schema and metadata. The structure of this field depends on the <code>descriptorType</code> you specify.</p>"
+        },
+        "recordVersion":{
+          "shape":"RegistryRecordVersion",
+          "documentation":"<p>The version of the registry record. Use this to track different versions of the record's content.</p>"
+        },
+        "synchronizationType":{
+          "shape":"SynchronizationType",
+          "documentation":"<p>The type of synchronization to use for keeping the record metadata up to date from an external source. Possible values include <code>FROM_URL</code> and <code>NONE</code>.</p>"
+        },
+        "synchronizationConfiguration":{
+          "shape":"SynchronizationConfiguration",
+          "documentation":"<p>The configuration for synchronizing registry record metadata from an external source, such as a URL-based MCP server.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateRegistryRecordResponse":{
+      "type":"structure",
+      "required":[
+        "recordArn",
+        "status"
+      ],
+      "members":{
+        "recordArn":{
+          "shape":"RegistryRecordArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created registry record.</p>"
+        },
+        "status":{
+          "shape":"RegistryRecordStatus",
+          "documentation":"<p>The status of the registry record. Set to <code>CREATING</code> while the asynchronous workflow is in progress.</p>"
+        }
+      }
+    },
+    "CreateRegistryRequest":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"RegistryName",
+          "documentation":"<p>The name of the registry. The name must be unique within your account and can contain alphanumeric characters and underscores.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the registry.</p>"
+        },
+        "authorizerType":{
+          "shape":"RegistryAuthorizerType",
+          "documentation":"<p>The type of authorizer to use for the registry. This controls the authorization method for the Search and Invoke APIs used by consumers, and does not affect the standard CRUDL APIs for registry and registry record management used by administrators.</p> <ul> <li> <p> <code>CUSTOM_JWT</code> - Authorize with a bearer token.</p> </li> <li> <p> <code>AWS_IAM</code> - Authorize with your Amazon Web Services IAM credentials.</p> </li> </ul>"
+        },
+        "authorizerConfiguration":{
+          "shape":"AuthorizerConfiguration",
+          "documentation":"<p>The authorizer configuration for the registry. Required if <code>authorizerType</code> is <code>CUSTOM_JWT</code>. For details, see the <code>AuthorizerConfiguration</code> data type.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "approvalConfiguration":{
+          "shape":"ApprovalConfiguration",
+          "documentation":"<p>The approval configuration for registry records. Controls whether records require explicit approval before becoming active. See the <code>ApprovalConfiguration</code> data type for supported configuration options.</p>"
+        }
+      }
+    },
+    "CreateRegistryResponse":{
+      "type":"structure",
+      "required":["registryArn"],
+      "members":{
+        "registryArn":{
+          "shape":"RegistryArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created registry.</p>"
+        }
+      }
+    },
     "CreateWorkloadIdentityRequest":{
       "type":"structure",
       "required":["name"],
@@ -4023,6 +4413,12 @@
       },
       "documentation":"<p>A credential provider for gateway authentication. This structure contains the configuration for authenticating with the target endpoint.</p>",
       "union":true
+    },
+    "CredentialProviderArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:.*"
     },
     "CredentialProviderArnType":{
       "type":"string",
@@ -4194,6 +4590,16 @@
       "documentation":"<p>Input for a custom consolidation configuration.</p>",
       "union":true
     },
+    "CustomDescriptor":{
+      "type":"structure",
+      "members":{
+        "inlineContent":{
+          "shape":"InlineContent",
+          "documentation":"<p>The custom descriptor content as a valid JSON document. You can define any custom schema that describes your resource.</p>"
+        }
+      },
+      "documentation":"<p>A custom descriptor for a registry record. Use this for resources such as APIs, Lambda functions, or servers that do not conform to a standard protocol like MCP or A2A.</p>"
+    },
     "CustomEvaluatorArn":{
       "type":"string",
       "pattern":"arn:aws:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:evaluator\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
@@ -4334,6 +4740,11 @@
         }
       },
       "documentation":"<p>Output configuration for a custom OAuth2 provider.</p>"
+    },
+    "CustomParameterMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"}
     },
     "CustomReflectionConfiguration":{
       "type":"structure",
@@ -4961,6 +5372,53 @@
         }
       }
     },
+    "DeleteRegistryRecordRequest":{
+      "type":"structure",
+      "required":[
+        "registryId",
+        "recordId"
+      ],
+      "members":{
+        "registryId":{
+          "shape":"RegistryIdentifier",
+          "documentation":"<p>The identifier of the registry containing the record. You can specify either the Amazon Resource Name (ARN) or the ID of the registry.</p>",
+          "location":"uri",
+          "locationName":"registryId"
+        },
+        "recordId":{
+          "shape":"RecordIdentifier",
+          "documentation":"<p>The identifier of the registry record to delete. You can specify either the Amazon Resource Name (ARN) or the ID of the record.</p>",
+          "location":"uri",
+          "locationName":"recordId"
+        }
+      }
+    },
+    "DeleteRegistryRecordResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteRegistryRequest":{
+      "type":"structure",
+      "required":["registryId"],
+      "members":{
+        "registryId":{
+          "shape":"RegistryIdentifier",
+          "documentation":"<p>The identifier of the registry to delete. You can specify either the Amazon Resource Name (ARN) or the ID of the registry.</p>",
+          "location":"uri",
+          "locationName":"registryId"
+        }
+      }
+    },
+    "DeleteRegistryResponse":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"RegistryStatus",
+          "documentation":"<p>The current status of the registry, set to <code>DELETING</code> when deletion is initiated. For a list of all possible registry statuses, see the <code>RegistryStatus</code> data type.</p>"
+        }
+      }
+    },
     "DeleteResourcePolicyRequest":{
       "type":"structure",
       "required":["resourceArn"],
@@ -4996,6 +5454,37 @@
       "max":4096,
       "min":1,
       "sensitive":true
+    },
+    "DescriptorType":{
+      "type":"string",
+      "enum":[
+        "MCP",
+        "A2A",
+        "CUSTOM",
+        "AGENT_SKILLS"
+      ]
+    },
+    "Descriptors":{
+      "type":"structure",
+      "members":{
+        "mcp":{
+          "shape":"McpDescriptor",
+          "documentation":"<p>The Model Context Protocol (MCP) descriptor configuration. Use this when the <code>descriptorType</code> is <code>MCP</code>.</p>"
+        },
+        "a2a":{
+          "shape":"A2aDescriptor",
+          "documentation":"<p>The Agent-to-Agent (A2A) protocol descriptor configuration. Use this when the <code>descriptorType</code> is <code>A2A</code>.</p>"
+        },
+        "custom":{
+          "shape":"CustomDescriptor",
+          "documentation":"<p>The custom descriptor configuration. Use this when the <code>descriptorType</code> is <code>CUSTOM</code>.</p>"
+        },
+        "agentSkills":{
+          "shape":"AgentSkillsDescriptor",
+          "documentation":"<p>The agent skills descriptor configuration. Use this when the <code>descriptorType</code> is <code>AGENT_SKILLS</code>.</p>"
+        }
+      },
+      "documentation":"<p>Contains descriptor-type-specific configurations for a registry record. Only the descriptor matching the record's <code>descriptorType</code> should be populated.</p>"
     },
     "DiscoveryUrl":{
       "type":"string",
@@ -5560,6 +6049,21 @@
     "Findings":{
       "type":"list",
       "member":{"shape":"Finding"}
+    },
+    "FromUrlSynchronizationConfiguration":{
+      "type":"structure",
+      "required":["url"],
+      "members":{
+        "url":{
+          "shape":"McpServerUrl",
+          "documentation":"<p>The HTTPS URL of the MCP server to synchronize from.</p>"
+        },
+        "credentialProviderConfigurations":{
+          "shape":"RegistryRecordCredentialProviderConfigurationList",
+          "documentation":"<p>Optional list of credential provider configurations for authenticating with the MCP server. At most one credential provider configuration can be specified.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for synchronizing from a URL-based MCP server.</p>"
     },
     "GatewayArn":{
       "type":"string",
@@ -6910,6 +7414,168 @@
         }
       }
     },
+    "GetRegistryRecordRequest":{
+      "type":"structure",
+      "required":[
+        "registryId",
+        "recordId"
+      ],
+      "members":{
+        "registryId":{
+          "shape":"RegistryIdentifier",
+          "documentation":"<p>The identifier of the registry containing the record. You can specify either the Amazon Resource Name (ARN) or the ID of the registry.</p>",
+          "location":"uri",
+          "locationName":"registryId"
+        },
+        "recordId":{
+          "shape":"RecordIdentifier",
+          "documentation":"<p>The identifier of the registry record to retrieve. You can specify either the Amazon Resource Name (ARN) or the ID of the record.</p>",
+          "location":"uri",
+          "locationName":"recordId"
+        }
+      }
+    },
+    "GetRegistryRecordResponse":{
+      "type":"structure",
+      "required":[
+        "registryArn",
+        "recordArn",
+        "recordId",
+        "name",
+        "descriptorType",
+        "descriptors",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "registryArn":{
+          "shape":"RegistryArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the registry that contains the record.</p>"
+        },
+        "recordArn":{
+          "shape":"RegistryRecordArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the registry record.</p>"
+        },
+        "recordId":{
+          "shape":"RegistryRecordId",
+          "documentation":"<p>The unique identifier of the registry record.</p>"
+        },
+        "name":{
+          "shape":"RegistryRecordName",
+          "documentation":"<p>The name of the registry record.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the registry record.</p>"
+        },
+        "descriptorType":{
+          "shape":"DescriptorType",
+          "documentation":"<p>The descriptor type of the registry record. Possible values are <code>MCP</code>, <code>A2A</code>, <code>CUSTOM</code>, and <code>AGENT_SKILLS</code>.</p>"
+        },
+        "descriptors":{
+          "shape":"Descriptors",
+          "documentation":"<p>The descriptor-type-specific configuration containing the resource schema and metadata. For details, see the <code>Descriptors</code> data type.</p>"
+        },
+        "recordVersion":{
+          "shape":"RegistryRecordVersion",
+          "documentation":"<p>The version of the registry record.</p>"
+        },
+        "status":{
+          "shape":"RegistryRecordStatus",
+          "documentation":"<p>The current status of the registry record. Possible values include <code>CREATING</code>, <code>DRAFT</code>, <code>APPROVED</code>, <code>PENDING_APPROVAL</code>, <code>REJECTED</code>, <code>DEPRECATED</code>, <code>UPDATING</code>, <code>CREATE_FAILED</code>, and <code>UPDATE_FAILED</code>. A record transitions from <code>CREATING</code> to <code>DRAFT</code>, then to <code>PENDING_APPROVAL</code> (via <code>SubmitRegistryRecordForApproval</code>), and finally to <code>APPROVED</code> upon approval.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the registry record was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the registry record was last updated.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current status, typically set when the status is a failure state.</p>"
+        },
+        "synchronizationType":{
+          "shape":"SynchronizationType",
+          "documentation":"<p>The type of synchronization used for this record.</p>"
+        },
+        "synchronizationConfiguration":{
+          "shape":"SynchronizationConfiguration",
+          "documentation":"<p>The configuration for synchronizing registry record metadata from an external source.</p>"
+        }
+      }
+    },
+    "GetRegistryRequest":{
+      "type":"structure",
+      "required":["registryId"],
+      "members":{
+        "registryId":{
+          "shape":"RegistryIdentifier",
+          "documentation":"<p>The identifier of the registry to retrieve. You can specify either the Amazon Resource Name (ARN) or the ID of the registry.</p>",
+          "location":"uri",
+          "locationName":"registryId"
+        }
+      }
+    },
+    "GetRegistryResponse":{
+      "type":"structure",
+      "required":[
+        "name",
+        "registryId",
+        "registryArn",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "name":{
+          "shape":"RegistryName",
+          "documentation":"<p>The name of the registry.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the registry.</p>"
+        },
+        "registryId":{
+          "shape":"RegistryId",
+          "documentation":"<p>The unique identifier of the registry.</p>"
+        },
+        "registryArn":{
+          "shape":"RegistryArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the registry.</p>"
+        },
+        "authorizerType":{
+          "shape":"RegistryAuthorizerType",
+          "documentation":"<p>The type of authorizer used by the registry. This controls the authorization method for the Search and Invoke APIs used by consumers.</p> <ul> <li> <p> <code>CUSTOM_JWT</code> - Authorize with a bearer token.</p> </li> <li> <p> <code>AWS_IAM</code> - Authorize with your Amazon Web Services IAM credentials.</p> </li> </ul>"
+        },
+        "authorizerConfiguration":{
+          "shape":"AuthorizerConfiguration",
+          "documentation":"<p>The authorizer configuration for the registry. For details, see the <code>AuthorizerConfiguration</code> data type.</p>"
+        },
+        "approvalConfiguration":{
+          "shape":"ApprovalConfiguration",
+          "documentation":"<p>The approval configuration for registry records. For details, see the <code>ApprovalConfiguration</code> data type.</p>"
+        },
+        "status":{
+          "shape":"RegistryStatus",
+          "documentation":"<p>The current status of the registry. Possible values include <code>CREATING</code>, <code>READY</code>, <code>UPDATING</code>, <code>CREATE_FAILED</code>, <code>UPDATE_FAILED</code>, <code>DELETING</code>, and <code>DELETE_FAILED</code>.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current status, typically set when the status is a failure state.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the registry was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the registry was last updated.</p>"
+        }
+      }
+    },
     "GetResourcePolicyRequest":{
       "type":"structure",
       "required":["resourceArn"],
@@ -7112,6 +7778,24 @@
       "min":1,
       "pattern":"[a-zA-Z0-9._-]+"
     },
+    "IamRoleArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws(-[^:]+)?:iam::[0-9]{12}:role/.+"
+    },
+    "IamSigningRegion":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-z0-9-]+"
+    },
+    "IamSigningServiceName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
     "InboundTokenClaimNameType":{
       "type":"string",
       "max":255,
@@ -7211,6 +7895,11 @@
       "box":true,
       "max":1,
       "min":0
+    },
+    "InlineContent":{
+      "type":"string",
+      "max":102400,
+      "min":1
     },
     "InlinePayload":{
       "type":"string",
@@ -8054,6 +8743,99 @@
         }
       }
     },
+    "ListRegistriesRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in the response. If the total number of results is greater than this value, use the token returned in the response in the <code>nextToken</code> field when making another request to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, enter the token returned in the <code>nextToken</code> field in the response in this field to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "status":{
+          "shape":"RegistryStatus",
+          "documentation":"<p>Filter registries by their current status. Possible values include <code>CREATING</code>, <code>READY</code>, <code>UPDATING</code>, <code>CREATE_FAILED</code>, <code>UPDATE_FAILED</code>, <code>DELETING</code>, and <code>DELETE_FAILED</code>.</p>",
+          "location":"querystring",
+          "locationName":"status"
+        }
+      }
+    },
+    "ListRegistriesResponse":{
+      "type":"structure",
+      "required":["registries"],
+      "members":{
+        "registries":{
+          "shape":"RegistrySummaryList",
+          "documentation":"<p>The list of registry summaries. For details about the fields in each summary, see the <code>RegistrySummary</code> data type.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, use this token when making another request in the <code>nextToken</code> field to return the next batch of results.</p>"
+        }
+      }
+    },
+    "ListRegistryRecordsRequest":{
+      "type":"structure",
+      "required":["registryId"],
+      "members":{
+        "registryId":{
+          "shape":"RegistryIdentifier",
+          "documentation":"<p>The identifier of the registry to list records from. You can specify either the Amazon Resource Name (ARN) or the ID of the registry.</p>",
+          "location":"uri",
+          "locationName":"registryId"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in the response. If the total number of results is greater than this value, use the token returned in the response in the <code>nextToken</code> field when making another request to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, enter the token returned in the <code>nextToken</code> field in the response in this field to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "name":{
+          "shape":"RegistryRecordName",
+          "documentation":"<p>Filter registry records by name.</p>",
+          "location":"querystring",
+          "locationName":"name"
+        },
+        "status":{
+          "shape":"RegistryRecordStatus",
+          "documentation":"<p>Filter registry records by their current status. Possible values include <code>CREATING</code>, <code>DRAFT</code>, <code>APPROVED</code>, <code>PENDING_APPROVAL</code>, <code>REJECTED</code>, <code>DEPRECATED</code>, <code>UPDATING</code>, <code>CREATE_FAILED</code>, and <code>UPDATE_FAILED</code>.</p>",
+          "location":"querystring",
+          "locationName":"status"
+        },
+        "descriptorType":{
+          "shape":"DescriptorType",
+          "documentation":"<p>Filter registry records by their descriptor type. Possible values are <code>MCP</code>, <code>A2A</code>, <code>CUSTOM</code>, and <code>AGENT_SKILLS</code>.</p>",
+          "location":"querystring",
+          "locationName":"descriptorType"
+        }
+      }
+    },
+    "ListRegistryRecordsResponse":{
+      "type":"structure",
+      "required":["registryRecords"],
+      "members":{
+        "registryRecords":{
+          "shape":"RegistryRecordSummaryList",
+          "documentation":"<p>The list of registry record summaries. For details about the fields in each summary, see the <code>RegistryRecordSummary</code> data type.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, use this token when making another request in the <code>nextToken</code> field to return the next batch of results.</p>"
+        }
+      }
+    },
     "ListTagsForResourceRequest":{
       "type":"structure",
       "required":["resourceArn"],
@@ -8225,6 +9007,20 @@
       "max":100,
       "min":1
     },
+    "McpDescriptor":{
+      "type":"structure",
+      "members":{
+        "server":{
+          "shape":"ServerDefinition",
+          "documentation":"<p>The MCP server definition, containing the server configuration and schema as defined by the MCP protocol specification.</p>"
+        },
+        "tools":{
+          "shape":"ToolsDefinition",
+          "documentation":"<p>The MCP tools definition, containing the tools available on the MCP server as defined by the MCP protocol specification.</p>"
+        }
+      },
+      "documentation":"<p>The Model Context Protocol (MCP) descriptor for a registry record. Contains the server definition and tools definition for an MCP-compatible server. The schema is validated against the MCP protocol specification.</p>"
+    },
     "McpInstructions":{
       "type":"string",
       "max":2048,
@@ -8265,6 +9061,12 @@
     },
     "McpServerTargetConfigurationEndpointString":{
       "type":"string",
+      "pattern":"https://.*"
+    },
+    "McpServerUrl":{
+      "type":"string",
+      "max":2048,
+      "min":1,
       "pattern":"https://.*"
     },
     "McpSupportedVersions":{
@@ -9670,7 +10472,14 @@
         }
       },
       "documentation":"<p> The rating scale that defines how evaluators should score agent performance, supporting both numerical and categorical scales. </p>",
+      "sensitive":true,
       "union":true
+    },
+    "RecordIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"(arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:registry/[a-zA-Z0-9]{12,16}/record/)?[a-zA-Z0-9]{12}"
     },
     "RecordingConfig":{
       "type":"structure",
@@ -9700,6 +10509,291 @@
       },
       "documentation":"<p>Contains reflection configuration information for a memory strategy.</p>",
       "union":true
+    },
+    "RegistryArn":{
+      "type":"string",
+      "pattern":"arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:registry/[a-zA-Z0-9]{12,16}"
+    },
+    "RegistryAuthorizerType":{
+      "type":"string",
+      "enum":[
+        "CUSTOM_JWT",
+        "AWS_IAM"
+      ]
+    },
+    "RegistryId":{
+      "type":"string",
+      "max":16,
+      "min":12,
+      "pattern":"[a-zA-Z0-9]{12,16}"
+    },
+    "RegistryIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"(arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:registry/)?[a-zA-Z0-9]{12,16}"
+    },
+    "RegistryName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9][a-zA-Z0-9_\\-\\.\\/]*"
+    },
+    "RegistryRecordArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:registry/[a-zA-Z0-9]{12,16}/record/[a-zA-Z0-9]{12}"
+    },
+    "RegistryRecordCredentialProviderConfiguration":{
+      "type":"structure",
+      "required":[
+        "credentialProviderType",
+        "credentialProvider"
+      ],
+      "members":{
+        "credentialProviderType":{
+          "shape":"RegistryRecordCredentialProviderType",
+          "documentation":"<p>The type of credential provider.</p> <ul> <li> <p> <code>OAUTH</code> - OAuth-based authentication.</p> </li> <li> <p> <code>IAM</code> - Amazon Web Services IAM-based authentication using SigV4 signing.</p> </li> </ul>"
+        },
+        "credentialProvider":{
+          "shape":"RegistryRecordCredentialProviderUnion",
+          "documentation":"<p>The credential provider configuration details. The structure depends on the <code>credentialProviderType</code>.</p>"
+        }
+      },
+      "documentation":"<p>A pairing of a credential provider type with its corresponding provider details for authenticating with external sources.</p>"
+    },
+    "RegistryRecordCredentialProviderConfigurationList":{
+      "type":"list",
+      "member":{"shape":"RegistryRecordCredentialProviderConfiguration"},
+      "max":1,
+      "min":0
+    },
+    "RegistryRecordCredentialProviderType":{
+      "type":"string",
+      "enum":[
+        "OAUTH",
+        "IAM"
+      ]
+    },
+    "RegistryRecordCredentialProviderUnion":{
+      "type":"structure",
+      "members":{
+        "oauthCredentialProvider":{
+          "shape":"RegistryRecordOAuthCredentialProvider",
+          "documentation":"<p>The OAuth credential provider configuration for authenticating with the external source.</p>"
+        },
+        "iamCredentialProvider":{
+          "shape":"RegistryRecordIamCredentialProvider",
+          "documentation":"<p>The IAM credential provider configuration for authenticating with the external source using SigV4 signing.</p>"
+        }
+      },
+      "documentation":"<p>Union of supported credential provider types for registry record synchronization.</p>",
+      "union":true
+    },
+    "RegistryRecordIamCredentialProvider":{
+      "type":"structure",
+      "members":{
+        "roleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role to assume for SigV4 signing.</p>"
+        },
+        "service":{
+          "shape":"IamSigningServiceName",
+          "documentation":"<p>The SigV4 signing service name (for example, <code>execute-api</code> or <code>bedrock-agentcore</code>).</p>"
+        },
+        "region":{
+          "shape":"IamSigningRegion",
+          "documentation":"<p>The Amazon Web Services region for SigV4 signing (for example, <code>us-west-2</code>). If not specified, the region is extracted from the MCP server URL hostname, with fallback to the service's own region.</p>"
+        }
+      },
+      "documentation":"<p>IAM credential provider configuration for authenticating with an external source using SigV4 signing during synchronization.</p>"
+    },
+    "RegistryRecordId":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"[a-zA-Z0-9]{12}"
+    },
+    "RegistryRecordName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[a-zA-Z0-9][a-zA-Z0-9_\\-\\.\\/]*"
+    },
+    "RegistryRecordOAuthCredentialProvider":{
+      "type":"structure",
+      "required":["providerArn"],
+      "members":{
+        "providerArn":{
+          "shape":"CredentialProviderArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the OAuth credential provider resource.</p>"
+        },
+        "grantType":{
+          "shape":"RegistryRecordOAuthGrantType",
+          "documentation":"<p>The OAuth grant type. Currently only <code>CLIENT_CREDENTIALS</code> is supported.</p>"
+        },
+        "scopes":{
+          "shape":"ScopeList",
+          "documentation":"<p>The OAuth scopes to request during authentication.</p>"
+        },
+        "customParameters":{
+          "shape":"CustomParameterMap",
+          "documentation":"<p>Additional custom parameters for the OAuth flow.</p>"
+        }
+      },
+      "documentation":"<p>OAuth credential provider configuration for authenticating with an external source during synchronization.</p>"
+    },
+    "RegistryRecordOAuthGrantType":{
+      "type":"string",
+      "enum":["CLIENT_CREDENTIALS"]
+    },
+    "RegistryRecordStatus":{
+      "type":"string",
+      "enum":[
+        "DRAFT",
+        "PENDING_APPROVAL",
+        "APPROVED",
+        "REJECTED",
+        "DEPRECATED",
+        "CREATING",
+        "UPDATING",
+        "CREATE_FAILED",
+        "UPDATE_FAILED"
+      ]
+    },
+    "RegistryRecordSummary":{
+      "type":"structure",
+      "required":[
+        "registryArn",
+        "recordArn",
+        "recordId",
+        "name",
+        "descriptorType",
+        "recordVersion",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "registryArn":{
+          "shape":"RegistryArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the registry that contains the record.</p>"
+        },
+        "recordArn":{
+          "shape":"RegistryRecordArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the registry record.</p>"
+        },
+        "recordId":{
+          "shape":"RegistryRecordId",
+          "documentation":"<p>The unique identifier of the registry record.</p>"
+        },
+        "name":{
+          "shape":"RegistryRecordName",
+          "documentation":"<p>The name of the registry record.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the registry record.</p>"
+        },
+        "descriptorType":{
+          "shape":"DescriptorType",
+          "documentation":"<p>The descriptor type of the registry record. Possible values are <code>MCP</code>, <code>A2A</code>, <code>CUSTOM</code>, and <code>AGENT_SKILLS</code>.</p>"
+        },
+        "recordVersion":{
+          "shape":"RegistryRecordVersion",
+          "documentation":"<p>The version of the registry record.</p>"
+        },
+        "status":{
+          "shape":"RegistryRecordStatus",
+          "documentation":"<p>The current status of the registry record. Possible values include <code>CREATING</code>, <code>DRAFT</code>, <code>APPROVED</code>, <code>PENDING_APPROVAL</code>, <code>REJECTED</code>, <code>DEPRECATED</code>, <code>UPDATING</code>, <code>CREATE_FAILED</code>, and <code>UPDATE_FAILED</code>.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the registry record was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the registry record was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a registry record.</p>"
+    },
+    "RegistryRecordSummaryList":{
+      "type":"list",
+      "member":{"shape":"RegistryRecordSummary"}
+    },
+    "RegistryRecordVersion":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[a-zA-Z0-9.-]+"
+    },
+    "RegistryStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "READY",
+        "UPDATING",
+        "CREATE_FAILED",
+        "UPDATE_FAILED",
+        "DELETING",
+        "DELETE_FAILED"
+      ]
+    },
+    "RegistrySummary":{
+      "type":"structure",
+      "required":[
+        "name",
+        "registryId",
+        "registryArn",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "name":{
+          "shape":"RegistryName",
+          "documentation":"<p>The name of the registry.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the registry.</p>"
+        },
+        "registryId":{
+          "shape":"RegistryId",
+          "documentation":"<p>The unique identifier of the registry.</p>"
+        },
+        "registryArn":{
+          "shape":"RegistryArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the registry.</p>"
+        },
+        "authorizerType":{
+          "shape":"RegistryAuthorizerType",
+          "documentation":"<p>The type of authorizer used by the registry. This controls the authorization method for the Search and Invoke APIs used by consumers.</p> <ul> <li> <p> <code>CUSTOM_JWT</code> - Authorize with a bearer token.</p> </li> <li> <p> <code>AWS_IAM</code> - Authorize with your Amazon Web Services IAM credentials.</p> </li> </ul>"
+        },
+        "status":{
+          "shape":"RegistryStatus",
+          "documentation":"<p>The current status of the registry. Possible values include <code>CREATING</code>, <code>READY</code>, <code>UPDATING</code>, <code>CREATE_FAILED</code>, <code>UPDATE_FAILED</code>, <code>DELETING</code>, and <code>DELETE_FAILED</code>.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current status, typically set when the status is a failure state.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the registry was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the registry was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a registry.</p>"
+    },
+    "RegistrySummaryList":{
+      "type":"list",
+      "member":{"shape":"RegistrySummary"}
     },
     "RequestHeaderAllowlist":{
       "type":"list",
@@ -10026,6 +11120,15 @@
         "integer"
       ]
     },
+    "SchemaVersion":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "ScopeList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "SearchType":{
       "type":"string",
       "enum":["SEMANTIC"]
@@ -10247,6 +11350,20 @@
       },
       "documentation":"<p>Input for semantic override extraction configuration in a memory strategy.</p>"
     },
+    "ServerDefinition":{
+      "type":"structure",
+      "members":{
+        "schemaVersion":{
+          "shape":"SchemaVersion",
+          "documentation":"<p>The schema version of the server definition based on the MCP protocol specification. If not specified, the version is auto-detected from the content.</p>"
+        },
+        "inlineContent":{
+          "shape":"InlineContent",
+          "documentation":"<p>The JSON content containing the MCP server definition, conforming to the MCP protocol specification.</p>"
+        }
+      },
+      "documentation":"<p>The server definition for an MCP descriptor. Contains the schema version and inline content for the MCP server configuration.</p>"
+    },
     "ServerProtocol":{
       "type":"string",
       "enum":[
@@ -10348,6 +11465,30 @@
           "documentation":"<p>The timestamp when the token vault was last modified.</p>"
         }
       }
+    },
+    "SkillDefinition":{
+      "type":"structure",
+      "members":{
+        "schemaVersion":{
+          "shape":"SchemaVersion",
+          "documentation":"<p>The version of the skill definition schema.</p>"
+        },
+        "inlineContent":{
+          "shape":"InlineContent",
+          "documentation":"<p>The JSON content containing the structured skill definition.</p>"
+        }
+      },
+      "documentation":"<p>The structured skill definition with schema version and content.</p>"
+    },
+    "SkillMdDefinition":{
+      "type":"structure",
+      "members":{
+        "inlineContent":{
+          "shape":"InlineContent",
+          "documentation":"<p>The markdown content describing the agent's skills in a human-readable format.</p>"
+        }
+      },
+      "documentation":"<p>The skill markdown definition for an agent skills descriptor.</p>"
     },
     "SlackOauth2ProviderConfigInput":{
       "type":"structure",
@@ -10543,6 +11684,59 @@
       "min":0
     },
     "String":{"type":"string"},
+    "SubmitRegistryRecordForApprovalRequest":{
+      "type":"structure",
+      "required":[
+        "registryId",
+        "recordId"
+      ],
+      "members":{
+        "registryId":{
+          "shape":"RegistryIdentifier",
+          "documentation":"<p>The identifier of the registry containing the record. You can specify either the Amazon Resource Name (ARN) or the ID of the registry.</p>",
+          "location":"uri",
+          "locationName":"registryId"
+        },
+        "recordId":{
+          "shape":"RecordIdentifier",
+          "documentation":"<p>The identifier of the registry record to submit for approval. You can specify either the Amazon Resource Name (ARN) or the ID of the record.</p>",
+          "location":"uri",
+          "locationName":"recordId"
+        }
+      }
+    },
+    "SubmitRegistryRecordForApprovalResponse":{
+      "type":"structure",
+      "required":[
+        "registryArn",
+        "recordArn",
+        "recordId",
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "registryArn":{
+          "shape":"RegistryArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the registry that contains the record.</p>"
+        },
+        "recordArn":{
+          "shape":"RegistryRecordArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the registry record.</p>"
+        },
+        "recordId":{
+          "shape":"RegistryRecordId",
+          "documentation":"<p>The unique identifier of the registry record.</p>"
+        },
+        "status":{
+          "shape":"RegistryRecordStatus",
+          "documentation":"<p>The resulting status of the registry record after submission.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the record was last updated.</p>"
+        }
+      }
+    },
     "SubnetId":{
       "type":"string",
       "pattern":"subnet-[0-9a-zA-Z]{8,17}"
@@ -10628,6 +11822,20 @@
         }
       },
       "documentation":"<p>Input for summary override consolidation configuration in a memory strategy.</p>"
+    },
+    "SynchronizationConfiguration":{
+      "type":"structure",
+      "members":{
+        "fromUrl":{
+          "shape":"FromUrlSynchronizationConfiguration",
+          "documentation":"<p>Configuration for synchronizing from a URL-based source.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for synchronizing registry record metadata from an external source.</p>"
+    },
+    "SynchronizationType":{
+      "type":"string",
+      "enum":["URL"]
     },
     "SynchronizeGatewayTargetsRequest":{
       "type":"structure",
@@ -10961,6 +12169,20 @@
     "ToolSecretArn":{
       "type":"string",
       "pattern":"arn:aws(-[a-z-]+)?:secretsmanager:[a-z0-9-]+:[0-9]{12}:secret:[a-zA-Z0-9/_+=.@-]+"
+    },
+    "ToolsDefinition":{
+      "type":"structure",
+      "members":{
+        "protocolVersion":{
+          "shape":"SchemaVersion",
+          "documentation":"<p>The protocol version of the tools definition based on the MCP protocol specification. If not specified, the version is auto-detected from the content.</p>"
+        },
+        "inlineContent":{
+          "shape":"InlineContent",
+          "documentation":"<p>The JSON content containing the MCP tools definition, conforming to the MCP protocol specification.</p>"
+        }
+      },
+      "documentation":"<p>The tools definition for an MCP descriptor. Contains the protocol version and inline content describing the available tools.</p>"
     },
     "TriggerCondition":{
       "type":"structure",
@@ -11950,6 +13172,289 @@
         }
       }
     },
+    "UpdateRegistryRecordRequest":{
+      "type":"structure",
+      "required":[
+        "registryId",
+        "recordId"
+      ],
+      "members":{
+        "registryId":{
+          "shape":"RegistryIdentifier",
+          "documentation":"<p>The identifier of the registry containing the record. You can specify either the Amazon Resource Name (ARN) or the ID of the registry.</p>",
+          "location":"uri",
+          "locationName":"registryId"
+        },
+        "recordId":{
+          "shape":"RecordIdentifier",
+          "documentation":"<p>The identifier of the registry record to update. You can specify either the Amazon Resource Name (ARN) or the ID of the record.</p>",
+          "location":"uri",
+          "locationName":"recordId"
+        },
+        "name":{
+          "shape":"RegistryRecordName",
+          "documentation":"<p>The updated name for the registry record.</p>"
+        },
+        "description":{
+          "shape":"UpdatedDescription",
+          "documentation":"<p>The updated description for the registry record. To clear the description, include the <code>UpdatedDescription</code> wrapper with <code>optionalValue</code> not specified.</p>"
+        },
+        "descriptorType":{
+          "shape":"DescriptorType",
+          "documentation":"<p>The updated descriptor type for the registry record. Changing the descriptor type may require updating the <code>descriptors</code> field to match the new type's schema requirements.</p>"
+        },
+        "descriptors":{
+          "shape":"UpdatedDescriptors",
+          "documentation":"<p>The updated descriptor-type-specific configuration containing the resource schema and metadata. Uses PATCH semantics where individual descriptor fields can be updated independently.</p>"
+        },
+        "recordVersion":{
+          "shape":"RegistryRecordVersion",
+          "documentation":"<p>The version of the registry record for optimistic locking. If provided, it must match the current version of the record. The service automatically increments the version after a successful update.</p>"
+        },
+        "synchronizationType":{
+          "shape":"UpdatedSynchronizationType",
+          "documentation":"<p>The updated synchronization type for the registry record.</p>"
+        },
+        "synchronizationConfiguration":{
+          "shape":"UpdatedSynchronizationConfiguration",
+          "documentation":"<p>The updated synchronization configuration for the registry record.</p>"
+        },
+        "triggerSynchronization":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to trigger synchronization using the stored or provided configuration. When set to <code>true</code>, the service will synchronize the record metadata from the configured external source.</p>"
+        }
+      }
+    },
+    "UpdateRegistryRecordResponse":{
+      "type":"structure",
+      "required":[
+        "registryArn",
+        "recordArn",
+        "recordId",
+        "name",
+        "descriptorType",
+        "descriptors",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "registryArn":{
+          "shape":"RegistryArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the registry that contains the updated record.</p>"
+        },
+        "recordArn":{
+          "shape":"RegistryRecordArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the updated registry record.</p>"
+        },
+        "recordId":{
+          "shape":"RegistryRecordId",
+          "documentation":"<p>The unique identifier of the updated registry record.</p>"
+        },
+        "name":{
+          "shape":"RegistryRecordName",
+          "documentation":"<p>The name of the updated registry record.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the updated registry record.</p>"
+        },
+        "descriptorType":{
+          "shape":"DescriptorType",
+          "documentation":"<p>The descriptor type of the updated registry record. Possible values are <code>MCP</code>, <code>A2A</code>, <code>CUSTOM</code>, and <code>AGENT_SKILLS</code>.</p>"
+        },
+        "descriptors":{
+          "shape":"Descriptors",
+          "documentation":"<p>The descriptor-type-specific configuration of the updated registry record. For details, see the <code>Descriptors</code> data type.</p>"
+        },
+        "recordVersion":{
+          "shape":"RegistryRecordVersion",
+          "documentation":"<p>The version of the updated registry record.</p>"
+        },
+        "status":{
+          "shape":"RegistryRecordStatus",
+          "documentation":"<p>The current status of the updated registry record. Possible values include <code>CREATING</code>, <code>DRAFT</code>, <code>APPROVED</code>, <code>PENDING_APPROVAL</code>, <code>REJECTED</code>, <code>DEPRECATED</code>, <code>UPDATING</code>, <code>CREATE_FAILED</code>, and <code>UPDATE_FAILED</code>.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the registry record was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the registry record was last updated.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current status of the updated registry record.</p>"
+        },
+        "synchronizationType":{
+          "shape":"SynchronizationType",
+          "documentation":"<p>The synchronization type of the updated registry record.</p>"
+        },
+        "synchronizationConfiguration":{
+          "shape":"SynchronizationConfiguration",
+          "documentation":"<p>The synchronization configuration of the updated registry record.</p>"
+        }
+      }
+    },
+    "UpdateRegistryRecordStatusRequest":{
+      "type":"structure",
+      "required":[
+        "registryId",
+        "recordId",
+        "status",
+        "statusReason"
+      ],
+      "members":{
+        "registryId":{
+          "shape":"RegistryIdentifier",
+          "documentation":"<p>The identifier of the registry containing the record. You can specify either the Amazon Resource Name (ARN) or the ID of the registry.</p>",
+          "location":"uri",
+          "locationName":"registryId"
+        },
+        "recordId":{
+          "shape":"RecordIdentifier",
+          "documentation":"<p>The identifier of the registry record to update the status for. You can specify either the Amazon Resource Name (ARN) or the ID of the record.</p>",
+          "location":"uri",
+          "locationName":"recordId"
+        },
+        "status":{
+          "shape":"RegistryRecordStatus",
+          "documentation":"<p>The target status for the registry record.</p>"
+        },
+        "statusReason":{
+          "shape":"UpdateRegistryRecordStatusRequestStatusReasonString",
+          "documentation":"<p>The reason for the status change, such as why the record was approved or rejected.</p>"
+        }
+      }
+    },
+    "UpdateRegistryRecordStatusRequestStatusReasonString":{
+      "type":"string",
+      "max":255,
+      "min":0
+    },
+    "UpdateRegistryRecordStatusResponse":{
+      "type":"structure",
+      "required":[
+        "registryArn",
+        "recordArn",
+        "recordId",
+        "status",
+        "statusReason",
+        "updatedAt"
+      ],
+      "members":{
+        "registryArn":{
+          "shape":"RegistryArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the registry that contains the record.</p>"
+        },
+        "recordArn":{
+          "shape":"RegistryRecordArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the registry record.</p>"
+        },
+        "recordId":{
+          "shape":"RegistryRecordId",
+          "documentation":"<p>The unique identifier of the registry record.</p>"
+        },
+        "status":{
+          "shape":"RegistryRecordStatus",
+          "documentation":"<p>The resulting status of the registry record.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the status change.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the record was last updated.</p>"
+        }
+      }
+    },
+    "UpdateRegistryRequest":{
+      "type":"structure",
+      "required":["registryId"],
+      "members":{
+        "registryId":{
+          "shape":"RegistryIdentifier",
+          "documentation":"<p>The identifier of the registry to update. You can specify either the Amazon Resource Name (ARN) or the ID of the registry.</p>",
+          "location":"uri",
+          "locationName":"registryId"
+        },
+        "name":{
+          "shape":"RegistryName",
+          "documentation":"<p>The updated name of the registry.</p>"
+        },
+        "description":{
+          "shape":"UpdatedDescription",
+          "documentation":"<p>The updated description of the registry. To clear the description, include the <code>UpdatedDescription</code> wrapper with <code>optionalValue</code> not specified.</p>"
+        },
+        "authorizerConfiguration":{
+          "shape":"UpdatedAuthorizerConfiguration",
+          "documentation":"<p>The updated authorizer configuration for the registry. Changing the authorizer configuration can break existing consumers of the registry who are using the authorization type prior to the update.</p>"
+        },
+        "approvalConfiguration":{
+          "shape":"UpdatedApprovalConfiguration",
+          "documentation":"<p>The updated approval configuration for registry records. The updated configuration only affects new records that move to <code>PENDING_APPROVAL</code> status after the change. Existing records already in <code>PENDING_APPROVAL</code> status are not affected.</p>"
+        }
+      }
+    },
+    "UpdateRegistryResponse":{
+      "type":"structure",
+      "required":[
+        "name",
+        "registryId",
+        "registryArn",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "name":{
+          "shape":"RegistryName",
+          "documentation":"<p>The name of the updated registry.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the updated registry.</p>"
+        },
+        "registryId":{
+          "shape":"RegistryId",
+          "documentation":"<p>The unique identifier of the updated registry.</p>"
+        },
+        "registryArn":{
+          "shape":"RegistryArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the updated registry.</p>"
+        },
+        "authorizerType":{
+          "shape":"RegistryAuthorizerType",
+          "documentation":"<p>The type of authorizer used by the updated registry. This controls the authorization method for the Search and Invoke APIs used by consumers.</p> <ul> <li> <p> <code>CUSTOM_JWT</code> - Authorize with a bearer token.</p> </li> <li> <p> <code>AWS_IAM</code> - Authorize with your Amazon Web Services IAM credentials.</p> </li> </ul>"
+        },
+        "authorizerConfiguration":{
+          "shape":"AuthorizerConfiguration",
+          "documentation":"<p>The authorizer configuration for the updated registry. For details, see the <code>AuthorizerConfiguration</code> data type.</p>"
+        },
+        "approvalConfiguration":{
+          "shape":"ApprovalConfiguration",
+          "documentation":"<p>The approval configuration for the updated registry. For details, see the <code>ApprovalConfiguration</code> data type.</p>"
+        },
+        "status":{
+          "shape":"RegistryStatus",
+          "documentation":"<p>The current status of the updated registry. Possible values include <code>CREATING</code>, <code>READY</code>, <code>UPDATING</code>, <code>CREATE_FAILED</code>, <code>UPDATE_FAILED</code>, <code>DELETING</code>, and <code>DELETE_FAILED</code>.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current status of the updated registry.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the registry was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the registry was last updated.</p>"
+        }
+      }
+    },
     "UpdateWorkloadIdentityRequest":{
       "type":"structure",
       "required":["name"],
@@ -11995,6 +13500,70 @@
         }
       }
     },
+    "UpdatedA2aDescriptor":{
+      "type":"structure",
+      "members":{
+        "optionalValue":{
+          "shape":"A2aDescriptor",
+          "documentation":"<p>The updated A2A descriptor value.</p>"
+        }
+      },
+      "documentation":"<p>Wrapper for updating an A2A descriptor with PATCH semantics. When present, the A2A descriptor is replaced with the provided value. When absent, the A2A descriptor is left unchanged. To unset, include the wrapper with the value set to null.</p>"
+    },
+    "UpdatedAgentSkillsDescriptor":{
+      "type":"structure",
+      "members":{
+        "optionalValue":{
+          "shape":"UpdatedAgentSkillsDescriptorFields",
+          "documentation":"<p>The updated agent skills descriptor fields.</p>"
+        }
+      },
+      "documentation":"<p>Wrapper for updating an agent skills descriptor with PATCH semantics. When present with a value, individual fields can be updated independently. When present with a null value, the entire agent skills descriptor is unset. When absent, the agent skills descriptor is left unchanged.</p>"
+    },
+    "UpdatedAgentSkillsDescriptorFields":{
+      "type":"structure",
+      "members":{
+        "skillMd":{
+          "shape":"UpdatedSkillMdDefinition",
+          "documentation":"<p>The updated skill markdown definition.</p>"
+        },
+        "skillDefinition":{
+          "shape":"UpdatedSkillDefinition",
+          "documentation":"<p>The updated skill definition.</p>"
+        }
+      },
+      "documentation":"<p>Individual agent skills descriptor fields that can be updated independently.</p>"
+    },
+    "UpdatedApprovalConfiguration":{
+      "type":"structure",
+      "members":{
+        "optionalValue":{
+          "shape":"ApprovalConfiguration",
+          "documentation":"<p>The updated approval configuration value. Set to <code>null</code> to unset the approval configuration.</p>"
+        }
+      },
+      "documentation":"<p>Wrapper for updating an optional approval configuration field with PATCH semantics. When present in an update request, the approval configuration is replaced with the provided value. When absent, the approval configuration is left unchanged.</p>"
+    },
+    "UpdatedAuthorizerConfiguration":{
+      "type":"structure",
+      "members":{
+        "optionalValue":{
+          "shape":"AuthorizerConfiguration",
+          "documentation":"<p>The updated authorizer configuration value. If not specified, it will clear the current authorizer configuration of the resource.</p>"
+        }
+      },
+      "documentation":"<p>Wrapper for updating an optional AuthorizerConfiguration field with PATCH semantics. When present in an update request, the authorizer configuration is replaced with optionalValue. When absent, the authorizer configuration is left unchanged. To unset, include the wrapper with optionalValue not specified.</p>"
+    },
+    "UpdatedCustomDescriptor":{
+      "type":"structure",
+      "members":{
+        "optionalValue":{
+          "shape":"CustomDescriptor",
+          "documentation":"<p>The updated custom descriptor value.</p>"
+        }
+      },
+      "documentation":"<p>Wrapper for updating a custom descriptor with PATCH semantics. When present, the custom descriptor is replaced with the provided value. When absent, the custom descriptor is left unchanged. To unset, include the wrapper with the value set to null.</p>"
+    },
     "UpdatedDescription":{
       "type":"structure",
       "members":{
@@ -12004,6 +13573,122 @@
         }
       },
       "documentation":"<p>Wrapper for updating an optional Description field with PATCH semantics. When present in an update request, the description is replaced with optionalValue. When absent, the description is left unchanged. To unset the description, include the wrapper with optionalValue not specified.</p>"
+    },
+    "UpdatedDescriptors":{
+      "type":"structure",
+      "members":{
+        "optionalValue":{
+          "shape":"UpdatedDescriptorsUnion",
+          "documentation":"<p>The updated descriptors value. Contains per-descriptor-type wrappers that are each independently updatable.</p>"
+        }
+      },
+      "documentation":"<p>Wrapper for updating an optional descriptors field with PATCH semantics. When present with a value, individual descriptors can be updated. When present with a null value, all descriptors are unset. When absent, descriptors are left unchanged.</p>"
+    },
+    "UpdatedDescriptorsUnion":{
+      "type":"structure",
+      "members":{
+        "mcp":{
+          "shape":"UpdatedMcpDescriptor",
+          "documentation":"<p>The updated MCP descriptor.</p>"
+        },
+        "a2a":{
+          "shape":"UpdatedA2aDescriptor",
+          "documentation":"<p>The updated A2A descriptor.</p>"
+        },
+        "custom":{
+          "shape":"UpdatedCustomDescriptor",
+          "documentation":"<p>The updated custom descriptor.</p>"
+        },
+        "agentSkills":{
+          "shape":"UpdatedAgentSkillsDescriptor",
+          "documentation":"<p>The updated agent skills descriptor.</p>"
+        }
+      },
+      "documentation":"<p>Contains per-descriptor-type wrappers for updating descriptors. Each descriptor type can be updated independently.</p>"
+    },
+    "UpdatedMcpDescriptor":{
+      "type":"structure",
+      "members":{
+        "optionalValue":{
+          "shape":"UpdatedMcpDescriptorFields",
+          "documentation":"<p>The updated MCP descriptor fields.</p>"
+        }
+      },
+      "documentation":"<p>Wrapper for updating an MCP descriptor with PATCH semantics. When present with a value, individual MCP fields can be updated independently. When present with a null value, the entire MCP descriptor is unset. When absent, the MCP descriptor is left unchanged.</p>"
+    },
+    "UpdatedMcpDescriptorFields":{
+      "type":"structure",
+      "members":{
+        "server":{
+          "shape":"UpdatedServerDefinition",
+          "documentation":"<p>The updated server definition for the MCP descriptor.</p>"
+        },
+        "tools":{
+          "shape":"UpdatedToolsDefinition",
+          "documentation":"<p>The updated tools definition for the MCP descriptor.</p>"
+        }
+      },
+      "documentation":"<p>Individual MCP descriptor fields that can be updated independently.</p>"
+    },
+    "UpdatedServerDefinition":{
+      "type":"structure",
+      "members":{
+        "optionalValue":{
+          "shape":"ServerDefinition",
+          "documentation":"<p>The updated server definition value.</p>"
+        }
+      },
+      "documentation":"<p>Wrapper for updating a server definition with PATCH semantics. When present, the server definition is replaced with the provided value. When absent, the server definition is left unchanged. To unset, include the wrapper with the value set to null.</p>"
+    },
+    "UpdatedSkillDefinition":{
+      "type":"structure",
+      "members":{
+        "optionalValue":{
+          "shape":"SkillDefinition",
+          "documentation":"<p>The updated skill definition value.</p>"
+        }
+      },
+      "documentation":"<p>Wrapper for updating a skill definition with PATCH semantics.</p>"
+    },
+    "UpdatedSkillMdDefinition":{
+      "type":"structure",
+      "members":{
+        "optionalValue":{
+          "shape":"SkillMdDefinition",
+          "documentation":"<p>The updated skill markdown definition value.</p>"
+        }
+      },
+      "documentation":"<p>Wrapper for updating a skill markdown definition with PATCH semantics.</p>"
+    },
+    "UpdatedSynchronizationConfiguration":{
+      "type":"structure",
+      "members":{
+        "optionalValue":{
+          "shape":"SynchronizationConfiguration",
+          "documentation":"<p>The updated synchronization configuration value.</p>"
+        }
+      },
+      "documentation":"<p>Wrapper for updating the synchronization configuration with PATCH semantics. Must be matched with <code>UpdatedSynchronizationType</code>.</p>"
+    },
+    "UpdatedSynchronizationType":{
+      "type":"structure",
+      "members":{
+        "optionalValue":{
+          "shape":"SynchronizationType",
+          "documentation":"<p>The updated synchronization type value.</p>"
+        }
+      },
+      "documentation":"<p>Wrapper for updating the synchronization type with PATCH semantics. Must be matched with <code>UpdatedSynchronizationConfiguration</code>.</p>"
+    },
+    "UpdatedToolsDefinition":{
+      "type":"structure",
+      "members":{
+        "optionalValue":{
+          "shape":"ToolsDefinition",
+          "documentation":"<p>The updated tools definition value.</p>"
+        }
+      },
+      "documentation":"<p>Wrapper for updating a tools definition with PATCH semantics. When present, the tools definition is replaced with the provided value. When absent, the tools definition is left unchanged. To unset, include the wrapper with the value set to null.</p>"
     },
     "UserPreferenceConsolidationOverride":{
       "type":"structure",

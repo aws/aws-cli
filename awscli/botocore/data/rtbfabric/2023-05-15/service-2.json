@@ -685,6 +685,10 @@
         "roleArn":{
           "shape":"AutoScalingGroupsConfigurationRoleArnString",
           "documentation":"<p>The role ARN of the auto scaling group.</p>"
+        },
+        "healthCheckConfig":{
+          "shape":"HealthCheckConfig",
+          "documentation":"<p>The health check configuration for the Auto Scaling group managed endpoint.</p>"
         }
       },
       "documentation":"<p>Describes the configuration of an auto scaling group.</p>"
@@ -1931,6 +1935,84 @@
       },
       "documentation":"<p>Describes the header tag for a bid action.</p>"
     },
+    "HealthCheckConfig":{
+      "type":"structure",
+      "required":[
+        "port",
+        "path"
+      ],
+      "members":{
+        "port":{
+          "shape":"HealthCheckConfigPortInteger",
+          "documentation":"<p>The port to use for health check probes. Valid range is 80 to 65535.</p>"
+        },
+        "path":{
+          "shape":"HealthCheckConfigPathString",
+          "documentation":"<p>The destination path for the health check request. Must start with <code>/</code>.</p>"
+        },
+        "protocol":{
+          "shape":"Protocol",
+          "documentation":"<p>The protocol to use for health check probes.</p>"
+        },
+        "timeoutMs":{
+          "shape":"HealthCheckConfigTimeoutMsInteger",
+          "documentation":"<p>The timeout for each health check probe, in milliseconds. Valid range is 100 to 5000.</p>"
+        },
+        "intervalSeconds":{
+          "shape":"HealthCheckConfigIntervalSecondsInteger",
+          "documentation":"<p>The interval between health check probes, in seconds. Valid range is 5 to 60.</p>"
+        },
+        "statusCodeMatcher":{
+          "shape":"StatusCodeMatcher",
+          "documentation":"<p>The expected HTTP status code or status code pattern from healthy instances. Supports a single code (for example, <code>200</code>), a range (for example, <code>200-299</code>), or a comma-separated list (for example, <code>200,204</code>).</p>"
+        },
+        "healthyThresholdCount":{
+          "shape":"HealthCheckConfigHealthyThresholdCountInteger",
+          "documentation":"<p>The number of consecutive successful health checks required before an instance is considered healthy. Valid range is 2 to 10.</p>"
+        },
+        "unhealthyThresholdCount":{
+          "shape":"HealthCheckConfigUnhealthyThresholdCountInteger",
+          "documentation":"<p>The number of consecutive failed health checks required before an instance is considered unhealthy. Valid range is 2 to 10.</p>"
+        }
+      },
+      "documentation":"<p>The health check configuration for a managed endpoint. Defines how the service probes instances in the Auto Scaling group to determine their health status.</p>"
+    },
+    "HealthCheckConfigHealthyThresholdCountInteger":{
+      "type":"integer",
+      "box":true,
+      "max":10,
+      "min":2
+    },
+    "HealthCheckConfigIntervalSecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":60,
+      "min":5
+    },
+    "HealthCheckConfigPathString":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"/.*"
+    },
+    "HealthCheckConfigPortInteger":{
+      "type":"integer",
+      "box":true,
+      "max":65535,
+      "min":80
+    },
+    "HealthCheckConfigTimeoutMsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":5000,
+      "min":100
+    },
+    "HealthCheckConfigUnhealthyThresholdCountInteger":{
+      "type":"integer",
+      "box":true,
+      "max":10,
+      "min":2
+    },
     "Integer":{
       "type":"integer",
       "box":true
@@ -2659,6 +2741,11 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "StatusCodeMatcher":{
+      "type":"string",
+      "max":64,
+      "min":1
     },
     "String":{"type":"string"},
     "SubnetId":{

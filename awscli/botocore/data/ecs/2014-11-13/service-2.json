@@ -25,6 +25,7 @@
       "input":{"shape":"CreateCapacityProviderRequest"},
       "output":{"shape":"CreateCapacityProviderResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"LimitExceededException"},
         {"shape":"ServerException"},
         {"shape":"UpdateInProgressException"},
@@ -45,6 +46,7 @@
       "input":{"shape":"CreateClusterRequest"},
       "output":{"shape":"CreateClusterResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"NamespaceNotFoundException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
@@ -122,6 +124,7 @@
       "output":{"shape":"CreateTaskSetResponse"},
       "errors":[
         {"shape":"AccessDeniedException"},
+        {"shape":"LimitExceededException"},
         {"shape":"PlatformUnknownException"},
         {"shape":"NamespaceNotFoundException"},
         {"shape":"ServiceNotActiveException"},
@@ -144,6 +147,7 @@
       "input":{"shape":"DeleteAccountSettingRequest"},
       "output":{"shape":"DeleteAccountSettingResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ClientException"}
@@ -159,8 +163,11 @@
       "input":{"shape":"DeleteAttributesRequest"},
       "output":{"shape":"DeleteAttributesResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"TargetNotFoundException"},
+        {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
         {"shape":"ClusterNotFoundException"}
       ],
       "documentation":"<p>Deletes one or more custom attributes from an Amazon ECS resource.</p>"
@@ -174,7 +181,9 @@
       "input":{"shape":"DeleteCapacityProviderRequest"},
       "output":{"shape":"DeleteCapacityProviderResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"ServerException"},
+        {"shape":"UpdateInProgressException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ClientException"},
         {"shape":"ClusterNotFoundException"},
@@ -193,6 +202,7 @@
       "output":{"shape":"DeleteClusterResponse"},
       "errors":[
         {"shape":"ClusterContainsContainerInstancesException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"ClusterContainsServicesException"},
         {"shape":"ClusterContainsCapacityProviderException"},
         {"shape":"ClusterContainsTasksException"},
@@ -271,6 +281,7 @@
       "input":{"shape":"DeleteServiceRequest"},
       "output":{"shape":"DeleteServiceResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ClientException"},
@@ -306,6 +317,7 @@
       "output":{"shape":"DeleteTaskSetResponse"},
       "errors":[
         {"shape":"AccessDeniedException"},
+        {"shape":"LimitExceededException"},
         {"shape":"ServiceNotActiveException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
@@ -327,6 +339,7 @@
       "input":{"shape":"DeregisterContainerInstanceRequest"},
       "output":{"shape":"DeregisterContainerInstanceResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ClientException"},
@@ -343,6 +356,7 @@
       "input":{"shape":"DeregisterTaskDefinitionRequest"},
       "output":{"shape":"DeregisterTaskDefinitionResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ClientException"}
@@ -358,6 +372,7 @@
       "input":{"shape":"DescribeCapacityProvidersRequest"},
       "output":{"shape":"DescribeCapacityProvidersResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ClientException"},
@@ -376,6 +391,7 @@
       "input":{"shape":"DescribeClustersRequest"},
       "output":{"shape":"DescribeClustersResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ClientException"}
@@ -392,6 +408,7 @@
       "input":{"shape":"DescribeContainerInstancesRequest"},
       "output":{"shape":"DescribeContainerInstancesResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ClientException"},
@@ -544,6 +561,7 @@
       "input":{"shape":"DescribeServicesRequest"},
       "output":{"shape":"DescribeServicesResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ClientException"},
@@ -561,6 +579,7 @@
       "input":{"shape":"DescribeTaskDefinitionRequest"},
       "output":{"shape":"DescribeTaskDefinitionResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ClientException"}
@@ -598,6 +617,7 @@
       "input":{"shape":"DescribeTasksRequest"},
       "output":{"shape":"DescribeTasksResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ClientException"},
@@ -615,7 +635,9 @@
       "input":{"shape":"DiscoverPollEndpointRequest"},
       "output":{"shape":"DiscoverPollEndpointResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
         {"shape":"ClientException"}
       ],
       "documentation":"<p><note> <p>This action is only used by the Amazon ECS agent, and it is not intended for use outside of the agent.</p> </note> <p>Returns an endpoint for the Amazon ECS agent to poll for updates.</p></p>"
@@ -667,6 +689,7 @@
       "input":{"shape":"ListAccountSettingsRequest"},
       "output":{"shape":"ListAccountSettingsResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ClientException"}
@@ -683,7 +706,10 @@
       "input":{"shape":"ListAttributesRequest"},
       "output":{"shape":"ListAttributesResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
         {"shape":"ClusterNotFoundException"}
       ],
       "documentation":"<p>Lists the attributes for Amazon ECS resources within a specified target type and cluster. When you specify a target type and cluster, <code>ListAttributes</code> returns a list of attribute objects, one for each attribute on each resource. You can filter the list of results to a single attribute name to only return results that have that name. You can also filter the results by attribute name and value. You can do this, for example, to see which container instances in a cluster are running a Linux AMI (<code>ecs.os-type=linux</code>). </p>",
@@ -698,6 +724,7 @@
       "input":{"shape":"ListClustersRequest"},
       "output":{"shape":"ListClustersResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ClientException"}
@@ -714,6 +741,7 @@
       "input":{"shape":"ListContainerInstancesRequest"},
       "output":{"shape":"ListContainerInstancesResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ClientException"},
@@ -791,6 +819,7 @@
         {"shape":"InvalidParameterException"},
         {"shape":"ClientException"},
         {"shape":"ServiceNotFoundException"},
+        {"shape":"ClusterNotFoundException"},
         {"shape":"UnsupportedFeatureException"}
       ],
       "documentation":"<p>This operation lists all the service deployments that meet the specified filter criteria.</p> <p>A service deployment happens when you release a software update for the service. You route traffic from the running service revisions to the new service revison and control the number of running tasks. </p> <p>This API returns the values that you use for the request parameters in <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DescribeServiceRevisions.html\">DescribeServiceRevisions</a>.</p>",
@@ -805,6 +834,7 @@
       "input":{"shape":"ListServicesRequest"},
       "output":{"shape":"ListServicesResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ClientException"},
@@ -822,6 +852,7 @@
       "input":{"shape":"ListServicesByNamespaceRequest"},
       "output":{"shape":"ListServicesByNamespaceResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"NamespaceNotFoundException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
@@ -839,6 +870,7 @@
       "input":{"shape":"ListTagsForResourceRequest"},
       "output":{"shape":"ListTagsForResourceResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ClientException"},
@@ -856,6 +888,7 @@
       "input":{"shape":"ListTaskDefinitionFamiliesRequest"},
       "output":{"shape":"ListTaskDefinitionFamiliesResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ClientException"}
@@ -872,6 +905,7 @@
       "input":{"shape":"ListTaskDefinitionsRequest"},
       "output":{"shape":"ListTaskDefinitionsResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ClientException"}
@@ -888,6 +922,7 @@
       "input":{"shape":"ListTasksRequest"},
       "output":{"shape":"ListTasksResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ClientException"},
@@ -906,6 +941,7 @@
       "input":{"shape":"PutAccountSettingRequest"},
       "output":{"shape":"PutAccountSettingResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ClientException"}
@@ -921,6 +957,7 @@
       "input":{"shape":"PutAccountSettingDefaultRequest"},
       "output":{"shape":"PutAccountSettingDefaultResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ClientException"}
@@ -936,9 +973,12 @@
       "input":{"shape":"PutAttributesRequest"},
       "output":{"shape":"PutAttributesResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"TargetNotFoundException"},
+        {"shape":"ServerException"},
         {"shape":"AttributeLimitExceededException"},
         {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
         {"shape":"ClusterNotFoundException"}
       ],
       "documentation":"<p>Create or update an attribute on an Amazon ECS resource. If the attribute doesn't exist, it's created. If the attribute exists, its value is replaced with the specified value. To delete an attribute, use <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DeleteAttributes.html\">DeleteAttributes</a>. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-placement-constraints.html#attributes\">Attributes</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
@@ -952,6 +992,7 @@
       "input":{"shape":"PutClusterCapacityProvidersRequest"},
       "output":{"shape":"PutClusterCapacityProvidersResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"ServerException"},
         {"shape":"UpdateInProgressException"},
         {"shape":"InvalidParameterException"},
@@ -970,9 +1011,11 @@
       "input":{"shape":"RegisterContainerInstanceRequest"},
       "output":{"shape":"RegisterContainerInstanceResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
-        {"shape":"ClientException"}
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"}
       ],
       "documentation":"<p><note> <p>This action is only used by the Amazon ECS agent, and it is not intended for use outside of the agent.</p> </note> <p>Registers an EC2 instance into the specified cluster. This instance becomes available to place containers on.</p></p>"
     },
@@ -1002,6 +1045,8 @@
       "input":{"shape":"RegisterTaskDefinitionRequest"},
       "output":{"shape":"RegisterTaskDefinitionResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"LimitExceededException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ClientException"}
@@ -1039,6 +1084,8 @@
       "input":{"shape":"StartTaskRequest"},
       "output":{"shape":"StartTaskResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"NamespaceNotFoundException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ClientException"},
@@ -1075,6 +1122,7 @@
       "input":{"shape":"StopTaskRequest"},
       "output":{"shape":"StopTaskResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ClientException"},
@@ -1094,7 +1142,8 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
-        {"shape":"ClientException"}
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"}
       ],
       "documentation":"<p><note> <p>This action is only used by the Amazon ECS agent, and it is not intended for use outside of the agent.</p> </note> <p>Sent to acknowledge that an attachment changed states.</p></p>"
     },
@@ -1109,7 +1158,9 @@
       "errors":[
         {"shape":"AccessDeniedException"},
         {"shape":"ServerException"},
-        {"shape":"ClientException"}
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"}
       ],
       "documentation":"<p><note> <p>This action is only used by the Amazon ECS agent, and it is not intended for use outside of the agent.</p> </note> <p>Sent to acknowledge that a container changed states.</p></p>"
     },
@@ -1125,7 +1176,8 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
-        {"shape":"ClientException"}
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"}
       ],
       "documentation":"<p><note> <p>This action is only used by the Amazon ECS agent, and it is not intended for use outside of the agent.</p> </note> <p>Sent to acknowledge that a task changed states.</p></p>"
     },
@@ -1138,6 +1190,8 @@
       "input":{"shape":"TagResourceRequest"},
       "output":{"shape":"TagResourceResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"LimitExceededException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
@@ -1155,6 +1209,7 @@
       "input":{"shape":"UntagResourceRequest"},
       "output":{"shape":"UntagResourceResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
@@ -1172,6 +1227,7 @@
       "input":{"shape":"UpdateCapacityProviderRequest"},
       "output":{"shape":"UpdateCapacityProviderResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ClientException"},
@@ -1189,6 +1245,7 @@
       "input":{"shape":"UpdateClusterRequest"},
       "output":{"shape":"UpdateClusterResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"NamespaceNotFoundException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
@@ -1206,7 +1263,9 @@
       "input":{"shape":"UpdateClusterSettingsRequest"},
       "output":{"shape":"UpdateClusterSettingsResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"ServerException"},
+        {"shape":"UpdateInProgressException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ClientException"},
         {"shape":"ClusterNotFoundException"}
@@ -1222,6 +1281,7 @@
       "input":{"shape":"UpdateContainerAgentRequest"},
       "output":{"shape":"UpdateContainerAgentResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"NoUpdateAvailableException"},
         {"shape":"MissingVersionException"},
         {"shape":"ServerException"},
@@ -1241,6 +1301,7 @@
       "input":{"shape":"UpdateContainerInstancesStateRequest"},
       "output":{"shape":"UpdateContainerInstancesStateResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ClientException"},
@@ -1362,6 +1423,7 @@
       "output":{"shape":"UpdateTaskSetResponse"},
       "errors":[
         {"shape":"AccessDeniedException"},
+        {"shape":"LimitExceededException"},
         {"shape":"ServiceNotActiveException"},
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
@@ -3637,7 +3699,10 @@
     "DaemonNotActiveException":{
       "type":"structure",
       "members":{
-        "message":{"shape":"String"}
+        "message":{
+          "shape":"String",
+          "documentation":"<p> Message that describes the cause of the exception.</p>"
+        }
       },
       "documentation":"<p>The specified daemon isn't active. You can't update a daemon that's inactive. If you have previously deleted a daemon, you can re-create it with <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_CreateDaemon.html\">CreateDaemon</a>.</p>",
       "exception":true
@@ -3645,7 +3710,10 @@
     "DaemonNotFoundException":{
       "type":"structure",
       "members":{
-        "message":{"shape":"String"}
+        "message":{
+          "shape":"String",
+          "documentation":"<p> Message that describes the cause of the exception.</p>"
+        }
       },
       "documentation":"<p>The specified daemon wasn't found. You can view your available daemons with <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ListDaemons.html\">ListDaemons</a>. Amazon ECS daemons are cluster specific and Region specific.</p>",
       "exception":true
@@ -5161,7 +5229,8 @@
     },
     "EnvironmentVariables":{
       "type":"list",
-      "member":{"shape":"KeyValuePair"}
+      "member":{"shape":"KeyValuePair"},
+      "sensitive":true
     },
     "EphemeralStorage":{
       "type":"structure",
@@ -5698,7 +5767,10 @@
           "documentation":"<p>The Elastic Inference accelerator type to use.</p>"
         }
       },
-      "documentation":"<p>Details on an Elastic Inference accelerator. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-inference.html\">Working with Amazon Elastic Inference on Amazon ECS</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
+      "documentation":"<p>Details on an Elastic Inference accelerator. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-inference.html\">Working with Amazon Elastic Inference on Amazon ECS</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>",
+      "deprecated":true,
+      "deprecatedMessage":"This feature is no longer available.",
+      "deprecatedSince":"2023-04-15"
     },
     "InferenceAcceleratorOverride":{
       "type":"structure",
@@ -5712,15 +5784,24 @@
           "documentation":"<p>The Elastic Inference accelerator type to use.</p>"
         }
       },
-      "documentation":"<p>Details on an Elastic Inference accelerator task override. This parameter is used to override the Elastic Inference accelerator specified in the task definition. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-inference.html\">Working with Amazon Elastic Inference on Amazon ECS</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
+      "documentation":"<p>Details on an Elastic Inference accelerator task override. This parameter is used to override the Elastic Inference accelerator specified in the task definition. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-inference.html\">Working with Amazon Elastic Inference on Amazon ECS</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>",
+      "deprecated":true,
+      "deprecatedMessage":"This feature is no longer available.",
+      "deprecatedSince":"2023-04-15"
     },
     "InferenceAcceleratorOverrides":{
       "type":"list",
-      "member":{"shape":"InferenceAcceleratorOverride"}
+      "member":{"shape":"InferenceAcceleratorOverride"},
+      "deprecated":true,
+      "deprecatedMessage":"This feature is no longer available.",
+      "deprecatedSince":"2023-04-15"
     },
     "InferenceAccelerators":{
       "type":"list",
-      "member":{"shape":"InferenceAccelerator"}
+      "member":{"shape":"InferenceAccelerator"},
+      "deprecated":true,
+      "deprecatedMessage":"This feature is no longer available.",
+      "deprecatedSince":"2023-04-15"
     },
     "InfrastructureOptimization":{
       "type":"structure",
@@ -6111,7 +6192,7 @@
         },
         "tmpfs":{
           "shape":"TmpfsList",
-          "documentation":"<p>The container path, mount options, and size (in MiB) of the tmpfs mount. This parameter maps to the <code>--tmpfs</code> option to docker run.</p> <note> <p>If you're using tasks that use the Fargate launch type, the <code>tmpfs</code> parameter isn't supported.</p> </note>"
+          "documentation":"<p>The container path, mount options, and size (in MiB) of the tmpfs mount. This parameter maps to the <code>--tmpfs</code> option to docker run.</p>"
         },
         "maxSwap":{
           "shape":"BoxedInteger",
@@ -8064,7 +8145,10 @@
         },
         "inferenceAccelerators":{
           "shape":"InferenceAccelerators",
-          "documentation":"<p>The Elastic Inference accelerators to use for the containers in the task.</p>"
+          "documentation":"<p>The Elastic Inference accelerators to use for the containers in the task.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This feature is no longer available.",
+          "deprecatedSince":"2023-04-15"
         },
         "ephemeralStorage":{
           "shape":"EphemeralStorage",

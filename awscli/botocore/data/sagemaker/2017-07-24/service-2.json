@@ -3818,6 +3818,19 @@
       ],
       "documentation":"<p>Notifies the pipeline that the execution of a callback step succeeded and provides a list of the step's output parameters. When a callback step is run, the pipeline generates a callback token and includes the token in a message sent to Amazon Simple Queue Service (Amazon SQS).</p>"
     },
+    "StartClusterHealthCheck":{
+      "name":"StartClusterHealthCheck",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartClusterHealthCheckRequest"},
+      "output":{"shape":"StartClusterHealthCheckResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Start deep health checks for a SageMaker HyperPod cluster. You can use <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeClusterNode.html\">DescribeClusterNode</a> API to track progress of the deep health checks. The unhealthy nodes will be automatically rebooted or replaced. Please see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-hyperpod-eks-resiliency-node-labels.html\"> Resilience-related Kubernetes labels by SageMaker HyperPod</a> for details.</p>"
+    },
     "StartEdgeDeploymentStage":{
       "name":"StartEdgeDeploymentStage",
       "http":{
@@ -4914,6 +4927,14 @@
         "IncrementTargetCountBy":{
           "shape":"AddClusterNodeSpecificationIncrementTargetCountByInteger",
           "documentation":"<p>The number of nodes to add to the specified instance group. The total number of nodes across all instance groups in a single request cannot exceed 50.</p>"
+        },
+        "AvailabilityZones":{
+          "shape":"ClusterAvailabilityZones",
+          "documentation":"<p>The availability zones in which to add nodes. Use this to target node placement in specific availability zones within a flexible instance group.</p>"
+        },
+        "InstanceTypes":{
+          "shape":"ClusterInstanceTypes",
+          "documentation":"<p>The instance types to use when adding nodes. Use this to target specific instance types within a flexible instance group.</p>"
         }
       },
       "documentation":"<p>Specifies an instance group and the number of nodes to add to it.</p>"
@@ -7107,6 +7128,14 @@
           "shape":"BatchAddFailureCount",
           "documentation":"<p>The number of nodes that failed to be added to the specified instance group.</p>"
         },
+        "AvailabilityZones":{
+          "shape":"ClusterAvailabilityZones",
+          "documentation":"<p>The availability zones associated with the failed node addition request.</p>"
+        },
+        "InstanceTypes":{
+          "shape":"ClusterInstanceTypes",
+          "documentation":"<p>The instance types associated with the failed node addition request.</p>"
+        },
         "Message":{
           "shape":"String",
           "documentation":"<p>A descriptive message providing additional details about the error.</p>"
@@ -7118,7 +7147,9 @@
       "type":"string",
       "enum":[
         "InstanceGroupNotFound",
-        "InvalidInstanceGroupStatus"
+        "InvalidInstanceGroupStatus",
+        "IncompatibleAvailabilityZones",
+        "IncompatibleInstanceTypes"
       ]
     },
     "BatchAddClusterNodesErrorList":{
@@ -8949,6 +8980,12 @@
       "type":"string",
       "pattern":"[a-z]{3}\\d-az\\d"
     },
+    "ClusterAvailabilityZones":{
+      "type":"list",
+      "member":{"shape":"ClusterAvailabilityZone"},
+      "max":10,
+      "min":1
+    },
     "ClusterCapacityRequirements":{
       "type":"structure",
       "members":{
@@ -9194,6 +9231,14 @@
           "shape":"ClusterInstanceType",
           "documentation":"<p>The instance type of the instance group of a SageMaker HyperPod cluster.</p>"
         },
+        "InstanceRequirements":{
+          "shape":"ClusterInstanceRequirementDetails",
+          "documentation":"<p>The instance requirements for the instance group, including the current and desired instance types. This field is present for flexible instance groups that support multiple instance types.</p>"
+        },
+        "InstanceTypeDetails":{
+          "shape":"ClusterInstanceTypeDetails",
+          "documentation":"<p>Details about the instance types in the instance group, including the count and configuration of each instance type. This field is present for flexible instance groups that support multiple instance types.</p>"
+        },
         "LifeCycleConfig":{
           "shape":"ClusterLifeCycleConfig",
           "documentation":"<p>Details of LifeCycle configuration for the instance group.</p>"
@@ -9285,7 +9330,6 @@
       "required":[
         "InstanceCount",
         "InstanceGroupName",
-        "LifeCycleConfig",
         "ExecutionRole"
       ],
       "members":{
@@ -9304,6 +9348,10 @@
         "InstanceType":{
           "shape":"ClusterInstanceType",
           "documentation":"<p>Specifies the instance type of the instance group.</p>"
+        },
+        "InstanceRequirements":{
+          "shape":"ClusterInstanceRequirements",
+          "documentation":"<p>The instance requirements for the instance group, including the instance types to use. Use this to create a flexible instance group that supports multiple instance types. The <code>InstanceType</code> and <code>InstanceRequirements</code> properties are mutually exclusive.</p>"
         },
         "LifeCycleConfig":{
           "shape":"ClusterLifeCycleConfig",
@@ -9387,6 +9435,31 @@
         }
       },
       "documentation":"<p>Specifies the placement details for the node in the SageMaker HyperPod cluster, including the Availability Zone and the unique identifier (ID) of the Availability Zone.</p>"
+    },
+    "ClusterInstanceRequirementDetails":{
+      "type":"structure",
+      "members":{
+        "CurrentInstanceTypes":{
+          "shape":"ClusterInstanceTypes",
+          "documentation":"<p>The instance types currently in use by the instance group.</p>"
+        },
+        "DesiredInstanceTypes":{
+          "shape":"ClusterInstanceTypes",
+          "documentation":"<p>The desired instance types for the instance group, as specified in the most recent update request.</p>"
+        }
+      },
+      "documentation":"<p>The instance requirement details for a flexible instance group, including the current and desired instance types.</p>"
+    },
+    "ClusterInstanceRequirements":{
+      "type":"structure",
+      "required":["InstanceTypes"],
+      "members":{
+        "InstanceTypes":{
+          "shape":"ClusterInstanceTypes",
+          "documentation":"<p>The list of instance types that the instance group can use. The order of instance types determines the priority—HyperPod attempts to provision instances using the first instance type in the list and falls back to subsequent types if capacity is unavailable.</p>"
+        }
+      },
+      "documentation":"<p>The instance requirements for a flexible instance group. Use this to specify multiple instance types that the instance group can use. The order of instance types in the list determines the priority for instance provisioning.</p>"
     },
     "ClusterInstanceStatus":{
       "type":"string",
@@ -9568,6 +9641,36 @@
         "ml.p6-b300.48xlarge"
       ]
     },
+    "ClusterInstanceTypeDetail":{
+      "type":"structure",
+      "members":{
+        "InstanceType":{
+          "shape":"ClusterInstanceType",
+          "documentation":"<p>The instance type.</p>"
+        },
+        "CurrentCount":{
+          "shape":"ClusterNonNegativeInstanceCount",
+          "documentation":"<p>The number of instances of this type currently running in the instance group.</p>"
+        },
+        "ThreadsPerCore":{
+          "shape":"ClusterThreadsPerCore",
+          "documentation":"<p>The number of threads per CPU core for this instance type.</p>"
+        }
+      },
+      "documentation":"<p>Details about a specific instance type within a flexible instance group, including the count and configuration.</p>"
+    },
+    "ClusterInstanceTypeDetails":{
+      "type":"list",
+      "member":{"shape":"ClusterInstanceTypeDetail"},
+      "max":20,
+      "min":0
+    },
+    "ClusterInstanceTypes":{
+      "type":"list",
+      "member":{"shape":"ClusterInstanceType"},
+      "max":20,
+      "min":1
+    },
     "ClusterKubernetesConfig":{
       "type":"structure",
       "members":{
@@ -9695,10 +9798,6 @@
     },
     "ClusterLifeCycleConfig":{
       "type":"structure",
-      "required":[
-        "SourceS3Uri",
-        "OnCreate"
-      ],
       "members":{
         "SourceS3Uri":{
           "shape":"S3Uri",
@@ -15013,12 +15112,24 @@
       "max":20,
       "min":0
     },
+    "DeepHealthCheckConfigurations":{
+      "type":"list",
+      "member":{"shape":"InstanceGroupHealthCheckConfiguration"},
+      "max":99,
+      "min":1
+    },
     "DeepHealthCheckType":{
       "type":"string",
       "enum":[
         "InstanceStress",
         "InstanceConnectivity"
       ]
+    },
+    "DeepHealthChecks":{
+      "type":"list",
+      "member":{"shape":"DeepHealthCheckType"},
+      "max":2,
+      "min":1
     },
     "DefaultDomainIdList":{
       "type":"list",
@@ -26822,6 +26933,28 @@
       },
       "documentation":"<p>Defines an instance group for heterogeneous cluster training. When requesting a training job using the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingJob.html\">CreateTrainingJob</a> API, you can configure multiple instance groups .</p>"
     },
+    "InstanceGroupHealthCheckConfiguration":{
+      "type":"structure",
+      "required":[
+        "InstanceGroupName",
+        "DeepHealthChecks"
+      ],
+      "members":{
+        "InstanceGroupName":{
+          "shape":"ClusterInstanceGroupName",
+          "documentation":"<p>The name of the instance group.</p>"
+        },
+        "InstanceIds":{
+          "shape":"InstanceIds",
+          "documentation":"<p>A list of Amazon Elastic Compute Cloud (EC2) instance IDs on which to perform deep health checks.</p> <note> <p>Leave this field blank to perform deep health checks on the entire instance group.</p> </note>"
+        },
+        "DeepHealthChecks":{
+          "shape":"DeepHealthChecks",
+          "documentation":"<p>A list of deep health checks to be performed.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of deep health checks for an instance group.</p> <note> <p>Overlapping deep health check configurations will be merged into a single operation.</p> </note>"
+    },
     "InstanceGroupMetadata":{
       "type":"structure",
       "members":{
@@ -26908,6 +27041,12 @@
       "member":{"shape":"InstanceGroup"},
       "max":5,
       "min":0
+    },
+    "InstanceIds":{
+      "type":"list",
+      "member":{"shape":"ClusterNodeId"},
+      "max":500,
+      "min":1
     },
     "InstanceMetadata":{
       "type":"structure",
@@ -35595,6 +35734,14 @@
         "Status":{
           "shape":"ClusterInstanceStatus",
           "documentation":"<p>The current status of the node. Possible values include <code>Pending</code>, <code>Running</code>, <code>Failed</code>, <code>ShuttingDown</code>, <code>SystemUpdating</code>, <code>DeepHealthCheckInProgress</code>, and <code>NotFound</code>.</p>"
+        },
+        "AvailabilityZones":{
+          "shape":"ClusterAvailabilityZones",
+          "documentation":"<p>The availability zones associated with the successfully added node.</p>"
+        },
+        "InstanceTypes":{
+          "shape":"ClusterInstanceTypes",
+          "documentation":"<p>The instance types associated with the successfully added node.</p>"
         }
       },
       "documentation":"<p>Information about a node that was successfully added to the cluster.</p>"
@@ -36977,7 +37124,7 @@
       "type":"string",
       "max":2048,
       "min":0,
-      "pattern":"arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:pipeline/.*"
+      "pattern":"arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:([0-9]{12}|aws):pipeline/.*"
     },
     "PipelineDefinition":{
       "type":"string",
@@ -37319,7 +37466,7 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"(arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:pipeline/.*)?([a-zA-Z0-9](-*[a-zA-Z0-9]){0,255})"
+      "pattern":"(arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:([0-9]{12}|aws):pipeline/.*)?([a-zA-Z0-9](-*[a-zA-Z0-9]){0,255})"
     },
     "PipelineParameterName":{
       "type":"string",
@@ -42227,6 +42374,33 @@
         }
       },
       "documentation":"<p>Defines the stairs traffic pattern for an Inference Recommender load test. This pattern type consists of multiple steps where the number of users increases at each step.</p> <p>Specify either the stairs or phases traffic pattern.</p>"
+    },
+    "StartClusterHealthCheckRequest":{
+      "type":"structure",
+      "required":[
+        "ClusterName",
+        "DeepHealthCheckConfigurations"
+      ],
+      "members":{
+        "ClusterName":{
+          "shape":"ClusterNameOrArn",
+          "documentation":"<p>The string name or the Amazon Resource Name (ARN) of the SageMaker HyperPod cluster.</p>"
+        },
+        "DeepHealthCheckConfigurations":{
+          "shape":"DeepHealthCheckConfigurations",
+          "documentation":"<p>A list of configurations containing instance group names, EC2 instance IDs, and deep health checks to perform.</p>"
+        }
+      }
+    },
+    "StartClusterHealthCheckResponse":{
+      "type":"structure",
+      "required":["ClusterArn"],
+      "members":{
+        "ClusterArn":{
+          "shape":"ClusterArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the SageMaker HyperPod cluster on which the deep health checks were initiated.</p>"
+        }
+      }
     },
     "StartEdgeDeploymentStageRequest":{
       "type":"structure",

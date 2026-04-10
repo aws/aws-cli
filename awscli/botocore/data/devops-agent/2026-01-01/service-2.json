@@ -3640,7 +3640,7 @@
       "type":"string",
       "documentation":"<p>API Key Value for service.</p>",
       "min":1,
-      "pattern":"[a-zA-Z0-9+/=._-]+(\\s[a-zA-Z0-9+/=._-]+)?",
+      "pattern":"[!-~]([ \\t]*[!-~])*",
       "sensitive":true
     },
     "MCPServerAuthorizationConfig":{
@@ -3730,6 +3730,22 @@
       "documentation":"<p>Token value for authentication.</p>",
       "pattern":"[\\S]+",
       "sensitive":true
+    },
+    "MCPServerConfiguration":{
+      "type":"structure",
+      "required":["tools"],
+      "members":{
+        "tools":{
+          "shape":"MCPToolsList",
+          "documentation":"<p>List of MCP tools can be used with the association.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for Model Context Protocol (MCP) server integration.</p>"
+    },
+    "MCPServerDatadogConfiguration":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Mixin for webhook update support.</p>"
     },
     "MCPServerDetails":{
       "type":"structure",
@@ -3938,6 +3954,11 @@
     "MCPServerOAuthClientCredentialsConfigExchangeUrlString":{
       "type":"string",
       "pattern":"https://[a-zA-Z0-9.-]+(?::[0-9]+)?(?:/.*)?"
+    },
+    "MCPServerSplunkConfiguration":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Mixin for webhook update support.</p>"
     },
     "MCPToolsList":{
       "type":"list",
@@ -4845,10 +4866,10 @@
     },
     "ResourceConfigurationArn":{
       "type":"string",
-      "documentation":"<p>Resource Configuration ARN.</p>",
+      "documentation":"<p>The ID or ARN of the Resource Configuration.</p>",
       "max":2048,
       "min":20,
-      "pattern":"arn:[a-z0-9\\-]+:vpc-lattice:[a-zA-Z0-9\\-]+:\\d{12}:resourceconfiguration/rcfg-[0-9a-z]{17}"
+      "pattern":"(arn:[a-z0-9\\-]+:vpc-lattice:[a-zA-Z0-9\\-]+:\\d{12}:resourceconfiguration/rcfg-[0-9a-z]{17}|rcfg-[0-9a-z]{17})"
     },
     "ResourceGatewayArn":{
       "type":"string",
@@ -4913,7 +4934,7 @@
       "members":{
         "resourceConfigurationId":{
           "shape":"ResourceConfigurationArn",
-          "documentation":"<p>The ARN of the Resource Configuration.</p>"
+          "documentation":"<p>The ID or ARN of the resource configuration.</p>"
         },
         "certificate":{
           "shape":"CertificateString",
@@ -5300,9 +5321,21 @@
           "shape":"MCPServerNewRelicConfiguration",
           "documentation":"<p>NewRelic instance integration configuration.</p>"
         },
+        "mcpserverdatadog":{
+          "shape":"MCPServerDatadogConfiguration",
+          "documentation":"<p>Datadog MCP server integration configuration.</p>"
+        },
+        "mcpserver":{
+          "shape":"MCPServerConfiguration",
+          "documentation":"<p>MCP (Model Context Protocol) server integration configuration.</p>"
+        },
         "gitlab":{
           "shape":"GitLabConfiguration",
           "documentation":"<p>GitLab project integration configuration.</p>"
+        },
+        "mcpserversplunk":{
+          "shape":"MCPServerSplunkConfiguration",
+          "documentation":"<p>Splunk MCP server integration configuration.</p>"
         },
         "eventChannel":{
           "shape":"EventChannelConfiguration",

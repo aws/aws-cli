@@ -108,6 +108,27 @@ class TestGetObject(BaseAWSCommandParamsTest):
         # Mask file type bits to isolate permission bits (rwxrwxrwx)
         self.assertEqual(os.stat(filename).st_mode & 0o777, 0o600)
 
+    @skip_if_windows('chmod is not supported on Windows')
+    def test_output_does_not_chmod_non_regular_files(self):
+        cmdline = self.prefix + [
+            '--bucket',
+            'mybucket',
+            '--key',
+            'mykey',
+            '--expression',
+            'SELECT * FROM S3Object',
+            '--expression-type',
+            'SQL',
+            '--input-serialization',
+            '{"CSV": {}}',
+            '--output-serialization',
+            '{"CSV": {}}',
+            '/dev/null',
+        ]
+        original_mode = os.stat('/dev/null').st_mode & 0o777
+        self.assert_params_for_cmd(cmdline, ignore_params=True)
+        self.assertEqual(os.stat('/dev/null').st_mode & 0o777, original_mode)
+
     def test_errors_are_propagated(self):
         self.http_response.status_code = 400
         self.parsed_response = {

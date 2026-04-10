@@ -62,3 +62,17 @@ class TestStreamingOutput(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(cmdline % outpath, ignore_params=True)
         # Mask file type bits to isolate permission bits (rwxrwxrwx)
         self.assertEqual(os.stat(outpath).st_mode & 0o777, 0o600)
+
+    @skip_if_windows('chmod is not supported on Windows')
+    def test_streaming_output_does_not_chmod_non_regular_files(self):
+        cmdline = (
+            'kinesis-video-media get-media --stream-name test-stream '
+            '--start-selector StartSelectorType=EARLIEST %s'
+        )
+        self.parsed_response = {
+            'ContentType': 'video/webm',
+            'Payload': BytesIO(b'testbody'),
+        }
+        original_mode = os.stat('/dev/null').st_mode & 0o777
+        self.assert_params_for_cmd(cmdline % '/dev/null', ignore_params=True)
+        self.assertEqual(os.stat('/dev/null').st_mode & 0o777, original_mode)

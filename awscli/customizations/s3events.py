@@ -13,6 +13,7 @@
 """Add S3 specific event streaming output arg."""
 
 import os
+import stat
 
 from awscli.arguments import CustomArgument
 
@@ -124,7 +125,9 @@ class S3SelectStreamOutputArgument(CustomArgument):
         fd = os.open(
             self._output_file, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600
         )
-        os.chmod(self._output_file, 0o600)
+        if stat.S_ISREG(os.fstat(fd).st_mode):
+            # Only chmod regular files; skip devices like /dev/null
+            os.chmod(self._output_file, 0o600)
         with os.fdopen(fd, 'wb') as fp:
             for event in event_stream:
                 if 'Records' in event:

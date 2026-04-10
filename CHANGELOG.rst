@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.44.78
+=======
+
+* api-change:``connect``: Conversational Analytics for Email
+* api-change:``devops-agent``: Devops Agent now supports associate Splunk, Datadog and custom MCP server to an Agent Space.
+* api-change:``ecs``: Minor updates to exceptions for completeness
+* api-change:``imagebuilder``: Image pipelines can now automatically apply tags to images they create. Set the imageTags property when creating or updating your pipelines to get started.
+* api-change:``mediaconvert``: Adds support for MV-HEVC video output and clear lead for AV1 DRM output.
+* api-change:``observabilityadmin``: CloudWatch Observability Admin adds support for multi-region telemetry evaluation and telemetry enablement rules.
+* api-change:``rtbfabric``: Adds optional health check configuration for Responder Gateways with ASG Managed Endpoints. When provided, RTB Fabric continuously probes customers' instance IPs and routes traffic only to healthy ones, reducing errors during deployments, scaling events, and instance failures.
+* api-change:``sagemaker``: Support new SageMaker StartClusterHealthCheck API for on-demand DHC on Hyperpod EKS cluster. Support updated CreateCluster, UpdateCluster, DescribeCluster, BatchAddClusterNodes APIs for flexible instance group on HyperPod cluster
+* bugfix:codedeploy: Tighten file permissions for CodeDeploy configuration file
+
+
 1.44.77
 =======
 

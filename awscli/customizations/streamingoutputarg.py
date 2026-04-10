@@ -111,7 +111,7 @@ class StreamingOutputArgument(BaseCLIArgument):
             self._output_file, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600
         )
         if stat.S_ISREG(os.fstat(fd).st_mode):
-            # Only chmod regular files; skip devices like /dev/null
+            # Only chmod regular files; skip special files like /dev/null
             os.chmod(self._output_file, 0o600)
         with os.fdopen(fd, 'wb') as fp:
             data = body.read(buffer_size)

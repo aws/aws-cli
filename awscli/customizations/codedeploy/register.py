@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+import os
 import sys
 
 from awscli.customizations.codedeploy.systems import DEFAULT_CONFIG_FILE
@@ -162,13 +163,24 @@ class Register(BasicCommand):
             f'Creating the on-premises instance configuration file named {DEFAULT_CONFIG_FILE}'
             '...'
         )
-        with open(DEFAULT_CONFIG_FILE, 'w') as f:
-            f.write(
-                '---\n'
-                f'region: {params.region}\n'
-                f'iam_user_arn: {params.iam_user_arn}\n'
-                f'aws_access_key_id: {params.access_key_id}\n'
-                f'aws_secret_access_key: {params.secret_access_key}\n'
+        try:
+            fd = os.open(
+                DEFAULT_CONFIG_FILE,
+                os.O_WRONLY | os.O_CREAT | os.O_TRUNC,
+                0o600,
+            )
+            with os.fdopen(fd, 'w') as f:
+                os.chmod(DEFAULT_CONFIG_FILE, 0o600)
+                f.write(
+                    '---\n'
+                    f'region: {params.region}\n'
+                    f'iam_user_arn: {params.iam_user_arn}\n'
+                    f'aws_access_key_id: {params.access_key_id}\n'
+                    f'aws_secret_access_key: {params.secret_access_key}\n'
+                )
+        except OSError as e:
+            raise RuntimeError(
+                f'Failed to create config file {DEFAULT_CONFIG_FILE}: {e}'
             )
         sys.stdout.write('DONE\n')
 

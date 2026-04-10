@@ -1092,6 +1092,10 @@
           "shape":"InsecureIngest",
           "documentation":"<p>Whether the stage allows insecure RTMP ingest. This must be set to <code>true</code>, if <code>ingestProtocol</code> is set to <code>RTMP</code>. Default: <code>false</code>. </p>"
         },
+        "redundantIngest":{
+          "shape":"RedundantIngest",
+          "documentation":"<p>Indicates whether redundant ingest is enabled for the ingest configuration. Default: <code>false</code>.</p>"
+        },
         "tags":{
           "shape":"Tags",
           "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging AWS Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
@@ -1896,6 +1900,14 @@
           "shape":"UserId",
           "documentation":"<p>Customer-assigned name to help identify the participant using the IngestConfiguration; this can be used to link a participant to a user in the customer’s own systems. This can be any UTF-8 encoded text. <i>This field is exposed to all stage participants and should not be used for personally identifying, confidential, or sensitive information.</i> </p>"
         },
+        "redundantIngest":{
+          "shape":"RedundantIngest",
+          "documentation":"<p>Indicates whether redundant ingest is enabled for the ingest configuration.</p>"
+        },
+        "redundantIngestCredentials":{
+          "shape":"RedundantIngestCredentials",
+          "documentation":"<p>A list of redundant ingest credentials, present only when <code>redundantIngest</code> is set to <code>true</code>. See <a href=\"https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/rt-rtmp-publishing.html#redundant-ingest\">Redundant Ingest</a> in <i>IVS RTMP Publishing</i> for details.</p>"
+        },
         "attributes":{
           "shape":"ParticipantAttributes",
           "documentation":"<p>Application-provided attributes to to store in the IngestConfiguration and attach to a stage. Map keys and values can contain UTF-8 encoded text. The maximum length of this field is 1 KB total. <i>This field is exposed to all stage participants and should not be used for personally identifying, confidential, or sensitive information.</i> </p>"
@@ -1973,6 +1985,10 @@
         "userId":{
           "shape":"UserId",
           "documentation":"<p>Customer-assigned name to help identify the participant using the IngestConfiguration; this can be used to link a participant to a user in the customer’s own systems. This can be any UTF-8 encoded text. <i>This field is exposed to all stage participants and should not be used for personally identifying, confidential, or sensitive information.</i> </p>"
+        },
+        "redundantIngest":{
+          "shape":"RedundantIngest",
+          "documentation":"<p>Indicates whether redundant ingest is enabled for the ingest configuration.</p>"
         }
       },
       "documentation":"<p>Summary information about an IngestConfiguration.</p>"
@@ -2579,6 +2595,14 @@
         "sourceSessionId":{
           "shape":"StageSessionId",
           "documentation":"<p>ID of the session within the source stage, if <code>replicationType</code> is <code>REPLICA</code>.</p>"
+        },
+        "redundantIngest":{
+          "shape":"RedundantIngest",
+          "documentation":"<p>Indicates whether redundant ingest is enabled for the participant.</p>"
+        },
+        "ingestConfigurationArn":{
+          "shape":"IngestConfigurationArn",
+          "documentation":"<p>The participant’s ingest configuration.</p>"
         }
       },
       "documentation":"<p>Object describing a participant that has joined a stage.</p>"
@@ -2772,6 +2796,14 @@
         "sourceSessionId":{
           "shape":"StageSessionId",
           "documentation":"<p>ID of the session within the source stage, if <code>replicationType</code> is <code>REPLICA</code>.</p>"
+        },
+        "redundantIngest":{
+          "shape":"RedundantIngest",
+          "documentation":"<p>Indicates whether redundant ingest is enabled for the participant.</p>"
+        },
+        "ingestConfigurationArn":{
+          "shape":"IngestConfigurationArn",
+          "documentation":"<p>The participant’s ingest configuration.</p>"
         }
       },
       "documentation":"<p>Summary object describing a participant that has joined a stage.</p>"
@@ -3136,6 +3168,25 @@
     "RecordingConfigurationFormat":{
       "type":"string",
       "enum":["HLS"]
+    },
+    "RedundantIngest":{"type":"boolean"},
+    "RedundantIngestCredential":{
+      "type":"structure",
+      "members":{
+        "participantId":{
+          "shape":"ParticipantId",
+          "documentation":"<p>ID of the participant within the stage.</p>"
+        },
+        "streamKey":{
+          "shape":"StreamKey",
+          "documentation":"<p>Ingest-key value.</p>"
+        }
+      },
+      "documentation":"<p>An object representing a redundant ingest credential.</p>"
+    },
+    "RedundantIngestCredentials":{
+      "type":"list",
+      "member":{"shape":"RedundantIngestCredential"}
     },
     "Replica":{"type":"boolean"},
     "ReplicationState":{
@@ -3556,43 +3607,43 @@
       "members":{
         "accessControlAllowOrigin":{
           "shape":"String",
-          "documentation":"<p/>",
+          "documentation":"<p>See <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Access-Control-Allow-Origin\">Access-Control-Allow-Origin</a> in the MDN Web Docs.</p>",
           "location":"header",
           "locationName":"Access-Control-Allow-Origin"
         },
         "accessControlExposeHeaders":{
           "shape":"String",
-          "documentation":"<p/>",
+          "documentation":"<p>See <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Access-Control-Expose-Headers\">Access-Control-Expose-Headers</a> in the MDN Web Docs.</p>",
           "location":"header",
           "locationName":"Access-Control-Expose-Headers"
         },
         "cacheControl":{
           "shape":"String",
-          "documentation":"<p/>",
+          "documentation":"<p>See <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cache-Control\">Cache-Control</a> in the MDN Web Docs.</p>",
           "location":"header",
           "locationName":"Cache-Control"
         },
         "contentSecurityPolicy":{
           "shape":"String",
-          "documentation":"<p/>",
+          "documentation":"<p>See <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy\">Content-Security-Policy</a> in the MDN Web Docs.</p>",
           "location":"header",
           "locationName":"Content-Security-Policy"
         },
         "strictTransportSecurity":{
           "shape":"String",
-          "documentation":"<p/>",
+          "documentation":"<p>See <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Strict-Transport-Security\">Strict-Transport-Security</a> in the MDN Web Docs.</p>",
           "location":"header",
           "locationName":"Strict-Transport-Security"
         },
         "xContentTypeOptions":{
           "shape":"String",
-          "documentation":"<p/>",
+          "documentation":"<p>See <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-Content-Type-Options\">X-Content-Type-Options</a> in the MDN Web Docs.</p>",
           "location":"header",
           "locationName":"X-Content-Type-Options"
         },
         "xFrameOptions":{
           "shape":"String",
-          "documentation":"<p/>",
+          "documentation":"<p>See <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-Frame-Options\">X-Frame-Options</a> in the MDN Web Docs.</p>",
           "location":"header",
           "locationName":"X-Frame-Options"
         }
@@ -3640,43 +3691,43 @@
       "members":{
         "accessControlAllowOrigin":{
           "shape":"String",
-          "documentation":"<p/>",
+          "documentation":"<p>See <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Access-Control-Allow-Origin\">Access-Control-Allow-Origin</a> in the MDN Web Docs.</p>",
           "location":"header",
           "locationName":"Access-Control-Allow-Origin"
         },
         "accessControlExposeHeaders":{
           "shape":"String",
-          "documentation":"<p/>",
+          "documentation":"<p>See <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Access-Control-Expose-Headers\">Access-Control-Expose-Headers</a> in the MDN Web Docs.</p>",
           "location":"header",
           "locationName":"Access-Control-Expose-Headers"
         },
         "cacheControl":{
           "shape":"String",
-          "documentation":"<p/>",
+          "documentation":"<p>See <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cache-Control\">Cache-Control</a> in the MDN Web Docs.</p>",
           "location":"header",
           "locationName":"Cache-Control"
         },
         "contentSecurityPolicy":{
           "shape":"String",
-          "documentation":"<p/>",
+          "documentation":"<p>See <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy\">Content-Security-Policy</a> in the MDN Web Docs.</p>",
           "location":"header",
           "locationName":"Content-Security-Policy"
         },
         "strictTransportSecurity":{
           "shape":"String",
-          "documentation":"<p/>",
+          "documentation":"<p>See <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Strict-Transport-Security\">Strict-Transport-Security</a> in the MDN Web Docs.</p>",
           "location":"header",
           "locationName":"Strict-Transport-Security"
         },
         "xContentTypeOptions":{
           "shape":"String",
-          "documentation":"<p/>",
+          "documentation":"<p>See <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-Content-Type-Options\">X-Content-Type-Options</a> in the MDN Web Docs.</p>",
           "location":"header",
           "locationName":"X-Content-Type-Options"
         },
         "xFrameOptions":{
           "shape":"String",
-          "documentation":"<p/>",
+          "documentation":"<p>See <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-Frame-Options\">X-Frame-Options</a> in the MDN Web Docs.</p>",
           "location":"header",
           "locationName":"X-Frame-Options"
         }
@@ -3864,6 +3915,10 @@
         "stageArn":{
           "shape":"IngestConfigurationStageArn",
           "documentation":"<p>Stage ARN that needs to be updated.</p>"
+        },
+        "redundantIngest":{
+          "shape":"RedundantIngest",
+          "documentation":"<p>Indicates whether redundant ingest is enabled for the ingest configuration. Default: <code>false</code>.</p>"
         }
       }
     },

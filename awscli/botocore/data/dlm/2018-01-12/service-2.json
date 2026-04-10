@@ -197,6 +197,18 @@
       "min":0,
       "pattern":"([a-z]+-){2,3}\\d[a-z]"
     },
+    "AvailabilityZoneId":{
+      "type":"string",
+      "max":16,
+      "min":0,
+      "pattern":"[a-z]{3,4}\\d-az\\d+"
+    },
+    "AvailabilityZoneIdList":{
+      "type":"list",
+      "member":{"shape":"AvailabilityZoneId"},
+      "max":10,
+      "min":1
+    },
     "AvailabilityZoneList":{
       "type":"list",
       "member":{"shape":"AvailabilityZone"},
@@ -617,7 +629,6 @@
     "ExtendDeletion":{"type":"boolean"},
     "FastRestoreRule":{
       "type":"structure",
-      "required":["AvailabilityZones"],
       "members":{
         "Count":{
           "shape":"Count",
@@ -634,6 +645,10 @@
         "AvailabilityZones":{
           "shape":"AvailabilityZoneList",
           "documentation":"<p>The Availability Zones in which to enable fast snapshot restore.</p>"
+        },
+        "AvailabilityZoneIds":{
+          "shape":"AvailabilityZoneIdList",
+          "documentation":"<p>The Availability Zone Ids in which to enable fast snapshot restore.</p>"
         }
       },
       "documentation":"<p> <b>[Custom snapshot policies only]</b> Specifies a rule for enabling fast snapshot restore for snapshots created by snapshot policies. You can enable fast snapshot restore based on either a count or a time interval.</p>"

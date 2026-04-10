@@ -16478,6 +16478,11 @@
           "shape": "__listOf__string",
           "locationName": "logicalInterfaceNames",
           "documentation": "Optional assignment of an output to a logical interface on the Node. Only applies to on premises channels."
+        },
+        "MediaConnectRouterSettings": {
+          "shape": "__listOfMediaConnectRouterOutputDestinationSettings",
+          "locationName": "mediaConnectRouterSettings",
+          "documentation": "Destination settings for a MediaConnect Router output; one destination for each redundant encoder."
         }
       },
       "documentation": "Placeholder documentation for OutputDestination"
@@ -16574,6 +16579,10 @@
         "SrtGroupSettings": {
           "shape": "SrtGroupSettings",
           "locationName": "srtGroupSettings"
+        },
+        "MediaConnectRouterGroupSettings": {
+          "shape": "MediaConnectRouterGroupSettings",
+          "locationName": "mediaConnectRouterGroupSettings"
         }
       },
       "documentation": "Output Group Settings"
@@ -16648,6 +16657,10 @@
         "SrtOutputSettings": {
           "shape": "SrtOutputSettings",
           "locationName": "srtOutputSettings"
+        },
+        "MediaConnectRouterOutputSettings": {
+          "shape": "MediaConnectRouterOutputSettings",
+          "locationName": "mediaConnectRouterOutputSettings"
         }
       },
       "documentation": "Output Settings"
@@ -19242,6 +19255,11 @@
           "shape": "InferenceSettings",
           "locationName": "inferenceSettings",
           "documentation": "Include this setting to include Elemental Inference features in this channel."
+        },
+        "SpecialRouterSettings": {
+          "shape": "SpecialRouterSettings",
+          "locationName": "specialRouterSettings",
+          "documentation": "When using MediaConnect Router as the source of a MediaLive input there's a special handoff that occurs when a router output\nis created. This group of settings is set on your behalf by the MediaConnect Router service using this set of settings. This\nsetting object can only by used by that service."
         }
       },
       "documentation": "Placeholder documentation for UpdateChannel"
@@ -19382,6 +19400,11 @@
           "shape": "InferenceSettings",
           "locationName": "inferenceSettings",
           "documentation": "Include this setting to include Elemental Inference features in this channel."
+        },
+        "SpecialRouterSettings": {
+          "shape": "SpecialRouterSettings",
+          "locationName": "specialRouterSettings",
+          "documentation": "When using MediaConnect Router as the source of a MediaLive input there's a special handoff that occurs when a router output\nis created. This group of settings is set on your behalf by the MediaConnect Router service using this set of settings. This\nsetting object can only by used by that service."
         }
       },
       "documentation": "A request to update a channel.",
@@ -25959,6 +25982,10 @@
         "Rec709Settings": {
           "shape": "Rec709Settings",
           "locationName": "rec709Settings"
+        },
+        "Hlg2020Settings": {
+          "shape": "Hlg2020Settings",
+          "locationName": "hlg2020Settings"
         }
       },
       "documentation": "Av1 Color Space Settings"
@@ -30506,6 +30533,98 @@
         }
       },
       "documentation": "Configures Elemental Inference features in a channel."
+    },
+    "MediaConnectRouterContainerSettings": {
+      "type": "structure",
+      "members": {
+        "M2tsSettings": {
+          "shape": "M2tsSettings",
+          "locationName": "m2tsSettings"
+        }
+      },
+      "documentation": "Media Connect Router Container Settings"
+    },
+    "MediaConnectRouterGroupSettings": {
+      "type": "structure",
+      "members": {
+        "AvailabilityZones": {
+          "shape": "__listOf__string",
+          "locationName": "availabilityZones",
+          "documentation": "The names of the Availability Zones in which to write output to MediaConnect Router."
+        }
+      },
+      "documentation": "Media Connect Router Group Settings"
+    },
+    "MediaConnectRouterOutputConnectionMap": {
+      "type": "structure",
+      "members": {
+        "Pipeline0": {
+          "shape": "__string",
+          "locationName": "pipeline0",
+          "documentation": "The ARN of the MediaConnect Router Input connected to pipeline 0."
+        },
+        "Pipeline1": {
+          "shape": "__string",
+          "locationName": "pipeline1",
+          "documentation": "The ARN of the MediaConnect Router Input connected to pipeline 1."
+        }
+      },
+      "documentation": "Map of MediaLive pipeline IDs to the ARNs of the MediaConnect Router Inputs to which this Output is connected."
+    },
+    "MediaConnectRouterOutputDestinationSettings": {
+      "type": "structure",
+      "members": {
+        "EncryptionType": {
+          "shape": "MediaConnectRouterOutputEncryptionType",
+          "locationName": "encryptionType",
+          "documentation": "Encryption configuration for MediaConnect router. When using SECRETS_MANAGER encryption, you must provide the ARN of the secret used to encrypt data in transit. When using AUTOMATIC encryption, a service-managed secret will be used instead."
+        },
+        "SecretArn": {
+          "shape": "__string",
+          "locationName": "secretArn",
+          "documentation": "ARN of the secret used to encrypt this input. Used only with the SECRETS_MANAGER encryption type."
+        }
+      },
+      "documentation": "MediaConnect Router Output Destination Settings"
+    },
+    "MediaConnectRouterOutputEncryptionType": {
+      "type": "string",
+      "documentation": "Encryption configuration for MediaConnect router. When using SECRETS_MANAGER encryption, you must provide the ARN of the secret used to encrypt data in transit. When using AUTOMATIC encryption, a service-managed secret will be used instead.",
+      "enum": [
+        "AUTOMATIC",
+        "SECRETS_MANAGER"
+      ]
+    },
+    "MediaConnectRouterOutputSettings": {
+      "type": "structure",
+      "members": {
+        "ConnectedRouterInputs": {
+          "shape": "MediaConnectRouterOutputConnectionMap",
+          "locationName": "connectedRouterInputs",
+          "documentation": "Shows the MediaConnect Router Inputs that are connected to this output. This parameter is purely informative, and editing it will have no effect. To connect or disconnect MediaConnect Router Inputs, go to MediaConnect."
+        },
+        "ContainerSettings": {
+          "shape": "MediaConnectRouterContainerSettings",
+          "locationName": "containerSettings"
+        },
+        "Destination": {
+          "shape": "OutputLocationRef",
+          "locationName": "destination",
+          "documentation": "Destination for this MediaConnect Router Output. The referenced OutputDestination must have MediaConnect Router settings configured."
+        }
+      },
+      "documentation": "Media Connect Router Output Settings",
+      "required": [
+        "Destination",
+        "ContainerSettings"
+      ]
+    },
+    "__listOfMediaConnectRouterOutputDestinationSettings": {
+      "type": "list",
+      "member": {
+        "shape": "MediaConnectRouterOutputDestinationSettings"
+      },
+      "documentation": "Placeholder documentation for __listOfMediaConnectRouterOutputDestinationSettings"
     }
   },
   "documentation": "API for AWS Elemental MediaLive"

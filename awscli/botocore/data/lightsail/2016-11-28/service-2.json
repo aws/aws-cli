@@ -262,7 +262,7 @@
         {"shape":"UnauthenticatedException"},
         {"shape":"RegionSetupInProgressException"}
       ],
-      "documentation":"<p>Creates an email or SMS text message contact method.</p> <p>A contact method is used to send you notifications about your Amazon Lightsail resources. You can add one email address and one mobile phone number contact method in each Amazon Web Services Region. However, SMS text messaging is not supported in some Amazon Web Services Regions, and SMS text messages cannot be sent to some countries/regions. For more information, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-notifications\">Notifications in Amazon Lightsail</a>.</p>"
+      "documentation":"<p>Creates an email or SMS text message contact method.</p> <p>A contact method is used to send you notifications about your Amazon Lightsail resources. You can add one email address and one mobile phone number contact method in each Amazon Web Services Region. However, SMS text messaging is not supported in some Amazon Web Services Regions, and SMS text messages cannot be sent to some countries/regions. For more information, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-notifications\">Notifications in Amazon Lightsail</a>.</p> <p>The <code>create contact method</code> operation supports tag-based access control via request tags. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Lightsail Developer Guide</a>.</p>"
     },
     "CreateContainerService":{
       "name":"CreateContainerService",
@@ -2548,7 +2548,7 @@
         {"shape":"NotFoundException"},
         {"shape":"RegionSetupInProgressException"}
       ],
-      "documentation":"<p>Creates or updates an alarm, and associates it with the specified metric.</p> <p>An alarm is used to monitor a single metric for one of your resources. When a metric condition is met, the alarm can notify you by email, SMS text message, and a banner displayed on the Amazon Lightsail console. For more information, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-alarms\">Alarms in Amazon Lightsail</a>.</p> <p>When this action creates an alarm, the alarm state is immediately set to <code>INSUFFICIENT_DATA</code>. The alarm is then evaluated and its state is set appropriately. Any actions associated with the new state are then executed.</p> <p>When you update an existing alarm, its state is left unchanged, but the update completely overwrites the previous configuration of the alarm. The alarm is then evaluated with the updated configuration.</p>"
+      "documentation":"<p>Creates or updates an alarm, and associates it with the specified metric.</p> <p>An alarm is used to monitor a single metric for one of your resources. When a metric condition is met, the alarm can notify you by email, SMS text message, and a banner displayed on the Amazon Lightsail console. For more information, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-alarms\">Alarms in Amazon Lightsail</a>.</p> <p>When this action creates an alarm, the alarm state is immediately set to <code>INSUFFICIENT_DATA</code>. The alarm is then evaluated and its state is set appropriately. Any actions associated with the new state are then executed.</p> <p>When you update an existing alarm, its state is left unchanged, but the update completely overwrites the previous configuration of the alarm. The alarm is then evaluated with the updated configuration.</p> <p>The <code>put alarm</code> operation supports tag-based access control via request tags. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Lightsail Developer Guide</a>.</p>"
     },
     "PutInstancePublicPorts":{
       "name":"PutInstancePublicPorts",
@@ -3407,6 +3407,10 @@
         "notificationEnabled":{
           "shape":"boolean",
           "documentation":"<p>Indicates whether the alarm is enabled.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tag keys and optional values for the resource. For more information about tags in Lightsail, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-tags\">Amazon Lightsail Developer Guide</a>.</p>"
         }
       },
       "documentation":"<p>Describes an alarm.</p> <p>An alarm is a way to monitor your Lightsail resource metrics. For more information, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-alarms\">Alarms in Amazon Lightsail</a>.</p>"
@@ -10807,6 +10811,10 @@
         "notificationEnabled":{
           "shape":"boolean",
           "documentation":"<p>Indicates whether the alarm is enabled.</p> <p>Notifications are enabled by default if you don't specify this parameter.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tag keys and optional values to add to the alarm during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it's created.</p>"
         }
       }
     },
@@ -10973,14 +10981,15 @@
         "eu-west-2",
         "eu-west-3",
         "eu-central-1",
+        "eu-north-1",
         "ca-central-1",
         "ap-south-1",
         "ap-southeast-1",
         "ap-southeast-2",
         "ap-northeast-1",
         "ap-northeast-2",
-        "eu-north-1",
-        "ap-southeast-3"
+        "ap-southeast-3",
+        "ap-southeast-5"
       ]
     },
     "RegionSetupInProgressException":{

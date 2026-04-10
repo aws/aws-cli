@@ -1524,6 +1524,13 @@
       },
       "documentation":"<p>VPC_LATTICE egress configuration that specifies the Resource Configuration ARN and port for connecting to SFTP servers through customer VPCs. Requires a valid Resource Configuration with appropriate network access.</p>"
     },
+    "ConnectorsIpAddressType":{
+      "type":"string",
+      "enum":[
+        "IPV4",
+        "DUALSTACK"
+      ]
+    },
     "CopyStepDetails":{
       "type":"structure",
       "members":{
@@ -1702,6 +1709,10 @@
         "EgressConfig":{
           "shape":"ConnectorEgressConfig",
           "documentation":"<p>Specifies the egress configuration for the connector, which determines how traffic is routed from the connector to the SFTP server. When set to VPC, enables routing through customer VPCs using VPC_LATTICE for private connectivity.</p>"
+        },
+        "IpAddressType":{
+          "shape":"ConnectorsIpAddressType",
+          "documentation":"<p>Specifies the IP address type for the connector's network connections. When set to <code>IPV4</code>, the connector uses IPv4 addresses only. When set to <code>DUALSTACK</code>, the connector supports both IPv4 and IPv6 addresses, with IPv6 preferred when available.</p>"
         }
       }
     },
@@ -2826,6 +2837,10 @@
         "Status":{
           "shape":"ConnectorStatus",
           "documentation":"<p>Current status of the connector. PENDING indicates creation/update in progress, ACTIVE means ready for operations, and ERRORED indicates a failure requiring attention.</p>"
+        },
+        "IpAddressType":{
+          "shape":"ConnectorsIpAddressType",
+          "documentation":"<p>IP address type for the connector's network connections. When set to <code>IPV4</code>, the connector uses IPv4 addresses only. When set to <code>DUALSTACK</code>, the connector supports both IPv4 and IPv6 addresses, with IPv6 preferred when available.</p>"
         }
       },
       "documentation":"<p>Describes the parameters for the connector, as identified by the <code>ConnectorId</code>.</p>"
@@ -5926,6 +5941,10 @@
         "EgressConfig":{
           "shape":"UpdateConnectorEgressConfig",
           "documentation":"<p>Updates the egress configuration for the connector, allowing you to modify how traffic is routed from the connector to the SFTP server. Changes to VPC configuration may require connector restart.</p>"
+        },
+        "IpAddressType":{
+          "shape":"ConnectorsIpAddressType",
+          "documentation":"<p>Specifies the IP address type for the connector's network connections. When set to <code>IPV4</code>, the connector uses IPv4 addresses only. When set to <code>DUALSTACK</code>, the connector supports both IPv4 and IPv6 addresses, with IPv6 preferred when available.</p>"
         }
       }
     },

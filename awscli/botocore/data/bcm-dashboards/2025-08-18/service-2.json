@@ -32,6 +32,24 @@
       ],
       "documentation":"<p>Creates a new dashboard that can contain multiple widgets displaying cost and usage data. You can add custom widgets or use predefined widgets, arranging them in your preferred layout.</p>"
     },
+    "CreateScheduledReport":{
+      "name":"CreateScheduledReport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateScheduledReportRequest"},
+      "output":{"shape":"CreateScheduledReportResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a new scheduled report for a dashboard. A scheduled report automatically generates and delivers dashboard snapshots on a recurring schedule. Reports are delivered within 15 minutes of the scheduled delivery time.</p>"
+    },
     "DeleteDashboard":{
       "name":"DeleteDashboard",
       "http":{
@@ -47,6 +65,41 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Deletes a specified dashboard. This action cannot be undone.</p>"
+    },
+    "DeleteScheduledReport":{
+      "name":"DeleteScheduledReport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteScheduledReportRequest"},
+      "output":{"shape":"DeleteScheduledReportResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes a specified scheduled report. This is an irreversible operation.</p>"
+    },
+    "ExecuteScheduledReport":{
+      "name":"ExecuteScheduledReport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ExecuteScheduledReportRequest"},
+      "output":{"shape":"ExecuteScheduledReportResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Triggers an immediate execution of a scheduled report, outside of its regular schedule. The scheduled report must be in <code>ENABLED</code> state. Calling this operation on a <code>DISABLED</code> scheduled report returns a <code>ValidationException</code>.</p> <note> <p>If a <code>clientToken</code> is provided, the service uses it for idempotency. Requests with the same client token will not trigger a new execution within the same minute.</p> </note>"
     },
     "GetDashboard":{
       "name":"GetDashboard",
@@ -84,6 +137,24 @@
       "documentation":"<p>Retrieves the resource-based policy attached to a dashboard, showing sharing configurations and permissions.</p>",
       "readonly":true
     },
+    "GetScheduledReport":{
+      "name":"GetScheduledReport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetScheduledReportRequest"},
+      "output":{"shape":"GetScheduledReportResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves the configuration and metadata of a specified scheduled report.</p>",
+      "readonly":true
+    },
     "ListDashboards":{
       "name":"ListDashboards",
       "http":{
@@ -99,6 +170,23 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Returns a list of all dashboards in your account.</p>",
+      "readonly":true
+    },
+    "ListScheduledReports":{
+      "name":"ListScheduledReports",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListScheduledReportsRequest"},
+      "output":{"shape":"ListScheduledReportsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Returns a list of scheduled reports in your account.</p>",
       "readonly":true
     },
     "ListTagsForResource":{
@@ -166,6 +254,24 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Updates an existing dashboard's properties, including its name, description, and widget configurations.</p>"
+    },
+    "UpdateScheduledReport":{
+      "name":"UpdateScheduledReport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateScheduledReportRequest"},
+      "output":{"shape":"UpdateScheduledReportResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates an existing scheduled report's properties, including its name, description, schedule configuration, and widget settings. Only the parameters included in the request are updated; all other properties remain unchanged.</p>"
     }
   },
   "shapes":{
@@ -176,6 +282,25 @@
         "message":{"shape":"GenericString"}
       },
       "documentation":"<p>You do not have sufficient permissions to perform this action. Verify your IAM permissions and any resource policies.</p>",
+      "exception":true
+    },
+    "Boolean":{
+      "type":"boolean",
+      "box":true
+    },
+    "ClientToken":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[\\u0021-\\u007E]+"
+    },
+    "ConflictException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"GenericString"}
+      },
+      "documentation":"<p>The request could not be completed due to a conflict with the current state of the resource. For example, attempting to create a resource that already exists or is being created.</p>",
       "exception":true
     },
     "CostAndUsageQuery":{
@@ -259,6 +384,35 @@
         "arn":{
           "shape":"DashboardArn",
           "documentation":"<p>The ARN of the newly created dashboard.</p>"
+        }
+      }
+    },
+    "CreateScheduledReportRequest":{
+      "type":"structure",
+      "required":["scheduledReport"],
+      "members":{
+        "scheduledReport":{
+          "shape":"ScheduledReportInput",
+          "documentation":"<p>The configuration for the scheduled report, including the dashboard to report on, the schedule, and the execution role that the service will use to generate the dashboard snapshot.</p>"
+        },
+        "resourceTags":{
+          "shape":"ResourceTagList",
+          "documentation":"<p>The tags to apply to the scheduled report resource for organization and management.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateScheduledReportResponse":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"ScheduledReportArn",
+          "documentation":"<p>The ARN of the newly created scheduled report.</p>"
         }
       }
     },
@@ -382,6 +536,26 @@
         }
       }
     },
+    "DeleteScheduledReportRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"ScheduledReportArn",
+          "documentation":"<p>The ARN of the scheduled report to delete.</p>"
+        }
+      }
+    },
+    "DeleteScheduledReportResponse":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"ScheduledReportArn",
+          "documentation":"<p>The ARN of the scheduled report that was deleted.</p>"
+        }
+      }
+    },
     "Description":{
       "type":"string",
       "max":200,
@@ -455,6 +629,38 @@
       },
       "documentation":"<p>Defines how the widget's data should be visualized, including chart type, color schemes, axis configurations, and other display preferences.</p>",
       "union":true
+    },
+    "ExecuteScheduledReportRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"ScheduledReportArn",
+          "documentation":"<p>The ARN of the scheduled report to execute.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "dryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>When set to <code>true</code>, validates the scheduled report configuration without triggering an actual execution.</p>"
+        }
+      }
+    },
+    "ExecuteScheduledReportResponse":{
+      "type":"structure",
+      "members":{
+        "healthStatus":{
+          "shape":"HealthStatus",
+          "documentation":"<p>The health status of the scheduled report after the execution request.</p>"
+        },
+        "executionTriggered":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the execution was successfully triggered.</p>"
+        }
+      }
     },
     "Expression":{
       "type":"structure",
@@ -575,6 +781,26 @@
         }
       }
     },
+    "GetScheduledReportRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"ScheduledReportArn",
+          "documentation":"<p>The ARN of the scheduled report to retrieve.</p>"
+        }
+      }
+    },
+    "GetScheduledReportResponse":{
+      "type":"structure",
+      "required":["scheduledReport"],
+      "members":{
+        "scheduledReport":{
+          "shape":"ScheduledReport",
+          "documentation":"<p>The scheduled report configuration and metadata.</p>"
+        }
+      }
+    },
     "Granularity":{
       "type":"string",
       "enum":[
@@ -632,6 +858,32 @@
       "type":"list",
       "member":{"shape":"GroupDefinition"}
     },
+    "HealthStatus":{
+      "type":"structure",
+      "required":["statusCode"],
+      "members":{
+        "statusCode":{
+          "shape":"HealthStatusCode",
+          "documentation":"<p>The health status code. <code>HEALTHY</code> indicates the scheduled report is configured properly and has all required permissions to execute. <code>UNHEALTHY</code> indicates the scheduled report is unable to deliver the notification to the default Amazon EventBridge EventBus in your account and your action is needed. The reason for the unhealthy state is captured in the health status reasons.</p>"
+        },
+        "lastRefreshedAt":{
+          "shape":"GenericTimeStamp",
+          "documentation":"<p>The timestamp when the health status was last refreshed.</p>"
+        },
+        "statusReasons":{
+          "shape":"StatusReasonList",
+          "documentation":"<p>The list of reasons for the current health status. Only present when the status is <code>UNHEALTHY</code>.</p>"
+        }
+      },
+      "documentation":"<p>Contains the health status information for a scheduled report, including the status code and any reasons for an unhealthy state.</p>"
+    },
+    "HealthStatusCode":{
+      "type":"string",
+      "enum":[
+        "HEALTHY",
+        "UNHEALTHY"
+      ]
+    },
     "Integer":{
       "type":"integer",
       "box":true
@@ -673,12 +925,39 @@
         }
       }
     },
+    "ListScheduledReportsRequest":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"NextPageToken",
+          "documentation":"<p>The token for the next page of results. Use the value returned in the previous response.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. Valid range is 1 to 100. The default value is 50.</p>"
+        }
+      }
+    },
+    "ListScheduledReportsResponse":{
+      "type":"structure",
+      "required":["scheduledReports"],
+      "members":{
+        "scheduledReports":{
+          "shape":"ScheduledReportSummaryList",
+          "documentation":"<p>An array of scheduled report summaries, containing basic information about each scheduled report.</p>"
+        },
+        "nextToken":{
+          "shape":"NextPageToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. Not returned if there are no more results to retrieve.</p>"
+        }
+      }
+    },
     "ListTagsForResourceRequest":{
       "type":"structure",
       "required":["resourceArn"],
       "members":{
         "resourceArn":{
-          "shape":"DashboardArn",
+          "shape":"ResourceArn",
           "documentation":"<p>The unique identifier for the resource.</p>"
         }
       }
@@ -806,6 +1085,12 @@
       },
       "documentation":"<p>Defines the parameters for querying Reserved Instance utilization data, including grouping options and time granularity.</p>"
     },
+    "ResourceArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws[-a-z0-9]*:bcm-dashboards::[0-9]{12}:(dashboard|scheduled-report)/(\\*|[-a-z0-9]+)"
+    },
     "ResourceNotFoundException":{
       "type":"structure",
       "required":["message"],
@@ -885,11 +1170,216 @@
         "timeRange":{"shape":"DateTimeRange"},
         "granularity":{
           "shape":"Granularity",
-          "documentation":"<p>The time granularity of the retrieved data: HOURLY, DAILY, or MONTHLY.</p>"
+          "documentation":"<p>The time granularity of the retrieved data: <code>HOURLY</code>, <code>DAILY</code>, or <code>MONTHLY</code>.</p>"
         },
         "filter":{"shape":"Expression"}
       },
       "documentation":"<p>Defines the parameters for querying Savings Plans utilization data, including time granularity and sorting preferences.</p>"
+    },
+    "ScheduleConfig":{
+      "type":"structure",
+      "members":{
+        "scheduleExpression":{
+          "shape":"GenericString",
+          "documentation":"<p>The schedule expression that specifies when to trigger the scheduled report run. This value must be a cron expression consisting of six fields separated by white spaces: <code>cron(minutes hours day_of_month month day_of_week year)</code>.</p>"
+        },
+        "scheduleExpressionTimeZone":{
+          "shape":"GenericString",
+          "documentation":"<p>The time zone for the schedule expression, for example, <code>UTC</code>.</p>"
+        },
+        "schedulePeriod":{
+          "shape":"SchedulePeriod",
+          "documentation":"<p>The time period during which the schedule is active.</p>"
+        },
+        "state":{
+          "shape":"ScheduleState",
+          "documentation":"<p>The state of the schedule. <code>ENABLED</code> means the scheduled report runs according to its schedule expression. <code>DISABLED</code> means the scheduled report is paused and will not run until re-enabled.</p>"
+        }
+      },
+      "documentation":"<p>Defines the schedule for a scheduled report, including the cron expression, time zone, active period, and the schedule state.</p>"
+    },
+    "SchedulePeriod":{
+      "type":"structure",
+      "members":{
+        "startTime":{
+          "shape":"GenericTimeStamp",
+          "documentation":"<p>The start time of the schedule period. If not specified, defaults to the time of the create or update request. The start time cannot be more than 5 minutes before the time of the request.</p>"
+        },
+        "endTime":{
+          "shape":"GenericTimeStamp",
+          "documentation":"<p>The end time of the schedule period. If not specified, defaults to 3 years from the time of the create or update request. The maximum allowed value is 3 years from the current time. Setting an end time beyond this limit returns a <code>ValidationException</code>.</p>"
+        }
+      },
+      "documentation":"<p>Defines the active time period for execution of the scheduled report.</p>"
+    },
+    "ScheduleState":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "ScheduledReport":{
+      "type":"structure",
+      "required":[
+        "name",
+        "dashboardArn",
+        "scheduledReportExecutionRoleArn",
+        "scheduleConfig"
+      ],
+      "members":{
+        "arn":{
+          "shape":"ScheduledReportArn",
+          "documentation":"<p>The ARN of the scheduled report.</p>"
+        },
+        "name":{
+          "shape":"ScheduledReportName",
+          "documentation":"<p>The name of the scheduled report.</p>"
+        },
+        "dashboardArn":{
+          "shape":"DashboardArn",
+          "documentation":"<p>The ARN of the dashboard associated with the scheduled report.</p>"
+        },
+        "scheduledReportExecutionRoleArn":{
+          "shape":"ServiceRoleArn",
+          "documentation":"<p>The ARN of the IAM role that the scheduled report uses to execute. Amazon Web Services Billing and Cost Management Dashboards will assume this IAM role while executing the scheduled report.</p>"
+        },
+        "scheduleConfig":{
+          "shape":"ScheduleConfig",
+          "documentation":"<p>The schedule configuration that defines when and how often the report is generated.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the scheduled report's purpose or contents.</p>"
+        },
+        "widgetIds":{
+          "shape":"WidgetIdList",
+          "documentation":"<p>The list of widget identifiers included in the scheduled report.</p>"
+        },
+        "widgetDateRangeOverride":{
+          "shape":"DateTimeRange",
+          "documentation":"<p>The date range override applied to widgets in the scheduled report.</p>"
+        },
+        "createdAt":{
+          "shape":"GenericTimeStamp",
+          "documentation":"<p>The timestamp when the scheduled report was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"GenericTimeStamp",
+          "documentation":"<p>The timestamp when the scheduled report was last modified.</p>"
+        },
+        "lastExecutionAt":{
+          "shape":"GenericTimeStamp",
+          "documentation":"<p>The timestamp of the most recent execution of the scheduled report.</p>"
+        },
+        "healthStatus":{
+          "shape":"HealthStatus",
+          "documentation":"<p>The health status of the scheduled report at last refresh time.</p>"
+        }
+      },
+      "documentation":"<p>Contains the full configuration and metadata of a scheduled report.</p>"
+    },
+    "ScheduledReportArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws[-a-z0-9]*:bcm-dashboards::[0-9]{12}:scheduled-report/(\\*|[-a-z0-9]+)"
+    },
+    "ScheduledReportInput":{
+      "type":"structure",
+      "required":[
+        "name",
+        "dashboardArn",
+        "scheduledReportExecutionRoleArn",
+        "scheduleConfig"
+      ],
+      "members":{
+        "name":{
+          "shape":"ScheduledReportName",
+          "documentation":"<p>The name of the scheduled report.</p>"
+        },
+        "dashboardArn":{
+          "shape":"DashboardArn",
+          "documentation":"<p>The ARN of the dashboard to generate the scheduled report from.</p>"
+        },
+        "scheduledReportExecutionRoleArn":{
+          "shape":"ServiceRoleArn",
+          "documentation":"<p>The ARN of the IAM role that the scheduled report uses to execute. Amazon Web Services Billing and Cost Management Dashboards will assume this IAM role while executing the scheduled report.</p>"
+        },
+        "scheduleConfig":{
+          "shape":"ScheduleConfig",
+          "documentation":"<p>The schedule configuration that defines when and how often the report is generated. If the schedule state is not specified, it defaults to <code>ENABLED</code>.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the scheduled report's purpose or contents.</p>"
+        },
+        "widgetIds":{
+          "shape":"WidgetIdList",
+          "documentation":"<p>The list of widget identifiers to include in the scheduled report. If not specified, all widgets in the dashboard are included.</p>"
+        },
+        "widgetDateRangeOverride":{
+          "shape":"DateTimeRange",
+          "documentation":"<p>The date range override to apply to widgets in the scheduled report.</p>"
+        }
+      },
+      "documentation":"<p>Defines the configuration for creating a new scheduled report, including the dashboard, schedule, execution role, and optional widget settings.</p>"
+    },
+    "ScheduledReportName":{
+      "type":"string",
+      "max":50,
+      "min":2,
+      "pattern":"(?!.* {2})[a-zA-Z][a-zA-Z0-9 _-]{0,48}[a-zA-Z0-9_-]"
+    },
+    "ScheduledReportSummary":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "name",
+        "dashboardArn",
+        "scheduleExpression",
+        "state",
+        "healthStatus"
+      ],
+      "members":{
+        "arn":{
+          "shape":"ScheduledReportArn",
+          "documentation":"<p>The ARN of the scheduled report.</p>"
+        },
+        "name":{
+          "shape":"ScheduledReportName",
+          "documentation":"<p>The name of the scheduled report.</p>"
+        },
+        "dashboardArn":{
+          "shape":"DashboardArn",
+          "documentation":"<p>The ARN of the dashboard associated with the scheduled report.</p>"
+        },
+        "scheduleExpression":{
+          "shape":"GenericString",
+          "documentation":"<p>The schedule expression that defines when the report runs.</p>"
+        },
+        "state":{
+          "shape":"ScheduleState",
+          "documentation":"<p>The state of the schedule: <code>ENABLED</code> or <code>DISABLED</code>.</p>"
+        },
+        "healthStatus":{
+          "shape":"HealthStatus",
+          "documentation":"<p>The health status of the scheduled report as of its last refresh time.</p>"
+        },
+        "scheduleExpressionTimeZone":{
+          "shape":"GenericString",
+          "documentation":"<p>The time zone for the schedule expression, for example, <code>UTC</code>.</p>"
+        },
+        "widgetIds":{
+          "shape":"WidgetIdList",
+          "documentation":"<p>The list of widget identifiers included in the scheduled report.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information for a scheduled report.</p>"
+    },
+    "ScheduledReportSummaryList":{
+      "type":"list",
+      "member":{"shape":"ScheduledReportSummary"}
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
@@ -897,8 +1387,30 @@
       "members":{
         "message":{"shape":"GenericString"}
       },
-      "documentation":"<p>The request would exceed service quotas. For example, attempting to create more than 20 widgets in a dashboard or exceeding the maximum number of dashboards per account.</p>",
+      "documentation":"<p>The request would exceed a service quota. Review the service quotas for Amazon Web Services Billing and Cost Management Dashboards and retry your request.</p>",
       "exception":true
+    },
+    "ServiceRoleArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws[-a-z0-9]*:iam::[0-9]{12}:role/[a-zA-Z0-9+=,.@_/-]+"
+    },
+    "StatusReason":{
+      "type":"string",
+      "enum":[
+        "DATA_SOURCE_ACCESS_DENIED",
+        "EXECUTION_ROLE_ASSUME_FAILED",
+        "EXECUTION_ROLE_INSUFFICIENT_PERMISSIONS",
+        "DASHBOARD_NOT_FOUND",
+        "DASHBOARD_ACCESS_DENIED",
+        "INTERNAL_FAILURE",
+        "WIDGET_ID_NOT_FOUND"
+      ]
+    },
+    "StatusReasonList":{
+      "type":"list",
+      "member":{"shape":"StatusReason"}
     },
     "String":{"type":"string"},
     "StringList":{
@@ -918,7 +1430,7 @@
       ],
       "members":{
         "resourceArn":{
-          "shape":"DashboardArn",
+          "shape":"ResourceArn",
           "documentation":"<p>The unique identifier for the resource.</p>"
         },
         "resourceTags":{
@@ -966,7 +1478,7 @@
       ],
       "members":{
         "resourceArn":{
-          "shape":"DashboardArn",
+          "shape":"ResourceArn",
           "documentation":"<p>The unique identifier for the resource.</p>"
         },
         "resourceTagKeys":{
@@ -981,7 +1493,10 @@
     },
     "UpdateDashboardRequest":{
       "type":"structure",
-      "required":["arn"],
+      "required":[
+        "arn",
+        "name"
+      ],
       "members":{
         "arn":{
           "shape":"DashboardArn",
@@ -989,11 +1504,11 @@
         },
         "name":{
           "shape":"DashboardName",
-          "documentation":"<p>The new name for the dashboard. If not specified, the existing name is retained.</p>"
+          "documentation":"<p>The new name for the dashboard.</p>"
         },
         "description":{
           "shape":"Description",
-          "documentation":"<p>The new description for the dashboard. If not specified, the existing description is retained.</p>"
+          "documentation":"<p>The new description for the dashboard.</p>"
         },
         "widgets":{
           "shape":"WidgetList",
@@ -1008,6 +1523,62 @@
         "arn":{
           "shape":"DashboardArn",
           "documentation":"<p>The ARN of the updated dashboard.</p>"
+        }
+      }
+    },
+    "UpdateScheduledReportRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"ScheduledReportArn",
+          "documentation":"<p>The ARN of the scheduled report to update.</p>"
+        },
+        "name":{
+          "shape":"ScheduledReportName",
+          "documentation":"<p>The new name for the scheduled report.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The new description for the scheduled report.</p>"
+        },
+        "dashboardArn":{
+          "shape":"DashboardArn",
+          "documentation":"<p>The ARN of the dashboard to associate with the scheduled report.</p>"
+        },
+        "scheduledReportExecutionRoleArn":{
+          "shape":"ServiceRoleArn",
+          "documentation":"<p>The ARN of the IAM role that the scheduled report uses to execute. Amazon Web Services Billing and Cost Management Dashboards will assume this IAM role while executing the scheduled report.</p>"
+        },
+        "scheduleConfig":{
+          "shape":"ScheduleConfig",
+          "documentation":"<p>The updated schedule configuration for the report.</p>"
+        },
+        "widgetIds":{
+          "shape":"WidgetIdList",
+          "documentation":"<p>The list of widget identifiers to include in the scheduled report. If not specified, all widgets in the dashboard are included.</p>"
+        },
+        "widgetDateRangeOverride":{
+          "shape":"DateTimeRange",
+          "documentation":"<p>The date range override to apply to widgets in the scheduled report.</p>"
+        },
+        "clearWidgetIds":{
+          "shape":"Boolean",
+          "documentation":"<p>Set to true to clear existing widgetIds.</p>"
+        },
+        "clearWidgetDateRangeOverride":{
+          "shape":"Boolean",
+          "documentation":"<p>Set to true to clear existing widgetDateRangeOverride.</p>"
+        }
+      }
+    },
+    "UpdateScheduledReportResponse":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"ScheduledReportArn",
+          "documentation":"<p>The ARN of the updated scheduled report.</p>"
         }
       }
     },
@@ -1101,6 +1672,12 @@
       "max":32,
       "min":32,
       "pattern":"[0-9a-f]{32}"
+    },
+    "WidgetIdList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":1,
+      "min":0
     },
     "WidgetList":{
       "type":"list",

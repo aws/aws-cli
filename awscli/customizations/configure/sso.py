@@ -186,6 +186,15 @@ def display_account(account):
     return account_template.format(**account)
 
 
+def get_account_sorting_key(account):
+    only_account_id = ('accountName' not in account and 'emailAddress' not in account)
+    for key in ('accountName', 'emailAddress', 'accountId'):
+        value = account.get(key, None)
+        if value is not None:
+            return (only_account_id, value.lower())
+    return (only_account_id, None)
+
+
 class SSOSessionConfigurationPrompter:
     _DEFAULT_SSO_SCOPE = 'sso:account:access'
     _KNOWN_SSO_SCOPES = {
@@ -441,8 +450,9 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
             'There are {} AWS accounts available to you.\n'
         )
         uni_print(available_accounts_msg.format(len(accounts)))
+        sorted_accounts = sorted(accounts, key=get_account_sorting_key)
         selected_account = self._selector(
-            accounts, display_format=display_account
+            sorted_accounts, display_format=display_account
         )
         sso_account_id = selected_account['accountId']
         return sso_account_id
@@ -473,7 +483,8 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
     def _handle_multiple_roles(self, roles):
         available_roles_msg = 'There are {} roles available to you.\n'
         uni_print(available_roles_msg.format(len(roles)))
-        role_names = [r['roleName'] for r in roles]
+        sorted_roles = sorted(roles, key=lambda x: x['roleName'].lower())
+        role_names = [r['roleName'] for r in sorted_roles]
         sso_role_name = self._selector(role_names)
         return sso_role_name
 

@@ -588,7 +588,8 @@
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
         {"shape":"RepositoryNotFoundException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"UnableToListUpstreamImageReferrersException"}
       ],
       "documentation":"<p>Lists the artifacts associated with a specified subject image.</p> <note> <p>The IAM principal invoking this operation must have the <code>ecr:BatchGetImage</code> permission.</p> </note>"
     },
@@ -1932,7 +1933,7 @@
         },
         "imageStatus":{
           "shape":"ImageStatusFilter",
-          "documentation":"<p>The image status with which to filter your <a>DescribeImages</a> results. Valid values are <code>ACTIVE</code>, <code>ARCHIVED</code>, and <code>ACTIVATING</code>.</p>"
+          "documentation":"<p>The image status with which to filter your <a>DescribeImages</a> results. Valid values are <code>ACTIVE</code>, <code>ARCHIVED</code>, and <code>ACTIVATING</code>. If not specified, only images with <code>ACTIVE</code> status are returned.</p>"
         }
       },
       "documentation":"<p>An object representing a filter on a <a>DescribeImages</a> operation.</p>"
@@ -3456,7 +3457,7 @@
         },
         "maxResults":{
           "shape":"FiftyMaxResults",
-          "documentation":"<p>The maximum number of image referrer results returned by <code>ListImageReferrers</code> in paginated output. When this parameter is used, <code>ListImageReferrers</code> only returns <code>maxResults</code> results in a single page along with a <code>nextToken</code> response element. The remaining results of the initial request can be seen by sending another <code>ListImageReferrers</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 50. If this parameter is not used, then <code>ListImageReferrers</code> returns up to 50 results and a <code>nextToken</code> value, if applicable.</p>"
+          "documentation":"<p>The maximum number of image referrer results returned by <code>ListImageReferrers</code> in paginated output. When this parameter is used, <code>ListImageReferrers</code> only returns <code>maxResults</code> results in a single page along with a <code>nextToken</code> response element. The remaining results of the initial request can be seen by sending another <code>ListImageReferrers</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 50. If this parameter is not used, then <code>ListImageReferrers</code> returns up to 20 results and a <code>nextToken</code> value, if applicable.</p>"
         }
       }
     },
@@ -3482,7 +3483,7 @@
         },
         "imageStatus":{
           "shape":"ImageStatusFilter",
-          "documentation":"<p>The image status with which to filter your <a>ListImages</a> results. Valid values are <code>ACTIVE</code>, <code>ARCHIVED</code>, and <code>ACTIVATING</code>.</p>"
+          "documentation":"<p>The image status with which to filter your <a>ListImages</a> results. Valid values are <code>ACTIVE</code>, <code>ARCHIVED</code>, and <code>ACTIVATING</code>. If not specified, only images with <code>ACTIVE</code> status are returned.</p>"
         }
       },
       "documentation":"<p>An object representing a filter on a <a>ListImages</a> operation.</p>"
@@ -5000,6 +5001,14 @@
         "message":{"shape":"ExceptionMessage"}
       },
       "documentation":"<p>There was an issue getting the upstream layer matching the pull through cache rule.</p>",
+      "exception":true
+    },
+    "UnableToListUpstreamImageReferrersException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ExceptionMessage"}
+      },
+      "documentation":"<p>The referrer or referrers were unable to be listed using the pull through cache rule. This is usually caused because of an issue with the Secrets Manager secret containing the credentials for the upstream registry.</p>",
       "exception":true
     },
     "UnsupportedImageTypeException":{

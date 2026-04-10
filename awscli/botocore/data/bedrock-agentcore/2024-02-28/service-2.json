@@ -411,6 +411,25 @@
       ],
       "documentation":"<p>Executes a command in a runtime session container and streams the output back to the caller. This operation allows you to run shell commands within the agent runtime environment and receive real-time streaming responses including standard output and standard error.</p> <p>To invoke a command, you must specify the agent runtime ARN and a runtime session ID. The command execution supports streaming responses, allowing you to receive output as it becomes available through <code>contentStart</code>, <code>contentDelta</code>, and <code>contentStop</code> events.</p> <p>To use this operation, you must have the <code>bedrock-agentcore:InvokeAgentRuntimeCommand</code> permission.</p>"
     },
+    "InvokeBrowser":{
+      "name":"InvokeBrowser",
+      "http":{
+        "method":"POST",
+        "requestUri":"/browsers/{browserIdentifier}/sessions/invoke",
+        "responseCode":200
+      },
+      "input":{"shape":"InvokeBrowserRequest"},
+      "output":{"shape":"InvokeBrowserResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Invokes an operating system-level action on a browser session in Amazon Bedrock AgentCore. This operation provides direct OS-level control over browser sessions, enabling mouse actions, keyboard input, and screenshots that the WebSocket-based Chrome DevTools Protocol (CDP) cannot handle — such as interacting with print dialogs, context menus, and JavaScript alerts.</p> <p>You send a request with exactly one action in the <code>BrowserAction</code> union, and receive a corresponding result in the <code>BrowserActionResult</code> union.</p> <p>The following operations are related to <code>InvokeBrowser</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StartBrowserSession.html\">StartBrowserSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetBrowserSession.html\">GetBrowserSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StopBrowserSession.html\">StopBrowserSession</a> </p> </li> </ul>"
+    },
     "InvokeCodeInterpreter":{
       "name":"InvokeCodeInterpreter",
       "http":{
@@ -569,7 +588,7 @@
         {"shape":"InvalidInputException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Lists sessions in an AgentCore Memory resource based on specified criteria. We recommend using pagination to ensure that the operation returns quickly and successfully.</p> <p>To use this operation, you must have the <code>bedrock-agentcore:ListSessions</code> permission.</p>",
+      "documentation":"<p>Lists sessions in an AgentCore Memory resource based on specified criteria. We recommend using pagination to ensure that the operation returns quickly and successfully.</p> <p>Empty sessions are automatically deleted after one day.</p> <p>To use this operation, you must have the <code>bedrock-agentcore:ListSessions</code> permission.</p>",
       "readonly":true
     },
     "RetrieveMemoryRecords":{
@@ -612,6 +631,25 @@
       "documentation":"<p>Saves the current state of a browser session as a reusable profile in Amazon Bedrock AgentCore. A browser profile captures persistent browser data such as cookies and local storage from an active session, enabling you to reuse this data in future browser sessions.</p> <p>To save a browser session profile, you must specify the profile identifier, browser identifier, and session ID. The session must be active when saving the profile. Once saved, the profile can be used with the <code>StartBrowserSession</code> operation to initialize new sessions with the stored browser state.</p> <p>Browser profiles are useful for scenarios that require persistent authentication, maintaining user preferences across sessions, or continuing tasks that depend on previously stored browser data.</p> <p>The following operations are related to <code>SaveBrowserSessionProfile</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StartBrowserSession.html\">StartBrowserSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetBrowserSession.html\">GetBrowserSession</a> </p> </li> </ul>",
       "idempotent":true
     },
+    "SearchRegistryRecords":{
+      "name":"SearchRegistryRecords",
+      "http":{
+        "method":"POST",
+        "requestUri":"/registry-records/search",
+        "responseCode":200
+      },
+      "input":{"shape":"SearchRegistryRecordsRequest"},
+      "output":{"shape":"SearchRegistryRecordsResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Searches for registry records using semantic, lexical, or hybrid queries. Returns metadata for matching records ordered by relevance within the specified registry.</p>"
+    },
     "StartBrowserSession":{
       "name":"StartBrowserSession",
       "http":{
@@ -630,7 +668,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates and initializes a browser session in Amazon Bedrock AgentCore. The session enables agents to navigate and interact with web content, extract information from websites, and perform web-based tasks as part of their response generation.</p> <p>To create a session, you must specify a browser identifier and a name. You can also configure the viewport dimensions to control the visible area of web content. The session remains active until it times out or you explicitly stop it using the <code>StopBrowserSession</code> operation.</p> <p>The following operations are related to <code>StartBrowserSession</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetBrowserSession.html\">GetBrowserSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_UpdateBrowserStream.html\">UpdateBrowserStream</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_SaveBrowserSessionProfile.html\">SaveBrowserSessionProfile</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StopBrowserSession.html\">StopBrowserSession</a> </p> </li> </ul>",
+      "documentation":"<p>Creates and initializes a browser session in Amazon Bedrock AgentCore. The session enables agents to navigate and interact with web content, extract information from websites, and perform web-based tasks as part of their response generation.</p> <p>To create a session, you must specify a browser identifier and a name. You can also configure the viewport dimensions to control the visible area of web content. The session remains active until it times out or you explicitly stop it using the <code>StopBrowserSession</code> operation.</p> <p>The following operations are related to <code>StartBrowserSession</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetBrowserSession.html\">GetBrowserSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_UpdateBrowserStream.html\">UpdateBrowserStream</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_SaveBrowserSessionProfile.html\">SaveBrowserSessionProfile</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StopBrowserSession.html\">StopBrowserSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_InvokeBrowser.html\">InvokeBrowser</a> </p> </li> </ul>",
       "idempotent":true
     },
     "StartCodeInterpreterSession":{
@@ -762,6 +800,17 @@
     }
   },
   "shapes":{
+    "A2aDescriptor":{
+      "type":"structure",
+      "required":["agentCard"],
+      "members":{
+        "agentCard":{
+          "shape":"AgentCardDefinition",
+          "documentation":"<p> The agent card definition that describes the agent's capabilities and interface.</p>"
+        }
+      },
+      "documentation":"<p> The A2A (Agent-to-Agent) descriptor configuration for a registry record.</p>"
+    },
     "AccessDeniedException":{
       "type":"structure",
       "members":{
@@ -805,6 +854,35 @@
       "type":"structure",
       "members":{},
       "document":true
+    },
+    "AgentCardDefinition":{
+      "type":"structure",
+      "members":{
+        "schemaVersion":{
+          "shape":"SchemaVersion",
+          "documentation":"<p> The schema version of the agent card definition.</p>"
+        },
+        "inlineContent":{
+          "shape":"InlineContent",
+          "documentation":"<p> The inline content of the agent card definition.</p>"
+        }
+      },
+      "documentation":"<p> The agent card definition for A2A descriptors, including the schema version and inline content that describes the agent's capabilities.</p>"
+    },
+    "AgentSkillsDescriptor":{
+      "type":"structure",
+      "required":["skillMd"],
+      "members":{
+        "skillMd":{
+          "shape":"SkillMdDefinition",
+          "documentation":"<p> The skill description in markdown format.</p>"
+        },
+        "skillDefinition":{
+          "shape":"SkillDefinition",
+          "documentation":"<p> The structured skill definition with a schema version and content.</p>"
+        }
+      },
+      "documentation":"<p> The agent skills descriptor configuration for a registry record.</p>"
     },
     "ApiKeyType":{
       "type":"string",
@@ -1022,6 +1100,92 @@
       "max":100,
       "min":1,
       "pattern":"[a-zA-Z0-9][a-zA-Z0-9-_]*"
+    },
+    "BrowserAction":{
+      "type":"structure",
+      "members":{
+        "mouseClick":{
+          "shape":"MouseClickArguments",
+          "documentation":"<p>Click at the specified coordinates.</p>"
+        },
+        "mouseMove":{
+          "shape":"MouseMoveArguments",
+          "documentation":"<p>Move the cursor to the specified coordinates.</p>"
+        },
+        "mouseDrag":{
+          "shape":"MouseDragArguments",
+          "documentation":"<p>Drag from a start position to an end position.</p>"
+        },
+        "mouseScroll":{
+          "shape":"MouseScrollArguments",
+          "documentation":"<p>Scroll at the specified position.</p>"
+        },
+        "keyType":{
+          "shape":"KeyTypeArguments",
+          "documentation":"<p>Type a string of text.</p>"
+        },
+        "keyPress":{
+          "shape":"KeyPressArguments",
+          "documentation":"<p>Press a key one or more times.</p>"
+        },
+        "keyShortcut":{
+          "shape":"KeyShortcutArguments",
+          "documentation":"<p>Press a key combination.</p>"
+        },
+        "screenshot":{
+          "shape":"ScreenshotArguments",
+          "documentation":"<p>Capture a full-screen screenshot.</p>"
+        }
+      },
+      "documentation":"<p>The browser action to perform. Exactly one member must be set per request.</p>",
+      "union":true
+    },
+    "BrowserActionResult":{
+      "type":"structure",
+      "members":{
+        "mouseClick":{
+          "shape":"MouseClickResult",
+          "documentation":"<p>The result of a mouse click action.</p>"
+        },
+        "mouseMove":{
+          "shape":"MouseMoveResult",
+          "documentation":"<p>The result of a mouse move action.</p>"
+        },
+        "mouseDrag":{
+          "shape":"MouseDragResult",
+          "documentation":"<p>The result of a mouse drag action.</p>"
+        },
+        "mouseScroll":{
+          "shape":"MouseScrollResult",
+          "documentation":"<p>The result of a mouse scroll action.</p>"
+        },
+        "keyType":{
+          "shape":"KeyTypeResult",
+          "documentation":"<p>The result of a key type action.</p>"
+        },
+        "keyPress":{
+          "shape":"KeyPressResult",
+          "documentation":"<p>The result of a key press action.</p>"
+        },
+        "keyShortcut":{
+          "shape":"KeyShortcutResult",
+          "documentation":"<p>The result of a key shortcut action.</p>"
+        },
+        "screenshot":{
+          "shape":"ScreenshotResult",
+          "documentation":"<p>The result of a screenshot action.</p>"
+        }
+      },
+      "documentation":"<p>The result of a browser action execution. Exactly one member is set, matching the action that was performed.</p>",
+      "union":true
+    },
+    "BrowserActionStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a browser action execution.</p>",
+      "enum":[
+        "SUCCESS",
+        "FAILED"
+      ]
     },
     "BrowserEnterprisePolicies":{
       "type":"list",
@@ -1528,6 +1692,16 @@
       "min":1,
       "pattern":"[a-zA-Z0-9\\-_]+"
     },
+    "CustomDescriptor":{
+      "type":"structure",
+      "members":{
+        "inlineContent":{
+          "shape":"InlineContent",
+          "documentation":"<p> The inline content of the custom descriptor.</p>"
+        }
+      },
+      "documentation":"<p> A custom descriptor configuration for a registry record.</p>"
+    },
     "CustomRequestKeyType":{
       "type":"string",
       "max":256,
@@ -1624,6 +1798,44 @@
           "documentation":"<p>The identifier of the memory record that was deleted.</p>"
         }
       }
+    },
+    "Description":{
+      "type":"string",
+      "max":4096,
+      "min":1,
+      "sensitive":true
+    },
+    "DescriptorType":{
+      "type":"string",
+      "documentation":"<p> The type of descriptor associated with a registry record.</p>",
+      "enum":[
+        "MCP",
+        "A2A",
+        "CUSTOM",
+        "AGENT_SKILLS"
+      ]
+    },
+    "Descriptors":{
+      "type":"structure",
+      "members":{
+        "mcp":{
+          "shape":"McpDescriptor",
+          "documentation":"<p> The MCP (Model Context Protocol) descriptor configuration. Populated when the record's <code>descriptorType</code> is <code>MCP</code>.</p>"
+        },
+        "a2a":{
+          "shape":"A2aDescriptor",
+          "documentation":"<p> The A2A (Agent-to-Agent) descriptor configuration. Populated when the record's <code>descriptorType</code> is <code>A2A</code>.</p>"
+        },
+        "custom":{
+          "shape":"CustomDescriptor",
+          "documentation":"<p> The custom descriptor configuration. Populated when the record's <code>descriptorType</code> is <code>CUSTOM</code>.</p>"
+        },
+        "agentSkills":{
+          "shape":"AgentSkillsDescriptor",
+          "documentation":"<p> The agent skills descriptor configuration. Populated when the record's <code>descriptorType</code> is <code>AGENT_SKILLS</code>.</p>"
+        }
+      },
+      "documentation":"<p> Contains the descriptor configuration for a registry record. Only the field that matches the record's <code>descriptorType</code> is populated.</p>"
     },
     "Document":{
       "type":"structure",
@@ -2563,6 +2775,11 @@
       "max":100,
       "min":0
     },
+    "InlineContent":{
+      "type":"string",
+      "max":409600,
+      "min":1
+    },
     "InputContentBlock":{
       "type":"structure",
       "required":["path"],
@@ -2991,6 +3208,53 @@
       },
       "payload":"response"
     },
+    "InvokeBrowserRequest":{
+      "type":"structure",
+      "required":[
+        "browserIdentifier",
+        "sessionId",
+        "action"
+      ],
+      "members":{
+        "browserIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the browser associated with the session. This must match the identifier used when creating the session with <code>StartBrowserSession</code>.</p>",
+          "location":"uri",
+          "locationName":"browserIdentifier"
+        },
+        "sessionId":{
+          "shape":"BrowserSessionId",
+          "documentation":"<p>The unique identifier of the browser session on which to perform the action. This must be an active session created with <code>StartBrowserSession</code>.</p>",
+          "location":"header",
+          "locationName":"x-amzn-browser-session-id"
+        },
+        "action":{
+          "shape":"BrowserAction",
+          "documentation":"<p>The browser action to perform. Exactly one member of the <code>BrowserAction</code> union must be set per request.</p>"
+        }
+      },
+      "documentation":"<p>Request for the InvokeBrowser operation.</p>"
+    },
+    "InvokeBrowserResponse":{
+      "type":"structure",
+      "required":[
+        "result",
+        "sessionId"
+      ],
+      "members":{
+        "result":{
+          "shape":"BrowserActionResult",
+          "documentation":"<p>The result of the browser action. The member set in the result corresponds to the action that was performed.</p>"
+        },
+        "sessionId":{
+          "shape":"BrowserSessionId",
+          "documentation":"<p>The unique identifier of the browser session on which the action was performed.</p>",
+          "location":"header",
+          "locationName":"x-amzn-browser-session-id"
+        }
+      },
+      "documentation":"<p>Response for the InvokeBrowser operation.</p>"
+    },
     "InvokeCodeInterpreterRequest":{
       "type":"structure",
       "required":[
@@ -3058,6 +3322,106 @@
         }
       },
       "payload":"stream"
+    },
+    "KeyList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "documentation":"<p>A list of key names for keyboard shortcuts.</p>",
+      "max":5,
+      "min":1
+    },
+    "KeyPressArguments":{
+      "type":"structure",
+      "required":["key"],
+      "members":{
+        "key":{
+          "shape":"String",
+          "documentation":"<p>The key name to press (for example, <code>enter</code>, <code>tab</code>, <code>escape</code>).</p>"
+        },
+        "presses":{
+          "shape":"KeyPressArgumentsPressesInteger",
+          "documentation":"<p>The number of times to press the key. Valid range: 1–100. Defaults to 1.</p>"
+        }
+      },
+      "documentation":"<p>Arguments for a key press action.</p>"
+    },
+    "KeyPressArgumentsPressesInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "KeyPressResult":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"BrowserActionStatus",
+          "documentation":"<p>The status of the action execution.</p>"
+        },
+        "error":{
+          "shape":"String",
+          "documentation":"<p>The error message. Present only when the action failed.</p>"
+        }
+      },
+      "documentation":"<p>The result of a key press action.</p>"
+    },
+    "KeyShortcutArguments":{
+      "type":"structure",
+      "required":["keys"],
+      "members":{
+        "keys":{
+          "shape":"KeyList",
+          "documentation":"<p>The key combination to press (for example, <code>[\"ctrl\", \"s\"]</code>). Maximum 5 keys.</p>"
+        }
+      },
+      "documentation":"<p>Arguments for a key shortcut action.</p>"
+    },
+    "KeyShortcutResult":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"BrowserActionStatus",
+          "documentation":"<p>The status of the action execution.</p>"
+        },
+        "error":{
+          "shape":"String",
+          "documentation":"<p>The error message. Present only when the action failed.</p>"
+        }
+      },
+      "documentation":"<p>The result of a key shortcut action.</p>"
+    },
+    "KeyTypeArguments":{
+      "type":"structure",
+      "required":["text"],
+      "members":{
+        "text":{
+          "shape":"KeyTypeArgumentsTextString",
+          "documentation":"<p>The text string to type. Maximum length: 10,000 characters.</p>"
+        }
+      },
+      "documentation":"<p>Arguments for a key type action.</p>"
+    },
+    "KeyTypeArgumentsTextString":{
+      "type":"string",
+      "max":10000,
+      "min":0
+    },
+    "KeyTypeResult":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"BrowserActionStatus",
+          "documentation":"<p>The status of the action execution.</p>"
+        },
+        "error":{
+          "shape":"String",
+          "documentation":"<p>The error message. Present only when the action failed.</p>"
+        }
+      },
+      "documentation":"<p>The result of a key type action.</p>"
     },
     "LanguageRuntime":{
       "type":"string",
@@ -3407,6 +3771,24 @@
       "max":100,
       "min":1
     },
+    "McpDescriptor":{
+      "type":"structure",
+      "required":[
+        "server",
+        "tools"
+      ],
+      "members":{
+        "server":{
+          "shape":"ServerDefinition",
+          "documentation":"<p> The MCP server definition that describes the server configuration.</p>"
+        },
+        "tools":{
+          "shape":"ToolsDefinition",
+          "documentation":"<p> The MCP tools definition that describes the available tools.</p>"
+        }
+      },
+      "documentation":"<p> The MCP (Model Context Protocol) descriptor configuration for a registry record. Contains the server definition and tools definition.</p>"
+    },
     "MemoryContent":{
       "type":"structure",
       "members":{
@@ -3699,6 +4081,12 @@
       "type":"list",
       "member":{"shape":"MessageMetadata"}
     },
+    "MetadataFilterExpression":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p> A JSON document that represents a structured metadata filter expression. Supports field-level operators (<code>$eq</code>, <code>$ne</code>, <code>$in</code>) and logical operators (<code>$and</code>, <code>$or</code>) on filterable fields (<code>name</code>, <code>descriptorType</code>, <code>version</code>).</p>",
+      "document":true
+    },
     "MetadataKey":{
       "type":"string",
       "max":128,
@@ -3733,6 +4121,195 @@
       "type":"string",
       "max":256,
       "min":1
+    },
+    "MouseButton":{
+      "type":"string",
+      "documentation":"<p>The mouse button to use for a browser mouse action.</p>",
+      "enum":[
+        "LEFT",
+        "RIGHT",
+        "MIDDLE"
+      ]
+    },
+    "MouseClickArguments":{
+      "type":"structure",
+      "required":[
+        "x",
+        "y"
+      ],
+      "members":{
+        "x":{
+          "shape":"Integer",
+          "documentation":"<p>The X coordinate on screen where the click occurs.</p>"
+        },
+        "y":{
+          "shape":"Integer",
+          "documentation":"<p>The Y coordinate on screen where the click occurs.</p>"
+        },
+        "button":{
+          "shape":"MouseButton",
+          "documentation":"<p>The mouse button to use. Defaults to <code>LEFT</code>.</p>"
+        },
+        "clickCount":{
+          "shape":"MouseClickArgumentsClickCountInteger",
+          "documentation":"<p>The number of clicks to perform. Valid range: 1–10. Defaults to 1.</p>"
+        }
+      },
+      "documentation":"<p>Arguments for a mouse click action.</p>"
+    },
+    "MouseClickArgumentsClickCountInteger":{
+      "type":"integer",
+      "box":true,
+      "max":10,
+      "min":1
+    },
+    "MouseClickResult":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"BrowserActionStatus",
+          "documentation":"<p>The status of the action execution.</p>"
+        },
+        "error":{
+          "shape":"String",
+          "documentation":"<p>The error message. Present only when the action failed.</p>"
+        }
+      },
+      "documentation":"<p>The result of a mouse click action.</p>"
+    },
+    "MouseDragArguments":{
+      "type":"structure",
+      "required":[
+        "endX",
+        "endY",
+        "startX",
+        "startY"
+      ],
+      "members":{
+        "endX":{
+          "shape":"Integer",
+          "documentation":"<p>The ending X coordinate for the drag.</p>"
+        },
+        "endY":{
+          "shape":"Integer",
+          "documentation":"<p>The ending Y coordinate for the drag.</p>"
+        },
+        "startX":{
+          "shape":"Integer",
+          "documentation":"<p>The starting X coordinate for the drag.</p>"
+        },
+        "startY":{
+          "shape":"Integer",
+          "documentation":"<p>The starting Y coordinate for the drag.</p>"
+        },
+        "button":{
+          "shape":"MouseButton",
+          "documentation":"<p>The mouse button to use for the drag. Defaults to <code>LEFT</code>.</p>"
+        }
+      },
+      "documentation":"<p>Arguments for a mouse drag action.</p>"
+    },
+    "MouseDragResult":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"BrowserActionStatus",
+          "documentation":"<p>The status of the action execution.</p>"
+        },
+        "error":{
+          "shape":"String",
+          "documentation":"<p>The error message. Present only when the action failed.</p>"
+        }
+      },
+      "documentation":"<p>The result of a mouse drag action.</p>"
+    },
+    "MouseMoveArguments":{
+      "type":"structure",
+      "required":[
+        "x",
+        "y"
+      ],
+      "members":{
+        "x":{
+          "shape":"Integer",
+          "documentation":"<p>The target X coordinate on screen.</p>"
+        },
+        "y":{
+          "shape":"Integer",
+          "documentation":"<p>The target Y coordinate on screen.</p>"
+        }
+      },
+      "documentation":"<p>Arguments for a mouse move action.</p>"
+    },
+    "MouseMoveResult":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"BrowserActionStatus",
+          "documentation":"<p>The status of the action execution.</p>"
+        },
+        "error":{
+          "shape":"String",
+          "documentation":"<p>The error message. Present only when the action failed.</p>"
+        }
+      },
+      "documentation":"<p>The result of a mouse move action.</p>"
+    },
+    "MouseScrollArguments":{
+      "type":"structure",
+      "required":[
+        "x",
+        "y"
+      ],
+      "members":{
+        "x":{
+          "shape":"Integer",
+          "documentation":"<p>The X coordinate on screen where the scroll occurs.</p>"
+        },
+        "y":{
+          "shape":"Integer",
+          "documentation":"<p>The Y coordinate on screen where the scroll occurs.</p>"
+        },
+        "deltaX":{
+          "shape":"MouseScrollArgumentsDeltaXInteger",
+          "documentation":"<p>The horizontal scroll delta. Valid range: -1000 to 1000.</p>"
+        },
+        "deltaY":{
+          "shape":"MouseScrollArgumentsDeltaYInteger",
+          "documentation":"<p>The vertical scroll delta. Valid range: -1000 to 1000. Negative values scroll down.</p>"
+        }
+      },
+      "documentation":"<p>Arguments for a mouse scroll action.</p>"
+    },
+    "MouseScrollArgumentsDeltaXInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":-1000
+    },
+    "MouseScrollArgumentsDeltaYInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":-1000
+    },
+    "MouseScrollResult":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"BrowserActionStatus",
+          "documentation":"<p>The status of the action execution.</p>"
+        },
+        "error":{
+          "shape":"String",
+          "documentation":"<p>The error message. Present only when the action failed.</p>"
+        }
+      },
+      "documentation":"<p>The result of a mouse scroll action.</p>"
     },
     "Name":{
       "type":"string",
@@ -3858,6 +4435,119 @@
       },
       "documentation":"<p>Union type representing different proxy authentication methods. Currently supports HTTP Basic Authentication (username and password).</p>",
       "union":true
+    },
+    "RegistryArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:registry/[a-zA-Z0-9]{12,16}"
+    },
+    "RegistryIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"(arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:registry/)?[a-zA-Z0-9]{12,16}"
+    },
+    "RegistryRecordArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:registry/[a-zA-Z0-9]{12,16}/record/[a-zA-Z0-9]{12}"
+    },
+    "RegistryRecordId":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"[a-zA-Z0-9]{12}"
+    },
+    "RegistryRecordName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[a-zA-Z0-9][a-zA-Z0-9_\\-\\.\\/]*"
+    },
+    "RegistryRecordStatus":{
+      "type":"string",
+      "documentation":"<p> The status of a registry record in its lifecycle.</p>",
+      "enum":[
+        "DRAFT",
+        "PENDING_APPROVAL",
+        "APPROVED",
+        "REJECTED",
+        "DEPRECATED"
+      ]
+    },
+    "RegistryRecordSummary":{
+      "type":"structure",
+      "required":[
+        "registryArn",
+        "recordArn",
+        "recordId",
+        "name",
+        "descriptorType",
+        "descriptors",
+        "version",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "registryArn":{
+          "shape":"RegistryArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the registry that this record belongs to.</p>"
+        },
+        "recordArn":{
+          "shape":"RegistryRecordArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the registry record.</p>"
+        },
+        "recordId":{
+          "shape":"RegistryRecordId",
+          "documentation":"<p> The unique identifier of the registry record.</p>"
+        },
+        "name":{
+          "shape":"RegistryRecordName",
+          "documentation":"<p> The name of the registry record.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p> A description of the registry record.</p>"
+        },
+        "descriptorType":{
+          "shape":"DescriptorType",
+          "documentation":"<p> The type of descriptor associated with this registry record.</p>"
+        },
+        "descriptors":{
+          "shape":"Descriptors",
+          "documentation":"<p> The descriptor configurations for this registry record.</p>"
+        },
+        "version":{
+          "shape":"RegistryRecordVersion",
+          "documentation":"<p> The version of the registry record.</p>"
+        },
+        "status":{
+          "shape":"RegistryRecordStatus",
+          "documentation":"<p> The current status of the registry record.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p> The date and time when the registry record was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p> The date and time when the registry record was last updated.</p>"
+        }
+      },
+      "documentation":"<p> Summary information about a registry record.</p>"
+    },
+    "RegistryRecordSummaryList":{
+      "type":"list",
+      "member":{"shape":"RegistryRecordSummary"}
+    },
+    "RegistryRecordVersion":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[a-zA-Z0-9.-]+"
     },
     "RequestIdentifier":{
       "type":"string",
@@ -4166,6 +4856,11 @@
         }
       }
     },
+    "SchemaVersion":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
     "ScopeType":{
       "type":"string",
       "max":128,
@@ -4174,6 +4869,40 @@
     "ScopesListType":{
       "type":"list",
       "member":{"shape":"ScopeType"}
+    },
+    "ScreenshotArguments":{
+      "type":"structure",
+      "members":{
+        "format":{
+          "shape":"ScreenshotFormat",
+          "documentation":"<p>The image format for the screenshot. Defaults to <code>PNG</code>.</p>"
+        }
+      },
+      "documentation":"<p>Arguments for a screenshot action.</p>"
+    },
+    "ScreenshotFormat":{
+      "type":"string",
+      "documentation":"<p>The image format for a browser screenshot.</p>",
+      "enum":["PNG"]
+    },
+    "ScreenshotResult":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"BrowserActionStatus",
+          "documentation":"<p>The status of the action execution.</p>"
+        },
+        "error":{
+          "shape":"String",
+          "documentation":"<p>The error message. Present only when the action failed.</p>"
+        },
+        "data":{
+          "shape":"Blob",
+          "documentation":"<p>The base64-encoded image data. Present only when the action succeeded.</p>"
+        }
+      },
+      "documentation":"<p>The result of a screenshot action.</p>"
     },
     "SearchCriteria":{
       "type":"structure",
@@ -4210,6 +4939,58 @@
       "max":100,
       "min":1
     },
+    "SearchRegistryRecordsRequest":{
+      "type":"structure",
+      "required":[
+        "searchQuery",
+        "registryIds"
+      ],
+      "members":{
+        "searchQuery":{
+          "shape":"SearchRegistryRecordsRequestSearchQueryString",
+          "documentation":"<p> The search query to find matching registry records.</p>"
+        },
+        "registryIds":{
+          "shape":"SearchRegistryRecordsRequestRegistryIdsList",
+          "documentation":"<p> The list of registry identifiers to search within. Currently, you can specify exactly one registry identifier. You can provide either the full Amazon Web Services Resource Name (ARN) or the 12-character alphanumeric registry ID.</p>"
+        },
+        "maxResults":{
+          "shape":"SearchRegistryRecordsRequestMaxResultsInteger",
+          "documentation":"<p> The maximum number of records to return in a single call. Valid values are 1 through 20. The default value is 10.</p>"
+        },
+        "filters":{
+          "shape":"MetadataFilterExpression",
+          "documentation":"<p> A metadata filter expression to narrow search results. Uses structured JSON operators including field-level operators (<code>$eq</code>, <code>$ne</code>, <code>$in</code>) and logical operators (<code>$and</code>, <code>$or</code>) on filterable fields (<code>name</code>, <code>descriptorType</code>, <code>version</code>). For example, to filter by descriptor type: <code>{\"descriptorType\": {\"$eq\": \"MCP\"}}</code>. To combine filters: <code>{\"$and\": [{\"descriptorType\": {\"$eq\": \"MCP\"}}, {\"name\": {\"$eq\": \"my-tool\"}}]}</code>.</p>"
+        }
+      }
+    },
+    "SearchRegistryRecordsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":20,
+      "min":1
+    },
+    "SearchRegistryRecordsRequestRegistryIdsList":{
+      "type":"list",
+      "member":{"shape":"RegistryIdentifier"},
+      "max":1,
+      "min":1
+    },
+    "SearchRegistryRecordsRequestSearchQueryString":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "SearchRegistryRecordsResponse":{
+      "type":"structure",
+      "required":["registryRecords"],
+      "members":{
+        "registryRecords":{
+          "shape":"RegistryRecordSummaryList",
+          "documentation":"<p> The list of registry records that match the search query, ordered by relevance.</p>"
+        }
+      }
+    },
     "SecretArn":{
       "type":"string",
       "pattern":"arn:aws(-[a-z-]+)?:secretsmanager:[a-z0-9-]+:[0-9]{12}:secret:[a-zA-Z0-9/_+=.@-]+"
@@ -4224,6 +5005,20 @@
         }
       },
       "documentation":"<p>The Amazon Web Services Secrets Manager location configuration.</p>"
+    },
+    "ServerDefinition":{
+      "type":"structure",
+      "members":{
+        "schemaVersion":{
+          "shape":"SchemaVersion",
+          "documentation":"<p> The schema version of the MCP server configuration. The schema version identifies the format of the server definition content.</p>"
+        },
+        "inlineContent":{
+          "shape":"InlineContent",
+          "documentation":"<p> The inline content of the server definition.</p>"
+        }
+      },
+      "documentation":"<p> The MCP server definition with a schema version and inline content. The <code>schemaVersion</code> identifies the version of the MCP server configuration schema.</p>"
     },
     "ServiceException":{
       "type":"structure",
@@ -4302,6 +5097,30 @@
       "type":"string",
       "max":256,
       "min":33
+    },
+    "SkillDefinition":{
+      "type":"structure",
+      "members":{
+        "schemaVersion":{
+          "shape":"SchemaVersion",
+          "documentation":"<p> The schema version of the skill definition. If you don't specify a version, the service detects it automatically.</p>"
+        },
+        "inlineContent":{
+          "shape":"InlineContent",
+          "documentation":"<p> The inline content of the skill definition.</p>"
+        }
+      },
+      "documentation":"<p> The structured skill definition with a schema version and inline content.</p>"
+    },
+    "SkillMdDefinition":{
+      "type":"structure",
+      "members":{
+        "inlineContent":{
+          "shape":"InlineContent",
+          "documentation":"<p> The inline markdown content of the skill definition.</p>"
+        }
+      },
+      "documentation":"<p> The skill markdown definition for agent skills descriptors.</p>"
     },
     "Span":{
       "type":"structure",
@@ -4907,6 +5726,20 @@
         }
       },
       "documentation":"<p>Contains structured content from a tool result.</p>"
+    },
+    "ToolsDefinition":{
+      "type":"structure",
+      "members":{
+        "protocolVersion":{
+          "shape":"SchemaVersion",
+          "documentation":"<p> The MCP protocol version that the tools conform to. This differs from the <code>schemaVersion</code> field in the server definition, which identifies the server configuration schema format.</p>"
+        },
+        "inlineContent":{
+          "shape":"InlineContent",
+          "documentation":"<p> The inline content of the tools definition.</p>"
+        }
+      },
+      "documentation":"<p> The MCP tools definition with a protocol version and inline content. The <code>protocolVersion</code> identifies the MCP protocol version that the tools conform to. This differs from <code>schemaVersion</code> in the server definition, which identifies the server configuration schema format.</p>"
     },
     "TraceId":{
       "type":"string",

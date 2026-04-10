@@ -6701,6 +6701,10 @@
           "shape":"LocationStringModel",
           "documentation":"<p>The fleet location where the game session is running. This value might specify the fleet's home Region or a remote location. Location is expressed as an Amazon Web Services Region code such as <code>us-west-2</code>. </p>"
         },
+        "ComputeName":{
+          "shape":"ComputeName",
+          "documentation":"<p>A descriptive label for the compute resource. The compute resource that is hosting the game session. For EC2 fleets, this is the EC2 instance ID. For Container fleets, each game server container group on a fleet instance is assigned a compute name. For Anywhere fleets, this is the custom compute name.</p>"
+        },
         "PlayerGatewayStatus":{
           "shape":"PlayerGatewayStatus",
           "documentation":"<p>Indicates whether player gateway is available for use for this game session. Note, even if a fleet has PlayerGatewayMode configured as <code>ENABLED</code>, player gateway might not be available in a specific location. For more information about locations where player gateway is supported, see <a href=\"https://docs.aws.amazon.com/gameliftservers/latest/developerguide/gamelift-regions.html\">Amazon GameLift Servers service locations</a>.</p> <p>Possible values include:</p> <ul> <li> <p> <code>ENABLED</code> -- Player gateway is available for routing player connections for this game session.</p> </li> <li> <p> <code>DISABLED</code> -- Player gateway is not available for this game session.</p> </li> </ul>"
@@ -8372,7 +8376,7 @@
     "NodeJsVersion":{
       "type":"string",
       "max":16,
-      "pattern":"^\\d+\\.[x0-9]+$"
+      "pattern":"^[0-9]+\\.(?:x|[0-9]+)$"
     },
     "NonBlankAndLengthConstraintString":{
       "type":"string",

@@ -191,7 +191,17 @@ class SwiftLogin(BaseLogin):
                     new_contents, new_entry
                 )
 
-            with open(netrc_path, 'w') as f:
+            fd = os.open(netrc_path,
+                         os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+           
+            try:
+                os.chmod(netrc_path, 0o600) # Ensure secure perms on pre-existing files
+            except OSError as e:
+                uni_print('Unable to set file permissions '
+                          'for %s: %s%s' % (netrc_path, e, os.linesep),
+                          sys.stderr)
+
+            with os.fdopen(fd, 'w') as f:
                 f.write(new_contents)
 
     def _create_netrc_file(self, netrc_path, new_entry):
@@ -635,7 +645,17 @@ password: {auth_token}'''
             sys.stdout.write(pypi_rc_str)
             sys.stdout.write(os.linesep)
         else:
-            with open(self.pypi_rc_path, 'w+') as fp:
+            fd = os.open(self.pypi_rc_path,
+                         os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+          
+            try:
+                os.chmod(self.pypi_rc_path, 0o600) # Ensure secure perms on pre-existing files
+            except OSError as e:
+                uni_print('Unable to set file permissions '
+                          'for %s: %s%s' % (self.pypi_rc_path, e, os.linesep), 
+                          sys.stderr)
+            
+            with os.fdopen(fd, 'w') as fp:
                 fp.write(pypi_rc_str)
 
             self._write_success_message('twine')

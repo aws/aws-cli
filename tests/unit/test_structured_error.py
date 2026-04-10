@@ -53,6 +53,7 @@ class TestClientErrorHandler:
             'ResponseMetadata': {'RequestId': '123'},
         }
         client_error = ClientError(error_response, 'GetObject')
+        client_error.modeled_fields = {'Code', 'Message', 'BucketName'}
 
         stdout = io.StringIO()
         stderr = io.StringIO()
@@ -129,6 +130,7 @@ class TestClientErrorHandler:
             'ResponseMetadata': {'RequestId': '123'},
         }
         client_error = ClientError(error_response, 'GetObject')
+        client_error.modeled_fields = {'Code', 'Message', 'BucketName'}
 
         self.session.config_store.set_config_provider(
             'cli_error_format', mock.Mock(provide=lambda: 'Enhanced')
@@ -149,6 +151,91 @@ class TestClientErrorHandler:
             'BucketName: test\n'
         )
         assert stderr.getvalue() == expected
+
+    def test_modeled_fields_filters_unmodeled_from_display(self):
+        error_response = {
+            'Error': {
+                'Code': 'ExpiredToken',
+                'Message': 'Token expired',
+                'Token-0': 'AQoDYXdzEJr...sensitive...',
+            },
+            'ResponseMetadata': {'RequestId': '123'},
+        }
+        client_error = ClientError(error_response, 'ListBuckets')
+        client_error.modeled_fields = {'Code', 'Message'}
+
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+
+        rc = self.handler.handle_exception(client_error, stdout, stderr)
+
+        assert rc == CLIENT_ERROR_RC
+        assert 'Token-0' not in stderr.getvalue()
+        assert 'sensitive' not in stderr.getvalue()
+
+    def test_modeled_fields_not_leaked_in_json_format(self):
+        error_response = {
+            'Error': {
+                'Code': 'ExpiredToken',
+                'Message': 'Token expired',
+                'Token-0': 'AQoDYXdzEJr...sensitive...',
+            },
+            'ResponseMetadata': {'RequestId': '123'},
+        }
+        client_error = ClientError(error_response, 'ListBuckets')
+        client_error.modeled_fields = {'Code', 'Message'}
+
+        self.session.session_vars['cli_error_format'] = 'json'
+
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+
+        self.handler.handle_exception(client_error, stdout, stderr)
+
+        parsed = json.loads(stderr.getvalue())
+        assert 'Token-0' not in parsed
+        assert '_modeled_fields' not in parsed
+        assert 'modeled_fields' not in parsed
+
+    def test_no_modeled_fields_hides_additional_fields(self):
+        # ClientError without modeled_fields attribute (e.g. manually
+        # constructed in customizations) should not show additional fields.
+        error_response = {
+            'Error': {
+                'Code': 'CustomError',
+                'Message': 'Something broke',
+                'Detail': 'extra info',
+            },
+            'ResponseMetadata': {'RequestId': '123'},
+        }
+        client_error = ClientError(error_response, 'DoThing')
+
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+
+        self.handler.handle_exception(client_error, stdout, stderr)
+
+        assert 'Detail' not in stderr.getvalue()
+
+    def test_modeled_fields_case_insensitive_match(self):
+        # Model has 'ErrorCode' but response has 'errorCode' (or vice versa)
+        error_response = {
+            'Error': {
+                'Code': 'SomeError',
+                'Message': 'msg',
+                'errorcode': 'detail',
+            },
+            'ResponseMetadata': {'RequestId': '123'},
+        }
+        client_error = ClientError(error_response, 'Op')
+        client_error.modeled_fields = {'Code', 'Message', 'ErrorCode'}
+
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+
+        self.handler.handle_exception(client_error, stdout, stderr)
+
+        assert 'errorcode: detail' in stderr.getvalue()
 
 
 class TestEnhancedErrorFormatter:
@@ -343,6 +430,33 @@ class TestEnhancedErrorFormatter:
         )
         assert output == expected
 
+    def test_format_error_hides_unmodeled_fields(self):
+        # Unmodeled fields are now filtered before reaching the formatter.
+        # Formatter receives only modeled fields.
+        error_info = {
+            'Code': 'ExpiredToken',
+            'Message': 'Token expired',
+        }
+
+        stream = io.StringIO()
+        self.formatter.format_error(error_info, stream)
+
+        assert stream.getvalue() == ''
+
+    def test_format_error_shows_modeled_fields(self):
+        # Unmodeled fields are filtered before reaching the formatter.
+        error_info = {
+            'Code': 'FileSystemNotFound',
+            'Message': 'Not found',
+            'ErrorCode': 'FileSystemNotFound',
+        }
+
+        stream = io.StringIO()
+        self.formatter.format_error(error_info, stream)
+
+        output = stream.getvalue()
+        assert 'ErrorCode: FileSystemNotFound' in output
+
     def test_format_error_with_large_list(self):
         error_info = {
             'Code': 'LargeList',
@@ -398,6 +512,11 @@ class TestRealWorldErrorScenarios:
             },
         }
         client_error = ClientError(error_response, 'TransactWriteItems')
+        client_error.modeled_fields = {
+            'Code',
+            'Message',
+            'CancellationReasons',
+        }
 
         stdout = io.StringIO()
         stderr = io.StringIO()
@@ -441,6 +560,7 @@ class TestParsedGlobalsPassthrough:
             'ResponseMetadata': {'RequestId': '123'},
         }
         client_error = ClientError(error_response, 'GetObject')
+        client_error.modeled_fields = {'Code', 'Message', 'BucketName'}
 
         stdout = io.StringIO()
         stderr = io.StringIO()
@@ -471,6 +591,7 @@ class TestParsedGlobalsPassthrough:
             'ResponseMetadata': {'RequestId': '123'},
         }
         client_error = ClientError(error_response, 'GetObject')
+        client_error.modeled_fields = {'Code', 'Message', 'BucketName'}
 
         stdout = io.StringIO()
         stderr = io.StringIO()

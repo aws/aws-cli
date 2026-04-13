@@ -1140,6 +1140,26 @@
       "endpoint":{"hostPrefix":"management."},
       "readonly":true
     },
+    "GetMonitorSettings":{
+      "name":"GetMonitorSettings",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2023-10-12/monitors/{monitorId}/settings",
+        "responseCode":200
+      },
+      "input":{"shape":"GetMonitorSettingsRequest"},
+      "output":{"shape":"GetMonitorSettingsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Gets the settings for a Deadline Cloud monitor.</p>",
+      "endpoint":{"hostPrefix":"management."},
+      "readonly":true
+    },
     "GetQueue":{
       "name":"GetQueue",
       "http":{
@@ -2233,6 +2253,26 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Modifies the settings for a Deadline Cloud monitor. You can modify one or all of the settings when you call <code>UpdateMonitor</code>.</p>",
+      "endpoint":{"hostPrefix":"management."},
+      "idempotent":true
+    },
+    "UpdateMonitorSettings":{
+      "name":"UpdateMonitorSettings",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/2023-10-12/monitors/{monitorId}/settings",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateMonitorSettingsRequest"},
+      "output":{"shape":"UpdateMonitorSettingsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Updates the settings for a Deadline Cloud monitor. Keys present in the request are upserted; keys absent are left unchanged. Send an empty string value to delete a key.</p>",
       "endpoint":{"hostPrefix":"management."},
       "idempotent":true
     },
@@ -7639,6 +7679,28 @@
       },
       "documentation":"<p>Mixin that adds an optional ARN field to response structures. Apply to SummaryMixins (flows into Get, Summary, and BatchGet) and Create outputs.</p>"
     },
+    "GetMonitorSettingsRequest":{
+      "type":"structure",
+      "required":["monitorId"],
+      "members":{
+        "monitorId":{
+          "shape":"MonitorId",
+          "documentation":"<p>The unique identifier of the monitor. This ID is returned by the <code>CreateMonitor</code> operation, and is included in the response to the <code>GetMonitor</code> operation.</p>",
+          "location":"uri",
+          "locationName":"monitorId"
+        }
+      }
+    },
+    "GetMonitorSettingsResponse":{
+      "type":"structure",
+      "required":["settings"],
+      "members":{
+        "settings":{
+          "shape":"SettingsMap",
+          "documentation":"<p>Monitor settings as key-value pairs.</p>"
+        }
+      }
+    },
     "GetQueueEnvironmentRequest":{
       "type":"structure",
       "required":[
@@ -12752,6 +12814,24 @@
       "max":10,
       "min":1
     },
+    "SettingKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z][a-zA-Z0-9_.:-]*"
+    },
+    "SettingValue":{
+      "type":"string",
+      "max":8192,
+      "min":0
+    },
+    "SettingsMap":{
+      "type":"map",
+      "key":{"shape":"SettingKey"},
+      "value":{"shape":"SettingValue"},
+      "max":64,
+      "min":0
+    },
     "SortOrder":{
       "type":"string",
       "enum":[
@@ -14203,6 +14283,29 @@
       }
     },
     "UpdateMonitorResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "UpdateMonitorSettingsRequest":{
+      "type":"structure",
+      "required":[
+        "monitorId",
+        "settings"
+      ],
+      "members":{
+        "monitorId":{
+          "shape":"MonitorId",
+          "documentation":"<p>The unique identifier of the monitor to update settings for.</p>",
+          "location":"uri",
+          "locationName":"monitorId"
+        },
+        "settings":{
+          "shape":"SettingsMap",
+          "documentation":"<p>Monitor settings as key-value pairs. Keys present in the request are upserted; keys absent are left unchanged. Send an empty string value to delete a key.</p>"
+        }
+      }
+    },
+    "UpdateMonitorSettingsResponse":{
       "type":"structure",
       "members":{}
     },

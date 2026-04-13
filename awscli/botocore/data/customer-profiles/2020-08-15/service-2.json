@@ -3464,6 +3464,10 @@
           "shape":"sensitiveString1To50000",
           "documentation":"<p>The segment SQL query.</p>"
         },
+        "SegmentSort":{
+          "shape":"SegmentSort",
+          "documentation":"<p>The segment sort.</p>"
+        },
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
@@ -3638,7 +3642,7 @@
     },
     "CustomAttributes":{
       "type":"map",
-      "key":{"shape":"typeName"},
+      "key":{"shape":"string1To255"},
       "value":{"shape":"AttributeDimension"}
     },
     "DataFormat":{
@@ -6228,6 +6232,11 @@
           "shape":"SegmentGroup",
           "documentation":"<p>The segment criteria associated with this definition.</p>",
           "locationName":"SegmentGroups"
+        },
+        "SegmentSort":{
+          "shape":"SegmentSort",
+          "documentation":"<p>The segment sort.</p>",
+          "locationName":"SegmentSort"
         },
         "SegmentDefinitionArn":{
           "shape":"SegmentDefinitionArn",
@@ -10310,6 +10319,34 @@
         "FAILED"
       ]
     },
+    "SegmentSort":{
+      "type":"structure",
+      "required":["Attributes"],
+      "members":{
+        "Attributes":{
+          "shape":"SortAttributeList",
+          "documentation":"<p>A list of attributes used to sort the segments and their ordering preferences.</p>",
+          "locationName":"Attributes"
+        }
+      },
+      "documentation":"<p>Defines how segments should be sorted and ordered in the results.</p>",
+      "sensitive":true
+    },
+    "SegmentSortDataType":{
+      "type":"string",
+      "enum":[
+        "STRING",
+        "NUMBER",
+        "DATE"
+      ]
+    },
+    "SegmentSortOrder":{
+      "type":"string",
+      "enum":[
+        "ASC",
+        "DESC"
+      ]
+    },
     "SegmentType":{
       "type":"string",
       "enum":[
@@ -10353,6 +10390,49 @@
         }
       },
       "documentation":"<p>The properties that are applied when ServiceNow is being used as a source.</p>"
+    },
+    "SortAttribute":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Order"
+      ],
+      "members":{
+        "Name":{
+          "shape":"fieldName",
+          "documentation":"<p>The name of the attribute to sort by.</p>",
+          "locationName":"Name"
+        },
+        "DataType":{
+          "shape":"SegmentSortDataType",
+          "documentation":"<p>The data type of the sort attribute (e.g., string, number, date).</p>",
+          "locationName":"DataType"
+        },
+        "Order":{
+          "shape":"SegmentSortOrder",
+          "documentation":"<p>The sort order for the attribute (ascending or descending).</p>",
+          "locationName":"Order"
+        },
+        "Type":{
+          "shape":"SortAttributeType",
+          "documentation":"<p>The type of attribute (e.g., profile, calculated).</p>",
+          "locationName":"Type"
+        }
+      },
+      "documentation":"<p>Defines the characteristics and rules for sorting by a specific attribute.</p>"
+    },
+    "SortAttributeList":{
+      "type":"list",
+      "member":{"shape":"SortAttribute"},
+      "max":10,
+      "min":1
+    },
+    "SortAttributeType":{
+      "type":"string",
+      "enum":[
+        "PROFILE",
+        "CALCULATED"
+      ]
     },
     "SourceConnectorProperties":{
       "type":"structure",

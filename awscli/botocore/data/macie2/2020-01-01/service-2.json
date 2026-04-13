@@ -3754,7 +3754,7 @@
         "errorCode": {
           "shape": "AutomatedDiscoveryAccountUpdateErrorCode",
           "locationName": "errorCode",
-          "documentation": "<p>The error code for the error that caused the request to fail for the account (accountId). Possible values are: ACCOUNT_NOT_FOUND, the account doesn’t exist or you're not the Amazon Macie administrator for the account; and, ACCOUNT_PAUSED, Macie isn’t enabled for the account in the current Amazon Web Services Region.</p>"
+          "documentation": "<p>The error code for the error that caused the request to fail for the account (accountId). Possible values are: ACCOUNT_NOT_FOUND, the account doesn't exist or you're not the Amazon Macie administrator for the account; and, ACCOUNT_PAUSED, Macie isn't enabled for the account in the current Amazon Web Services Region.</p>"
         }
       },
       "documentation": "<p>Provides information about a request that failed to change the status of automated sensitive data discovery for an Amazon Macie account.</p>"
@@ -3895,7 +3895,7 @@
         "errors": {
           "shape": "__listOfAutomatedDiscoveryAccountUpdateError",
           "locationName": "errors",
-          "documentation": "<p>An array of objects, one for each account whose status wasn’t changed. Each object identifies the account and explains why the status of automated sensitive data discovery wasn’t changed for the account. This value is null if the request succeeded for all specified accounts.</p>"
+          "documentation": "<p>An array of objects, one for each account whose status wasn't changed. Each object identifies the account and explains why the status of automated sensitive data discovery wasn't changed for the account. This value is null if the request succeeded for all specified accounts.</p>"
         }
       }
     },
@@ -8537,6 +8537,11 @@
           "locationName": "bucketName",
           "documentation": "<p>The name of the bucket. This must be the name of an existing general purpose bucket.</p>"
         },
+        "expectedBucketOwner": {
+          "shape": "__string",
+          "locationName": "expectedBucketOwner",
+          "documentation": "<p>The unique identifier (ID) for the Amazon Web Services account that owns the bucket. This must be the ID for the account that owns the specified bucket.</p>"
+        },
         "keyPrefix": {
           "shape": "__string",
           "locationName": "keyPrefix",
@@ -8548,7 +8553,7 @@
           "documentation": "<p>The Amazon Resource Name (ARN) of the customer managed KMS key to use for encryption of the results. This must be the ARN of an existing, symmetric encryption KMS key that's enabled in the same Amazon Web Services Region as the bucket.</p>"
         }
       },
-      "documentation": "<p>Specifies an S3 bucket to store data classification results in, and the encryption settings to use when storing results in that bucket.</p>",
+      "documentation": "<p>Specifies an S3 bucket to store data classification results in, and the encryption settings to use when storing results in that bucket. The bucket must be an existing general purpose bucket. It can be a bucket in your own account or a bucket that another account owns. If another account owns the bucket, you must specify both the unique identifier for the account and the name of the bucket.</p>",
       "required": [
         "bucketName",
         "kmsKeyArn"

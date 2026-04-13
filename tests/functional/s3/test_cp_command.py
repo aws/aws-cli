@@ -817,6 +817,33 @@ class TestCPCommand(BaseCPCommandTest):
         self.assertEqual(self.operations_called[1][0].name, 'GetObject')
         self.assertEqual(self.operations_called[1][1]['ChecksumMode'], 'ENABLED')
 
+    def test_upload_with_no_checksum_param_v2_debug(self):
+        full_path = self.files.create_file('foo.txt', 'contents')
+        cmdline = f'{self.prefix} {full_path} s3://bucket/key.txt --v2-debug'
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=0)
+        self.assertIn(
+            'AWS CLI v2 UPGRADE WARNING: In AWS CLI v2, for `aws s3` '
+            'commands that upload a file to an S3 bucket, Cyclic Redundancy '
+            'Check 64 (CRC64NVME) will be used to compute object checksums by '
+            'default and include it in the request.',
+            stderr
+        )
+
+    def test_upload_with_crc32_checksum_v2_debug(self):
+        full_path = self.files.create_file('foo.txt', 'contents')
+        cmdline = (
+            f'{self.prefix} {full_path} s3://bucket/key.txt '
+            f'--checksum-algorithm CRC32 --v2-debug'
+        )
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=0)
+        self.assertNotIn(
+            'AWS CLI v2 UPGRADE WARNING: In AWS CLI v2, for `aws s3` '
+            'commands that upload a file to an S3 bucket, Cyclic Redundancy '
+            'Check 64 (CRC64NVME) will be used to compute object checksums by '
+            'default and include it in the request.',
+            stderr
+        )
+
 
 class TestStreamingCPCommand(BaseAWSCommandParamsTest):
     def test_streaming_upload(self):

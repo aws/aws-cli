@@ -1152,7 +1152,7 @@ class CommandArchitecture(object):
                     '\nAWS CLI v2 UPGRADE WARNING: In AWS CLI v2, for '
                     '`aws s3` commands that upload a file to an S3 bucket, '
                     'Cyclic Redundancy Check 64 (CRC64NVME) will be used to '
-                    'compute object checksums by default and include it in '
+                    'compute object checksums by default and included in '
                     'the request. This is different from v1 behavior, where '
                     'Cyclic Redundancy Check 32 (CRC32) checksums will '
                     'instead be used. For guidance on retaining v1 behavior '

@@ -19,7 +19,11 @@ from botocore import (
     xform_name,
 )
 from botocore.args import ClientArgsCreator
-from botocore.auth import AUTH_TYPE_MAPS, resolve_auth_type
+from botocore.auth import (
+    AUTH_TYPE_MAPS,
+    resolve_auth_scheme_preference,
+    resolve_auth_type,
+)
 from botocore.awsrequest import prepare_request_dict
 from botocore.compress import maybe_compress_request
 
@@ -838,11 +842,23 @@ class BaseClient:
             logger.debug(
                 'Warning: %s.%s() is deprecated', service_name, operation_name
             )
+        # If the operation has the `auth` property and the client has a
+        # configured auth scheme preference, use both to compute the
+        # auth type. Otherwise, fallback to auth/auth_type resolution.
+        if operation_model.auth and self.meta.config.auth_scheme_preference:
+            preferred_schemes = (
+                self.meta.config.auth_scheme_preference.split(',')
+            )
+            auth_type = resolve_auth_scheme_preference(
+                preferred_schemes, operation_model.auth
+            )
+        else:
+            auth_type = operation_model.resolved_auth_type
         request_context = {
             'client_region': self.meta.region_name,
             'client_config': self.meta.config,
             'has_streaming_input': operation_model.has_streaming_input,
-            'auth_type': operation_model.resolved_auth_type,
+            'auth_type': auth_type,
             'unsigned_payload': operation_model.unsigned_payload,
             'auth_options': self._service_model.metadata.get('auth'),
         }

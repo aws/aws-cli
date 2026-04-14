@@ -14,6 +14,7 @@
 import json
 import logging
 import os
+from unittest import mock
 
 import pytest
 
@@ -79,6 +80,28 @@ ENDPOINT_DICT = {
             "us-east-2",
         ],
     },
+}
+ENDPOINT_AUTH_SCHEMES_DICT = {
+    "url": URL_TEMPLATE,
+    "properties": {
+        "authSchemes": [
+            {
+                "disableDoubleEncoding": True,
+                "name": "foo",
+                "signingName": "s3-outposts",
+                "signingRegionSet": [
+                    "*"
+                ]
+            },
+            {
+                "disableDoubleEncoding": True,
+                "name": "bar",
+                "signingName": "s3-outposts",
+                "signingRegion": REGION_TEMPLATE,
+            },
+        ],
+    },
+    "headers": {},
 }
 
 
@@ -563,3 +586,78 @@ def test_construct_endpoint_parametrized(
         ):
             result = resolver.construct_endpoint(None, None, None)
             assert result.url == expected_url
+
+
+@pytest.mark.parametrize(
+    "auth_scheme_preference,expected_auth_scheme_name",
+    [
+        (
+            'foo,bar',
+            'foo',
+        ),
+        (
+            'bar,foo',
+            'bar',
+        ),
+        (
+            'xyz,foo,bar',
+            'foo',
+        ),
+    ],
+)
+def test_auth_scheme_preference(
+    auth_scheme_preference,
+    expected_auth_scheme_name,
+    monkeypatch
+):
+    conditions = [
+        PARSE_ARN_FUNC,
+        {
+            "fn": "not",
+            "argv": [STRING_EQUALS_FUNC],
+        },
+        {
+            "fn": "aws.partition",
+            "argv": [REGION_REF],
+            "assign": "PartitionResults",
+        },
+    ],
+    resolver = EndpointRulesetResolver(
+        endpoint_ruleset_data={
+            'version': '1.0',
+            'parameters': {},
+            'rules': [
+                {
+                    'conditions': conditions,
+                    'type': 'endpoint',
+                    'endpoint': ENDPOINT_AUTH_SCHEMES_DICT,
+                }
+            ],
+        },
+        partition_data={},
+        service_model=None,
+        builtins={},
+        client_context=None,
+        event_emitter=None,
+        use_ssl=True,
+        requested_auth_scheme=None,
+        auth_scheme_preference=auth_scheme_preference,
+    )
+    auth_schemes = [
+        {'name': 'foo', 'signingName': 's3', 'signingRegion': 'ap-south-1'},
+        {'name': 'bar', 'signingName': 's3', 'signingRegion': 'ap-south-2'},
+    ]
+    with (
+        mock.patch.dict(
+            'botocore.auth.AUTH_TYPE_MAPS',
+            {'bar': None, 'foo': None},
+            clear=True
+        ),
+        mock.patch.dict(
+            'botocore.auth.AUTH_PREF_TO_SIGNATURE_VERSION',
+            {'bar': 'bar', 'foo': 'foo'},
+            clear=True
+        )
+    ):
+        name, scheme = resolver.auth_schemes_to_signing_ctx(auth_schemes)
+    assert name == expected_auth_scheme_name

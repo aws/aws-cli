@@ -24,7 +24,7 @@ from enum import Enum
 
 import jmespath
 from botocore import UNSIGNED, xform_name
-from botocore.auth import AUTH_TYPE_MAPS
+from botocore.auth import AUTH_TYPE_MAPS, resolve_auth_scheme_preference
 from botocore.endpoint_provider import EndpointProvider
 from botocore.exceptions import (
     EndpointProviderError,
@@ -471,6 +471,7 @@ class EndpointRulesetResolver:
         event_emitter,
         use_ssl=True,
         requested_auth_scheme=None,
+        auth_scheme_preference=None,
     ):
         self._provider = EndpointProvider(
             ruleset_data=endpoint_ruleset_data,
@@ -483,6 +484,7 @@ class EndpointRulesetResolver:
         self._event_emitter = event_emitter
         self._use_ssl = use_ssl
         self._requested_auth_scheme = requested_auth_scheme
+        self._auth_scheme_preference = auth_scheme_preference
         self._instance_cache = {}
 
     def construct_endpoint(
@@ -698,6 +700,9 @@ class EndpointRulesetResolver:
         if self._requested_auth_scheme == UNSIGNED:
             return 'none', {}
 
+        available_ruleset_names = [
+            s['name'].split('#')[-1] for s in auth_schemes
+        ]
         auth_schemes = [
             {**scheme, 'name': self._strip_sig_prefix(scheme['name'])}
             for scheme in auth_schemes
@@ -719,6 +724,14 @@ class EndpointRulesetResolver:
                 # exception, instead default to the logic in botocore
                 # customizations.
                 return None, {}
+        elif self._auth_scheme_preference is not None:
+            prefs = self._auth_scheme_preference.split(',')
+            auth_schemes_by_auth_type = {
+                self._strip_sig_prefix(s['name'].split('#')[-1]): s
+                for s in auth_schemes
+            }
+            name = resolve_auth_scheme_preference(prefs, available_ruleset_names)
+            scheme = auth_schemes_by_auth_type[name]
         else:
             try:
                 name, scheme = next(

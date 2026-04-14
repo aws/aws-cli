@@ -75,6 +75,10 @@ raw_input = input
 OUTPUT_ENCODING_ENV_VAR = 'AWS_CLI_OUTPUT_ENCODING'
 PYTHONUTF8_ENV_VAR = 'PYTHONUTF8'
 
+# cmd.exe characters that require double-quoting to be treated as literals.
+# https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/cmd
+_WIN_CMD_UNSAFE_CHARS = set('&<>[]|{}^=;!\'()+,`~ \t')
+
 LOG = logging.getLogger(__name__)
 
 
@@ -353,8 +357,8 @@ def _windows_cmd_shell_quote(s):
     safe to pass through cmd.exe
 
     Handles two interpretation layers:
-      1. cmd.exe metacharacters - neutralized by always double-quoting,
-         which prevents interpretation of &, |, >, <, ^, (, and ).
+      1. cmd.exe metacharacters - neutralized by double-quoting when
+         the string contains any cmd.exe special characters.
       2. MSVC C runtime argv parsing - backslash/double-quote escaping
          so the target process receives the correct argument.
 
@@ -370,6 +374,7 @@ def _windows_cmd_shell_quote(s):
 
     buff = []
     num_backspaces = 0
+    needs_quoting = False
     for character in s:
         if character == '\\':
             num_backspaces += 1
@@ -378,20 +383,27 @@ def _windows_cmd_shell_quote(s):
                 buff.append('\\' * (num_backspaces * 2))
                 num_backspaces = 0
             buff.append('\\"')
+            needs_quoting = True
         else:
             if num_backspaces > 0:
                 buff.append('\\' * num_backspaces)
                 num_backspaces = 0
+            if character in _WIN_CMD_UNSAFE_CHARS:
+                needs_quoting = True
             buff.append(character)
 
-    # Trailing backslashes must be doubled because we always append
-    # a closing double quote. Without doubling, a trailing backslash
-    # would escape the closing quote.
-    if num_backspaces > 0:
-        buff.append('\\' * (num_backspaces * 2))
+    if needs_quoting:
+        # Trailing backslashes must be doubled when we append a closing
+        # double quote — without doubling, a trailing backslash would
+        # escape the closing quote.
+        if num_backspaces > 0:
+            buff.append('\\' * (num_backspaces * 2))
+        inner = ''.join(buff)
+        return f'"{inner}"'
 
-    inner = ''.join(buff)
-    return f'"{inner}"'
+    if num_backspaces > 0:
+        buff.append('\\' * num_backspaces)
+    return ''.join(buff)
 
 
 def get_popen_kwargs_for_pager_cmd(pager_cmd=None):

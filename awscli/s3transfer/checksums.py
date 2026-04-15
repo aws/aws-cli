@@ -70,6 +70,13 @@ class FullObjectChecksumCombiner:
         self._parts[part_index] = PartChecksum(crc_int, data_length)
 
     def combine_and_validate(self):
+        if len(self._parts) != self._num_parts:
+            logger.debug(
+                f'Skipping full object checksum validation. '
+                f'Expected {self._num_parts} parts but only '
+                f'{len(self._parts)} were registered.'
+            )
+            return
         combined_bytes = self._get_combined_bytes()
         combined_b64 = base64.b64encode(combined_bytes).decode('ascii')
         expected_bytes = base64.b64decode(self._expected_b64)

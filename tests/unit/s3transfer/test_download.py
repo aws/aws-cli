@@ -10,12 +10,14 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import base64
 import copy
 import os
 import shutil
 import tempfile
 from io import BytesIO
 
+from awscrt import checksums as crt_checksums
 from botocore.config import Config
 from s3transfer.bandwidth import BandwidthLimiter
 from s3transfer.checksums import (
@@ -623,10 +625,6 @@ class TestDownloadSubmissionTask(BaseSubmissionTaskTest):
         self.wait_and_assert_completed_successfully(self.submission_task)
 
     def _compute_content_crc32_b64(self):
-        import base64
-
-        from awscrt import checksums as crt_checksums
-
         crc = crt_checksums.crc32(self.content)
         return base64.b64encode(crc.to_bytes(4, byteorder='big')).decode(
             'ascii'

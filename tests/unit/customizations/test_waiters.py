@@ -223,6 +223,41 @@ class TestWait(BaseAWSCommandParamsTest):
         }
         self.assert_params_for_cmd(cmdline, result)
 
+    def test_ec2_wait_forwards_waiter_config_end_to_end(self):
+        # End-to-end check: --delay and --max-attempts must flow from the
+        # command line all the way into waiter.wait() as WaiterConfig,
+        # alongside the regular API parameters.
+        with mock.patch(
+            'botocore.client.BaseClient.get_waiter'
+        ) as mock_get_waiter:
+            mock_waiter = mock.Mock()
+            mock_get_waiter.return_value = mock_waiter
+            cmdline = (
+                'ec2 wait instance-running '
+                '--instance-ids i-12345678 '
+                '--delay 10 --max-attempts 100'
+            )
+            self.run_cmd(cmdline, expected_rc=0)
+            mock_get_waiter.assert_called_with('instance_running')
+            mock_waiter.wait.assert_called_once_with(
+                InstanceIds=['i-12345678'],
+                WaiterConfig={'Delay': 10, 'MaxAttempts': 100},
+            )
+
+    def test_ec2_wait_without_waiter_flags_omits_waiter_config(self):
+        # When neither --delay nor --max-attempts are supplied, no
+        # WaiterConfig kwarg should be passed to waiter.wait().
+        with mock.patch(
+            'botocore.client.BaseClient.get_waiter'
+        ) as mock_get_waiter:
+            mock_waiter = mock.Mock()
+            mock_get_waiter.return_value = mock_waiter
+            cmdline = 'ec2 wait instance-running --instance-ids i-12345678'
+            self.run_cmd(cmdline, expected_rc=0)
+            mock_waiter.wait.assert_called_once_with(
+                InstanceIds=['i-12345678']
+            )
+
 
 class TestWaiterStateCommandBuilder(unittest.TestCase):
     def setUp(self):

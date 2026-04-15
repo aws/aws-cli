@@ -10,15 +10,73 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore import xform_name
+from botocore import model, xform_name
 from botocore.exceptions import DataNotFoundError
 
+from awscli.arguments import BaseCLIArgument
 from awscli.clidriver import ServiceOperation
 from awscli.customizations.commands import (
     BasicCommand,
     BasicDocHandler,
     BasicHelp,
 )
+
+
+DELAY_HELP = (
+    '<p>The amount of time in seconds to wait between attempts. '
+    'If not specified, the default delay for the waiter is used.</p>'
+)
+
+MAX_ATTEMPTS_HELP = (
+    '<p>The maximum number of attempts to be made. '
+    'If not specified, the default max attempts value for the '
+    'waiter is used.</p>'
+)
+
+
+class WaiterArgument(BaseCLIArgument):
+
+    def __init__(self, name, documentation, serialized_name):
+        self.argument_model = model.Shape(
+            'WaiterArgument', {'type': 'integer'}
+        )
+        self._name = name
+        self._serialized_name = serialized_name
+        self._documentation = documentation
+        self._required = False
+
+    @property
+    def cli_name(self):
+        return '--' + self._name
+
+    @property
+    def cli_type_name(self):
+        return 'integer'
+
+    @property
+    def required(self):
+        return self._required
+
+    @required.setter
+    def required(self, value):
+        self._required = value
+
+    @property
+    def documentation(self):
+        return self._documentation
+
+    def add_to_parser(self, parser):
+        parser.add_argument(
+            self.cli_name,
+            dest=self.py_name,
+            type=int,
+        )
+
+    def add_to_params(self, parameters, value):
+        if value is not None:
+            waiter_config = parameters.get('WaiterConfig', {})
+            waiter_config[self._serialized_name] = value
+            parameters['WaiterConfig'] = waiter_config
 
 
 def register_add_waiters(cli):
@@ -203,7 +261,9 @@ class WaiterStateDocBuilder:
         description = (
             ' It will poll every %s seconds until a successful state '
             'has been reached. This will exit with a return code of 255 '
-            'after %s failed checks.' % (delay, max_attempts)
+            'after %s failed checks. You can override the default polling '
+            'behavior with ``--delay`` and ``--max-attempts``.'
+            % (delay, max_attempts)
         )
         return description
 
@@ -212,6 +272,10 @@ class WaiterCaller:
     def __init__(self, session, waiter_name):
         self._session = session
         self._waiter_name = waiter_name
+        self._waiter_config = None
+
+    def set_waiter_config(self, waiter_config):
+        self._waiter_config = waiter_config
 
     def invoke(self, service_name, operation_name, parameters, parsed_globals):
         client = self._session.create_client(
@@ -221,12 +285,33 @@ class WaiterCaller:
             verify=parsed_globals.verify_ssl,
         )
         waiter = client.get_waiter(xform_name(self._waiter_name))
+        if self._waiter_config is not None:
+            parameters = dict(parameters, WaiterConfig=self._waiter_config)
         waiter.wait(**parameters)
         return 0
 
 
 class WaiterStateCommand(ServiceOperation):
     DESCRIPTION = ''
+
+    def _create_argument_table(self):
+        argument_table = super()._create_argument_table()
+        argument_table['delay'] = WaiterArgument(
+            'delay', DELAY_HELP, 'Delay',
+        )
+        argument_table['max-attempts'] = WaiterArgument(
+            'max-attempts', MAX_ATTEMPTS_HELP, 'MaxAttempts',
+        )
+        return argument_table
+
+    def _build_call_parameters(self, args, arg_table):
+        service_params = super()._build_call_parameters(args, arg_table)
+        # Strip WaiterConfig from call parameters so it doesn't leak
+        # into --generate-cli-skeleton or other API model validation.
+        # The WaiterCaller will inject it back when calling waiter.wait().
+        waiter_config = service_params.pop('WaiterConfig', None)
+        self._operation_caller.set_waiter_config(waiter_config)
+        return service_params
 
     def create_help_command(self):
         help_command = super(WaiterStateCommand, self).create_help_command()

@@ -80,9 +80,7 @@ class FullObjectChecksumCombiner:
                 f'combined checksum: {combined_b64}'
             )
         logger.debug(
-            'Full object %s checksum validated: %s',
-            self._algorithm,
-            combined_b64,
+            f'Full object {self._algorithm} checksum validated: {combined_b64}'
         )
 
     @property

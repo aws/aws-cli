@@ -15,7 +15,6 @@ from botocore.exceptions import ProfileNotFound
 from awscli.autocomplete.filters import fuzzy_filter
 from awscli.autocomplete.main import create_autocompleter
 from awscli.autoprompt.prompttoolkit import PromptToolkitPrompter
-from awscli.customizations.exceptions import ParamValidationError
 from awscli.errorhandler import SilenceParamValidationMsgErrorHandler
 
 
@@ -41,34 +40,6 @@ class AutoPromptDriver:
                 self._completion_source, self._driver
             )
         return self._prompter
-
-    def validate_auto_prompt_args_are_mutually_exclusive(self, args):
-        no_cli_auto_prompt = self._NO_CLI_AUTO_PROMPT_OPTION in args
-        cli_auto_prompt = self._CLI_AUTO_PROMPT_OPTION in args
-        if cli_auto_prompt and no_cli_auto_prompt:
-            raise ParamValidationError(
-                'Both --cli-auto-prompt and --no-cli-auto-prompt cannot be '
-                'specified at the same time.'
-            )
-
-    def resolve_mode(self, args):
-        # Order of precedence to check:
-        # - check if any arg rom NO_PROMPT_ARGS in args
-        # - check if '--no-cli-auto-prompt' was specified
-        # - check if '--cli-auto-prompt' was specified
-        # - check configuration chain
-        self.validate_auto_prompt_args_are_mutually_exclusive(args)
-        if any(arg in args for arg in self._NO_PROMPT_ARGS):
-            return 'off'
-        if self._NO_CLI_AUTO_PROMPT_OPTION in args:
-            return 'off'
-        if self._CLI_AUTO_PROMPT_OPTION in args:
-            return 'on'
-        try:
-            config = self._session.get_config_variable('cli_auto_prompt')
-            return config.lower()
-        except ProfileNotFound:
-            return 'off'
 
     def inject_silence_param_error_msg_handler(self, driver):
         driver.error_handler.inject_handler(

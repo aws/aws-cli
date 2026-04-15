@@ -17,10 +17,13 @@ import os
 import platform
 import re
 import sys
+from collections import namedtuple
 
 import awscrt.io
 import botocore.model
 import pytest
+
+from autoprompt import core
 from botocore import xform_name
 from botocore.awsrequest import AWSResponse
 from botocore.compat import OrderedDict
@@ -43,11 +46,13 @@ from awscli.clidriver import (
     ServiceOperation,
     construct_cli_error_handlers_chain,
     create_clidriver,
+    validate_auto_prompt_args_are_mutually_exclusive, resolve_auto_prompt_mode,
 )
 from awscli.compat import StringIO
 from awscli.customizations.commands import BasicCommand
 from awscli.paramfile import URIArgumentHandler
 from awscli.testutils import BaseAWSCommandParamsTest, mock, unittest
+from customizations.exceptions import ParamValidationError
 
 GET_DATA = {
     'cli': {
@@ -175,6 +180,43 @@ MINI_SERVICE = {
         "Token": {"type": "string"},
     },
 }
+
+
+def _generate_auto_prompt_resolve_cases():
+    # Each case is a 5-namedtuple with the following meaning:
+    # "args" is a list of arguments that command got as input from
+    #   command line
+    # "config_variable" is the result from get_config_variable
+    #   This takes a value of either 'on' , 'off' or 'on-partial'
+    # "expected_result" is a boolean indicating whether auto-prompt
+    #   should be used or not.
+    #
+    # Note: This set of tests assumes that only one of --no-cli-auto-prompt
+    # or --cli-auto-prompt overrides can be specified.
+    # TestCLIAutoPrompt.test_throw_error_if_both_args_specified tests
+    # that these command line overrides are mutually exclusive.
+    Case = namedtuple(
+        'Case',
+        [
+            'args',
+            'config_variable',
+            'expected_result',
+        ],
+    )
+    return [
+        Case([], 'off', 'off'),
+        Case([], 'on', 'on'),
+        Case(['--cli-auto-prompt'], 'off', 'on'),
+        Case(['--cli-auto-prompt'], 'on', 'on'),
+        Case(['--no-cli-auto-prompt'], 'off', 'off'),
+        Case(['--no-cli-auto-prompt'], 'on', 'off'),
+        Case([], 'on', 'on'),
+        Case([], 'on-partial', 'on-partial'),
+        Case(['--cli-auto-prompt'], 'on-partial', 'on'),
+        Case(['--no-cli-auto-prompt'], 'on-partial', 'off'),
+        Case(['--version'], 'on', 'off'),
+        Case(['help'], 'on', 'off'),
+    ]
 
 
 class FakeSession:
@@ -412,6 +454,24 @@ class TestCliDriver:
         mock_init_logging.assert_called_with(
             awscrt.io.LogLevel.NoLogs,
         )
+
+    def test_throw_error_if_both_args_specified(self):
+        args = ['--cli-auto-prompt', '--no-cli-auto-prompt']
+        with pytest.raises(ParamValidationError):
+            validate_auto_prompt_args_are_mutually_exclusive(args)
+
+    @pytest.mark.parametrize('case', _generate_auto_prompt_resolve_cases())
+    def test_auto_prompt_resolve_mode(self, case):
+        driver = create_clidriver()
+        driver.session.set_config_variable('cli_auto_prompt', case.config_variable)
+        result = resolve_auto_prompt_mode(case.args, driver.session)
+        assert result == case.expected_result
+
+    def test_auto_prompt_resolve_mode_on_non_existing_profile(self):
+        driver = create_clidriver()
+        driver.session.set_config_variable('profile', 'not_exist')
+        result = resolve_auto_prompt_mode([], driver.session)
+        assert result == 'off'
 
 
 class TestCliDriverHooks(unittest.TestCase):

@@ -18,6 +18,8 @@ import platform
 import re
 import sys
 
+from botocore.exceptions import ProfileNotFound
+
 import botocore.session
 import distro
 from botocore import xform_name
@@ -49,7 +51,6 @@ from awscli.arguments import (
     ListArgument,
     UnknownArgumentError,
 )
-from awscli.autoprompt.core import AutoPromptDriver
 from awscli.commands import CLICommand
 from awscli.compat import (
     default_pager,
@@ -83,6 +84,7 @@ from awscli.utils import (
     add_metadata_component_to_user_agent_extra,
     emit_top_level_args_parsed_event,
 )
+from awscli.customizations.exceptions import ParamValidationError
 
 LOG = logging.getLogger('awscli.clidriver')
 LOG_FORMAT = (
@@ -90,6 +92,9 @@ LOG_FORMAT = (
 )
 HISTORY_RECORDER = get_global_history_recorder()
 METADATA_FILENAME = 'metadata.json'
+_NO_AUTO_PROMPT_ARGS = ['help', '--version']
+_CLI_AUTO_PROMPT_OPTION = '--cli-auto-prompt'
+_NO_CLI_AUTO_PROMPT_OPTION = '--no-cli-auto-prompt'
 # Don't remove this line.  The idna encoding
 # is used by getaddrinfo when dealing with unicode hostnames,
 # and in some cases, there appears to be a race condition
@@ -124,6 +129,36 @@ def create_clidriver(args=None):
         session=session, error_handler=error_handlers_chain, debug=debug
     )
     return driver
+
+
+def validate_auto_prompt_args_are_mutually_exclusive(args):
+    no_cli_auto_prompt = _NO_CLI_AUTO_PROMPT_OPTION in args
+    cli_auto_prompt = _CLI_AUTO_PROMPT_OPTION in args
+    if cli_auto_prompt and no_cli_auto_prompt:
+        raise ParamValidationError(
+            'Both --cli-auto-prompt and --no-cli-auto-prompt cannot be '
+            'specified at the same time.'
+        )
+
+
+def resolve_auto_prompt_mode(args, session):
+    # Order of precedence to check:
+    # - check if any arg rom NO_PROMPT_ARGS in args
+    # - check if '--no-cli-auto-prompt' was specified
+    # - check if '--cli-auto-prompt' was specified
+    # - check configuration chain
+    validate_auto_prompt_args_are_mutually_exclusive(args)
+    if any(arg in args for arg in _NO_AUTO_PROMPT_ARGS):
+        return 'off'
+    if _NO_CLI_AUTO_PROMPT_OPTION in args:
+        return 'off'
+    if _CLI_AUTO_PROMPT_OPTION in args:
+        return 'on'
+    try:
+        config = session.get_config_variable('cli_auto_prompt')
+        return config.lower()
+    except ProfileNotFound:
+        return 'off'
 
 
 def _get_distribution_source():
@@ -220,12 +255,15 @@ class AWSCLIEntryPoint:
         driver = self._driver
         if driver is None:
             driver = create_clidriver(args)
-        autoprompt_driver = AutoPromptDriver(driver)
-        auto_prompt_mode = autoprompt_driver.resolve_mode(args)
+        auto_prompt_mode = resolve_auto_prompt_mode(args, driver.session)
         if auto_prompt_mode == 'on':
+            from awscli.autoprompt.core import AutoPromptDriver
+            autoprompt_driver = AutoPromptDriver(driver)
             args = autoprompt_driver.prompt_for_args(args)
             rc = self._run_driver(driver, args, prompt_mode='on')
         elif auto_prompt_mode == 'on-partial':
+            from awscli.autoprompt.core import AutoPromptDriver
+            autoprompt_driver = AutoPromptDriver(driver)
             autoprompt_driver.inject_silence_param_error_msg_handler(driver)
             rc = self._run_driver(driver, args, prompt_mode='off')
             if rc == PARAM_VALIDATION_ERROR_RC:

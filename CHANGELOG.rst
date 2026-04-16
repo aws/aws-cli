@@ -2,6 +2,26 @@
 CHANGELOG
 =========
 
+2.34.31
+=======
+
+* api-change:``devops-agent``: Deprecate the userId from the Chat operations. This update also removes  support of AllowVendedLogDeliveryForResource API from AWS SDKs.
+* api-change:``autoscaling``: This release adds support for specifying Availability Zone IDs as an alternative to Availability Zone names when creating or updating Auto Scaling groups.
+* api-change:``rds``: Adds a new DescribeServerlessV2PlatformVersions API to describe platform version properties for Aurora Serverless v2. Also introduces a new valid maintenance action value for serverless platform version updates.
+* api-change:``appstream``: Add content redirection to Update Stack
+* api-change:``connectcases``: Added error handling for service quota limits
+* api-change:``bedrock-agentcore``: Introducing NamespacePath in AgentCore Memory to support hierarchical prefix based memory record retrieval.
+* api-change:``logs``: Endpoint update for CloudWatch Logs Streaming APIs.
+* api-change:``datazone``: Launching SMUS IAM domain SDK support
+* api-change:``drs``: Updating regex for identification of AWS Regions.
+* bugfix:signing: Fix bug so that configured auth scheme preference is used when auth scheme is resolved from endpoints rulesets, or from operation-level auth trait. Auth scheme preference can be configured using the existing ``auth_scheme_preference`` shared config setting, or the existing ``AWS_AUTH_SCHEME_PREFERENCE`` environment variable.
+* api-change:``cloudwatch``: Update documentation of alarm mute rules start and end date fields
+* api-change:``connect``: This release updates the Amazon Connect Rules CRUD APIs to support a new EventSourceName - OnEmailAnalysisAvailable. Use this event source to trigger rules when conversational analytics results are available for email contacts.
+* api-change:``mediaconvert``: Adds support for Elemental Inference powered smart crop feature, enabling video verticalization
+* api-change:``cognito-idp``: Adds support for passkey-based multi-factor authentication in Cognito User Pools. Users can authenticate securely using FIDO2-compliant passkeys with user verification, enabling passwordless MFA flows while maintaining backward compatibility with password-based authentication
+* api-change:``customer-profiles``: Amazon Connect Customer Profiles adds RecommenderSchema CRUD APIs for custom ML training columns. CreateRecommender and CreateRecommenderFilter now accept optional RecommenderSchemaName.
+
+
 2.34.30
 =======
 

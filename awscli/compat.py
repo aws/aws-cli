@@ -312,37 +312,37 @@ def _windows_argv_quote(s):
         return '""'
 
     buff = []
-    num_backspaces = 0
+    num_backslashes = 0
     for character in s:
         if character == '\\':
             # We can't simply append backslashes because we don't know if
             # they will need to be escaped. Instead we separately keep track
             # of how many we've seen.
-            num_backspaces += 1
+            num_backslashes += 1
         elif character == '"':
-            if num_backspaces > 0:
+            if num_backslashes > 0:
                 # The backslashes are part of a chain that lead up to a
                 # double quote, so they need to be escaped.
-                buff.append('\\' * (num_backspaces * 2))
-                num_backspaces = 0
+                buff.append('\\' * (num_backslashes * 2))
+                num_backslashes = 0
 
             # The double quote also needs to be escaped. The fact that we're
             # seeing it at all means that it must have been escaped in the
             # original source.
             buff.append('\\"')
         else:
-            if num_backspaces > 0:
+            if num_backslashes > 0:
                 # The backslashes aren't part of a chain leading up to a
                 # double quote, so they can be inserted directly without
                 # being escaped.
-                buff.append('\\' * num_backspaces)
-                num_backspaces = 0
+                buff.append('\\' * num_backslashes)
+                num_backslashes = 0
             buff.append(character)
 
-    # There may be some leftover backspaces if they were on the trailing
+    # There may be some leftover backslashes if they were on the trailing
     # end, so they're added back in here.
-    if num_backspaces > 0:
-        buff.append('\\' * num_backspaces)
+    if num_backslashes > 0:
+        buff.append('\\' * num_backslashes)
 
     new_s = ''.join(buff)
     if ' ' in new_s or '\t' in new_s:
@@ -373,21 +373,21 @@ def _windows_cmd_shell_quote(s):
         return '""'
 
     buff = []
-    num_backspaces = 0
+    num_backslashes = 0
     needs_quoting = False
     for character in s:
         if character == '\\':
-            num_backspaces += 1
+            num_backslashes += 1
         elif character == '"':
-            if num_backspaces > 0:
-                buff.append('\\' * (num_backspaces * 2))
-                num_backspaces = 0
+            if num_backslashes > 0:
+                buff.append('\\' * (num_backslashes * 2))
+                num_backslashes = 0
             buff.append('\\"')
             needs_quoting = True
         else:
-            if num_backspaces > 0:
-                buff.append('\\' * num_backspaces)
-                num_backspaces = 0
+            if num_backslashes > 0:
+                buff.append('\\' * num_backslashes)
+                num_backslashes = 0
             if character in _WIN_CMD_UNSAFE_CHARS:
                 needs_quoting = True
             buff.append(character)
@@ -396,13 +396,13 @@ def _windows_cmd_shell_quote(s):
         # Trailing backslashes must be doubled when we append a closing
         # double quote — without doubling, a trailing backslash would
         # escape the closing quote.
-        if num_backspaces > 0:
-            buff.append('\\' * (num_backspaces * 2))
+        if num_backslashes > 0:
+            buff.append('\\' * (num_backslashes * 2))
         inner = ''.join(buff)
         return f'"{inner}"'
 
-    if num_backspaces > 0:
-        buff.append('\\' * num_backspaces)
+    if num_backslashes > 0:
+        buff.append('\\' * num_backslashes)
     return ''.join(buff)
 
 

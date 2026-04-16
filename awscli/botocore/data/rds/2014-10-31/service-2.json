@@ -1763,6 +1763,20 @@
       ],
       "documentation":"<p>Lists available reserved DB instance offerings.</p>"
     },
+    "DescribeServerlessV2PlatformVersions":{
+      "name":"DescribeServerlessV2PlatformVersions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeServerlessV2PlatformVersionsMessage"},
+      "output":{
+        "shape":"ServerlessV2PlatformVersionsMessage",
+        "resultWrapper":"DescribeServerlessV2PlatformVersionsResult"
+      },
+      "errors":[],
+      "documentation":"<p>Describes the properties of specific platform versions for Aurora Serverless v2.</p>"
+    },
     "DescribeSourceRegions":{
       "name":"DescribeSourceRegions",
       "http":{
@@ -10802,6 +10816,40 @@
       },
       "documentation":"<p/>"
     },
+    "DescribeServerlessV2PlatformVersionsMessage":{
+      "type":"structure",
+      "members":{
+        "ServerlessV2PlatformVersion":{
+          "shape":"String",
+          "documentation":"<p>A specific platform version to return details for.</p> <p>Example: <code>3</code> </p>"
+        },
+        "Engine":{
+          "shape":"String",
+          "documentation":"<p>The database engine to return platform version details for.</p> <p>Valid Values:</p> <ul> <li> <p> <code>aurora-mysql</code> </p> </li> <li> <p> <code>aurora-postgresql</code> </p> </li> </ul>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>This parameter isn't currently supported.</p>"
+        },
+        "DefaultOnly":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether to return only the default platform versions for each engine. The default platform version is the version used for new DB clusters.</p>"
+        },
+        "IncludeAll":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether to also include platform versions which are no longer in use.</p>"
+        },
+        "MaxRecords":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The maximum number of records to include in the response. If more than the <code>MaxRecords</code> value is available, a pagination token called a marker is included in the response so you can retrieve the remaining results.</p> <p>Default: 20</p> <p>Constraints: Minimum 1, maximum 200.</p>"
+        },
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.</p>"
+        }
+      },
+      "documentation":"<p/>"
+    },
     "DescribeSourceRegionsMessage":{
       "type":"structure",
       "members":{
@@ -14397,7 +14445,7 @@
       "members":{
         "Action":{
           "shape":"String",
-          "documentation":"<p>The type of pending maintenance action that is available for the resource. </p> <p>For more information about maintenance actions, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.Maintenance.html\">Maintaining a DB instance</a>.</p> <p>Valid Values:</p> <ul> <li> <p> <code>ca-certificate-rotation</code> </p> </li> <li> <p> <code>db-upgrade</code> </p> </li> <li> <p> <code>hardware-maintenance</code> </p> </li> <li> <p> <code>os-upgrade</code> </p> </li> <li> <p> <code>system-update</code> </p> </li> </ul> <p>For more information about these actions, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_UpgradeDBInstance.Maintenance.html#maintenance-actions-aurora\">Maintenance actions for Amazon Aurora</a> or <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.Maintenance.html#maintenance-actions-rds\">Maintenance actions for Amazon RDS</a>.</p>"
+          "documentation":"<p>The type of pending maintenance action that is available for the resource. </p> <p>For more information about maintenance actions, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.Maintenance.html\">Maintaining a DB instance</a>.</p> <p>Valid Values:</p> <ul> <li> <p> <code>ca-certificate-rotation</code> </p> </li> <li> <p> <code>db-upgrade</code> </p> </li> <li> <p> <code>hardware-maintenance</code> </p> </li> <li> <p> <code>os-upgrade</code> </p> </li> <li> <p> <code>serverless-platform-version-update</code> </p> </li> <li> <p> <code>system-update</code> </p> </li> </ul> <p>For more information about these actions, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_UpgradeDBInstance.Maintenance.html#maintenance-actions-aurora\">Maintenance actions for Amazon Aurora</a> or <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.Maintenance.html#maintenance-actions-rds\">Maintenance actions for Amazon RDS</a>.</p>"
         },
         "AutoAppliedAfterDate":{
           "shape":"TStamp",
@@ -16696,6 +16744,54 @@
         }
       },
       "documentation":"<p>Specifies any Aurora Serverless v2 properties or limits that differ between Aurora engine versions and platform versions. You can test the values of this attribute when deciding which Aurora version to use in a new or upgraded DB cluster. You can also retrieve the version of an existing DB cluster and check whether that version supports certain Aurora Serverless v2 features before you attempt to use those features. </p>"
+    },
+    "ServerlessV2PlatformVersionInfo":{
+      "type":"structure",
+      "members":{
+        "ServerlessV2PlatformVersion":{
+          "shape":"String",
+          "documentation":"<p>The version number of the serverless platform.</p>"
+        },
+        "ServerlessV2PlatformVersionDescription":{
+          "shape":"String",
+          "documentation":"<p>The description of the serverless platform.</p>"
+        },
+        "Engine":{
+          "shape":"String",
+          "documentation":"<p>The name of the database engine.</p>"
+        },
+        "ServerlessV2FeaturesSupport":{
+          "shape":"ServerlessV2FeaturesSupport",
+          "documentation":"<p>Specifies any Aurora Serverless v2 properties or limits that differ between Aurora Serverless v2 platform versions. You can retrieve the platform version of an existing DB cluster and check whether that version supports certain Aurora Serverless v2 features before you attempt to use those features.</p>"
+        },
+        "Status":{
+          "shape":"String",
+          "documentation":"<p>The status of the serverless platform. Valid statuses are the following:</p> <ul> <li> <p> <code>enabled</code> - The platform version is in use.</p> </li> <li> <p> <code>disabled</code> - The platform version is not in use.</p> </li> </ul>"
+        },
+        "IsDefault":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether this platform version is the default version for the engine. The default platform version is the version used for new DB clusters.</p>"
+        }
+      },
+      "documentation":"<p>This data type is used as a response element in the action <code>DescribeServerlessV2PlatformVersions</code>.</p>"
+    },
+    "ServerlessV2PlatformVersionList":{
+      "type":"list",
+      "member":{"shape":"ServerlessV2PlatformVersionInfo"}
+    },
+    "ServerlessV2PlatformVersionsMessage":{
+      "type":"structure",
+      "members":{
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.</p>"
+        },
+        "ServerlessV2PlatformVersions":{
+          "shape":"ServerlessV2PlatformVersionList",
+          "documentation":"<p>A list of <code>ServerlessV2PlatformVersionInfo</code> elements.</p>"
+        }
+      },
+      "documentation":"<p>Contains the result of a successful invocation of the <code>DescribeServerlessV2PlatformVersions</code> action.</p>"
     },
     "ServerlessV2ScalingConfiguration":{
       "type":"structure",

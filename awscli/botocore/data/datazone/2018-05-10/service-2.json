@@ -7061,10 +7061,7 @@
     },
     "CreateDomainInput":{
       "type":"structure",
-      "required":[
-        "name",
-        "domainExecutionRole"
-      ],
+      "required":["name"],
       "members":{
         "name":{
           "shape":"String",
@@ -7961,10 +7958,7 @@
     },
     "CreateGroupProfileInput":{
       "type":"structure",
-      "required":[
-        "domainIdentifier",
-        "groupIdentifier"
-      ],
+      "required":["domainIdentifier"],
       "members":{
         "domainIdentifier":{
           "shape":"DomainId",
@@ -7975,6 +7969,10 @@
         "groupIdentifier":{
           "shape":"GroupIdentifier",
           "documentation":"<p>The identifier of the group for which the group profile is created.</p>"
+        },
+        "rolePrincipalArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the IAM role that will be associated with the group profile. This role defines the permissions that group members will assume when accessing Amazon DataZone resources.</p>"
         },
         "clientToken":{
           "shape":"String",
@@ -8001,6 +7999,14 @@
         "groupName":{
           "shape":"GroupProfileName",
           "documentation":"<p>The name of the group for which group profile is created.</p>"
+        },
+        "rolePrincipalArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the IAM role principal. This role is associated with the group profile.</p>"
+        },
+        "rolePrincipalId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the IAM role principal. This principal is associated with the group profile.</p>"
         }
       }
     },
@@ -8118,6 +8124,18 @@
         "userParameters":{
           "shape":"EnvironmentConfigurationUserParametersList",
           "documentation":"<p>The user parameters of the project.</p>"
+        },
+        "projectCategory":{
+          "shape":"String",
+          "documentation":"<p>The category of the project. Set to 'ADMIN' designates this as an administrative project for the Amazon DataZone domain.</p>"
+        },
+        "projectExecutionRole":{
+          "shape":"RoleArn",
+          "documentation":"<p>The default project IAM role that is used to access project resources and run computes such as Glue and Sagemaker.</p>"
+        },
+        "membershipAssignments":{
+          "shape":"ProjectMembershipAssignments",
+          "documentation":"<p>The members to be assigned to the project.</p>"
         }
       }
     },
@@ -8231,6 +8249,10 @@
         "environmentDeploymentDetails":{
           "shape":"EnvironmentDeploymentDetails",
           "documentation":"<p>The environment deployment details.</p>"
+        },
+        "projectCategory":{
+          "shape":"String",
+          "documentation":"<p>The category of the project.</p>"
         }
       }
     },
@@ -8862,12 +8884,21 @@
           "shape":"UserType",
           "documentation":"<p>The user type of the user for which the user profile is created.</p>"
         },
+        "sessionName":{
+          "shape":"CreateUserProfileInputSessionNameString",
+          "documentation":"<p>The session name for IAM role sessions.</p>"
+        },
         "clientToken":{
           "shape":"String",
           "documentation":"<p>A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.</p>",
           "idempotencyToken":true
         }
       }
+    },
+    "CreateUserProfileInputSessionNameString":{
+      "type":"string",
+      "max":64,
+      "min":2
     },
     "CreateUserProfileOutput":{
       "type":"structure",
@@ -13631,6 +13662,14 @@
         "groupName":{
           "shape":"GroupProfileName",
           "documentation":"<p>The name of the group for which the specified group profile exists.</p>"
+        },
+        "rolePrincipalArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the IAM role principal. This role is associated with the group profile.</p>"
+        },
+        "rolePrincipalId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the IAM role principal. This principal is associated with the group profile.</p>"
         }
       }
     },
@@ -14148,6 +14187,10 @@
         "environmentDeploymentDetails":{
           "shape":"EnvironmentDeploymentDetails",
           "documentation":"<p>The environment deployment status of a project.</p>"
+        },
+        "projectCategory":{
+          "shape":"String",
+          "documentation":"<p>The category of the project.</p>"
         }
       }
     },
@@ -14810,8 +14853,19 @@
           "documentation":"<p>The type of the user profile.</p>",
           "location":"querystring",
           "locationName":"type"
+        },
+        "sessionName":{
+          "shape":"GetUserProfileInputSessionNameString",
+          "documentation":"<p>The session name for IAM role sessions.</p>",
+          "location":"querystring",
+          "locationName":"sessionName"
         }
       }
+    },
+    "GetUserProfileInputSessionNameString":{
+      "type":"string",
+      "max":64,
+      "min":2
     },
     "GetUserProfileOutput":{
       "type":"structure",
@@ -15589,6 +15643,14 @@
         "groupName":{
           "shape":"GroupProfileName",
           "documentation":"<p>The group name of a group profile.</p>"
+        },
+        "rolePrincipalArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the IAM role principal. This role is associated with the group profile.</p>"
+        },
+        "rolePrincipalId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the IAM role principal. This principal is associated with the group profile.</p>"
         }
       },
       "documentation":"<p>The details of a group profile.</p>"
@@ -15603,7 +15665,8 @@
       "type":"string",
       "enum":[
         "SSO_GROUP",
-        "DATAZONE_SSO_GROUP"
+        "DATAZONE_SSO_GROUP",
+        "IAM_ROLE_SESSION_GROUP"
       ]
     },
     "HyperPodOrchestrator":{
@@ -15702,6 +15765,14 @@
         "principalId":{
           "shape":"String",
           "documentation":"<p>The principal ID as part of the IAM user profile details.</p>"
+        },
+        "sessionName":{
+          "shape":"String",
+          "documentation":"<p>The session name for IAM role sessions.</p>"
+        },
+        "groupProfileId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the group profile associated with the IAM user profile. This links the user to a specific group profile within the Amazon DataZone domain.</p>"
         }
       },
       "documentation":"<p>The details of the IAM user profile.</p>"
@@ -17799,6 +17870,12 @@
           "location":"querystring",
           "locationName":"name"
         },
+        "projectCategory":{
+          "shape":"String",
+          "documentation":"<p>A parameter to filter projects by their category.</p>",
+          "location":"querystring",
+          "locationName":"projectCategory"
+        },
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>When the number of projects is greater than the default value for the <code>MaxResults</code> parameter, or if you explicitly specify a value for <code>MaxResults</code> that is less than the number of projects, the response includes a pagination token named <code>NextToken</code>. You can specify this <code>NextToken</code> value in a subsequent call to <code>ListProjects</code> to list the next set of projects.</p>",
@@ -19676,6 +19753,28 @@
       "type":"list",
       "member":{"shape":"ProjectMember"}
     },
+    "ProjectMembershipAssignment":{
+      "type":"structure",
+      "required":[
+        "member",
+        "designation"
+      ],
+      "members":{
+        "member":{
+          "shape":"Member",
+          "documentation":"<p>The details about a project member.</p>"
+        },
+        "designation":{
+          "shape":"UserDesignation",
+          "documentation":"<p>The designation of the project membership.</p>"
+        }
+      },
+      "documentation":"<p>A map of user or group profiles to designations that need to be assigned in the project.</p>"
+    },
+    "ProjectMembershipAssignments":{
+      "type":"list",
+      "member":{"shape":"ProjectMembershipAssignment"}
+    },
     "ProjectName":{
       "type":"string",
       "max":64,
@@ -19838,6 +19937,10 @@
         "domainUnitId":{
           "shape":"DomainUnitId",
           "documentation":"<p>The ID of the domain unit.</p>"
+        },
+        "projectCategory":{
+          "shape":"String",
+          "documentation":"<p>The category of the project.</p>"
         }
       },
       "documentation":"<p>The details of a Amazon DataZone project.</p>"
@@ -21077,7 +21180,7 @@
     },
     "RoleArn":{
       "type":"string",
-      "pattern":"arn:aws[^:]*:iam::\\d{12}:(role|role/service-role)/[\\w+=,.@-]*"
+      "pattern":"arn:aws[^:]*:iam::\\d{12}:role(/[a-zA-Z0-9+=,.@_-]+)*/[a-zA-Z0-9+=,.@_-]+"
     },
     "RowFilter":{
       "type":"structure",
@@ -25050,6 +25153,14 @@
         "groupName":{
           "shape":"GroupProfileName",
           "documentation":"<p>The name of the group profile that is updated.</p>"
+        },
+        "rolePrincipalArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the IAM role principal. This role is associated with the updated group profile.</p>"
+        },
+        "rolePrincipalId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the IAM role principal. This principal is associated with the updated group profile.</p>"
         }
       }
     },
@@ -25181,6 +25292,10 @@
         "environmentDeploymentDetails":{
           "shape":"EnvironmentDeploymentDetails",
           "documentation":"<p>The environment deployment details of the project.</p>"
+        },
+        "projectCategory":{
+          "shape":"String",
+          "documentation":"<p>The category of the project.</p>"
         }
       }
     },
@@ -25827,8 +25942,17 @@
         "status":{
           "shape":"UserProfileStatus",
           "documentation":"<p>The status of the user profile that are to be updated.</p>"
+        },
+        "sessionName":{
+          "shape":"UpdateUserProfileInputSessionNameString",
+          "documentation":"<p>The session name for IAM role sessions.</p>"
         }
       }
+    },
+    "UpdateUserProfileInputSessionNameString":{
+      "type":"string",
+      "max":64,
+      "min":2
     },
     "UpdateUserProfileOutput":{
       "type":"structure",
@@ -26006,7 +26130,8 @@
       "enum":[
         "IAM_USER",
         "IAM_ROLE",
-        "SSO_USER"
+        "SSO_USER",
+        "IAM_ROLE_SESSION"
       ]
     },
     "Username":{

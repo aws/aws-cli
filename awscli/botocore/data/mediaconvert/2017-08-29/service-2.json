@@ -4604,12 +4604,12 @@
         "Tags": {
           "shape": "__mapOf__string",
           "locationName": "tags",
-          "documentation": "Optional. The tags that you want to add to the resource. You can tag resources with a key-value pair or with only a key.  Use standard AWS tags on your job for automatic integration with AWS services and for custom integrations and workflows."
+          "documentation": "Optional. The tags that you want to add to the resource. You can tag resources with a key-value pair or with only a key. Use standard AWS tags on your job for automatic integration with AWS services and for custom integrations and workflows."
         },
         "UserMetadata": {
           "shape": "__mapOf__string",
           "locationName": "userMetadata",
-          "documentation": "Optional. User-defined metadata that you want to associate with an MediaConvert job. You specify metadata in key/value pairs.  Use only for existing integrations or workflows that rely on job metadata tags. Otherwise, we recommend that you use standard AWS tags."
+          "documentation": "Optional. User-defined metadata that you want to associate with an MediaConvert job. You specify metadata in key/value pairs. Use only for existing integrations or workflows that rely on job metadata tags. Otherwise, we recommend that you use standard AWS tags."
         }
       },
       "required": [
@@ -4752,6 +4752,11 @@
           "shape": "__string",
           "locationName": "description",
           "documentation": "Optional. A description of the queue that you are creating."
+        },
+        "MaximumConcurrentFeeds": {
+          "shape": "__integerMin0",
+          "locationName": "maximumConcurrentFeeds",
+          "documentation": "Specify the maximum number of Elemental Inference feeds MediaConvert can process concurrently."
         },
         "Name": {
           "shape": "__string",
@@ -6210,6 +6215,55 @@
         "NOT_INDICATED",
         "ENABLED",
         "DISABLED"
+      ]
+    },
+    "ElementalInferenceConfiguration": {
+      "type": "structure",
+      "members": {
+        "Features": {
+          "shape": "__listOfElementalInferenceFeature",
+          "locationName": "features",
+          "documentation": "A list of Elemental Inference features used in this job."
+        },
+        "Feeds": {
+          "shape": "__listOfElementalInferenceFeed",
+          "locationName": "feeds",
+          "documentation": "A list of Elemental Inference feeds used by this job."
+        }
+      },
+      "documentation": "The Elemental Inference configuration used in this job."
+    },
+    "ElementalInferenceFeature": {
+      "type": "string",
+      "documentation": "Elemental Inference feature.",
+      "enum": [
+        "SMART_CROP"
+      ]
+    },
+    "ElementalInferenceFeed": {
+      "type": "structure",
+      "members": {
+        "Arn": {
+          "shape": "__string",
+          "locationName": "arn",
+          "documentation": "Feed ARN."
+        },
+        "FeedManagementState": {
+          "shape": "ElementalInferenceFeedManagementState",
+          "locationName": "feedManagementState",
+          "documentation": "Elemental Inference Feed management state."
+        }
+      },
+      "documentation": "Elemental Inference Feed."
+    },
+    "ElementalInferenceFeedManagementState": {
+      "type": "string",
+      "documentation": "Elemental Inference Feed management state.",
+      "enum": [
+        "CREATED",
+        "ASSOCIATED",
+        "PENDING_DELETION",
+        "DELETED"
       ]
     },
     "EmbeddedConvert608To708": {
@@ -9191,6 +9245,11 @@
           "locationName": "currentPhase",
           "documentation": "A job's phase can be PROBING, TRANSCODING OR UPLOADING"
         },
+        "ElementalInferenceConfiguration": {
+          "shape": "ElementalInferenceConfiguration",
+          "locationName": "elementalInferenceConfiguration",
+          "documentation": "The Elemental Inference configuration used in this job."
+        },
         "ErrorCode": {
           "shape": "__integer",
           "locationName": "errorCode",
@@ -9390,7 +9449,7 @@
         "FollowSource": {
           "shape": "__integerMin1Max150",
           "locationName": "followSource",
-          "documentation": "Specify the input that MediaConvert references for your default output settings.  MediaConvert uses this input's Resolution, Frame rate, and Pixel aspect ratio for all  outputs that you don't manually specify different output settings for. Enabling this setting will disable \"Follow source\" for all other inputs.  If MediaConvert cannot follow your source, for example if you specify an audio-only input,  MediaConvert uses the first followable input instead. In your JSON job specification, enter an integer from 1 to 150 corresponding  to the order of your inputs."
+          "documentation": "Specify the input that MediaConvert references for your default output settings. MediaConvert uses this input's Resolution, Frame rate, and Pixel aspect ratio for all outputs that you don't manually specify different output settings for. Enabling this setting will disable \"Follow source\" for all other inputs.  If MediaConvert cannot follow your source, for example if you specify an audio-only input,  MediaConvert uses the first followable input instead. In your JSON job specification, enter an integer from 1 to 150 corresponding  to the order of your inputs."
         },
         "Inputs": {
           "shape": "__listOfInput",
@@ -9561,7 +9620,7 @@
         "FollowSource": {
           "shape": "__integerMin1Max150",
           "locationName": "followSource",
-          "documentation": "Specify the input that MediaConvert references for your default output settings.  MediaConvert uses this input's Resolution, Frame rate, and Pixel aspect ratio for all  outputs that you don't manually specify different output settings for. Enabling this setting will disable \"Follow source\" for all other inputs.  If MediaConvert cannot follow your source, for example if you specify an audio-only input,  MediaConvert uses the first followable input instead. In your JSON job specification, enter an integer from 1 to 150 corresponding  to the order of your inputs."
+          "documentation": "Specify the input that MediaConvert references for your default output settings. MediaConvert uses this input's Resolution, Frame rate, and Pixel aspect ratio for all outputs that you don't manually specify different output settings for. Enabling this setting will disable \"Follow source\" for all other inputs.  If MediaConvert cannot follow your source, for example if you specify an audio-only input,  MediaConvert uses the first followable input instead. In your JSON job specification, enter an integer from 1 to 150 corresponding  to the order of your inputs."
         },
         "Inputs": {
           "shape": "__listOfInputTemplate",
@@ -12702,6 +12761,11 @@
           "locationName": "lastUpdated",
           "documentation": "The timestamp in epoch seconds for when you most recently updated the queue."
         },
+        "MaximumConcurrentFeeds": {
+          "shape": "__integerMin0",
+          "locationName": "maximumConcurrentFeeds",
+          "documentation": "Specify the maximum number of Elemental Inference feeds MediaConvert can process concurrently."
+        },
         "Name": {
           "shape": "__string",
           "locationName": "name",
@@ -13066,13 +13130,14 @@
     },
     "ScalingBehavior": {
       "type": "string",
-      "documentation": "Specify the video Scaling behavior when your output has a different resolution than your input. For more information, see https://docs.aws.amazon.com/mediaconvert/latest/ug/video-scaling.html",
+      "documentation": "Specify the video Scaling behavior when your output has a different resolution than your input. For more information, see https://docs.aws.amazon.com/mediaconvert/latest/ug/video-scaling.html Select Smart Cropping using Elemental Inference as your scaling behavior to have Elemental Inference automatically crop your video. Smart Crop requires a vertical output aspect ratio (1:1 is the widest aspect ratio supported).",
       "enum": [
         "DEFAULT",
         "STRETCH_TO_OUTPUT",
         "FIT",
         "FIT_NO_UPSCALE",
-        "FILL"
+        "FILL",
+        "SMART_CROP"
       ]
     },
     "SccDestinationFramerate": {
@@ -13983,6 +14048,11 @@
           "locationName": "description",
           "documentation": "The new description for the queue, if you are changing it."
         },
+        "MaximumConcurrentFeeds": {
+          "shape": "__integerMin0",
+          "locationName": "maximumConcurrentFeeds",
+          "documentation": "Specify the maximum number of Elemental Inference feeds MediaConvert can process concurrently."
+        },
         "Name": {
           "shape": "__string",
           "locationName": "name",
@@ -14294,7 +14364,7 @@
         "ScalingBehavior": {
           "shape": "ScalingBehavior",
           "locationName": "scalingBehavior",
-          "documentation": "Specify the video Scaling behavior when your output has a different resolution than your input. For more information, see https://docs.aws.amazon.com/mediaconvert/latest/ug/video-scaling.html"
+          "documentation": "Specify the video Scaling behavior when your output has a different resolution than your input. For more information, see https://docs.aws.amazon.com/mediaconvert/latest/ug/video-scaling.html Select Smart Cropping using Elemental Inference as your scaling behavior to have Elemental Inference automatically crop your video. Smart Crop requires a vertical output aspect ratio (1:1 is the widest aspect ratio supported)."
         },
         "Sharpness": {
           "shape": "__integerMin0Max100",
@@ -15537,6 +15607,10 @@
     "__integer": {
       "type": "integer"
     },
+    "__integerMin0": {
+      "type": "integer",
+      "min": 0
+    },
     "__integerMin0Max0": {
       "type": "integer",
       "min": 0,
@@ -16129,6 +16203,18 @@
       "type": "list",
       "member": {
         "shape": "DashAdditionalManifest"
+      }
+    },
+    "__listOfElementalInferenceFeature": {
+      "type": "list",
+      "member": {
+        "shape": "ElementalInferenceFeature"
+      }
+    },
+    "__listOfElementalInferenceFeed": {
+      "type": "list",
+      "member": {
+        "shape": "ElementalInferenceFeed"
       }
     },
     "__listOfEndpoint": {

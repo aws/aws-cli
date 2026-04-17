@@ -3,15 +3,16 @@ name: Closed Issue Update
 on:
   issues:
     types: [closed]
-permissions:
-  issues: write
+permissions: {}
 
 jobs:
   unlabel:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
     if: contains(toJson(github.event.issue.labels), 'needs-triage')
     steps:
-    - uses: actions/github-script@v8
+    - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
       with:
         script: |
           github.rest.issues.removeLabel({
@@ -22,8 +23,10 @@ jobs:
           })      
   auto_comment:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
     steps:
-    - uses: aws-actions/closed-issue-message@v2
+    - uses: aws-actions/closed-issue-message@10aaf6366131b673a7c8b7742f8b3849f1d44f18 # v2
       with:
         # These inputs are both required
         repo-token: "${{ secrets.GITHUB_TOKEN }}"

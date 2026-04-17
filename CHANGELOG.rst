@@ -2,6 +2,22 @@
 CHANGELOG
 =========
 
+2.34.32
+=======
+
+* api-change:``sts``: The STS client now supports configuring SigV4a through the auth scheme preference setting. SigV4a uses asymmetric cryptography, enabling customers using long-term IAM credentials to continue making STS API calls even when a region is isolated from the partition leader.
+* api-change:``groundstation``: Adds support for updating contacts, listing antennas, and listing ground station reservations. New API operations - UpdateContact, ListContactVersions, DescribeContactVersion, ListAntennas, and ListGroundStationReservations.
+* api-change:``sagemaker``: Adds support for providing NetworkInterface for efa enabled instances and Simplified cluster creation for Slurm-orchestrated clusters with optional Lifecycle Script (LCS) configuration.
+* enhancement:openssl: Update bundled OpenSSL version to 1.1.1zg for Linux installers
+* api-change:``connect``: Fixes in SDK for customers using TestCase APIs
+* api-change:``connectcampaignsv2``: This release adds support for campaign entry limits configuration and hourly refresh frequency in Amazon Connect Outbound Campaigns.
+* api-change:``quicksight``: Public release of dashboard customization summary, S3 Tables data source type, Athena cross-account connector, custom sorting for controls, and AI-powered analysis generation.
+* enhancement:``awscrt``: Update awscrt to version 0.32.1
+* api-change:``neptune``: Improving Documentation for Neptune
+* api-change:``cleanrooms``: This release adds support for configurable spark properties for Cleanrooms PySpark workloads.
+* api-change:``imagebuilder``: ImportDiskImage API adds registerImageOptions for Secure Boot control and custom UEFI data. It adds windowsConfiguration for selecting a specific edition from multi-image .wim files during ISO import.
+
+
 2.34.31
 =======
 

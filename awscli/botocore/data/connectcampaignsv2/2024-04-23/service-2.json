@@ -108,6 +108,25 @@
       "documentation":"<p>Deletes the communication time config for a campaign. This API is idempotent.</p>",
       "idempotent":true
     },
+    "DeleteCampaignEntryLimits":{
+      "name":"DeleteCampaignEntryLimits",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v2/campaigns/{id}/entry-limits",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteCampaignEntryLimitsRequest"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidCampaignStateException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes the entry limits config for a campaign. This API is idempotent.</p>",
+      "idempotent":true
+    },
     "DeleteConnectInstanceConfig":{
       "name":"DeleteConnectInstanceConfig",
       "http":{
@@ -590,6 +609,25 @@
       "documentation":"<p>Updates the communication time config for a campaign. This API is idempotent.</p>",
       "idempotent":true
     },
+    "UpdateCampaignEntryLimits":{
+      "name":"UpdateCampaignEntryLimits",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/campaigns/{id}/entry-limits",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateCampaignEntryLimitsRequest"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidCampaignStateException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates the entry limits config for a campaign. This API is idempotent.</p>",
+      "idempotent":true
+    },
     "UpdateCampaignFlowAssociation":{
       "name":"UpdateCampaignFlowAssociation",
       "http":{
@@ -772,6 +810,7 @@
         "source":{"shape":"Source"},
         "connectCampaignFlowArn":{"shape":"Arn"},
         "schedule":{"shape":"Schedule"},
+        "entryLimitsConfig":{"shape":"EntryLimitsConfig"},
         "communicationTimeConfig":{"shape":"CommunicationTimeConfig"},
         "communicationLimitsOverride":{"shape":"CommunicationLimitsConfig"},
         "tags":{"shape":"TagMap"}
@@ -841,6 +880,7 @@
         "channelSubtypes":{"shape":"ChannelSubtypeList"},
         "type":{"shape":"ExternalCampaignType"},
         "schedule":{"shape":"Schedule"},
+        "entryLimitsConfig":{"shape":"EntryLimitsConfig"},
         "connectCampaignFlowArn":{"shape":"Arn"}
       },
       "documentation":"<p>An Amazon Connect campaign summary.</p>"
@@ -1024,6 +1064,7 @@
         "source":{"shape":"Source"},
         "connectCampaignFlowArn":{"shape":"Arn"},
         "schedule":{"shape":"Schedule"},
+        "entryLimitsConfig":{"shape":"EntryLimitsConfig"},
         "communicationTimeConfig":{"shape":"CommunicationTimeConfig"},
         "communicationLimitsOverride":{"shape":"CommunicationLimitsConfig"},
         "tags":{"shape":"TagMap"}
@@ -1149,6 +1190,18 @@
         }
       },
       "documentation":"<p>The request for DeleteCampaignCommunicationTime API.</p>"
+    },
+    "DeleteCampaignEntryLimitsRequest":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"CampaignId",
+          "location":"uri",
+          "locationName":"id"
+        }
+      },
+      "documentation":"<p>The request for DeleteCampaignEntryLimits API.</p>"
     },
     "DeleteCampaignRequest":{
       "type":"structure",
@@ -1328,6 +1381,29 @@
       "type":"string",
       "documentation":"<p>Server-side encryption type.</p>",
       "enum":["KMS"]
+    },
+    "EntryLimitsConfig":{
+      "type":"structure",
+      "required":[
+        "maxEntryCount",
+        "minEntryInterval"
+      ],
+      "members":{
+        "maxEntryCount":{
+          "shape":"EntryLimitsConfigMaxEntryCountInteger",
+          "documentation":"<p>Maximum number of times a participant can enter the campaign. A value of 0 indicates unlimited entries. Values of 1 or greater specify the exact number of entries allowed.</p>"
+        },
+        "minEntryInterval":{
+          "shape":"Iso8601Duration",
+          "documentation":"<p>Minimum time interval that must pass before a participant can enter the campaign again.</p>"
+        }
+      },
+      "documentation":"<p>Campaign entry limits config</p>"
+    },
+    "EntryLimitsConfigMaxEntryCountInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
     },
     "EventTrigger":{
       "type":"structure",
@@ -2574,6 +2650,22 @@
         "communicationTimeConfig":{"shape":"CommunicationTimeConfig"}
       },
       "documentation":"<p>The request for UpdateCampaignCommunicationTime API.</p>"
+    },
+    "UpdateCampaignEntryLimitsRequest":{
+      "type":"structure",
+      "required":[
+        "id",
+        "entryLimitsConfig"
+      ],
+      "members":{
+        "id":{
+          "shape":"CampaignId",
+          "location":"uri",
+          "locationName":"id"
+        },
+        "entryLimitsConfig":{"shape":"EntryLimitsConfig"}
+      },
+      "documentation":"<p>The request for UpdateCampaignEntryLimits API.</p>"
     },
     "UpdateCampaignFlowAssociationRequest":{
       "type":"structure",

@@ -17,6 +17,23 @@
         "state" : "success",
         "expected" : "SCHEDULED"
       } ]
+    },
+    "ContactUpdated" : {
+      "description" : "Waits until a contact has been updated",
+      "delay" : 5,
+      "maxAttempts" : 180,
+      "operation" : "DescribeContactVersion",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "version.status",
+        "state" : "failure",
+        "expected" : "FAILED_TO_UPDATE"
+      }, {
+        "matcher" : "path",
+        "argument" : "version.status",
+        "state" : "success",
+        "expected" : "ACTIVE"
+      } ]
     }
   }
 }

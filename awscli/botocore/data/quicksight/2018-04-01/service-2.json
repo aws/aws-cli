@@ -6953,6 +6953,10 @@
           "shape":"RoleArn",
           "documentation":"<p>Use the <code>RoleArn</code> structure to override an account-wide role for a specific Athena data source. For example, say an account administrator has turned off all Athena access with an account-wide role. The administrator can then use <code>RoleArn</code> to bypass the account-wide role and allow Athena access for the single Athena data source that is specified in the structure, even if the account-wide role forbidding Athena access is still active.</p>"
         },
+        "ConsumerAccountRoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>Use <code>ConsumerAccountRoleArn</code> to perform cross-account Athena access. This is an IAM role ARN in the same AWS account as the Athena resources you want to access. Provide this along with <code>RoleArn</code> to enable role-chaining, where Amazon Quick Sight first assumes the <code>RoleArn</code> and then assumes the <code>ConsumerAccountRoleArn</code> to access Athena resources.</p>"
+        },
         "IdentityCenterConfiguration":{
           "shape":"IdentityCenterConfiguration",
           "documentation":"<p>An optional parameter that configures IAM Identity Center authentication to grant Quick Sight access to your workgroup.</p> <p>This parameter can only be specified if your Quick Sight account is configured with IAM Identity Center.</p>"
@@ -9405,6 +9409,10 @@
         "ManageSharedFolders":{
           "shape":"CapabilityState",
           "documentation":"<p>The ability to create, update, delete and view shared folders (both restricted and unrestricted), ability to add any asset to shared folders, and ability to share the folders.</p> <p> <b>Note:</b> This does <i>not</i> prevent inheriting access to assets that others share with them through folder membership.</p>"
+        },
+        "GenerateAnalyses":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to generate analysis using AI</p>"
         }
       },
       "documentation":"<p>A set of actions that correspond to Amazon Quick Sight permissions.</p>"
@@ -10894,6 +10902,33 @@
       "member":{"shape":"ColumnIdentifier"},
       "max":4,
       "min":1
+    },
+    "ControlSortConfiguration":{
+      "type":"structure",
+      "members":{
+        "SelectableValuesSort":{
+          "shape":"SelectableValuesSort",
+          "documentation":"<p>The sort configuration for user-specified values in the control. Use this option to sort values that are manually entered by users in a dropdown or list control.</p>"
+        },
+        "ControlColumnSort":{
+          "shape":"AggregationSortConfiguration",
+          "documentation":"<p>The sort configuration for controls that are tied to a dataset column. Use this option to sort control values by an aggregate of a column.</p>"
+        }
+      },
+      "documentation":"<p>The sort configuration for control values. This is a tagged union type. Specify either <code>SelectableValuesSort</code> or <code>ControlColumnSort</code>, but not both.</p>"
+    },
+    "ControlSortConfigurationList":{
+      "type":"list",
+      "member":{"shape":"ControlSortConfiguration"},
+      "max":1
+    },
+    "ControlSortDirection":{
+      "type":"string",
+      "enum":[
+        "ASC",
+        "DESC",
+        "USER_DEFINED_ORDER"
+      ]
     },
     "Coordinate":{
       "type":"structure",
@@ -13183,6 +13218,17 @@
         "DISABLED"
       ]
     },
+    "DashboardCustomizationSummaryConfigurations":{
+      "type":"structure",
+      "required":["Enabled"],
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>The enabled status of the dashboard customization summary configuration for an embedded Quick Sight dashboard.</p>"
+        }
+      },
+      "documentation":"<p>The dashboard customization summary configuration for an embedded Quick Sight dashboard.</p>"
+    },
     "DashboardCustomizationVisualOptions":{
       "type":"structure",
       "members":{
@@ -14881,6 +14927,10 @@
           "shape":"S3Parameters",
           "documentation":"<p>The parameters for S3.</p>"
         },
+        "S3TablesParameters":{
+          "shape":"S3TablesParameters",
+          "documentation":"<p>The parameters for S3 Tables.</p>"
+        },
         "S3KnowledgeBaseParameters":{
           "shape":"S3KnowledgeBaseParameters",
           "documentation":"<p>The parameters for S3 Knowledge Base.</p>"
@@ -15043,6 +15093,7 @@
         "PRESTO",
         "REDSHIFT",
         "S3",
+        "S3_TABLES",
         "SALESFORCE",
         "SERVICENOW",
         "SNOWFLAKE",
@@ -15862,6 +15913,10 @@
         "CommitMode":{
           "shape":"CommitMode",
           "documentation":"<p>The visibility configuration of the Apply button on a <code>FilterDropDownControl</code>.</p>"
+        },
+        "ControlSortConfigurations":{
+          "shape":"ControlSortConfigurationList",
+          "documentation":"<p>The sort configuration for the values displayed in the control. Only one sort configuration can be applied per control.</p>"
         }
       },
       "documentation":"<p>The default options that correspond to the <code>Dropdown</code> filter control type.</p>"
@@ -15880,6 +15935,10 @@
         "SelectableValues":{
           "shape":"FilterSelectableValues",
           "documentation":"<p>A list of selectable values that are used in a control.</p>"
+        },
+        "ControlSortConfigurations":{
+          "shape":"ControlSortConfigurationList",
+          "documentation":"<p>The sort configuration for the values displayed in the control. Only one sort configuration can be applied per control.</p>"
         }
       },
       "documentation":"<p>The default options that correspond to the <code>List</code> filter control type.</p>"
@@ -21298,6 +21357,10 @@
         "CommitMode":{
           "shape":"CommitMode",
           "documentation":"<p>The visibility configuration of the Apply button on a <code>FilterDropDownControl</code>.</p>"
+        },
+        "ControlSortConfigurations":{
+          "shape":"ControlSortConfigurationList",
+          "documentation":"<p>The sort configuration for the values displayed in the control. Only one sort configuration can be applied per control.</p>"
         }
       },
       "documentation":"<p>A control to display a dropdown list with buttons that are used to select a single value.</p>"
@@ -21402,6 +21465,10 @@
         "CascadingControlConfiguration":{
           "shape":"CascadingControlConfiguration",
           "documentation":"<p>The values that are displayed in a control can be configured to only show values that are valid based on what's selected in other controls.</p>"
+        },
+        "ControlSortConfigurations":{
+          "shape":"ControlSortConfigurationList",
+          "documentation":"<p>The sort configuration for the values displayed in the control. Only one sort configuration can be applied per control.</p>"
         }
       },
       "documentation":"<p>A control to display a list of buttons or boxes. This is used to select either a single value or multiple values.</p>"
@@ -30214,6 +30281,10 @@
         "CommitMode":{
           "shape":"CommitMode",
           "documentation":"<p>The visibility configuration of the Apply button on a <code>ParameterDropDownControl</code>.</p>"
+        },
+        "ControlSortConfigurations":{
+          "shape":"ControlSortConfigurationList",
+          "documentation":"<p>The sort configuration for the values displayed in the control. Only one sort configuration can be applied per control.</p>"
         }
       },
       "documentation":"<p>A control to display a dropdown list with buttons that are used to select a single value.</p>"
@@ -30253,6 +30324,10 @@
         "CascadingControlConfiguration":{
           "shape":"CascadingControlConfiguration",
           "documentation":"<p>The values that are displayed in a control can be configured to only show values that are valid based on what's selected in other controls.</p>"
+        },
+        "ControlSortConfigurations":{
+          "shape":"ControlSortConfigurationList",
+          "documentation":"<p>The sort configuration for the values displayed in the control. Only one sort configuration can be applied per control.</p>"
         }
       },
       "documentation":"<p>A control to display a list with buttons or boxes that are used to select either a single value or multiple values.</p>"
@@ -32968,6 +33043,10 @@
         "ThresholdAlerts":{
           "shape":"ThresholdAlertsConfigurations",
           "documentation":"<p>The threshold alerts configuration for an embedded Quick Sight dashboard.</p>"
+        },
+        "DashboardCustomizationSummary":{
+          "shape":"DashboardCustomizationSummaryConfigurations",
+          "documentation":"<p>The dashboard customization summary configuration for an embedded Quick Sight console.</p>"
         }
       },
       "documentation":"<p>The feature configurations of an embedded Amazon Quick Sight console.</p>"
@@ -33017,6 +33096,10 @@
         "ThresholdAlerts":{
           "shape":"ThresholdAlertsConfigurations",
           "documentation":"<p>The threshold alerts configuration for an Quick Sight embedded dashboard.</p>"
+        },
+        "DashboardCustomizationSummary":{
+          "shape":"DashboardCustomizationSummaryConfigurations",
+          "documentation":"<p>The dashboard customization summary configuration for an embedded Quick Sight dashboard.</p>"
         }
       },
       "documentation":"<p>The feature configuration for an embedded dashboard.</p>"
@@ -33779,6 +33862,20 @@
         }
       },
       "documentation":"<p>A physical table type for an S3 data source.</p>"
+    },
+    "S3TableBucketArn":{
+      "type":"string",
+      "pattern":"^(arn:aws[-a-z0-9]*:[a-z0-9]+:[-a-z0-9]*:[0-9]{12}:bucket/[a-zA-Z0-9-_]{3,63})$"
+    },
+    "S3TablesParameters":{
+      "type":"structure",
+      "members":{
+        "TableBucketArn":{
+          "shape":"S3TableBucketArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the S3 Tables bucket.</p>"
+        }
+      },
+      "documentation":"<p>The parameters for S3 Tables.</p>"
     },
     "S3Uri":{
       "type":"string",
@@ -34764,6 +34861,17 @@
     "SelectAllValueOptions":{
       "type":"string",
       "enum":["ALL_VALUES"]
+    },
+    "SelectableValuesSort":{
+      "type":"structure",
+      "required":["Direction"],
+      "members":{
+        "Direction":{
+          "shape":"ControlSortDirection",
+          "documentation":"<p>The sort direction for the selectable values. Choose one of the following options:</p> <ul> <li> <p> <code>ASC</code>: Sort in ascending order.</p> </li> <li> <p> <code>DESC</code>: Sort in descending order.</p> </li> <li> <p> <code>USER_DEFINED_ORDER</code>: Preserve the order in which the values were entered.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The sort configuration for selectable values in a control.</p>"
     },
     "SelectedFieldList":{
       "type":"list",

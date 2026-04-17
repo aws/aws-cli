@@ -5098,6 +5098,14 @@
           "shape":"TagMap",
           "documentation":"<p>Tags that are attached to image resources created from the import.</p>"
         },
+        "registerImageOptions":{
+          "shape":"RegisterImageOptions",
+          "documentation":"<p>Configures Secure Boot and UEFI settings for the imported image.</p>"
+        },
+        "windowsConfiguration":{
+          "shape":"WindowsConfiguration",
+          "documentation":"<p>Specifies Windows settings for ISO imports.</p>"
+        },
         "clientToken":{
           "shape":"ClientToken",
           "documentation":"<p>Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a> in the <i>Amazon EC2 API Reference</i>.</p>",
@@ -7261,6 +7269,20 @@
       "type":"list",
       "member":{"shape":"NonEmptyString"}
     },
+    "RegisterImageOptions":{
+      "type":"structure",
+      "members":{
+        "secureBootEnabled":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Specifies whether Secure Boot is enabled for the output AMI. The default value is <code>true</code>. To disable Secure Boot for custom unsigned drivers, set this value to <code>false</code>.</p>"
+        },
+        "uefiData":{
+          "shape":"UefiData",
+          "documentation":"<p>A Base64-encoded representation of the non-volatile UEFI variable store. You can specify this parameter only when <code>secureBootEnabled</code> is <code>true</code> or unspecified. You can inspect and modify the UEFI data by using the <a href=\"https://github.com/awslabs/python-uefivars\">python-uefivars tool on GitHub</a>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/uefi-variables.html\">UEFI variables for Amazon EC2 instances</a>.</p>"
+        }
+      },
+      "documentation":"<p>Controls Secure Boot and UEFI data settings for the resulting image during ISO imports. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/uefi-secure-boot.html\">UEFI Secure Boot for Amazon EC2 instances</a> in the <i> <i>Amazon EC2 User Guide</i> </i>.</p>"
+    },
     "Remediation":{
       "type":"structure",
       "members":{
@@ -7827,6 +7849,11 @@
       "error":{"httpStatusCode":429},
       "exception":true
     },
+    "UefiData":{
+      "type":"string",
+      "max":64000,
+      "min":0
+    },
     "UntagResourceRequest":{
       "type":"structure",
       "required":[
@@ -8210,6 +8237,22 @@
     "WildcardVersionNumber":{
       "type":"string",
       "pattern":"^(?:[0-9]+|x)\\.(?:[0-9]+|x)\\.(?:[0-9]+|x)$"
+    },
+    "WindowsConfiguration":{
+      "type":"structure",
+      "required":["imageIndex"],
+      "members":{
+        "imageIndex":{
+          "shape":"WindowsConfigurationImageIndex",
+          "documentation":"<p>The 1-based index that specifies which Windows edition to install from a multi-edition Windows ISO file. A Windows ISO can contain a <code>.wim</code> file with multiple image indexes, each representing a different edition.</p>"
+        }
+      },
+      "documentation":"<p>Windows-specific configuration settings for an ISO import, including the edition to install from a multi-edition Windows ISO file.</p>"
+    },
+    "WindowsConfigurationImageIndex":{
+      "type":"long",
+      "max":4294967295,
+      "min":1
     },
     "Workflow":{
       "type":"structure",

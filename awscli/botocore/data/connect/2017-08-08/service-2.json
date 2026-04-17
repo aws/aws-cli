@@ -16814,6 +16814,10 @@
         "AI_AGENT"
       ]
     },
+    "EpochMilliseconds":{
+      "type":"long",
+      "min":0
+    },
     "ErrorCode":{"type":"string"},
     "ErrorMessage":{"type":"string"},
     "ErrorResult":{
@@ -24101,13 +24105,13 @@
           "locationName":"testCaseName"
         },
         "StartTime":{
-          "shape":"Timestamp",
+          "shape":"EpochMilliseconds",
           "documentation":"<p>Filter executions that started after this time.</p>",
           "location":"querystring",
           "locationName":"startTime"
         },
         "EndTime":{
-          "shape":"Timestamp",
+          "shape":"EpochMilliseconds",
           "documentation":"<p>Filter executions that started before this time.</p>",
           "location":"querystring",
           "locationName":"endTime"
@@ -32048,7 +32052,8 @@
         },
         "ClientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>"
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "idempotencyToken":true
         }
       }
     },
@@ -32317,7 +32322,8 @@
         },
         "ClientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>"
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "idempotencyToken":true
         }
       }
     },
@@ -33024,7 +33030,7 @@
         },
         "InitializationData":{
           "shape":"TestCaseInitializationData",
-          "documentation":"<p>Defines the test attributes for precise data representation.</p>"
+          "documentation":"<p>Defines the test attributes for precise data representation. The value must be a valid JSON string.</p>"
         },
         "Description":{
           "shape":"TestCaseDescription",

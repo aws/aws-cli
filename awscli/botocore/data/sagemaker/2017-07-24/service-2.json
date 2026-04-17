@@ -9311,6 +9311,10 @@
         "SlurmConfig":{
           "shape":"ClusterSlurmConfigDetails",
           "documentation":"<p>The Slurm configuration for the instance group.</p>"
+        },
+        "NetworkInterface":{
+          "shape":"ClusterNetworkInterfaceDetails",
+          "documentation":"<p>The network interface configuration for the instance group.</p>"
         }
       },
       "documentation":"<p>Details of an instance group in a SageMaker HyperPod cluster.</p>"
@@ -9400,6 +9404,10 @@
         "CapacityRequirements":{
           "shape":"ClusterCapacityRequirements",
           "documentation":"<p>Specifies the capacity requirements for the instance group.</p>"
+        },
+        "NetworkInterface":{
+          "shape":"ClusterNetworkInterface",
+          "documentation":"<p>The network interface configuration for the instance group.</p>"
         }
       },
       "documentation":"<p>The specifications of an instance group that you need to define.</p>"
@@ -9671,6 +9679,13 @@
       "max":20,
       "min":1
     },
+    "ClusterInterfaceType":{
+      "type":"string",
+      "enum":[
+        "efa",
+        "efa-only"
+      ]
+    },
     "ClusterKubernetesConfig":{
       "type":"structure",
       "members":{
@@ -9806,6 +9821,10 @@
         "OnCreate":{
           "shape":"ClusterLifeCycleConfigFileName",
           "documentation":"<p>The file name of the entrypoint script of lifecycle scripts under <code>SourceS3Uri</code>. This entrypoint script runs during cluster creation.</p>"
+        },
+        "OnInitComplete":{
+          "shape":"ClusterLifeCycleConfigFileName",
+          "documentation":"<p>The file name of the entrypoint script of lifecycle scripts under <code>SourceS3Uri</code>. This script runs on the node after the AMI-based initialization is complete.</p>"
         }
       },
       "documentation":"<p>The lifecycle configuration for a SageMaker HyperPod cluster.</p>"
@@ -9851,6 +9870,26 @@
       "max":256,
       "min":0,
       "pattern":"(arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:cluster/[a-z0-9]{12})|([a-zA-Z0-9](-*[a-zA-Z0-9]){0,62})"
+    },
+    "ClusterNetworkInterface":{
+      "type":"structure",
+      "members":{
+        "InterfaceType":{
+          "shape":"ClusterInterfaceType",
+          "documentation":"<p>The type of network interface for the instance group. Valid values:</p> <ul> <li> <p> <code>efa</code> – An EFA with ENA interface, which provides both the EFA device for low-latency, high-throughput communication and the ENA device for IP networking.</p> </li> <li> <p> <code>efa-only</code> – An EFA-only interface, which provides only the EFA device capabilities without the ENA device for traditional IP networking.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/efa.html\">Elastic Fabric Adapter</a>.</p>"
+        }
+      },
+      "documentation":"<p>The network interface configuration for a Amazon SageMaker HyperPod cluster instance group.</p>"
+    },
+    "ClusterNetworkInterfaceDetails":{
+      "type":"structure",
+      "members":{
+        "InterfaceType":{
+          "shape":"ClusterInterfaceType",
+          "documentation":"<p>The type of network interface for the instance group. Valid values are <code>efa</code> and <code>efa-only</code>.</p>"
+        }
+      },
+      "documentation":"<p>The network interface configuration details for a Amazon SageMaker HyperPod cluster instance group.</p>"
     },
     "ClusterNodeDetails":{
       "type":"structure",
@@ -9934,6 +9973,10 @@
         "CapacityType":{
           "shape":"ClusterCapacityType",
           "documentation":"<p>The capacity type of the node. Valid values are <code>OnDemand</code> and <code>Spot</code>. When set to <code>OnDemand</code>, the node is launched as an On-Demand instance. When set to <code>Spot</code>, the node is launched as a Spot instance. </p>"
+        },
+        "NetworkInterface":{
+          "shape":"ClusterNetworkInterfaceDetails",
+          "documentation":"<p>The network interface configuration for the cluster node.</p>"
         }
       },
       "documentation":"<p>Details of an instance (also called a <i>node</i> interchangeably) in a SageMaker HyperPod cluster.</p>"
@@ -21813,6 +21856,7 @@
     },
     "DomainId":{
       "type":"string",
+      "documentation":"<p>Types duplicated from IronmanApiServiceModel for federation. These types are defined in other service directories and are not available via IronmanApiServiceCommonModel.</p>",
       "max":63,
       "min":0,
       "pattern":"d-(-*[a-z0-9]){1,61}"

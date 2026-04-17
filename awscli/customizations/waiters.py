@@ -20,6 +20,7 @@ from awscli.customizations.commands import (
     BasicDocHandler,
     BasicHelp,
 )
+from awscli.customizations.exceptions import ParamValidationError
 
 
 DELAY_HELP = (
@@ -74,6 +75,16 @@ class WaiterArgument(BaseCLIArgument):
 
     def add_to_params(self, parameters, value):
         if value is not None:
+            if self._serialized_name == 'Delay' and value < 0:
+                raise ParamValidationError(
+                    '--delay must be a non-negative integer, '
+                    'got %s' % value
+                )
+            if self._serialized_name == 'MaxAttempts' and value < 1:
+                raise ParamValidationError(
+                    '--max-attempts must be a positive integer, '
+                    'got %s' % value
+                )
             waiter_config = parameters.get('WaiterConfig', {})
             waiter_config[self._serialized_name] = value
             parameters['WaiterConfig'] = waiter_config

@@ -556,3 +556,43 @@ class TestWaiterArgument(unittest.TestCase):
     def test_required_defaults_to_false(self):
         arg = WaiterArgument('delay', 'help text', 'Delay')
         self.assertFalse(arg.required)
+
+    def test_delay_rejects_negative(self):
+        arg = WaiterArgument('delay', 'help text', 'Delay')
+        params = {}
+        with self.assertRaises(Exception) as ctx:
+            arg.add_to_params(params, -1)
+        self.assertIn('--delay', str(ctx.exception))
+        self.assertEqual(params, {})
+
+    def test_delay_rejects_negative_large(self):
+        arg = WaiterArgument('delay', 'help text', 'Delay')
+        params = {}
+        with self.assertRaises(Exception):
+            arg.add_to_params(params, -100)
+
+    def test_delay_accepts_zero(self):
+        arg = WaiterArgument('delay', 'help text', 'Delay')
+        params = {}
+        arg.add_to_params(params, 0)
+        self.assertEqual(params, {'WaiterConfig': {'Delay': 0}})
+
+    def test_max_attempts_rejects_zero(self):
+        arg = WaiterArgument('max-attempts', 'help text', 'MaxAttempts')
+        params = {}
+        with self.assertRaises(Exception) as ctx:
+            arg.add_to_params(params, 0)
+        self.assertIn('--max-attempts', str(ctx.exception))
+        self.assertEqual(params, {})
+
+    def test_max_attempts_rejects_negative(self):
+        arg = WaiterArgument('max-attempts', 'help text', 'MaxAttempts')
+        params = {}
+        with self.assertRaises(Exception):
+            arg.add_to_params(params, -1)
+
+    def test_max_attempts_accepts_one(self):
+        arg = WaiterArgument('max-attempts', 'help text', 'MaxAttempts')
+        params = {}
+        arg.add_to_params(params, 1)
+        self.assertEqual(params, {'WaiterConfig': {'MaxAttempts': 1}})

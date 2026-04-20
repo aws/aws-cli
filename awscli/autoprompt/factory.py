@@ -46,8 +46,7 @@ from awscli.autoprompt.widgets import (
 )
 
 
-class PrompterKeyboardInterrupt(KeyboardInterrupt):
-    pass
+from awscli.autoprompt.exceptions import PrompterKeyboardInterrupt
 
 
 class CLIPromptBuffer(Buffer):

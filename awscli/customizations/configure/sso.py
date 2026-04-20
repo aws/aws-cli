@@ -43,7 +43,6 @@ from awscli.customizations.sso.utils import (
     parse_sso_registration_scopes,
 )
 from awscli.customizations.utils import uni_print
-from awscli.customizations.wizard.ui.selectmenu import select_menu
 from awscli.formatter import CLI_OUTPUT_FORMATS
 
 logger = logging.getLogger(__name__)
@@ -418,6 +417,7 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
             session, prompter=prompter, config_writer=config_writer
         )
         if selector is None:
+            from awscli.customizations.wizard.ui.selectmenu import select_menu
             selector = select_menu
         self._selector = selector
         if sso_login is None:

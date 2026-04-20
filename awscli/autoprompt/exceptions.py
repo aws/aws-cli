@@ -1,0 +1,2 @@
+class PrompterKeyboardInterrupt(KeyboardInterrupt):
+    pass

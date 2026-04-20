@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.44.82
+=======
+
+* api-change:``application-signals``: Releasing Second phase of SLO Recommendations where you can create recommended SLOs out-of-the box using CreateSLO API
+* api-change:``bedrock-agentcore-control``: Supporting listingMode for AgentCore Gateway MCP server targets
+* api-change:``ec2``: Added Transit Gateway Integration into AWS Client VPN.
+* api-change:``evs``: Amazon EVS now allows you to create connectors to your vCenter appliances and create Windows Server entitlements for virtual machines running in your EVS environments
+* api-change:``guardduty``: Expanded support for new suppression rule fields.
+* api-change:``kafka``: Amazon MSK Replicator now supports data migration from external Apache Kafka clusters to Amazon MSK Express brokers. This release adds SaslScram authentication with TLS encryption, enhanced consumer offset synchronization, and customer log forwarding for troubleshooting.
+* api-change:``location``: This release adds support for new Job APIs for bulk workloads. The initial job type supported is Address Validation. The new APIs added are StartJob, CancelJob, ListJobs, and GetJob.
+* api-change:``observabilityadmin``: Enablement for Security Hub v2 via Observability Admin Telemetry Rule for account and organization level.
+
+
 1.44.81
 =======
 

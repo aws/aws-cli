@@ -171,6 +171,13 @@ def _running_on_rhel():
     )
 
 
+class TestMakeBucketAccountRegionalNamespace(BaseS3IntegrationTest):
+    def test_short_an_suffix_sends_namespace_header(self):
+        p = aws('s3 mb s3://xyz-an')
+        assert p.rc != 0
+        assert 'InvalidBucketNamespace' in p.stderr
+
+
 @pytest.mark.parametrize(
     'preferred_transfer_client', ['classic', 'crt'], indirect=True
 )

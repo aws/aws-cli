@@ -46,7 +46,8 @@ from awscli.clidriver import (
     ServiceOperation,
     construct_cli_error_handlers_chain,
     create_clidriver,
-    validate_auto_prompt_args_are_mutually_exclusive, resolve_auto_prompt_mode,
+    validate_auto_prompt_args_are_mutually_exclusive,
+    resolve_auto_prompt_mode,
 )
 from awscli.compat import StringIO
 from awscli.customizations.commands import BasicCommand

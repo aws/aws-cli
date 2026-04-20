@@ -23,7 +23,6 @@ import awscrt.io
 import botocore.model
 import pytest
 
-from autoprompt import core
 from botocore import xform_name
 from botocore.awsrequest import AWSResponse
 from botocore.compat import OrderedDict
@@ -51,9 +50,9 @@ from awscli.clidriver import (
 )
 from awscli.compat import StringIO
 from awscli.customizations.commands import BasicCommand
+from awscli.customizations.exceptions import ParamValidationError
 from awscli.paramfile import URIArgumentHandler
 from awscli.testutils import BaseAWSCommandParamsTest, mock, unittest
-from customizations.exceptions import ParamValidationError
 
 GET_DATA = {
     'cli': {
@@ -1146,12 +1145,16 @@ class TestAWSCLIEntryPoint(unittest.TestCase):
             self.driver.session.user_agent_extra = ''
             return self.driver
 
-        self.prompt_patch = mock.patch('awscli.clidriver.AutoPromptDriver')
+        self.prompt_patch = mock.patch('awscli.autoprompt.core.AutoPromptDriver')
         self.crete_driver_patch = mock.patch(
             'awscli.clidriver.create_clidriver'
         )
+        self.resolve_mode_patch = mock.patch(
+            'awscli.clidriver.resolve_auto_prompt_mode'
+        )
         prompt_driver_class = self.prompt_patch.start()
         self.create_clidriver = self.crete_driver_patch.start()
+        self.resolve_auto_prompt_mode = self.resolve_mode_patch.start()
         self.create_clidriver.side_effect = _create_fake_cli_driver
         self.prompt_driver = mock.Mock()
         prompt_driver_class.return_value = self.prompt_driver
@@ -1159,9 +1162,10 @@ class TestAWSCLIEntryPoint(unittest.TestCase):
     def tearDown(self):
         self.prompt_patch.stop()
         self.crete_driver_patch.stop()
+        self.resolve_mode_patch.stop()
 
     def test_recreate_driver_in_partial_mode_on_param_err(self):
-        self.prompt_driver.resolve_mode.return_value = 'on-partial'
+        self.resolve_auto_prompt_mode.return_value = 'on-partial'
         self.driver.main.return_value = 252
         entry_point = awscli.clidriver.AWSCLIEntryPoint()
         rc = entry_point.main([])
@@ -1169,7 +1173,7 @@ class TestAWSCLIEntryPoint(unittest.TestCase):
         self.assertEqual(rc, 252)
 
     def test_not_recreate_driver_in_partial_mode_on_success(self):
-        self.prompt_driver.resolve_mode.return_value = 'on-partial'
+        self.resolve_auto_prompt_mode.return_value = 'on-partial'
         self.driver.main.return_value = 0
         entry_point = awscli.clidriver.AWSCLIEntryPoint()
         rc = entry_point.main([])
@@ -1177,7 +1181,7 @@ class TestAWSCLIEntryPoint(unittest.TestCase):
         self.assertEqual(rc, 0)
 
     def test_not_recreate_driver_in_on_mode(self):
-        self.prompt_driver.resolve_mode.return_value = 'on'
+        self.resolve_auto_prompt_mode.return_value = 'on'
         self.driver.main.return_value = 252
         entry_point = awscli.clidriver.AWSCLIEntryPoint()
         rc = entry_point.main([])
@@ -1185,7 +1189,7 @@ class TestAWSCLIEntryPoint(unittest.TestCase):
         self.assertEqual(rc, 252)
 
     def test_not_recreate_driver_in_off_mode(self):
-        self.prompt_driver.resolve_mode.return_value = 'off'
+        self.resolve_auto_prompt_mode.return_value = 'off'
         self.driver.main.return_value = 252
         entry_point = awscli.clidriver.AWSCLIEntryPoint()
         rc = entry_point.main([])
@@ -1193,7 +1197,7 @@ class TestAWSCLIEntryPoint(unittest.TestCase):
         self.assertEqual(rc, 252)
 
     def test_handle_exception_in_main(self):
-        self.prompt_driver.resolve_mode.return_value = 'on'
+        self.resolve_auto_prompt_mode.return_value = 'on'
         self.prompt_driver.prompt_for_args.side_effect = Exception('error')
         entry_point = awscli.clidriver.AWSCLIEntryPoint()
         fake_stderr = io.StringIO()
@@ -1203,21 +1207,21 @@ class TestAWSCLIEntryPoint(unittest.TestCase):
         self.assertIn('error', fake_stderr.getvalue())
 
     def test_update_user_agent_in_on_mode(self):
-        self.prompt_driver.resolve_mode.return_value = 'on'
+        self.resolve_auto_prompt_mode.return_value = 'on'
         self.driver.main.return_value = 252
         entry_point = awscli.clidriver.AWSCLIEntryPoint()
         entry_point.main([])
         self.assertEqual(self.driver.session.user_agent_extra, 'md/prompt#on')
 
     def test_not_update_user_agent_in_off_mode(self):
-        self.prompt_driver.resolve_mode.return_value = 'off'
+        self.resolve_auto_prompt_mode.return_value = 'off'
         self.driver.main.return_value = 252
         entry_point = awscli.clidriver.AWSCLIEntryPoint()
         entry_point.main([])
         self.assertEqual(self.driver.session.user_agent_extra, 'md/prompt#off')
 
     def test_update_user_agent_in_partial_mode_on_param_err(self):
-        self.prompt_driver.resolve_mode.return_value = 'on-partial'
+        self.resolve_auto_prompt_mode.return_value = 'on-partial'
         self.driver.main.return_value = 252
         entry_point = awscli.clidriver.AWSCLIEntryPoint()
         entry_point.main([])
@@ -1226,7 +1230,7 @@ class TestAWSCLIEntryPoint(unittest.TestCase):
         )
 
     def test_not_update_user_agent_in_partial_mode_on_success(self):
-        self.prompt_driver.resolve_mode.return_value = 'on-partial'
+        self.resolve_auto_prompt_mode.return_value = 'on-partial'
         self.driver.main.return_value = 0
         entry_point = awscli.clidriver.AWSCLIEntryPoint()
         entry_point.main([])

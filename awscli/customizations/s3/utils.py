@@ -56,10 +56,6 @@ _S3_OUTPOST_BUCKET_ARN_TO_BUCKET_KEY_REGEX = re.compile(
     r'[a-zA-Z0-9\-]{1,63})[/:]?(?P<key>.*)$'
 )
 
-_S3_ACCOUNT_REGIONAL_NAMESPACE_REGEX = re.compile(
-    r'^.+-\d{12}-[a-z]{2}(-[a-z]+-\d+)?-an$'
-)
-
 _S3_OBJECT_LAMBDA_TO_BUCKET_KEY_REGEX = re.compile(
     r'^(?P<bucket>arn:(aws).*:s3-object-lambda:[a-z\-0-9]+:[0-9]{12}:'
     r'accesspoint[/:][a-zA-Z0-9\-]{1,63})[/:]?(?P<key>.*)$'
@@ -67,7 +63,7 @@ _S3_OBJECT_LAMBDA_TO_BUCKET_KEY_REGEX = re.compile(
 
 
 def is_account_regional_namespace_bucket(bucket):
-    return bool(_S3_ACCOUNT_REGIONAL_NAMESPACE_REGEX.match(bucket))
+    return bucket.endswith('-an')
 
 
 def human_readable_size(value):

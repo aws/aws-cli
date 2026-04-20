@@ -92,7 +92,7 @@ class TestMBCommand(BaseAWSCommandParamsTest):
 
     def test_account_regional_namespace_bucket(self):
         bucket = 'amzn-s3-demo-bucket-111122223333-us-west-2-an'
-        command = self.prefix + 's3://%s --region us-west-2' % bucket
+        command = self.prefix + f's3://{bucket} --region us-west-2'
         self.parsed_responses = [{'Location': 'us-west-2'}]
         expected_params = {
             'Bucket': bucket,
@@ -103,7 +103,16 @@ class TestMBCommand(BaseAWSCommandParamsTest):
 
     def test_account_regional_namespace_bucket_us_east_1(self):
         bucket = 'my-bucket-111122223333-us-east-1-an'
-        command = self.prefix + 's3://%s --region us-east-1' % bucket
+        command = self.prefix + f's3://{bucket} --region us-east-1'
+        expected_params = {
+            'Bucket': bucket,
+            'BucketNamespace': 'account-regional',
+        }
+        self.assert_params_for_cmd(command, expected_params)
+
+    def test_account_regional_namespace_short_bucket_name(self):
+        bucket = 'xyz-an'
+        command = self.prefix + f's3://{bucket} --region us-east-1'
         expected_params = {
             'Bucket': bucket,
             'BucketNamespace': 'account-regional',

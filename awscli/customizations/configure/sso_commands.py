@@ -10,6 +10,19 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+"""
+Defines SSO-specific configure commands, to be used with the `aws configure`
+command.
+
+The main reason it lives in its own separate module instead of in
+`awscli/customizations/sso.py` is so that these commands can be referenced
+without importing `awscli/customizations/sso.py`, which imports
+from `prompt_toolkit`. Importing from `prompt_toolkit` has historically
+increased command execution times.
+
+This separation helps us limit our imports from `prompt_toolit` to when it
+is actually needed, improving execution time across most commands.
+"""
 import logging
 import os
 

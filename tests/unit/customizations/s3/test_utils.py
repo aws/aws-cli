@@ -388,11 +388,9 @@ class TestIsAccountRegionalNamespaceBucket(unittest.TestCase):
             )
         )
 
-    def test_no_match_wrong_account_id_length(self):
-        self.assertFalse(
-            is_account_regional_namespace_bucket(
-                'bucket-12345-us-west-2-an'
-            )
+    def test_matches_short_bucket_name(self):
+        self.assertTrue(
+            is_account_regional_namespace_bucket('xyz-an')
         )
 
     def test_no_match_express_directory_bucket(self):

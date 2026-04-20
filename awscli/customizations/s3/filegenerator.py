@@ -366,12 +366,6 @@ class FileGenerator:
                 source_path, response_data = key
                 if response_data['Size'] == 0 and source_path.endswith('/'):
                     if self.operation_name == 'delete':
-                        # This is to filter out manually created folders
-                        # in S3.  They have a size zero and would be
-                        # undesirably downloaded.  Local directories
-                        # are automatically created when they do not
-                        # exist locally.  But user should be able to
-                        # delete them.
                         yield source_path, response_data
                 elif not dir_op and s3_path != source_path:
                     pass
@@ -391,9 +385,11 @@ class FileGenerator:
             return s3_path, {'Size': None, 'LastModified': None}
         bucket, key = find_bucket_key(s3_path)
         try:
+            import awscli.perf_timer as T
             params = {'Bucket': bucket, 'Key': key}
             params.update(self.request_parameters.get('HeadObject', {}))
-            response = self._client.head_object(**params)
+            with T.timer('FileGenerator.head_object'):
+                response = self._client.head_object(**params)
         except ClientError as e:
             # We want to try to give a more helpful error message.
             # This is what the customer is going to see so we want to

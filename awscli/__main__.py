@@ -12,9 +12,14 @@
 # language governing permissions and limitations under the License.
 
 
+import awscli.perf_timer as T
+T.install_import_hook()
+
 import sys
 
 from awscli.clidriver import main
 
 if __name__ == "__main__":
-    sys.exit(main())
+    with T.timer('total'):
+        rc = main()
+    sys.exit(rc)

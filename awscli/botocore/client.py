@@ -880,6 +880,7 @@ class BaseClient:
             # Pass arbitrary endpoint info with the Request
             # for use during construction.
             request_context['endpoint_properties'] = properties
+
         request_dict = self._convert_to_request_dict(
             api_params=api_params,
             operation_model=operation_model,

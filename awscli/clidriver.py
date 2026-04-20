@@ -108,6 +108,7 @@ def main():
 
 
 def create_clidriver(args=None):
+    import awscli.perf_timer as T
     debug = None
     if args is not None:
         parser = FirstPassGlobalArgParser()
@@ -115,10 +116,11 @@ def create_clidriver(args=None):
         debug = args.debug
     session = botocore.session.Session()
     _set_user_agent_for_session(session)
-    load_plugins(
-        session.full_config.get('plugins', {}),
-        event_hooks=session.get_component('event_emitter'),
-    )
+    with T.timer('create_clidriver.load_plugins'):
+        load_plugins(
+            session.full_config.get('plugins', {}),
+            event_hooks=session.get_component('event_emitter'),
+        )
     error_handlers_chain = construct_cli_error_handlers_chain(session)
     driver = CLIDriver(
         session=session, error_handler=error_handlers_chain, debug=debug
@@ -530,9 +532,11 @@ class CLIDriver:
             args list of ``['s3', 'list-objects', '--bucket', 'foo']``.
 
         """
+        import awscli.perf_timer as T
         if args is None:
             args = sys.argv[1:]
-        command_table = self._get_command_table()
+        with T.timer('CLIDriver.build_command_table'):
+            command_table = self._get_command_table()
         parser = self.create_parser(command_table)
         self._add_aliases(command_table, parser)
         parsed_args = None
@@ -541,10 +545,11 @@ class CLIDriver:
             # that exceptions can be raised, which should have the same
             # general exception handling logic as calling into the
             # command table.  This is why it's in the try/except clause.
-            parsed_args, remaining = parser.parse_known_args(args)
-            self._handle_top_level_args(parsed_args)
-            validate_preferred_output_encoding()
-            self._emit_session_event(parsed_args)
+            with T.timer('CLIDriver.parse_args'):
+                parsed_args, remaining = parser.parse_known_args(args)
+                self._handle_top_level_args(parsed_args)
+                validate_preferred_output_encoding()
+                self._emit_session_event(parsed_args)
             HISTORY_RECORDER.record('CLI_VERSION', self._cli_version(), 'CLI')
             HISTORY_RECORDER.record('CLI_ARGUMENTS', args, 'CLI')
             return command_table[parsed_args.command](remaining, parsed_args)
@@ -688,8 +693,10 @@ class ServiceCommand(CLICommand):
         return command_table[parsed_args.operation](remaining, parsed_globals)
 
     def _create_command_table(self):
+        import awscli.perf_timer as T
         command_table = OrderedDict()
-        service_model = self._get_service_model()
+        with T.timer('ServiceCommand.load_service_model'):
+            service_model = self._get_service_model()
         for operation_name in service_model.operation_names:
             cli_name = xform_name(operation_name, '-')
             operation_model = service_model.operation_model(operation_name)
@@ -700,12 +707,13 @@ class ServiceCommand(CLICommand):
                 operation_model=operation_model,
                 operation_caller=CLIOperationCaller(self.session),
             )
-        self.session.emit(
-            f'building-command-table.{self._name}',
-            command_table=command_table,
-            session=self.session,
-            command_object=self,
-        )
+        with T.timer('ServiceCommand.emit_building_command_table'):
+            self.session.emit(
+                f'building-command-table.{self._name}',
+                command_table=command_table,
+                session=self.session,
+                command_object=self,
+            )
         self._add_lineage(command_table)
         return command_table
 
@@ -951,36 +959,38 @@ class ServiceOperation:
         )
 
     def _create_argument_table(self):
-        argument_table = OrderedDict()
-        input_shape = self._operation_model.input_shape
-        required_arguments = []
-        arg_dict = {}
-        if input_shape is not None:
-            required_arguments = input_shape.required_members
-            arg_dict = input_shape.members
-        for arg_name, arg_shape in arg_dict.items():
-            cli_arg_name = xform_name(arg_name, '-')
-            arg_class = self.ARG_TYPES.get(
-                arg_shape.type_name, self.DEFAULT_ARG_CLASS
-            )
-            is_token = arg_shape.metadata.get('idempotencyToken', False)
-            is_required = arg_name in required_arguments and not is_token
-            event_emitter = self._session.get_component('event_emitter')
-            arg_object = arg_class(
-                name=cli_arg_name,
-                argument_model=arg_shape,
-                is_required=is_required,
+        import awscli.perf_timer as T
+        with T.timer('ServiceOperation._create_argument_table'):
+            argument_table = OrderedDict()
+            input_shape = self._operation_model.input_shape
+            required_arguments = []
+            arg_dict = {}
+            if input_shape is not None:
+                required_arguments = input_shape.required_members
+                arg_dict = input_shape.members
+            for arg_name, arg_shape in arg_dict.items():
+                cli_arg_name = xform_name(arg_name, '-')
+                arg_class = self.ARG_TYPES.get(
+                    arg_shape.type_name, self.DEFAULT_ARG_CLASS
+                )
+                is_token = arg_shape.metadata.get('idempotencyToken', False)
+                is_required = arg_name in required_arguments and not is_token
+                event_emitter = self._session.get_component('event_emitter')
+                arg_object = arg_class(
+                    name=cli_arg_name,
+                    argument_model=arg_shape,
+                    is_required=is_required,
+                    operation_model=self._operation_model,
+                    serialized_name=arg_name,
+                    event_emitter=event_emitter,
+                )
+                arg_object.add_to_arg_table(argument_table)
+            LOG.debug(argument_table)
+            self._emit(
+                f'building-argument-table.{self._parent_name}.{self._name}',
                 operation_model=self._operation_model,
-                serialized_name=arg_name,
-                event_emitter=event_emitter,
-            )
-            arg_object.add_to_arg_table(argument_table)
-        LOG.debug(argument_table)
-        self._emit(
-            f'building-argument-table.{self._parent_name}.{self._name}',
-            operation_model=self._operation_model,
-            session=self._session,
-            command=self,
+                session=self._session,
+                command=self,
             argument_table=argument_table,
         )
         return argument_table
@@ -1032,16 +1042,19 @@ class CLIOperationCaller:
             value is returned.
 
         """
-        client = self._session.create_client(
-            service_name,
-            region_name=parsed_globals.region,
-            endpoint_url=parsed_globals.endpoint_url,
-            verify=parsed_globals.verify_ssl,
-        )
+        import awscli.perf_timer as T
+        with T.timer('CLIOperationCaller.create_client'):
+            client = self._session.create_client(
+                service_name,
+                region_name=parsed_globals.region,
+                endpoint_url=parsed_globals.endpoint_url,
+                verify=parsed_globals.verify_ssl,
+            )
         response = self._make_client_call(
             client, operation_name, parameters, parsed_globals
         )
-        self._display_response(operation_name, response, parsed_globals)
+        with T.timer('CLIOperationCaller.display_response'):
+            self._display_response(operation_name, response, parsed_globals)
         return 0
 
     def _make_client_call(

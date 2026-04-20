@@ -796,8 +796,10 @@ class PutObjectTask(Task):
         :param extra_args: A dictionary of any extra arguments that may be
             used in the upload.
         """
-        with fileobj as body:
-            client.put_object(Bucket=bucket, Key=key, Body=body, **extra_args)
+        import awscli.perf_timer as T
+        with T.timer('PutObjectTask'):
+            with fileobj as body:
+                client.put_object(Bucket=bucket, Key=key, Body=body, **extra_args)
 
 
 class UploadPartTask(Task):
@@ -825,15 +827,17 @@ class UploadPartTask(Task):
             This value can be appended to a list to be used to complete
             the multipart upload.
         """
-        with fileobj as body:
-            response = client.upload_part(
-                Bucket=bucket,
-                Key=key,
-                UploadId=upload_id,
-                PartNumber=part_number,
-                Body=body,
-                **extra_args,
-            )
+        import awscli.perf_timer as T
+        with T.timer('UploadPartTask'):
+            with fileobj as body:
+                response = client.upload_part(
+                    Bucket=bucket,
+                    Key=key,
+                    UploadId=upload_id,
+                    PartNumber=part_number,
+                    Body=body,
+                    **extra_args,
+                )
         etag = response['ETag']
         part_metadata = {'ETag': etag, 'PartNumber': part_number}
         if 'ChecksumAlgorithm' in extra_args:

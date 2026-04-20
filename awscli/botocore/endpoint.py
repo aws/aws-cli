@@ -210,6 +210,7 @@ class Endpoint:
         return success_response, exception
 
     def _do_get_response(self, request, operation_model, context):
+        import awscli.perf_timer as T
         try:
             logger.debug("Sending http request: %s", request)
             history_recorder.record(
@@ -227,7 +228,8 @@ class Endpoint:
             responses = self._event_emitter.emit(event_name, request=request)
             http_response = first_non_none_response(responses)
             if http_response is None:
-                http_response = self._send(request)
+                with T.timer('botocore.http_send'):
+                    http_response = self._send(request)
         except HTTPClientError as e:
             return (None, e)
         except Exception as e:
@@ -236,48 +238,49 @@ class Endpoint:
             )
             return (None, e)
         # This returns the http_response and the parsed_data.
-        response_dict = convert_to_response_dict(
-            http_response, operation_model
-        )
-        handle_checksum_body(
-            http_response,
-            response_dict,
-            context,
-            operation_model,
-        )
-
-        http_response_record_dict = response_dict.copy()
-        http_response_record_dict['streaming'] = (
-            operation_model.has_streaming_output
-        )
-        history_recorder.record('HTTP_RESPONSE', http_response_record_dict)
-
-        protocol = operation_model.service_model.resolved_protocol
-        customized_response_dict = {}
-        self._event_emitter.emit(
-            f"before-parse.{service_id}.{operation_model.name}",
-            operation_model=operation_model,
-            response_dict=response_dict,
-            customized_response_dict=customized_response_dict,
-        )
-        parser = self._response_parser_factory.create_parser(protocol)
-        parsed_response = parser.parse(
-            response_dict, operation_model.output_shape
-        )
-        parsed_response.update(customized_response_dict)
-        # Do a second parsing pass to pick up on any modeled error fields
-        # NOTE: Ideally, we would push this down into the parser classes but
-        # they currently have no reference to the operation or service model
-        # The parsers should probably take the operation model instead of
-        # output shape but we can't change that now
-        if http_response.status_code >= 300:
-            self._add_modeled_error_fields(
-                response_dict,
-                parsed_response,
-                operation_model,
-                parser,
+        with T.timer('botocore.parse_response'):
+            response_dict = convert_to_response_dict(
+                http_response, operation_model
             )
-        history_recorder.record('PARSED_RESPONSE', parsed_response)
+            handle_checksum_body(
+                http_response,
+                response_dict,
+                context,
+                operation_model,
+            )
+
+            http_response_record_dict = response_dict.copy()
+            http_response_record_dict['streaming'] = (
+                operation_model.has_streaming_output
+            )
+            history_recorder.record('HTTP_RESPONSE', http_response_record_dict)
+
+            protocol = operation_model.service_model.resolved_protocol
+            customized_response_dict = {}
+            self._event_emitter.emit(
+                f"before-parse.{service_id}.{operation_model.name}",
+                operation_model=operation_model,
+                response_dict=response_dict,
+                customized_response_dict=customized_response_dict,
+            )
+            parser = self._response_parser_factory.create_parser(protocol)
+            parsed_response = parser.parse(
+                response_dict, operation_model.output_shape
+            )
+            parsed_response.update(customized_response_dict)
+            # Do a second parsing pass to pick up on any modeled error fields
+            # NOTE: Ideally, we would push this down into the parser classes
+            # but they currently have no reference to the operation or service
+            # model. The parsers should probably take the operation model
+            # instead of output shape but we can't change that now.
+            if http_response.status_code >= 300:
+                self._add_modeled_error_fields(
+                    response_dict,
+                    parsed_response,
+                    operation_model,
+                    parser,
+                )
+            history_recorder.record('PARSED_RESPONSE', parsed_response)
         return (http_response, parsed_response), None
 
     def _add_modeled_error_fields(

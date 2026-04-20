@@ -469,6 +469,8 @@ class BoundedExecutor:
 
         :returns: The future associated to the submitted task
         """
+        import awscli.perf_timer as T
+
         semaphore = self._semaphore
         # If a tag was provided, use the semaphore associated to that
         # tag.
@@ -476,7 +478,9 @@ class BoundedExecutor:
             semaphore = self._tag_semaphores[tag]
 
         # Call acquire on the semaphore.
-        acquire_token = semaphore.acquire(task.transfer_id, block)
+        tag_label = f'[tag={tag}]' if tag else ''
+        with T.timer(f'BoundedExecutor.semaphore_acquire{tag_label}'):
+            acquire_token = semaphore.acquire(task.transfer_id, block)
         # Create a callback to invoke when task is done in order to call
         # release on the semaphore.
         release_callback = FunctionContainer(

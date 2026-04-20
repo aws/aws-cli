@@ -179,6 +179,7 @@ class Task:
         raise NotImplementedError('_main() must be implemented')
 
     def _wait_on_dependent_futures(self):
+        import awscli.perf_timer as T
         # Gather all of the futures into that main() depends on.
         futures_to_wait_on = []
         for _, future in self._pending_main_kwargs.items():
@@ -188,8 +189,8 @@ class Task:
             # If the pending main keyword arg is a future append it to the list.
             else:
                 futures_to_wait_on.append(future)
-        # Now wait for all of the futures to complete.
-        self._wait_until_all_complete(futures_to_wait_on)
+        with T.timer('Task._wait_on_dependent_futures'):
+            self._wait_until_all_complete(futures_to_wait_on)
 
     def _wait_until_all_complete(self, futures):
         # This is a basic implementation of the concurrent.futures.wait()
@@ -251,6 +252,7 @@ class SubmissionTask(Task):
         :param kwargs: Any additional kwargs that you may want to pass
             to the _submit() method
         """
+        import awscli.perf_timer as T
         try:
             self._transfer_coordinator.set_status_to_queued()
 
@@ -264,7 +266,8 @@ class SubmissionTask(Task):
 
             # Call the submit method to start submitting tasks to execute the
             # transfer.
-            self._submit(transfer_future=transfer_future, **kwargs)
+            with T.timer('SubmissionTask._submit'):
+                self._submit(transfer_future=transfer_future, **kwargs)
         except BaseException as e:
             # If there was an exception raised during the submission of task
             # there is a chance that the final task that signals if a transfer
@@ -342,10 +345,11 @@ class CreateMultipartUploadTask(Task):
 
         :returns: The upload id of the multipart upload
         """
-        # Create the multipart upload.
-        response = client.create_multipart_upload(
-            Bucket=bucket, Key=key, **extra_args
-        )
+        import awscli.perf_timer as T
+        with T.timer('CreateMultipartUploadTask'):
+            response = client.create_multipart_upload(
+                Bucket=bucket, Key=key, **extra_args
+            )
         upload_id = response['UploadId']
 
         # Add a cleanup if the multipart upload fails at any point.
@@ -376,10 +380,12 @@ class CompleteMultipartUploadTask(Task):
         :param extra_args:  A dictionary of any extra arguments that may be
             used in completing the multipart transfer.
         """
-        client.complete_multipart_upload(
-            Bucket=bucket,
-            Key=key,
-            UploadId=upload_id,
-            MultipartUpload={'Parts': parts},
-            **extra_args,
-        )
+        import awscli.perf_timer as T
+        with T.timer('CompleteMultipartUploadTask'):
+            client.complete_multipart_upload(
+                Bucket=bucket,
+                Key=key,
+                UploadId=upload_id,
+                MultipartUpload={'Parts': parts},
+                **extra_args,
+            )

@@ -29,12 +29,14 @@ def add_waiters(command_table, session, command_object, **kwargs):
     # Check if the command object passed in has a ``service_object``. We
     # only want to add wait commands to top level model-driven services.
     # These require service objects.
+    import awscli.perf_timer as T
     service_model = getattr(command_object, 'service_model', None)
     if service_model is not None:
         # Get a client out of the service object.
-        waiter_model = get_waiter_model_from_service_model(
-            session, service_model
-        )
+        with T.timer('add_waiters.load_waiter_model'):
+            waiter_model = get_waiter_model_from_service_model(
+                session, service_model
+            )
         if waiter_model is None:
             return
         waiter_names = waiter_model.waiter_names

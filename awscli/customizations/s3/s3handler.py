@@ -163,14 +163,16 @@ class S3TransferHandler:
         :returns: The result of the command that specifies the number of
             failures and warnings encountered.
         """
+        import awscli.perf_timer as T
         with self._result_command_recorder:
             with self._transfer_manager:
                 total_submissions = 0
                 for fileinfo in fileinfos:
                     for submitter in self._submitters:
                         if submitter.can_submit(fileinfo):
-                            if submitter.submit(fileinfo):
-                                total_submissions += 1
+                            with T.timer(f'submit:{type(submitter).__name__}'):
+                                if submitter.submit(fileinfo):
+                                    total_submissions += 1
                             break
                 self._result_command_recorder.notify_total_submissions(
                     total_submissions

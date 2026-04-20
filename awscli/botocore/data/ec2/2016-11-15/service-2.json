@@ -44,6 +44,16 @@
       "output":{"shape":"AcceptReservedInstancesExchangeQuoteResult"},
       "documentation":"<p>Accepts the Convertible Reserved Instance exchange quote described in the <a>GetReservedInstancesExchangeQuote</a> call.</p>"
     },
+    "AcceptTransitGatewayClientVpnAttachment":{
+      "name":"AcceptTransitGatewayClientVpnAttachment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AcceptTransitGatewayClientVpnAttachmentRequest"},
+      "output":{"shape":"AcceptTransitGatewayClientVpnAttachmentResult"},
+      "documentation":"<p>Accepts a Transit Gateway attachment request for a Client VPN endpoint. The Transit Gateway owner must accept the attachment request before the Client VPN endpoint can route traffic through the Transit Gateway.</p>"
+    },
     "AcceptTransitGatewayMulticastDomainAssociations":{
       "name":"AcceptTransitGatewayMulticastDomainAssociations",
       "http":{
@@ -2283,6 +2293,16 @@
       "input":{"shape":"DeleteTransitGatewayRequest"},
       "output":{"shape":"DeleteTransitGatewayResult"},
       "documentation":"<p>Deletes the specified transit gateway.</p>"
+    },
+    "DeleteTransitGatewayClientVpnAttachment":{
+      "name":"DeleteTransitGatewayClientVpnAttachment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteTransitGatewayClientVpnAttachmentRequest"},
+      "output":{"shape":"DeleteTransitGatewayClientVpnAttachmentResult"},
+      "documentation":"<p>Deletes a Transit Gateway attachment for a Client VPN endpoint. The Transit Gateway owner can delete the attachment to remove the association between the Client VPN endpoint and the Transit Gateway.</p>"
     },
     "DeleteTransitGatewayConnect":{
       "name":"DeleteTransitGatewayConnect",
@@ -6951,6 +6971,16 @@
       "output":{"shape":"RejectCapacityReservationBillingOwnershipResult"},
       "documentation":"<p>Rejects a request to assign billing of the available capacity of a shared Capacity Reservation to your account. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/assign-billing.html\"> Billing assignment for shared Amazon EC2 Capacity Reservations</a>.</p>"
     },
+    "RejectTransitGatewayClientVpnAttachment":{
+      "name":"RejectTransitGatewayClientVpnAttachment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RejectTransitGatewayClientVpnAttachmentRequest"},
+      "output":{"shape":"RejectTransitGatewayClientVpnAttachmentResult"},
+      "documentation":"<p>Rejects a Transit Gateway attachment request for a Client VPN endpoint. The Transit Gateway owner can reject the attachment request to prevent the Client VPN endpoint from routing traffic through the Transit Gateway.</p>"
+    },
     "RejectTransitGatewayMulticastDomainAssociations":{
       "name":"RejectTransitGatewayMulticastDomainAssociations",
       "http":{
@@ -7751,6 +7781,30 @@
         }
       },
       "documentation":"<p>The result of the exchange and whether it was <code>successful</code>.</p>"
+    },
+    "AcceptTransitGatewayClientVpnAttachmentRequest":{
+      "type":"structure",
+      "required":["TransitGatewayAttachmentId"],
+      "members":{
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The ID of the Transit Gateway attachment.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "AcceptTransitGatewayClientVpnAttachmentResult":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayClientVpnAttachment":{
+          "shape":"TransitGatewayClientVpnAttachment",
+          "documentation":"<p>Information about the Transit Gateway Client VPN attachment.</p>",
+          "locationName":"transitGatewayClientVpnAttachment"
+        }
+      }
     },
     "AcceptTransitGatewayMulticastDomainAssociationsRequest":{
       "type":"structure",
@@ -9532,10 +9586,7 @@
     },
     "AssociateClientVpnTargetNetworkRequest":{
       "type":"structure",
-      "required":[
-        "ClientVpnEndpointId",
-        "SubnetId"
-      ],
+      "required":["ClientVpnEndpointId"],
       "members":{
         "ClientVpnEndpointId":{
           "shape":"ClientVpnEndpointId",
@@ -9543,7 +9594,7 @@
         },
         "SubnetId":{
           "shape":"SubnetId",
-          "documentation":"<p>The ID of the subnet to associate with the Client VPN endpoint.</p>"
+          "documentation":"<p>The ID of the subnet to associate with the Client VPN endpoint. Required for VPC-based endpoints. For Transit Gateway-based endpoints, use <code>AvailabilityZone</code> or <code>AvailabilityZoneId</code> instead.</p>"
         },
         "ClientToken":{
           "shape":"String",
@@ -9553,6 +9604,14 @@
         "DryRun":{
           "shape":"Boolean",
           "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "AvailabilityZone":{
+          "shape":"AvailabilityZoneName",
+          "documentation":"<p>The Availability Zone name for the Transit Gateway association. Required if when associating an Availability Zone with a Client VPN endpoint that uses a Transit Gateway. You cannot specify both <code>SubnetId</code> and <code>AvailabilityZone</code>.</p>"
+        },
+        "AvailabilityZoneId":{
+          "shape":"AvailabilityZoneId",
+          "documentation":"<p>The Availability Zone ID for the Transit Gateway association. Required if when associating an Availability Zone with a Client VPN endpoint that uses a Transit Gateway. You cannot specify both <code>AvailabilityZone</code> and <code>AvailabilityZoneId</code>.</p>"
         }
       }
     },
@@ -13839,6 +13898,20 @@
         "revoking"
       ]
     },
+    "ClientVpnAvailabilityZoneIdSet":{
+      "type":"list",
+      "member":{
+        "shape":"AvailabilityZoneId",
+        "locationName":"item"
+      }
+    },
+    "ClientVpnAvailabilityZoneSet":{
+      "type":"list",
+      "member":{
+        "shape":"AvailabilityZoneName",
+        "locationName":"item"
+      }
+    },
     "ClientVpnConnection":{
       "type":"structure",
       "members":{
@@ -14091,6 +14164,11 @@
           "shape":"TrafficIpAddressType",
           "documentation":"<p>The IP address type of the Client VPN endpoint. Possible values are either <code>ipv4</code> for IPv4 addressing only, <code>ipv6</code> for IPv6 addressing only, or <code>dual-stack</code> for both IPv4 and IPv6 addressing.</p>",
           "locationName":"trafficIpAddressType"
+        },
+        "TransitGatewayConfiguration":{
+          "shape":"TransitGatewayConfigurationDescribeEndpointStructure",
+          "documentation":"<p>The Transit Gateway configuration for the Client VPN endpoint.</p>",
+          "locationName":"transitGatewayConfiguration"
         }
       },
       "documentation":"<p>Describes a Client VPN endpoint.</p>"
@@ -14131,7 +14209,7 @@
       "members":{
         "Code":{
           "shape":"ClientVpnEndpointStatusCode",
-          "documentation":"<p>The state of the Client VPN endpoint. Possible states include:</p> <ul> <li> <p> <code>pending-associate</code> - The Client VPN endpoint has been created but no target networks have been associated. The Client VPN endpoint cannot accept connections.</p> </li> <li> <p> <code>available</code> - The Client VPN endpoint has been created and a target network has been associated. The Client VPN endpoint can accept connections.</p> </li> <li> <p> <code>deleting</code> - The Client VPN endpoint is being deleted. The Client VPN endpoint cannot accept connections.</p> </li> <li> <p> <code>deleted</code> - The Client VPN endpoint has been deleted. The Client VPN endpoint cannot accept connections.</p> </li> </ul>",
+          "documentation":"<p>The state of the Client VPN endpoint. Possible states include:</p> <ul> <li> <p> <code>pending-associate</code> - The Client VPN endpoint has been created but no target networks have been associated. The Client VPN endpoint cannot accept connections.</p> </li> <li> <p> <code>available</code> - The Client VPN endpoint has been created and a target network has been associated. The Client VPN endpoint can accept connections.</p> </li> <li> <p> <code>deleting</code> - The Client VPN endpoint is being deleted. The Client VPN endpoint cannot accept connections.</p> </li> <li> <p> <code>deleted</code> - The Client VPN endpoint has been deleted. The Client VPN endpoint cannot accept connections.</p> </li> <li> <p> <code>pending</code> - The Client VPN endpoint has been created with a Transit Gateway configuration and is waiting for the Transit Gateway attachment to be accepted. The Client VPN endpoint cannot accept connections.</p> </li> </ul>",
           "locationName":"code"
         },
         "Message":{
@@ -14148,7 +14226,8 @@
         "pending-associate",
         "available",
         "deleting",
-        "deleted"
+        "deleted",
+        "pending"
       ]
     },
     "ClientVpnRoute":{
@@ -14188,6 +14267,11 @@
           "shape":"String",
           "documentation":"<p>A brief description of the route.</p>",
           "locationName":"description"
+        },
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The ID of the Transit Gateway attachment, if the route targets a Transit Gateway.</p>",
+          "locationName":"transitGatewayAttachmentId"
         }
       },
       "documentation":"<p>Information about a Client VPN endpoint route.</p>"
@@ -15533,6 +15617,10 @@
         "TrafficIpAddressType":{
           "shape":"TrafficIpAddressType",
           "documentation":"<p>The IP address type for traffic within the Client VPN tunnel. Valid values are <code>ipv4</code> (default) for IPv4 traffic only, <code>ipv6</code> for IPv6 addressing only, or <code>dual-stack</code> for both IPv4 and IPv6 traffic. When set to <code>dual-stack</code>, clients can access both IPv4 and IPv6 resources through the VPN .</p>"
+        },
+        "TransitGatewayConfiguration":{
+          "shape":"TransitGatewayConfigurationInputStructure",
+          "documentation":"<p>The Transit Gateway configuration for the Client VPN endpoint. Use this parameter to associate the endpoint with a Transit Gateway instead of a VPC. You cannot specify both <code>TransitGatewayConfiguration</code> and <code>VpcId</code>/<code>SecurityGroupIds</code>.</p>"
         }
       }
     },
@@ -15560,8 +15648,7 @@
       "type":"structure",
       "required":[
         "ClientVpnEndpointId",
-        "DestinationCidrBlock",
-        "TargetVpcSubnetId"
+        "DestinationCidrBlock"
       ],
       "members":{
         "ClientVpnEndpointId":{
@@ -15574,7 +15661,7 @@
         },
         "TargetVpcSubnetId":{
           "shape":"SubnetId",
-          "documentation":"<p>The ID of the subnet through which you want to route traffic. The specified subnet must be an existing target network of the Client VPN endpoint.</p> <p>Alternatively, if you're adding a route for the local network, specify <code>local</code>.</p>"
+          "documentation":"<p>The ID of the subnet through which you want to route traffic. The specified subnet must be an existing target network of the Client VPN endpoint.</p> <p>Alternatively, if you're adding a route for the local network, specify <code>local</code>.</p> <p>This parameter is required for VPC-based Client VPN endpoints. For Transit Gateway-based endpoints, this parameter is not required.</p>"
         },
         "Description":{
           "shape":"String",
@@ -22758,6 +22845,30 @@
           "shape":"String",
           "documentation":"<p>The ID of the deleted Traffic Mirror target.</p>",
           "locationName":"trafficMirrorTargetId"
+        }
+      }
+    },
+    "DeleteTransitGatewayClientVpnAttachmentRequest":{
+      "type":"structure",
+      "required":["TransitGatewayAttachmentId"],
+      "members":{
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The ID of the Transit Gateway attachment.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DeleteTransitGatewayClientVpnAttachmentResult":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayClientVpnAttachment":{
+          "shape":"TransitGatewayClientVpnAttachment",
+          "documentation":"<p>Information about the Transit Gateway Client VPN attachment.</p>",
+          "locationName":"transitGatewayClientVpnAttachment"
         }
       }
     },
@@ -35350,7 +35461,7 @@
         },
         "OrganizationTargetId":{
           "shape":"String",
-          "documentation":"<p>The ID of the Amazon Web Services Organizations target for which to enable the IPAM policy. This parameter is required only when IPAM is integrated with Amazon Web Services Organizations. When IPAM is not integrated with Amazon Web Services Organizations, omit this parameter and the policy will apply to the current account.</p> <p>A target can be an individual Amazon Web Services account or an entity within an Amazon Web Services Organization to which an IPAM policy can be applied.</p>"
+          "documentation":"<p>A target can be an individual Amazon Web Services account or an entity within an Amazon Web Services Organization to which an IPAM policy can be applied.</p> <p>The ID of the Amazon Web Services Organizations target for which to enable the IPAM policy. This parameter is required only when IPAM is integrated with Amazon Web Services Organizations. When IPAM is not integrated with Amazon Web Services Organizations, omit this parameter and the policy will apply to the current account.</p>"
         }
       }
     },
@@ -53297,6 +53408,10 @@
         "DisconnectOnSessionTimeout":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the client VPN session is disconnected after the maximum timeout specified in <code>sessionTimeoutHours</code> is reached. If <code>true</code>, users are prompted to reconnect client VPN. If <code>false</code>, client VPN attempts to reconnect automatically. The default value is <code>true</code>.</p>"
+        },
+        "TransitGatewayConfiguration":{
+          "shape":"TransitGatewayConfigurationInputStructure",
+          "documentation":"<p>The Transit Gateway configuration for the Client VPN endpoint. This option is currently not supported.</p>"
         }
       }
     },
@@ -61379,6 +61494,30 @@
           "shape":"Boolean",
           "documentation":"<p>Returns <code>true</code> if the request succeeds; otherwise, it returns an error.</p>",
           "locationName":"return"
+        }
+      }
+    },
+    "RejectTransitGatewayClientVpnAttachmentRequest":{
+      "type":"structure",
+      "required":["TransitGatewayAttachmentId"],
+      "members":{
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The ID of the Transit Gateway attachment.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "RejectTransitGatewayClientVpnAttachmentResult":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayClientVpnAttachment":{
+          "shape":"TransitGatewayClientVpnAttachment",
+          "documentation":"<p>Information about the Transit Gateway Client VPN attachment.</p>",
+          "locationName":"transitGatewayClientVpnAttachment"
         }
       }
     },
@@ -69961,6 +70100,16 @@
           "shape":"ValueStringList",
           "documentation":"<p>The IDs of the security groups applied to the target network association.</p>",
           "locationName":"securityGroups"
+        },
+        "AvailabilityZones":{
+          "shape":"ClientVpnAvailabilityZoneSet",
+          "documentation":"<p>The Availability Zone names for the target network association, if the Client VPN endpoint uses a Transit Gateway.</p>",
+          "locationName":"availabilityZoneSet"
+        },
+        "AvailabilityZoneIds":{
+          "shape":"ClientVpnAvailabilityZoneIdSet",
+          "documentation":"<p>The Availability Zone IDs for the target network association, if the Client VPN endpoint uses a Transit Gateway.</p>",
+          "locationName":"availabilityZoneIdSet"
         }
       },
       "documentation":"<p>Describes a target network associated with a Client VPN endpoint.</p>"
@@ -70847,7 +70996,8 @@
         "connect",
         "peering",
         "tgw-peering",
-        "network-function"
+        "network-function",
+        "client-vpn"
       ]
     },
     "TransitGatewayAttachmentState":{
@@ -70868,12 +71018,105 @@
         "failing"
       ]
     },
+    "TransitGatewayAttachmentStatusType":{
+      "type":"string",
+      "enum":[
+        "pending-acceptance",
+        "pending",
+        "rejected",
+        "available",
+        "deleting",
+        "deleted"
+      ]
+    },
     "TransitGatewayCidrBlockStringList":{
       "type":"list",
       "member":{
         "shape":"String",
         "locationName":"item"
       }
+    },
+    "TransitGatewayClientVpnAttachment":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The ID of the Transit Gateway attachment.</p>",
+          "locationName":"transitGatewayAttachmentId"
+        },
+        "TransitGatewayId":{
+          "shape":"TransitGatewayId",
+          "documentation":"<p>The ID of the Transit Gateway.</p>",
+          "locationName":"transitGatewayId"
+        },
+        "ClientVpnEndpointId":{
+          "shape":"ClientVpnEndpointId",
+          "documentation":"<p>The ID of the Client VPN endpoint.</p>",
+          "locationName":"clientVpnEndpointId"
+        },
+        "ClientVpnOwnerId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the Client VPN endpoint.</p>",
+          "locationName":"clientVpnOwnerId"
+        },
+        "State":{
+          "shape":"TransitGatewayAttachmentStatusType",
+          "documentation":"<p>The state of the Transit Gateway attachment.</p>",
+          "locationName":"state"
+        },
+        "CreationTime":{
+          "shape":"String",
+          "documentation":"<p>The date and time the Transit Gateway attachment was created.</p>",
+          "locationName":"creationTime"
+        }
+      },
+      "documentation":"<p>Describes a Transit Gateway attachment for a Client VPN endpoint.</p>"
+    },
+    "TransitGatewayConfigurationDescribeEndpointStructure":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayId":{
+          "shape":"TransitGatewayId",
+          "documentation":"<p>The ID of the Transit Gateway.</p>",
+          "locationName":"transitGatewayId"
+        },
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The ID of the Transit Gateway attachment.</p>",
+          "locationName":"transitGatewayAttachmentId"
+        },
+        "AvailabilityZones":{
+          "shape":"ClientVpnAvailabilityZoneSet",
+          "documentation":"<p>The Availability Zone names for the Transit Gateway association.</p>",
+          "locationName":"availabilityZoneSet"
+        },
+        "AvailabilityZoneIds":{
+          "shape":"ClientVpnAvailabilityZoneIdSet",
+          "documentation":"<p>The Availability Zone IDs for the Transit Gateway association.</p>",
+          "locationName":"availabilityZoneIdSet"
+        }
+      },
+      "documentation":"<p>Describes the Transit Gateway configuration for a Client VPN endpoint.</p>"
+    },
+    "TransitGatewayConfigurationInputStructure":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayId":{
+          "shape":"TransitGatewayId",
+          "documentation":"<p>The ID of the Transit Gateway to associate with the Client VPN endpoint.</p>"
+        },
+        "AvailabilityZones":{
+          "shape":"ClientVpnAvailabilityZoneSet",
+          "documentation":"<p>The Availability Zone names for the Transit Gateway association. You can specify up to the maximum number of Availability Zones supported by the Transit Gateway. You cannot specify both <code>AvailabilityZones</code> and <code>AvailabilityZoneIds</code>.</p>",
+          "locationName":"AvailabilityZone"
+        },
+        "AvailabilityZoneIds":{
+          "shape":"ClientVpnAvailabilityZoneIdSet",
+          "documentation":"<p>The Availability Zone IDs for the Transit Gateway association. You can specify up to the maximum number of Availability Zones supported by the Transit Gateway. You cannot specify both <code>AvailabilityZones</code> and <code>AvailabilityZoneIds</code>.</p>",
+          "locationName":"AvailabilityZoneId"
+        }
+      },
+      "documentation":"<p>The Transit Gateway configuration for a Client VPN endpoint.</p>"
     },
     "TransitGatewayConnect":{
       "type":"structure",

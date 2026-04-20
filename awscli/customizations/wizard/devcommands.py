@@ -13,7 +13,6 @@
 from ruamel.yaml import YAML
 
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.wizard.factory import create_wizard_app
 
 
 def register_dev_commands(event_handlers):
@@ -43,6 +42,7 @@ class WizardDevRunner:
 
     def run_wizard(self, wizard_contents):
         """Run a single wizard given the contents as a string."""
+        from awscli.customizations.wizard.factory import create_wizard_app
         loaded = self._wizard_loader.load(wizard_contents)
         app = create_wizard_app(loaded, self._session)
         app.run()

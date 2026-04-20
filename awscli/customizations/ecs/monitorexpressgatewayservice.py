@@ -54,7 +54,6 @@ from awscli.customizations.ecs.expressgateway.display_strategy import (
     InteractiveDisplayStrategy,
     TextOnlyDisplayStrategy,
 )
-from awscli.customizations.ecs.prompt_toolkit_display import Display
 from awscli.customizations.ecs.serviceviewcollector import ServiceViewCollector
 from awscli.customizations.utils import uni_print
 
@@ -281,6 +280,7 @@ class ECSExpressGatewayServiceWatcher:
         if self.display_mode == 'TEXT-ONLY':
             return TextOnlyDisplayStrategy(use_color=self.use_color)
         elif self.display_mode == 'INTERACTIVE':
+            from awscli.customizations.ecs.prompt_toolkit_display import Display
             return InteractiveDisplayStrategy(
                 display=Display(), use_color=self.use_color
             )

@@ -536,6 +536,7 @@ class TestCPCommand(BaseCPCommandTest):
                     {
                         'Bucket': 'bucket',
                         'Key': 'key.txt',
+                        'ChecksumMode': 'ENABLED',
                     },
                 )
             ]
@@ -577,6 +578,7 @@ class TestCPCommand(BaseCPCommandTest):
                     {
                         'Bucket': 'bucket',
                         'Key': 'key.txt',
+                        'ChecksumMode': 'ENABLED',
                     },
                 )
             ]
@@ -985,6 +987,7 @@ class TestCPCommand(BaseCPCommandTest):
         expected_head_args = {
             'Bucket': 'bucket-one',
             'Key': 'key.txt',
+            'ChecksumMode': 'ENABLED',
             'SSECustomerAlgorithm': 'AES256',
             'SSECustomerKey': key_contents,
         }
@@ -1016,6 +1019,7 @@ class TestCPCommand(BaseCPCommandTest):
         expected_head_args = {
             'Bucket': 'bucket-one',
             'Key': 'key.txt',
+            'ChecksumMode': 'ENABLED',
             # don't expect to see SSE-c params for the source
         }
         self.assertDictEqual(self.operations_called[0][1], expected_head_args)
@@ -1047,6 +1051,7 @@ class TestCPCommand(BaseCPCommandTest):
         expected_head_args = {
             'Bucket': 'bucket-one',
             'Key': 'key.txt',
+            'ChecksumMode': 'ENABLED',
             'SSECustomerAlgorithm': 'AES256',
             'SSECustomerKey': 'foo',
         }
@@ -1083,6 +1088,7 @@ class TestCPCommand(BaseCPCommandTest):
                 self.head_object_request(
                     'bucket-one',
                     'key.txt',
+                    ChecksumMode='ENABLED',
                     # no SSE-C params — source is unencrypted
                 ),
                 ('GetObjectTagging', mock.ANY),
@@ -1134,6 +1140,7 @@ class TestCPCommand(BaseCPCommandTest):
         expected_head_args = {
             'Bucket': 'bucket-one',
             'Key': 'key.txt',
+            'ChecksumMode': 'ENABLED',
             'SSECustomerAlgorithm': 'AES256',
             'SSECustomerKey': 'source-key',
         }
@@ -1143,6 +1150,7 @@ class TestCPCommand(BaseCPCommandTest):
                 self.head_object_request(
                     'bucket-one',
                     'key.txt',
+                    ChecksumMode='ENABLED',
                     SSECustomerAlgorithm='AES256',
                     SSECustomerKey='source-key',
                 ),
@@ -1744,7 +1752,10 @@ class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
         self.assert_operations_called(
             [
                 self.head_object_request(
-                    'mybucket', 'mykey', RequestPayer='requester'
+                    'mybucket',
+                    'mykey',
+                    RequestPayer='requester',
+                    ChecksumMode='ENABLED',
                 ),
                 self.get_object_request(
                     'mybucket', 'mykey', RequestPayer='requester'
@@ -1767,7 +1778,10 @@ class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
         self.assert_operations_called(
             [
                 self.head_object_request(
-                    'mybucket', 'mykey', RequestPayer='requester'
+                    'mybucket',
+                    'mykey',
+                    RequestPayer='requester',
+                    ChecksumMode='ENABLED',
                 ),
                 self.get_object_request(
                     'mybucket',
@@ -1819,7 +1833,10 @@ class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
         self.assert_operations_called(
             [
                 self.head_object_request(
-                    'sourcebucket', 'sourcekey', RequestPayer='requester'
+                    'sourcebucket',
+                    'sourcekey',
+                    RequestPayer='requester',
+                    ChecksumMode='ENABLED',
                 ),
                 self.copy_object_request(
                     'sourcebucket',
@@ -1848,7 +1865,10 @@ class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
         self.assert_operations_called(
             [
                 self.head_object_request(
-                    'sourcebucket', 'sourcekey', RequestPayer='requester'
+                    'sourcebucket',
+                    'sourcekey',
+                    RequestPayer='requester',
+                    ChecksumMode='ENABLED',
                 ),
                 self.create_mpu_request(
                     'mybucket', 'mykey', RequestPayer='requester'
@@ -2017,7 +2037,11 @@ class TestAccesspointCPCommand(BaseCPCommandTest):
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_operations_called(
             [
-                self.head_object_request(self.accesspoint_arn, 'mykey'),
+                self.head_object_request(
+                    self.accesspoint_arn,
+                    'mykey',
+                    ChecksumMode='ENABLED',
+                ),
                 self.get_object_request(self.accesspoint_arn, 'mykey'),
             ]
         )
@@ -2051,7 +2075,11 @@ class TestAccesspointCPCommand(BaseCPCommandTest):
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_operations_called(
             [
-                self.head_object_request(self.accesspoint_arn, 'mykey'),
+                self.head_object_request(
+                    self.accesspoint_arn,
+                    'mykey',
+                    ChecksumMode='ENABLED',
+                ),
                 self.copy_object_request(
                     self.accesspoint_arn,
                     'mykey',

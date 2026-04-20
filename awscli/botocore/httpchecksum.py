@@ -276,6 +276,10 @@ class StreamingChecksumBody(StreamingBody):
         self._checksum = checksum
         self._expected = expected
 
+    @property
+    def checksum(self):
+        return self._checksum
+
     def read(self, amt=None):
         chunk = super().read(amt=amt)
         self._checksum.update(chunk)
@@ -284,6 +288,8 @@ class StreamingChecksumBody(StreamingBody):
         return chunk
 
     def _validate_checksum(self):
+        if self._expected is None:
+            return
         if self._checksum.digest() != base64.b64decode(self._expected):
             error_msg = f"Expected checksum {self._expected} did not match calculated checksum: {self._checksum.b64digest()}"
             raise FlexibleChecksumError(error_msg=error_msg)

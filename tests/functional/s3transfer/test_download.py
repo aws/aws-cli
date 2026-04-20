@@ -19,9 +19,11 @@ import time
 from io import BytesIO
 
 from botocore.exceptions import ClientError
+from s3transfer.checksums import FullObjectChecksum
 from s3transfer.compat import SOCKET_ERROR
 from s3transfer.exceptions import (
     RetriesExceededError,
+    S3DownloadChecksumError,
     S3DownloadFailedError,
     S3ValidationError,
 )
@@ -31,6 +33,7 @@ from tests import (
     BaseGeneralInterfaceTest,
     ETagProvider,
     FileSizeProvider,
+    FullObjectChecksumProvider,
     NonSeekableWriter,
     RecordingOSUtils,
     RecordingSubscriber,
@@ -106,10 +109,12 @@ class BaseDownloadTest(BaseGeneralInterfaceTest):
         # that the stream is done.
         return [{'bytes_transferred': 10}]
 
-    def add_head_object_response(self, expected_params=None):
+    def add_head_object_response(self, expected_params=None, extras=None):
         head_response = self.create_stubbed_responses()[0]
         if expected_params:
             head_response['expected_params'] = expected_params
+        if extras:
+            head_response['service_response'].update(extras)
         self.stubber.add_response(**head_response)
 
     def add_successful_get_object_responses(
@@ -647,3 +652,72 @@ class TestRangedDownload(BaseDownloadTest):
         # Ensure that the contents are correct
         with open(self.filename, 'rb') as f:
             self.assertEqual(self.content, f.read())
+
+    def test_ranged_download_full_object_checksum_validation(self):
+        checksum_crc32 = 'AUwfuQ=='
+        expected_params = {
+            'Bucket': self.bucket,
+            'Key': self.key,
+        }
+        expected_ranges = ['bytes=0-3', 'bytes=4-7', 'bytes=8-']
+        stubbed_ranges = ['bytes 0-3/10', 'bytes 4-7/10', 'bytes 8-9/10']
+        self.add_head_object_response(
+            expected_params,
+            extras={
+                'ChecksumCRC32': checksum_crc32,
+                'ChecksumType': 'FULL_OBJECT',
+            },
+        )
+        self.add_successful_get_object_responses(
+            {**expected_params, 'IfMatch': self.etag},
+            expected_ranges,
+            [{'ContentRange': r} for r in stubbed_ranges],
+        )
+        future = self.manager.download(
+            self.bucket,
+            self.key,
+            self.filename,
+            self.extra_args,
+            [
+                FullObjectChecksumProvider(
+                    FullObjectChecksum('crc32', checksum_crc32)
+                ),
+            ],
+        )
+        future.result()
+        with open(self.filename, 'rb') as f:
+            self.assertEqual(self.content, f.read())
+
+    def test_ranged_download_full_object_checksum_mismatch_raises(self):
+        expected_params = {
+            'Bucket': self.bucket,
+            'Key': self.key,
+        }
+        expected_ranges = ['bytes=0-3', 'bytes=4-7', 'bytes=8-']
+        stubbed_ranges = ['bytes 0-3/10', 'bytes 4-7/10', 'bytes 8-9/10']
+        self.add_head_object_response(
+            expected_params,
+            extras={
+                'ChecksumCRC32': 'AAAABB==',
+                'ChecksumType': 'FULL_OBJECT',
+            },
+        )
+        self.add_successful_get_object_responses(
+            {**expected_params, 'IfMatch': self.etag},
+            expected_ranges,
+            [{'ContentRange': r} for r in stubbed_ranges],
+        )
+        future = self.manager.download(
+            self.bucket,
+            self.key,
+            self.filename,
+            self.extra_args,
+            [
+                FullObjectChecksumProvider(
+                    FullObjectChecksum('crc32', 'AAAABB==')
+                ),
+            ],
+        )
+        with self.assertRaises(S3DownloadChecksumError):
+            future.result()
+        self.assertFalse(os.path.exists(self.filename))

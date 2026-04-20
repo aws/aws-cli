@@ -765,6 +765,18 @@ class TestRequestParamsMapperChecksumMode:
         )
         assert 'ChecksumMode' not in request_params
 
+    def test_head_object(self, cli_params):
+        request_params = {}
+        RequestParamsMapper.map_head_object_params(request_params, cli_params)
+        assert request_params == {'ChecksumMode': 'ENABLED'}
+
+    def test_head_object_no_checksums(self, cli_params_no_checksum):
+        request_params = {}
+        RequestParamsMapper.map_head_object_params(
+            request_params, cli_params_no_checksum
+        )
+        assert 'ChecksumMode' not in request_params
+
 
 class TestRequestParamsMapperRequestPayer(unittest.TestCase):
     def setUp(self):

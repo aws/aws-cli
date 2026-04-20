@@ -28,6 +28,10 @@ from awscli.customizations.configure.list import ConfigureListCommand
 from awscli.customizations.configure.listprofiles import ListProfilesCommand
 from awscli.customizations.configure.mfalogin import ConfigureMFALoginCommand
 from awscli.customizations.configure.set import ConfigureSetCommand
+from awscli.customizations.configure.sso_commands import (
+    ConfigureSSOCommand,
+    ConfigureSSOSessionCommand,
+)
 from awscli.customizations.configure.writer import ConfigFileWriter
 
 from . import mask_value, profile_to_section
@@ -86,29 +90,14 @@ class ConfigureCommand(BasicCommand):
         {'name': 'add-model', 'command_class': AddModelCommand},
         {'name': 'import', 'command_class': ConfigureImportCommand},
         {'name': 'list-profiles', 'command_class': ListProfilesCommand},
+        {'name': 'sso', 'command_class': ConfigureSSOCommand},
+        {'name': 'sso-session', 'command_class': ConfigureSSOSessionCommand},
         {'name': 'mfa-login', 'command_class': ConfigureMFALoginCommand},
         {
             'name': 'export-credentials',
             'command_class': ConfigureExportCredentialsCommand,
         },
     ]
-
-    def _build_subcommand_table(self):
-        from awscli.customizations.configure.sso import (
-            ConfigureSSOCommand,
-            ConfigureSSOSessionCommand,
-        )
-        # Temporarily extend SUBCOMMANDS with the lazily-imported SSO classes
-        # without mutating the class-level list.
-        original = self.SUBCOMMANDS
-        self.SUBCOMMANDS = original + [
-            {'name': 'sso', 'command_class': ConfigureSSOCommand},
-            {'name': 'sso-session', 'command_class': ConfigureSSOSessionCommand},
-        ]
-        try:
-            return super()._build_subcommand_table()
-        finally:
-            self.SUBCOMMANDS = original
 
     # If you want to add new values to prompt, update this list here.
     VALUES_TO_PROMPT = [

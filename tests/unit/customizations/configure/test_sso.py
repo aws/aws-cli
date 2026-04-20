@@ -29,13 +29,15 @@ from prompt_toolkit.validation import (
 )
 
 from awscli.customizations.configure.sso import (
-    ConfigureSSOCommand,
-    ConfigureSSOSessionCommand,
     PTKPrompt,
     RequiredInputValidator,
     ScopesValidator,
     SSOSessionConfigurationPrompter,
     StartUrlValidator,
+)
+from awscli.customizations.configure.sso_commands import (
+    ConfigureSSOCommand,
+    ConfigureSSOSessionCommand,
     display_account,
     get_account_sorting_key,
 )

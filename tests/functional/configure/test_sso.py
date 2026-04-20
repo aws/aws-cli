@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 from unittest.mock import patch
 
-from awscli.customizations.configure.sso import ConfigureSSOCommand
+from awscli.customizations.configure.sso_commands import ConfigureSSOCommand
 from awscli.testutils import BaseAWSCommandParamsTest, mock
 from tests.functional.sso import BaseSSOTest
 

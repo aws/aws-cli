@@ -384,6 +384,14 @@ def main():
         if committed == source:
             print('OK: committed registry matches fresh generation.')
         else:
+            import difflib
+            diff = difflib.unified_diff(
+                committed.splitlines(keepends=True),
+                source.splitlines(keepends=True),
+                fromfile=f'{args.output} (committed)',
+                tofile=f'{args.output} (generated)',
+            )
+            sys.stderr.write(''.join(diff))
             print(
                 f'ERROR: {args.output} is out of date.\n'
                 'Run `scripts/generate_plugin_registry` and commit the result.',

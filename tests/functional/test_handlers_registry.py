@@ -33,8 +33,8 @@ def test_handlers_registry_matches_generation_script():
         text=True,
     )
     assert result.returncode == 0, (
-        'awscli/handlers_registry.py is out of date.\n'
-        'Re-generate it by running:\n\n'
-        '    scripts/generate_plugin_registry\n\n'
-        f'Script output:\n{result.stdout}{result.stderr}'
+        f'awscli/handlers_registry.py is out of date.\n'
+        f'Re-generate it by running:\n\n'
+        f'    scripts/generate_plugin_registry\n\n'
+        f'Diff (committed vs generated):\n{result.stderr}'
     )

@@ -22,7 +22,8 @@ BUILTIN_PLUGINS = {'__builtin__': 'awscli.handlers'}
 CLI_LEGACY_PLUGIN_PATH = 'cli_legacy_plugin_path'
 
 
-def load_plugins(plugin_mapping, event_hooks=None, include_builtins=True):
+def load_plugins(plugin_mapping, event_hooks=None, include_builtins=True,
+                 args=None):
     """
 
     :type plugin_mapping: dict
@@ -38,6 +39,11 @@ def load_plugins(plugin_mapping, event_hooks=None, include_builtins=True):
     :param include_builtins: If True, the builtin awscli plugins (specified in
         ``BUILTIN_PLUGINS``) will be included in the list of plugins to load.
 
+    :type args: list
+    :param args: The raw CLI argument list (without the program name), used
+        to determine which service is being invoked so that only relevant
+        plugins are initialized.
+
     :rtype: HierarchicalEmitter
     :return: An event emitter object.
 
@@ -45,7 +51,7 @@ def load_plugins(plugin_mapping, event_hooks=None, include_builtins=True):
     if event_hooks is None:
         event_hooks = HierarchicalEmitter()
     if include_builtins:
-        _load_plugins(BUILTIN_PLUGINS, event_hooks)
+        _load_plugins(BUILTIN_PLUGINS, event_hooks, args=args)
     plugin_path = plugin_mapping.pop(CLI_LEGACY_PLUGIN_PATH, None)
     if plugin_path is not None:
         _add_plugin_path_to_sys_path(plugin_path)
@@ -58,10 +64,16 @@ def load_plugins(plugin_mapping, event_hooks=None, include_builtins=True):
     return event_hooks
 
 
-def _load_plugins(plugin_mapping, event_hooks):
+def _load_plugins(plugin_mapping, event_hooks, args=None):
     modules = _import_plugins(plugin_mapping)
     for name, plugin in zip(plugin_mapping.keys(), modules):
         log.debug("Initializing plugin %s: %s", name, plugin)
+        if args is not None and hasattr(plugin, 'awscli_initialize'):
+            import inspect
+            sig = inspect.signature(plugin.awscli_initialize)
+            if 'args' in sig.parameters:
+                plugin.awscli_initialize(event_hooks, args=args)
+                continue
         plugin.awscli_initialize(event_hooks)
 
 

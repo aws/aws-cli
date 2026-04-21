@@ -247,14 +247,10 @@ def _build_registry(entries):
             # register_fn — we need to run it against a mini RecordingEmitter
             # to discover what events it subscribes to.
             mini = _MiniEmitter()
-            try:
-                import importlib
-                mod = importlib.import_module(entry.module)
-                fn = getattr(mod, entry.fn_name)
-                fn(mini)
-            except Exception:
-                # If import fails (e.g. optional dependency), skip.
-                pass
+            import importlib
+            mod = importlib.import_module(entry.module)
+            fn = getattr(mod, entry.fn_name)
+            fn(mini)
 
             if not mini.registrations:
                 # No events recorded — treat as __always__ so it still runs.

@@ -437,7 +437,7 @@ REPO_UPGRADE_ON_BOOT = (
     ' specified. On first boot, by default, Amazon Linux AMIs'
     ' connect to package repositories to install security updates'
     ' before other services start. You can set this parameter'
-    ' using <code>--rep-upgrade-on-boot NONE</code> to'
+    ' using <code>--repo-upgrade-on-boot NONE</code> to'
     ' disable these updates. CAUTION: This creates additional'
     ' security risks.</p>'
 )

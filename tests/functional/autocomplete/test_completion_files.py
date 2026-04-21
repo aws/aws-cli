@@ -114,6 +114,10 @@ def _get_invalid_completion_operations():
         for op_name in test_data.completions['operations']:
             if op_name not in known_ops:
                 cases.append((test_data.service_name, op_name))
+        for resource in test_data.completions.get('resources', {}).values():
+            op_name = resource.get('operation')
+            if op_name and op_name not in known_ops:
+                cases.append((test_data.service_name, op_name))
     return cases
 
 

@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+2.34.34
+=======
+
+* enhancement:``S3``: Add support for creating S3 account regional namespace buckets with ``aws s3 mb``. The command now automatically detects bucket names matching the account-regional naming pattern and sets the required ``x-amz-bucket-namespace`` header.
+* api-change:``compute-optimizer-automation``: This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.0. The SDK will prioritize its most performant protocol.
+* api-change:``marketplace-entitlement``: This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.1. The SDK will prioritize its most performant protocol.
+* api-change:``sagemaker``: SageMaker AI now supports generative AI inference recommendations. Provide your model and workload, and SageMaker AI optimizes configurations, benchmarks them on real GPUs, and returns deployment-ready recommendations with validated metrics, accelerating the path to production from weeks to hours.
+* api-change:``network-firewall``: Support for new types of partner managed rulegroups for Network Firewall Service
+* api-change:``cognito-idp``: Adding dutch language support for Cognito Managed Login and Terms on Console
+* api-change:``gamelift``: This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.1. The SDK will prioritize its most performant protocol.
+* api-change:``comprehendmedical``: This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.1. The SDK will prioritize its most performant protocol.
+* api-change:``compute-optimizer``: This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.0. The SDK will prioritize its most performant protocol.
+* api-change:``snowball``: This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.1. The SDK will prioritize its most performant protocol.
+
+
 2.34.33
 =======
 

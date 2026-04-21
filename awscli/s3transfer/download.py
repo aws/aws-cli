@@ -551,8 +551,7 @@ class DownloadSubmissionTask(SubmissionTask):
                 callback()
             except Exception as e:
                 self._transfer_coordinator.set_exception(e)
-                self._transfer_coordinator.announce_done()
-                return
+                break
         finalize_callback()
 
     def _get_final_io_task_submission_callback(

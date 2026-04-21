@@ -135,7 +135,7 @@ def test_completions_operations_exist_in_model(
         f"update references to this operation."
     )
 
-
+@pytest.mark.validates_models
 @pytest.mark.parametrize(
     "test_data",
     get_models_with_completions(),

@@ -50,6 +50,7 @@ from awscli.customizations.s3.utils import (
     find_bucket_key,
     find_dest_path_comp_key,
     human_readable_size,
+    is_account_regional_namespace_bucket,
     split_s3_bucket_key,
 )
 from awscli.customizations.utils import uni_print
@@ -1210,7 +1211,13 @@ class SyncCommand(S3TransferCommand):
             }
         ]
         + TRANSFER_ARGS
-        + [METADATA, COPY_PROPS, METADATA_DIRECTIVE, CASE_CONFLICT, NO_OVERWRITE]
+        + [
+            METADATA,
+            COPY_PROPS,
+            METADATA_DIRECTIVE,
+            CASE_CONFLICT,
+            NO_OVERWRITE,
+        ]
     )
 
 
@@ -1218,16 +1225,13 @@ class MbCommand(S3Command):
     NAME = 'mb'
     DESCRIPTION = "Creates an S3 bucket."
     USAGE = "<S3Uri>"
-    ARG_TABLE = (
-        [
-            {
-                'name': 'path',
-                'positional_arg': True,
-                'synopsis': USAGE,
-            }
-        ]
-        + [TAGS]
-    )
+    ARG_TABLE = [
+        {
+            'name': 'path',
+            'positional_arg': True,
+            'synopsis': USAGE,
+        }
+    ] + [TAGS]
 
     def _run_main(self, parsed_args, parsed_globals):
         super(MbCommand, self)._run_main(parsed_args, parsed_globals)
@@ -1246,6 +1250,9 @@ class MbCommand(S3Command):
         params = {'Bucket': bucket}
         bucket_config = {}
         bucket_tags = self._create_bucket_tags(parsed_args)
+
+        if is_account_regional_namespace_bucket(bucket):
+            params['BucketNamespace'] = 'account-regional'
 
         # Only set LocationConstraint when the region name is not us-east-1.
         # Sending LocationConstraint with value us-east-1 results in an error.
@@ -1270,7 +1277,9 @@ class MbCommand(S3Command):
 
     def _create_bucket_tags(self, parsed_args):
         if parsed_args.tags is not None:
-            return [{'Key': tag[0], 'Value': tag[1]} for tag in parsed_args.tags]
+            return [
+                {'Key': tag[0], 'Value': tag[1]} for tag in parsed_args.tags
+            ]
         return []
 
 
@@ -1621,12 +1630,13 @@ class CommandArchitecture:
 
     def _get_s3_handler_params(self):
         params = self.parameters.copy()
-        
+
         # Removing no-overwrite params from sync since file to be synced are
         # already separated out using sync strategy
         if self.cmd == 'sync':
             params.pop('no_overwrite', None)
         return params
+
     def _should_handle_case_conflicts(self):
         return (
             self.cmd in {'sync', 'cp', 'mv'}

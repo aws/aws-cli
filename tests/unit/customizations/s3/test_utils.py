@@ -39,6 +39,7 @@ from awscli.customizations.s3.utils import (
     guess_content_type,
     human_readable_size,
     human_readable_to_int,
+    is_account_regional_namespace_bucket,
     relative_path,
     set_file_utime,
 )
@@ -366,6 +367,44 @@ class TestBlockUnsupportedResources(unittest.TestCase):
                 'arn:aws:s3-outposts:us-west-2:123456789012:'
                 'outpost/op-0a12345678abcdefg/bucket/bucket-foo'
             )
+
+
+class TestIsAccountRegionalNamespaceBucket(unittest.TestCase):
+    def test_matches_standard_pattern(self):
+        self.assertTrue(
+            is_account_regional_namespace_bucket(
+                'amzn-s3-demo-bucket-111122223333-us-west-2-an'
+            )
+        )
+
+    def test_matches_different_region(self):
+        self.assertTrue(
+            is_account_regional_namespace_bucket(
+                'my-bucket-123456789012-eu-central-1-an'
+            )
+        )
+
+    def test_no_match_regular_bucket(self):
+        self.assertFalse(
+            is_account_regional_namespace_bucket('my-regular-bucket')
+        )
+
+    def test_no_match_missing_an_suffix(self):
+        self.assertFalse(
+            is_account_regional_namespace_bucket(
+                'bucket-111122223333-us-west-2'
+            )
+        )
+
+    def test_matches_short_bucket_name(self):
+        self.assertTrue(
+            is_account_regional_namespace_bucket('xyz-an')
+        )
+
+    def test_no_match_express_directory_bucket(self):
+        self.assertFalse(
+            is_account_regional_namespace_bucket('bucket--usw2-az1--x-s3')
+        )
 
 
 class TestCreateWarning(unittest.TestCase):

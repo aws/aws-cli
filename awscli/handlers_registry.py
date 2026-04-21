@@ -143,6 +143,7 @@ PLUGIN_REGISTRY = {
     ],
     'ec2': [
         ('awscli.customizations.ec2.decryptpassword', 'ec2_add_priv_launch_key', 'building-argument-table.ec2.get-password-data'),
+        ('awscli.customizations.ec2.addcount', 'register_count_events'),
         ('awscli.customizations.ec2.secgroupsimplify', 'register_secgroup'),
         ('awscli.customizations.ec2.bundleinstance', 'register_bundleinstance'),
         ('awscli.customizations.ec2.runinstances', 'register_runinstances'),

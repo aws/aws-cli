@@ -49,16 +49,6 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.dynamodb.paginatorfix', 'register_dynamodb_paginator_fix'),
         ('awscli.alias', 'register_alias_commands')
     ],
-    'ec2': [
-        ('awscli.customizations.ec2.decryptpassword', 'ec2_add_priv_launch_key', 'building-argument-table.ec2.get-password-data'),
-        ('awscli.customizations.ec2.secgroupsimplify', 'register_secgroup'),
-        ('awscli.customizations.ec2.bundleinstance', 'register_bundleinstance'),
-        ('awscli.customizations.ec2.runinstances', 'register_runinstances'),
-        ('awscli.customizations.removals', 'register_removals'),
-        ('awscli.customizations.argrename', 'register_arg_renames'),
-        ('awscli.customizations.toplevelbool', 'register_bool_params'),
-        ('awscli.customizations.ec2.protocolarg', 'register_protocol_args')
-    ],
     '__main__': [
         ('awscli.customizations.s3.s3', 's3_plugin_initialize'),
         ('awscli.customizations.dynamodb.ddb', 'register_ddb'),
@@ -69,35 +59,11 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.devcommands', 'register_dev_commands'),
         ('awscli.customizations.login', 'register_login_cmds')
     ],
-    's3_sync': [
-        ('awscli.customizations.s3.s3', 's3_plugin_initialize')
+    'apigateway': [
+        ('awscli.customizations.argrename', 'register_arg_renames')
     ],
-    'ses': [
-        ('awscli.customizations.removals', 'register_removals'),
-        ('awscli.customizations.sessendemail', 'register_ses_send_email')
-    ],
-    'emr': [
-        ('awscli.customizations.removals', 'register_removals'),
-        ('awscli.customizations.argrename', 'register_arg_renames'),
-        ('awscli.customizations.emr.emr', 'emr_initialize')
-    ],
-    'kinesis': [
-        ('awscli.customizations.removals', 'register_removals'),
-        ('awscli.customizations.kinesis', 'register_kinesis_list_streams_pagination_backcompat')
-    ],
-    'lexv2-runtime': [
-        ('awscli.customizations.removals', 'register_removals')
-    ],
-    'lambda': [
-        ('awscli.customizations.removals', 'register_removals'),
-        ('awscli.customizations.awslambda', 'register_lambda_create_function'),
-        ('awscli.customizations.wizard.commands', 'register_wizard_commands')
-    ],
-    'sagemaker-runtime': [
-        ('awscli.customizations.removals', 'register_removals')
-    ],
-    'bedrock-runtime': [
-        ('awscli.customizations.removals', 'register_removals')
+    'apigatewayv2': [
+        ('awscli.customizations.argrename', 'register_arg_renames')
     ],
     'bedrock-agent-runtime': [
         ('awscli.customizations.removals', 'register_removals')
@@ -105,24 +71,187 @@ PLUGIN_REGISTRY = {
     'bedrock-agentcore': [
         ('awscli.customizations.removals', 'register_removals')
     ],
-    'qbusiness': [
+    'bedrock-runtime': [
         ('awscli.customizations.removals', 'register_removals')
+    ],
+    'cli-dev': [
+        ('awscli.customizations.wizard.commands', 'register_wizard_commands')
+    ],
+    'clouddirectory': [
+        ('awscli.customizations.argrename', 'register_arg_renames')
+    ],
+    'cloudformation': [
+        ('awscli.customizations.cloudformation', 'initialize')
+    ],
+    'cloudfront': [
+        ('awscli.customizations.cloudfront', 'register')
+    ],
+    'cloudsearch': [
+        ('awscli.customizations.cloudsearch', 'initialize')
+    ],
+    'cloudsearchdomain': [
+        ('awscli.customizations.argrename', 'register_arg_renames')
+    ],
+    'cloudtrail': [
+        ('awscli.customizations.cloudtrail', 'initialize')
+    ],
+    'cloudwatch': [
+        ('awscli.customizations.putmetricdata', 'register_put_metric_data')
+    ],
+    'codeartifact': [
+        ('awscli.customizations.codeartifact', 'register_codeartifact_commands')
+    ],
+    'codecommit': [
+        ('awscli.customizations.codecommit', 'initialize')
+    ],
+    'codepipeline': [
+        ('awscli.customizations.argrename', 'register_arg_renames')
+    ],
+    'configservice': [
+        ('awscli.customizations.configservice.subscribe', 'register_subscribe'),
+        ('awscli.customizations.configservice.getstatus', 'register_get_status'),
+        ('awscli.customizations.configservice.putconfigurationrecorder', 'register_modify_put_configuration_recorder')
+    ],
+    'configure': [
+        ('awscli.customizations.wizard.commands', 'register_wizard_commands')
+    ],
+    'connecthealth': [
+        ('awscli.customizations.removals', 'register_removals')
+    ],
+    'controltower': [
+        ('awscli.customizations.argrename', 'register_arg_renames')
+    ],
+    'datapipeline': [
+        ('awscli.customizations.argrename', 'register_arg_renames'),
+        ('awscli.customizations.datapipeline', 'register_customizations')
+    ],
+    'deploy': [
+        ('awscli.customizations.argrename', 'register_arg_renames'),
+        ('awscli.customizations.codedeploy.codedeploy', 'initialize')
+    ],
+    'devops-agent': [
+        ('awscli.customizations.removals', 'register_removals')
+    ],
+    'dlm': [
+        ('awscli.customizations.dlm.dlm', 'dlm_initialize')
+    ],
+    'dsql': [
+        ('awscli.customizations.dsql', 'register_dsql_customizations')
+    ],
+    'dynamodb': [
+        ('awscli.customizations.wizard.commands', 'register_wizard_commands')
+    ],
+    'ec2': [
+        ('awscli.customizations.ec2.decryptpassword', 'ec2_add_priv_launch_key', 'building-argument-table.ec2.get-password-data'),
+        ('awscli.customizations.ec2.secgroupsimplify', 'register_secgroup'),
+        ('awscli.customizations.ec2.bundleinstance', 'register_bundleinstance'),
+        ('awscli.customizations.ec2.runinstances', 'register_runinstances'),
+        ('awscli.customizations.removals', 'register_removals'),
+        ('awscli.customizations.argrename', 'register_arg_renames'),
+        ('awscli.customizations.toplevelbool', 'register_bool_params'),
+        ('awscli.customizations.ec2.protocolarg', 'register_protocol_args')
+    ],
+    'ec2-instance-connect': [
+        ('awscli.customizations.ec2instanceconnect', 'register_ec2_instance_connect_commands')
+    ],
+    'ecr': [
+        ('awscli.customizations.ecr', 'register_ecr_commands')
+    ],
+    'ecr-public': [
+        ('awscli.customizations.ecr_public', 'register_ecr_public_commands')
+    ],
+    'ecs': [
+        ('awscli.customizations.argrename', 'register_arg_renames'),
+        ('awscli.customizations.ecs', 'initialize'),
+        ('awscli.customizations.ecs.monitormutatinggatewayservice', 'register_monitor_mutating_gateway_service')
+    ],
+    'eks': [
+        ('awscli.customizations.argrename', 'register_arg_renames'),
+        ('awscli.customizations.eks', 'initialize')
+    ],
+    'elasticache': [
+        ('awscli.customizations.argrename', 'register_arg_renames')
+    ],
+    'emr': [
+        ('awscli.customizations.removals', 'register_removals'),
+        ('awscli.customizations.argrename', 'register_arg_renames'),
+        ('awscli.customizations.emr.emr', 'emr_initialize')
+    ],
+    'emr-containers': [
+        ('awscli.customizations.emrcontainers', 'initialize')
+    ],
+    'events': [
+        ('awscli.customizations.wizard.commands', 'register_wizard_commands')
+    ],
+    'gamelift': [
+        ('awscli.customizations.argrename', 'register_arg_renames'),
+        ('awscli.customizations.gamelift', 'register_gamelift_commands')
+    ],
+    'glue': [
+        ('awscli.customizations.argrename', 'register_arg_renames')
+    ],
+    'iam': [
+        ('awscli.customizations.iamvirtmfa', 'IAMVMFAWrapper'),
+        ('awscli.customizations.wizard.commands', 'register_wizard_commands')
+    ],
+    'iot': [
+        ('awscli.customizations.iot', 'register_create_keys_and_cert_arguments', 'building-argument-table.iot.create-keys-and-certificate'),
+        ('awscli.customizations.iot', 'register_create_keys_from_csr_arguments', 'building-argument-table.iot.create-certificate-from-csr')
     ],
     'iotsitewise': [
         ('awscli.customizations.removals', 'register_removals')
+    ],
+    'iotwireless': [
+        ('awscli.customizations.argrename', 'register_arg_renames')
+    ],
+    'kinesis': [
+        ('awscli.customizations.removals', 'register_removals'),
+        ('awscli.customizations.kinesis', 'register_kinesis_list_streams_pagination_backcompat')
+    ],
+    'kinesisanalytics': [
+        ('awscli.customizations.argrename', 'register_arg_renames')
+    ],
+    'kinesisanalyticsv2': [
+        ('awscli.customizations.argrename', 'register_arg_renames')
+    ],
+    'lambda': [
+        ('awscli.customizations.removals', 'register_removals'),
+        ('awscli.customizations.awslambda', 'register_lambda_create_function'),
+        ('awscli.customizations.wizard.commands', 'register_wizard_commands')
+    ],
+    'lex-models': [
+        ('awscli.customizations.argrename', 'register_arg_renames')
+    ],
+    'lexv2-runtime': [
+        ('awscli.customizations.removals', 'register_removals')
+    ],
+    'license-manager': [
+        ('awscli.customizations.argrename', 'register_arg_renames')
+    ],
+    'lightsail': [
+        ('awscli.customizations.lightsail', 'initialize')
     ],
     'logs': [
         ('awscli.customizations.removals', 'register_removals'),
         ('awscli.customizations.logs', 'register_logs_commands')
     ],
+    'mgn': [
+        ('awscli.customizations.argrename', 'register_arg_renames')
+    ],
+    'mturk': [
+        ('awscli.customizations.argrename', 'register_arg_renames')
+    ],
+    'pinpoint': [
+        ('awscli.customizations.argrename', 'register_arg_renames')
+    ],
     'polly': [
         ('awscli.customizations.removals', 'register_removals')
     ],
-    'connecthealth': [
+    'qbusiness': [
         ('awscli.customizations.removals', 'register_removals')
     ],
-    'devops-agent': [
-        ('awscli.customizations.removals', 'register_removals')
+    'quicksight': [
+        ('awscli.customizations.quicksight', 'register_quicksight_asset_bundle_customizations')
     ],
     'rds': [
         ('awscli.customizations.rds', 'register_rds_modify_split'),
@@ -132,182 +261,53 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.rekognition', 'register_rekognition_detect_labels'),
         ('awscli.customizations.argrename', 'register_arg_renames')
     ],
-    'dsql': [
-        ('awscli.customizations.dsql', 'register_dsql_customizations')
-    ],
-    'cloudwatch': [
-        ('awscli.customizations.putmetricdata', 'register_put_metric_data')
-    ],
-    'iam': [
-        ('awscli.customizations.iamvirtmfa', 'IAMVMFAWrapper'),
-        ('awscli.customizations.wizard.commands', 'register_wizard_commands')
-    ],
-    'swf': [
-        ('awscli.customizations.argrename', 'register_arg_renames')
-    ],
-    'datapipeline': [
-        ('awscli.customizations.argrename', 'register_arg_renames'),
-        ('awscli.customizations.datapipeline', 'register_customizations')
-    ],
-    'cloudsearchdomain': [
-        ('awscli.customizations.argrename', 'register_arg_renames')
-    ],
-    'sns': [
-        ('awscli.customizations.argrename', 'register_arg_renames')
-    ],
-    'deploy': [
-        ('awscli.customizations.argrename', 'register_arg_renames'),
-        ('awscli.customizations.codedeploy.codedeploy', 'initialize')
-    ],
-    'codepipeline': [
-        ('awscli.customizations.argrename', 'register_arg_renames')
-    ],
-    'kinesisanalytics': [
-        ('awscli.customizations.argrename', 'register_arg_renames')
-    ],
-    'kinesisanalyticsv2': [
-        ('awscli.customizations.argrename', 'register_arg_renames')
-    ],
     'route53': [
         ('awscli.customizations.argrename', 'register_arg_renames')
-    ],
-    'gamelift': [
-        ('awscli.customizations.argrename', 'register_arg_renames'),
-        ('awscli.customizations.gamelift', 'register_gamelift_commands')
     ],
     'route53domains': [
         ('awscli.customizations.argrename', 'register_arg_renames')
     ],
-    'apigateway': [
-        ('awscli.customizations.argrename', 'register_arg_renames')
-    ],
-    'apigatewayv2': [
-        ('awscli.customizations.argrename', 'register_arg_renames')
-    ],
-    'pinpoint': [
-        ('awscli.customizations.argrename', 'register_arg_renames')
-    ],
-    'stepfunctions': [
-        ('awscli.customizations.argrename', 'register_arg_renames')
-    ],
-    'clouddirectory': [
-        ('awscli.customizations.argrename', 'register_arg_renames')
-    ],
-    'mturk': [
-        ('awscli.customizations.argrename', 'register_arg_renames')
-    ],
-    'workdocs': [
-        ('awscli.customizations.argrename', 'register_arg_renames')
-    ],
-    'lex-models': [
-        ('awscli.customizations.argrename', 'register_arg_renames')
-    ],
-    'license-manager': [
-        ('awscli.customizations.argrename', 'register_arg_renames')
-    ],
-    'eks': [
-        ('awscli.customizations.argrename', 'register_arg_renames'),
-        ('awscli.customizations.eks', 'initialize')
-    ],
-    'schemas': [
-        ('awscli.customizations.argrename', 'register_arg_renames')
-    ],
-    'sagemaker': [
-        ('awscli.customizations.argrename', 'register_arg_renames')
-    ],
-    'iotwireless': [
-        ('awscli.customizations.argrename', 'register_arg_renames')
-    ],
-    'ecs': [
-        ('awscli.customizations.argrename', 'register_arg_renames'),
-        ('awscli.customizations.ecs', 'initialize'),
-        ('awscli.customizations.ecs.monitormutatinggatewayservice', 'register_monitor_mutating_gateway_service')
-    ],
-    'controltower': [
-        ('awscli.customizations.argrename', 'register_arg_renames')
-    ],
-    'glue': [
-        ('awscli.customizations.argrename', 'register_arg_renames')
-    ],
-    'mgn': [
-        ('awscli.customizations.argrename', 'register_arg_renames')
-    ],
-    'elasticache': [
-        ('awscli.customizations.argrename', 'register_arg_renames')
-    ],
-    'cloudtrail': [
-        ('awscli.customizations.cloudtrail', 'initialize')
-    ],
-    'ecr': [
-        ('awscli.customizations.ecr', 'register_ecr_commands')
-    ],
-    'ecr-public': [
-        ('awscli.customizations.ecr_public', 'register_ecr_public_commands')
-    ],
-    'cloudsearch': [
-        ('awscli.customizations.cloudsearch', 'initialize')
-    ],
-    'emr-containers': [
-        ('awscli.customizations.emrcontainers', 'initialize')
-    ],
-    'lightsail': [
-        ('awscli.customizations.lightsail', 'initialize')
-    ],
-    'configservice': [
-        ('awscli.customizations.configservice.subscribe', 'register_subscribe'),
-        ('awscli.customizations.configservice.getstatus', 'register_get_status'),
-        ('awscli.customizations.configservice.putconfigurationrecorder', 'register_modify_put_configuration_recorder')
-    ],
-    'codeartifact': [
-        ('awscli.customizations.codeartifact', 'register_codeartifact_commands')
-    ],
-    'codecommit': [
-        ('awscli.customizations.codecommit', 'initialize')
-    ],
-    'iot': [
-        ('awscli.customizations.iot', 'register_create_keys_and_cert_arguments', 'building-argument-table.iot.create-keys-and-certificate'),
-        ('awscli.customizations.iot', 'register_create_keys_from_csr_arguments', 'building-argument-table.iot.create-certificate-from-csr')
-    ],
-    'cloudfront': [
-        ('awscli.customizations.cloudfront', 'register')
-    ],
-    'cloudformation': [
-        ('awscli.customizations.cloudformation', 'initialize')
-    ],
-    'servicecatalog': [
-        ('awscli.customizations.servicecatalog', 'register_servicecatalog_commands')
-    ],
-    'translate': [
-        ('awscli.customizations.translate', 'register_translate_import_terminology')
+    's3_sync': [
+        ('awscli.customizations.s3.s3', 's3_plugin_initialize')
     ],
     's3api': [
         ('awscli.customizations.s3events', 'register_event_stream_arg')
     ],
-    'dlm': [
-        ('awscli.customizations.dlm.dlm', 'dlm_initialize')
+    'sagemaker': [
+        ('awscli.customizations.argrename', 'register_arg_renames')
+    ],
+    'sagemaker-runtime': [
+        ('awscli.customizations.removals', 'register_removals')
+    ],
+    'schemas': [
+        ('awscli.customizations.argrename', 'register_arg_renames')
+    ],
+    'servicecatalog': [
+        ('awscli.customizations.servicecatalog', 'register_servicecatalog_commands')
+    ],
+    'ses': [
+        ('awscli.customizations.removals', 'register_removals'),
+        ('awscli.customizations.sessendemail', 'register_ses_send_email')
+    ],
+    'sns': [
+        ('awscli.customizations.argrename', 'register_arg_renames')
     ],
     'ssm': [
         ('awscli.customizations.sessionmanager', 'register_ssm_session')
     ],
-    'cli-dev': [
-        ('awscli.customizations.wizard.commands', 'register_wizard_commands')
-    ],
-    'configure': [
-        ('awscli.customizations.wizard.commands', 'register_wizard_commands')
-    ],
-    'dynamodb': [
-        ('awscli.customizations.wizard.commands', 'register_wizard_commands')
-    ],
-    'events': [
-        ('awscli.customizations.wizard.commands', 'register_wizard_commands')
-    ],
     'sso': [
         ('awscli.customizations.sso', 'register_sso_commands')
     ],
-    'quicksight': [
-        ('awscli.customizations.quicksight', 'register_quicksight_asset_bundle_customizations')
+    'stepfunctions': [
+        ('awscli.customizations.argrename', 'register_arg_renames')
     ],
-    'ec2-instance-connect': [
-        ('awscli.customizations.ec2instanceconnect', 'register_ec2_instance_connect_commands')
+    'swf': [
+        ('awscli.customizations.argrename', 'register_arg_renames')
+    ],
+    'translate': [
+        ('awscli.customizations.translate', 'register_translate_import_terminology')
+    ],
+    'workdocs': [
+        ('awscli.customizations.argrename', 'register_arg_renames')
     ]
 }

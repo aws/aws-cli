@@ -56,6 +56,14 @@ class TopLevelWizardCommand(BasicCommand):
         self._wizard_name = wizard_name
 
     def _get_runner(self):
+        # If a runner was not provided during initialization, compute the
+        # default. This defers default computation to runtime, when the
+        # wizard command is actually invoked. The benefit of this is so that
+        # we defer importing `awscli.customizations.wizard.factory` until
+        # it's actually needed. The wizard factory module imports from
+        # `prompt_toolkit`, and importing `prompt_toolkit` while executing
+        # commands that don't actually use it has historically led to
+        # unnecessarily higher command execution time and wasted compute.
         if self._runner is None:
             from awscli.customizations.wizard import factory
             self._runner = {
@@ -74,7 +82,7 @@ class TopLevelWizardCommand(BasicCommand):
                 self._session,
                 self._loader,
                 self._parent_command,
-                runner=None,
+                runner=self._runner,
                 wizard_name=name,
             )
             subcommand_table[name] = cmd

@@ -64,6 +64,10 @@ _S3_OBJECT_LAMBDA_TO_BUCKET_KEY_REGEX = re.compile(
 )
 
 
+def is_account_regional_namespace_bucket(bucket):
+    return bucket.endswith('-an')
+
+
 def human_readable_size(value):
     """Convert a size in bytes into a human readable format.
 

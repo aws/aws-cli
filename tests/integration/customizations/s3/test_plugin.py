@@ -190,6 +190,13 @@ class BaseS3IntegrationTest(BaseS3CLICommand):
         super(BaseS3IntegrationTest, self).setUp()
 
 
+class TestMakeBucketAccountRegionalNamespace(BaseS3IntegrationTest):
+    def test_short_an_suffix_sends_namespace_header(self):
+        p = aws('s3 mb s3://xyz-an')
+        assert p.rc != 0
+        assert 'InvalidBucketNamespace' in p.stderr
+
+
 class TestMoveCommand(BaseS3IntegrationTest):
     def assert_mv_local_to_s3(self, bucket_name):
         full_path = self.files.create_file('foo.txt', 'this is foo.txt')

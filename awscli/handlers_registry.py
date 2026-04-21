@@ -4,7 +4,7 @@
 # DO NOT EDIT MANUALLY.
 #
 # Re-generate by running:
-#   python scripts/generate_plugin_registry
+#   scripts/generate_plugin_registry
 #
 # Sentinels:
 #   __always__  registered for every CLI invocation

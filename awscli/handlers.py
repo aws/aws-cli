@@ -106,7 +106,16 @@ def awscli_initialize(event_handlers, args=None):
     _enqueue(PLUGIN_REGISTRY.get(_SENTINEL_MAIN, []))
 
     if command is not None:
+        # Load only the service-scoped plugins for the given command.
         _enqueue(PLUGIN_REGISTRY.get(command, []))
+    else:
+        # args was not provided — load all service-scoped plugins to ensure
+        # nothing is missing. In production args is always provided via
+        # create_clidriver(args); this path is hit only when a driver is
+        # pre-created without args (e.g. in tests).
+        for sentinel, entries in PLUGIN_REGISTRY.items():
+            if sentinel not in (_SENTINEL_ALWAYS, _SENTINEL_MAIN):
+                _enqueue(entries)
 
     for entry in to_call:
         _call(entry, event_handlers)

@@ -317,7 +317,16 @@ def _render_registry(registry):
         'PLUGIN_REGISTRY = {',
     ]
 
-    sentinels = list(registry.keys())
+    # Sort sentinels so output is stable across platforms (e.g. os.listdir order).
+    # Pin __always__ and __main__ first, then alphabetical.
+    def _sentinel_key(s):
+        if s == SENTINEL_ALWAYS:
+            return (0, s)
+        if s == SENTINEL_MAIN:
+            return (1, s)
+        return (2, s)
+
+    sentinels = sorted(registry.keys(), key=_sentinel_key)
     for i, sentinel in enumerate(sentinels):
         entries = registry[sentinel]
         is_last = (i == len(sentinels) - 1)

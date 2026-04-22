@@ -14,12 +14,14 @@ import logging
 import os
 import sys
 
-from botocore.hooks import HierarchicalEmitter
+from awscli.lazy_emitter import LazyInitEmitter
 
 log = logging.getLogger('awscli.plugin')
 
 BUILTIN_PLUGINS = {'__builtin__': 'awscli.handlers'}
 CLI_LEGACY_PLUGIN_PATH = 'cli_legacy_plugin_path'
+# Re-export for backward compatibility.
+HierarchicalEmitter = LazyInitEmitter
 
 
 def load_plugins(plugin_mapping, event_hooks=None, include_builtins=True,
@@ -32,7 +34,7 @@ def load_plugins(plugin_mapping, event_hooks=None, include_builtins=True,
 
     :type event_hooks: ``EventHooks``
     :param event_hooks: Event hook emitter.  If one if not provided,
-        an emitter will be created and returned.  Otherwise, the
+        a LazyInitEmitter will be created and returned.  Otherwise, the
         passed in ``event_hooks`` will be used to initialize plugins.
 
     :type include_builtins: bool
@@ -40,18 +42,16 @@ def load_plugins(plugin_mapping, event_hooks=None, include_builtins=True,
         ``BUILTIN_PLUGINS``) will be included in the list of plugins to load.
 
     :type args: list
-    :param args: The raw CLI argument list (without the program name), used
-        to determine which service is being invoked so that only relevant
-        plugins are initialized.
+    :param args: Unused. Kept for backward compatibility.
 
-    :rtype: HierarchicalEmitter
+    :rtype: LazyInitEmitter
     :return: An event emitter object.
 
     """
     if event_hooks is None:
-        event_hooks = HierarchicalEmitter()
+        event_hooks = LazyInitEmitter()
     if include_builtins:
-        _load_plugins(BUILTIN_PLUGINS, event_hooks, args=args)
+        _load_plugins(BUILTIN_PLUGINS, event_hooks)
     plugin_path = plugin_mapping.pop(CLI_LEGACY_PLUGIN_PATH, None)
     if plugin_path is not None:
         _add_plugin_path_to_sys_path(plugin_path)
@@ -64,16 +64,10 @@ def load_plugins(plugin_mapping, event_hooks=None, include_builtins=True,
     return event_hooks
 
 
-def _load_plugins(plugin_mapping, event_hooks, args=None):
+def _load_plugins(plugin_mapping, event_hooks):
     modules = _import_plugins(plugin_mapping)
     for name, plugin in zip(plugin_mapping.keys(), modules):
         log.debug("Initializing plugin %s: %s", name, plugin)
-        if args is not None and hasattr(plugin, 'awscli_initialize'):
-            import inspect
-            sig = inspect.signature(plugin.awscli_initialize)
-            if 'args' in sig.parameters:
-                plugin.awscli_initialize(event_hooks, args=args)
-                continue
         plugin.awscli_initialize(event_hooks)
 
 

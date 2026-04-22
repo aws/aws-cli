@@ -116,10 +116,15 @@ def create_clidriver(args=None):
         debug = parsed_args.debug
     session = botocore.session.Session()
     _set_user_agent_for_session(session)
+    # Replace the session's default emitter with a LazyInitEmitter
+    # so plugins are initialized on demand when their events fire.
+    from awscli.lazy_emitter import LazyInitEmitter
+    lazy_emitter = LazyInitEmitter()
+    session._events = lazy_emitter
+    session._register_event_emitter()
     load_plugins(
         session.full_config.get('plugins', {}),
-        event_hooks=session.get_component('event_emitter'),
-        args=args,
+        event_hooks=lazy_emitter,
     )
     error_handlers_chain = construct_cli_error_handlers_chain(session)
     driver = CLIDriver(

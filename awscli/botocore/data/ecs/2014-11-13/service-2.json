@@ -1680,6 +1680,23 @@
       "type":"list",
       "member":{"shape":"Attribute"}
     },
+    "AutoRepairActionsStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "AutoRepairConfiguration":{
+      "type":"structure",
+      "members":{
+        "actionsStatus":{
+          "shape":"AutoRepairActionsStatus",
+          "documentation":"<p>The status of auto repair actions for the capacity provider. When set to <code>ENABLED</code>, Amazon ECS automatically replaces container instances with an <code>IMPAIRED</code> health status. When set to <code>DISABLED</code>, Amazon ECS still monitors container instance health but does not automatically replace impaired instances.</p>"
+        }
+      },
+      "documentation":"<p>The auto repair configuration for an Amazon ECS Managed Instances capacity provider. When enabled, Amazon ECS automatically replaces container instances that are detected as unhealthy based on container instance health checks, including accelerated compute device and daemon health checks.</p>"
+    },
     "AutoScalingGroupProvider":{
       "type":"structure",
       "required":["autoScalingGroupArn"],
@@ -2999,6 +3016,10 @@
         "infrastructureOptimization":{
           "shape":"InfrastructureOptimization",
           "documentation":"<p>Defines how Amazon ECS Managed Instances optimizes the infrastastructure in your capacity provider. Provides control over the delay between when EC2 instances become idle or underutilized and when Amazon ECS optimizes them.</p>"
+        },
+        "autoRepairConfiguration":{
+          "shape":"AutoRepairConfiguration",
+          "documentation":"<p>The auto repair configuration for the Amazon ECS Managed Instances capacity provider. Use this to enable or disable automatic replacement of container instances that are detected as unhealthy.</p>"
         }
       },
       "documentation":"<p>The configuration for creating a Amazon ECS Managed Instances provider. This specifies how Amazon ECS should manage Amazon EC2 instances, including the infrastructure role, instance launch template, and whether to propagate tags from the capacity provider to the instances.</p>"
@@ -5857,6 +5878,10 @@
           "shape":"InstanceHealthCheckState",
           "documentation":"<p>The container instance health status.</p>"
         },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the container instance health status.</p>"
+        },
         "lastUpdated":{
           "shape":"Timestamp",
           "documentation":"<p>The Unix timestamp for when the container instance health status was last updated.</p>"
@@ -7091,6 +7116,10 @@
         "infrastructureOptimization":{
           "shape":"InfrastructureOptimization",
           "documentation":"<p>Defines how Amazon ECS Managed Instances optimizes the infrastastructure in your capacity provider. Configure it to turn on or off the infrastructure optimization in your capacity provider, and to control the idle or underutilized EC2 instances optimization delay.</p>"
+        },
+        "autoRepairConfiguration":{
+          "shape":"AutoRepairConfiguration",
+          "documentation":"<p>The auto repair configuration for the Amazon ECS Managed Instances capacity provider. Indicates whether Amazon ECS automatically replaces container instances that are detected as unhealthy.</p>"
         }
       },
       "documentation":"<p>The configuration for a Amazon ECS Managed Instances provider. Amazon ECS uses this configuration to automatically launch, manage, and terminate Amazon EC2 instances on your behalf. Managed instances provide access to the full range of Amazon EC2 instance types and features while offloading infrastructure management to Amazon Web Services.</p>"
@@ -10898,6 +10927,10 @@
         "infrastructureOptimization":{
           "shape":"InfrastructureOptimization",
           "documentation":"<p>The updated infrastructure optimization configuration. Changes to this setting affect how Amazon ECS optimizes instances going forward.</p>"
+        },
+        "autoRepairConfiguration":{
+          "shape":"AutoRepairConfiguration",
+          "documentation":"<p>The updated auto repair configuration for the Amazon ECS Managed Instances capacity provider.</p>"
         }
       },
       "documentation":"<p>The updated configuration for a Amazon ECS Managed Instances provider. You can modify the infrastructure role, instance launch template, and tag propagation settings. Changes apply to new instances launched after the update.</p>"

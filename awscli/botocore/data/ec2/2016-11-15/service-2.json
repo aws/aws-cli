@@ -5651,6 +5651,16 @@
       "output":{"shape":"GetManagedPrefixListEntriesResult"},
       "documentation":"<p>Gets information about the entries for a specified managed prefix list.</p>"
     },
+    "GetManagedResourceVisibility":{
+      "name":"GetManagedResourceVisibility",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetManagedResourceVisibilityRequest"},
+      "output":{"shape":"GetManagedResourceVisibilityResult"},
+      "documentation":"<p>Retrieves the managed resource visibility configuration for the account. The response indicates whether managed resources are hidden or visible by default.</p>"
+    },
     "GetNetworkInsightsAccessScopeAnalysisFindings":{
       "name":"GetNetworkInsightsAccessScopeAnalysisFindings",
       "http":{
@@ -6376,6 +6386,16 @@
       "input":{"shape":"ModifyManagedPrefixListRequest"},
       "output":{"shape":"ModifyManagedPrefixListResult"},
       "documentation":"<p>Modifies the specified managed prefix list.</p> <p>Adding or removing entries in a prefix list creates a new version of the prefix list. Changing the name of the prefix list does not affect the version.</p> <p>If you specify a current version number that does not match the true current version number, the request fails.</p>"
+    },
+    "ModifyManagedResourceVisibility":{
+      "name":"ModifyManagedResourceVisibility",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyManagedResourceVisibilityRequest"},
+      "output":{"shape":"ModifyManagedResourceVisibilityResult"},
+      "documentation":"<p>Modifies the managed resource visibility configuration for the account. Use this operation to control whether managed resources are hidden or visible by default. Visibility settings are account-wide and affect all IAM principals uniformly. Hidden resources remain fully operational and billable.</p>"
     },
     "ModifyNetworkInterfaceAttribute":{
       "name":"ModifyNetworkInterfaceAttribute",
@@ -26807,6 +26827,10 @@
           "shape":"String",
           "documentation":"<p>The token returned from a previous paginated request. Pagination continues from the end of the items returned by the previous request.</p>"
         },
+        "IncludeManagedResources":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether to include managed resources in the output. If this parameter is set to <code>true</code>, the output includes resources that are managed by Amazon Web Services services, even if managed resource visibility is set to hidden.</p>"
+        },
         "DryRun":{
           "shape":"Boolean",
           "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>",
@@ -26989,6 +27013,10 @@
           "shape":"InstanceIdStringList",
           "documentation":"<p>The instance IDs.</p> <p>Default: Describes all your instances.</p>",
           "locationName":"InstanceId"
+        },
+        "IncludeManagedResources":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether to include managed resources in the output. If this parameter is set to <code>true</code>, the output includes resources that are managed by Amazon Web Services services, even if managed resource visibility is set to hidden.</p>"
         },
         "DryRun":{
           "shape":"Boolean",
@@ -27619,6 +27647,10 @@
         "ResolveAlias":{
           "shape":"Boolean",
           "documentation":"<p>If <code>true</code>, and if a Systems Manager parameter is specified for <code>ImageId</code>, the AMI ID is displayed in the response for <code>imageId</code>.</p> <p>If <code>false</code>, and if a Systems Manager parameter is specified for <code>ImageId</code>, the parameter is displayed in the response for <code>imageId</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-launch-template.html#use-an-ssm-parameter-instead-of-an-ami-id\">Use a Systems Manager parameter instead of an AMI ID</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>Default: <code>false</code> </p>"
+        },
+        "IncludeManagedResources":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether to include managed resources in the output. If this parameter is set to <code>true</code>, the output includes resources that are managed by Amazon Web Services services, even if managed resource visibility is set to hidden.</p>"
         }
       }
     },
@@ -27671,6 +27703,10 @@
         "MaxResults":{
           "shape":"DescribeLaunchTemplatesMaxResults",
           "documentation":"<p>The maximum number of results to return in a single call. To retrieve the remaining results, make another call with the returned <code>NextToken</code> value. This value can be between 1 and 200.</p>"
+        },
+        "IncludeManagedResources":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether to include managed resources in the output. If this parameter is set to <code>true</code>, the output includes resources that are managed by Amazon Web Services services, even if managed resource visibility is set to hidden.</p>"
         }
       }
     },
@@ -28574,6 +28610,10 @@
         "MaxResults":{
           "shape":"DescribeNetworkInterfacesMaxResults",
           "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. You cannot specify this parameter and the network interface IDs parameter in the same request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
+        },
+        "IncludeManagedResources":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether to include managed resources in the output. If this parameter is set to <code>true</code>, the output includes resources that are managed by Amazon Web Services services, even if managed resource visibility is set to hidden.</p>"
         },
         "DryRun":{
           "shape":"Boolean",
@@ -31326,6 +31366,10 @@
           "documentation":"<p>The IDs of the volumes.</p> <p>Default: Describes all your volumes.</p>",
           "locationName":"VolumeId"
         },
+        "IncludeManagedResources":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether to include managed resources in the output. If this parameter is set to <code>true</code>, the output includes resources that are managed by Amazon Web Services services, even if managed resource visibility is set to hidden.</p>"
+        },
         "DryRun":{
           "shape":"Boolean",
           "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>",
@@ -31402,6 +31446,10 @@
           "shape":"VolumeIdStringList",
           "documentation":"<p>The volume IDs. If not specified, then all volumes are included in the response.</p>",
           "locationName":"VolumeId"
+        },
+        "IncludeManagedResources":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether to include managed resources in the output. If this parameter is set to <code>true</code>, the output includes resources that are managed by Amazon Web Services services, even if managed resource visibility is set to hidden.</p>"
         },
         "DryRun":{
           "shape":"Boolean",
@@ -39657,6 +39705,25 @@
           "shape":"NextToken",
           "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
           "locationName":"nextToken"
+        }
+      }
+    },
+    "GetManagedResourceVisibilityRequest":{
+      "type":"structure",
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "GetManagedResourceVisibilityResult":{
+      "type":"structure",
+      "members":{
+        "Visibility":{
+          "shape":"ManagedResourceVisibilitySettings",
+          "documentation":"<p>The managed resource visibility settings for the account.</p>",
+          "locationName":"visibility"
         }
       }
     },
@@ -52827,6 +52894,24 @@
         "locationName":"item"
       }
     },
+    "ManagedResourceDefaultVisibility":{
+      "type":"string",
+      "enum":[
+        "hidden",
+        "visible"
+      ]
+    },
+    "ManagedResourceVisibilitySettings":{
+      "type":"structure",
+      "members":{
+        "DefaultVisibility":{
+          "shape":"ManagedResourceDefaultVisibility",
+          "documentation":"<p>The default visibility setting for managed resources. A value of <code>hidden</code> indicates that managed resources are not included in Describe operation responses by default. A value of <code>visible</code> indicates that managed resources are included by default.</p>",
+          "locationName":"defaultVisibility"
+        }
+      },
+      "documentation":"<p>Describes the managed resource visibility settings for the account.</p>"
+    },
     "MarketType":{
       "type":"string",
       "enum":[
@@ -53762,7 +53847,7 @@
           "locationName":"attribute"
         },
         "Value":{
-          "shape":"String",
+          "shape":"ModifyInstanceAttributeValue",
           "documentation":"<p>A new value for the attribute. Use only with the <code>kernel</code>, <code>ramdisk</code>, <code>userData</code>, <code>disableApiTermination</code>, or <code>instanceInitiatedShutdownBehavior</code> attribute.</p>",
           "locationName":"value"
         },
@@ -53822,6 +53907,16 @@
           "locationName":"enaSupport"
         }
       }
+    },
+    "ModifyInstanceAttributeUserDataRequest":{
+      "type":"structure",
+      "members":{
+        "Value":{"shape":"ModifyInstanceAttributeValue"}
+      }
+    },
+    "ModifyInstanceAttributeValue":{
+      "type":"string",
+      "sensitive":true
     },
     "ModifyInstanceCapacityReservationAttributesRequest":{
       "type":"structure",
@@ -54744,6 +54839,29 @@
           "shape":"ManagedPrefixList",
           "documentation":"<p>Information about the prefix list.</p>",
           "locationName":"prefixList"
+        }
+      }
+    },
+    "ModifyManagedResourceVisibilityRequest":{
+      "type":"structure",
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "DefaultVisibility":{
+          "shape":"ManagedResourceDefaultVisibility",
+          "documentation":"<p>The default visibility setting for managed resources. Valid values: <code>hidden</code> | <code>visible</code>.</p>"
+        }
+      }
+    },
+    "ModifyManagedResourceVisibilityResult":{
+      "type":"structure",
+      "members":{
+        "Visibility":{
+          "shape":"ManagedResourceVisibilitySettings",
+          "documentation":"<p>The updated managed resource visibility settings for the account.</p>",
+          "locationName":"visibility"
         }
       }
     },
@@ -58818,6 +58936,11 @@
           "shape":"String",
           "documentation":"<p>If <code>managed</code> is <code>true</code>, then the principal is returned. The principal is the service provider that manages the resource.</p>",
           "locationName":"principal"
+        },
+        "HiddenByDefault":{
+          "shape":"Boolean",
+          "documentation":"<p>If <code>true</code>, the resource is hidden by default based on the managed resource visibility settings for the account.</p>",
+          "locationName":"hiddenByDefault"
         }
       },
       "documentation":"<p>Describes whether the resource is managed by a service provider and, if so, describes the service provider that manages it.</p>"
@@ -74986,6 +75109,10 @@
           "shape":"DateTime",
           "documentation":"<p>The modification completion or failure time.</p>",
           "locationName":"endTime"
+        },
+        "Operator":{
+          "shape":"OperatorResponse",
+          "locationName":"operator"
         }
       },
       "documentation":"<p>Describes the modification status of an EBS volume.</p>"
@@ -75299,6 +75426,11 @@
           "shape":"String",
           "documentation":"<p>The ID of the Availability Zone.</p>",
           "locationName":"availabilityZoneId"
+        },
+        "Operator":{
+          "shape":"OperatorResponse",
+          "documentation":"<p>The service provider that manages the resource.</p>",
+          "locationName":"operator"
         }
       },
       "documentation":"<p>Describes the volume status.</p>"

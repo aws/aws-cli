@@ -1285,6 +1285,23 @@
       ],
       "documentation":"<p>Revokes access to an Amazon OpenSearch Service domain that was provided through an interface VPC endpoint.</p>"
     },
+    "RollbackServiceSoftwareUpdate":{
+      "name":"RollbackServiceSoftwareUpdate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2021-01-01/opensearch/serviceSoftwareUpdate/rollback"
+      },
+      "input":{"shape":"RollbackServiceSoftwareUpdateRequest"},
+      "output":{"shape":"RollbackServiceSoftwareUpdateResponse"},
+      "errors":[
+        {"shape":"BaseException"},
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"DisabledOperationException"}
+      ],
+      "documentation":"<p>Rolls back a service software update for a domain to the previous version. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/service-software.html\">Service software updates in Amazon OpenSearch Service</a>.</p>"
+    },
     "StartDomainMaintenance":{
       "name":"StartDomainMaintenance",
       "http":{
@@ -7947,6 +7964,49 @@
         "DEFAULT_ROLLBACK"
       ]
     },
+    "RollbackServiceSoftwareOptions":{
+      "type":"structure",
+      "members":{
+        "CurrentVersion":{
+          "shape":"String",
+          "documentation":"<p>The current service software version on the domain.</p>"
+        },
+        "NewVersion":{
+          "shape":"String",
+          "documentation":"<p>The service software version that the domain will roll back to.</p>"
+        },
+        "RollbackAvailable":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether a service software rollback is available for the domain.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A description of the rollback status.</p>"
+        }
+      },
+      "documentation":"<p>Details about the rollback options for a service software update.</p>"
+    },
+    "RollbackServiceSoftwareUpdateRequest":{
+      "type":"structure",
+      "required":["DomainName"],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The name of the domain to roll back the service software update on.</p>"
+        }
+      },
+      "documentation":"<p>Container for the request parameters to the <code>RollbackServiceSoftwareUpdate</code> operation.</p>"
+    },
+    "RollbackServiceSoftwareUpdateResponse":{
+      "type":"structure",
+      "members":{
+        "RollbackServiceSoftwareOptions":{
+          "shape":"RollbackServiceSoftwareOptions",
+          "documentation":"<p>The rollback options for the service software update.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the rolled-back service software update.</p>"
+    },
     "S3BucketName":{
       "type":"string",
       "max":63,
@@ -8303,6 +8363,10 @@
         "AutoSoftwareUpdateEnabled":{
           "shape":"Boolean",
           "documentation":"<p>Whether automatic service software updates are enabled for the domain.</p>"
+        },
+        "UseLatestServiceSoftwareForBlueGreen":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the domain should use the latest service software version during a blue/green deployment. If enabled, the domain will automatically use the latest available service software when a blue/green deployment is triggered.</p>"
         }
       },
       "documentation":"<p>Options for configuring service software updates for a domain.</p>"

@@ -2087,6 +2087,16 @@
       "min":0
     },
     "AddGwMetadata":{"type":"boolean"},
+    "AdvancedConfiguration":{
+      "type":"structure",
+      "members":{
+        "WiFiCellular":{
+          "shape":"WiFiCellular",
+          "documentation":"Configuration for WiFi and cellular-based payloads for location estimates."
+        }
+      },
+      "documentation":"Optional configuration to customize location estimates."
+    },
     "AggregationPeriod":{
       "type":"string",
       "enum":[
@@ -2598,6 +2608,11 @@
       "max":64,
       "min":1,
       "pattern":"^[a-zA-Z0-9-_]+$"
+    },
+    "ConfidencePercent":{
+      "type":"integer",
+      "max":99,
+      "min":50
     },
     "ConflictException":{
       "type":"structure",
@@ -4407,6 +4422,10 @@
         "Timestamp":{
           "shape":"CreationDate",
           "documentation":"<p>Optional information that specifies the time when the position information will be resolved. It uses the Unix timestamp format. If not specified, the time at which the request was received will be used.</p>"
+        },
+        "AdvancedConfiguration":{
+          "shape":"AdvancedConfiguration",
+          "documentation":"Optional configuration to customize position estimates. If not provided, defaults are applied."
         }
       }
     },
@@ -9231,6 +9250,16 @@
     "WiFiAccessPoints":{
       "type":"list",
       "member":{"shape":"WiFiAccessPoint"}
+    },
+    "WiFiCellular":{
+      "type":"structure",
+      "members":{
+        "ConfidencePercent":{
+          "shape":"ConfidencePercent",
+          "documentation":"Confidence level for WiFi and cellular position estimates, expressed as a percentage. Valid range: 50–99 inclusive. Defaults to 68 if not specified."
+        }
+      },
+      "documentation":"Configuration for WiFi and cellular location payloads."
     },
     "WirelessDeviceArn":{"type":"string"},
     "WirelessDeviceEvent":{

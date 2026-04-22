@@ -199,6 +199,26 @@
       "documentation":"<p>Creates a target for a gateway. A target defines an endpoint that the gateway can connect to.</p>",
       "idempotent":true
     },
+    "CreateHarness":{
+      "name":"CreateHarness",
+      "http":{
+        "method":"POST",
+        "requestUri":"/harnesses",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateHarnessRequest"},
+      "output":{"shape":"CreateHarnessResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Operation to create a Harness.</p>",
+      "idempotent":true
+    },
     "CreateMemory":{
       "name":"CreateMemory",
       "http":{
@@ -542,6 +562,26 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Deletes a gateway target.</p> <p>You cannot delete a target that is in a pending authorization state (<code>CREATE_PENDING_AUTH</code>, <code>UPDATE_PENDING_AUTH</code>, or <code>SYNCHRONIZE_PENDING_AUTH</code>). Wait for the authorization to complete or fail before deleting the target.</p>",
+      "idempotent":true
+    },
+    "DeleteHarness":{
+      "name":"DeleteHarness",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/harnesses/{harnessId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteHarnessRequest"},
+      "output":{"shape":"DeleteHarnessResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Operation to delete a Harness.</p>",
       "idempotent":true
     },
     "DeleteMemory":{
@@ -894,6 +934,25 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Retrieves information about a specific gateway target.</p>",
+      "readonly":true
+    },
+    "GetHarness":{
+      "name":"GetHarness",
+      "http":{
+        "method":"GET",
+        "requestUri":"/harnesses/{harnessId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetHarnessRequest"},
+      "output":{"shape":"GetHarnessResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Operation to get a single Harness.</p>",
       "readonly":true
     },
     "GetMemory":{
@@ -1291,6 +1350,24 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Lists all gateways in the account.</p>",
+      "readonly":true
+    },
+    "ListHarnesses":{
+      "name":"ListHarnesses",
+      "http":{
+        "method":"GET",
+        "requestUri":"/harnesses",
+        "responseCode":200
+      },
+      "input":{"shape":"ListHarnessesRequest"},
+      "output":{"shape":"ListHarnessesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Operation to list Harnesses.</p>",
       "readonly":true
     },
     "ListMemories":{
@@ -1766,6 +1843,26 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Updates an existing gateway target.</p> <p>You cannot update a target that is in a pending authorization state (<code>CREATE_PENDING_AUTH</code>, <code>UPDATE_PENDING_AUTH</code>, or <code>SYNCHRONIZE_PENDING_AUTH</code>). Wait for the authorization to complete or fail before updating the target.</p>",
+      "idempotent":true
+    },
+    "UpdateHarness":{
+      "name":"UpdateHarness",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/harnesses/{harnessId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateHarnessRequest"},
+      "output":{"shape":"UpdateHarnessResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Operation to update a Harness.</p>",
       "idempotent":true
     },
     "UpdateMemory":{
@@ -2324,6 +2421,10 @@
       "type":"list",
       "member":{"shape":"ApiGatewayToolOverride"}
     },
+    "ApiKeyArn":{
+      "type":"string",
+      "pattern":"arn:aws:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:token-vault/[a-zA-Z0-9-.]+/apikeycredentialprovider/[a-zA-Z0-9-.]+"
+    },
     "ApiKeyCredentialLocation":{
       "type":"string",
       "enum":[
@@ -2549,7 +2650,7 @@
     },
     "BrowserArn":{
       "type":"string",
-      "pattern":"arn:(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:(aws|[0-9]{12}):browser(-custom)?/(aws\\.browser\\.v1|[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10})"
+      "pattern":"arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:(aws|[0-9]{12}):browser(-custom)?/(aws\\.browser\\.v1|[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10})"
     },
     "BrowserEnterprisePolicies":{
       "type":"list",
@@ -2963,7 +3064,7 @@
     },
     "CodeInterpreterArn":{
       "type":"string",
-      "pattern":"arn:(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:(aws|[0-9]{12}):code-interpreter(-custom)?/(aws\\.codeinterpreter\\.v1|[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10})"
+      "pattern":"arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:(aws|[0-9]{12}):code-interpreter(-custom)?/(aws\\.codeinterpreter\\.v1|[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10})"
     },
     "CodeInterpreterId":{
       "type":"string",
@@ -3870,6 +3971,95 @@
         "authorizationData":{
           "shape":"AuthorizationData",
           "documentation":"<p>OAuth2 authorization data for the created gateway target. This data is returned when a target is configured with a credential provider with authorization code grant type and requires user federation.</p>"
+        }
+      }
+    },
+    "CreateHarnessRequest":{
+      "type":"structure",
+      "required":[
+        "harnessName",
+        "executionRoleArn"
+      ],
+      "members":{
+        "harnessName":{
+          "shape":"HarnessName",
+          "documentation":"<p>The name of the harness. Must start with a letter and contain only alphanumeric characters and underscores.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "executionRoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the IAM role that the harness assumes when running. This role must have permissions for the services the agent needs to access, such as Amazon Bedrock for model invocation.</p>"
+        },
+        "environment":{
+          "shape":"HarnessEnvironmentProviderRequest",
+          "documentation":"<p>The compute environment configuration for the harness, including network and lifecycle settings.</p>"
+        },
+        "environmentArtifact":{
+          "shape":"HarnessEnvironmentArtifact",
+          "documentation":"<p>The environment artifact for the harness, such as a custom container image containing additional dependencies.</p>"
+        },
+        "environmentVariables":{
+          "shape":"EnvironmentVariablesMap",
+          "documentation":"<p>Environment variables to set in the harness runtime environment.</p>"
+        },
+        "authorizerConfiguration":{"shape":"AuthorizerConfiguration"},
+        "model":{
+          "shape":"HarnessModelConfiguration",
+          "documentation":"<p>The model configuration for the harness. Supports Amazon Bedrock, OpenAI, and Google Gemini model providers.</p>"
+        },
+        "systemPrompt":{
+          "shape":"HarnessSystemPrompt",
+          "documentation":"<p>The system prompt that defines the agent's behavior and instructions.</p>"
+        },
+        "tools":{
+          "shape":"HarnessTools",
+          "documentation":"<p>The tools available to the agent, such as remote MCP servers, AgentCore Gateway, AgentCore Browser, Code Interpreter, or inline functions.</p>"
+        },
+        "skills":{
+          "shape":"HarnessSkills",
+          "documentation":"<p>The skills available to the agent. Skills are bundles of files that the agent can pull into its context on demand.</p>"
+        },
+        "allowedTools":{
+          "shape":"HarnessAllowedTools",
+          "documentation":"<p>The tools that the agent is allowed to use. Supports glob patterns such as * for all tools, @builtin for all built-in tools, or @serverName/toolName for specific MCP server tools.</p>"
+        },
+        "memory":{
+          "shape":"HarnessMemoryConfiguration",
+          "documentation":"<p>The AgentCore Memory configuration for persisting conversation context across sessions.</p>"
+        },
+        "truncation":{
+          "shape":"HarnessTruncationConfiguration",
+          "documentation":"<p>The truncation configuration for managing conversation context when it exceeds model limits.</p>"
+        },
+        "maxIterations":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of iterations the agent loop can execute per invocation.</p>"
+        },
+        "maxTokens":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of tokens the agent can generate per iteration.</p>"
+        },
+        "timeoutSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum duration in seconds for the agent loop execution per invocation.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Tags to apply to the harness resource.</p>"
+        }
+      }
+    },
+    "CreateHarnessResponse":{
+      "type":"structure",
+      "required":["harness"],
+      "members":{
+        "harness":{
+          "shape":"Harness",
+          "documentation":"<p>The harness that was created.</p>"
         }
       }
     },
@@ -5135,6 +5325,34 @@
         }
       }
     },
+    "DeleteHarnessRequest":{
+      "type":"structure",
+      "required":["harnessId"],
+      "members":{
+        "harnessId":{
+          "shape":"HarnessId",
+          "documentation":"<p>The ID of the harness to delete.</p>",
+          "location":"uri",
+          "locationName":"harnessId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency of the request.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
+        }
+      }
+    },
+    "DeleteHarnessResponse":{
+      "type":"structure",
+      "members":{
+        "harness":{
+          "shape":"Harness",
+          "documentation":"<p>The harness that was deleted.</p>"
+        }
+      }
+    },
     "DeleteMemoryInput":{
       "type":"structure",
       "required":["memoryId"],
@@ -6050,6 +6268,10 @@
       "type":"list",
       "member":{"shape":"Finding"}
     },
+    "Float":{
+      "type":"float",
+      "box":true
+    },
     "FromUrlSynchronizationConfiguration":{
       "type":"structure",
       "required":["url"],
@@ -6067,7 +6289,7 @@
     },
     "GatewayArn":{
       "type":"string",
-      "pattern":"arn:aws(|-cn|-us-gov):bedrock-agentcore:[a-z0-9-]{1,20}:[0-9]{12}:gateway/[0-9a-zA-Z]{10}"
+      "pattern":"arn:aws(|-cn|-us-gov):bedrock-agentcore:[a-z0-9-]{1,20}:[0-9]{12}:gateway/([0-9a-z][-]?){1,48}-[a-z0-9]{10}"
     },
     "GatewayDescription":{
       "type":"string",
@@ -7029,6 +7251,28 @@
         }
       }
     },
+    "GetHarnessRequest":{
+      "type":"structure",
+      "required":["harnessId"],
+      "members":{
+        "harnessId":{
+          "shape":"HarnessId",
+          "documentation":"<p>The ID of the harness to retrieve.</p>",
+          "location":"uri",
+          "locationName":"harnessId"
+        }
+      }
+    },
+    "GetHarnessResponse":{
+      "type":"structure",
+      "required":["harness"],
+      "members":{
+        "harness":{
+          "shape":"Harness",
+          "documentation":"<p>The harness resource.</p>"
+        }
+      }
+    },
     "GetMemoryInput":{
       "type":"structure",
       "required":["memoryId"],
@@ -7735,16 +7979,713 @@
       },
       "documentation":"<p>Output configuration for a Google OAuth2 provider.</p>"
     },
+    "Harness":{
+      "type":"structure",
+      "required":[
+        "harnessId",
+        "harnessName",
+        "arn",
+        "status",
+        "executionRoleArn",
+        "createdAt",
+        "updatedAt",
+        "model",
+        "systemPrompt",
+        "tools",
+        "skills",
+        "allowedTools",
+        "truncation",
+        "environment"
+      ],
+      "members":{
+        "harnessId":{
+          "shape":"HarnessId",
+          "documentation":"<p>The ID of the Harness.</p>"
+        },
+        "harnessName":{
+          "shape":"HarnessName",
+          "documentation":"<p>The name of the Harness.</p>"
+        },
+        "arn":{
+          "shape":"HarnessArn",
+          "documentation":"<p>The ARN of the Harness.</p>"
+        },
+        "status":{
+          "shape":"HarnessStatus",
+          "documentation":"<p>The status of the Harness.</p>"
+        },
+        "executionRoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>IAM role the Harness assumes when running.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The createdAt time of the Harness.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The updatedAt time of the Harness.</p>"
+        },
+        "model":{
+          "shape":"HarnessModelConfiguration",
+          "documentation":"<p>The configuration of the default model used by the Harness.</p>"
+        },
+        "systemPrompt":{
+          "shape":"HarnessSystemPrompt",
+          "documentation":"<p>The system prompt of the Harness.</p>"
+        },
+        "tools":{
+          "shape":"HarnessTools",
+          "documentation":"<p>The tools of the Harness.</p>"
+        },
+        "skills":{
+          "shape":"HarnessSkills",
+          "documentation":"<p>The skills of the Harness.</p>"
+        },
+        "allowedTools":{
+          "shape":"HarnessAllowedTools",
+          "documentation":"<p>The allowed tools of the Harness. All tools are allowed by default.</p>"
+        },
+        "truncation":{
+          "shape":"HarnessTruncationConfiguration",
+          "documentation":"<p>Configuration for truncating model context.</p>"
+        },
+        "environment":{
+          "shape":"HarnessEnvironmentProvider",
+          "documentation":"<p>The compute environment on which the Harness runs.</p>"
+        },
+        "environmentArtifact":{
+          "shape":"HarnessEnvironmentArtifact",
+          "documentation":"<p>The environment artifact (e.g., container) in which the Harness operates.</p>"
+        },
+        "environmentVariables":{
+          "shape":"EnvironmentVariablesMap",
+          "documentation":"<p>Environment variables exposed in the environment in which the Harness operates.</p>"
+        },
+        "authorizerConfiguration":{"shape":"AuthorizerConfiguration"},
+        "memory":{
+          "shape":"HarnessMemoryConfiguration",
+          "documentation":"<p>AgentCore Memory instance configuration for short and long term memory.</p>"
+        },
+        "maxIterations":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of iterations in the agent loop allowed before exiting per invocation.</p>"
+        },
+        "maxTokens":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of tokens allowed before exiting per invocation.</p>"
+        },
+        "timeoutSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum duration per invocation.</p>"
+        },
+        "failureReason":{
+          "shape":"String",
+          "documentation":"<p>Reason why create or update operations fail.</p>"
+        }
+      },
+      "documentation":"<p>Representation of a Harness.</p>"
+    },
+    "HarnessAgentCoreBrowserConfig":{
+      "type":"structure",
+      "members":{
+        "browserArn":{
+          "shape":"BrowserArn",
+          "documentation":"<p>If not populated, the built-in Browser ARN is used.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for AgentCore Browser.</p>"
+    },
+    "HarnessAgentCoreCodeInterpreterConfig":{
+      "type":"structure",
+      "members":{
+        "codeInterpreterArn":{
+          "shape":"CodeInterpreterArn",
+          "documentation":"<p>If not populated, the built-in Code Interpreter ARN is used.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for AgentCore Code Interpreter.</p>"
+    },
+    "HarnessAgentCoreGatewayConfig":{
+      "type":"structure",
+      "required":["gatewayArn"],
+      "members":{
+        "gatewayArn":{
+          "shape":"GatewayArn",
+          "documentation":"<p>The ARN of the desired AgentCore Gateway.</p>"
+        },
+        "outboundAuth":{
+          "shape":"HarnessGatewayOutboundAuth",
+          "documentation":"<p>How Loopy authenticates to this Gateway. Defaults to AWS_IAM (SigV4) if omitted.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for AgentCore Gateway.</p>"
+    },
+    "HarnessAgentCoreMemoryConfiguration":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"MemoryArn",
+          "documentation":"<p>The ARN of the AgentCore Memory resource.</p>"
+        },
+        "actorId":{
+          "shape":"String",
+          "documentation":"<p>The actor ID for memory operations.</p>"
+        },
+        "messagesCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of messages to retrieve from memory.</p>"
+        },
+        "retrievalConfig":{
+          "shape":"HarnessAgentCoreMemoryRetrievalConfigs",
+          "documentation":"<p>The retrieval configuration for long-term memory, mapping namespace path templates to retrieval settings.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for AgentCore Memory integration.</p>"
+    },
+    "HarnessAgentCoreMemoryRetrievalConfig":{
+      "type":"structure",
+      "members":{
+        "topK":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of memory entries to retrieve.</p>"
+        },
+        "relevanceScore":{
+          "shape":"Float",
+          "documentation":"<p>The minimum relevance score for retrieved memories.</p>"
+        },
+        "strategyId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the retrieval strategy to use.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for memory retrieval within a namespace.</p>"
+    },
+    "HarnessAgentCoreMemoryRetrievalConfigs":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"HarnessAgentCoreMemoryRetrievalConfig"}
+    },
+    "HarnessAgentCoreRuntimeEnvironment":{
+      "type":"structure",
+      "required":[
+        "agentRuntimeArn",
+        "agentRuntimeName",
+        "agentRuntimeId",
+        "lifecycleConfiguration",
+        "networkConfiguration"
+      ],
+      "members":{
+        "agentRuntimeArn":{
+          "shape":"BedrockAgentcoreResourceArn",
+          "documentation":"<p>The ARN of the underlying AgentCore Runtime.</p>"
+        },
+        "agentRuntimeName":{
+          "shape":"String",
+          "documentation":"<p>The name of the underlying AgentCore Runtime.</p>"
+        },
+        "agentRuntimeId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the underlying AgentCore Runtime.</p>"
+        },
+        "lifecycleConfiguration":{"shape":"LifecycleConfiguration"},
+        "networkConfiguration":{"shape":"NetworkConfiguration"},
+        "filesystemConfigurations":{
+          "shape":"FilesystemConfigurations",
+          "documentation":"<p>The filesystem configurations for the runtime environment.</p>"
+        }
+      },
+      "documentation":"<p>The AgentCore Runtime environment for a harness.</p>"
+    },
+    "HarnessAgentCoreRuntimeEnvironmentRequest":{
+      "type":"structure",
+      "members":{
+        "lifecycleConfiguration":{"shape":"LifecycleConfiguration"},
+        "networkConfiguration":{"shape":"NetworkConfiguration"},
+        "filesystemConfigurations":{
+          "shape":"FilesystemConfigurations",
+          "documentation":"<p>The filesystem configurations for the runtime environment.</p>"
+        }
+      },
+      "documentation":"<p>The AgentCore Runtime environment request configuration.</p>"
+    },
+    "HarnessAllowedTool":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"(\\*|@?[^/]+(/[^/]+)?)"
+    },
+    "HarnessAllowedTools":{
+      "type":"list",
+      "member":{"shape":"HarnessAllowedTool"}
+    },
+    "HarnessArn":{
+      "type":"string",
+      "pattern":"arn:([^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:harness/[a-zA-Z][a-zA-Z0-9_]{0,39}-[a-zA-Z0-9]{10}"
+    },
+    "HarnessBedrockModelConfig":{
+      "type":"structure",
+      "required":["modelId"],
+      "members":{
+        "modelId":{
+          "shape":"ModelId",
+          "documentation":"<p>The Bedrock model ID.</p>"
+        },
+        "maxTokens":{
+          "shape":"MaxTokens",
+          "documentation":"<p>The maximum number of tokens to allow in the generated response per iteration.</p>"
+        },
+        "temperature":{
+          "shape":"Temperature",
+          "documentation":"<p>The temperature to set when calling the model.</p>"
+        },
+        "topP":{
+          "shape":"TopP",
+          "documentation":"<p>The topP set when calling the model.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for an Amazon Bedrock model provider.</p>"
+    },
+    "HarnessEnvironmentArtifact":{
+      "type":"structure",
+      "members":{
+        "containerConfiguration":{"shape":"ContainerConfiguration"}
+      },
+      "documentation":"<p>The environment artifact for a harness, such as a container image containing custom dependencies.</p>",
+      "union":true
+    },
+    "HarnessEnvironmentProvider":{
+      "type":"structure",
+      "members":{
+        "agentCoreRuntimeEnvironment":{
+          "shape":"HarnessAgentCoreRuntimeEnvironment",
+          "documentation":"<p>The AgentCore Runtime environment configuration.</p>"
+        }
+      },
+      "documentation":"<p>The environment provider for a harness.</p>",
+      "union":true
+    },
+    "HarnessEnvironmentProviderRequest":{
+      "type":"structure",
+      "members":{
+        "agentCoreRuntimeEnvironment":{
+          "shape":"HarnessAgentCoreRuntimeEnvironmentRequest",
+          "documentation":"<p>The AgentCore Runtime environment configuration.</p>"
+        }
+      },
+      "documentation":"<p>The environment provider request configuration.</p>",
+      "union":true
+    },
+    "HarnessGatewayOutboundAuth":{
+      "type":"structure",
+      "members":{
+        "awsIam":{
+          "shape":"Unit",
+          "documentation":"<p>SigV4-sign requests using the agent's execution role.</p>"
+        },
+        "none":{
+          "shape":"Unit",
+          "documentation":"<p>No authentication.</p>"
+        },
+        "oauth":{"shape":"OAuthCredentialProvider"}
+      },
+      "documentation":"<p>Authentication method for calling a Gateway.</p>",
+      "union":true
+    },
+    "HarnessGeminiModelConfig":{
+      "type":"structure",
+      "required":[
+        "modelId",
+        "apiKeyArn"
+      ],
+      "members":{
+        "modelId":{
+          "shape":"ModelId",
+          "documentation":"<p>The Gemini model ID.</p>"
+        },
+        "apiKeyArn":{
+          "shape":"ApiKeyArn",
+          "documentation":"<p>The ARN of your Gemini API key on AgentCore Identity.</p>"
+        },
+        "maxTokens":{
+          "shape":"MaxTokens",
+          "documentation":"<p>The maximum number of tokens to allow in the generated response per iteration.</p>"
+        },
+        "temperature":{
+          "shape":"Temperature",
+          "documentation":"<p>The temperature to set when calling the model.</p>"
+        },
+        "topP":{
+          "shape":"TopP",
+          "documentation":"<p>The topP set when calling the model.</p>"
+        },
+        "topK":{
+          "shape":"TopK",
+          "documentation":"<p>The topK set when calling the model.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for a Google Gemini model provider. Requires an API key stored in AgentCore Identity.</p>"
+    },
+    "HarnessId":{
+      "type":"string",
+      "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,39}-[a-zA-Z0-9]{10}"
+    },
+    "HarnessInlineFunctionConfig":{
+      "type":"structure",
+      "required":[
+        "description",
+        "inputSchema"
+      ],
+      "members":{
+        "description":{
+          "shape":"HarnessInlineFunctionDescription",
+          "documentation":"<p>Description of what the tool does, provided to the model.</p>"
+        },
+        "inputSchema":{
+          "shape":"SensitiveJson",
+          "documentation":"<p>JSON Schema describing the tool's input parameters.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for an inline function tool. When the agent calls this tool, the tool call is returned to the caller for external execution.</p>"
+    },
+    "HarnessInlineFunctionDescription":{
+      "type":"string",
+      "max":4096,
+      "min":1,
+      "sensitive":true
+    },
+    "HarnessMemoryConfiguration":{
+      "type":"structure",
+      "members":{
+        "agentCoreMemoryConfiguration":{
+          "shape":"HarnessAgentCoreMemoryConfiguration",
+          "documentation":"<p>The AgentCore Memory configuration.</p>"
+        }
+      },
+      "documentation":"<p>The memory configuration for a harness.</p>",
+      "union":true
+    },
+    "HarnessModelConfiguration":{
+      "type":"structure",
+      "members":{
+        "bedrockModelConfig":{
+          "shape":"HarnessBedrockModelConfig",
+          "documentation":"<p>Configuration for an Amazon Bedrock model.</p>"
+        },
+        "openAiModelConfig":{
+          "shape":"HarnessOpenAiModelConfig",
+          "documentation":"<p>Configuration for an OpenAI model.</p>"
+        },
+        "geminiModelConfig":{
+          "shape":"HarnessGeminiModelConfig",
+          "documentation":"<p>Configuration for a Google Gemini model.</p>"
+        }
+      },
+      "documentation":"<p>Specification of which model to use.</p>",
+      "union":true
+    },
+    "HarnessName":{
+      "type":"string",
+      "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,39}"
+    },
+    "HarnessOpenAiModelConfig":{
+      "type":"structure",
+      "required":[
+        "modelId",
+        "apiKeyArn"
+      ],
+      "members":{
+        "modelId":{
+          "shape":"ModelId",
+          "documentation":"<p>The OpenAI model ID.</p>"
+        },
+        "apiKeyArn":{
+          "shape":"ApiKeyArn",
+          "documentation":"<p>The ARN of your OpenAI API key on AgentCore Identity.</p>"
+        },
+        "maxTokens":{
+          "shape":"MaxTokens",
+          "documentation":"<p>The maximum number of tokens to allow in the generated response per iteration.</p>"
+        },
+        "temperature":{
+          "shape":"Temperature",
+          "documentation":"<p>The temperature to set when calling the model.</p>"
+        },
+        "topP":{
+          "shape":"TopP",
+          "documentation":"<p>The topP set when calling the model.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for an OpenAI model provider. Requires an API key stored in AgentCore Identity.</p>"
+    },
+    "HarnessRemoteMcpConfig":{
+      "type":"structure",
+      "required":["url"],
+      "members":{
+        "url":{
+          "shape":"HarnessRemoteMcpUrl",
+          "documentation":"<p>URL of the MCP endpoint.</p>"
+        },
+        "headers":{"shape":"HttpHeadersMap"}
+      },
+      "documentation":"<p>Configuration for connecting to a remote MCP server.</p>"
+    },
+    "HarnessRemoteMcpUrl":{
+      "type":"string",
+      "max":16383,
+      "min":1,
+      "sensitive":true
+    },
+    "HarnessSkill":{
+      "type":"structure",
+      "members":{
+        "path":{
+          "shape":"HarnessSkillPath",
+          "documentation":"<p>The filesystem path to the skill definition.</p>"
+        }
+      },
+      "documentation":"<p>A skill available to the agent.</p>",
+      "union":true
+    },
+    "HarnessSkillPath":{
+      "type":"string",
+      "min":1
+    },
+    "HarnessSkills":{
+      "type":"list",
+      "member":{"shape":"HarnessSkill"}
+    },
+    "HarnessSlidingWindowConfiguration":{
+      "type":"structure",
+      "members":{
+        "messagesCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of recent messages to retain in the context window.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for sliding window truncation strategy.</p>"
+    },
+    "HarnessStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "CREATE_FAILED",
+        "UPDATING",
+        "UPDATE_FAILED",
+        "READY",
+        "DELETING",
+        "DELETE_FAILED"
+      ]
+    },
+    "HarnessSummaries":{
+      "type":"list",
+      "member":{"shape":"HarnessSummary"}
+    },
+    "HarnessSummarizationConfiguration":{
+      "type":"structure",
+      "members":{
+        "summaryRatio":{
+          "shape":"Float",
+          "documentation":"<p>The ratio of content to summarize.</p>"
+        },
+        "preserveRecentMessages":{
+          "shape":"Integer",
+          "documentation":"<p>The number of recent messages to preserve without summarization.</p>"
+        },
+        "summarizationSystemPrompt":{
+          "shape":"String",
+          "documentation":"<p>The system prompt used for generating summaries.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for summarization-based truncation strategy.</p>"
+    },
+    "HarnessSummary":{
+      "type":"structure",
+      "required":[
+        "harnessId",
+        "harnessName",
+        "arn",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "harnessId":{
+          "shape":"HarnessId",
+          "documentation":"<p>The ID of the harness.</p>"
+        },
+        "harnessName":{
+          "shape":"HarnessName",
+          "documentation":"<p>The name of the harness.</p>"
+        },
+        "arn":{
+          "shape":"HarnessArn",
+          "documentation":"<p>The ARN of the harness.</p>"
+        },
+        "status":{
+          "shape":"HarnessStatus",
+          "documentation":"<p>The current status of the harness.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the harness was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the harness was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a harness.</p>"
+    },
+    "HarnessSystemContentBlock":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"SensitiveText",
+          "documentation":"<p>The text content of the system prompt block.</p>"
+        }
+      },
+      "documentation":"<p>A content block in the system prompt.</p>",
+      "union":true
+    },
+    "HarnessSystemPrompt":{
+      "type":"list",
+      "member":{"shape":"HarnessSystemContentBlock"}
+    },
+    "HarnessTool":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "type":{
+          "shape":"HarnessToolType",
+          "documentation":"<p>The type of tool.</p>"
+        },
+        "name":{
+          "shape":"HarnessToolName",
+          "documentation":"<p>Unique name for the tool. If not provided, a name will be inferred or generated.</p>"
+        },
+        "config":{
+          "shape":"HarnessToolConfiguration",
+          "documentation":"<p>Tool-specific configuration.</p>"
+        }
+      },
+      "documentation":"<p>A tool available to the agent loop.</p>"
+    },
+    "HarnessToolConfiguration":{
+      "type":"structure",
+      "members":{
+        "remoteMcp":{
+          "shape":"HarnessRemoteMcpConfig",
+          "documentation":"<p>Configuration for remote MCP server.</p>"
+        },
+        "agentCoreBrowser":{
+          "shape":"HarnessAgentCoreBrowserConfig",
+          "documentation":"<p>Configuration for AgentCore Browser.</p>"
+        },
+        "agentCoreGateway":{
+          "shape":"HarnessAgentCoreGatewayConfig",
+          "documentation":"<p>Configuration for AgentCore Gateway.</p>"
+        },
+        "inlineFunction":{
+          "shape":"HarnessInlineFunctionConfig",
+          "documentation":"<p>Configuration for an inline function tool.</p>"
+        },
+        "agentCoreCodeInterpreter":{
+          "shape":"HarnessAgentCoreCodeInterpreterConfig",
+          "documentation":"<p>Configuration for AgentCore Code Interpreter.</p>"
+        }
+      },
+      "documentation":"<p>Configuration union for different tool types.</p>",
+      "union":true
+    },
+    "HarnessToolName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "HarnessToolType":{
+      "type":"string",
+      "enum":[
+        "remote_mcp",
+        "agentcore_browser",
+        "agentcore_gateway",
+        "inline_function",
+        "agentcore_code_interpreter"
+      ]
+    },
+    "HarnessTools":{
+      "type":"list",
+      "member":{"shape":"HarnessTool"}
+    },
+    "HarnessTruncationConfiguration":{
+      "type":"structure",
+      "required":["strategy"],
+      "members":{
+        "strategy":{
+          "shape":"HarnessTruncationStrategy",
+          "documentation":"<p>The truncation strategy to use.</p>"
+        },
+        "config":{
+          "shape":"HarnessTruncationStrategyConfiguration",
+          "documentation":"<p>The strategy-specific configuration.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for truncating conversation context when it exceeds model limits.</p>"
+    },
+    "HarnessTruncationStrategy":{
+      "type":"string",
+      "enum":[
+        "sliding_window",
+        "summarization",
+        "none"
+      ]
+    },
+    "HarnessTruncationStrategyConfiguration":{
+      "type":"structure",
+      "members":{
+        "slidingWindow":{
+          "shape":"HarnessSlidingWindowConfiguration",
+          "documentation":"<p>Configuration for sliding window truncation.</p>"
+        },
+        "summarization":{
+          "shape":"HarnessSummarizationConfiguration",
+          "documentation":"<p>Configuration for summarization-based truncation.</p>"
+        }
+      },
+      "documentation":"<p>Strategy-specific truncation configuration.</p>",
+      "union":true
+    },
     "HeaderName":{
       "type":"string",
       "max":256,
       "min":1,
       "pattern":"(Authorization|X-Amzn-Bedrock-AgentCore-Runtime-Custom-[a-zA-Z0-9-]+)"
     },
+    "HttpHeaderKey":{
+      "type":"string",
+      "documentation":"<p>The key of an HTTP header.</p>",
+      "max":16383,
+      "min":1
+    },
     "HttpHeaderName":{
       "type":"string",
       "max":100,
       "min":1
+    },
+    "HttpHeaderValue":{
+      "type":"string",
+      "documentation":"<p>The value of an HTTP header.</p>",
+      "max":16383,
+      "min":1
+    },
+    "HttpHeadersMap":{
+      "type":"map",
+      "key":{"shape":"HttpHeaderKey"},
+      "value":{"shape":"HttpHeaderValue"},
+      "documentation":"<p>Map of key/value pairs for HTTP headers.</p>",
+      "sensitive":true
     },
     "HttpQueryParameterName":{
       "type":"string",
@@ -8481,6 +9422,37 @@
         }
       }
     },
+    "ListHarnessesRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListHarnessesResponse":{
+      "type":"structure",
+      "required":["harnesses"],
+      "members":{
+        "harnesses":{
+          "shape":"HarnessSummaries",
+          "documentation":"<p>The list of harness summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results.</p>"
+        }
+      }
+    },
     "ListMemoriesInput":{
       "type":"structure",
       "members":{
@@ -9014,6 +9986,11 @@
       "max":100,
       "min":1
     },
+    "MaxTokens":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
     "McpDescriptor":{
       "type":"structure",
       "members":{
@@ -9062,6 +10039,10 @@
         "mcpToolSchema":{
           "shape":"McpToolSchemaConfiguration",
           "documentation":"<p>The tool schema configuration for the MCP server target. Supported only when the credential provider is configured with an authorization code grant type. Dynamic tool discovery/synchronization will be disabled when target is configured with mcpToolSchema.</p>"
+        },
+        "resourcePriority":{
+          "shape":"TargetResourcePriority",
+          "documentation":"<p>Priority for resolving MCP server targets with shared resource URIs. Lower values take precedence. Defaults to 1000 when not set.</p>"
         },
         "listingMode":{
           "shape":"ListingMode",
@@ -9994,7 +10975,8 @@
         "CREATE_FAILED",
         "UPDATING",
         "UPDATE_FAILED",
-        "DELETING"
+        "DELETING",
+        "ERROR"
       ]
     },
     "OnlineEvaluationConfigSummary":{
@@ -11361,6 +12343,17 @@
       },
       "documentation":"<p>Input for semantic override extraction configuration in a memory strategy.</p>"
     },
+    "SensitiveJson":{
+      "type":"structure",
+      "members":{},
+      "document":true,
+      "sensitive":true
+    },
+    "SensitiveText":{
+      "type":"string",
+      "min":1,
+      "sensitive":true
+    },
     "ServerDefinition":{
       "type":"structure",
       "members":{
@@ -11974,6 +12967,12 @@
       "min":1,
       "pattern":"\\S*"
     },
+    "TargetResourcePriority":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":0
+    },
     "TargetStatus":{
       "type":"string",
       "enum":[
@@ -12027,9 +13026,19 @@
         "updatedAt":{
           "shape":"DateTimestamp",
           "documentation":"<p>The timestamp when the target was last updated.</p>"
+        },
+        "resourcePriority":{
+          "shape":"TargetResourcePriority",
+          "documentation":"<p>Priority for resolving resource URI conflicts across targets. Lower values take precedence. Defaults to 1000 when not set.</p>"
         }
       },
       "documentation":"<p>Contains summary information about a gateway target. A target represents an endpoint that the gateway can connect to.</p>"
+    },
+    "Temperature":{
+      "type":"float",
+      "box":true,
+      "max":2.0,
+      "min":0.0
     },
     "TenantIdType":{
       "type":"string",
@@ -12195,6 +13204,18 @@
       },
       "documentation":"<p>The tools definition for an MCP descriptor. Contains the protocol version and inline content describing the available tools.</p>"
     },
+    "TopK":{
+      "type":"integer",
+      "box":true,
+      "max":500,
+      "min":0
+    },
+    "TopP":{
+      "type":"float",
+      "box":true,
+      "max":1.0,
+      "min":0.0
+    },
     "TriggerCondition":{
       "type":"structure",
       "members":{
@@ -12254,6 +13275,10 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "Unit":{
+      "type":"structure",
+      "members":{}
     },
     "UntagResourceRequest":{
       "type":"structure",
@@ -12823,6 +13848,90 @@
         "authorizationData":{
           "shape":"AuthorizationData",
           "documentation":"<p>OAuth2 authorization data for the updated gateway target. This data is returned when a target is configured with a credential provider with authorization code grant type and requires user federation.</p>"
+        }
+      }
+    },
+    "UpdateHarnessRequest":{
+      "type":"structure",
+      "required":["harnessId"],
+      "members":{
+        "harnessId":{
+          "shape":"HarnessId",
+          "documentation":"<p>The ID of the harness to update.</p>",
+          "location":"uri",
+          "locationName":"harnessId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "executionRoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the IAM role that the harness assumes when running. If not specified, the existing value is retained.</p>"
+        },
+        "environment":{
+          "shape":"HarnessEnvironmentProviderRequest",
+          "documentation":"<p>The compute environment configuration for the harness. If not specified, the existing value is retained.</p>"
+        },
+        "environmentArtifact":{
+          "shape":"UpdatedHarnessEnvironmentArtifact",
+          "documentation":"<p>The environment artifact for the harness. Use the optionalValue wrapper to set a new value, or set it to null to clear the existing configuration.</p>"
+        },
+        "environmentVariables":{
+          "shape":"EnvironmentVariablesMap",
+          "documentation":"<p>Environment variables to set in the harness runtime environment. If specified, this replaces all existing environment variables. If not specified, the existing value is retained.</p>"
+        },
+        "authorizerConfiguration":{"shape":"UpdatedAuthorizerConfiguration"},
+        "model":{
+          "shape":"HarnessModelConfiguration",
+          "documentation":"<p>The model configuration for the harness. If not specified, the existing value is retained.</p>"
+        },
+        "systemPrompt":{
+          "shape":"HarnessSystemPrompt",
+          "documentation":"<p>The system prompt that defines the agent's behavior. If not specified, the existing value is retained.</p>"
+        },
+        "tools":{
+          "shape":"HarnessTools",
+          "documentation":"<p>The tools available to the agent. If specified, this replaces all existing tools. If not specified, the existing value is retained.</p>"
+        },
+        "skills":{
+          "shape":"HarnessSkills",
+          "documentation":"<p>The skills available to the agent. If specified, this replaces all existing skills. If not specified, the existing value is retained.</p>"
+        },
+        "allowedTools":{
+          "shape":"HarnessAllowedTools",
+          "documentation":"<p>The tools that the agent is allowed to use. If specified, this replaces all existing allowed tools. If not specified, the existing value is retained.</p>"
+        },
+        "memory":{
+          "shape":"UpdatedHarnessMemoryConfiguration",
+          "documentation":"<p>The AgentCore Memory configuration. Use the optionalValue wrapper to set a new value, or set it to null to clear the existing configuration.</p>"
+        },
+        "truncation":{
+          "shape":"HarnessTruncationConfiguration",
+          "documentation":"<p>The truncation configuration for managing conversation context. If not specified, the existing value is retained.</p>"
+        },
+        "maxIterations":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of iterations the agent loop can execute per invocation. If not specified, the existing value is retained.</p>"
+        },
+        "maxTokens":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of tokens the agent can generate per iteration. If not specified, the existing value is retained.</p>"
+        },
+        "timeoutSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum duration in seconds for the agent loop execution per invocation. If not specified, the existing value is retained.</p>"
+        }
+      }
+    },
+    "UpdateHarnessResponse":{
+      "type":"structure",
+      "required":["harness"],
+      "members":{
+        "harness":{
+          "shape":"Harness",
+          "documentation":"<p>The updated harness.</p>"
         }
       }
     },
@@ -13616,6 +14725,26 @@
         }
       },
       "documentation":"<p>Contains per-descriptor-type wrappers for updating descriptors. Each descriptor type can be updated independently.</p>"
+    },
+    "UpdatedHarnessEnvironmentArtifact":{
+      "type":"structure",
+      "members":{
+        "optionalValue":{
+          "shape":"HarnessEnvironmentArtifact",
+          "documentation":"<p>The updated environment artifact value, or null to clear the existing configuration.</p>"
+        }
+      },
+      "documentation":"<p>Wrapper for updating the environment artifact configuration.</p>"
+    },
+    "UpdatedHarnessMemoryConfiguration":{
+      "type":"structure",
+      "members":{
+        "optionalValue":{
+          "shape":"HarnessMemoryConfiguration",
+          "documentation":"<p>The updated memory configuration value, or null to clear the existing configuration.</p>"
+        }
+      },
+      "documentation":"<p>Wrapper for updating the memory configuration.</p>"
     },
     "UpdatedMcpDescriptor":{
       "type":"structure",

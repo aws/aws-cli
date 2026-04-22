@@ -10221,6 +10221,73 @@
             }
         },
         {
+            "documentation": "Data Plane with bucket containing delimiters",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4-s3express",
+                                "signingName": "s3express",
+                                "signingRegion": "us-east-1",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://my--s3--bucket--abcd-ab1--x-s3.s3express-abcd-ab1.us-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1"
+                    },
+                    "operationName": "GetObject",
+                    "operationParams": {
+                        "Bucket": "my--s3--bucket--abcd-ab1--x-s3",
+                        "Key": "key"
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "Bucket": "my--s3--bucket--abcd-ab1--x-s3",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": false
+            }
+        },
+        {
+            "documentation": "Control plane with with bucket containing delimiters",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-east-1",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://s3express-control.us-east-1.amazonaws.com/my--s3--bucket--abcd-ab1--x-s3"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "Bucket": "my--s3--bucket--abcd-ab1--x-s3",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": true,
+                "DisableS3ExpressSessionAuth": false
+            }
+        },
+        {
             "documentation": "Data Plane with short AZ and dualstack",
             "expect": {
                 "endpoint": {

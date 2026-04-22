@@ -450,6 +450,24 @@
       ],
       "documentation":"<p>Executes code within an active code interpreter session in Amazon Bedrock AgentCore. This operation processes the provided code, runs it in a secure environment, and returns the execution results including output, errors, and generated visualizations.</p> <p>To execute code, you must specify the code interpreter identifier, session ID, and the code to run in the arguments parameter. The operation returns a stream containing the execution results, which can include text output, error messages, and data visualizations.</p> <p>This operation is subject to request rate limiting based on your account's service quotas.</p> <p>The following operations are related to <code>InvokeCodeInterpreter</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StartCodeInterpreterSession.html\">StartCodeInterpreterSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetCodeInterpreterSession.html\">GetCodeInterpreterSession</a> </p> </li> </ul>"
     },
+    "InvokeHarness":{
+      "name":"InvokeHarness",
+      "http":{
+        "method":"POST",
+        "requestUri":"/harnesses/invoke",
+        "responseCode":200
+      },
+      "input":{"shape":"InvokeHarnessRequest"},
+      "output":{"shape":"InvokeHarnessResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Operation to invoke a Harness.</p>"
+    },
     "ListActors":{
       "name":"ListActors",
       "http":{
@@ -884,6 +902,10 @@
       },
       "documentation":"<p> The agent skills descriptor configuration for a registry record.</p>"
     },
+    "ApiKeyArn":{
+      "type":"string",
+      "pattern":"arn:aws:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:token-vault/[a-zA-Z0-9-.]+/apikeycredentialprovider/[a-zA-Z0-9-.]+"
+    },
     "ApiKeyType":{
       "type":"string",
       "max":65536,
@@ -1187,6 +1209,10 @@
         "FAILED"
       ]
     },
+    "BrowserArn":{
+      "type":"string",
+      "pattern":"arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:(aws|[0-9]{12}):browser(-custom)?/(aws\\.browser\\.v1|[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10})"
+    },
     "BrowserEnterprisePolicies":{
       "type":"list",
       "member":{"shape":"BrowserEnterprisePolicy"},
@@ -1358,6 +1384,10 @@
       "max":256,
       "min":33,
       "pattern":"[a-zA-Z0-9](-*[a-zA-Z0-9]){0,256}"
+    },
+    "CodeInterpreterArn":{
+      "type":"string",
+      "pattern":"arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:(aws|[0-9]{12}):code-interpreter(-custom)?/(aws\\.codeinterpreter\\.v1|[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10})"
     },
     "CodeInterpreterResult":{
       "type":"structure",
@@ -2315,6 +2345,10 @@
       },
       "documentation":"<p>Contains filter criteria for listing events.</p>"
     },
+    "GatewayArn":{
+      "type":"string",
+      "pattern":"arn:aws(|-cn|-us-gov):bedrock-agentcore:[a-z0-9-]{1,20}:[0-9]{12}:gateway/([0-9a-z][-]?){1,48}-[a-z0-9]{10}"
+    },
     "GetAgentCardRequest":{
       "type":"structure",
       "required":["agentRuntimeArn"],
@@ -2754,11 +2788,839 @@
         }
       }
     },
+    "HarnessAgentCoreBrowserConfig":{
+      "type":"structure",
+      "members":{
+        "browserArn":{
+          "shape":"BrowserArn",
+          "documentation":"<p>If not populated, the built-in Browser ARN is used.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for AgentCore Browser.</p>"
+    },
+    "HarnessAgentCoreCodeInterpreterConfig":{
+      "type":"structure",
+      "members":{
+        "codeInterpreterArn":{
+          "shape":"CodeInterpreterArn",
+          "documentation":"<p>If not populated, the built-in Code Interpreter ARN is used.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for AgentCore Code Interpreter.</p>"
+    },
+    "HarnessAgentCoreGatewayConfig":{
+      "type":"structure",
+      "required":["gatewayArn"],
+      "members":{
+        "gatewayArn":{
+          "shape":"GatewayArn",
+          "documentation":"<p>The ARN of the desired AgentCore Gateway.</p>"
+        },
+        "outboundAuth":{
+          "shape":"HarnessGatewayOutboundAuth",
+          "documentation":"<p>How Loopy authenticates to this Gateway. Defaults to AWS_IAM (SigV4) if omitted.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for AgentCore Gateway.</p>"
+    },
+    "HarnessAllowedTool":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"(\\*|@?[^/]+(/[^/]+)?)"
+    },
+    "HarnessAllowedTools":{
+      "type":"list",
+      "member":{"shape":"HarnessAllowedTool"}
+    },
+    "HarnessArn":{
+      "type":"string",
+      "pattern":"arn:([^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:harness/[a-zA-Z][a-zA-Z0-9_]{0,39}-[a-zA-Z0-9]{10}"
+    },
+    "HarnessBedrockModelConfig":{
+      "type":"structure",
+      "required":["modelId"],
+      "members":{
+        "modelId":{
+          "shape":"ModelId",
+          "documentation":"<p>The Bedrock model ID.</p>"
+        },
+        "maxTokens":{
+          "shape":"MaxTokens",
+          "documentation":"<p>The maximum number of tokens to allow in the generated response per iteration.</p>"
+        },
+        "temperature":{
+          "shape":"Temperature",
+          "documentation":"<p>The temperature to set when calling the model.</p>"
+        },
+        "topP":{
+          "shape":"TopP",
+          "documentation":"<p>The topP set when calling the model.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for an Amazon Bedrock model provider.</p>"
+    },
+    "HarnessContentBlock":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"SensitiveText",
+          "documentation":"<p>Text content.</p>"
+        },
+        "toolUse":{
+          "shape":"HarnessToolUseBlock",
+          "documentation":"<p>A tool use request from the model.</p>"
+        },
+        "toolResult":{
+          "shape":"HarnessToolResultBlock",
+          "documentation":"<p>A tool execution result.</p>"
+        },
+        "reasoningContent":{
+          "shape":"HarnessReasoningContentBlock",
+          "documentation":"<p>Model reasoning content.</p>"
+        }
+      },
+      "documentation":"<p>A content block within a message.</p>",
+      "union":true
+    },
+    "HarnessContentBlockDelta":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"SensitiveText",
+          "documentation":"<p>A text delta.</p>"
+        },
+        "toolUse":{
+          "shape":"HarnessToolUseBlockDelta",
+          "documentation":"<p>A tool use input delta.</p>"
+        },
+        "toolResult":{
+          "shape":"HarnessToolResultBlocksDelta",
+          "documentation":"<p>A tool result delta.</p>"
+        },
+        "reasoningContent":{
+          "shape":"HarnessReasoningContentBlockDelta",
+          "documentation":"<p>A reasoning content delta.</p>"
+        }
+      },
+      "documentation":"<p>A delta update to a content block.</p>",
+      "union":true
+    },
+    "HarnessContentBlockDeltaEvent":{
+      "type":"structure",
+      "required":[
+        "contentBlockIndex",
+        "delta"
+      ],
+      "members":{
+        "contentBlockIndex":{
+          "shape":"Integer",
+          "documentation":"<p>The index of the content block being updated.</p>"
+        },
+        "delta":{
+          "shape":"HarnessContentBlockDelta",
+          "documentation":"<p>The delta payload.</p>"
+        }
+      },
+      "documentation":"<p>Event containing a delta update to a content block.</p>",
+      "event":true
+    },
+    "HarnessContentBlockStart":{
+      "type":"structure",
+      "members":{
+        "toolUse":{
+          "shape":"HarnessToolUseBlockStart",
+          "documentation":"<p>Start of a tool use content block.</p>"
+        },
+        "toolResult":{
+          "shape":"HarnessToolResultBlockStart",
+          "documentation":"<p>Start of a tool result content block.</p>"
+        }
+      },
+      "documentation":"<p>The start payload for a content block.</p>",
+      "union":true
+    },
+    "HarnessContentBlockStartEvent":{
+      "type":"structure",
+      "required":[
+        "contentBlockIndex",
+        "start"
+      ],
+      "members":{
+        "contentBlockIndex":{
+          "shape":"Integer",
+          "documentation":"<p>The index of the content block within the message.</p>"
+        },
+        "start":{
+          "shape":"HarnessContentBlockStart",
+          "documentation":"<p>The content block start payload.</p>"
+        }
+      },
+      "documentation":"<p>Event indicating the start of a content block.</p>",
+      "event":true
+    },
+    "HarnessContentBlockStopEvent":{
+      "type":"structure",
+      "required":["contentBlockIndex"],
+      "members":{
+        "contentBlockIndex":{
+          "shape":"Integer",
+          "documentation":"<p>The index of the content block that ended.</p>"
+        }
+      },
+      "documentation":"<p>Event indicating the end of a content block.</p>",
+      "event":true
+    },
+    "HarnessContentBlocks":{
+      "type":"list",
+      "member":{"shape":"HarnessContentBlock"}
+    },
+    "HarnessConversationRole":{
+      "type":"string",
+      "enum":[
+        "user",
+        "assistant"
+      ]
+    },
+    "HarnessGatewayOutboundAuth":{
+      "type":"structure",
+      "members":{
+        "awsIam":{
+          "shape":"Unit",
+          "documentation":"<p>SigV4-sign requests using the agent's execution role.</p>"
+        },
+        "none":{
+          "shape":"Unit",
+          "documentation":"<p>No authentication.</p>"
+        },
+        "oauth":{
+          "shape":"OAuthCredentialProvider",
+          "documentation":"<p>OAuth 2.0 authentication via AgentCore Identity.</p>"
+        }
+      },
+      "documentation":"<p>Authentication method for calling a Gateway.</p>",
+      "union":true
+    },
+    "HarnessGeminiModelConfig":{
+      "type":"structure",
+      "required":[
+        "modelId",
+        "apiKeyArn"
+      ],
+      "members":{
+        "modelId":{
+          "shape":"ModelId",
+          "documentation":"<p>The Gemini model ID.</p>"
+        },
+        "apiKeyArn":{
+          "shape":"ApiKeyArn",
+          "documentation":"<p>The ARN of your Gemini API key on AgentCore Identity.</p>"
+        },
+        "maxTokens":{
+          "shape":"MaxTokens",
+          "documentation":"<p>The maximum number of tokens to allow in the generated response per iteration.</p>"
+        },
+        "temperature":{
+          "shape":"Temperature",
+          "documentation":"<p>The temperature to set when calling the model.</p>"
+        },
+        "topP":{
+          "shape":"TopP",
+          "documentation":"<p>The topP set when calling the model.</p>"
+        },
+        "topK":{
+          "shape":"TopK",
+          "documentation":"<p>The topK set when calling the model.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for a Google Gemini model provider. Requires an API key stored in AgentCore Identity.</p>"
+    },
+    "HarnessInlineFunctionConfig":{
+      "type":"structure",
+      "required":[
+        "description",
+        "inputSchema"
+      ],
+      "members":{
+        "description":{
+          "shape":"HarnessInlineFunctionDescription",
+          "documentation":"<p>Description of what the tool does, provided to the model.</p>"
+        },
+        "inputSchema":{
+          "shape":"SensitiveJson",
+          "documentation":"<p>JSON Schema describing the tool's input parameters.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for an inline function tool. When the agent calls this tool, the tool call is returned to the caller for external execution.</p>"
+    },
+    "HarnessInlineFunctionDescription":{
+      "type":"string",
+      "max":4096,
+      "min":1,
+      "sensitive":true
+    },
+    "HarnessMessage":{
+      "type":"structure",
+      "required":[
+        "role",
+        "content"
+      ],
+      "members":{
+        "role":{
+          "shape":"HarnessConversationRole",
+          "documentation":"<p>The role of the message sender.</p>"
+        },
+        "content":{
+          "shape":"HarnessContentBlocks",
+          "documentation":"<p>The content blocks of the message.</p>"
+        }
+      },
+      "documentation":"<p>A message in the conversation.</p>"
+    },
+    "HarnessMessageStartEvent":{
+      "type":"structure",
+      "required":["role"],
+      "members":{
+        "role":{
+          "shape":"HarnessConversationRole",
+          "documentation":"<p>The role of the message sender.</p>"
+        }
+      },
+      "documentation":"<p>Event indicating the start of a message.</p>",
+      "event":true
+    },
+    "HarnessMessageStopEvent":{
+      "type":"structure",
+      "required":["stopReason"],
+      "members":{
+        "stopReason":{
+          "shape":"HarnessStopReason",
+          "documentation":"<p>The reason the agent stopped generating.</p>"
+        }
+      },
+      "documentation":"<p>Event indicating the end of a message.</p>",
+      "event":true
+    },
+    "HarnessMessages":{
+      "type":"list",
+      "member":{"shape":"HarnessMessage"}
+    },
+    "HarnessMetadataEvent":{
+      "type":"structure",
+      "required":[
+        "usage",
+        "metrics"
+      ],
+      "members":{
+        "usage":{
+          "shape":"HarnessTokenUsage",
+          "documentation":"<p>Token usage counts.</p>"
+        },
+        "metrics":{
+          "shape":"HarnessStreamMetrics",
+          "documentation":"<p>Latency metrics.</p>"
+        }
+      },
+      "documentation":"<p>Token usage and latency metrics for the invocation.</p>",
+      "event":true
+    },
+    "HarnessModelConfiguration":{
+      "type":"structure",
+      "members":{
+        "bedrockModelConfig":{
+          "shape":"HarnessBedrockModelConfig",
+          "documentation":"<p>Configuration for an Amazon Bedrock model.</p>"
+        },
+        "openAiModelConfig":{
+          "shape":"HarnessOpenAiModelConfig",
+          "documentation":"<p>Configuration for an OpenAI model.</p>"
+        },
+        "geminiModelConfig":{
+          "shape":"HarnessGeminiModelConfig",
+          "documentation":"<p>Configuration for a Google Gemini model.</p>"
+        }
+      },
+      "documentation":"<p>Specification of which model to use.</p>",
+      "union":true
+    },
+    "HarnessOpenAiModelConfig":{
+      "type":"structure",
+      "required":[
+        "modelId",
+        "apiKeyArn"
+      ],
+      "members":{
+        "modelId":{
+          "shape":"ModelId",
+          "documentation":"<p>The OpenAI model ID.</p>"
+        },
+        "apiKeyArn":{
+          "shape":"ApiKeyArn",
+          "documentation":"<p>The ARN of your OpenAI API key on AgentCore Identity.</p>"
+        },
+        "maxTokens":{
+          "shape":"MaxTokens",
+          "documentation":"<p>The maximum number of tokens to allow in the generated response per iteration.</p>"
+        },
+        "temperature":{
+          "shape":"Temperature",
+          "documentation":"<p>The temperature to set when calling the model.</p>"
+        },
+        "topP":{
+          "shape":"TopP",
+          "documentation":"<p>The topP set when calling the model.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for an OpenAI model provider. Requires an API key stored in AgentCore Identity.</p>"
+    },
+    "HarnessReasoningContentBlock":{
+      "type":"structure",
+      "members":{
+        "reasoningText":{
+          "shape":"HarnessReasoningTextBlock",
+          "documentation":"<p>The reasoning text.</p>"
+        },
+        "redactedContent":{
+          "shape":"Blob",
+          "documentation":"<p>Redacted reasoning content.</p>"
+        }
+      },
+      "documentation":"<p>Reasoning content from the model.</p>",
+      "sensitive":true,
+      "union":true
+    },
+    "HarnessReasoningContentBlockDelta":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"String",
+          "documentation":"<p>Reasoning text delta.</p>"
+        },
+        "redactedContent":{
+          "shape":"Body",
+          "documentation":"<p>Redacted reasoning content.</p>"
+        },
+        "signature":{
+          "shape":"String",
+          "documentation":"<p>Signature for the reasoning content.</p>"
+        }
+      },
+      "documentation":"<p>A delta update to a reasoning content block.</p>",
+      "sensitive":true,
+      "union":true
+    },
+    "HarnessReasoningTextBlock":{
+      "type":"structure",
+      "required":["text"],
+      "members":{
+        "text":{
+          "shape":"String",
+          "documentation":"<p>The reasoning text.</p>"
+        },
+        "signature":{
+          "shape":"String",
+          "documentation":"<p>Signature for verifying the reasoning content.</p>"
+        }
+      },
+      "documentation":"<p>A block of reasoning text from the model.</p>",
+      "sensitive":true
+    },
+    "HarnessRemoteMcpConfig":{
+      "type":"structure",
+      "required":["url"],
+      "members":{
+        "url":{
+          "shape":"HarnessRemoteMcpUrl",
+          "documentation":"<p>URL of the MCP endpoint.</p>"
+        },
+        "headers":{"shape":"HttpHeadersMap"}
+      },
+      "documentation":"<p>Configuration for connecting to a remote MCP server.</p>"
+    },
+    "HarnessRemoteMcpUrl":{
+      "type":"string",
+      "max":16383,
+      "min":1,
+      "sensitive":true
+    },
+    "HarnessSkill":{
+      "type":"structure",
+      "members":{
+        "path":{
+          "shape":"HarnessSkillPath",
+          "documentation":"<p>The filesystem path to the skill definition.</p>"
+        }
+      },
+      "documentation":"<p>A skill available to the agent.</p>",
+      "union":true
+    },
+    "HarnessSkillPath":{
+      "type":"string",
+      "min":1
+    },
+    "HarnessSkills":{
+      "type":"list",
+      "member":{"shape":"HarnessSkill"}
+    },
+    "HarnessStopReason":{
+      "type":"string",
+      "enum":[
+        "end_turn",
+        "tool_use",
+        "tool_result",
+        "max_tokens",
+        "stop_sequence",
+        "content_filtered",
+        "malformed_model_output",
+        "malformed_tool_use",
+        "interrupted",
+        "partial_turn",
+        "model_context_window_exceeded",
+        "max_iterations_exceeded",
+        "max_output_tokens_exceeded",
+        "timeout_exceeded"
+      ]
+    },
+    "HarnessStreamMetrics":{
+      "type":"structure",
+      "required":["latencyMs"],
+      "members":{
+        "latencyMs":{
+          "shape":"Long",
+          "documentation":"<p>The end-to-end latency of the invocation in milliseconds.</p>"
+        }
+      },
+      "documentation":"<p>Latency metrics for the invocation.</p>"
+    },
+    "HarnessSystemContentBlock":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"SensitiveText",
+          "documentation":"<p>The text content of the system prompt block.</p>"
+        }
+      },
+      "documentation":"<p>A content block in the system prompt.</p>",
+      "union":true
+    },
+    "HarnessSystemPrompt":{
+      "type":"list",
+      "member":{"shape":"HarnessSystemContentBlock"}
+    },
+    "HarnessTokenUsage":{
+      "type":"structure",
+      "required":[
+        "inputTokens",
+        "outputTokens",
+        "totalTokens"
+      ],
+      "members":{
+        "inputTokens":{
+          "shape":"HarnessTokenUsageInputTokensInteger",
+          "documentation":"<p>The number of input tokens consumed.</p>"
+        },
+        "outputTokens":{
+          "shape":"HarnessTokenUsageOutputTokensInteger",
+          "documentation":"<p>The number of output tokens generated.</p>"
+        },
+        "totalTokens":{
+          "shape":"HarnessTokenUsageTotalTokensInteger",
+          "documentation":"<p>The total number of tokens consumed.</p>"
+        },
+        "cacheReadInputTokens":{
+          "shape":"HarnessTokenUsageCacheReadInputTokensInteger",
+          "documentation":"<p>The number of input tokens read from cache.</p>"
+        },
+        "cacheWriteInputTokens":{
+          "shape":"HarnessTokenUsageCacheWriteInputTokensInteger",
+          "documentation":"<p>The number of input tokens written to cache.</p>"
+        }
+      },
+      "documentation":"<p>Token usage counts for the invocation.</p>"
+    },
+    "HarnessTokenUsageCacheReadInputTokensInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "HarnessTokenUsageCacheWriteInputTokensInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "HarnessTokenUsageInputTokensInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "HarnessTokenUsageOutputTokensInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "HarnessTokenUsageTotalTokensInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "HarnessTool":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "type":{
+          "shape":"HarnessToolType",
+          "documentation":"<p>The type of tool.</p>"
+        },
+        "name":{
+          "shape":"HarnessToolName",
+          "documentation":"<p>Unique name for the tool. If not provided, a name will be inferred or generated.</p>"
+        },
+        "config":{
+          "shape":"HarnessToolConfiguration",
+          "documentation":"<p>Tool-specific configuration.</p>"
+        }
+      },
+      "documentation":"<p>A tool available to the agent loop.</p>"
+    },
+    "HarnessToolConfiguration":{
+      "type":"structure",
+      "members":{
+        "remoteMcp":{
+          "shape":"HarnessRemoteMcpConfig",
+          "documentation":"<p>Configuration for remote MCP server.</p>"
+        },
+        "agentCoreBrowser":{
+          "shape":"HarnessAgentCoreBrowserConfig",
+          "documentation":"<p>Configuration for AgentCore Browser.</p>"
+        },
+        "agentCoreGateway":{
+          "shape":"HarnessAgentCoreGatewayConfig",
+          "documentation":"<p>Configuration for AgentCore Gateway.</p>"
+        },
+        "inlineFunction":{
+          "shape":"HarnessInlineFunctionConfig",
+          "documentation":"<p>Configuration for an inline function tool.</p>"
+        },
+        "agentCoreCodeInterpreter":{
+          "shape":"HarnessAgentCoreCodeInterpreterConfig",
+          "documentation":"<p>Configuration for AgentCore Code Interpreter.</p>"
+        }
+      },
+      "documentation":"<p>Configuration union for different tool types.</p>",
+      "union":true
+    },
+    "HarnessToolName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "HarnessToolResultBlock":{
+      "type":"structure",
+      "required":[
+        "toolUseId",
+        "content"
+      ],
+      "members":{
+        "toolUseId":{
+          "shape":"HarnessToolUseId",
+          "documentation":"<p>The tool use ID that this result corresponds to.</p>"
+        },
+        "content":{
+          "shape":"HarnessToolResultContentBlocks",
+          "documentation":"<p>The content of the tool result.</p>"
+        },
+        "status":{
+          "shape":"HarnessToolUseStatus",
+          "documentation":"<p>The status of the tool execution.</p>"
+        },
+        "type":{
+          "shape":"HarnessToolUseType",
+          "documentation":"<p>The type of tool use that produced this result.</p>"
+        }
+      },
+      "documentation":"<p>The result of a tool execution.</p>"
+    },
+    "HarnessToolResultBlockDelta":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"SensitiveText",
+          "documentation":"<p>A text tool result delta.</p>"
+        },
+        "json":{
+          "shape":"SensitiveJson",
+          "documentation":"<p>A JSON tool result delta.</p>"
+        }
+      },
+      "documentation":"<p>A delta update to a tool result content block.</p>",
+      "union":true
+    },
+    "HarnessToolResultBlockStart":{
+      "type":"structure",
+      "required":["toolUseId"],
+      "members":{
+        "toolUseId":{
+          "shape":"HarnessToolUseId",
+          "documentation":"<p>The tool use ID that this result corresponds to.</p>"
+        },
+        "status":{
+          "shape":"HarnessToolUseStatus",
+          "documentation":"<p>The status of the tool execution.</p>"
+        }
+      },
+      "documentation":"<p>Start payload for a tool result content block.</p>"
+    },
+    "HarnessToolResultBlocksDelta":{
+      "type":"list",
+      "member":{"shape":"HarnessToolResultBlockDelta"}
+    },
+    "HarnessToolResultContentBlock":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"SensitiveText",
+          "documentation":"<p>Text content.</p>"
+        },
+        "json":{
+          "shape":"SensitiveJson",
+          "documentation":"<p>JSON content.</p>"
+        }
+      },
+      "documentation":"<p>A content block within a tool result.</p>",
+      "union":true
+    },
+    "HarnessToolResultContentBlocks":{
+      "type":"list",
+      "member":{"shape":"HarnessToolResultContentBlock"}
+    },
+    "HarnessToolType":{
+      "type":"string",
+      "enum":[
+        "remote_mcp",
+        "agentcore_browser",
+        "agentcore_gateway",
+        "inline_function",
+        "agentcore_code_interpreter"
+      ]
+    },
+    "HarnessToolUseBlock":{
+      "type":"structure",
+      "required":[
+        "name",
+        "toolUseId",
+        "input"
+      ],
+      "members":{
+        "name":{
+          "shape":"HarnessToolName",
+          "documentation":"<p>The name of the tool to call.</p>"
+        },
+        "toolUseId":{
+          "shape":"HarnessToolUseId",
+          "documentation":"<p>The unique ID of this tool use.</p>"
+        },
+        "input":{
+          "shape":"SensitiveJson",
+          "documentation":"<p>The JSON input to pass to the tool.</p>"
+        },
+        "type":{
+          "shape":"HarnessToolUseType",
+          "documentation":"<p>The type of tool use.</p>"
+        },
+        "serverName":{
+          "shape":"String",
+          "documentation":"<p>The name of the MCP server providing this tool.</p>"
+        }
+      },
+      "documentation":"<p>A tool use request from the model.</p>"
+    },
+    "HarnessToolUseBlockDelta":{
+      "type":"structure",
+      "required":["input"],
+      "members":{
+        "input":{
+          "shape":"SensitiveText",
+          "documentation":"<p>The partial JSON input for the tool call.</p>"
+        }
+      },
+      "documentation":"<p>Delta payload for tool use input.</p>"
+    },
+    "HarnessToolUseBlockStart":{
+      "type":"structure",
+      "required":[
+        "toolUseId",
+        "name"
+      ],
+      "members":{
+        "toolUseId":{
+          "shape":"HarnessToolUseId",
+          "documentation":"<p>The unique ID of this tool use.</p>"
+        },
+        "name":{
+          "shape":"HarnessToolName",
+          "documentation":"<p>The name of the tool being called.</p>"
+        },
+        "type":{
+          "shape":"HarnessToolUseType",
+          "documentation":"<p>The type of tool use.</p>"
+        },
+        "serverName":{
+          "shape":"String",
+          "documentation":"<p>The name of the MCP server providing this tool.</p>"
+        }
+      },
+      "documentation":"<p>Start payload for a tool use content block.</p>"
+    },
+    "HarnessToolUseId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "HarnessToolUseStatus":{
+      "type":"string",
+      "enum":[
+        "success",
+        "error"
+      ]
+    },
+    "HarnessToolUseType":{
+      "type":"string",
+      "enum":[
+        "tool_use",
+        "server_tool_use",
+        "mcp_tool_use"
+      ]
+    },
+    "HarnessTools":{
+      "type":"list",
+      "member":{"shape":"HarnessTool"}
+    },
     "HostName":{
       "type":"string",
       "max":253,
       "min":1,
       "pattern":"[a-zA-Z0-9]([a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9])?)*"
+    },
+    "HttpHeaderKey":{
+      "type":"string",
+      "documentation":"<p>The key of an HTTP header.</p>",
+      "max":16383,
+      "min":1
+    },
+    "HttpHeaderValue":{
+      "type":"string",
+      "documentation":"<p>The value of an HTTP header.</p>",
+      "max":16383,
+      "min":1
+    },
+    "HttpHeadersMap":{
+      "type":"map",
+      "key":{"shape":"HttpHeaderKey"},
+      "value":{"shape":"HttpHeaderValue"},
+      "documentation":"<p>Map of key/value pairs for HTTP headers.</p>",
+      "sensitive":true
     },
     "HttpResponseCode":{
       "type":"integer",
@@ -3323,6 +4185,113 @@
       },
       "payload":"stream"
     },
+    "InvokeHarnessRequest":{
+      "type":"structure",
+      "required":[
+        "harnessArn",
+        "runtimeSessionId",
+        "messages"
+      ],
+      "members":{
+        "harnessArn":{
+          "shape":"HarnessArn",
+          "documentation":"<p>The ARN of the harness to invoke.</p>",
+          "location":"querystring",
+          "locationName":"harnessArn"
+        },
+        "runtimeSessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The session ID for the invocation. Use the same session ID across requests to continue a conversation.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-Bedrock-AgentCore-Runtime-Session-Id"
+        },
+        "messages":{
+          "shape":"HarnessMessages",
+          "documentation":"<p>The messages to send to the agent.</p>"
+        },
+        "model":{
+          "shape":"HarnessModelConfiguration",
+          "documentation":"<p>The model configuration to use for this invocation. If specified, overrides the harness default.</p>"
+        },
+        "systemPrompt":{
+          "shape":"HarnessSystemPrompt",
+          "documentation":"<p>The system prompt to use for this invocation. If specified, overrides the harness default.</p>"
+        },
+        "tools":{
+          "shape":"HarnessTools",
+          "documentation":"<p>The tools available to the agent for this invocation. If specified, overrides the harness default.</p>"
+        },
+        "skills":{
+          "shape":"HarnessSkills",
+          "documentation":"<p>The skills available to the agent for this invocation. If specified, overrides the harness default.</p>"
+        },
+        "allowedTools":{
+          "shape":"HarnessAllowedTools",
+          "documentation":"<p>The tools that the agent is allowed to use for this invocation. If specified, overrides the harness default.</p>"
+        },
+        "maxIterations":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of iterations the agent loop can execute. If specified, overrides the harness default.</p>"
+        },
+        "maxTokens":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of tokens the agent can generate per iteration. If specified, overrides the harness default.</p>"
+        },
+        "timeoutSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum duration in seconds for the agent loop execution. If specified, overrides the harness default.</p>"
+        },
+        "actorId":{
+          "shape":"String",
+          "documentation":"<p>The actor ID for memory operations. Overrides the actor ID configured on the harness.</p>"
+        }
+      }
+    },
+    "InvokeHarnessResponse":{
+      "type":"structure",
+      "required":["stream"],
+      "members":{
+        "stream":{
+          "shape":"InvokeHarnessStreamOutput",
+          "documentation":"<p>The streaming output from the harness invocation.</p>"
+        }
+      },
+      "payload":"stream"
+    },
+    "InvokeHarnessStreamOutput":{
+      "type":"structure",
+      "members":{
+        "messageStart":{
+          "shape":"HarnessMessageStartEvent",
+          "documentation":"<p>Indicates the start of a new message from the agent.</p>"
+        },
+        "contentBlockStart":{
+          "shape":"HarnessContentBlockStartEvent",
+          "documentation":"<p>Indicates the start of a new content block.</p>"
+        },
+        "contentBlockDelta":{
+          "shape":"HarnessContentBlockDeltaEvent",
+          "documentation":"<p>A delta update to the current content block.</p>"
+        },
+        "contentBlockStop":{
+          "shape":"HarnessContentBlockStopEvent",
+          "documentation":"<p>Indicates the end of the current content block.</p>"
+        },
+        "messageStop":{
+          "shape":"HarnessMessageStopEvent",
+          "documentation":"<p>Indicates the end of the current message.</p>"
+        },
+        "metadata":{
+          "shape":"HarnessMetadataEvent",
+          "documentation":"<p>Token usage and latency metrics for the invocation.</p>"
+        },
+        "internalServerException":{"shape":"InternalServerException"},
+        "validationException":{"shape":"ValidationException"},
+        "runtimeClientError":{"shape":"RuntimeClientError"}
+      },
+      "documentation":"<p>The streaming events returned by a harness invocation.</p>",
+      "eventstream":true
+    },
     "KeyList":{
       "type":"list",
       "member":{"shape":"String"},
@@ -3772,6 +4741,11 @@
       "max":100,
       "min":1
     },
+    "MaxTokens":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
     "McpDescriptor":{
       "type":"structure",
       "required":[
@@ -4123,6 +5097,7 @@
       "max":256,
       "min":1
     },
+    "ModelId":{"type":"string"},
     "MouseButton":{
       "type":"string",
       "documentation":"<p>The mouse button to use for a browser mouse action.</p>",
@@ -4338,6 +5313,82 @@
     "NonBlankString":{
       "type":"string",
       "pattern":"[\\s\\S]+"
+    },
+    "OAuthCredentialProvider":{
+      "type":"structure",
+      "required":[
+        "providerArn",
+        "scopes"
+      ],
+      "members":{
+        "providerArn":{
+          "shape":"OAuthCredentialProviderArn",
+          "documentation":"<p>The ARN of the OAuth 2.0 credential provider in AgentCore Identity.</p>"
+        },
+        "scopes":{
+          "shape":"OAuthScopes",
+          "documentation":"<p>The OAuth 2.0 scopes to request when obtaining an access token.</p>"
+        },
+        "customParameters":{
+          "shape":"OAuthCustomParameters",
+          "documentation":"<p>Additional custom parameters to include in the OAuth 2.0 token request.</p>"
+        },
+        "grantType":{
+          "shape":"OAuthGrantType",
+          "documentation":"<p>The OAuth 2.0 grant type to use for authentication.</p>"
+        },
+        "defaultReturnUrl":{
+          "shape":"OAuthDefaultReturnUrl",
+          "documentation":"<p>The default return URL for the OAuth 2.0 authorization flow.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for an OAuth 2.0 credential provider used to authenticate tool calls.</p>"
+    },
+    "OAuthCredentialProviderArn":{
+      "type":"string",
+      "pattern":"arn:([^:]*):([^:]*):([^:]*):([0-9]{12})?:(.+)"
+    },
+    "OAuthCustomParameters":{
+      "type":"map",
+      "key":{"shape":"OAuthCustomParametersKey"},
+      "value":{"shape":"OAuthCustomParametersValue"},
+      "max":10,
+      "min":1
+    },
+    "OAuthCustomParametersKey":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "OAuthCustomParametersValue":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "sensitive":true
+    },
+    "OAuthDefaultReturnUrl":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"\\w+:(\\/?\\/?)[^\\s]+"
+    },
+    "OAuthGrantType":{
+      "type":"string",
+      "enum":[
+        "CLIENT_CREDENTIALS",
+        "AUTHORIZATION_CODE"
+      ]
+    },
+    "OAuthScope":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "OAuthScopes":{
+      "type":"list",
+      "member":{"shape":"OAuthScope"},
+      "max":100,
+      "min":0
     },
     "Oauth2FlowType":{
       "type":"string",
@@ -5010,6 +6061,17 @@
       },
       "documentation":"<p>The Amazon Web Services Secrets Manager location configuration.</p>"
     },
+    "SensitiveJson":{
+      "type":"structure",
+      "members":{},
+      "document":true,
+      "sensitive":true
+    },
+    "SensitiveText":{
+      "type":"string",
+      "min":1,
+      "sensitive":true
+    },
     "ServerDefinition":{
       "type":"structure",
       "members":{
@@ -5597,6 +6659,12 @@
         "failed"
       ]
     },
+    "Temperature":{
+      "type":"float",
+      "box":true,
+      "max":2.0,
+      "min":0.0
+    },
     "ThrottledException":{
       "type":"structure",
       "required":["message"],
@@ -5745,6 +6813,18 @@
       },
       "documentation":"<p> The MCP tools definition with a protocol version and inline content. The <code>protocolVersion</code> identifies the MCP protocol version that the tools conform to. This differs from <code>schemaVersion</code> in the server definition, which identifies the server configuration schema format.</p>"
     },
+    "TopK":{
+      "type":"integer",
+      "box":true,
+      "max":500,
+      "min":0
+    },
+    "TopP":{
+      "type":"float",
+      "box":true,
+      "max":1.0,
+      "min":0.0
+    },
     "TraceId":{
       "type":"string",
       "max":32,
@@ -5767,6 +6847,10 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "Unit":{
+      "type":"structure",
+      "members":{}
     },
     "UpdateBrowserStreamRequest":{
       "type":"structure",

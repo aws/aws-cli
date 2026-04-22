@@ -204,7 +204,7 @@
         "responseCode":204
       },
       "input":{"shape":"DeleteBucketInventoryConfigurationRequest"},
-      "documentation":"<note> <p>This operation is not supported for directory buckets.</p> </note> <p>Deletes an S3 Inventory configuration (identified by the inventory ID) from the bucket.</p> <p>To use this operation, you must have permissions to perform the <code>s3:PutInventoryConfiguration</code> action. The bucket owner has this permission by default. The bucket owner can grant this permission to others. For more information about permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-with-s3-actions.html#using-with-s3-actions-related-to-bucket-subresources\">Permissions Related to Bucket Subresource Operations</a> and <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-access-control.html\">Managing Access Permissions to Your Amazon S3 Resources</a>.</p> <p>For information about the Amazon S3 inventory feature, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/storage-inventory.html\">Amazon S3 Inventory</a>.</p> <note> <p>After deleting a configuration, Amazon S3 might still deliver one additional inventory report during a brief transition period while the system processes the deletion.</p> </note> <p>Operations related to <code>DeleteBucketInventoryConfiguration</code> include: </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketInventoryConfiguration.html\">GetBucketInventoryConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketInventoryConfiguration.html\">PutBucketInventoryConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBucketInventoryConfigurations.html\">ListBucketInventoryConfigurations</a> </p> </li> </ul> <important> <p>You must URL encode any signed header values that contain spaces. For example, if your header value is <code>my file.txt</code>, containing two spaces after <code>my</code>, you must URL encode this value to <code>my%20%20file.txt</code>.</p> </important>",
+      "documentation":"<p>Deletes an S3 Inventory configuration (identified by the inventory ID) from the bucket.</p> <note> <p> <b>Directory buckets </b> - For directory buckets, you must make requests for this API operation to the Regional endpoint. These endpoints support path-style requests in the format <code>https://s3express-control.<i>region-code</i>.amazonaws.com/<i>bucket-name</i> </code>. Virtual-hosted-style requests aren't supported. For more information about endpoints in Availability Zones, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/endpoint-directory-buckets-AZ.html\">Regional and Zonal endpoints for directory buckets in Availability Zones</a> in the <i>Amazon S3 User Guide</i>. For more information about endpoints in Local Zones, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-lzs-for-directory-buckets.html\">Concepts for directory buckets in Local Zones</a> in the <i>Amazon S3 User Guide</i>.</p> </note> <dl> <dt>Permissions</dt> <dd> <p>To use this operation, you must have permissions to perform the <code>s3:PutInventoryConfiguration</code> action. The bucket owner has this permission by default. The bucket owner can grant this permission to others. For more information about permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-with-s3-actions.html#using-with-s3-actions-related-to-bucket-subresources\">Permissions Related to Bucket Subresource Operations</a> and <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-access-control.html\">Managing Access Permissions to Your Amazon S3 Resources</a>.</p> <ul> <li> <p> <b>General purpose bucket permissions</b> - The <code>s3:PutInventoryConfiguration</code> permission is required in a policy. For more information about general purpose buckets permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/using-iam-policies.html\">Using Bucket Policies and User Policies</a> in the <i>Amazon S3 User Guide</i>.</p> </li> <li> <p> <b>Directory bucket permissions</b> - To grant access to this API operation, you must have the <code>s3express:PutInventoryConfiguration</code> permission in an IAM identity-based policy instead of a bucket policy. For more information about directory bucket policies and permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-express-security-iam.html\">Amazon Web Services Identity and Access Management (IAM) for S3 Express One Zone</a> in the <i>Amazon S3 User Guide</i>.</p> </li> </ul> </dd> <dt>HTTP Host header syntax</dt> <dd> <p> <b>Directory buckets </b> - The HTTP Host header syntax is <code>s3express-control.<i>region-code</i>.amazonaws.com</code>.</p> </dd> </dl> <p>For information about the Amazon S3 inventory feature, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/storage-inventory.html\">Amazon S3 Inventory</a>.</p> <note> <p>After deleting a configuration, Amazon S3 might still deliver one additional inventory report during a brief transition period while the system processes the deletion.</p> </note> <p>Operations related to <code>DeleteBucketInventoryConfiguration</code> include: </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketInventoryConfiguration.html\">GetBucketInventoryConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketInventoryConfiguration.html\">PutBucketInventoryConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBucketInventoryConfigurations.html\">ListBucketInventoryConfigurations</a> </p> </li> </ul> <important> <p>You must URL encode any signed header values that contain spaces. For example, if your header value is <code>my file.txt</code>, containing two spaces after <code>my</code>, you must URL encode this value to <code>my%20%20file.txt</code>.</p> </important>",
       "staticContextParams":{
         "UseS3ExpressControlEndpoint":{"value":true}
       }
@@ -471,7 +471,7 @@
       },
       "input":{"shape":"GetBucketInventoryConfigurationRequest"},
       "output":{"shape":"GetBucketInventoryConfigurationOutput"},
-      "documentation":"<note> <p>This operation is not supported for directory buckets.</p> </note> <p>Returns an S3 Inventory configuration (identified by the inventory configuration ID) from the bucket.</p> <p>To use this operation, you must have permissions to perform the <code>s3:GetInventoryConfiguration</code> action. The bucket owner has this permission by default and can grant this permission to others. For more information about permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-with-s3-actions.html#using-with-s3-actions-related-to-bucket-subresources\">Permissions Related to Bucket Subresource Operations</a> and <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-access-control.html\">Managing Access Permissions to Your Amazon S3 Resources</a>.</p> <p>For information about the Amazon S3 inventory feature, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/storage-inventory.html\">Amazon S3 Inventory</a>.</p> <p>The following operations are related to <code>GetBucketInventoryConfiguration</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketInventoryConfiguration.html\">DeleteBucketInventoryConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBucketInventoryConfigurations.html\">ListBucketInventoryConfigurations</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketInventoryConfiguration.html\">PutBucketInventoryConfiguration</a> </p> </li> </ul> <important> <p>You must URL encode any signed header values that contain spaces. For example, if your header value is <code>my file.txt</code>, containing two spaces after <code>my</code>, you must URL encode this value to <code>my%20%20file.txt</code>.</p> </important>",
+      "documentation":"<p>Returns an S3 Inventory configuration (identified by the inventory configuration ID) from the bucket.</p> <note> <p> <b>Directory buckets </b> - For directory buckets, you must make requests for this API operation to the Regional endpoint. These endpoints support path-style requests in the format <code>https://s3express-control.<i>region-code</i>.amazonaws.com/<i>bucket-name</i> </code>. Virtual-hosted-style requests aren't supported. For more information about endpoints in Availability Zones, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/endpoint-directory-buckets-AZ.html\">Regional and Zonal endpoints for directory buckets in Availability Zones</a> in the <i>Amazon S3 User Guide</i>. For more information about endpoints in Local Zones, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-lzs-for-directory-buckets.html\">Concepts for directory buckets in Local Zones</a> in the <i>Amazon S3 User Guide</i>.</p> </note> <dl> <dt>Permissions</dt> <dd> <p>To use this operation, you must have permissions to perform the <code>s3:GetInventoryConfiguration</code> action. The bucket owner has this permission by default. The bucket owner can grant this permission to others. For more information about permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-with-s3-actions.html#using-with-s3-actions-related-to-bucket-subresources\">Permissions Related to Bucket Subresource Operations</a> and <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-access-control.html\">Managing Access Permissions to Your Amazon S3 Resources</a>.</p> <ul> <li> <p> <b>General purpose bucket permissions</b> - The <code>s3:GetInventoryConfiguration</code> permission is required in a policy. For more information about general purpose buckets permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/using-iam-policies.html\">Using Bucket Policies and User Policies</a> in the <i>Amazon S3 User Guide</i>.</p> </li> <li> <p> <b>Directory bucket permissions</b> - To grant access to this API operation, you must have the <code>s3express:GetInventoryConfiguration</code> permission in an IAM identity-based policy instead of a bucket policy. For more information about directory bucket policies and permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-express-security-iam.html\">Amazon Web Services Identity and Access Management (IAM) for S3 Express One Zone</a> in the <i>Amazon S3 User Guide</i>.</p> </li> </ul> </dd> <dt>HTTP Host header syntax</dt> <dd> <p> <b>Directory buckets </b> - The HTTP Host header syntax is <code>s3express-control.<i>region-code</i>.amazonaws.com</code>.</p> </dd> </dl> <p>For information about the Amazon S3 inventory feature, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/storage-inventory.html\">Amazon S3 Inventory</a>.</p> <p>The following operations are related to <code>GetBucketInventoryConfiguration</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketInventoryConfiguration.html\">DeleteBucketInventoryConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBucketInventoryConfigurations.html\">ListBucketInventoryConfigurations</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketInventoryConfiguration.html\">PutBucketInventoryConfiguration</a> </p> </li> </ul> <important> <p>You must URL encode any signed header values that contain spaces. For example, if your header value is <code>my file.txt</code>, containing two spaces after <code>my</code>, you must URL encode this value to <code>my%20%20file.txt</code>.</p> </important>",
       "staticContextParams":{
         "UseS3ExpressControlEndpoint":{"value":true}
       }
@@ -719,7 +719,12 @@
           "CRC32",
           "CRC32C",
           "SHA256",
-          "SHA1"
+          "SHA1",
+          "SHA512",
+          "MD5",
+          "XXHASH64",
+          "XXHASH3",
+          "XXHASH128"
         ]
       }
     },
@@ -872,7 +877,7 @@
       },
       "input":{"shape":"ListBucketInventoryConfigurationsRequest"},
       "output":{"shape":"ListBucketInventoryConfigurationsOutput"},
-      "documentation":"<note> <p>This operation is not supported for directory buckets.</p> </note> <p>Returns a list of S3 Inventory configurations for the bucket. You can have up to 1,000 inventory configurations per bucket.</p> <p>This action supports list pagination and does not return more than 100 configurations at a time. Always check the <code>IsTruncated</code> element in the response. If there are no more configurations to list, <code>IsTruncated</code> is set to false. If there are more configurations to list, <code>IsTruncated</code> is set to true, and there is a value in <code>NextContinuationToken</code>. You use the <code>NextContinuationToken</code> value to continue the pagination of the list by passing the value in continuation-token in the request to <code>GET</code> the next page.</p> <p> To use this operation, you must have permissions to perform the <code>s3:GetInventoryConfiguration</code> action. The bucket owner has this permission by default. The bucket owner can grant this permission to others. For more information about permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-with-s3-actions.html#using-with-s3-actions-related-to-bucket-subresources\">Permissions Related to Bucket Subresource Operations</a> and <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-access-control.html\">Managing Access Permissions to Your Amazon S3 Resources</a>.</p> <p>For information about the Amazon S3 inventory feature, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/storage-inventory.html\">Amazon S3 Inventory</a> </p> <p>The following operations are related to <code>ListBucketInventoryConfigurations</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketInventoryConfiguration.html\">GetBucketInventoryConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketInventoryConfiguration.html\">DeleteBucketInventoryConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketInventoryConfiguration.html\">PutBucketInventoryConfiguration</a> </p> </li> </ul> <important> <p>You must URL encode any signed header values that contain spaces. For example, if your header value is <code>my file.txt</code>, containing two spaces after <code>my</code>, you must URL encode this value to <code>my%20%20file.txt</code>.</p> </important>",
+      "documentation":"<p>Returns a list of S3 Inventory configurations for the bucket. You can have up to 1,000 inventory configurations per bucket.</p> <p>This action supports list pagination and does not return more than 100 configurations at a time. Always check the <code>IsTruncated</code> element in the response. If there are no more configurations to list, <code>IsTruncated</code> is set to false. If there are more configurations to list, <code>IsTruncated</code> is set to true, and there is a value in <code>NextContinuationToken</code>. You use the <code>NextContinuationToken</code> value to continue the pagination of the list by passing the value in continuation-token in the request to <code>GET</code> the next page.</p> <note> <p> <b>Directory buckets </b> - For directory buckets, you must make requests for this API operation to the Regional endpoint. These endpoints support path-style requests in the format <code>https://s3express-control.<i>region-code</i>.amazonaws.com/<i>bucket-name</i> </code>. Virtual-hosted-style requests aren't supported. For more information about endpoints in Availability Zones, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/endpoint-directory-buckets-AZ.html\">Regional and Zonal endpoints for directory buckets in Availability Zones</a> in the <i>Amazon S3 User Guide</i>. For more information about endpoints in Local Zones, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-lzs-for-directory-buckets.html\">Concepts for directory buckets in Local Zones</a> in the <i>Amazon S3 User Guide</i>.</p> </note> <dl> <dt>Permissions</dt> <dd> <p>To use this operation, you must have permissions to perform the <code>s3:GetInventoryConfiguration</code> action. The bucket owner has this permission by default. The bucket owner can grant this permission to others. For more information about permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-with-s3-actions.html#using-with-s3-actions-related-to-bucket-subresources\">Permissions Related to Bucket Subresource Operations</a> and <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-access-control.html\">Managing Access Permissions to Your Amazon S3 Resources</a>.</p> <ul> <li> <p> <b>General purpose bucket permissions</b> - The <code>s3:GetInventoryConfiguration</code> permission is required in a policy. For more information about general purpose buckets permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/using-iam-policies.html\">Using Bucket Policies and User Policies</a> in the <i>Amazon S3 User Guide</i>.</p> </li> <li> <p> <b>Directory bucket permissions</b> - To grant access to this API operation, you must have the <code>s3express:GetInventoryConfiguration</code> permission in an IAM identity-based policy instead of a bucket policy. For more information about directory bucket policies and permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-express-security-iam.html\">Amazon Web Services Identity and Access Management (IAM) for S3 Express One Zone</a> in the <i>Amazon S3 User Guide</i>.</p> </li> </ul> </dd> <dt>HTTP Host header syntax</dt> <dd> <p> <b>Directory buckets </b> - The HTTP Host header syntax is <code>s3express-control.<i>region-code</i>.amazonaws.com</code>.</p> </dd> </dl> <p>For information about the Amazon S3 inventory feature, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/storage-inventory.html\">Amazon S3 Inventory</a> </p> <p>The following operations are related to <code>ListBucketInventoryConfigurations</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketInventoryConfiguration.html\">GetBucketInventoryConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketInventoryConfiguration.html\">DeleteBucketInventoryConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketInventoryConfiguration.html\">PutBucketInventoryConfiguration</a> </p> </li> </ul> <important> <p>You must URL encode any signed header values that contain spaces. For example, if your header value is <code>my file.txt</code>, containing two spaces after <code>my</code>, you must URL encode this value to <code>my%20%20file.txt</code>.</p> </important>",
       "staticContextParams":{
         "UseS3ExpressControlEndpoint":{"value":true}
       }
@@ -1077,7 +1082,7 @@
         "requestUri":"/{Bucket}?inventory"
       },
       "input":{"shape":"PutBucketInventoryConfigurationRequest"},
-      "documentation":"<note> <p>This operation is not supported for directory buckets.</p> </note> <p>This implementation of the <code>PUT</code> action adds an S3 Inventory configuration (identified by the inventory ID) to the bucket. You can have up to 1,000 inventory configurations per bucket. </p> <p>Amazon S3 inventory generates inventories of the objects in the bucket on a daily or weekly basis, and the results are published to a flat file. The bucket that is inventoried is called the <i>source</i> bucket, and the bucket where the inventory flat file is stored is called the <i>destination</i> bucket. The <i>destination</i> bucket must be in the same Amazon Web Services Region as the <i>source</i> bucket. </p> <p>When you configure an inventory for a <i>source</i> bucket, you specify the <i>destination</i> bucket where you want the inventory to be stored, and whether to generate the inventory daily or weekly. You can also configure what object metadata to include and whether to inventory all object versions or only current versions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/storage-inventory.html\">Amazon S3 Inventory</a> in the Amazon S3 User Guide.</p> <important> <p>You must create a bucket policy on the <i>destination</i> bucket to grant permissions to Amazon S3 to write objects to the bucket in the defined location. For an example policy, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/example-bucket-policies.html#example-bucket-policies-use-case-9\"> Granting Permissions for Amazon S3 Inventory and Storage Class Analysis</a>.</p> </important> <dl> <dt>Permissions</dt> <dd> <p>To use this operation, you must have permission to perform the <code>s3:PutInventoryConfiguration</code> action. The bucket owner has this permission by default and can grant this permission to others. </p> <p>The <code>s3:PutInventoryConfiguration</code> permission allows a user to create an <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-inventory.html\">S3 Inventory</a> report that includes all object metadata fields available and to specify the destination bucket to store the inventory. A user with read access to objects in the destination bucket can also access all object metadata fields that are available in the inventory report. </p> <p>To restrict access to an inventory report, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/example-bucket-policies.html#example-bucket-policies-use-case-10\">Restricting access to an Amazon S3 Inventory report</a> in the <i>Amazon S3 User Guide</i>. For more information about the metadata fields available in S3 Inventory, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-inventory.html#storage-inventory-contents\">Amazon S3 Inventory lists</a> in the <i>Amazon S3 User Guide</i>. For more information about permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-with-s3-actions.html#using-with-s3-actions-related-to-bucket-subresources\">Permissions related to bucket subresource operations</a> and <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-access-control.html\">Identity and access management in Amazon S3</a> in the <i>Amazon S3 User Guide</i>.</p> </dd> </dl> <p> <code>PutBucketInventoryConfiguration</code> has the following special errors:</p> <dl> <dt>HTTP 400 Bad Request Error</dt> <dd> <p> <i>Code:</i> InvalidArgument</p> <p> <i>Cause:</i> Invalid Argument</p> </dd> <dt>HTTP 400 Bad Request Error</dt> <dd> <p> <i>Code:</i> TooManyConfigurations</p> <p> <i>Cause:</i> You are attempting to create a new configuration but have already reached the 1,000-configuration limit. </p> </dd> <dt>HTTP 403 Forbidden Error</dt> <dd> <p> <i>Cause:</i> You are not the owner of the specified bucket, or you do not have the <code>s3:PutInventoryConfiguration</code> bucket permission to set the configuration on the bucket. </p> </dd> </dl> <p>The following operations are related to <code>PutBucketInventoryConfiguration</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketInventoryConfiguration.html\">GetBucketInventoryConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketInventoryConfiguration.html\">DeleteBucketInventoryConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBucketInventoryConfigurations.html\">ListBucketInventoryConfigurations</a> </p> </li> </ul> <important> <p>You must URL encode any signed header values that contain spaces. For example, if your header value is <code>my file.txt</code>, containing two spaces after <code>my</code>, you must URL encode this value to <code>my%20%20file.txt</code>.</p> </important>",
+      "documentation":"<p>This implementation of the <code>PUT</code> action adds an S3 Inventory configuration (identified by the inventory ID) to the bucket. You can have up to 1,000 inventory configurations per bucket. </p> <p>Amazon S3 inventory generates inventories of the objects in the bucket on a daily or weekly basis, and the results are published to a flat file. The bucket that is inventoried is called the <i>source</i> bucket, and the bucket where the inventory flat file is stored is called the <i>destination</i> bucket. The <i>destination</i> bucket must be in the same Amazon Web Services Region as the <i>source</i> bucket. </p> <p>When you configure an inventory for a <i>source</i> bucket, you specify the <i>destination</i> bucket where you want the inventory to be stored, and whether to generate the inventory daily or weekly. You can also configure what object metadata to include and whether to inventory all object versions or only current versions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/storage-inventory.html\">Amazon S3 Inventory</a> in the Amazon S3 User Guide.</p> <important> <p>You must create a bucket policy on the <i>destination</i> bucket to grant permissions to Amazon S3 to write objects to the bucket in the defined location. For an example policy, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/example-bucket-policies.html#example-bucket-policies-use-case-9\"> Granting Permissions for Amazon S3 Inventory and Storage Class Analysis</a>.</p> </important> <note> <p> <b>Directory buckets </b> - For directory buckets, you must make requests for this API operation to the Regional endpoint. These endpoints support path-style requests in the format <code>https://s3express-control.<i>region-code</i>.amazonaws.com/<i>bucket-name</i> </code>. Virtual-hosted-style requests aren't supported. For more information about endpoints in Availability Zones, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/endpoint-directory-buckets-AZ.html\">Regional and Zonal endpoints for directory buckets in Availability Zones</a> in the <i>Amazon S3 User Guide</i>. For more information about endpoints in Local Zones, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-lzs-for-directory-buckets.html\">Concepts for directory buckets in Local Zones</a> in the <i>Amazon S3 User Guide</i>.</p> </note> <dl> <dt>Permissions</dt> <dd> <p>To use this operation, you must have permission to perform the <code>s3:PutInventoryConfiguration</code> action. The bucket owner has this permission by default and can grant this permission to others. </p> <p>The <code>s3:PutInventoryConfiguration</code> permission allows a user to create an <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-inventory.html\">S3 Inventory</a> report that includes all object metadata fields available and to specify the destination bucket to store the inventory. A user with read access to objects in the destination bucket can also access all object metadata fields that are available in the inventory report. </p> <ul> <li> <p> <b>General purpose bucket permissions</b> - The <code>s3:PutInventoryConfiguration</code> permission is required in a policy. For more information about general purpose buckets permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/using-iam-policies.html\">Using Bucket Policies and User Policies</a> in the <i>Amazon S3 User Guide</i>.</p> </li> <li> <p> <b>Directory bucket permissions</b> - To grant access to this API operation, you must have the <code>s3express:PutInventoryConfiguration</code> permission in an IAM identity-based policy instead of a bucket policy. For more information about directory bucket policies and permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-express-security-iam.html\">Amazon Web Services Identity and Access Management (IAM) for S3 Express One Zone</a> in the <i>Amazon S3 User Guide</i>.</p> </li> </ul> <p>To restrict access to an inventory report, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/example-bucket-policies.html#example-bucket-policies-s3-inventory\">Restricting access to an Amazon S3 Inventory report</a> in the <i>Amazon S3 User Guide</i>. For more information about the metadata fields available in S3 Inventory, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-inventory.html#storage-inventory-contents\">Amazon S3 Inventory lists</a> in the <i>Amazon S3 User Guide</i>. For more information about permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-with-s3-actions.html#using-with-s3-actions-related-to-bucket-subresources\">Permissions related to bucket subresource operations</a> and <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-access-control.html\">Identity and access management in Amazon S3</a> in the <i>Amazon S3 User Guide</i>.</p> </dd> <dt>HTTP Host header syntax</dt> <dd> <p> <b>Directory buckets </b> - The HTTP Host header syntax is <code>s3express-control.<i>region-code</i>.amazonaws.com</code>.</p> </dd> </dl> <p> <code>PutBucketInventoryConfiguration</code> has the following special errors:</p> <dl> <dt>HTTP 400 Bad Request Error</dt> <dd> <p> <i>Code:</i> InvalidArgument</p> <p> <i>Cause:</i> Invalid Argument</p> </dd> <dt>HTTP 400 Bad Request Error</dt> <dd> <p> <i>Code:</i> TooManyConfigurations</p> <p> <i>Cause:</i> You are attempting to create a new configuration but have already reached the 1,000-configuration limit. </p> </dd> <dt>HTTP 403 Forbidden Error</dt> <dd> <p> <i>Cause:</i> You are not the owner of the specified bucket, or you do not have the <code>s3:PutInventoryConfiguration</code> bucket permission to set the configuration on the bucket. </p> </dd> </dl> <p>The following operations are related to <code>PutBucketInventoryConfiguration</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketInventoryConfiguration.html\">GetBucketInventoryConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketInventoryConfiguration.html\">DeleteBucketInventoryConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBucketInventoryConfigurations.html\">ListBucketInventoryConfigurations</a> </p> </li> </ul> <important> <p>You must URL encode any signed header values that contain spaces. For example, if your header value is <code>my file.txt</code>, containing two spaces after <code>my</code>, you must URL encode this value to <code>my%20%20file.txt</code>.</p> </important>",
       "staticContextParams":{
         "UseS3ExpressControlEndpoint":{"value":true}
       }
@@ -2139,6 +2144,26 @@
           "shape":"ChecksumSHA256",
           "documentation":"<p>The Base64 encoded, 256-bit <code>SHA256</code> digest of the object. This checksum is only present if the checksum was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums\"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
         },
+        "ChecksumSHA512":{
+          "shape":"ChecksumSHA512",
+          "documentation":"<p>The Base64 encoded, 512-bit <code>SHA512</code> digest of the object. This checksum is present if the object was uploaded with the <code>SHA512</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+        },
+        "ChecksumMD5":{
+          "shape":"ChecksumMD5",
+          "documentation":"<p>The Base64 encoded, 128-bit <code>MD5</code> digest of the object. This checksum is present if the object was uploaded with the <code>MD5</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+        },
+        "ChecksumXXHASH64":{
+          "shape":"ChecksumXXHASH64",
+          "documentation":"<p>The Base64 encoded, 64-bit <code>XXHASH64</code> checksum of the object. This checksum is present if the object was uploaded with the <code>XXHASH64</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+        },
+        "ChecksumXXHASH3":{
+          "shape":"ChecksumXXHASH3",
+          "documentation":"<p>The Base64 encoded, 64-bit <code>XXHASH3</code> checksum of the object. This checksum is present if the object was uploaded with the <code>XXHASH3</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+        },
+        "ChecksumXXHASH128":{
+          "shape":"ChecksumXXHASH128",
+          "documentation":"<p>The Base64 encoded, 128-bit <code>XXHASH128</code> checksum of the object. This checksum is present if the object was uploaded with the <code>XXHASH128</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+        },
         "ChecksumType":{
           "shape":"ChecksumType",
           "documentation":"<p>The checksum type that is used to calculate the object’s checksum value. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
@@ -2153,7 +2178,12 @@
         "CRC32C",
         "SHA1",
         "SHA256",
-        "CRC64NVME"
+        "CRC64NVME",
+        "SHA512",
+        "MD5",
+        "XXHASH64",
+        "XXHASH3",
+        "XXHASH128"
       ]
     },
     "ChecksumAlgorithmList":{
@@ -2164,12 +2194,14 @@
     "ChecksumCRC32":{"type":"string"},
     "ChecksumCRC32C":{"type":"string"},
     "ChecksumCRC64NVME":{"type":"string"},
+    "ChecksumMD5":{"type":"string"},
     "ChecksumMode":{
       "type":"string",
       "enum":["ENABLED"]
     },
     "ChecksumSHA1":{"type":"string"},
     "ChecksumSHA256":{"type":"string"},
+    "ChecksumSHA512":{"type":"string"},
     "ChecksumType":{
       "type":"string",
       "enum":[
@@ -2177,6 +2209,9 @@
         "FULL_OBJECT"
       ]
     },
+    "ChecksumXXHASH128":{"type":"string"},
+    "ChecksumXXHASH3":{"type":"string"},
+    "ChecksumXXHASH64":{"type":"string"},
     "ClientToken":{"type":"string"},
     "CloudFunction":{"type":"string"},
     "CloudFunctionConfiguration":{
@@ -2265,6 +2300,26 @@
         "ChecksumSHA256":{
           "shape":"ChecksumSHA256",
           "documentation":"<p>The Base64 encoded, 256-bit <code>SHA256</code> digest of the object. This checksum is only present if the checksum was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums\"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+        },
+        "ChecksumSHA512":{
+          "shape":"ChecksumSHA512",
+          "documentation":"<p>The Base64 encoded, 512-bit <code>SHA512</code> digest of the object. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity in the Amazon S3 User Guide</a>.</p>"
+        },
+        "ChecksumMD5":{
+          "shape":"ChecksumMD5",
+          "documentation":"<p>The Base64 encoded, 128-bit <code>MD5</code> digest of the object. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity in the Amazon S3 User Guide</a>.</p>"
+        },
+        "ChecksumXXHASH64":{
+          "shape":"ChecksumXXHASH64",
+          "documentation":"<p>The Base64 encoded, 64-bit <code>XXHASH64</code> checksum of the object. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity in the Amazon S3 User Guide</a>.</p>"
+        },
+        "ChecksumXXHASH3":{
+          "shape":"ChecksumXXHASH3",
+          "documentation":"<p>The Base64 encoded, 64-bit <code>XXHASH3</code> checksum of the object. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity in the Amazon S3 User Guide</a>.</p>"
+        },
+        "ChecksumXXHASH128":{
+          "shape":"ChecksumXXHASH128",
+          "documentation":"<p>The Base64 encoded, 128-bit <code>XXHASH128</code> checksum of the object. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity in the Amazon S3 User Guide</a>.</p>"
         },
         "ChecksumType":{
           "shape":"ChecksumType",
@@ -2365,6 +2420,36 @@
           "location":"header",
           "locationName":"x-amz-checksum-sha256"
         },
+        "ChecksumSHA512":{
+          "shape":"ChecksumSHA512",
+          "documentation":"<p>This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the Base64 encoded, 512-bit <code>SHA512</code> digest of the object. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity in the Amazon S3 User Guide</a>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-sha512"
+        },
+        "ChecksumMD5":{
+          "shape":"ChecksumMD5",
+          "documentation":"<p>This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the Base64 encoded, 128-bit <code>MD5</code> digest of the object. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity in the Amazon S3 User Guide</a>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-md5"
+        },
+        "ChecksumXXHASH64":{
+          "shape":"ChecksumXXHASH64",
+          "documentation":"<p>This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the Base64 encoded, 64-bit <code>XXHASH64</code> checksum of the object. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity in the Amazon S3 User Guide</a>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-xxhash64"
+        },
+        "ChecksumXXHASH3":{
+          "shape":"ChecksumXXHASH3",
+          "documentation":"<p>This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the Base64 encoded, 64-bit <code>XXHASH3</code> checksum of the object. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity in the Amazon S3 User Guide</a>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-xxhash3"
+        },
+        "ChecksumXXHASH128":{
+          "shape":"ChecksumXXHASH128",
+          "documentation":"<p>This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the Base64 encoded, 128-bit <code>XXHASH128</code> checksum of the object. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity in the Amazon S3 User Guide</a>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-xxhash128"
+        },
         "ChecksumType":{
           "shape":"ChecksumType",
           "documentation":"<p>This header specifies the checksum type of the object, which determines how part-level checksums are combined to create an object-level checksum for multipart objects. You can use this header as a data integrity check to verify that the checksum type that is received is the same checksum that was specified. If the checksum type doesn’t match the checksum type that was specified for the object during the <code>CreateMultipartUpload</code> request, it’ll result in a <code>BadDigest</code> error. For more information, see Checking object integrity in the Amazon S3 User Guide. </p>",
@@ -2449,7 +2534,7 @@
         },
         "ChecksumCRC64NVME":{
           "shape":"ChecksumCRC64NVME",
-          "documentation":"<p>The Base64 encoded, 64-bit <code>CRC64NVME</code> checksum of the part. This checksum is present if the multipart upload request was created with the <code>CRC64NVME</code> checksum algorithm to the uploaded object). For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+          "documentation":"<p>The Base64 encoded, 64-bit <code>CRC64NVME</code> checksum of the part. This checksum is present if the multipart upload request was created with the <code>CRC64NVME</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
         },
         "ChecksumSHA1":{
           "shape":"ChecksumSHA1",
@@ -2458,6 +2543,26 @@
         "ChecksumSHA256":{
           "shape":"ChecksumSHA256",
           "documentation":"<p>The Base64 encoded, 256-bit <code>SHA256</code> checksum of the part. This checksum is present if the multipart upload request was created with the <code>SHA256</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+        },
+        "ChecksumSHA512":{
+          "shape":"ChecksumSHA512",
+          "documentation":"<p>The Base64 encoded, 512-bit <code>SHA512</code> digest of the part. This checksum is present if the multipart upload request was created with the <code>SHA512</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+        },
+        "ChecksumMD5":{
+          "shape":"ChecksumMD5",
+          "documentation":"<p>The Base64 encoded, 128-bit <code>MD5</code> digest of the part. This checksum is present if the multipart upload request was created with the <code>MD5</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+        },
+        "ChecksumXXHASH64":{
+          "shape":"ChecksumXXHASH64",
+          "documentation":"<p>The Base64 encoded, 64-bit <code>XXHASH64</code> checksum of the part. This checksum is present if the multipart upload request was created with the <code>XXHASH64</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+        },
+        "ChecksumXXHASH3":{
+          "shape":"ChecksumXXHASH3",
+          "documentation":"<p>The Base64 encoded, 64-bit <code>XXHASH3</code> checksum of the part. This checksum is present if the multipart upload request was created with the <code>XXHASH3</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+        },
+        "ChecksumXXHASH128":{
+          "shape":"ChecksumXXHASH128",
+          "documentation":"<p>The Base64 encoded, 128-bit <code>XXHASH128</code> checksum of the part. This checksum is present if the multipart upload request was created with the <code>XXHASH128</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
         },
         "PartNumber":{
           "shape":"PartNumber",
@@ -2883,6 +2988,26 @@
         "ChecksumSHA256":{
           "shape":"ChecksumSHA256",
           "documentation":"<p>The Base64 encoded, 256-bit <code>SHA256</code> digest of the object. This checksum is only present if the checksum was uploaded with the object. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+        },
+        "ChecksumSHA512":{
+          "shape":"ChecksumSHA512",
+          "documentation":"<p>The Base64 encoded, 512-bit <code>SHA512</code> digest of the object. This checksum is only present if the object was uploaded with the <code>SHA512</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+        },
+        "ChecksumMD5":{
+          "shape":"ChecksumMD5",
+          "documentation":"<p>The Base64 encoded, 128-bit <code>MD5</code> digest of the object. This checksum is only present if the object was uploaded with the <code>MD5</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+        },
+        "ChecksumXXHASH64":{
+          "shape":"ChecksumXXHASH64",
+          "documentation":"<p>The Base64 encoded, 64-bit <code>XXHASH64</code> checksum of the object. This checksum is only present if the object was uploaded with the <code>XXHASH64</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+        },
+        "ChecksumXXHASH3":{
+          "shape":"ChecksumXXHASH3",
+          "documentation":"<p>The Base64 encoded, 64-bit <code>XXHASH3</code> checksum of the object. This checksum is only present if the object was uploaded with the <code>XXHASH3</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+        },
+        "ChecksumXXHASH128":{
+          "shape":"ChecksumXXHASH128",
+          "documentation":"<p>The Base64 encoded, 128-bit <code>XXHASH128</code> checksum of the object. This checksum is only present if the object was uploaded with the <code>XXHASH128</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
         }
       },
       "documentation":"<p>Container for all response elements.</p>"
@@ -2900,23 +3025,43 @@
         },
         "ChecksumCRC32":{
           "shape":"ChecksumCRC32",
-          "documentation":"<p>This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the Base64 encoded, 32-bit <code>CRC32</code> checksum of the part. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+          "documentation":"<p>The Base64 encoded, 32-bit <code>CRC32</code> checksum of the part. This checksum is present if the multipart upload request was created with the <code>CRC32</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
         },
         "ChecksumCRC32C":{
           "shape":"ChecksumCRC32C",
-          "documentation":"<p>This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the Base64 encoded, 32-bit <code>CRC32C</code> checksum of the part. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+          "documentation":"<p>The Base64 encoded, 32-bit <code>CRC32C</code> checksum of the part. This checksum is present if the multipart upload request was created with the <code>CRC32C</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
         },
         "ChecksumCRC64NVME":{
           "shape":"ChecksumCRC64NVME",
-          "documentation":"<p>The Base64 encoded, 64-bit <code>CRC64NVME</code> checksum of the part. This checksum is present if the multipart upload request was created with the <code>CRC64NVME</code> checksum algorithm to the uploaded object). For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+          "documentation":"<p>The Base64 encoded, 64-bit <code>CRC64NVME</code> checksum of the part. This checksum is present if the multipart upload request was created with the <code>CRC64NVME</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
         },
         "ChecksumSHA1":{
           "shape":"ChecksumSHA1",
-          "documentation":"<p>This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the Base64 encoded, 160-bit <code>SHA1</code> checksum of the part. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+          "documentation":"<p>The Base64 encoded, 160-bit <code>SHA1</code> digest of the part. This checksum is present if the multipart upload request was created with the <code>SHA1</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
         },
         "ChecksumSHA256":{
           "shape":"ChecksumSHA256",
-          "documentation":"<p>This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the Base64 encoded, 256-bit <code>SHA256</code> checksum of the part. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+          "documentation":"<p>The Base64 encoded, 256-bit <code>SHA256</code> digest of the part. This checksum is present if the multipart upload request was created with the <code>SHA256</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+        },
+        "ChecksumSHA512":{
+          "shape":"ChecksumSHA512",
+          "documentation":"<p>The Base64 encoded, 512-bit <code>SHA512</code> digest of the part. This checksum is present if the multipart upload request was created with the <code>SHA512</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+        },
+        "ChecksumMD5":{
+          "shape":"ChecksumMD5",
+          "documentation":"<p>The Base64 encoded, 128-bit <code>MD5</code> digest of the part. This checksum is present if the multipart upload request was created with the <code>MD5</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+        },
+        "ChecksumXXHASH64":{
+          "shape":"ChecksumXXHASH64",
+          "documentation":"<p>The Base64 encoded, 64-bit <code>XXHASH64</code> checksum of the part. This checksum is present if the multipart upload request was created with the <code>XXHASH64</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+        },
+        "ChecksumXXHASH3":{
+          "shape":"ChecksumXXHASH3",
+          "documentation":"<p>The Base64 encoded, 64-bit <code>XXHASH3</code> checksum of the part. This checksum is present if the multipart upload request was created with the <code>XXHASH3</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+        },
+        "ChecksumXXHASH128":{
+          "shape":"ChecksumXXHASH128",
+          "documentation":"<p>The Base64 encoded, 128-bit <code>XXHASH128</code> checksum of the part. This checksum is present if the multipart upload request was created with the <code>XXHASH128</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
         }
       },
       "documentation":"<p>Container for all response elements.</p>"
@@ -3645,7 +3790,7 @@
       "members":{
         "Bucket":{
           "shape":"BucketName",
-          "documentation":"<p>The name of the bucket containing the inventory configuration to delete.</p>",
+          "documentation":"<p>The name of the bucket containing the inventory configuration to delete.</p> <p> <b>Directory buckets </b> - When you use this operation with a directory bucket, you must use path-style requests in the format <code>https://s3express-control.<i>region-code</i>.amazonaws.com/<i>bucket-name</i> </code>. Virtual-hosted-style requests aren't supported. Directory bucket names must be unique in the chosen Zone (Availability Zone or Local Zone). Bucket names must also follow the format <code> <i>bucket-base-name</i>--<i>zone-id</i>--x-s3</code> (for example, <code> <i>DOC-EXAMPLE-BUCKET</i>--<i>usw2-az1</i>--x-s3</code>). For information about bucket naming restrictions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-bucket-naming-rules.html\">Directory bucket naming rules</a> in the <i>Amazon S3 User Guide</i> </p>",
           "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
@@ -3658,7 +3803,7 @@
         },
         "ExpectedBucketOwner":{
           "shape":"AccountId",
-          "documentation":"<p>The account ID of the expected bucket owner. If the account ID that you provide does not match the actual owner of the bucket, the request fails with the HTTP status code <code>403 Forbidden</code> (access denied).</p>",
+          "documentation":"<p>The account ID of the expected bucket owner. If the account ID that you provide does not match the actual owner of the bucket, the request fails with the HTTP status code <code>403 Forbidden</code> (access denied).</p> <note> <p>For directory buckets, this header is not supported in this API operation. If you specify this header, the request fails with the HTTP status code <code>501 Not Implemented</code>.</p> </note>",
           "location":"header",
           "locationName":"x-amz-expected-bucket-owner"
         }
@@ -4114,7 +4259,7 @@
         },
         "ChecksumAlgorithm":{
           "shape":"ChecksumAlgorithm",
-          "documentation":"<p>Indicates the algorithm used to create the checksum for the object when you use the SDK. This header will not provide any additional functionality if you don't use the SDK. When you send this header, there must be a corresponding <code>x-amz-checksum-<i>algorithm</i> </code> or <code>x-amz-trailer</code> header sent. Otherwise, Amazon S3 fails the request with the HTTP status code <code>400 Bad Request</code>.</p> <p>For the <code>x-amz-checksum-<i>algorithm</i> </code> header, replace <code> <i>algorithm</i> </code> with the supported algorithm from the following list: </p> <ul> <li> <p> <code>CRC32</code> </p> </li> <li> <p> <code>CRC32C</code> </p> </li> <li> <p> <code>CRC64NVME</code> </p> </li> <li> <p> <code>SHA1</code> </p> </li> <li> <p> <code>SHA256</code> </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p> <p>If the individual checksum value you provide through <code>x-amz-checksum-<i>algorithm</i> </code> doesn't match the checksum algorithm you set through <code>x-amz-sdk-checksum-algorithm</code>, Amazon S3 fails the request with a <code>BadDigest</code> error.</p> <p>If you provide an individual checksum, Amazon S3 ignores any provided <code>ChecksumAlgorithm</code> parameter.</p>",
+          "documentation":"<p>Indicates the algorithm used to create the checksum for the object when you use the SDK. This header will not provide any additional functionality if you don't use the SDK. When you send this header, there must be a corresponding <code>x-amz-checksum-<i>algorithm</i> </code> or <code>x-amz-trailer</code> header sent. Otherwise, Amazon S3 fails the request with the HTTP status code <code>400 Bad Request</code>.</p> <p>For the <code>x-amz-checksum-<i>algorithm</i> </code> header, replace <code> <i>algorithm</i> </code> with the supported algorithm from the following list: </p> <ul> <li> <p> <code>CRC32</code> </p> </li> <li> <p> <code>CRC32C</code> </p> </li> <li> <p> <code>CRC64NVME</code> </p> </li> <li> <p> <code>MD5</code> </p> </li> <li> <p> <code>SHA1</code> </p> </li> <li> <p> <code>SHA256</code> </p> </li> <li> <p> <code>SHA512</code> </p> </li> <li> <p> <code>XXHASH3</code> </p> </li> <li> <p> <code>XXHASH64</code> </p> </li> <li> <p> <code>XXHASH128</code> </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p> <p>If the individual checksum value you provide through <code>x-amz-checksum-<i>algorithm</i> </code> doesn't match the checksum algorithm you set through <code>x-amz-sdk-checksum-algorithm</code>, Amazon S3 fails the request with a <code>BadDigest</code> error.</p> <p>If you provide an individual checksum, Amazon S3 ignores any provided <code>ChecksumAlgorithm</code> parameter.</p>",
           "location":"header",
           "locationName":"x-amz-sdk-checksum-algorithm"
         }
@@ -4737,7 +4882,7 @@
       "members":{
         "Bucket":{
           "shape":"BucketName",
-          "documentation":"<p>The name of the bucket containing the inventory configuration to retrieve.</p>",
+          "documentation":"<p>The name of the bucket containing the inventory configuration to retrieve.</p> <p> <b>Directory buckets </b> - When you use this operation with a directory bucket, you must use path-style requests in the format <code>https://s3express-control.<i>region-code</i>.amazonaws.com/<i>bucket-name</i> </code>. Virtual-hosted-style requests aren't supported. Directory bucket names must be unique in the chosen Zone (Availability Zone or Local Zone). Bucket names must also follow the format <code> <i>bucket-base-name</i>--<i>zone-id</i>--x-s3</code> (for example, <code> <i>DOC-EXAMPLE-BUCKET</i>--<i>usw2-az1</i>--x-s3</code>). For information about bucket naming restrictions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-bucket-naming-rules.html\">Directory bucket naming rules</a> in the <i>Amazon S3 User Guide</i> </p>",
           "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
@@ -4750,7 +4895,7 @@
         },
         "ExpectedBucketOwner":{
           "shape":"AccountId",
-          "documentation":"<p>The account ID of the expected bucket owner. If the account ID that you provide does not match the actual owner of the bucket, the request fails with the HTTP status code <code>403 Forbidden</code> (access denied).</p>",
+          "documentation":"<p>The account ID of the expected bucket owner. If the account ID that you provide does not match the actual owner of the bucket, the request fails with the HTTP status code <code>403 Forbidden</code> (access denied).</p> <note> <p>For directory buckets, this header is not supported in this API operation. If you specify this header, the request fails with the HTTP status code <code>501 Not Implemented</code>.</p> </note>",
           "location":"header",
           "locationName":"x-amz-expected-bucket-owner"
         }
@@ -5638,6 +5783,36 @@
           "location":"header",
           "locationName":"x-amz-checksum-sha256"
         },
+        "ChecksumSHA512":{
+          "shape":"ChecksumSHA512",
+          "documentation":"<p>The Base64 encoded, 512-bit <code>SHA512</code> digest of the object. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity in the Amazon S3 User Guide</a>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-sha512"
+        },
+        "ChecksumMD5":{
+          "shape":"ChecksumMD5",
+          "documentation":"<p>The Base64 encoded, 128-bit <code>MD5</code> digest of the object. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity in the Amazon S3 User Guide</a>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-md5"
+        },
+        "ChecksumXXHASH64":{
+          "shape":"ChecksumXXHASH64",
+          "documentation":"<p>The Base64 encoded, 64-bit <code>XXHASH64</code> checksum of the object. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity in the Amazon S3 User Guide</a>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-xxhash64"
+        },
+        "ChecksumXXHASH3":{
+          "shape":"ChecksumXXHASH3",
+          "documentation":"<p>The Base64 encoded, 64-bit <code>XXHASH3</code> checksum of the object. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity in the Amazon S3 User Guide</a>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-xxhash3"
+        },
+        "ChecksumXXHASH128":{
+          "shape":"ChecksumXXHASH128",
+          "documentation":"<p>The Base64 encoded, 128-bit <code>XXHASH128</code> checksum of the object. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity in the Amazon S3 User Guide</a>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-xxhash128"
+        },
         "ChecksumType":{
           "shape":"ChecksumType",
           "documentation":"<p>The checksum type, which determines how part-level checksums are combined to create an object-level checksum for multipart objects. You can use this header response to verify that the checksum type that is received is the same checksum type that was specified in the <code>CreateMultipartUpload</code> request. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>",
@@ -6312,6 +6487,36 @@
           "location":"header",
           "locationName":"x-amz-checksum-sha256"
         },
+        "ChecksumSHA512":{
+          "shape":"ChecksumSHA512",
+          "documentation":"<p>The Base64 encoded, 512-bit <code>SHA512</code> digest of the object. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity in the Amazon S3 User Guide</a>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-sha512"
+        },
+        "ChecksumMD5":{
+          "shape":"ChecksumMD5",
+          "documentation":"<p>The Base64 encoded, 128-bit <code>MD5</code> digest of the object. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity in the Amazon S3 User Guide</a>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-md5"
+        },
+        "ChecksumXXHASH64":{
+          "shape":"ChecksumXXHASH64",
+          "documentation":"<p>The Base64 encoded, 64-bit <code>XXHASH64</code> checksum of the object. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity in the Amazon S3 User Guide</a>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-xxhash64"
+        },
+        "ChecksumXXHASH3":{
+          "shape":"ChecksumXXHASH3",
+          "documentation":"<p>The Base64 encoded, 64-bit <code>XXHASH3</code> checksum of the object. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity in the Amazon S3 User Guide</a>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-xxhash3"
+        },
+        "ChecksumXXHASH128":{
+          "shape":"ChecksumXXHASH128",
+          "documentation":"<p>The Base64 encoded, 128-bit <code>XXHASH128</code> checksum of the object. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity in the Amazon S3 User Guide</a>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-xxhash128"
+        },
         "ChecksumType":{
           "shape":"ChecksumType",
           "documentation":"<p>The checksum type, which determines how part-level checksums are combined to create an object-level checksum for multipart objects. You can use this header response to verify that the checksum type that is received is the same checksum type that was specified in <code>CreateMultipartUpload</code> request. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity in the Amazon S3 User Guide</a>.</p>",
@@ -6819,7 +7024,7 @@
         },
         "OptionalFields":{
           "shape":"InventoryOptionalFields",
-          "documentation":"<p>Contains the optional fields that are included in the inventory results.</p>"
+          "documentation":"<p>Contains the optional fields that are included in the inventory results.</p> <note> <p>The following optional fields are supported for directory buckets <code>Size | LastModifiedDate | StorageClass | ETag | IsMultipartUploaded | EncryptionStatus | BucketKeyStatus | ChecksumAlgorithm | LifecycleExpirationDate.</code> Throws MalformedXML error if unsupported optional field is provided. </p> </note>"
         },
         "Schedule":{
           "shape":"InventorySchedule",
@@ -7407,7 +7612,7 @@
       "members":{
         "Bucket":{
           "shape":"BucketName",
-          "documentation":"<p>The name of the bucket containing the inventory configurations to retrieve.</p>",
+          "documentation":"<p>The name of the bucket containing the inventory configurations to retrieve.</p> <p> <b>Directory buckets </b> - When you use this operation with a directory bucket, you must use path-style requests in the format <code>https://s3express-control.<i>region-code</i>.amazonaws.com/<i>bucket-name</i> </code>. Virtual-hosted-style requests aren't supported. Directory bucket names must be unique in the chosen Zone (Availability Zone or Local Zone). Bucket names must also follow the format <code> <i>bucket-base-name</i>--<i>zone-id</i>--x-s3</code> (for example, <code> <i>DOC-EXAMPLE-BUCKET</i>--<i>usw2-az1</i>--x-s3</code>). For information about bucket naming restrictions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-bucket-naming-rules.html\">Directory bucket naming rules</a> in the <i>Amazon S3 User Guide</i> </p>",
           "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
@@ -7420,7 +7625,7 @@
         },
         "ExpectedBucketOwner":{
           "shape":"AccountId",
-          "documentation":"<p>The account ID of the expected bucket owner. If the account ID that you provide does not match the actual owner of the bucket, the request fails with the HTTP status code <code>403 Forbidden</code> (access denied).</p>",
+          "documentation":"<p>The account ID of the expected bucket owner. If the account ID that you provide does not match the actual owner of the bucket, the request fails with the HTTP status code <code>403 Forbidden</code> (access denied).</p> <note> <p>For directory buckets, this header is not supported in this API operation. If you specify this header, the request fails with the HTTP status code <code>501 Not Implemented</code>.</p> </note>",
           "location":"header",
           "locationName":"x-amz-expected-bucket-owner"
         }
@@ -8898,6 +9103,26 @@
         "ChecksumSHA256":{
           "shape":"ChecksumSHA256",
           "documentation":"<p>The Base64 encoded, 256-bit <code>SHA256</code> checksum of the part. This checksum is present if the multipart upload request was created with the <code>SHA256</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+        },
+        "ChecksumSHA512":{
+          "shape":"ChecksumSHA512",
+          "documentation":"<p>The Base64 encoded, 512-bit <code>SHA512</code> digest of the part. This checksum is present if the multipart upload request was created with the <code>SHA512</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+        },
+        "ChecksumMD5":{
+          "shape":"ChecksumMD5",
+          "documentation":"<p>The Base64 encoded, 128-bit <code>MD5</code> digest of the part. This checksum is present if the multipart upload request was created with the <code>MD5</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+        },
+        "ChecksumXXHASH64":{
+          "shape":"ChecksumXXHASH64",
+          "documentation":"<p>The Base64 encoded, 64-bit <code>XXHASH64</code> checksum of the part. This checksum is present if the multipart upload request was created with the <code>XXHASH64</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+        },
+        "ChecksumXXHASH3":{
+          "shape":"ChecksumXXHASH3",
+          "documentation":"<p>The Base64 encoded, 64-bit <code>XXHASH3</code> checksum of the part. This checksum is present if the multipart upload request was created with the <code>XXHASH3</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+        },
+        "ChecksumXXHASH128":{
+          "shape":"ChecksumXXHASH128",
+          "documentation":"<p>The Base64 encoded, 128-bit <code>XXHASH128</code> checksum of the part. This checksum is present if the multipart upload request was created with the <code>XXHASH128</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
         }
       },
       "documentation":"<p>A container for elements related to an individual part.</p>"
@@ -9110,6 +9335,26 @@
         "ChecksumSHA256":{
           "shape":"ChecksumSHA256",
           "documentation":"<p>The Base64 encoded, 256-bit <code>SHA256</code> checksum of the part. This checksum is present if the object was uploaded with the <code>SHA256</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+        },
+        "ChecksumSHA512":{
+          "shape":"ChecksumSHA512",
+          "documentation":"<p>The Base64 encoded, 512-bit <code>SHA512</code> digest of the part. This checksum is present if the multipart upload request was created with the <code>SHA512</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+        },
+        "ChecksumMD5":{
+          "shape":"ChecksumMD5",
+          "documentation":"<p>The Base64 encoded, 128-bit <code>MD5</code> digest of the part. This checksum is present if the multipart upload request was created with the <code>MD5</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+        },
+        "ChecksumXXHASH64":{
+          "shape":"ChecksumXXHASH64",
+          "documentation":"<p>The Base64 encoded, 64-bit <code>XXHASH64</code> checksum of the part. This checksum is present if the multipart upload request was created with the <code>XXHASH64</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+        },
+        "ChecksumXXHASH3":{
+          "shape":"ChecksumXXHASH3",
+          "documentation":"<p>The Base64 encoded, 64-bit <code>XXHASH3</code> checksum of the part. This checksum is present if the multipart upload request was created with the <code>XXHASH3</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+        },
+        "ChecksumXXHASH128":{
+          "shape":"ChecksumXXHASH128",
+          "documentation":"<p>The Base64 encoded, 128-bit <code>XXHASH128</code> checksum of the part. This checksum is present if the multipart upload request was created with the <code>XXHASH128</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
         }
       },
       "documentation":"<p>Container for elements related to a part.</p>"
@@ -9558,7 +9803,7 @@
       "members":{
         "Bucket":{
           "shape":"BucketName",
-          "documentation":"<p>The name of the bucket where the inventory configuration will be stored.</p>",
+          "documentation":"<p>The name of the bucket where the inventory configuration will be stored.</p> <p> <b>Directory buckets </b> - When you use this operation with a directory bucket, you must use path-style requests in the format <code>https://s3express-control.<i>region-code</i>.amazonaws.com/<i>bucket-name</i> </code>. Virtual-hosted-style requests aren't supported. Directory bucket names must be unique in the chosen Zone (Availability Zone or Local Zone). Bucket names must also follow the format <code> <i>bucket-base-name</i>--<i>zone-id</i>--x-s3</code> (for example, <code> <i>DOC-EXAMPLE-BUCKET</i>--<i>usw2-az1</i>--x-s3</code>). For information about bucket naming restrictions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-bucket-naming-rules.html\">Directory bucket naming rules</a> in the <i>Amazon S3 User Guide</i> </p>",
           "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
@@ -9577,7 +9822,7 @@
         },
         "ExpectedBucketOwner":{
           "shape":"AccountId",
-          "documentation":"<p>The account ID of the expected bucket owner. If the account ID that you provide does not match the actual owner of the bucket, the request fails with the HTTP status code <code>403 Forbidden</code> (access denied).</p>",
+          "documentation":"<p>The account ID of the expected bucket owner. If the account ID that you provide does not match the actual owner of the bucket, the request fails with the HTTP status code <code>403 Forbidden</code> (access denied).</p> <note> <p>For directory buckets, this header is not supported in this API operation. If you specify this header, the request fails with the HTTP status code <code>501 Not Implemented</code>.</p> </note>",
           "location":"header",
           "locationName":"x-amz-expected-bucket-owner"
         }
@@ -9886,7 +10131,7 @@
         },
         "ChecksumAlgorithm":{
           "shape":"ChecksumAlgorithm",
-          "documentation":"<p>Indicates the algorithm used to create the checksum for the request when you use the SDK. This header will not provide any additional functionality if you don't use the SDK. When you send this header, there must be a corresponding <code>x-amz-checksum-<i>algorithm</i> </code> or <code>x-amz-trailer</code> header sent. Otherwise, Amazon S3 fails the request with the HTTP status code <code>400 Bad Request</code>.</p> <p>For the <code>x-amz-checksum-<i>algorithm</i> </code> header, replace <code> <i>algorithm</i> </code> with the supported algorithm from the following list: </p> <ul> <li> <p> <code>CRC32</code> </p> </li> <li> <p> <code>CRC32C</code> </p> </li> <li> <p> <code>CRC64NVME</code> </p> </li> <li> <p> <code>SHA1</code> </p> </li> <li> <p> <code>SHA256</code> </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p> <p>If the individual checksum value you provide through <code>x-amz-checksum-<i>algorithm</i> </code> doesn't match the checksum algorithm you set through <code>x-amz-sdk-checksum-algorithm</code>, Amazon S3 fails the request with a <code>BadDigest</code> error.</p> <note> <p>For directory buckets, when you use Amazon Web Services SDKs, <code>CRC32</code> is the default checksum algorithm that's used for performance.</p> </note>",
+          "documentation":"<p>Indicates the algorithm used to create the checksum for the request when you use the SDK. This header will not provide any additional functionality if you don't use the SDK. When you send this header, there must be a corresponding <code>x-amz-checksum-<i>algorithm</i> </code> or <code>x-amz-trailer</code> header sent. Otherwise, Amazon S3 fails the request with the HTTP status code <code>400 Bad Request</code>.</p> <p>For the <code>x-amz-checksum-<i>algorithm</i> </code> header, replace <code> <i>algorithm</i> </code> with the supported algorithm from the following list: </p> <ul> <li> <p> <code>CRC32</code> </p> </li> <li> <p> <code>CRC32C</code> </p> </li> <li> <p> <code>CRC64NVME</code> </p> </li> <li> <p> <code>MD5</code> </p> </li> <li> <p> <code>SHA1</code> </p> </li> <li> <p> <code>SHA256</code> </p> </li> <li> <p> <code>SHA512</code> </p> </li> <li> <p> <code>XXHASH3</code> </p> </li> <li> <p> <code>XXHASH64</code> </p> </li> <li> <p> <code>XXHASH128</code> </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p> <p>If the individual checksum value you provide through <code>x-amz-checksum-<i>algorithm</i> </code> doesn't match the checksum algorithm you set through <code>x-amz-sdk-checksum-algorithm</code>, Amazon S3 fails the request with a <code>BadDigest</code> error.</p> <note> <p>For directory buckets, when you use Amazon Web Services SDKs, <code>CRC32</code> is the default checksum algorithm that's used for performance.</p> </note>",
           "location":"header",
           "locationName":"x-amz-sdk-checksum-algorithm"
         },
@@ -10402,6 +10647,36 @@
           "location":"header",
           "locationName":"x-amz-checksum-sha256"
         },
+        "ChecksumSHA512":{
+          "shape":"ChecksumSHA512",
+          "documentation":"<p>The Base64 encoded, 512-bit <code>SHA512</code> digest of the object. This header is present if the object was uploaded with the <code>SHA512</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity in the Amazon S3 User Guide</a>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-sha512"
+        },
+        "ChecksumMD5":{
+          "shape":"ChecksumMD5",
+          "documentation":"<p>The Base64 encoded, 128-bit <code>MD5</code> digest of the object. This header is present if the object was uploaded with the <code>MD5</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity in the Amazon S3 User Guide</a>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-md5"
+        },
+        "ChecksumXXHASH64":{
+          "shape":"ChecksumXXHASH64",
+          "documentation":"<p>The Base64 encoded, 64-bit <code>XXHASH64</code> checksum of the object. This header is present if the object was uploaded with the <code>XXHASH64</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity in the Amazon S3 User Guide</a>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-xxhash64"
+        },
+        "ChecksumXXHASH3":{
+          "shape":"ChecksumXXHASH3",
+          "documentation":"<p>The Base64 encoded, 64-bit <code>XXHASH3</code> checksum of the object. This header is present if the object was uploaded with the <code>XXHASH3</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity in the Amazon S3 User Guide</a>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-xxhash3"
+        },
+        "ChecksumXXHASH128":{
+          "shape":"ChecksumXXHASH128",
+          "documentation":"<p>The Base64 encoded, 128-bit <code>XXHASH128</code> checksum of the object. This header is present if the object was uploaded with the <code>XXHASH128</code> checksum algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity in the Amazon S3 User Guide</a>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-xxhash128"
+        },
         "ChecksumType":{
           "shape":"ChecksumType",
           "documentation":"<p>This header specifies the checksum type of the object, which determines how part-level checksums are combined to create an object-level checksum for multipart objects. For <code>PutObject</code> uploads, the checksum type is always <code>FULL_OBJECT</code>. You can use this header as a data integrity check to verify that the checksum type that is received is the same checksum that was specified. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>",
@@ -10532,7 +10807,7 @@
         },
         "ChecksumAlgorithm":{
           "shape":"ChecksumAlgorithm",
-          "documentation":"<p>Indicates the algorithm used to create the checksum for the object when you use the SDK. This header will not provide any additional functionality if you don't use the SDK. When you send this header, there must be a corresponding <code>x-amz-checksum-<i>algorithm</i> </code> or <code>x-amz-trailer</code> header sent. Otherwise, Amazon S3 fails the request with the HTTP status code <code>400 Bad Request</code>.</p> <p>For the <code>x-amz-checksum-<i>algorithm</i> </code> header, replace <code> <i>algorithm</i> </code> with the supported algorithm from the following list: </p> <ul> <li> <p> <code>CRC32</code> </p> </li> <li> <p> <code>CRC32C</code> </p> </li> <li> <p> <code>CRC64NVME</code> </p> </li> <li> <p> <code>SHA1</code> </p> </li> <li> <p> <code>SHA256</code> </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p> <p>If the individual checksum value you provide through <code>x-amz-checksum-<i>algorithm</i> </code> doesn't match the checksum algorithm you set through <code>x-amz-sdk-checksum-algorithm</code>, Amazon S3 fails the request with a <code>BadDigest</code> error.</p> <note> <p>The <code>Content-MD5</code> or <code>x-amz-sdk-checksum-algorithm</code> header is required for any request to upload an object with a retention period configured using Amazon S3 Object Lock. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock-managing.html#object-lock-put-object\">Uploading objects to an Object Lock enabled bucket </a> in the <i>Amazon S3 User Guide</i>.</p> </note> <p>For directory buckets, when you use Amazon Web Services SDKs, <code>CRC32</code> is the default checksum algorithm that's used for performance.</p>",
+          "documentation":"<p>Indicates the algorithm used to create the checksum for the object when you use the SDK. This header will not provide any additional functionality if you don't use the SDK. When you send this header, there must be a corresponding <code>x-amz-checksum-<i>algorithm</i> </code> or <code>x-amz-trailer</code> header sent. Otherwise, Amazon S3 fails the request with the HTTP status code <code>400 Bad Request</code>.</p> <p>For the <code>x-amz-checksum-<i>algorithm</i> </code> header, replace <code> <i>algorithm</i> </code> with the supported algorithm from the following list: </p> <ul> <li> <p> <code>CRC32</code> </p> </li> <li> <p> <code>CRC32C</code> </p> </li> <li> <p> <code>CRC64NVME</code> </p> </li> <li> <p> <code>MD5</code> </p> </li> <li> <p> <code>SHA1</code> </p> </li> <li> <p> <code>SHA256</code> </p> </li> <li> <p> <code>SHA512</code> </p> </li> <li> <p> <code>XXHASH3</code> </p> </li> <li> <p> <code>XXHASH64</code> </p> </li> <li> <p> <code>XXHASH128</code> </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p> <p>If the individual checksum value you provide through <code>x-amz-checksum-<i>algorithm</i> </code> doesn't match the checksum algorithm you set through <code>x-amz-sdk-checksum-algorithm</code>, Amazon S3 fails the request with a <code>BadDigest</code> error.</p> <note> <p>The <code>Content-MD5</code> or <code>x-amz-sdk-checksum-algorithm</code> header is required for any request to upload an object with a retention period configured using Amazon S3 Object Lock. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock-managing.html#object-lock-put-object\">Uploading objects to an Object Lock enabled bucket </a> in the <i>Amazon S3 User Guide</i>.</p> </note> <p>For directory buckets, when you use Amazon Web Services SDKs, <code>CRC32</code> is the default checksum algorithm that's used for performance.</p>",
           "location":"header",
           "locationName":"x-amz-sdk-checksum-algorithm"
         },
@@ -10565,6 +10840,36 @@
           "documentation":"<p>This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the Base64 encoded, 256-bit <code>SHA256</code> digest of the object. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>",
           "location":"header",
           "locationName":"x-amz-checksum-sha256"
+        },
+        "ChecksumSHA512":{
+          "shape":"ChecksumSHA512",
+          "documentation":"<p>This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the Base64 encoded, 512-bit <code>SHA512</code> digest of the object. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity in the Amazon S3 User Guide</a>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-sha512"
+        },
+        "ChecksumMD5":{
+          "shape":"ChecksumMD5",
+          "documentation":"<p>This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the Base64 encoded, 128-bit <code>MD5</code> digest of the object. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity in the Amazon S3 User Guide</a>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-md5"
+        },
+        "ChecksumXXHASH64":{
+          "shape":"ChecksumXXHASH64",
+          "documentation":"<p>This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the Base64 encoded, 64-bit <code>XXHASH64</code> checksum of the object. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity in the Amazon S3 User Guide</a>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-xxhash64"
+        },
+        "ChecksumXXHASH3":{
+          "shape":"ChecksumXXHASH3",
+          "documentation":"<p>This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the Base64 encoded, 64-bit <code>XXHASH3</code> checksum of the object. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity in the Amazon S3 User Guide</a>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-xxhash3"
+        },
+        "ChecksumXXHASH128":{
+          "shape":"ChecksumXXHASH128",
+          "documentation":"<p>This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the Base64 encoded, 128-bit <code>XXHASH128</code> checksum of the object. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity in the Amazon S3 User Guide</a>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-xxhash128"
         },
         "Expires":{
           "shape":"Expires",
@@ -12674,33 +12979,63 @@
         },
         "ChecksumCRC32":{
           "shape":"ChecksumCRC32",
-          "documentation":"<p>The Base64 encoded, 32-bit <code>CRC32 checksum</code> of the object. This checksum is only present if the checksum was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums\"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "documentation":"<p>The Base64 encoded, 32-bit <code>CRC32</code> checksum of the part. This will only be present if the checksum was provided in the request. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>",
           "location":"header",
           "locationName":"x-amz-checksum-crc32"
         },
         "ChecksumCRC32C":{
           "shape":"ChecksumCRC32C",
-          "documentation":"<p>The Base64 encoded, 32-bit <code>CRC32C</code> checksum of the object. This checksum is only present if the checksum was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums\"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "documentation":"<p>The Base64 encoded, 32-bit <code>CRC32C</code> checksum of the part. This will only be present if the checksum was provided in the request. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>",
           "location":"header",
           "locationName":"x-amz-checksum-crc32c"
         },
         "ChecksumCRC64NVME":{
           "shape":"ChecksumCRC64NVME",
-          "documentation":"<p>This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the Base64 encoded, 64-bit <code>CRC64NVME</code> checksum of the part. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "documentation":"<p>The Base64 encoded, 64-bit <code>CRC64NVME</code> checksum of the part. This will only be present if the checksum was provided in the request. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>",
           "location":"header",
           "locationName":"x-amz-checksum-crc64nvme"
         },
         "ChecksumSHA1":{
           "shape":"ChecksumSHA1",
-          "documentation":"<p>The Base64 encoded, 160-bit <code>SHA1</code> digest of the object. This checksum is only present if the checksum was uploaded with the object. When you use the API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums\"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "documentation":"<p>The Base64 encoded, 160-bit <code>SHA1</code> checksum of the part. This will only be present if the checksum was provided in the request. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>",
           "location":"header",
           "locationName":"x-amz-checksum-sha1"
         },
         "ChecksumSHA256":{
           "shape":"ChecksumSHA256",
-          "documentation":"<p>The Base64 encoded, 256-bit <code>SHA256</code> digest of the object. This checksum is only present if the checksum was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums\"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "documentation":"<p>The Base64 encoded, 256-bit <code>SHA256</code> checksum of the part. This will only be present if the checksum was provided in the request. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>",
           "location":"header",
           "locationName":"x-amz-checksum-sha256"
+        },
+        "ChecksumSHA512":{
+          "shape":"ChecksumSHA512",
+          "documentation":"<p>The Base64 encoded, 512-bit <code>SHA512</code> checksum of the part. This will only be present if the checksum was provided in the request. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-sha512"
+        },
+        "ChecksumMD5":{
+          "shape":"ChecksumMD5",
+          "documentation":"<p>The Base64 encoded, 128-bit <code>MD5</code> checksum of the part. This will only be present if the checksum was provided in the request. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-md5"
+        },
+        "ChecksumXXHASH64":{
+          "shape":"ChecksumXXHASH64",
+          "documentation":"<p>The Base64 encoded, 64-bit <code>XXHASH64</code> checksum of the part. This will only be present if the checksum was provided in the request. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-xxhash64"
+        },
+        "ChecksumXXHASH3":{
+          "shape":"ChecksumXXHASH3",
+          "documentation":"<p>The Base64 encoded, 64-bit <code>XXHASH3</code> checksum of the part. This will only be present if the checksum was provided in the request. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-xxhash3"
+        },
+        "ChecksumXXHASH128":{
+          "shape":"ChecksumXXHASH128",
+          "documentation":"<p>The Base64 encoded, 128-bit <code>XXHASH128</code> checksum of the part. This will only be present if the checksum was provided in the request. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-xxhash128"
         },
         "SSECustomerAlgorithm":{
           "shape":"SSECustomerAlgorithm",
@@ -12801,6 +13136,36 @@
           "documentation":"<p>This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the Base64 encoded, 256-bit <code>SHA256</code> digest of the object. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>",
           "location":"header",
           "locationName":"x-amz-checksum-sha256"
+        },
+        "ChecksumSHA512":{
+          "shape":"ChecksumSHA512",
+          "documentation":"<p>This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the Base64 encoded, 512-bit <code>SHA512</code> digest of the part. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-sha512"
+        },
+        "ChecksumMD5":{
+          "shape":"ChecksumMD5",
+          "documentation":"<p>This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the Base64 encoded, 128-bit <code>MD5</code> digest of the part. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-md5"
+        },
+        "ChecksumXXHASH64":{
+          "shape":"ChecksumXXHASH64",
+          "documentation":"<p>This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the Base64 encoded, 64-bit <code>XXHASH64</code> checksum of the part. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-xxhash64"
+        },
+        "ChecksumXXHASH3":{
+          "shape":"ChecksumXXHASH3",
+          "documentation":"<p>This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the Base64 encoded, 64-bit <code>XXHASH3</code> checksum of the part. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-xxhash3"
+        },
+        "ChecksumXXHASH128":{
+          "shape":"ChecksumXXHASH128",
+          "documentation":"<p>This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the Base64 encoded, 128-bit <code>XXHASH128</code> checksum of the part. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "location":"header",
+          "locationName":"x-amz-checksum-xxhash128"
         },
         "Key":{
           "shape":"ObjectKey",
@@ -13024,6 +13389,36 @@
           "documentation":"<p>This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This specifies the Base64 encoded, 256-bit <code>SHA256</code> digest of the object returned by the Object Lambda function. This may not match the checksum for the object stored in Amazon S3. Amazon S3 will perform validation of the checksum values only when the original <code>GetObject</code> request required checksum validation. For more information about checksums, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p> <p>Only one checksum header can be specified at a time. If you supply multiple checksum headers, this request will fail.</p>",
           "location":"header",
           "locationName":"x-amz-fwd-header-x-amz-checksum-sha256"
+        },
+        "ChecksumSHA512":{
+          "shape":"ChecksumSHA512",
+          "documentation":"<p>This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the Base64 encoded, 512-bit <code>SHA512</code> digest of the part. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "location":"header",
+          "locationName":"x-amz-fwd-header-x-amz-checksum-sha512"
+        },
+        "ChecksumMD5":{
+          "shape":"ChecksumMD5",
+          "documentation":"<p>This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the Base64 encoded, 128-bit <code>MD5</code> digest of the part. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "location":"header",
+          "locationName":"x-amz-fwd-header-x-amz-checksum-md5"
+        },
+        "ChecksumXXHASH64":{
+          "shape":"ChecksumXXHASH64",
+          "documentation":"<p>This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the Base64 encoded, 64-bit <code>XXHASH64</code> checksum of the part. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "location":"header",
+          "locationName":"x-amz-fwd-header-x-amz-checksum-xxhash64"
+        },
+        "ChecksumXXHASH3":{
+          "shape":"ChecksumXXHASH3",
+          "documentation":"<p>This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the Base64 encoded, 64-bit <code>XXHASH3</code> checksum of the part. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "location":"header",
+          "locationName":"x-amz-fwd-header-x-amz-checksum-xxhash3"
+        },
+        "ChecksumXXHASH128":{
+          "shape":"ChecksumXXHASH128",
+          "documentation":"<p>This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the Base64 encoded, 128-bit <code>XXHASH128</code> checksum of the part. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "location":"header",
+          "locationName":"x-amz-fwd-header-x-amz-checksum-xxhash128"
         },
         "DeleteMarker":{
           "shape":"DeleteMarker",

@@ -113,11 +113,13 @@ def create_clidriver(args=None):
         parser = FirstPassGlobalArgParser()
         args, _ = parser.parse_known_args(args)
         debug = args.debug
-    session = botocore.session.Session()
+    from awscli.lazy_emitter import LazyInitEmitter
+    lazy_emitter = LazyInitEmitter()
+    session = botocore.session.Session(event_hooks=lazy_emitter)
     _set_user_agent_for_session(session)
     load_plugins(
         session.full_config.get('plugins', {}),
-        event_hooks=session.get_component('event_emitter'),
+        event_hooks=lazy_emitter,
     )
     error_handlers_chain = construct_cli_error_handlers_chain(session)
     driver = CLIDriver(

@@ -24,8 +24,7 @@ CLI_LEGACY_PLUGIN_PATH = 'cli_legacy_plugin_path'
 HierarchicalEmitter = LazyInitEmitter
 
 
-def load_plugins(plugin_mapping, event_hooks=None, include_builtins=True,
-                 args=None):
+def load_plugins(plugin_mapping, event_hooks=None, include_builtins=True):
     """
 
     :type plugin_mapping: dict
@@ -40,9 +39,6 @@ def load_plugins(plugin_mapping, event_hooks=None, include_builtins=True,
     :type include_builtins: bool
     :param include_builtins: If True, the builtin awscli plugins (specified in
         ``BUILTIN_PLUGINS``) will be included in the list of plugins to load.
-
-    :type args: list
-    :param args: Unused. Kept for backward compatibility.
 
     :rtype: LazyInitEmitter
     :return: An event emitter object.

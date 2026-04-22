@@ -109,11 +109,10 @@ def main():
 
 def create_clidriver(args=None):
     debug = None
-    parsed_args = None
     if args is not None:
         parser = FirstPassGlobalArgParser()
-        parsed_args, _ = parser.parse_known_args(args)
-        debug = parsed_args.debug
+        args, _ = parser.parse_known_args(args)
+        debug = args.debug
     session = botocore.session.Session()
     _set_user_agent_for_session(session)
     # Replace the session's default emitter with a LazyInitEmitter

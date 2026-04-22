@@ -5,19 +5,18 @@ This script is the authoritative source of truth for which customizations
 exist and in what order they are registered.  It mirrors what the old
 monolithic awscli_initialize used to do, but instead of actually importing
 and calling everything, it runs each registration call against a
-RecordingEmitter that captures (module_path, fn_name, event_name) triples
-without importing any customization modules.
+_MiniEmitter that captures (event_pattern, module, fn_name, type) tuples
+without side effects.
 
 The output is written to awscli/handlers_registry.py as a plain Python dict
-PLUGIN_REGISTRY mapping each sentinel to a list of entries:
+PLUGIN_REGISTRY mapping each event pattern to a list of entries:
 
-  (module, fn_name)              -- call fn(event_handlers)
-  (module, fn_name, event_name)  -- event_handlers.register(event_name, fn)
+  (module, fn_name, 'init')    call fn(event_handlers)
+  (module, fn_name, 'direct')  event_handlers.register(event_pattern, fn)
 
-Sentinels:
-  __always__  registered for every CLI invocation
-  __main__    registered when building the top-level command table
-  <service>   registered only when that service/command is invoked
+At runtime, the LazyInitEmitter triggers entries on demand: before emitting
+event X, it finds entries whose event patterns match X, dispatches each
+entry at most once, then proceeds with normal event dispatch.
 
 Usage:
     scripts/generate_plugin_registry [--output PATH] [--check] [--print]
@@ -34,6 +33,7 @@ To add a new customization:
 """
 import argparse
 import collections
+import importlib
 import os
 import sys
 
@@ -41,21 +41,6 @@ REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, REPO_ROOT)
 
 DEFAULT_OUTPUT = os.path.join(REPO_ROOT, 'awscli', 'handlers_registry.py')
-
-SENTINEL_ALWAYS = '__always__'
-SENTINEL_MAIN = '__main__'
-
-ALWAYS_PREFIXES = (
-    'session-initialized',
-    'top-level-args-parsed',
-    'provide-client-params',
-    'after-call',
-)
-
-ALWAYS_EXACT = {
-    'building-argument-table',
-    'building-command-table',
-}
 
 
 # ---------------------------------------------------------------------------
@@ -70,11 +55,6 @@ class _Entry:
         self.module = module
         self.fn_name = fn_name
         self.event_name = event_name  # None means "call fn(event_handlers)"
-
-    def as_tuple(self):
-        if self.event_name is not None:
-            return (self.module, self.fn_name, self.event_name)
-        return (self.module, self.fn_name)
 
 
 class _Recorder:
@@ -96,30 +76,20 @@ class _Recorder:
         return list(self._entries)
 
 
-# ---------------------------------------------------------------------------
-# Classification
-# ---------------------------------------------------------------------------
+class _MiniEmitter:
+    """Minimal emitter that just records event names."""
 
-def _classify_event(event_name):
-    if event_name in ALWAYS_EXACT:
-        return SENTINEL_ALWAYS
-    for prefix in ALWAYS_PREFIXES:
-        if event_name.startswith(prefix):
-            return SENTINEL_ALWAYS
-    parts = event_name.split('.')
-    if len(parts) >= 2:
-        namespace = parts[0]
-        qualifier = parts[1]
-        if qualifier == '*':
-            return SENTINEL_ALWAYS
-        if namespace == 'building-argument-table':
-            return qualifier
-        if namespace == 'building-command-table':
-            if qualifier == 'main':
-                return SENTINEL_MAIN
-            return qualifier
-        return qualifier
-    return SENTINEL_ALWAYS
+    def __init__(self):
+        self.registrations = []
+
+    def register(self, event_name, *args, **kwargs):
+        self.registrations.append(event_name)
+
+    register_first = register
+    register_last = register
+
+    def emit(self, *a, **k): pass
+    def emit_first_non_none_response(self, *a, **k): return None
 
 
 # ---------------------------------------------------------------------------
@@ -224,69 +194,40 @@ def _all_registrations(r):
 # ---------------------------------------------------------------------------
 
 def _build_registry(entries):
-    """Group entries by sentinel, deduplicating while preserving order."""
+    """Map each entry to its event patterns, producing event_pattern -> [entries]."""
     registry = collections.OrderedDict()
     seen = set()
 
+    def _add(event_pattern, entry_tuple):
+        key = (event_pattern,) + entry_tuple
+        if key not in seen:
+            seen.add(key)
+            registry.setdefault(event_pattern, []).append(entry_tuple)
+
     for entry in entries:
-        # Determine the sentinel from the event name.  For register_fn entries
-        # we don't have an event name yet — we need to import the module to
-        # find out what events it subscribes to.  Instead we use a lightweight
-        # RecordingEmitter to run each register_fn against and capture the
-        # events it subscribes to.
         if entry.event_name is not None:
-            # Direct registration — sentinel comes from the event name.
-            sentinel = _classify_event(entry.event_name)
-            key = (sentinel,) + entry.as_tuple()
-            if key not in seen:
-                seen.add(key)
-                registry.setdefault(sentinel, []).append(entry.as_tuple())
+            # Direct registration — event pattern is explicit.
+            entry_tuple = (entry.module, entry.fn_name, 'direct')
+            _add(entry.event_name, entry_tuple)
         else:
-            # register_fn — we need to run it against a mini RecordingEmitter
-            # to discover what events it subscribes to.
+            # register_fn — run against _MiniEmitter to discover events.
             mini = _MiniEmitter()
-            import importlib
             mod = importlib.import_module(entry.module)
             fn = getattr(mod, entry.fn_name)
             fn(mini)
 
+            entry_tuple = (entry.module, entry.fn_name, 'init')
             if not mini.registrations:
-                # No events recorded — treat as __always__ so it still runs.
-                sentinel = SENTINEL_ALWAYS
-                key = (sentinel,) + entry.as_tuple()
-                if key not in seen:
-                    seen.add(key)
-                    registry.setdefault(sentinel, []).append(entry.as_tuple())
+                # No events recorded — should not happen, but be safe.
+                _add('session-initialized', entry_tuple)
             else:
-                sentinels_seen_for_fn = set()
                 for event_name in mini.registrations:
-                    sentinel = _classify_event(event_name)
-                    if sentinel in sentinels_seen_for_fn:
-                        continue
-                    sentinels_seen_for_fn.add(sentinel)
-                    key = (sentinel,) + entry.as_tuple()
-                    if key not in seen:
-                        seen.add(key)
-                        registry.setdefault(sentinel, []).append(entry.as_tuple())
+                    _add(event_name, entry_tuple)
 
-    return registry
-
-
-class _MiniEmitter:
-    """Minimal emitter that just records event names."""
-
-    def __init__(self):
-        self.registrations = []
-
-    def register(self, event_name, *args, **kwargs):
-        self.registrations.append(event_name)
-
-    register_first = register
-    register_last = register
-
-    # Some register functions call session.register() — support that too.
-    def emit(self, *a, **k): pass
-    def emit_first_non_none_response(self, *a, **k): return None
+    # Sort by event pattern for stable output.
+    return collections.OrderedDict(
+        sorted(registry.items(), key=lambda kv: kv[0])
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -303,32 +244,23 @@ def _render_registry(registry):
         '# Re-generate by running:',
         '#   scripts/generate_plugin_registry',
         '#',
-        '# Sentinels:',
-        '#   __always__  registered for every CLI invocation',
-        '#   __main__    registered when building the top-level command table',
-        '#   <service>   registered only when that service/command is invoked',
+        '# Maps event patterns to initializer entries.',
+        '# At runtime, the LazyInitEmitter triggers entries on demand:',
+        '# before emitting event X, it finds entries whose event patterns',
+        '# match X, dispatches each entry at most once, then proceeds',
+        '# with normal event dispatch.',
         '#',
         '# Entry formats:',
-        '#   (module, fn_name)              call fn(event_handlers)',
-        '#   (module, fn_name, event_name)  event_handlers.register(event_name, fn)',
+        "#   (module, fn_name, 'init')    call fn(event_handlers)",
+        "#   (module, fn_name, 'direct')  event_handlers.register(event_pattern, fn)",
         '',
         'PLUGIN_REGISTRY = {',
     ]
 
-    # Sort sentinels so output is stable across platforms (e.g. os.listdir order).
-    # Pin __always__ and __main__ first, then alphabetical.
-    def _sentinel_key(s):
-        if s == SENTINEL_ALWAYS:
-            return (0, s)
-        if s == SENTINEL_MAIN:
-            return (1, s)
-        return (2, s)
-
-    sentinels = sorted(registry.keys(), key=_sentinel_key)
-    for i, sentinel in enumerate(sentinels):
-        entries = registry[sentinel]
-        is_last = (i == len(sentinels) - 1)
-        lines.append(f'    {sentinel!r}: [')
+    items = list(registry.items())
+    for i, (event_pattern, entries) in enumerate(items):
+        is_last = (i == len(items) - 1)
+        lines.append(f'    {event_pattern!r}: [')
         for j, entry in enumerate(entries):
             comma = '' if j == len(entries) - 1 else ','
             lines.append(f'        {entry!r}{comma}')
@@ -412,9 +344,9 @@ def main():
     print(f'Written {args.output}')
 
     total = sum(len(v) for v in registry.values())
-    print(f'\nRegistry summary ({total} entries across {len(registry)} sentinels):')
-    for sentinel, entries in registry.items():
-        print(f'  {sentinel!r:30s} {len(entries):3d} entries')
+    unique = len({e for entries in registry.values() for e in entries})
+    print(f'\nRegistry summary:')
+    print(f'  {len(registry)} event patterns, {total} total entries, {unique} unique initializers')
 
 
 if __name__ == '__main__':

@@ -1372,8 +1372,8 @@ class TestMbRb(BaseS3IntegrationTest):
         self.assert_no_errors(p)
 
     def test_fail_mb_rb(self):
-        #S3 can intermittenly return an `OperationAborted` exception instead of
-        # `BucketAlreadyExists`, so we give this test three attempts
+        # S3 can intermittently return an `OperationAborted` exception instead of
+        # `BucketAlreadyExists`, so we give this test four attempts
         for i in range(4):
             # Choose a bucket name that already exists.
             p = aws('s3 mb s3://mybucket')

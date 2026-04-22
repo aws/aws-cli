@@ -31,8 +31,7 @@ def validate_and_find_master_dns(session, parsed_globals, cluster_id):
     Return the latest created master instance public dns name.
     Throw MasterDNSNotAvailableError or ClusterTerminatedError.
     """
-    cluster_state = emrutils.get_cluster_state(
-        session, parsed_globals, cluster_id)
+    cluster_state = emrutils.get_cluster_state(session, parsed_globals, cluster_id)
 
     if cluster_state in constants.TERMINATED_STATES:
         raise exceptions.ClusterTerminatedError
@@ -40,7 +39,7 @@ def validate_and_find_master_dns(session, parsed_globals, cluster_id):
     emr = emrutils.get_client(session, parsed_globals)
 
     try:
-        cluster_running_waiter = emr.get_waiter('cluster_running')
+        cluster_running_waiter = emr.get_waiter("cluster_running")
         if cluster_state in constants.STARTING_STATES:
             print("Waiting for the cluster to start.")
         cluster_running_waiter.wait(ClusterId=cluster_id)
@@ -48,21 +47,25 @@ def validate_and_find_master_dns(session, parsed_globals, cluster_id):
         raise exceptions.MasterDNSNotAvailableError
 
     return emrutils.find_master_dns(
-        session=session, cluster_id=cluster_id,
-        parsed_globals=parsed_globals)
+        session=session, cluster_id=cluster_id, parsed_globals=parsed_globals
+    )
 
 
 def validate_ssh_with_key_file(key_file):
-    if (emrutils.which('putty.exe') or emrutils.which('ssh') or
-            emrutils.which('ssh.exe')) is None:
+    if (
+        emrutils.which("putty.exe")
+        or emrutils.which("ssh")
+        or emrutils.which("ssh.exe")
+    ) is None:
         raise exceptions.SSHNotFoundError
     else:
         check_ssh_key_format(key_file)
 
 
 def validate_scp_with_key_file(key_file):
-    if (emrutils.which('pscp.exe') or emrutils.which('scp') or
-            emrutils.which('scp.exe')) is None:
+    if (
+        emrutils.which("pscp.exe") or emrutils.which("scp") or emrutils.which("scp.exe")
+    ) is None:
         raise exceptions.SCPNotFoundError
     else:
         check_scp_key_format(key_file)
@@ -70,9 +73,11 @@ def validate_scp_with_key_file(key_file):
 
 def check_scp_key_format(key_file):
     # If only pscp is present and the file format is incorrect
-    if (emrutils.which('pscp.exe') is not None and
-            (emrutils.which('scp.exe') or emrutils.which('scp')) is None):
-        if check_command_key_format(key_file, ['ppk']) is False:
+    if (
+        emrutils.which("pscp.exe") is not None
+        and (emrutils.which("scp.exe") or emrutils.which("scp")) is None
+    ):
+        if check_command_key_format(key_file, ["ppk"]) is False:
             raise exceptions.WrongPuttyKeyError
     else:
         pass
@@ -80,15 +85,19 @@ def check_scp_key_format(key_file):
 
 def check_ssh_key_format(key_file):
     # If only putty is present and the file format is incorrect
-    if (emrutils.which('putty.exe') is not None and
-            (emrutils.which('ssh.exe') or emrutils.which('ssh')) is None):
-        if check_command_key_format(key_file, ['ppk']) is False:
+    if (
+        emrutils.which("putty.exe") is not None
+        and (emrutils.which("ssh.exe") or emrutils.which("ssh")) is None
+    ):
+        if check_command_key_format(key_file, ["ppk"]) is False:
             raise exceptions.WrongPuttyKeyError
     else:
         pass
 
 
-def check_command_key_format(key_file, accepted_file_format=[]):
+def check_command_key_format(key_file, accepted_file_format=None):
+    if accepted_file_format is None:
+        accepted_file_format = []
     if any(key_file.endswith(i) for i in accepted_file_format):
         return True
     else:

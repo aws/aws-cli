@@ -1367,6 +1367,33 @@ class TestCPCommand(BaseCPCommandTest):
             self.operations_called[0][1]['ChecksumAlgorithm'], 'CRC32'
         )
 
+    def test_upload_with_checksum_algorithm_sha1(self):
+        full_path = self.files.create_file('foo.txt', 'contents')
+        cmdline = f'{self.prefix} {full_path} s3://bucket/key.txt --checksum-algorithm SHA1'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        self.assertEqual(
+            self.operations_called[0][1]['ChecksumAlgorithm'], 'SHA1'
+        )
+
+    def test_upload_with_checksum_algorithm_sha256(self):
+        full_path = self.files.create_file('foo.txt', 'contents')
+        cmdline = f'{self.prefix} {full_path} s3://bucket/key.txt --checksum-algorithm SHA256'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        self.assertEqual(
+            self.operations_called[0][1]['ChecksumAlgorithm'], 'SHA256'
+        )
+
+    def test_upload_with_checksum_algorithm_sha512(self):
+        full_path = self.files.create_file('foo.txt', 'contents')
+        cmdline = f'{self.prefix} {full_path} s3://bucket/key.txt --checksum-algorithm SHA512'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        self.assertEqual(
+            self.operations_called[0][1]['ChecksumAlgorithm'], 'SHA512'
+        )
+
     def test_upload_with_checksum_algorithm_crc32c(self):
         full_path = self.files.create_file('foo.txt', 'contents')
         cmdline = f'{self.prefix} {full_path} s3://bucket/key.txt --checksum-algorithm CRC32C'
@@ -1383,6 +1410,33 @@ class TestCPCommand(BaseCPCommandTest):
         self.assertEqual(self.operations_called[0][0].name, 'PutObject')
         self.assertEqual(
             self.operations_called[0][1]['ChecksumAlgorithm'], 'CRC64NVME'
+        )
+
+    def test_upload_with_checksum_algorithm_xxhash3(self):
+        full_path = self.files.create_file('foo.txt', 'contents')
+        cmdline = f'{self.prefix} {full_path} s3://bucket/key.txt --checksum-algorithm XXHASH3'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        self.assertEqual(
+            self.operations_called[0][1]['ChecksumAlgorithm'], 'XXHASH3'
+        )
+
+    def test_upload_with_checksum_algorithm_xxhash64(self):
+        full_path = self.files.create_file('foo.txt', 'contents')
+        cmdline = f'{self.prefix} {full_path} s3://bucket/key.txt --checksum-algorithm XXHASH64'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        self.assertEqual(
+            self.operations_called[0][1]['ChecksumAlgorithm'], 'XXHASH64'
+        )
+
+    def test_upload_with_checksum_algorithm_xxhash128(self):
+        full_path = self.files.create_file('foo.txt', 'contents')
+        cmdline = f'{self.prefix} {full_path} s3://bucket/key.txt --checksum-algorithm XXHASH128'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        self.assertEqual(
+            self.operations_called[0][1]['ChecksumAlgorithm'], 'XXHASH128'
         )
 
     def test_multipart_upload_with_checksum_algorithm_crc32(self):

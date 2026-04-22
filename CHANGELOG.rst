@@ -2,6 +2,25 @@
 CHANGELOG
 =========
 
+2.34.35
+=======
+
+* enhancement:``s3``: Add support for xxhash3, xxhash64, xxhash128, and sha512 algorithms to the high-level ``s3`` commands
+* api-change:``opensearch``: Adds support for RollbackServiceSoftwareUpdate API
+* api-change:``s3control``: This release adds support for five additional checksum algorithms for data integrity checking in Amazon S3 - MD5, SHA-512, XXHash3, XXHash64, and XXHash128.
+* api-change:``emr-serverless``: This release adds support for Spark connect sessions starting with release label emr-7.13.0.
+* api-change:``osis``: Update the pipeline configuration body character limit for the CreatePipeline API call.
+* api-change:``batch``: Support of S3Files volume type, container start and stop timeouts.
+* api-change:``lambda``: Add Ruby 4.0 (ruby4.0) support to AWS Lambda.
+* api-change:``bedrock-agentcore-control``: Adds support for Amazon Bedrock AgentCore Harness control plane APIs, enabling customers to create, manage, and configure managed agent loops with customizable models, tools, memory, and isolated execution environments.
+* api-change:``bedrock-agentcore``: Adds support for Amazon Bedrock AgentCore Harness data plane APIs, enabling customers to invoke managed agent loops and execute commands on live agent sessions with streaming responses.
+* api-change:``iotwireless``: Enable customers to optionally specify a desired confidence level for Cellular and WiFi position estimates. Customers can use this to trade off confidence level and radius of uncertainty based on their needs.
+* api-change:``ecs``: GPU health monitoring and auto-repair for ECS Managed Instances
+* api-change:``ec2``: Managed resource visibility settings control whether resources that AWS services provision on your behalf within your AWS account appear in your Amazon console views and API list operations.
+* api-change:``s3``: This release adds five additional checksum algorithms for S3 data integrity (MD5, SHA-512, XXHash3, XXHash64, XXHash128) and support for S3 Inventory on directory buckets (S3 Express One Zone).
+* api-change:``ivs``: Adds support for Amazon IVS server-side ad insertion
+
+
 2.34.34
 =======
 

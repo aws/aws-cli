@@ -27,26 +27,16 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.streamingoutputarg', 'add_streaming_output_arg', 'building-argument-table.*'),
         ('awscli.customizations.globalargs', 'register_parse_global_args'),
         ('awscli.customizations.paginate', 'register_pagination'),
-        ('awscli.customizations.ec2.secgroupsimplify', 'register_secgroup'),
         ('awscli.customizations.iamvirtmfa', 'IAMVMFAWrapper'),
         ('awscli.customizations.datapipeline', 'register_customizations'),
         ('awscli.customizations.ecs.monitormutatinggatewayservice', 'register_monitor_mutating_gateway_service'),
-        ('awscli.customizations.cloudsearchdomain', 'register_cloudsearchdomain'),
         ('awscli.customizations.generatecliskeleton', 'register_generate_cli_skeleton'),
         ('awscli.customizations.assumerole', 'register_assume_role_provider'),
         ('awscli.customizations.waiters', 'register_add_waiters'),
         ('awscli.customizations.timestampformat', 'register_timestamp_format'),
-        ('awscli.customizations.awslambda', 'register_lambda_create_function'),
-        ('awscli.customizations.kms', 'register_fix_kms_create_grant_docs'),
-        ('awscli.customizations.route53', 'register_create_hosted_zone_doc_fix'),
-        ('awscli.customizations.iot_data', 'register_custom_endpoint_note'),
         ('awscli.customizations.cloudfront', 'register'),
-        ('awscli.customizations.ec2.paginate', 'register_ec2_page_size_injector'),
         ('awscli.customizations.history', 'register_history_mode'),
-        ('awscli.customizations.s3events', 'register_event_stream_arg'),
-        ('awscli.customizations.s3events', 'register_document_expires_string'),
         ('awscli.customizations.sso', 'register_sso_commands'),
-        ('awscli.customizations.dynamodb.paginatorfix', 'register_dynamodb_paginator_fix'),
         ('awscli.alias', 'register_alias_commands')
     ],
     '__main__': [
@@ -90,7 +80,8 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.cloudsearch', 'initialize')
     ],
     'cloudsearchdomain': [
-        ('awscli.customizations.argrename', 'register_arg_renames')
+        ('awscli.customizations.argrename', 'register_arg_renames'),
+        ('awscli.customizations.cloudsearchdomain', 'register_cloudsearchdomain')
     ],
     'cloudtrail': [
         ('awscli.customizations.cloudtrail', 'initialize')
@@ -139,7 +130,8 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.dsql', 'register_dsql_customizations')
     ],
     'dynamodb': [
-        ('awscli.customizations.wizard.commands', 'register_wizard_commands')
+        ('awscli.customizations.wizard.commands', 'register_wizard_commands'),
+        ('awscli.customizations.dynamodb.paginatorfix', 'register_dynamodb_paginator_fix')
     ],
     'ec2': [
         ('awscli.customizations.ec2.decryptpassword', 'ec2_add_priv_launch_key', 'building-argument-table.ec2.get-password-data'),
@@ -150,7 +142,8 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.removals', 'register_removals'),
         ('awscli.customizations.argrename', 'register_arg_renames'),
         ('awscli.customizations.toplevelbool', 'register_bool_params'),
-        ('awscli.customizations.ec2.protocolarg', 'register_protocol_args')
+        ('awscli.customizations.ec2.protocolarg', 'register_protocol_args'),
+        ('awscli.customizations.ec2.paginate', 'register_ec2_page_size_injector')
     ],
     'ec2-instance-connect': [
         ('awscli.customizations.ec2instanceconnect', 'register_ec2_instance_connect_commands')
@@ -199,6 +192,9 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.iot', 'register_create_keys_and_cert_arguments', 'building-argument-table.iot.create-keys-and-certificate'),
         ('awscli.customizations.iot', 'register_create_keys_from_csr_arguments', 'building-argument-table.iot.create-certificate-from-csr')
     ],
+    'iot-data': [
+        ('awscli.customizations.iot_data', 'register_custom_endpoint_note')
+    ],
     'iotsitewise': [
         ('awscli.customizations.removals', 'register_removals')
     ],
@@ -214,6 +210,9 @@ PLUGIN_REGISTRY = {
     ],
     'kinesisanalyticsv2': [
         ('awscli.customizations.argrename', 'register_arg_renames')
+    ],
+    'kms': [
+        ('awscli.customizations.kms', 'register_fix_kms_create_grant_docs')
     ],
     'lambda': [
         ('awscli.customizations.removals', 'register_removals'),
@@ -263,7 +262,8 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.argrename', 'register_arg_renames')
     ],
     'route53': [
-        ('awscli.customizations.argrename', 'register_arg_renames')
+        ('awscli.customizations.argrename', 'register_arg_renames'),
+        ('awscli.customizations.route53', 'register_create_hosted_zone_doc_fix')
     ],
     'route53domains': [
         ('awscli.customizations.argrename', 'register_arg_renames')
@@ -272,7 +272,8 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.s3.s3', 's3_plugin_initialize')
     ],
     's3api': [
-        ('awscli.customizations.s3events', 'register_event_stream_arg')
+        ('awscli.customizations.s3events', 'register_event_stream_arg'),
+        ('awscli.customizations.s3events', 'register_document_expires_string')
     ],
     'sagemaker': [
         ('awscli.customizations.argrename', 'register_arg_renames')

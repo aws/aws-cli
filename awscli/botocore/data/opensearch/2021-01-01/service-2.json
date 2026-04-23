@@ -2079,6 +2079,10 @@
         "Service":{
           "shape":"AWSServicePrincipal",
           "documentation":"<p>The Amazon Web Services service SP to grant access to.</p>"
+        },
+        "ServiceOptions":{
+          "shape":"ServiceOptions",
+          "documentation":"<p>The options for the service, including the supported Regions for the endpoint access.</p>"
         }
       }
     },
@@ -2102,6 +2106,10 @@
         "Principal":{
           "shape":"String",
           "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_principal.html\">IAM principal</a> that is allowed access to the domain.</p>"
+        },
+        "ServiceOptions":{
+          "shape":"ServiceOptions",
+          "documentation":"<p>The options for the service, including the supported Regions for the endpoint access.</p>"
         }
       },
       "documentation":"<p>Information about an Amazon Web Services account or service that has access to an Amazon OpenSearch Service domain through the use of an interface VPC endpoint.</p>"
@@ -5614,6 +5622,10 @@
           "shape":"IdentityCenterInstanceARN",
           "documentation":"<p>The Amazon Resource Name (ARN) of the IAM Identity Center instance.</p>"
         },
+        "IdentityCenterInstanceRegion":{
+          "shape":"Region",
+          "documentation":"<p>The Region of the IAM Identity Center instance.</p>"
+        },
         "SubjectKey":{
           "shape":"SubjectKeyIdCOption",
           "documentation":"<p>Specifies the attribute that contains the subject identifier (such as username, user ID, or email) in IAM Identity Center.</p>"
@@ -5643,6 +5655,10 @@
         "IdentityCenterInstanceARN":{
           "shape":"IdentityCenterInstanceARN",
           "documentation":"<p>The ARN of the IAM Identity Center instance used to create an OpenSearch UI application that uses IAM Identity Center for authentication.</p>"
+        },
+        "IdentityCenterInstanceRegion":{
+          "shape":"Region",
+          "documentation":"<p>The Region of the IAM Identity Center instance.</p>"
         },
         "SubjectKey":{
           "shape":"SubjectKeyIdCOption",
@@ -7672,9 +7688,14 @@
     "ReferencePath":{"type":"string"},
     "Region":{
       "type":"string",
+      "documentation":"<p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p>",
       "max":30,
       "min":5,
       "pattern":"[a-z][a-z0-9\\-]+"
+    },
+    "RegionsList":{
+      "type":"list",
+      "member":{"shape":"Region"}
     },
     "RegisterCapabilityRequest":{
       "type":"structure",
@@ -7931,6 +7952,10 @@
         "Service":{
           "shape":"AWSServicePrincipal",
           "documentation":"<p>The service SP to revoke access from.</p>"
+        },
+        "ServiceOptions":{
+          "shape":"ServiceOptions",
+          "documentation":"<p>The options for the service, including the supported Regions for the endpoint access.</p>"
         }
       }
     },
@@ -8255,6 +8280,16 @@
         }
       },
       "documentation":"<p>Configuration for serverless vector acceleration, which provides <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/gpu-acceleration-vector-index.html\">GPU-accelerated</a> vector search capabilities for improved performance on vector workloads.</p>"
+    },
+    "ServiceOptions":{
+      "type":"structure",
+      "members":{
+        "SupportedRegions":{
+          "shape":"RegionsList",
+          "documentation":"<p>The list of supported Regions for the service.</p>"
+        }
+      },
+      "documentation":"<p>Options for the service, such as the supported Regions.</p>"
     },
     "ServiceQuotaExceededException":{
       "type":"structure",

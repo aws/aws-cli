@@ -1377,7 +1377,7 @@ class TestMbRb(BaseS3IntegrationTest):
         for i in range(4):
             # Choose a bucket name that already exists.
             p = aws('s3 mb s3://mybucket')
-            if "BucketAlreadyExists" in p.stderr:
+            if "OperationAborted" not in p.stderr:
                 break
             time.sleep(2**i)
         assert "BucketAlreadyExists" in p.stderr

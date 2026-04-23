@@ -15,6 +15,7 @@ import os
 import platform
 import shlex
 import sys
+from io import StringIO
 from subprocess import PIPE, Popen
 
 from docutils.core import publish_string
@@ -69,6 +70,7 @@ class PagingHelpRenderer:
         self.output_stream = output_stream
 
     PAGER = None
+    warning_stream = StringIO()
     _DEFAULT_DOCUTILS_SETTINGS_OVERRIDES = {
         # The default for line length limit in docutils is 10,000. However,
         # currently in the documentation, it inlines all possible enums in
@@ -77,7 +79,8 @@ class PagingHelpRenderer:
         # This is a temporary fix to allow the manpages for these commands
         # to be rendered. Long term, we should avoid enumerating over all
         # enums inline for the JSON syntax snippets.
-        'line_length_limit': 50_000
+        'line_length_limit': 50_000,
+        'warning_stream': warning_stream,
     }
 
     def get_pager_cmdline(self):
@@ -123,6 +126,13 @@ class PosixHelpRenderer(PagingHelpRenderer):
             writer=manpage.Writer(),
             settings_overrides=self._DEFAULT_DOCUTILS_SETTINGS_OVERRIDES,
         )
+
+        warnings = self.warning_stream.getvalue().strip()
+        if warnings:
+            LOG.warning(
+                "Warnings processing docstring with docutils: %s", warnings
+            )
+
         if self._exists_on_path('groff'):
             cmdline = ['groff', '-m', 'man', '-T', 'ascii']
         elif self._exists_on_path('mandoc'):
@@ -366,9 +376,7 @@ class ServiceHelpCommand(HelpCommand):
     def __init__(
         self, session, obj, command_table, arg_table, name, event_class
     ):
-        super().__init__(
-            session, obj, command_table, arg_table
-        )
+        super().__init__(session, obj, command_table, arg_table)
         self._name = name
         self._event_class = event_class
 

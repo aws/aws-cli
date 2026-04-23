@@ -25,7 +25,7 @@ from enum import Enum
 import jmespath
 from botocore import UNSIGNED, xform_name
 from botocore.auth import AUTH_TYPE_MAPS, resolve_auth_scheme_preference
-from botocore.endpoint_provider import EndpointProvider
+from botocore.endpoint_provider import S3_UNREFERENCED_PARAMS, EndpointProvider
 from botocore.exceptions import (
     EndpointProviderError,
     EndpointVariantError,
@@ -476,6 +476,11 @@ class EndpointRulesetResolver:
         self._provider = EndpointProvider(
             ruleset_data=endpoint_ruleset_data,
             partition_data=partition_data,
+            excluded_params=(
+                S3_UNREFERENCED_PARAMS
+                if service_model.service_name == 's3'
+                else None
+            ),
         )
         self._param_definitions = self._provider.ruleset.parameters
         self._service_model = service_model
@@ -522,9 +527,9 @@ class EndpointRulesetResolver:
 
         # The endpoint provider does not support non-secure transport.
         if (
-                not self._use_ssl
-                and provider_result.url.startswith('https://')
-                and 'Endpoint' not in provider_params
+            not self._use_ssl
+            and provider_result.url.startswith('https://')
+            and 'Endpoint' not in provider_params
         ):
             provider_result = provider_result._replace(
                 url=f'http://{provider_result.url[8:]}'

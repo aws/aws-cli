@@ -14,20 +14,17 @@ from awscli.customizations.utils import make_hidden_command_alias
 
 
 def register_rename_otel_commands(event_emitter):
-  event_emitter.register(
-      'building-command-table.cloudwatch',
-      alias_otel_commands
-  )
+    event_emitter.register(
+        'building-command-table.cloudwatch', alias_otel_commands
+    )
 
 
 def alias_otel_commands(command_table, **kwargs):
-  aliases = {
-      'get-otel-enrichment': 'get-o-tel-enrichment',
-      'start-otel-enrichment': 'start-o-tel-enrichment',
-      'stop-otel-enrichment': 'stop-o-tel-enrichment',
-  }
-  for existing_name, alias_name in aliases.items():
-      if existing_name in command_table:
-          make_hidden_command_alias(
-              command_table, existing_name, alias_name
-          )
+    aliases = {
+        'get-otel-enrichment': 'get-o-tel-enrichment',
+        'start-otel-enrichment': 'start-o-tel-enrichment',
+        'stop-otel-enrichment': 'stop-o-tel-enrichment',
+    }
+    for existing_name, alias_name in aliases.items():
+        if existing_name in command_table:
+            make_hidden_command_alias(command_table, existing_name, alias_name)

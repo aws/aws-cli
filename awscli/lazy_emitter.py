@@ -41,7 +41,7 @@ class LazyInitEmitter(HierarchicalEmitter):
         self._init_trie = _PrefixTrie()
         self._initialized = set()  # set of (module, fn_name, type)
         self._pending_count = 0  # number of entries not yet initialized
-        self._init_cache = {}  # event_name -> list of entries (cleared on init)
+        self._init_cache = {}  # event_name -> list of entries from init trie
         self._direct_patterns = {}  # event_pattern -> set of entries
         if plugin_registry:
             self._load_registry(plugin_registry)
@@ -72,7 +72,6 @@ class LazyInitEmitter(HierarchicalEmitter):
             if entry not in self._initialized:
                 self._initialized.add(entry)
                 self._pending_count -= 1
-                self._init_cache = {}  # invalidate; new handlers may change matches
                 module_path, fn_name, entry_type = entry
                 logger.debug(
                     'Lazy-initializing plugin %s.%s (%s) for event %s',

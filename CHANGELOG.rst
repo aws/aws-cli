@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.34.36
+=======
+
+* api-change:``datazone``: Releasing For LakehouseProperties attributes in the Connections API's
+* api-change:``iot-managed-integrations``: Adds "Status" field to provisioning profile operation response types, giving users visibility into the readiness of a provisioning profile to be used for device provisioning.
+* api-change:``opensearch``: Amazon OpenSearch UI applications now support cross-Region domain association, enabling you to connect OpenSearch Dashboards in one AWS Region to OpenSearch domains in other Regions within the same partition for centralized data visualization.
+* api-change:``pcs``: This release adds support for Slurm 25.11 with expedited requeue enabled by default for jobs failing due to node issues, configurable requeue delay, health checks at node startup only, and unauthenticated HTTP endpoints disabled by default for improved security.
+* bugfix:``cloudwatch``: Rename ``get-o-tel-enrichment``, ``start-o-tel-enrichment``, and ``stop-o-tel-enrichment`` commands to ``get-otel-enrichment``, ``start-otel-enrichment``, and ``stop-otel-enrichment``. The old names are kept as hidden aliases for backward compatibility.
+* enhancement:``s3``: Improve caching of S3 endpoints, which should improve performance of sync and recursive copy commands that interact with multiple keys in the same bucket
+
+
 2.34.35
 =======
 

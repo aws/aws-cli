@@ -9,7 +9,10 @@ import awscli
 from awscli.argparser import ArgTableArgParser
 from awscli.argprocess import unpack_argument, unpack_cli_arg
 from awscli.arguments import CustomArgument, create_argument_model_from_schema
-from awscli.clidocs import OperationDocumentEventHandler
+from awscli.clidocs import (
+    OperationDocumentEventHandler,
+    iter_option_cli_flags,
+)
 from awscli.clidriver import CLICommand
 from awscli.bcdoc import docevents
 from awscli.help import HelpCommand
@@ -392,15 +395,19 @@ class BasicDocHandler(OperationDocumentEventHandler):
                     # This arg is already documented so we can move on.
                     return
                 option_str = ' | '.join(
-                    [a.cli_name for a in
+                    [' | '.join(iter_option_cli_flags(a)) for a in
                      self._arg_groups[argument.group_name]])
                 self._documented_arg_groups.append(argument.group_name)
             elif argument.cli_type_name == 'boolean':
-                option_str = '%s' % argument.cli_name
+                option_str = '%s' % ' | '.join(iter_option_cli_flags(argument))
             elif argument.nargs == '+':
-                option_str = "%s <value> [<value>...]" % argument.cli_name
+                option_str = '%s <value> [<value>...]' % ' | '.join(
+                    iter_option_cli_flags(argument),
+                )
             else:
-                option_str = '%s <value>' % argument.cli_name
+                option_str = '%s <value>' % ' | '.join(
+                    iter_option_cli_flags(argument),
+                )
             if not (argument.required or argument.positional_arg):
                 option_str = '[%s]' % option_str
             doc.writeln('%s' % option_str)

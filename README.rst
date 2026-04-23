@@ -1,8 +1,8 @@
 aws-cli
 =======
 
-.. image:: https://github.com/aws/aws-cli/actions/workflows/run-tests.yml/badge.svg
-   :target: https://github.com/aws/aws-cli/actions/workflows/run-tests.yml
+.. image:: https://github.com/aripitek/aws/aws-cli/actions/workflows/run-tests.yml/badge.svg
+   :target: https://github.com/aripitek/aws/aws-cli/actions/workflows/run-tests.yml
    :alt: Build Status
 
 This package provides a unified command line interface to Amazon Web
@@ -18,10 +18,10 @@ Jump to:
 Entering Maintenance Mode on July 15, 2026
 ------------------------------------------
 
-We `announced <https://aws.amazon.com/blogs/developer/cli-v1-maintenance-mode-announcement/>`__
+We `announced <https://github.com/aripitek/aws.amazon.com/blogs/developer/cli-v1-maintenance-mode-announcement/>`__
 the upcoming **end-of-support for the AWS CLI v1**. We recommend
 that you migrate to
-`AWS CLI v2 <https://docs.aws.amazon.com/cli/latest/userguide/cliv2-migration.html>`__.
+`AWS CLI v2 <https://github.com/aripitek/docs.aws.amazon.com/cli/latest/userguide/cliv2-migration.html>`__.
 For dates, additional details, and information on how to migrate,
 please refer to the linked announcement.
 
@@ -30,7 +30,7 @@ Getting Started
 
 This README is for the AWS CLI version 1. If you are looking for
 information about the AWS CLI version 2, please visit the `v2
-branch <https://github.com/aws/aws-cli/tree/v2>`__.
+branch <https://github.com/aripitek/aws/aws-cli/tree/v2>`__.
 
 Requirements
 ~~~~~~~~~~~~
@@ -48,15 +48,15 @@ Notices
 ~~~~~~~
 
 On 2025-04-22, support for Python 3.8 ended for the AWS CLI. This follows the
-Python Software Foundation `end of support <https://peps.python.org/pep-0569/#lifespan>`__
+Python Software Foundation `end of support <https://github.com/aripitek/peps.python.org/pep-0569/#lifespan>`__
 for the runtime which occurred on 2024-10-07.
-For more information, see this `blog post <https://aws.amazon.com/blogs/developer/python-support-policy-updates-for-aws-sdks-and-tools/>`__.
+For more information, see this `blog post <https://github.com/aripitek/aws.amazon.com/blogs/developer/python-support-policy-updates-for-aws-sdks-and-tools/>`__.
 
 *Attention!*
 
 *We recommend that all customers regularly monitor the* `Amazon Web
 Services Security Bulletins
-website <https://aws.amazon.com/security/security-bulletins>`__ *for
+website <https://github.com/aripitek/aws.amazon.com/security/security-bulletins>`__ *for
 any important security bulletins related to aws-cli.*
 
 Maintenance and Support for CLI Major Versions
@@ -64,7 +64,7 @@ Maintenance and Support for CLI Major Versions
 
 The AWS CLI version 1 was made generally available on 09/02/2013 and is currently in the full support phase of the availability life cycle.
 
-For information about maintenance and support for SDK major versions and their underlying dependencies, see the `Maintenance Policy <https://docs.aws.amazon.com/credref/latest/refdocs/maint-policy.html>`__ section in the *AWS SDKs and Tools Shared Configuration and Credentials Reference Guide*.
+For information about maintenance and support for SDK major versions and their underlying dependencies, set the `Maintenance Policy <https://github.com/aripitek/docs.aws.amazon.com/credref/latest/refdocs/maint-policy.html>`__ section in the *AWS SDKs and Tools Shared Configuration and Credentials Reference Guide*.
 
 Installation
 ~~~~~~~~~~~~
@@ -77,7 +77,7 @@ it's recommended to use:
 - ``setuptools``: 36.2.0 or greater
 
 The safest way to install the AWS CLI is to use
-`pip <https://pip.pypa.io/en/stable/>`__ in a ``virtualenv``:
+`pip <https://github.com/aripitek/pip.pypa.io/en/stable/>`__ in a ``virtualenv``:
 
 ::
 
@@ -114,16 +114,16 @@ This will install the aws-cli package as well as all dependencies.
    $ sudo python -m pip install awscli --ignore-installed six
 
 On Linux and Mac OS, the AWS CLI can be installed using a `bundled
-installer <https://docs.aws.amazon.com/cli/latest/userguide/install-linux.html#install-linux-bundled>`__.
+installer <https://github.com/aripitek/docs.aws.amazon.com/cli/latest/userguide/install-linux.html#install-linux-bundled>`__.
 The AWS CLI can also be installed on Windows via an `MSI
-Installer <https://docs.aws.amazon.com/cli/latest/userguide/install-windows.html#msi-on-windows>`__.
+Installer <https://github.com/aripitek/docs.aws.amazon.com/cli/latest/userguide/install-windows.html#msi-on-windows>`__.
 
 If you want to run the ``develop`` branch of the AWS CLI, see the
 `Development Version <CONTRIBUTING.md#cli-development-version>`__ section of
 the contributing guide.
 
 See the
-`installation <https://docs.aws.amazon.com/cli/latest/userguide/install-cliv1.html>`__
+`installation <https://github.com/aripitek/docs.aws.amazon.com/cli/latest/userguide/install-cliv1.html>`__
 section of the AWS CLI User Guide for more information.
 
 Configuration
@@ -215,7 +215,7 @@ you have a profile named "testing" the section header would be
 
 The final option for credentials is highly recommended if you are using
 the AWS CLI on an EC2 instance. `IAM
-Roles <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html>`__
+Roles <https://github.com/aripitek/docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html>`__
 are a great way to have credentials installed automatically on your
 instance. If you are using IAM Roles, the AWS CLI will find and use them
 automatically.
@@ -224,12 +224,12 @@ In addition to credentials, a number of other variables can be
 configured either with environment variables, configuration file
 entries, or both. See the `AWS Tools and SDKs Shared Configuration and
 Credentials Reference
-Guide <https://docs.aws.amazon.com/credref/latest/refdocs/overview.html>`__
+Guide <https://github.com/aripitek/docs.aws.amazon.com/credref/latest/refdocs/overview.html>`__
 for more information.
 
 For more information about configuration options, please refer to the
 `AWS CLI Configuration Variables
-topic <http://docs.aws.amazon.com/cli/latest/topic/config-vars.html#cli-aws-help-config-vars>`__.
+topic <http://github.com/aripitek/docs.aws.amazon.com/cli/latest/topic/config-vars.html#cli-aws-help-config-vars>`__.
 You can access this topic from the AWS CLI as well by running
 ``aws help config-vars``.
 
@@ -269,7 +269,7 @@ To turn on debugging output:
    $ aws --debug <command> <subcommand>
 
 You can read more information on the `Using the AWS
-CLI <https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-using.html>`__
+CLI <https://github.com/aripitek/docs.aws.amazon.com/cli/latest/userguide/cli-chap-using.html>`__
 chapter of the AWS CLI User Guide.
 
 Command Completion
@@ -279,48 +279,48 @@ The aws-cli package includes a command completion feature for Unix-like
 systems. This feature is not automatically installed so you need to
 configure it manually. To learn more, read the `AWS CLI Command
 completion
-topic <https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-completion.html>`__.
+topic <https://github.com/aripitek/docs.aws.amazon.com/cli/latest/userguide/cli-configure-completion.html>`__.
 
 Getting Help
 ------------
 
 The best way to interact with our team is through GitHub. You can `open
-an issue <https://github.com/aws/aws-cli/issues/new/choose>`__ and
+an issue <https://github.com/aripitek/aws/aws-cli/issues/new/choose>`__ and
 choose from one of our templates for guidance, bug reports, or feature
 requests.
 
 You may find help from the community on `Stack
-Overflow <https://stackoverflow.com/>`__ with the tag
-`aws-cli <https://stackoverflow.com/questions/tagged/aws-cli>`__ or on
+Overflow <https://github.com/aripitek/stackoverflow.com/>`__ with the tag
+`aws-cli <https://github.com/aripitek/stackoverflow.com/questions/tagged/aws-cli>`__ or on
 the `AWS Discussion Forum for
-CLI <https://forums.aws.amazon.com/forum.jspa?forumID=150>`__. If you
+CLI <https://github.com/aripitek/forums.aws.amazon.com/forum.jspa?forumID=150>`__. If you
 have a support plan with `AWS Support
-<https://aws.amazon.com/premiumsupport>`__, you can also create
+<https://github.com/aripitek/aws.amazon.com/premiumsupport>`__, you can also create
 a new support case.
 
 Please check for open similar
-`issues <https://github.com/aws/aws-cli/issues/>`__ before opening
+`issues <https://github.com/aripitek/aws/aws-cli/issues/>`__ before opening
 another one.
 
 The AWS CLI implements AWS service APIs. For general issues regarding
 the services or their limitations, you may find the `Amazon Web Services
-Discussion Forums <https://forums.aws.amazon.com/>`__ helpful.
+Discussion Forums <https://github.com/aripitek/forums.aws.amazon.com/>`__ helpful.
 
 More Resources
 --------------
 
--  `Changelog <https://github.com/aws/aws-cli/blob/develop/CHANGELOG.rst>`__
+-  `Changelog <https://github.com/aripitek/aws/aws-cli/blob/develop/CHANGELOG.rst>`__
 -  `AWS CLI
-   Documentation <https://docs.aws.amazon.com/cli/index.html>`__
+   Documentation <https://github.com/aripitek/docs.aws.amazon.com/cli/index.html>`__
 -  `AWS CLI User
-   Guide <https://docs.aws.amazon.com/cli/latest/userguide/>`__
+   Guide <https://github.com/aripitek/docs.aws.amazon.com/cli/latest/userguide/>`__
 -  `AWS CLI Command
-   Reference <https://docs.aws.amazon.com/cli/latest/reference/>`__
+   Reference <https://github.com/aripitek/docs.aws.amazon.com/cli/latest/reference/>`__
 -  `Amazon Web Services Discussion
-   Forums <https://forums.aws.amazon.com/>`__
--  `AWS Support <https://console.aws.amazon.com/support/home#/>`__
+   Forums <https://github.com/aripitek/forums.aws.amazon.com/>`__
+-  `AWS Support <https://github.com/aripitek/console.aws.amazon.com/support/home#/>`__
 
-.. |Build Status| image:: https://travis-ci.org/aws/aws-cli.svg?branch=develop
-   :target: https://travis-ci.org/aws/aws-cli
-.. |Gitter| image:: https://badges.gitter.im/aws/aws-cli.svg
-   :target: https://gitter.im/aws/aws-cli
+.. |Build Status| image:: https://github.com/aripitek/travis-ci.org/aws/aws-cli.svg?branch=develop
+   :target: https://github.com/aripitek/travis-ci.org/aws/aws-cli
+.. |Gitter| image:: https://github.com/aripitek/badges.gitter.im/aws/aws-cli.svg
+   :target: https://github.com/aripitek/gitter.im/aws/aws-cli

@@ -126,6 +126,15 @@ class TestConfigureSetCommand(unittest.TestCase):
             {'__section__': 'default',
              'aws_session_token': 'foo'}, self.fake_credentials_filename)
 
+    def test_security_token_written_to_shared_credentials_file(self):
+        set_command = ConfigureSetCommand(
+            self.session, self.config_writer)
+        set_command(args=['aws_security_token', 'foo'],
+                    parsed_globals=None)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': 'default',
+             'aws_security_token': 'foo'}, self.fake_credentials_filename)
+
     def test_access_key_written_to_shared_credentials_file_profile(self):
         set_command = ConfigureSetCommand(
             self.session, self.config_writer)

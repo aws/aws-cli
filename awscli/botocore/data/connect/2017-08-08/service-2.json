@@ -1965,6 +1965,23 @@
       ],
       "documentation":"<p>Describes an agent status.</p>"
     },
+    "DescribeAttachedFilesConfiguration":{
+      "name":"DescribeAttachedFilesConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/attached-files-configurations/{InstanceId}/{AttachmentScope}"
+      },
+      "input":{"shape":"DescribeAttachedFilesConfigurationRequest"},
+      "output":{"shape":"DescribeAttachedFilesConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Describes the attached files configuration for the specified Amazon Connect instance and attachment scope.</p> <p>If a custom configuration exists for the specified attachment scope, the custom configuration is returned. If no custom configuration exists, the default configuration values for that attachment scope are returned.</p>"
+    },
     "DescribeAuthenticationProfile":{
       "name":"DescribeAuthenticationProfile",
       "http":{
@@ -3211,6 +3228,23 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Provides information about contact tree, a list of associated contacts with a unique identifier.</p>"
+    },
+    "ListAttachedFilesConfigurations":{
+      "name":"ListAttachedFilesConfigurations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/attached-files-configurations/{InstanceId}"
+      },
+      "input":{"shape":"ListAttachedFilesConfigurationsRequest"},
+      "output":{"shape":"ListAttachedFilesConfigurationsResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Provides summary information about the attached files configurations for the specified Amazon Connect instance.</p> <p>This API returns effective configurations (custom overrides or defaults) for each attachment scope. If no custom configuration exists for a scope, the default configuration values are returned.</p>"
     },
     "ListAuthenticationProfiles":{
       "name":"ListAuthenticationProfiles",
@@ -5387,6 +5421,23 @@
       ],
       "documentation":"<p>Updates agent status.</p>"
     },
+    "UpdateAttachedFilesConfiguration":{
+      "name":"UpdateAttachedFilesConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/attached-files-configurations/{InstanceId}/{AttachmentScope}"
+      },
+      "input":{"shape":"UpdateAttachedFilesConfigurationRequest"},
+      "output":{"shape":"UpdateAttachedFilesConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates the attached files configuration for the specified Amazon Connect instance and attachment scope.</p> <p>If no instance-specific configuration exists, this operation creates one. Partial updates are supported—only specified fields are updated, while unspecified fields retain their current values.</p>"
+    },
     "UpdateAuthenticationProfile":{
       "name":"UpdateAuthenticationProfile",
       "http":{
@@ -7127,6 +7178,22 @@
       },
       "documentation":"<p>Information about the capabilities enabled for participants of the contact.</p>"
     },
+    "AllowedExtension":{
+      "type":"structure",
+      "required":["Extension"],
+      "members":{
+        "Extension":{
+          "shape":"FileExtension",
+          "documentation":"<p>The file extension. The extension must be between 1 and 10 characters and can contain only alphanumeric characters, hyphens, and underscores.</p>"
+        }
+      },
+      "documentation":"<p>Information about an allowed file extension.</p>"
+    },
+    "AllowedExtensionsList":{
+      "type":"list",
+      "member":{"shape":"AllowedExtension"},
+      "documentation":"<p>A list of allowed file extensions.</p>"
+    },
     "AllowedFlowModules":{
       "type":"list",
       "member":{"shape":"FlowModule"},
@@ -8040,6 +8107,64 @@
         "TOTAL_FILE_COUNT_EXCEEDED"
       ]
     },
+    "AttachedFilesConfiguration":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "AttachmentScope"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance.</p>"
+        },
+        "AttachmentScope":{
+          "shape":"AttachmentScope",
+          "documentation":"<p>The scope of the attachment. Valid values are <code>EMAIL</code>, <code>CHAT</code>, <code>CASE</code>, and <code>TASK</code>.</p>"
+        },
+        "MaximumSizeLimitInBytes":{
+          "shape":"MaximumSizeLimitInBytes",
+          "documentation":"<p>The maximum size limit for attached files in bytes.</p>"
+        },
+        "ExtensionConfiguration":{
+          "shape":"ExtensionConfiguration",
+          "documentation":"<p>The configuration for allowed file extensions.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp when the configuration was last modified.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for attached files for a specific attachment scope.</p>"
+    },
+    "AttachedFilesConfigurationSummary":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "AttachmentScope"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance.</p>"
+        },
+        "AttachmentScope":{
+          "shape":"AttachmentScope",
+          "documentation":"<p>The scope of the attachment. Valid values are <code>EMAIL</code>, <code>CHAT</code>, <code>CASE</code>, and <code>TASK</code>.</p>"
+        },
+        "MaximumSizeLimitInBytes":{"shape":"MaximumSizeLimitInBytes"},
+        "ExtensionConfiguration":{
+          "shape":"ExtensionConfiguration",
+          "documentation":"<p>The configuration for allowed file extensions.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the attached files configuration.</p>"
+    },
+    "AttachedFilesConfigurationSummaryList":{
+      "type":"list",
+      "member":{"shape":"AttachedFilesConfigurationSummary"},
+      "documentation":"<p>A list of attached files configuration summaries.</p>"
+    },
     "AttachedFilesList":{
       "type":"list",
       "member":{"shape":"AttachedFile"}
@@ -8070,6 +8195,16 @@
         }
       },
       "documentation":"<p>Information about a reference when the <code>referenceType</code> is <code>ATTACHMENT</code>. Otherwise, null.</p>"
+    },
+    "AttachmentScope":{
+      "type":"string",
+      "documentation":"<p>The scope of the attachment. Valid values are:</p> <ul> <li> <p> <code>EMAIL</code> - Attachments for email messages.</p> </li> <li> <p> <code>CHAT</code> - Attachments for chat conversations.</p> </li> <li> <p> <code>CASE</code> - Attachments for cases.</p> </li> <li> <p> <code>TASK</code> - Attachments for tasks.</p> </li> </ul>",
+      "enum":[
+        "EMAIL",
+        "CHAT",
+        "CASE",
+        "TASK"
+      ]
     },
     "Attendee":{
       "type":"structure",
@@ -14651,6 +14786,37 @@
         }
       }
     },
+    "DescribeAttachedFilesConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "AttachmentScope"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "AttachmentScope":{
+          "shape":"AttachmentScope",
+          "documentation":"<p>The scope of the attachment. Valid values are <code>EMAIL</code>, <code>CHAT</code>, <code>CASE</code>, and <code>TASK</code>.</p>",
+          "location":"uri",
+          "locationName":"AttachmentScope"
+        }
+      }
+    },
+    "DescribeAttachedFilesConfigurationResponse":{
+      "type":"structure",
+      "required":["AttachedFilesConfiguration"],
+      "members":{
+        "AttachedFilesConfiguration":{
+          "shape":"AttachedFilesConfiguration",
+          "documentation":"<p>Information about the attached files configuration.</p>"
+        }
+      }
+    },
     "DescribeAuthenticationProfileRequest":{
       "type":"structure",
       "required":[
@@ -18928,6 +19094,17 @@
       "type":"list",
       "member":{"shape":"Expression"}
     },
+    "ExtensionConfiguration":{
+      "type":"structure",
+      "required":["AllowedExtensions"],
+      "members":{
+        "AllowedExtensions":{
+          "shape":"AllowedExtensionsList",
+          "documentation":"<p>The list of allowed file extensions.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for allowed file extensions.</p>"
+    },
     "ExternalInvocationConfiguration":{
       "type":"structure",
       "members":{
@@ -19051,6 +19228,13 @@
     "FieldValues":{
       "type":"list",
       "member":{"shape":"FieldValue"}
+    },
+    "FileExtension":{
+      "type":"string",
+      "documentation":"<p>A file extension. The extension must be between 1 and 10 characters and can contain only alphanumeric characters, hyphens, and underscores.</p>",
+      "max":10,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9-_]+$"
     },
     "FileId":{
       "type":"string",
@@ -21756,6 +21940,43 @@
         "ContactSummaryList":{
           "shape":"AssociatedContactSummaryList",
           "documentation":"<p>List of the contact summary for all the contacts in contact tree associated with unique identifier.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        }
+      }
+    },
+    "ListAttachedFilesConfigurationsRequest":{
+      "type":"structure",
+      "required":["InstanceId"],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page. The default MaxResult size is 100.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListAttachedFilesConfigurationsResponse":{
+      "type":"structure",
+      "members":{
+        "AttachedFilesConfigurations":{
+          "shape":"AttachedFilesConfigurationSummaryList",
+          "documentation":"<p>Information about the attached files configurations.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -24783,6 +25004,13 @@
       "documentation":"<p>Maximum number (1000) of tags have been returned with current request. Consider changing request parameters to get more tags.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
+    },
+    "MaximumSizeLimitInBytes":{
+      "type":"long",
+      "documentation":"<p>The maximum size limit for attached files in bytes. The minimum value is 1 and the maximum value is 104857600 (100 MB).</p>",
+      "box":true,
+      "max":104857600,
+      "min":1
     },
     "MediaConcurrencies":{
       "type":"list",
@@ -33654,6 +33882,64 @@
         "ResetOrderNumber":{
           "shape":"Boolean",
           "documentation":"<p>A number indicating the reset order of the agent status.</p>"
+        }
+      }
+    },
+    "UpdateAttachedFilesConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "AttachmentScope"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "AttachmentScope":{
+          "shape":"AttachmentScope",
+          "documentation":"<p>The scope of the attachment. Valid values are <code>EMAIL</code>, <code>CHAT</code>, <code>CASE</code>, and <code>TASK</code>.</p>",
+          "location":"uri",
+          "locationName":"AttachmentScope"
+        },
+        "MaximumSizeLimitInBytes":{
+          "shape":"MaximumSizeLimitInBytes",
+          "documentation":"<p>The maximum size limit for attached files in bytes. The minimum value is 1 and the maximum value is 104857600 (100 MB).</p>"
+        },
+        "ExtensionConfiguration":{
+          "shape":"ExtensionConfiguration",
+          "documentation":"<p>The configuration for allowed file extensions.</p>"
+        }
+      }
+    },
+    "UpdateAttachedFilesConfigurationResponse":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "AttachmentScope"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance.</p>"
+        },
+        "AttachmentScope":{
+          "shape":"AttachmentScope",
+          "documentation":"<p>The scope of the attachment.</p>"
+        },
+        "MaximumSizeLimitInBytes":{
+          "shape":"MaximumSizeLimitInBytes",
+          "documentation":"<p>The maximum size limit for attached files in bytes.</p>"
+        },
+        "ExtensionConfiguration":{
+          "shape":"ExtensionConfiguration",
+          "documentation":"<p>The configuration for allowed file extensions.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp when the configuration was last modified.</p>"
         }
       }
     },

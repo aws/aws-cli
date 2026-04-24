@@ -617,6 +617,7 @@
         {"shape":"UnauthorizedException"},
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
@@ -2103,7 +2104,8 @@
         "PYTHON_3_11",
         "PYTHON_3_12",
         "PYTHON_3_13",
-        "PYTHON_3_14"
+        "PYTHON_3_14",
+        "NODE_22"
       ]
     },
     "AgentRuntime":{
@@ -3047,7 +3049,7 @@
         },
         "runtime":{
           "shape":"AgentManagedRuntimeType",
-          "documentation":"<p>The runtime environment for executing the code (for example, Python 3.9 or Node.js 18).</p>"
+          "documentation":"<p>The runtime environment for executing the agent code. Specify the programming language and version to use for the agent runtime. For valid values, see the list of supported runtimes.</p>"
         },
         "entryPoint":{
           "shape":"CodeConfigurationEntryPointList",
@@ -4179,7 +4181,11 @@
           "shape":"String",
           "documentation":"<p>Callback URL to register on the OAuth2 credential provider as an allowed callback URL. This URL is where the OAuth2 authorization server redirects users after they complete the authorization flow.</p>"
         },
-        "oauth2ProviderConfigOutput":{"shape":"Oauth2ProviderConfigOutput"}
+        "oauth2ProviderConfigOutput":{"shape":"Oauth2ProviderConfigOutput"},
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The current status of the OAuth2 credential provider.</p>"
+        }
       }
     },
     "CreateOnlineEvaluationConfigRequest":{
@@ -4859,6 +4865,11 @@
         "customClaims":{
           "shape":"CustomClaimValidationsType",
           "documentation":"<p>An array of objects that define a custom claim validation name, value, and operation </p>"
+        },
+        "privateEndpoint":{"shape":"PrivateEndpoint"},
+        "privateEndpointOverrides":{
+          "shape":"PrivateEndpointOverrides",
+          "documentation":"<p>A list of private endpoint overrides for the JWT authorizer. Each override maps a specific domain to a private endpoint, enabling secure connectivity through VPC Lattice resource configurations.</p>"
         }
       },
       "documentation":"<p>Configuration for inbound JWT-based authorization, specifying how incoming requests should be authenticated.</p>"
@@ -4912,6 +4923,14 @@
         "clientSecret":{
           "shape":"ClientSecretType",
           "documentation":"<p>The client secret for the custom OAuth2 provider.</p>"
+        },
+        "privateEndpoint":{
+          "shape":"PrivateEndpoint",
+          "documentation":"<p>The default private endpoint for the custom OAuth2 provider, enabling secure connectivity through a VPC Lattice resource configuration.</p>"
+        },
+        "privateEndpointOverrides":{
+          "shape":"PrivateEndpointOverrides",
+          "documentation":"<p>The list of private endpoint overrides for the custom OAuth2 provider. Each override maps a specific domain to a private endpoint, enabling secure connectivity through VPC Lattice resource configurations.</p>"
         }
       },
       "documentation":"<p>Input configuration for a custom OAuth2 provider.</p>"
@@ -4927,6 +4946,14 @@
         "clientId":{
           "shape":"ClientIdType",
           "documentation":"<p>The client ID for the custom OAuth2 provider.</p>"
+        },
+        "privateEndpoint":{
+          "shape":"PrivateEndpoint",
+          "documentation":"<p>The default private endpoint for the custom OAuth2 provider, enabling secure connectivity through a VPC Lattice resource configuration.</p>"
+        },
+        "privateEndpointOverrides":{
+          "shape":"PrivateEndpointOverrides",
+          "documentation":"<p>The list of private endpoint overrides for the custom OAuth2 provider. Each override maps a specific domain to a private endpoint, enabling secure connectivity through VPC Lattice resource configurations.</p>"
         }
       },
       "documentation":"<p>Output configuration for a custom OAuth2 provider.</p>"
@@ -7354,6 +7381,14 @@
         "lastUpdatedTime":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp when the OAuth2 credential provider was last updated.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The current status of the OAuth2 credential provider.</p>"
+        },
+        "failureReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the failure if the OAuth2 credential provider is in a failed state.</p>"
         }
       }
     },
@@ -9916,7 +9951,25 @@
       },
       "documentation":"<p>The configuration for a Model Context Protocol (MCP) gateway. This structure defines how the gateway implements the MCP protocol.</p>"
     },
-    "ManagedLatticeResource":{
+    "ManagedResourceDetails":{
+      "type":"structure",
+      "members":{
+        "domain":{
+          "shape":"DomainName",
+          "documentation":"<p>The domain associated with this managed resource.</p>"
+        },
+        "resourceGatewayArn":{
+          "shape":"ResourceGatewayArn",
+          "documentation":"<p>The ARN of the VPC Lattice resource gateway created in your account.</p>"
+        },
+        "resourceAssociationArn":{
+          "shape":"ResourceAssociationArn",
+          "documentation":"<p>The ARN of the service network resource association.</p>"
+        }
+      },
+      "documentation":"<p>Details of a resource created and managed by the gateway for private endpoint connectivity.</p>"
+    },
+    "ManagedVpcResource":{
       "type":"structure",
       "required":[
         "vpcIdentifier",
@@ -9950,24 +10003,6 @@
         }
       },
       "documentation":"<p>Configuration for a managed VPC Lattice resource. The gateway creates and manages the VPC Lattice resource gateway and resource configuration on your behalf using a service-linked role.</p>"
-    },
-    "ManagedResourceDetails":{
-      "type":"structure",
-      "members":{
-        "domain":{
-          "shape":"DomainName",
-          "documentation":"<p>The domain associated with this managed resource.</p>"
-        },
-        "resourceGatewayArn":{
-          "shape":"ResourceGatewayArn",
-          "documentation":"<p>The ARN of the VPC Lattice resource gateway created in your account.</p>"
-        },
-        "resourceAssociationArn":{
-          "shape":"ResourceAssociationArn",
-          "documentation":"<p>The ARN of the service network resource association.</p>"
-        }
-      },
-      "documentation":"<p>Details of a resource created and managed by the gateway for private endpoint connectivity.</p>"
     },
     "MatchValueString":{
       "type":"string",
@@ -11393,8 +11428,8 @@
           "shape":"SelfManagedLatticeResource",
           "documentation":"<p>Configuration for connecting to a private resource using a self-managed VPC Lattice resource configuration.</p>"
         },
-        "managedLatticeResource":{
-          "shape":"ManagedLatticeResource",
+        "managedVpcResource":{
+          "shape":"ManagedVpcResource",
           "documentation":"<p>Configuration for connecting to a private resource using a managed VPC Lattice resource. The gateway creates and manages the VPC Lattice resources on your behalf.</p>"
         }
       },
@@ -11405,6 +11440,35 @@
       "type":"list",
       "member":{"shape":"ManagedResourceDetails"},
       "documentation":"<p>A list of managed resources created by the gateway for private endpoint connectivity.</p>"
+    },
+    "PrivateEndpointOverride":{
+      "type":"structure",
+      "required":[
+        "domain",
+        "privateEndpoint"
+      ],
+      "members":{
+        "domain":{
+          "shape":"PrivateEndpointOverrideDomain",
+          "documentation":"<p>The domain to override with a private endpoint.</p>"
+        },
+        "privateEndpoint":{
+          "shape":"PrivateEndpoint",
+          "documentation":"<p>The private endpoint configuration for the specified domain.</p>"
+        }
+      },
+      "documentation":"<p>A mapping of a specific domain to a private endpoint for secure connectivity through a VPC Lattice resource configuration.</p>"
+    },
+    "PrivateEndpointOverrideDomain":{
+      "type":"string",
+      "max":253,
+      "min":1
+    },
+    "PrivateEndpointOverrides":{
+      "type":"list",
+      "member":{"shape":"PrivateEndpointOverride"},
+      "max":5,
+      "min":0
     },
     "Prompt":{
       "type":"string",
@@ -12621,6 +12685,18 @@
       "type":"string",
       "max":10000,
       "min":35
+    },
+    "Status":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "CREATE_FAILED",
+        "UPDATING",
+        "UPDATE_FAILED",
+        "READY",
+        "DELETING",
+        "DELETE_FAILED"
+      ]
     },
     "StatusReason":{
       "type":"string",
@@ -14057,6 +14133,10 @@
         "lastUpdatedTime":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp when the OAuth2 credential provider was last updated.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The current status of the OAuth2 credential provider.</p>"
         }
       }
     },

@@ -4880,6 +4880,15 @@
         }
       }
     },
+    "GetQueryResultsMaxItems":{
+      "type":"integer",
+      "max":10000,
+      "min":0
+    },
+    "GetQueryResultsNextToken":{
+      "type":"string",
+      "max":1024
+    },
     "GetQueryResultsRequest":{
       "type":"structure",
       "required":["queryId"],
@@ -4887,6 +4896,14 @@
         "queryId":{
           "shape":"QueryId",
           "documentation":"<p>The ID number of the query.</p>"
+        },
+        "nextToken":{
+          "shape":"GetQueryResultsNextToken",
+          "documentation":"<p>The token for the next set of items to return. The token expires after 1 hour.</p>"
+        },
+        "maxItems":{
+          "shape":"GetQueryResultsMaxItems",
+          "documentation":"<p>The maximum number of log events to return in the response. The maximum is 10,000 log events.</p>"
         }
       }
     },
@@ -4912,6 +4929,10 @@
         "encryptionKey":{
           "shape":"EncryptionKey",
           "documentation":"<p>If you associated an KMS key with the CloudWatch Logs Insights query results in this account, this field displays the ARN of the key that's used to encrypt the query results when <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_StartQuery.html\">StartQuery</a> stores them.</p>"
+        },
+        "nextToken":{
+          "shape":"GetQueryResultsNextToken",
+          "documentation":"<p>If there are more log events remaining in the results, the response includes a <code>nextToken</code>. You can use this token in a subsequent <code>GetQueryResults</code> request to get the next set of results.</p>"
         }
       }
     },

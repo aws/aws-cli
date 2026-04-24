@@ -7,6 +7,8 @@ This example updates the certificate thumbprint list for the OIDC provider whose
         --open-id-connect-provider-arn arn:aws:iam::123456789012:oidc-provider/example.oidcprovider.com \
         --thumbprint-list 7359755EXAMPLEabc3060bce3EXAMPLEec4542a3
 
+If your OIDC provider's discovery and JWKS endpoints use different certificates, include thumbprints for both endpoints in the ``--thumbprint-list`` value.
+
 This command produces no output.
 
 For more information, see `Creating OpenID Connect (OIDC) identity providers <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc.html>`__ in the *AWS IAM User Guide*.

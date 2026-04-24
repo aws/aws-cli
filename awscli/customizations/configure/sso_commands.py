@@ -95,19 +95,25 @@ def get_account_sorting_key(account):
 class BaseSSOConfigurationCommand(BaseSSOCommand):
     def __init__(self, session, prompter=None, config_writer=None):
         super(BaseSSOConfigurationCommand, self).__init__(session)
-        if prompter is None:
-            from awscli.customizations.configure.sso import PTKPrompt
-            prompter = PTKPrompt()
         self._prompter = prompter
         if config_writer is None:
             config_writer = ConfigFileWriter()
         self._config_writer = config_writer
         self._sso_sessions = self._session.full_config.get('sso_sessions', {})
+        # Initialize self._sso_session_prompter to None. It will be
+        # initialized lazily during command execution.
+        self._sso_session_prompter = None
+
+    def _init_prompt_toolkit(self):
         from awscli.customizations.configure.sso import (
             SSOSessionConfigurationPrompter,
         )
+        if self._prompter is None:
+            from awscli.customizations.configure.sso import PTKPrompt
+            self._prompter = PTKPrompt()
+
         self._sso_session_prompter = SSOSessionConfigurationPrompter(
-            botocore_session=session,
+            botocore_session=self._session,
             prompter=self._prompter,
         )
 
@@ -124,6 +130,9 @@ class BaseSSOConfigurationCommand(BaseSSOCommand):
         config_path = os.path.expanduser(config_path)
         new_values['__section__'] = section_header
         self._config_writer.update_config(new_values, config_path)
+
+    def _run_main(self, parsed_args, parsed_globals):
+        self._init_prompt_toolkit()
 
 
 class ConfigureSSOCommand(BaseSSOConfigurationCommand):
@@ -154,9 +163,6 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
         super(ConfigureSSOCommand, self).__init__(
             session, prompter=prompter, config_writer=config_writer
         )
-        if selector is None:
-            from awscli.customizations.wizard.ui.selectmenu import select_menu
-            selector = select_menu
         self._selector = selector
         if sso_login is None:
             sso_login = do_sso_login
@@ -169,6 +175,12 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
             self._profile_config = self._session.get_scoped_config()
         except ProfileNotFound:
             self._profile_config = {}
+
+    def _init_prompt_toolkit(self):
+        super()._init_prompt_toolkit()
+        if self._selector is None:
+            from awscli.customizations.wizard.ui.selectmenu import select_menu
+            self._selector = select_menu
         self._set_sso_session_if_configured_in_profile()
 
     def _set_sso_session_if_configured_in_profile(self):
@@ -291,6 +303,7 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
         config_store.set_config_provider('profile', ConstantProvider(None))
 
     def _run_main(self, parsed_args, parsed_globals):
+        super()._run_main(parsed_args, parsed_globals)
         self._unset_session_profile()
         on_pending_authorization = None
         if parsed_args.no_browser:
@@ -459,6 +472,7 @@ class ConfigureSSOSessionCommand(BaseSSOConfigurationCommand):
     )
 
     def _run_main(self, parsed_args, parsed_globals):
+        super()._run_main(parsed_args, parsed_globals)
         self._sso_session_prompter.prompt_for_sso_session()
         self._sso_session_prompter.prompt_for_sso_start_url()
         self._sso_session_prompter.prompt_for_sso_region()

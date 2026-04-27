@@ -832,6 +832,39 @@
       "max":250,
       "min":0
     },
+    "CompositeSliComponent":{
+      "type":"structure",
+      "members":{
+        "OperationName":{
+          "shape":"OperationName",
+          "documentation":"<p>The name of the operation to include in the composite SLI.</p>"
+        }
+      },
+      "documentation":"<p>Identifies a single operation to include in a composite SLI for a service-level SLO. Used as an element of the <code>Components</code> list in <code>CompositeSliConfig</code>.</p>",
+      "union":true
+    },
+    "CompositeSliComponents":{
+      "type":"list",
+      "member":{"shape":"CompositeSliComponent"},
+      "documentation":"<p>A list of operations that form a composite SLI for a service-level SLO. Each element is a <code>CompositeSliComponent</code> that identifies a single operation. Used in the <code>Components</code> field of <code>CompositeSliConfig</code>.</p>",
+      "max":20,
+      "min":2
+    },
+    "CompositeSliConfig":{
+      "type":"structure",
+      "required":["SelectionConfig"],
+      "members":{
+        "SelectionConfig":{
+          "shape":"SelectionConfig",
+          "documentation":"<p>Specifies how operations are selected for this service-level SLO. Operations can be selected explicitly by listing them, by specifying a prefix to match operation names, or by providing a regular expression pattern.</p>"
+        },
+        "Components":{
+          "shape":"CompositeSliComponents",
+          "documentation":"<p>The list of operations included in this composite SLI. You must specify between 2 and 20 components. Each component is a <code>CompositeSliComponent</code> that identifies a single operation by its <code>OperationName</code>.</p>"
+        }
+      },
+      "documentation":"<p>This structure contains the configuration for a composite service level indicator (SLI) that aggregates metrics across multiple operations of a service for service-level SLOs.</p>"
+    },
     "ConflictException":{
       "type":"structure",
       "required":["Message"],
@@ -887,6 +920,10 @@
         "CreateRecommendedSlo":{
           "shape":"Boolean",
           "documentation":"<p>Set this to <code>true</code> to create a recommended SLO out of the box. When set to <code>true</code>, you don't need to specify the <code>MetricThreshold</code> or <code>ComparisonOperator</code> in the <code>SliConfig</code> or <code>RequestBasedSliConfig</code>. The default value is <code>false</code>.</p> <p>This is supported for SLOs on a service, service operation, or a dependency.</p>"
+        },
+        "AutoInvestigationEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether DevOps Agent will automatically investigate this SLO when it is breached</p>"
         }
       }
     },
@@ -2325,6 +2362,10 @@
         "MetricSource":{
           "shape":"MetricSource",
           "documentation":"<p>Identifies the metric source for SLOs on resources other than Application Signals services.</p>"
+        },
+        "CompositeSliConfig":{
+          "shape":"CompositeSliConfig",
+          "documentation":"<p>The composite SLI configuration for service-level SLOs that monitor multiple operations of a service.</p>"
         }
       },
       "documentation":"<p>This structure contains the information about the metric that is used for a request-based SLO.</p>"
@@ -2363,6 +2404,10 @@
         "MetricName":{
           "shape":"MetricName",
           "documentation":"<p>The name of the metric for SLOs on resources other than Application Signals services.</p>"
+        },
+        "CompositeSliConfig":{
+          "shape":"CompositeSliConfig",
+          "documentation":"<p>The composite SLI configuration for service-level SLOs that monitor multiple operations of a service.</p>"
         }
       },
       "documentation":"<p>Use this structure to specify the information for the metric that a period-based SLO will monitor.</p>"
@@ -2426,6 +2471,31 @@
       "box":true,
       "max":900,
       "min":60
+    },
+    "SelectionConfig":{
+      "type":"structure",
+      "required":["Type"],
+      "members":{
+        "Type":{"shape":"SelectionType"},
+        "Pattern":{
+          "shape":"SelectionPattern",
+          "documentation":"<p>A prefix string or regular expression that specifies which operations to include in a service-level SLO. When <code>SelectionType</code> is <code>PREFIX</code>, this value is a prefix string that matches the beginning of operation names. When <code>SelectionType</code> is <code>REGEX</code>, this value is a regular expression that matches operation names.</p>"
+        }
+      },
+      "documentation":"<p>Defines how operations are selected for a service-level SLO.</p>"
+    },
+    "SelectionPattern":{
+      "type":"string",
+      "pattern":".+"
+    },
+    "SelectionType":{
+      "type":"string",
+      "documentation":"<p>The strategy for selecting operations to include in a service-level SLO.</p> <ul> <li> <p> <code>EXPLICIT</code> — You provide a specific list of operations in the <code>Components</code> field of <code>CompositeSliConfig</code>.</p> </li> <li> <p> <code>PREFIX</code> — You provide a prefix string in the <code>Pattern</code> field of <code>SelectionConfig</code>, and all operations whose names start with the prefix are included.</p> </li> <li> <p> <code>REGEX</code> — You provide a regular expression in the <code>Pattern</code> field of <code>SelectionConfig</code>, and all operations whose names match the pattern are included.</p> </li> </ul>",
+      "enum":[
+        "EXPLICIT",
+        "PREFIX",
+        "REGEX"
+      ]
     },
     "Service":{
       "type":"structure",
@@ -2657,6 +2727,10 @@
         "MetricSource":{
           "shape":"MetricSource",
           "documentation":"<p>Identifies the metric source for SLOs on resources other than Application Signals services.</p>"
+        },
+        "CompositeSliConfig":{
+          "shape":"CompositeSliConfig",
+          "documentation":"<p>The composite SLI configuration for service-level SLOs that monitor multiple operations of a service.</p>"
         }
       },
       "documentation":"<p>This structure contains the information about the metric that is used for a period-based SLO.</p>"
@@ -2699,6 +2773,10 @@
         "DependencyConfig":{
           "shape":"DependencyConfig",
           "documentation":"<p>Identifies the dependency using the <code>DependencyKeyAttributes</code> and <code>DependencyOperationName</code>. </p>"
+        },
+        "CompositeSliConfig":{
+          "shape":"CompositeSliConfig",
+          "documentation":"<p>The composite SLI configuration for service-level SLOs that monitor multiple operations of a service.</p>"
         }
       },
       "documentation":"<p>Use this structure to specify the information for the metric that a period-based SLO will monitor.</p>"
@@ -2770,6 +2848,10 @@
         "MetricSourceType":{
           "shape":"MetricSourceType",
           "documentation":"<p>Displays the SLI metric source type for this SLO. Supported types are:</p> <ul> <li> <p>Service operation</p> </li> <li> <p>Service dependency</p> </li> <li> <p>Service</p> </li> <li> <p>CloudWatch metric</p> </li> <li> <p>AppMonitor</p> </li> <li> <p>Canary</p> </li> </ul>"
+        },
+        "AutoInvestigationEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether DevOps Agent will automatically investigate this SLO when it is breached</p>"
         }
       },
       "documentation":"<p>A structure containing information about one service level objective (SLO) that has been created in Application Signals. Creating SLOs can help you ensure your services are performing to the level that you expect. SLOs help you set and track a specific target level for the reliability and availability of your applications and services. Each SLO uses a service level indicator (SLI), which is a key performance metric, to calculate how much underperformance can be tolerated before the goal that you set for the SLO is not achieved.</p>"
@@ -2963,6 +3045,10 @@
         "MetricSource":{
           "shape":"MetricSource",
           "documentation":"<p>Identifies the metric source for SLOs on resources other than Application Signals services.</p>"
+        },
+        "CompositeSliConfig":{
+          "shape":"CompositeSliConfig",
+          "documentation":"<p>The composite SLI configuration for service-level SLOs that monitor multiple operations of a service.</p>"
         }
       },
       "documentation":"<p>A structure that contains information about one service level objective (SLO) created in Application Signals.</p>"
@@ -3265,6 +3351,10 @@
         "BurnRateConfigurations":{
           "shape":"BurnRateConfigurations",
           "documentation":"<p>Use this array to create <i>burn rates</i> for this SLO. Each burn rate is a metric that indicates how fast the service is consuming the error budget, relative to the attainment goal of the SLO.</p>"
+        },
+        "AutoInvestigationEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether DevOps Agent will automatically investigate this SLO when it is breached</p>"
         }
       }
     },

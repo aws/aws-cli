@@ -1486,6 +1486,10 @@
         "mediaTailorPlaybackConfigurations":{
           "shape":"MediaTailorPlaybackConfigurationsList",
           "documentation":"<p>List of integration configurations with media tailor resources.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>Array of 1-50 maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging Amazon Web Services Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no service-specific constraints beyond what is documented there.</p>"
         }
       }
     },
@@ -3403,7 +3407,8 @@
     "TagKey":{
       "type":"string",
       "max":128,
-      "min":1
+      "min":1,
+      "pattern":"([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]+)"
     },
     "TagKeyList":{
       "type":"list",
@@ -3437,7 +3442,8 @@
     "TagValue":{
       "type":"string",
       "max":256,
-      "min":0
+      "min":0,
+      "pattern":"([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)"
     },
     "Tags":{
       "type":"map",

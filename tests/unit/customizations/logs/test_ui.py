@@ -1,40 +1,27 @@
-# Copyright 2024 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License"). You
-# may not use this file except in compliance with the License. A copy of
-# the License is located at
-#
-#     http://aws.amazon.com/apache2.0/
-#
-# or in the "license" file accompanying this file. This file is
-# distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
-# ANY KIND, either express or implied. See the License for the specific
-# language governing permissions and limitations under the License.
+import colorama
 import json
 
-import colorama
-from prompt_toolkit.application import Application
-from prompt_toolkit.buffer import Buffer
-from prompt_toolkit.key_binding import KeyPressEvent
-from prompt_toolkit.output import DummyOutput
-from prompt_toolkit.input import create_pipe_input
-
 from awscli.compat import StringIO
-from awscli.customizations.logs.startlivetail import (
+from awscli.customizations.logs.ui import (
     COLOR_LIST,
     InputState,
     InteractivePrinter,
     InteractiveUI,
     Keyword,
     LiveTailBuffer,
-    LiveTailKeyBindings,
     LiveTailLogEventsCollector,
+    LiveTailKeyBindings,
     LiveTailSessionMetadata,
     OutputFormat,
     PrintOnlyPrinter,
     PrintOnlyUI,
 )
 from awscli.testutils import mock, unittest
+from prompt_toolkit.application import Application
+from prompt_toolkit.buffer import Buffer
+from prompt_toolkit.input import create_pipe_input
+from prompt_toolkit.key_binding import KeyPressEvent
+from prompt_toolkit.output import DummyOutput
 
 
 class LiveTailSessionMetadataTest(unittest.TestCase):
@@ -731,3 +718,4 @@ class InteractiveUITest(unittest.IsolatedAsyncioTestCase):
         self.ui.exit()
 
         self.ui._application.exit.assert_called_once_with()
+

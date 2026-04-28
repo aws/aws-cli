@@ -24,11 +24,33 @@ BASIC_COMMANDS = [
 ]
 
 _CHECK_SCRIPT = """\
+import os
 import sys
-from awscli.clidriver import create_clidriver
 
-driver = create_clidriver()
-driver.main({args})
+from unittest.mock import patch
+from awscli.botocore.awsrequest import AWSResponse
+
+env = {{
+    'AWS_DATA_PATH': os.environ.get('AWS_DATA_PATH', ''),
+    'AWS_DEFAULT_REGION': 'us-east-1',
+    'AWS_ACCESS_KEY_ID': 'testing',
+    'AWS_SECRET_ACCESS_KEY': 'testing',
+    'AWS_CONFIG_FILE': '',
+    'AWS_SHARED_CREDENTIALS_FILE': '',
+}}
+
+http_response = AWSResponse(None, 200, {{}}, None)
+
+with patch('os.environ', env), \\
+     patch('awscli.botocore.endpoint.Endpoint.make_request',
+           return_value=(http_response, {{}})):
+    from awscli.clidriver import create_clidriver
+    driver = create_clidriver()
+    try:
+        driver.main({args})
+    except SystemExit:
+        pass
+
 mods = [m for m in sys.modules if m.startswith('prompt_toolkit')]
 if mods:
     print('FAIL: prompt_toolkit modules loaded: ' + ', '.join(sorted(mods)))

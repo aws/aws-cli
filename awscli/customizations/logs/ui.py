@@ -21,7 +21,7 @@ import time
 
 from enum import Enum
 from functools import partial
-from prompt_toolkit.application import get_app
+from prompt_toolkit.application import Application, get_app
 from prompt_toolkit.buffer import Buffer
 from prompt_toolkit.filters import Condition
 from prompt_toolkit.formatted_text import (
@@ -30,6 +30,13 @@ from prompt_toolkit.formatted_text import (
     to_formatted_text
 )
 from prompt_toolkit.key_binding import KeyBindings, KeyPressEvent
+from prompt_toolkit.layout import Layout, Window, WindowAlign
+from prompt_toolkit.layout.containers import HSplit, VSplit
+from prompt_toolkit.layout.controls import (
+    BufferControl,
+    FormattedTextControl
+)
+from prompt_toolkit.layout.dimension import Dimension
 from prompt_toolkit.layout.processors import Processor, Transformation
 from threading import Thread
 
@@ -507,13 +514,6 @@ class InteractiveUI(BaseLiveTailUI):
         self._create_ui(app_output, app_input)
 
     def _create_ui(self, app_output, app_input):
-        from prompt_toolkit.application import Application
-        from prompt_toolkit.layout import Layout, Window
-        from prompt_toolkit.layout.containers import HSplit, VSplit
-        from prompt_toolkit.layout.controls import (
-            BufferControl,
-            FormattedTextControl
-        )
         prompt_buffer = Buffer()
         self._prompt_buffer_control = BufferControl(prompt_buffer)
         prompt_buffer_window = Window(self._prompt_buffer_control)
@@ -562,12 +562,6 @@ class InteractiveUI(BaseLiveTailUI):
         return self._prompt_buffer_control
 
     def _create_bottom_toolbar(self):
-        from prompt_toolkit.layout import Window, WindowAlign
-        from prompt_toolkit.layout.containers import HSplit
-        from prompt_toolkit.layout.controls import (
-            FormattedTextControl
-        )
-        from prompt_toolkit.layout.dimension import Dimension
         self._quit_button = FormattedTextControl(self.EXIT_SESSION)
         self._bottom_toolbar = FormattedTextControl(self.get_instructions())
 
@@ -638,8 +632,6 @@ class InteractiveUI(BaseLiveTailUI):
             self._application.invalidate()
 
     def _create_metadata(self):
-        from prompt_toolkit.layout import Window, WindowAlign
-        from prompt_toolkit.layout.controls import FormattedTextControl
         self._metadata = FormattedTextControl(
             text="Highlighted Terms: {}, 0 events/sec, Sampled: No | 00:00:00"
         )
@@ -801,4 +793,4 @@ class LiveTailLogEventsCollector(Thread):
             self._output.flush()
 
     def run(self):
-        (self._collect_log_events())
+        self._collect_log_events()

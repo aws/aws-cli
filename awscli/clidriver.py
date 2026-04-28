@@ -143,7 +143,7 @@ def validate_auto_prompt_args_are_mutually_exclusive(args):
 
 def resolve_auto_prompt_mode(args, session):
     # Order of precedence to check:
-    # - check if any arg rom NO_PROMPT_ARGS in args
+    # - check if any arg from _NO_AUTO_PROMPT_ARGS in args
     # - check if '--no-cli-auto-prompt' was specified
     # - check if '--cli-auto-prompt' was specified
     # - check configuration chain

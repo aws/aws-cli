@@ -15,12 +15,12 @@ Defines SSO-specific configure commands, to be used with the `aws configure`
 command.
 
 The main reason it lives in its own separate module instead of in
-`awscli/customizations/sso.py` is so that these commands can be referenced
-without importing `awscli/customizations/sso.py`, which imports
-from `prompt_toolkit`. Importing from `prompt_toolkit` has historically
-increased command execution times.
+`awscli/customizations/configure/sso.py` is so that these commands can be
+referenced without importing `awscli/customizations/configure/sso.py`,
+which imports from `prompt_toolkit`. Importing from `prompt_toolkit` has
+historically increased command execution times.
 
-This separation helps us limit our imports from `prompt_toolit` to when it
+This separation helps us limit our imports from `prompt_toolkit` to when it
 is actually needed, improving execution time across most commands.
 """
 import logging
@@ -42,7 +42,6 @@ from awscli.customizations.sso.utils import (
     BaseSSOCommand,
     PrintOnlyHandler,
     do_sso_login,
-    parse_sso_registration_scopes,
 )
 from awscli.customizations.utils import uni_print
 from awscli.formatter import CLI_OUTPUT_FORMATS
@@ -106,10 +105,10 @@ class BaseSSOConfigurationCommand(BaseSSOCommand):
 
     def _init_prompt_toolkit(self):
         from awscli.customizations.configure.sso import (
+            PTKPrompt,
             SSOSessionConfigurationPrompter,
         )
         if self._prompter is None:
-            from awscli.customizations.configure.sso import PTKPrompt
             self._prompter = PTKPrompt()
 
         self._sso_session_prompter = SSOSessionConfigurationPrompter(

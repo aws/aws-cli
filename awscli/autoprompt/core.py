@@ -10,8 +10,6 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore.exceptions import ProfileNotFound
-
 from awscli.autocomplete.filters import fuzzy_filter
 from awscli.autocomplete.main import create_autocompleter
 from awscli.autoprompt.prompttoolkit import PromptToolkitPrompter
@@ -19,10 +17,6 @@ from awscli.errorhandler import SilenceParamValidationMsgErrorHandler
 
 
 class AutoPromptDriver:
-    _NO_PROMPT_ARGS = ['help', '--version']
-    _CLI_AUTO_PROMPT_OPTION = '--cli-auto-prompt'
-    _NO_CLI_AUTO_PROMPT_OPTION = '--no-cli-auto-prompt'
-
     def __init__(self, driver, completion_source=None, prompter=None):
         self._completion_source = completion_source
         self._prompter = prompter

@@ -22,6 +22,24 @@ from awscli.customizations.sso.utils import AWS_CREDS_CACHE_DIR, SSO_TOKEN_DIR
 LOG = logging.getLogger(__name__)
 
 
+def revoke_sso_token(session, sso_region, access_token, parsed_globals):
+    """Server-side revoke an SSO access token via the sso.Logout API.
+
+    Errors from the Logout call are caught and logged; this is best-effort.
+    """
+    sso = session.create_client(
+        'sso',
+        region_name=sso_region,
+        verify=parsed_globals.verify_ssl,
+    )
+    try:
+        sso.logout(accessToken=access_token)
+    except ClientError:
+        # The token may already be expired or otherwise invalid. If we
+        # get a client error on logout just log and continue on.
+        LOG.debug('Failed to call logout API:', exc_info=True)
+
+
 class LogoutCommand(BasicCommand):
     NAME = 'logout'
     DESCRIPTION = (
@@ -85,17 +103,12 @@ class SSOTokenSweeper(BaseCredentialSweeper):
         # and invoke the logout api to invalidate the token before deleting it.
         sso_region = contents.get('region')
         if sso_region:
-            sso = self._session.create_client(
-                'sso',
-                region_name=sso_region,
-                verify=self._parsed_globals.verify_ssl,
+            revoke_sso_token(
+                self._session,
+                sso_region,
+                contents['accessToken'],
+                self._parsed_globals,
             )
-            try:
-                sso.logout(accessToken=contents['accessToken'])
-            except ClientError:
-                # The token may already be expired or otherwise invalid. If we
-                # get a client error on logout just log and continue on
-                LOG.debug('Failed to call logout API:', exc_info=True)
 
 
 class SSOCredentialSweeper(BaseCredentialSweeper):

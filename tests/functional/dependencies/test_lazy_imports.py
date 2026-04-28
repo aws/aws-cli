@@ -29,6 +29,7 @@ import sys
 
 from unittest.mock import patch
 from awscli.botocore.awsrequest import AWSResponse
+from awscli.clidriver import create_clidriver
 
 env = {{
     'AWS_DATA_PATH': os.environ.get('AWS_DATA_PATH', ''),
@@ -38,13 +39,14 @@ env = {{
     'AWS_CONFIG_FILE': '',
     'AWS_SHARED_CREDENTIALS_FILE': '',
 }}
+if os.environ.get('ComSpec'):
+    env['ComSpec'] = os.environ['ComSpec']
 
 http_response = AWSResponse(None, 200, {{}}, None)
 
 with patch('os.environ', env), \\
      patch('awscli.botocore.endpoint.Endpoint.make_request',
            return_value=(http_response, {{}})):
-    from awscli.clidriver import create_clidriver
     driver = create_clidriver()
     try:
         driver.main({args})

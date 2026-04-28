@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 
 class ValidatorWithDefault(Validator):
     def __init__(self, default=None):
-        super(ValidatorWithDefault, self).__init__()
+        super().__init__()
         self._default = default
 
     def _raise_validation_error(self, document, message):

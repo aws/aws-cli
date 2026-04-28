@@ -247,9 +247,6 @@ class KeywordTest(unittest.TestCase):
         log_event = "This is an INFO log"
         self.keyword = Keyword(text)
 
-        colored_log_event = self.keyword._add_color_to_string(
-            log_event, 11, 15
-        )
         uncolored_log_event = self.keyword._remove_color_from_string(
             log_event, 15, 19
         )

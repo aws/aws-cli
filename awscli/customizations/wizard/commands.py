@@ -27,7 +27,7 @@ def register_wizard_commands(event_handlers):
 def _register_wizards_for_commands(commands, event_handlers):
     for command in commands:
         event_handlers.register(
-            'building-command-table.%s' % command, _add_wizard_command
+            f'building-command-table.{command}', _add_wizard_command
         )
 
 
@@ -49,7 +49,7 @@ class TopLevelWizardCommand(BasicCommand):
     def __init__(
         self, session, loader, parent_command, runner=None, wizard_name='_main'
     ):
-        super(TopLevelWizardCommand, self).__init__(session)
+        super().__init__(session)
         self._session = session
         self._loader = loader
         self._parent_command = parent_command
@@ -75,9 +75,7 @@ class TopLevelWizardCommand(BasicCommand):
         return self._runner
 
     def _build_subcommand_table(self):
-        subcommand_table = super(
-            TopLevelWizardCommand, self
-        )._build_subcommand_table()
+        subcommand_table = super()._build_subcommand_table()
         wizards = self._get_available_wizards()
         for name in wizards:
             cmd = SingleWizardCommand(
@@ -117,7 +115,7 @@ class TopLevelWizardCommand(BasicCommand):
             runner[version].run(loaded)
         else:
             raise ParamValidationError(
-                'Definition file has unsupported version %s ' % version
+                f'Definition file has unsupported version {version} '
             )
 
     def create_help_command(self):
@@ -131,7 +129,7 @@ class TopLevelWizardCommand(BasicCommand):
 
 class SingleWizardCommand(TopLevelWizardCommand):
     def __init__(self, session, loader, parent_command, runner, wizard_name):
-        super(SingleWizardCommand, self).__init__(
+        super().__init__(
             session,
             loader,
             parent_command,
@@ -165,7 +163,7 @@ class WizardHelpCommand(BasicHelp):
     def __init__(
         self, session, command_object, command_table, arg_table, loaded_wizard
     ):
-        super(WizardHelpCommand, self).__init__(
+        super().__init__(
             session, command_object, command_table, arg_table
         )
         self._description = loaded_wizard.get('description', '')

@@ -642,7 +642,7 @@ class UserInput:
 @dataclasses.dataclass
 class Prompt(UserInput):
     expected_validator_cls: typing.Optional[Validator] = None
-    expected_completions: typing.Optional[typing.List[str]] = None
+    expected_completions: typing.Optional[list[str]] = None
     _expected_message: typing.Optional[str] = dataclasses.field(
         init=False, repr=False, default=None
     )
@@ -745,7 +745,7 @@ class ProfilePrompt(PromptWithDefault):
 
 @dataclasses.dataclass
 class SelectMenu(UserInput):
-    expected_choices: typing.Optional[typing.List[typing.Any]] = None
+    expected_choices: typing.Optional[list[typing.Any]] = None
 
 
 @dataclasses.dataclass

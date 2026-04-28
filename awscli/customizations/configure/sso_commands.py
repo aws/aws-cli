@@ -96,7 +96,7 @@ def get_account_sorting_key(account):
 
 class BaseSSOConfigurationCommand(BaseSSOCommand):
     def __init__(self, session, prompter=None, config_writer=None):
-        super(BaseSSOConfigurationCommand, self).__init__(session)
+        super().__init__(session)
         self._prompter = prompter
         if config_writer is None:
             config_writer = ConfigFileWriter()
@@ -163,7 +163,7 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
         sso_token_cache=None,
         sso_login=None,
     ):
-        super(ConfigureSSOCommand, self).__init__(
+        super().__init__(
             session, prompter=prompter, config_writer=config_writer
         )
         self._selector = selector

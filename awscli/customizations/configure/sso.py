@@ -448,11 +448,13 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
     def _handle_multiple_accounts(self, accounts):
         available_accounts_msg = (
             'There are {} AWS accounts available to you.\n'
+            'Use arrow keys to navigate, type to filter, and press Enter to select.\n'
         )
         uni_print(available_accounts_msg.format(len(accounts)))
         sorted_accounts = sorted(accounts, key=get_account_sorting_key)
         selected_account = self._selector(
-            sorted_accounts, display_format=display_account
+            sorted_accounts, display_format=display_account, enable_filter=True,
+            no_results_message='No matching accounts found'
         )
         sso_account_id = selected_account['accountId']
         return sso_account_id

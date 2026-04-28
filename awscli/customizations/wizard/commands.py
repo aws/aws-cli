@@ -163,7 +163,5 @@ class WizardHelpCommand(BasicHelp):
     def __init__(
         self, session, command_object, command_table, arg_table, loaded_wizard
     ):
-        super().__init__(
-            session, command_object, command_table, arg_table
-        )
+        super().__init__(session, command_object, command_table, arg_table)
         self._description = loaded_wizard.get('description', '')

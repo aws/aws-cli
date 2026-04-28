@@ -280,7 +280,10 @@ class ECSExpressGatewayServiceWatcher:
         if self.display_mode == 'TEXT-ONLY':
             return TextOnlyDisplayStrategy(use_color=self.use_color)
         elif self.display_mode == 'INTERACTIVE':
-            from awscli.customizations.ecs.prompt_toolkit_display import Display
+            from awscli.customizations.ecs.prompt_toolkit_display import (
+                Display,
+            )
+
             return InteractiveDisplayStrategy(
                 display=Display(), use_color=self.use_color
             )

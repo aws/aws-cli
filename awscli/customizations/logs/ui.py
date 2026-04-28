@@ -12,33 +12,30 @@
 # language governing permissions and limitations under the License.
 import asyncio
 import contextlib
-import colorama
 import json
 import re
 import signal
 import sys
 import time
-
 from enum import Enum
 from functools import partial
+from threading import Thread
+
+import colorama
 from prompt_toolkit.application import Application, get_app
 from prompt_toolkit.buffer import Buffer
 from prompt_toolkit.filters import Condition
 from prompt_toolkit.formatted_text import (
     ANSI,
     fragment_list_to_text,
-    to_formatted_text
+    to_formatted_text,
 )
 from prompt_toolkit.key_binding import KeyBindings, KeyPressEvent
 from prompt_toolkit.layout import Layout, Window, WindowAlign
 from prompt_toolkit.layout.containers import HSplit, VSplit
-from prompt_toolkit.layout.controls import (
-    BufferControl,
-    FormattedTextControl
-)
+from prompt_toolkit.layout.controls import BufferControl, FormattedTextControl
 from prompt_toolkit.layout.dimension import Dimension
 from prompt_toolkit.layout.processors import Processor, Transformation
-from threading import Thread
 
 
 def signal_handler(printer, signum, frame):

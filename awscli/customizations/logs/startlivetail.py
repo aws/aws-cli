@@ -190,6 +190,7 @@ class StartLiveTailCommand(BasicCommand):
             LiveTailSessionMetadata,
             PrintOnlyUI,
         )
+
         self._client = self._get_client(parsed_globals)
 
         start_live_tail_kwargs = self._get_start_live_tail_kwargs(parsed_args)

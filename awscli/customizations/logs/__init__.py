@@ -19,9 +19,11 @@ def register_logs_commands(event_emitter):
 
 def inject_tail_command(command_table, session, **kwargs):
     from awscli.customizations.logs.tail import TailCommand
+
     command_table['tail'] = TailCommand(session)
 
 
 def inject_start_live_tail_command(command_table, session, **kwargs):
     from awscli.customizations.logs.startlivetail import StartLiveTailCommand
+
     command_table['start-live-tail'] = StartLiveTailCommand(session)

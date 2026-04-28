@@ -23,6 +23,7 @@ historically increased command execution times.
 This separation helps us limit our imports from `prompt_toolkit` to when it
 is actually needed, improving execution time across most commands.
 """
+
 import logging
 import os
 
@@ -83,7 +84,9 @@ def display_account(account):
 
 
 def get_account_sorting_key(account):
-    only_account_id = ('accountName' not in account and 'emailAddress' not in account)
+    only_account_id = (
+        'accountName' not in account and 'emailAddress' not in account
+    )
     for key in ('accountName', 'emailAddress', 'accountId'):
         value = account.get(key, None)
         if value is not None:
@@ -108,6 +111,7 @@ class BaseSSOConfigurationCommand(BaseSSOCommand):
             PTKPrompt,
             SSOSessionConfigurationPrompter,
         )
+
         if self._prompter is None:
             self._prompter = PTKPrompt()
 
@@ -179,6 +183,7 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
         super()._init_prompt_toolkit()
         if self._selector is None:
             from awscli.customizations.wizard.ui.selectmenu import select_menu
+
             self._selector = select_menu
         self._set_sso_session_if_configured_in_profile()
 
@@ -259,6 +264,7 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
 
     def _prompt_for_profile(self, sso_account_id=None, sso_role_name=None):
         from awscli.customizations.configure.sso import RequiredInputValidator
+
         if self._original_profile_name:
             profile_name = self._original_profile_name
         else:

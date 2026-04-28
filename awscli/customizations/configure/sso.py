@@ -30,6 +30,7 @@ from awscli.customizations.sso.utils import (
 
 logger = logging.getLogger(__name__)
 
+
 class ValidatorWithDefault(Validator):
     def __init__(self, default=None):
         super(ValidatorWithDefault, self).__init__()

@@ -237,6 +237,7 @@ class LoginCommand(BasicCommand):
             PTKPrompt,
             RequiredInputValidator,
         )
+
         prompter = PTKPrompt()
         self._prompted_for_region = True
         uni_print(

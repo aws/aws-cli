@@ -17,6 +17,7 @@ from awscli.customizations.wizard.loader import WizardLoader
 
 def register_wizard_commands(event_handlers):
     from awscli.customizations.wizard import devcommands
+
     devcommands.register_dev_commands(event_handlers)
     loader = WizardLoader()
     commands = loader.list_commands_with_wizards()
@@ -66,6 +67,7 @@ class TopLevelWizardCommand(BasicCommand):
         # unnecessarily higher command execution time and wasted compute.
         if self._runner is None:
             from awscli.customizations.wizard import factory
+
             self._runner = {
                 '0.1': factory.create_default_wizard_v1_runner(self._session),
                 '0.2': factory.create_default_wizard_v2_runner(self._session),
@@ -130,7 +132,11 @@ class TopLevelWizardCommand(BasicCommand):
 class SingleWizardCommand(TopLevelWizardCommand):
     def __init__(self, session, loader, parent_command, runner, wizard_name):
         super(SingleWizardCommand, self).__init__(
-            session, loader, parent_command, runner=runner, wizard_name=wizard_name
+            session,
+            loader,
+            parent_command,
+            runner=runner,
+            wizard_name=wizard_name,
         )
         self._session = session
         self._loader = loader

@@ -18,8 +18,6 @@ import platform
 import re
 import sys
 
-from botocore.exceptions import ProfileNotFound
-
 import botocore.session
 import distro
 from botocore import xform_name
@@ -32,6 +30,7 @@ from botocore.configprovider import (
     ScopedConfigProvider,
 )
 from botocore.context import start_as_current_context
+from botocore.exceptions import ProfileNotFound
 from botocore.history import get_global_history_recorder
 
 from awscli import __version__
@@ -59,6 +58,7 @@ from awscli.compat import (
     validate_preferred_output_encoding,
 )
 from awscli.constants import PARAM_VALIDATION_ERROR_RC
+from awscli.customizations.exceptions import ParamValidationError
 from awscli.errorhandler import (
     construct_cli_error_handlers_chain,
     construct_entry_point_handlers_chain,
@@ -84,7 +84,6 @@ from awscli.utils import (
     add_metadata_component_to_user_agent_extra,
     emit_top_level_args_parsed_event,
 )
-from awscli.customizations.exceptions import ParamValidationError
 
 LOG = logging.getLogger('awscli.clidriver')
 LOG_FORMAT = (
@@ -258,11 +257,13 @@ class AWSCLIEntryPoint:
         auto_prompt_mode = resolve_auto_prompt_mode(args, driver.session)
         if auto_prompt_mode == 'on':
             from awscli.autoprompt.core import AutoPromptDriver
+
             autoprompt_driver = AutoPromptDriver(driver)
             args = autoprompt_driver.prompt_for_args(args)
             rc = self._run_driver(driver, args, prompt_mode='on')
         elif auto_prompt_mode == 'on-partial':
             from awscli.autoprompt.core import AutoPromptDriver
+
             autoprompt_driver = AutoPromptDriver(driver)
             autoprompt_driver.inject_silence_param_error_msg_handler(driver)
             rc = self._run_driver(driver, args, prompt_mode='off')

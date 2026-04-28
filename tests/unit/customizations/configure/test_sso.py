@@ -365,11 +365,15 @@ def account_id_select(account_id):
         expected_choices=sorted(
             [
                 selected_account,
-                {"accountId": "1234567890", "emailAddress": "account2@site.com"},
+                {
+                    "accountId": "1234567890",
+                    "emailAddress": "account2@site.com",
+                },
             ],
             key=get_account_sorting_key,
-        )
+        ),
     )
+
 
 @pytest.fixture
 def role_name_select(role_name):
@@ -2241,8 +2245,6 @@ def passes_validator(validator, text):
         (ScopesValidator, "value-1, value-2 value3", None, False),
     ],
 )
-
-
 def test_validators(validator_cls, input_value, default, is_valid):
     validator = validator_cls(default)
     assert passes_validator(validator, input_value) == is_valid

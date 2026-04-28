@@ -22,7 +22,6 @@ from collections import namedtuple
 import awscrt.io
 import botocore.model
 import pytest
-
 from botocore import xform_name
 from botocore.awsrequest import AWSResponse
 from botocore.compat import OrderedDict
@@ -45,8 +44,8 @@ from awscli.clidriver import (
     ServiceOperation,
     construct_cli_error_handlers_chain,
     create_clidriver,
-    validate_auto_prompt_args_are_mutually_exclusive,
     resolve_auto_prompt_mode,
+    validate_auto_prompt_args_are_mutually_exclusive,
 )
 from awscli.compat import StringIO
 from awscli.customizations.commands import BasicCommand
@@ -463,7 +462,9 @@ class TestCliDriver:
     @pytest.mark.parametrize('case', _generate_auto_prompt_resolve_cases())
     def test_auto_prompt_resolve_mode(self, case):
         driver = create_clidriver()
-        driver.session.set_config_variable('cli_auto_prompt', case.config_variable)
+        driver.session.set_config_variable(
+            'cli_auto_prompt', case.config_variable
+        )
         result = resolve_auto_prompt_mode(case.args, driver.session)
         assert result == case.expected_result
 
@@ -1145,7 +1146,9 @@ class TestAWSCLIEntryPoint(unittest.TestCase):
             self.driver.session.user_agent_extra = ''
             return self.driver
 
-        self.prompt_patch = mock.patch('awscli.autoprompt.core.AutoPromptDriver')
+        self.prompt_patch = mock.patch(
+            'awscli.autoprompt.core.AutoPromptDriver'
+        )
         self.crete_driver_patch = mock.patch(
             'awscli.clidriver.create_clidriver'
         )

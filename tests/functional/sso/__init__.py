@@ -159,6 +159,11 @@ class BaseSSOTest(BaseAWSCommandParamsTest):
             verificationUriComplete, kwargs['verificationUriComplete']
         )
 
+    def assert_auth_code_fetcher_called_with(self, server_address):
+        self.fetcher_mock.assert_called_once()
+        _, kwargs = self.fetcher_mock.call_args
+        self.assertEqual(server_address, kwargs["server_address"])
+
     def assert_auth_browser_handler_called_with(self, expected_scopes):
         # The endpoint is subject to the endpoint rules, and the
         # code_challenge is not fixed so assert against the rest of the url

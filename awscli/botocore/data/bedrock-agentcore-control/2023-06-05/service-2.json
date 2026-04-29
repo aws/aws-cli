@@ -139,6 +139,25 @@
       "documentation":"<p>Creates a custom code interpreter.</p>",
       "idempotent":true
     },
+    "CreateConfigurationBundle":{
+      "name":"CreateConfigurationBundle",
+      "http":{
+        "method":"POST",
+        "requestUri":"/configuration-bundles/create",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateConfigurationBundleRequest"},
+      "output":{"shape":"CreateConfigurationBundleResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a new configuration bundle resource. A configuration bundle stores versioned component configurations for agent evaluation workflows.</p>"
+    },
     "CreateEvaluator":{
       "name":"CreateEvaluator",
       "http":{
@@ -176,6 +195,27 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Creates a gateway for Amazon Bedrock Agent. A gateway serves as an integration point between your agent and external services.</p> <p>If you specify <code>CUSTOM_JWT</code> as the <code>authorizerType</code>, you must provide an <code>authorizerConfiguration</code>.</p>",
+      "idempotent":true
+    },
+    "CreateGatewayRule":{
+      "name":"CreateGatewayRule",
+      "http":{
+        "method":"POST",
+        "requestUri":"/gateways/{gatewayIdentifier}/rules",
+        "responseCode":202
+      },
+      "input":{"shape":"CreateGatewayRuleRequest"},
+      "output":{"shape":"CreateGatewayRuleResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a rule for a gateway. Rules define conditions and actions that control how requests are routed and processed through the gateway, including principal-based access control and path-based routing.</p>",
       "idempotent":true
     },
     "CreateGatewayTarget":{
@@ -504,6 +544,26 @@
       "documentation":"<p>Deletes a custom code interpreter.</p>",
       "idempotent":true
     },
+    "DeleteConfigurationBundle":{
+      "name":"DeleteConfigurationBundle",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/configuration-bundles/{bundleId}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteConfigurationBundleRequest"},
+      "output":{"shape":"DeleteConfigurationBundleResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes a configuration bundle and all of its versions.</p>",
+      "idempotent":true
+    },
     "DeleteEvaluator":{
       "name":"DeleteEvaluator",
       "http":{
@@ -542,6 +602,26 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Deletes a gateway.</p>",
+      "idempotent":true
+    },
+    "DeleteGatewayRule":{
+      "name":"DeleteGatewayRule",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/gateways/{gatewayIdentifier}/rules/{ruleId}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteGatewayRuleRequest"},
+      "output":{"shape":"DeleteGatewayRuleResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes a gateway rule.</p>",
       "idempotent":true
     },
     "DeleteGatewayTarget":{
@@ -880,6 +960,44 @@
       "documentation":"<p>Gets information about a custom code interpreter.</p>",
       "readonly":true
     },
+    "GetConfigurationBundle":{
+      "name":"GetConfigurationBundle",
+      "http":{
+        "method":"GET",
+        "requestUri":"/configuration-bundles/{bundleId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetConfigurationBundleRequest"},
+      "output":{"shape":"GetConfigurationBundleResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Gets the latest version of a configuration bundle. By default, returns the latest version on the mainline branch. Use <code>GetConfigurationBundleVersion</code> to retrieve a specific historical version.</p>",
+      "readonly":true
+    },
+    "GetConfigurationBundleVersion":{
+      "name":"GetConfigurationBundleVersion",
+      "http":{
+        "method":"GET",
+        "requestUri":"/configuration-bundles/{bundleId}/versions/{versionId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetConfigurationBundleVersionRequest"},
+      "output":{"shape":"GetConfigurationBundleVersionResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Gets a specific version of a configuration bundle by its version identifier.</p>",
+      "readonly":true
+    },
     "GetEvaluator":{
       "name":"GetEvaluator",
       "http":{
@@ -916,6 +1034,25 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Retrieves information about a specific Gateway.</p>",
+      "readonly":true
+    },
+    "GetGatewayRule":{
+      "name":"GetGatewayRule",
+      "http":{
+        "method":"GET",
+        "requestUri":"/gateways/{gatewayIdentifier}/rules/{ruleId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetGatewayRuleRequest"},
+      "output":{"shape":"GetGatewayRuleResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves detailed information about a specific gateway rule.</p>",
       "readonly":true
     },
     "GetGatewayTarget":{
@@ -1299,6 +1436,43 @@
       "documentation":"<p>Lists all custom code interpreters in your account.</p>",
       "readonly":true
     },
+    "ListConfigurationBundleVersions":{
+      "name":"ListConfigurationBundleVersions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/configuration-bundles/{bundleId}/versions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListConfigurationBundleVersionsRequest"},
+      "output":{"shape":"ListConfigurationBundleVersionsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists all versions of a configuration bundle, with optional filtering by branch name or creation source.</p>",
+      "readonly":true
+    },
+    "ListConfigurationBundles":{
+      "name":"ListConfigurationBundles",
+      "http":{
+        "method":"POST",
+        "requestUri":"/configuration-bundles",
+        "responseCode":200
+      },
+      "input":{"shape":"ListConfigurationBundlesRequest"},
+      "output":{"shape":"ListConfigurationBundlesResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists all configuration bundles in the account.</p>",
+      "readonly":true
+    },
     "ListEvaluators":{
       "name":"ListEvaluators",
       "http":{
@@ -1315,6 +1489,25 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p> Lists all available evaluators, including both builtin evaluators provided by the service and custom evaluators created by the user. </p>",
+      "readonly":true
+    },
+    "ListGatewayRules":{
+      "name":"ListGatewayRules",
+      "http":{
+        "method":"GET",
+        "requestUri":"/gateways/{gatewayIdentifier}/rules",
+        "responseCode":200
+      },
+      "input":{"shape":"ListGatewayRulesRequest"},
+      "output":{"shape":"ListGatewayRulesResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists all rules for a gateway.</p>",
       "readonly":true
     },
     "ListGatewayTargets":{
@@ -1783,6 +1976,25 @@
       "documentation":"<p>Updates an existing API key credential provider.</p>",
       "idempotent":true
     },
+    "UpdateConfigurationBundle":{
+      "name":"UpdateConfigurationBundle",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/configuration-bundles/{bundleId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateConfigurationBundleRequest"},
+      "output":{"shape":"UpdateConfigurationBundleResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates a configuration bundle by creating a new version with the specified changes. Each update creates a new version in the version history.</p>"
+    },
     "UpdateEvaluator":{
       "name":"UpdateEvaluator",
       "http":{
@@ -1823,6 +2035,26 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Updates an existing gateway.</p>",
+      "idempotent":true
+    },
+    "UpdateGatewayRule":{
+      "name":"UpdateGatewayRule",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/gateways/{gatewayIdentifier}/rules/{ruleId}",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdateGatewayRuleRequest"},
+      "output":{"shape":"UpdateGatewayRuleResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates a gateway rule's priority, conditions, actions, or description.</p>",
       "idempotent":true
     },
     "UpdateGatewayTarget":{
@@ -2072,6 +2304,27 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "Action":{
+      "type":"structure",
+      "members":{
+        "configurationBundle":{
+          "shape":"ConfigurationBundleAction",
+          "documentation":"<p>An action that applies a configuration bundle override to the request.</p>"
+        },
+        "routeToTarget":{
+          "shape":"RouteToTargetAction",
+          "documentation":"<p>An action that routes the request to a specific target.</p>"
+        }
+      },
+      "documentation":"<p>An action to take when a gateway rule's conditions are met.</p>",
+      "union":true
+    },
+    "Actions":{
+      "type":"list",
+      "member":{"shape":"Action"},
+      "max":2,
+      "min":1
     },
     "AdditionalModelRequestFields":{
       "type":"structure",
@@ -2597,7 +2850,8 @@
       "enum":[
         "CUSTOM_JWT",
         "AWS_IAM",
-        "NONE"
+        "NONE",
+        "AUTHENTICATE_ONLY"
       ]
     },
     "AuthorizingClaimMatchValueType":{
@@ -2649,6 +2903,12 @@
     "Boolean":{
       "type":"boolean",
       "box":true
+    },
+    "BranchName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z][a-zA-Z0-9_/-]{0,127}"
     },
     "BrowserArn":{
       "type":"string",
@@ -3147,6 +3407,29 @@
       },
       "documentation":"<p>Contains summary information about a code interpreter. A code interpreter enables Amazon Bedrock AgentCore Agent to execute code.</p>"
     },
+    "ComponentConfiguration":{
+      "type":"structure",
+      "required":["configuration"],
+      "members":{
+        "configuration":{
+          "shape":"Document",
+          "documentation":"<p>The configuration values as a flexible JSON document.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a component within a configuration bundle. The component type is inferred from the component identifier ARN.</p>",
+      "sensitive":true
+    },
+    "ComponentConfigurationMap":{
+      "type":"map",
+      "key":{"shape":"ComponentIdentifier"},
+      "value":{"shape":"ComponentConfiguration"}
+    },
+    "ComponentIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"[a-zA-Z][a-zA-Z0-9_:/.\\-]{0,2047}"
+    },
     "ConcurrentModificationException":{
       "type":"structure",
       "required":["message"],
@@ -3159,6 +3442,170 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "Condition":{
+      "type":"structure",
+      "members":{
+        "matchPrincipals":{
+          "shape":"MatchPrincipals",
+          "documentation":"<p>A condition that matches on the identity of the caller making the request.</p>"
+        },
+        "matchPaths":{
+          "shape":"MatchPaths",
+          "documentation":"<p>A condition that matches on the request path.</p>"
+        }
+      },
+      "documentation":"<p>A condition that determines when a gateway rule applies. Conditions can match on principals or request paths.</p>",
+      "union":true
+    },
+    "Conditions":{
+      "type":"list",
+      "member":{"shape":"Condition"},
+      "max":2,
+      "min":1
+    },
+    "ConfigurationBundleAction":{
+      "type":"structure",
+      "members":{
+        "staticOverride":{
+          "shape":"StaticOverride",
+          "documentation":"<p>A static configuration bundle override that applies a single bundle version to all matching requests.</p>"
+        },
+        "weightedOverride":{
+          "shape":"WeightedOverride",
+          "documentation":"<p>A weighted configuration bundle override that splits traffic between multiple bundle versions based on configured weights.</p>"
+        }
+      },
+      "documentation":"<p>An action that applies a configuration bundle override, either as a static override or a weighted split for A/B testing.</p>",
+      "union":true
+    },
+    "ConfigurationBundleArn":{
+      "type":"string",
+      "pattern":"arn:aws:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:configuration-bundle/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
+    },
+    "ConfigurationBundleDescription":{
+      "type":"string",
+      "max":500,
+      "min":1,
+      "pattern":".+",
+      "sensitive":true
+    },
+    "ConfigurationBundleId":{
+      "type":"string",
+      "pattern":"[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
+    },
+    "ConfigurationBundleName":{
+      "type":"string",
+      "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,99}"
+    },
+    "ConfigurationBundleReference":{
+      "type":"structure",
+      "required":[
+        "bundleArn",
+        "bundleVersion"
+      ],
+      "members":{
+        "bundleArn":{
+          "shape":"GatewayConfigurationBundleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configuration bundle.</p>"
+        },
+        "bundleVersion":{
+          "shape":"ConfigurationBundleReferenceBundleVersionString",
+          "documentation":"<p>The version of the configuration bundle.</p>"
+        }
+      },
+      "documentation":"<p>A reference to a specific version of a configuration bundle.</p>"
+    },
+    "ConfigurationBundleReferenceBundleVersionString":{
+      "type":"string",
+      "pattern":"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
+    },
+    "ConfigurationBundleStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "CREATING",
+        "CREATE_FAILED",
+        "UPDATING",
+        "UPDATE_FAILED",
+        "DELETING",
+        "DELETE_FAILED"
+      ]
+    },
+    "ConfigurationBundleSummary":{
+      "type":"structure",
+      "required":[
+        "bundleArn",
+        "bundleId",
+        "bundleName"
+      ],
+      "members":{
+        "bundleArn":{
+          "shape":"ConfigurationBundleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configuration bundle.</p>"
+        },
+        "bundleId":{
+          "shape":"ConfigurationBundleId",
+          "documentation":"<p>The unique identifier of the configuration bundle.</p>"
+        },
+        "bundleName":{
+          "shape":"ConfigurationBundleName",
+          "documentation":"<p>The name of the configuration bundle.</p>"
+        },
+        "description":{
+          "shape":"ConfigurationBundleDescription",
+          "documentation":"<p>The description of the configuration bundle.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a configuration bundle.</p>"
+    },
+    "ConfigurationBundleSummaryList":{
+      "type":"list",
+      "member":{"shape":"ConfigurationBundleSummary"}
+    },
+    "ConfigurationBundleVersion":{
+      "type":"string",
+      "pattern":"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
+    },
+    "ConfigurationBundleVersionList":{
+      "type":"list",
+      "member":{"shape":"ConfigurationBundleVersion"}
+    },
+    "ConfigurationBundleVersionSummary":{
+      "type":"structure",
+      "required":[
+        "bundleArn",
+        "bundleId",
+        "versionId",
+        "versionCreatedAt"
+      ],
+      "members":{
+        "bundleArn":{
+          "shape":"ConfigurationBundleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configuration bundle.</p>"
+        },
+        "bundleId":{
+          "shape":"ConfigurationBundleId",
+          "documentation":"<p>The unique identifier of the configuration bundle.</p>"
+        },
+        "versionId":{
+          "shape":"ConfigurationBundleVersion",
+          "documentation":"<p>The version identifier of this configuration bundle version.</p>"
+        },
+        "lineageMetadata":{
+          "shape":"VersionLineageMetadata",
+          "documentation":"<p>The version lineage metadata, including parent versions, branch name, and creation source.</p>"
+        },
+        "versionCreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when this version was created.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a configuration bundle version.</p>"
+    },
+    "ConfigurationBundleVersionSummaryList":{
+      "type":"list",
+      "member":{"shape":"ConfigurationBundleVersionSummary"}
     },
     "ConflictException":{
       "type":"structure",
@@ -3639,6 +4086,80 @@
         }
       }
     },
+    "CreateConfigurationBundleRequest":{
+      "type":"structure",
+      "required":[
+        "bundleName",
+        "components"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "bundleName":{
+          "shape":"ConfigurationBundleName",
+          "documentation":"<p>The name for the configuration bundle. Names must be unique within your account.</p>"
+        },
+        "description":{
+          "shape":"ConfigurationBundleDescription",
+          "documentation":"<p>The description for the configuration bundle.</p>"
+        },
+        "components":{
+          "shape":"ComponentConfigurationMap",
+          "documentation":"<p>A map of component identifiers to their configurations. Each component represents a configurable element within the bundle.</p>"
+        },
+        "branchName":{
+          "shape":"BranchName",
+          "documentation":"<p>The branch name for version tracking. Defaults to <code>mainline</code> if not specified.</p>"
+        },
+        "commitMessage":{
+          "shape":"CreateConfigurationBundleRequestCommitMessageString",
+          "documentation":"<p>A commit message describing the initial version of the configuration bundle.</p>"
+        },
+        "createdBy":{
+          "shape":"VersionCreatedBySource",
+          "documentation":"<p>The source that created this version, including the source name and optional ARN.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of tag keys and values to assign to the configuration bundle. Tags enable you to categorize your resources in different ways, for example, by purpose, owner, or environment.</p>"
+        }
+      }
+    },
+    "CreateConfigurationBundleRequestCommitMessageString":{
+      "type":"string",
+      "max":500,
+      "min":1
+    },
+    "CreateConfigurationBundleResponse":{
+      "type":"structure",
+      "required":[
+        "bundleArn",
+        "bundleId",
+        "versionId",
+        "createdAt"
+      ],
+      "members":{
+        "bundleArn":{
+          "shape":"ConfigurationBundleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created configuration bundle.</p>"
+        },
+        "bundleId":{
+          "shape":"ConfigurationBundleId",
+          "documentation":"<p>The unique identifier of the created configuration bundle.</p>"
+        },
+        "versionId":{
+          "shape":"ConfigurationBundleVersion",
+          "documentation":"<p>The initial version identifier of the configuration bundle.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the configuration bundle was created.</p>"
+        }
+      }
+    },
     "CreateEvaluatorRequest":{
       "type":"structure",
       "required":[
@@ -3667,6 +4188,10 @@
         "level":{
           "shape":"EvaluatorLevel",
           "documentation":"<p> The evaluation level that determines the scope of evaluation. Valid values are <code>TOOL_CALL</code> for individual tool invocations, <code>TRACE</code> for single request-response interactions, or <code>SESSION</code> for entire conversation sessions. </p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of a customer managed KMS key to use for encrypting sensitive evaluator data, including instructions and rating scale. If you don't specify a KMS key, the evaluator data is encrypted with an Amazon Web Services owned key. Only symmetric encryption KMS keys are supported. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/evaluations-encryption.html\">Encryption at rest for AgentCore Evaluations</a>. </p>"
         },
         "tags":{
           "shape":"TagsMap",
@@ -3706,7 +4231,6 @@
       "required":[
         "name",
         "roleArn",
-        "protocolType",
         "authorizerType"
       ],
       "members":{
@@ -3774,7 +4298,6 @@
         "updatedAt",
         "status",
         "name",
-        "protocolType",
         "authorizerType"
       ],
       "members":{
@@ -3853,6 +4376,92 @@
         "exceptionLevel":{
           "shape":"ExceptionLevel",
           "documentation":"<p>The level of detail in error messages returned when invoking the gateway.</p> <ul> <li> <p>If the value is <code>DEBUG</code>, granular exception messages are returned to help a user debug the gateway.</p> </li> <li> <p>If the value is omitted, a generic error message is returned to the end user.</p> </li> </ul>"
+        }
+      }
+    },
+    "CreateGatewayRuleRequest":{
+      "type":"structure",
+      "required":[
+        "gatewayIdentifier",
+        "priority",
+        "actions"
+      ],
+      "members":{
+        "gatewayIdentifier":{
+          "shape":"GatewayIdentifier",
+          "documentation":"<p>The identifier of the gateway to create a rule for.</p>",
+          "location":"uri",
+          "locationName":"gatewayIdentifier"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "priority":{
+          "shape":"GatewayRulePriority",
+          "documentation":"<p>The priority of the rule. Rules are evaluated in order of priority, with lower numbers evaluated first. Must be between 1 and 1,000,000.</p>"
+        },
+        "conditions":{
+          "shape":"Conditions",
+          "documentation":"<p>The conditions that must be met for the rule to apply. Conditions can match on principals (IAM ARNs) or request paths.</p>"
+        },
+        "actions":{
+          "shape":"Actions",
+          "documentation":"<p>The actions to take when the rule conditions are met. Actions can route to a specific target or apply a configuration bundle override.</p>"
+        },
+        "description":{
+          "shape":"GatewayRuleDescription",
+          "documentation":"<p>The description of the gateway rule.</p>"
+        }
+      }
+    },
+    "CreateGatewayRuleResponse":{
+      "type":"structure",
+      "required":[
+        "ruleId",
+        "gatewayArn",
+        "priority",
+        "actions",
+        "createdAt",
+        "status"
+      ],
+      "members":{
+        "ruleId":{
+          "shape":"GatewayRuleId",
+          "documentation":"<p>The unique identifier of the gateway rule.</p>"
+        },
+        "gatewayArn":{
+          "shape":"GatewayArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway that the rule belongs to.</p>"
+        },
+        "priority":{
+          "shape":"GatewayRulePriority",
+          "documentation":"<p>The priority of the rule. Rules are evaluated in order of priority, with lower numbers evaluated first.</p>"
+        },
+        "conditions":{
+          "shape":"Conditions",
+          "documentation":"<p>The conditions that must be met for the rule to apply.</p>"
+        },
+        "actions":{
+          "shape":"Actions",
+          "documentation":"<p>The actions to take when the rule conditions are met.</p>"
+        },
+        "description":{
+          "shape":"GatewayRuleDescription",
+          "documentation":"<p>The description of the gateway rule.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the rule was created.</p>"
+        },
+        "status":{
+          "shape":"GatewayRuleStatus",
+          "documentation":"<p>The current status of the rule.</p>"
+        },
+        "system":{
+          "shape":"SystemManagedBlock",
+          "documentation":"<p>System-managed metadata for rules created by automated processes.</p>"
         }
       }
     },
@@ -3973,6 +4582,10 @@
         "authorizationData":{
           "shape":"AuthorizationData",
           "documentation":"<p>OAuth2 authorization data for the created gateway target. This data is returned when a target is configured with a credential provider with authorization code grant type and requires user federation.</p>"
+        },
+        "protocolType":{
+          "shape":"TargetProtocolType",
+          "documentation":"<p>The protocol type of the created gateway target.</p>"
         }
       }
     },
@@ -4043,7 +4656,7 @@
         },
         "maxTokens":{
           "shape":"Integer",
-          "documentation":"<p>The maximum number of tokens the agent can generate per iteration.</p>"
+          "documentation":"<p>The maximum total number of output tokens the agent can generate across all model calls within a single invocation.</p>"
         },
         "timeoutSeconds":{
           "shape":"Integer",
@@ -4226,7 +4839,7 @@
         },
         "evaluationExecutionRoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p> The Amazon Resource Name (ARN) of the IAM role that grants permissions to read from CloudWatch logs, write evaluation results, and invoke Amazon Bedrock models for evaluation. </p>"
+          "documentation":"<p> The Amazon Resource Name (ARN) of the IAM role that grants permissions to read from CloudWatch logs, write evaluation results, and invoke Amazon Bedrock models for evaluation. If the configuration references evaluators encrypted with a customer managed KMS key, this role must also have <code>kms:Decrypt</code> permission on the KMS key. The service validates this permission at configuration creation time. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/evaluations-encryption.html\">Encryption at rest for AgentCore Evaluations</a>. </p>"
         },
         "enableOnCreate":{
           "shape":"Boolean",
@@ -4652,7 +5265,9 @@
       "enum":[
         "GATEWAY_IAM_ROLE",
         "OAUTH",
-        "API_KEY"
+        "API_KEY",
+        "CALLER_IAM_CREDENTIALS",
+        "JWT_PASSTHROUGH"
       ]
     },
     "CredentialProviderVendorType":{
@@ -5238,6 +5853,35 @@
         }
       }
     },
+    "DeleteConfigurationBundleRequest":{
+      "type":"structure",
+      "required":["bundleId"],
+      "members":{
+        "bundleId":{
+          "shape":"ConfigurationBundleId",
+          "documentation":"<p>The unique identifier of the configuration bundle to delete.</p>",
+          "location":"uri",
+          "locationName":"bundleId"
+        }
+      }
+    },
+    "DeleteConfigurationBundleResponse":{
+      "type":"structure",
+      "required":[
+        "bundleId",
+        "status"
+      ],
+      "members":{
+        "bundleId":{
+          "shape":"ConfigurationBundleId",
+          "documentation":"<p>The unique identifier of the deleted configuration bundle.</p>"
+        },
+        "status":{
+          "shape":"ConfigurationBundleStatus",
+          "documentation":"<p>The status of the configuration bundle deletion operation.</p>"
+        }
+      }
+    },
     "DeleteEvaluatorRequest":{
       "type":"structure",
       "required":["evaluatorId"],
@@ -5302,6 +5946,44 @@
         "statusReasons":{
           "shape":"StatusReasons",
           "documentation":"<p>The reasons for the current status of the gateway deletion.</p>"
+        }
+      }
+    },
+    "DeleteGatewayRuleRequest":{
+      "type":"structure",
+      "required":[
+        "gatewayIdentifier",
+        "ruleId"
+      ],
+      "members":{
+        "gatewayIdentifier":{
+          "shape":"GatewayIdentifier",
+          "documentation":"<p>The identifier of the gateway containing the rule.</p>",
+          "location":"uri",
+          "locationName":"gatewayIdentifier"
+        },
+        "ruleId":{
+          "shape":"GatewayRuleId",
+          "documentation":"<p>The unique identifier of the rule to delete.</p>",
+          "location":"uri",
+          "locationName":"ruleId"
+        }
+      }
+    },
+    "DeleteGatewayRuleResponse":{
+      "type":"structure",
+      "required":[
+        "ruleId",
+        "status"
+      ],
+      "members":{
+        "ruleId":{
+          "shape":"GatewayRuleId",
+          "documentation":"<p>The unique identifier of the deleted rule.</p>"
+        },
+        "status":{
+          "shape":"GatewayRuleStatus",
+          "documentation":"<p>The status of the rule deletion operation.</p>"
         }
       }
     },
@@ -5739,6 +6421,11 @@
       "type":"string",
       "pattern":".+/\\.well-known/openid-configuration"
     },
+    "Document":{
+      "type":"structure",
+      "members":{},
+      "document":true
+    },
     "DomainName":{"type":"string"},
     "Double":{
       "type":"double",
@@ -6145,6 +6832,10 @@
         "lockedForModification":{
           "shape":"Boolean",
           "documentation":"<p> Whether the evaluator is locked for modification due to being referenced by active online evaluation configurations. </p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the customer managed KMS key used to encrypt the evaluator's sensitive data. This field is only present for evaluators encrypted with a customer managed key. </p>"
         }
       },
       "documentation":"<p> The summary information about an evaluator, including basic metadata and status information. </p>"
@@ -6318,6 +7009,10 @@
       "type":"string",
       "pattern":"arn:aws(|-cn|-us-gov):bedrock-agentcore:[a-z0-9-]{1,20}:[0-9]{12}:gateway/([0-9a-z][-]?){1,48}-[a-z0-9]{10}"
     },
+    "GatewayConfigurationBundleArn":{
+      "type":"string",
+      "pattern":"arn:aws[a-zA-Z-]*:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:configuration-bundle/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
+    },
     "GatewayDescription":{
       "type":"string",
       "max":200,
@@ -6436,6 +7131,102 @@
       "type":"string",
       "enum":["MCP"]
     },
+    "GatewayRuleDescription":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "GatewayRuleDetail":{
+      "type":"structure",
+      "required":[
+        "ruleId",
+        "gatewayArn",
+        "priority",
+        "actions",
+        "createdAt",
+        "status"
+      ],
+      "members":{
+        "ruleId":{
+          "shape":"GatewayRuleId",
+          "documentation":"<p>The unique identifier of the gateway rule.</p>"
+        },
+        "gatewayArn":{
+          "shape":"GatewayArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway that the rule belongs to.</p>"
+        },
+        "priority":{
+          "shape":"GatewayRulePriority",
+          "documentation":"<p>The priority of the rule. Rules are evaluated in order of priority, with lower numbers evaluated first.</p>"
+        },
+        "conditions":{
+          "shape":"Conditions",
+          "documentation":"<p>The conditions that must be met for the rule to apply.</p>"
+        },
+        "actions":{
+          "shape":"Actions",
+          "documentation":"<p>The actions to take when the rule conditions are met.</p>"
+        },
+        "description":{
+          "shape":"GatewayRuleDescription",
+          "documentation":"<p>The description of the gateway rule.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the rule was created.</p>"
+        },
+        "status":{
+          "shape":"GatewayRuleStatus",
+          "documentation":"<p>The current status of the rule.</p>"
+        },
+        "system":{
+          "shape":"SystemManagedBlock",
+          "documentation":"<p>System-managed metadata for rules created by automated processes.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the rule was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Detailed information about a gateway rule.</p>"
+    },
+    "GatewayRuleId":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
+    "GatewayRuleMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "GatewayRuleNextToken":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"\\S*"
+    },
+    "GatewayRulePriority":{
+      "type":"integer",
+      "box":true,
+      "max":1000000,
+      "min":1
+    },
+    "GatewayRuleStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "ACTIVE",
+        "UPDATING",
+        "DELETING"
+      ]
+    },
+    "GatewayRules":{
+      "type":"list",
+      "member":{"shape":"GatewayRuleDetail"}
+    },
     "GatewayStatus":{
       "type":"string",
       "enum":[
@@ -6459,8 +7250,7 @@
         "status",
         "createdAt",
         "updatedAt",
-        "authorizerType",
-        "protocolType"
+        "authorizerType"
       ],
       "members":{
         "gatewayId":{
@@ -6564,6 +7354,10 @@
         "authorizationData":{
           "shape":"AuthorizationData",
           "documentation":"<p>OAuth2 authorization data for the gateway target. This data is returned when a target is configured with a credential provider with authorization code grant type and requires user federation.</p>"
+        },
+        "protocolType":{
+          "shape":"TargetProtocolType",
+          "documentation":"<p>The protocol type of the gateway target.</p>"
         }
       },
       "documentation":"<p>The gateway target.</p>"
@@ -7018,6 +7812,145 @@
         }
       }
     },
+    "GetConfigurationBundleRequest":{
+      "type":"structure",
+      "required":["bundleId"],
+      "members":{
+        "bundleId":{
+          "shape":"ConfigurationBundleId",
+          "documentation":"<p>The unique identifier of the configuration bundle to retrieve.</p>",
+          "location":"uri",
+          "locationName":"bundleId"
+        },
+        "branchName":{
+          "shape":"BranchName",
+          "documentation":"<p>The branch name to get the latest version from. If not specified, returns the latest version on the mainline branch.</p>",
+          "location":"querystring",
+          "locationName":"branchName"
+        }
+      }
+    },
+    "GetConfigurationBundleResponse":{
+      "type":"structure",
+      "required":[
+        "bundleArn",
+        "bundleId",
+        "bundleName",
+        "versionId",
+        "components",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "bundleArn":{
+          "shape":"ConfigurationBundleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configuration bundle.</p>"
+        },
+        "bundleId":{
+          "shape":"ConfigurationBundleId",
+          "documentation":"<p>The unique identifier of the configuration bundle.</p>"
+        },
+        "bundleName":{
+          "shape":"ConfigurationBundleName",
+          "documentation":"<p>The name of the configuration bundle.</p>"
+        },
+        "description":{
+          "shape":"ConfigurationBundleDescription",
+          "documentation":"<p>The description of the configuration bundle.</p>"
+        },
+        "versionId":{
+          "shape":"ConfigurationBundleVersion",
+          "documentation":"<p>The version identifier of this configuration bundle.</p>"
+        },
+        "components":{
+          "shape":"ComponentConfigurationMap",
+          "documentation":"<p>A map of component identifiers to their configurations for this version.</p>"
+        },
+        "lineageMetadata":{
+          "shape":"VersionLineageMetadata",
+          "documentation":"<p>The version lineage metadata, including parent versions, branch name, and creation source.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the configuration bundle was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the configuration bundle was last updated.</p>"
+        }
+      }
+    },
+    "GetConfigurationBundleVersionRequest":{
+      "type":"structure",
+      "required":[
+        "bundleId",
+        "versionId"
+      ],
+      "members":{
+        "bundleId":{
+          "shape":"ConfigurationBundleId",
+          "documentation":"<p>The unique identifier of the configuration bundle.</p>",
+          "location":"uri",
+          "locationName":"bundleId"
+        },
+        "versionId":{
+          "shape":"ConfigurationBundleVersion",
+          "documentation":"<p>The version identifier of the configuration bundle version to retrieve.</p>",
+          "location":"uri",
+          "locationName":"versionId"
+        }
+      }
+    },
+    "GetConfigurationBundleVersionResponse":{
+      "type":"structure",
+      "required":[
+        "bundleArn",
+        "bundleId",
+        "bundleName",
+        "versionId",
+        "components",
+        "createdAt",
+        "versionCreatedAt"
+      ],
+      "members":{
+        "bundleArn":{
+          "shape":"ConfigurationBundleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configuration bundle.</p>"
+        },
+        "bundleId":{
+          "shape":"ConfigurationBundleId",
+          "documentation":"<p>The unique identifier of the configuration bundle.</p>"
+        },
+        "bundleName":{
+          "shape":"ConfigurationBundleName",
+          "documentation":"<p>The name of the configuration bundle.</p>"
+        },
+        "description":{
+          "shape":"ConfigurationBundleDescription",
+          "documentation":"<p>The description of the configuration bundle.</p>"
+        },
+        "versionId":{
+          "shape":"ConfigurationBundleVersion",
+          "documentation":"<p>The version identifier of this configuration bundle version.</p>"
+        },
+        "components":{
+          "shape":"ComponentConfigurationMap",
+          "documentation":"<p>A map of component identifiers to their configurations for this version.</p>"
+        },
+        "lineageMetadata":{
+          "shape":"VersionLineageMetadata",
+          "documentation":"<p>The version lineage metadata, including parent versions, branch name, and creation source.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the configuration bundle was created.</p>"
+        },
+        "versionCreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when this specific version was created.</p>"
+        }
+      }
+    },
     "GetEvaluatorRequest":{
       "type":"structure",
       "required":["evaluatorId"],
@@ -7027,6 +7960,12 @@
           "documentation":"<p> The unique identifier of the evaluator to retrieve. Can be a built-in evaluator ID (e.g., Builtin.Helpfulness) or a custom evaluator ID. </p>",
           "location":"uri",
           "locationName":"evaluatorId"
+        },
+        "includedData":{
+          "shape":"IncludedData",
+          "documentation":"<p> Controls which data is returned in the response. <code>ALL_DATA</code> (default) returns the full evaluator including decrypted instructions and rating scale. For evaluators encrypted with a customer managed KMS key, this requires <code>kms:Decrypt</code> permission on the key. <code>METADATA_ONLY</code> returns evaluator metadata and model configuration without instructions or rating scale, and does not require any KMS permissions. </p>",
+          "location":"querystring",
+          "locationName":"includedData"
         }
       }
     },
@@ -7082,6 +8021,10 @@
         "lockedForModification":{
           "shape":"Boolean",
           "documentation":"<p> Whether the evaluator is locked for modification due to being referenced by active online evaluation configurations. </p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the customer managed KMS key used to encrypt the evaluator's sensitive data. This field is only present for evaluators encrypted with a customer managed key. </p>"
         }
       }
     },
@@ -7106,7 +8049,6 @@
         "updatedAt",
         "status",
         "name",
-        "protocolType",
         "authorizerType"
       ],
       "members":{
@@ -7184,6 +8126,81 @@
           "documentation":"<p>The level of detail in error messages returned when invoking the gateway.</p> <ul> <li> <p>If the value is <code>DEBUG</code>, granular exception messages are returned to help a user debug the gateway.</p> </li> <li> <p>If the value is omitted, a generic error message is returned to the end user.</p> </li> </ul>"
         }
       }
+    },
+    "GetGatewayRuleRequest":{
+      "type":"structure",
+      "required":[
+        "gatewayIdentifier",
+        "ruleId"
+      ],
+      "members":{
+        "gatewayIdentifier":{
+          "shape":"GatewayIdentifier",
+          "documentation":"<p>The identifier of the gateway containing the rule.</p>",
+          "location":"uri",
+          "locationName":"gatewayIdentifier"
+        },
+        "ruleId":{
+          "shape":"GatewayRuleId",
+          "documentation":"<p>The unique identifier of the rule to retrieve.</p>",
+          "location":"uri",
+          "locationName":"ruleId"
+        }
+      }
+    },
+    "GetGatewayRuleResponse":{
+      "type":"structure",
+      "required":[
+        "ruleId",
+        "gatewayArn",
+        "priority",
+        "actions",
+        "createdAt",
+        "status"
+      ],
+      "members":{
+        "ruleId":{
+          "shape":"GatewayRuleId",
+          "documentation":"<p>The unique identifier of the gateway rule.</p>"
+        },
+        "gatewayArn":{
+          "shape":"GatewayArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway that the rule belongs to.</p>"
+        },
+        "priority":{
+          "shape":"GatewayRulePriority",
+          "documentation":"<p>The priority of the rule. Rules are evaluated in order of priority, with lower numbers evaluated first.</p>"
+        },
+        "conditions":{
+          "shape":"Conditions",
+          "documentation":"<p>The conditions that must be met for the rule to apply.</p>"
+        },
+        "actions":{
+          "shape":"Actions",
+          "documentation":"<p>The actions to take when the rule conditions are met.</p>"
+        },
+        "description":{
+          "shape":"GatewayRuleDescription",
+          "documentation":"<p>The description of the gateway rule.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the rule was created.</p>"
+        },
+        "status":{
+          "shape":"GatewayRuleStatus",
+          "documentation":"<p>The current status of the rule.</p>"
+        },
+        "system":{
+          "shape":"SystemManagedBlock",
+          "documentation":"<p>System-managed metadata for rules created by automated processes.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the rule was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Create response excludes updatedAt (redundant on create). Get/Update responses include it via their own output structures.</p>"
     },
     "GetGatewayTargetRequest":{
       "type":"structure",
@@ -7275,6 +8292,10 @@
         "authorizationData":{
           "shape":"AuthorizationData",
           "documentation":"<p>OAuth2 authorization data for the gateway target. This data is returned when a target is configured with a credential provider with authorization code grant type and requires user federation.</p>"
+        },
+        "protocolType":{
+          "shape":"TargetProtocolType",
+          "documentation":"<p>The protocol type of the gateway target.</p>"
         }
       }
     },
@@ -8108,7 +9129,7 @@
         },
         "maxTokens":{
           "shape":"Integer",
-          "documentation":"<p>The maximum number of tokens allowed before exiting per invocation.</p>"
+          "documentation":"<p>The maximum total number of output tokens the agent can generate across all model calls within a single invocation.</p>"
         },
         "timeoutSeconds":{
           "shape":"Integer",
@@ -8151,7 +9172,7 @@
         },
         "outboundAuth":{
           "shape":"HarnessGatewayOutboundAuth",
-          "documentation":"<p>How Loopy authenticates to this Gateway. Defaults to AWS_IAM (SigV4) if omitted.</p>"
+          "documentation":"<p>How harness authenticates to this Gateway. Defaults to AWS_IAM (SigV4) if omitted.</p>"
         }
       },
       "documentation":"<p>Configuration for AgentCore Gateway.</p>"
@@ -8269,7 +9290,7 @@
         },
         "maxTokens":{
           "shape":"MaxTokens",
-          "documentation":"<p>The maximum number of tokens to allow in the generated response per iteration.</p>"
+          "documentation":"<p>The maximum number of tokens to allow in the generated response per model call.</p>"
         },
         "temperature":{
           "shape":"Temperature",
@@ -8345,7 +9366,7 @@
         },
         "maxTokens":{
           "shape":"MaxTokens",
-          "documentation":"<p>The maximum number of tokens to allow in the generated response per iteration.</p>"
+          "documentation":"<p>The maximum number of tokens to allow in the generated response per model call.</p>"
         },
         "temperature":{
           "shape":"Temperature",
@@ -8441,7 +9462,7 @@
         },
         "maxTokens":{
           "shape":"MaxTokens",
-          "documentation":"<p>The maximum number of tokens to allow in the generated response per iteration.</p>"
+          "documentation":"<p>The maximum number of tokens to allow in the generated response per model call.</p>"
         },
         "temperature":{
           "shape":"Temperature",
@@ -8462,7 +9483,10 @@
           "shape":"HarnessRemoteMcpUrl",
           "documentation":"<p>URL of the MCP endpoint.</p>"
         },
-        "headers":{"shape":"HttpHeadersMap"}
+        "headers":{
+          "shape":"HttpHeadersMap",
+          "documentation":"<p>Custom headers to include when connecting to the remote MCP server.</p>"
+        }
       },
       "documentation":"<p>Configuration for connecting to a remote MCP server.</p>"
     },
@@ -8727,6 +9751,17 @@
       "max":40,
       "min":1
     },
+    "HttpTargetConfiguration":{
+      "type":"structure",
+      "members":{
+        "agentcoreRuntime":{
+          "shape":"RuntimeTargetConfiguration",
+          "documentation":"<p>The AgentCore Runtime target configuration for HTTP-based communication with an agent runtime.</p>"
+        }
+      },
+      "documentation":"<p>The HTTP target configuration for a gateway target. Contains the configuration for HTTP-based target endpoints.</p>",
+      "union":true
+    },
     "IamCredentialProvider":{
       "type":"structure",
       "required":["service"],
@@ -8753,6 +9788,27 @@
       "max":64,
       "min":1,
       "pattern":"[a-zA-Z0-9._-]+"
+    },
+    "IamPrincipal":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"IamPrincipalArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM principal. Supports user, role, and assumed-role ARNs. Wildcards can be used with the <code>StringLike</code> operator.</p>"
+        },
+        "operator":{
+          "shape":"PrincipalMatchOperator",
+          "documentation":"<p>The match operator. <code>StringEquals</code> requires an exact match. <code>StringLike</code> supports wildcard patterns using <code>*</code> and <code>?</code>.</p>"
+        }
+      },
+      "documentation":"<p>An IAM principal specification for rule matching.</p>"
+    },
+    "IamPrincipalArn":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"(arn:aws[a-zA-Z-]*:iam::(\\d{12}|\\*):(user|role)/[\\w+=,.@*?/-]+|arn:aws[a-zA-Z-]*:sts::(\\d{12}|\\*):assumed-role/[\\w+=,.@*?/-]+)"
     },
     "IamRoleArn":{
       "type":"string",
@@ -8783,6 +9839,13 @@
       "enum":[
         "STRING",
         "STRING_ARRAY"
+      ]
+    },
+    "IncludedData":{
+      "type":"string",
+      "enum":[
+        "ALL_DATA",
+        "METADATA_ONLY"
       ]
     },
     "IncludedOauth2ProviderConfigInput":{
@@ -9351,6 +10414,91 @@
         }
       }
     },
+    "ListConfigurationBundleVersionsRequest":{
+      "type":"structure",
+      "required":["bundleId"],
+      "members":{
+        "bundleId":{
+          "shape":"ConfigurationBundleId",
+          "documentation":"<p>The unique identifier of the configuration bundle to list versions for.</p>",
+          "location":"uri",
+          "locationName":"bundleId"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, enter the token returned in the <code>nextToken</code> field in the response in this field to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"ListConfigurationBundleVersionsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return in the response. If the total number of results is greater than this value, use the token returned in the response in the <code>nextToken</code> field when making another request to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "filter":{
+          "shape":"VersionFilter",
+          "documentation":"<p>An optional filter for listing versions, including branch name, creation source, and whether to return only the latest version per branch.</p>"
+        }
+      }
+    },
+    "ListConfigurationBundleVersionsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListConfigurationBundleVersionsResponse":{
+      "type":"structure",
+      "required":["versions"],
+      "members":{
+        "versions":{
+          "shape":"ConfigurationBundleVersionSummaryList",
+          "documentation":"<p>The list of configuration bundle version summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, use this token when making another request in the <code>nextToken</code> field to return the next batch of results.</p>"
+        }
+      }
+    },
+    "ListConfigurationBundlesRequest":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, enter the token returned in the <code>nextToken</code> field in the response in this field to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"ListConfigurationBundlesRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return in the response. If the total number of results is greater than this value, use the token returned in the response in the <code>nextToken</code> field when making another request to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListConfigurationBundlesRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListConfigurationBundlesResponse":{
+      "type":"structure",
+      "required":["bundles"],
+      "members":{
+        "bundles":{
+          "shape":"ConfigurationBundleSummaryList",
+          "documentation":"<p>The list of configuration bundle summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, use this token when making another request in the <code>nextToken</code> field to return the next batch of results.</p>"
+        }
+      }
+    },
     "ListEvaluatorsRequest":{
       "type":"structure",
       "members":{
@@ -9385,6 +10533,44 @@
         "nextToken":{
           "shape":"String",
           "documentation":"<p> The pagination token to use in a subsequent request to retrieve the next page of results. </p>"
+        }
+      }
+    },
+    "ListGatewayRulesRequest":{
+      "type":"structure",
+      "required":["gatewayIdentifier"],
+      "members":{
+        "gatewayIdentifier":{
+          "shape":"GatewayIdentifier",
+          "documentation":"<p>The identifier of the gateway to list rules for.</p>",
+          "location":"uri",
+          "locationName":"gatewayIdentifier"
+        },
+        "maxResults":{
+          "shape":"GatewayRuleMaxResults",
+          "documentation":"<p>The maximum number of results to return in the response. If the total number of results is greater than this value, use the token returned in the response in the <code>nextToken</code> field when making another request to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"GatewayRuleNextToken",
+          "documentation":"<p>The pagination token from a previous request.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListGatewayRulesResponse":{
+      "type":"structure",
+      "required":["gatewayRules"],
+      "members":{
+        "gatewayRules":{
+          "shape":"GatewayRules",
+          "documentation":"<p>The list of gateway rules.</p>"
+        },
+        "nextToken":{
+          "shape":"GatewayRuleNextToken",
+          "documentation":"<p>The pagination token to use in a subsequent request.</p>"
         }
       }
     },
@@ -10004,6 +11190,57 @@
       },
       "documentation":"<p>Configuration for a managed VPC Lattice resource. The gateway creates and manages the VPC Lattice resource gateway and resource configuration on your behalf using a service-linked role.</p>"
     },
+    "MatchPathPattern":{
+      "type":"string",
+      "max":512,
+      "min":0,
+      "pattern":"/[\\w\\-.]+/\\*"
+    },
+    "MatchPaths":{
+      "type":"structure",
+      "required":["anyOf"],
+      "members":{
+        "anyOf":{
+          "shape":"MatchPathsAnyOfList",
+          "documentation":"<p>A list of path patterns. The condition is met if the request path matches any of the patterns.</p>"
+        }
+      },
+      "documentation":"<p>A condition that matches requests based on the request path.</p>"
+    },
+    "MatchPathsAnyOfList":{
+      "type":"list",
+      "member":{"shape":"MatchPathPattern"},
+      "max":10,
+      "min":1
+    },
+    "MatchPrincipalEntry":{
+      "type":"structure",
+      "members":{
+        "iamPrincipal":{
+          "shape":"IamPrincipal",
+          "documentation":"<p>An IAM principal to match against, specified by ARN.</p>"
+        }
+      },
+      "documentation":"<p>Union for principal matching. Currently supports IAM principal ARN glob matching. Extensible for future principal types (e.g., OAuth client ID).</p>",
+      "union":true
+    },
+    "MatchPrincipals":{
+      "type":"structure",
+      "required":["anyOf"],
+      "members":{
+        "anyOf":{
+          "shape":"MatchPrincipalsAnyOfList",
+          "documentation":"<p>A list of principal entries. The condition is met if any of the entries match the caller's identity.</p>"
+        }
+      },
+      "documentation":"<p>A condition that matches requests based on the caller's identity.</p>"
+    },
+    "MatchPrincipalsAnyOfList":{
+      "type":"list",
+      "member":{"shape":"MatchPrincipalEntry"},
+      "max":100,
+      "min":1
+    },
     "MatchValueString":{
       "type":"string",
       "max":255,
@@ -10075,13 +11312,13 @@
           "shape":"McpToolSchemaConfiguration",
           "documentation":"<p>The tool schema configuration for the MCP server target. Supported only when the credential provider is configured with an authorization code grant type. Dynamic tool discovery/synchronization will be disabled when target is configured with mcpToolSchema.</p>"
         },
-        "resourcePriority":{
-          "shape":"TargetResourcePriority",
-          "documentation":"<p>Priority for resolving MCP server targets with shared resource URIs. Lower values take precedence. Defaults to 1000 when not set.</p>"
-        },
         "listingMode":{
           "shape":"ListingMode",
           "documentation":"<p>The listing mode for the MCP server target configuration. MCP resources for default targets are cached at the control plane for faster access. MCP resources for dynamic targets will be dynamically retrieved when listing tools.</p>"
+        },
+        "resourcePriority":{
+          "shape":"TargetResourcePriority",
+          "documentation":"<p>Priority for resolving MCP server targets with shared resource URIs. Lower values take precedence. Defaults to 1000 when not set.</p>"
         }
       },
       "documentation":"<p>The target configuration for the MCP server.</p>"
@@ -11421,6 +12658,13 @@
         "IGNORE_ALL_FINDINGS"
       ]
     },
+    "PrincipalMatchOperator":{
+      "type":"string",
+      "enum":[
+        "StringEquals",
+        "StringLike"
+      ]
+    },
     "PrivateEndpoint":{
       "type":"structure",
       "members":{
@@ -11985,6 +13229,21 @@
       "min":1,
       "pattern":"arn:aws(-[^:]+)?:iam::([0-9]{12})?:role/.+"
     },
+    "RouteToTargetAction":{
+      "type":"structure",
+      "members":{
+        "staticRoute":{
+          "shape":"StaticRoute",
+          "documentation":"<p>A static route that sends all matching requests to a single target.</p>"
+        },
+        "weightedRoute":{
+          "shape":"WeightedRoute",
+          "documentation":"<p>A weighted route that splits traffic between multiple targets.</p>"
+        }
+      },
+      "documentation":"<p>An action that routes requests to a gateway target, either statically or with weighted traffic splitting.</p>",
+      "union":true
+    },
     "RoutingDomain":{
       "type":"string",
       "max":255,
@@ -12009,6 +13268,10 @@
       },
       "documentation":"<p> The evaluation rule that defines sampling configuration, filtering criteria, and session detection settings for online evaluation. </p>"
     },
+    "RuntimeArn":{
+      "type":"string",
+      "pattern":"arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:runtime/[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10}"
+    },
     "RuntimeContainerUri":{
       "type":"string",
       "max":1024,
@@ -12025,6 +13288,25 @@
         }
       },
       "documentation":"<p>Configuration for microVM metadata service settings.</p>"
+    },
+    "RuntimeQualifier":{
+      "type":"string",
+      "pattern":".*([1-9][0-9]{0,4})|([a-zA-Z][a-zA-Z0-9_]{0,47}).*"
+    },
+    "RuntimeTargetConfiguration":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"RuntimeArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AgentCore Runtime to route requests to.</p>"
+        },
+        "qualifier":{
+          "shape":"RuntimeQualifier",
+          "documentation":"<p>The qualifier for the agent runtime, used to target a specific endpoint version. If not specified, the default endpoint is used.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for an AgentCore Runtime target. Specifies the agent runtime to route requests to via HTTP.</p>"
     },
     "S3BucketUri":{
       "type":"string",
@@ -12686,6 +13968,39 @@
       "max":10000,
       "min":35
     },
+    "StaticOverride":{
+      "type":"structure",
+      "required":[
+        "bundleArn",
+        "bundleVersion"
+      ],
+      "members":{
+        "bundleArn":{
+          "shape":"GatewayConfigurationBundleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configuration bundle to apply.</p>"
+        },
+        "bundleVersion":{
+          "shape":"StaticOverrideBundleVersionString",
+          "documentation":"<p>The version of the configuration bundle to apply.</p>"
+        }
+      },
+      "documentation":"<p>A static configuration bundle override.</p>"
+    },
+    "StaticOverrideBundleVersionString":{
+      "type":"string",
+      "pattern":"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
+    },
+    "StaticRoute":{
+      "type":"structure",
+      "required":["targetName"],
+      "members":{
+        "targetName":{
+          "shape":"TargetName",
+          "documentation":"<p>The name of the target to route requests to.</p>"
+        }
+      },
+      "documentation":"<p>A static route to a single gateway target.</p>"
+    },
     "Status":{
       "type":"string",
       "enum":[
@@ -12945,6 +14260,17 @@
         }
       }
     },
+    "SystemManagedBlock":{
+      "type":"structure",
+      "required":["managedBy"],
+      "members":{
+        "managedBy":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the system or process that manages this rule.</p>"
+        }
+      },
+      "documentation":"<p>System-managed metadata for rules created by automated processes such as A/B tests.</p>"
+    },
     "TagKey":{
       "type":"string",
       "max":128,
@@ -13005,6 +14331,10 @@
         "mcp":{
           "shape":"McpTargetConfiguration",
           "documentation":"<p>The Model Context Protocol (MCP) configuration for the target. This configuration defines how the gateway uses MCP to communicate with the target.</p>"
+        },
+        "http":{
+          "shape":"HttpTargetConfiguration",
+          "documentation":"<p>The HTTP target configuration. Use this to route gateway requests to an HTTP-based endpoint such as an AgentCore Runtime.</p>"
         }
       },
       "documentation":"<p>The configuration for a gateway target. This structure defines how the gateway connects to and interacts with the target endpoint.</p>",
@@ -13042,6 +14372,13 @@
       "max":2048,
       "min":1,
       "pattern":"\\S*"
+    },
+    "TargetProtocolType":{
+      "type":"string",
+      "enum":[
+        "MCP",
+        "HTTP"
+      ]
     },
     "TargetResourcePriority":{
       "type":"integer",
@@ -13109,6 +14446,60 @@
         }
       },
       "documentation":"<p>Contains summary information about a gateway target. A target represents an endpoint that the gateway can connect to.</p>"
+    },
+    "TargetTrafficSplitEntries":{
+      "type":"list",
+      "member":{"shape":"TargetTrafficSplitEntry"},
+      "max":2,
+      "min":2
+    },
+    "TargetTrafficSplitEntry":{
+      "type":"structure",
+      "required":[
+        "name",
+        "weight",
+        "targetName"
+      ],
+      "members":{
+        "name":{
+          "shape":"TargetTrafficSplitEntryNameString",
+          "documentation":"<p>The name of this traffic split variant.</p>"
+        },
+        "weight":{
+          "shape":"TargetTrafficSplitEntryWeightInteger",
+          "documentation":"<p>The percentage of traffic to route to this variant.</p>"
+        },
+        "targetName":{
+          "shape":"TargetName",
+          "documentation":"<p>The name of the target to route traffic to.</p>"
+        },
+        "description":{
+          "shape":"TargetTrafficSplitEntryDescriptionString",
+          "documentation":"<p>The description of this traffic split variant.</p>"
+        },
+        "metadata":{
+          "shape":"TrafficSplitMetadataMap",
+          "documentation":"<p>Key-value metadata associated with this traffic split variant.</p>"
+        }
+      },
+      "documentation":"<p>An entry in a target traffic split configuration.</p>"
+    },
+    "TargetTrafficSplitEntryDescriptionString":{
+      "type":"string",
+      "max":200,
+      "min":1
+    },
+    "TargetTrafficSplitEntryNameString":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9]([a-zA-Z0-9-]{0,62}[a-zA-Z0-9])?"
+    },
+    "TargetTrafficSplitEntryWeightInteger":{
+      "type":"integer",
+      "box":true,
+      "max":99,
+      "min":1
     },
     "Temperature":{
       "type":"float",
@@ -13291,6 +14682,77 @@
       "box":true,
       "max":1.0,
       "min":0.0
+    },
+    "TrafficSplitEntries":{
+      "type":"list",
+      "member":{"shape":"TrafficSplitEntry"},
+      "max":2,
+      "min":2
+    },
+    "TrafficSplitEntry":{
+      "type":"structure",
+      "required":[
+        "name",
+        "weight",
+        "configurationBundle"
+      ],
+      "members":{
+        "name":{
+          "shape":"TrafficSplitEntryNameString",
+          "documentation":"<p>The name of this traffic split variant.</p>"
+        },
+        "weight":{
+          "shape":"TrafficSplitEntryWeightInteger",
+          "documentation":"<p>The percentage of traffic to route to this variant. Weights across all entries must sum to 100.</p>"
+        },
+        "configurationBundle":{
+          "shape":"ConfigurationBundleReference",
+          "documentation":"<p>The configuration bundle reference for this variant.</p>"
+        },
+        "description":{
+          "shape":"TrafficSplitEntryDescriptionString",
+          "documentation":"<p>The description of this traffic split variant.</p>"
+        },
+        "metadata":{
+          "shape":"TrafficSplitMetadataMap",
+          "documentation":"<p>Key-value metadata associated with this traffic split variant.</p>"
+        }
+      },
+      "documentation":"<p>An entry in a traffic split configuration, defining a named variant with a weight and configuration bundle reference.</p>"
+    },
+    "TrafficSplitEntryDescriptionString":{
+      "type":"string",
+      "max":200,
+      "min":1
+    },
+    "TrafficSplitEntryNameString":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9]([a-zA-Z0-9-]{0,62}[a-zA-Z0-9])?"
+    },
+    "TrafficSplitEntryWeightInteger":{
+      "type":"integer",
+      "box":true,
+      "max":99,
+      "min":1
+    },
+    "TrafficSplitMetadataKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "TrafficSplitMetadataMap":{
+      "type":"map",
+      "key":{"shape":"TrafficSplitMetadataKey"},
+      "value":{"shape":"TrafficSplitMetadataValue"},
+      "max":25,
+      "min":0
+    },
+    "TrafficSplitMetadataValue":{
+      "type":"string",
+      "max":256,
+      "min":1
     },
     "TriggerCondition":{
       "type":"structure",
@@ -13608,6 +15070,83 @@
         }
       }
     },
+    "UpdateConfigurationBundleRequest":{
+      "type":"structure",
+      "required":["bundleId"],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "bundleId":{
+          "shape":"ConfigurationBundleId",
+          "documentation":"<p>The unique identifier of the configuration bundle to update.</p>",
+          "location":"uri",
+          "locationName":"bundleId"
+        },
+        "bundleName":{
+          "shape":"ConfigurationBundleName",
+          "documentation":"<p>The updated name for the configuration bundle.</p>"
+        },
+        "description":{
+          "shape":"ConfigurationBundleDescription",
+          "documentation":"<p>The updated description for the configuration bundle.</p>"
+        },
+        "components":{
+          "shape":"ComponentConfigurationMap",
+          "documentation":"<p>The updated component configurations. Creates a new version of the bundle.</p>"
+        },
+        "parentVersionIds":{
+          "shape":"ConfigurationBundleVersionList",
+          "documentation":"<p>A list of parent version identifiers for lineage tracking. Regular commits have a single parent. Merge commits have two parents: the target branch parent and the source branch parent. If the branch already exists, the first parent must be the latest version on that branch.</p>"
+        },
+        "branchName":{
+          "shape":"BranchName",
+          "documentation":"<p>The branch name for this version. If not specified, inherits the parent's branch or defaults to <code>mainline</code>.</p>"
+        },
+        "commitMessage":{
+          "shape":"UpdateConfigurationBundleRequestCommitMessageString",
+          "documentation":"<p>A commit message describing the changes in this version.</p>"
+        },
+        "createdBy":{
+          "shape":"VersionCreatedBySource",
+          "documentation":"<p>The source that created this version, including the source name and optional ARN.</p>"
+        }
+      }
+    },
+    "UpdateConfigurationBundleRequestCommitMessageString":{
+      "type":"string",
+      "max":500,
+      "min":1
+    },
+    "UpdateConfigurationBundleResponse":{
+      "type":"structure",
+      "required":[
+        "bundleArn",
+        "bundleId",
+        "versionId",
+        "updatedAt"
+      ],
+      "members":{
+        "bundleArn":{
+          "shape":"ConfigurationBundleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the updated configuration bundle.</p>"
+        },
+        "bundleId":{
+          "shape":"ConfigurationBundleId",
+          "documentation":"<p>The unique identifier of the updated configuration bundle.</p>"
+        },
+        "versionId":{
+          "shape":"ConfigurationBundleVersion",
+          "documentation":"<p>The new version identifier created by this update.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the configuration bundle was updated.</p>"
+        }
+      }
+    },
     "UpdateEvaluatorRequest":{
       "type":"structure",
       "required":["evaluatorId"],
@@ -13634,6 +15173,10 @@
         "level":{
           "shape":"EvaluatorLevel",
           "documentation":"<p> The updated evaluation level (<code>TOOL_CALL</code>, <code>TRACE</code>, or <code>SESSION</code>) that determines the scope of evaluation. </p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of a customer managed KMS key to use for encrypting sensitive evaluator data. Specify a new key ARN to rotate the encryption key, or specify a key ARN to add encryption to an evaluator that was previously created without one. When you rotate to a new key, the service decrypts the existing data with the old key and re-encrypts it with the new key. Only symmetric encryption KMS keys are supported. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/evaluations-encryption.html\">Encryption at rest for AgentCore Evaluations</a>. </p>"
         }
       }
     },
@@ -13670,7 +15213,6 @@
         "gatewayIdentifier",
         "name",
         "roleArn",
-        "protocolType",
         "authorizerType"
       ],
       "members":{
@@ -13732,7 +15274,6 @@
         "updatedAt",
         "status",
         "name",
-        "protocolType",
         "authorizerType"
       ],
       "members":{
@@ -13810,6 +15351,97 @@
           "documentation":"<p>The level of detail in error messages returned when invoking the gateway.</p> <ul> <li> <p>If the value is <code>DEBUG</code>, granular exception messages are returned to help a user debug the gateway.</p> </li> <li> <p>If the value is omitted, a generic error message is returned to the end user.</p> </li> </ul>"
         }
       }
+    },
+    "UpdateGatewayRuleRequest":{
+      "type":"structure",
+      "required":[
+        "gatewayIdentifier",
+        "ruleId"
+      ],
+      "members":{
+        "gatewayIdentifier":{
+          "shape":"GatewayIdentifier",
+          "documentation":"<p>The identifier of the gateway containing the rule.</p>",
+          "location":"uri",
+          "locationName":"gatewayIdentifier"
+        },
+        "ruleId":{
+          "shape":"GatewayRuleId",
+          "documentation":"<p>The unique identifier of the rule to update.</p>",
+          "location":"uri",
+          "locationName":"ruleId"
+        },
+        "priority":{
+          "shape":"GatewayRulePriority",
+          "documentation":"<p>The updated priority of the rule.</p>"
+        },
+        "conditions":{
+          "shape":"Conditions",
+          "documentation":"<p>The updated conditions for the rule.</p>"
+        },
+        "actions":{
+          "shape":"Actions",
+          "documentation":"<p>The updated actions for the rule.</p>"
+        },
+        "description":{
+          "shape":"GatewayRuleDescription",
+          "documentation":"<p>The updated description of the rule.</p>"
+        }
+      }
+    },
+    "UpdateGatewayRuleResponse":{
+      "type":"structure",
+      "required":[
+        "ruleId",
+        "gatewayArn",
+        "priority",
+        "actions",
+        "createdAt",
+        "status"
+      ],
+      "members":{
+        "ruleId":{
+          "shape":"GatewayRuleId",
+          "documentation":"<p>The unique identifier of the gateway rule.</p>"
+        },
+        "gatewayArn":{
+          "shape":"GatewayArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway that the rule belongs to.</p>"
+        },
+        "priority":{
+          "shape":"GatewayRulePriority",
+          "documentation":"<p>The priority of the rule. Rules are evaluated in order of priority, with lower numbers evaluated first.</p>"
+        },
+        "conditions":{
+          "shape":"Conditions",
+          "documentation":"<p>The conditions that must be met for the rule to apply.</p>"
+        },
+        "actions":{
+          "shape":"Actions",
+          "documentation":"<p>The actions to take when the rule conditions are met.</p>"
+        },
+        "description":{
+          "shape":"GatewayRuleDescription",
+          "documentation":"<p>The description of the gateway rule.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the rule was created.</p>"
+        },
+        "status":{
+          "shape":"GatewayRuleStatus",
+          "documentation":"<p>The current status of the rule.</p>"
+        },
+        "system":{
+          "shape":"SystemManagedBlock",
+          "documentation":"<p>System-managed metadata for rules created by automated processes.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the rule was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Create response excludes updatedAt (redundant on create). Get/Update responses include it via their own output structures.</p>"
     },
     "UpdateGatewayTargetRequest":{
       "type":"structure",
@@ -13924,6 +15556,10 @@
         "authorizationData":{
           "shape":"AuthorizationData",
           "documentation":"<p>OAuth2 authorization data for the updated gateway target. This data is returned when a target is configured with a credential provider with authorization code grant type and requires user federation.</p>"
+        },
+        "protocolType":{
+          "shape":"TargetProtocolType",
+          "documentation":"<p>The protocol type of the updated gateway target.</p>"
         }
       }
     },
@@ -13993,7 +15629,7 @@
         },
         "maxTokens":{
           "shape":"Integer",
-          "documentation":"<p>The maximum number of tokens the agent can generate per iteration. If not specified, the existing value is retained.</p>"
+          "documentation":"<p>The maximum total number of output tokens the agent can generate across all model calls within a single invocation. If not specified, the existing value is retained.</p>"
         },
         "timeoutSeconds":{
           "shape":"Integer",
@@ -15072,6 +16708,66 @@
         "ResourceConflict"
       ]
     },
+    "VersionCreatedBySource":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the source (for example, <code>user</code>, <code>optimization-job</code>, or <code>system</code>).</p>"
+        },
+        "arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source, if applicable (for example, a user ARN or optimization job ARN).</p>"
+        }
+      },
+      "documentation":"<p>The source that created a configuration bundle version.</p>"
+    },
+    "VersionFilter":{
+      "type":"structure",
+      "members":{
+        "branchName":{
+          "shape":"BranchName",
+          "documentation":"<p>Filter by branch name.</p>"
+        },
+        "createdByName":{
+          "shape":"String",
+          "documentation":"<p>Filter by creation source name.</p>"
+        },
+        "latestPerBranch":{
+          "shape":"Boolean",
+          "documentation":"<p>When true, returns only the latest version for each branch. When false or not specified, returns all versions. Can be combined with <code>branchName</code> to get the latest version for a specific branch.</p>"
+        }
+      },
+      "documentation":"<p>A filter for listing configuration bundle versions.</p>"
+    },
+    "VersionLineageMetadata":{
+      "type":"structure",
+      "members":{
+        "parentVersionIds":{
+          "shape":"ConfigurationBundleVersionList",
+          "documentation":"<p>A list of parent version identifiers. Regular commits have 0-1 parents. Merge commits have 2 parents: the target branch parent and the source branch parent. The first parent represents the primary lineage.</p>"
+        },
+        "branchName":{
+          "shape":"BranchName",
+          "documentation":"<p>The branch name for this version. If not specified, inherits the parent's branch or defaults to <code>mainline</code>.</p>"
+        },
+        "createdBy":{
+          "shape":"VersionCreatedBySource",
+          "documentation":"<p>The source that created this version.</p>"
+        },
+        "commitMessage":{
+          "shape":"VersionLineageMetadataCommitMessageString",
+          "documentation":"<p>A commit message describing the changes in this version.</p>"
+        }
+      },
+      "documentation":"<p>The version lineage metadata that tracks parent versions and creation source. Supports git-like two-parent merges for branch management.</p>"
+    },
+    "VersionLineageMetadataCommitMessageString":{
+      "type":"string",
+      "max":500,
+      "min":1
+    },
     "VpcConfig":{
       "type":"structure",
       "required":[
@@ -15093,6 +16789,28 @@
     "VpcIdentifier":{
       "type":"string",
       "pattern":"vpc-(([0-9a-z]{8})|([0-9a-z]{17}))"
+    },
+    "WeightedOverride":{
+      "type":"structure",
+      "required":["trafficSplit"],
+      "members":{
+        "trafficSplit":{
+          "shape":"TrafficSplitEntries",
+          "documentation":"<p>The traffic split entries defining how traffic is distributed between configuration bundle versions.</p>"
+        }
+      },
+      "documentation":"<p>A weighted configuration bundle override that splits traffic between multiple bundle versions.</p>"
+    },
+    "WeightedRoute":{
+      "type":"structure",
+      "required":["trafficSplit"],
+      "members":{
+        "trafficSplit":{
+          "shape":"TargetTrafficSplitEntries",
+          "documentation":"<p>The traffic split entries defining how traffic is distributed between targets.</p>"
+        }
+      },
+      "documentation":"<p>A weighted route that splits traffic between multiple gateway targets.</p>"
     },
     "WorkloadIdentityArn":{
       "type":"string",

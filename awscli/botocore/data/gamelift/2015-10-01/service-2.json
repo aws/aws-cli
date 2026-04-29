@@ -728,6 +728,24 @@
       ],
       "documentation":"<p> <b>This API works with the following fleet types:</b> Container</p> <p>Retrieves the properties of a container group definition, including all container definitions in the group. </p> <p> <b>Request options:</b> </p> <ul> <li> <p>Retrieve the latest version of a container group definition. Specify the container group definition name only, or use an ARN value without a version number.</p> </li> <li> <p>Retrieve a particular version. Specify the container group definition name and a version number, or use an ARN value that includes the version number.</p> </li> </ul> <p> <b>Results:</b> </p> <p>If successful, this operation returns the complete properties of a container group definition version.</p> <p> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/containers-create-groups.html\">Manage a container group definition</a> </p> </li> </ul>"
     },
+    "DescribeContainerGroupPortMappings":{
+      "name":"DescribeContainerGroupPortMappings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeContainerGroupPortMappingsInput"},
+      "output":{"shape":"DescribeContainerGroupPortMappingsOutput"},
+      "errors":[
+        {"shape":"InternalServiceException"},
+        {"shape":"NotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"UnsupportedRegionException"}
+      ],
+      "documentation":"<p> <b>This API works with the following fleet types:</b> Container</p> <p>Retrieves the port mappings for a container group running on a container fleet. Port mappings show how container ports are mapped to connection ports on the fleet instance. Use this operation to find the connection port for a specific container on a fleet instance.</p> <p> <b>Request options</b> </p> <ul> <li> <p>Get port mappings for a game server container group. Provide the fleet ID, set <code>ContainerGroupType</code> to <code>GAME_SERVER</code>, and specify the <code>ComputeName</code> for the game server container group.</p> </li> <li> <p>Get port mappings for a per-instance container group. Provide the fleet ID, set <code>ContainerGroupType</code> to <code>PER_INSTANCE</code>, and specify the <code>InstanceId</code> for the instance.</p> </li> <li> <p>Optionally filter results to a single container by providing a <code>ContainerName</code>.</p> </li> </ul> <p> <b>Results</b> </p> <p>This operation returns the fleet ID, location, container group definition ARN, container group type, compute name (for game server container groups), instance ID, and a list of <code>ContainerGroupPortMapping</code> objects. Each object contains the container name, runtime ID, and a list of port mappings that show how container ports map to connection ports on the instance.</p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/containers-remote-access.html\">Connect to containers</a> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/containers-create-groups.html\">Create a container group definition</a> </p>"
+    },
     "DescribeEC2InstanceLimits":{
       "name":"DescribeEC2InstanceLimits",
       "http":{
@@ -742,7 +760,7 @@
         {"shape":"UnauthorizedException"},
         {"shape":"UnsupportedRegionException"}
       ],
-      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2</p> <p>Retrieves the instance limits and current utilization for an Amazon Web Services Region or location. Instance limits control the number of instances, per instance type, per location, that your Amazon Web Services account can use. Learn more at <a href=\"http://aws.amazon.com/ec2/instance-types/\">Amazon EC2 Instance Types</a>. The information returned includes the maximum number of instances allowed and your account's current usage across all fleets. This information can affect your ability to scale your Amazon GameLift Servers fleets. You can request a limit increase for your account by using the <b>Service limits</b> page in the Amazon GameLift Servers console.</p> <p>Instance limits differ based on whether the instances are deployed in a fleet's home Region or in a remote location. For remote locations, limits also differ based on the combination of home Region and remote location. All requests must specify an Amazon Web Services Region (either explicitly or as your default settings). To get the limit for a remote location, you must also specify the location. For example, the following requests all return different results: </p> <ul> <li> <p>Request specifies the Region <code>ap-northeast-1</code> with no location. The result is limits and usage data on all instance types that are deployed in <code>us-east-2</code>, by all of the fleets that reside in <code>ap-northeast-1</code>. </p> </li> <li> <p>Request specifies the Region <code>us-east-1</code> with location <code>ca-central-1</code>. The result is limits and usage data on all instance types that are deployed in <code>ca-central-1</code>, by all of the fleets that reside in <code>us-east-2</code>. These limits do not affect fleets in any other Regions that deploy instances to <code>ca-central-1</code>.</p> </li> <li> <p>Request specifies the Region <code>eu-west-1</code> with location <code>ca-central-1</code>. The result is limits and usage data on all instance types that are deployed in <code>ca-central-1</code>, by all of the fleets that reside in <code>eu-west-1</code>.</p> </li> </ul> <p>This operation can be used in the following ways:</p> <ul> <li> <p>To get limit and usage data for all instance types that are deployed in an Amazon Web Services Region by fleets that reside in the same Region: Specify the Region only. Optionally, specify a single instance type to retrieve information for.</p> </li> <li> <p>To get limit and usage data for all instance types that are deployed to a remote location by fleets that reside in different Amazon Web Services Region: Provide both the Amazon Web Services Region and the remote location. Optionally, specify a single instance type to retrieve information for.</p> </li> </ul> <p>If successful, an <code>EC2InstanceLimits</code> object is returned with limits and usage data for each requested instance type.</p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-intro.html\">Setting up Amazon GameLift Servers fleets</a> </p>"
+      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2</p> <p>Retrieves the instance limits and current utilization for an Amazon Web Services Region or location. Instance limits control the number of instances, per instance type, per location, that your Amazon Web Services account can use. Learn more at <a href=\"http://aws.amazon.com/ec2/instance-types/\">Amazon EC2 Instance Types</a>. The information returned includes the maximum number of instances allowed and your account's current usage across all fleets. This information can affect your ability to scale your Amazon GameLift Servers fleets. You can request a limit increase for your account by using the <b>Service limits</b> page in the Amazon GameLift Servers console.</p> <p>Instance limits differ based on whether the instances are deployed in a fleet's home Region or in a remote location. For remote locations, limits also differ based on the combination of home Region and remote location. All requests must specify an Amazon Web Services Region (either explicitly or as your default settings). To get the limit for a remote location, you must also specify the location. To learn more about how Amazon GameLift Servers handles locations, see <a href=\"https://docs.aws.amazon.com/gameliftservers/latest/developerguide/gamelift-regions.html\">Amazon GameLift Servers service locations</a>. For example, the following requests all return different results: </p> <ul> <li> <p>Request specifies the Region <code>ap-northeast-1</code> with no location. The result is limits and usage data on all of the fleets that reside in <code>ap-northeast-1</code>, for all instance types that are deployed in <code>ap-northeast-1</code>. </p> </li> <li> <p>Request specifies the Region <code>ap-northeast-1</code> with location <code>us-west-2</code>. The result is limits and usage data on all of the fleets that reside in <code>ap-northeast-1</code>, for all instance types that are deployed in <code>us-west-2</code>.</p> </li> <li> <p>Request specifies the Region <code>us-east-1</code> with location <code>ap-northeast-1</code>. The result is limits and usage data on all of the fleets that reside in <code>us-east-1</code>, for all instance types that are deployed in <code>ap-northeast-1</code>. These limits do not affect fleets in any other Regions that deploy instances to <code>ap-northeast-1</code>.</p> </li> </ul> <p>This operation can be used in the following ways:</p> <ul> <li> <p>To get limit and usage data for all instance types that are deployed in an Amazon Web Services Region by fleets that reside in the same Region: Specify the Region only. Optionally, specify a single instance type to retrieve information for.</p> </li> <li> <p>To get limit and usage data for all instance types that are deployed to a remote location by fleets that reside in different Amazon Web Services Region: Provide both the Amazon Web Services Region and the remote location. Optionally, specify a single instance type to retrieve information for.</p> </li> </ul> <p>If successful, an <code>EC2InstanceLimits</code> object is returned with limits and usage data for each requested instance type.</p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-intro.html\">Setting up Amazon GameLift Servers fleets</a> </p>"
     },
     "DescribeFleetAttributes":{
       "name":"DescribeFleetAttributes",
@@ -1577,7 +1595,7 @@
         {"shape":"TerminalRoutingStrategyException"},
         {"shape":"UnsupportedRegionException"}
       ],
-      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Anywhere, Container</p> <p>Retrieves all active game sessions that match a set of search criteria and sorts them into a specified order. </p> <p>This operation is not designed to continually track game session status because that practice can cause you to exceed your API limit and generate errors. Instead, configure an Amazon Simple Notification Service (Amazon SNS) topic to receive notifications from a matchmaker or a game session placement queue.</p> <p>When searching for game sessions, you specify exactly where you want to search and provide a search filter expression, a sort expression, or both. A search request can search only one fleet, but it can search all of a fleet's locations. </p> <p>This operation can be used in the following ways: </p> <ul> <li> <p>To search all game sessions that are currently running on all locations in a fleet, provide a fleet or alias ID. This approach returns game sessions in the fleet's home Region and all remote locations that fit the search criteria.</p> </li> <li> <p>To search all game sessions that are currently running on a specific fleet location, provide a fleet or alias ID and a location name. For location, you can specify a fleet's home Region or any remote location.</p> </li> </ul> <p>Use the pagination parameters to retrieve results as a set of sequential pages. </p> <p>If successful, a <code>GameSession</code> object is returned for each game session that matches the request. Search finds game sessions that are in <code>ACTIVE</code> status only. To retrieve information on game sessions in other statuses, use <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeGameSessions.html\">DescribeGameSessions</a>.</p> <p>To set search and sort criteria, create a filter expression using the following game session attributes. For game session search examples, see the Examples section of this topic.</p> <ul> <li> <p> <b>gameSessionId</b> -- A unique identifier for the game session. You can use either a <code>GameSessionId</code> or <code>GameSessionArn</code> value. </p> </li> <li> <p> <b>gameSessionName</b> -- Name assigned to a game session. Game session names do not need to be unique to a game session.</p> </li> <li> <p> <b>gameSessionProperties</b> -- A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>. The filter expression must specify the <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_GameProperty\">https://docs.aws.amazon.com/gamelift/latest/apireference/API_GameProperty</a> -- a <code>Key</code> and a string <code>Value</code> to search for the game sessions.</p> <p>For example, to search for the above key-value pair, specify the following search filter: <code>gameSessionProperties.difficulty = \"novice\"</code>. All game property values are searched as strings.</p> <p> For examples of searching game sessions, see the ones below, and also see <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-client-api.html#game-properties-search\">Search game sessions by game property</a>. </p> <note> <ul> <li> <p>Avoid using periods (\".\") in property keys if you plan to search for game sessions by properties. Property keys containing periods cannot be searched and will be filtered out from search results due to search index limitations.</p> </li> <li> <p>If you use SearchGameSessions API, there is a limit of 500 game property keys across all game sessions and all fleets per region. If the limit is exceeded, there will potentially be game session entries missing from SearchGameSessions API results.</p> </li> </ul> </note> </li> <li> <p> <b>maximumSessions</b> -- Maximum number of player sessions allowed for a game session.</p> </li> <li> <p> <b>creationTimeMillis</b> -- Value indicating when a game session was created. It is expressed in Unix time as milliseconds.</p> </li> <li> <p> <b>playerSessionCount</b> -- Number of players currently connected to a game session. This value changes rapidly as players join the session or drop out.</p> </li> <li> <p> <b>hasAvailablePlayerSessions</b> -- Boolean value indicating whether a game session has reached its maximum number of players. It is highly recommended that all search requests include this filter attribute to optimize search performance and return only sessions that players can join. </p> </li> </ul> <note> <p>Returned values for <code>playerSessionCount</code> and <code>hasAvailablePlayerSessions</code> change quickly as players join sessions and others drop out. Results should be considered a snapshot in time. Be sure to refresh search results often, and handle sessions that fill up before a player can join. </p> </note> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets\">All APIs by task</a> </p>"
+      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Anywhere, Container</p> <p>Retrieves all active game sessions that match a set of search criteria and sorts them into a specified order. </p> <p>This operation is not designed to continually track game session status because that practice can cause you to exceed your API limit and generate errors. Instead, configure an Amazon Simple Notification Service (Amazon SNS) topic to receive notifications from a matchmaker or a game session placement queue.</p> <p>When searching for game sessions, you specify exactly where you want to search and provide a search filter expression, a sort expression, or both. A search request can search only one fleet, but it can search all of a fleet's locations. </p> <p>This operation can be used in the following ways: </p> <ul> <li> <p>To search all game sessions that are currently running on all locations in a fleet, provide a fleet or alias ID. This approach returns game sessions in the fleet's home Region and all remote locations that fit the search criteria.</p> </li> <li> <p>To search all game sessions that are currently running on a specific fleet location, provide a fleet or alias ID and a location name. For location, you can specify a fleet's home Region or any remote location.</p> </li> </ul> <p>Use the pagination parameters to retrieve results as a set of sequential pages. </p> <p>If successful, a <code>GameSession</code> object is returned for each game session that matches the request. Search finds game sessions that are in <code>ACTIVE</code> status only. To retrieve information on game sessions in other statuses, use <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeGameSessions.html\">DescribeGameSessions</a>.</p> <p>To set search and sort criteria, create a filter expression using the following game session attributes. For game session search examples, see the Examples section of this topic.</p> <ul> <li> <p> <b>gameSessionId</b> -- An identifier for the game session that is unique across all regions. You must use the full ARN value. </p> </li> <li> <p> <b>gameSessionName</b> -- Name assigned to a game session. Game session names do not need to be unique to a game session.</p> </li> <li> <p> <b>gameSessionProperties</b> -- A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>. The filter expression must specify the <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_GameProperty\">https://docs.aws.amazon.com/gamelift/latest/apireference/API_GameProperty</a> -- a <code>Key</code> and a string <code>Value</code> to search for the game sessions.</p> <p>For example, to search for the above key-value pair, specify the following search filter: <code>gameSessionProperties.difficulty = \"novice\"</code>. All game property values are searched as strings.</p> <p> For examples of searching game sessions, see the ones below, and also see <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-client-api.html#game-properties-search\">Search game sessions by game property</a>. </p> <note> <ul> <li> <p>Avoid using periods (\".\") in property keys if you plan to search for game sessions by properties. Property keys containing periods cannot be searched and will be filtered out from search results due to search index limitations.</p> </li> <li> <p>If you use SearchGameSessions API, there is a limit of 500 game property keys across all game sessions and all fleets per region. If the limit is exceeded, there will potentially be game session entries missing from SearchGameSessions API results.</p> </li> </ul> </note> </li> <li> <p> <b>maximumSessions</b> -- Maximum number of player sessions allowed for a game session.</p> </li> <li> <p> <b>creationTimeMillis</b> -- Value indicating when a game session was created. It is expressed in Unix time as milliseconds.</p> </li> <li> <p> <b>playerSessionCount</b> -- Number of players currently connected to a game session. This value changes rapidly as players join the session or drop out.</p> </li> <li> <p> <b>hasAvailablePlayerSessions</b> -- Boolean value indicating whether a game session has reached its maximum number of players. It is highly recommended that all search requests include this filter attribute to optimize search performance and return only sessions that players can join. </p> </li> </ul> <note> <p>Returned values for <code>playerSessionCount</code> and <code>hasAvailablePlayerSessions</code> change quickly as players join sessions and others drop out. Results should be considered a snapshot in time. Be sure to refresh search results often, and handle sessions that fill up before a player can join. </p> </note> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets\">All APIs by task</a> </p>"
     },
     "StartFleetActions":{
       "name":"StartFleetActions",
@@ -2461,7 +2479,7 @@
           "documentation":"<p>Ending value for the port. Port numbers are end-inclusive. This value must be equal to or greater than <code>FromPort</code>.</p>"
         }
       },
-      "documentation":"<p>The set of port numbers to open on each instance in a container fleet. Connection ports are used by inbound traffic to connect with processes that are running in containers on the fleet.</p>"
+      "documentation":"<p>The set of port numbers to open on each instance in a container fleet. Connection ports are used by inbound traffic to connect with processes that are running in containers on the fleet.</p> <p>The port range must not overlap with the Amazon GameLift Servers reserved port range <code>4092-4191</code>. This range is reserved for internal Amazon GameLift Servers services.</p>"
     },
     "ContainerAttribute":{
       "type":"structure",
@@ -2798,6 +2816,28 @@
         "FAILED"
       ]
     },
+    "ContainerGroupPortMapping":{
+      "type":"structure",
+      "members":{
+        "ContainerName":{
+          "shape":"NonZeroAnd128MaxAsciiString",
+          "documentation":"<p>The name of the container, as defined in the container group definition.</p>"
+        },
+        "ContainerRuntimeId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The runtime ID for the container that's running in a compute. This value is unique within the compute.</p>"
+        },
+        "ContainerPortMappings":{
+          "shape":"ContainerPortMappingList",
+          "documentation":"<p>A list of <code>ContainerPortMapping</code> objects that describe the port mappings for this container.</p>"
+        }
+      },
+      "documentation":"<p>Describes the port mappings for a single container in a container group. Each mapping shows how a container port maps to a connection port on the fleet instance.</p> <p> <b>Returned by:</b> <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeContainerGroupPortMappings.html\">DescribeContainerGroupPortMappings</a> </p>"
+    },
+    "ContainerGroupPortMappingList":{
+      "type":"list",
+      "member":{"shape":"ContainerGroupPortMapping"}
+    },
     "ContainerGroupType":{
       "type":"string",
       "enum":[
@@ -2929,6 +2969,28 @@
         }
       },
       "documentation":"<p>A set of port ranges that can be opened on the container. A process that's running in the container can bind to a port number, making it accessible to inbound traffic when it's mapped to a container fleet's connection port.</p> <p>Each container port range specifies a network protocol. When the configuration supports more than one protocol, we recommend that you use a different range for each protocol. If your ranges have overlapping port numbers, Amazon GameLift Servers maps a duplicated container port number to different connection ports. For example, if you include 1935 in port ranges for both TCP and UDP, it might result in the following mappings: </p> <ul> <li> <p>container port 1935 (tcp) =&gt; connection port 2001</p> </li> <li> <p>container port 1935 (udp) =&gt; connection port 2002</p> </li> </ul> <p> <b>Part of:</b> <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_GameServerContainerDefinition.html\">GameServerContainerDefinition</a>, <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_GameServerContainerDefinitionInput.html\">GameServerContainerDefinitionInput</a>, <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_SupportContainerDefinition.html\">SupportContainerDefinition</a>, <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_SupportContainerDefinitionInput.html\">SupportContainerDefinitionInput</a> </p>"
+    },
+    "ContainerPortMapping":{
+      "type":"structure",
+      "members":{
+        "ContainerPort":{
+          "shape":"PortNumber",
+          "documentation":"<p>The port number on the container. This port is defined in the container group definition. Container port numbers must be unique within a container group definition.</p>"
+        },
+        "ConnectionPort":{
+          "shape":"PortNumber",
+          "documentation":"<p>The port number on the fleet instance that maps to the container port. Connection ports are assigned by Amazon GameLift Servers when the container group is deployed to an instance.</p>"
+        },
+        "Protocol":{
+          "shape":"IpProtocol",
+          "documentation":"<p>The network protocol for the port mapping. Valid values are <code>TCP</code> or <code>UDP</code>.</p>"
+        }
+      },
+      "documentation":"<p>Describes a mapping between a container port and a connection port on a fleet instance. You define container ports in a container group definition. Amazon GameLift Servers assigns connection ports when it deploys the container group to an instance.</p> <p> <b>Part of:</b> <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_ContainerGroupPortMapping.html\">ContainerGroupPortMapping</a> </p>"
+    },
+    "ContainerPortMappingList":{
+      "type":"list",
+      "member":{"shape":"ContainerPortMapping"}
     },
     "ContainerPortRange":{
       "type":"structure",
@@ -3076,11 +3138,11 @@
         },
         "InstanceConnectionPortRange":{
           "shape":"ConnectionPortRange",
-          "documentation":"<p>The set of port numbers to open on each fleet instance. A fleet's connection ports map to container ports that are configured in the fleet's container group definitions. </p> <p>By default, Amazon GameLift Servers calculates an optimal port range based on your fleet configuration. To use the calculated range, don't set this parameter. The values are:</p> <ul> <li> <p>Port range: 4192 to a number calculated based on your fleet configuration. Amazon GameLift Servers uses the following formula: <code>4192 + [# of game server container groups per fleet instance] * [# of container ports in the game server container group definition] + [# of container ports in the game server container group definition]</code> </p> </li> </ul> <p>You can also choose to manually set this parameter. When manually setting this parameter, you must use port numbers that match the fleet's inbound permissions port range.</p> <note> <p>If you set values manually, Amazon GameLift Servers no longer calculates a port range for you, even if you later remove the manual settings. </p> </note>"
+          "documentation":"<p>The set of port numbers to open on each fleet instance. A fleet's connection ports map to container ports that are configured in the fleet's container group definitions. </p> <p>By default, Amazon GameLift Servers calculates an optimal port range based on your fleet configuration. To use the calculated range, don't set this parameter. The values are:</p> <ul> <li> <p>Port range: 4192 to a number calculated based on your fleet configuration. Amazon GameLift Servers uses the following formula: <code>4192 + [# of game server container groups per fleet instance] * [# of container ports in the game server container group definition] + [# of container ports in the game server container group definition]</code> </p> </li> </ul> <p>You can also choose to manually set this parameter. When manually setting this parameter, you must use port numbers that match the fleet's inbound permissions port range.</p> <note> <p>If you set values manually, Amazon GameLift Servers no longer calculates a port range for you, even if you later remove the manual settings. </p> </note> <p>The port range must not overlap with the Amazon GameLift Servers reserved port range <code>4092-4191</code>. This range is reserved for internal Amazon GameLift Servers services.</p>"
         },
         "InstanceInboundPermissions":{
           "shape":"IpPermissionsList",
-          "documentation":"<p>The IP address ranges and port settings that allow inbound traffic to access game server processes and other processes on this fleet. As a best practice, when remotely accessing a fleet instance, we recommend opening ports only when you need them and closing them when you're finished.</p> <p>By default, Amazon GameLift Servers calculates an optimal port range based on your fleet configuration. To use the calculated range, don't set this parameter. The values are:</p> <ul> <li> <p>Protocol: UDP</p> </li> <li> <p>Port range: 4192 to a number calculated based on your fleet configuration. Amazon GameLift Servers uses the following formula: <code>4192 + [# of game server container groups per fleet instance] * [# of container ports in the game server container group definition] + [# of container ports in the game server container group definition]</code> </p> </li> </ul> <p>You can also choose to manually set this parameter. When manually setting this parameter, you must use port numbers that match the fleet's connection port range.</p> <note> <p>If you set values manually, Amazon GameLift Servers no longer calculates a port range for you, even if you later remove the manual settings. </p> </note>"
+          "documentation":"<p>The IP address ranges and port settings that allow inbound traffic to access game server processes and other processes on this fleet. As a best practice, when remotely accessing a fleet instance, we recommend opening ports only when you need them and closing them when you're finished.</p> <p>By default, Amazon GameLift Servers calculates an optimal port range based on your fleet configuration. To use the calculated range, don't set this parameter. The values are:</p> <ul> <li> <p>Protocol: UDP</p> </li> <li> <p>Port range: 4192 to a number calculated based on your fleet configuration. Amazon GameLift Servers uses the following formula: <code>4192 + [# of game server container groups per fleet instance] * [# of container ports in the game server container group definition] + [# of container ports in the game server container group definition]</code> </p> </li> </ul> <p>You can also choose to manually set this parameter. When manually setting this parameter, you must use port numbers that match the fleet's connection port range.</p> <note> <p>If you set values manually, Amazon GameLift Servers no longer calculates a port range for you, even if you later remove the manual settings. </p> </note> <p>The port range must not overlap with the Amazon GameLift Servers reserved port range <code>4092-4191</code>. This range is reserved for internal Amazon GameLift Servers services.</p>"
         },
         "GameServerContainerGroupsPerInstance":{
           "shape":"GameServerContainerGroupsPerInstance",
@@ -3442,7 +3504,7 @@
         },
         "IdempotencyToken":{
           "shape":"IdStringModel",
-          "documentation":"<p>Custom string that uniquely identifies the new game session request. This is useful for ensuring that game session requests with the same idempotency token are processed only once. Subsequent requests with the same string return the original <code>GameSession</code> object, with an updated status. Maximum token length is 48 characters. If provided, this string is included in the new game session's ID. A game session ARN has the following format: <code>arn:aws:gamelift:&lt;location&gt;::gamesession/&lt;fleet ID&gt;/&lt;custom ID string or idempotency token&gt;</code>. Idempotency tokens remain in use for 30 days after a game session has ended; game session objects are retained for this time period and then deleted.</p>"
+          "documentation":"<p>Custom string that uniquely identifies the new game session request. This is useful for ensuring that game session requests with the same idempotency token are processed only once. Subsequent requests with the same string return the original <code>GameSession</code> object, with an updated status. Maximum token length is 48 characters. If provided, this string is included in the new game session's ID. The value is always a full ARN in the following format: <code>arn:aws:gamelift:&lt;location&gt;::gamesession/&lt;fleet ID&gt;/&lt;ID string&gt;</code>. Idempotency tokens remain in use for 30 days after a game session has ended; game session objects are retained for this time period and then deleted.</p>"
         },
         "GameSessionData":{
           "shape":"LargeGameSessionData",
@@ -3657,7 +3719,7 @@
       "members":{
         "GameSessionId":{
           "shape":"ArnStringModel",
-          "documentation":"<p>A unique identifier for the game session to add a player to.</p>"
+          "documentation":"<p>An identifier for the game session that is unique across all regions to add a player to. The value is always a full ARN in the following format: <code>arn:aws:gamelift:&lt;location&gt;::gamesession/&lt;fleet ID&gt;/&lt;ID string&gt;</code>.</p>"
         },
         "PlayerId":{
           "shape":"PlayerId",
@@ -3687,7 +3749,7 @@
       "members":{
         "GameSessionId":{
           "shape":"ArnStringModel",
-          "documentation":"<p>A unique identifier for the game session to add players to.</p>"
+          "documentation":"<p>An identifier for the game session that is unique across all regions to add players to. The value is always a full ARN in the following format: <code>arn:aws:gamelift:&lt;location&gt;::gamesession/&lt;fleet ID&gt;/&lt;ID string&gt;</code>.</p>"
         },
         "PlayerIds":{
           "shape":"PlayerIdList",
@@ -4267,6 +4329,68 @@
         }
       }
     },
+    "DescribeContainerGroupPortMappingsInput":{
+      "type":"structure",
+      "required":[
+        "FleetId",
+        "ContainerGroupType"
+      ],
+      "members":{
+        "FleetId":{
+          "shape":"FleetIdOrArn",
+          "documentation":"<p>A unique identifier for the container fleet. You can use either the fleet ID or ARN value.</p>"
+        },
+        "ContainerGroupType":{
+          "shape":"ContainerGroupType",
+          "documentation":"<p>The type of container group to retrieve port mappings for.</p> <ul> <li> <p> <code>GAME_SERVER</code> -- Get port mappings for a game server container group.</p> </li> <li> <p> <code>PER_INSTANCE</code> -- Get port mappings for a per-instance container group.</p> </li> </ul>"
+        },
+        "ComputeName":{
+          "shape":"ComputeNameOrArn",
+          "documentation":"<p>A unique identifier for the compute resource for which to retrieve port mappings. For a container fleet, a compute represents a game server container group running on a fleet instance. You can use either the compute name or ARN value.</p> <p>When <code>ContainerGroupType</code> is <code>GAME_SERVER</code>, this parameter is required.</p> <p>When <code>ContainerGroupType</code> is <code>PER_INSTANCE</code>, do not provide this parameter. If you provide a compute name with <code>PER_INSTANCE</code>, the request fails with an <code>InvalidRequestException</code>.</p>"
+        },
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>A unique identifier for the fleet instance to retrieve port mappings for.</p> <p>When <code>ContainerGroupType</code> is <code>PER_INSTANCE</code>, this parameter is required.</p> <p>When <code>ContainerGroupType</code> is <code>GAME_SERVER</code>, this parameter is optional. If you provide an instance ID, it must match the instance that's running the specified compute. If the instance ID doesn't match, the request fails with an <code>InvalidRequestException</code>.</p>"
+        },
+        "ContainerName":{
+          "shape":"NonZeroAnd128MaxAsciiString",
+          "documentation":"<p>A container name to filter the results. When provided, the operation returns port mappings for the specified container only. If no container with the specified name exists in the container group, the request fails with a <code>NotFoundException</code>.</p> <p>If not provided, the operation returns port mappings for all containers in the container group.</p>"
+        }
+      }
+    },
+    "DescribeContainerGroupPortMappingsOutput":{
+      "type":"structure",
+      "members":{
+        "FleetId":{
+          "shape":"FleetId",
+          "documentation":"<p>A unique identifier for the container fleet.</p>"
+        },
+        "Location":{
+          "shape":"LocationStringModel",
+          "documentation":"<p>The location of the fleet instance, expressed as an Amazon Web Services Region code, such as <code>us-west-2</code>.</p>"
+        },
+        "ContainerGroupDefinitionArn":{
+          "shape":"ContainerGroupDefinitionArn",
+          "documentation":"<p>The Amazon Resource Name (<a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html\">ARN</a>) that is assigned to the container group definition. The ARN value also identifies the specific container group definition version in use.</p>"
+        },
+        "ContainerGroupType":{
+          "shape":"ContainerGroupType",
+          "documentation":"<p>The type of container group that was specified in the request. Valid values are <code>GAME_SERVER</code> or <code>PER_INSTANCE</code>.</p>"
+        },
+        "ComputeName":{
+          "shape":"ComputeName",
+          "documentation":"<p>A unique identifier for the compute resource running the game server container group. Returned when <code>ContainerGroupType</code> is <code>GAME_SERVER</code>.</p>"
+        },
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>A unique identifier for the fleet instance. For <code>GAME_SERVER</code> requests, this is the instance running the specified compute. For <code>PER_INSTANCE</code> requests, this is the instance specified in the request.</p>"
+        },
+        "ContainerGroupPortMappings":{
+          "shape":"ContainerGroupPortMappingList",
+          "documentation":"<p>A list of <code>ContainerGroupPortMapping</code> objects that describe the port mappings for each container in the container group.</p>"
+        }
+      }
+    },
     "DescribeEC2InstanceLimitsInput":{
       "type":"structure",
       "members":{
@@ -4668,7 +4792,7 @@
         },
         "GameSessionId":{
           "shape":"ArnStringModel",
-          "documentation":"<p>A unique identifier for the game session to retrieve. </p>"
+          "documentation":"<p>An identifier for the game session that is unique across all regions to retrieve. The value is always a full ARN in the following format: <code>arn:aws:gamelift:&lt;location&gt;::gamesession/&lt;fleet ID&gt;/&lt;ID string&gt;</code>.</p>"
         },
         "AliasId":{
           "shape":"AliasIdOrArn",
@@ -4763,7 +4887,7 @@
         },
         "GameSessionId":{
           "shape":"ArnStringModel",
-          "documentation":"<p>A unique identifier for the game session to retrieve. </p>"
+          "documentation":"<p>An identifier for the game session that is unique across all regions to retrieve. The value is always a full ARN in the following format: <code>arn:aws:gamelift:&lt;location&gt;::gamesession/&lt;fleet ID&gt;/&lt;ID string&gt;</code>.</p>"
         },
         "AliasId":{
           "shape":"AliasIdOrArn",
@@ -4928,7 +5052,7 @@
       "members":{
         "GameSessionId":{
           "shape":"ArnStringModel",
-          "documentation":"<p>A unique identifier for the game session to retrieve player sessions for.</p>"
+          "documentation":"<p>An identifier for the game session that is unique across all regions to retrieve player sessions for. The value is always a full ARN in the following format: <code>arn:aws:gamelift:&lt;location&gt;::gamesession/&lt;fleet ID&gt;/&lt;ID string&gt;</code>.</p>"
         },
         "PlayerId":{
           "shape":"PlayerId",
@@ -6631,7 +6755,7 @@
       "members":{
         "GameSessionId":{
           "shape":"NonZeroAndMaxString",
-          "documentation":"<p>A unique identifier for the game session. A game session ARN has the following format: <code>arn:aws:gamelift:&lt;location&gt;::gamesession/&lt;fleet ID&gt;/&lt;custom ID string or idempotency token&gt;</code>.</p>"
+          "documentation":"<p>An identifier for the game session that is unique across all regions. The value is always a full ARN in the following format: <code>arn:aws:gamelift:&lt;location&gt;::gamesession/&lt;fleet ID&gt;/&lt;ID string&gt;</code>.</p>"
         },
         "Name":{
           "shape":"NonZeroAndMaxString",
@@ -6726,7 +6850,7 @@
       "members":{
         "GameSessionArn":{
           "shape":"ArnStringModel",
-          "documentation":"<p>A unique identifier for the game session. Use the game session ID.</p>"
+          "documentation":"<p>An identifier for the game session that is unique across all regions. The value is always a full ARN in the following format: <code>arn:aws:gamelift:&lt;location&gt;::gamesession/&lt;fleet ID&gt;/&lt;ID string&gt;</code>.</p>"
         },
         "IpAddress":{
           "shape":"IpAddress",
@@ -6829,11 +6953,11 @@
         },
         "GameSessionId":{
           "shape":"NonZeroAndMaxString",
-          "documentation":"<p>A unique identifier for the game session. This value isn't final until placement status is <code>FULFILLED</code>.</p>"
+          "documentation":"<p>An identifier for the game session that is unique across all regions. The value is always a full ARN in the following format: <code>arn:aws:gamelift:&lt;location&gt;::gamesession/&lt;fleet ID&gt;/&lt;ID string&gt;</code>. This value is the same as <code>GameSessionArn</code>. This value isn't final until placement status is <code>FULFILLED</code>.</p>"
         },
         "GameSessionArn":{
           "shape":"NonZeroAndMaxString",
-          "documentation":"<p>Identifier for the game session created by this placement request. This identifier is unique across all Regions. This value isn't final until placement status is <code>FULFILLED</code>.</p>"
+          "documentation":"<p>An identifier for the game session that is unique across all regions. The value is always a full ARN in the following format: <code>arn:aws:gamelift:&lt;location&gt;::gamesession/&lt;fleet ID&gt;/&lt;ID string&gt;</code>. This value is the same as <code>GameSessionId</code>. This value isn't final until placement status is <code>FULFILLED</code>.</p>"
         },
         "GameSessionRegion":{
           "shape":"NonZeroAndMaxString",
@@ -7098,7 +7222,7 @@
       "members":{
         "GameSessionId":{
           "shape":"ArnStringModel",
-          "documentation":"<p>A unique identifier for the game session to get logs for. </p>"
+          "documentation":"<p>An identifier for the game session that is unique across all regions to get logs for. The value is always a full ARN in the following format: <code>arn:aws:gamelift:&lt;location&gt;::gamesession/&lt;fleet ID&gt;/&lt;ID string&gt;</code>.</p>"
         }
       }
     },
@@ -7146,7 +7270,7 @@
       "members":{
         "GameSessionId":{
           "shape":"ArnStringModel",
-          "documentation":"<p>A unique identifier for the game session for which to retrieve player connection details.</p>"
+          "documentation":"<p>An identifier for the game session that is unique across all regions for which to retrieve player connection details. The value is always a full ARN in the following format: <code>arn:aws:gamelift:&lt;location&gt;::gamesession/&lt;fleet ID&gt;/&lt;ID string&gt;</code>.</p>"
         },
         "PlayerIds":{
           "shape":"PlayerIdList",
@@ -7159,7 +7283,7 @@
       "members":{
         "GameSessionId":{
           "shape":"ArnStringModel",
-          "documentation":"<p>A unique identifier for the game session for which the player connection details were retrieved.</p>"
+          "documentation":"<p>An identifier for the game session that is unique across all regions for which the player connection details were retrieved. The value is always a full ARN in the following format: <code>arn:aws:gamelift:&lt;location&gt;::gamesession/&lt;fleet ID&gt;/&lt;ID string&gt;</code>.</p>"
         },
         "PlayerConnectionDetails":{
           "shape":"PlayerConnectionDetailList",
@@ -8684,7 +8808,7 @@
         },
         "GameSessionId":{
           "shape":"NonZeroAndMaxString",
-          "documentation":"<p>A unique identifier for the game session that the player session is connected to.</p>"
+          "documentation":"<p>An identifier for the game session that is unique across all regions that the player session is connected to. The value is always a full ARN in the following format: <code>arn:aws:gamelift:&lt;location&gt;::gamesession/&lt;fleet ID&gt;/&lt;ID string&gt;</code>.</p>"
         },
         "FleetId":{
           "shape":"FleetId",
@@ -9487,7 +9611,7 @@
         },
         "GameSessionArn":{
           "shape":"ArnStringModel",
-          "documentation":"<p>A unique identifier for the game session. Use the game session ID. When using FlexMatch as a standalone matchmaking solution, this parameter is not needed. </p>"
+          "documentation":"<p>An identifier for the game session that is unique across all regions. The value is always a full ARN in the following format: <code>arn:aws:gamelift:&lt;location&gt;::gamesession/&lt;fleet ID&gt;/&lt;ID string&gt;</code>. When using FlexMatch as a standalone matchmaking solution, this parameter is not needed. </p>"
         },
         "Players":{
           "shape":"PlayerList",
@@ -9852,7 +9976,7 @@
       "members":{
         "GameSessionId":{
           "shape":"ArnStringModel",
-          "documentation":"<p>A unique identifier for the game session to be terminated. A game session ARN has the following format: <code>arn:aws:gamelift:&lt;location&gt;::gamesession/&lt;fleet ID&gt;/&lt;custom ID string or idempotency token&gt;</code>.</p>"
+          "documentation":"<p>An identifier for the game session that is unique across all regions to be terminated. The value is always a full ARN in the following format: <code>arn:aws:gamelift:&lt;location&gt;::gamesession/&lt;fleet ID&gt;/&lt;ID string&gt;</code>.</p>"
         },
         "TerminationMode":{
           "shape":"TerminationMode",
@@ -10005,11 +10129,11 @@
         },
         "InstanceConnectionPortRange":{
           "shape":"ConnectionPortRange",
-          "documentation":"<p>A revised set of port numbers to open on each fleet instance. By default, Amazon GameLift Servers calculates an optimal port range based on your fleet configuration. If you previously set this parameter manually, you can't reset this to use the calculated settings.</p>"
+          "documentation":"<p>A revised set of port numbers to open on each fleet instance. By default, Amazon GameLift Servers calculates an optimal port range based on your fleet configuration. If you previously set this parameter manually, you can't reset this to use the calculated settings.</p> <p>The port range must not overlap with the Amazon GameLift Servers reserved port range <code>4092-4191</code>. This range is reserved for internal Amazon GameLift Servers services.</p>"
         },
         "InstanceInboundPermissionAuthorizations":{
           "shape":"IpPermissionsList",
-          "documentation":"<p>A set of ports to add to the container fleet's inbound permissions.</p>"
+          "documentation":"<p>A set of ports to add to the container fleet's inbound permissions.</p> <p>The port range must not overlap with the Amazon GameLift Servers reserved port range <code>4092-4191</code>. This range is reserved for internal Amazon GameLift Servers services.</p>"
         },
         "InstanceInboundPermissionRevocations":{
           "shape":"IpPermissionsList",
@@ -10309,7 +10433,7 @@
       "members":{
         "GameSessionId":{
           "shape":"ArnStringModel",
-          "documentation":"<p>A unique identifier for the game session to update. </p>"
+          "documentation":"<p>An identifier for the game session that is unique across all regions to update. The value is always a full ARN in the following format: <code>arn:aws:gamelift:&lt;location&gt;::gamesession/&lt;fleet ID&gt;/&lt;ID string&gt;</code>.</p>"
         },
         "MaximumPlayerSessionCount":{
           "shape":"WholeNumber",

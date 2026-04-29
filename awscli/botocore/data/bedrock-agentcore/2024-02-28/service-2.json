@@ -90,6 +90,26 @@
       ],
       "documentation":"<p>Confirms the user authentication session for obtaining OAuth2.0 tokens for a resource.</p>"
     },
+    "CreateABTest":{
+      "name":"CreateABTest",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ab-tests",
+        "responseCode":202
+      },
+      "input":{"shape":"CreateABTestRequest"},
+      "output":{"shape":"CreateABTestResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates an A/B test for comparing agent configurations. A/B tests split traffic between a control variant and a treatment variant through a gateway, then evaluate performance using online evaluation configurations to determine which variant performs better.</p>"
+    },
     "CreateEvent":{
       "name":"CreateEvent",
       "http":{
@@ -110,6 +130,48 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Creates an event in an AgentCore Memory resource. Events represent interactions or activities that occur within a session and are associated with specific actors.</p> <p>To use this operation, you must have the <code>bedrock-agentcore:CreateEvent</code> permission.</p> <p>This operation is subject to request rate limiting.</p>",
+      "idempotent":true
+    },
+    "DeleteABTest":{
+      "name":"DeleteABTest",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/ab-tests/{abTestId}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteABTestRequest"},
+      "output":{"shape":"DeleteABTestResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes an A/B test and its associated gateway rules.</p>",
+      "idempotent":true
+    },
+    "DeleteBatchEvaluation":{
+      "name":"DeleteBatchEvaluation",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/evaluations/batch-evaluate/{batchEvaluationId}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteBatchEvaluationRequest"},
+      "output":{"shape":"DeleteBatchEvaluationResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes a batch evaluation and its associated results.</p>",
       "idempotent":true
     },
     "DeleteEvent":{
@@ -152,6 +214,26 @@
       ],
       "documentation":"<p>Deletes a memory record from an AgentCore Memory resource. When you delete a memory record, it is permanently removed.</p> <p>To use this operation, you must have the <code>bedrock-agentcore:DeleteMemoryRecord</code> permission.</p>"
     },
+    "DeleteRecommendation":{
+      "name":"DeleteRecommendation",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/recommendations/{recommendationId}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteRecommendationRequest"},
+      "output":{"shape":"DeleteRecommendationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes a recommendation and its associated results.</p>",
+      "idempotent":true
+    },
     "Evaluate":{
       "name":"Evaluate",
       "http":{
@@ -174,6 +256,26 @@
       ],
       "documentation":"<p> Performs on-demand evaluation of agent traces using a specified evaluator. This synchronous API accepts traces in OpenTelemetry format and returns immediate scoring results with detailed explanations.</p>"
     },
+    "GetABTest":{
+      "name":"GetABTest",
+      "http":{
+        "method":"GET",
+        "requestUri":"/ab-tests/{abTestId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetABTestRequest"},
+      "output":{"shape":"GetABTestResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves detailed information about an A/B test, including its configuration, status, and statistical results.</p>",
+      "readonly":true
+    },
     "GetAgentCard":{
       "name":"GetAgentCard",
       "http":{
@@ -193,6 +295,26 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Retrieves the A2A agent card associated with an AgentCore Runtime agent.</p>"
+    },
+    "GetBatchEvaluation":{
+      "name":"GetBatchEvaluation",
+      "http":{
+        "method":"GET",
+        "requestUri":"/evaluations/batch-evaluate/{batchEvaluationId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetBatchEvaluationRequest"},
+      "output":{"shape":"GetBatchEvaluationResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves detailed information about a batch evaluation, including its status, configuration, results, and any error details.</p>",
+      "readonly":true
     },
     "GetBrowserSession":{
       "name":"GetBrowserSession",
@@ -272,6 +394,25 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Retrieves a specific memory record from an AgentCore Memory resource.</p> <p>To use this operation, you must have the <code>bedrock-agentcore:GetMemoryRecord</code> permission.</p>",
+      "readonly":true
+    },
+    "GetRecommendation":{
+      "name":"GetRecommendation",
+      "http":{
+        "method":"GET",
+        "requestUri":"/recommendations/{recommendationId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetRecommendationRequest"},
+      "output":{"shape":"GetRecommendationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves detailed information about a recommendation, including its configuration, status, and results.</p>",
       "readonly":true
     },
     "GetResourceApiKey":{
@@ -468,6 +609,25 @@
       ],
       "documentation":"<p>Operation to invoke a Harness.</p>"
     },
+    "ListABTests":{
+      "name":"ListABTests",
+      "http":{
+        "method":"GET",
+        "requestUri":"/ab-tests",
+        "responseCode":200
+      },
+      "input":{"shape":"ListABTestsRequest"},
+      "output":{"shape":"ListABTestsResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists all A/B tests in the account.</p>",
+      "readonly":true
+    },
     "ListActors":{
       "name":"ListActors",
       "http":{
@@ -487,6 +647,25 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Lists all actors in an AgentCore Memory resource. We recommend using pagination to ensure that the operation returns quickly and successfully.</p> <p>To use this operation, you must have the <code>bedrock-agentcore:ListActors</code> permission.</p>",
+      "readonly":true
+    },
+    "ListBatchEvaluations":{
+      "name":"ListBatchEvaluations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/evaluations/batch-evaluate",
+        "responseCode":200
+      },
+      "input":{"shape":"ListBatchEvaluationsRequest"},
+      "output":{"shape":"ListBatchEvaluationsResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists all batch evaluations in the account, providing summary information about each evaluation's status and configuration.</p>",
       "readonly":true
     },
     "ListBrowserSessions":{
@@ -588,6 +767,24 @@
       "documentation":"<p>Lists memory records in an AgentCore Memory resource based on specified criteria. We recommend using pagination to ensure that the operation returns quickly and successfully.</p> <p>To use this operation, you must have the <code>bedrock-agentcore:ListMemoryRecords</code> permission.</p>",
       "readonly":true
     },
+    "ListRecommendations":{
+      "name":"ListRecommendations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/recommendations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListRecommendationsRequest"},
+      "output":{"shape":"ListRecommendationsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists all recommendations in the account, with optional filtering by status.</p>",
+      "readonly":true
+    },
     "ListSessions":{
       "name":"ListSessions",
       "http":{
@@ -668,6 +865,27 @@
       ],
       "documentation":"<p> Searches for registry records using semantic, lexical, or hybrid queries. Returns metadata for matching records ordered by relevance within the specified registry.</p>"
     },
+    "StartBatchEvaluation":{
+      "name":"StartBatchEvaluation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/evaluations/batch-evaluate",
+        "responseCode":202
+      },
+      "input":{"shape":"StartBatchEvaluationRequest"},
+      "output":{"shape":"StartBatchEvaluationResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Starts a batch evaluation job that evaluates agent performance across multiple sessions. Batch evaluations pull agent traces from CloudWatch Logs or an existing online evaluation configuration and run specified evaluators and insights against them.</p>",
+      "idempotent":true
+    },
     "StartBrowserSession":{
       "name":"StartBrowserSession",
       "http":{
@@ -729,6 +947,45 @@
       ],
       "documentation":"<p> Starts a memory extraction job that processes events that failed extraction previously in an AgentCore Memory resource and produces structured memory records. When earlier extraction attempts have left events unprocessed, this job will pick up and extract those as well. </p> <p>To use this operation, you must have the <code>bedrock-agentcore:StartMemoryExtractionJob</code> permission.</p>",
       "idempotent":true
+    },
+    "StartRecommendation":{
+      "name":"StartRecommendation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/recommendations",
+        "responseCode":202
+      },
+      "input":{"shape":"StartRecommendationRequest"},
+      "output":{"shape":"StartRecommendationResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Starts a recommendation job that analyzes agent traces and generates optimization suggestions for system prompts or tool descriptions to improve agent performance.</p>"
+    },
+    "StopBatchEvaluation":{
+      "name":"StopBatchEvaluation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/evaluations/batch-evaluate/{batchEvaluationId}/stop",
+        "responseCode":202
+      },
+      "input":{"shape":"StopBatchEvaluationRequest"},
+      "output":{"shape":"StopBatchEvaluationResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Stops a running batch evaluation. Sessions that have already been evaluated retain their results.</p>"
     },
     "StopBrowserSession":{
       "name":"StopBrowserSession",
@@ -795,6 +1052,28 @@
       "documentation":"<p>Stops a session that is running in an running AgentCore Runtime agent.</p>",
       "idempotent":true
     },
+    "UpdateABTest":{
+      "name":"UpdateABTest",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/ab-tests/{abTestId}",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdateABTestRequest"},
+      "output":{"shape":"UpdateABTestResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates an A/B test's configuration, including variants, traffic allocation, evaluation settings, or execution status.</p>",
+      "idempotent":true
+    },
     "UpdateBrowserStream":{
       "name":"UpdateBrowserStream",
       "http":{
@@ -828,6 +1107,130 @@
         }
       },
       "documentation":"<p> The A2A (Agent-to-Agent) descriptor configuration for a registry record.</p>"
+    },
+    "ABTestArn":{
+      "type":"string",
+      "pattern":"arn:aws[a-zA-Z-]*:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:ab-test/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
+    },
+    "ABTestDescription":{
+      "type":"string",
+      "max":200,
+      "min":1
+    },
+    "ABTestEvaluationConfig":{
+      "type":"structure",
+      "members":{
+        "onlineEvaluationConfigArn":{
+          "shape":"OnlineEvaluationConfigArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a single online evaluation configuration to use for both variants.</p>"
+        },
+        "perVariantOnlineEvaluationConfig":{
+          "shape":"PerVariantOnlineEvaluationConfigList",
+          "documentation":"<p>Per-variant online evaluation configurations, allowing different evaluation settings for each variant.</p>"
+        }
+      },
+      "documentation":"<p>The evaluation configuration for an A/B test, specifying which online evaluation configurations to use for measuring variant performance.</p>",
+      "union":true
+    },
+    "ABTestExecutionStatus":{
+      "type":"string",
+      "enum":[
+        "PAUSED",
+        "RUNNING",
+        "STOPPED",
+        "NOT_STARTED"
+      ]
+    },
+    "ABTestId":{
+      "type":"string",
+      "pattern":"[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
+    },
+    "ABTestName":{
+      "type":"string",
+      "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,47}"
+    },
+    "ABTestResults":{
+      "type":"structure",
+      "required":["evaluatorMetrics"],
+      "members":{
+        "analysisTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the analysis was performed.</p>"
+        },
+        "evaluatorMetrics":{
+          "shape":"EvaluatorMetricList",
+          "documentation":"<p>The per-evaluator metrics comparing control and treatment variants.</p>"
+        }
+      },
+      "documentation":"<p>The statistical results of an A/B test.</p>"
+    },
+    "ABTestStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "ACTIVE",
+        "CREATE_FAILED",
+        "UPDATING",
+        "UPDATE_FAILED",
+        "DELETING",
+        "DELETE_FAILED",
+        "FAILED"
+      ]
+    },
+    "ABTestSummary":{
+      "type":"structure",
+      "required":[
+        "abTestId",
+        "abTestArn",
+        "name",
+        "status",
+        "executionStatus",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "abTestId":{
+          "shape":"ABTestId",
+          "documentation":"<p>The unique identifier of the A/B test.</p>"
+        },
+        "abTestArn":{
+          "shape":"ABTestArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the A/B test.</p>"
+        },
+        "name":{
+          "shape":"ABTestName",
+          "documentation":"<p>The name of the A/B test.</p>"
+        },
+        "status":{
+          "shape":"ABTestStatus",
+          "documentation":"<p>The current status of the A/B test.</p>"
+        },
+        "executionStatus":{
+          "shape":"ABTestExecutionStatus",
+          "documentation":"<p>The execution status of the A/B test.</p>"
+        },
+        "description":{
+          "shape":"ABTestDescription",
+          "documentation":"<p>The description of the A/B test.</p>"
+        },
+        "gatewayArn":{
+          "shape":"GatewayArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway used for traffic splitting.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the A/B test was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the A/B test was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about an A/B test.</p>"
+    },
+    "ABTestSummaryList":{
+      "type":"list",
+      "member":{"shape":"ABTestSummary"}
     },
     "AccessDeniedException":{
       "type":"structure",
@@ -901,6 +1304,21 @@
         }
       },
       "documentation":"<p> The agent skills descriptor configuration for a registry record.</p>"
+    },
+    "AgentTracesConfig":{
+      "type":"structure",
+      "members":{
+        "sessionSpans":{
+          "shape":"Spans",
+          "documentation":"<p>Agent traces provided as inline session spans in OpenTelemetry format.</p>"
+        },
+        "cloudwatchLogs":{
+          "shape":"CloudWatchLogsTraceConfig",
+          "documentation":"<p>Agent traces read from CloudWatch Logs.</p>"
+        }
+      },
+      "documentation":"<p>The configuration specifying where to read agent traces from for recommendation analysis.</p>",
+      "union":true
     },
     "ApiKeyArn":{
       "type":"string",
@@ -1039,6 +1457,95 @@
           "documentation":"<p>A list of memory records that failed to be deleted, including error details for each failure.</p>"
         }
       }
+    },
+    "BatchEvaluationArn":{
+      "type":"string",
+      "documentation":"<p>ARN for a batch evaluation</p>"
+    },
+    "BatchEvaluationDescription":{
+      "type":"string",
+      "max":200,
+      "min":0
+    },
+    "BatchEvaluationId":{
+      "type":"string",
+      "documentation":"<p>Unique identifier for a batch evaluation (name-prefixed format)</p>",
+      "pattern":"[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
+    },
+    "BatchEvaluationName":{
+      "type":"string",
+      "documentation":"<p>Human-readable name for a batch evaluation</p>",
+      "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,47}"
+    },
+    "BatchEvaluationStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "IN_PROGRESS",
+        "COMPLETED",
+        "COMPLETED_WITH_ERRORS",
+        "FAILED",
+        "STOPPING",
+        "STOPPED",
+        "DELETING"
+      ]
+    },
+    "BatchEvaluationSummary":{
+      "type":"structure",
+      "required":[
+        "batchEvaluationId",
+        "batchEvaluationArn",
+        "batchEvaluationName",
+        "status",
+        "createdAt"
+      ],
+      "members":{
+        "batchEvaluationId":{
+          "shape":"BatchEvaluationId",
+          "documentation":"<p>The unique identifier of the batch evaluation.</p>"
+        },
+        "batchEvaluationArn":{
+          "shape":"BatchEvaluationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the batch evaluation.</p>"
+        },
+        "batchEvaluationName":{
+          "shape":"BatchEvaluationName",
+          "documentation":"<p>The name of the batch evaluation.</p>"
+        },
+        "status":{
+          "shape":"BatchEvaluationStatus",
+          "documentation":"<p>The current status of the batch evaluation.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the batch evaluation was created.</p>"
+        },
+        "description":{
+          "shape":"BatchEvaluationDescription",
+          "documentation":"<p>The description of the batch evaluation.</p>"
+        },
+        "evaluators":{
+          "shape":"EvaluatorList",
+          "documentation":"<p>The list of evaluators applied during the batch evaluation.</p>"
+        },
+        "evaluationResults":{
+          "shape":"EvaluationJobResults",
+          "documentation":"<p>The aggregated evaluation results.</p>"
+        },
+        "errorDetails":{
+          "shape":"ErrorDetailsList",
+          "documentation":"<p>The error details if the batch evaluation encountered failures.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the batch evaluation was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Summary representation for list responses</p>"
+    },
+    "BatchEvaluationSummaryList":{
+      "type":"list",
+      "member":{"shape":"BatchEvaluationSummary"}
     },
     "BatchUpdateMemoryRecordsInput":{
       "type":"structure",
@@ -1385,6 +1892,172 @@
       "min":33,
       "pattern":"[a-zA-Z0-9](-*[a-zA-Z0-9]){0,256}"
     },
+    "CloudWatchFilterConfig":{
+      "type":"structure",
+      "members":{
+        "sessionIds":{
+          "shape":"CloudWatchFilterConfigSessionIdsList",
+          "documentation":"<p>A list of specific session IDs to evaluate. If specified, only these sessions are included in the evaluation.</p>"
+        },
+        "timeRange":{
+          "shape":"SessionFilterConfig",
+          "documentation":"<p>The time range filter for selecting sessions to evaluate.</p>"
+        }
+      },
+      "documentation":"<p>Filter configuration for narrowing down CloudWatch Logs sessions for evaluation.</p>"
+    },
+    "CloudWatchFilterConfigSessionIdsList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":500,
+      "min":0
+    },
+    "CloudWatchLogsFilter":{
+      "type":"structure",
+      "required":[
+        "key",
+        "operator",
+        "value"
+      ],
+      "members":{
+        "key":{
+          "shape":"CloudWatchLogsFilterKeyString",
+          "documentation":"<p>The key or field name to filter on within the agent trace data.</p>"
+        },
+        "operator":{
+          "shape":"CloudWatchLogsFilterOperator",
+          "documentation":"<p>The comparison operator to use for filtering.</p>"
+        },
+        "value":{
+          "shape":"FilterValue",
+          "documentation":"<p>The value to compare against using the specified operator.</p>"
+        }
+      },
+      "documentation":"<p>A filter for narrowing down agent traces from CloudWatch Logs based on key-value comparisons.</p>"
+    },
+    "CloudWatchLogsFilterKeyString":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[a-zA-Z0-9._-]+"
+    },
+    "CloudWatchLogsFilterList":{
+      "type":"list",
+      "member":{"shape":"CloudWatchLogsFilter"}
+    },
+    "CloudWatchLogsFilterOperator":{
+      "type":"string",
+      "enum":[
+        "Equals",
+        "NotEquals",
+        "GreaterThan",
+        "LessThan",
+        "GreaterThanOrEqual",
+        "LessThanOrEqual",
+        "Contains",
+        "NotContains"
+      ]
+    },
+    "CloudWatchLogsRule":{
+      "type":"structure",
+      "members":{
+        "filters":{
+          "shape":"CloudWatchLogsFilterList",
+          "documentation":"<p>The list of filters to apply when reading agent traces.</p>"
+        }
+      },
+      "documentation":"<p>A rule configuration for filtering agent traces from CloudWatch Logs.</p>"
+    },
+    "CloudWatchLogsSource":{
+      "type":"structure",
+      "required":[
+        "serviceNames",
+        "logGroupNames"
+      ],
+      "members":{
+        "serviceNames":{
+          "shape":"CloudWatchLogsSourceServiceNamesList",
+          "documentation":"<p>The list of agent service names to filter traces within the specified log groups.</p>"
+        },
+        "logGroupNames":{
+          "shape":"CloudWatchLogsSourceLogGroupNamesList",
+          "documentation":"<p>The list of CloudWatch log group names to read agent traces from. Maximum of 5 log groups.</p>"
+        },
+        "filterConfig":{
+          "shape":"CloudWatchFilterConfig",
+          "documentation":"<p>Optional filter configuration to narrow down which sessions to evaluate.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for reading agent traces from CloudWatch Logs.</p>"
+    },
+    "CloudWatchLogsSourceLogGroupNamesList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":5,
+      "min":1
+    },
+    "CloudWatchLogsSourceServiceNamesList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":1,
+      "min":1
+    },
+    "CloudWatchLogsTraceConfig":{
+      "type":"structure",
+      "required":[
+        "logGroupArns",
+        "serviceNames",
+        "startTime",
+        "endTime"
+      ],
+      "members":{
+        "logGroupArns":{
+          "shape":"CloudWatchLogsTraceConfigLogGroupArnsList",
+          "documentation":"<p>The list of CloudWatch log group ARNs to read agent traces from.</p>"
+        },
+        "serviceNames":{
+          "shape":"ServiceNameList",
+          "documentation":"<p>The list of service names to filter traces within the specified log groups.</p>"
+        },
+        "startTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The start time of the time range to read traces from.</p>"
+        },
+        "endTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The end time of the time range to read traces from.</p>"
+        },
+        "rule":{
+          "shape":"CloudWatchLogsRule",
+          "documentation":"<p>Optional rule configuration for filtering traces.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for reading agent traces from CloudWatch Logs for recommendation analysis.</p>"
+    },
+    "CloudWatchLogsTraceConfigLogGroupArnsList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":5,
+      "min":1
+    },
+    "CloudWatchOutputConfig":{
+      "type":"structure",
+      "required":[
+        "logGroupName",
+        "logStreamName"
+      ],
+      "members":{
+        "logGroupName":{
+          "shape":"String",
+          "documentation":"<p>The name of the CloudWatch log group where evaluation results will be written.</p>"
+        },
+        "logStreamName":{
+          "shape":"String",
+          "documentation":"<p>The name of the CloudWatch log stream where evaluation results will be written.</p>"
+        }
+      },
+      "documentation":"<p>CloudWatch Logs destination for batch evaluation results</p>"
+    },
     "CodeInterpreterArn":{
       "type":"string",
       "pattern":"arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:(aws|[0-9]{12}):code-interpreter(-custom)?/(aws\\.codeinterpreter\\.v1|[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10})"
@@ -1509,6 +2182,69 @@
       "type":"structure",
       "members":{}
     },
+    "ConfidenceInterval":{
+      "type":"structure",
+      "members":{
+        "lower":{
+          "shape":"Double",
+          "documentation":"<p>The lower bound of the confidence interval.</p>"
+        },
+        "upper":{
+          "shape":"Double",
+          "documentation":"<p>The upper bound of the confidence interval.</p>"
+        }
+      },
+      "documentation":"<p>A confidence interval for a statistical measurement.</p>"
+    },
+    "ConfigurationBundleArn":{
+      "type":"string",
+      "pattern":"arn:aws:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:configuration-bundle/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
+    },
+    "ConfigurationBundleRef":{
+      "type":"structure",
+      "required":[
+        "bundleArn",
+        "bundleVersion"
+      ],
+      "members":{
+        "bundleArn":{
+          "shape":"ConfigurationBundleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configuration bundle.</p>"
+        },
+        "bundleVersion":{
+          "shape":"ConfigurationBundleVersion",
+          "documentation":"<p>The version of the configuration bundle.</p>"
+        }
+      },
+      "documentation":"<p>A reference to a specific version of a configuration bundle.</p>"
+    },
+    "ConfigurationBundleToolEntry":{
+      "type":"structure",
+      "required":[
+        "toolName",
+        "toolDescriptionJsonPath"
+      ],
+      "members":{
+        "toolName":{
+          "shape":"RecommendationToolName",
+          "documentation":"<p>The name of the tool.</p>"
+        },
+        "toolDescriptionJsonPath":{
+          "shape":"String",
+          "documentation":"<p>The JSON path within the configuration bundle's components that contains the tool description.</p>"
+        }
+      },
+      "documentation":"<p>Maps a tool name to its JSON path within a configuration bundle.</p>"
+    },
+    "ConfigurationBundleToolEntryList":{
+      "type":"list",
+      "member":{"shape":"ConfigurationBundleToolEntry"}
+    },
+    "ConfigurationBundleVersion":{
+      "type":"string",
+      "pattern":"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
+    },
+    "ConfigurationBundleVersionId":{"type":"string"},
     "ConflictException":{
       "type":"structure",
       "members":{
@@ -1642,6 +2378,29 @@
       "documentation":"<p> The contextual information associated with an evaluation, including span context details that identify the specific traces and sessions being evaluated within the agent's execution flow. </p>",
       "union":true
     },
+    "ControlStats":{
+      "type":"structure",
+      "required":[
+        "variantName",
+        "sampleSize",
+        "mean"
+      ],
+      "members":{
+        "variantName":{
+          "shape":"String",
+          "documentation":"<p>The name of the control variant.</p>"
+        },
+        "sampleSize":{
+          "shape":"Integer",
+          "documentation":"<p>The number of sessions evaluated for the control variant.</p>"
+        },
+        "mean":{
+          "shape":"Double",
+          "documentation":"<p>The mean evaluation score for the control variant.</p>"
+        }
+      },
+      "documentation":"<p>Statistics for the control variant in an A/B test.</p>"
+    },
     "Conversational":{
       "type":"structure",
       "required":[
@@ -1659,6 +2418,91 @@
         }
       },
       "documentation":"<p>Contains conversational content for an event payload.</p>"
+    },
+    "CreateABTestRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "gatewayArn",
+        "variants",
+        "evaluationConfig",
+        "roleArn"
+      ],
+      "members":{
+        "name":{
+          "shape":"ABTestName",
+          "documentation":"<p>The name of the A/B test. Must be unique within your account.</p>"
+        },
+        "description":{
+          "shape":"ABTestDescription",
+          "documentation":"<p>The description of the A/B test.</p>"
+        },
+        "gatewayArn":{
+          "shape":"GatewayArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway to use for traffic splitting.</p>"
+        },
+        "variants":{
+          "shape":"VariantList",
+          "documentation":"<p>The list of variants for the A/B test. Must contain exactly two variants: a control (C) and a treatment (T1), each with a configuration bundle or target reference and a traffic weight.</p>"
+        },
+        "gatewayFilter":{
+          "shape":"GatewayFilter",
+          "documentation":"<p>Optional filter to restrict which gateway target paths are included in the A/B test.</p>"
+        },
+        "evaluationConfig":{
+          "shape":"ABTestEvaluationConfig",
+          "documentation":"<p>The evaluation configuration specifying which online evaluation configurations to use for measuring variant performance.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The IAM role ARN that grants permissions for the A/B test to access gateway and evaluation resources.</p>"
+        },
+        "enableOnCreate":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to enable the A/B test immediately upon creation. If true, traffic splitting begins automatically.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, the service ignores the request, but does not return an error.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateABTestResponse":{
+      "type":"structure",
+      "required":[
+        "abTestId",
+        "abTestArn",
+        "status",
+        "executionStatus",
+        "createdAt"
+      ],
+      "members":{
+        "abTestId":{
+          "shape":"ABTestId",
+          "documentation":"<p>The unique identifier of the created A/B test.</p>"
+        },
+        "abTestArn":{
+          "shape":"ABTestArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created A/B test.</p>"
+        },
+        "name":{
+          "shape":"ABTestName",
+          "documentation":"<p>The name of the A/B test.</p>"
+        },
+        "status":{
+          "shape":"ABTestStatus",
+          "documentation":"<p>The status of the A/B test.</p>"
+        },
+        "executionStatus":{
+          "shape":"ABTestExecutionStatus",
+          "documentation":"<p>The execution status indicating whether the A/B test is currently running.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the A/B test was created.</p>"
+        }
+      }
     },
     "CreateEventInput":{
       "type":"structure",
@@ -1749,9 +2593,88 @@
       "min":1,
       "sensitive":true
     },
+    "DataSourceConfig":{
+      "type":"structure",
+      "members":{
+        "cloudWatchLogs":{
+          "shape":"CloudWatchLogsSource",
+          "documentation":"<p>Pull session spans from CloudWatch</p>"
+        }
+      },
+      "documentation":"<p>Where to pull session spans from</p>",
+      "union":true
+    },
     "DateTimestamp":{
       "type":"timestamp",
       "timestampFormat":"iso8601"
+    },
+    "DeleteABTestRequest":{
+      "type":"structure",
+      "required":["abTestId"],
+      "members":{
+        "abTestId":{
+          "shape":"ABTestId",
+          "documentation":"<p>The unique identifier of the A/B test to delete.</p>",
+          "location":"uri",
+          "locationName":"abTestId"
+        }
+      }
+    },
+    "DeleteABTestResponse":{
+      "type":"structure",
+      "required":[
+        "abTestId",
+        "abTestArn",
+        "status"
+      ],
+      "members":{
+        "abTestId":{
+          "shape":"ABTestId",
+          "documentation":"<p>The unique identifier of the deleted A/B test.</p>"
+        },
+        "abTestArn":{
+          "shape":"ABTestArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the deleted A/B test.</p>"
+        },
+        "status":{
+          "shape":"ABTestStatus",
+          "documentation":"<p>The status of the A/B test deletion operation.</p>"
+        }
+      }
+    },
+    "DeleteBatchEvaluationRequest":{
+      "type":"structure",
+      "required":["batchEvaluationId"],
+      "members":{
+        "batchEvaluationId":{
+          "shape":"BatchEvaluationId",
+          "documentation":"<p>The unique identifier of the batch evaluation to delete.</p>",
+          "location":"uri",
+          "locationName":"batchEvaluationId"
+        }
+      }
+    },
+    "DeleteBatchEvaluationResponse":{
+      "type":"structure",
+      "required":[
+        "batchEvaluationId",
+        "batchEvaluationArn",
+        "status"
+      ],
+      "members":{
+        "batchEvaluationId":{
+          "shape":"BatchEvaluationId",
+          "documentation":"<p>The unique identifier of the deleted batch evaluation.</p>"
+        },
+        "batchEvaluationArn":{
+          "shape":"BatchEvaluationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the deleted batch evaluation.</p>"
+        },
+        "status":{
+          "shape":"BatchEvaluationStatus",
+          "documentation":"<p>The status of the batch evaluation deletion operation.</p>"
+        }
+      }
     },
     "DeleteEventInput":{
       "type":"structure",
@@ -1829,6 +2752,35 @@
         }
       }
     },
+    "DeleteRecommendationRequest":{
+      "type":"structure",
+      "required":["recommendationId"],
+      "members":{
+        "recommendationId":{
+          "shape":"RecommendationId",
+          "documentation":"<p>The unique identifier of the recommendation to delete.</p>",
+          "location":"uri",
+          "locationName":"recommendationId"
+        }
+      }
+    },
+    "DeleteRecommendationResponse":{
+      "type":"structure",
+      "required":[
+        "recommendationId",
+        "status"
+      ],
+      "members":{
+        "recommendationId":{
+          "shape":"RecommendationId",
+          "documentation":"<p>The unique identifier of the deleted recommendation.</p>"
+        },
+        "status":{
+          "shape":"RecommendationStatus",
+          "documentation":"<p>The status of the recommendation deletion operation.</p>"
+        }
+      }
+    },
     "Description":{
       "type":"string",
       "max":4096,
@@ -1900,6 +2852,17 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ErrorDetailsList":{
+      "type":"list",
+      "member":{"shape":"ErrorDetailsListMemberString"},
+      "max":1,
+      "min":0
+    },
+    "ErrorDetailsListMemberString":{
+      "type":"string",
+      "max":1000,
+      "min":0
     },
     "EvaluateRequest":{
       "type":"structure",
@@ -1995,6 +2958,47 @@
         }
       },
       "documentation":"<p> The input data structure containing agent session spans in OpenTelemetry format. Supports traces from frameworks like Strands (AgentCore Runtime) and LangGraph with OpenInference instrumentation for comprehensive evaluation. </p>",
+      "union":true
+    },
+    "EvaluationJobResults":{
+      "type":"structure",
+      "members":{
+        "numberOfSessionsCompleted":{
+          "shape":"Integer",
+          "documentation":"<p>The number of sessions that have been successfully evaluated.</p>"
+        },
+        "numberOfSessionsInProgress":{
+          "shape":"Integer",
+          "documentation":"<p>The number of sessions currently being evaluated.</p>"
+        },
+        "numberOfSessionsFailed":{
+          "shape":"Integer",
+          "documentation":"<p>The number of sessions that failed evaluation.</p>"
+        },
+        "totalNumberOfSessions":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of sessions included in the batch evaluation.</p>"
+        },
+        "numberOfSessionsIgnored":{
+          "shape":"Integer",
+          "documentation":"<p>The number of sessions that were ignored during evaluation.</p>"
+        },
+        "evaluatorSummaries":{
+          "shape":"EvaluatorSummaryList",
+          "documentation":"<p>A list of per-evaluator summary statistics.</p>"
+        }
+      },
+      "documentation":"<p>Aggregated results from a batch evaluation, including session completion counts and evaluator score summaries.</p>"
+    },
+    "EvaluationMetadata":{
+      "type":"structure",
+      "members":{
+        "sessionMetadata":{
+          "shape":"SessionMetadataList",
+          "documentation":"<p>A list of session metadata entries containing ground truth data and test scenario identifiers for specific sessions.</p>"
+        }
+      },
+      "documentation":"<p>Metadata for the evaluation, including session-specific ground truth data.</p>",
       "union":true
     },
     "EvaluationReferenceInput":{
@@ -2110,6 +3114,17 @@
       "max":1000,
       "min":0
     },
+    "Evaluator":{
+      "type":"structure",
+      "required":["evaluatorId"],
+      "members":{
+        "evaluatorId":{
+          "shape":"EvaluatorId",
+          "documentation":"<p>The unique identifier of the evaluator. Can reference built-in evaluators (e.g., <code>Builtin.Helpfulness</code>) or custom evaluators.</p>"
+        }
+      },
+      "documentation":"<p>An evaluator to run against sessions</p>"
+    },
     "EvaluatorArn":{
       "type":"string",
       "pattern":"arn:aws:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:evaluator\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}$|^arn:aws:bedrock-agentcore:::evaluator/Builtin.[a-zA-Z0-9_-]+"
@@ -2118,9 +3133,76 @@
       "type":"string",
       "pattern":"(Builtin.[a-zA-Z0-9_-]+|[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10})"
     },
+    "EvaluatorList":{
+      "type":"list",
+      "member":{"shape":"Evaluator"}
+    },
+    "EvaluatorMetric":{
+      "type":"structure",
+      "required":[
+        "evaluatorArn",
+        "controlStats",
+        "variantResults"
+      ],
+      "members":{
+        "evaluatorArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the evaluator.</p>"
+        },
+        "controlStats":{
+          "shape":"ControlStats",
+          "documentation":"<p>The statistics for the control variant.</p>"
+        },
+        "variantResults":{
+          "shape":"VariantResultList",
+          "documentation":"<p>The results for each treatment variant compared against the control.</p>"
+        }
+      },
+      "documentation":"<p>Statistical metrics for a single evaluator comparing control and treatment variants.</p>"
+    },
+    "EvaluatorMetricList":{
+      "type":"list",
+      "member":{"shape":"EvaluatorMetric"}
+    },
     "EvaluatorName":{
       "type":"string",
       "pattern":"(Builtin.[a-zA-Z0-9_-]+|[a-zA-Z][a-zA-Z0-9_]{0,47})"
+    },
+    "EvaluatorStatistics":{
+      "type":"structure",
+      "members":{
+        "averageScore":{
+          "shape":"Double",
+          "documentation":"<p>The average score across all evaluated sessions for this evaluator.</p>"
+        }
+      },
+      "documentation":"<p>Aggregated statistics for an evaluator.</p>"
+    },
+    "EvaluatorSummary":{
+      "type":"structure",
+      "members":{
+        "evaluatorId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the evaluator.</p>"
+        },
+        "statistics":{
+          "shape":"EvaluatorStatistics",
+          "documentation":"<p>The aggregated statistics for this evaluator.</p>"
+        },
+        "totalEvaluated":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of sessions evaluated by this evaluator.</p>"
+        },
+        "totalFailed":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of sessions that failed evaluation by this evaluator.</p>"
+        }
+      },
+      "documentation":"<p>Summary statistics for a single evaluator within a batch evaluation.</p>"
+    },
+    "EvaluatorSummaryList":{
+      "type":"list",
+      "member":{"shape":"EvaluatorSummary"}
     },
     "Event":{
       "type":"structure",
@@ -2345,9 +3427,148 @@
       },
       "documentation":"<p>Contains filter criteria for listing events.</p>"
     },
+    "FilterStringValue":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "FilterValue":{
+      "type":"structure",
+      "members":{
+        "stringValue":{
+          "shape":"FilterStringValue",
+          "documentation":"<p>A string value for text-based filtering.</p>"
+        },
+        "doubleValue":{
+          "shape":"Double",
+          "documentation":"<p>A numeric value for numerical filtering and comparisons.</p>"
+        },
+        "booleanValue":{
+          "shape":"Boolean",
+          "documentation":"<p>A boolean value for true/false filtering conditions.</p>"
+        }
+      },
+      "documentation":"<p>A value used in filter comparisons, supporting different data types.</p>",
+      "union":true
+    },
     "GatewayArn":{
       "type":"string",
       "pattern":"arn:aws(|-cn|-us-gov):bedrock-agentcore:[a-z0-9-]{1,20}:[0-9]{12}:gateway/([0-9a-z][-]?){1,48}-[a-z0-9]{10}"
+    },
+    "GatewayFilter":{
+      "type":"structure",
+      "members":{
+        "targetPaths":{
+          "shape":"TargetPathList",
+          "documentation":"<p>A list of target path patterns to include in the A/B test.</p>"
+        }
+      },
+      "documentation":"<p>A filter to restrict which gateway target paths are included in the A/B test.</p>"
+    },
+    "GetABTestRequest":{
+      "type":"structure",
+      "required":["abTestId"],
+      "members":{
+        "abTestId":{
+          "shape":"ABTestId",
+          "documentation":"<p>The unique identifier of the A/B test to retrieve.</p>",
+          "location":"uri",
+          "locationName":"abTestId"
+        }
+      }
+    },
+    "GetABTestResponse":{
+      "type":"structure",
+      "required":[
+        "abTestId",
+        "abTestArn",
+        "name",
+        "status",
+        "executionStatus",
+        "gatewayArn",
+        "variants",
+        "evaluationConfig",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "abTestId":{
+          "shape":"ABTestId",
+          "documentation":"<p>The unique identifier of the A/B test.</p>"
+        },
+        "abTestArn":{
+          "shape":"ABTestArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the A/B test.</p>"
+        },
+        "name":{
+          "shape":"ABTestName",
+          "documentation":"<p>The name of the A/B test.</p>"
+        },
+        "description":{
+          "shape":"ABTestDescription",
+          "documentation":"<p>The description of the A/B test.</p>"
+        },
+        "status":{
+          "shape":"ABTestStatus",
+          "documentation":"<p>The current status of the A/B test.</p>"
+        },
+        "executionStatus":{
+          "shape":"ABTestExecutionStatus",
+          "documentation":"<p>The execution status indicating whether the A/B test is currently running.</p>"
+        },
+        "gatewayArn":{
+          "shape":"GatewayArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway used for traffic splitting.</p>"
+        },
+        "variants":{
+          "shape":"VariantList",
+          "documentation":"<p>The list of variants in the A/B test.</p>"
+        },
+        "gatewayFilter":{
+          "shape":"GatewayFilter",
+          "documentation":"<p>The gateway filter restricting which target paths are included.</p>"
+        },
+        "evaluationConfig":{
+          "shape":"ABTestEvaluationConfig",
+          "documentation":"<p>The evaluation configuration for measuring variant performance.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The IAM role ARN used by the A/B test.</p>"
+        },
+        "currentRunId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the current run of the A/B test.</p>"
+        },
+        "errorDetails":{
+          "shape":"ErrorDetailsList",
+          "documentation":"<p>The error details if the A/B test encountered failures.</p>"
+        },
+        "startedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the A/B test was started.</p>"
+        },
+        "stoppedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the A/B test was stopped.</p>"
+        },
+        "maxDurationExpiresAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the A/B test will automatically expire.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the A/B test was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the A/B test was last updated.</p>"
+        },
+        "results":{
+          "shape":"ABTestResults",
+          "documentation":"<p>The statistical results of the A/B test, including per-evaluator metrics and significance analysis.</p>"
+        }
+      }
     },
     "GetAgentCardRequest":{
       "type":"structure",
@@ -2395,6 +3616,78 @@
         }
       },
       "payload":"agentCard"
+    },
+    "GetBatchEvaluationRequest":{
+      "type":"structure",
+      "required":["batchEvaluationId"],
+      "members":{
+        "batchEvaluationId":{
+          "shape":"BatchEvaluationId",
+          "documentation":"<p>The unique identifier of the batch evaluation to retrieve.</p>",
+          "location":"uri",
+          "locationName":"batchEvaluationId"
+        }
+      }
+    },
+    "GetBatchEvaluationResponse":{
+      "type":"structure",
+      "required":[
+        "batchEvaluationId",
+        "batchEvaluationArn",
+        "batchEvaluationName",
+        "status",
+        "createdAt"
+      ],
+      "members":{
+        "batchEvaluationId":{
+          "shape":"BatchEvaluationId",
+          "documentation":"<p>The unique identifier of the batch evaluation.</p>"
+        },
+        "batchEvaluationArn":{
+          "shape":"BatchEvaluationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the batch evaluation.</p>"
+        },
+        "batchEvaluationName":{
+          "shape":"BatchEvaluationName",
+          "documentation":"<p>The name of the batch evaluation.</p>"
+        },
+        "status":{
+          "shape":"BatchEvaluationStatus",
+          "documentation":"<p>The current status of the batch evaluation.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the batch evaluation was created.</p>"
+        },
+        "evaluators":{
+          "shape":"EvaluatorList",
+          "documentation":"<p>The list of evaluators applied during the batch evaluation.</p>"
+        },
+        "dataSourceConfig":{
+          "shape":"DataSourceConfig",
+          "documentation":"<p>The data source configuration specifying where agent traces are pulled from.</p>"
+        },
+        "outputConfig":{
+          "shape":"OutputConfig",
+          "documentation":"<p>The output configuration specifying where evaluation results are written.</p>"
+        },
+        "evaluationResults":{
+          "shape":"EvaluationJobResults",
+          "documentation":"<p>The aggregated evaluation results, including session completion counts and evaluator score summaries.</p>"
+        },
+        "errorDetails":{
+          "shape":"ErrorDetailsList",
+          "documentation":"<p>The error details if the batch evaluation encountered failures.</p>"
+        },
+        "description":{
+          "shape":"BatchEvaluationDescription",
+          "documentation":"<p>The description of the batch evaluation.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the batch evaluation was last updated.</p>"
+        }
+      }
     },
     "GetBrowserSessionRequest":{
       "type":"structure",
@@ -2619,6 +3912,73 @@
         }
       }
     },
+    "GetRecommendationRequest":{
+      "type":"structure",
+      "required":["recommendationId"],
+      "members":{
+        "recommendationId":{
+          "shape":"RecommendationId",
+          "documentation":"<p>The unique identifier of the recommendation to retrieve.</p>",
+          "location":"uri",
+          "locationName":"recommendationId"
+        }
+      }
+    },
+    "GetRecommendationResponse":{
+      "type":"structure",
+      "required":[
+        "recommendationId",
+        "recommendationArn",
+        "name",
+        "type",
+        "recommendationConfig",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "recommendationId":{
+          "shape":"RecommendationId",
+          "documentation":"<p>The unique identifier of the recommendation.</p>"
+        },
+        "recommendationArn":{
+          "shape":"RecommendationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the recommendation.</p>"
+        },
+        "name":{
+          "shape":"RecommendationName",
+          "documentation":"<p>The name of the recommendation.</p>"
+        },
+        "description":{
+          "shape":"RecommendationDescription",
+          "documentation":"<p>The description of the recommendation.</p>"
+        },
+        "type":{
+          "shape":"RecommendationType",
+          "documentation":"<p>The type of recommendation.</p>"
+        },
+        "recommendationConfig":{
+          "shape":"RecommendationConfig",
+          "documentation":"<p>The configuration for the recommendation.</p>"
+        },
+        "status":{
+          "shape":"RecommendationStatus",
+          "documentation":"<p>The current status of the recommendation.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the recommendation was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the recommendation was last updated.</p>"
+        },
+        "recommendationResult":{
+          "shape":"RecommendationResult",
+          "documentation":"<p>The result of the recommendation, containing the optimized system prompt or tool descriptions. Only present when the recommendation status is <code>COMPLETED</code>.</p>"
+        }
+      }
+    },
     "GetResourceApiKeyRequest":{
       "type":"structure",
       "required":[
@@ -2788,6 +4148,47 @@
         }
       }
     },
+    "GroundTruthSource":{
+      "type":"structure",
+      "members":{
+        "inline":{
+          "shape":"InlineGroundTruth",
+          "documentation":"<p>Provide ground truth inline</p>"
+        }
+      },
+      "documentation":"<p>Where to pull ground truth from</p>",
+      "union":true
+    },
+    "GroundTruthTurn":{
+      "type":"structure",
+      "members":{
+        "input":{
+          "shape":"GroundTruthTurnInput",
+          "documentation":"<p>The input for this conversation turn.</p>"
+        },
+        "expectedResponse":{
+          "shape":"EvaluationContent",
+          "documentation":"<p>The expected response for this conversation turn.</p>"
+        }
+      },
+      "documentation":"<p>Ground truth data for a single conversation turn.</p>"
+    },
+    "GroundTruthTurnInput":{
+      "type":"structure",
+      "members":{
+        "prompt":{
+          "shape":"GroundTruthTurnInputPromptString",
+          "documentation":"<p>The text prompt for this conversation turn.</p>"
+        }
+      },
+      "documentation":"<p>The input for a ground truth conversation turn.</p>",
+      "union":true
+    },
+    "GroundTruthTurnInputPromptString":{
+      "type":"string",
+      "max":4000,
+      "min":0
+    },
     "HarnessAgentCoreBrowserConfig":{
       "type":"structure",
       "members":{
@@ -2818,7 +4219,7 @@
         },
         "outboundAuth":{
           "shape":"HarnessGatewayOutboundAuth",
-          "documentation":"<p>How Loopy authenticates to this Gateway. Defaults to AWS_IAM (SigV4) if omitted.</p>"
+          "documentation":"<p>How harness authenticates to this Gateway. Defaults to AWS_IAM (SigV4) if omitted.</p>"
         }
       },
       "documentation":"<p>Configuration for AgentCore Gateway.</p>"
@@ -3233,7 +4634,10 @@
           "shape":"HarnessRemoteMcpUrl",
           "documentation":"<p>URL of the MCP endpoint.</p>"
         },
-        "headers":{"shape":"HttpHeadersMap"}
+        "headers":{
+          "shape":"HttpHeadersMap",
+          "documentation":"<p>Custom headers to include when connecting to the remote MCP server.</p>"
+        }
       },
       "documentation":"<p>Configuration for connecting to a remote MCP server.</p>"
     },
@@ -3640,6 +5044,29 @@
     "InlineContent":{
       "type":"string",
       "max":409600,
+      "min":1
+    },
+    "InlineGroundTruth":{
+      "type":"structure",
+      "members":{
+        "assertions":{
+          "shape":"EvaluationContentList",
+          "documentation":"<p>assertions for evaluation, reuses common model EvaluationContentList</p>"
+        },
+        "expectedTrajectory":{
+          "shape":"EvaluationExpectedTrajectory",
+          "documentation":"<p>expectedTrajectory for evaluation, reuses common model EvaluationExpectedTrajectory</p>"
+        },
+        "turns":{
+          "shape":"InlineGroundTruthTurnsList",
+          "documentation":"<p>A list of per-turn ground truth data, each containing an input prompt and expected response.</p>"
+        }
+      },
+      "documentation":"<p>Inline ground truth data containing assertions, expected trajectories, and per-turn expected responses.</p>"
+    },
+    "InlineGroundTruthTurnsList":{
+      "type":"list",
+      "member":{"shape":"GroundTruthTurn"},
       "min":1
     },
     "InputContentBlock":{
@@ -4411,6 +5838,43 @@
       "documentation":"<p>Left expression of the event metadata filter.</p>",
       "union":true
     },
+    "ListABTestsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"ListABTestsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return in the response. If the total number of results is greater than this value, use the token returned in the response in the <code>nextToken</code> field when making another request to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, enter the token returned in the <code>nextToken</code> field in the response in this field to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListABTestsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListABTestsResponse":{
+      "type":"structure",
+      "required":["abTests"],
+      "members":{
+        "abTests":{
+          "shape":"ABTestSummaryList",
+          "documentation":"<p>The list of A/B test summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, use this token when making another request in the <code>nextToken</code> field to return the next batch of results.</p>"
+        }
+      }
+    },
     "ListActorsInput":{
       "type":"structure",
       "required":["memoryId"],
@@ -4442,6 +5906,43 @@
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>The token to use in a subsequent request to get the next set of results. This value is null when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListBatchEvaluationsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"ListBatchEvaluationsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return in the response. If the total number of results is greater than this value, use the token returned in the response in the <code>nextToken</code> field when making another request to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, enter the token returned in the <code>nextToken</code> field in the response in this field to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListBatchEvaluationsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListBatchEvaluationsResponse":{
+      "type":"structure",
+      "required":["batchEvaluations"],
+      "members":{
+        "batchEvaluations":{
+          "shape":"BatchEvaluationSummaryList",
+          "documentation":"<p>The list of batch evaluation summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, use this token when making another request in the <code>nextToken</code> field to return the next batch of results.</p>"
         }
       }
     },
@@ -4666,6 +6167,49 @@
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>The token to use in a subsequent request to get the next set of results. This value is null when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListRecommendationsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"ListRecommendationsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return in the response. If the total number of results is greater than this value, use the token returned in the response in the <code>nextToken</code> field when making another request to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, enter the token returned in the <code>nextToken</code> field in the response in this field to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "statusFilter":{
+          "shape":"RecommendationStatus",
+          "documentation":"<p>Optional filter to return only recommendations with the specified status.</p>",
+          "location":"querystring",
+          "locationName":"status"
+        }
+      }
+    },
+    "ListRecommendationsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListRecommendationsResponse":{
+      "type":"structure",
+      "required":["recommendationSummaries"],
+      "members":{
+        "recommendationSummaries":{
+          "shape":"RecommendationSummaryList",
+          "documentation":"<p>The list of recommendation summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, use this token when making another request in the <code>nextToken</code> field to return the next batch of results.</p>"
         }
       }
     },
@@ -5397,6 +6941,10 @@
         "M2M"
       ]
     },
+    "OnlineEvaluationConfigArn":{
+      "type":"string",
+      "pattern":"arn:aws:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:online-evaluation-config\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
+    },
     "OperatorType":{
       "type":"string",
       "enum":[
@@ -5405,7 +6953,23 @@
         "NOT_EXISTS"
       ]
     },
+    "OutputConfig":{
+      "type":"structure",
+      "members":{
+        "cloudWatchConfig":{
+          "shape":"CloudWatchOutputConfig",
+          "documentation":"<p>The CloudWatch Logs configuration for writing evaluation results.</p>"
+        }
+      },
+      "documentation":"<p>Output destination configuration</p>",
+      "union":true
+    },
     "PaginationToken":{"type":"string"},
+    "PathPattern":{
+      "type":"string",
+      "max":500,
+      "min":1
+    },
     "PayloadType":{
       "type":"structure",
       "members":{
@@ -5426,6 +6990,30 @@
       "member":{"shape":"PayloadType"},
       "max":100,
       "min":0
+    },
+    "PerVariantOnlineEvaluationConfig":{
+      "type":"structure",
+      "required":[
+        "name",
+        "onlineEvaluationConfigArn"
+      ],
+      "members":{
+        "name":{
+          "shape":"VariantName",
+          "documentation":"<p>The name of the variant this evaluation configuration applies to.</p>"
+        },
+        "onlineEvaluationConfigArn":{
+          "shape":"OnlineEvaluationConfigArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the online evaluation configuration for this variant.</p>"
+        }
+      },
+      "documentation":"<p>An online evaluation configuration associated with a specific A/B test variant.</p>"
+    },
+    "PerVariantOnlineEvaluationConfigList":{
+      "type":"list",
+      "member":{"shape":"PerVariantOnlineEvaluationConfig"},
+      "max":2,
+      "min":2
     },
     "ProgrammingLanguage":{
       "type":"string",
@@ -5487,6 +7075,185 @@
       },
       "documentation":"<p>Union type representing different proxy authentication methods. Currently supports HTTP Basic Authentication (username and password).</p>",
       "union":true
+    },
+    "RecommendationArn":{
+      "type":"string",
+      "pattern":"arn:aws[a-zA-Z-]*:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:recommendation/[0-9a-zA-Z_-]{1,48}-[0-9A-Z]{10}"
+    },
+    "RecommendationConfig":{
+      "type":"structure",
+      "members":{
+        "systemPromptRecommendationConfig":{
+          "shape":"SystemPromptRecommendationConfig",
+          "documentation":"<p>The configuration for a system prompt recommendation.</p>"
+        },
+        "toolDescriptionRecommendationConfig":{
+          "shape":"ToolDescriptionRecommendationConfig",
+          "documentation":"<p>The configuration for a tool description recommendation.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a recommendation, varying by recommendation type.</p>",
+      "union":true
+    },
+    "RecommendationDescription":{
+      "type":"string",
+      "max":4096,
+      "min":0
+    },
+    "RecommendationErrorCode":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "RecommendationErrorMessage":{
+      "type":"string",
+      "max":2048,
+      "min":0
+    },
+    "RecommendationEvaluationConfig":{
+      "type":"structure",
+      "required":["evaluators"],
+      "members":{
+        "evaluators":{
+          "shape":"RecommendationEvaluationConfigEvaluatorsList",
+          "documentation":"<p>The list of evaluators to use for assessing recommendation quality.</p>"
+        }
+      },
+      "documentation":"<p>The evaluation configuration for assessing recommendation quality.</p>"
+    },
+    "RecommendationEvaluationConfigEvaluatorsList":{
+      "type":"list",
+      "member":{"shape":"RecommendationEvaluatorReference"},
+      "max":1,
+      "min":1
+    },
+    "RecommendationEvaluatorReference":{
+      "type":"structure",
+      "required":["evaluatorArn"],
+      "members":{
+        "evaluatorArn":{
+          "shape":"EvaluatorArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the evaluator.</p>"
+        }
+      },
+      "documentation":"<p>A reference to an evaluator used for recommendation assessment.</p>"
+    },
+    "RecommendationId":{
+      "type":"string",
+      "pattern":"[0-9a-zA-Z_-]{1,48}-[0-9A-Z]{10}"
+    },
+    "RecommendationName":{
+      "type":"string",
+      "max":100,
+      "min":0,
+      "pattern":"[a-zA-Z][a-zA-Z0-9_-]{0,47}"
+    },
+    "RecommendationResult":{
+      "type":"structure",
+      "members":{
+        "systemPromptRecommendationResult":{
+          "shape":"SystemPromptRecommendationResult",
+          "documentation":"<p>The result of a system prompt recommendation.</p>"
+        },
+        "toolDescriptionRecommendationResult":{
+          "shape":"ToolDescriptionRecommendationResult",
+          "documentation":"<p>The result of a tool description recommendation.</p>"
+        }
+      },
+      "documentation":"<p>The result of a recommendation, containing the optimized output.</p>",
+      "union":true
+    },
+    "RecommendationResultConfigurationBundle":{
+      "type":"structure",
+      "required":[
+        "bundleArn",
+        "versionId"
+      ],
+      "members":{
+        "bundleArn":{
+          "shape":"ConfigurationBundleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configuration bundle.</p>"
+        },
+        "versionId":{
+          "shape":"ConfigurationBundleVersionId",
+          "documentation":"<p>The version identifier of the configuration bundle containing the recommendation.</p>"
+        }
+      },
+      "documentation":"<p>A configuration bundle reference in a recommendation result.</p>"
+    },
+    "RecommendationStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "IN_PROGRESS",
+        "COMPLETED",
+        "FAILED",
+        "DELETING"
+      ]
+    },
+    "RecommendationSummary":{
+      "type":"structure",
+      "required":[
+        "recommendationId",
+        "recommendationArn",
+        "name",
+        "type",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "recommendationId":{
+          "shape":"RecommendationId",
+          "documentation":"<p>The unique identifier of the recommendation.</p>"
+        },
+        "recommendationArn":{
+          "shape":"RecommendationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the recommendation.</p>"
+        },
+        "name":{
+          "shape":"RecommendationName",
+          "documentation":"<p>The name of the recommendation.</p>"
+        },
+        "description":{
+          "shape":"RecommendationDescription",
+          "documentation":"<p>The description of the recommendation.</p>"
+        },
+        "type":{
+          "shape":"RecommendationType",
+          "documentation":"<p>The type of recommendation.</p>"
+        },
+        "status":{
+          "shape":"RecommendationStatus",
+          "documentation":"<p>The current status of the recommendation.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the recommendation was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the recommendation was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a recommendation.</p>"
+    },
+    "RecommendationSummaryList":{
+      "type":"list",
+      "member":{"shape":"RecommendationSummary"}
+    },
+    "RecommendationToolName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_\\-\\.]+"
+    },
+    "RecommendationType":{
+      "type":"string",
+      "enum":[
+        "SYSTEM_PROMPT_RECOMMENDATION",
+        "TOOL_DESCRIPTION_RECOMMENDATION"
+      ]
     },
     "RegistryArn":{
       "type":"string",
@@ -5782,6 +7549,12 @@
         "TOOL",
         "OTHER"
       ]
+    },
+    "RoleArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws(-[^:]+)?:iam::([0-9]{12})?:role/.+"
     },
     "RuntimeClientError":{
       "type":"structure",
@@ -6097,6 +7870,16 @@
       "exception":true,
       "fault":true
     },
+    "ServiceName":{
+      "type":"string",
+      "pattern":"[a-zA-Z0-9._-]+"
+    },
+    "ServiceNameList":{
+      "type":"list",
+      "member":{"shape":"ServiceName"},
+      "max":1,
+      "min":1
+    },
     "ServiceQuotaExceededException":{
       "type":"structure",
       "members":{
@@ -6119,11 +7902,54 @@
       },
       "documentation":"<p>Contains filter criteria for listing sessions.</p>"
     },
+    "SessionFilterConfig":{
+      "type":"structure",
+      "members":{
+        "startTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The start time of the time range. Only sessions with activity at or after this timestamp are included.</p>"
+        },
+        "endTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The end time of the time range. Only sessions with activity before this timestamp are included.</p>"
+        }
+      },
+      "documentation":"<p>A time range filter for selecting sessions. Specifies the start and end times to narrow down which sessions are included.</p>"
+    },
     "SessionId":{
       "type":"string",
       "max":100,
       "min":1,
       "pattern":"[a-zA-Z0-9][a-zA-Z0-9-_]*"
+    },
+    "SessionMetadataList":{
+      "type":"list",
+      "member":{"shape":"SessionMetadataShape"},
+      "max":500,
+      "min":0
+    },
+    "SessionMetadataShape":{
+      "type":"structure",
+      "required":["sessionId"],
+      "members":{
+        "sessionId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the session this metadata applies to.</p>"
+        },
+        "testScenarioId":{
+          "shape":"String",
+          "documentation":"<p>An optional test scenario identifier for categorizing and tracking evaluation results.</p>"
+        },
+        "groundTruth":{
+          "shape":"GroundTruthSource",
+          "documentation":"<p>The ground truth data for this session, including expected responses and assertions.</p>"
+        },
+        "metadata":{
+          "shape":"StringMap",
+          "documentation":"<p>Additional key-value metadata associated with this session.</p>"
+        }
+      },
+      "documentation":"<p>Metadata for a specific session in a batch evaluation, including ground truth data and test scenario identifiers.</p>"
     },
     "SessionStatus":{
       "type":"string",
@@ -6229,6 +8055,90 @@
       "max":1000,
       "min":1,
       "sensitive":true
+    },
+    "StartBatchEvaluationRequest":{
+      "type":"structure",
+      "required":[
+        "batchEvaluationName",
+        "dataSourceConfig"
+      ],
+      "members":{
+        "batchEvaluationName":{
+          "shape":"BatchEvaluationName",
+          "documentation":"<p>The name of the batch evaluation. Must be unique within your account.</p>"
+        },
+        "evaluators":{
+          "shape":"StartBatchEvaluationRequestEvaluatorsList",
+          "documentation":"<p>The list of evaluators to apply during the batch evaluation. Can include both built-in evaluators and custom evaluators. Maximum of 10 evaluators.</p>"
+        },
+        "dataSourceConfig":{
+          "shape":"DataSourceConfig",
+          "documentation":"<p>The data source configuration that specifies where to pull agent session traces from for evaluation.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, the service ignores the request, but does not return an error.</p>",
+          "idempotencyToken":true
+        },
+        "evaluationMetadata":{
+          "shape":"EvaluationMetadata",
+          "documentation":"<p>Optional metadata for the evaluation, including session-specific ground truth data and test scenario identifiers.</p>"
+        },
+        "description":{
+          "shape":"BatchEvaluationDescription",
+          "documentation":"<p>The description of the batch evaluation.</p>"
+        }
+      }
+    },
+    "StartBatchEvaluationRequestEvaluatorsList":{
+      "type":"list",
+      "member":{"shape":"Evaluator"},
+      "max":10,
+      "min":0
+    },
+    "StartBatchEvaluationResponse":{
+      "type":"structure",
+      "required":[
+        "batchEvaluationId",
+        "batchEvaluationArn",
+        "batchEvaluationName",
+        "status",
+        "createdAt"
+      ],
+      "members":{
+        "batchEvaluationId":{
+          "shape":"BatchEvaluationId",
+          "documentation":"<p>The unique identifier of the created batch evaluation.</p>"
+        },
+        "batchEvaluationArn":{
+          "shape":"BatchEvaluationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created batch evaluation.</p>"
+        },
+        "batchEvaluationName":{
+          "shape":"BatchEvaluationName",
+          "documentation":"<p>The name of the batch evaluation.</p>"
+        },
+        "evaluators":{
+          "shape":"EvaluatorList",
+          "documentation":"<p>The list of evaluators applied during the batch evaluation.</p>"
+        },
+        "status":{
+          "shape":"BatchEvaluationStatus",
+          "documentation":"<p>The status of the batch evaluation.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the batch evaluation was created.</p>"
+        },
+        "outputConfig":{
+          "shape":"OutputConfig",
+          "documentation":"<p>The output configuration specifying where evaluation results are written.</p>"
+        },
+        "description":{
+          "shape":"BatchEvaluationDescription",
+          "documentation":"<p>The description of the batch evaluation.</p>"
+        }
+      }
     },
     "StartBrowserSessionRequest":{
       "type":"structure",
@@ -6434,11 +8344,131 @@
         }
       }
     },
+    "StartRecommendationRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "type",
+        "recommendationConfig"
+      ],
+      "members":{
+        "name":{
+          "shape":"RecommendationName",
+          "documentation":"<p>The name of the recommendation. Must be unique within your account.</p>"
+        },
+        "description":{
+          "shape":"RecommendationDescription",
+          "documentation":"<p>The description of the recommendation.</p>"
+        },
+        "type":{
+          "shape":"RecommendationType",
+          "documentation":"<p>The type of recommendation to generate. Valid values are <code>SYSTEM_PROMPT_RECOMMENDATION</code> for system prompt optimization or <code>TOOL_DESCRIPTION_RECOMMENDATION</code> for tool description optimization.</p>"
+        },
+        "recommendationConfig":{
+          "shape":"RecommendationConfig",
+          "documentation":"<p>The configuration for the recommendation, including the input to optimize, agent traces to analyze, and evaluation settings.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, the service ignores the request, but does not return an error.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "StartRecommendationResponse":{
+      "type":"structure",
+      "required":[
+        "recommendationId",
+        "recommendationArn",
+        "name",
+        "type",
+        "recommendationConfig",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "recommendationId":{
+          "shape":"RecommendationId",
+          "documentation":"<p>The unique identifier of the created recommendation.</p>"
+        },
+        "recommendationArn":{
+          "shape":"RecommendationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created recommendation.</p>"
+        },
+        "name":{
+          "shape":"RecommendationName",
+          "documentation":"<p>The name of the recommendation.</p>"
+        },
+        "description":{
+          "shape":"RecommendationDescription",
+          "documentation":"<p>The description of the recommendation.</p>"
+        },
+        "type":{
+          "shape":"RecommendationType",
+          "documentation":"<p>The type of recommendation.</p>"
+        },
+        "recommendationConfig":{
+          "shape":"RecommendationConfig",
+          "documentation":"<p>The configuration for the recommendation.</p>"
+        },
+        "status":{
+          "shape":"RecommendationStatus",
+          "documentation":"<p>The status of the recommendation.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the recommendation was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the recommendation was last updated.</p>"
+        }
+      }
+    },
     "State":{
       "type":"string",
       "max":4096,
       "min":1,
       "sensitive":true
+    },
+    "StopBatchEvaluationRequest":{
+      "type":"structure",
+      "required":["batchEvaluationId"],
+      "members":{
+        "batchEvaluationId":{
+          "shape":"BatchEvaluationId",
+          "documentation":"<p>The unique identifier of the batch evaluation to stop.</p>",
+          "location":"uri",
+          "locationName":"batchEvaluationId"
+        }
+      }
+    },
+    "StopBatchEvaluationResponse":{
+      "type":"structure",
+      "required":[
+        "batchEvaluationId",
+        "batchEvaluationArn",
+        "status"
+      ],
+      "members":{
+        "batchEvaluationId":{
+          "shape":"BatchEvaluationId",
+          "documentation":"<p>The unique identifier of the stopped batch evaluation.</p>"
+        },
+        "batchEvaluationArn":{
+          "shape":"BatchEvaluationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the stopped batch evaluation.</p>"
+        },
+        "status":{
+          "shape":"BatchEvaluationStatus",
+          "documentation":"<p>The status of the batch evaluation after the stop request.</p>"
+        },
+        "description":{
+          "shape":"BatchEvaluationDescription",
+          "documentation":"<p>The description of the batch evaluation.</p>"
+        }
+      }
     },
     "StopBrowserSessionRequest":{
       "type":"structure",
@@ -6644,10 +8674,130 @@
       "type":"list",
       "member":{"shape":"MaxLenString"}
     },
+    "StringMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"}
+    },
     "StringType":{
       "type":"string",
       "max":1024,
       "min":1
+    },
+    "SyntheticTimestamp_date_time":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
+    "SystemPromptConfig":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"SystemPromptText",
+          "documentation":"<p>The system prompt text provided inline.</p>"
+        },
+        "configurationBundle":{
+          "shape":"SystemPromptConfigurationBundle",
+          "documentation":"<p>The system prompt sourced from a configuration bundle version.</p>"
+        }
+      },
+      "documentation":"<p>The system prompt input, either as inline text or from a configuration bundle.</p>",
+      "union":true
+    },
+    "SystemPromptConfigurationBundle":{
+      "type":"structure",
+      "required":[
+        "bundleArn",
+        "versionId",
+        "systemPromptJsonPath"
+      ],
+      "members":{
+        "bundleArn":{
+          "shape":"ConfigurationBundleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configuration bundle.</p>"
+        },
+        "versionId":{
+          "shape":"ConfigurationBundleVersionId",
+          "documentation":"<p>The version identifier of the configuration bundle.</p>"
+        },
+        "systemPromptJsonPath":{
+          "shape":"String",
+          "documentation":"<p>The JSON path within the configuration bundle that contains the system prompt.</p>"
+        }
+      },
+      "documentation":"<p>A system prompt sourced from a configuration bundle version.</p>"
+    },
+    "SystemPromptRecommendationConfig":{
+      "type":"structure",
+      "required":[
+        "systemPrompt",
+        "agentTraces",
+        "evaluationConfig"
+      ],
+      "members":{
+        "systemPrompt":{
+          "shape":"SystemPromptConfig",
+          "documentation":"<p>The current system prompt to optimize.</p>"
+        },
+        "agentTraces":{
+          "shape":"AgentTracesConfig",
+          "documentation":"<p>The agent traces to analyze for generating recommendations.</p>"
+        },
+        "evaluationConfig":{
+          "shape":"RecommendationEvaluationConfig",
+          "documentation":"<p>The evaluation configuration specifying which evaluator to use for assessing recommendation quality.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for generating system prompt optimization recommendations.</p>"
+    },
+    "SystemPromptRecommendationResult":{
+      "type":"structure",
+      "members":{
+        "recommendedSystemPrompt":{
+          "shape":"SystemPromptText",
+          "documentation":"<p>The optimized system prompt text generated by the recommendation.</p>"
+        },
+        "configurationBundle":{
+          "shape":"RecommendationResultConfigurationBundle",
+          "documentation":"<p>The configuration bundle containing the recommended system prompt, if the input was sourced from a configuration bundle.</p>"
+        },
+        "errorCode":{
+          "shape":"RecommendationErrorCode",
+          "documentation":"<p>The error code if the recommendation failed.</p>"
+        },
+        "errorMessage":{
+          "shape":"RecommendationErrorMessage",
+          "documentation":"<p>The error message if the recommendation failed.</p>"
+        }
+      },
+      "documentation":"<p>The result of a system prompt recommendation, containing the optimized prompt.</p>"
+    },
+    "SystemPromptText":{
+      "type":"string",
+      "max":20000,
+      "min":1,
+      "sensitive":true
+    },
+    "TargetName":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "TargetPathList":{
+      "type":"list",
+      "member":{"shape":"PathPattern"},
+      "max":1,
+      "min":1
+    },
+    "TargetRef":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"TargetName",
+          "documentation":"<p>The name of the gateway target.</p>"
+        }
+      },
+      "documentation":"<p>A reference to a gateway target.</p>"
     },
     "TaskStatus":{
       "type":"string",
@@ -6755,6 +8905,153 @@
       },
       "documentation":"<p>The collection of arguments that specify the operation to perform and its parameters when invoking a tool in Amazon Bedrock AgentCore. Different tools require different arguments, and this structure provides a flexible way to pass the appropriate arguments to each tool type.</p>"
     },
+    "ToolDescriptionConfig":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"ToolDescriptionText",
+          "documentation":"<p>The tool description as inline text.</p>"
+        }
+      },
+      "documentation":"<p>The tool description content.</p>",
+      "union":true
+    },
+    "ToolDescriptionConfigurationBundle":{
+      "type":"structure",
+      "required":[
+        "bundleArn",
+        "versionId",
+        "tools"
+      ],
+      "members":{
+        "bundleArn":{
+          "shape":"ConfigurationBundleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configuration bundle.</p>"
+        },
+        "versionId":{
+          "shape":"ConfigurationBundleVersionId",
+          "documentation":"<p>The version identifier of the configuration bundle.</p>"
+        },
+        "tools":{
+          "shape":"ConfigurationBundleToolEntryList",
+          "documentation":"<p>The list of tool entries mapping tool names to their JSON paths within the bundle.</p>"
+        }
+      },
+      "documentation":"<p>Tool descriptions sourced from a configuration bundle version.</p>"
+    },
+    "ToolDescriptionInput":{
+      "type":"structure",
+      "required":[
+        "toolName",
+        "toolDescription"
+      ],
+      "members":{
+        "toolName":{
+          "shape":"RecommendationToolName",
+          "documentation":"<p>The name of the tool.</p>"
+        },
+        "toolDescription":{
+          "shape":"ToolDescriptionConfig",
+          "documentation":"<p>The current description of the tool to optimize.</p>"
+        }
+      },
+      "documentation":"<p>A tool description input containing the tool name and its current description.</p>"
+    },
+    "ToolDescriptionList":{
+      "type":"list",
+      "member":{"shape":"ToolDescriptionInput"}
+    },
+    "ToolDescriptionOutput":{
+      "type":"structure",
+      "required":["toolName"],
+      "members":{
+        "toolName":{
+          "shape":"RecommendationToolName",
+          "documentation":"<p>The name of the tool.</p>"
+        },
+        "recommendedToolDescription":{
+          "shape":"ToolDescriptionText",
+          "documentation":"<p>The optimized tool description text generated by the recommendation.</p>"
+        }
+      },
+      "documentation":"<p>The output for a single tool description recommendation.</p>"
+    },
+    "ToolDescriptionRecommendationConfig":{
+      "type":"structure",
+      "required":[
+        "toolDescription",
+        "agentTraces"
+      ],
+      "members":{
+        "toolDescription":{
+          "shape":"ToolDescriptionSource",
+          "documentation":"<p>The current tool descriptions to optimize.</p>"
+        },
+        "agentTraces":{
+          "shape":"AgentTracesConfig",
+          "documentation":"<p>The agent traces to analyze for generating tool description recommendations.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for generating tool description optimization recommendations.</p>"
+    },
+    "ToolDescriptionRecommendationResult":{
+      "type":"structure",
+      "members":{
+        "tools":{
+          "shape":"ToolDescriptionResultList",
+          "documentation":"<p>The list of tools with their recommended descriptions.</p>"
+        },
+        "configurationBundle":{
+          "shape":"RecommendationResultConfigurationBundle",
+          "documentation":"<p>The configuration bundle containing the recommended tool descriptions, if the input was sourced from a configuration bundle.</p>"
+        },
+        "errorCode":{
+          "shape":"RecommendationErrorCode",
+          "documentation":"<p>The error code if the recommendation failed.</p>"
+        },
+        "errorMessage":{
+          "shape":"RecommendationErrorMessage",
+          "documentation":"<p>The error message if the recommendation failed.</p>"
+        }
+      },
+      "documentation":"<p>The result of a tool description recommendation, containing optimized descriptions.</p>"
+    },
+    "ToolDescriptionResultList":{
+      "type":"list",
+      "member":{"shape":"ToolDescriptionOutput"}
+    },
+    "ToolDescriptionSource":{
+      "type":"structure",
+      "members":{
+        "toolDescriptionText":{
+          "shape":"ToolDescriptionTextInput",
+          "documentation":"<p>Tool descriptions provided as inline text.</p>"
+        },
+        "configurationBundle":{
+          "shape":"ToolDescriptionConfigurationBundle",
+          "documentation":"<p>Tool descriptions sourced from a configuration bundle version.</p>"
+        }
+      },
+      "documentation":"<p>The source of tool descriptions, either inline text or from a configuration bundle.</p>",
+      "union":true
+    },
+    "ToolDescriptionText":{
+      "type":"string",
+      "max":20000,
+      "min":1,
+      "sensitive":true
+    },
+    "ToolDescriptionTextInput":{
+      "type":"structure",
+      "required":["tools"],
+      "members":{
+        "tools":{
+          "shape":"ToolDescriptionList",
+          "documentation":"<p>The list of tool descriptions to optimize.</p>"
+        }
+      },
+      "documentation":"<p>Inline tool description input containing a list of tools.</p>"
+    },
     "ToolName":{
       "type":"string",
       "enum":[
@@ -6851,6 +9148,83 @@
     "Unit":{
       "type":"structure",
       "members":{}
+    },
+    "UpdateABTestRequest":{
+      "type":"structure",
+      "required":["abTestId"],
+      "members":{
+        "abTestId":{
+          "shape":"ABTestId",
+          "documentation":"<p>The unique identifier of the A/B test to update.</p>",
+          "location":"uri",
+          "locationName":"abTestId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, the service ignores the request, but does not return an error.</p>",
+          "idempotencyToken":true
+        },
+        "name":{
+          "shape":"ABTestName",
+          "documentation":"<p>The updated name of the A/B test.</p>"
+        },
+        "description":{
+          "shape":"ABTestDescription",
+          "documentation":"<p>The updated description of the A/B test.</p>"
+        },
+        "variants":{
+          "shape":"VariantList",
+          "documentation":"<p>The updated list of variants.</p>"
+        },
+        "gatewayFilter":{
+          "shape":"GatewayFilter",
+          "documentation":"<p>The updated gateway filter.</p>"
+        },
+        "evaluationConfig":{
+          "shape":"ABTestEvaluationConfig",
+          "documentation":"<p>The updated evaluation configuration.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The updated IAM role ARN.</p>"
+        },
+        "executionStatus":{
+          "shape":"ABTestExecutionStatus",
+          "documentation":"<p>The updated execution status to enable or disable the A/B test.</p>"
+        }
+      }
+    },
+    "UpdateABTestResponse":{
+      "type":"structure",
+      "required":[
+        "abTestId",
+        "abTestArn",
+        "status",
+        "executionStatus",
+        "updatedAt"
+      ],
+      "members":{
+        "abTestId":{
+          "shape":"ABTestId",
+          "documentation":"<p>The unique identifier of the updated A/B test.</p>"
+        },
+        "abTestArn":{
+          "shape":"ABTestArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the updated A/B test.</p>"
+        },
+        "status":{
+          "shape":"ABTestStatus",
+          "documentation":"<p>The status of the A/B test.</p>"
+        },
+        "executionStatus":{
+          "shape":"ABTestExecutionStatus",
+          "documentation":"<p>The execution status of the A/B test.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the A/B test was updated.</p>"
+        }
+      }
     },
     "UpdateBrowserStreamRequest":{
       "type":"structure",
@@ -6983,6 +9357,109 @@
         "EventInOtherSession",
         "ResourceConflict"
       ]
+    },
+    "Variant":{
+      "type":"structure",
+      "required":[
+        "name",
+        "weight",
+        "variantConfiguration"
+      ],
+      "members":{
+        "name":{
+          "shape":"VariantName",
+          "documentation":"<p>The name of the variant. Must be <code>C</code> for control or <code>T1</code> for treatment.</p>"
+        },
+        "weight":{
+          "shape":"VariantWeightInteger",
+          "documentation":"<p>The percentage of traffic to route to this variant. Weights across all variants must sum to 100.</p>"
+        },
+        "variantConfiguration":{
+          "shape":"VariantConfiguration",
+          "documentation":"<p>The configuration for this variant, including the configuration bundle or target reference.</p>"
+        }
+      },
+      "documentation":"<p>A variant in an A/B test, representing either the control (C) or treatment (T1) configuration.</p>"
+    },
+    "VariantConfiguration":{
+      "type":"structure",
+      "members":{
+        "configurationBundle":{
+          "shape":"ConfigurationBundleRef",
+          "documentation":"<p>A reference to a configuration bundle version to use for this variant.</p>"
+        },
+        "target":{
+          "shape":"TargetRef",
+          "documentation":"<p>A reference to a gateway target to route traffic to for this variant.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for an A/B test variant.</p>"
+    },
+    "VariantList":{
+      "type":"list",
+      "member":{"shape":"Variant"},
+      "max":2,
+      "min":2
+    },
+    "VariantName":{
+      "type":"string",
+      "max":2,
+      "min":1,
+      "pattern":"(C|T1)"
+    },
+    "VariantResult":{
+      "type":"structure",
+      "required":[
+        "variantName",
+        "sampleSize",
+        "mean",
+        "isSignificant"
+      ],
+      "members":{
+        "variantName":{
+          "shape":"String",
+          "documentation":"<p>The name of the treatment variant.</p>"
+        },
+        "sampleSize":{
+          "shape":"Integer",
+          "documentation":"<p>The number of sessions evaluated for this variant.</p>"
+        },
+        "mean":{
+          "shape":"Double",
+          "documentation":"<p>The mean evaluation score for this variant.</p>"
+        },
+        "absoluteChange":{
+          "shape":"Double",
+          "documentation":"<p>The absolute change in mean score compared to the control variant.</p>"
+        },
+        "percentChange":{
+          "shape":"Double",
+          "documentation":"<p>The percentage change in mean score compared to the control variant.</p>"
+        },
+        "pValue":{
+          "shape":"Double",
+          "documentation":"<p>The p-value indicating the statistical significance of the observed difference.</p>"
+        },
+        "confidenceInterval":{
+          "shape":"ConfidenceInterval",
+          "documentation":"<p>The confidence interval for the observed difference.</p>"
+        },
+        "isSignificant":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the observed difference is statistically significant.</p>"
+        }
+      },
+      "documentation":"<p>Statistical results for a treatment variant compared against the control.</p>"
+    },
+    "VariantResultList":{
+      "type":"list",
+      "member":{"shape":"VariantResult"}
+    },
+    "VariantWeightInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
     },
     "ViewPort":{
       "type":"structure",

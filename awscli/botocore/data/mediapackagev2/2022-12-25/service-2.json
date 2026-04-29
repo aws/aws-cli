@@ -1057,6 +1057,10 @@
         "SubtitleConfiguration":{
           "shape":"DashSubtitleConfiguration",
           "documentation":"<p>The configuration for DASH subtitles.</p>"
+        },
+        "UriPathType":{
+          "shape":"UriPathType",
+          "documentation":"<p>The type of path to use in manifest URIs. <code>LEAF</code> uses leaf-relative paths (for example, <code>index_1.mpd</code>). <code>ROOT</code> uses root-relative paths that include the full path from root (for example, <code>/out/v1/channel-group/channel/endpoint/index_1.mpd</code>). If you don't specify a value, the default is <code>LEAF</code>.</p>"
         }
       },
       "documentation":"<p>Create a DASH manifest configuration.</p>"
@@ -1256,6 +1260,10 @@
         "UrlEncodeChildManifest":{
           "shape":"Boolean",
           "documentation":"<p>When enabled, MediaPackage URL-encodes the query string for API requests for HLS child manifests to comply with Amazon Web Services Signature Version 4 (SigV4) signature signing protocol. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv.html\">Amazon Web Services Signature Version 4 for API requests</a> in <i>Identity and Access Management User Guide</i>.</p>"
+        },
+        "UriPathType":{
+          "shape":"UriPathType",
+          "documentation":"<p>The type of path to use in manifest URIs. <code>LEAF</code> uses leaf-relative paths (for example, <code>index_1.m3u8</code>). <code>ROOT</code> uses root-relative paths that include the full path from root (for example, <code>/out/v1/channel-group/channel/endpoint/index_1.m3u8</code>). If you don't specify a value, the default is <code>LEAF</code>.</p>"
         }
       },
       "documentation":"<p>Create an HTTP live streaming (HLS) manifest configuration.</p>"
@@ -1301,6 +1309,10 @@
         "UrlEncodeChildManifest":{
           "shape":"Boolean",
           "documentation":"<p>When enabled, MediaPackage URL-encodes the query string for API requests for LL-HLS child manifests to comply with Amazon Web Services Signature Version 4 (SigV4) signature signing protocol. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv.html\">Amazon Web Services Signature Version 4 for API requests</a> in <i>Identity and Access Management User Guide</i>.</p>"
+        },
+        "UriPathType":{
+          "shape":"UriPathType",
+          "documentation":"<p>The type of path to use in manifest URIs. <code>LEAF</code> uses leaf-relative paths (for example, <code>index_1.m3u8</code>). <code>ROOT</code> uses root-relative paths that include the full path from root (for example, <code>/out/v1/channel-group/channel/endpoint/index_1.m3u8</code>). If you don't specify a value, the default is <code>LEAF</code>.</p>"
         }
       },
       "documentation":"<p>Create a low-latency HTTP live streaming (HLS) manifest configuration.</p>"
@@ -1417,6 +1429,10 @@
           "shape":"ForceEndpointErrorConfiguration",
           "documentation":"<p>The failover settings for the endpoint.</p>"
         },
+        "UriSeparator":{
+          "shape":"UriSeparator",
+          "documentation":"<p>The separator character to use in generated URIs for this origin endpoint. This setting applies to all manifest types on the endpoint. If you don't specify a value, the default is <code>UNDERSCORE</code>.</p>"
+        },
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>A comma-separated list of tag key:value pairs that you define. For example:</p> <p> <code>\"Key1\": \"Value1\",</code> </p> <p> <code>\"Key2\": \"Value2\"</code> </p>"
@@ -1502,6 +1518,10 @@
           "shape":"ForceEndpointErrorConfiguration",
           "documentation":"<p>The failover settings for the endpoint.</p>"
         },
+        "UriSeparator":{
+          "shape":"UriSeparator",
+          "documentation":"<p>The separator character used in generated URIs for this origin endpoint.</p>"
+        },
         "ETag":{
           "shape":"EntityTag",
           "documentation":"<p>The current Entity Tag (ETag) associated with this resource. The entity tag can be used to safely make concurrent updates to the resource.</p>"
@@ -1511,6 +1531,22 @@
           "documentation":"<p>The comma-separated list of tag key:value pairs assigned to the origin endpoint.</p>"
         }
       }
+    },
+    "CustomAdType":{
+      "type":"string",
+      "enum":[
+        "PROGRAM",
+        "CHAPTER",
+        "UNSCHEDULED_EVENT",
+        "ALTERNATE_CONTENT_OPPORTUNITY",
+        "NETWORK"
+      ]
+    },
+    "CustomAdTypeList":{
+      "type":"list",
+      "member":{"shape":"CustomAdType"},
+      "max":25,
+      "min":0
     },
     "DashBaseUrl":{
       "type":"structure",
@@ -2360,6 +2396,10 @@
         "SubtitleConfiguration":{
           "shape":"DashSubtitleConfiguration",
           "documentation":"<p>The configuration for DASH subtitles.</p>"
+        },
+        "UriPathType":{
+          "shape":"UriPathType",
+          "documentation":"<p>The type of path used in manifest URIs. <code>LEAF</code> indicates leaf-relative paths. <code>ROOT</code> indicates root-relative paths that include the full path from root.</p>"
         }
       },
       "documentation":"<p>Retrieve the DASH manifest configuration.</p>"
@@ -2516,6 +2556,10 @@
         "UrlEncodeChildManifest":{
           "shape":"Boolean",
           "documentation":"<p>When enabled, MediaPackage URL-encodes the query string for API requests for HLS child manifests to comply with Amazon Web Services Signature Version 4 (SigV4) signature signing protocol. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv.html\">Amazon Web Services Signature Version 4 for API requests</a> in <i>Identity and Access Management User Guide</i>.</p>"
+        },
+        "UriPathType":{
+          "shape":"UriPathType",
+          "documentation":"<p>The type of path used in manifest URIs. <code>LEAF</code> indicates leaf-relative paths. <code>ROOT</code> indicates root-relative paths that include the full path from root.</p>"
         }
       },
       "documentation":"<p>Retrieve the HTTP live streaming (HLS) manifest configuration.</p>"
@@ -2557,6 +2601,10 @@
         "UrlEncodeChildManifest":{
           "shape":"Boolean",
           "documentation":"<p>When enabled, MediaPackage URL-encodes the query string for API requests for LL-HLS child manifests to comply with Amazon Web Services Signature Version 4 (SigV4) signature signing protocol. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv.html\">Amazon Web Services Signature Version 4 for API requests</a> in <i>Identity and Access Management User Guide</i>.</p>"
+        },
+        "UriPathType":{
+          "shape":"UriPathType",
+          "documentation":"<p>The type of path used in manifest URIs. <code>LEAF</code> indicates leaf-relative paths. <code>ROOT</code> indicates root-relative paths that include the full path from root.</p>"
         }
       },
       "documentation":"<p>Retrieve the low-latency HTTP live streaming (HLS) manifest configuration.</p>"
@@ -2756,6 +2804,10 @@
         "ForceEndpointErrorConfiguration":{
           "shape":"ForceEndpointErrorConfiguration",
           "documentation":"<p>The failover settings for the endpoint.</p>"
+        },
+        "UriSeparator":{
+          "shape":"UriSeparator",
+          "documentation":"<p>The separator character used in generated URIs for this origin endpoint.</p>"
         },
         "ETag":{
           "shape":"EntityTag",
@@ -3381,6 +3433,10 @@
         "ForceEndpointErrorConfiguration":{
           "shape":"ForceEndpointErrorConfiguration",
           "documentation":"<p>The failover settings for the endpoint.</p>"
+        },
+        "UriSeparator":{
+          "shape":"UriSeparator",
+          "documentation":"<p>The separator character used in generated URIs for this origin endpoint.</p>"
         }
       },
       "documentation":"<p>The configuration of the origin endpoint.</p>"
@@ -3682,7 +3738,11 @@
         },
         "ScteInSegments":{
           "shape":"ScteInSegments",
-          "documentation":"<p>Controls whether SCTE-35 messages are included in segment files.</p> <ul> <li> <p>None – SCTE-35 messages are not included in segments (default)</p> </li> <li> <p>All – SCTE-35 messages are embedded in segment data</p> </li> </ul> <p> For DASH manifests, when set to <code>All</code>, an <code>InbandEventStream</code> tag signals that SCTE messages are present in segments. This setting works independently of manifest ad markers.</p>"
+          "documentation":"<p>Controls whether SCTE-35 messages are included in segment files.</p> <ul> <li> <p>None – SCTE-35 messages are not included in segments (default)</p> </li> <li> <p>All – SCTE-35 messages are embedded in segment data</p> </li> <li> <p>MatchesFilter – SCTE-35 messages which match the ScteFilter are embedded in segment data</p> </li> </ul> <p> For DASH manifests, when set to <code>All</code> or <code>MatchesFilter</code>, an <code>InbandEventStream</code> tag signals that SCTE messages are present in segments. This setting works independently of manifest ad markers.</p>"
+        },
+        "CustomAdTypes":{
+          "shape":"CustomAdTypeList",
+          "documentation":"<p>A list of additional non-Ad SCTE-35 event types to treat as advertisements. When configured, events matching these types produce ad markers (such as <code>SCTE35-OUT</code> and <code>SCTE35-IN</code> in HLS DATERANGE tags) in manifests.</p> <p>Valid values: <code>PROGRAM</code> | <code>CHAPTER</code> | <code>UNSCHEDULED_EVENT</code> | <code>ALTERNATE_CONTENT_OPPORTUNITY</code> | <code>NETWORK</code> </p> <p>If you don't specify any values, the default is empty (only default ad types are used).</p>"
         }
       },
       "documentation":"<p>The SCTE configuration.</p>"
@@ -3693,6 +3753,10 @@
         "AdMarkerDash":{
           "shape":"AdMarkerDash",
           "documentation":"<p>Choose how ad markers are included in the packaged content. If you include ad markers in the content stream in your upstream encoders, then you need to inform MediaPackage what to do with the ad markers in the output.</p> <p>Value description:</p> <ul> <li> <p> <code>Binary</code> - The SCTE-35 marker is expressed as a hex-string (Base64 string) rather than full XML.</p> </li> <li> <p> <code>XML</code> - The SCTE marker is expressed fully in XML.</p> </li> </ul>"
+        },
+        "ScteInManifests":{
+          "shape":"ScteInManifests",
+          "documentation":"<p>Controls which SCTE-35 events appear in DASH manifests. <code>ALL</code> includes all non-implicit SCTE-35 events. <code>MATCHES_FILTER</code> includes only events whose type matches the configured <code>ScteFilter</code>.</p> <p>If you don't specify a value, the default is <code>ALL</code>.</p>"
         }
       },
       "documentation":"<p>The SCTE configuration.</p>"
@@ -3708,7 +3772,15 @@
         "DISTRIBUTOR_PLACEMENT_OPPORTUNITY",
         "PROVIDER_OVERLAY_PLACEMENT_OPPORTUNITY",
         "DISTRIBUTOR_OVERLAY_PLACEMENT_OPPORTUNITY",
-        "PROGRAM"
+        "PROGRAM",
+        "CHAPTER",
+        "UNSCHEDULED_EVENT",
+        "ALTERNATE_CONTENT_OPPORTUNITY",
+        "NETWORK",
+        "PROVIDER_PROMO",
+        "DISTRIBUTOR_PROMO",
+        "PROVIDER_AD_BLOCK",
+        "DISTRIBUTOR_AD_BLOCK"
       ]
     },
     "ScteFilterList":{
@@ -3723,15 +3795,27 @@
         "AdMarkerHls":{
           "shape":"AdMarkerHls",
           "documentation":"<p>Ad markers indicate when ads should be inserted during playback. If you include ad markers in the content stream in your upstream encoders, then you need to inform MediaPackage what to do with the ad markers in the output. Choose what you want MediaPackage to do with the ad markers.</p> <p>Value description: </p> <ul> <li> <p>SCTE35_ENHANCED - Generate industry-standard CUE tag ad markers in HLS manifests based on SCTE-35 input messages from the input stream.</p> </li> <li> <p>DATERANGE - Insert EXT-X-DATERANGE tags to signal ad and program transition events in TS and CMAF manifests. If you use DATERANGE, you must set a programDateTimeIntervalSeconds value of 1 or higher. To learn more about DATERANGE, see <a href=\"http://docs.aws.amazon.com/mediapackage/latest/ug/scte-35-ad-marker-ext-x-daterange.html\">SCTE-35 Ad Marker EXT-X-DATERANGE</a>.</p> </li> </ul>"
+        },
+        "ScteInManifests":{
+          "shape":"ScteInManifests",
+          "documentation":"<p>Controls which SCTE-35 events appear in HLS manifests. <code>ALL</code> includes all non-implicit SCTE-35 events. <code>MATCHES_FILTER</code> includes only events whose type matches the configured <code>ScteFilter</code>.</p> <p>If you don't specify a value, the default is <code>ALL</code>.</p>"
         }
       },
       "documentation":"<p>The SCTE configuration.</p>"
+    },
+    "ScteInManifests":{
+      "type":"string",
+      "enum":[
+        "ALL",
+        "MATCHES_FILTER"
+      ]
     },
     "ScteInSegments":{
       "type":"string",
       "enum":[
         "NONE",
-        "ALL"
+        "ALL",
+        "MATCHES_FILTER"
       ]
     },
     "Segment":{
@@ -4170,6 +4254,10 @@
           "shape":"ForceEndpointErrorConfiguration",
           "documentation":"<p>The failover settings for the endpoint.</p>"
         },
+        "UriSeparator":{
+          "shape":"UriSeparator",
+          "documentation":"<p>The separator character to use in generated URIs for this origin endpoint. This setting applies to all manifest types on the endpoint. If you don't specify a value in the update request, the current value is preserved.</p>"
+        },
         "ETag":{
           "shape":"EntityTag",
           "documentation":"<p>The expected current Entity Tag (ETag) for the resource. If the specified ETag does not match the resource's current entity tag, the update request will be rejected.</p>",
@@ -4253,6 +4341,10 @@
           "shape":"ForceEndpointErrorConfiguration",
           "documentation":"<p>The failover settings for the endpoint.</p>"
         },
+        "UriSeparator":{
+          "shape":"UriSeparator",
+          "documentation":"<p>The separator character used in generated URIs for this origin endpoint.</p>"
+        },
         "ETag":{
           "shape":"EntityTag",
           "documentation":"<p>The current Entity Tag (ETag) associated with this resource. The entity tag can be used to safely make concurrent updates to the resource.</p>"
@@ -4267,6 +4359,20 @@
           "documentation":"<p>A DASH manifest configuration.</p>"
         }
       }
+    },
+    "UriPathType":{
+      "type":"string",
+      "enum":[
+        "LEAF",
+        "ROOT"
+      ]
+    },
+    "UriSeparator":{
+      "type":"string",
+      "enum":[
+        "UNDERSCORE",
+        "HYPHEN"
+      ]
     },
     "ValidationException":{
       "type":"structure",
@@ -4380,7 +4486,9 @@
         "INVALID_CERTIFICATE_KEY_ALGORITHM",
         "INVALID_CERTIFICATE_SIGNATURE_ALGORITHM",
         "MISSING_CERTIFICATE_DOMAIN_NAME",
-        "INVALID_ARN"
+        "INVALID_ARN",
+        "SCTE_IN_MANIFESTS_INVALID_CONFIGURATION",
+        "CUSTOM_AD_TYPES_INVALID_CONFIGURATION"
       ]
     }
   },

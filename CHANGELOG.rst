@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+1.45.0
+======
+
+* api-change:``account``: Adds AccountState in the response for the GetAccountInformation API. Each state represents a specific phase in the account lifecycle. Use this information to manage account access, automate workflows, or trigger actions based on account state changes.
+* api-change:``bedrock-agentcore``: Adds batch evaluation for running evaluators against multiple agent sessions with server-side orchestration, AI-powered recommendations for optimizing system prompts and tool descriptions, and AB testing with controlled traffic splitting and statistical significance reporting
+* api-change:``bedrock-agentcore-control``: Adds configuration bundles for versioned, immutable agent configuration snapshots with branch-based lineage
+* api-change:``cloudfront``: Amazon CloudFront now supports cache tag. Tag objects via response headers and invalidate all matching objects in a single request, replacing manual URL tracking and broad wildcards.
+* api-change:``deadline``: Adds support for rtx-pro-server-6000 GPU accelerator for service-managed fleets.
+* api-change:``ecr``: Removes support for registry policy V1
+* api-change:``gamelift``: Amazon GameLift Servers adds a new DescribeContainerGroupPortMappings API for container fleets, making it easy to discover which connection ports map to your container ports without needing to remotely access the compute.
+* api-change:``mediapackagev2``: This feature adds configuration for specifying SCTE marker handling and allow greater control over generated manifest and segment URIs
+* api-change:``transfer``: This launch will increase the limits for customers to list the contents from the remote directories from 10k to 200k.
+* api-change:``workspaces-web``: Allow admins to configure IPv6 ranges on IP Access Settings.
+* feature:Python: End of support for Python 3.9
+* feature:Python: End of support for Python 3.9
+
+
 1.44.87
 =======
 

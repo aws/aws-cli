@@ -36,13 +36,15 @@ class LazyInitEmitter(HierarchicalEmitter):
     If so, it imports and calls them, then proceeds with normal dispatch.
     """
 
-    def __init__(self, plugin_registry=None):
+    def __init__(self, plugin_registry=None, main_command_table_ops=None):
         super().__init__()
         self._init_trie = _PrefixTrie()
         self._initialized = set()  # set of (module, fn_name, type)
         self._pending_count = 0  # number of entries not yet initialized
         self._init_cache = {}  # event_name -> list of entries from init trie
         self._direct_patterns = {}  # event_pattern -> set of entries
+        self._main_ops = main_command_table_ops
+        self._main_ops_applied = False
         if plugin_registry:
             self._load_registry(plugin_registry)
 
@@ -59,6 +61,53 @@ class LazyInitEmitter(HierarchicalEmitter):
                     unique.add(entry)
                     self._pending_count += 1
         self._init_cache = {}
+
+    def _apply_main_command_table_ops(self, kwargs):
+        """Apply pre-computed renames and LazyCommand additions.
+
+        This replaces the normal lazy-init path for
+        building-command-table.main entries, avoiding the import of
+        heavy plugin modules until the command is actually invoked.
+        """
+        from awscli.lazy import LazyCommand
+
+        command_table = kwargs.get('command_table')
+        session = kwargs.get('session')
+        if command_table is None or session is None:
+            return
+
+        for op in self._main_ops:
+            if op[0] == 'rename':
+                _, old_name, new_name, _mod, _fn = op
+                if old_name in command_table:
+                    current = command_table[old_name]
+                    command_table[new_name] = current
+                    current.name = new_name
+                    del command_table[old_name]
+            elif op[0] == 'add':
+                _, cmd_name, cmd_module, cmd_class, _mod, _fn = op
+                command_table[cmd_name] = LazyCommand(
+                    cmd_name, session, cmd_module, cmd_class,
+                )
+
+        # Mark only the building-command-table.main entries that are
+        # accounted for by MAIN_COMMAND_TABLE_OPS as initialized, so
+        # _ensure_initialized never imports them.  Entries that register
+        # against building-command-table.main but are NOT represented
+        # by an add/rename op must still be lazily initialized normally.
+        covered_plugins = set()
+        for op in self._main_ops:
+            if op[0] == 'rename':
+                covered_plugins.add((op[3], op[4]))
+            elif op[0] == 'add':
+                covered_plugins.add((op[4], op[5]))
+        from awscli.handlers_registry import PLUGIN_REGISTRY
+        for entry in PLUGIN_REGISTRY.get('building-command-table.main', []):
+            entry = tuple(entry)
+            if (entry[0], entry[1]) in covered_plugins:
+                if entry not in self._initialized:
+                    self._initialized.add(entry)
+                    self._pending_count -= 1
 
     def _ensure_initialized(self, event_name):
         """Initialize any plugins whose event patterns match event_name."""
@@ -106,6 +155,13 @@ class LazyInitEmitter(HierarchicalEmitter):
                 return
 
     def _emit(self, event_name, kwargs, stop_on_response=False):
+        if (
+            self._main_ops
+            and not self._main_ops_applied
+            and event_name == 'building-command-table.main'
+        ):
+            self._main_ops_applied = True
+            self._apply_main_command_table_ops(kwargs)
         self._ensure_initialized(event_name)
         return super()._emit(event_name, kwargs, stop_on_response)
 
@@ -117,5 +173,6 @@ class LazyInitEmitter(HierarchicalEmitter):
         new_state['_direct_patterns'] = copy.copy(self._direct_patterns)
         new_state['_init_trie'] = copy.copy(self._init_trie)
         new_state['_initialized'] = copy.copy(self._initialized)
+        new_state['_main_ops_applied'] = self._main_ops_applied
         new_instance.__dict__ = new_state
         return new_instance

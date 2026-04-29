@@ -47,6 +47,16 @@ def s3_plugin_initialize(event_handlers):
     awscli_initialize(event_handlers)
 
 
+def register_s3_main(event_handlers):
+    event_handlers.register('building-command-table.main', add_s3)
+
+
+def register_s3_sync_strategies(event_handlers):
+    event_handlers.register(
+        'building-command-table.s3_sync', register_sync_strategies
+    )
+
+
 def add_s3(command_table, session, **kwargs):
     """
     This creates a new service object for the s3 plugin.  It sends the

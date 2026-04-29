@@ -121,7 +121,8 @@ def _all_registrations(r):
     r.register_fn('awscli.customizations.ec2.addcount', 'register_count_events')
     r.register_fn('awscli.customizations.ec2.secgroupsimplify', 'register_secgroup')
     r.register_fn('awscli.customizations.ec2.bundleinstance', 'register_bundleinstance')
-    r.register_fn('awscli.customizations.s3.s3', 's3_plugin_initialize')
+    r.register_fn('awscli.customizations.s3.s3', 'register_s3_main')
+    r.register_fn('awscli.customizations.s3.s3', 'register_s3_sync_strategies')
     r.register_fn('awscli.customizations.dynamodb.ddb', 'register_ddb')
     r.register_fn('awscli.customizations.ec2.runinstances', 'register_runinstances')
     r.register_fn('awscli.customizations.removals', 'register_removals')
@@ -151,7 +152,8 @@ def _all_registrations(r):
     r.register_fn('awscli.customizations.generatecliskeleton', 'register_generate_cli_skeleton')
     r.register_fn('awscli.customizations.assumerole', 'register_assume_role_provider')
     r.register_fn('awscli.customizations.waiters', 'register_add_waiters')
-    r.register_fn('awscli.customizations.codedeploy.codedeploy', 'initialize')
+    r.register_fn('awscli.customizations.codedeploy.codedeploy', 'register_rename_codedeploy')
+    r.register_fn('awscli.customizations.codedeploy.codedeploy', 'register_deploy_customizations')
     r.register_fn('awscli.customizations.configservice.subscribe', 'register_subscribe')
     r.register_fn('awscli.customizations.configservice.getstatus', 'register_get_status')
     r.register_fn('awscli.customizations.configservice.rename_cmd', 'register_rename_config')
@@ -231,10 +233,96 @@ def _build_registry(entries):
 
 
 # ---------------------------------------------------------------------------
+# Probing building-command-table.main plugins
+# ---------------------------------------------------------------------------
+
+class _MainCallbackEmitter:
+    """Emitter that captures only building-command-table.main callbacks."""
+
+    def __init__(self):
+        self.main_callbacks = []
+
+    def register(self, event_name, handler, *args, **kwargs):
+        if event_name == 'building-command-table.main':
+            self.main_callbacks.append(handler)
+
+    register_first = register
+    register_last = register
+
+
+def _probe_main_command_table_ops(registry):
+    """Probe plugins that register against building-command-table.main.
+
+    Builds a real command table (service names from botocore), fires each
+    plugin's callbacks in order, and diffs the table after each callback
+    to detect renames and additions.  Returns an ordered list of:
+
+      ('rename', old_name, new_name, module, fn_name)
+      ('add', cmd_name, cmd_module, cmd_class, module, fn_name)
+
+    where module/fn_name identify the plugin that produced the operation.
+    """
+    import botocore.session
+
+    session = botocore.session.Session()
+    services = session.get_available_services()
+
+    # Build a command table with lightweight placeholders.
+    # We only need to track identity (id) and the .name attribute.
+    class _Placeholder:
+        def __init__(self, name):
+            self.name = name
+
+    command_table = collections.OrderedDict()
+    for svc in services:
+        command_table[svc] = _Placeholder(svc)
+
+    main_entries = registry.get('building-command-table.main', [])
+    ops = []
+
+    for entry_module, entry_fn_name, entry_type in main_entries:
+        # Discover which callbacks this plugin registers for
+        # building-command-table.main.
+        emitter = _MainCallbackEmitter()
+        mod = importlib.import_module(entry_module)
+        fn = getattr(mod, entry_fn_name)
+        fn(emitter)
+
+        for callback in emitter.main_callbacks:
+            # Snapshot: map object id -> key before the callback fires.
+            snap_id_to_key = {id(v): k for k, v in command_table.items()}
+
+            callback(command_table=command_table, session=session)
+
+            # Detect renames: same object id now under a different key.
+            new_id_to_key = {id(v): k for k, v in command_table.items()}
+            for obj_id, new_key in new_id_to_key.items():
+                old_key = snap_id_to_key.get(obj_id)
+                if old_key is not None and old_key != new_key:
+                    ops.append((
+                        'rename', old_key, new_key,
+                        entry_module, entry_fn_name,
+                    ))
+
+            # Detect additions: object id was not in the previous snapshot.
+            old_ids = set(snap_id_to_key.keys())
+            for key, cmd in command_table.items():
+                if id(cmd) not in old_ids:
+                    cmd_module = type(cmd).__module__
+                    cmd_class = type(cmd).__qualname__
+                    ops.append((
+                        'add', key, cmd_module, cmd_class,
+                        entry_module, entry_fn_name,
+                    ))
+
+    return ops
+
+
+# ---------------------------------------------------------------------------
 # Rendering
 # ---------------------------------------------------------------------------
 
-def _render_registry(registry):
+def _render_registry(registry, main_ops):
     lines = [
         '# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.',
         '#',
@@ -267,6 +355,30 @@ def _render_registry(registry):
         lines.append(f'    ]{("" if is_last else ",")}')
 
     lines.append('}')
+    lines.append('')
+
+    # Render MAIN_COMMAND_TABLE_OPS — the probed operations for
+    # building-command-table.main plugins.  At runtime these replace
+    # the building-command-table.main entries in PLUGIN_REGISTRY:
+    # renames are applied directly and additions use LazyCommand.
+    #
+    # Entry formats:
+    #   ('rename', old_name, new_name, module, fn_name)
+    #   ('add', cmd_name, cmd_module, cmd_class, module, fn_name)
+    lines.append('# Probed operations for building-command-table.main plugins.')
+    lines.append('# These replace the building-command-table.main entries above')
+    lines.append('# so that added commands can be wrapped in LazyCommand and')
+    lines.append('# the heavy plugin modules are never imported unless the')
+    lines.append('# command is actually invoked.')
+    lines.append('#')
+    lines.append("# Entry formats:")
+    lines.append("#   ('rename', old_name, new_name, module, fn_name)")
+    lines.append("#   ('add', cmd_name, cmd_module, cmd_class, module, fn_name)")
+    lines.append('')
+    lines.append('MAIN_COMMAND_TABLE_OPS = [')
+    for op in main_ops:
+        lines.append(f'    {op!r},')
+    lines.append(']')
     lines.append('')
     return '\n'.join(lines)
 
@@ -304,7 +416,8 @@ def main():
     recorder = _Recorder()
     _all_registrations(recorder)
     registry = _build_registry(recorder.entries)
-    source = _render_registry(registry)
+    main_ops = _probe_main_command_table_ops(registry)
+    source = _render_registry(registry, main_ops)
 
     if args.print_only:
         print(source)

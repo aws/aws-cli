@@ -141,13 +141,13 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.argrename', 'register_arg_renames', 'init')
     ],
     'building-argument-table.deploy.create-deployment': [
-        ('awscli.customizations.codedeploy.codedeploy', 'initialize', 'init')
+        ('awscli.customizations.codedeploy.codedeploy', 'register_deploy_customizations', 'init')
     ],
     'building-argument-table.deploy.get-application-revision': [
-        ('awscli.customizations.codedeploy.codedeploy', 'initialize', 'init')
+        ('awscli.customizations.codedeploy.codedeploy', 'register_deploy_customizations', 'init')
     ],
     'building-argument-table.deploy.register-application-revision': [
-        ('awscli.customizations.codedeploy.codedeploy', 'initialize', 'init')
+        ('awscli.customizations.codedeploy.codedeploy', 'register_deploy_customizations', 'init')
     ],
     'building-argument-table.ec2.*': [
         ('awscli.customizations.argrename', 'register_arg_renames', 'init'),
@@ -484,7 +484,7 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.datapipeline', 'register_customizations', 'init')
     ],
     'building-command-table.deploy': [
-        ('awscli.customizations.codedeploy.codedeploy', 'initialize', 'init')
+        ('awscli.customizations.codedeploy.codedeploy', 'register_deploy_customizations', 'init')
     ],
     'building-command-table.devops-agent': [
         ('awscli.customizations.removals', 'register_removals', 'init')
@@ -553,10 +553,10 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.logs', 'register_logs_commands', 'init')
     ],
     'building-command-table.main': [
-        ('awscli.customizations.s3.s3', 's3_plugin_initialize', 'init'),
+        ('awscli.customizations.s3.s3', 'register_s3_main', 'init'),
         ('awscli.customizations.dynamodb.ddb', 'register_ddb', 'init'),
         ('awscli.customizations.configure.configure', 'register_configure_cmd', 'init'),
-        ('awscli.customizations.codedeploy.codedeploy', 'initialize', 'init'),
+        ('awscli.customizations.codedeploy.codedeploy', 'register_rename_codedeploy', 'init'),
         ('awscli.customizations.configservice.rename_cmd', 'register_rename_config', 'init'),
         ('awscli.customizations.history', 'register_history_commands', 'init'),
         ('awscli.customizations.devcommands', 'register_dev_commands', 'init'),
@@ -573,7 +573,7 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.rds', 'register_add_generate_db_auth_token', 'init')
     ],
     'building-command-table.s3_sync': [
-        ('awscli.customizations.s3.s3', 's3_plugin_initialize', 'init')
+        ('awscli.customizations.s3.s3', 'register_s3_sync_strategies', 'init')
     ],
     'building-command-table.sagemaker-runtime': [
         ('awscli.customizations.removals', 'register_removals', 'init')
@@ -703,3 +703,26 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.cloudfront', 'register', 'init')
     ]
 }
+
+# Probed operations for building-command-table.main plugins.
+# These replace the building-command-table.main entries above
+# so that added commands can be wrapped in LazyCommand and
+# the heavy plugin modules are never imported unless the
+# command is actually invoked.
+#
+# Entry formats:
+#   ('rename', old_name, new_name, module, fn_name)
+#   ('add', cmd_name, cmd_module, cmd_class, module, fn_name)
+
+MAIN_COMMAND_TABLE_OPS = [
+    ('rename', 's3', 's3api', 'awscli.customizations.s3.s3', 'register_s3_main'),
+    ('add', 's3', 'awscli.customizations.s3.s3', 'S3', 'awscli.customizations.s3.s3', 'register_s3_main'),
+    ('add', 'ddb', 'awscli.customizations.dynamodb.ddb', 'DDB', 'awscli.customizations.dynamodb.ddb', 'register_ddb'),
+    ('add', 'configure', 'awscli.customizations.configure.configure', 'ConfigureCommand', 'awscli.customizations.configure.configure', 'register_configure_cmd'),
+    ('rename', 'codedeploy', 'deploy', 'awscli.customizations.codedeploy.codedeploy', 'register_rename_codedeploy'),
+    ('rename', 'config', 'configservice', 'awscli.customizations.configservice.rename_cmd', 'register_rename_config'),
+    ('add', 'history', 'awscli.customizations.history', 'HistoryCommand', 'awscli.customizations.history', 'register_history_commands'),
+    ('add', 'cli-dev', 'awscli.customizations.devcommands', 'CLIDevCommand', 'awscli.customizations.devcommands', 'register_dev_commands'),
+    ('add', 'login', 'awscli.customizations.login.login', 'LoginCommand', 'awscli.customizations.login', 'register_login_cmds'),
+    ('add', 'logout', 'awscli.customizations.login.logout', 'LogoutCommand', 'awscli.customizations.login', 'register_login_cmds'),
+]

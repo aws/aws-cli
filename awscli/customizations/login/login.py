@@ -15,10 +15,6 @@ from botocore.utils import (
 
 from awscli.compat import compat_input
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.configure.sso import (
-    PTKPrompt,
-    RequiredInputValidator,
-)
 from awscli.customizations.configure.writer import ConfigFileWriter
 from awscli.customizations.exceptions import ConfigurationError
 from awscli.customizations.login.utils import (
@@ -237,6 +233,11 @@ class LoginCommand(BasicCommand):
         return self._prompt_for_region()
 
     def _prompt_for_region(self):
+        from awscli.customizations.configure.sso import (
+            PTKPrompt,
+            RequiredInputValidator,
+        )
+
         prompter = PTKPrompt()
         self._prompted_for_region = True
         uni_print(

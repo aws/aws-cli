@@ -28,7 +28,7 @@ from awscli.customizations.configure.list import ConfigureListCommand
 from awscli.customizations.configure.listprofiles import ListProfilesCommand
 from awscli.customizations.configure.mfalogin import ConfigureMFALoginCommand
 from awscli.customizations.configure.set import ConfigureSetCommand
-from awscli.customizations.configure.sso import (
+from awscli.customizations.configure.sso_commands import (
     ConfigureSSOCommand,
     ConfigureSSOSessionCommand,
 )

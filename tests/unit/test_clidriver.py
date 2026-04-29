@@ -17,6 +17,7 @@ import os
 import platform
 import re
 import sys
+from collections import namedtuple
 
 import awscrt.io
 import botocore.model
@@ -43,9 +44,12 @@ from awscli.clidriver import (
     ServiceOperation,
     construct_cli_error_handlers_chain,
     create_clidriver,
+    resolve_auto_prompt_mode,
+    validate_auto_prompt_args_are_mutually_exclusive,
 )
 from awscli.compat import StringIO
 from awscli.customizations.commands import BasicCommand
+from awscli.customizations.exceptions import ParamValidationError
 from awscli.paramfile import URIArgumentHandler
 from awscli.testutils import BaseAWSCommandParamsTest, mock, unittest
 
@@ -175,6 +179,43 @@ MINI_SERVICE = {
         "Token": {"type": "string"},
     },
 }
+
+
+def _generate_auto_prompt_resolve_cases():
+    # Each case is a 5-namedtuple with the following meaning:
+    # "args" is a list of arguments that command got as input from
+    #   command line
+    # "config_variable" is the result from get_config_variable
+    #   This takes a value of either 'on' , 'off' or 'on-partial'
+    # "expected_result" is a boolean indicating whether auto-prompt
+    #   should be used or not.
+    #
+    # Note: This set of tests assumes that only one of --no-cli-auto-prompt
+    # or --cli-auto-prompt overrides can be specified.
+    # TestCLIAutoPrompt.test_throw_error_if_both_args_specified tests
+    # that these command line overrides are mutually exclusive.
+    Case = namedtuple(
+        'Case',
+        [
+            'args',
+            'config_variable',
+            'expected_result',
+        ],
+    )
+    return [
+        Case([], 'off', 'off'),
+        Case([], 'on', 'on'),
+        Case(['--cli-auto-prompt'], 'off', 'on'),
+        Case(['--cli-auto-prompt'], 'on', 'on'),
+        Case(['--no-cli-auto-prompt'], 'off', 'off'),
+        Case(['--no-cli-auto-prompt'], 'on', 'off'),
+        Case([], 'on', 'on'),
+        Case([], 'on-partial', 'on-partial'),
+        Case(['--cli-auto-prompt'], 'on-partial', 'on'),
+        Case(['--no-cli-auto-prompt'], 'on-partial', 'off'),
+        Case(['--version'], 'on', 'off'),
+        Case(['help'], 'on', 'off'),
+    ]
 
 
 class FakeSession:
@@ -412,6 +453,26 @@ class TestCliDriver:
         mock_init_logging.assert_called_with(
             awscrt.io.LogLevel.NoLogs,
         )
+
+    def test_throw_error_if_both_args_specified(self):
+        args = ['--cli-auto-prompt', '--no-cli-auto-prompt']
+        with pytest.raises(ParamValidationError):
+            validate_auto_prompt_args_are_mutually_exclusive(args)
+
+    @pytest.mark.parametrize('case', _generate_auto_prompt_resolve_cases())
+    def test_auto_prompt_resolve_mode(self, case):
+        driver = create_clidriver()
+        driver.session.set_config_variable(
+            'cli_auto_prompt', case.config_variable
+        )
+        result = resolve_auto_prompt_mode(case.args, driver.session)
+        assert result == case.expected_result
+
+    def test_auto_prompt_resolve_mode_on_non_existing_profile(self):
+        driver = create_clidriver()
+        driver.session.set_config_variable('profile', 'not_exist')
+        result = resolve_auto_prompt_mode([], driver.session)
+        assert result == 'off'
 
 
 class TestCliDriverHooks(unittest.TestCase):
@@ -1085,12 +1146,18 @@ class TestAWSCLIEntryPoint(unittest.TestCase):
             self.driver.session.user_agent_extra = ''
             return self.driver
 
-        self.prompt_patch = mock.patch('awscli.clidriver.AutoPromptDriver')
+        self.prompt_patch = mock.patch(
+            'awscli.autoprompt.core.AutoPromptDriver'
+        )
         self.crete_driver_patch = mock.patch(
             'awscli.clidriver.create_clidriver'
         )
+        self.resolve_mode_patch = mock.patch(
+            'awscli.clidriver.resolve_auto_prompt_mode'
+        )
         prompt_driver_class = self.prompt_patch.start()
         self.create_clidriver = self.crete_driver_patch.start()
+        self.resolve_auto_prompt_mode = self.resolve_mode_patch.start()
         self.create_clidriver.side_effect = _create_fake_cli_driver
         self.prompt_driver = mock.Mock()
         prompt_driver_class.return_value = self.prompt_driver
@@ -1098,9 +1165,10 @@ class TestAWSCLIEntryPoint(unittest.TestCase):
     def tearDown(self):
         self.prompt_patch.stop()
         self.crete_driver_patch.stop()
+        self.resolve_mode_patch.stop()
 
     def test_recreate_driver_in_partial_mode_on_param_err(self):
-        self.prompt_driver.resolve_mode.return_value = 'on-partial'
+        self.resolve_auto_prompt_mode.return_value = 'on-partial'
         self.driver.main.return_value = 252
         entry_point = awscli.clidriver.AWSCLIEntryPoint()
         rc = entry_point.main([])
@@ -1108,7 +1176,7 @@ class TestAWSCLIEntryPoint(unittest.TestCase):
         self.assertEqual(rc, 252)
 
     def test_not_recreate_driver_in_partial_mode_on_success(self):
-        self.prompt_driver.resolve_mode.return_value = 'on-partial'
+        self.resolve_auto_prompt_mode.return_value = 'on-partial'
         self.driver.main.return_value = 0
         entry_point = awscli.clidriver.AWSCLIEntryPoint()
         rc = entry_point.main([])
@@ -1116,7 +1184,7 @@ class TestAWSCLIEntryPoint(unittest.TestCase):
         self.assertEqual(rc, 0)
 
     def test_not_recreate_driver_in_on_mode(self):
-        self.prompt_driver.resolve_mode.return_value = 'on'
+        self.resolve_auto_prompt_mode.return_value = 'on'
         self.driver.main.return_value = 252
         entry_point = awscli.clidriver.AWSCLIEntryPoint()
         rc = entry_point.main([])
@@ -1124,7 +1192,7 @@ class TestAWSCLIEntryPoint(unittest.TestCase):
         self.assertEqual(rc, 252)
 
     def test_not_recreate_driver_in_off_mode(self):
-        self.prompt_driver.resolve_mode.return_value = 'off'
+        self.resolve_auto_prompt_mode.return_value = 'off'
         self.driver.main.return_value = 252
         entry_point = awscli.clidriver.AWSCLIEntryPoint()
         rc = entry_point.main([])
@@ -1132,7 +1200,7 @@ class TestAWSCLIEntryPoint(unittest.TestCase):
         self.assertEqual(rc, 252)
 
     def test_handle_exception_in_main(self):
-        self.prompt_driver.resolve_mode.return_value = 'on'
+        self.resolve_auto_prompt_mode.return_value = 'on'
         self.prompt_driver.prompt_for_args.side_effect = Exception('error')
         entry_point = awscli.clidriver.AWSCLIEntryPoint()
         fake_stderr = io.StringIO()
@@ -1142,21 +1210,21 @@ class TestAWSCLIEntryPoint(unittest.TestCase):
         self.assertIn('error', fake_stderr.getvalue())
 
     def test_update_user_agent_in_on_mode(self):
-        self.prompt_driver.resolve_mode.return_value = 'on'
+        self.resolve_auto_prompt_mode.return_value = 'on'
         self.driver.main.return_value = 252
         entry_point = awscli.clidriver.AWSCLIEntryPoint()
         entry_point.main([])
         self.assertEqual(self.driver.session.user_agent_extra, 'md/prompt#on')
 
     def test_not_update_user_agent_in_off_mode(self):
-        self.prompt_driver.resolve_mode.return_value = 'off'
+        self.resolve_auto_prompt_mode.return_value = 'off'
         self.driver.main.return_value = 252
         entry_point = awscli.clidriver.AWSCLIEntryPoint()
         entry_point.main([])
         self.assertEqual(self.driver.session.user_agent_extra, 'md/prompt#off')
 
     def test_update_user_agent_in_partial_mode_on_param_err(self):
-        self.prompt_driver.resolve_mode.return_value = 'on-partial'
+        self.resolve_auto_prompt_mode.return_value = 'on-partial'
         self.driver.main.return_value = 252
         entry_point = awscli.clidriver.AWSCLIEntryPoint()
         entry_point.main([])
@@ -1165,7 +1233,7 @@ class TestAWSCLIEntryPoint(unittest.TestCase):
         )
 
     def test_not_update_user_agent_in_partial_mode_on_success(self):
-        self.prompt_driver.resolve_mode.return_value = 'on-partial'
+        self.resolve_auto_prompt_mode.return_value = 'on-partial'
         self.driver.main.return_value = 0
         entry_point = awscli.clidriver.AWSCLIEntryPoint()
         entry_point.main([])

@@ -2,18 +2,28 @@
     {
         "description": "Test cases for EmptyOperation operation",
         "metadata": {
+            "apiVersion": "2018-01-01",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "jsonprotocol",
+            "jsonVersion": "1.1",
             "protocol": "json",
             "protocols": [
                 "json"
             ],
-            "apiVersion": "2018-01-01",
-            "jsonVersion": "1.1",
-            "targetPrefix": "JsonProtocol"
+            "serviceFullName": "JsonProtocol",
+            "serviceId": "Json Protocol",
+            "signatureVersion": "v4",
+            "signingName": "JsonProtocol",
+            "targetPrefix": "JsonProtocol",
+            "uid": "json-protocol-2018-01-01"
         },
         "shapes": {},
         "cases": [
             {
                 "id": "sends_requests_to_slash",
+                "description": "Sends requests to /",
                 "given": {
                     "name": "EmptyOperation",
                     "http": {
@@ -21,19 +31,19 @@
                         "requestUri": "/"
                     }
                 },
-                "description": "Sends requests to /",
                 "params": {},
                 "serialized": {
                     "method": "POST",
                     "uri": "/",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.EmptyOperation"
+                        "X-Amz-Target": "JsonProtocol.EmptyOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
                     }
                 }
             },
             {
                 "id": "includes_x_amz_target_and_content_type",
+                "description": "Includes X-Amz-Target header and Content-Type",
                 "given": {
                     "name": "EmptyOperation",
                     "http": {
@@ -41,19 +51,19 @@
                         "requestUri": "/"
                     }
                 },
-                "description": "Includes X-Amz-Target header and Content-Type",
                 "params": {},
                 "serialized": {
                     "method": "POST",
                     "uri": "/",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.EmptyOperation"
+                        "X-Amz-Target": "JsonProtocol.EmptyOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
                     }
                 }
             },
             {
                 "id": "json_1_1_client_sends_empty_payload_for_no_input_shape",
+                "description": "Clients must always send an empty JSON object payload for\noperations with no input (that is, `{}`). While AWS service\nimplementations support requests with no payload or requests\nthat send `{}`, always sending `{}` from the client is\npreferred for forward compatibility in case input is ever\nadded to an operation.",
                 "given": {
                     "name": "EmptyOperation",
                     "http": {
@@ -61,15 +71,14 @@
                         "requestUri": "/"
                     }
                 },
-                "description": "Clients must always send an empty JSON object payload for\noperations with no input (that is, `{}`). While AWS service\nimplementations support requests with no payload or requests\nthat send `{}`, always sending `{}` from the client is\npreferred for forward compatibility in case input is ever\nadded to an operation.",
                 "params": {},
                 "serialized": {
                     "method": "POST",
                     "uri": "/",
                     "body": "{}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.EmptyOperation"
+                        "X-Amz-Target": "JsonProtocol.EmptyOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
                     }
                 }
             }
@@ -77,19 +86,30 @@
     },
     {
         "description": "Test cases for EndpointOperation operation",
+        "clientEndpoint": "https://example.com",
         "metadata": {
+            "apiVersion": "2018-01-01",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "jsonprotocol",
+            "jsonVersion": "1.1",
             "protocol": "json",
             "protocols": [
                 "json"
             ],
-            "apiVersion": "2018-01-01",
-            "jsonVersion": "1.1",
-            "targetPrefix": "JsonProtocol"
+            "serviceFullName": "JsonProtocol",
+            "serviceId": "Json Protocol",
+            "signatureVersion": "v4",
+            "signingName": "JsonProtocol",
+            "targetPrefix": "JsonProtocol",
+            "uid": "json-protocol-2018-01-01"
         },
         "shapes": {},
         "cases": [
             {
                 "id": "AwsJson11EndpointTrait",
+                "description": "Operations can prepend to the given host if they define the\nendpoint trait.",
                 "given": {
                     "name": "EndpointOperation",
                     "http": {
@@ -100,32 +120,40 @@
                         "hostPrefix": "foo."
                     }
                 },
-                "description": "Operations can prepend to the given host if they define the\nendpoint trait.",
                 "params": {},
                 "serialized": {
                     "method": "POST",
                     "uri": "/",
                     "body": "{}",
+                    "host": "foo.example.com",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.EndpointOperation"
-                    },
-                    "host": "foo.example.com"
+                        "X-Amz-Target": "JsonProtocol.EndpointOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
+                    }
                 }
             }
-        ],
-        "clientEndpoint": "https://example.com"
+        ]
     },
     {
         "description": "Test cases for EndpointWithHostLabelOperation operation",
+        "clientEndpoint": "https://example.com",
         "metadata": {
+            "apiVersion": "2018-01-01",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "jsonprotocol",
+            "jsonVersion": "1.1",
             "protocol": "json",
             "protocols": [
                 "json"
             ],
-            "apiVersion": "2018-01-01",
-            "jsonVersion": "1.1",
-            "targetPrefix": "JsonProtocol"
+            "serviceFullName": "JsonProtocol",
+            "serviceId": "Json Protocol",
+            "signatureVersion": "v4",
+            "signingName": "JsonProtocol",
+            "targetPrefix": "JsonProtocol",
+            "uid": "json-protocol-2018-01-01"
         },
         "shapes": {
             "HostLabelInput": {
@@ -147,6 +175,7 @@
         "cases": [
             {
                 "id": "AwsJson11EndpointTraitWithHostLabel",
+                "description": "Operations can prepend to the given host if they define the\nendpoint trait, and can use the host label trait to define\nfurther customization based on user input.",
                 "given": {
                     "name": "EndpointWithHostLabelOperation",
                     "http": {
@@ -160,7 +189,6 @@
                         "hostPrefix": "foo.{label}."
                     }
                 },
-                "description": "Operations can prepend to the given host if they define the\nendpoint trait, and can use the host label trait to define\nfurther customization based on user input.",
                 "params": {
                     "label": "bar"
                 },
@@ -168,31 +196,41 @@
                     "method": "POST",
                     "uri": "/",
                     "body": "{\"label\": \"bar\"}",
+                    "host": "foo.bar.example.com",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.EndpointWithHostLabelOperation"
-                    },
-                    "host": "foo.bar.example.com"
+                        "X-Amz-Target": "JsonProtocol.EndpointWithHostLabelOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
+                    }
                 }
             }
-        ],
-        "clientEndpoint": "https://example.com"
+        ]
     },
     {
         "description": "Test cases for HostWithPathOperation operation",
+        "clientEndpoint": "https://example.com/custom",
         "metadata": {
+            "apiVersion": "2018-01-01",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "jsonprotocol",
+            "jsonVersion": "1.1",
             "protocol": "json",
             "protocols": [
                 "json"
             ],
-            "apiVersion": "2018-01-01",
-            "jsonVersion": "1.1",
-            "targetPrefix": "JsonProtocol"
+            "serviceFullName": "JsonProtocol",
+            "serviceId": "Json Protocol",
+            "signatureVersion": "v4",
+            "signingName": "JsonProtocol",
+            "targetPrefix": "JsonProtocol",
+            "uid": "json-protocol-2018-01-01"
         },
         "shapes": {},
         "cases": [
             {
                 "id": "AwsJson11HostWithPath",
+                "description": "Custom endpoints supplied by users can have paths",
                 "given": {
                     "name": "HostWithPathOperation",
                     "http": {
@@ -200,34 +238,72 @@
                         "requestUri": "/"
                     }
                 },
-                "description": "Custom endpoints supplied by users can have paths",
                 "params": {},
                 "serialized": {
                     "method": "POST",
                     "uri": "/custom/",
                     "body": "{}",
+                    "host": "example.com/custom",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.HostWithPathOperation"
-                    },
-                    "host": "example.com/custom"
+                        "X-Amz-Target": "JsonProtocol.HostWithPathOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
+                    }
                 }
             }
-        ],
-        "clientEndpoint": "https://example.com/custom"
+        ]
     },
     {
         "description": "Test cases for JsonEnums operation",
         "metadata": {
+            "apiVersion": "2018-01-01",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "jsonprotocol",
+            "jsonVersion": "1.1",
             "protocol": "json",
             "protocols": [
                 "json"
             ],
-            "apiVersion": "2018-01-01",
-            "jsonVersion": "1.1",
-            "targetPrefix": "JsonProtocol"
+            "serviceFullName": "JsonProtocol",
+            "serviceId": "Json Protocol",
+            "signatureVersion": "v4",
+            "signingName": "JsonProtocol",
+            "targetPrefix": "JsonProtocol",
+            "uid": "json-protocol-2018-01-01"
         },
         "shapes": {
+            "FooEnum": {
+                "type": "string",
+                "enum": [
+                    "Foo",
+                    "Baz",
+                    "Bar",
+                    "1",
+                    "0"
+                ]
+            },
+            "FooEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "FooEnum"
+                }
+            },
+            "FooEnumMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "FooEnum"
+                }
+            },
+            "FooEnumSet": {
+                "type": "list",
+                "member": {
+                    "shape": "FooEnum"
+                }
+            },
             "JsonEnumsInputOutput": {
                 "type": "structure",
                 "members": {
@@ -251,37 +327,6 @@
                     }
                 }
             },
-            "FooEnum": {
-                "type": "string",
-                "enum": [
-                    "Foo",
-                    "Baz",
-                    "Bar",
-                    "1",
-                    "0"
-                ]
-            },
-            "FooEnumList": {
-                "type": "list",
-                "member": {
-                    "shape": "FooEnum"
-                }
-            },
-            "FooEnumSet": {
-                "type": "list",
-                "member": {
-                    "shape": "FooEnum"
-                }
-            },
-            "FooEnumMap": {
-                "type": "map",
-                "key": {
-                    "shape": "String"
-                },
-                "value": {
-                    "shape": "FooEnum"
-                }
-            },
             "String": {
                 "type": "string"
             }
@@ -289,6 +334,7 @@
         "cases": [
             {
                 "id": "AwsJson11Enums",
+                "description": "Serializes simple scalar properties",
                 "given": {
                     "name": "JsonEnums",
                     "http": {
@@ -301,7 +347,6 @@
                     "documentation": "<p>This example serializes enums as top level properties, in lists, sets, and maps.</p>",
                     "idempotent": true
                 },
-                "description": "Serializes simple scalar properties",
                 "params": {
                     "fooEnum1": "Foo",
                     "fooEnum2": "0",
@@ -324,8 +369,8 @@
                     "uri": "/",
                     "body": "{\n    \"fooEnum1\": \"Foo\",\n    \"fooEnum2\": \"0\",\n    \"fooEnum3\": \"1\",\n    \"fooEnumList\": [\n        \"Foo\",\n        \"0\"\n    ],\n    \"fooEnumSet\": [\n        \"Foo\",\n        \"0\"\n    ],\n    \"fooEnumMap\": {\n        \"hi\": \"Foo\",\n        \"zero\": \"0\"\n    }\n}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.JsonEnums"
+                        "X-Amz-Target": "JsonProtocol.JsonEnums",
+                        "Content-Type": "application/x-amz-json-1.1"
                     }
                 }
             }
@@ -334,15 +379,49 @@
     {
         "description": "Test cases for JsonIntEnums operation",
         "metadata": {
+            "apiVersion": "2018-01-01",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "jsonprotocol",
+            "jsonVersion": "1.1",
             "protocol": "json",
             "protocols": [
                 "json"
             ],
-            "apiVersion": "2018-01-01",
-            "jsonVersion": "1.1",
-            "targetPrefix": "JsonProtocol"
+            "serviceFullName": "JsonProtocol",
+            "serviceId": "Json Protocol",
+            "signatureVersion": "v4",
+            "signingName": "JsonProtocol",
+            "targetPrefix": "JsonProtocol",
+            "uid": "json-protocol-2018-01-01"
         },
         "shapes": {
+            "IntegerEnum": {
+                "type": "integer",
+                "box": true
+            },
+            "IntegerEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "IntegerEnum"
+                }
+            },
+            "IntegerEnumMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "IntegerEnum"
+                }
+            },
+            "IntegerEnumSet": {
+                "type": "list",
+                "member": {
+                    "shape": "IntegerEnum"
+                }
+            },
             "JsonIntEnumsInputOutput": {
                 "type": "structure",
                 "members": {
@@ -366,31 +445,6 @@
                     }
                 }
             },
-            "IntegerEnum": {
-                "type": "integer",
-                "box": true
-            },
-            "IntegerEnumList": {
-                "type": "list",
-                "member": {
-                    "shape": "IntegerEnum"
-                }
-            },
-            "IntegerEnumSet": {
-                "type": "list",
-                "member": {
-                    "shape": "IntegerEnum"
-                }
-            },
-            "IntegerEnumMap": {
-                "type": "map",
-                "key": {
-                    "shape": "String"
-                },
-                "value": {
-                    "shape": "IntegerEnum"
-                }
-            },
             "String": {
                 "type": "string"
             }
@@ -398,6 +452,7 @@
         "cases": [
             {
                 "id": "AwsJson11IntEnums",
+                "description": "Serializes simple scalar properties",
                 "given": {
                     "name": "JsonIntEnums",
                     "http": {
@@ -410,7 +465,6 @@
                     "documentation": "<p>This example serializes intEnums as top level properties, in lists, sets, and maps.</p>",
                     "idempotent": true
                 },
-                "description": "Serializes simple scalar properties",
                 "params": {
                     "intEnum1": 1,
                     "intEnum2": 2,
@@ -433,8 +487,8 @@
                     "uri": "/",
                     "body": "{\n    \"intEnum1\": 1,\n    \"intEnum2\": 2,\n    \"intEnum3\": 3,\n    \"intEnumList\": [\n        1,\n        2\n    ],\n    \"intEnumSet\": [\n        1,\n        2\n    ],\n    \"intEnumMap\": {\n        \"a\": 1,\n        \"b\": 2\n    }\n}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.JsonIntEnums"
+                        "X-Amz-Target": "JsonProtocol.JsonIntEnums",
+                        "Content-Type": "application/x-amz-json-1.1"
                     }
                 }
             }
@@ -443,23 +497,52 @@
     {
         "description": "Test cases for JsonUnions operation",
         "metadata": {
+            "apiVersion": "2018-01-01",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "jsonprotocol",
+            "jsonVersion": "1.1",
             "protocol": "json",
             "protocols": [
                 "json"
             ],
-            "apiVersion": "2018-01-01",
-            "jsonVersion": "1.1",
-            "targetPrefix": "JsonProtocol"
+            "serviceFullName": "JsonProtocol",
+            "serviceId": "Json Protocol",
+            "signatureVersion": "v4",
+            "signingName": "JsonProtocol",
+            "targetPrefix": "JsonProtocol",
+            "uid": "json-protocol-2018-01-01"
         },
         "shapes": {
-            "UnionInputOutput": {
+            "Blob": {
+                "type": "blob"
+            },
+            "Boolean": {
+                "type": "boolean",
+                "box": true
+            },
+            "FooEnum": {
+                "type": "string",
+                "enum": [
+                    "Foo",
+                    "Baz",
+                    "Bar",
+                    "1",
+                    "0"
+                ]
+            },
+            "GreetingStruct": {
                 "type": "structure",
                 "members": {
-                    "contents": {
-                        "shape": "MyUnion"
+                    "hi": {
+                        "shape": "String"
                     }
-                },
-                "documentation": "<p>A shared structure that contains a single union member.</p>"
+                }
+            },
+            "Integer": {
+                "type": "integer",
+                "box": true
             },
             "MyUnion": {
                 "type": "structure",
@@ -498,30 +581,6 @@
             "String": {
                 "type": "string"
             },
-            "Boolean": {
-                "type": "boolean",
-                "box": true
-            },
-            "Integer": {
-                "type": "integer",
-                "box": true
-            },
-            "Blob": {
-                "type": "blob"
-            },
-            "Timestamp": {
-                "type": "timestamp"
-            },
-            "FooEnum": {
-                "type": "string",
-                "enum": [
-                    "Foo",
-                    "Baz",
-                    "Bar",
-                    "1",
-                    "0"
-                ]
-            },
             "StringList": {
                 "type": "list",
                 "member": {
@@ -537,18 +596,23 @@
                     "shape": "String"
                 }
             },
-            "GreetingStruct": {
+            "Timestamp": {
+                "type": "timestamp"
+            },
+            "UnionInputOutput": {
                 "type": "structure",
                 "members": {
-                    "hi": {
-                        "shape": "String"
+                    "contents": {
+                        "shape": "MyUnion"
                     }
-                }
+                },
+                "documentation": "<p>A shared structure that contains a single union member.</p>"
             }
         },
         "cases": [
             {
                 "id": "AwsJson11SerializeStringUnionValue",
+                "description": "Serializes a string union value",
                 "given": {
                     "name": "JsonUnions",
                     "http": {
@@ -561,7 +625,6 @@
                     "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
                     "idempotent": true
                 },
-                "description": "Serializes a string union value",
                 "params": {
                     "contents": {
                         "stringValue": "foo"
@@ -572,13 +635,14 @@
                     "uri": "/",
                     "body": "{\n    \"contents\": {\n        \"stringValue\": \"foo\"\n    }\n}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.JsonUnions"
+                        "X-Amz-Target": "JsonProtocol.JsonUnions",
+                        "Content-Type": "application/x-amz-json-1.1"
                     }
                 }
             },
             {
                 "id": "AwsJson11SerializeBooleanUnionValue",
+                "description": "Serializes a boolean union value",
                 "given": {
                     "name": "JsonUnions",
                     "http": {
@@ -591,7 +655,6 @@
                     "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
                     "idempotent": true
                 },
-                "description": "Serializes a boolean union value",
                 "params": {
                     "contents": {
                         "booleanValue": true
@@ -602,13 +665,14 @@
                     "uri": "/",
                     "body": "{\n    \"contents\": {\n        \"booleanValue\": true\n    }\n}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.JsonUnions"
+                        "X-Amz-Target": "JsonProtocol.JsonUnions",
+                        "Content-Type": "application/x-amz-json-1.1"
                     }
                 }
             },
             {
                 "id": "AwsJson11SerializeNumberUnionValue",
+                "description": "Serializes a number union value",
                 "given": {
                     "name": "JsonUnions",
                     "http": {
@@ -621,7 +685,6 @@
                     "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
                     "idempotent": true
                 },
-                "description": "Serializes a number union value",
                 "params": {
                     "contents": {
                         "numberValue": 1
@@ -632,13 +695,14 @@
                     "uri": "/",
                     "body": "{\n    \"contents\": {\n        \"numberValue\": 1\n    }\n}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.JsonUnions"
+                        "X-Amz-Target": "JsonProtocol.JsonUnions",
+                        "Content-Type": "application/x-amz-json-1.1"
                     }
                 }
             },
             {
                 "id": "AwsJson11SerializeBlobUnionValue",
+                "description": "Serializes a blob union value",
                 "given": {
                     "name": "JsonUnions",
                     "http": {
@@ -651,7 +715,6 @@
                     "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
                     "idempotent": true
                 },
-                "description": "Serializes a blob union value",
                 "params": {
                     "contents": {
                         "blobValue": "foo"
@@ -662,13 +725,14 @@
                     "uri": "/",
                     "body": "{\n    \"contents\": {\n        \"blobValue\": \"Zm9v\"\n    }\n}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.JsonUnions"
+                        "X-Amz-Target": "JsonProtocol.JsonUnions",
+                        "Content-Type": "application/x-amz-json-1.1"
                     }
                 }
             },
             {
                 "id": "AwsJson11SerializeTimestampUnionValue",
+                "description": "Serializes a timestamp union value",
                 "given": {
                     "name": "JsonUnions",
                     "http": {
@@ -681,7 +745,6 @@
                     "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
                     "idempotent": true
                 },
-                "description": "Serializes a timestamp union value",
                 "params": {
                     "contents": {
                         "timestampValue": 1398796238
@@ -692,13 +755,14 @@
                     "uri": "/",
                     "body": "{\n    \"contents\": {\n        \"timestampValue\": 1398796238\n    }\n}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.JsonUnions"
+                        "X-Amz-Target": "JsonProtocol.JsonUnions",
+                        "Content-Type": "application/x-amz-json-1.1"
                     }
                 }
             },
             {
                 "id": "AwsJson11SerializeEnumUnionValue",
+                "description": "Serializes an enum union value",
                 "given": {
                     "name": "JsonUnions",
                     "http": {
@@ -711,7 +775,6 @@
                     "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
                     "idempotent": true
                 },
-                "description": "Serializes an enum union value",
                 "params": {
                     "contents": {
                         "enumValue": "Foo"
@@ -722,13 +785,14 @@
                     "uri": "/",
                     "body": "{\n    \"contents\": {\n        \"enumValue\": \"Foo\"\n    }\n}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.JsonUnions"
+                        "X-Amz-Target": "JsonProtocol.JsonUnions",
+                        "Content-Type": "application/x-amz-json-1.1"
                     }
                 }
             },
             {
                 "id": "AwsJson11SerializeListUnionValue",
+                "description": "Serializes a list union value",
                 "given": {
                     "name": "JsonUnions",
                     "http": {
@@ -741,7 +805,6 @@
                     "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
                     "idempotent": true
                 },
-                "description": "Serializes a list union value",
                 "params": {
                     "contents": {
                         "listValue": [
@@ -755,13 +818,14 @@
                     "uri": "/",
                     "body": "{\n    \"contents\": {\n        \"listValue\": [\"foo\", \"bar\"]\n    }\n}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.JsonUnions"
+                        "X-Amz-Target": "JsonProtocol.JsonUnions",
+                        "Content-Type": "application/x-amz-json-1.1"
                     }
                 }
             },
             {
                 "id": "AwsJson11SerializeMapUnionValue",
+                "description": "Serializes a map union value",
                 "given": {
                     "name": "JsonUnions",
                     "http": {
@@ -774,7 +838,6 @@
                     "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
                     "idempotent": true
                 },
-                "description": "Serializes a map union value",
                 "params": {
                     "contents": {
                         "mapValue": {
@@ -788,13 +851,14 @@
                     "uri": "/",
                     "body": "{\n    \"contents\": {\n        \"mapValue\": {\n            \"foo\": \"bar\",\n            \"spam\": \"eggs\"\n        }\n    }\n}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.JsonUnions"
+                        "X-Amz-Target": "JsonProtocol.JsonUnions",
+                        "Content-Type": "application/x-amz-json-1.1"
                     }
                 }
             },
             {
                 "id": "AwsJson11SerializeStructureUnionValue",
+                "description": "Serializes a structure union value",
                 "given": {
                     "name": "JsonUnions",
                     "http": {
@@ -807,7 +871,6 @@
                     "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
                     "idempotent": true
                 },
-                "description": "Serializes a structure union value",
                 "params": {
                     "contents": {
                         "structureValue": {
@@ -820,8 +883,8 @@
                     "uri": "/",
                     "body": "{\n    \"contents\": {\n        \"structureValue\": {\n            \"hi\": \"hello\"\n        }\n    }\n}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.JsonUnions"
+                        "X-Amz-Target": "JsonProtocol.JsonUnions",
+                        "Content-Type": "application/x-amz-json-1.1"
                     }
                 }
             }
@@ -830,15 +893,50 @@
     {
         "description": "Test cases for KitchenSinkOperation operation",
         "metadata": {
+            "apiVersion": "2018-01-01",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "jsonprotocol",
+            "jsonVersion": "1.1",
             "protocol": "json",
             "protocols": [
                 "json"
             ],
-            "apiVersion": "2018-01-01",
-            "jsonVersion": "1.1",
-            "targetPrefix": "JsonProtocol"
+            "serviceFullName": "JsonProtocol",
+            "serviceId": "Json Protocol",
+            "signatureVersion": "v4",
+            "signingName": "JsonProtocol",
+            "targetPrefix": "JsonProtocol",
+            "uid": "json-protocol-2018-01-01"
         },
         "shapes": {
+            "Blob": {
+                "type": "blob"
+            },
+            "Boolean": {
+                "type": "boolean",
+                "box": true
+            },
+            "Double": {
+                "type": "double",
+                "box": true
+            },
+            "EmptyStruct": {
+                "type": "structure",
+                "members": {}
+            },
+            "Float": {
+                "type": "float",
+                "box": true
+            },
+            "Integer": {
+                "type": "integer",
+                "box": true
+            },
+            "JsonValue": {
+                "type": "string"
+            },
             "KitchenSink": {
                 "type": "structure",
                 "members": {
@@ -923,39 +1021,11 @@
                     }
                 }
             },
-            "Blob": {
-                "type": "blob"
-            },
-            "Boolean": {
-                "type": "boolean",
-                "box": true
-            },
-            "Double": {
-                "type": "double",
-                "box": true
-            },
-            "EmptyStruct": {
-                "type": "structure",
-                "members": {}
-            },
-            "Float": {
-                "type": "float",
-                "box": true
-            },
-            "SyntheticTimestamp_http_date": {
-                "type": "timestamp",
-                "timestampFormat": "rfc822"
-            },
-            "Integer": {
-                "type": "integer",
-                "box": true
-            },
-            "SyntheticTimestamp_date_time": {
-                "type": "timestamp",
-                "timestampFormat": "iso8601"
-            },
-            "JsonValue": {
-                "type": "string"
+            "ListOfKitchenSinks": {
+                "type": "list",
+                "member": {
+                    "shape": "KitchenSink"
+                }
             },
             "ListOfListOfStrings": {
                 "type": "list",
@@ -984,6 +1054,15 @@
             "Long": {
                 "type": "long",
                 "box": true
+            },
+            "MapOfKitchenSinks": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "KitchenSink"
+                }
             },
             "MapOfListsOfStrings": {
                 "type": "map",
@@ -1021,21 +1100,6 @@
                     "shape": "SimpleStruct"
                 }
             },
-            "ListOfKitchenSinks": {
-                "type": "list",
-                "member": {
-                    "shape": "KitchenSink"
-                }
-            },
-            "MapOfKitchenSinks": {
-                "type": "map",
-                "key": {
-                    "shape": "String"
-                },
-                "value": {
-                    "shape": "KitchenSink"
-                }
-            },
             "SimpleStruct": {
                 "type": "structure",
                 "members": {
@@ -1055,17 +1119,26 @@
                     }
                 }
             },
-            "Timestamp": {
-                "type": "timestamp"
+            "SyntheticTimestamp_date_time": {
+                "type": "timestamp",
+                "timestampFormat": "iso8601"
             },
             "SyntheticTimestamp_epoch_seconds": {
                 "type": "timestamp",
                 "timestampFormat": "unixTimestamp"
+            },
+            "SyntheticTimestamp_http_date": {
+                "type": "timestamp",
+                "timestampFormat": "rfc822"
+            },
+            "Timestamp": {
+                "type": "timestamp"
             }
         },
         "cases": [
             {
                 "id": "serializes_string_shapes",
+                "description": "Serializes string shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1076,7 +1149,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Serializes string shapes",
                 "params": {
                     "String": "abc xyz"
                 },
@@ -1085,8 +1157,8 @@
                     "uri": "/",
                     "body": "{\"String\":\"abc xyz\"}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation"
+                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
                     },
                     "requireHeaders": [
                         "Content-Length"
@@ -1095,6 +1167,7 @@
             },
             {
                 "id": "serializes_string_shapes_with_jsonvalue_trait",
+                "description": "Serializes string shapes with jsonvalue trait",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1105,7 +1178,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Serializes string shapes with jsonvalue trait",
                 "params": {
                     "JsonValue": "{\"string\":\"value\",\"number\":1234.5,\"boolTrue\":true,\"boolFalse\":false,\"array\":[1,2,3,4],\"object\":{\"key\":\"value\"},\"null\":null}"
                 },
@@ -1114,8 +1186,8 @@
                     "uri": "/",
                     "body": "{\"JsonValue\":\"{\\\"string\\\":\\\"value\\\",\\\"number\\\":1234.5,\\\"boolTrue\\\":true,\\\"boolFalse\\\":false,\\\"array\\\":[1,2,3,4],\\\"object\\\":{\\\"key\\\":\\\"value\\\"},\\\"null\\\":null}\"}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation"
+                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
                     },
                     "requireHeaders": [
                         "Content-Length"
@@ -1124,6 +1196,7 @@
             },
             {
                 "id": "serializes_integer_shapes",
+                "description": "Serializes integer shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1134,7 +1207,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Serializes integer shapes",
                 "params": {
                     "Integer": 1234
                 },
@@ -1143,8 +1215,8 @@
                     "uri": "/",
                     "body": "{\"Integer\":1234}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation"
+                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
                     },
                     "requireHeaders": [
                         "Content-Length"
@@ -1153,6 +1225,7 @@
             },
             {
                 "id": "serializes_long_shapes",
+                "description": "Serializes long shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1163,7 +1236,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Serializes long shapes",
                 "params": {
                     "Long": 999999999999
                 },
@@ -1172,8 +1244,8 @@
                     "uri": "/",
                     "body": "{\"Long\":999999999999}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation"
+                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
                     },
                     "requireHeaders": [
                         "Content-Length"
@@ -1182,6 +1254,7 @@
             },
             {
                 "id": "serializes_float_shapes",
+                "description": "Serializes float shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1192,7 +1265,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Serializes float shapes",
                 "params": {
                     "Float": 1234.5
                 },
@@ -1201,8 +1273,8 @@
                     "uri": "/",
                     "body": "{\"Float\":1234.5}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation"
+                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
                     },
                     "requireHeaders": [
                         "Content-Length"
@@ -1211,6 +1283,7 @@
             },
             {
                 "id": "serializes_double_shapes",
+                "description": "Serializes double shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1221,7 +1294,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Serializes double shapes",
                 "params": {
                     "Double": 1234.5
                 },
@@ -1230,8 +1302,8 @@
                     "uri": "/",
                     "body": "{\"Double\":1234.5}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation"
+                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
                     },
                     "requireHeaders": [
                         "Content-Length"
@@ -1240,6 +1312,7 @@
             },
             {
                 "id": "serializes_blob_shapes",
+                "description": "Serializes blob shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1250,7 +1323,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Serializes blob shapes",
                 "params": {
                     "Blob": "binary-value"
                 },
@@ -1259,8 +1331,8 @@
                     "uri": "/",
                     "body": "{\"Blob\":\"YmluYXJ5LXZhbHVl\"}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation"
+                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
                     },
                     "requireHeaders": [
                         "Content-Length"
@@ -1269,6 +1341,7 @@
             },
             {
                 "id": "serializes_boolean_shapes_true",
+                "description": "Serializes boolean shapes (true)",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1279,7 +1352,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Serializes boolean shapes (true)",
                 "params": {
                     "Boolean": true
                 },
@@ -1288,8 +1360,8 @@
                     "uri": "/",
                     "body": "{\"Boolean\":true}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation"
+                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
                     },
                     "requireHeaders": [
                         "Content-Length"
@@ -1298,6 +1370,7 @@
             },
             {
                 "id": "serializes_boolean_shapes_false",
+                "description": "Serializes boolean shapes (false)",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1308,7 +1381,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Serializes boolean shapes (false)",
                 "params": {
                     "Boolean": false
                 },
@@ -1317,8 +1389,8 @@
                     "uri": "/",
                     "body": "{\"Boolean\":false}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation"
+                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
                     },
                     "requireHeaders": [
                         "Content-Length"
@@ -1327,6 +1399,7 @@
             },
             {
                 "id": "serializes_timestamp_shapes",
+                "description": "Serializes timestamp shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1337,7 +1410,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Serializes timestamp shapes",
                 "params": {
                     "Timestamp": 946845296
                 },
@@ -1346,8 +1418,8 @@
                     "uri": "/",
                     "body": "{\"Timestamp\":946845296}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation"
+                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
                     },
                     "requireHeaders": [
                         "Content-Length"
@@ -1356,6 +1428,7 @@
             },
             {
                 "id": "serializes_timestamp_shapes_with_iso8601_timestampformat",
+                "description": "Serializes timestamp shapes with iso8601 timestampFormat",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1366,7 +1439,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Serializes timestamp shapes with iso8601 timestampFormat",
                 "params": {
                     "Iso8601Timestamp": 946845296
                 },
@@ -1375,8 +1447,8 @@
                     "uri": "/",
                     "body": "{\"Iso8601Timestamp\":\"2000-01-02T20:34:56Z\"}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation"
+                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
                     },
                     "requireHeaders": [
                         "Content-Length"
@@ -1385,6 +1457,7 @@
             },
             {
                 "id": "serializes_timestamp_shapes_with_httpdate_timestampformat",
+                "description": "Serializes timestamp shapes with httpdate timestampFormat",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1395,7 +1468,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Serializes timestamp shapes with httpdate timestampFormat",
                 "params": {
                     "HttpdateTimestamp": 946845296
                 },
@@ -1404,8 +1476,8 @@
                     "uri": "/",
                     "body": "{\"HttpdateTimestamp\":\"Sun, 02 Jan 2000 20:34:56 GMT\"}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation"
+                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
                     },
                     "requireHeaders": [
                         "Content-Length"
@@ -1414,6 +1486,7 @@
             },
             {
                 "id": "serializes_timestamp_shapes_with_unixtimestamp_timestampformat",
+                "description": "Serializes timestamp shapes with unixTimestamp timestampFormat",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1424,7 +1497,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Serializes timestamp shapes with unixTimestamp timestampFormat",
                 "params": {
                     "UnixTimestamp": 946845296
                 },
@@ -1433,8 +1505,8 @@
                     "uri": "/",
                     "body": "{\"UnixTimestamp\":946845296}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation"
+                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
                     },
                     "requireHeaders": [
                         "Content-Length"
@@ -1443,6 +1515,7 @@
             },
             {
                 "id": "serializes_list_shapes",
+                "description": "Serializes list shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1453,7 +1526,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Serializes list shapes",
                 "params": {
                     "ListOfStrings": [
                         "abc",
@@ -1466,8 +1538,8 @@
                     "uri": "/",
                     "body": "{\"ListOfStrings\":[\"abc\",\"mno\",\"xyz\"]}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation"
+                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
                     },
                     "requireHeaders": [
                         "Content-Length"
@@ -1476,6 +1548,7 @@
             },
             {
                 "id": "serializes_empty_list_shapes",
+                "description": "Serializes empty list shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1486,7 +1559,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Serializes empty list shapes",
                 "params": {
                     "ListOfStrings": []
                 },
@@ -1495,8 +1567,8 @@
                     "uri": "/",
                     "body": "{\"ListOfStrings\":[]}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation"
+                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
                     },
                     "requireHeaders": [
                         "Content-Length"
@@ -1505,6 +1577,7 @@
             },
             {
                 "id": "serializes_list_of_map_shapes",
+                "description": "Serializes list of map shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1515,7 +1588,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Serializes list of map shapes",
                 "params": {
                     "ListOfMapsOfStrings": [
                         {
@@ -1534,8 +1606,8 @@
                     "uri": "/",
                     "body": "{\"ListOfMapsOfStrings\":[{\"foo\":\"bar\"},{\"abc\":\"xyz\"},{\"red\":\"blue\"}]}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation"
+                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
                     },
                     "requireHeaders": [
                         "Content-Length"
@@ -1544,6 +1616,7 @@
             },
             {
                 "id": "serializes_list_of_structure_shapes",
+                "description": "Serializes list of structure shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1554,7 +1627,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Serializes list of structure shapes",
                 "params": {
                     "ListOfStructs": [
                         {
@@ -1573,8 +1645,8 @@
                     "uri": "/",
                     "body": "{\"ListOfStructs\":[{\"Value\":\"abc\"},{\"Value\":\"mno\"},{\"Value\":\"xyz\"}]}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation"
+                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
                     },
                     "requireHeaders": [
                         "Content-Length"
@@ -1583,6 +1655,7 @@
             },
             {
                 "id": "serializes_list_of_recursive_structure_shapes",
+                "description": "Serializes list of recursive structure shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1593,7 +1666,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Serializes list of recursive structure shapes",
                 "params": {
                     "RecursiveList": [
                         {
@@ -1614,8 +1686,8 @@
                     "uri": "/",
                     "body": "{\"RecursiveList\":[{\"RecursiveList\":[{\"RecursiveList\":[{\"Integer\":123}]}]}]}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation"
+                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
                     },
                     "requireHeaders": [
                         "Content-Length"
@@ -1624,6 +1696,7 @@
             },
             {
                 "id": "serializes_map_shapes",
+                "description": "Serializes map shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1634,7 +1707,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Serializes map shapes",
                 "params": {
                     "MapOfStrings": {
                         "abc": "xyz",
@@ -1646,8 +1718,8 @@
                     "uri": "/",
                     "body": "{\"MapOfStrings\":{\"abc\":\"xyz\",\"mno\":\"hjk\"}}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation"
+                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
                     },
                     "requireHeaders": [
                         "Content-Length"
@@ -1656,6 +1728,7 @@
             },
             {
                 "id": "serializes_empty_map_shapes",
+                "description": "Serializes empty map shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1666,7 +1739,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Serializes empty map shapes",
                 "params": {
                     "MapOfStrings": {}
                 },
@@ -1675,8 +1747,8 @@
                     "uri": "/",
                     "body": "{\"MapOfStrings\":{}}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation"
+                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
                     },
                     "requireHeaders": [
                         "Content-Length"
@@ -1685,6 +1757,7 @@
             },
             {
                 "id": "serializes_map_of_list_shapes",
+                "description": "Serializes map of list shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1695,7 +1768,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Serializes map of list shapes",
                 "params": {
                     "MapOfListsOfStrings": {
                         "abc": [
@@ -1713,8 +1785,8 @@
                     "uri": "/",
                     "body": "{\"MapOfListsOfStrings\":{\"abc\":[\"abc\",\"xyz\"],\"mno\":[\"xyz\",\"abc\"]}}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation"
+                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
                     },
                     "requireHeaders": [
                         "Content-Length"
@@ -1723,6 +1795,7 @@
             },
             {
                 "id": "serializes_map_of_structure_shapes",
+                "description": "Serializes map of structure shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1733,7 +1806,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Serializes map of structure shapes",
                 "params": {
                     "MapOfStructs": {
                         "key1": {
@@ -1749,8 +1821,8 @@
                     "uri": "/",
                     "body": "{\"MapOfStructs\":{\"key1\":{\"Value\":\"value-1\"},\"key2\":{\"Value\":\"value-2\"}}}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation"
+                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
                     },
                     "requireHeaders": [
                         "Content-Length"
@@ -1759,6 +1831,7 @@
             },
             {
                 "id": "serializes_map_of_recursive_structure_shapes",
+                "description": "Serializes map of recursive structure shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1769,7 +1842,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Serializes map of recursive structure shapes",
                 "params": {
                     "RecursiveMap": {
                         "key1": {
@@ -1790,8 +1862,8 @@
                     "uri": "/",
                     "body": "{\"RecursiveMap\":{\"key1\":{\"RecursiveMap\":{\"key2\":{\"RecursiveMap\":{\"key3\":{\"Boolean\":false}}}}}}}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation"
+                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
                     },
                     "requireHeaders": [
                         "Content-Length"
@@ -1800,6 +1872,7 @@
             },
             {
                 "id": "serializes_structure_shapes",
+                "description": "Serializes structure shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1810,7 +1883,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Serializes structure shapes",
                 "params": {
                     "SimpleStruct": {
                         "Value": "abc"
@@ -1821,8 +1893,8 @@
                     "uri": "/",
                     "body": "{\"SimpleStruct\":{\"Value\":\"abc\"}}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation"
+                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
                     },
                     "requireHeaders": [
                         "Content-Length"
@@ -1831,6 +1903,7 @@
             },
             {
                 "id": "serializes_structure_members_with_locationname_traits",
+                "description": "Serializes structure members with locationName traits",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1841,7 +1914,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Serializes structure members with locationName traits",
                 "params": {
                     "StructWithJsonName": {
                         "Value": "some-value"
@@ -1852,8 +1924,8 @@
                     "uri": "/",
                     "body": "{\"StructWithJsonName\":{\"Value\":\"some-value\"}}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation"
+                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
                     },
                     "requireHeaders": [
                         "Content-Length"
@@ -1862,6 +1934,7 @@
             },
             {
                 "id": "serializes_empty_structure_shapes",
+                "description": "Serializes empty structure shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1872,7 +1945,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Serializes empty structure shapes",
                 "params": {
                     "SimpleStruct": {}
                 },
@@ -1881,8 +1953,8 @@
                     "uri": "/",
                     "body": "{\"SimpleStruct\":{}}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation"
+                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
                     },
                     "requireHeaders": [
                         "Content-Length"
@@ -1891,6 +1963,7 @@
             },
             {
                 "id": "serializes_structure_which_have_no_members",
+                "description": "Serializes structure which have no members",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1901,7 +1974,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Serializes structure which have no members",
                 "params": {
                     "EmptyStruct": {}
                 },
@@ -1910,8 +1982,8 @@
                     "uri": "/",
                     "body": "{\"EmptyStruct\":{}}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation"
+                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
                     },
                     "requireHeaders": [
                         "Content-Length"
@@ -1920,6 +1992,7 @@
             },
             {
                 "id": "serializes_recursive_structure_shapes",
+                "description": "Serializes recursive structure shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1930,7 +2003,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Serializes recursive structure shapes",
                 "params": {
                     "String": "top-value",
                     "Boolean": false,
@@ -1957,8 +2029,8 @@
                     "uri": "/",
                     "body": "{\"String\":\"top-value\",\"Boolean\":false,\"RecursiveStruct\":{\"String\":\"nested-value\",\"Boolean\":true,\"RecursiveList\":[{\"String\":\"string-only\"},{\"RecursiveStruct\":{\"MapOfStrings\":{\"color\":\"red\",\"size\":\"large\"}}}]}}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation"
+                        "X-Amz-Target": "JsonProtocol.KitchenSinkOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
                     },
                     "requireHeaders": [
                         "Content-Length"
@@ -1970,13 +2042,22 @@
     {
         "description": "Test cases for NullOperation operation",
         "metadata": {
+            "apiVersion": "2018-01-01",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "jsonprotocol",
+            "jsonVersion": "1.1",
             "protocol": "json",
             "protocols": [
                 "json"
             ],
-            "apiVersion": "2018-01-01",
-            "jsonVersion": "1.1",
-            "targetPrefix": "JsonProtocol"
+            "serviceFullName": "JsonProtocol",
+            "serviceId": "Json Protocol",
+            "signatureVersion": "v4",
+            "signingName": "JsonProtocol",
+            "targetPrefix": "JsonProtocol",
+            "uid": "json-protocol-2018-01-01"
         },
         "shapes": {
             "NullOperationInputOutput": {
@@ -1994,6 +2075,7 @@
         "cases": [
             {
                 "id": "AwsJson11StructuresDontSerializeNullValues",
+                "description": "Null structure values are dropped",
                 "given": {
                     "name": "NullOperation",
                     "http": {
@@ -2004,7 +2086,6 @@
                         "shape": "NullOperationInputOutput"
                     }
                 },
-                "description": "Null structure values are dropped",
                 "params": {
                     "string": null
                 },
@@ -2013,8 +2094,8 @@
                     "uri": "/",
                     "body": "{}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.NullOperation"
+                        "X-Amz-Target": "JsonProtocol.NullOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
                     }
                 }
             }
@@ -2023,13 +2104,22 @@
     {
         "description": "Test cases for OperationWithOptionalInputOutput operation",
         "metadata": {
+            "apiVersion": "2018-01-01",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "jsonprotocol",
+            "jsonVersion": "1.1",
             "protocol": "json",
             "protocols": [
                 "json"
             ],
-            "apiVersion": "2018-01-01",
-            "jsonVersion": "1.1",
-            "targetPrefix": "JsonProtocol"
+            "serviceFullName": "JsonProtocol",
+            "serviceId": "Json Protocol",
+            "signatureVersion": "v4",
+            "signingName": "JsonProtocol",
+            "targetPrefix": "JsonProtocol",
+            "uid": "json-protocol-2018-01-01"
         },
         "shapes": {
             "OperationWithOptionalInputOutputInput": {
@@ -2047,6 +2137,7 @@
         "cases": [
             {
                 "id": "can_call_operation_with_no_input_or_output",
+                "description": "Can call operations with no input or output",
                 "given": {
                     "name": "OperationWithOptionalInputOutput",
                     "http": {
@@ -2057,20 +2148,20 @@
                         "shape": "OperationWithOptionalInputOutputInput"
                     }
                 },
-                "description": "Can call operations with no input or output",
                 "params": {},
                 "serialized": {
                     "method": "POST",
                     "uri": "/",
                     "body": "{}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.OperationWithOptionalInputOutput"
+                        "X-Amz-Target": "JsonProtocol.OperationWithOptionalInputOutput",
+                        "Content-Type": "application/x-amz-json-1.1"
                     }
                 }
             },
             {
                 "id": "can_call_operation_with_optional_input",
+                "description": "Can invoke operations with optional input",
                 "given": {
                     "name": "OperationWithOptionalInputOutput",
                     "http": {
@@ -2081,7 +2172,6 @@
                         "shape": "OperationWithOptionalInputOutputInput"
                     }
                 },
-                "description": "Can invoke operations with optional input",
                 "params": {
                     "Value": "Hi"
                 },
@@ -2090,8 +2180,8 @@
                     "uri": "/",
                     "body": "{\"Value\":\"Hi\"}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.OperationWithOptionalInputOutput"
+                        "X-Amz-Target": "JsonProtocol.OperationWithOptionalInputOutput",
+                        "Content-Type": "application/x-amz-json-1.1"
                     }
                 }
             }
@@ -2100,15 +2190,29 @@
     {
         "description": "Test cases for PutAndGetInlineDocuments operation",
         "metadata": {
+            "apiVersion": "2018-01-01",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "jsonprotocol",
+            "jsonVersion": "1.1",
             "protocol": "json",
             "protocols": [
                 "json"
             ],
-            "apiVersion": "2018-01-01",
-            "jsonVersion": "1.1",
-            "targetPrefix": "JsonProtocol"
+            "serviceFullName": "JsonProtocol",
+            "serviceId": "Json Protocol",
+            "signatureVersion": "v4",
+            "signingName": "JsonProtocol",
+            "targetPrefix": "JsonProtocol",
+            "uid": "json-protocol-2018-01-01"
         },
         "shapes": {
+            "Document": {
+                "type": "structure",
+                "members": {},
+                "document": true
+            },
             "PutAndGetInlineDocumentsInputOutput": {
                 "type": "structure",
                 "members": {
@@ -2116,16 +2220,12 @@
                         "shape": "Document"
                     }
                 }
-            },
-            "Document": {
-                "type": "structure",
-                "members": {},
-                "document": true
             }
         },
         "cases": [
             {
                 "id": "PutAndGetInlineDocumentsInput",
+                "description": "Serializes inline documents in a JSON request.",
                 "given": {
                     "name": "PutAndGetInlineDocuments",
                     "http": {
@@ -2137,7 +2237,6 @@
                     },
                     "documentation": "<p>This example serializes an inline document as part of the payload.</p>"
                 },
-                "description": "Serializes inline documents in a JSON request.",
                 "params": {
                     "inlineDocument": {
                         "foo": "bar"
@@ -2148,8 +2247,8 @@
                     "uri": "/",
                     "body": "{\n    \"inlineDocument\": {\"foo\": \"bar\"}\n}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.PutAndGetInlineDocuments"
+                        "X-Amz-Target": "JsonProtocol.PutAndGetInlineDocuments",
+                        "Content-Type": "application/x-amz-json-1.1"
                     },
                     "requireHeaders": [
                         "Content-Length"
@@ -2161,13 +2260,22 @@
     {
         "description": "Test cases for PutWithContentEncoding operation",
         "metadata": {
+            "apiVersion": "2018-01-01",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "jsonprotocol",
+            "jsonVersion": "1.1",
             "protocol": "json",
             "protocols": [
                 "json"
             ],
-            "apiVersion": "2018-01-01",
-            "jsonVersion": "1.1",
-            "targetPrefix": "JsonProtocol"
+            "serviceFullName": "JsonProtocol",
+            "serviceId": "Json Protocol",
+            "signatureVersion": "v4",
+            "signingName": "JsonProtocol",
+            "targetPrefix": "JsonProtocol",
+            "uid": "json-protocol-2018-01-01"
         },
         "shapes": {
             "PutWithContentEncodingInput": {
@@ -2188,6 +2296,7 @@
         "cases": [
             {
                 "id": "SDKAppliedContentEncoding_awsJson1_1",
+                "description": "Compression algorithm encoding is appended to the Content-Encoding header.",
                 "given": {
                     "name": "PutWithContentEncoding",
                     "http": {
@@ -2203,7 +2312,6 @@
                         ]
                     }
                 },
-                "description": "Compression algorithm encoding is appended to the Content-Encoding header.",
                 "params": {
                     "data": "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\n"
                 },
@@ -2217,6 +2325,7 @@
             },
             {
                 "id": "SDKAppendsGzipAndIgnoresHttpProvidedEncoding_awsJson1_1",
+                "description": "Compression algorithm encoding is appended to the Content-Encoding header, and the\nuser-provided content-encoding is NOT in the Content-Encoding header since HTTP binding\ntraits are ignored in the awsJson1_1 protocol.\n",
                 "given": {
                     "name": "PutWithContentEncoding",
                     "http": {
@@ -2232,7 +2341,6 @@
                         ]
                     }
                 },
-                "description": "Compression algorithm encoding is appended to the Content-Encoding header, and the\nuser-provided content-encoding is NOT in the Content-Encoding header since HTTP binding\ntraits are ignored in the awsJson1_1 protocol.\n",
                 "params": {
                     "encoding": "custom",
                     "data": "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\n"
@@ -2250,15 +2358,32 @@
     {
         "description": "Test cases for SimpleScalarProperties operation",
         "metadata": {
+            "apiVersion": "2018-01-01",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "jsonprotocol",
+            "jsonVersion": "1.1",
             "protocol": "json",
             "protocols": [
                 "json"
             ],
-            "apiVersion": "2018-01-01",
-            "jsonVersion": "1.1",
-            "targetPrefix": "JsonProtocol"
+            "serviceFullName": "JsonProtocol",
+            "serviceId": "Json Protocol",
+            "signatureVersion": "v4",
+            "signingName": "JsonProtocol",
+            "targetPrefix": "JsonProtocol",
+            "uid": "json-protocol-2018-01-01"
         },
         "shapes": {
+            "Double": {
+                "type": "double",
+                "box": true
+            },
+            "Float": {
+                "type": "float",
+                "box": true
+            },
             "SimpleScalarPropertiesInputOutput": {
                 "type": "structure",
                 "members": {
@@ -2269,19 +2394,12 @@
                         "shape": "Double"
                     }
                 }
-            },
-            "Float": {
-                "type": "float",
-                "box": true
-            },
-            "Double": {
-                "type": "double",
-                "box": true
             }
         },
         "cases": [
             {
                 "id": "AwsJson11SupportsNaNFloatInputs",
+                "description": "Supports handling NaN float values.",
                 "given": {
                     "name": "SimpleScalarProperties",
                     "http": {
@@ -2292,7 +2410,6 @@
                         "shape": "SimpleScalarPropertiesInputOutput"
                     }
                 },
-                "description": "Supports handling NaN float values.",
                 "params": {
                     "floatValue": "NaN",
                     "doubleValue": "NaN"
@@ -2302,13 +2419,14 @@
                     "uri": "/",
                     "body": "{\n    \"floatValue\": \"NaN\",\n    \"doubleValue\": \"NaN\"\n}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.SimpleScalarProperties"
+                        "X-Amz-Target": "JsonProtocol.SimpleScalarProperties",
+                        "Content-Type": "application/x-amz-json-1.1"
                     }
                 }
             },
             {
                 "id": "AwsJson11SupportsInfinityFloatInputs",
+                "description": "Supports handling Infinity float values.",
                 "given": {
                     "name": "SimpleScalarProperties",
                     "http": {
@@ -2319,7 +2437,6 @@
                         "shape": "SimpleScalarPropertiesInputOutput"
                     }
                 },
-                "description": "Supports handling Infinity float values.",
                 "params": {
                     "floatValue": "Infinity",
                     "doubleValue": "Infinity"
@@ -2329,13 +2446,14 @@
                     "uri": "/",
                     "body": "{\n    \"floatValue\": \"Infinity\",\n    \"doubleValue\": \"Infinity\"\n}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.SimpleScalarProperties"
+                        "X-Amz-Target": "JsonProtocol.SimpleScalarProperties",
+                        "Content-Type": "application/x-amz-json-1.1"
                     }
                 }
             },
             {
                 "id": "AwsJson11SupportsNegativeInfinityFloatInputs",
+                "description": "Supports handling -Infinity float values.",
                 "given": {
                     "name": "SimpleScalarProperties",
                     "http": {
@@ -2346,7 +2464,6 @@
                         "shape": "SimpleScalarPropertiesInputOutput"
                     }
                 },
-                "description": "Supports handling -Infinity float values.",
                 "params": {
                     "floatValue": "-Infinity",
                     "doubleValue": "-Infinity"
@@ -2356,8 +2473,120 @@
                     "uri": "/",
                     "body": "{\n    \"floatValue\": \"-Infinity\",\n    \"doubleValue\": \"-Infinity\"\n}",
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.SimpleScalarProperties"
+                        "X-Amz-Target": "JsonProtocol.SimpleScalarProperties",
+                        "Content-Type": "application/x-amz-json-1.1"
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for SparseNullsOperation operation",
+        "metadata": {
+            "apiVersion": "2018-01-01",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "jsonprotocol",
+            "jsonVersion": "1.1",
+            "protocol": "json",
+            "protocols": [
+                "json"
+            ],
+            "serviceFullName": "JsonProtocol",
+            "serviceId": "Json Protocol",
+            "signatureVersion": "v4",
+            "signingName": "JsonProtocol",
+            "targetPrefix": "JsonProtocol",
+            "uid": "json-protocol-2018-01-01"
+        },
+        "shapes": {
+            "SparseNullsOperationInputOutput": {
+                "type": "structure",
+                "members": {
+                    "sparseStringList": {
+                        "shape": "SparseStringList"
+                    },
+                    "sparseStringMap": {
+                        "shape": "SparseStringMap"
+                    }
+                }
+            },
+            "SparseStringList": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                },
+                "sparse": true
+            },
+            "SparseStringMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "String"
+                },
+                "sparse": true
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "AwsJson11SparseMapsSerializeNullValues",
+                "description": "Serializes null values in maps",
+                "given": {
+                    "name": "SparseNullsOperation",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "input": {
+                        "shape": "SparseNullsOperationInputOutput"
+                    }
+                },
+                "params": {
+                    "sparseStringMap": {
+                        "foo": null
+                    }
+                },
+                "serialized": {
+                    "method": "POST",
+                    "uri": "/",
+                    "body": "{\n    \"sparseStringMap\": {\n        \"foo\": null\n    }\n}",
+                    "headers": {
+                        "X-Amz-Target": "JsonProtocol.SparseNullsOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
+                    }
+                }
+            },
+            {
+                "id": "AwsJson11SparseListsSerializeNull",
+                "description": "Serializes null values in lists",
+                "given": {
+                    "name": "SparseNullsOperation",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "input": {
+                        "shape": "SparseNullsOperationInputOutput"
+                    }
+                },
+                "params": {
+                    "sparseStringList": [
+                        null
+                    ]
+                },
+                "serialized": {
+                    "method": "POST",
+                    "uri": "/",
+                    "body": "{\n    \"sparseStringList\": [\n        null\n    ]\n}",
+                    "headers": {
+                        "X-Amz-Target": "JsonProtocol.SparseNullsOperation",
+                        "Content-Type": "application/x-amz-json-1.1"
                     }
                 }
             }

@@ -36,6 +36,7 @@
         "cases": [
             {
                 "id": "QueryCompatibleRpcV2CborNoCustomCodeError",
+                "description": "Parses simple RpcV2 CBOR errors with no query error code",
                 "given": {
                     "name": "QueryCompatibleOperation",
                     "http": {
@@ -49,7 +50,6 @@
                         }
                     ]
                 },
-                "description": "Parses simple RpcV2 CBOR errors with no query error code",
                 "errorCode": "NoCustomCodeError",
                 "errorMessage": "Hi",
                 "error": {
@@ -58,8 +58,8 @@
                 "response": {
                     "status_code": 400,
                     "headers": {
-                        "Content-Type": "application/cbor",
-                        "smithy-protocol": "rpc-v2-cbor"
+                        "smithy-protocol": "rpc-v2-cbor",
+                        "Content-Type": "application/cbor"
                     },
                     "body": "uQACZl9fdHlwZXgtYXdzLnByb3RvY29sdGVzdHMucnBjdjJjYm9yI05vQ3VzdG9tQ29kZUVycm9yZ21lc3NhZ2ViSGk="
                 }
@@ -108,6 +108,7 @@
         "cases": [
             {
                 "id": "QueryCompatibleRpcV2CborCustomCodeError",
+                "description": "Parses simple RpcV2 CBOR errors with query error code",
                 "given": {
                     "name": "QueryCompatibleOperation",
                     "http": {
@@ -121,7 +122,6 @@
                         }
                     ]
                 },
-                "description": "Parses simple RpcV2 CBOR errors with query error code",
                 "errorCode": "Customized",
                 "errorMessage": "Hi",
                 "error": {
@@ -130,9 +130,9 @@
                 "response": {
                     "status_code": 400,
                     "headers": {
-                        "Content-Type": "application/cbor",
+                        "x-amzn-query-error": "Customized;Sender",
                         "smithy-protocol": "rpc-v2-cbor",
-                        "x-amzn-query-error": "Customized;Sender"
+                        "Content-Type": "application/cbor"
                     },
                     "body": "uQACZl9fdHlwZXgrYXdzLnByb3RvY29sdGVzdHMucnBjdjJjYm9yI0N1c3RvbUNvZGVFcnJvcmdtZXNzYWdlYkhp"
                 }

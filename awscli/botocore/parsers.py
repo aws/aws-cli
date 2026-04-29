@@ -709,7 +709,12 @@ class BaseJSONParser(ResponseParser):
         value_shape = shape.value
         for key, value in value.items():
             actual_key = self._parse_shape(key_shape, key)
-            actual_value = self._parse_shape(value_shape, value)
+            # Treat all maps as sparse during parsing to safely handle null
+            # values that may be present in service responses.
+            if value is None:
+                actual_value = None
+            else:
+                actual_value = self._parse_shape(value_shape, value)
             parsed[actual_key] = actual_value
         return parsed
 
@@ -891,8 +896,7 @@ class BaseCBORParser(ResponseParser):
     def _parse_key_value_pair(self, stream, items):
         key = self.parse_data_item(stream)
         value = self.parse_data_item(stream)
-        if value is not None:
-            items[key] = value
+        items[key] = value
 
     # Major type 6 is tags.  The only tag we currently support is tag 1 for unix
     # timestamps

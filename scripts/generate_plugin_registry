@@ -1,0 +1,353 @@
+#!/usr/bin/env python
+"""Generate the lazy plugin registry for awscli_initialize.
+
+This script is the authoritative source of truth for which customizations
+exist and in what order they are registered.  It mirrors what the old
+monolithic awscli_initialize used to do, but instead of actually importing
+and calling everything, it runs each registration call against a
+_MiniEmitter that captures (event_pattern, module, fn_name, type) tuples
+without side effects.
+
+The output is written to awscli/handlers_registry.py as a plain Python dict
+PLUGIN_REGISTRY mapping each event pattern to a list of entries:
+
+  (module, fn_name, 'init')    call fn(event_handlers)
+  (module, fn_name, 'direct')  event_handlers.register(event_pattern, fn)
+
+At runtime, the LazyInitEmitter triggers entries on demand: before emitting
+event X, it finds entries whose event patterns match X, dispatches each
+entry at most once, then proceeds with normal event dispatch.
+
+Usage:
+    scripts/generate_plugin_registry [--output PATH] [--check] [--print]
+
+Run this script whenever a customization is added, removed, or changed, and
+commit the updated registry.  A CI check should verify the committed registry
+matches a fresh run of this script.
+
+To add a new customization:
+  1. Add a call to _register() or _register_direct() in _all_registrations()
+     below, in the same position it would appear in awscli_initialize.
+  2. Re-run this script.
+  3. Commit both this script and the updated handlers_registry.py.
+"""
+import argparse
+import collections
+import importlib
+import os
+import sys
+
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, REPO_ROOT)
+
+DEFAULT_OUTPUT = os.path.join(REPO_ROOT, 'awscli', 'handlers_registry.py')
+
+
+# ---------------------------------------------------------------------------
+# Recording infrastructure
+# ---------------------------------------------------------------------------
+
+class _Entry:
+    """A single pending registration."""
+    __slots__ = ('module', 'fn_name', 'event_name')
+
+    def __init__(self, module, fn_name, event_name=None):
+        self.module = module
+        self.fn_name = fn_name
+        self.event_name = event_name  # None means "call fn(event_handlers)"
+
+
+class _Recorder:
+    """Collects registration calls without importing any modules."""
+
+    def __init__(self):
+        self._entries = []
+
+    def register_fn(self, module, fn_name):
+        """Record a call of the form fn(event_handlers)."""
+        self._entries.append(_Entry(module, fn_name))
+
+    def register_direct(self, module, fn_name, event_name):
+        """Record a call of the form event_handlers.register(event_name, fn)."""
+        self._entries.append(_Entry(module, fn_name, event_name))
+
+    @property
+    def entries(self):
+        return list(self._entries)
+
+
+class _MiniEmitter:
+    """Minimal emitter that just records event names."""
+
+    def __init__(self):
+        self.registrations = []
+
+    def register(self, event_name, *args, **kwargs):
+        self.registrations.append(event_name)
+
+    register_first = register
+    register_last = register
+
+    def emit(self, *a, **k): pass
+    def emit_first_non_none_response(self, *a, **k): return None
+
+
+# ---------------------------------------------------------------------------
+# The authoritative list of all registrations.
+# This is the source of truth — update this when adding/removing customizations.
+# ---------------------------------------------------------------------------
+
+def _all_registrations(r):
+    """Populate r with every registration in the same order as the original
+    awscli_initialize.
+
+    r.register_fn(module, fn_name)
+        -- will call fn(event_handlers) at runtime
+
+    r.register_direct(module, fn_name, event_name)
+        -- will call event_handlers.register(event_name, fn) at runtime
+    """
+    r.register_direct('awscli.paramfile', 'register_uri_param_handler', 'session-initialized')
+    r.register_direct('awscli.customizations.binaryformat', 'add_binary_formatter', 'session-initialized')
+    r.register_direct('awscli.clidriver', 'no_pager_handler', 'session-initialized')
+    r.register_direct('awscli.argprocess', 'ParamShorthandParser', 'process-cli-arg')
+    r.register_fn('awscli.customizations.s3errormsg', 'register_s3_error_msg')
+    r.register_direct('awscli.customizations.addexamples', 'add_examples', 'doc-examples.*.*')
+    r.register_fn('awscli.customizations.cliinput', 'register_cli_input_args')
+    r.register_direct('awscli.customizations.streamingoutputarg', 'add_streaming_output_arg', 'building-argument-table.*')
+    r.register_direct('awscli.customizations.ec2.decryptpassword', 'ec2_add_priv_launch_key', 'building-argument-table.ec2.get-password-data')
+    r.register_fn('awscli.customizations.globalargs', 'register_parse_global_args')
+    r.register_fn('awscli.customizations.paginate', 'register_pagination')
+    r.register_fn('awscli.customizations.ec2.addcount', 'register_count_events')
+    r.register_fn('awscli.customizations.ec2.secgroupsimplify', 'register_secgroup')
+    r.register_fn('awscli.customizations.ec2.bundleinstance', 'register_bundleinstance')
+    r.register_fn('awscli.customizations.s3.s3', 's3_plugin_initialize')
+    r.register_fn('awscli.customizations.dynamodb.ddb', 'register_ddb')
+    r.register_fn('awscli.customizations.ec2.runinstances', 'register_runinstances')
+    r.register_fn('awscli.customizations.removals', 'register_removals')
+    r.register_fn('awscli.customizations.rds', 'register_rds_modify_split')
+    r.register_fn('awscli.customizations.rekognition', 'register_rekognition_detect_labels')
+    r.register_fn('awscli.customizations.rds', 'register_add_generate_db_auth_token')
+    r.register_fn('awscli.customizations.dsql', 'register_dsql_customizations')
+    r.register_fn('awscli.customizations.putmetricdata', 'register_put_metric_data')
+    r.register_fn('awscli.customizations.sessendemail', 'register_ses_send_email')
+    r.register_fn('awscli.customizations.iamvirtmfa', 'IAMVMFAWrapper')
+    r.register_fn('awscli.customizations.argrename', 'register_arg_renames')
+    r.register_fn('awscli.customizations.configure.configure', 'register_configure_cmd')
+    r.register_fn('awscli.customizations.cloudtrail', 'initialize')
+    r.register_fn('awscli.customizations.ecr', 'register_ecr_commands')
+    r.register_fn('awscli.customizations.ecr_public', 'register_ecr_public_commands')
+    r.register_fn('awscli.customizations.toplevelbool', 'register_bool_params')
+    r.register_fn('awscli.customizations.ec2.protocolarg', 'register_protocol_args')
+    r.register_fn('awscli.customizations.datapipeline', 'register_customizations')
+    r.register_fn('awscli.customizations.cloudsearch', 'initialize')
+    r.register_fn('awscli.customizations.emr.emr', 'emr_initialize')
+    r.register_fn('awscli.customizations.emrcontainers', 'initialize')
+    r.register_fn('awscli.customizations.eks', 'initialize')
+    r.register_fn('awscli.customizations.ecs', 'initialize')
+    r.register_fn('awscli.customizations.ecs.monitormutatinggatewayservice', 'register_monitor_mutating_gateway_service')
+    r.register_fn('awscli.customizations.lightsail', 'initialize')
+    r.register_fn('awscli.customizations.cloudsearchdomain', 'register_cloudsearchdomain')
+    r.register_fn('awscli.customizations.generatecliskeleton', 'register_generate_cli_skeleton')
+    r.register_fn('awscli.customizations.assumerole', 'register_assume_role_provider')
+    r.register_fn('awscli.customizations.waiters', 'register_add_waiters')
+    r.register_fn('awscli.customizations.codedeploy.codedeploy', 'initialize')
+    r.register_fn('awscli.customizations.configservice.subscribe', 'register_subscribe')
+    r.register_fn('awscli.customizations.configservice.getstatus', 'register_get_status')
+    r.register_fn('awscli.customizations.configservice.rename_cmd', 'register_rename_config')
+    r.register_fn('awscli.customizations.timestampformat', 'register_timestamp_format')
+    r.register_fn('awscli.customizations.awslambda', 'register_lambda_create_function')
+    r.register_fn('awscli.customizations.kms', 'register_fix_kms_create_grant_docs')
+    r.register_fn('awscli.customizations.route53', 'register_create_hosted_zone_doc_fix')
+    r.register_fn('awscli.customizations.configservice.putconfigurationrecorder', 'register_modify_put_configuration_recorder')
+    r.register_fn('awscli.customizations.codeartifact', 'register_codeartifact_commands')
+    r.register_fn('awscli.customizations.codecommit', 'initialize')
+    r.register_fn('awscli.customizations.iot_data', 'register_custom_endpoint_note')
+    r.register_direct('awscli.customizations.iot', 'register_create_keys_and_cert_arguments', 'building-argument-table.iot.create-keys-and-certificate')
+    r.register_direct('awscli.customizations.iot', 'register_create_keys_from_csr_arguments', 'building-argument-table.iot.create-certificate-from-csr')
+    r.register_fn('awscli.customizations.cloudfront', 'register')
+    r.register_fn('awscli.customizations.gamelift', 'register_gamelift_commands')
+    r.register_fn('awscli.customizations.ec2.paginate', 'register_ec2_page_size_injector')
+    r.register_fn('awscli.customizations.cloudformation', 'initialize')
+    r.register_fn('awscli.customizations.servicecatalog', 'register_servicecatalog_commands')
+    r.register_fn('awscli.customizations.translate', 'register_translate_import_terminology')
+    r.register_fn('awscli.customizations.history', 'register_history_mode')
+    r.register_fn('awscli.customizations.history', 'register_history_commands')
+    r.register_fn('awscli.customizations.s3events', 'register_event_stream_arg')
+    r.register_fn('awscli.customizations.s3events', 'register_document_expires_string')
+    r.register_fn('awscli.customizations.dlm.dlm', 'dlm_initialize')
+    r.register_fn('awscli.customizations.sessionmanager', 'register_ssm_session')
+    r.register_fn('awscli.customizations.logs', 'register_logs_commands')
+    r.register_fn('awscli.customizations.devcommands', 'register_dev_commands')
+    r.register_fn('awscli.customizations.wizard.commands', 'register_wizard_commands')
+    r.register_fn('awscli.customizations.sso', 'register_sso_commands')
+    r.register_fn('awscli.customizations.dynamodb.paginatorfix', 'register_dynamodb_paginator_fix')
+    r.register_fn('awscli.alias', 'register_alias_commands')
+    r.register_fn('awscli.customizations.kinesis', 'register_kinesis_list_streams_pagination_backcompat')
+    r.register_fn('awscli.customizations.quicksight', 'register_quicksight_asset_bundle_customizations')
+    r.register_fn('awscli.customizations.ec2instanceconnect', 'register_ec2_instance_connect_commands')
+    r.register_fn('awscli.customizations.login', 'register_login_cmds')
+
+
+# ---------------------------------------------------------------------------
+# Registry construction
+# ---------------------------------------------------------------------------
+
+def _build_registry(entries):
+    """Map each entry to its event patterns, producing event_pattern -> [entries]."""
+    registry = collections.OrderedDict()
+    seen = set()
+
+    def _add(event_pattern, entry_tuple):
+        key = (event_pattern,) + entry_tuple
+        if key not in seen:
+            seen.add(key)
+            registry.setdefault(event_pattern, []).append(entry_tuple)
+
+    for entry in entries:
+        if entry.event_name is not None:
+            # Direct registration — event pattern is explicit.
+            entry_tuple = (entry.module, entry.fn_name, 'direct')
+            _add(entry.event_name, entry_tuple)
+        else:
+            # register_fn — run against _MiniEmitter to discover events.
+            mini = _MiniEmitter()
+            mod = importlib.import_module(entry.module)
+            fn = getattr(mod, entry.fn_name)
+            fn(mini)
+
+            entry_tuple = (entry.module, entry.fn_name, 'init')
+            if not mini.registrations:
+                # No events recorded — should not happen, but be safe.
+                _add('session-initialized', entry_tuple)
+            else:
+                for event_name in mini.registrations:
+                    _add(event_name, entry_tuple)
+
+    # Sort by event pattern for stable output.
+    return collections.OrderedDict(
+        sorted(registry.items(), key=lambda kv: kv[0])
+    )
+
+
+# ---------------------------------------------------------------------------
+# Rendering
+# ---------------------------------------------------------------------------
+
+def _render_registry(registry):
+    lines = [
+        '# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.',
+        '#',
+        '# AUTO-GENERATED by scripts/generate_plugin_registry.',
+        '# DO NOT EDIT MANUALLY.',
+        '#',
+        '# Re-generate by running:',
+        '#   scripts/generate_plugin_registry',
+        '#',
+        '# Maps event patterns to initializer entries.',
+        '# At runtime, the LazyInitEmitter triggers entries on demand:',
+        '# before emitting event X, it finds entries whose event patterns',
+        '# match X, dispatches each entry at most once, then proceeds',
+        '# with normal event dispatch.',
+        '#',
+        '# Entry formats:',
+        "#   (module, fn_name, 'init')    call fn(event_handlers)",
+        "#   (module, fn_name, 'direct')  event_handlers.register(event_pattern, fn)",
+        '',
+        'PLUGIN_REGISTRY = {',
+    ]
+
+    items = list(registry.items())
+    for i, (event_pattern, entries) in enumerate(items):
+        is_last = (i == len(items) - 1)
+        lines.append(f'    {event_pattern!r}: [')
+        for j, entry in enumerate(entries):
+            comma = '' if j == len(entries) - 1 else ','
+            lines.append(f'        {entry!r}{comma}')
+        lines.append(f'    ]{("" if is_last else ",")}')
+
+    lines.append('}')
+    lines.append('')
+    return '\n'.join(lines)
+
+
+# ---------------------------------------------------------------------------
+# Main
+# ---------------------------------------------------------------------------
+
+def main():
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    parser.add_argument(
+        '--output',
+        default=DEFAULT_OUTPUT,
+        help=f'Path to write the generated registry (default: {DEFAULT_OUTPUT})',
+    )
+    parser.add_argument(
+        '--check',
+        action='store_true',
+        help=(
+            'Check that the committed registry matches a fresh generation. '
+            'Exits with code 1 if they differ (for CI).'
+        ),
+    )
+    parser.add_argument(
+        '--print',
+        dest='print_only',
+        action='store_true',
+        help='Print the generated registry to stdout instead of writing a file.',
+    )
+    args = parser.parse_args()
+
+    recorder = _Recorder()
+    _all_registrations(recorder)
+    registry = _build_registry(recorder.entries)
+    source = _render_registry(registry)
+
+    if args.print_only:
+        print(source)
+        return
+
+    if args.check:
+        if not os.path.exists(args.output):
+            print(
+                f'ERROR: {args.output} does not exist. '
+                'Run without --check to generate it.',
+                file=sys.stderr,
+            )
+            sys.exit(1)
+        with open(args.output) as f:
+            committed = f.read()
+        if committed == source:
+            print('OK: committed registry matches fresh generation.')
+        else:
+            import difflib
+            diff = difflib.unified_diff(
+                committed.splitlines(keepends=True),
+                source.splitlines(keepends=True),
+                fromfile=f'{args.output} (committed)',
+                tofile=f'{args.output} (generated)',
+            )
+            sys.stderr.write(''.join(diff))
+            print(
+                f'ERROR: {args.output} is out of date.\n'
+                'Run `scripts/generate_plugin_registry` and commit the result.',
+                file=sys.stderr,
+            )
+            sys.exit(1)
+        return
+
+    with open(args.output, 'w') as f:
+        f.write(source)
+    print(f'Written {args.output}')
+
+    total = sum(len(v) for v in registry.values())
+    unique = len({e for entries in registry.values() for e in entries})
+    print(f'\nRegistry summary:')
+    print(f'  {len(registry)} event patterns, {total} total entries, {unique} unique initializers')
+
+
+if __name__ == '__main__':
+    main()

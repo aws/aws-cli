@@ -28,6 +28,18 @@ alias_packages_plugins = hooks.collect_submodules(
 ) + hooks.collect_submodules('awscli.s3transfer')
 hiddenimports += alias_packages_plugins
 
+# handlers.py uses importlib.import_module at runtime to load customization
+# modules, so PyInstaller cannot discover them statically. Collect all module
+# paths referenced in handlers_registry.py as hidden imports.
+from awscli.handlers_registry import PLUGIN_REGISTRY
+_registry_modules = {
+    module_path
+    for entries in PLUGIN_REGISTRY.values()
+    for entry in entries
+    for module_path in [entry[0]]
+}
+hiddenimports += sorted(_registry_modules)
+
 
 # Completion model files are only used at build time to generate the
 # ac.index SQLite database. They are not needed at runtime and can be

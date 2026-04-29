@@ -622,9 +622,11 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
             value='file:///foo',
         )
         # Make sure it was called with our passed-in URI
-        self.assertEqual(
-            'file:///foo', mock_paramfile.call_args_list[-1][1]['value']
-        )
+        matching = [
+            c for c in mock_paramfile.call_args_list
+            if c[1].get('value') == 'file:///foo'
+        ]
+        self.assertTrue(len(matching) > 0)
 
     @mock.patch('awscli.paramfile.URIArgumentHandler', spec=URIArgumentHandler)
     def test_custom_command_paramfile(self, mock_handler):

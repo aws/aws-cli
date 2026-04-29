@@ -14,12 +14,14 @@ import logging
 import os
 import sys
 
-from botocore.hooks import HierarchicalEmitter
+from awscli.lazy_emitter import LazyInitEmitter
 
 log = logging.getLogger('awscli.plugin')
 
 BUILTIN_PLUGINS = {'__builtin__': 'awscli.handlers'}
 CLI_LEGACY_PLUGIN_PATH = 'cli_legacy_plugin_path'
+# Re-export for backward compatibility.
+HierarchicalEmitter = LazyInitEmitter
 
 
 def load_plugins(plugin_mapping, event_hooks=None, include_builtins=True):
@@ -31,19 +33,19 @@ def load_plugins(plugin_mapping, event_hooks=None, include_builtins=True):
 
     :type event_hooks: ``EventHooks``
     :param event_hooks: Event hook emitter.  If one if not provided,
-        an emitter will be created and returned.  Otherwise, the
+        a LazyInitEmitter will be created and returned.  Otherwise, the
         passed in ``event_hooks`` will be used to initialize plugins.
 
     :type include_builtins: bool
     :param include_builtins: If True, the builtin awscli plugins (specified in
         ``BUILTIN_PLUGINS``) will be included in the list of plugins to load.
 
-    :rtype: HierarchicalEmitter
+    :rtype: LazyInitEmitter
     :return: An event emitter object.
 
     """
     if event_hooks is None:
-        event_hooks = HierarchicalEmitter()
+        event_hooks = LazyInitEmitter()
     if include_builtins:
         _load_plugins(BUILTIN_PLUGINS, event_hooks)
     plugin_path = plugin_mapping.pop(CLI_LEGACY_PLUGIN_PATH, None)

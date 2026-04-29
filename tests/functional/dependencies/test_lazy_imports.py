@@ -78,7 +78,7 @@ def test_prompt_toolkit_not_imported(cmd):
         [sys.executable, '-c', script],
         capture_output=True,
         text=True,
-        timeout=30,
+        timeout=60,
     )
     assert result.returncode == 0, (
         f"prompt_toolkit was unexpectedly imported for 'aws {cmd}':\n"

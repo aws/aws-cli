@@ -16,6 +16,7 @@ from botocore.waiter import WaiterModel
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.waiters import (
     WaitCommand,
+    WaiterArgument,
     WaiterCaller,
     WaiterStateCommand,
     WaiterStateCommandBuilder,
@@ -166,6 +167,13 @@ class TestWaitHelpOutput(BaseAWSHelpOutputTest):
         self.assert_contains('``--filters`` (list)')
         self.assert_contains('======\nOutput\n======\n\nNone')
 
+    def test_wait_state_help_shows_waiter_params(self):
+        self.driver.main(['ec2', 'wait', 'instance-running', 'help'])
+        self.assert_contains('[--delay <value>]')
+        self.assert_contains('[--max-attempts <value>]')
+        self.assert_contains('``--delay``')
+        self.assert_contains('``--max-attempts``')
+
 
 class TestWait(BaseAWSCommandParamsTest):
     """This is merely a smoke test.
@@ -202,6 +210,53 @@ class TestWait(BaseAWSCommandParamsTest):
             'DBInstances': [{'DBInstanceStatus': 'available'}]
         }
         self.assert_params_for_cmd(cmdline, result)
+
+    def test_ec2_wait_with_delay_and_max_attempts(self):
+        cmdline = 'ec2 wait instance-running'
+        cmdline += ' --instance-ids i-12345678'
+        cmdline += ' --delay 10 --max-attempts 100'
+        # WaiterConfig is popped by botocore's Waiter.wait() before
+        # the API call, so only API params appear in last_kwargs.
+        result = {'InstanceIds': ['i-12345678']}
+        self.parsed_response = {
+            'Reservations': [{'Instances': [{'State': {'Name': 'running'}}]}]
+        }
+        self.assert_params_for_cmd(cmdline, result)
+
+    def test_ec2_wait_forwards_waiter_config_end_to_end(self):
+        # End-to-end check: --delay and --max-attempts must flow from the
+        # command line all the way into waiter.wait() as WaiterConfig,
+        # alongside the regular API parameters.
+        with mock.patch(
+            'botocore.client.BaseClient.get_waiter'
+        ) as mock_get_waiter:
+            mock_waiter = mock.Mock()
+            mock_get_waiter.return_value = mock_waiter
+            cmdline = (
+                'ec2 wait instance-running '
+                '--instance-ids i-12345678 '
+                '--delay 10 --max-attempts 100'
+            )
+            self.run_cmd(cmdline, expected_rc=0)
+            mock_get_waiter.assert_called_with('instance_running')
+            mock_waiter.wait.assert_called_once_with(
+                InstanceIds=['i-12345678'],
+                WaiterConfig={'Delay': 10, 'MaxAttempts': 100},
+            )
+
+    def test_ec2_wait_without_waiter_flags_omits_waiter_config(self):
+        # When neither --delay nor --max-attempts are supplied, no
+        # WaiterConfig kwarg should be passed to waiter.wait().
+        with mock.patch(
+            'botocore.client.BaseClient.get_waiter'
+        ) as mock_get_waiter:
+            mock_waiter = mock.Mock()
+            mock_get_waiter.return_value = mock_waiter
+            cmdline = 'ec2 wait instance-running --instance-ids i-12345678'
+            self.run_cmd(cmdline, expected_rc=0)
+            mock_waiter.wait.assert_called_once_with(
+                InstanceIds=['i-12345678']
+            )
 
 
 class TestWaiterStateCommandBuilder(unittest.TestCase):
@@ -258,13 +313,17 @@ class TestWaiterStateCommandBuilder(unittest.TestCase):
             instance_running_cmd.DESCRIPTION,
             'My waiter description. It will poll every 1 seconds until '
             'a successful state has been reached. This will exit with a '
-            'return code of 255 after 10 failed checks.',
+            'return code of 255 after 10 failed checks. You can override '
+            'the default polling behavior with ``--delay`` and '
+            '``--max-attempts``.',
         )
         self.assertEqual(
             bucket_exists_cmd.DESCRIPTION,
             'My waiter description. It will poll every 1 seconds until '
             'a successful state has been reached. This will exit with a '
-            'return code of 255 after 10 failed checks.',
+            'return code of 255 after 10 failed checks. You can override '
+            'the default polling behavior with ``--delay`` and '
+            '``--max-attempts``.',
         )
 
 
@@ -299,7 +358,9 @@ class TestWaiterStateDocBuilder(unittest.TestCase):
             description,
             'My description. It will poll every 5 seconds until a '
             'successful state has been reached. This will exit with a '
-            'return code of 255 after 20 failed checks.',
+            'return code of 255 after 20 failed checks. You can override '
+            'the default polling behavior with ``--delay`` and '
+            '``--max-attempts``.',
         )
 
     def test_error_acceptor(self):
@@ -311,7 +372,9 @@ class TestWaiterStateDocBuilder(unittest.TestCase):
             'Wait until MyException is thrown when polling with '
             '``my-operation``. It will poll every 5 seconds until a '
             'successful state has been reached. This will exit with a '
-            'return code of 255 after 20 failed checks.',
+            'return code of 255 after 20 failed checks. You can override '
+            'the default polling behavior with ``--delay`` and '
+            '``--max-attempts``.',
         )
 
     def test_status_acceptor(self):
@@ -323,7 +386,9 @@ class TestWaiterStateDocBuilder(unittest.TestCase):
             'Wait until 200 response is received when polling with '
             '``my-operation``. It will poll every 5 seconds until a '
             'successful state has been reached. This will exit with a '
-            'return code of 255 after 20 failed checks.',
+            'return code of 255 after 20 failed checks. You can override '
+            'the default polling behavior with ``--delay`` and '
+            '``--max-attempts``.',
         )
 
     def test_path_acceptor(self):
@@ -336,7 +401,9 @@ class TestWaiterStateDocBuilder(unittest.TestCase):
             'Wait until JMESPath query MyResource.name returns running when '
             'polling with ``my-operation``. It will poll every 5 seconds '
             'until a successful state has been reached. This will exit with '
-            'a return code of 255 after 20 failed checks.',
+            'a return code of 255 after 20 failed checks. You can override '
+            'the default polling behavior with ``--delay`` and '
+            '``--max-attempts``.',
         )
 
     def test_path_all_acceptor(self):
@@ -349,7 +416,9 @@ class TestWaiterStateDocBuilder(unittest.TestCase):
             'Wait until JMESPath query MyResource[].name returns running for '
             'all elements when polling with ``my-operation``. It will poll '
             'every 5 seconds until a successful state has been reached. '
-            'This will exit with a return code of 255 after 20 failed checks.',
+            'This will exit with a return code of 255 after 20 failed checks. '
+            'You can override the default polling behavior with ``--delay`` '
+            'and ``--max-attempts``.',
         )
 
     def test_path_any_acceptor(self):
@@ -362,7 +431,9 @@ class TestWaiterStateDocBuilder(unittest.TestCase):
             'Wait until JMESPath query MyResource[].name returns running for '
             'any element when polling with ``my-operation``. It will poll '
             'every 5 seconds until a successful state has been reached. '
-            'This will exit with a return code of 255 after 20 failed checks.',
+            'This will exit with a return code of 255 after 20 failed checks. '
+            'You can override the default polling behavior with ``--delay`` '
+            'and ``--max-attempts``.',
         )
 
 
@@ -399,3 +470,129 @@ class TestWaiterCaller(unittest.TestCase):
 
         # Ensure the wait command was called properly.
         waiter.wait.assert_called_with(Foo='bar', Baz='biz')
+
+    def test_invoke_with_set_waiter_config(self):
+        waiter = mock.Mock()
+        waiter_name = 'my_waiter'
+        session = mock.Mock()
+        session.create_client.return_value.get_waiter.return_value = waiter
+
+        parameters = {'Foo': 'bar'}
+        parsed_globals = mock.Mock()
+        parsed_globals.region = 'us-east-1'
+        parsed_globals.endpoint_url = 'myurl'
+        parsed_globals.verify_ssl = True
+
+        waiter_caller = WaiterCaller(session, waiter_name)
+        waiter_caller.set_waiter_config({'Delay': 10, 'MaxAttempts': 50})
+        waiter_caller.invoke(
+            'myservice', 'MyWaiter', parameters, parsed_globals
+        )
+
+        waiter.wait.assert_called_with(
+            Foo='bar',
+            WaiterConfig={'Delay': 10, 'MaxAttempts': 50},
+        )
+
+    def test_invoke_without_waiter_config(self):
+        waiter = mock.Mock()
+        waiter_name = 'my_waiter'
+        session = mock.Mock()
+        session.create_client.return_value.get_waiter.return_value = waiter
+
+        parameters = {'Foo': 'bar'}
+        parsed_globals = mock.Mock()
+        parsed_globals.region = 'us-east-1'
+        parsed_globals.endpoint_url = 'myurl'
+        parsed_globals.verify_ssl = True
+
+        waiter_caller = WaiterCaller(session, waiter_name)
+        waiter_caller.invoke(
+            'myservice', 'MyWaiter', parameters, parsed_globals
+        )
+
+        # Without set_waiter_config, no WaiterConfig should be passed.
+        waiter.wait.assert_called_with(Foo='bar')
+
+
+class TestWaiterArgument(unittest.TestCase):
+    def test_add_delay_to_params(self):
+        arg = WaiterArgument('delay', 'help text', 'Delay')
+        params = {}
+        arg.add_to_params(params, 10)
+        self.assertEqual(params, {'WaiterConfig': {'Delay': 10}})
+
+    def test_add_max_attempts_to_params(self):
+        arg = WaiterArgument('max-attempts', 'help text', 'MaxAttempts')
+        params = {}
+        arg.add_to_params(params, 50)
+        self.assertEqual(params, {'WaiterConfig': {'MaxAttempts': 50}})
+
+    def test_both_params_together(self):
+        delay_arg = WaiterArgument('delay', 'help text', 'Delay')
+        max_arg = WaiterArgument('max-attempts', 'help text', 'MaxAttempts')
+        params = {}
+        delay_arg.add_to_params(params, 10)
+        max_arg.add_to_params(params, 50)
+        self.assertEqual(
+            params,
+            {'WaiterConfig': {'Delay': 10, 'MaxAttempts': 50}},
+        )
+
+    def test_none_value_not_added(self):
+        arg = WaiterArgument('delay', 'help text', 'Delay')
+        params = {}
+        arg.add_to_params(params, None)
+        self.assertEqual(params, {})
+
+    def test_cli_name(self):
+        arg = WaiterArgument('delay', 'help text', 'Delay')
+        self.assertEqual(arg.cli_name, '--delay')
+
+    def test_cli_type_name(self):
+        arg = WaiterArgument('delay', 'help text', 'Delay')
+        self.assertEqual(arg.cli_type_name, 'integer')
+
+    def test_required_defaults_to_false(self):
+        arg = WaiterArgument('delay', 'help text', 'Delay')
+        self.assertFalse(arg.required)
+
+    def test_delay_rejects_negative(self):
+        arg = WaiterArgument('delay', 'help text', 'Delay')
+        params = {}
+        with self.assertRaises(Exception) as ctx:
+            arg.add_to_params(params, -1)
+        self.assertIn('--delay', str(ctx.exception))
+        self.assertEqual(params, {})
+
+    def test_delay_rejects_negative_large(self):
+        arg = WaiterArgument('delay', 'help text', 'Delay')
+        params = {}
+        with self.assertRaises(Exception):
+            arg.add_to_params(params, -100)
+
+    def test_delay_accepts_zero(self):
+        arg = WaiterArgument('delay', 'help text', 'Delay')
+        params = {}
+        arg.add_to_params(params, 0)
+        self.assertEqual(params, {'WaiterConfig': {'Delay': 0}})
+
+    def test_max_attempts_rejects_zero(self):
+        arg = WaiterArgument('max-attempts', 'help text', 'MaxAttempts')
+        params = {}
+        with self.assertRaises(Exception) as ctx:
+            arg.add_to_params(params, 0)
+        self.assertIn('--max-attempts', str(ctx.exception))
+        self.assertEqual(params, {})
+
+    def test_max_attempts_rejects_negative(self):
+        arg = WaiterArgument('max-attempts', 'help text', 'MaxAttempts')
+        params = {}
+        with self.assertRaises(Exception):
+            arg.add_to_params(params, -1)
+
+    def test_max_attempts_accepts_one(self):
+        arg = WaiterArgument('max-attempts', 'help text', 'MaxAttempts')
+        params = {}
+        arg.add_to_params(params, 1)
+        self.assertEqual(params, {'WaiterConfig': {'MaxAttempts': 1}})

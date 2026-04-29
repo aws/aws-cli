@@ -210,13 +210,70 @@ class TestOpenBrowserWithPatchedEnv(unittest.TestCase):
         # correctly.
         env = {'LD_LIBRARY_PATH': '/foo'}
         with mock.patch('os.environ', env):
-            with mock.patch('webbrowser.open_new_tab') as open_new_tab:
-                captured_env = {}
-                open_new_tab.side_effect = lambda x: captured_env.update(
-                    os.environ
-                )
-                open_browser_with_original_ld_path('http://example.com')
+            with mock.patch(
+                'awscli.customizations.sso.utils._is_wsl', return_value=False
+            ):
+                with mock.patch('webbrowser.open_new_tab') as open_new_tab:
+                    captured_env = {}
+                    open_new_tab.side_effect = lambda x: captured_env.update(
+                        os.environ
+                    )
+                    open_browser_with_original_ld_path('http://example.com')
         self.assertIsNone(captured_env.get('LD_LIBRARY_PATH'))
+
+    def test_open_browser_uses_wslview_in_wsl(self):
+        with mock.patch(
+            'awscli.customizations.sso.utils._is_wsl', return_value=True
+        ):
+            with mock.patch(
+                'awscli.customizations.sso.utils.shutil.which',
+                return_value='/usr/bin/wslview',
+            ):
+                with mock.patch(
+                    'awscli.customizations.sso.utils.subprocess.run'
+                ) as subprocess_run:
+                    with mock.patch('webbrowser.open_new_tab') as open_new_tab:
+                        open_browser_with_original_ld_path(
+                            'http://example.com'
+                        )
+        subprocess_run.assert_called_once_with(
+            ['/usr/bin/wslview', 'http://example.com'],
+            check=True,
+        )
+        open_new_tab.assert_not_called()
+
+    def test_open_browser_uses_cmd_exe_without_wslview(self):
+        with mock.patch(
+            'awscli.customizations.sso.utils._is_wsl', return_value=True
+        ):
+            with mock.patch(
+                'awscli.customizations.sso.utils.shutil.which',
+                return_value=None,
+            ):
+                with mock.patch(
+                    'awscli.customizations.sso.utils.subprocess.run'
+                ) as subprocess_run:
+                    with mock.patch('webbrowser.open_new_tab') as open_new_tab:
+                        open_browser_with_original_ld_path(
+                            'http://example.com'
+                        )
+        subprocess_run.assert_called_once_with(
+            ['cmd.exe', '/C', 'start', '', 'http://example.com'],
+            check=True,
+        )
+        open_new_tab.assert_not_called()
+
+    def test_open_browser_falls_back_when_wsl_open_fails(self):
+        with mock.patch(
+            'awscli.customizations.sso.utils._is_wsl', return_value=True
+        ):
+            with mock.patch(
+                'awscli.customizations.sso.utils._open_browser_with_wslinterop',
+                side_effect=OSError(),
+            ):
+                with mock.patch('webbrowser.open_new_tab') as open_new_tab:
+                    open_browser_with_original_ld_path('http://example.com')
+        open_new_tab.assert_called_once_with('http://example.com')
 
 
 class MockRequest:

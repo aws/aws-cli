@@ -3,7 +3,7 @@
 The following ``delete-message`` example sends an even to the specified room, which directs clients to delete the specified message: that is, unrender it from view and delete it from the client's chat history. ::
 
     aws ivschat delete-message \
-        --roomIdentifier "arn:aws:ivschat:us-west-2:12345689012:room/g1H2I3j4k5L6" \
+        --room-identifier "arn:aws:ivschat:us-west-2:12345689012:room/g1H2I3j4k5L6" \
         --id "ABC123def456" \
         --reason "Message contains profanity"
 

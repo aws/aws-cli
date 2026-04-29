@@ -2,7 +2,7 @@
 
 The following ``describe-user-hierarchy-structure`` example displays the details for the hierarchy structure for the specified Amazon Connect instance. ::
 
-    aws connect describe-user-hierarchy-group \
+    aws connect describe-user-hierarchy-structure \
         --instance-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::

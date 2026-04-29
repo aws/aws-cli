@@ -76,25 +76,33 @@ class ConfigureGetCommand(BasicCommand):
 
         # Logic to deal with predefined sections like [preview], [plugin] and
         # etc.
+        # default section type for full_config is profiles, override with sso-sessions if qualified name is an sso-session
+        section_type = "profiles"
+        profile_name = None
+        session_name = None
         if num_dots == 1 and parts[0] in PREDEFINED_SECTION_NAMES:
             full_config = self._session.full_config
             section, config_name = varname.split('.')
             value = full_config.get(section, {}).get(config_name)
             if value is None:
                 # Try to retrieve it from the profile config.
-                value = full_config['profiles'].get(
+                value = full_config[section_type].get(
                     section, {}).get(config_name)
             return value
-
         if parts[0] == 'profile':
             profile_name = parts[1]
+            config_name = parts[2]
+            remaining = parts[3:]
+        elif parts[0] == 'sso-session':
+            section_type = "sso-sessions"
+            session_name = parts[1]
             config_name = parts[2]
             remaining = parts[3:]
         # Check if varname starts with 'default' profile (e.g.
         # default.emr-dev.emr.instance_profile) If not, go further to check
         # if varname starts with a known profile name
         elif parts[0] == 'default' or (
-                parts[0] in self._session.full_config['profiles']):
+                parts[0] in self._session.full_config[section_type]):
             profile_name = parts[0]
             config_name = parts[1]
             remaining = parts[2:]
@@ -104,9 +112,9 @@ class ConfigureGetCommand(BasicCommand):
                 profile_name = 'default'
             config_name = parts[0]
             remaining = parts[1:]
-
-        value = self._session.full_config['profiles'].get(
-            profile_name, {}).get(config_name)
+        section_label = profile_name or session_name
+        value = self._session.full_config[section_type].get(
+            section_label, {}).get(config_name)
         if len(remaining) == 1:
             try:
                 value = value.get(remaining[-1])

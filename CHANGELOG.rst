@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+1.45.1
+======
+
+* api-change:``bedrock-agentcore``: AgentCore Identity now supports on-behalf-of token exchange OAuth2. AgentCore Memory now supports metadata for LongTerm Memory Records.
+* api-change:``bedrock-agentcore-control``: AgentCore Identity now supports on-behalf-of token exchange OAuth2. AgentCore Memory now supports metadata for LongTerm Memory Records.
+* api-change:``datazone``: Adds support for asynchronous notebook runs
+* api-change:``eks``: Vended logs update param for capability vended logs feature
+* api-change:``kafka``: Adds support for ZookeeperAccess field to control the Client-Zookeeper connectivity.
+* api-change:``observabilityadmin``: Observability Admin enablement launch for AWS Kafka, Bedrock Agent Core Workload Identity and OTel metric enablement.
+* api-change:``payment-cryptography``: Adds support for resource-based policies on AWS Payment Cryptography keys, enabling cross-account key sharing. Also adds Multi-Party Approval (MPA) team association APIs for protecting sensitive import root public key operations.
+* api-change:``route53globalresolver``: Adds support for regions in the UpdateGlobalResolver input.
+* api-change:``sagemaker``: Add InstancePools support to Endpoint for flexible provisioning across a prioritized list of instance types. Add Specifications support to InferenceComponent for per-instance-type model configurations.
+* api-change:``sso-admin``: Add InstanceArn and IdentityStoreArn in the response of CreateApplication API and IdentityStoreArn in the response of DescribeApplication API
+
+
 1.45.0
 ======
 

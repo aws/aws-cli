@@ -12,14 +12,18 @@
 # language governing permissions and limitations under the License.
 import io
 import json
+import os
 from datetime import datetime, timedelta
 
 import pytest
 from botocore.credentials import Credentials as StaticCredentials
 from botocore.credentials import ReadOnlyCredentials, RefreshableCredentials
+from botocore.exceptions import ClientError
 from botocore.session import Session
+from botocore.utils import SSOTokenLoader
 from dateutil.tz import tzutc
 
+from awscli.customizations.configure import exportcreds as exportcreds_mod
 from awscli.customizations.configure.exportcreds import (
     BashEnvVarFormatter,
     BashNoExportEnvFormatter,
@@ -350,3 +354,210 @@ class TestConfigureExportCredentialsCommand(unittest.TestCase):
             'Maximum recursive credential process resolution reached',
             str(excinfo),
         )
+
+
+class TestRevokeSSOTokenFlag(unittest.TestCase):
+    def setUp(self):
+        self.session = mock.Mock(spec=Session)
+        self.session.emit_first_non_none_response.return_value = None
+        self.session.get_config_variable.return_value = 'default'
+        self.session.get_credentials.return_value = StaticCredentials(
+            'access_key', 'secret_key', 'token'
+        )
+        self.out_stream = io.StringIO()
+        self.err_stream = io.StringIO()
+        self.os_env = {}
+        self.global_args = mock.Mock()
+        self.tmpdir = mock.MagicMock()
+
+        # Patch SSO_TOKEN_DIR to a temp dir for the duration of the test.
+        self._tmp_token_dir = os.path.join(
+            os.path.dirname(__file__), '_tmp_sso_cache_test'
+        )
+        os.makedirs(self._tmp_token_dir, exist_ok=True)
+        self._token_dir_patcher = mock.patch.object(
+            exportcreds_mod, 'SSO_TOKEN_DIR', self._tmp_token_dir
+        )
+        self._token_dir_patcher.start()
+
+        self.export_creds_cmd = ConfigureExportCredentialsCommand(
+            self.session, self.out_stream, self.err_stream, env=self.os_env
+        )
+
+    def tearDown(self):
+        self._token_dir_patcher.stop()
+        for name in os.listdir(self._tmp_token_dir):
+            os.remove(os.path.join(self._tmp_token_dir, name))
+        os.rmdir(self._tmp_token_dir)
+
+    def _write_token_cache(self, start_url, session_name, contents):
+        # Compute the cache filename via botocore's SSOTokenLoader, the
+        # authority for where SSO tokens are written by ``aws sso login``.
+        # Pinning the test to that contract — rather than to the command's
+        # own cache-key helper — ensures we catch drift between this
+        # command's lookup logic and botocore's storage logic.
+        cache_key = SSOTokenLoader()._generate_cache_key(
+            start_url, session_name
+        )
+        path = os.path.join(self._tmp_token_dir, cache_key + '.json')
+        with open(path, 'w') as f:
+            json.dump(contents, f)
+        return path
+
+    def _sso_session_profile_config(self):
+        return {
+            'scoped': {'sso_session': 'my-session'},
+            'full': {
+                'sso_sessions': {
+                    'my-session': {
+                        'sso_region': 'us-east-1',
+                        'sso_start_url': 'https://example.awsapps.com/start',
+                    }
+                }
+            },
+        }
+
+    def _legacy_profile_config(self):
+        return {
+            'scoped': {
+                'sso_region': 'us-east-1',
+                'sso_start_url': 'https://example.awsapps.com/start',
+            },
+            'full': {},
+        }
+
+    def _wire_profile(self, profile_config):
+        self.session.get_scoped_config.return_value = profile_config['scoped']
+        self.session.full_config = profile_config['full']
+
+    def test_revokes_token_for_sso_session_profile(self):
+        self._wire_profile(self._sso_session_profile_config())
+        cache_path = self._write_token_cache(
+            start_url='https://example.awsapps.com/start',
+            session_name='my-session',
+            contents={'accessToken': 'abc123', 'region': 'us-east-1'},
+        )
+        sso_client = mock.Mock()
+        self.session.create_client.return_value = sso_client
+
+        rc = self.export_creds_cmd(
+            args=['--revoke-sso-token'], parsed_globals=self.global_args
+        )
+
+        self.assertEqual(rc, 0)
+        self.session.create_client.assert_called_once_with(
+            'sso',
+            region_name='us-east-1',
+            verify=self.global_args.verify_ssl,
+        )
+        sso_client.logout.assert_called_once_with(accessToken='abc123')
+        self.assertFalse(os.path.exists(cache_path))
+
+    def test_revokes_token_for_legacy_sso_profile(self):
+        self._wire_profile(self._legacy_profile_config())
+        cache_path = self._write_token_cache(
+            start_url='https://example.awsapps.com/start',
+            session_name=None,
+            contents={'accessToken': 'legacy-token', 'region': 'us-east-1'},
+        )
+        sso_client = mock.Mock()
+        self.session.create_client.return_value = sso_client
+
+        rc = self.export_creds_cmd(
+            args=['--revoke-sso-token'], parsed_globals=self.global_args
+        )
+
+        self.assertEqual(rc, 0)
+        sso_client.logout.assert_called_once_with(accessToken='legacy-token')
+        self.assertFalse(os.path.exists(cache_path))
+
+    def test_no_op_for_non_sso_profile(self):
+        self._wire_profile({'scoped': {}, 'full': {}})
+        rc = self.export_creds_cmd(
+            args=['--revoke-sso-token'], parsed_globals=self.global_args
+        )
+        self.assertEqual(rc, 0)
+        self.session.create_client.assert_not_called()
+
+    def test_no_op_when_cache_file_missing(self):
+        self._wire_profile(self._sso_session_profile_config())
+        # No cache file written.
+        rc = self.export_creds_cmd(
+            args=['--revoke-sso-token'], parsed_globals=self.global_args
+        )
+        self.assertEqual(rc, 0)
+        self.session.create_client.assert_not_called()
+
+    def test_swallows_non_client_error_from_revoke_call(self):
+        # ``revoke_sso_token`` only catches ClientError. Non-ClientError
+        # transport-level exceptions (BotoCoreError, EndpointResolutionError,
+        # network failures, etc.) must not crash the export command, since
+        # credentials have already been emitted.
+        self._wire_profile(self._sso_session_profile_config())
+        self._write_token_cache(
+            start_url='https://example.awsapps.com/start',
+            session_name='my-session',
+            contents={'accessToken': 'abc123', 'region': 'us-east-1'},
+        )
+        self.session.create_client.side_effect = RuntimeError(
+            'simulated transport failure'
+        )
+
+        rc = self.export_creds_cmd(
+            args=['--revoke-sso-token'], parsed_globals=self.global_args
+        )
+
+        self.assertEqual(rc, 0)
+        # Credentials must still have been emitted to stdout.
+        emitted = json.loads(self.out_stream.getvalue())
+        self.assertEqual(emitted['AccessKeyId'], 'access_key')
+
+    def test_swallows_logout_api_error_and_still_removes_cache(self):
+        self._wire_profile(self._sso_session_profile_config())
+        cache_path = self._write_token_cache(
+            start_url='https://example.awsapps.com/start',
+            session_name='my-session',
+            contents={'accessToken': 'abc123', 'region': 'us-east-1'},
+        )
+        sso_client = mock.Mock()
+        sso_client.logout.side_effect = ClientError(
+            {'Error': {'Code': 'UnauthorizedException', 'Message': 'expired'}},
+            'Logout',
+        )
+        self.session.create_client.return_value = sso_client
+
+        rc = self.export_creds_cmd(
+            args=['--revoke-sso-token'], parsed_globals=self.global_args
+        )
+
+        self.assertEqual(rc, 0)
+        sso_client.logout.assert_called_once()
+        self.assertFalse(os.path.exists(cache_path))
+
+    def test_credentials_still_emitted_when_revoke_fails(self):
+        self._wire_profile(self._sso_session_profile_config())
+        # Cache contents missing required keys -> revoke is a no-op, but
+        # output must still be produced.
+        self._write_token_cache(
+            start_url='https://example.awsapps.com/start',
+            session_name='my-session',
+            contents={'accessToken': ''},
+        )
+        rc = self.export_creds_cmd(
+            args=['--revoke-sso-token'], parsed_globals=self.global_args
+        )
+        self.assertEqual(rc, 0)
+        emitted = json.loads(self.out_stream.getvalue())
+        self.assertEqual(emitted['AccessKeyId'], 'access_key')
+        self.assertEqual(emitted['SecretAccessKey'], 'secret_key')
+
+    def test_flag_off_does_not_revoke(self):
+        self._wire_profile(self._sso_session_profile_config())
+        self._write_token_cache(
+            start_url='https://example.awsapps.com/start',
+            session_name='my-session',
+            contents={'accessToken': 'abc123', 'region': 'us-east-1'},
+        )
+        rc = self.export_creds_cmd(args=[], parsed_globals=self.global_args)
+        self.assertEqual(rc, 0)
+        self.session.create_client.assert_not_called()

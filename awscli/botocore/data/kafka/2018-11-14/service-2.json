@@ -6343,6 +6343,11 @@
           "locationName": "openMonitoring",
           "documentation": "\n            <p>The settings for open monitoring.</p>\n         "
         },
+        "ZookeeperAccess": {
+          "shape": "ZookeeperAccess",
+          "locationName": "zookeeperAccess",
+          "documentation": "\n            <p>Access control settings for zookeeper</p>\n         "
+        },
         "KafkaVersion": {
           "shape": "__string",
           "locationName": "kafkaVersion",
@@ -6760,6 +6765,17 @@
         "IPV4",
         "DUAL"
       ]
+    },
+    "ZookeeperAccess": {
+      "type": "structure",
+      "members": {
+        "Enabled": {
+          "shape": "__boolean",
+          "locationName": "enabled",
+          "documentation": "\n            <p>Zookeeper Access was on or off for the cluster</p>\n         "
+        }
+      },
+      "documentation": "\n            <p>Access control settings for zookeeper</p>\n         "
     },
     "NodeType": {
       "type": "string",
@@ -7838,12 +7854,16 @@
           "shape": "__string",
           "locationName": "currentVersion",
           "documentation": "\n            <p>The version of the MSK cluster to update. Cluster versions aren't simple numbers. You can describe an MSK cluster to find its version. When this update operation is successful, it generates a new cluster version.</p>\n         "
+        },
+        "ZookeeperAccess": {
+          "shape": "ZookeeperAccess",
+          "locationName": "zookeeperAccess",
+          "documentation": "\n            <p>Access control settings for zookeeper</p>\n         "
         }
       },
       "documentation": "Request body for UpdateConnectivity.",
       "required": [
         "ClusterArn",
-        "ConnectivityInfo",
         "CurrentVersion"
       ]
     },

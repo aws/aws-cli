@@ -11093,8 +11093,7 @@
         "InstanceCount",
         "InstanceGroupName",
         "InstanceType",
-        "ExecutionRole",
-        "EnvironmentConfig"
+        "ExecutionRole"
       ],
       "members":{
         "InstanceCount":{
@@ -13775,6 +13774,10 @@
         "Specification":{
           "shape":"InferenceComponentSpecification",
           "documentation":"<p>Details about the resources to deploy with this inference component, including the model, container, and compute resources.</p>"
+        },
+        "Specifications":{
+          "shape":"InferenceComponentSpecificationList",
+          "documentation":"<p>A list of specification objects for the inference component, one per instance type. Use this parameter when you want to deploy a different model or resource configuration for the inference component on each instance type. You can use either this parameter or the singular <code>Specification</code> parameter, but not both.</p>"
         },
         "RuntimeConfig":{
           "shape":"InferenceComponentRuntimeConfig",
@@ -19976,6 +19979,10 @@
         "Specification":{
           "shape":"InferenceComponentSpecificationSummary",
           "documentation":"<p>Details about the resources that are deployed with this inference component.</p>"
+        },
+        "Specifications":{
+          "shape":"InferenceComponentSpecificationSummaryList",
+          "documentation":"<p>A list of specification summaries for the inference component, one per instance type. This parameter is populated when the inference component was created with multiple specifications. When this parameter is populated, the singular <code>Specification</code> parameter is not returned.</p>"
         },
         "RuntimeConfig":{
           "shape":"InferenceComponentRuntimeConfigSummary",
@@ -27601,6 +27608,29 @@
       "min":0,
       "pattern":"[a-zA-Z0-9-]+"
     },
+    "InferenceComponentPlacementStatus":{
+      "type":"structure",
+      "required":[
+        "InstanceType",
+        "CurrentCopyCount"
+      ],
+      "members":{
+        "InstanceType":{
+          "shape":"ProductionVariantInstanceType",
+          "documentation":"<p>The ML compute instance type where the inference component copies are placed.</p>"
+        },
+        "CurrentCopyCount":{
+          "shape":"InferenceComponentCopyCount",
+          "documentation":"<p>The number of inference component copies currently placed on instances of this type.</p>"
+        }
+      },
+      "documentation":"<p>The placement status of an inference component on a specific instance type. Shows the number of inference component copies currently placed on instances of a given type.</p>"
+    },
+    "InferenceComponentPlacementStatusList":{
+      "type":"list",
+      "member":{"shape":"InferenceComponentPlacementStatus"},
+      "min":1
+    },
     "InferenceComponentPlacementStrategy":{
       "type":"string",
       "enum":[
@@ -27655,6 +27685,10 @@
         "CurrentCopyCount":{
           "shape":"InferenceComponentCopyCount",
           "documentation":"<p>The number of runtime copies of the model container that are currently deployed.</p>"
+        },
+        "PlacementStatus":{
+          "shape":"InferenceComponentPlacementStatusList",
+          "documentation":"<p>The placement status of the inference component across instance types. Shows how the inference component copies are distributed across instance types.</p>"
         }
       },
       "documentation":"<p>Details about the runtime settings for the model that is deployed with the inference component.</p>"
@@ -27685,6 +27719,10 @@
     "InferenceComponentSpecification":{
       "type":"structure",
       "members":{
+        "InstanceType":{
+          "shape":"ProductionVariantInstanceType",
+          "documentation":"<p>The ML compute instance type for the inference component specification. Specifies which instance type this specification applies to. Required when using the <code>Specifications</code> parameter with multiple entries.</p>"
+        },
         "ModelName":{
           "shape":"ModelName",
           "documentation":"<p>The name of an existing SageMaker AI model object in your account that you want to deploy with the inference component.</p>"
@@ -27716,9 +27754,19 @@
       },
       "documentation":"<p>Details about the resources to deploy with this inference component, including the model, container, and compute resources.</p>"
     },
+    "InferenceComponentSpecificationList":{
+      "type":"list",
+      "member":{"shape":"InferenceComponentSpecification"},
+      "max":5,
+      "min":1
+    },
     "InferenceComponentSpecificationSummary":{
       "type":"structure",
       "members":{
+        "InstanceType":{
+          "shape":"ProductionVariantInstanceType",
+          "documentation":"<p>The ML compute instance type associated with this inference component specification.</p>"
+        },
         "ModelName":{
           "shape":"ModelName",
           "documentation":"<p>The name of the SageMaker AI model object that is deployed with the inference component.</p>"
@@ -27749,6 +27797,11 @@
         }
       },
       "documentation":"<p>Details about the resources that are deployed with this inference component.</p>"
+    },
+    "InferenceComponentSpecificationSummaryList":{
+      "type":"list",
+      "member":{"shape":"InferenceComponentSpecificationSummary"},
+      "min":1
     },
     "InferenceComponentStartupParameters":{
       "type":"structure",
@@ -28459,6 +28512,63 @@
         }
       },
       "documentation":"<p>Configuration for how instances are placed and allocated within UltraServers. This is only applicable for UltraServer capacity.</p>"
+    },
+    "InstancePool":{
+      "type":"structure",
+      "required":[
+        "InstanceType",
+        "Priority"
+      ],
+      "members":{
+        "InstanceType":{
+          "shape":"ProductionVariantInstanceType",
+          "documentation":"<p>The ML compute instance type for the instance pool.</p>"
+        },
+        "ModelNameOverride":{
+          "shape":"ModelName",
+          "documentation":"<p>The name of a SageMaker model to use for this instance pool instead of the model specified for the production variant. Use this to deploy a different model optimized for the instance type in this pool.</p>"
+        },
+        "Priority":{
+          "shape":"InstancePoolPriority",
+          "documentation":"<p>The priority for the instance pool. SageMaker attempts to provision instances in order of priority, starting with the lowest value. If instances for a higher-priority pool are unavailable, SageMaker attempts to provision from the next pool.</p> <p>Valid values: 1 to 5, where 1 is the highest priority.</p>"
+        }
+      },
+      "documentation":"<p>Specifies an instance type and its priority for a heterogeneous endpoint. Use instance pools to configure a production variant with multiple instance types, enabling the endpoint to provision instances across different types based on priority.</p>"
+    },
+    "InstancePoolList":{
+      "type":"list",
+      "member":{"shape":"InstancePool"},
+      "max":5,
+      "min":1
+    },
+    "InstancePoolPriority":{
+      "type":"integer",
+      "box":true,
+      "max":5,
+      "min":1
+    },
+    "InstancePoolSummary":{
+      "type":"structure",
+      "required":[
+        "InstanceType",
+        "CurrentInstanceCount"
+      ],
+      "members":{
+        "InstanceType":{
+          "shape":"ProductionVariantInstanceType",
+          "documentation":"<p>The ML compute instance type for the instance pool.</p>"
+        },
+        "CurrentInstanceCount":{
+          "shape":"TaskCount",
+          "documentation":"<p>The current number of instances of this type in the instance pool.</p>"
+        }
+      },
+      "documentation":"<p>A summary of an instance pool for a production variant, including the instance type and the current number of instances.</p>"
+    },
+    "InstancePoolSummaryList":{
+      "type":"list",
+      "member":{"shape":"InstancePoolSummary"},
+      "min":1
     },
     "InstanceType":{
       "type":"string",
@@ -38547,6 +38657,10 @@
           "shape":"ProductionVariantInstanceType",
           "documentation":"<p>The type of instances associated with the variant.</p>"
         },
+        "InstancePools":{
+          "shape":"InstancePoolSummaryList",
+          "documentation":"<p>A list of instance pools for the production variant. Each pool indicates the instance type and the current number of instances of that type.</p>"
+        },
         "AcceleratorType":{
           "shape":"ProductionVariantAcceleratorType",
           "documentation":"<p>This parameter is no longer supported. Elastic Inference (EI) is no longer available.</p> <p>This parameter was used to specify the size of the EI instance to use for the production variant.</p>"
@@ -39863,6 +39977,14 @@
           "shape":"ProductionVariantInstanceType",
           "documentation":"<p>The ML compute instance type.</p>"
         },
+        "InstancePools":{
+          "shape":"InstancePoolList",
+          "documentation":"<p>A list of instance pools for the production variant. Each instance pool specifies an instance type and its priority for provisioning. Use instance pools to configure heterogeneous endpoints that deploy models across multiple instance types.</p>"
+        },
+        "VariantInstanceProvisionTimeoutInSeconds":{
+          "shape":"VariantInstanceProvisionTimeoutInSeconds",
+          "documentation":"<p>The timeout value, in seconds, for provisioning instances for the production variant. When SageMaker encounters an insufficient capacity error while provisioning instances, it retries with the next instance pool (if configured) or waits until the timeout expires. This timeout applies only to capacity provisioning and does not include the time for model download or container startup.</p> <p>Valid values: 300 to 3600.</p>"
+        },
         "InitialVariantWeight":{
           "shape":"VariantWeight",
           "documentation":"<p>Determines initial traffic distribution among all of the models that you specify in the endpoint configuration. The traffic to a production variant is determined by the ratio of the <code>VariantWeight</code> to the sum of all <code>VariantWeight</code> values across all ProductionVariants. If unspecified, it defaults to 1.0. </p>"
@@ -40432,6 +40554,10 @@
         "DesiredInstanceCount":{
           "shape":"TaskCount",
           "documentation":"<p>The number of instances requested in the <code>UpdateEndpointWeightsAndCapacities</code> request. </p>"
+        },
+        "InstancePools":{
+          "shape":"InstancePoolSummaryList",
+          "documentation":"<p>A list of instance pools for the production variant. Each pool indicates the instance type and the current number of instances of that type.</p>"
         },
         "VariantStatus":{
           "shape":"ProductionVariantStatusList",
@@ -48476,6 +48602,10 @@
           "shape":"InferenceComponentSpecification",
           "documentation":"<p>Details about the resources to deploy with this inference component, including the model, container, and compute resources.</p>"
         },
+        "Specifications":{
+          "shape":"InferenceComponentSpecificationList",
+          "documentation":"<p>A list of specification objects for the inference component, one per instance type. Use this parameter when you want to specify different model or resource configurations for the inference component on each instance type. You can use either this parameter or the singular <code>Specification</code> parameter, but not both.</p>"
+        },
         "RuntimeConfig":{
           "shape":"InferenceComponentRuntimeConfig",
           "documentation":"<p>Runtime settings for a model that is deployed with an inference component.</p>"
@@ -49582,6 +49712,12 @@
       "box":true,
       "max":1,
       "min":0
+    },
+    "VariantInstanceProvisionTimeoutInSeconds":{
+      "type":"integer",
+      "box":true,
+      "max":3600,
+      "min":300
     },
     "VariantName":{
       "type":"string",

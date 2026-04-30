@@ -1330,6 +1330,15 @@
       "min":1,
       "sensitive":true
     },
+    "AudienceType":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "AudiencesListType":{
+      "type":"list",
+      "member":{"shape":"AudienceType"}
+    },
     "AuthorizationUrlType":{
       "type":"string",
       "min":1,
@@ -4050,6 +4059,14 @@
         "customState":{
           "shape":"State",
           "documentation":"<p>An opaque string that will be sent back to the callback URL provided in resourceOauth2ReturnUrl. This state should be used to protect the callback URL of your application against CSRF attacks by ensuring the response corresponds to the original request.</p>"
+        },
+        "resources":{
+          "shape":"ResourcesListType",
+          "documentation":"<p>The resources to include in the token request. These are used to specify the target resources for which the OAuth2 token is being requested.</p>"
+        },
+        "audiences":{
+          "shape":"AudiencesListType",
+          "documentation":"<p>The audiences to include in the token request. These are used to specify the intended recipients of the OAuth2 token.</p>"
         }
       }
     },
@@ -6153,6 +6170,10 @@
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
+        },
+        "metadataFilters":{
+          "shape":"MemoryMetadataFilterList",
+          "documentation":"<p>A list of metadata filter expressions to scope the returned memory records.</p>"
         }
       }
     },
@@ -6337,19 +6358,25 @@
         "operator"
       ],
       "members":{
-        "left":{"shape":"LeftExpression"},
+        "left":{
+          "shape":"MemoryRecordLeftExpression",
+          "documentation":"<p>The metadata key to evaluate.</p>"
+        },
         "operator":{
-          "shape":"OperatorType",
+          "shape":"MemoryRecordOperatorType",
           "documentation":"<p>The relationship between the metadata key and value to match when applying the metadata filter.</p>"
         },
-        "right":{"shape":"RightExpression"}
+        "right":{
+          "shape":"MemoryRecordRightExpression",
+          "documentation":"<p>The value to compare against. Required for all operators except EXISTS and NOT_EXISTS.</p>"
+        }
       },
       "documentation":"<p>Filters to apply to metadata associated with a memory. Specify the metadata key and value in the <code>left</code> and <code>right</code> fields and use the <code>operator</code> field to define the relationship to match.</p>"
     },
     "MemoryMetadataFilterList":{
       "type":"list",
       "member":{"shape":"MemoryMetadataFilterExpression"},
-      "max":1,
+      "max":5,
       "min":1
     },
     "MemoryRecord":{
@@ -6383,7 +6410,7 @@
           "documentation":"<p>The timestamp when the memory record was created.</p>"
         },
         "metadata":{
-          "shape":"MetadataMap",
+          "shape":"MemoryRecordMetadataMap",
           "documentation":"<p>A map of metadata key-value pairs associated with a memory record.</p>"
         }
       },
@@ -6417,6 +6444,10 @@
         "memoryStrategyId":{
           "shape":"MemoryStrategyId",
           "documentation":"<p>The ID of the memory strategy that defines how this memory record is grouped.</p>"
+        },
+        "metadata":{
+          "shape":"MemoryRecordMetadataMap",
+          "documentation":"<p>Metadata key-value pairs to be stored with the memory record.</p>"
         }
       },
       "documentation":"<p>Input structure to create a new memory record.</p>"
@@ -6437,6 +6468,62 @@
       "max":50,
       "min":40,
       "pattern":"mem-[a-zA-Z0-9-_]*"
+    },
+    "MemoryRecordLeftExpression":{
+      "type":"structure",
+      "members":{
+        "metadataKey":{
+          "shape":"MetadataKey",
+          "documentation":"<p>The metadata key to filter on.</p>"
+        }
+      },
+      "documentation":"<p>The left-hand side of a memory record metadata filter expression.</p>",
+      "union":true
+    },
+    "MemoryRecordMetadataMap":{
+      "type":"map",
+      "key":{"shape":"MetadataKey"},
+      "value":{"shape":"MemoryRecordMetadataValue"},
+      "max":20,
+      "min":1
+    },
+    "MemoryRecordMetadataValue":{
+      "type":"structure",
+      "members":{
+        "stringValue":{
+          "shape":"StringValue",
+          "documentation":"<p>A string value.</p>"
+        },
+        "stringListValue":{
+          "shape":"StringValueList",
+          "documentation":"<p>A list of string values.</p>"
+        },
+        "numberValue":{
+          "shape":"Double",
+          "documentation":"<p>A numeric value.</p>"
+        },
+        "dateTimeValue":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp value in ISO 8601 UTC format.</p>"
+        }
+      },
+      "documentation":"<p>The value of a memory record metadata entry.</p>",
+      "union":true
+    },
+    "MemoryRecordOperatorType":{
+      "type":"string",
+      "enum":[
+        "EQUALS_TO",
+        "EXISTS",
+        "NOT_EXISTS",
+        "BEFORE",
+        "AFTER",
+        "CONTAINS",
+        "GREATER_THAN",
+        "GREATER_THAN_OR_EQUALS",
+        "LESS_THAN",
+        "LESS_THAN_OR_EQUALS"
+      ]
     },
     "MemoryRecordOutput":{
       "type":"structure",
@@ -6467,6 +6554,17 @@
         }
       },
       "documentation":"<p>Output information returned after processing a memory record operation.</p>"
+    },
+    "MemoryRecordRightExpression":{
+      "type":"structure",
+      "members":{
+        "metadataValue":{
+          "shape":"MemoryRecordMetadataValue",
+          "documentation":"<p>The metadata value to compare against.</p>"
+        }
+      },
+      "documentation":"<p>The right-hand side of a memory record metadata filter expression.</p>",
+      "union":true
     },
     "MemoryRecordStatus":{
       "type":"string",
@@ -6510,7 +6608,7 @@
           "documentation":"<p>The relevance score of the memory record when returned as part of a search result. Higher values indicate greater relevance to the search query.</p>"
         },
         "metadata":{
-          "shape":"MetadataMap",
+          "shape":"MemoryRecordMetadataMap",
           "documentation":"<p>A map of metadata key-value pairs associated with a memory record.</p>"
         }
       },
@@ -6546,6 +6644,10 @@
         "memoryStrategyId":{
           "shape":"MemoryStrategyId",
           "documentation":"<p>The updated ID of the memory strategy that defines how this memory record is grouped.</p>"
+        },
+        "metadata":{
+          "shape":"MemoryRecordMetadataMap",
+          "documentation":"<p>Metadata key-value pairs to be stored with the memory record.</p>"
         }
       },
       "documentation":"<p>Input structure to update an existing memory record.</p>"
@@ -6938,7 +7040,8 @@
       "type":"string",
       "enum":[
         "USER_FEDERATION",
-        "M2M"
+        "M2M",
+        "ON_BEHALF_OF_TOKEN_EXCHANGE"
       ]
     },
     "OnlineEvaluationConfigArn":{
@@ -7442,6 +7545,15 @@
       "max":2048,
       "min":1,
       "pattern":"\\w+:(\\/?\\/?)[^\\s]+"
+    },
+    "ResourceType":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "ResourcesListType":{
+      "type":"list",
+      "member":{"shape":"ResourceType"}
     },
     "ResponseChunk":{
       "type":"structure",
@@ -8674,6 +8786,12 @@
       "type":"list",
       "member":{"shape":"MaxLenString"}
     },
+    "StringListMemberValue":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9\\s._:/=+@-]*"
+    },
     "StringMap":{
       "type":"map",
       "key":{"shape":"String"},
@@ -8682,6 +8800,18 @@
     "StringType":{
       "type":"string",
       "max":1024,
+      "min":1
+    },
+    "StringValue":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[a-zA-Z0-9\\s._:/=+@-]*"
+    },
+    "StringValueList":{
+      "type":"list",
+      "member":{"shape":"StringListMemberValue"},
+      "max":5,
       "min":1
     },
     "SyntheticTimestamp_date_time":{

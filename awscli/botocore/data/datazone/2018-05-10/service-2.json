@@ -1939,6 +1939,26 @@
       "documentation":"<p>Gets a metadata generation run in Amazon DataZone.</p> <p>Prerequisites:</p> <ul> <li> <p>Valid domain and run identifier. </p> </li> <li> <p>The metadata generation run must exist.</p> </li> <li> <p>User must have read access to the metadata run.</p> </li> </ul>",
       "readonly":true
     },
+    "GetNotebookRun":{
+      "name":"GetNotebookRun",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/notebook-runs/{identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetNotebookRunInput"},
+      "output":{"shape":"GetNotebookRunOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Gets the details of a notebook run in an Amazon DataZone domain.</p>",
+      "readonly":true
+    },
     "GetProject":{
       "name":"GetProject",
       "http":{
@@ -2539,6 +2559,25 @@
       "documentation":"<p>Lists all metadata generation runs.</p> <p>Metadata generation runs represent automated processes that leverage AI/ML capabilities to create or enhance asset metadata at scale. This feature helps organizations maintain comprehensive and consistent metadata across large numbers of assets without manual intervention. It can automatically generate business descriptions, tags, and other metadata elements, significantly reducing the time and effort required for metadata management while improving consistency and completeness.</p> <p>Prerequisites:</p> <ul> <li> <p>Valid domain identifier. </p> </li> <li> <p>User must have access to metadata generation runs in the domain.</p> </li> </ul>",
       "readonly":true
     },
+    "ListNotebookRuns":{
+      "name":"ListNotebookRuns",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/notebook-runs",
+        "responseCode":200
+      },
+      "input":{"shape":"ListNotebookRunsInput"},
+      "output":{"shape":"ListNotebookRunsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Lists notebook runs in an Amazon DataZone domain.</p>",
+      "readonly":true
+    },
     "ListNotifications":{
       "name":"ListNotifications",
       "http":{
@@ -3117,6 +3156,49 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Starts the metadata generation run.</p> <p>Prerequisites:</p> <ul> <li> <p>Asset must be created and belong to the specified domain and project. </p> </li> <li> <p>Asset type must be supported for metadata generation (e.g., Amazon Web Services Glue table).</p> </li> <li> <p>Asset must have a structured schema with valid rows and columns.</p> </li> <li> <p>Valid values for --type: BUSINESS_DESCRIPTIONS, BUSINESS_NAMES, BUSINESS_GLOSSARY_ASSOCIATIONS.</p> </li> <li> <p>The user must have permission to run metadata generation in the domain/project.</p> </li> </ul>",
+      "idempotent":true
+    },
+    "StartNotebookRun":{
+      "name":"StartNotebookRun",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/domains/{domainIdentifier}/notebook-runs",
+        "responseCode":201
+      },
+      "input":{"shape":"StartNotebookRunInput"},
+      "output":{"shape":"StartNotebookRunOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Starts a notebook run in an Amazon DataZone domain. A notebook run represents the execution of a Amazon DataZone notebook within a project. You can configure compute, network, timeout, and environment settings for the run.</p>",
+      "idempotent":true
+    },
+    "StopNotebookRun":{
+      "name":"StopNotebookRun",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v2/domains/{domainIdentifier}/notebook-runs/{identifier}/stop",
+        "responseCode":200
+      },
+      "input":{"shape":"StopNotebookRunInput"},
+      "output":{"shape":"StopNotebookRunOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Stops a running notebook run in an Amazon DataZone domain.</p>",
       "idempotent":true
     },
     "TagResource":{
@@ -5494,6 +5576,17 @@
         }
       }
     },
+    "CellInformation":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The information about a cell in a notebook run in Amazon DataZone.</p>"
+    },
+    "CellOrder":{
+      "type":"list",
+      "member":{"shape":"CellInformation"},
+      "max":200,
+      "min":0
+    },
     "ChangeAction":{
       "type":"string",
       "enum":[
@@ -5531,6 +5624,20 @@
     "ColumnNameList":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "ComputeConfig":{
+      "type":"structure",
+      "members":{
+        "instanceType":{
+          "shape":"InstanceType",
+          "documentation":"<p>The instance type for the notebook run compute.</p>"
+        },
+        "environmentVersion":{
+          "shape":"String",
+          "documentation":"<p>The environment version for the notebook run compute.</p>"
+        }
+      },
+      "documentation":"<p>The compute configuration for a notebook run in Amazon DataZone.</p>"
     },
     "ComputeEnvironments":{
       "type":"string",
@@ -11170,6 +11277,20 @@
       },
       "documentation":"<p>The details of an environment blueprint summary.</p>"
     },
+    "EnvironmentConfig":{
+      "type":"structure",
+      "members":{
+        "imageVersion":{
+          "shape":"String",
+          "documentation":"<p>The image version for the notebook run environment.</p>"
+        },
+        "packageConfig":{
+          "shape":"PackageConfig",
+          "documentation":"<p>The package configuration for the notebook run environment.</p>"
+        }
+      },
+      "documentation":"<p>The environment configuration for a notebook run in Amazon DataZone.</p>"
+    },
     "EnvironmentConfiguration":{
       "type":"structure",
       "required":[
@@ -14110,6 +14231,127 @@
         }
       }
     },
+    "GetNotebookRunInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain in which the notebook run exists.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"NotebookRunId",
+          "documentation":"<p>The identifier of the notebook run.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        }
+      }
+    },
+    "GetNotebookRunOutput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "domainId",
+        "owningProjectId",
+        "notebookId",
+        "status"
+      ],
+      "members":{
+        "id":{
+          "shape":"NotebookRunId",
+          "documentation":"<p>The identifier of the notebook run.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain.</p>"
+        },
+        "owningProjectId":{
+          "shape":"ProjectId",
+          "documentation":"<p>The identifier of the project that owns the notebook run.</p>"
+        },
+        "notebookId":{
+          "shape":"NotebookId",
+          "documentation":"<p>The identifier of the notebook.</p>"
+        },
+        "scheduleId":{
+          "shape":"ScheduleId",
+          "documentation":"<p>The identifier of the schedule associated with the notebook run.</p>"
+        },
+        "status":{
+          "shape":"NotebookRunStatus",
+          "documentation":"<p>The status of the notebook run.</p>"
+        },
+        "cellOrder":{
+          "shape":"CellOrder",
+          "documentation":"<p>The ordered list of cells in the notebook run.</p>"
+        },
+        "metadata":{
+          "shape":"Metadata",
+          "documentation":"<p>The metadata of the notebook run.</p>"
+        },
+        "parameters":{
+          "shape":"Parameters",
+          "documentation":"<p>The sensitive parameters of the notebook run.</p>"
+        },
+        "computeConfiguration":{
+          "shape":"ComputeConfig",
+          "documentation":"<p>The compute configuration of the notebook run.</p>"
+        },
+        "networkConfiguration":{
+          "shape":"NetworkConfig",
+          "documentation":"<p>The network configuration of the notebook run.</p>"
+        },
+        "timeoutConfiguration":{
+          "shape":"TimeoutConfig",
+          "documentation":"<p>The timeout configuration of the notebook run.</p>"
+        },
+        "environmentConfiguration":{
+          "shape":"EnvironmentConfig",
+          "documentation":"<p>The environment configuration of the notebook run, including image version and package settings.</p>"
+        },
+        "storageConfiguration":{
+          "shape":"StorageConfig",
+          "documentation":"<p>The storage configuration of the notebook run, including the Amazon Simple Storage Service path and KMS key ARN.</p>"
+        },
+        "triggerSource":{
+          "shape":"TriggerSource",
+          "documentation":"<p>The source that triggered the notebook run.</p>"
+        },
+        "error":{
+          "shape":"NotebookRunError",
+          "documentation":"<p>The error details if the notebook run failed.</p>"
+        },
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp of when the notebook run was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The identifier of the user who created the notebook run.</p>"
+        },
+        "updatedAt":{
+          "shape":"UpdatedAt",
+          "documentation":"<p>The timestamp of when the notebook run was last updated.</p>"
+        },
+        "updatedBy":{
+          "shape":"UpdatedBy",
+          "documentation":"<p>The identifier of the user who last updated the notebook run.</p>"
+        },
+        "startedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the notebook run started executing.</p>"
+        },
+        "completedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the notebook run completed.</p>"
+        }
+      }
+    },
     "GetProjectInput":{
       "type":"structure",
       "required":[
@@ -15830,6 +16072,10 @@
         }
       },
       "documentation":"<p>Specifies whether values are in the expression.</p>"
+    },
+    "InstanceType":{
+      "type":"string",
+      "pattern":"(ml|sc)\\.[a-z][0-9]+[a-z]*\\.[a-z0-9]+"
     },
     "Integer":{
       "type":"integer",
@@ -17639,6 +17885,76 @@
         }
       }
     },
+    "ListNotebookRunsInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "owningProjectIdentifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain in which to list notebook runs.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "owningProjectIdentifier":{
+          "shape":"ProjectId",
+          "documentation":"<p>The identifier of the project that owns the notebook runs.</p>",
+          "location":"querystring",
+          "locationName":"owningProjectIdentifier"
+        },
+        "notebookIdentifier":{
+          "shape":"NotebookId",
+          "documentation":"<p>The identifier of the notebook to filter runs by.</p>",
+          "location":"querystring",
+          "locationName":"notebookIdentifier"
+        },
+        "status":{
+          "shape":"NotebookRunStatus",
+          "documentation":"<p>The status to filter notebook runs by.</p>",
+          "location":"querystring",
+          "locationName":"status"
+        },
+        "scheduleIdentifier":{
+          "shape":"ScheduleId",
+          "documentation":"<p>The identifier of the schedule to filter notebook runs by.</p>",
+          "location":"querystring",
+          "locationName":"scheduleIdentifier"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of notebook runs to return in a single call. When the number of notebook runs exceeds the value of <code>MaxResults</code>, the response contains a <code>NextToken</code> value.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sort order for the results.</p>",
+          "location":"querystring",
+          "locationName":"sortOrder"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of notebook runs is greater than the default value for the <code>MaxResults</code> parameter, or if you explicitly specify a value for <code>MaxResults</code> that is less than the number of notebook runs, the response includes a pagination token named <code>NextToken</code>. You can specify this <code>NextToken</code> value in a subsequent call to <code>ListNotebookRuns</code> to list the next set of notebook runs.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListNotebookRunsOutput":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"NotebookRunSummaryList",
+          "documentation":"<p>The results of the <code>ListNotebookRuns</code> action.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of notebook runs is greater than the default value for the <code>MaxResults</code> parameter, or if you explicitly specify a value for <code>MaxResults</code> that is less than the number of notebook runs, the response includes a pagination token named <code>NextToken</code>. You can specify this <code>NextToken</code> value in a subsequent call to <code>ListNotebookRuns</code> to list the next set of notebook runs.</p>"
+        }
+      }
+    },
     "ListNotificationsInput":{
       "type":"structure",
       "required":[
@@ -18759,6 +19075,13 @@
       "min":0,
       "sensitive":true
     },
+    "Metadata":{
+      "type":"map",
+      "key":{"shape":"MetadataKey"},
+      "value":{"shape":"MetadataValue"},
+      "max":50,
+      "min":0
+    },
     "MetadataFormEnforcementDetail":{
       "type":"structure",
       "members":{
@@ -18956,10 +19279,21 @@
       "type":"string",
       "enum":["ASSET"]
     },
+    "MetadataKey":{
+      "type":"string",
+      "max":128,
+      "min":0
+    },
     "MetadataMap":{
       "type":"map",
       "key":{"shape":"String"},
       "value":{"shape":"String"}
+    },
+    "MetadataValue":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "sensitive":true
     },
     "MlflowPropertiesInput":{
       "type":"structure",
@@ -19027,6 +19361,37 @@
       "type":"list",
       "member":{"shape":"NameIdentifier"}
     },
+    "NetworkAccessType":{
+      "type":"string",
+      "documentation":"<p>The network access type for a notebook run in Amazon DataZone.</p>",
+      "enum":[
+        "PUBLIC_INTERNET_ONLY",
+        "VPC_ONLY"
+      ]
+    },
+    "NetworkConfig":{
+      "type":"structure",
+      "required":["networkAccessType"],
+      "members":{
+        "networkAccessType":{
+          "shape":"NetworkAccessType",
+          "documentation":"<p>The network access type for the notebook run. Valid values are <code>PUBLIC_INTERNET_ONLY</code> and <code>VPC_ONLY</code>.</p>"
+        },
+        "vpcId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the VPC for the notebook run. This is required when the network access type is <code>VPC_ONLY</code>.</p>"
+        },
+        "subnetIds":{
+          "shape":"SubnetIds",
+          "documentation":"<p>The identifiers of the subnets for the notebook run. You can specify up to 10 subnets.</p>"
+        },
+        "securityGroupIds":{
+          "shape":"SecurityGroupIds",
+          "documentation":"<p>The identifiers of the security groups for the notebook run. You can specify up to 5 security groups.</p>"
+        }
+      },
+      "documentation":"<p>The network configuration for a notebook run in Amazon DataZone.</p>"
+    },
     "NotEqualToExpression":{
       "type":"structure",
       "required":[
@@ -19080,6 +19445,112 @@
         }
       },
       "documentation":"<p>Specifies that a value might be not like the expression.</p>"
+    },
+    "NotebookId":{
+      "type":"string",
+      "pattern":"[a-zA-Z0-9_-]{1,36}"
+    },
+    "NotebookRunError":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{
+          "shape":"NotebookRunErrorMessageString",
+          "documentation":"<p>The error message. The maximum length is 1024 characters.</p>"
+        }
+      },
+      "documentation":"<p>The error details of a failed notebook run in Amazon DataZone.</p>"
+    },
+    "NotebookRunErrorMessageString":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "NotebookRunId":{
+      "type":"string",
+      "pattern":"[a-zA-Z0-9_-]{1,36}"
+    },
+    "NotebookRunStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a notebook run in Amazon DataZone.</p>",
+      "enum":[
+        "QUEUED",
+        "STARTING",
+        "RUNNING",
+        "STOPPING",
+        "STOPPED",
+        "SUCCEEDED",
+        "FAILED"
+      ]
+    },
+    "NotebookRunSummary":{
+      "type":"structure",
+      "required":[
+        "id",
+        "domainId",
+        "owningProjectId",
+        "notebookId",
+        "status"
+      ],
+      "members":{
+        "id":{
+          "shape":"NotebookRunId",
+          "documentation":"<p>The identifier of the notebook run.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain.</p>"
+        },
+        "owningProjectId":{
+          "shape":"ProjectId",
+          "documentation":"<p>The identifier of the project that owns the notebook run.</p>"
+        },
+        "notebookId":{
+          "shape":"NotebookId",
+          "documentation":"<p>The identifier of the notebook.</p>"
+        },
+        "scheduleId":{
+          "shape":"ScheduleId",
+          "documentation":"<p>The identifier of the schedule associated with the notebook run.</p>"
+        },
+        "status":{
+          "shape":"NotebookRunStatus",
+          "documentation":"<p>The status of the notebook run.</p>"
+        },
+        "triggerSource":{
+          "shape":"TriggerSource",
+          "documentation":"<p>The source that triggered the notebook run.</p>"
+        },
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp of when the notebook run was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The identifier of the user who created the notebook run.</p>"
+        },
+        "updatedAt":{
+          "shape":"UpdatedAt",
+          "documentation":"<p>The timestamp of when the notebook run was last updated.</p>"
+        },
+        "updatedBy":{
+          "shape":"UpdatedBy",
+          "documentation":"<p>The identifier of the user who last updated the notebook run.</p>"
+        },
+        "startedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the notebook run started executing.</p>"
+        },
+        "completedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the notebook run completed.</p>"
+        }
+      },
+      "documentation":"<p>The summary of a notebook run in Amazon DataZone.</p>"
+    },
+    "NotebookRunSummaryList":{
+      "type":"list",
+      "member":{"shape":"NotebookRunSummary"}
     },
     "NotificationOutput":{
       "type":"structure",
@@ -19402,15 +19873,58 @@
       },
       "documentation":"<p>The properties of the owner user.</p>"
     },
+    "PackageConfig":{
+      "type":"structure",
+      "required":["packageManager"],
+      "members":{
+        "packageManager":{
+          "shape":"PackageManager",
+          "documentation":"<p>The package manager for the notebook run environment. The default value is <code>UV</code>.</p>"
+        },
+        "packageSpecification":{
+          "shape":"PackageConfigPackageSpecificationString",
+          "documentation":"<p>The package specification content for the notebook run environment. The maximum length is 10240 characters.</p>"
+        }
+      },
+      "documentation":"<p>The package configuration for a notebook run environment in Amazon DataZone.</p>"
+    },
+    "PackageConfigPackageSpecificationString":{
+      "type":"string",
+      "max":10240,
+      "min":0
+    },
+    "PackageManager":{
+      "type":"string",
+      "documentation":"<p>The package manager for a notebook run environment in Amazon DataZone.</p>",
+      "enum":["UV"]
+    },
     "PaginationToken":{
       "type":"string",
       "max":8192,
       "min":1
     },
+    "ParameterKey":{
+      "type":"string",
+      "max":128,
+      "min":0
+    },
     "ParameterStorePath":{
       "type":"string",
       "max":2048,
       "min":1
+    },
+    "ParameterValue":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "Parameters":{
+      "type":"map",
+      "key":{"shape":"ParameterKey"},
+      "value":{"shape":"ParameterValue"},
+      "max":50,
+      "min":0,
+      "sensitive":true
     },
     "Password":{
       "type":"string",
@@ -21505,6 +22019,12 @@
       "max":20,
       "min":0
     },
+    "S3Path":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"s3://.+"
+    },
     "S3Permission":{
       "type":"string",
       "enum":[
@@ -21653,6 +22173,10 @@
       },
       "documentation":"<p>The details of the schedule of the data source runs.</p>",
       "sensitive":true
+    },
+    "ScheduleId":{
+      "type":"string",
+      "pattern":"[a-zA-Z0-9_-]{1,36}"
     },
     "SearchGroupProfilesInput":{
       "type":"structure",
@@ -22073,6 +22597,12 @@
       "type":"string",
       "max":255,
       "min":1
+    },
+    "SecurityGroupIds":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":5,
+      "min":0
     },
     "SelfGrantStatus":{
       "type":"string",
@@ -22750,12 +23280,236 @@
         }
       }
     },
+    "StartNotebookRunInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "owningProjectIdentifier",
+        "notebookIdentifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain in which the notebook run is started.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "owningProjectIdentifier":{
+          "shape":"ProjectId",
+          "documentation":"<p>The identifier of the project that owns the notebook run.</p>"
+        },
+        "notebookIdentifier":{
+          "shape":"NotebookId",
+          "documentation":"<p>The identifier of the notebook to run.</p>"
+        },
+        "scheduleIdentifier":{
+          "shape":"ScheduleId",
+          "documentation":"<p>The identifier of the schedule associated with the notebook run.</p>"
+        },
+        "computeConfiguration":{
+          "shape":"ComputeConfig",
+          "documentation":"<p>The compute configuration for the notebook run, including instance type and environment version.</p>"
+        },
+        "networkConfiguration":{
+          "shape":"NetworkConfig",
+          "documentation":"<p>The network configuration for the notebook run, including network access type and optional VPC settings.</p>"
+        },
+        "timeoutConfiguration":{
+          "shape":"TimeoutConfig",
+          "documentation":"<p>The timeout configuration for the notebook run. The default timeout is 720 minutes (12 hours) and the maximum is 1440 minutes (24 hours).</p>"
+        },
+        "triggerSource":{
+          "shape":"TriggerSource",
+          "documentation":"<p>The source that triggered the notebook run.</p>"
+        },
+        "metadata":{
+          "shape":"Metadata",
+          "documentation":"<p>The metadata for the notebook run, specified as key-value pairs. You can specify up to 50 entries, with keys up to 128 characters and values up to 1024 characters.</p>"
+        },
+        "parameters":{
+          "shape":"Parameters",
+          "documentation":"<p>The sensitive parameters for the notebook run, specified as key-value pairs. You can specify up to 50 entries, with keys up to 128 characters and values up to 1024 characters.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency of the request. This field is automatically populated if not provided.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "StartNotebookRunOutput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "domainId",
+        "owningProjectId",
+        "notebookId",
+        "status"
+      ],
+      "members":{
+        "id":{
+          "shape":"NotebookRunId",
+          "documentation":"<p>The identifier of the notebook run.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain.</p>"
+        },
+        "owningProjectId":{
+          "shape":"ProjectId",
+          "documentation":"<p>The identifier of the project that owns the notebook run.</p>"
+        },
+        "notebookId":{
+          "shape":"NotebookId",
+          "documentation":"<p>The identifier of the notebook.</p>"
+        },
+        "scheduleId":{
+          "shape":"ScheduleId",
+          "documentation":"<p>The identifier of the schedule associated with the notebook run.</p>"
+        },
+        "status":{
+          "shape":"NotebookRunStatus",
+          "documentation":"<p>The status of the notebook run.</p>"
+        },
+        "cellOrder":{
+          "shape":"CellOrder",
+          "documentation":"<p>The ordered list of cells in the notebook run.</p>"
+        },
+        "metadata":{
+          "shape":"Metadata",
+          "documentation":"<p>The metadata of the notebook run.</p>"
+        },
+        "parameters":{
+          "shape":"Parameters",
+          "documentation":"<p>The sensitive parameters of the notebook run.</p>"
+        },
+        "computeConfiguration":{
+          "shape":"ComputeConfig",
+          "documentation":"<p>The compute configuration of the notebook run.</p>"
+        },
+        "networkConfiguration":{
+          "shape":"NetworkConfig",
+          "documentation":"<p>The network configuration of the notebook run.</p>"
+        },
+        "timeoutConfiguration":{
+          "shape":"TimeoutConfig",
+          "documentation":"<p>The timeout configuration of the notebook run.</p>"
+        },
+        "environmentConfiguration":{
+          "shape":"EnvironmentConfig",
+          "documentation":"<p>The environment configuration of the notebook run, including image version and package settings.</p>"
+        },
+        "storageConfiguration":{
+          "shape":"StorageConfig",
+          "documentation":"<p>The storage configuration of the notebook run, including the Amazon Simple Storage Service path and KMS key ARN.</p>"
+        },
+        "triggerSource":{
+          "shape":"TriggerSource",
+          "documentation":"<p>The source that triggered the notebook run.</p>"
+        },
+        "error":{
+          "shape":"NotebookRunError",
+          "documentation":"<p>The error details if the notebook run failed.</p>"
+        },
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp of when the notebook run was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The identifier of the user who created the notebook run.</p>"
+        },
+        "updatedAt":{
+          "shape":"UpdatedAt",
+          "documentation":"<p>The timestamp of when the notebook run was last updated.</p>"
+        },
+        "updatedBy":{
+          "shape":"UpdatedBy",
+          "documentation":"<p>The identifier of the user who last updated the notebook run.</p>"
+        },
+        "startedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the notebook run started executing.</p>"
+        },
+        "completedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the notebook run completed.</p>"
+        }
+      }
+    },
     "Status":{
       "type":"string",
       "enum":[
         "ENABLED",
         "DISABLED"
       ]
+    },
+    "StopNotebookRunInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain in which the notebook run is stopped.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"NotebookRunId",
+          "documentation":"<p>The identifier of the notebook run to stop.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency of the request. This field is automatically populated if not provided.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "StopNotebookRunOutput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "domainId",
+        "owningProjectId",
+        "status"
+      ],
+      "members":{
+        "id":{
+          "shape":"NotebookRunId",
+          "documentation":"<p>The identifier of the notebook run.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain.</p>"
+        },
+        "owningProjectId":{
+          "shape":"ProjectId",
+          "documentation":"<p>The identifier of the project that owns the notebook run.</p>"
+        },
+        "status":{
+          "shape":"NotebookRunStatus",
+          "documentation":"<p>The status of the notebook run.</p>"
+        }
+      }
+    },
+    "StorageConfig":{
+      "type":"structure",
+      "members":{
+        "projectS3Path":{
+          "shape":"S3Path",
+          "documentation":"<p>The Amazon Simple Storage Service path for the project storage.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The ARN of the KMS key used for encryption.</p>"
+        }
+      },
+      "documentation":"<p>The storage configuration for a notebook run in Amazon DataZone.</p>"
     },
     "String":{"type":"string"},
     "StringList":{
@@ -22773,6 +23527,12 @@
       "member":{"shape":"SubnetId"},
       "max":50,
       "min":1
+    },
+    "SubnetIds":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":10,
+      "min":0
     },
     "SubscribedAsset":{
       "type":"structure",
@@ -23783,6 +24543,22 @@
       "max":128,
       "min":1
     },
+    "TimeoutConfig":{
+      "type":"structure",
+      "members":{
+        "runTimeoutInMinutes":{
+          "shape":"TimeoutConfigRunTimeoutInMinutesInteger",
+          "documentation":"<p>The timeout for the notebook run, in minutes. The minimum value is 60 minutes (1 hour), the maximum value is 1440 minutes (24 hours), and the default value is 720 minutes (12 hours).</p>"
+        }
+      },
+      "documentation":"<p>The timeout configuration for a notebook run in Amazon DataZone.</p>"
+    },
+    "TimeoutConfigRunTimeoutInMinutesInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1440,
+      "min":60
+    },
     "Timestamp":{"type":"timestamp"},
     "Timezone":{
       "type":"string",
@@ -23906,6 +24682,29 @@
       "value":{"shape":"TrackingAssetArns"},
       "max":1,
       "min":1
+    },
+    "TriggerSource":{
+      "type":"structure",
+      "members":{
+        "type":{
+          "shape":"TriggerSourceType",
+          "documentation":"<p>The type of the trigger source. Valid values are <code>MANUAL</code>, <code>SCHEDULED</code>, and <code>WORKFLOW</code>.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the trigger source.</p>"
+        }
+      },
+      "documentation":"<p>The source that triggered a notebook run in Amazon DataZone.</p>"
+    },
+    "TriggerSourceType":{
+      "type":"string",
+      "documentation":"<p>The type of trigger source for a notebook run in Amazon DataZone.</p>",
+      "enum":[
+        "MANUAL",
+        "SCHEDULED",
+        "WORKFLOW"
+      ]
     },
     "TypeName":{
       "type":"string",

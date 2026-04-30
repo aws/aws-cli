@@ -2159,6 +2159,26 @@
       "type":"long",
       "box":true
     },
+    "MskEnhancedMonitoringLevel":{
+      "type":"string",
+      "documentation":"<p> Enumeration of supported enhanced monitoring levels for Amazon MSK clusters: DEFAULT, PER_BROKER, PER_TOPIC_PER_BROKER, and PER_TOPIC_PER_PARTITION. </p>",
+      "enum":[
+        "DEFAULT",
+        "PER_BROKER",
+        "PER_TOPIC_PER_BROKER",
+        "PER_TOPIC_PER_PARTITION"
+      ]
+    },
+    "MskMonitoringParameters":{
+      "type":"structure",
+      "members":{
+        "EnhancedMonitoring":{
+          "shape":"MskEnhancedMonitoringLevel",
+          "documentation":"<p> The level of enhanced monitoring for the MSK cluster. </p>"
+        }
+      },
+      "documentation":"<p> Configuration parameters for Amazon MSK cluster monitoring, including enhanced monitoring level settings. </p>"
+    },
     "NextToken":{"type":"string"},
     "OrganizationUnitIdentifier":{
       "type":"string",
@@ -2324,9 +2344,12 @@
         "AWS::BedrockAgentCore::CodeInterpreter",
         "AWS::BedrockAgentCore::Gateway",
         "AWS::BedrockAgentCore::Memory",
+        "AWS::BedrockAgentCore::WorkloadIdentity",
         "AWS::SecurityHub::Hub",
         "AWS::CloudFront::Distribution",
-        "AWS::SecurityHub::HubV2"
+        "AWS::SecurityHub::HubV2",
+        "AWS::CloudWatch::OTelEnrichment",
+        "AWS::MSK::Cluster"
       ]
     },
     "ResourceTypes":{
@@ -2644,6 +2667,10 @@
         "LogDeliveryParameters":{
           "shape":"LogDeliveryParameters",
           "documentation":"<p>Configuration parameters specific to Amazon Bedrock AgentCore logging when Amazon Bedrock AgentCore is the resource type.</p>"
+        },
+        "MskMonitoringParameters":{
+          "shape":"MskMonitoringParameters",
+          "documentation":"<p> Configuration parameters specific to MSK monitoring when MSK is the resource type. </p>"
         }
       },
       "documentation":"<p> Configuration specifying where and how telemetry data should be delivered for Amazon Web Services resources. </p>"

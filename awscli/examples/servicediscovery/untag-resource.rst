@@ -4,7 +4,7 @@ The following ``untag-resource`` example removes a ``Department`` tag from the s
 
     aws servicediscovery untag-resource \
         --resource-arn arn:aws:servicediscovery:us-west-2:123456789012:namespace/ns-e4anhexample0004 \
-        --tags Key=Department, Value=Engineering
+        --tag-keys Department
 
 This command produces no output.
 

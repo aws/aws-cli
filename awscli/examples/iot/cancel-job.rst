@@ -3,7 +3,7 @@
 The following ``cancel-job`` example cancels the specified job. ::
 
     aws iot cancel-job \
-        --job-job "example-job-03"
+        --job-id "example-job-03"
         
 Output::
 

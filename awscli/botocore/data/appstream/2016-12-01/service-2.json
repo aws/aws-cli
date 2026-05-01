@@ -1508,6 +1508,95 @@
       },
       "documentation":"<p>The collection of license usage records.</p>"
     },
+    "AgentAccessConfig":{
+      "type":"structure",
+      "required":[
+        "Settings",
+        "ScreenResolution",
+        "ScreenImageFormat"
+      ],
+      "members":{
+        "Settings":{
+          "shape":"AgentAccessSettingList",
+          "documentation":"<p>The list of agent access settings that define permissions for each agent action. You must specify at least one setting.</p>"
+        },
+        "S3BucketArn":{
+          "shape":"S3BucketArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon S3 bucket where agent screenshots are stored. Required when ScreenshotsUploadEnabled is true.</p>"
+        },
+        "ScreenshotsUploadEnabled":{
+          "shape":"BooleanObject",
+          "documentation":"<p>Indicates whether screenshot uploads to Amazon S3 are enabled for agent sessions.</p>"
+        },
+        "ScreenResolution":{
+          "shape":"ScreenResolution",
+          "documentation":"<p>The screen resolution for the agent streaming environment.</p>"
+        },
+        "ScreenImageFormat":{
+          "shape":"ScreenImageFormat",
+          "documentation":"<p>The image format for agent screen captures.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for agent access on a stack. Agent access enables AI agents to interact with desktop applications during streaming sessions.</p>"
+    },
+    "AgentAccessConfigForUpdate":{
+      "type":"structure",
+      "members":{
+        "Settings":{
+          "shape":"AgentAccessSettingList",
+          "documentation":"<p>The list of agent access settings that define permissions for each agent action.</p>"
+        },
+        "S3BucketArn":{
+          "shape":"S3BucketArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon S3 bucket where agent screenshots are stored.</p>"
+        },
+        "ScreenshotsUploadEnabled":{
+          "shape":"BooleanObject",
+          "documentation":"<p>Indicates whether screenshot uploads to Amazon S3 are enabled for agent sessions.</p>"
+        },
+        "ScreenResolution":{
+          "shape":"ScreenResolution",
+          "documentation":"<p>The screen resolution for the agent streaming environment.</p>"
+        },
+        "ScreenImageFormat":{
+          "shape":"ScreenImageFormat",
+          "documentation":"<p>The image format for agent screen captures.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for updating agent access on a stack. This type supports partial updates, so you only need to specify the fields you want to change.</p>"
+    },
+    "AgentAccessSetting":{
+      "type":"structure",
+      "required":[
+        "AgentAction",
+        "Permission"
+      ],
+      "members":{
+        "AgentAction":{
+          "shape":"AgentAction",
+          "documentation":"<p>The agent action to configure. Valid values are COMPUTER_VISION and COMPUTER_INPUT. If you enable COMPUTER_INPUT, you must also enable COMPUTER_VISION.</p>"
+        },
+        "Permission":{
+          "shape":"Permission",
+          "documentation":"<p>Whether the agent action is enabled or disabled.</p>"
+        }
+      },
+      "documentation":"<p>A permission setting for an agent action. Each setting specifies an agent action and whether it is enabled or disabled.</p>"
+    },
+    "AgentAccessSettingList":{
+      "type":"list",
+      "member":{"shape":"AgentAccessSetting"},
+      "documentation":"<p>A list of AgentAccessSetting objects.</p>",
+      "min":1
+    },
+    "AgentAction":{
+      "type":"string",
+      "documentation":"<p>The type of agent action.</p> <ul> <li> <p>COMPUTER_VISION - Allows agents to take screenshots of the desktop.</p> </li> <li> <p>COMPUTER_INPUT - Allows agents to click, type, and scroll on the desktop. Requires COMPUTER_VISION to also be enabled.</p> </li> </ul>",
+      "enum":[
+        "COMPUTER_VISION",
+        "COMPUTER_INPUT"
+      ]
+    },
     "AgentSoftwareVersion":{
       "type":"string",
       "documentation":"The image type is the type of AppStream image resource.",
@@ -2911,7 +3000,11 @@
           "shape":"StreamingExperienceSettings",
           "documentation":"<p>The streaming protocol you want your stack to prefer. This can be UDP or TCP. Currently, UDP is only supported in the Windows native client.</p>"
         },
-        "ContentRedirection":{"shape":"ContentRedirection"}
+        "ContentRedirection":{"shape":"ContentRedirection"},
+        "AgentAccessConfig":{
+          "shape":"AgentAccessConfig",
+          "documentation":"<p>The configuration for agent access on the stack. If specified, agent access is enabled for the stack.</p>"
+        }
       }
     },
     "CreateStackResult":{
@@ -5397,6 +5490,10 @@
       "min":3,
       "pattern":"^[0-9a-z\\.\\-]*(?<!\\.)$"
     },
+    "S3BucketArn":{
+      "type":"string",
+      "pattern":"^arn:aws(?:\\-cn|\\-iso\\-b|\\-iso|\\-us\\-gov)?:s3:::[a-z0-9][a-z0-9.\\-]{1,61}[a-z0-9]$"
+    },
     "S3Key":{
       "type":"string",
       "max":1024,
@@ -5416,6 +5513,19 @@
         }
       },
       "documentation":"<p>Describes the S3 location.</p>"
+    },
+    "ScreenImageFormat":{
+      "type":"string",
+      "documentation":"<p>The image format for agent screen captures.</p> <ul> <li> <p>PNG - PNG format.</p> </li> <li> <p>JPEG - JPEG format.</p> </li> </ul>",
+      "enum":[
+        "PNG",
+        "JPEG"
+      ]
+    },
+    "ScreenResolution":{
+      "type":"string",
+      "documentation":"<p>The screen resolution for the agent streaming environment.</p> <ul> <li> <p>W_1280xH_720 - 1280 x 720 pixels.</p> </li> </ul>",
+      "enum":["W_1280xH_720"]
     },
     "ScriptDetails":{
       "type":"structure",
@@ -5673,12 +5783,17 @@
         "ContentRedirection":{
           "shape":"ContentRedirection",
           "documentation":"<p>Configuration for bidirectional URL redirection between the streaming session and the local client. Use HostToClient to redirect URLs from the remote desktop to the local browser.</p>"
+        },
+        "AgentAccessConfig":{
+          "shape":"AgentAccessConfig",
+          "documentation":"<p>The agent access configuration of the stack, if agent access is enabled.</p>"
         }
       },
       "documentation":"<p>Describes a stack.</p>"
     },
     "StackAttribute":{
       "type":"string",
+      "documentation":"<p>The stack attributes to delete.</p> <ul> <li> <p>STORAGE_CONNECTORS</p> </li> <li> <p>STORAGE_CONNECTOR_HOMEFOLDERS</p> </li> <li> <p>STORAGE_CONNECTOR_GOOGLE_DRIVE</p> </li> <li> <p>STORAGE_CONNECTOR_ONE_DRIVE</p> </li> <li> <p>REDIRECT_URL</p> </li> <li> <p>FEEDBACK_URL</p> </li> <li> <p>THEME_NAME</p> </li> <li> <p>USER_SETTINGS</p> </li> <li> <p>EMBED_HOST_DOMAINS</p> </li> <li> <p>IAM_ROLE_ARN</p> </li> <li> <p>ACCESS_ENDPOINTS</p> </li> <li> <p>STREAMING_EXPERIENCE_SETTINGS</p> </li> <li> <p>AGENT_ACCESS_CONFIG</p> </li> </ul>",
       "enum":[
         "STORAGE_CONNECTORS",
         "STORAGE_CONNECTOR_HOMEFOLDERS",
@@ -5692,7 +5807,8 @@
         "IAM_ROLE_ARN",
         "ACCESS_ENDPOINTS",
         "STREAMING_EXPERIENCE_SETTINGS",
-        "CONTENT_REDIRECTION"
+        "CONTENT_REDIRECTION",
+        "AGENT_ACCESS_CONFIG"
       ]
     },
     "StackAttributes":{
@@ -6459,7 +6575,11 @@
           "shape":"StreamingExperienceSettings",
           "documentation":"<p>The streaming protocol you want your stack to prefer. This can be UDP or TCP. Currently, UDP is only supported in the Windows native client.</p>"
         },
-        "ContentRedirection":{"shape":"ContentRedirection"}
+        "ContentRedirection":{"shape":"ContentRedirection"},
+        "AgentAccessConfig":{
+          "shape":"AgentAccessConfigForUpdate",
+          "documentation":"<p>The configuration for agent access on the stack. Specify this to update agent access settings. To remove agent access, use AttributesToDelete with the AGENT_ACCESS_CONFIG value.</p>"
+        }
       }
     },
     "UpdateStackResult":{

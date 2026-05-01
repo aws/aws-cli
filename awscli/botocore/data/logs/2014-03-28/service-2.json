@@ -1222,7 +1222,7 @@
         {"shape":"InvalidParameterException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Returns a list of log groups in the Region in your account. If you are performing this action in a monitoring account, you can choose to also return log groups from source accounts that are linked to the monitoring account. For more information about using cross-account observability to set up monitoring accounts and source accounts, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html\"> CloudWatch cross-account observability</a>.</p> <p>You can optionally filter the list by log group class, by using regular expressions in your request to match strings in the log group names, by using the fieldIndexes parameter to filter log groups based on which field indexes are configured, by using the dataSources parameter to filter log groups by data source types, and by using the fieldIndexNames parameter to filter by specific field index names.</p> <p>This operation is paginated. By default, your first use of this operation returns 50 results, and includes a token to use in a subsequent operation to return more results.</p>"
+      "documentation":"<p>Returns a list of log groups in the Region in your account. If you are performing this action in a monitoring account, you can choose to also return log groups from source accounts that are linked to the monitoring account. For more information about using cross-account observability to set up monitoring accounts and source accounts, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html\"> CloudWatch cross-account observability</a>.</p> <p>You can optionally filter the results by log group class, log group name pattern, field indexes, data sources, field index names, or log group tags. If you specify more than one filter type, the results include log groups that satisfy all filters.</p> <p>This operation is paginated. By default, your first use of this operation returns 50 results, and includes a token to use in a subsequent operation to return more results.</p>"
     },
     "ListLogGroupsForQuery":{
       "name":"ListLogGroupsForQuery",
@@ -1635,7 +1635,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Starts a query of one or more log groups or data sources using CloudWatch Logs Insights. You specify the log groups or data sources and time range to query and the query string to use. You can query up to 10 data sources in a single query.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax.html\">CloudWatch Logs Insights Query Syntax</a>.</p> <p>After you run a query using <code>StartQuery</code>, the query results are stored by CloudWatch Logs. You can use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetQueryResults.html\">GetQueryResults</a> to retrieve the results of a query, using the <code>queryId</code> that <code>StartQuery</code> returns. </p> <p>Interactive queries started with <code>StartQuery</code> share concurrency limits with automated scheduled query executions. Both types of queries count toward the same regional concurrent query quota, so high scheduled query activity may affect the availability of concurrent slots for interactive queries.</p> <note> <p>To specify the log groups to query, a <code>StartQuery</code> operation must include one of the following:</p> <ul> <li> <p>Either exactly one of the following parameters: <code>logGroupName</code>, <code>logGroupNames</code>, or <code>logGroupIdentifiers</code> </p> </li> <li> <p>Or the <code>queryString</code> must include a <code>SOURCE</code> command to select log groups for the query. The <code>SOURCE</code> command can select log groups based on log group name prefix, account ID, and log class, or select data sources using dataSource syntax in LogsQL, PPL, and SQL. </p> <p>For more information about the <code>SOURCE</code> command, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax-Source.html\">SOURCE</a>.</p> </li> </ul> </note> <p>If you have associated a KMS key with the query results in this account, then <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_StartQuery.html\">StartQuery</a> uses that key to encrypt the results when it stores them. If no key is associated with query results, the query results are encrypted with the default CloudWatch Logs encryption method.</p> <p>Queries time out after 60 minutes of runtime. If your queries are timing out, reduce the time range being searched or partition your query into a number of queries.</p> <p>If you are using CloudWatch cross-account observability, you can use this operation in a monitoring account to start a query in a linked source account. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html\">CloudWatch cross-account observability</a>. For a cross-account <code>StartQuery</code> operation, the query definition must be defined in the monitoring account.</p> <p>You can have up to 100 concurrent CloudWatch Logs insights queries, including queries that have been added to dashboards. </p>"
+      "documentation":"<p>Starts a query of one or more log groups or data sources using CloudWatch Logs Insights. You specify the log groups or data sources and time range to query and the query string to use. You can query up to 10 data sources in a single query.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax.html\">CloudWatch Logs Insights Query Syntax</a>.</p> <p>After you run a query using <code>StartQuery</code>, the query results are stored by CloudWatch Logs. You can use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetQueryResults.html\">GetQueryResults</a> to retrieve the results of a query, using the <code>queryId</code> that <code>StartQuery</code> returns. </p> <p>Interactive queries started with <code>StartQuery</code> share concurrency limits with automated scheduled query executions. Both types of queries count toward the same regional concurrent query quota, so high scheduled query activity may affect the availability of concurrent slots for interactive queries.</p> <note> <p>To specify the log groups to query, a <code>StartQuery</code> operation must include one of the following:</p> <ul> <li> <p>Either exactly one of the following parameters: <code>logGroupName</code>, <code>logGroupNames</code>, or <code>logGroupIdentifiers</code> </p> </li> <li> <p>Or the <code>queryString</code> must include a <code>SOURCE</code> command to select log groups for the query. The <code>SOURCE</code> command can select log groups based on log group name prefix, account ID, and log class, or select data sources using dataSource syntax in LogsQL, PPL, and SQL. In LogsQL, the <code>SOURCE</code> command also supports filtering by log group tags. </p> <p>For more information about the <code>SOURCE</code> command, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax-Source.html\">SOURCE</a>.</p> </li> </ul> </note> <p>If you have associated a KMS key with the query results in this account, then <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_StartQuery.html\">StartQuery</a> uses that key to encrypt the results when it stores them. If no key is associated with query results, the query results are encrypted with the default CloudWatch Logs encryption method.</p> <p>Queries time out after 60 minutes of runtime. If your queries are timing out, reduce the time range being searched or partition your query into a number of queries.</p> <p>If you are using CloudWatch cross-account observability, you can use this operation in a monitoring account to start a query in a linked source account. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html\">CloudWatch cross-account observability</a>. For a cross-account <code>StartQuery</code> operation, the query definition must be defined in the monitoring account.</p> <p>You can have up to 100 concurrent CloudWatch Logs insights queries, including queries that have been added to dashboards. </p>"
     },
     "StopQuery":{
       "name":"StopQuery",
@@ -5685,6 +5685,10 @@
         "fieldIndexNames":{
           "shape":"FieldIndexNames",
           "documentation":"<p>An array of field index names to filter log groups that have specific field indexes. Only log groups containing all specified field indexes are returned. You can specify 1 to 20 field index names, each with 1 to 512 characters.</p>"
+        },
+        "logGroupTags":{
+          "shape":"TagFilters",
+          "documentation":"<p>An array of tag filters to return only log groups that have specific tags. Multiple filters are combined with AND logic.</p>"
         }
       }
     },
@@ -8745,6 +8749,45 @@
     "TableFields":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "TagFilter":{
+      "type":"structure",
+      "required":["key"],
+      "members":{
+        "key":{
+          "shape":"TagFilterKey",
+          "documentation":"<p>The tag key to filter on.</p>"
+        },
+        "values":{
+          "shape":"TagFilterValues",
+          "documentation":"<p>An optional list of tag values to filter on.</p> <ul> <li> <p>If you specify a filter that contains more than one value for a key, the response returns log groups that match any of the specified values for that key.</p> </li> <li> <p>If you don't specify values, the response returns all log groups that are tagged with that key, with any or no value.</p> </li> <li> <p>Use <code>*</code> for wildcard matching. For example, <code>prod*</code> matches values that start with <code>prod</code>.</p> </li> <li> <p>Use <code>!</code> as a prefix for negation. For example, <code>!prod</code> matches values that are not <code>prod</code>.</p> </li> <li> <p>Exact matching and negation are case-sensitive. Wildcard matching is case-insensitive.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>A tag filter that specifies a tag key and optional tag values for filtering log groups by tags.</p>"
+    },
+    "TagFilterKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]+)$"
+    },
+    "TagFilterValue":{
+      "type":"string",
+      "max":259,
+      "min":0,
+      "pattern":"^!?\\*?([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)\\*?$"
+    },
+    "TagFilterValues":{
+      "type":"list",
+      "member":{"shape":"TagFilterValue"},
+      "max":5,
+      "min":0
+    },
+    "TagFilters":{
+      "type":"list",
+      "member":{"shape":"TagFilter"},
+      "max":5,
+      "min":1
     },
     "TagKey":{
       "type":"string",

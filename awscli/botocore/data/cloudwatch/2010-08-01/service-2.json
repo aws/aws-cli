@@ -75,11 +75,10 @@
       },
       "errors":[
         {"shape":"InvalidParameterValueException"},
-        {"shape":"DashboardNotFoundError"},
         {"shape":"InternalServiceFault"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Deletes all dashboards that you specify. You can specify up to 100 dashboards to delete. If there is an error during this call, no dashboards are deleted.</p>"
+      "documentation":"<p>Deletes all dashboards that you specify. You can specify up to 100 dashboards to delete. If there is an error during this call, the operation attempts to delete as many dashboards as possible.</p>"
     },
     "DeleteInsightRules":{
       "name":"DeleteInsightRules",
@@ -397,7 +396,7 @@
         "shape":"GetOTelEnrichmentOutput",
         "resultWrapper":"GetOTelEnrichmentResult"
       },
-      "documentation":"<p>Returns the current status of vended metric enrichment for the account, including whether CloudWatch vended metrics are enriched with resource ARN and resource tag labels and queryable using PromQL. For the list of supported resources, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/UsingResourceTagsForTelemetry.html\">Supported AWS infrastructure metrics</a>.</p>"
+      "documentation":"<p>Returns the current status of vended metric enrichment for the account, including whether CloudWatch vended metrics are enriched with resource ARN and resource tag labels and queryable using PromQL. For the list of supported resources, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/UsingResourceTagsForTelemetry.html\">Supported Amazon Web Services infrastructure metrics</a>.</p>"
     },
     "ListAlarmMuteRules":{
       "name":"ListAlarmMuteRules",
@@ -503,7 +502,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServiceFault"}
       ],
-      "documentation":"<p>Displays the tags associated with a CloudWatch resource. Currently, alarms and Contributor Insights rules support tagging.</p>"
+      "documentation":"<p>Displays the tags associated with a CloudWatch resource. Currently, alarms, dashboards, metric streams and Contributor Insights rules support tagging.</p>"
     },
     "PutAlarmMuteRule":{
       "name":"PutAlarmMuteRule",
@@ -692,7 +691,7 @@
         "shape":"StartOTelEnrichmentOutput",
         "resultWrapper":"StartOTelEnrichmentResult"
       },
-      "documentation":"<p>Enables enrichment and PromQL access for CloudWatch vended metrics for <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/UsingResourceTagsForTelemetry.html\">supported AWS resources</a> in the account. Once enabled, metrics that contain a resource identifier dimension (for example, EC2 <code>CPUUtilization</code> with an <code>InstanceId</code> dimension) are enriched with resource ARN and resource tag labels and become queryable using PromQL.</p> <p>Before calling this operation, you must enable resource tags on telemetry for your account. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/EnableResourceTagsOnTelemetry.html\">Enable resource tags on telemetry</a>.</p>"
+      "documentation":"<p>Enables enrichment and PromQL access for CloudWatch vended metrics for <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/UsingResourceTagsForTelemetry.html\">supported Amazon Web Services resources</a> in the account. Once enabled, metrics that contain a resource identifier dimension (for example, EC2 <code>CPUUtilization</code> with an <code>InstanceId</code> dimension) are enriched with resource ARN and resource tag labels and become queryable using PromQL.</p> <p>Before calling this operation, you must enable resource tags on telemetry for your account. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/EnableResourceTagsOnTelemetry.html\">Enable resource tags on telemetry</a>.</p>"
     },
     "StopMetricStreams":{
       "name":"StopMetricStreams",
@@ -723,7 +722,7 @@
         "shape":"StopOTelEnrichmentOutput",
         "resultWrapper":"StopOTelEnrichmentResult"
       },
-      "documentation":"<p>Disables enrichment and PromQL access for CloudWatch vended metrics for <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/UsingResourceTagsForTelemetry.html\">supported AWS resources</a> in the account. After disabling, these metrics are no longer enriched with resource ARN and resource tag labels, and cannot be queried using PromQL.</p>"
+      "documentation":"<p>Disables enrichment and PromQL access for CloudWatch vended metrics for <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/UsingResourceTagsForTelemetry.html\">supported Amazon Web Services resources</a> in the account. After disabling, these metrics are no longer enriched with resource ARN and resource tag labels, and cannot be queried using PromQL.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -743,7 +742,7 @@
         {"shape":"InternalServiceFault"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Assigns one or more tags (key-value pairs) to the specified CloudWatch resource. Currently, the only CloudWatch resources that can be tagged are alarms and Contributor Insights rules.</p> <p>Tags can help you organize and categorize your resources. You can also use them to scope user permissions by granting a user permission to access or change only resources with certain tag values.</p> <p>Tags don't have any semantic meaning to Amazon Web Services and are interpreted strictly as strings of characters.</p> <p>You can use the <code>TagResource</code> action with an alarm that already has tags. If you specify a new tag key for the alarm, this tag is appended to the list of tags associated with the alarm. If you specify a tag key that is already associated with the alarm, the new tag value that you specify replaces the previous value for that tag.</p> <p>You can associate as many as 50 tags with a CloudWatch resource.</p>"
+      "documentation":"<p>Assigns one or more tags (key-value pairs) to the specified CloudWatch resource. Currently, the only CloudWatch resources that can be tagged are alarms, dashboards, metric streams and Contributor Insights rules.</p> <p>Tags can help you organize and categorize your resources. You can also use them to scope user permissions by granting a user permission to access or change only resources with certain tag values.</p> <p>Tags don't have any semantic meaning to Amazon Web Services and are interpreted strictly as strings of characters.</p> <p>You can use the <code>TagResource</code> action with an alarm that already has tags. If you specify a new tag key for the alarm, this tag is appended to the list of tags associated with the alarm. If you specify a tag key that is already associated with the alarm, the new tag value that you specify replaces the previous value for that tag.</p> <p>You can associate as many as 50 tags with a CloudWatch resource.</p>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -763,7 +762,7 @@
         {"shape":"InternalServiceFault"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Removes one or more tags from the specified resource.</p>"
+      "documentation":"<p>Removes one or more tags from the specified resource. Currently, alarms, dashboards, metric streams and Contributor Insights rules support tagging.</p>"
     }
   },
   "shapes":{
@@ -1242,7 +1241,8 @@
       "type":"map",
       "key":{"shape":"AttributeName"},
       "value":{"shape":"AttributeValue"},
-      "max":30
+      "max":150,
+      "min":0
     },
     "ContributorId":{
       "type":"string",
@@ -2888,7 +2888,7 @@
       "members":{
         "ResourceARN":{
           "shape":"AmazonResourceName",
-          "documentation":"<p>The ARN of the CloudWatch resource that you want to view tags for.</p> <p>The ARN format of an alarm is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:alarm:<i>alarm-name</i> </code> </p> <p>The ARN format of a Contributor Insights rule is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:insight-rule/<i>insight-rule-name</i> </code> </p> <p>For more information about ARN format, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/list_amazoncloudwatch.html#amazoncloudwatch-resources-for-iam-policies\"> Resource Types Defined by Amazon CloudWatch</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+          "documentation":"<p>The ARN of the CloudWatch resource that you want to view tags for.</p> <p>The ARN format of an alarm is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:alarm:<i>alarm-name</i> </code> </p> <p>The ARN format of a Contributor Insights rule is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:insight-rule/<i>insight-rule-name</i> </code> </p> <p>The ARN format of a dashboard is <code>arn:aws:cloudwatch::<i>account-id</i>:dashboard/<i>dashboard-name</i> </code> </p> <p>The ARN format of a metric stream is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:metric-stream/<i>metric-stream-name</i> </code> </p> <p>For more information about ARN format, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/list_amazoncloudwatch.html#amazoncloudwatch-resources-for-iam-policies\"> Resource Types Defined by Amazon CloudWatch</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         }
       }
     },
@@ -3749,6 +3749,10 @@
         "DashboardBody":{
           "shape":"DashboardBody",
           "documentation":"<p>The detailed information about the dashboard in JSON format, including the widgets to include and their location on the dashboard. This parameter is required.</p> <p>For more information about the syntax, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/CloudWatch-Dashboard-Body-Structure.html\">Dashboard Body Structure and Syntax</a>.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of key-value pairs to associate with the dashboard. You can associate as many as 50 tags with a dashboard.</p> <p>Tags can help you organize and categorize your dashboards. You can also use them to scope user permissions by granting a user permission to access or change only dashboards with certain tag values.</p> <p>You can use this parameter only when creating a new dashboard. If you specify <code>Tags</code> when updating an existing dashboard, the tag updates are ignored. To add or update tags on an existing dashboard, use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_TagResource.html\">TagResource</a>. To remove tags, use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_UntagResource.html\">UntagResource</a>.</p>"
         }
       }
     },
@@ -4360,7 +4364,7 @@
       "members":{
         "ResourceARN":{
           "shape":"AmazonResourceName",
-          "documentation":"<p>The ARN of the CloudWatch resource that you're adding tags to.</p> <p>The ARN format of an alarm is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:alarm:<i>alarm-name</i> </code> </p> <p>The ARN format of a Contributor Insights rule is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:insight-rule/<i>insight-rule-name</i> </code> </p> <p>For more information about ARN format, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/list_amazoncloudwatch.html#amazoncloudwatch-resources-for-iam-policies\"> Resource Types Defined by Amazon CloudWatch</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+          "documentation":"<p>The ARN of the CloudWatch resource that you're adding tags to.</p> <p>The ARN format of an alarm is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:alarm:<i>alarm-name</i> </code> </p> <p>The ARN format of a Contributor Insights rule is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:insight-rule/<i>insight-rule-name</i> </code> </p> <p>The ARN format of a dashboard is <code>arn:aws:cloudwatch::<i>account-id</i>:dashboard/<i>dashboard-name</i> </code> </p> <p>The ARN format of a metric stream is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:metric-stream/<i>metric-stream-name</i> </code> </p> <p>For more information about ARN format, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/list_amazoncloudwatch.html#amazoncloudwatch-resources-for-iam-policies\"> Resource Types Defined by Amazon CloudWatch</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -4408,7 +4412,7 @@
       "members":{
         "ResourceARN":{
           "shape":"AmazonResourceName",
-          "documentation":"<p>The ARN of the CloudWatch resource that you're removing tags from.</p> <p>The ARN format of an alarm is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:alarm:<i>alarm-name</i> </code> </p> <p>The ARN format of a Contributor Insights rule is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:insight-rule/<i>insight-rule-name</i> </code> </p> <p>For more information about ARN format, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/list_amazoncloudwatch.html#amazoncloudwatch-resources-for-iam-policies\"> Resource Types Defined by Amazon CloudWatch</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+          "documentation":"<p>The ARN of the CloudWatch resource that you're removing tags from.</p> <p>The ARN format of an alarm is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:alarm:<i>alarm-name</i> </code> </p> <p>The ARN format of a Contributor Insights rule is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:insight-rule/<i>insight-rule-name</i> </code> </p> <p>The ARN format of a dashboard is <code>arn:aws:cloudwatch::<i>account-id</i>:dashboard/<i>dashboard-name</i> </code> </p> <p>The ARN format of a metric stream is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:metric-stream/<i>metric-stream-name</i> </code> </p> <p>For more information about ARN format, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/list_amazoncloudwatch.html#amazoncloudwatch-resources-for-iam-policies\"> Resource Types Defined by Amazon CloudWatch</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         },
         "TagKeys":{
           "shape":"TagKeyList",

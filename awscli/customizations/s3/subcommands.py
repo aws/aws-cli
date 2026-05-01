@@ -1149,7 +1149,7 @@ class CommandArchitecture(object):
                 and self.parameters.get('checksum_algorithm') is None
                 and self.session.get_config_variable(
                     'request_checksum_calculation'
-                ) != 'when_required'
+                ) == 'when_supported'
             ):
                 uni_print(
                     '\nAWS CLI v2 UPGRADE WARNING: In AWS CLI v2, for '

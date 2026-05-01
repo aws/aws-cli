@@ -190,7 +190,9 @@ class ConfigureMFALoginCommand(BasicCommand):
         except AttributeError:
             expiration_time = str(temp_credentials['Expiration'])
 
-        self._config_writer.update_config(credential_values, credentials_file)
+        self._config_writer.update_config(
+            credential_values, credentials_file, check_permissions=True
+        )
 
         sys.stdout.write(
             f"Temporary credentials written to profile '{target_profile}'\n"

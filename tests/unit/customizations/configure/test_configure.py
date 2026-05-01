@@ -40,7 +40,10 @@ class TestConfigureCommand(unittest.TestCase):
         credentials_file_call = called_args[0]
         expected_creds_file = os.path.expanduser('~/fake_credentials_filename')
         self.assertEqual(
-            credentials_file_call, mock.call(new_values, expected_creds_file)
+            credentials_file_call,
+            mock.call(
+                new_values, expected_creds_file, check_permissions=True
+            ),
         )
 
     def test_configure_command_sends_values_to_writer(self):
@@ -231,6 +234,22 @@ class TestConfigureCommand(unittest.TestCase):
                 'aws_session_token': None,
             }
         )
+
+    def test_check_permissions_when_credential_values_provided(self):
+        self.configure(args=[], parsed_globals=self.global_args)
+        expected_creds_file = os.path.expanduser('~/fake_credentials_filename')
+        self.writer.update_config.assert_any_call(
+            mock.ANY, expected_creds_file, check_permissions=True
+        )
+
+    def test_no_check_permissions_when_no_credential_values_changed(self):
+        user_presses_enter = None
+        precanned = PrecannedPrompter(value=user_presses_enter)
+        self.configure = configure.ConfigureCommand(
+            self.session, prompter=precanned, config_writer=self.writer
+        )
+        self.configure(args=[], parsed_globals=self.global_args)
+        self.writer.update_config.assert_not_called()
 
 
 class TestInteractivePrompter(unittest.TestCase):

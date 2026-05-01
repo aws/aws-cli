@@ -15,7 +15,7 @@ import shutil
 import tempfile
 
 from awscli.customizations.configure.writer import ConfigFileWriter
-from awscli.testutils import skip_if_windows, unittest
+from awscli.testutils import mock, skip_if_windows, unittest
 
 
 class TestConfigFileWriter(unittest.TestCase):
@@ -350,3 +350,24 @@ class TestConfigFileWriter(unittest.TestCase):
                 {'__section__': 'default', 's3': {'key': 'bad\nvalue'}},
                 self.config_filename
             )
+
+    @mock.patch('awscli.customizations.configure.writer.warn_if_permissive')
+    def test_check_permissions_calls_warn_if_permissive(self, mock_warn):
+        with open(self.config_filename, 'w') as f:
+            f.write('[default]\n')
+        self.writer.update_config(
+            {'__section__': 'default', 'key': 'value'},
+            self.config_filename,
+            check_permissions=True,
+        )
+        mock_warn.assert_called_once_with(self.config_filename)
+
+    @mock.patch('awscli.customizations.configure.writer.warn_if_permissive')
+    def test_no_check_permissions_by_default(self, mock_warn):
+        with open(self.config_filename, 'w') as f:
+            f.write('[default]\n')
+        self.writer.update_config(
+            {'__section__': 'default', 'key': 'value'},
+            self.config_filename,
+        )
+        mock_warn.assert_not_called()

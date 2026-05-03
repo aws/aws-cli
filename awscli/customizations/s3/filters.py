@@ -74,6 +74,41 @@ def _get_local_root(source_location, dir_op):
     return rootdir
 
 
+def _literal_prefix(pattern):
+    for i, ch in enumerate(pattern):
+        if ch in '*?[':
+            return pattern[:i]
+    return pattern
+
+
+def _pattern_can_match_under(pattern, target_with_sep):
+    """Sound check: returns False only when ``pattern`` cannot match any
+    string starting with ``target_with_sep`` plus at least one more char.
+    True is conservative (the pattern *might* match such a string).
+    """
+    lit = _literal_prefix(pattern)
+    common = min(len(lit), len(target_with_sep))
+    if lit[:common] != target_with_sep[:common]:
+        return False
+    if len(target_with_sep) <= len(lit):
+        return True
+    if lit == pattern:
+        return False
+    return True
+
+
+def _pattern_matches_all_under(pattern, target_with_sep):
+    """Sound check: returns True only when ``pattern`` is proven to match
+    every string starting with ``target_with_sep`` plus a non-empty tail.
+    False is conservative.
+    """
+    lit = _literal_prefix(pattern)
+    if not target_with_sep.startswith(lit):
+        return False
+    rest = pattern[len(lit):]
+    return bool(rest) and all(c == '*' for c in rest)
+
+
 class Filter:
     """
     This is a universal exclude/include filter.
@@ -161,3 +196,51 @@ class Filter:
                 path_pattern,
             )
         return file_status
+
+    def can_skip_directory(
+        self, dir_path, src_type='local', use_dst_patterns=False
+    ):
+        """Return True only when no descendant of ``dir_path`` can possibly
+        be included by the filter chain.
+
+        Sound: a True result is a proof that traversing into ``dir_path``
+        cannot uncover any path that the filter chain would include, so
+        the caller may safely skip listing it. False is conservative
+        (the directory must be traversed normally).
+
+        ``use_dst_patterns``: when True, evaluate against ``dst_patterns``
+        (rooted at the destination) instead of ``patterns`` (rooted at the
+        source). The reverse-direction file generator used during
+        ``s3 sync s3://bucket/ ./local`` walks the local destination, so
+        it must consult the destination-rooted patterns to prune correctly.
+        """
+        patterns = self.dst_patterns if use_dst_patterns else self.patterns
+        if not patterns:
+            return False
+        sep = os.sep if src_type == 'local' else '/'
+        target = dir_path.rstrip(sep) + sep
+        if src_type == 'local':
+            # ``fnmatch.fnmatch`` (used by ``_match_pattern``) normalizes
+            # case via ``os.path.normcase`` on Windows, so this prefix
+            # comparison must do the same — otherwise a case-different
+            # subtree on Windows would be incorrectly pruned. On POSIX
+            # ``normcase`` is identity.
+            target = os.path.normcase(target)
+        normalized = []
+        for pattern_type, pat in patterns:
+            if src_type == 'local':
+                pat = os.path.normcase(pat.replace('/', os.sep))
+            else:
+                pat = pat.replace(os.sep, '/')
+            normalized.append((pattern_type, pat))
+        for pattern_type, pat in normalized:
+            if pattern_type == 'include' and _pattern_can_match_under(
+                pat, target
+            ):
+                return False
+        for pattern_type, pat in normalized:
+            if pattern_type == 'exclude' and _pattern_matches_all_under(
+                pat, target
+            ):
+                return True
+        return False

@@ -13,7 +13,7 @@
 # language governing permissions and limitations under the License.
 import os
 
-from awscli.testutils import BaseAWSCommandParamsTest, skip_if_windows
+from awscli.testutils import BaseAWSCommandParamsTest, skip_if_windows, temporary_file, create_clidriver
 from awscli.testutils import capture_input
 from awscli.testutils import mock 
 from awscli.compat import BytesIO
@@ -1043,6 +1043,55 @@ class TestCPCommand(BaseCPCommandTest):
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(self.operations_called[1][0].name, 'GetObject')
         self.assertEqual(self.operations_called[1][1]['ChecksumMode'], 'ENABLED')
+
+    def test_upload_with_no_checksum_param_v2_debug(self):
+        full_path = self.files.create_file('foo.txt', 'contents')
+        cmdline = f'{self.prefix} {full_path} s3://bucket/key.txt --v2-debug'
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=0)
+        self.assertIn(
+            'AWS CLI v2 UPGRADE WARNING: In AWS CLI v2, for `aws s3` '
+            'commands that upload a file to an S3 bucket, Cyclic Redundancy '
+            'Check 64 (CRC64NVME) will be used to compute object checksums by '
+            'default and included in the request.',
+            stderr
+        )
+
+    def test_upload_with_no_checksum_when_required_v2_debug(self):
+        with temporary_file('w') as f:
+            f.write(
+                "[default]\n"
+                "request_checksum_calculation = when_required\n"
+            )
+            f.flush()
+            self.environ['AWS_CONFIG_FILE'] = f.name
+            self.driver = create_clidriver()
+        full_path = self.files.create_file('foo.txt', 'contents')
+        cmdline = (
+            f'{self.prefix} {full_path} s3://bucket/key.txt --v2-debug'
+        )
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=0)
+        self.assertNotIn(
+            'AWS CLI v2 UPGRADE WARNING: In AWS CLI v2, for `aws s3` '
+            'commands that upload a file to an S3 bucket, Cyclic Redundancy '
+            'Check 64 (CRC64NVME) will be used to compute object checksums by '
+            'default and included in the request.',
+            stderr
+        )
+
+    def test_upload_with_crc32_checksum_v2_debug(self):
+        full_path = self.files.create_file('foo.txt', 'contents')
+        cmdline = (
+            f'{self.prefix} {full_path} s3://bucket/key.txt '
+            '--checksum-algorithm CRC32 --v2-debug'
+        )
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=0)
+        self.assertNotIn(
+            'AWS CLI v2 UPGRADE WARNING: In AWS CLI v2, for `aws s3` '
+            'commands that upload a file to an S3 bucket, Cyclic Redundancy '
+            'Check 64 (CRC64NVME) will be used to compute object checksums by '
+            'default and included in the request.',
+            stderr
+        )
 
 
 class TestStreamingCPCommand(BaseAWSCommandParamsTest):

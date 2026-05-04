@@ -9828,7 +9828,7 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"(Authorization|X-Amzn-Bedrock-AgentCore-Runtime-Custom-[a-zA-Z0-9-]+)"
+      "pattern":"[A-Za-z][A-Za-z0-9_-]{0,255}"
     },
     "HttpHeaderKey":{
       "type":"string",
@@ -11290,6 +11290,14 @@
         "searchType":{
           "shape":"SearchType",
           "documentation":"<p>The search type for the Model Context Protocol gateway. This field specifies how the gateway handles search operations.</p>"
+        },
+        "sessionConfiguration":{
+          "shape":"SessionConfiguration",
+          "documentation":"<p>The session configuration for the MCP gateway. This configuration controls session behavior, including session timeout settings.</p>"
+        },
+        "streamingConfiguration":{
+          "shape":"StreamingConfiguration",
+          "documentation":"<p>The streaming configuration for the MCP gateway. This configuration controls whether response streaming is enabled for the gateway.</p>"
         }
       },
       "documentation":"<p>The configuration for a Model Context Protocol (MCP) gateway. This structure defines how the gateway implements the MCP protocol.</p>"
@@ -11342,7 +11350,7 @@
         },
         "routingDomain":{
           "shape":"RoutingDomain",
-          "documentation":"<p>An intermediate publicly resolvable domain used as the VPC Lattice resource configuration endpoint. Required when your private endpoint uses a domain that is not publicly resolvable.</p>"
+          "documentation":"<p>An intermediate domain to use as the resource configuration endpoint instead of the actual target domain. Use this when you want to route traffic through an intermediate component such as a VPC endpoint or internal load balancer. For more information, see xref:lattice-vpc-egress-routing-domain[Route traffic through an intermediate domain].</p>"
         }
       },
       "documentation":"<p>Configuration for a managed VPC Lattice resource. The gateway creates and manages the VPC Lattice resource gateway and resource configuration on your behalf using a service-linked role.</p>"
@@ -12474,10 +12482,10 @@
         },
         "tokenExchangeGrantTypeConfig":{
           "shape":"TokenExchangeGrantTypeConfigType",
-          "documentation":"<p>Configuration specific to TOKEN_EXCHANGE grant type (RFC 8693)</p>"
+          "documentation":"<p>Configuration specific to the TOKEN_EXCHANGE grant type (RFC 8693).</p>"
         }
       },
-      "documentation":"<p>Configuration for on-behalf-of token exchange</p>"
+      "documentation":"<p>Configuration for on-behalf-of token exchange.</p>"
     },
     "OnBehalfOfTokenExchangeGrantTypeType":{
       "type":"string",
@@ -14034,6 +14042,22 @@
       "max":1440,
       "min":1
     },
+    "SessionConfiguration":{
+      "type":"structure",
+      "members":{
+        "sessionTimeoutInSeconds":{
+          "shape":"SessionConfigurationSessionTimeoutInSecondsInteger",
+          "documentation":"<p>The session timeout in seconds. After this timeout, the session expires and subsequent requests to this session will receive an error. The minimum value is 900 seconds (15 minutes), the maximum value is 28800 seconds (8 hours), and the default value is 3600 seconds (1 hour).</p>"
+        }
+      },
+      "documentation":"<p>The session configuration for an MCP gateway. This structure defines settings that control session behavior.</p>"
+    },
+    "SessionConfigurationSessionTimeoutInSecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":28800,
+      "min":900
+    },
     "SessionStorageConfiguration":{
       "type":"structure",
       "required":["mountPath"],
@@ -14342,6 +14366,16 @@
       "member":{"shape":"StreamDeliveryResource"},
       "max":1,
       "min":0
+    },
+    "StreamingConfiguration":{
+      "type":"structure",
+      "members":{
+        "enableResponseStreaming":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether response streaming is enabled for the gateway. When set to <code>true</code>, the gateway streams responses from targets back to the client.</p>"
+        }
+      },
+      "documentation":"<p>The streaming configuration for an MCP gateway. This structure defines settings that control response streaming behavior.</p>"
     },
     "String":{"type":"string"},
     "StringListValidation":{
@@ -14911,10 +14945,10 @@
         },
         "actorTokenScopes":{
           "shape":"ScopesListType",
-          "documentation":"<p>Only valid when actorTokenContent is M2M</p>"
+          "documentation":"<p>The scopes for the actor token. Only valid when actorTokenContent is M2M.</p>"
         }
       },
-      "documentation":"<p>Configuration for RFC 8693 Token Exchange</p>"
+      "documentation":"<p>Configuration for RFC 8693 token exchange.</p>"
     },
     "TokenVaultIdType":{
       "type":"string",

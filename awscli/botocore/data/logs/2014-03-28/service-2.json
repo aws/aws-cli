@@ -2333,6 +2333,14 @@
         "allowedSuffixPathFields":{
           "shape":"RecordFields",
           "documentation":"<p>The list of variable fields that can be used in the suffix path of a delivery that delivers to an S3 bucket.</p>"
+        },
+        "deliverySourceConfiguration":{
+          "shape":"DeliverySourceConfigurationSchemas",
+          "documentation":"<p>The schema of the delivery source configuration that is available for this log type. Each element describes a configuration that can be set when calling <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliverySource.html\">PutDeliverySource</a>, including the configuration name, type, and default value.</p>"
+        },
+        "s3TablesIntegration":{
+          "shape":"S3TablesIntegration",
+          "documentation":"<p>The S3 Tables integration configuration for this configuration template, including the datasource name and type.</p>"
         }
       },
       "documentation":"<p>A structure containing information about the deafult settings and available settings that you can use to configure a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_Delivery.html\">delivery</a> or a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_DeliveryDestination.html\">delivery destination</a>.</p>"
@@ -3280,15 +3288,116 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p>The tags that have been assigned to this delivery source.</p>"
+        },
+        "deliverySourceConfiguration":{
+          "shape":"DeliverySourceConfiguration",
+          "documentation":"<p>The map of key-value pairs that configure the delivery source.</p>"
+        },
+        "status":{
+          "shape":"DeliverySourceStatus",
+          "documentation":"<p>The status of the delivery source. A delivery source can have the status <code>ACTIVE</code> or <code>INACTIVE</code>. Note: This value is defined for selective log types.</p>"
+        },
+        "statusReason":{
+          "shape":"DeliverySourceStatusReason",
+          "documentation":"<p>The reason for the status of the delivery source. A status reason of <code>RESOURCE_DELETED</code> indicates that the resource associated with the delivery source has been deleted. Note: This value is defined for selective log types.</p>"
         }
       },
       "documentation":"<p>This structure contains information about one <i>delivery source</i> in your account. A delivery source is an Amazon Web Services resource that sends logs to an Amazon Web Services destination. The destination can be CloudWatch Logs, Amazon S3, or Firehose.</p> <p>Only some Amazon Web Services services support being configured as a delivery source. These services are listed as <b>Supported [V2 Permissions]</b> in the table at <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AWS-logs-and-resource-policy.html\">Enabling logging from Amazon Web Services services.</a> </p> <p>To configure logs delivery between a supported Amazon Web Services service and a destination, you must do the following:</p> <ul> <li> <p>Create a delivery source, which is a logical object that represents the resource that is actually sending the logs. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliverySource.html\">PutDeliverySource</a>.</p> </li> <li> <p>Create a <i>delivery destination</i>, which is a logical object that represents the actual delivery destination. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestination.html\">PutDeliveryDestination</a>.</p> </li> <li> <p>If you are delivering logs cross-account, you must use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestinationPolicy.html\">PutDeliveryDestinationPolicy</a> in the destination account to assign an IAM policy to the destination. This policy allows delivery to that destination. </p> </li> <li> <p>Create a <i>delivery</i> by pairing exactly one delivery source and one delivery destination. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html\">CreateDelivery</a>.</p> </li> </ul> <p>You can configure a single delivery source to send logs to multiple destinations by creating multiple deliveries. You can also create multiple deliveries to configure multiple delivery sources to send logs to the same delivery destination.</p>"
+    },
+    "DeliverySourceConfiguration":{
+      "type":"map",
+      "key":{"shape":"DeliverySourceConfigurationKey"},
+      "value":{"shape":"DeliverySourceConfigurationValue"}
+    },
+    "DeliverySourceConfigurationKey":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "DeliverySourceConfigurationNumericValue":{
+      "type":"double",
+      "box":true
+    },
+    "DeliverySourceConfigurationSchema":{
+      "type":"structure",
+      "required":[
+        "keyName",
+        "valueType",
+        "defaultValue"
+      ],
+      "members":{
+        "keyName":{
+          "shape":"DeliverySourceConfigurationSchemaField",
+          "documentation":"<p>The name of the configuration.</p>"
+        },
+        "valueType":{
+          "shape":"DeliverySourceConfigurationSchemaValueType",
+          "documentation":"<p>The data type of the configuration value. Valid values are <code>string</code>, <code>boolean</code>, <code>int</code>, <code>double</code>, and <code>long</code>.</p>"
+        },
+        "defaultValue":{
+          "shape":"DeliverySourceConfigurationSchemaField",
+          "documentation":"<p>The default value of the configuration that is used when a value is not specified in a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliverySource.html\">PutDeliverySource</a> request.</p>"
+        },
+        "supportedValues":{
+          "shape":"DeliverySourceConfigurationSupportedValues",
+          "documentation":"<p>The list of allowed values for the configuration. Empty for free-form configuration.</p>"
+        },
+        "minValue":{
+          "shape":"DeliverySourceConfigurationNumericValue",
+          "documentation":"<p>The minimum numeric value allowed for the configuration. This applies only when the <code>valueType</code> is a numeric type.</p>"
+        },
+        "maxValue":{
+          "shape":"DeliverySourceConfigurationNumericValue",
+          "documentation":"<p>The maximum numeric value allowed for the configuration. This applies only when the <code>valueType</code> is a numeric type.</p>"
+        }
+      },
+      "documentation":"<p>A structure that describes a single configuration for a log type, including its name, value type, default value, and the range of supported values.</p>"
+    },
+    "DeliverySourceConfigurationSchemaField":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "DeliverySourceConfigurationSchemaValueType":{
+      "type":"string",
+      "enum":[
+        "string",
+        "boolean",
+        "int",
+        "double",
+        "long"
+      ]
+    },
+    "DeliverySourceConfigurationSchemas":{
+      "type":"list",
+      "member":{"shape":"DeliverySourceConfigurationSchema"},
+      "documentation":"<p>A list of <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_DeliverySourceConfigurationSchema.html\">DeliverySourceConfigurationSchema</a> objects that describe the available configuration parameters for a delivery source.</p>"
+    },
+    "DeliverySourceConfigurationSupportedValues":{
+      "type":"list",
+      "member":{"shape":"DeliverySourceConfigurationSchemaField"}
+    },
+    "DeliverySourceConfigurationValue":{
+      "type":"string",
+      "max":255,
+      "min":1
     },
     "DeliverySourceName":{
       "type":"string",
       "max":60,
       "min":1,
       "pattern":"[\\w-]*"
+    },
+    "DeliverySourceStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "INACTIVE"
+      ]
+    },
+    "DeliverySourceStatusReason":{
+      "type":"string",
+      "enum":["RESOURCE_DELETED"]
     },
     "DeliverySources":{
       "type":"list",
@@ -7278,6 +7387,10 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p>An optional list of key-value pairs to associate with the resource.</p> <p>For more information about tagging, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a> </p>"
+        },
+        "deliverySourceConfiguration":{
+          "shape":"DeliverySourceConfiguration",
+          "documentation":"<p>A map of key-value pairs to configure the delivery source. Both keys and values must be between 1 and 255 characters in length. For example, <code>{\"samplingRate\": \"50\"}</code>.</p>"
         }
       }
     },
@@ -8200,6 +8313,30 @@
     "S3TableIntegrationSources":{
       "type":"list",
       "member":{"shape":"S3TableIntegrationSource"}
+    },
+    "S3TablesDatasourceName":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "S3TablesDatasourceType":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "S3TablesIntegration":{
+      "type":"structure",
+      "members":{
+        "datasourceName":{
+          "shape":"S3TablesDatasourceName",
+          "documentation":"<p>The name of the S3 Tables datasource.</p>"
+        },
+        "datasourceType":{
+          "shape":"S3TablesDatasourceType",
+          "documentation":"<p>The type of the S3 Tables datasource.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the S3 Tables integration configuration for a configuration template.</p>"
     },
     "S3Uri":{
       "type":"string",

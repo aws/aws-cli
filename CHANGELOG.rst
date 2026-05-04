@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.34.42
+=======
+
+* api-change:``securityagent``: AWS Security Agent is adding a new target domain verification method for private VPC penetration testing. Additionally, the target domain resource will now have a verification status reason field to surface additional details about domain verification
+* api-change:``logs``: Adding an additional optional deliverySourceConfiguration field to PutDeliverySource API. This enables customers to pass service-specific configurations through IngestionHub such as tracing enablement or sampling rates that will be propagated to the source resource.
+* api-change:``lex-models``: Lex V1 is deprecated, use Lex V2 instead
+* api-change:``medialive``: Updates the type of the MediaLiveRouterOutputConnectionMap.
+* api-change:``vpc-lattice``: Amazon VPC Lattice now supports privately resolvable DNS resources
+* api-change:``ec2``: This feature allows customers to change the tunnel bandwidth on existing VPN connections using the ModifyVpnConnectionOptions API
+* api-change:``geo-routes``: Added support for TravelTimeExceedsDriverWorkHours, ViolatedBlockedRoad, and ViolatedVehicleRestriction notice codes to the CalculateRoutes API response.
+* api-change:``bedrock-agentcore-control``: Amazon Bedrock AgentCore gateways now support MCP Sessions and response streaming from MCP targets. Session timeouts can be set between 15 minutes and 8 hours, and response streaming enables forwarding stream events sent by MCP targets to gateway users.
+
+
 2.34.41
 =======
 

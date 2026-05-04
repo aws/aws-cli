@@ -242,7 +242,6 @@ class FileGenerator:
                         # If the user's filter chain makes it impossible
                         # for any descendant to be included, prune the
                         # whole subtree instead of recursing into it.
-                        # This is what fixes aws/aws-cli#1138.
                         if (
                             self.file_filter is not None
                             and self.file_filter.can_skip_directory(
@@ -353,18 +352,12 @@ class FileGenerator:
                 return self.triggers_warning(path)
             # Pre-filter using the user's --include/--exclude rules so the
             # walker does not stat / listdir entries that the filter chain
-            # is going to drop anyway.
-            #
-            # * For directories: ask Filter.can_skip_directory whether any
-            #   descendant could possibly be included. This must run before
-            #   triggers_warning() because is_readable() unconditionally
-            #   calls os.listdir() on directories — without this guard,
-            #   excluded subtrees would be listed just to check readability
-            #   (defeats the entire #1138 fix).
-            # * For files: ask Filter.call. This is what fixes #1117 — a
-            #   FIFO/socket/0o000 file inside an excluded subtree should
-            #   not produce a warning because it would not be transferred
-            #   anyway.
+            # is going to drop anyway. The directory check must run before
+            # triggers_warning() because is_readable() calls os.listdir()
+            # on directories — without this guard, excluded subtrees would
+            # be listed just to test readability and the prune would be
+            # defeated. The file branch silences readability warnings for
+            # files that the filter would drop anyway.
             if os.path.isdir(path):
                 if self.file_filter.can_skip_directory(
                     path, 'local', use_dst_patterns=self.is_dst_walker

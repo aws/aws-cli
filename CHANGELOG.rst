@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.45.3
+======
+
+* api-change:``bedrock-agentcore-control``: Amazon Bedrock AgentCore gateways now support MCP Sessions and response streaming from MCP targets. Session timeouts can be set between 15 minutes and 8 hours, and response streaming enables forwarding stream events sent by MCP targets to gateway users.
+* api-change:``ec2``: This feature allows customers to change the tunnel bandwidth on existing VPN connections using the ModifyVpnConnectionOptions API
+* api-change:``geo-routes``: Added support for TravelTimeExceedsDriverWorkHours, ViolatedBlockedRoad, and ViolatedVehicleRestriction notice codes to the CalculateRoutes API response.
+* api-change:``lex-models``: Lex V1 is deprecated, use Lex V2 instead
+* api-change:``logs``: Adding an additional optional deliverySourceConfiguration field to PutDeliverySource API. This enables customers to pass service-specific configurations through IngestionHub such as tracing enablement or sampling rates that will be propagated to the source resource.
+* api-change:``medialive``: Updates the type of the MediaLiveRouterOutputConnectionMap.
+* api-change:``securityagent``: AWS Security Agent is adding a new target domain verification method for private VPC penetration testing. Additionally, the target domain resource will now have a verification status reason field to surface additional details about domain verification
+* api-change:``vpc-lattice``: Amazon VPC Lattice now supports privately resolvable DNS resources
+* enhancement:Migration: Added support to upgrade debug mode for detecting breaking change introduced in AWS CLI v2: in v2, Cyclic Redundancy Check 64 (CRC64NVME) is used by default for ``aws s3`` commands that upload a file to S3, but Cyclic Redundancy Check 32 (CRC32) is used instead in v1. To use upgrade debug mode, specify the ``--v2-debug`` global parameter on a command.
+
+
 1.45.2
 ======
 

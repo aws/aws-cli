@@ -1470,11 +1470,6 @@ class CommandArchitecture:
         result_queue = queue.Queue()
         operation_name = cmd_translation[paths_type]
 
-        # Build the user's --include/--exclude filter once and share the
-        # same instance with both the file generator (for early prune /
-        # pre-filter) and the post-walk filter stage. Sharing avoids two
-        # separate compilations of the same patterns and lets the walker
-        # skip excluded directories entirely (fixes #1117 and #1138).
         file_filter = create_filter(self.parameters)
         fgen_kwargs = {
             'client': self._source_client,
@@ -1491,10 +1486,6 @@ class CommandArchitecture:
             'page_size': self.parameters['page_size'],
             'result_queue': result_queue,
             'file_filter': file_filter,
-            # rgen always operates on the destination side. When that
-            # side is local (e.g. ``sync s3://b/ ./dst``), filter pruning
-            # must consult ``dst_patterns`` (rooted at the local dest)
-            # rather than the source-rooted ``patterns``.
             'is_dst_walker': True,
         }
 
@@ -1542,7 +1533,10 @@ class CommandArchitecture:
             command_dict = {
                 'setup': [files, rev_files],
                 'file_generator': [file_generator, rev_generator],
-                'filters': [file_filter, file_filter],
+                'filters': [
+                    create_filter(self.parameters),
+                    create_filter(self.parameters),
+                ],
                 'comparator': [Comparator(**sync_strategies)],
                 'file_info_builder': [file_info_builder],
                 's3_handler': [s3_transfer_handler],
@@ -1556,7 +1550,7 @@ class CommandArchitecture:
             command_dict = {
                 'setup': [files],
                 'file_generator': [file_generator],
-                'filters': [file_filter],
+                'filters': [create_filter(self.parameters)],
                 'file_info_builder': [file_info_builder],
                 's3_handler': [s3_transfer_handler],
             }
@@ -1570,7 +1564,7 @@ class CommandArchitecture:
             command_dict = {
                 'setup': [files],
                 'file_generator': [file_generator],
-                'filters': [file_filter],
+                'filters': [create_filter(self.parameters)],
                 'file_info_builder': [file_info_builder],
                 's3_handler': [s3_transfer_handler],
             }
@@ -1578,7 +1572,7 @@ class CommandArchitecture:
             command_dict = {
                 'setup': [files],
                 'file_generator': [file_generator],
-                'filters': [file_filter],
+                'filters': [create_filter(self.parameters)],
                 'file_info_builder': [file_info_builder],
                 's3_handler': [s3_transfer_handler],
             }

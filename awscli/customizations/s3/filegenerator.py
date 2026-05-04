@@ -330,10 +330,7 @@ class FileGenerator:
         # user actually supplied --include/--exclude patterns. With an
         # empty filter, ``Filter.call`` cannot suppress anything anyway,
         # so the extra os.path.exists() call here would be pure overhead
-        # on large unfiltered sync/cp/mv walks. The reverse walker uses
-        # destination-rooted patterns; pick the right set up front so an
-        # empty src-side filter on a dst-walking generator (or vice versa)
-        # also short-circuits correctly.
+        # on large unfiltered sync/cp/mv walks.
         if self.file_filter is not None:
             relevant_patterns = (
                 self.file_filter.dst_patterns

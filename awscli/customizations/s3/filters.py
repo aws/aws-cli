@@ -82,9 +82,10 @@ def _literal_prefix(pattern):
 
 
 def _pattern_can_match_under(pattern, target_with_sep):
-    """Sound check: returns False only when ``pattern`` cannot match any
-    string starting with ``target_with_sep`` plus at least one more char.
-    True is conservative (the pattern *might* match such a string).
+    """Return True if some descendant path under ``target_with_sep``
+    could match ``pattern``. False means no descendant can possibly
+    match, so the caller may safely skip the directory. False is
+    never returned when a match is actually possible.
     """
     lit = _literal_prefix(pattern)
     common = min(len(lit), len(target_with_sep))
@@ -98,9 +99,9 @@ def _pattern_can_match_under(pattern, target_with_sep):
 
 
 def _pattern_matches_all_under(pattern, target_with_sep):
-    """Sound check: returns True only when ``pattern`` is proven to match
-    every string starting with ``target_with_sep`` plus a non-empty tail.
-    False is conservative.
+    """Return True only when every descendant path under
+    ``target_with_sep`` is guaranteed to match ``pattern``. False
+    means we cannot prove this — the caller must not assume a match.
     """
     lit = _literal_prefix(pattern)
     if not target_with_sep.startswith(lit):
@@ -200,13 +201,10 @@ class Filter:
     def can_skip_directory(
         self, dir_path, src_type='local', use_dst_patterns=False
     ):
-        """Return True only when no descendant of ``dir_path`` can possibly
-        be included by the filter chain.
-
-        Sound: a True result is a proof that traversing into ``dir_path``
-        cannot uncover any path that the filter chain would include, so
-        the caller may safely skip listing it. False is conservative
-        (the directory must be traversed normally).
+        """Return True only when the filter chain cannot include any
+        descendant of ``dir_path``, so the walker may skip listing it.
+        False means the directory must be traversed normally — either
+        a descendant could match, or we cannot prove otherwise.
 
         ``use_dst_patterns``: when True, evaluate against ``dst_patterns``
         (rooted at the destination) instead of ``patterns`` (rooted at the

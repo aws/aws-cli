@@ -366,20 +366,16 @@ class BenchmarkHarness:
                         os.dup2(err.fileno(), sys.stderr.fileno())
                     else:
                         with open(
-                            os.path.abspath(
-                                os.path.join(
-                                    args.debug_dir,
-                                    f'{benchmark["name"]}-{iteration}.txt',
-                                )
+                            os.path.join(
+                                args.debug_dir,
+                                f'{benchmark["name"]}-{iteration}.txt',
                             ),
                             'w',
                         ) as f:
                             with open(
-                                os.path.abspath(
-                                    os.path.join(
-                                        args.debug_dir,
-                                        f'{benchmark["name"]}-{iteration}-err.txt',
-                                    )
+                                os.path.join(
+                                    args.debug_dir,
+                                    f'{benchmark["name"]}-{iteration}-err.txt',
                                 ),
                                 'w',
                             ) as f_err:

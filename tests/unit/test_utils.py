@@ -399,7 +399,7 @@ class BaseIMDSRegionTest(unittest.TestCase):
         self._send = self._urllib3_patch.start()
         self._imds_responses = []
         self._send.side_effect = self.get_imds_response
-        self._region = 'us-mars-1a'
+        self._region = 'us-mars-1'
         self.environ = {}
         self.environ_patch = mock.patch('os.environ', self.environ)
         self.environ_patch.start()
@@ -554,6 +554,28 @@ class TestInstanceMetadataRegionFetcher(BaseIMDSRegionTest):
             num_attempts=2
         ).retrieve_region()
         self.assertEqual(result, None)
+
+    def test_retrieve_region_local_zone_instance(self):
+        _imds_responses = {
+            'api/token': b'my-token',
+            'placement/region': b'us-east-1',
+            'placement/availability-zone': b'us-east-1-atl-2a',
+        }
+
+        def get_response(request):
+            for path, body in _imds_responses.items():
+                if path in request.url:
+                    return botocore.awsrequest.AWSResponse(
+                        url=request.url,
+                        status_code=200,
+                        headers={},
+                        raw=RawResponse(body),
+                    )
+            raise ValueError(f'Unexpected IMDS request: {request.url}')
+
+        self._send.side_effect = get_response
+        result = InstanceMetadataRegionFetcher().retrieve_region()
+        self.assertEqual(result, 'us-east-1')
 
 
 class TestIMDSRegionProvider(BaseIMDSRegionTest):

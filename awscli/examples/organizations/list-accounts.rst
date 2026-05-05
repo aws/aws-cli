@@ -15,6 +15,7 @@ The output includes a list of account summary objects. ::
 				"Id": "111111111111",
 				"Name": "Master Account",
 				"Email": "bill@example.com",
+				"State": "ACTIVE",
 				"Status": "ACTIVE"
 			},
 			{

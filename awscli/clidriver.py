@@ -111,14 +111,16 @@ def main():
         return AWSCLIEntryPoint().main(sys.argv[1:])
 
 
-def create_clidriver(args=None):
+def create_clidriver(args=None, event_hooks=None):
     debug = None
     if args is not None:
         parser = FirstPassGlobalArgParser()
         args, _ = parser.parse_known_args(args)
         debug = args.debug
-    session = botocore.session.Session()
+    session = botocore.session.Session(event_hooks=event_hooks)
     _set_user_agent_for_session(session)
+    # if event_hooks is not None:
+    #     session.register_component('event_emitter', event_hooks)
     load_plugins(
         session.full_config.get('plugins', {}),
         event_hooks=session.get_component('event_emitter'),

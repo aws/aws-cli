@@ -7,6 +7,8 @@ import time
 
 import psutil
 
+from awscli.botocore.hooks import HierarchicalEmitter
+
 from awscli.clidriver import AWSCLIEntryPoint, create_clidriver
 from scripts.performance import BaseBenchmarkSuite
 from scripts.performance.simple_stubbed_tests import (
@@ -172,10 +174,7 @@ class Summarizer:
             'plugins.import.time': Metric(
                 'Total time spent loading all built-in plugins.',
                 'Seconds',
-                (
-                    worker_results['plugin_import_end']
-                    - worker_results['plugin_import_start']
-                ),
+                worker_results['plugin_imports'],
             )
         }
         # reset data state
@@ -275,8 +274,6 @@ class BenchmarkHarness:
         plugin_import_start_time = None
         plugin_import_end_time = None
         start_time = time.time()
-        driver = create_clidriver()
-        event_emitter = driver.session.get_component('event_emitter')
 
         def _log_invocation_time(params, request_signer, model, **kwargs):
             nonlocal first_client_invocation_time
@@ -293,22 +290,24 @@ class BenchmarkHarness:
             if plugin_import_end_time is None:
                 plugin_import_end_time = time.time()
 
-        event_emitter.register_last(
+        event_hooks = HierarchicalEmitter()
+        event_hooks.register_last(
             'before-call',
             _log_invocation_time,
             'benchmarks.log-invocation-time',
         )
-        event_emitter.register_last(
+        event_hooks.register_last(
             'before-import-plugins',
             _log_import_plugins_start,
             'benchmarks.log-before-import-plugins',
         )
-        event_emitter.register_last(
+        event_hooks.register_last(
             'after-import-plugins',
             _log_import_plugins_end,
             'benchmarks.log-after-import-plugins',
         )
 
+        driver = create_clidriver(event_hooks=event_hooks)
         rc = AWSCLIEntryPoint(driver).main(cmd)
         end_time = time.time()
 
@@ -352,6 +351,7 @@ class BenchmarkHarness:
         os.chdir(result_dir)
 
         # fork a child process to run the command on.
+        print('0')
         pid = os.fork()
 
         try:
@@ -386,6 +386,7 @@ class BenchmarkHarness:
                                 os.dup2(f.fileno(), sys.stdout.fileno())
                                 os.dup2(f_err.fileno(), sys.stderr.fileno())
                     # execute command on child process
+                    print('1')
                     self._run_command_with_metric_hooks(
                         benchmark['command'], metrics_path
                     )
@@ -451,6 +452,7 @@ class BenchmarkHarness:
             for suite, case in cases:
                 for idx in range(args.num_iterations):
                     for cmd in case:
+                        print(cmd)
                         samples, execution_results = (
                             self._run_isolated_benchmark(
                                 result_dir,

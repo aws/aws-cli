@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.34.43
+=======
+
+* api-change:``marketplace-agreement``: With this release, Agreements API provides a programmatic way to generate quotes, accept offers, track charges and entitlements, manage renewals and cancellations, and streamline operations entirely through APIs without navigating to the AWS Marketplace website or AWS Management Console.
+* api-change:``mediatailor``: Added support for Monetization Functions. Monetization Functions let you enrich ad requests with external data and transform session parameters using JSONata expressions, without deploying custom infrastructure.
+* api-change:``route53domains``: This release adds the TLDInMaintenance exception.
+* api-change:``cleanroomsml``: Increase max configurable output limits in the Clean Rooms ML configured model algorithm association resource.
+* api-change:``medical-imaging``: Add support for DICOM Json Metadata Override features in startDICOMImportJob API
+* api-change:``opensearch``: Amazon OpenSearch Service now supports VPC egress, enabling outbound traffic from your OpenSearch domain to route privately through your VPC instead of the public internet.
+* api-change:``sagemaker``: Adds support for ml.p5.4xlarge instance type for SageMaker Studio JupyterLab and CodeEditor apps for IAD (us-east-1), NRT (ap-northeast-1), BOM (ap-south-1), CGK (ap-southeast-3), GRU (sa-east-1), PDX (us-west-2), CMH (us-east-2).
+* api-change:``cloudfront``: Adds support for tagging CloudFront Functions and KeyValueStores resources.
+
+
 2.34.42
 =======
 

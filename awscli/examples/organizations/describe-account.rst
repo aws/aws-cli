@@ -14,6 +14,7 @@ The output shows an account object with the details about the account: ::
 			"Email": "anika@example.com",
 			"JoinedMethod": "INVITED",
 			"JoinedTimeStamp": 1481756563.134,
+    		"State": "ACTIVE",
 			"Status": "ACTIVE"
 		}
 	}

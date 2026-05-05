@@ -169,6 +169,14 @@ class Summarizer:
                 worker_results['first_client_invocation_time']
                 - worker_results['start_time'],
             ),
+            'plugins.import.time': Metric(
+                'Total time spent loading all built-in plugins.',
+                'Seconds',
+                (
+                    worker_results['plugin_import_end']
+                    - worker_results['plugin_import_start']
+                ),
+            )
         }
         # reset data state
         self._samples.clear()
@@ -264,6 +272,8 @@ class BenchmarkHarness:
         Runs a CLI command and logs CLI-specific metrics to a file.
         """
         first_client_invocation_time = None
+        plugin_import_start_time = None
+        plugin_import_end_time = None
         start_time = time.time()
         driver = create_clidriver()
         event_emitter = driver.session.get_component('event_emitter')
@@ -273,10 +283,30 @@ class BenchmarkHarness:
             if first_client_invocation_time is None:
                 first_client_invocation_time = time.time()
 
+        def _log_import_plugins_start(**kwargs):
+            nonlocal plugin_import_start_time
+            if plugin_import_start_time is None:
+                plugin_import_start_time = time.time()
+
+        def _log_import_plugins_end(**kwargs):
+            nonlocal plugin_import_end_time
+            if plugin_import_end_time is None:
+                plugin_import_end_time = time.time()
+
         event_emitter.register_last(
             'before-call',
             _log_invocation_time,
             'benchmarks.log-invocation-time',
+        )
+        event_emitter.register_last(
+            'before-import-plugins',
+            _log_import_plugins_start,
+            'benchmarks.log-before-import-plugins',
+        )
+        event_emitter.register_last(
+            'after-import-plugins',
+            _log_import_plugins_end,
+            'benchmarks.log-after-import-plugins',
         )
 
         rc = AWSCLIEntryPoint(driver).main(cmd)
@@ -291,6 +321,9 @@ class BenchmarkHarness:
                         'start_time': start_time,
                         'end_time': end_time,
                         'first_client_invocation_time': first_client_invocation_time,
+                        'plugin_imports': (
+                            plugin_import_end_time - plugin_import_start_time
+                        ),
                     }
                 )
             )

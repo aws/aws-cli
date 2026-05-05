@@ -316,7 +316,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Start importing bulk data into an <code>ACTIVE</code> data store. The import job imports DICOM P10 files found in the S3 prefix specified by the <code>inputS3Uri</code> parameter. The import job stores processing results in the file specified by the <code>outputS3Uri</code> parameter.</p>",
+      "documentation":"<p>Start importing bulk data into an <code>ACTIVE</code> data store. The import job imports DICOM P10 files or enhances existing DICOM files with JSON metadata. The <code>importConfiguration</code> parameter specifies the import type. The data is found in the S3 prefix specified by the <code>inputS3Uri</code> parameter. The import job stores processing results in the file specified by the <code>outputS3Uri</code> parameter.</p>",
       "idempotent":true
     },
     "TagResource":{
@@ -741,6 +741,10 @@
         "message":{
           "shape":"Message",
           "documentation":"<p>The error message thrown if an import job fails.</p>"
+        },
+        "importConfiguration":{
+          "shape":"ImportConfiguration",
+          "documentation":"<p>The object containing <code>DicomJsonMetadataImportConfiguration</code>.</p>"
         }
       },
       "documentation":"<p>Properties of the import job.</p>"
@@ -1167,6 +1171,45 @@
         }
       }
     },
+    "DicomJsonMetadataImportConfiguration":{
+      "type":"structure",
+      "required":["dicomMetadataMappings"],
+      "members":{
+        "dicomMetadataMappings":{
+          "shape":"DicomMetadataMappings",
+          "documentation":"<p>Maps DCM files to their metadata.</p>"
+        }
+      },
+      "documentation":"<p>The configuration parameters that are specific to DICOM JSON metadata import operations.</p>"
+    },
+    "DicomMetadataMapping":{
+      "type":"structure",
+      "required":[
+        "studyInstanceUID",
+        "metadataFilePath"
+      ],
+      "members":{
+        "studyInstanceUID":{
+          "shape":"DICOMStudyInstanceUID",
+          "documentation":"<p>The Study Instance UID that identifies the study.</p>"
+        },
+        "seriesInstanceUID":{
+          "shape":"DICOMSeriesInstanceUID",
+          "documentation":"<p>The Series Instance UID that identifies the series. This parameter is optional because the mapping might be at the study level.</p>"
+        },
+        "metadataFilePath":{
+          "shape":"MetadataFilePath",
+          "documentation":"<p>The path to the JSON metadata file relative to inputS3Uri.</p>"
+        }
+      },
+      "documentation":"<p>Maps DCM files to their metadata.</p>"
+    },
+    "DicomMetadataMappings":{
+      "type":"list",
+      "member":{"shape":"DicomMetadataMapping"},
+      "max":1000,
+      "min":1
+    },
     "GetDICOMImportJobRequest":{
       "type":"structure",
       "required":[
@@ -1560,6 +1603,14 @@
       },
       "documentation":"<p>Summary of the image set metadata.</p>"
     },
+    "ImportConfiguration":{
+      "type":"structure",
+      "members":{
+        "dicomJsonMetadataImportConfiguration":{"shape":"DicomJsonMetadataImportConfiguration"}
+      },
+      "documentation":"<p>The configuration options for different types of import operations.</p>",
+      "union":true
+    },
     "Integer":{
       "type":"integer",
       "box":true
@@ -1797,6 +1848,12 @@
         }
       },
       "documentation":"<p>Contains copiable <code>Attributes</code> structure and wraps information related to specific copy use cases. For example, when copying subsets.</p>"
+    },
+    "MetadataFilePath":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"[a-zA-Z0-9!-~]+([a-zA-Z0-9!-~ ]*[a-zA-Z0-9!-~]+)*"
     },
     "MetadataUpdates":{
       "type":"structure",
@@ -2105,6 +2162,10 @@
         "inputOwnerAccountId":{
           "shape":"AwsAccountId",
           "documentation":"<p>The account ID of the source S3 bucket owner.</p>"
+        },
+        "importConfiguration":{
+          "shape":"ImportConfiguration",
+          "documentation":"<p>The import configuration for the import job.</p>"
         }
       }
     },

@@ -9642,72 +9642,93 @@
                                                                                                                                 {
                                                                                                                                     "conditions": [
                                                                                                                                         {
-                                                                                                                                            "fn": "isSet",
+                                                                                                                                            "fn": "isValidHostLabel",
                                                                                                                                             "argv": [
                                                                                                                                                 {
-                                                                                                                                                    "ref": "Endpoint"
-                                                                                                                                                }
+                                                                                                                                                    "ref": "accessPointName"
+                                                                                                                                                },
+                                                                                                                                                false
                                                                                                                                             ]
-                                                                                                                                        },
-                                                                                                                                        {
-                                                                                                                                            "fn": "parseURL",
-                                                                                                                                            "argv": [
-                                                                                                                                                {
-                                                                                                                                                    "ref": "Endpoint"
-                                                                                                                                                }
-                                                                                                                                            ],
-                                                                                                                                            "assign": "url"
                                                                                                                                         }
                                                                                                                                     ],
-                                                                                                                                    "endpoint": {
-                                                                                                                                        "url": "https://{accessPointName}-{bucketArn#accountId}.{outpostId}.{url#authority}",
-                                                                                                                                        "properties": {
-                                                                                                                                            "authSchemes": [
+                                                                                                                                    "rules": [
+                                                                                                                                        {
+                                                                                                                                            "conditions": [
                                                                                                                                                 {
-                                                                                                                                                    "disableDoubleEncoding": true,
-                                                                                                                                                    "name": "sigv4a",
-                                                                                                                                                    "signingName": "s3-outposts",
-                                                                                                                                                    "signingRegionSet": [
-                                                                                                                                                        "*"
+                                                                                                                                                    "fn": "isSet",
+                                                                                                                                                    "argv": [
+                                                                                                                                                        {
+                                                                                                                                                            "ref": "Endpoint"
+                                                                                                                                                        }
                                                                                                                                                     ]
                                                                                                                                                 },
                                                                                                                                                 {
-                                                                                                                                                    "disableDoubleEncoding": true,
-                                                                                                                                                    "name": "sigv4",
-                                                                                                                                                    "signingName": "s3-outposts",
-                                                                                                                                                    "signingRegion": "{bucketArn#region}"
+                                                                                                                                                    "fn": "parseURL",
+                                                                                                                                                    "argv": [
+                                                                                                                                                        {
+                                                                                                                                                            "ref": "Endpoint"
+                                                                                                                                                        }
+                                                                                                                                                    ],
+                                                                                                                                                    "assign": "url"
                                                                                                                                                 }
-                                                                                                                                            ]
+                                                                                                                                            ],
+                                                                                                                                            "endpoint": {
+                                                                                                                                                "url": "https://{accessPointName}-{bucketArn#accountId}.{outpostId}.{url#authority}",
+                                                                                                                                                "properties": {
+                                                                                                                                                    "authSchemes": [
+                                                                                                                                                        {
+                                                                                                                                                            "disableDoubleEncoding": true,
+                                                                                                                                                            "name": "sigv4a",
+                                                                                                                                                            "signingName": "s3-outposts",
+                                                                                                                                                            "signingRegionSet": [
+                                                                                                                                                                "*"
+                                                                                                                                                            ]
+                                                                                                                                                        },
+                                                                                                                                                        {
+                                                                                                                                                            "disableDoubleEncoding": true,
+                                                                                                                                                            "name": "sigv4",
+                                                                                                                                                            "signingName": "s3-outposts",
+                                                                                                                                                            "signingRegion": "{bucketArn#region}"
+                                                                                                                                                        }
+                                                                                                                                                    ]
+                                                                                                                                                },
+                                                                                                                                                "headers": {}
+                                                                                                                                            },
+                                                                                                                                            "type": "endpoint"
                                                                                                                                         },
-                                                                                                                                        "headers": {}
-                                                                                                                                    },
-                                                                                                                                    "type": "endpoint"
+                                                                                                                                        {
+                                                                                                                                            "conditions": [],
+                                                                                                                                            "endpoint": {
+                                                                                                                                                "url": "https://{accessPointName}-{bucketArn#accountId}.{outpostId}.s3-outposts.{bucketArn#region}.{bucketPartition#dnsSuffix}",
+                                                                                                                                                "properties": {
+                                                                                                                                                    "authSchemes": [
+                                                                                                                                                        {
+                                                                                                                                                            "disableDoubleEncoding": true,
+                                                                                                                                                            "name": "sigv4a",
+                                                                                                                                                            "signingName": "s3-outposts",
+                                                                                                                                                            "signingRegionSet": [
+                                                                                                                                                                "*"
+                                                                                                                                                            ]
+                                                                                                                                                        },
+                                                                                                                                                        {
+                                                                                                                                                            "disableDoubleEncoding": true,
+                                                                                                                                                            "name": "sigv4",
+                                                                                                                                                            "signingName": "s3-outposts",
+                                                                                                                                                            "signingRegion": "{bucketArn#region}"
+                                                                                                                                                        }
+                                                                                                                                                    ]
+                                                                                                                                                },
+                                                                                                                                                "headers": {}
+                                                                                                                                            },
+                                                                                                                                            "type": "endpoint"
+                                                                                                                                        }
+                                                                                                                                    ],
+                                                                                                                                    "type": "tree"
                                                                                                                                 },
                                                                                                                                 {
                                                                                                                                     "conditions": [],
-                                                                                                                                    "endpoint": {
-                                                                                                                                        "url": "https://{accessPointName}-{bucketArn#accountId}.{outpostId}.s3-outposts.{bucketArn#region}.{bucketPartition#dnsSuffix}",
-                                                                                                                                        "properties": {
-                                                                                                                                            "authSchemes": [
-                                                                                                                                                {
-                                                                                                                                                    "disableDoubleEncoding": true,
-                                                                                                                                                    "name": "sigv4a",
-                                                                                                                                                    "signingName": "s3-outposts",
-                                                                                                                                                    "signingRegionSet": [
-                                                                                                                                                        "*"
-                                                                                                                                                    ]
-                                                                                                                                                },
-                                                                                                                                                {
-                                                                                                                                                    "disableDoubleEncoding": true,
-                                                                                                                                                    "name": "sigv4",
-                                                                                                                                                    "signingName": "s3-outposts",
-                                                                                                                                                    "signingRegion": "{bucketArn#region}"
-                                                                                                                                                }
-                                                                                                                                            ]
-                                                                                                                                        },
-                                                                                                                                        "headers": {}
-                                                                                                                                    },
-                                                                                                                                    "type": "endpoint"
+                                                                                                                                    "error": "Invalid ARN: The access point name may only contain a-z, A-Z, 0-9 and `-`. Found: `{accessPointName}`",
+                                                                                                                                    "type": "error"
                                                                                                                                 }
                                                                                                                             ],
                                                                                                                             "type": "tree"

@@ -10095,6 +10095,14 @@
       },
       "documentation":"<p>Defines the configuration for attaching an Amazon FSx for OpenZFS file system to instances in a SageMaker HyperPod cluster instance group.</p>"
     },
+    "ClusterImageVersionStatus":{
+      "type":"string",
+      "documentation":"<p>The status of the Amazon Machine Image (AMI) version for the HyperPod cluster instance group, node, or cluster. The AMI version is determined at the instance group level, and all nodes within an instance group run the same AMI. The cluster-level status is aggregated across all instance groups.</p> <ul> <li> <p> <code>UpToDate</code>: The resource is running the latest available AMI version.</p> </li> <li> <p> <code>UpdateAvailable</code>: A newer AMI version is available for the resource.</p> </li> </ul>",
+      "enum":[
+        "UpToDate",
+        "UpdateAvailable"
+      ]
+    },
     "ClusterInstanceCount":{
       "type":"integer",
       "box":true,
@@ -10179,6 +10187,10 @@
         "DesiredImageId":{
           "shape":"ImageId",
           "documentation":"<p>The ID of the Amazon Machine Image (AMI) desired for the instance group.</p>"
+        },
+        "ImageVersionStatus":{
+          "shape":"ClusterImageVersionStatus",
+          "documentation":"<p>The status of the image version for the instance group. Indicates whether the instance group is running the latest image version or if an update is available.</p>"
         },
         "ActiveOperations":{
           "shape":"ActiveOperations",
@@ -10855,6 +10867,10 @@
           "shape":"ImageId",
           "documentation":"<p>The ID of the Amazon Machine Image (AMI) desired for the node.</p>"
         },
+        "ImageVersionStatus":{
+          "shape":"ClusterImageVersionStatus",
+          "documentation":"<p>The status of the image version for the cluster node.</p>"
+        },
         "UltraServerInfo":{
           "shape":"UltraServerInfo",
           "documentation":"<p>Contains information about the UltraServer.</p>"
@@ -10958,6 +10974,10 @@
         "PrivateDnsHostname":{
           "shape":"ClusterPrivateDnsHostname",
           "documentation":"<p>The private DNS hostname of the SageMaker HyperPod cluster node.</p>"
+        },
+        "ImageVersionStatus":{
+          "shape":"ClusterImageVersionStatus",
+          "documentation":"<p>The status of the image version for the cluster node.</p>"
         }
       },
       "documentation":"<p>Lists a summary of the properties of an instance (also called a <i>node</i> interchangeably) of a SageMaker HyperPod cluster.</p>"

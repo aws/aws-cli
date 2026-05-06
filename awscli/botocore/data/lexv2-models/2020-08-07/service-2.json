@@ -3164,6 +3164,59 @@
       "min":1,
       "pattern":"^s3://([a-z0-9\\\\.-]+)/(.+)$"
     },
+    "AudioFillerDelayInMilliseconds":{
+      "type":"integer",
+      "box":true
+    },
+    "AudioFillerDeliveryDelayInMilliseconds":{
+      "type":"integer",
+      "box":true
+    },
+    "AudioFillerDurationInMilliseconds":{
+      "type":"integer",
+      "box":true
+    },
+    "AudioFillerSettings":{
+      "type":"structure",
+      "members":{
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether audio filler playback is enabled for the bot locale. Set to <code>true</code> to play filler audio while Amazon Lex processes a user utterance. Set to <code>false</code> to disable filler audio.</p>"
+        },
+        "audioType":{
+          "shape":"AudioFillerType",
+          "documentation":"<p>The identifier of the audio filler to play while Amazon Lex processes the user's input. This field is required when <code>enabled</code> is <code>true</code>.</p>"
+        },
+        "startDelayInMilliseconds":{
+          "shape":"AudioFillerDelayInMilliseconds",
+          "documentation":"<p>The time, in milliseconds, to wait after the end of the user's utterance before starting audio filler playback. Valid range is <code>500</code> to <code>5000</code> milliseconds. If not specified, Amazon Lex uses a default of <code>2500</code> milliseconds.</p>"
+        },
+        "minimumPlayDurationInMilliseconds":{
+          "shape":"AudioFillerDurationInMilliseconds",
+          "documentation":"<p>The minimum time, in milliseconds, that audio filler plays once it has started, even if the bot response becomes ready sooner. Valid range is <code>1000</code> to <code>5000</code> milliseconds. If not specified, Amazon Lex uses a default of <code>3000</code> milliseconds.</p>"
+        },
+        "responseDeliveryDelayInMilliseconds":{
+          "shape":"AudioFillerDeliveryDelayInMilliseconds",
+          "documentation":"<p>The silent delay, in milliseconds, inserted between the end of audio filler playback and the start of the bot's response. Valid range is <code>200</code> to <code>1000</code> milliseconds. If not specified, Amazon Lex uses a default of <code>500</code> milliseconds.</p>"
+        }
+      },
+      "documentation":"<p>Configuration that plays background filler audio during speech-to-speech interactions to mask processing delays and improve the perceived responsiveness of the bot.</p> <p>Audio filler requires <code>unifiedSpeechSettings</code> (speech-to-speech) to be enabled on the bot locale when <code>enabled</code> is <code>true</code>.</p>"
+    },
+    "AudioFillerType":{
+      "type":"string",
+      "documentation":"<p>The audio filler identifier played during speech-to-speech interactions. Supported values include melody and typing variants such as <code>MELODY_CHIPPER_CHIME</code>, <code>MELODY_CURIOUS_CRAWL</code>, <code>MELODY_RISING_RIPPLE</code>, <code>MELODY_PATIENT_PING</code>, <code>MELODY_PONDERING_PONG</code>, <code>TYPING_KINETIC_KEYS</code>, and <code>TYPING_QUIET_QWERTY</code>.</p>",
+      "enum":[
+        "MELODY_CHIPPER_CHIME",
+        "MELODY_CURIOUS_CRAWL",
+        "MELODY_RISING_RIPPLE",
+        "MELODY_PATIENT_PING",
+        "MELODY_PONDERING_PONG",
+        "TYPING_KINETIC_KEYS",
+        "TYPING_QUIET_QWERTY"
+      ],
+      "max":64,
+      "min":1
+    },
     "AudioLogDestination":{
       "type":"structure",
       "required":["s3Bucket"],
@@ -3958,6 +4011,10 @@
         "unifiedSpeechSettings":{
           "shape":"UnifiedSpeechSettings",
           "documentation":"<p>Unified speech settings to apply when importing the bot locale configuration.</p>"
+        },
+        "audioFillerSettings":{
+          "shape":"AudioFillerSettings",
+          "documentation":"<p>Audio filler settings to apply when importing the bot locale configuration. Audio filler requires <code>unifiedSpeechSettings</code> (speech-to-speech) to be enabled when <code>enabled</code> is <code>true</code>.</p>"
         }
       },
       "documentation":"<p>Provides the bot locale parameters required for importing a bot locale.</p>"
@@ -5091,6 +5148,10 @@
           "shape":"UnifiedSpeechSettings",
           "documentation":"<p>Unified speech settings to configure for the new bot locale.</p>"
         },
+        "audioFillerSettings":{
+          "shape":"AudioFillerSettings",
+          "documentation":"<p>Audio filler settings to configure for the new bot locale. When enabled, Amazon Lex plays a brief background audio filler during speech-to-speech interactions to mask processing delays. Requires <code>unifiedSpeechSettings</code> (speech-to-speech) to be configured on the bot locale.</p>"
+        },
         "speechRecognitionSettings":{
           "shape":"SpeechRecognitionSettings",
           "documentation":"<p>Speech-to-text settings to configure for the new bot locale.</p>"
@@ -5136,6 +5197,10 @@
         "unifiedSpeechSettings":{
           "shape":"UnifiedSpeechSettings",
           "documentation":"<p>The unified speech settings configured for the created bot locale.</p>"
+        },
+        "audioFillerSettings":{
+          "shape":"AudioFillerSettings",
+          "documentation":"<p>The audio filler settings configured for the created bot locale.</p>"
         },
         "speechRecognitionSettings":{
           "shape":"SpeechRecognitionSettings",
@@ -6957,6 +7022,10 @@
         "unifiedSpeechSettings":{
           "shape":"UnifiedSpeechSettings",
           "documentation":"<p>The unified speech settings configured for the bot locale.</p>"
+        },
+        "audioFillerSettings":{
+          "shape":"AudioFillerSettings",
+          "documentation":"<p>The audio filler settings configured for the bot locale.</p>"
         },
         "speechRecognitionSettings":{
           "shape":"SpeechRecognitionSettings",
@@ -14440,6 +14509,10 @@
           "shape":"UnifiedSpeechSettings",
           "documentation":"<p>Updated unified speech settings to apply to the bot locale.</p>"
         },
+        "audioFillerSettings":{
+          "shape":"AudioFillerSettings",
+          "documentation":"<p>Updated audio filler settings to apply to the bot locale. When enabled, requires <code>unifiedSpeechSettings</code> (speech-to-speech) to be configured on the bot locale.</p>"
+        },
         "speechRecognitionSettings":{
           "shape":"SpeechRecognitionSettings",
           "documentation":"<p>Updated speech-to-text settings to apply to the bot locale.</p>"
@@ -14488,6 +14561,10 @@
         "unifiedSpeechSettings":{
           "shape":"UnifiedSpeechSettings",
           "documentation":"<p>The updated unified speech settings for the bot locale.</p>"
+        },
+        "audioFillerSettings":{
+          "shape":"AudioFillerSettings",
+          "documentation":"<p>The updated audio filler settings for the bot locale.</p>"
         },
         "speechRecognitionSettings":{
           "shape":"SpeechRecognitionSettings",

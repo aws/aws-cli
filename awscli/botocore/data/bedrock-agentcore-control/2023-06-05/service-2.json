@@ -6508,6 +6508,30 @@
       "type":"double",
       "box":true
     },
+    "EfsAccessPointArn":{
+      "type":"string",
+      "max":128,
+      "min":0,
+      "pattern":"arn:aws[-a-z]*:elasticfilesystem:[0-9a-z-:]+:access-point/fsap-[0-9a-f]{8,40}"
+    },
+    "EfsAccessPointConfiguration":{
+      "type":"structure",
+      "required":[
+        "accessPointArn",
+        "mountPath"
+      ],
+      "members":{
+        "accessPointArn":{
+          "shape":"EfsAccessPointArn",
+          "documentation":"<p>The ARN of the EFS access point to mount into the AgentCore Runtime.</p>"
+        },
+        "mountPath":{
+          "shape":"MountPath",
+          "documentation":"<p>The mount path for the EFS access point inside the AgentCore Runtime. The path must be under <code>/mnt</code> with exactly one subdirectory level (for example, <code>/mnt/data</code>).</p>"
+        }
+      },
+      "documentation":"<p>Configuration for an Amazon EFS access point filesystem mounted into the AgentCore Runtime. EFS access points provide shared file storage accessible from your AgentCore Runtime sessions.</p>"
+    },
     "EncryptionFailure":{
       "type":"structure",
       "required":["message"],
@@ -6981,6 +7005,14 @@
         "sessionStorage":{
           "shape":"SessionStorageConfiguration",
           "documentation":"<p>Configuration for session storage. Session storage provides persistent storage that is preserved across AgentCore Runtime session invocations.</p>"
+        },
+        "s3FilesAccessPoint":{
+          "shape":"S3FilesAccessPointConfiguration",
+          "documentation":"<p>Configuration for an Amazon S3 Files access point to mount into the AgentCore Runtime.</p>"
+        },
+        "efsAccessPoint":{
+          "shape":"EfsAccessPointConfiguration",
+          "documentation":"<p>Configuration for an Amazon EFS access point to mount into the AgentCore Runtime.</p>"
         }
       },
       "documentation":"<p>Configuration for a filesystem that can be mounted into the AgentCore Runtime.</p>",
@@ -6989,7 +7021,7 @@
     "FilesystemConfigurations":{
       "type":"list",
       "member":{"shape":"FilesystemConfiguration"},
-      "max":1,
+      "max":5,
       "min":0
     },
     "Filter":{
@@ -13588,6 +13620,30 @@
         }
       },
       "documentation":"<p>The Amazon S3 configuration for a gateway. This structure defines how the gateway accesses files in Amazon S3.</p>"
+    },
+    "S3FilesAccessPointArn":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"arn:aws[-a-z]*:s3files:[0-9a-z-:]+:file-system/fs-[0-9a-f]{17,40}/access-point/fsap-[0-9a-f]{17,40}"
+    },
+    "S3FilesAccessPointConfiguration":{
+      "type":"structure",
+      "required":[
+        "accessPointArn",
+        "mountPath"
+      ],
+      "members":{
+        "accessPointArn":{
+          "shape":"S3FilesAccessPointArn",
+          "documentation":"<p>The ARN of the S3 Files access point to mount into the AgentCore Runtime.</p>"
+        },
+        "mountPath":{
+          "shape":"MountPath",
+          "documentation":"<p>The mount path for the S3 Files access point inside the AgentCore Runtime. The path must be under <code>/mnt</code> with exactly one subdirectory level (for example, <code>/mnt/data</code>).</p>"
+        }
+      },
+      "documentation":"<p>Configuration for an Amazon S3 Files access point filesystem mounted into the AgentCore Runtime. S3 Files access points provide shared file storage accessible from your AgentCore Runtime sessions.</p>"
     },
     "S3Location":{
       "type":"structure",

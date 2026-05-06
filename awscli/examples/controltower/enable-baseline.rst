@@ -5,7 +5,7 @@ The following ``enable-baseline`` example enables an AWS Control Tower baseline 
     aws controltower enable-baseline \
         --baseline-identifier arn:aws:controltower:us-east-1::baseline/17BSJV3IGJ2QSGA2 \
         --baseline-version 4.0 \
-        --target-identifier arn:aws:organizations::371737006705:ou/o-s64ryihwdd/ou-oq9f-i5wnx6zf
+        --target-identifier arn:aws:organizations::123456789012:ou/o-s64ryixxxx/ou-oq9f-i5wnxxxx
 
 Output::
 

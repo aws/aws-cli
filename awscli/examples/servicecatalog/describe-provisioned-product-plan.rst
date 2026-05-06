@@ -3,17 +3,17 @@
 The following ``describe-provisioned-product-plan`` example describes a provisioned product plan. ::
 
     aws servicecatalog describe-provisioned-product-plan  \
-        --plan-id "plan-g7iwsaf3mytwu"
+        --plan-id "plan-g7iwsaf3mxxxx"
 
 Output::
 
     {
         "ProvisionedProductPlanDetails": {
             "CreatedTime": "2025-11-09T18:09:37.808000-06:00",
-            "PathId": "lpv3-y3fnkeslpoevg",
+            "PathId": "lpv3-y3fnkeslpxxxx",
             "ProductId": "prod-cfrfxmraxxxxx",
             "PlanName": "test-plan",
-            "PlanId": "plan-g7iwsaf3mytwu",
+            "PlanId": "plan-g7iwsaf3mxxxx",
             "ProvisionProductId": "pp-mkbnbztzxxxxx",
             "ProvisionProductName": "test-pp",
             "PlanType": "CLOUDFORMATION",

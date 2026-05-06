@@ -48,4 +48,5 @@ Output::
             "version": "3.3"
         }
     }
+
 For more information, see `Getting started with AWS Control Tower <https://docs.aws.amazon.com/controltower/latest/userguide/getting-started-with-control-tower.html>`__ in the *AWS Control Tower User Guide*.

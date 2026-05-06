@@ -18,7 +18,11 @@ For more information, see `Types of baselines <https://docs.aws.amazon.com/contr
 
 **Example 2: To enable a Control Tower baseline that is enabled**
 
-The following ``enable-baseline`` example enables an AWS Control Tower baseline if baseline 'IdentityCenterBaseline' is enabled::
+For more information, see `Types of baselines <https://docs.aws.amazon.com/controltower/latest/userguide/types-of-baselines.html>`__ in the *AWS Control Tower User Guide*.
+
+**Example 2: To enable a Control Tower baseline that is enabled**
+
+The following ``enable-baseline`` example enables an AWS Control Tower baseline if baseline ``IdentityCenterBaseline`` is enabled. ::
 
     aws controltower enable-baseline \
         --baseline-identifier arn:aws:controltower:us-east-1::baseline/17BSJV3IGJ2QSGA2 \

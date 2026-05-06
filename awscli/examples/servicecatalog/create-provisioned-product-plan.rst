@@ -2,7 +2,7 @@
 
 The following ``create-provisioned-product-plan`` example creates a plan. ::
 
-    aws servicecatalog create-provisioned-product-plan  \
+    aws servicecatalog create-provisioned-product-plan \
         --plan-name test-plan \
         --plan-type CLOUDFORMATION \
         --product-id prod-cfrfxmraxxxxx \

@@ -26,3 +26,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Sharing a Portfolio <https://docs.aws.amazon.com/servicecatalog/latest/adminguide/catalogs_portfolios_sharing_how-to-share.html>`__ in the *AWS Service Catalog User Guide*.

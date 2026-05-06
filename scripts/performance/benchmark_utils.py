@@ -7,9 +7,6 @@ import time
 
 import psutil
 
-from awscli.botocore.hooks import HierarchicalEmitter
-
-from awscli.clidriver import AWSCLIEntryPoint, create_clidriver
 from scripts.performance import BaseBenchmarkSuite
 from scripts.performance.simple_stubbed_tests import (
     JSONStubbedBenchmarkSuite,
@@ -171,11 +168,16 @@ class Summarizer:
                 worker_results['first_client_invocation_time']
                 - worker_results['start_time'],
             ),
-            'plugins.import.time': Metric(
+            'plugins.load.time': Metric(
                 'Total time spent loading all built-in plugins.',
                 'Seconds',
-                worker_results['plugin_imports'],
-            )
+                worker_results['load_plugins_time'],
+            ),
+            'imports.static.time': Metric(
+                'Total time spent on static Python imports.',
+                'Seconds',
+                worker_results['static_imports_time'],
+            ),
         }
         # reset data state
         self._samples.clear()
@@ -275,6 +277,13 @@ class BenchmarkHarness:
         plugin_import_end_time = None
         start_time = time.time()
 
+        before_imports = start_time
+        # We import from awscli lazily to ensure import time is measured in
+        # total runtime.
+        from awscli.botocore.hooks import HierarchicalEmitter
+        from awscli.clidriver import AWSCLIEntryPoint, create_clidriver
+        after_imports = time.time()
+
         def _log_invocation_time(params, request_signer, model, **kwargs):
             nonlocal first_client_invocation_time
             if first_client_invocation_time is None:
@@ -297,14 +306,14 @@ class BenchmarkHarness:
             'benchmarks.log-invocation-time',
         )
         event_hooks.register_last(
-            'before-import-plugins',
+            'before-load-plugins',
             _log_import_plugins_start,
-            'benchmarks.log-before-import-plugins',
+            'benchmarks.log-before-load-plugins',
         )
         event_hooks.register_last(
-            'after-import-plugins',
+            'after-load-plugins',
             _log_import_plugins_end,
-            'benchmarks.log-after-import-plugins',
+            'benchmarks.log-after-load-plugins',
         )
 
         driver = create_clidriver(event_hooks=event_hooks)
@@ -320,8 +329,11 @@ class BenchmarkHarness:
                         'start_time': start_time,
                         'end_time': end_time,
                         'first_client_invocation_time': first_client_invocation_time,
-                        'plugin_imports': (
+                        'load_plugins_time': (
                             plugin_import_end_time - plugin_import_start_time
+                        ),
+                        'static_imports_time': (
+                            after_imports - before_imports
                         ),
                     }
                 )
@@ -351,7 +363,6 @@ class BenchmarkHarness:
         os.chdir(result_dir)
 
         # fork a child process to run the command on.
-        print('0')
         pid = os.fork()
 
         try:
@@ -382,7 +393,6 @@ class BenchmarkHarness:
                                 os.dup2(f.fileno(), sys.stdout.fileno())
                                 os.dup2(f_err.fileno(), sys.stderr.fileno())
                     # execute command on child process
-                    print('1')
                     self._run_command_with_metric_hooks(
                         benchmark['command'], metrics_path
                     )
@@ -448,7 +458,6 @@ class BenchmarkHarness:
             for suite, case in cases:
                 for idx in range(args.num_iterations):
                     for cmd in case:
-                        print(cmd)
                         samples, execution_results = (
                             self._run_isolated_benchmark(
                                 result_dir,

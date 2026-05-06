@@ -3,14 +3,14 @@
 The following ``list-constraints-for-portfolio`` example lists all constraints for a portfolio. ::
 
     aws servicecatalog list-constraints-for-portfolio \
-        --portfolio-id port-y3fnkeslpoevg
+        --portfolio-id port-y3fnkeslpxxxx
 
 Output::
 
     {
         "ConstraintDetails": [
             {
-                "ConstraintId": "cons-dgdyqdqrxx4bq",
+                "ConstraintId": "cons-dgdyqdqrxxxxx",
                 "Type": "LAUNCH",
                 "Description": "Launch as local role TestLaunchRole",
                 "Owner": "123456789012",
@@ -18,7 +18,7 @@ Output::
                 "PortfolioId": "port-y3fnkeslxxxxx"
             },
             {
-                "ConstraintId": "cons-tzxjnj4l6yvck",
+                "ConstraintId": "cons-tzxjnj4l6xxxx",
                 "Type": "RESOURCE_UPDATE",
                 "Owner": "123456789012",
                 "ProductId": "prod-sphewkokxxxxx",
@@ -41,7 +41,7 @@ Output::
     {
         "ConstraintDetails": [
             {
-                "ConstraintId": "cons-dgdyqdqrxx4bq",
+                "ConstraintId": "cons-dgdyqdqrxxxxx",
                 "Type": "LAUNCH",
                 "Description": "Launch as local role TestLaunchRole",
                 "Owner": "123456789012",
@@ -50,3 +50,5 @@ Output::
             }
         ]
     }
+
+For more information, see `Using AWS Service Catalog Constraints <https://docs.aws.amazon.com/servicecatalog/latest/adminguide/constraints.html>`__ in the *AWS Service Catalog User Guide*.

@@ -1,4 +1,4 @@
-**To get information about the products to which the caller has access*
+**To get information about the products to which the caller has access**
 
 The following ``search-products `` example gets all the products the caller has access to. ::
 

@@ -10,6 +10,8 @@ The output includes an organizationalUnit object with details about the new OU: 
 		"OrganizationalUnit": {
 			"Id": "ou-examplerootid111-exampleouid111",
 			"Arn": "arn:aws:organizations::111111111111:ou/o-exampleorgid/ou-examplerootid111-exampleouid111",
-			"Name": "AccountingOU"
+			"Name": "AccountingOU",
+    		"Path": "o-exampleorgid/r-examplerootid111/ou-examplerootid111-exampleouid111/"
+
 		}
 	}

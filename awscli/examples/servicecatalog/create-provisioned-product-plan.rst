@@ -15,6 +15,6 @@ Output::
         "PlanName": "test-plan",
         "PlanId": "plan-cuxae3z6gxxxx",
         "ProvisionProductId": "pp-7kh7wbc4xxxxx",
-        "ProvisionedProductName": "test-params",
+        "ProvisionedProductName": "test-pp",
         "ProvisioningArtifactId": "pa-7wz4cu5cxxxxx"
     }

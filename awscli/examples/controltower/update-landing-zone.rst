@@ -12,4 +12,5 @@ Output::
     {
         "operationIdentifier": "53XXXXXX-b2XX-97XX-c6XX-474XXXXXXXXX"
     }
+
 For more information, see `Getting started with AWS Control Tower <https://docs.aws.amazon.com/controltower/latest/userguide/getting-started-with-control-tower.html>`__ in the *AWS Control Tower User Guide*.

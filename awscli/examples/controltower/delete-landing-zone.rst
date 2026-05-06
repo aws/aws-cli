@@ -10,4 +10,5 @@ Output::
     {
         "operationIdentifier": "47XXXXXX-a6XX-82XX-c9XX-432XXXXXXXXX"
     }
+
 For more information, see `Decommission an AWS Control Tower landing zone <https://docs.aws.amazon.com/controltower/latest/userguide/decommission-landing-zone.html>`__ in the *AWS Control Tower User Guide*.

@@ -3,7 +3,7 @@
 The following ``terminate-provisioned-product`` example terminates a provisioned product. ::
 
     aws servicecatalog terminate-provisioned-product \
-        --provisioned-product-id pp-7z4t3k4hxxxxx 
+        --provisioned-product-id pp-7z4t3k4hxxxxx
 {
 
 Output::

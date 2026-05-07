@@ -2,7 +2,7 @@
 
 The following ``create-constraint`` example creates a constraint. ::
 
-    aws servicecatalog create-constraint  \
+    aws servicecatalog create-constraint \
         --portfolio-id port-y3fnkesxxxxx \
         --product-id prod-cfrfxmraxxxxx \
         --type LAUNCH \

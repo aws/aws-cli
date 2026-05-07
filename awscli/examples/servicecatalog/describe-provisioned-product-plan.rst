@@ -2,7 +2,7 @@
 
 The following ``describe-provisioned-product-plan`` example describes a provisioned product plan. ::
 
-    aws servicecatalog describe-provisioned-product-plan  \
+    aws servicecatalog describe-provisioned-product-plan \
         --plan-id "plan-g7iwsaf3mxxxx"
 
 Output::

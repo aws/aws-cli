@@ -2,7 +2,7 @@
 
 The following ``list-launch-paths`` example lists launch paths for a portfolio. ::
 
-    aws servicecatalog list-launch-paths  \
+    aws servicecatalog list-launch-paths \
         --product-id prod-cfrfxmraxxxxx
 
 Output::

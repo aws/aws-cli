@@ -2,7 +2,7 @@
 
 The following ``describe-constraint`` example describes a constraint. ::
 
-    aws servicecatalog describe-constraint  \
+    aws servicecatalog describe-constraint \
         --id "cons-oqp52evr4bxxxx"   
 
 Output::

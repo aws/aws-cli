@@ -2,7 +2,7 @@
 
 The following ``describe-product`` example describes a product. ::
 
-    aws servicecatalog describe-product  \
+    aws servicecatalog describe-product \
         --id prod-dybl43puxxxxx
 
 Output::

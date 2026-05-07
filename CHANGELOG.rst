@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.45.6
+======
+
+* api-change:``bcm-data-exports``: With this release, customers can configure their data exports to generate additional integration artifacts for Athena and Redshift.
+* api-change:``bedrock-agentcore``: Launching AgentCore payments - a capability that provides secure, instant microtransaction payments for AI agents to access paid APIs, MCP servers, and content. It handles payment processing for x402 protocol, payment limits, and 3P wallet integrations with Coinbase CDP and Stripe (Privy).
+* api-change:``bedrock-agentcore-control``: Launching AgentCore payments - a capability that provides secure, instant microtransaction payments for AI agents to access paid APIs, MCP servers, and content. It handles payment processing for x402 protocol, payment limits, and 3P wallet integrations with Coinbase CDP and Stripe (Privy).
+* api-change:``ec2``: DescribeInstanceTypes now accepts an IncludeUnsupportedInRegion parameter. When set, the response also lists instance types that are not available in the current Region. Each instance type includes a SupportedInRegion field indicating its regional availability.
+* api-change:``guardduty``: This is a documentation update
+* api-change:``invoicing``: Updated ListInvoiceSummaries API to add new ReceiverRole filter in Request and Response
+* api-change:``route53resolver``: Adds supports for DNS64 on inbound endpoints and IPv6 forwarding through the internet gateway (IGW) on outbound endpoints, making it easier to manage hybrid DNS across IPv4 and IPv6 networks.
+
+
 1.45.5
 ======
 

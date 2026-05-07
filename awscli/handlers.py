@@ -118,6 +118,7 @@ from awscli.customizations.s3events import (
     register_document_expires_string,
     register_event_stream_arg,
 )
+from awscli.customizations.schema import register_schema_command
 from awscli.customizations.servicecatalog import (
     register_servicecatalog_commands,
 )
@@ -239,3 +240,4 @@ def awscli_initialize(event_handlers):
     register_quicksight_asset_bundle_customizations(event_handlers)
     register_ec2_instance_connect_commands(event_handlers)
     register_login_cmds(event_handlers)
+    register_schema_command(event_handlers)

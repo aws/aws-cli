@@ -11,7 +11,7 @@ Output::
     {
         "PortfolioShareDetails": [
             {
-                "PrincipalId": "012345678901",
+                "PrincipalId": "123456789012",
                 "Type": "ACCOUNT",
                 "Accepted": true,
                 "ShareTagOptions": false,

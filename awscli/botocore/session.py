@@ -866,6 +866,7 @@ class Session:
         :return: A botocore client instance
 
         """
+        self.emit('before-create-client')
         default_client_config = self.get_default_client_config()
         # If a config is provided and a default config is set, then
         # use the config resulting from merging the two.
@@ -960,6 +961,7 @@ class Session:
         monitor = self._get_internal_component('monitor')
         if monitor is not None:
             monitor.register(client.meta.events)
+        self.emit('after-create-client')
         return client
 
     def _resolve_region_name(self, region_name, config):

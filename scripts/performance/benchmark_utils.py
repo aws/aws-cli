@@ -178,6 +178,11 @@ class Summarizer:
                 'Seconds',
                 worker_results['static_imports_time'],
             ),
+            'client.creation.time': Metric(
+                'Total time spent creating a botocore client.',
+                'Seconds',
+                worker_results['create-client-time'],
+            ),
         }
         # reset data state
         self._samples.clear()
@@ -273,6 +278,8 @@ class BenchmarkHarness:
         Runs a CLI command and logs CLI-specific metrics to a file.
         """
         first_client_invocation_time = None
+        create_client_start_time = None
+        create_client_end_time = None
         plugin_import_start_time = None
         plugin_import_end_time = None
         start_time = time.time()
@@ -289,6 +296,16 @@ class BenchmarkHarness:
             if first_client_invocation_time is None:
                 first_client_invocation_time = time.time()
 
+        def _log_create_client_start(**kwargs):
+            nonlocal create_client_start_time
+            if create_client_start_time is None:
+                create_client_start_time = time.time()
+
+        def _log_create_client_end(**kwargs):
+            nonlocal create_client_end_time
+            if create_client_end_time is None:
+                create_client_end_time = time.time()
+
         def _log_import_plugins_start(**kwargs):
             nonlocal plugin_import_start_time
             if plugin_import_start_time is None:
@@ -304,6 +321,16 @@ class BenchmarkHarness:
             'before-call',
             _log_invocation_time,
             'benchmarks.log-invocation-time',
+        )
+        event_hooks.register_last(
+            'before-create-client',
+            _log_create_client_start,
+            'benchmarks.log-before-create-client',
+        )
+        event_hooks.register_last(
+            'after-create-client',
+            _log_create_client_end,
+            'benchmarks.log-after-create-client',
         )
         event_hooks.register_last(
             'before-load-plugins',
@@ -335,6 +362,9 @@ class BenchmarkHarness:
                         'static_imports_time': (
                             after_imports - before_imports
                         ),
+                        'create-client-time': (
+                            create_client_end_time - create_client_start_time
+                        )
                     }
                 )
             )

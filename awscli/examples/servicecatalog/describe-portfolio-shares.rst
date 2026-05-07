@@ -2,7 +2,7 @@
 
 The following ``describe-portfolio-shares`` example describes portfolio shares. ::
 
-    aws servicecatalog describe-portfolio-shares  \
+    aws servicecatalog describe-portfolio-shares \
         --portfolio-id port-y3fnkeslxxxxx \
         --type ACCOUNT
 

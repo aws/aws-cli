@@ -2,7 +2,7 @@
 
 The following ``describe-provisioning-parameters`` example describes provisioning parameters. ::
 
-    aws servicecatalog describe-provisioning-parameters  \
+    aws servicecatalog describe-provisioning-parameters \
         --product-id prod-cfrfxmraxxxxx \
         --provisioning-artifact-id pa-7wz4cu5cxxxxx \
         --path-id lpv3-y3fnkeslpxxxx

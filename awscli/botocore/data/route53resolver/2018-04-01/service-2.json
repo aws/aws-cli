@@ -338,6 +338,7 @@
       "input":{"shape":"DeleteResolverRuleRequest"},
       "output":{"shape":"DeleteResolverRuleResponse"},
       "errors":[
+        {"shape":"InvalidRequestException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ResourceInUseException"},
@@ -410,6 +411,7 @@
       "output":{"shape":"DisassociateResolverRuleResponse"},
       "errors":[
         {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
         {"shape":"InvalidParameterException"},
         {"shape":"InternalServiceErrorException"},
         {"shape":"ThrottlingException"}
@@ -1688,6 +1690,16 @@
           "shape":"TargetNameServerMetricsEnabled",
           "documentation":"<p>Specifies whether target name server metrics are enabled for the outbound Resolver endpoints. When set to true, one-minute granular metrics are published in CloudWatch for each target name server associated with this endpoint. When set to false, metrics are not published. Default is false. This is not supported for inbound Resolver endpoints.</p> <note> <p>Standard CloudWatch pricing and charges are applied for using the Route 53 Resolver endpoint target name server metrics. For more information, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/monitoring-resolver-with-cloudwatch.html\">Detailed metrics</a>.</p> </note>",
           "box":true
+        },
+        "Dns64Enabled":{
+          "shape":"Dns64Enabled",
+          "documentation":"<p>Specifies whether DNS64 is enabled for the inbound Resolver endpoint. When set to <code>true</code>, Route 53 Resolver synthesizes AAAA (IPv6) records for IPv4-only services by prepending the <code>64:ff9b::/96</code> prefix to the IPv4 address. This enables IPv6-only clients that send queries through the inbound endpoint to reach IPv4-only services. DNS64 works with NAT64 to provide complete IPv6-to-IPv4 translation. Default is false.</p>",
+          "box":true
+        },
+        "Ipv6InternetAccessEnabled":{
+          "shape":"Ipv6InternetAccessEnabled",
+          "documentation":"<p>Specifies whether IPv6 internet access is enabled for the outbound Resolver endpoint. When set to <code>true</code>, the endpoint elastic network interfaces (ENIs) can forward DNS queries to public IPv6 targets through an internet gateway. Default is false.</p> <important> <p>When you enable IPv6 internet access, use network controls like security groups, NACLs, or egress-only internet gateways to protect the endpoint ENIs from unsolicited ingress traffic. Be aware that some network controls can affect DNS query throughput due to connection tracking. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/userguide/security-group-connection-tracking.html\">Amazon EC2 security group connection tracking</a> and <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/best-practices-resolver-endpoint-scaling.html\">Resolver endpoint scaling</a>.</p> </important>",
+          "box":true
         }
       }
     },
@@ -2051,6 +2063,7 @@
         }
       }
     },
+    "Dns64Enabled":{"type":"boolean"},
     "DnsThreatProtection":{
       "type":"string",
       "enum":[
@@ -3000,6 +3013,7 @@
       "max":39,
       "min":7
     },
+    "Ipv6InternetAccessEnabled":{"type":"boolean"},
     "LimitExceededException":{
       "type":"structure",
       "members":{
@@ -3962,6 +3976,14 @@
         "TargetNameServerMetricsEnabled":{
           "shape":"TargetNameServerMetricsEnabled",
           "documentation":"<p>Indicates whether target name server metrics are enabled for the outbound Resolver endpoint. When enabled, one-minute granular metrics are published in CloudWatch for each target name server associated with this endpoint. When disabled, these metrics are not published. This feature is not supported for inbound Resolver endpoint.</p>"
+        },
+        "Dns64Enabled":{
+          "shape":"Dns64Enabled",
+          "documentation":"<p>Indicates whether DNS64 is enabled for the inbound Resolver endpoint. When <code>true</code>, Route 53 Resolver synthesizes AAAA (IPv6) records for IPv4-only services by prepending the <code>64:ff9b::/96</code> prefix to the IPv4 address.</p>"
+        },
+        "Ipv6InternetAccessEnabled":{
+          "shape":"Ipv6InternetAccessEnabled",
+          "documentation":"<p>Indicates whether IPv6 internet access is enabled for the outbound Resolver endpoint. When <code>true</code>, the endpoint elastic network interfaces (ENIs) can forward DNS queries to public IPv6 targets through an internet gateway.</p>"
         }
       },
       "documentation":"<p>In the response to a <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_CreateResolverEndpoint.html\">CreateResolverEndpoint</a>, <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_DeleteResolverEndpoint.html\">DeleteResolverEndpoint</a>, <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverEndpoint.html\">GetResolverEndpoint</a>, Updates the name, or ResolverEndpointType for an endpoint, or <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_UpdateResolverEndpoint.html\">UpdateResolverEndpoint</a> request, a complex type that contains settings for an existing inbound or outbound Resolver endpoint.</p>"
@@ -4855,6 +4877,16 @@
         "TargetNameServerMetricsEnabled":{
           "shape":"TargetNameServerMetricsEnabled",
           "documentation":"<p>Updates whether target name server metrics are enabled for the outbound Resolver endpoints. When set to true, one-minute granular metrics are published in CloudWatch for each target name server associated with this endpoint. When set to false, metrics are not published. This setting is not supported for inbound Resolver endpoints.</p> <note> <p>Standard CloudWatch pricing and charges are applied for using the Route 53 Resolver endpoint target name server metrics. For more information, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/monitoring-resolver-with-cloudwatch.html\">Detailed metrics</a>.</p> </note>",
+          "box":true
+        },
+        "Dns64Enabled":{
+          "shape":"Dns64Enabled",
+          "documentation":"<p>Specifies whether DNS64 is enabled for the inbound Resolver endpoint. When set to <code>true</code>, Route 53 Resolver synthesizes AAAA (IPv6) records for IPv4-only services by prepending the <code>64:ff9b::/96</code> prefix to the IPv4 address. This enables IPv6-only clients that send queries through the inbound endpoint to reach IPv4-only services. DNS64 works with NAT64 to provide complete IPv6-to-IPv4 translation.</p>",
+          "box":true
+        },
+        "Ipv6InternetAccessEnabled":{
+          "shape":"Ipv6InternetAccessEnabled",
+          "documentation":"<p>Specifies whether IPv6 internet access is enabled for the outbound Resolver endpoint. When set to <code>true</code>, the endpoint elastic network interfaces (ENIs) can forward DNS queries to public IPv6 targets through an internet gateway.</p> <important> <p>When you enable IPv6 internet access, use network controls like security groups, NACLs, or egress-only internet gateways to protect the endpoint ENIs from unsolicited ingress traffic. Be aware that some network controls can affect DNS query throughput due to connection tracking. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/userguide/security-group-connection-tracking.html\">Amazon EC2 security group connection tracking</a> and <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/best-practices-resolver-endpoint-scaling.html\">Resolver endpoint scaling</a>.</p> </important>",
           "box":true
         }
       }

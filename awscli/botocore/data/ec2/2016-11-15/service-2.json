@@ -3337,7 +3337,7 @@
       },
       "input":{"shape":"DescribeInstanceTypesRequest"},
       "output":{"shape":"DescribeInstanceTypesResult"},
-      "documentation":"<p>Describes the specified instance types. By default, all instance types for the current Region are described. Alternatively, you can filter the results.</p>"
+      "documentation":"<p>Describes the specified instance types. By default, all instance types for the current Region are described. Alternatively, you can filter the results. To include instance types that are not supported in the current Region, set <code>IncludeUnsupportedInRegion</code> to <code>true</code>.</p>"
     },
     "DescribeInstances":{
       "name":"DescribeInstances",
@@ -26988,6 +26988,10 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>The token returned from a previous paginated request. Pagination continues from the end of the items returned by the previous request.</p>"
+        },
+        "IncludeUnsupportedInRegion":{
+          "shape":"IncludeUnsupportedInRegion",
+          "documentation":"<p>If <code>true</code>, the response includes instance types that are not supported in the current Region, in addition to the supported types. Default: <code>false</code>.</p>"
         }
       }
     },
@@ -43226,6 +43230,7 @@
       },
       "documentation":"<p>Describes an import volume task.</p>"
     },
+    "IncludeUnsupportedInRegion":{"type":"boolean"},
     "InferenceAcceleratorInfo":{
       "type":"structure",
       "members":{
@@ -47202,6 +47207,11 @@
           "shape":"RebootMigrationSupport",
           "documentation":"<p>Indicates whether reboot migration during a user-initiated reboot is supported for instances that have a scheduled <code>system-reboot</code> event. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/schedevents_actions_reboot.html#reboot-migration\">Enable or disable reboot migration</a> in the <i>Amazon EC2 User Guide</i>.</p>",
           "locationName":"rebootMigrationSupport"
+        },
+        "SupportedInRegion":{
+          "shape":"SupportedInRegion",
+          "documentation":"<p>Indicates whether the instance type is supported in the current Region.</p>",
+          "locationName":"supportedInRegion"
         }
       },
       "documentation":"<p>Describes the instance type.</p>"
@@ -69949,6 +69959,7 @@
         "locationName":"item"
       }
     },
+    "SupportedInRegion":{"type":"boolean"},
     "SupportedIpAddressTypes":{
       "type":"list",
       "member":{

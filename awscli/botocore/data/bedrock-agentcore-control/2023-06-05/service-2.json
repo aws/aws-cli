@@ -324,6 +324,72 @@
       ],
       "documentation":"<p> Creates an online evaluation configuration for continuous monitoring of agent performance. Online evaluation automatically samples live traffic from CloudWatch logs at specified rates and applies evaluators to assess agent quality in production. </p>"
     },
+    "CreatePaymentConnector":{
+      "name":"CreatePaymentConnector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/payments/managers/{paymentManagerId}/connectors",
+        "responseCode":202
+      },
+      "input":{"shape":"CreatePaymentConnectorRequest"},
+      "output":{"shape":"CreatePaymentConnectorResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a new payment connector for a payment manager. A payment connector integrates with a supported payment provider to enable payment processing capabilities.</p>",
+      "idempotent":true
+    },
+    "CreatePaymentCredentialProvider":{
+      "name":"CreatePaymentCredentialProvider",
+      "http":{
+        "method":"POST",
+        "requestUri":"/identities/CreatePaymentCredentialProvider",
+        "responseCode":201
+      },
+      "input":{"shape":"CreatePaymentCredentialProviderRequest"},
+      "output":{"shape":"CreatePaymentCredentialProviderResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ResourceLimitExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"DecryptionFailure"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"EncryptionFailure"}
+      ],
+      "documentation":"<p>Creates a new payment credential provider for storing authentication credentials used by payment connectors to communicate with external payment providers.</p>",
+      "idempotent":true
+    },
+    "CreatePaymentManager":{
+      "name":"CreatePaymentManager",
+      "http":{
+        "method":"POST",
+        "requestUri":"/payments/managers",
+        "responseCode":202
+      },
+      "input":{"shape":"CreatePaymentManagerRequest"},
+      "output":{"shape":"CreatePaymentManagerResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a new payment manager in your Amazon Web Services account. A payment manager serves as the top-level resource for managing payment processing capabilities, including payment connectors that integrate with supported payment providers.</p> <p>If you specify <code>CUSTOM_JWT</code> as the <code>authorizerType</code>, you must provide an <code>authorizerConfiguration</code>.</p>",
+      "idempotent":true
+    },
     "CreatePolicy":{
       "name":"CreatePolicy",
       "http":{
@@ -723,6 +789,64 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p> Deletes an online evaluation configuration and stops any ongoing evaluation processes associated with it. </p>",
+      "idempotent":true
+    },
+    "DeletePaymentConnector":{
+      "name":"DeletePaymentConnector",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/payments/managers/{paymentManagerId}/connectors/{paymentConnectorId}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeletePaymentConnectorRequest"},
+      "output":{"shape":"DeletePaymentConnectorResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes a payment connector.</p>",
+      "idempotent":true
+    },
+    "DeletePaymentCredentialProvider":{
+      "name":"DeletePaymentCredentialProvider",
+      "http":{
+        "method":"POST",
+        "requestUri":"/identities/DeletePaymentCredentialProvider",
+        "responseCode":204
+      },
+      "input":{"shape":"DeletePaymentCredentialProviderRequest"},
+      "output":{"shape":"DeletePaymentCredentialProviderResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes a payment credential provider and its associated stored credentials.</p>",
+      "idempotent":true
+    },
+    "DeletePaymentManager":{
+      "name":"DeletePaymentManager",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/payments/managers/{paymentManagerId}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeletePaymentManagerRequest"},
+      "output":{"shape":"DeletePaymentManagerResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes a payment manager. All payment connectors associated with the payment manager must be deleted before the payment manager can be deleted. This operation initiates the deletion process asynchronously.</p>",
       "idempotent":true
     },
     "DeletePolicy":{
@@ -1150,6 +1274,65 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p> Retrieves detailed information about an online evaluation configuration, including its rules, data sources, evaluators, and execution status. </p>",
+      "readonly":true
+    },
+    "GetPaymentConnector":{
+      "name":"GetPaymentConnector",
+      "http":{
+        "method":"GET",
+        "requestUri":"/payments/managers/{paymentManagerId}/connectors/{paymentConnectorId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetPaymentConnectorRequest"},
+      "output":{"shape":"GetPaymentConnectorResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves information about a specific payment connector.</p>",
+      "readonly":true
+    },
+    "GetPaymentCredentialProvider":{
+      "name":"GetPaymentCredentialProvider",
+      "http":{
+        "method":"POST",
+        "requestUri":"/identities/GetPaymentCredentialProvider",
+        "responseCode":200
+      },
+      "input":{"shape":"GetPaymentCredentialProviderRequest"},
+      "output":{"shape":"GetPaymentCredentialProviderResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"DecryptionFailure"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves information about a specific payment credential provider.</p>",
+      "readonly":true
+    },
+    "GetPaymentManager":{
+      "name":"GetPaymentManager",
+      "http":{
+        "method":"GET",
+        "requestUri":"/payments/managers/{paymentManagerId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetPaymentManagerRequest"},
+      "output":{"shape":"GetPaymentManagerResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves information about a specific payment manager.</p>",
       "readonly":true
     },
     "GetPolicy":{
@@ -1619,6 +1802,62 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p> Lists all online evaluation configurations in the account, providing summary information about each configuration's status and settings. </p>",
+      "readonly":true
+    },
+    "ListPaymentConnectors":{
+      "name":"ListPaymentConnectors",
+      "http":{
+        "method":"POST",
+        "requestUri":"/payments/managers/{paymentManagerId}/connectors-list",
+        "responseCode":200
+      },
+      "input":{"shape":"ListPaymentConnectorsRequest"},
+      "output":{"shape":"ListPaymentConnectorsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists all payment connectors for a specified payment manager.</p>",
+      "readonly":true
+    },
+    "ListPaymentCredentialProviders":{
+      "name":"ListPaymentCredentialProviders",
+      "http":{
+        "method":"POST",
+        "requestUri":"/identities/ListPaymentCredentialProviders",
+        "responseCode":200
+      },
+      "input":{"shape":"ListPaymentCredentialProvidersRequest"},
+      "output":{"shape":"ListPaymentCredentialProvidersResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists all payment credential providers in the account.</p>",
+      "readonly":true
+    },
+    "ListPaymentManagers":{
+      "name":"ListPaymentManagers",
+      "http":{
+        "method":"POST",
+        "requestUri":"/payments/managers-list",
+        "responseCode":200
+      },
+      "input":{"shape":"ListPaymentManagersRequest"},
+      "output":{"shape":"ListPaymentManagersResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists all payment managers in the account.</p>",
       "readonly":true
     },
     "ListPolicies":{
@@ -2161,6 +2400,71 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p> Updates an online evaluation configuration's settings, including rules, data sources, evaluators, and execution status. Changes take effect immediately for ongoing evaluations. </p>",
+      "idempotent":true
+    },
+    "UpdatePaymentConnector":{
+      "name":"UpdatePaymentConnector",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/payments/managers/{paymentManagerId}/connectors/{paymentConnectorId}",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdatePaymentConnectorRequest"},
+      "output":{"shape":"UpdatePaymentConnectorResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates an existing payment connector. This operation uses PATCH semantics, so you only need to specify the fields you want to change.</p>",
+      "idempotent":true
+    },
+    "UpdatePaymentCredentialProvider":{
+      "name":"UpdatePaymentCredentialProvider",
+      "http":{
+        "method":"POST",
+        "requestUri":"/identities/UpdatePaymentCredentialProvider",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdatePaymentCredentialProviderRequest"},
+      "output":{"shape":"UpdatePaymentCredentialProviderResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"DecryptionFailure"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"EncryptionFailure"}
+      ],
+      "documentation":"<p>Updates an existing payment credential provider with new authentication credentials.</p>"
+    },
+    "UpdatePaymentManager":{
+      "name":"UpdatePaymentManager",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/payments/managers/{paymentManagerId}",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdatePaymentManagerRequest"},
+      "output":{"shape":"UpdatePaymentManagerResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates an existing payment manager. This operation uses PATCH semantics, so you only need to specify the fields you want to change.</p>",
       "idempotent":true
     },
     "UpdatePolicy":{
@@ -3446,6 +3750,66 @@
         }
       },
       "documentation":"<p>Contains summary information about a code interpreter. A code interpreter enables Amazon Bedrock AgentCore Agent to execute code.</p>"
+    },
+    "CoinbaseCdpApiKeyIdType":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"[a-zA-Z0-9\\-_]+"
+    },
+    "CoinbaseCdpApiKeySecretType":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"[a-zA-Z0-9+/=\\-_\\s]+",
+      "sensitive":true
+    },
+    "CoinbaseCdpConfigurationInput":{
+      "type":"structure",
+      "required":[
+        "apiKeyId",
+        "apiKeySecret",
+        "walletSecret"
+      ],
+      "members":{
+        "apiKeyId":{
+          "shape":"CoinbaseCdpApiKeyIdType",
+          "documentation":"<p>The API key identifier provided by Coinbase Developer Platform.</p>"
+        },
+        "apiKeySecret":{
+          "shape":"CoinbaseCdpApiKeySecretType",
+          "documentation":"<p>The API key secret provided by Coinbase Developer Platform.</p>"
+        },
+        "walletSecret":{
+          "shape":"CoinbaseCdpWalletSecretType",
+          "documentation":"<p>The wallet secret provided by Coinbase Developer Platform.</p>"
+        }
+      },
+      "documentation":"<p>Coinbase CDP configuration - credentials provided by Coinbase Developer Platform</p>"
+    },
+    "CoinbaseCdpConfigurationOutput":{
+      "type":"structure",
+      "required":[
+        "apiKeyId",
+        "apiKeySecretArn",
+        "walletSecretArn"
+      ],
+      "members":{
+        "apiKeyId":{
+          "shape":"CoinbaseCdpApiKeyIdType",
+          "documentation":"<p>The API key identifier provided by Coinbase Developer Platform.</p>"
+        },
+        "apiKeySecretArn":{"shape":"Secret"},
+        "walletSecretArn":{"shape":"Secret"}
+      },
+      "documentation":"<p>Coinbase CDP configuration output with secret ARNs</p>"
+    },
+    "CoinbaseCdpWalletSecretType":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"[a-zA-Z0-9+/=\\-_\\s]+",
+      "sensitive":true
     },
     "ComponentConfiguration":{
       "type":"structure",
@@ -4932,6 +5296,223 @@
         }
       }
     },
+    "CreatePaymentConnectorRequest":{
+      "type":"structure",
+      "required":[
+        "paymentManagerId",
+        "name",
+        "type",
+        "credentialProviderConfigurations"
+      ],
+      "members":{
+        "paymentManagerId":{
+          "shape":"PaymentManagerId",
+          "documentation":"<p>The unique identifier of the payment manager to create the connector for.</p>",
+          "location":"uri",
+          "locationName":"paymentManagerId"
+        },
+        "name":{
+          "shape":"PaymentConnectorName",
+          "documentation":"<p>The name of the payment connector.</p>"
+        },
+        "description":{
+          "shape":"PaymentsDescription",
+          "documentation":"<p>A description of the payment connector.</p>"
+        },
+        "type":{
+          "shape":"PaymentConnectorType",
+          "documentation":"<p>The type of payment connector, which determines the payment provider integration.</p>"
+        },
+        "credentialProviderConfigurations":{
+          "shape":"CredentialsProviderConfigurations",
+          "documentation":"<p>The credential provider configurations for the payment connector. These configurations specify how the connector authenticates with the payment provider.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreatePaymentConnectorResponse":{
+      "type":"structure",
+      "required":[
+        "paymentConnectorId",
+        "paymentManagerId",
+        "name",
+        "type",
+        "credentialProviderConfigurations",
+        "createdAt",
+        "status"
+      ],
+      "members":{
+        "paymentConnectorId":{
+          "shape":"PaymentConnectorId",
+          "documentation":"<p>The unique identifier of the created payment connector.</p>"
+        },
+        "paymentManagerId":{
+          "shape":"PaymentManagerId",
+          "documentation":"<p>The unique identifier of the parent payment manager.</p>"
+        },
+        "name":{
+          "shape":"PaymentConnectorName",
+          "documentation":"<p>The name of the created payment connector.</p>"
+        },
+        "type":{
+          "shape":"PaymentConnectorType",
+          "documentation":"<p>The type of the created payment connector.</p>"
+        },
+        "credentialProviderConfigurations":{
+          "shape":"CredentialsProviderConfigurations",
+          "documentation":"<p>The credential provider configurations for the created payment connector.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the payment connector was created.</p>"
+        },
+        "status":{
+          "shape":"PaymentConnectorStatus",
+          "documentation":"<p>The current status of the payment connector. Possible values include <code>CREATING</code>, <code>READY</code>, <code>UPDATING</code>, <code>DELETING</code>, <code>CREATE_FAILED</code>, <code>UPDATE_FAILED</code>, and <code>DELETE_FAILED</code>.</p>"
+        }
+      }
+    },
+    "CreatePaymentCredentialProviderRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "credentialProviderVendor",
+        "providerConfigurationInput"
+      ],
+      "members":{
+        "name":{
+          "shape":"CredentialProviderName",
+          "documentation":"<p>Unique name for the payment credential provider</p>"
+        },
+        "credentialProviderVendor":{
+          "shape":"PaymentCredentialProviderVendorType",
+          "documentation":"<p>The vendor type (e.g., CoinbaseCDP)</p>"
+        },
+        "providerConfigurationInput":{
+          "shape":"PaymentProviderConfigurationInput",
+          "documentation":"<p>Configuration specific to the vendor, including API credentials</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Optional tags for resource organization</p>"
+        }
+      }
+    },
+    "CreatePaymentCredentialProviderResponse":{
+      "type":"structure",
+      "required":[
+        "name",
+        "credentialProviderVendor",
+        "credentialProviderArn",
+        "providerConfigurationOutput"
+      ],
+      "members":{
+        "name":{
+          "shape":"CredentialProviderName",
+          "documentation":"<p>The name of the created payment credential provider.</p>"
+        },
+        "credentialProviderVendor":{"shape":"PaymentCredentialProviderVendorType"},
+        "credentialProviderArn":{
+          "shape":"PaymentCredentialProviderArnType",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created payment credential provider.</p>"
+        },
+        "providerConfigurationOutput":{
+          "shape":"PaymentProviderConfigurationOutput",
+          "documentation":"<p>Output configuration (contains secret ARNs, excludes actual secret values)</p>"
+        }
+      }
+    },
+    "CreatePaymentManagerRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "authorizerType",
+        "roleArn"
+      ],
+      "members":{
+        "name":{
+          "shape":"PaymentManagerName",
+          "documentation":"<p>The name of the payment manager.</p>"
+        },
+        "description":{
+          "shape":"PaymentsDescription",
+          "documentation":"<p>A description of the payment manager.</p>"
+        },
+        "authorizerType":{
+          "shape":"PaymentsAuthorizerType",
+          "documentation":"<p>The type of authorizer to use for the payment manager.</p> <ul> <li> <p> <code>CUSTOM_JWT</code> - Authorize with a bearer token.</p> </li> <li> <p> <code>AWS_IAM</code> - Authorize with your Amazon Web Services IAM credentials.</p> </li> </ul>"
+        },
+        "authorizerConfiguration":{
+          "shape":"AuthorizerConfiguration",
+          "documentation":"<p>The authorizer configuration for the payment manager.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that the payment manager assumes to access resources on your behalf.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of tag keys and values to assign to the payment manager.</p>"
+        }
+      }
+    },
+    "CreatePaymentManagerResponse":{
+      "type":"structure",
+      "required":[
+        "paymentManagerArn",
+        "paymentManagerId",
+        "name",
+        "authorizerType",
+        "roleArn",
+        "createdAt",
+        "status"
+      ],
+      "members":{
+        "paymentManagerArn":{
+          "shape":"PaymentManagerArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created payment manager.</p>"
+        },
+        "paymentManagerId":{
+          "shape":"PaymentManagerId",
+          "documentation":"<p>The unique identifier of the created payment manager.</p>"
+        },
+        "name":{
+          "shape":"PaymentManagerName",
+          "documentation":"<p>The name of the created payment manager.</p>"
+        },
+        "authorizerType":{
+          "shape":"PaymentsAuthorizerType",
+          "documentation":"<p>The type of authorizer for the created payment manager.</p>"
+        },
+        "authorizerConfiguration":{"shape":"AuthorizerConfiguration"},
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role associated with the created payment manager.</p>"
+        },
+        "workloadIdentityDetails":{"shape":"WorkloadIdentityDetails"},
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the payment manager was created.</p>"
+        },
+        "status":{
+          "shape":"PaymentManagerStatus",
+          "documentation":"<p>The current status of the payment manager. Possible values include <code>CREATING</code>, <code>READY</code>, <code>UPDATING</code>, <code>DELETING</code>, <code>CREATE_FAILED</code>, <code>UPDATE_FAILED</code>, and <code>DELETE_FAILED</code>.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>The tags associated with the created payment manager.</p>"
+        }
+      }
+    },
     "CreatePolicyEngineRequest":{
       "type":"structure",
       "required":["name"],
@@ -5344,6 +5925,27 @@
         "CognitoOauth2"
       ]
     },
+    "CredentialsProviderConfiguration":{
+      "type":"structure",
+      "members":{
+        "coinbaseCDP":{
+          "shape":"PaymentCredentialProviderConfiguration",
+          "documentation":"<p>The credential provider configuration for a Coinbase CDP payment connector.</p>"
+        },
+        "stripePrivy":{
+          "shape":"PaymentCredentialProviderConfiguration",
+          "documentation":"<p>The credential provider configuration for a Stripe Privy payment connector.</p>"
+        }
+      },
+      "documentation":"<p>The credential provider configuration for a payment connector. Specifies the payment provider type and its associated credential provider.</p>",
+      "union":true
+    },
+    "CredentialsProviderConfigurations":{
+      "type":"list",
+      "member":{"shape":"CredentialsProviderConfiguration"},
+      "max":1,
+      "min":1
+    },
     "CustomClaimValidationType":{
       "type":"structure",
       "required":[
@@ -5528,7 +6130,7 @@
         "privateEndpoint":{"shape":"PrivateEndpoint"},
         "privateEndpointOverrides":{
           "shape":"PrivateEndpointOverrides",
-          "documentation":"<p>A list of private endpoint overrides for the JWT authorizer. Each override maps a specific domain to a private endpoint, enabling secure connectivity through VPC Lattice resource configurations.</p>"
+          "documentation":"<p>The private endpoint overrides for the custom JWT authorizer configuration.</p>"
         }
       },
       "documentation":"<p>Configuration for inbound JWT-based authorization, specifying how incoming requests should be authenticated.</p>"
@@ -5589,7 +6191,7 @@
         },
         "privateEndpointOverrides":{
           "shape":"PrivateEndpointOverrides",
-          "documentation":"<p>The list of private endpoint overrides for the custom OAuth2 provider. Each override maps a specific domain to a private endpoint, enabling secure connectivity through VPC Lattice resource configurations.</p>"
+          "documentation":"<p>The private endpoint overrides for the custom OAuth2 provider configuration.</p>"
         },
         "onBehalfOfTokenExchangeConfig":{
           "shape":"OnBehalfOfTokenExchangeConfigType",
@@ -5620,7 +6222,7 @@
         },
         "privateEndpointOverrides":{
           "shape":"PrivateEndpointOverrides",
-          "documentation":"<p>The list of private endpoint overrides for the custom OAuth2 provider. Each override maps a specific domain to a private endpoint, enabling secure connectivity through VPC Lattice resource configurations.</p>"
+          "documentation":"<p>The private endpoint overrides for the custom OAuth2 provider configuration.</p>"
         },
         "onBehalfOfTokenExchangeConfig":{
           "shape":"OnBehalfOfTokenExchangeConfigType",
@@ -6237,6 +6839,95 @@
         "status":{
           "shape":"OnlineEvaluationConfigStatus",
           "documentation":"<p> The status of the online evaluation configuration deletion operation. </p>"
+        }
+      }
+    },
+    "DeletePaymentConnectorRequest":{
+      "type":"structure",
+      "required":[
+        "paymentManagerId",
+        "paymentConnectorId"
+      ],
+      "members":{
+        "paymentManagerId":{
+          "shape":"PaymentManagerId",
+          "documentation":"<p>The unique identifier of the parent payment manager.</p>",
+          "location":"uri",
+          "locationName":"paymentManagerId"
+        },
+        "paymentConnectorId":{
+          "shape":"PaymentConnectorId",
+          "documentation":"<p>The unique identifier of the payment connector to delete.</p>",
+          "location":"uri",
+          "locationName":"paymentConnectorId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
+        }
+      }
+    },
+    "DeletePaymentConnectorResponse":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"PaymentConnectorStatus",
+          "documentation":"<p>The current status of the payment connector, set to <code>DELETING</code> when deletion is initiated. Possible values include <code>CREATING</code>, <code>READY</code>, <code>UPDATING</code>, <code>DELETING</code>, <code>CREATE_FAILED</code>, <code>UPDATE_FAILED</code>, and <code>DELETE_FAILED</code>.</p>"
+        },
+        "paymentConnectorId":{
+          "shape":"PaymentConnectorId",
+          "documentation":"<p>The unique identifier of the deleted payment connector.</p>"
+        }
+      }
+    },
+    "DeletePaymentCredentialProviderRequest":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"CredentialProviderName",
+          "documentation":"<p>The name of the payment credential provider to delete.</p>"
+        }
+      }
+    },
+    "DeletePaymentCredentialProviderResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeletePaymentManagerRequest":{
+      "type":"structure",
+      "required":["paymentManagerId"],
+      "members":{
+        "paymentManagerId":{
+          "shape":"PaymentManagerId",
+          "documentation":"<p>The unique identifier of the payment manager to delete.</p>",
+          "location":"uri",
+          "locationName":"paymentManagerId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
+        }
+      }
+    },
+    "DeletePaymentManagerResponse":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"PaymentManagerStatus",
+          "documentation":"<p>The current status of the payment manager, set to <code>DELETING</code> when deletion is initiated. Possible values include <code>CREATING</code>, <code>READY</code>, <code>UPDATING</code>, <code>DELETING</code>, <code>CREATE_FAILED</code>, <code>UPDATE_FAILED</code>, and <code>DELETE_FAILED</code>.</p>"
+        },
+        "paymentManagerId":{
+          "shape":"PaymentManagerId",
+          "documentation":"<p>The unique identifier of the deleted payment manager.</p>"
         }
       }
     },
@@ -8549,7 +9240,7 @@
         },
         "failureReason":{
           "shape":"String",
-          "documentation":"<p>The reason for the failure if the OAuth2 credential provider is in a failed state.</p>"
+          "documentation":"<p>The reason for failure if the OAuth2 credential provider is in a failed state.</p>"
         }
       }
     },
@@ -8635,6 +9326,190 @@
         "failureReason":{
           "shape":"String",
           "documentation":"<p> The reason for failure if the online evaluation configuration execution failed. </p>"
+        }
+      }
+    },
+    "GetPaymentConnectorRequest":{
+      "type":"structure",
+      "required":[
+        "paymentManagerId",
+        "paymentConnectorId"
+      ],
+      "members":{
+        "paymentManagerId":{
+          "shape":"PaymentManagerId",
+          "documentation":"<p>The unique identifier of the parent payment manager.</p>",
+          "location":"uri",
+          "locationName":"paymentManagerId"
+        },
+        "paymentConnectorId":{
+          "shape":"PaymentConnectorId",
+          "documentation":"<p>The unique identifier of the payment connector to retrieve.</p>",
+          "location":"uri",
+          "locationName":"paymentConnectorId"
+        }
+      }
+    },
+    "GetPaymentConnectorResponse":{
+      "type":"structure",
+      "required":[
+        "paymentConnectorId",
+        "name",
+        "type",
+        "credentialProviderConfigurations",
+        "createdAt",
+        "lastUpdatedAt",
+        "status"
+      ],
+      "members":{
+        "paymentConnectorId":{
+          "shape":"PaymentConnectorId",
+          "documentation":"<p>The unique identifier of the payment connector.</p>"
+        },
+        "name":{
+          "shape":"PaymentConnectorName",
+          "documentation":"<p>The name of the payment connector.</p>"
+        },
+        "description":{
+          "shape":"PaymentsDescription",
+          "documentation":"<p>The description of the payment connector.</p>"
+        },
+        "type":{
+          "shape":"PaymentConnectorType",
+          "documentation":"<p>The type of the payment connector, which determines the payment provider integration.</p>"
+        },
+        "credentialProviderConfigurations":{
+          "shape":"CredentialsProviderConfigurations",
+          "documentation":"<p>The credential provider configurations for the payment connector.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the payment connector was created.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the payment connector was last updated.</p>"
+        },
+        "status":{
+          "shape":"PaymentConnectorStatus",
+          "documentation":"<p>The current status of the payment connector. Possible values include <code>CREATING</code>, <code>READY</code>, <code>UPDATING</code>, <code>DELETING</code>, <code>CREATE_FAILED</code>, <code>UPDATE_FAILED</code>, and <code>DELETE_FAILED</code>.</p>"
+        }
+      }
+    },
+    "GetPaymentCredentialProviderRequest":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"CredentialProviderName",
+          "documentation":"<p>The name of the payment credential provider to retrieve.</p>"
+        }
+      }
+    },
+    "GetPaymentCredentialProviderResponse":{
+      "type":"structure",
+      "required":[
+        "name",
+        "credentialProviderArn",
+        "credentialProviderVendor",
+        "providerConfigurationOutput",
+        "createdTime",
+        "lastUpdatedTime"
+      ],
+      "members":{
+        "name":{
+          "shape":"CredentialProviderName",
+          "documentation":"<p>The name of the payment credential provider.</p>"
+        },
+        "credentialProviderArn":{
+          "shape":"PaymentCredentialProviderArnType",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the payment credential provider.</p>"
+        },
+        "credentialProviderVendor":{"shape":"PaymentCredentialProviderVendorType"},
+        "providerConfigurationOutput":{
+          "shape":"PaymentProviderConfigurationOutput",
+          "documentation":"<p>Output configuration (contains secret ARNs, excludes actual secret values)</p>"
+        },
+        "createdTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the payment credential provider was created.</p>"
+        },
+        "lastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the payment credential provider was last updated.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>The tags associated with the payment credential provider.</p>"
+        }
+      }
+    },
+    "GetPaymentManagerRequest":{
+      "type":"structure",
+      "required":["paymentManagerId"],
+      "members":{
+        "paymentManagerId":{
+          "shape":"PaymentManagerId",
+          "documentation":"<p>The unique identifier of the payment manager to retrieve.</p>",
+          "location":"uri",
+          "locationName":"paymentManagerId"
+        }
+      }
+    },
+    "GetPaymentManagerResponse":{
+      "type":"structure",
+      "required":[
+        "paymentManagerArn",
+        "paymentManagerId",
+        "name",
+        "authorizerType",
+        "roleArn",
+        "createdAt",
+        "lastUpdatedAt",
+        "status"
+      ],
+      "members":{
+        "paymentManagerArn":{
+          "shape":"PaymentManagerArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the payment manager.</p>"
+        },
+        "paymentManagerId":{
+          "shape":"PaymentManagerId",
+          "documentation":"<p>The unique identifier of the payment manager.</p>"
+        },
+        "name":{
+          "shape":"PaymentManagerName",
+          "documentation":"<p>The name of the payment manager.</p>"
+        },
+        "description":{
+          "shape":"PaymentsDescription",
+          "documentation":"<p>The description of the payment manager.</p>"
+        },
+        "authorizerType":{
+          "shape":"PaymentsAuthorizerType",
+          "documentation":"<p>The type of authorizer used by the payment manager.</p> <ul> <li> <p> <code>CUSTOM_JWT</code> - Authorize with a bearer token.</p> </li> <li> <p> <code>AWS_IAM</code> - Authorize with your Amazon Web Services IAM credentials.</p> </li> </ul>"
+        },
+        "authorizerConfiguration":{"shape":"AuthorizerConfiguration"},
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role associated with the payment manager.</p>"
+        },
+        "workloadIdentityDetails":{"shape":"WorkloadIdentityDetails"},
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the payment manager was created.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the payment manager was last updated.</p>"
+        },
+        "status":{
+          "shape":"PaymentManagerStatus",
+          "documentation":"<p>The current status of the payment manager. Possible values include <code>CREATING</code>, <code>READY</code>, <code>UPDATING</code>, <code>DELETING</code>, <code>CREATE_FAILED</code>, <code>UPDATE_FAILED</code>, and <code>DELETE_FAILED</code>.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>The tags associated with the payment manager.</p>"
         }
       }
     },
@@ -10941,6 +11816,108 @@
         }
       }
     },
+    "ListPaymentConnectorsRequest":{
+      "type":"structure",
+      "required":["paymentManagerId"],
+      "members":{
+        "paymentManagerId":{
+          "shape":"PaymentManagerId",
+          "documentation":"<p>The unique identifier of the payment manager whose connectors to list.</p>",
+          "location":"uri",
+          "locationName":"paymentManagerId"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in the response. If the total number of results is greater than this value, use the token returned in the response in the <code>nextToken</code> field when making another request to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, enter the token returned in the <code>nextToken</code> field in the response in this field to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListPaymentConnectorsResponse":{
+      "type":"structure",
+      "required":["paymentConnectors"],
+      "members":{
+        "paymentConnectors":{
+          "shape":"PaymentConnectorSummaries",
+          "documentation":"<p>The list of payment connector summaries. For details about the fields in each summary, see the <code>PaymentConnectorSummary</code> data type.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, use this token when making another request in the <code>nextToken</code> field to return the next batch of results.</p>"
+        }
+      }
+    },
+    "ListPaymentCredentialProvidersRequest":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>Pagination token.</p>"
+        },
+        "maxResults":{
+          "shape":"ListPaymentCredentialProvidersRequestMaxResultsInteger",
+          "documentation":"<p>Maximum number of results to return.</p>"
+        }
+      }
+    },
+    "ListPaymentCredentialProvidersRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":20,
+      "min":1
+    },
+    "ListPaymentCredentialProvidersResponse":{
+      "type":"structure",
+      "required":["credentialProviders"],
+      "members":{
+        "credentialProviders":{
+          "shape":"PaymentCredentialProviders",
+          "documentation":"<p>The list of payment credential providers.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>Pagination token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListPaymentManagersRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in the response. If the total number of results is greater than this value, use the token returned in the response in the <code>nextToken</code> field when making another request to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, enter the token returned in the <code>nextToken</code> field in the response in this field to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListPaymentManagersResponse":{
+      "type":"structure",
+      "required":["paymentManagers"],
+      "members":{
+        "paymentManagers":{
+          "shape":"PaymentManagerSummaries",
+          "documentation":"<p>The list of payment manager summaries. For details about the fields in each summary, see the <code>PaymentManagerSummary</code> data type.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, use this token when making another request in the <code>nextToken</code> field to return the next batch of results.</p>"
+        }
+      }
+    },
     "ListPoliciesRequest":{
       "type":"structure",
       "required":["policyEngineId"],
@@ -12628,6 +13605,253 @@
         "SELF_MANAGED",
         "EPISODIC_OVERRIDE"
       ]
+    },
+    "PaymentConnectorId":{
+      "type":"string",
+      "max":211,
+      "min":12,
+      "pattern":"([0-9a-z][-]?){1,100}-[0-9a-z]{10}"
+    },
+    "PaymentConnectorName":{
+      "type":"string",
+      "max":48,
+      "min":1,
+      "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,47}"
+    },
+    "PaymentConnectorStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "UPDATING",
+        "DELETING",
+        "READY",
+        "CREATE_FAILED",
+        "UPDATE_FAILED",
+        "DELETE_FAILED"
+      ]
+    },
+    "PaymentConnectorSummaries":{
+      "type":"list",
+      "member":{"shape":"PaymentConnectorSummary"}
+    },
+    "PaymentConnectorSummary":{
+      "type":"structure",
+      "required":[
+        "paymentConnectorId",
+        "name",
+        "type",
+        "status",
+        "lastUpdatedAt"
+      ],
+      "members":{
+        "paymentConnectorId":{
+          "shape":"PaymentConnectorId",
+          "documentation":"<p>The unique identifier of the payment connector.</p>"
+        },
+        "name":{
+          "shape":"PaymentConnectorName",
+          "documentation":"<p>The name of the payment connector.</p>"
+        },
+        "type":{
+          "shape":"PaymentConnectorType",
+          "documentation":"<p>The type of the payment connector, which determines the payment provider integration.</p>"
+        },
+        "status":{
+          "shape":"PaymentConnectorStatus",
+          "documentation":"<p>The current status of the payment connector. Possible values include <code>CREATING</code>, <code>READY</code>, <code>UPDATING</code>, <code>DELETING</code>, <code>CREATE_FAILED</code>, <code>UPDATE_FAILED</code>, and <code>DELETE_FAILED</code>.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the payment connector was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a payment connector.</p>"
+    },
+    "PaymentConnectorType":{
+      "type":"string",
+      "enum":[
+        "CoinbaseCDP",
+        "StripePrivy"
+      ]
+    },
+    "PaymentCredentialProviderArn":{
+      "type":"string",
+      "max":2048,
+      "min":69,
+      "pattern":"arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b|aws-iso-e|aws-iso-f|aws-eusc):(acps|bedrock-agentcore):[A-Za-z0-9-]{1,64}:[0-9]{12}:token-vault/[a-zA-Z0-9-.]+/paymentcredentialprovider/[a-zA-Z0-9-.]+"
+    },
+    "PaymentCredentialProviderArnType":{
+      "type":"string",
+      "pattern":"arn:(aws|aws-us-gov):acps:[A-Za-z0-9-]{1,64}:[0-9]{12}:token-vault/[a-zA-Z0-9-.]+/paymentcredentialprovider/[a-zA-Z0-9-.]+"
+    },
+    "PaymentCredentialProviderConfiguration":{
+      "type":"structure",
+      "required":["credentialProviderArn"],
+      "members":{
+        "credentialProviderArn":{
+          "shape":"PaymentCredentialProviderArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the credential provider that stores the authentication credentials for the payment provider.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for a payment credential provider that stores authentication credentials for a payment provider.</p>"
+    },
+    "PaymentCredentialProviderItem":{
+      "type":"structure",
+      "required":[
+        "name",
+        "credentialProviderVendor",
+        "credentialProviderArn",
+        "createdTime",
+        "lastUpdatedTime"
+      ],
+      "members":{
+        "name":{
+          "shape":"CredentialProviderName",
+          "documentation":"<p>The name of the payment credential provider.</p>"
+        },
+        "credentialProviderVendor":{"shape":"PaymentCredentialProviderVendorType"},
+        "credentialProviderArn":{
+          "shape":"PaymentCredentialProviderArnType",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the payment credential provider.</p>"
+        },
+        "createdTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the payment credential provider was created.</p>"
+        },
+        "lastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the payment credential provider was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a payment credential provider.</p>"
+    },
+    "PaymentCredentialProviderVendorType":{
+      "type":"string",
+      "documentation":"<p>Supported vendor types for payment providers using non-standard auth protocols</p>",
+      "enum":[
+        "CoinbaseCDP",
+        "StripePrivy"
+      ]
+    },
+    "PaymentCredentialProviders":{
+      "type":"list",
+      "member":{"shape":"PaymentCredentialProviderItem"}
+    },
+    "PaymentManagerArn":{
+      "type":"string",
+      "max":2048,
+      "min":66,
+      "pattern":"arn:(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:payment-manager/([0-9a-z][-]?){1,48}-[a-z0-9]{10}"
+    },
+    "PaymentManagerId":{
+      "type":"string",
+      "max":211,
+      "min":12,
+      "pattern":"([0-9a-z][-]?){1,100}-[0-9a-z]{10}"
+    },
+    "PaymentManagerName":{
+      "type":"string",
+      "max":48,
+      "min":1,
+      "pattern":"[a-zA-Z][a-zA-Z0-9]{0,47}"
+    },
+    "PaymentManagerStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "UPDATING",
+        "DELETING",
+        "READY",
+        "CREATE_FAILED",
+        "UPDATE_FAILED",
+        "DELETE_FAILED"
+      ]
+    },
+    "PaymentManagerSummaries":{
+      "type":"list",
+      "member":{"shape":"PaymentManagerSummary"}
+    },
+    "PaymentManagerSummary":{
+      "type":"structure",
+      "required":[
+        "paymentManagerArn",
+        "paymentManagerId",
+        "name",
+        "authorizerType",
+        "roleArn",
+        "status",
+        "lastUpdatedAt"
+      ],
+      "members":{
+        "paymentManagerArn":{
+          "shape":"PaymentManagerArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the payment manager.</p>"
+        },
+        "paymentManagerId":{
+          "shape":"PaymentManagerId",
+          "documentation":"<p>The unique identifier of the payment manager.</p>"
+        },
+        "name":{
+          "shape":"PaymentManagerName",
+          "documentation":"<p>The name of the payment manager.</p>"
+        },
+        "description":{
+          "shape":"PaymentsDescription",
+          "documentation":"<p>The description of the payment manager.</p>"
+        },
+        "authorizerType":{
+          "shape":"PaymentsAuthorizerType",
+          "documentation":"<p>The type of authorizer used by the payment manager.</p> <ul> <li> <p> <code>CUSTOM_JWT</code> - Authorize with a bearer token.</p> </li> <li> <p> <code>AWS_IAM</code> - Authorize with your Amazon Web Services IAM credentials.</p> </li> </ul>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role associated with the payment manager.</p>"
+        },
+        "status":{
+          "shape":"PaymentManagerStatus",
+          "documentation":"<p>The current status of the payment manager. Possible values include <code>CREATING</code>, <code>READY</code>, <code>UPDATING</code>, <code>DELETING</code>, <code>CREATE_FAILED</code>, <code>UPDATE_FAILED</code>, and <code>DELETE_FAILED</code>.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the payment manager was created.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the payment manager was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a payment manager.</p>"
+    },
+    "PaymentProviderConfigurationInput":{
+      "type":"structure",
+      "members":{
+        "coinbaseCdpConfiguration":{"shape":"CoinbaseCdpConfigurationInput"},
+        "stripePrivyConfiguration":{"shape":"StripePrivyConfigurationInput"}
+      },
+      "documentation":"<p>PROVIDER CONFIGURATION INPUT - Contains secrets for creation/update</p>",
+      "union":true
+    },
+    "PaymentProviderConfigurationOutput":{
+      "type":"structure",
+      "members":{
+        "coinbaseCdpConfiguration":{"shape":"CoinbaseCdpConfigurationOutput"},
+        "stripePrivyConfiguration":{"shape":"StripePrivyConfigurationOutput"}
+      },
+      "documentation":"<p>PROVIDER CONFIGURATION OUTPUT - No raw secrets, only ARNs</p>",
+      "union":true
+    },
+    "PaymentsAuthorizerType":{
+      "type":"string",
+      "enum":[
+        "CUSTOM_JWT",
+        "AWS_IAM"
+      ]
+    },
+    "PaymentsDescription":{
+      "type":"string",
+      "max":4096,
+      "min":1,
+      "pattern":"[a-zA-Z0-9\\s]+"
     },
     "Policies":{
       "type":"list",
@@ -14465,6 +15689,82 @@
       },
       "documentation":"<p>Validation for STRING fields.</p>"
     },
+    "StripePrivyAppIdType":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"[a-zA-Z0-9\\-_]+"
+    },
+    "StripePrivyAppSecretType":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"[a-zA-Z0-9+/=\\-_\\s]+",
+      "sensitive":true
+    },
+    "StripePrivyAuthorizationIdType":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"[a-zA-Z0-9\\-_]+"
+    },
+    "StripePrivyAuthorizationPrivateKeyType":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"[a-zA-Z0-9+/=\\-_\\s]+",
+      "sensitive":true
+    },
+    "StripePrivyConfigurationInput":{
+      "type":"structure",
+      "required":[
+        "appId",
+        "appSecret",
+        "authorizationPrivateKey",
+        "authorizationId"
+      ],
+      "members":{
+        "appId":{
+          "shape":"StripePrivyAppIdType",
+          "documentation":"<p>The app ID provided by Privy.</p>"
+        },
+        "appSecret":{
+          "shape":"StripePrivyAppSecretType",
+          "documentation":"<p>The app secret provided by Privy.</p>"
+        },
+        "authorizationPrivateKey":{
+          "shape":"StripePrivyAuthorizationPrivateKeyType",
+          "documentation":"<p>The authorization private key for the Stripe Privy integration.</p>"
+        },
+        "authorizationId":{
+          "shape":"StripePrivyAuthorizationIdType",
+          "documentation":"<p>The authorization ID for the Stripe Privy integration.</p>"
+        }
+      },
+      "documentation":"<p>StripePrivy configuration - credentials provided by Stripe + Privy</p>"
+    },
+    "StripePrivyConfigurationOutput":{
+      "type":"structure",
+      "required":[
+        "appId",
+        "appSecretArn",
+        "authorizationPrivateKeyArn",
+        "authorizationId"
+      ],
+      "members":{
+        "appId":{
+          "shape":"StripePrivyAppIdType",
+          "documentation":"<p>The app ID provided by Privy.</p>"
+        },
+        "appSecretArn":{"shape":"Secret"},
+        "authorizationPrivateKeyArn":{"shape":"Secret"},
+        "authorizationId":{
+          "shape":"StripePrivyAuthorizationIdType",
+          "documentation":"<p>The authorization ID for the Stripe Privy integration.</p>"
+        }
+      },
+      "documentation":"<p>StripePrivy configuration output with secret ARNs</p>"
+    },
     "SubmitRegistryRecordForApprovalRequest":{
       "type":"structure",
       "required":[
@@ -16181,7 +17481,7 @@
         },
         "status":{
           "shape":"Status",
-          "documentation":"<p>The current status of the OAuth2 credential provider.</p>"
+          "documentation":"<p>The current status of the updated OAuth2 credential provider.</p>"
         }
       }
     },
@@ -16259,6 +17559,215 @@
         "failureReason":{
           "shape":"String",
           "documentation":"<p> The reason for failure if the online evaluation configuration update or execution failed. </p>"
+        }
+      }
+    },
+    "UpdatePaymentConnectorRequest":{
+      "type":"structure",
+      "required":[
+        "paymentManagerId",
+        "paymentConnectorId"
+      ],
+      "members":{
+        "paymentManagerId":{
+          "shape":"PaymentManagerId",
+          "documentation":"<p>The unique identifier of the parent payment manager.</p>",
+          "location":"uri",
+          "locationName":"paymentManagerId"
+        },
+        "paymentConnectorId":{
+          "shape":"PaymentConnectorId",
+          "documentation":"<p>The unique identifier of the payment connector to update.</p>",
+          "location":"uri",
+          "locationName":"paymentConnectorId"
+        },
+        "description":{
+          "shape":"PaymentsDescription",
+          "documentation":"<p>The updated description of the payment connector.</p>"
+        },
+        "type":{
+          "shape":"PaymentConnectorType",
+          "documentation":"<p>The updated type of the payment connector.</p>"
+        },
+        "credentialProviderConfigurations":{
+          "shape":"CredentialsProviderConfigurations",
+          "documentation":"<p>The updated credential provider configurations for the payment connector.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "UpdatePaymentConnectorResponse":{
+      "type":"structure",
+      "required":[
+        "paymentConnectorId",
+        "paymentManagerId",
+        "name",
+        "type",
+        "credentialProviderConfigurations",
+        "lastUpdatedAt",
+        "status"
+      ],
+      "members":{
+        "paymentConnectorId":{
+          "shape":"PaymentConnectorId",
+          "documentation":"<p>The unique identifier of the updated payment connector.</p>"
+        },
+        "paymentManagerId":{
+          "shape":"PaymentManagerId",
+          "documentation":"<p>The unique identifier of the parent payment manager.</p>"
+        },
+        "name":{
+          "shape":"PaymentConnectorName",
+          "documentation":"<p>The name of the updated payment connector.</p>"
+        },
+        "type":{
+          "shape":"PaymentConnectorType",
+          "documentation":"<p>The type of the updated payment connector.</p>"
+        },
+        "credentialProviderConfigurations":{
+          "shape":"CredentialsProviderConfigurations",
+          "documentation":"<p>The credential provider configurations for the updated payment connector.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the payment connector was last updated.</p>"
+        },
+        "status":{
+          "shape":"PaymentConnectorStatus",
+          "documentation":"<p>The current status of the updated payment connector. Possible values include <code>CREATING</code>, <code>READY</code>, <code>UPDATING</code>, <code>DELETING</code>, <code>CREATE_FAILED</code>, <code>UPDATE_FAILED</code>, and <code>DELETE_FAILED</code>.</p>"
+        }
+      }
+    },
+    "UpdatePaymentCredentialProviderRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "credentialProviderVendor",
+        "providerConfigurationInput"
+      ],
+      "members":{
+        "name":{
+          "shape":"CredentialProviderName",
+          "documentation":"<p>The name of the payment credential provider to update.</p>"
+        },
+        "credentialProviderVendor":{"shape":"PaymentCredentialProviderVendorType"},
+        "providerConfigurationInput":{
+          "shape":"PaymentProviderConfigurationInput",
+          "documentation":"<p>Configuration specific to the vendor, including API credentials</p>"
+        }
+      }
+    },
+    "UpdatePaymentCredentialProviderResponse":{
+      "type":"structure",
+      "required":[
+        "name",
+        "credentialProviderVendor",
+        "credentialProviderArn",
+        "providerConfigurationOutput",
+        "createdTime",
+        "lastUpdatedTime"
+      ],
+      "members":{
+        "name":{
+          "shape":"CredentialProviderName",
+          "documentation":"<p>The name of the updated payment credential provider.</p>"
+        },
+        "credentialProviderVendor":{"shape":"PaymentCredentialProviderVendorType"},
+        "credentialProviderArn":{
+          "shape":"PaymentCredentialProviderArnType",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the updated payment credential provider.</p>"
+        },
+        "providerConfigurationOutput":{
+          "shape":"PaymentProviderConfigurationOutput",
+          "documentation":"<p>Output configuration (contains secret ARNs, excludes actual secret values)</p>"
+        },
+        "createdTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the payment credential provider was created.</p>"
+        },
+        "lastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the payment credential provider was last updated.</p>"
+        }
+      }
+    },
+    "UpdatePaymentManagerRequest":{
+      "type":"structure",
+      "required":["paymentManagerId"],
+      "members":{
+        "paymentManagerId":{
+          "shape":"PaymentManagerId",
+          "documentation":"<p>The unique identifier of the payment manager to update.</p>",
+          "location":"uri",
+          "locationName":"paymentManagerId"
+        },
+        "description":{
+          "shape":"PaymentsDescription",
+          "documentation":"<p>The updated description of the payment manager.</p>"
+        },
+        "authorizerType":{
+          "shape":"PaymentsAuthorizerType",
+          "documentation":"<p>The updated authorizer type for the payment manager.</p>"
+        },
+        "authorizerConfiguration":{
+          "shape":"AuthorizerConfiguration",
+          "documentation":"<p>The updated authorizer configuration for the payment manager.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The updated Amazon Resource Name (ARN) of the IAM role for the payment manager.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "UpdatePaymentManagerResponse":{
+      "type":"structure",
+      "required":[
+        "paymentManagerArn",
+        "paymentManagerId",
+        "name",
+        "authorizerType",
+        "roleArn",
+        "lastUpdatedAt",
+        "status"
+      ],
+      "members":{
+        "paymentManagerArn":{
+          "shape":"PaymentManagerArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the updated payment manager.</p>"
+        },
+        "paymentManagerId":{
+          "shape":"PaymentManagerId",
+          "documentation":"<p>The unique identifier of the updated payment manager.</p>"
+        },
+        "name":{
+          "shape":"PaymentManagerName",
+          "documentation":"<p>The name of the updated payment manager.</p>"
+        },
+        "authorizerType":{
+          "shape":"PaymentsAuthorizerType",
+          "documentation":"<p>The type of authorizer for the updated payment manager.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role associated with the updated payment manager.</p>"
+        },
+        "workloadIdentityDetails":{"shape":"WorkloadIdentityDetails"},
+        "lastUpdatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the payment manager was last updated.</p>"
+        },
+        "status":{
+          "shape":"PaymentManagerStatus",
+          "documentation":"<p>The current status of the updated payment manager. Possible values include <code>CREATING</code>, <code>READY</code>, <code>UPDATING</code>, <code>DELETING</code>, <code>CREATE_FAILED</code>, <code>UPDATE_FAILED</code>, and <code>DELETE_FAILED</code>.</p>"
         }
       }
     },

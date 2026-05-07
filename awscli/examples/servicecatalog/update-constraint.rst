@@ -2,7 +2,7 @@
 
 The following ``update-constraint`` example updates a constraint. ::
 
-    aws servicecatalog update-constraint  \
+    aws servicecatalog update-constraint \
         --id cons-dgdyqdqrxxxxx \
         --parameters '{"LocalRoleName": "TestLaunchRole"}'
 

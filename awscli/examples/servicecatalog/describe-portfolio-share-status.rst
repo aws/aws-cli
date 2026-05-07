@@ -2,7 +2,7 @@
 
 The following ``describe-portfolio-share-status`` example describes portfolio share status. ::
 
-    aws servicecatalog describe-portfolio-share-status  \
+    aws servicecatalog describe-portfolio-share-status \
         --portfolio-share-token "share-agngcybu4xxxx"
 
 Output::

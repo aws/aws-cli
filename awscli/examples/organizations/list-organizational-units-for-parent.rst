@@ -17,7 +17,7 @@ The output shows that the specified root contains two OUs and shows details of e
 			{
 				"Name": "ProductionDepartment",
 				"Arn": "arn:aws:organizations::o-exampleorgid:ou/r-examplerootid111/ou-examplerootid111-exampleouid222",
-				"Id": "ou-examplerootid111-exampleouid111",
+				"Id": "ou-examplerootid111-exampleouid222",
 				"Path": "o-exampleorgid/r-examplerootid111/ou-examplerootid111-exampleouid222/"
 			}
 		]

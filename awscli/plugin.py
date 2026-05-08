@@ -20,8 +20,6 @@ log = logging.getLogger('awscli.plugin')
 
 BUILTIN_PLUGINS = {'__builtin__': 'awscli.handlers'}
 CLI_LEGACY_PLUGIN_PATH = 'cli_legacy_plugin_path'
-# Re-export for backward compatibility.
-HierarchicalEmitter = LazyInitEmitter
 
 
 def load_plugins(plugin_mapping, event_hooks=None, include_builtins=True):

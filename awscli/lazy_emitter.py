@@ -13,7 +13,7 @@
 """Lazy-initializing event emitter for the AWS CLI plugin system.
 
 LazyInitEmitter wraps a HierarchicalEmitter and uses the plugin registry
-to initialize plugins on demand.  Before emitting event X, it finds all
+to initialize plugins on demand. Before emitting event X, it finds all
 initializer entries whose event patterns match X (using the same
 prefix/wildcard semantics as HierarchicalEmitter), calls each initializer
 at most once, then delegates to the underlying emitter for normal dispatch.
@@ -22,6 +22,8 @@ import copy
 import importlib
 import logging
 
+from awscli.handlers_registry import PLUGIN_REGISTRY
+from awscli.lazy import LazyCommand
 from botocore.hooks import HierarchicalEmitter, _PrefixTrie
 
 logger = logging.getLogger(__name__)
@@ -39,16 +41,20 @@ class LazyInitEmitter(HierarchicalEmitter):
     def __init__(self, plugin_registry=None, main_command_table_ops=None):
         super().__init__()
         self._init_trie = _PrefixTrie()
-        self._initialized = set()  # set of (module, fn_name, type)
-        self._pending_count = 0  # number of entries not yet initialized
-        self._init_cache = {}  # event_name -> list of entries from init trie
-        self._direct_patterns = {}  # event_pattern -> set of entries
+        # set of (module, fn_name, type)
+        self._initialized = set()
+        # number of entries not yet initialized
+        self._pending_count = 0
+        # event_name -> list of entries from init trie
+        self._init_cache = {}
+        # event_pattern -> set of entries
+        self._direct_patterns = {}
         self._main_ops = main_command_table_ops
         self._main_ops_applied = False
         if plugin_registry:
-            self._load_registry(plugin_registry)
+            self.load_registry(plugin_registry)
 
-    def _load_registry(self, registry):
+    def load_registry(self, registry):
         unique = set()
         for event_pattern, entries in registry.items():
             for entry in entries:
@@ -69,8 +75,6 @@ class LazyInitEmitter(HierarchicalEmitter):
         building-command-table.main entries, avoiding the import of
         heavy plugin modules until the command is actually invoked.
         """
-        from awscli.lazy import LazyCommand
-
         command_table = kwargs.get('command_table')
         session = kwargs.get('session')
         if command_table is None or session is None:
@@ -92,7 +96,7 @@ class LazyInitEmitter(HierarchicalEmitter):
 
         # Mark only the building-command-table.main entries that are
         # accounted for by MAIN_COMMAND_TABLE_OPS as initialized, so
-        # _ensure_initialized never imports them.  Entries that register
+        # _ensure_initialized never imports them. Entries that register
         # against building-command-table.main but are NOT represented
         # by an add/rename op must still be lazily initialized normally.
         covered_plugins = set()
@@ -101,7 +105,6 @@ class LazyInitEmitter(HierarchicalEmitter):
                 covered_plugins.add((op[3], op[4]))
             elif op[0] == 'add':
                 covered_plugins.add((op[4], op[5]))
-        from awscli.handlers_registry import PLUGIN_REGISTRY
         for entry in PLUGIN_REGISTRY.get('building-command-table.main', []):
             entry = tuple(entry)
             if (entry[0], entry[1]) in covered_plugins:
@@ -113,13 +116,14 @@ class LazyInitEmitter(HierarchicalEmitter):
         """Initialize any plugins whose event patterns match event_name."""
         if self._pending_count == 0:
             return
-        candidates = self._init_cache.get(event_name)
+        candidates = self._init_cache.get(event_name, [])
         if candidates is None:
             candidates = self._init_trie.prefix_search(event_name)
+            # Cache the candidates by event name to avoid re-searching
+            # the trie if the same event gets re-emitted later.
             self._init_cache[event_name] = candidates
         for entry in candidates:
             if entry not in self._initialized:
-                import awscli.perf_timer as T
                 self._initialized.add(entry)
                 self._pending_count -= 1
                 module_path, fn_name, entry_type = entry
@@ -127,25 +131,20 @@ class LazyInitEmitter(HierarchicalEmitter):
                     'Lazy-initializing plugin %s.%s (%s) for event %s',
                     module_path, fn_name, entry_type, event_name,
                 )
-                with T.timer(f"init_import:{module_path}:{fn_name}"):
-                    mod = importlib.import_module(module_path)
-                    fn = getattr(mod, fn_name)
-                with T.timer(f"init_register:{module_path}:{fn_name}"):
-                    if entry_type == 'direct':
-                        # Direct handler: register fn as a handler for the
-                        # event pattern it was originally associated with.
-                        # For classes (e.g. ParamShorthandParser), instantiate.
-                        handler = fn() if isinstance(fn, type) else fn
-                        # Find the event pattern this entry was stored under.
-                        # We need to register against the original pattern,
-                        # not the emitted event_name.
-                        self._register_direct_handler(entry, handler)
-                    else:
-                        # Initializer function: call fn(event_handlers)
-                        if isinstance(fn, type):
-                            fn(self)
-                        else:
-                            fn(self)
+                mod = importlib.import_module(module_path)
+                fn = getattr(mod, fn_name)
+                if entry_type == 'direct':
+                    # Direct handler: register fn as a handler for the
+                    # event pattern it was originally associated with.
+                    # For classes, instantiate.
+                    handler = fn() if isinstance(fn, type) else fn
+                    # Find the event pattern this entry was stored under.
+                    # We need to register against the original pattern,
+                    # not the emitted event_name.
+                    self._register_direct_handler(entry, handler)
+                elif entry_type == 'init':
+                    # Initializer function: call fn(event_handlers)
+                    fn(self)
 
     def _register_direct_handler(self, entry, handler):
         """Register a direct handler against its original event pattern."""

@@ -1,4 +1,3 @@
-"""LazyCommand: a proxy that defers plugin module imports until the command is actually used."""
 import importlib
 
 from awscli.commands import CLICommand

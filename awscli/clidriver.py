@@ -63,11 +63,13 @@ from awscli.errorhandler import (
     construct_entry_point_handlers_chain,
 )
 from awscli.formatter import get_formatter
+from awscli.handlers_registry import MAIN_COMMAND_TABLE_OPS
 from awscli.help import (
     OperationHelpCommand,
     ProviderHelpCommand,
     ServiceHelpCommand,
 )
+from awscli.lazy_emitter import LazyInitEmitter
 from awscli.logger import (
     disable_crt_logging,
     enable_crt_logging,
@@ -113,14 +115,12 @@ def create_clidriver(args=None):
         parser = FirstPassGlobalArgParser()
         args, _ = parser.parse_known_args(args)
         debug = args.debug
-    from awscli.lazy_emitter import LazyInitEmitter
-    from awscli.handlers_registry import MAIN_COMMAND_TABLE_OPS
     lazy_emitter = LazyInitEmitter(main_command_table_ops=MAIN_COMMAND_TABLE_OPS)
     session = botocore.session.Session(event_hooks=lazy_emitter)
     _set_user_agent_for_session(session)
     load_plugins(
         session.full_config.get('plugins', {}),
-        event_hooks=lazy_emitter,
+        event_hooks=session.get_component('event_emitter'),
     )
     error_handlers_chain = construct_cli_error_handlers_chain(session)
     driver = CLIDriver(
@@ -533,11 +533,9 @@ class CLIDriver:
             args list of ``['s3', 'list-objects', '--bucket', 'foo']``.
 
         """
-        import awscli.perf_timer as T
         if args is None:
             args = sys.argv[1:]
-        with T.timer('CLIDriver.build_command_table'):
-            command_table = self._get_command_table()
+        command_table = self._get_command_table()
         parser = self.create_parser(command_table)
         self._add_aliases(command_table, parser)
         parsed_args = None
@@ -693,10 +691,8 @@ class ServiceCommand(CLICommand):
         return command_table[parsed_args.operation](remaining, parsed_globals)
 
     def _create_command_table(self):
-        import awscli.perf_timer as T
         command_table = OrderedDict()
-        with T.timer('ServiceCommand.load_service_model'):
-            service_model = self._get_service_model()
+        service_model = self._get_service_model()
         for operation_name in service_model.operation_names:
             cli_name = xform_name(operation_name, '-')
             operation_model = service_model.operation_model(operation_name)

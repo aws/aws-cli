@@ -28,25 +28,6 @@ from awscli.customizations.s3.syncstrategy.register import (
 )
 
 
-def awscli_initialize(cli):
-    """
-    This function is require to use the plugin.  It calls the functions
-    required to add all necessary commands and parameters to the CLI.
-    This function is necessary to install the plugin using a configuration
-    file
-    """
-    cli.register("building-command-table.main", add_s3)
-    cli.register('building-command-table.s3_sync', register_sync_strategies)
-
-
-def s3_plugin_initialize(event_handlers):
-    """
-    This is a wrapper to make the plugin built-in to the cli as opposed
-    to specifying it in the configuration file.
-    """
-    awscli_initialize(event_handlers)
-
-
 def register_s3_main(event_handlers):
     event_handlers.register('building-command-table.main', add_s3)
 

@@ -1,5 +1,6 @@
 import os
 
+from awscli.handlers_registry import PLUGIN_REGISTRY
 from PyInstaller.utils import hooks
 
 hiddenimports = [
@@ -31,7 +32,6 @@ hiddenimports += alias_packages_plugins
 # handlers.py uses importlib.import_module at runtime to load customization
 # modules, so PyInstaller cannot discover them statically. Collect all module
 # paths referenced in handlers_registry.py as hidden imports.
-from awscli.handlers_registry import PLUGIN_REGISTRY
 _registry_modules = {
     module_path
     for entries in PLUGIN_REGISTRY.values()

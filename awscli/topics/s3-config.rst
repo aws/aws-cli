@@ -37,6 +37,8 @@ command set:
   and downloading data to and from Amazon S3.
 * ``io_chunksize`` - The maximum size of read parts that can be queued in-memory
   to be written for a download.
+* ``bucket_lister`` - The bucket listing implementation to use when discovering
+  S3 objects for transfer commands.
 
 For experimental ``s3`` configuration values, see the the
 `Experimental Configuration Values <#experimental-configuration-values>`__
@@ -77,6 +79,7 @@ configuration::
       multipart_threshold = 64MB
       multipart_chunksize = 16MB
       max_bandwidth = 50MB/s
+      bucket_lister = threaded
       use_accelerate_endpoint = true
       addressing_style = path
 
@@ -93,6 +96,7 @@ could instead run these commands::
     $ aws configure set default.s3.multipart_threshold 64MB
     $ aws configure set default.s3.multipart_chunksize 16MB
     $ aws configure set default.s3.max_bandwidth 50MB/s
+    $ aws configure set default.s3.bucket_lister threaded
     $ aws configure set default.s3.use_accelerate_endpoint true
     $ aws configure set default.s3.addressing_style path
 
@@ -237,6 +241,20 @@ network speed exceeds disk write speed. It is recommended to only configure
 ``io_chunksize`` if overall download throughput is constrained by writes.
 In cases where network IO is the bottleneck, it is recommended to configure
 ``max_concurrent_requests`` instead.
+
+
+bucket_lister
+-------------
+
+**Default** - ``standard``
+
+Determines the bucket listing implementation to use when the AWS CLI discovers
+S3 objects for transfer commands. Valid choices are:
+
+* ``standard`` - Use the non-threaded bucket lister.
+  This is the default behavior.
+
+* ``threaded`` - Use a background producer thread to fetch object listing pages.
 
 
 use_accelerate_endpoint

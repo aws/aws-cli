@@ -19,9 +19,9 @@ from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
 from awscli.compat import queue
+from awscli.customizations.s3.bucketlister import ThreadedBucketLister
 from awscli.customizations.s3.utils import (
     EPOCH_TIME,
-    BucketLister,
     create_warning,
     find_bucket_key,
     find_dest_path_comp_key,
@@ -134,6 +134,7 @@ class FileGenerator:
     under the same common prefix.  The generator yields corresponding
     ``FileInfo`` objects to send to a ``Comparator`` or ``S3Handler``.
     """
+    _DEFAULT_BUCKET_LISTER_CLS = ThreadedBucketLister
 
     def __init__(
         self,
@@ -143,8 +144,11 @@ class FileGenerator:
         page_size=None,
         result_queue=None,
         request_parameters=None,
+        listing_client=None,
+        bucket_lister_cls=None,
     ):
         self._client = client
+        self._listing_client = listing_client
         self.operation_name = operation_name
         self.follow_symlinks = follow_symlinks
         self.page_size = page_size
@@ -154,6 +158,9 @@ class FileGenerator:
         self.request_parameters = {}
         if request_parameters is not None:
             self.request_parameters = request_parameters
+        if bucket_lister_cls is None:
+            bucket_lister_cls = self._DEFAULT_BUCKET_LISTER_CLS
+        self._bucket_lister_cls = bucket_lister_cls
 
     def call(self, files):
         """
@@ -355,7 +362,9 @@ class FileGenerator:
         if not dir_op and prefix:
             yield self._list_single_object(s3_path)
         else:
-            lister = BucketLister(self._client)
+            lister = self._bucket_lister_cls(
+                self._listing_client or self._client
+            )
             extra_args = self.request_parameters.get('ListObjectsV2', {})
             for key in lister.list_objects(
                 bucket=bucket,

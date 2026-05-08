@@ -89,6 +89,21 @@ class TestTransferConfig:
         assert runtime_config['preferred_transfer_client'] == resolved
 
     @pytest.mark.parametrize(
+        'provided,resolved',
+        [
+            (None, 'standard'),
+            ('threaded', 'threaded'),
+            ('standard', 'standard'),
+        ],
+    )
+    def test_set_bucket_lister(self, provided, resolved):
+        config_kwargs = {}
+        if provided is not None:
+            config_kwargs['bucket_lister'] = provided
+        runtime_config = self.build_config_with(**config_kwargs)
+        assert runtime_config['bucket_lister'] == resolved
+
+    @pytest.mark.parametrize(
         'config_name,provided,expected',
         [
             # max_bandwidth cases
@@ -150,6 +165,10 @@ class TestTransferConfig:
     def test_validates_preferred_transfer_client_choices(self):
         with pytest.raises(transferconfig.InvalidConfigError):
             self.build_config_with(preferred_transfer_client='not-supported')
+
+    def test_validates_bucket_lister_choices(self):
+        with pytest.raises(transferconfig.InvalidConfigError):
+            self.build_config_with(bucket_lister='not-supported')
 
     @pytest.mark.parametrize(
         'attr,val,expected',

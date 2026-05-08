@@ -18,6 +18,9 @@ import botocore.session
 
 from awscli.compat import StringIO
 from awscli.customizations.exceptions import ParamValidationError
+from awscli.customizations.s3.bucketlister import (
+    BucketLister,
+)
 from awscli.customizations.s3.s3 import S3
 from awscli.customizations.s3.subcommands import (
     CommandArchitecture,
@@ -292,6 +295,8 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
         self.transfer_manager = mock.Mock()
         self.source_client = mock.Mock()
         self.transfer_client = mock.Mock()
+        self.source_listing_client = mock.Mock()
+        self.destination_listing_client = mock.Mock()
         self.file_creator = FileCreator()
         self.loc_files = make_loc_files(self.file_creator)
         self.output = StringIO()
@@ -310,7 +315,9 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
         super(CommandArchitectureTest, self).tearDown()
         clean_loc_files(self.file_creator)
 
-    def get_cmd_architecture(self, cmd, params):
+    def get_cmd_architecture(
+        self, cmd, params, bucket_lister_cls=BucketLister
+    ):
         return CommandArchitecture(
             session=self.session,
             cmd=cmd,
@@ -318,6 +325,9 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
             transfer_manager=self.transfer_manager,
             source_client=self.source_client,
             transfer_client=self.transfer_client,
+            source_listing_client=self.source_listing_client,
+            destination_listing_client=self.destination_listing_client,
+            bucket_lister_cls=bucket_lister_cls,
         )
 
     def get_params(self, **override_kwargs):
@@ -367,6 +377,146 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
         self.assertEqual(
             cmd_arc.instructions,
             ['file_generator', 'filters', 'file_info_builder', 's3_handler'],
+        )
+
+    def test_run_passes_source_and_destination_listing_clients(self):
+        class StopExecution(Exception):
+            pass
+
+        params = self.get_params(
+            src='s3://source/',
+            dest='s3://dest/',
+            paths_type='s3s3',
+            follow_symlinks=True,
+            page_size=None,
+            request_payer=None,
+            case_conflict='ignore',
+        )
+        cmd_arc = self.get_cmd_architecture('cp', params)
+
+        with mock.patch(
+            'awscli.customizations.s3.subcommands.FileFormat'
+        ) as file_format, mock.patch(
+            'awscli.customizations.s3.subcommands.FileGenerator'
+        ) as file_generator:
+            file_format.return_value.format.side_effect = [
+                {
+                    'src': {'path': 's3://source/', 'type': 's3'},
+                    'dest': {'path': 's3://dest/', 'type': 's3'},
+                    'dir_op': True,
+                },
+                {
+                    'src': {'path': 's3://dest/', 'type': 's3'},
+                    'dest': {'path': 's3://source/', 'type': 's3'},
+                    'dir_op': True,
+                },
+            ]
+            file_generator.side_effect = [mock.Mock(), StopExecution()]
+
+            with self.assertRaises(StopExecution):
+                cmd_arc.run()
+
+        self.assertEqual(
+            file_generator.call_args_list[0][1]['listing_client'],
+            self.source_listing_client,
+        )
+        self.assertEqual(
+            file_generator.call_args_list[1][1]['listing_client'],
+            self.destination_listing_client,
+        )
+
+    def test_run_uses_standard_bucket_lister_by_default(self):
+        class StopExecution(Exception):
+            pass
+
+        params = self.get_params(
+            src='s3://source/',
+            dest='s3://dest/',
+            paths_type='s3s3',
+            follow_symlinks=True,
+            page_size=None,
+            request_payer=None,
+            case_conflict='ignore',
+        )
+        cmd_arc = self.get_cmd_architecture('cp', params)
+
+        with mock.patch(
+            'awscli.customizations.s3.subcommands.FileFormat'
+        ) as file_format, mock.patch(
+            'awscli.customizations.s3.subcommands.FileGenerator'
+        ) as file_generator:
+            file_format.return_value.format.side_effect = [
+                {
+                    'src': {'path': 's3://source/', 'type': 's3'},
+                    'dest': {'path': 's3://dest/', 'type': 's3'},
+                    'dir_op': True,
+                },
+                {
+                    'src': {'path': 's3://dest/', 'type': 's3'},
+                    'dest': {'path': 's3://source/', 'type': 's3'},
+                    'dir_op': True,
+                },
+            ]
+            file_generator.side_effect = [mock.Mock(), StopExecution()]
+
+            with self.assertRaises(StopExecution):
+                cmd_arc.run()
+
+        self.assertEqual(
+            file_generator.call_args_list[0][1]['bucket_lister_cls'],
+            BucketLister,
+        )
+        self.assertEqual(
+            file_generator.call_args_list[1][1]['bucket_lister_cls'],
+            BucketLister,
+        )
+
+    def test_run_uses_standard_bucket_lister_when_configured(self):
+        class StopExecution(Exception):
+            pass
+
+        params = self.get_params(
+            src='s3://source/',
+            dest='s3://dest/',
+            paths_type='s3s3',
+            follow_symlinks=True,
+            page_size=None,
+            request_payer=None,
+            case_conflict='ignore',
+        )
+        cmd_arc = self.get_cmd_architecture(
+            'cp', params, bucket_lister_cls=BucketLister
+        )
+
+        with mock.patch(
+            'awscli.customizations.s3.subcommands.FileFormat'
+        ) as file_format, mock.patch(
+            'awscli.customizations.s3.subcommands.FileGenerator'
+        ) as file_generator:
+            file_format.return_value.format.side_effect = [
+                {
+                    'src': {'path': 's3://source/', 'type': 's3'},
+                    'dest': {'path': 's3://dest/', 'type': 's3'},
+                    'dir_op': True,
+                },
+                {
+                    'src': {'path': 's3://dest/', 'type': 's3'},
+                    'dest': {'path': 's3://source/', 'type': 's3'},
+                    'dir_op': True,
+                },
+            ]
+            file_generator.side_effect = [mock.Mock(), StopExecution()]
+
+            with self.assertRaises(StopExecution):
+                cmd_arc.run()
+
+        self.assertEqual(
+            file_generator.call_args_list[0][1]['bucket_lister_cls'],
+            BucketLister,
+        )
+        self.assertEqual(
+            file_generator.call_args_list[1][1]['bucket_lister_cls'],
+            BucketLister,
         )
 
     def test_choose_sync_strategy_default(self):

@@ -46,7 +46,7 @@ class LazyInitEmitter(HierarchicalEmitter):
         # number of entries not yet initialized
         self._pending_count = 0
         # event_name -> list of entries from init trie
-        self._init_cache = {}
+        self._init_cache: dict[str, list] = {}
         # event_pattern -> set of entries
         self._direct_patterns = {}
         self._main_ops = main_command_table_ops
@@ -67,6 +67,10 @@ class LazyInitEmitter(HierarchicalEmitter):
                     unique.add(entry)
                     self._pending_count += 1
         self._init_cache = {}
+
+    @property
+    def initialized_count(self):
+        return len(self._initialized)
 
     def _apply_main_command_table_ops(self, kwargs):
         """Apply pre-computed renames and LazyCommand additions.
@@ -121,8 +125,11 @@ class LazyInitEmitter(HierarchicalEmitter):
     def _ensure_initialized(self, event_name):
         """Initialize any plugins whose event patterns match event_name."""
         if self._pending_count == 0:
+            # Short-circuit cache-checking and trie-searching if all plugins
+            # are loaded. We do not expect this branch to execute since no
+            # command should load every plugin in the registry.
             return
-        candidates = self._init_cache.get(event_name, [])
+        candidates = self._init_cache.get(event_name)
         if candidates is None:
             candidates = self._init_trie.prefix_search(event_name)
             # Cache the candidates by event name to avoid re-searching

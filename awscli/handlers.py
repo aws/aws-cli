@@ -19,6 +19,9 @@ lazy plugin initialization. Otherwise, we fall back to loading all plugins in
 the registry eagerly.
 """
 from awscli.handlers_registry import PLUGIN_REGISTRY
+from awscli.lazy_emitter import LazyInitEmitter
+
+import importlib
 
 
 def awscli_initialize(event_handlers):
@@ -28,12 +31,10 @@ def awscli_initialize(event_handlers):
     initializer trie for on-demand initialization. Otherwise, all built-in
     plugins are eagerly initialized.
     """
-    from awscli.lazy_emitter import LazyInitEmitter
     if isinstance(event_handlers, LazyInitEmitter):
         event_handlers.load_registry(PLUGIN_REGISTRY)
     else:
         # Fallback to eagerly initializing all built-in plugins.
-        import importlib
         seen = set()
         for event_pattern, entries in PLUGIN_REGISTRY.items():
             for entry in entries:

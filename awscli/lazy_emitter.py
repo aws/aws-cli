@@ -80,31 +80,37 @@ class LazyInitEmitter(HierarchicalEmitter):
         if command_table is None or session is None:
             return
 
+        # Keep track of which plugins (module path, function) only
+        # add/rename commands, so we can avoid importing them when
+        # building-command-table.main is emitted. We avoid importing them
+        # because we already handle renames here, and add the commands to the
+        # command table in a LazyCommand wrapper.
+        covered_plugins = set()
         for op in self._main_ops:
             if op[0] == 'rename':
                 _, old_name, new_name, _mod, _fn = op
+                covered_plugins.add((_mod, _fn))
                 if old_name in command_table:
                     current = command_table[old_name]
                     command_table[new_name] = current
                     current.name = new_name
                     del command_table[old_name]
             elif op[0] == 'add':
+                # Wrap the added command in a LazyCommand to defer import
+                # until the command is invoked or help docs are generated.
                 _, cmd_name, cmd_module, cmd_class, _mod, _fn = op
+                covered_plugins.add((_mod, _fn))
                 command_table[cmd_name] = LazyCommand(
                     cmd_name, session, cmd_module, cmd_class,
                 )
+            else:
+                raise RuntimeError(f'Unknown command table ops entry: {op}')
 
         # Mark only the building-command-table.main entries that are
         # accounted for by MAIN_COMMAND_TABLE_OPS as initialized, so
         # _ensure_initialized never imports them. Entries that register
         # against building-command-table.main but are NOT represented
         # by an add/rename op must still be lazily initialized normally.
-        covered_plugins = set()
-        for op in self._main_ops:
-            if op[0] == 'rename':
-                covered_plugins.add((op[3], op[4]))
-            elif op[0] == 'add':
-                covered_plugins.add((op[4], op[5]))
         for entry in PLUGIN_REGISTRY.get('building-command-table.main', []):
             entry = tuple(entry)
             if (entry[0], entry[1]) in covered_plugins:

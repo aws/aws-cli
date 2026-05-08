@@ -21,7 +21,6 @@ class RawResponse(BytesIO):
 
 class StubbedHTTPClient:
     def _get_response(self, request):
-        print(request)
         response = self._responses.pop(0)
         if isinstance(response, Exception):
             raise response

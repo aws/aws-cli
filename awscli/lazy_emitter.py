@@ -145,6 +145,10 @@ class LazyInitEmitter(HierarchicalEmitter):
                 elif entry_type == 'init':
                     # Initializer function: call fn(event_handlers)
                     fn(self)
+                else:
+                    raise RuntimeError(
+                        f'Unknown entry type {entry_type} for {entry}'
+                    )
 
     def _register_direct_handler(self, entry, handler):
         """Register a direct handler against its original event pattern."""

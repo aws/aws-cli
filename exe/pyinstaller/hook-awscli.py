@@ -32,13 +32,12 @@ hiddenimports += alias_packages_plugins
 # handlers.py uses importlib.import_module at runtime to load customization
 # modules, so PyInstaller cannot discover them statically. Collect all module
 # paths referenced in handlers_registry.py as hidden imports.
-_registry_modules = {
-    module_path
+registry_modules = {
+    entry[0]
     for entries in PLUGIN_REGISTRY.values()
     for entry in entries
-    for module_path in [entry[0]]
 }
-hiddenimports += sorted(_registry_modules)
+hiddenimports += registry_modules
 
 
 # Completion model files are only used at build time to generate the

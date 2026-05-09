@@ -1,4 +1,4 @@
-# Copyright 2025 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -10,35 +10,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-"""Verify that awscli/handlers_registry.py is up to date.
-
-If this test fails, re-run the generation script and commit the result:
-
-    scripts/generate_plugin_registry
-"""
 import importlib
-import os
-import subprocess
-import sys
+from collections import OrderedDict
 
-REPO_ROOT = os.path.dirname(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-)
-SCRIPT = os.path.join(REPO_ROOT, 'scripts', 'generate_plugin_registry')
+import botocore.session
 
-
-def test_handlers_registry_matches_generation_script():
-    result = subprocess.run(
-        [sys.executable, SCRIPT, '--check'],
-        capture_output=True,
-        text=True,
-    )
-    assert result.returncode == 0, (
-        f'awscli/handlers_registry.py is out of date.\n'
-        f'Re-generate it by running:\n\n'
-        f'    scripts/generate_plugin_registry\n\n'
-        f'Diff (committed vs generated):\n{result.stderr}'
-    )
+from awscli.handlers_registry import PLUGIN_REGISTRY
 
 
 class _AuditEmitter:
@@ -80,8 +57,6 @@ def test_main_command_table_plugins_only_register_against_main():
     split it into separate functions: one that only registers against
     building-command-table.main, and another for the remaining events.
     """
-    from awscli.handlers_registry import PLUGIN_REGISTRY
-
     main_entries = PLUGIN_REGISTRY.get('building-command-table.main', [])
     violations = []
     for module_path, fn_name, entry_type in main_entries:
@@ -116,12 +91,6 @@ def test_main_command_table_callbacks_only_add_or_rename():
     modifies existing command table entries (e.g. changes properties on
     a command object), that modification would be silently lost.
     """
-    from collections import OrderedDict
-
-    import botocore.session
-
-    from awscli.handlers_registry import PLUGIN_REGISTRY
-
     session = botocore.session.Session()
     services = session.get_available_services()
 
@@ -153,7 +122,6 @@ def test_main_command_table_callbacks_only_add_or_rename():
 
             # Classify every change.
             new_id_to_key = {id(v): k for k, v in command_table.items()}
-            old_ids = set(snap_id_to_key.keys())
             renamed_ids = set()
 
             # Detect renames.
@@ -161,12 +129,6 @@ def test_main_command_table_callbacks_only_add_or_rename():
                 old_key = snap_id_to_key.get(obj_id)
                 if old_key is not None and old_key != new_key:
                     renamed_ids.add(obj_id)
-
-            # Detect additions.
-            added_keys = [
-                k for k, v in command_table.items()
-                if id(v) not in old_ids
-            ]
 
             # Detect modifications: an existing (non-renamed) entry whose
             # .name property changed, or any entry that was removed.

@@ -24,7 +24,7 @@ import logging
 
 from awscli.handlers_registry import PLUGIN_REGISTRY
 from awscli.lazy import LazyCommand
-from botocore.hooks import HierarchicalEmitter, _PrefixTrie
+from botocore.hooks import HierarchicalEmitter, PrefixTrie
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +40,7 @@ class LazyInitEmitter(HierarchicalEmitter):
 
     def __init__(self, plugin_registry=None, main_command_table_ops=None):
         super().__init__()
-        self._init_trie = _PrefixTrie()
+        self._init_trie = PrefixTrie()
         # set of (module, fn_name, type)
         self._initialized = set()
         # number of entries not yet initialized

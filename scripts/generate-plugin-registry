@@ -27,8 +27,9 @@ The --repo-root flag specifies the AWS CLI v2 repository root. The script
 adds it to sys.path to import awscli, and writes the generated registry to
 <repo-root>/awscli/handlers_registry.py.
 
-Run this script whenever a customization is added, removed, or changed, and
-commit the updated registry in the AWS CLI v2 GitHub repository.
+Run this script when a customization is added, removed, or changes the set
+of events it registers against. Commit the updated registry in the AWS CLI v2
+GitHub repository.
 
 To add a new customization:
   1. Add a call to _register() or _register_direct() in _all_registrations()
@@ -85,9 +86,6 @@ class _MiniEmitter:
 
     register_first = register
     register_last = register
-
-    def emit(self, *a, **k): pass
-    def emit_first_non_none_response(self, *a, **k): return None
 
 
 def _all_registrations(r):

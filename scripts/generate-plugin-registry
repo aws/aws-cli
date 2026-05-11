@@ -578,7 +578,10 @@ def main():
             )
             sys.exit(1)
         committed_ns = {}
-        exec(compile(open(output_path).read(), output_path, 'exec'), committed_ns)
+        exec(
+            compile(open(output_path).read(), output_path, 'exec'),
+            committed_ns,
+        )
         committed_registry = committed_ns.get('PLUGIN_REGISTRY')
         committed_ops = committed_ns.get('MAIN_COMMAND_TABLE_OPS')
         if committed_registry == registry and committed_ops == main_ops:

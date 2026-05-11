@@ -709,11 +709,14 @@ PLUGIN_REGISTRY = {
     ]
 }
 
-# Probed operations for building-command-table.main plugins.
-# These replace the building-command-table.main entries above
-# so that added commands can be wrapped in LazyCommand and
-# the heavy plugin modules are never imported unless the
-# command is actually invoked.
+# Declarative model of changes made to the command table by plugins
+# that register against building-command-table.main.
+#
+# At runtime, plugins listed in building-command-table.main above
+# that only add or rename commands are handled via these pre-computed
+# operations instead of being imported when building-command-table.main
+# is emitted. This allows added commands to be wrapped in LazyCommand,
+# deferring the heavy module import until the command is actually invoked.
 #
 # Entry formats:
 #   ('rename', old_name, new_name, module, fn_name)

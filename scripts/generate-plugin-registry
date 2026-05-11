@@ -37,6 +37,7 @@ To add a new customization:
   2. Re-run this script with --output pointing to the AWS CLI v2 repo.
   3. Commit the updated handlers_registry.py in the AWS CLI v2 repo.
 """
+
 import argparse
 import collections
 import difflib
@@ -47,6 +48,7 @@ import sys
 
 class _Entry:
     """A single pending registration."""
+
     __slots__ = ('module', 'fn_name', 'event_name')
 
     def __init__(self, module, fn_name, event_name=None):
@@ -100,87 +102,210 @@ def _all_registrations(r):
     r.register_direct(module, fn_name, event_name)
         -- will call event_handlers.register(event_name, fn) at runtime
     """
-    r.register_direct('awscli.paramfile', 'register_uri_param_handler', 'session-initialized')
-    r.register_direct('awscli.customizations.binaryformat', 'add_binary_formatter', 'session-initialized')
-    r.register_direct('awscli.clidriver', 'no_pager_handler', 'session-initialized')
-    r.register_direct('awscli.argprocess', 'ParamShorthandParser', 'process-cli-arg')
+    r.register_direct(
+        'awscli.paramfile', 'register_uri_param_handler', 'session-initialized'
+    )
+    r.register_direct(
+        'awscli.customizations.binaryformat',
+        'add_binary_formatter',
+        'session-initialized',
+    )
+    r.register_direct(
+        'awscli.clidriver', 'no_pager_handler', 'session-initialized'
+    )
+    r.register_direct(
+        'awscli.argprocess', 'ParamShorthandParser', 'process-cli-arg'
+    )
     r.register_fn('awscli.customizations.s3errormsg', 'register_s3_error_msg')
-    r.register_direct('awscli.customizations.addexamples', 'add_examples', 'doc-examples.*.*')
+    r.register_direct(
+        'awscli.customizations.addexamples', 'add_examples', 'doc-examples.*.*'
+    )
     r.register_fn('awscli.customizations.cliinput', 'register_cli_input_args')
-    r.register_direct('awscli.customizations.streamingoutputarg', 'add_streaming_output_arg', 'building-argument-table.*')
-    r.register_direct('awscli.customizations.ec2.decryptpassword', 'ec2_add_priv_launch_key', 'building-argument-table.ec2.get-password-data')
-    r.register_fn('awscli.customizations.globalargs', 'register_parse_global_args')
+    r.register_direct(
+        'awscli.customizations.streamingoutputarg',
+        'add_streaming_output_arg',
+        'building-argument-table.*',
+    )
+    r.register_direct(
+        'awscli.customizations.ec2.decryptpassword',
+        'ec2_add_priv_launch_key',
+        'building-argument-table.ec2.get-password-data',
+    )
+    r.register_fn(
+        'awscli.customizations.globalargs', 'register_parse_global_args'
+    )
     r.register_fn('awscli.customizations.paginate', 'register_pagination')
-    r.register_fn('awscli.customizations.ec2.addcount', 'register_count_events')
-    r.register_fn('awscli.customizations.ec2.secgroupsimplify', 'register_secgroup')
-    r.register_fn('awscli.customizations.ec2.bundleinstance', 'register_bundleinstance')
+    r.register_fn(
+        'awscli.customizations.ec2.addcount', 'register_count_events'
+    )
+    r.register_fn(
+        'awscli.customizations.ec2.secgroupsimplify', 'register_secgroup'
+    )
+    r.register_fn(
+        'awscli.customizations.ec2.bundleinstance', 'register_bundleinstance'
+    )
     r.register_fn('awscli.customizations.s3.s3', 'register_s3_main')
     r.register_fn('awscli.customizations.s3.s3', 'register_s3_sync_strategies')
     r.register_fn('awscli.customizations.dynamodb.ddb', 'register_ddb')
-    r.register_fn('awscli.customizations.ec2.runinstances', 'register_runinstances')
+    r.register_fn(
+        'awscli.customizations.ec2.runinstances', 'register_runinstances'
+    )
     r.register_fn('awscli.customizations.removals', 'register_removals')
     r.register_fn('awscli.customizations.rds', 'register_rds_modify_split')
-    r.register_fn('awscli.customizations.rekognition', 'register_rekognition_detect_labels')
-    r.register_fn('awscli.customizations.rds', 'register_add_generate_db_auth_token')
+    r.register_fn(
+        'awscli.customizations.rekognition',
+        'register_rekognition_detect_labels',
+    )
+    r.register_fn(
+        'awscli.customizations.rds', 'register_add_generate_db_auth_token'
+    )
     r.register_fn('awscli.customizations.dsql', 'register_dsql_customizations')
-    r.register_fn('awscli.customizations.putmetricdata', 'register_put_metric_data')
-    r.register_fn('awscli.customizations.sessendemail', 'register_ses_send_email')
+    r.register_fn(
+        'awscli.customizations.putmetricdata', 'register_put_metric_data'
+    )
+    r.register_fn(
+        'awscli.customizations.sessendemail', 'register_ses_send_email'
+    )
     r.register_fn('awscli.customizations.iamvirtmfa', 'IAMVMFAWrapper')
     r.register_fn('awscli.customizations.argrename', 'register_arg_renames')
-    r.register_fn('awscli.customizations.configure.configure', 'register_configure_cmd')
+    r.register_fn(
+        'awscli.customizations.configure.configure', 'register_configure_cmd'
+    )
     r.register_fn('awscli.customizations.cloudtrail', 'initialize')
     r.register_fn('awscli.customizations.ecr', 'register_ecr_commands')
-    r.register_fn('awscli.customizations.ecr_public', 'register_ecr_public_commands')
+    r.register_fn(
+        'awscli.customizations.ecr_public', 'register_ecr_public_commands'
+    )
     r.register_fn('awscli.customizations.toplevelbool', 'register_bool_params')
-    r.register_fn('awscli.customizations.ec2.protocolarg', 'register_protocol_args')
-    r.register_fn('awscli.customizations.datapipeline', 'register_customizations')
+    r.register_fn(
+        'awscli.customizations.ec2.protocolarg', 'register_protocol_args'
+    )
+    r.register_fn(
+        'awscli.customizations.datapipeline', 'register_customizations'
+    )
     r.register_fn('awscli.customizations.cloudsearch', 'initialize')
     r.register_fn('awscli.customizations.emr.emr', 'emr_initialize')
     r.register_fn('awscli.customizations.emrcontainers', 'initialize')
     r.register_fn('awscli.customizations.eks', 'initialize')
     r.register_fn('awscli.customizations.ecs', 'initialize')
-    r.register_fn('awscli.customizations.ecs.monitormutatinggatewayservice', 'register_monitor_mutating_gateway_service')
+    r.register_fn(
+        'awscli.customizations.ecs.monitormutatinggatewayservice',
+        'register_monitor_mutating_gateway_service',
+    )
     r.register_fn('awscli.customizations.lightsail', 'initialize')
-    r.register_fn('awscli.customizations.cloudsearchdomain', 'register_cloudsearchdomain')
-    r.register_fn('awscli.customizations.generatecliskeleton', 'register_generate_cli_skeleton')
-    r.register_fn('awscli.customizations.assumerole', 'register_assume_role_provider')
+    r.register_fn(
+        'awscli.customizations.cloudsearchdomain', 'register_cloudsearchdomain'
+    )
+    r.register_fn(
+        'awscli.customizations.generatecliskeleton',
+        'register_generate_cli_skeleton',
+    )
+    r.register_fn(
+        'awscli.customizations.assumerole', 'register_assume_role_provider'
+    )
     r.register_fn('awscli.customizations.waiters', 'register_add_waiters')
-    r.register_fn('awscli.customizations.codedeploy.codedeploy', 'register_rename_codedeploy')
-    r.register_fn('awscli.customizations.codedeploy.codedeploy', 'register_deploy_customizations')
-    r.register_fn('awscli.customizations.configservice.subscribe', 'register_subscribe')
-    r.register_fn('awscli.customizations.configservice.getstatus', 'register_get_status')
-    r.register_fn('awscli.customizations.configservice.rename_cmd', 'register_rename_config')
-    r.register_fn('awscli.customizations.timestampformat', 'register_timestamp_format')
-    r.register_fn('awscli.customizations.awslambda', 'register_lambda_create_function')
-    r.register_fn('awscli.customizations.kms', 'register_fix_kms_create_grant_docs')
-    r.register_fn('awscli.customizations.route53', 'register_create_hosted_zone_doc_fix')
-    r.register_fn('awscli.customizations.configservice.putconfigurationrecorder', 'register_modify_put_configuration_recorder')
-    r.register_fn('awscli.customizations.codeartifact', 'register_codeartifact_commands')
+    r.register_fn(
+        'awscli.customizations.codedeploy.codedeploy',
+        'register_rename_codedeploy',
+    )
+    r.register_fn(
+        'awscli.customizations.codedeploy.codedeploy',
+        'register_deploy_customizations',
+    )
+    r.register_fn(
+        'awscli.customizations.configservice.subscribe', 'register_subscribe'
+    )
+    r.register_fn(
+        'awscli.customizations.configservice.getstatus', 'register_get_status'
+    )
+    r.register_fn(
+        'awscli.customizations.configservice.rename_cmd',
+        'register_rename_config',
+    )
+    r.register_fn(
+        'awscli.customizations.timestampformat', 'register_timestamp_format'
+    )
+    r.register_fn(
+        'awscli.customizations.awslambda', 'register_lambda_create_function'
+    )
+    r.register_fn(
+        'awscli.customizations.kms', 'register_fix_kms_create_grant_docs'
+    )
+    r.register_fn(
+        'awscli.customizations.route53', 'register_create_hosted_zone_doc_fix'
+    )
+    r.register_fn(
+        'awscli.customizations.configservice.putconfigurationrecorder',
+        'register_modify_put_configuration_recorder',
+    )
+    r.register_fn(
+        'awscli.customizations.codeartifact', 'register_codeartifact_commands'
+    )
     r.register_fn('awscli.customizations.codecommit', 'initialize')
-    r.register_fn('awscli.customizations.iot_data', 'register_custom_endpoint_note')
-    r.register_direct('awscli.customizations.iot', 'register_create_keys_and_cert_arguments', 'building-argument-table.iot.create-keys-and-certificate')
-    r.register_direct('awscli.customizations.iot', 'register_create_keys_from_csr_arguments', 'building-argument-table.iot.create-certificate-from-csr')
+    r.register_fn(
+        'awscli.customizations.iot_data', 'register_custom_endpoint_note'
+    )
+    r.register_direct(
+        'awscli.customizations.iot',
+        'register_create_keys_and_cert_arguments',
+        'building-argument-table.iot.create-keys-and-certificate',
+    )
+    r.register_direct(
+        'awscli.customizations.iot',
+        'register_create_keys_from_csr_arguments',
+        'building-argument-table.iot.create-certificate-from-csr',
+    )
     r.register_fn('awscli.customizations.cloudfront', 'register')
-    r.register_fn('awscli.customizations.gamelift', 'register_gamelift_commands')
-    r.register_fn('awscli.customizations.ec2.paginate', 'register_ec2_page_size_injector')
+    r.register_fn(
+        'awscli.customizations.gamelift', 'register_gamelift_commands'
+    )
+    r.register_fn(
+        'awscli.customizations.ec2.paginate', 'register_ec2_page_size_injector'
+    )
     r.register_fn('awscli.customizations.cloudformation', 'initialize')
-    r.register_fn('awscli.customizations.servicecatalog', 'register_servicecatalog_commands')
-    r.register_fn('awscli.customizations.translate', 'register_translate_import_terminology')
+    r.register_fn(
+        'awscli.customizations.servicecatalog',
+        'register_servicecatalog_commands',
+    )
+    r.register_fn(
+        'awscli.customizations.translate',
+        'register_translate_import_terminology',
+    )
     r.register_fn('awscli.customizations.history', 'register_history_mode')
     r.register_fn('awscli.customizations.history', 'register_history_commands')
-    r.register_fn('awscli.customizations.s3events', 'register_event_stream_arg')
-    r.register_fn('awscli.customizations.s3events', 'register_document_expires_string')
+    r.register_fn(
+        'awscli.customizations.s3events', 'register_event_stream_arg'
+    )
+    r.register_fn(
+        'awscli.customizations.s3events', 'register_document_expires_string'
+    )
     r.register_fn('awscli.customizations.dlm.dlm', 'dlm_initialize')
-    r.register_fn('awscli.customizations.sessionmanager', 'register_ssm_session')
+    r.register_fn(
+        'awscli.customizations.sessionmanager', 'register_ssm_session'
+    )
     r.register_fn('awscli.customizations.logs', 'register_logs_commands')
     r.register_fn('awscli.customizations.devcommands', 'register_dev_commands')
-    r.register_fn('awscli.customizations.wizard.commands', 'register_wizard_commands')
+    r.register_fn(
+        'awscli.customizations.wizard.commands', 'register_wizard_commands'
+    )
     r.register_fn('awscli.customizations.sso', 'register_sso_commands')
-    r.register_fn('awscli.customizations.dynamodb.paginatorfix', 'register_dynamodb_paginator_fix')
+    r.register_fn(
+        'awscli.customizations.dynamodb.paginatorfix',
+        'register_dynamodb_paginator_fix',
+    )
     r.register_fn('awscli.alias', 'register_alias_commands')
-    r.register_fn('awscli.customizations.kinesis', 'register_kinesis_list_streams_pagination_backcompat')
-    r.register_fn('awscli.customizations.quicksight', 'register_quicksight_asset_bundle_customizations')
-    r.register_fn('awscli.customizations.ec2instanceconnect', 'register_ec2_instance_connect_commands')
+    r.register_fn(
+        'awscli.customizations.kinesis',
+        'register_kinesis_list_streams_pagination_backcompat',
+    )
+    r.register_fn(
+        'awscli.customizations.quicksight',
+        'register_quicksight_asset_bundle_customizations',
+    )
+    r.register_fn(
+        'awscli.customizations.ec2instanceconnect',
+        'register_ec2_instance_connect_commands',
+    )
     r.register_fn('awscli.customizations.login', 'register_login_cmds')
 
 
@@ -284,10 +409,15 @@ def _probe_main_command_table_ops(registry):
             for obj_id, new_key in new_id_to_key.items():
                 old_key = snap_id_to_key.get(obj_id)
                 if old_key is not None and old_key != new_key:
-                    ops.append((
-                        'rename', old_key, new_key,
-                        entry_module, entry_fn_name,
-                    ))
+                    ops.append(
+                        (
+                            'rename',
+                            old_key,
+                            new_key,
+                            entry_module,
+                            entry_fn_name,
+                        )
+                    )
 
             # Detect additions: object id was not in the previous snapshot.
             old_ids = set(snap_id_to_key.keys())
@@ -295,10 +425,16 @@ def _probe_main_command_table_ops(registry):
                 if id(cmd) not in old_ids:
                     cmd_module = type(cmd).__module__
                     cmd_class = type(cmd).__qualname__
-                    ops.append((
-                        'add', key, cmd_module, cmd_class,
-                        entry_module, entry_fn_name,
-                    ))
+                    ops.append(
+                        (
+                            'add',
+                            key,
+                            cmd_module,
+                            cmd_class,
+                            entry_module,
+                            entry_fn_name,
+                        )
+                    )
 
     return ops
 
@@ -333,7 +469,7 @@ def _render_registry(registry, main_ops):
 
     items = list(registry.items())
     for i, (event_pattern, entries) in enumerate(items):
-        is_last = (i == len(items) - 1)
+        is_last = i == len(items) - 1
         lines.append(f'    {event_pattern!r}: [')
         for j, entry in enumerate(entries):
             comma = '' if j == len(entries) - 1 else ','
@@ -351,18 +487,32 @@ def _render_registry(registry, main_ops):
     # Entry formats:
     #   ('rename', old_name, new_name, module, fn_name)
     #   ('add', cmd_name, cmd_module, cmd_class, module, fn_name)
-    lines.append('# Declarative model of changes made to the command table by plugins')
+    lines.append(
+        '# Declarative model of changes made to the command table by plugins'
+    )
     lines.append('# that register against building-command-table.main.')
     lines.append('#')
-    lines.append('# At runtime, plugins listed in building-command-table.main above')
-    lines.append('# that only add or rename commands are handled via these pre-computed')
-    lines.append('# operations instead of being imported when building-command-table.main')
-    lines.append('# is emitted. This allows added commands to be wrapped in LazyCommand,')
-    lines.append('# deferring the heavy module import until the command is actually invoked.')
+    lines.append(
+        '# At runtime, plugins listed in building-command-table.main above'
+    )
+    lines.append(
+        '# that only add or rename commands are handled via these pre-computed'
+    )
+    lines.append(
+        '# operations instead of being imported when building-command-table.main'
+    )
+    lines.append(
+        '# is emitted. This allows added commands to be wrapped in LazyCommand,'
+    )
+    lines.append(
+        '# deferring the heavy module import until the command is actually invoked.'
+    )
     lines.append('#')
     lines.append("# Entry formats:")
     lines.append("#   ('rename', old_name, new_name, module, fn_name)")
-    lines.append("#   ('add', cmd_name, cmd_module, cmd_class, module, fn_name)")
+    lines.append(
+        "#   ('add', cmd_name, cmd_module, cmd_class, module, fn_name)"
+    )
     lines.append('')
     lines.append('MAIN_COMMAND_TABLE_OPS = [')
     for op in main_ops:
@@ -454,8 +604,10 @@ def main():
 
     total = sum(len(v) for v in registry.values())
     unique = len({e for entries in registry.values() for e in entries})
-    print(f'\nRegistry summary:')
-    print(f'  {len(registry)} event patterns, {total} total entries, {unique} unique initializers')
+    print('\nRegistry summary:')
+    print(
+        f'  {len(registry)} event patterns, {total} total entries, {unique} unique initializers'
+    )
 
 
 if __name__ == '__main__':

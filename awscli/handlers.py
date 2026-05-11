@@ -18,10 +18,11 @@ LazyInitEmitter, we load the registry so that the LazyInitEmitter can handle
 lazy plugin initialization. Otherwise, we fall back to loading all plugins in
 the registry eagerly.
 """
-from awscli.handlers_registry import PLUGIN_REGISTRY
-from awscli.lazy_emitter import LazyInitEmitter
 
 import importlib
+
+from awscli.handlers_registry import PLUGIN_REGISTRY
+from awscli.lazy_emitter import LazyInitEmitter
 
 
 def awscli_initialize(event_handlers):

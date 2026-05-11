@@ -65,7 +65,8 @@ def test_main_command_table_plugins_only_register_against_main():
         fn = getattr(mod, fn_name)
         fn(emitter)
         non_main = [
-            e for e in emitter.registrations
+            e
+            for e in emitter.registrations
             if e != 'building-command-table.main'
         ]
         if non_main:
@@ -136,9 +137,7 @@ def test_main_command_table_callbacks_only_add_or_rename():
                 if obj_id in renamed_ids:
                     continue
                 if obj_id not in new_id_to_key:
-                    violations.append(
-                        f'{cb_name} removed command {old_key!r}'
-                    )
+                    violations.append(f'{cb_name} removed command {old_key!r}')
                     continue
                 new_key = new_id_to_key[obj_id]
                 cmd = command_table[new_key]
@@ -152,6 +151,5 @@ def test_main_command_table_callbacks_only_add_or_rename():
         'Callbacks registered against building-command-table.main must '
         'only add or rename commands. The following callbacks perform '
         'other modifications that would be lost when replaced by '
-        'MAIN_COMMAND_TABLE_OPS:\n'
-        + '\n'.join(f'  - {v}' for v in violations)
+        'MAIN_COMMAND_TABLE_OPS:\n' + '\n'.join(f'  - {v}' for v in violations)
     )

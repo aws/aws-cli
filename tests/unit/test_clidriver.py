@@ -623,7 +623,8 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         )
         # Make sure it was called with our passed-in URI
         matching = [
-            c for c in mock_paramfile.call_args_list
+            c
+            for c in mock_paramfile.call_args_list
             if c[1].get('value') == 'file:///foo'
         ]
         self.assertTrue(len(matching) > 0)

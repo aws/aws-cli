@@ -13,7 +13,7 @@
 from awscli.customizations.s3.s3 import (
     add_s3,
     register_s3_main,
-    register_s3_sync_strategies
+    register_s3_sync_strategies,
 )
 from awscli.testutils import BaseAWSCommandParamsTest, mock, unittest
 

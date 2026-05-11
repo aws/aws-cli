@@ -18,13 +18,15 @@ initializer entries whose event patterns match X (using the same
 prefix/wildcard semantics as HierarchicalEmitter), calls each initializer
 at most once, then delegates to the underlying emitter for normal dispatch.
 """
+
 import copy
 import importlib
 import logging
 
+from botocore.hooks import HierarchicalEmitter, PrefixTrie
+
 from awscli.handlers_registry import PLUGIN_REGISTRY
 from awscli.lazy import LazyCommand
-from botocore.hooks import HierarchicalEmitter, PrefixTrie
 
 logger = logging.getLogger(__name__)
 
@@ -60,9 +62,9 @@ class LazyInitEmitter(HierarchicalEmitter):
             for entry in entries:
                 self._init_trie.append_item(event_pattern, entry)
                 if entry[2] == 'direct':
-                    self._direct_patterns.setdefault(
-                        event_pattern, set()
-                    ).add(entry)
+                    self._direct_patterns.setdefault(event_pattern, set()).add(
+                        entry
+                    )
                 if entry not in unique:
                     unique.add(entry)
                     self._pending_count += 1
@@ -105,7 +107,10 @@ class LazyInitEmitter(HierarchicalEmitter):
                 _, cmd_name, cmd_module, cmd_class, _mod, _fn = op
                 covered_plugins.add((_mod, _fn))
                 command_table[cmd_name] = LazyCommand(
-                    cmd_name, session, cmd_module, cmd_class,
+                    cmd_name,
+                    session,
+                    cmd_module,
+                    cmd_class,
                 )
             else:
                 raise RuntimeError(f'Unknown command table ops entry: {op}')
@@ -142,7 +147,10 @@ class LazyInitEmitter(HierarchicalEmitter):
                 module_path, fn_name, entry_type = entry
                 logger.debug(
                     'Lazy-initializing plugin %s.%s (%s) for event %s',
-                    module_path, fn_name, entry_type, event_name,
+                    module_path,
+                    fn_name,
+                    entry_type,
+                    event_name,
                 )
                 mod = importlib.import_module(module_path)
                 fn = getattr(mod, fn_name)

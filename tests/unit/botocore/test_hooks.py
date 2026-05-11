@@ -15,9 +15,9 @@ import functools
 from functools import partial
 
 from botocore.hooks import (
-    first_non_none_response,
     HierarchicalEmitter,
     PrefixTrie,
+    first_non_none_response,
 )
 
 from tests import unittest

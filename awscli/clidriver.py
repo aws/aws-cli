@@ -115,7 +115,9 @@ def create_clidriver(args=None):
         parser = FirstPassGlobalArgParser()
         args, _ = parser.parse_known_args(args)
         debug = args.debug
-    lazy_emitter = LazyInitEmitter(main_command_table_ops=MAIN_COMMAND_TABLE_OPS)
+    lazy_emitter = LazyInitEmitter(
+        main_command_table_ops=MAIN_COMMAND_TABLE_OPS
+    )
     session = botocore.session.Session(event_hooks=lazy_emitter)
     _set_user_agent_for_session(session)
     load_plugins(

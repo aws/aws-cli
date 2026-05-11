@@ -1,7 +1,8 @@
 import os
 
-from awscli.handlers_registry import PLUGIN_REGISTRY
 from PyInstaller.utils import hooks
+
+from awscli.handlers_registry import PLUGIN_REGISTRY
 
 hiddenimports = [
     'docutils',
@@ -33,9 +34,7 @@ hiddenimports += alias_packages_plugins
 # modules, so PyInstaller cannot discover them statically. Collect all module
 # paths referenced in handlers_registry.py as hidden imports.
 registry_modules = {
-    entry[0]
-    for entries in PLUGIN_REGISTRY.values()
-    for entry in entries
+    entry[0] for entries in PLUGIN_REGISTRY.values() for entry in entries
 }
 hiddenimports += registry_modules
 

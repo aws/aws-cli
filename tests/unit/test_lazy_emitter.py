@@ -124,8 +124,14 @@ class TestMainCommandTableOps:
             ],
         }
         main_ops = [
-            ('add', 'my-cmd', 'heavy.module', 'MyCommand',
-             'heavy.module', 'register_add_cmd'),
+            (
+                'add',
+                'my-cmd',
+                'heavy.module',
+                'MyCommand',
+                'heavy.module',
+                'register_add_cmd',
+            ),
         ]
         emitter = LazyInitEmitter(main_command_table_ops=main_ops)
         emitter.load_registry(registry)
@@ -133,11 +139,10 @@ class TestMainCommandTableOps:
         command_table = {'existing': MagicMock(name='existing')}
         session = MagicMock()
 
-        with patch(
-            'awscli.lazy_emitter.PLUGIN_REGISTRY', registry
-        ), patch(
-            'importlib.import_module', return_value=mock_module
-        ) as imp:
+        with (
+            patch('awscli.lazy_emitter.PLUGIN_REGISTRY', registry),
+            patch('importlib.import_module', return_value=mock_module) as imp,
+        ):
             emitter.emit(
                 'building-command-table.main',
                 command_table=command_table,
@@ -158,8 +163,14 @@ class TestMainCommandTableOps:
         }
         # Only heavy.module is covered by ops
         main_ops = [
-            ('add', 'my-cmd', 'heavy.module', 'MyCommand',
-             'heavy.module', 'register_add_cmd'),
+            (
+                'add',
+                'my-cmd',
+                'heavy.module',
+                'MyCommand',
+                'heavy.module',
+                'register_add_cmd',
+            ),
         ]
         emitter = LazyInitEmitter(main_command_table_ops=main_ops)
         emitter.load_registry(registry)
@@ -175,10 +186,9 @@ class TestMainCommandTableOps:
                 return mock_other
             return mock_module
 
-        with patch(
-            'awscli.lazy_emitter.PLUGIN_REGISTRY', registry
-        ), patch(
-            'importlib.import_module', side_effect=import_side_effect
+        with (
+            patch('awscli.lazy_emitter.PLUGIN_REGISTRY', registry),
+            patch('importlib.import_module', side_effect=import_side_effect),
         ):
             emitter.emit(
                 'building-command-table.main',
@@ -197,8 +207,13 @@ class TestMainCommandTableOps:
             ],
         }
         main_ops = [
-            ('rename', 'old-name', 'new-name',
-             'rename.module', 'register_rename'),
+            (
+                'rename',
+                'old-name',
+                'new-name',
+                'rename.module',
+                'register_rename',
+            ),
         ]
         emitter = LazyInitEmitter(main_command_table_ops=main_ops)
         emitter.load_registry(registry)
@@ -227,8 +242,14 @@ class TestMainCommandTableOps:
             ],
         }
         main_ops = [
-            ('add', 'my-cmd', 'add.module.impl', 'MyCommand',
-             'add.module', 'register_add'),
+            (
+                'add',
+                'my-cmd',
+                'add.module.impl',
+                'MyCommand',
+                'add.module',
+                'register_add',
+            ),
         ]
         emitter = LazyInitEmitter(main_command_table_ops=main_ops)
         emitter.load_registry(registry)
@@ -261,8 +282,14 @@ class TestMainCommandTableOps:
             ],
         }
         main_ops = [
-            ('add', 'my-cmd', 'heavy.module', 'MyCommand',
-             'heavy.module', 'register_add_cmd'),
+            (
+                'add',
+                'my-cmd',
+                'heavy.module',
+                'MyCommand',
+                'heavy.module',
+                'register_add_cmd',
+            ),
         ]
         emitter = LazyInitEmitter(main_command_table_ops=main_ops)
         emitter.load_registry(registry)
@@ -279,14 +306,11 @@ class TestMainCommandTableOps:
             # imported because it is present in main_command_table_ops.
             if mod_path == 'global.module':
                 return mock_global
-            raise AssertionError(
-                f'Unexpected import of {mod_path!r}'
-            )
+            raise AssertionError(f'Unexpected import of {mod_path!r}')
 
-        with patch(
-            'awscli.lazy_emitter.PLUGIN_REGISTRY', registry
-        ), patch(
-            'importlib.import_module', side_effect=import_side_effect
+        with (
+            patch('awscli.lazy_emitter.PLUGIN_REGISTRY', registry),
+            patch('importlib.import_module', side_effect=import_side_effect),
         ):
             emitter.emit(
                 'building-command-table.main',

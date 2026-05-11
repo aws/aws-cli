@@ -40,7 +40,6 @@ To add a new customization:
 
 import argparse
 import collections
-import difflib
 import importlib
 import os
 import sys
@@ -578,20 +577,21 @@ def main():
                 file=sys.stderr,
             )
             sys.exit(1)
-        with open(output_path) as f:
-            committed = f.read()
-        if committed == source:
-            print('OK: committed registry matches fresh generation.')
+        committed_ns = {}
+        exec(compile(open(output_path).read(), output_path, 'exec'), committed_ns)
+        committed_registry = committed_ns.get('PLUGIN_REGISTRY')
+        committed_ops = committed_ns.get('MAIN_COMMAND_TABLE_OPS')
+        if committed_registry == registry and committed_ops == main_ops:
+            print('OK: committed registry is semantically up to date.')
         else:
-            diff = difflib.unified_diff(
-                committed.splitlines(keepends=True),
-                source.splitlines(keepends=True),
-                fromfile=f'{output_path} (committed)',
-                tofile=f'{output_path} (generated)',
-            )
-            sys.stderr.write(''.join(diff))
+            mismatches = []
+            if committed_registry != registry:
+                mismatches.append('PLUGIN_REGISTRY')
+            if committed_ops != main_ops:
+                mismatches.append('MAIN_COMMAND_TABLE_OPS')
             print(
                 f'ERROR: {output_path} is out of date.\n'
+                f'The following differ: {", ".join(mismatches)}\n'
                 'Run `generate-plugin-registry` and commit the result.',
                 file=sys.stderr,
             )

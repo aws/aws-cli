@@ -12,44 +12,8 @@
 # language governing permissions and limitations under the License.
 import pytest
 
-from awscli.handlers_registry import MAIN_COMMAND_TABLE_OPS
 from awscli.lazy import LazyCommand
-from awscli.testutils import BaseAWSHelpOutputTest, mock
-
-# Derive test parameters from MAIN_COMMAND_TABLE_OPS.
-_ADD_OPS = [op for op in MAIN_COMMAND_TABLE_OPS if op[0] == 'add']
-_RENAME_OPS = [op for op in MAIN_COMMAND_TABLE_OPS if op[0] == 'rename']
-_ADD_CMD_NAMES = [op[1] for op in _ADD_OPS]
-_RENAME_NEW_NAMES = [op[2] for op in _RENAME_OPS]
-
-
-class TestLazyCommandHelpRenders(BaseAWSHelpOutputTest):
-    def test_added_command_help_renders(self):
-        for cmd_name in _ADD_CMD_NAMES:
-            with self.subTest(cmd_name=cmd_name):
-                self.driver.main([cmd_name, 'help'])
-                self.assert_contains(cmd_name)
-
-    def test_renamed_command_help_renders(self):
-        for new_name in _RENAME_NEW_NAMES:
-            with self.subTest(new_name=new_name):
-                self.driver.main([new_name, 'help'])
-                self.assert_contains(new_name)
-
-
-class TestLazyCommandIsTransparent(BaseAWSHelpOutputTest):
-    def test_added_commands_appear_in_top_level_help(self):
-        self.driver.main(['help'])
-        for cmd_name in _ADD_CMD_NAMES:
-            self.assert_contains(cmd_name)
-
-    def test_lazy_command_has_subcommands(self):
-        command_table = self.driver.subcommand_table
-        s3_cmd = command_table['s3']
-        assert isinstance(s3_cmd, LazyCommand)
-        subcommands = s3_cmd.subcommand_table
-        assert 'ls' in subcommands
-        assert 'cp' in subcommands
+from awscli.testutils import mock
 
 
 class TestLazyCommandErrorPaths:

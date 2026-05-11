@@ -196,7 +196,7 @@ class HierarchicalEmitter(BaseEventHooks):
         # read only access (we never modify self._handlers).
         # A cache of event name to handler list.
         self._lookup_cache = {}
-        self._handlers = _PrefixTrie()
+        self._handlers = PrefixTrie()
         # This is used to ensure that unique_id's are only
         # registered once.
         self._unique_id_handlers = {}
@@ -398,7 +398,7 @@ class HierarchicalEmitter(BaseEventHooks):
         return new_instance
 
 
-class _PrefixTrie:
+class PrefixTrie:
     """Specialized prefix trie that handles wildcards.
 
     The prefixes in this case are based on dot separated

@@ -605,9 +605,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         # We use register_last to ensure unknown-arg is added to the argument
         # table after all plugin-added arguments, so that its load-cli-arg
         # event fires last in call_args_list.
-        driver.session.get_component(
-            'event_emitter'
-        ).register_last(
+        driver.session.get_component('event_emitter').register_last(
             'building-argument-table', self.inject_new_param
         )
 

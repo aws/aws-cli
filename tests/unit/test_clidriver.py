@@ -602,7 +602,12 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         mock_handler.return_value = mock_paramfile
 
         driver = create_clidriver()
-        driver.session.register(
+        # We use register_last to ensure unknown-arg is added to the argument
+        # table after all plugin-added arguments, so that its load-cli-arg
+        # event fires last in call_args_list.
+        driver.session.get_component(
+            'event_emitter'
+        ).register_last(
             'building-argument-table', self.inject_new_param
         )
 
@@ -622,12 +627,9 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
             value='file:///foo',
         )
         # Make sure it was called with our passed-in URI
-        matching = [
-            c
-            for c in mock_paramfile.call_args_list
-            if c[1].get('value') == 'file:///foo'
-        ]
-        self.assertTrue(len(matching) > 0)
+        self.assertEqual(
+            'file:///foo', mock_paramfile.call_args_list[-1][1]['value']
+        )
 
     @mock.patch('awscli.paramfile.URIArgumentHandler', spec=URIArgumentHandler)
     def test_custom_command_paramfile(self, mock_handler):

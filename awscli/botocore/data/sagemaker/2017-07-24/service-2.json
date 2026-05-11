@@ -130,6 +130,50 @@
       ],
       "documentation":"<p>Replaces specific nodes within a SageMaker HyperPod cluster with new hardware. <code>BatchReplaceClusterNodes</code> terminates the specified instances and provisions new replacement instances with the same configuration but fresh hardware. The Amazon Machine Image (AMI) and instance configuration remain the same.</p> <p>This operation is useful for recovering from hardware failures or persistent issues that cannot be resolved through a reboot.</p> <important> <ul> <li> <p> <b>Data Loss Warning:</b> Replacing nodes destroys all instance volumes, including both root and secondary volumes. All data stored on these volumes will be permanently lost and cannot be recovered.</p> </li> <li> <p>To safeguard your work, back up your data to Amazon S3 or an FSx for Lustre file system before invoking the API on a worker node group. This will help prevent any potential data loss from the instance root volume. For more information about backup, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-hyperpod-operate-cli-command.html#sagemaker-hyperpod-operate-cli-command-update-cluster-software-backup\">Use the backup script provided by SageMaker HyperPod</a>.</p> </li> <li> <p>If you want to invoke this API on an existing cluster, you'll first need to patch the cluster by running the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_UpdateClusterSoftware.html\">UpdateClusterSoftware API</a>. For more information about patching a cluster, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-hyperpod-operate-cli-command.html#sagemaker-hyperpod-operate-cli-command-update-cluster-software\">Update the SageMaker HyperPod platform software of a cluster</a>.</p> </li> <li> <p>You can replace up to 25 nodes in a single request.</p> </li> </ul> </important>"
     },
+    "CreateAIBenchmarkJob":{
+      "name":"CreateAIBenchmarkJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateAIBenchmarkJobRequest"},
+      "output":{"shape":"CreateAIBenchmarkJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"},
+        {"shape":"ResourceInUse"},
+        {"shape":"ResourceLimitExceeded"}
+      ],
+      "documentation":"<p>Creates a benchmark job that runs performance benchmarks against inference infrastructure using a predefined AI workload configuration. The benchmark job measures metrics such as latency, throughput, and cost for your generative AI inference endpoints.</p>"
+    },
+    "CreateAIRecommendationJob":{
+      "name":"CreateAIRecommendationJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateAIRecommendationJobRequest"},
+      "output":{"shape":"CreateAIRecommendationJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"},
+        {"shape":"ResourceInUse"},
+        {"shape":"ResourceLimitExceeded"}
+      ],
+      "documentation":"<p>Creates a recommendation job that generates intelligent optimization recommendations for generative AI inference deployments. The job analyzes your model, workload configuration, and performance targets to recommend optimal instance types, model optimization techniques (such as quantization and speculative decoding), and deployment configurations.</p>"
+    },
+    "CreateAIWorkloadConfig":{
+      "name":"CreateAIWorkloadConfig",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateAIWorkloadConfigRequest"},
+      "output":{"shape":"CreateAIWorkloadConfigResponse"},
+      "errors":[
+        {"shape":"ResourceInUse"},
+        {"shape":"ResourceLimitExceeded"}
+      ],
+      "documentation":"<p>Creates a reusable AI workload configuration that defines datasets, data sources, and benchmark tool settings for consistent performance testing of generative AI inference deployments on Amazon SageMaker AI.</p>"
+    },
     "CreateAction":{
       "name":"CreateAction",
       "http":{
@@ -1043,6 +1087,46 @@
       ],
       "documentation":"<p>Creates a new work team for labeling your data. A work team is defined by one or more Amazon Cognito user pools. You must first create the user pools before you can create a work team.</p> <p>You cannot create more than 25 work teams in an account and region.</p>"
     },
+    "DeleteAIBenchmarkJob":{
+      "name":"DeleteAIBenchmarkJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteAIBenchmarkJobRequest"},
+      "output":{"shape":"DeleteAIBenchmarkJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Deletes the specified AI benchmark job.</p>"
+    },
+    "DeleteAIRecommendationJob":{
+      "name":"DeleteAIRecommendationJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteAIRecommendationJobRequest"},
+      "output":{"shape":"DeleteAIRecommendationJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Deletes the specified AI recommendation job.</p>"
+    },
+    "DeleteAIWorkloadConfig":{
+      "name":"DeleteAIWorkloadConfig",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteAIWorkloadConfigRequest"},
+      "output":{"shape":"DeleteAIWorkloadConfigResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"},
+        {"shape":"ResourceInUse"}
+      ],
+      "documentation":"<p>Deletes the specified AI workload configuration. You cannot delete a configuration that is referenced by an active benchmark job.</p>"
+    },
     "DeleteAction":{
       "name":"DeleteAction",
       "http":{
@@ -1751,6 +1835,45 @@
       },
       "input":{"shape":"DeregisterDevicesRequest"},
       "documentation":"<p>Deregisters the specified devices. After you deregister a device, you will need to re-register the devices.</p>"
+    },
+    "DescribeAIBenchmarkJob":{
+      "name":"DescribeAIBenchmarkJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeAIBenchmarkJobRequest"},
+      "output":{"shape":"DescribeAIBenchmarkJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Returns details of an AI benchmark job, including its status, configuration, target endpoint, and timing information.</p>"
+    },
+    "DescribeAIRecommendationJob":{
+      "name":"DescribeAIRecommendationJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeAIRecommendationJobRequest"},
+      "output":{"shape":"DescribeAIRecommendationJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Returns details of an AI recommendation job, including its status, model source, performance targets, optimization recommendations, and deployment configurations.</p>"
+    },
+    "DescribeAIWorkloadConfig":{
+      "name":"DescribeAIWorkloadConfig",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeAIWorkloadConfigRequest"},
+      "output":{"shape":"DescribeAIWorkloadConfigResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Returns details of an AI workload configuration, including the dataset configuration, benchmark tool settings, tags, and creation time.</p>"
     },
     "DescribeAction":{
       "name":"DescribeAction",
@@ -2773,6 +2896,36 @@
         {"shape":"ResourceLimitExceeded"}
       ],
       "documentation":"<p>Import hub content.</p>"
+    },
+    "ListAIBenchmarkJobs":{
+      "name":"ListAIBenchmarkJobs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListAIBenchmarkJobsRequest"},
+      "output":{"shape":"ListAIBenchmarkJobsResponse"},
+      "documentation":"<p>Returns a list of AI benchmark jobs in your account. You can filter the results by name, status, and creation time, and sort the results. The response is paginated.</p>"
+    },
+    "ListAIRecommendationJobs":{
+      "name":"ListAIRecommendationJobs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListAIRecommendationJobsRequest"},
+      "output":{"shape":"ListAIRecommendationJobsResponse"},
+      "documentation":"<p>Returns a list of AI recommendation jobs in your account. You can filter the results by name, status, and creation time, and sort the results. The response is paginated.</p>"
+    },
+    "ListAIWorkloadConfigs":{
+      "name":"ListAIWorkloadConfigs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListAIWorkloadConfigsRequest"},
+      "output":{"shape":"ListAIWorkloadConfigsResponse"},
+      "documentation":"<p>Returns a list of AI workload configurations in your account. You can filter the results by name and creation time, and sort the results. The response is paginated.</p>"
     },
     "ListActions":{
       "name":"ListActions",
@@ -3921,6 +4074,32 @@
       ],
       "documentation":"<p>Initiates a remote connection session between a local integrated development environments (IDEs) and a remote SageMaker space.</p>"
     },
+    "StopAIBenchmarkJob":{
+      "name":"StopAIBenchmarkJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StopAIBenchmarkJobRequest"},
+      "output":{"shape":"StopAIBenchmarkJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Stops a running AI benchmark job.</p>"
+    },
+    "StopAIRecommendationJob":{
+      "name":"StopAIRecommendationJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StopAIRecommendationJobRequest"},
+      "output":{"shape":"StopAIRecommendationJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Stops a running AI recommendation job.</p>"
+    },
     "StopAutoMLJob":{
       "name":"StopAutoMLJob",
       "http":{
@@ -4728,6 +4907,719 @@
     }
   },
   "shapes":{
+    "AIBenchmarkEndpoint":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"AIResourceIdentifier",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the SageMaker endpoint to benchmark.</p>"
+        },
+        "TargetContainerHostname":{
+          "shape":"String",
+          "documentation":"<p>The hostname of the specific container to target within a multi-container endpoint.</p>"
+        },
+        "InferenceComponents":{
+          "shape":"AIBenchmarkInferenceComponentList",
+          "documentation":"<p>The list of inference components to benchmark on the endpoint.</p>"
+        }
+      },
+      "documentation":"<p>The SageMaker endpoint configuration for benchmarking.</p>"
+    },
+    "AIBenchmarkInferenceComponent":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"AIResourceIdentifier",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the inference component.</p>"
+        }
+      },
+      "documentation":"<p>An inference component to benchmark.</p>"
+    },
+    "AIBenchmarkInferenceComponentList":{
+      "type":"list",
+      "member":{"shape":"AIBenchmarkInferenceComponent"}
+    },
+    "AIBenchmarkJobArn":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:ai-benchmark-job/[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}"
+    },
+    "AIBenchmarkJobStatus":{
+      "type":"string",
+      "enum":[
+        "InProgress",
+        "Completed",
+        "Failed",
+        "Stopping",
+        "Stopped"
+      ]
+    },
+    "AIBenchmarkJobSummary":{
+      "type":"structure",
+      "required":[
+        "AIBenchmarkJobName",
+        "AIBenchmarkJobArn",
+        "AIBenchmarkJobStatus",
+        "CreationTime"
+      ],
+      "members":{
+        "AIBenchmarkJobName":{
+          "shape":"AIEntityName",
+          "documentation":"<p>The name of the benchmark job.</p>"
+        },
+        "AIBenchmarkJobArn":{
+          "shape":"AIBenchmarkJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the benchmark job.</p>"
+        },
+        "AIBenchmarkJobStatus":{
+          "shape":"AIBenchmarkJobStatus",
+          "documentation":"<p>The status of the benchmark job.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp that indicates when the benchmark job was created.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp that indicates when the benchmark job completed.</p>"
+        },
+        "AIWorkloadConfigName":{
+          "shape":"AIEntityName",
+          "documentation":"<p>The name of the AI workload configuration used by the benchmark job.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about an AI benchmark job.</p>"
+    },
+    "AIBenchmarkJobSummaryList":{
+      "type":"list",
+      "member":{"shape":"AIBenchmarkJobSummary"}
+    },
+    "AIBenchmarkNetworkConfig":{
+      "type":"structure",
+      "members":{
+        "VpcConfig":{
+          "shape":"VpcConfig",
+          "documentation":"<p>The VPC configuration, including security group IDs and subnet IDs.</p>"
+        }
+      },
+      "documentation":"<p>The network configuration for an AI benchmark job.</p>"
+    },
+    "AIBenchmarkOutputConfig":{
+      "type":"structure",
+      "required":["S3OutputLocation"],
+      "members":{
+        "S3OutputLocation":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 URI where benchmark results are stored.</p>"
+        }
+      },
+      "documentation":"<p>The output configuration for an AI benchmark job.</p>"
+    },
+    "AIBenchmarkOutputResult":{
+      "type":"structure",
+      "required":["S3OutputLocation"],
+      "members":{
+        "S3OutputLocation":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 URI where benchmark results are stored.</p>"
+        },
+        "CloudWatchLogs":{
+          "shape":"AICloudWatchLogsList",
+          "documentation":"<p>The CloudWatch log information for the benchmark job.</p>"
+        }
+      },
+      "documentation":"<p>The output result of an AI benchmark job, including the Amazon S3 location and CloudWatch log information.</p>"
+    },
+    "AIBenchmarkTarget":{
+      "type":"structure",
+      "members":{
+        "Endpoint":{
+          "shape":"AIBenchmarkEndpoint",
+          "documentation":"<p>The SageMaker endpoint to benchmark.</p>"
+        }
+      },
+      "documentation":"<p>The target for an AI benchmark job. This is a union type — specify one of the members.</p>",
+      "union":true
+    },
+    "AICapacityReservationConfig":{
+      "type":"structure",
+      "members":{
+        "CapacityReservationPreference":{
+          "shape":"AICapacityReservationPreference",
+          "documentation":"<p>The capacity reservation preference. The only valid value is <code>capacity-reservations-only</code>.</p>"
+        },
+        "MlReservationArns":{
+          "shape":"AIMlReservationArnList",
+          "documentation":"<p>The list of ML reservation ARNs to use.</p>"
+        }
+      },
+      "documentation":"<p>The capacity reservation configuration for an AI recommendation job.</p>"
+    },
+    "AICapacityReservationPreference":{
+      "type":"string",
+      "enum":["capacity-reservations-only"]
+    },
+    "AIChannelName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z0-9\\.\\-_]+"
+    },
+    "AICloudWatchLogs":{
+      "type":"structure",
+      "members":{
+        "LogGroupArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the CloudWatch log group.</p>"
+        },
+        "LogStreamName":{
+          "shape":"String",
+          "documentation":"<p>The name of the CloudWatch log stream.</p>"
+        }
+      },
+      "documentation":"<p>CloudWatch log information for an AI benchmark or recommendation job.</p>"
+    },
+    "AICloudWatchLogsList":{
+      "type":"list",
+      "member":{"shape":"AICloudWatchLogs"}
+    },
+    "AIDatasetConfig":{
+      "type":"structure",
+      "members":{
+        "InputDataConfig":{
+          "shape":"AIWorkloadInputDataConfigList",
+          "documentation":"<p>An array of input data channel configurations for the workload.</p>"
+        }
+      },
+      "documentation":"<p>The dataset configuration for an AI workload. This is a union type — specify one of the members.</p>",
+      "union":true
+    },
+    "AIEntityName":{
+      "type":"string",
+      "max":63,
+      "min":1,
+      "pattern":"[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}"
+    },
+    "AIInferenceSpecificationName":{
+      "type":"string",
+      "max":63,
+      "min":0,
+      "pattern":"[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}"
+    },
+    "AIMlReservationArn":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:[a-z0-9\\-]{1,14}/.*"
+    },
+    "AIMlReservationArnList":{
+      "type":"list",
+      "member":{"shape":"AIMlReservationArn"}
+    },
+    "AIModelSource":{
+      "type":"structure",
+      "members":{
+        "S3":{
+          "shape":"AIModelSourceS3",
+          "documentation":"<p>The Amazon S3 location of the model artifacts.</p>"
+        }
+      },
+      "documentation":"<p>The source of the model for an AI recommendation job. This is a union type.</p>",
+      "union":true
+    },
+    "AIModelSourceS3":{
+      "type":"structure",
+      "members":{
+        "S3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 URI of the model artifacts.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon S3 model source configuration.</p>"
+    },
+    "AIRecommendation":{
+      "type":"structure",
+      "members":{
+        "RecommendationDescription":{
+          "shape":"String",
+          "documentation":"<p>A description of the recommendation.</p>"
+        },
+        "OptimizationDetails":{
+          "shape":"AIRecommendationOptimizationDetailList",
+          "documentation":"<p>The optimization techniques applied in this recommendation.</p>"
+        },
+        "ModelDetails":{
+          "shape":"AIRecommendationModelDetails",
+          "documentation":"<p>Details about the model package associated with this recommendation.</p>"
+        },
+        "DeploymentConfiguration":{
+          "shape":"AIRecommendationDeploymentConfiguration",
+          "documentation":"<p>The deployment configuration for this recommendation, including the container image, instance type, instance count, and environment variables.</p>"
+        },
+        "AIBenchmarkJobArn":{
+          "shape":"AIBenchmarkJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the benchmark job associated with this recommendation.</p>"
+        },
+        "ExpectedPerformance":{
+          "shape":"ExpectedPerformanceList",
+          "documentation":"<p>The expected performance metrics for this recommendation.</p>"
+        }
+      },
+      "documentation":"<p>An optimization recommendation generated by an AI recommendation job.</p>"
+    },
+    "AIRecommendationAllowOptimization":{
+      "type":"boolean",
+      "box":true
+    },
+    "AIRecommendationComputeSpec":{
+      "type":"structure",
+      "members":{
+        "InstanceTypes":{
+          "shape":"AIRecommendationInstanceTypeList",
+          "documentation":"<p>The list of instance types to consider for recommendations. You can specify up to 3 instance types.</p>"
+        },
+        "CapacityReservationConfig":{
+          "shape":"AICapacityReservationConfig",
+          "documentation":"<p>The capacity reservation configuration.</p>"
+        }
+      },
+      "documentation":"<p>The compute resource specification for an AI recommendation job.</p>"
+    },
+    "AIRecommendationConstraint":{
+      "type":"structure",
+      "required":["Metric"],
+      "members":{
+        "Metric":{
+          "shape":"AIRecommendationMetric",
+          "documentation":"<p>The performance metric. Valid values are <code>ttft-ms</code> (time to first token in milliseconds), <code>throughput</code>, and <code>cost</code>.</p>"
+        }
+      },
+      "documentation":"<p>A performance constraint for an AI recommendation job.</p>"
+    },
+    "AIRecommendationConstraintList":{
+      "type":"list",
+      "member":{"shape":"AIRecommendationConstraint"}
+    },
+    "AIRecommendationCopyCountPerInstance":{
+      "type":"integer",
+      "box":true
+    },
+    "AIRecommendationDeploymentConfiguration":{
+      "type":"structure",
+      "members":{
+        "S3":{
+          "shape":"AIRecommendationDeploymentS3ChannelList",
+          "documentation":"<p>The Amazon S3 data channels for the deployment.</p>"
+        },
+        "ImageUri":{
+          "shape":"String",
+          "documentation":"<p>The URI of the container image for the deployment.</p>"
+        },
+        "InstanceType":{
+          "shape":"AIRecommendationInstanceType",
+          "documentation":"<p>The recommended instance type for the deployment.</p>"
+        },
+        "InstanceCount":{
+          "shape":"AIRecommendationInstanceCount",
+          "documentation":"<p>The recommended number of instances for the deployment.</p>"
+        },
+        "CopyCountPerInstance":{
+          "shape":"AIRecommendationCopyCountPerInstance",
+          "documentation":"<p>The number of model copies per instance.</p>"
+        },
+        "EnvironmentVariables":{
+          "shape":"EnvironmentMap",
+          "documentation":"<p>The environment variables for the deployment.</p>"
+        }
+      },
+      "documentation":"<p>The deployment configuration for a recommendation.</p>"
+    },
+    "AIRecommendationDeploymentS3Channel":{
+      "type":"structure",
+      "members":{
+        "ChannelName":{
+          "shape":"AIChannelName",
+          "documentation":"<p>A custom name for this Amazon S3 data channel.</p>"
+        },
+        "Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 URI of the data for this channel.</p>"
+        }
+      },
+      "documentation":"<p>An Amazon S3 data channel for a recommended deployment configuration, containing model artifacts or optimized model outputs.</p>"
+    },
+    "AIRecommendationDeploymentS3ChannelList":{
+      "type":"list",
+      "member":{"shape":"AIRecommendationDeploymentS3Channel"}
+    },
+    "AIRecommendationInferenceFramework":{
+      "type":"string",
+      "enum":[
+        "LMI",
+        "VLLM"
+      ]
+    },
+    "AIRecommendationInferenceSpecification":{
+      "type":"structure",
+      "members":{
+        "Framework":{
+          "shape":"AIRecommendationInferenceFramework",
+          "documentation":"<p>The inference framework. Valid values are <code>LMI</code> and <code>VLLM</code>.</p>"
+        }
+      },
+      "documentation":"<p>The inference framework for an AI recommendation job.</p>"
+    },
+    "AIRecommendationInstanceCount":{
+      "type":"integer",
+      "box":true
+    },
+    "AIRecommendationInstanceDetail":{
+      "type":"structure",
+      "members":{
+        "InstanceType":{
+          "shape":"AIRecommendationInstanceType",
+          "documentation":"<p>The recommended instance type.</p>"
+        },
+        "InstanceCount":{
+          "shape":"AIRecommendationInstanceCount",
+          "documentation":"<p>The recommended number of instances.</p>"
+        },
+        "CopyCountPerInstance":{
+          "shape":"AIRecommendationCopyCountPerInstance",
+          "documentation":"<p>The number of model copies per instance.</p>"
+        }
+      },
+      "documentation":"<p>Instance details for a recommendation.</p>"
+    },
+    "AIRecommendationInstanceDetailList":{
+      "type":"list",
+      "member":{"shape":"AIRecommendationInstanceDetail"}
+    },
+    "AIRecommendationInstanceType":{
+      "type":"string",
+      "enum":[
+        "ml.g5.xlarge",
+        "ml.g5.2xlarge",
+        "ml.g5.4xlarge",
+        "ml.g5.8xlarge",
+        "ml.g5.12xlarge",
+        "ml.g5.16xlarge",
+        "ml.g5.24xlarge",
+        "ml.g5.48xlarge",
+        "ml.g6.xlarge",
+        "ml.g6.2xlarge",
+        "ml.g6.4xlarge",
+        "ml.g6.8xlarge",
+        "ml.g6.12xlarge",
+        "ml.g6.16xlarge",
+        "ml.g6.24xlarge",
+        "ml.g6.48xlarge",
+        "ml.g6e.xlarge",
+        "ml.g6e.2xlarge",
+        "ml.g6e.4xlarge",
+        "ml.g6e.8xlarge",
+        "ml.g6e.12xlarge",
+        "ml.g6e.16xlarge",
+        "ml.g6e.24xlarge",
+        "ml.g6e.48xlarge",
+        "ml.g7e.2xlarge",
+        "ml.g7e.4xlarge",
+        "ml.g7e.8xlarge",
+        "ml.g7e.12xlarge",
+        "ml.g7e.24xlarge",
+        "ml.g7e.48xlarge",
+        "ml.p3.2xlarge",
+        "ml.p3.8xlarge",
+        "ml.p3.16xlarge",
+        "ml.p4d.24xlarge",
+        "ml.p4de.24xlarge",
+        "ml.p5.4xlarge",
+        "ml.p5.48xlarge",
+        "ml.p5e.48xlarge",
+        "ml.p5en.48xlarge"
+      ]
+    },
+    "AIRecommendationInstanceTypeList":{
+      "type":"list",
+      "member":{"shape":"AIRecommendationInstanceType"},
+      "max":3,
+      "min":0
+    },
+    "AIRecommendationJobArn":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:ai-recommendation-job/[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}"
+    },
+    "AIRecommendationJobStatus":{
+      "type":"string",
+      "enum":[
+        "InProgress",
+        "Completed",
+        "Failed",
+        "Stopping",
+        "Stopped"
+      ]
+    },
+    "AIRecommendationJobSummary":{
+      "type":"structure",
+      "required":[
+        "AIRecommendationJobName",
+        "AIRecommendationJobArn",
+        "AIRecommendationJobStatus",
+        "CreationTime"
+      ],
+      "members":{
+        "AIRecommendationJobName":{
+          "shape":"AIEntityName",
+          "documentation":"<p>The name of the recommendation job.</p>"
+        },
+        "AIRecommendationJobArn":{
+          "shape":"AIRecommendationJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the recommendation job.</p>"
+        },
+        "AIRecommendationJobStatus":{
+          "shape":"AIRecommendationJobStatus",
+          "documentation":"<p>The status of the recommendation job.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp that indicates when the recommendation job was created.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp that indicates when the recommendation job completed.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about an AI recommendation job.</p>"
+    },
+    "AIRecommendationJobSummaryList":{
+      "type":"list",
+      "member":{"shape":"AIRecommendationJobSummary"}
+    },
+    "AIRecommendationList":{
+      "type":"list",
+      "member":{"shape":"AIRecommendation"}
+    },
+    "AIRecommendationMetric":{
+      "type":"string",
+      "enum":[
+        "ttft-ms",
+        "throughput",
+        "cost"
+      ]
+    },
+    "AIRecommendationModelDetails":{
+      "type":"structure",
+      "members":{
+        "ModelPackageArn":{
+          "shape":"ModelPackageArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model package.</p>"
+        },
+        "InferenceSpecificationName":{
+          "shape":"AIInferenceSpecificationName",
+          "documentation":"<p>The name of the inference specification within the model package.</p>"
+        },
+        "InstanceDetails":{
+          "shape":"AIRecommendationInstanceDetailList",
+          "documentation":"<p>The instance details for this recommendation, including instance type, count, and model copies per instance.</p>"
+        }
+      },
+      "documentation":"<p>Details about the model package in a recommendation.</p>"
+    },
+    "AIRecommendationOptimizationConfigMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"}
+    },
+    "AIRecommendationOptimizationDetail":{
+      "type":"structure",
+      "required":["OptimizationType"],
+      "members":{
+        "OptimizationType":{
+          "shape":"AIRecommendationOptimizationType",
+          "documentation":"<p>The type of optimization. Valid values are <code>SpeculativeDecoding</code> and <code>KernelTuning</code>.</p>"
+        },
+        "OptimizationConfig":{
+          "shape":"AIRecommendationOptimizationConfigMap",
+          "documentation":"<p>A map of configuration parameters for the optimization technique.</p>"
+        }
+      },
+      "documentation":"<p>Details about an optimization technique applied in a recommendation.</p>"
+    },
+    "AIRecommendationOptimizationDetailList":{
+      "type":"list",
+      "member":{"shape":"AIRecommendationOptimizationDetail"}
+    },
+    "AIRecommendationOptimizationType":{
+      "type":"string",
+      "enum":[
+        "SpeculativeDecoding",
+        "KernelTuning"
+      ]
+    },
+    "AIRecommendationOutputConfig":{
+      "type":"structure",
+      "members":{
+        "S3OutputLocation":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 URI where recommendation results are stored.</p>"
+        },
+        "ModelPackageGroupIdentifier":{
+          "shape":"AIResourceIdentifier",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the model package group where the optimized model is registered as a new model package version.</p>"
+        }
+      },
+      "documentation":"<p>The output configuration for an AI recommendation job.</p>"
+    },
+    "AIRecommendationOutputResult":{
+      "type":"structure",
+      "required":["S3OutputLocation"],
+      "members":{
+        "S3OutputLocation":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 URI where the recommendation job writes its output results.</p>"
+        },
+        "ModelPackageGroupIdentifier":{
+          "shape":"AIResourceIdentifier",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the model package group where deployment-ready model packages are registered.</p>"
+        }
+      },
+      "documentation":"<p>The output configuration for an AI recommendation job, including the S3 location for results and the model package group for deployment.</p>"
+    },
+    "AIRecommendationPerformanceMetric":{
+      "type":"structure",
+      "required":[
+        "Metric",
+        "Value"
+      ],
+      "members":{
+        "Metric":{
+          "shape":"String",
+          "documentation":"<p>The name of the performance metric.</p>"
+        },
+        "Stat":{
+          "shape":"String",
+          "documentation":"<p>The statistical measure for the metric.</p>"
+        },
+        "Value":{
+          "shape":"String",
+          "documentation":"<p>The value of the metric.</p>"
+        },
+        "Unit":{
+          "shape":"String",
+          "documentation":"<p>The unit of the metric value.</p>"
+        }
+      },
+      "documentation":"<p>An expected performance metric for a recommendation.</p>"
+    },
+    "AIRecommendationPerformanceTarget":{
+      "type":"structure",
+      "required":["Constraints"],
+      "members":{
+        "Constraints":{
+          "shape":"AIRecommendationConstraintList",
+          "documentation":"<p>An array of performance constraints that define the optimization objectives.</p>"
+        }
+      },
+      "documentation":"<p>The performance targets for an AI recommendation job.</p>"
+    },
+    "AIResourceIdentifier":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"(arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:[a-z\\-]*/)?([a-zA-Z0-9]([a-zA-Z0-9\\-]){0,62})(?<!-)"
+    },
+    "AIWorkloadConfigArn":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:ai-workload-config/[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}"
+    },
+    "AIWorkloadConfigSummary":{
+      "type":"structure",
+      "required":[
+        "AIWorkloadConfigName",
+        "AIWorkloadConfigArn",
+        "CreationTime"
+      ],
+      "members":{
+        "AIWorkloadConfigName":{
+          "shape":"AIEntityName",
+          "documentation":"<p>The name of the AI workload configuration.</p>"
+        },
+        "AIWorkloadConfigArn":{
+          "shape":"AIWorkloadConfigArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AI workload configuration.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp that indicates when the configuration was created.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about an AI workload configuration.</p>"
+    },
+    "AIWorkloadConfigSummaryList":{
+      "type":"list",
+      "member":{"shape":"AIWorkloadConfigSummary"}
+    },
+    "AIWorkloadConfigs":{
+      "type":"structure",
+      "required":["WorkloadSpec"],
+      "members":{
+        "WorkloadSpec":{
+          "shape":"WorkloadSpec",
+          "documentation":"<p>The workload specification that defines benchmark parameters.</p>"
+        }
+      },
+      "documentation":"<p>The benchmark tool configuration for an AI workload.</p>"
+    },
+    "AIWorkloadDataSource":{
+      "type":"structure",
+      "members":{
+        "S3DataSource":{
+          "shape":"AIWorkloadS3DataSource",
+          "documentation":"<p>The Amazon S3 data source configuration.</p>"
+        }
+      },
+      "documentation":"<p>The data source for an AI workload input data channel.</p>"
+    },
+    "AIWorkloadInputDataConfig":{
+      "type":"structure",
+      "required":[
+        "ChannelName",
+        "DataSource"
+      ],
+      "members":{
+        "ChannelName":{
+          "shape":"AIChannelName",
+          "documentation":"<p>The logical name for the data channel.</p>"
+        },
+        "DataSource":{
+          "shape":"AIWorkloadDataSource",
+          "documentation":"<p>The data source for this channel.</p>"
+        }
+      },
+      "documentation":"<p>A channel of input data for an AI workload configuration. Each channel has a name and a data source.</p>"
+    },
+    "AIWorkloadInputDataConfigList":{
+      "type":"list",
+      "member":{"shape":"AIWorkloadInputDataConfig"}
+    },
+    "AIWorkloadS3DataSource":{
+      "type":"structure",
+      "required":["S3Uri"],
+      "members":{
+        "S3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 URI of the data.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon S3 data source for an AI workload.</p>"
+    },
     "AbsoluteBorrowLimitResourceList":{
       "type":"list",
       "member":{"shape":"ComputeQuotaResourceConfig"},
@@ -5647,7 +6539,8 @@
         "ml.r6id.12xlarge",
         "ml.r6id.16xlarge",
         "ml.r6id.24xlarge",
-        "ml.r6id.32xlarge"
+        "ml.r6id.32xlarge",
+        "ml.p5.4xlarge"
       ]
     },
     "AppLifecycleManagement":{
@@ -9202,6 +10095,14 @@
       },
       "documentation":"<p>Defines the configuration for attaching an Amazon FSx for OpenZFS file system to instances in a SageMaker HyperPod cluster instance group.</p>"
     },
+    "ClusterImageVersionStatus":{
+      "type":"string",
+      "documentation":"<p>The status of the Amazon Machine Image (AMI) version for the HyperPod cluster instance group, node, or cluster. The AMI version is determined at the instance group level, and all nodes within an instance group run the same AMI. The cluster-level status is aggregated across all instance groups.</p> <ul> <li> <p> <code>UpToDate</code>: The resource is running the latest available AMI version.</p> </li> <li> <p> <code>UpdateAvailable</code>: A newer AMI version is available for the resource.</p> </li> </ul>",
+      "enum":[
+        "UpToDate",
+        "UpdateAvailable"
+      ]
+    },
     "ClusterInstanceCount":{
       "type":"integer",
       "box":true,
@@ -9287,6 +10188,10 @@
           "shape":"ImageId",
           "documentation":"<p>The ID of the Amazon Machine Image (AMI) desired for the instance group.</p>"
         },
+        "ImageVersionStatus":{
+          "shape":"ClusterImageVersionStatus",
+          "documentation":"<p>The status of the image version for the instance group. Indicates whether the instance group is running the latest image version or if an update is available.</p>"
+        },
         "ActiveOperations":{
           "shape":"ActiveOperations",
           "documentation":"<p>A map indicating active operations currently in progress for the instance group of a SageMaker HyperPod cluster. When there is a scaling operation in progress, this map contains a key <code>Scaling</code> with value 1. </p>"
@@ -9311,6 +10216,10 @@
         "SlurmConfig":{
           "shape":"ClusterSlurmConfigDetails",
           "documentation":"<p>The Slurm configuration for the instance group.</p>"
+        },
+        "NetworkInterface":{
+          "shape":"ClusterNetworkInterfaceDetails",
+          "documentation":"<p>The network interface configuration for the instance group.</p>"
         }
       },
       "documentation":"<p>Details of an instance group in a SageMaker HyperPod cluster.</p>"
@@ -9400,6 +10309,10 @@
         "CapacityRequirements":{
           "shape":"ClusterCapacityRequirements",
           "documentation":"<p>Specifies the capacity requirements for the instance group.</p>"
+        },
+        "NetworkInterface":{
+          "shape":"ClusterNetworkInterface",
+          "documentation":"<p>The network interface configuration for the instance group.</p>"
         }
       },
       "documentation":"<p>The specifications of an instance group that you need to define.</p>"
@@ -9671,6 +10584,13 @@
       "max":20,
       "min":1
     },
+    "ClusterInterfaceType":{
+      "type":"string",
+      "enum":[
+        "efa",
+        "efa-only"
+      ]
+    },
     "ClusterKubernetesConfig":{
       "type":"structure",
       "members":{
@@ -9806,6 +10726,10 @@
         "OnCreate":{
           "shape":"ClusterLifeCycleConfigFileName",
           "documentation":"<p>The file name of the entrypoint script of lifecycle scripts under <code>SourceS3Uri</code>. This entrypoint script runs during cluster creation.</p>"
+        },
+        "OnInitComplete":{
+          "shape":"ClusterLifeCycleConfigFileName",
+          "documentation":"<p>The file name of the entrypoint script of lifecycle scripts under <code>SourceS3Uri</code>. This script runs on the node after the AMI-based initialization is complete.</p>"
         }
       },
       "documentation":"<p>The lifecycle configuration for a SageMaker HyperPod cluster.</p>"
@@ -9851,6 +10775,26 @@
       "max":256,
       "min":0,
       "pattern":"(arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:cluster/[a-z0-9]{12})|([a-zA-Z0-9](-*[a-zA-Z0-9]){0,62})"
+    },
+    "ClusterNetworkInterface":{
+      "type":"structure",
+      "members":{
+        "InterfaceType":{
+          "shape":"ClusterInterfaceType",
+          "documentation":"<p>The type of network interface for the instance group. Valid values:</p> <ul> <li> <p> <code>efa</code> – An EFA with ENA interface, which provides both the EFA device for low-latency, high-throughput communication and the ENA device for IP networking.</p> </li> <li> <p> <code>efa-only</code> – An EFA-only interface, which provides only the EFA device capabilities without the ENA device for traditional IP networking.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/efa.html\">Elastic Fabric Adapter</a>.</p>"
+        }
+      },
+      "documentation":"<p>The network interface configuration for a Amazon SageMaker HyperPod cluster instance group.</p>"
+    },
+    "ClusterNetworkInterfaceDetails":{
+      "type":"structure",
+      "members":{
+        "InterfaceType":{
+          "shape":"ClusterInterfaceType",
+          "documentation":"<p>The type of network interface for the instance group. Valid values are <code>efa</code> and <code>efa-only</code>.</p>"
+        }
+      },
+      "documentation":"<p>The network interface configuration details for a Amazon SageMaker HyperPod cluster instance group.</p>"
     },
     "ClusterNodeDetails":{
       "type":"structure",
@@ -9923,6 +10867,10 @@
           "shape":"ImageId",
           "documentation":"<p>The ID of the Amazon Machine Image (AMI) desired for the node.</p>"
         },
+        "ImageVersionStatus":{
+          "shape":"ClusterImageVersionStatus",
+          "documentation":"<p>The status of the image version for the cluster node.</p>"
+        },
         "UltraServerInfo":{
           "shape":"UltraServerInfo",
           "documentation":"<p>Contains information about the UltraServer.</p>"
@@ -9934,6 +10882,10 @@
         "CapacityType":{
           "shape":"ClusterCapacityType",
           "documentation":"<p>The capacity type of the node. Valid values are <code>OnDemand</code> and <code>Spot</code>. When set to <code>OnDemand</code>, the node is launched as an On-Demand instance. When set to <code>Spot</code>, the node is launched as a Spot instance. </p>"
+        },
+        "NetworkInterface":{
+          "shape":"ClusterNetworkInterfaceDetails",
+          "documentation":"<p>The network interface configuration for the cluster node.</p>"
         }
       },
       "documentation":"<p>Details of an instance (also called a <i>node</i> interchangeably) in a SageMaker HyperPod cluster.</p>"
@@ -10022,6 +10974,10 @@
         "PrivateDnsHostname":{
           "shape":"ClusterPrivateDnsHostname",
           "documentation":"<p>The private DNS hostname of the SageMaker HyperPod cluster node.</p>"
+        },
+        "ImageVersionStatus":{
+          "shape":"ClusterImageVersionStatus",
+          "documentation":"<p>The status of the image version for the cluster node.</p>"
         }
       },
       "documentation":"<p>Lists a summary of the properties of an instance (also called a <i>node</i> interchangeably) of a SageMaker HyperPod cluster.</p>"
@@ -10158,8 +11114,7 @@
         "InstanceCount",
         "InstanceGroupName",
         "InstanceType",
-        "ExecutionRole",
-        "EnvironmentConfig"
+        "ExecutionRole"
       ],
       "members":{
         "InstanceCount":{
@@ -11212,6 +12167,151 @@
       "max":2,
       "min":2,
       "pattern":"[A-Z]{2}"
+    },
+    "CreateAIBenchmarkJobRequest":{
+      "type":"structure",
+      "required":[
+        "AIBenchmarkJobName",
+        "BenchmarkTarget",
+        "OutputConfig",
+        "AIWorkloadConfigIdentifier",
+        "RoleArn"
+      ],
+      "members":{
+        "AIBenchmarkJobName":{
+          "shape":"AIEntityName",
+          "documentation":"<p>The name of the AI benchmark job. The name must be unique within your Amazon Web Services account in the current Amazon Web Services Region.</p>"
+        },
+        "BenchmarkTarget":{
+          "shape":"AIBenchmarkTarget",
+          "documentation":"<p>The target endpoint to benchmark. Specify a SageMaker endpoint by providing its name or Amazon Resource Name (ARN).</p>"
+        },
+        "OutputConfig":{
+          "shape":"AIBenchmarkOutputConfig",
+          "documentation":"<p>The output configuration for the benchmark job, including the Amazon S3 location where benchmark results are stored.</p>"
+        },
+        "AIWorkloadConfigIdentifier":{
+          "shape":"AIResourceIdentifier",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the AI workload configuration to use for this benchmark job.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role that enables Amazon SageMaker AI to perform tasks on your behalf.</p>"
+        },
+        "NetworkConfig":{
+          "shape":"AIBenchmarkNetworkConfig",
+          "documentation":"<p>The network configuration for the benchmark job, including VPC settings.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The metadata that you apply to Amazon Web Services resources to help you categorize and organize them. Each tag consists of a key and a value, both of which you define.</p>"
+        }
+      }
+    },
+    "CreateAIBenchmarkJobResponse":{
+      "type":"structure",
+      "required":["AIBenchmarkJobArn"],
+      "members":{
+        "AIBenchmarkJobArn":{
+          "shape":"AIBenchmarkJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created benchmark job.</p>"
+        }
+      }
+    },
+    "CreateAIRecommendationJobRequest":{
+      "type":"structure",
+      "required":[
+        "AIRecommendationJobName",
+        "ModelSource",
+        "OutputConfig",
+        "AIWorkloadConfigIdentifier",
+        "PerformanceTarget",
+        "RoleArn"
+      ],
+      "members":{
+        "AIRecommendationJobName":{
+          "shape":"AIEntityName",
+          "documentation":"<p>The name of the AI recommendation job. The name must be unique within your Amazon Web Services account in the current Amazon Web Services Region.</p>"
+        },
+        "ModelSource":{
+          "shape":"AIModelSource",
+          "documentation":"<p>The source of the model to optimize. Specify the Amazon S3 location of the model artifacts.</p>"
+        },
+        "OutputConfig":{
+          "shape":"AIRecommendationOutputConfig",
+          "documentation":"<p>The output configuration for the recommendation job, including the Amazon S3 location for results and an optional model package group where the optimized model is registered.</p>"
+        },
+        "AIWorkloadConfigIdentifier":{
+          "shape":"AIResourceIdentifier",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the AI workload configuration to use for this recommendation job.</p>"
+        },
+        "PerformanceTarget":{
+          "shape":"AIRecommendationPerformanceTarget",
+          "documentation":"<p>The performance targets for the recommendation job. Specify constraints on metrics such as time to first token (<code>ttft-ms</code>), <code>throughput</code>, or <code>cost</code>.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role that enables Amazon SageMaker AI to perform tasks on your behalf.</p>"
+        },
+        "InferenceSpecification":{
+          "shape":"AIRecommendationInferenceSpecification",
+          "documentation":"<p>The inference framework configuration. Specify the framework (such as LMI or vLLM) for the recommendation job.</p>"
+        },
+        "OptimizeModel":{
+          "shape":"AIRecommendationAllowOptimization",
+          "documentation":"<p>Whether to allow model optimization techniques such as quantization, speculative decoding, and kernel tuning. The default is <code>true</code>.</p>"
+        },
+        "ComputeSpec":{
+          "shape":"AIRecommendationComputeSpec",
+          "documentation":"<p>The compute resource specification for the recommendation job. You can specify up to 3 instance types to consider, and optionally provide capacity reservation configuration.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The metadata that you apply to Amazon Web Services resources to help you categorize and organize them.</p>"
+        }
+      }
+    },
+    "CreateAIRecommendationJobResponse":{
+      "type":"structure",
+      "required":["AIRecommendationJobArn"],
+      "members":{
+        "AIRecommendationJobArn":{
+          "shape":"AIRecommendationJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created recommendation job.</p>"
+        }
+      }
+    },
+    "CreateAIWorkloadConfigRequest":{
+      "type":"structure",
+      "required":["AIWorkloadConfigName"],
+      "members":{
+        "AIWorkloadConfigName":{
+          "shape":"AIEntityName",
+          "documentation":"<p>The name of the AI workload configuration. The name must be unique within your Amazon Web Services account in the current Amazon Web Services Region.</p>"
+        },
+        "DatasetConfig":{
+          "shape":"AIDatasetConfig",
+          "documentation":"<p>The dataset configuration for the workload. Specify input data channels with their data sources for benchmark workloads.</p>"
+        },
+        "AIWorkloadConfigs":{
+          "shape":"AIWorkloadConfigs",
+          "documentation":"<p>The benchmark tool configuration and workload specification. Provide the specification as an inline YAML or JSON string.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The metadata that you apply to Amazon Web Services resources to help you categorize and organize them. Each tag consists of a key and a value, both of which you define. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services Resources</a> in the Amazon Web Services General Reference.</p>"
+        }
+      }
+    },
+    "CreateAIWorkloadConfigResponse":{
+      "type":"structure",
+      "required":["AIWorkloadConfigArn"],
+      "members":{
+        "AIWorkloadConfigArn":{
+          "shape":"AIWorkloadConfigArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created AI workload configuration.</p>"
+        }
+      }
     },
     "CreateActionRequest":{
       "type":"structure",
@@ -12695,6 +13795,10 @@
         "Specification":{
           "shape":"InferenceComponentSpecification",
           "documentation":"<p>Details about the resources to deploy with this inference component, including the model, container, and compute resources.</p>"
+        },
+        "Specifications":{
+          "shape":"InferenceComponentSpecificationList",
+          "documentation":"<p>A list of specification objects for the inference component, one per instance type. Use this parameter when you want to deploy a different model or resource configuration for the inference component on each instance type. You can use either this parameter or the singular <code>Specification</code> parameter, but not both.</p>"
         },
         "RuntimeConfig":{
           "shape":"InferenceComponentRuntimeConfig",
@@ -15196,6 +16300,63 @@
       "max":65535,
       "min":0
     },
+    "DeleteAIBenchmarkJobRequest":{
+      "type":"structure",
+      "required":["AIBenchmarkJobName"],
+      "members":{
+        "AIBenchmarkJobName":{
+          "shape":"AIEntityName",
+          "documentation":"<p>The name of the AI benchmark job to delete.</p>"
+        }
+      }
+    },
+    "DeleteAIBenchmarkJobResponse":{
+      "type":"structure",
+      "members":{
+        "AIBenchmarkJobArn":{
+          "shape":"AIBenchmarkJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the deleted benchmark job.</p>"
+        }
+      }
+    },
+    "DeleteAIRecommendationJobRequest":{
+      "type":"structure",
+      "required":["AIRecommendationJobName"],
+      "members":{
+        "AIRecommendationJobName":{
+          "shape":"AIEntityName",
+          "documentation":"<p>The name of the AI recommendation job to delete.</p>"
+        }
+      }
+    },
+    "DeleteAIRecommendationJobResponse":{
+      "type":"structure",
+      "members":{
+        "AIRecommendationJobArn":{
+          "shape":"AIRecommendationJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the deleted recommendation job.</p>"
+        }
+      }
+    },
+    "DeleteAIWorkloadConfigRequest":{
+      "type":"structure",
+      "required":["AIWorkloadConfigName"],
+      "members":{
+        "AIWorkloadConfigName":{
+          "shape":"AIEntityName",
+          "documentation":"<p>The name of the AI workload configuration to delete.</p>"
+        }
+      }
+    },
+    "DeleteAIWorkloadConfigResponse":{
+      "type":"structure",
+      "members":{
+        "AIWorkloadConfigArn":{
+          "shape":"AIWorkloadConfigArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the deleted AI workload configuration.</p>"
+        }
+      }
+    },
     "DeleteActionRequest":{
       "type":"structure",
       "required":["ActionName"],
@@ -16219,6 +17380,220 @@
         }
       },
       "documentation":"<p>Information that SageMaker Neo automatically derived about the model.</p>"
+    },
+    "DescribeAIBenchmarkJobRequest":{
+      "type":"structure",
+      "required":["AIBenchmarkJobName"],
+      "members":{
+        "AIBenchmarkJobName":{
+          "shape":"AIEntityName",
+          "documentation":"<p>The name of the AI benchmark job to describe.</p>"
+        }
+      }
+    },
+    "DescribeAIBenchmarkJobResponse":{
+      "type":"structure",
+      "required":[
+        "AIBenchmarkJobName",
+        "AIBenchmarkJobArn",
+        "AIBenchmarkJobStatus",
+        "BenchmarkTarget",
+        "OutputConfig",
+        "AIWorkloadConfigIdentifier",
+        "RoleArn",
+        "CreationTime"
+      ],
+      "members":{
+        "AIBenchmarkJobName":{
+          "shape":"AIEntityName",
+          "documentation":"<p>The name of the AI benchmark job.</p>"
+        },
+        "AIBenchmarkJobArn":{
+          "shape":"AIBenchmarkJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AI benchmark job.</p>"
+        },
+        "AIBenchmarkJobStatus":{
+          "shape":"AIBenchmarkJobStatus",
+          "documentation":"<p>The status of the AI benchmark job.</p>"
+        },
+        "FailureReason":{
+          "shape":"FailureReason",
+          "documentation":"<p>If the benchmark job failed, the reason it failed.</p>"
+        },
+        "BenchmarkTarget":{
+          "shape":"AIBenchmarkTarget",
+          "documentation":"<p>The target endpoint that was benchmarked.</p>"
+        },
+        "OutputConfig":{
+          "shape":"AIBenchmarkOutputResult",
+          "documentation":"<p>The output configuration for the benchmark job, including the Amazon S3 output location and CloudWatch log information.</p>"
+        },
+        "AIWorkloadConfigIdentifier":{
+          "shape":"AIResourceIdentifier",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the AI workload configuration used for this benchmark job.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role used by the benchmark job.</p>"
+        },
+        "NetworkConfig":{
+          "shape":"AIBenchmarkNetworkConfig",
+          "documentation":"<p>The network configuration for the benchmark job.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp that indicates when the benchmark job was created.</p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp that indicates when the benchmark job started running.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp that indicates when the benchmark job completed.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags associated with the benchmark job.</p>"
+        }
+      }
+    },
+    "DescribeAIRecommendationJobRequest":{
+      "type":"structure",
+      "required":["AIRecommendationJobName"],
+      "members":{
+        "AIRecommendationJobName":{
+          "shape":"AIEntityName",
+          "documentation":"<p>The name of the AI recommendation job to describe.</p>"
+        }
+      }
+    },
+    "DescribeAIRecommendationJobResponse":{
+      "type":"structure",
+      "required":[
+        "AIRecommendationJobName",
+        "AIRecommendationJobArn",
+        "AIRecommendationJobStatus",
+        "ModelSource",
+        "OutputConfig",
+        "AIWorkloadConfigIdentifier",
+        "RoleArn",
+        "CreationTime"
+      ],
+      "members":{
+        "AIRecommendationJobName":{
+          "shape":"AIEntityName",
+          "documentation":"<p>The name of the AI recommendation job.</p>"
+        },
+        "AIRecommendationJobArn":{
+          "shape":"AIRecommendationJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AI recommendation job.</p>"
+        },
+        "AIRecommendationJobStatus":{
+          "shape":"AIRecommendationJobStatus",
+          "documentation":"<p>The status of the AI recommendation job.</p>"
+        },
+        "FailureReason":{
+          "shape":"FailureReason",
+          "documentation":"<p>If the recommendation job failed, the reason it failed.</p>"
+        },
+        "ModelSource":{
+          "shape":"AIModelSource",
+          "documentation":"<p>The source of the model that was analyzed.</p>"
+        },
+        "OutputConfig":{
+          "shape":"AIRecommendationOutputResult",
+          "documentation":"<p>The output configuration for the recommendation job.</p>"
+        },
+        "InferenceSpecification":{
+          "shape":"AIRecommendationInferenceSpecification",
+          "documentation":"<p>The inference framework configuration.</p>"
+        },
+        "AIWorkloadConfigIdentifier":{
+          "shape":"AIResourceIdentifier",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the AI workload configuration used for this recommendation job.</p>"
+        },
+        "OptimizeModel":{
+          "shape":"AIRecommendationAllowOptimization",
+          "documentation":"<p>Whether model optimization techniques were allowed.</p>"
+        },
+        "PerformanceTarget":{
+          "shape":"AIRecommendationPerformanceTarget",
+          "documentation":"<p>The performance targets specified for the recommendation job.</p>"
+        },
+        "Recommendations":{
+          "shape":"AIRecommendationList",
+          "documentation":"<p>The list of optimization recommendations generated by the job. Each recommendation includes optimization details, deployment configuration, expected performance metrics, and the associated benchmark job ARN.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role used by the recommendation job.</p>"
+        },
+        "ComputeSpec":{
+          "shape":"AIRecommendationComputeSpec",
+          "documentation":"<p>The compute resource specification for the recommendation job.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp that indicates when the recommendation job was created.</p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp that indicates when the recommendation job started running.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp that indicates when the recommendation job completed.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags associated with the recommendation job.</p>"
+        }
+      }
+    },
+    "DescribeAIWorkloadConfigRequest":{
+      "type":"structure",
+      "required":["AIWorkloadConfigName"],
+      "members":{
+        "AIWorkloadConfigName":{
+          "shape":"AIEntityName",
+          "documentation":"<p>The name of the AI workload configuration to describe.</p>"
+        }
+      }
+    },
+    "DescribeAIWorkloadConfigResponse":{
+      "type":"structure",
+      "required":[
+        "AIWorkloadConfigName",
+        "AIWorkloadConfigArn",
+        "CreationTime"
+      ],
+      "members":{
+        "AIWorkloadConfigName":{
+          "shape":"AIEntityName",
+          "documentation":"<p>The name of the AI workload configuration.</p>"
+        },
+        "AIWorkloadConfigArn":{
+          "shape":"AIWorkloadConfigArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AI workload configuration.</p>"
+        },
+        "DatasetConfig":{
+          "shape":"AIDatasetConfig",
+          "documentation":"<p>The dataset configuration for the workload.</p>"
+        },
+        "AIWorkloadConfigs":{
+          "shape":"AIWorkloadConfigs",
+          "documentation":"<p>The benchmark tool configuration and workload specification.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags associated with the AI workload configuration.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp that indicates when the AI workload configuration was created.</p>"
+        }
+      }
     },
     "DescribeActionRequest":{
       "type":"structure",
@@ -18625,6 +20000,10 @@
         "Specification":{
           "shape":"InferenceComponentSpecificationSummary",
           "documentation":"<p>Details about the resources that are deployed with this inference component.</p>"
+        },
+        "Specifications":{
+          "shape":"InferenceComponentSpecificationSummaryList",
+          "documentation":"<p>A list of specification summaries for the inference component, one per instance type. This parameter is populated when the inference component was created with multiple specifications. When this parameter is populated, the singular <code>Specification</code> parameter is not returned.</p>"
         },
         "RuntimeConfig":{
           "shape":"InferenceComponentRuntimeConfigSummary",
@@ -21813,6 +23192,7 @@
     },
     "DomainId":{
       "type":"string",
+      "documentation":"<p>Types duplicated from IronmanApiServiceModel for federation. These types are defined in other service directories and are not available via IronmanApiServiceCommonModel.</p>",
       "max":63,
       "min":0,
       "pattern":"d-(-*[a-z0-9]){1,61}"
@@ -23173,6 +24553,10 @@
       "max":1024,
       "min":0,
       "pattern":"[\\S\\s]*"
+    },
+    "ExpectedPerformanceList":{
+      "type":"list",
+      "member":{"shape":"AIRecommendationPerformanceMetric"}
     },
     "Experiment":{
       "type":"structure",
@@ -26245,6 +27629,29 @@
       "min":0,
       "pattern":"[a-zA-Z0-9-]+"
     },
+    "InferenceComponentPlacementStatus":{
+      "type":"structure",
+      "required":[
+        "InstanceType",
+        "CurrentCopyCount"
+      ],
+      "members":{
+        "InstanceType":{
+          "shape":"ProductionVariantInstanceType",
+          "documentation":"<p>The ML compute instance type where the inference component copies are placed.</p>"
+        },
+        "CurrentCopyCount":{
+          "shape":"InferenceComponentCopyCount",
+          "documentation":"<p>The number of inference component copies currently placed on instances of this type.</p>"
+        }
+      },
+      "documentation":"<p>The placement status of an inference component on a specific instance type. Shows the number of inference component copies currently placed on instances of a given type.</p>"
+    },
+    "InferenceComponentPlacementStatusList":{
+      "type":"list",
+      "member":{"shape":"InferenceComponentPlacementStatus"},
+      "min":1
+    },
     "InferenceComponentPlacementStrategy":{
       "type":"string",
       "enum":[
@@ -26299,6 +27706,10 @@
         "CurrentCopyCount":{
           "shape":"InferenceComponentCopyCount",
           "documentation":"<p>The number of runtime copies of the model container that are currently deployed.</p>"
+        },
+        "PlacementStatus":{
+          "shape":"InferenceComponentPlacementStatusList",
+          "documentation":"<p>The placement status of the inference component across instance types. Shows how the inference component copies are distributed across instance types.</p>"
         }
       },
       "documentation":"<p>Details about the runtime settings for the model that is deployed with the inference component.</p>"
@@ -26329,6 +27740,10 @@
     "InferenceComponentSpecification":{
       "type":"structure",
       "members":{
+        "InstanceType":{
+          "shape":"ProductionVariantInstanceType",
+          "documentation":"<p>The ML compute instance type for the inference component specification. Specifies which instance type this specification applies to. Required when using the <code>Specifications</code> parameter with multiple entries.</p>"
+        },
         "ModelName":{
           "shape":"ModelName",
           "documentation":"<p>The name of an existing SageMaker AI model object in your account that you want to deploy with the inference component.</p>"
@@ -26360,9 +27775,19 @@
       },
       "documentation":"<p>Details about the resources to deploy with this inference component, including the model, container, and compute resources.</p>"
     },
+    "InferenceComponentSpecificationList":{
+      "type":"list",
+      "member":{"shape":"InferenceComponentSpecification"},
+      "max":5,
+      "min":1
+    },
     "InferenceComponentSpecificationSummary":{
       "type":"structure",
       "members":{
+        "InstanceType":{
+          "shape":"ProductionVariantInstanceType",
+          "documentation":"<p>The ML compute instance type associated with this inference component specification.</p>"
+        },
         "ModelName":{
           "shape":"ModelName",
           "documentation":"<p>The name of the SageMaker AI model object that is deployed with the inference component.</p>"
@@ -26393,6 +27818,11 @@
         }
       },
       "documentation":"<p>Details about the resources that are deployed with this inference component.</p>"
+    },
+    "InferenceComponentSpecificationSummaryList":{
+      "type":"list",
+      "member":{"shape":"InferenceComponentSpecificationSummary"},
+      "min":1
     },
     "InferenceComponentStartupParameters":{
       "type":"structure",
@@ -27103,6 +28533,63 @@
         }
       },
       "documentation":"<p>Configuration for how instances are placed and allocated within UltraServers. This is only applicable for UltraServer capacity.</p>"
+    },
+    "InstancePool":{
+      "type":"structure",
+      "required":[
+        "InstanceType",
+        "Priority"
+      ],
+      "members":{
+        "InstanceType":{
+          "shape":"ProductionVariantInstanceType",
+          "documentation":"<p>The ML compute instance type for the instance pool.</p>"
+        },
+        "ModelNameOverride":{
+          "shape":"ModelName",
+          "documentation":"<p>The name of a SageMaker model to use for this instance pool instead of the model specified for the production variant. Use this to deploy a different model optimized for the instance type in this pool.</p>"
+        },
+        "Priority":{
+          "shape":"InstancePoolPriority",
+          "documentation":"<p>The priority for the instance pool. SageMaker attempts to provision instances in order of priority, starting with the lowest value. If instances for a higher-priority pool are unavailable, SageMaker attempts to provision from the next pool.</p> <p>Valid values: 1 to 5, where 1 is the highest priority.</p>"
+        }
+      },
+      "documentation":"<p>Specifies an instance type and its priority for a heterogeneous endpoint. Use instance pools to configure a production variant with multiple instance types, enabling the endpoint to provision instances across different types based on priority.</p>"
+    },
+    "InstancePoolList":{
+      "type":"list",
+      "member":{"shape":"InstancePool"},
+      "max":5,
+      "min":1
+    },
+    "InstancePoolPriority":{
+      "type":"integer",
+      "box":true,
+      "max":5,
+      "min":1
+    },
+    "InstancePoolSummary":{
+      "type":"structure",
+      "required":[
+        "InstanceType",
+        "CurrentInstanceCount"
+      ],
+      "members":{
+        "InstanceType":{
+          "shape":"ProductionVariantInstanceType",
+          "documentation":"<p>The ML compute instance type for the instance pool.</p>"
+        },
+        "CurrentInstanceCount":{
+          "shape":"TaskCount",
+          "documentation":"<p>The current number of instances of this type in the instance pool.</p>"
+        }
+      },
+      "documentation":"<p>A summary of an instance pool for a production variant, including the instance type and the current number of instances.</p>"
+    },
+    "InstancePoolSummaryList":{
+      "type":"list",
+      "member":{"shape":"InstancePoolSummary"},
+      "min":1
     },
     "InstanceType":{
       "type":"string",
@@ -28036,6 +29523,178 @@
         "Artifact",
         "Context",
         "Action"
+      ]
+    },
+    "ListAIBenchmarkJobsRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of benchmark jobs to return in the response.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the previous call to <code>ListAIBenchmarkJobs</code> didn't return the full set of jobs, the call returns a token for getting the next set.</p>"
+        },
+        "NameContains":{
+          "shape":"NameContains",
+          "documentation":"<p>A string in the job name. This filter returns only jobs whose name contains the specified string.</p>"
+        },
+        "StatusEquals":{
+          "shape":"AIBenchmarkJobStatus",
+          "documentation":"<p>A filter that returns only benchmark jobs with the specified status.</p>"
+        },
+        "CreationTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>A filter that returns only jobs created after the specified time.</p>"
+        },
+        "CreationTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>A filter that returns only jobs created before the specified time.</p>"
+        },
+        "SortBy":{
+          "shape":"ListAIBenchmarkJobsSortBy",
+          "documentation":"<p>The field to sort results by. The default is <code>CreationTime</code>.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sort order for results. The default is <code>Descending</code>.</p>"
+        }
+      }
+    },
+    "ListAIBenchmarkJobsResponse":{
+      "type":"structure",
+      "required":["AIBenchmarkJobs"],
+      "members":{
+        "AIBenchmarkJobs":{
+          "shape":"AIBenchmarkJobSummaryList",
+          "documentation":"<p>An array of <code>AIBenchmarkJobSummary</code> objects, one for each benchmark job that matches the specified filters.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response is truncated, Amazon SageMaker AI returns this token. To retrieve the next set of jobs, use it in the subsequent request.</p>"
+        }
+      }
+    },
+    "ListAIBenchmarkJobsSortBy":{
+      "type":"string",
+      "enum":[
+        "Name",
+        "CreationTime",
+        "Status"
+      ]
+    },
+    "ListAIRecommendationJobsRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of recommendation jobs to return in the response.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the previous call to <code>ListAIRecommendationJobs</code> didn't return the full set of jobs, the call returns a token for getting the next set.</p>"
+        },
+        "NameContains":{
+          "shape":"NameContains",
+          "documentation":"<p>A string in the job name. This filter returns only jobs whose name contains the specified string.</p>"
+        },
+        "StatusEquals":{
+          "shape":"AIRecommendationJobStatus",
+          "documentation":"<p>A filter that returns only recommendation jobs with the specified status.</p>"
+        },
+        "CreationTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>A filter that returns only jobs created after the specified time.</p>"
+        },
+        "CreationTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>A filter that returns only jobs created before the specified time.</p>"
+        },
+        "SortBy":{
+          "shape":"ListAIRecommendationJobsSortBy",
+          "documentation":"<p>The field to sort results by. The default is <code>CreationTime</code>.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sort order for results. The default is <code>Descending</code>.</p>"
+        }
+      }
+    },
+    "ListAIRecommendationJobsResponse":{
+      "type":"structure",
+      "required":["AIRecommendationJobs"],
+      "members":{
+        "AIRecommendationJobs":{
+          "shape":"AIRecommendationJobSummaryList",
+          "documentation":"<p>An array of <code>AIRecommendationJobSummary</code> objects, one for each recommendation job that matches the specified filters.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response is truncated, Amazon SageMaker AI returns this token. To retrieve the next set of jobs, use it in the subsequent request.</p>"
+        }
+      }
+    },
+    "ListAIRecommendationJobsSortBy":{
+      "type":"string",
+      "enum":[
+        "Name",
+        "CreationTime",
+        "Status"
+      ]
+    },
+    "ListAIWorkloadConfigsRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of AI workload configurations to return in the response.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the previous call to <code>ListAIWorkloadConfigs</code> didn't return the full set of configurations, the call returns a token for getting the next set of configurations.</p>"
+        },
+        "NameContains":{
+          "shape":"NameContains",
+          "documentation":"<p>A string in the configuration name. This filter returns only configurations whose name contains the specified string.</p>"
+        },
+        "CreationTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>A filter that returns only configurations created after the specified time.</p>"
+        },
+        "CreationTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>A filter that returns only configurations created before the specified time.</p>"
+        },
+        "SortBy":{
+          "shape":"ListAIWorkloadConfigsSortBy",
+          "documentation":"<p>The field to sort results by. The default is <code>CreationTime</code>.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sort order for results. The default is <code>Descending</code>.</p>"
+        }
+      }
+    },
+    "ListAIWorkloadConfigsResponse":{
+      "type":"structure",
+      "required":["AIWorkloadConfigs"],
+      "members":{
+        "AIWorkloadConfigs":{
+          "shape":"AIWorkloadConfigSummaryList",
+          "documentation":"<p>An array of <code>AIWorkloadConfigSummary</code> objects, one for each AI workload configuration that matches the specified filters.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response is truncated, Amazon SageMaker AI returns this token. To retrieve the next set of configurations, use it in the subsequent request.</p>"
+        }
+      }
+    },
+    "ListAIWorkloadConfigsSortBy":{
+      "type":"string",
+      "enum":[
+        "Name",
+        "CreationTime"
       ]
     },
     "ListActionsRequest":{
@@ -32853,11 +34512,11 @@
       "members":{
         "EnableEnhancedMetrics":{
           "shape":"EnableEnhancedMetrics",
-          "documentation":"<p>Specifies whether to enable enhanced metrics for the endpoint. Enhanced metrics provide utilization data at instance and container granularity. Container granularity is supported for Inference Components. The default is <code>False</code>.</p>"
+          "documentation":"<p>Specifies whether to enable enhanced metrics for the endpoint. Enhanced metrics provide utilization and invocation data at instance and container granularity. Container granularity is supported for Inference Components. The default is <code>False</code>.</p>"
         },
         "MetricPublishFrequencyInSeconds":{
           "shape":"MetricPublishFrequencyInSeconds",
-          "documentation":"<p>The frequency, in seconds, at which utilization metrics are published to Amazon CloudWatch. The default is <code>60</code> seconds.</p>"
+          "documentation":"<p>The interval, in seconds, at which metrics are published to Amazon CloudWatch. Defaults to <code>60</code>. Valid values: <code>10</code>, <code>30</code>, <code>60</code>, <code>120</code>, <code>180</code>, <code>240</code>, <code>300</code>. When <code>EnableEnhancedMetrics</code> is set to <code>False</code>, this interval applies to utilization metrics only; invocation metrics continue to be published at the default 60-second interval. When <code>EnableEnhancedMetrics</code> is set to <code>True</code>, this interval applies to both utilization and invocation metrics.</p>"
         }
       },
       "documentation":"<p>The configuration for Utilization metrics.</p>"
@@ -34226,6 +35885,10 @@
         "NearestModelName":{
           "shape":"String",
           "documentation":"<p>The name of a pre-trained machine learning benchmarked by Amazon SageMaker Inference Recommender model that matches your model. You can find a list of benchmarked models by calling <code>ListModelMetadata</code>.</p>"
+        },
+        "AdditionalModelDataSources":{
+          "shape":"AdditionalModelDataSources",
+          "documentation":"<p>Data sources that are available to your model in addition to the one that you specify for <code>ModelDataSource</code> when you use the <code>CreateModelPackage</code> action.</p>"
         },
         "AdditionalS3DataSource":{
           "shape":"AdditionalS3DataSource",
@@ -36063,12 +37726,12 @@
         },
         "DisableGlueTableCreation":{
           "shape":"Boolean",
-          "documentation":"<p>Set to <code>True</code> to disable the automatic creation of an Amazon Web Services Glue table when configuring an <code>OfflineStore</code>. If set to <code>False</code>, Feature Store will name the <code>OfflineStore</code> Glue table following <a href=\"https://docs.aws.amazon.com/athena/latest/ug/tables-databases-columns-names.html\">Athena's naming recommendations</a>.</p> <p>The default value is <code>False</code>.</p>",
+          "documentation":"<p>Set to <code>True</code> to disable the automatic creation of an Amazon Web Services Glue table when configuring an <code>OfflineStore</code>. If set to <code>True</code> and <code>DataCatalogConfig</code> is provided, Feature Store associates the provided catalog configuration with the feature group without creating a table. In this case, you are responsible for creating and managing the Glue table. If set to <code>True</code> without <code>DataCatalogConfig</code>, no Glue table is created or associated with the feature group. The <code>Iceberg</code> table format is only supported when this is set to <code>False</code>.</p> <p>If set to <code>False</code> and <code>DataCatalogConfig</code> is provided, Feature Store creates the table using the specified names. If set to <code>False</code> without <code>DataCatalogConfig</code>, Feature Store auto-generates the table name following <a href=\"https://docs.aws.amazon.com/athena/latest/ug/tables-databases-columns-names.html\">Athena's naming recommendations</a>. This applies to both Glue and Apache Iceberg table formats.</p> <p>The default value is <code>False</code>.</p>",
           "box":true
         },
         "DataCatalogConfig":{
           "shape":"DataCatalogConfig",
-          "documentation":"<p>The meta data of the Glue table that is autogenerated when an <code>OfflineStore</code> is created. </p>"
+          "documentation":"<p>The meta data of the Glue table for the <code>OfflineStore</code>. If not provided, Feature Store auto-generates the table name, database, and catalog when the <code>OfflineStore</code> is created. You can optionally provide this configuration to specify custom values. This applies to both Glue and Apache Iceberg table formats.</p>"
         },
         "TableFormat":{
           "shape":"TableFormat",
@@ -36331,6 +37994,12 @@
         "ml.p5.48xlarge",
         "ml.p5e.48xlarge",
         "ml.p5en.48xlarge",
+        "ml.g4dn.xlarge",
+        "ml.g4dn.2xlarge",
+        "ml.g4dn.4xlarge",
+        "ml.g4dn.8xlarge",
+        "ml.g4dn.12xlarge",
+        "ml.g4dn.16xlarge",
         "ml.g5.xlarge",
         "ml.g5.2xlarge",
         "ml.g5.4xlarge",
@@ -37008,6 +38677,10 @@
         "InstanceType":{
           "shape":"ProductionVariantInstanceType",
           "documentation":"<p>The type of instances associated with the variant.</p>"
+        },
+        "InstancePools":{
+          "shape":"InstancePoolSummaryList",
+          "documentation":"<p>A list of instance pools for the production variant. Each pool indicates the instance type and the current number of instances of that type.</p>"
         },
         "AcceleratorType":{
           "shape":"ProductionVariantAcceleratorType",
@@ -38325,6 +39998,14 @@
           "shape":"ProductionVariantInstanceType",
           "documentation":"<p>The ML compute instance type.</p>"
         },
+        "InstancePools":{
+          "shape":"InstancePoolList",
+          "documentation":"<p>A list of instance pools for the production variant. Each instance pool specifies an instance type and its priority for provisioning. Use instance pools to configure heterogeneous endpoints that deploy models across multiple instance types.</p>"
+        },
+        "VariantInstanceProvisionTimeoutInSeconds":{
+          "shape":"VariantInstanceProvisionTimeoutInSeconds",
+          "documentation":"<p>The timeout value, in seconds, for provisioning instances for the production variant. When SageMaker encounters an insufficient capacity error while provisioning instances, it retries with the next instance pool (if configured) or waits until the timeout expires. This timeout applies only to capacity provisioning and does not include the time for model download or container startup.</p> <p>Valid values: 300 to 3600.</p>"
+        },
         "InitialVariantWeight":{
           "shape":"VariantWeight",
           "documentation":"<p>Determines initial traffic distribution among all of the models that you specify in the endpoint configuration. The traffic to a production variant is determined by the ratio of the <code>VariantWeight</code> to the sum of all <code>VariantWeight</code> values across all ProductionVariants. If unspecified, it defaults to 1.0. </p>"
@@ -38894,6 +40575,10 @@
         "DesiredInstanceCount":{
           "shape":"TaskCount",
           "documentation":"<p>The number of instances requested in the <code>UpdateEndpointWeightsAndCapacities</code> request. </p>"
+        },
+        "InstancePools":{
+          "shape":"InstancePoolSummaryList",
+          "documentation":"<p>A list of instance pools for the production variant. Each pool indicates the instance type and the current number of instances of that type.</p>"
         },
         "VariantStatus":{
           "shape":"ProductionVariantStatusList",
@@ -42610,6 +44295,46 @@
         "Failed",
         "Succeeded"
       ]
+    },
+    "StopAIBenchmarkJobRequest":{
+      "type":"structure",
+      "required":["AIBenchmarkJobName"],
+      "members":{
+        "AIBenchmarkJobName":{
+          "shape":"AIEntityName",
+          "documentation":"<p>The name of the AI benchmark job to stop.</p>"
+        }
+      }
+    },
+    "StopAIBenchmarkJobResponse":{
+      "type":"structure",
+      "required":["AIBenchmarkJobArn"],
+      "members":{
+        "AIBenchmarkJobArn":{
+          "shape":"AIBenchmarkJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the stopped benchmark job.</p>"
+        }
+      }
+    },
+    "StopAIRecommendationJobRequest":{
+      "type":"structure",
+      "required":["AIRecommendationJobName"],
+      "members":{
+        "AIRecommendationJobName":{
+          "shape":"AIEntityName",
+          "documentation":"<p>The name of the AI recommendation job to stop.</p>"
+        }
+      }
+    },
+    "StopAIRecommendationJobResponse":{
+      "type":"structure",
+      "required":["AIRecommendationJobArn"],
+      "members":{
+        "AIRecommendationJobArn":{
+          "shape":"AIRecommendationJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the stopped recommendation job.</p>"
+        }
+      }
     },
     "StopAutoMLJobRequest":{
       "type":"structure",
@@ -46898,6 +48623,10 @@
           "shape":"InferenceComponentSpecification",
           "documentation":"<p>Details about the resources to deploy with this inference component, including the model, container, and compute resources.</p>"
         },
+        "Specifications":{
+          "shape":"InferenceComponentSpecificationList",
+          "documentation":"<p>A list of specification objects for the inference component, one per instance type. Use this parameter when you want to specify different model or resource configurations for the inference component on each instance type. You can use either this parameter or the singular <code>Specification</code> parameter, but not both.</p>"
+        },
         "RuntimeConfig":{
           "shape":"InferenceComponentRuntimeConfig",
           "documentation":"<p>Runtime settings for a model that is deployed with an inference component.</p>"
@@ -48005,6 +49734,12 @@
       "max":1,
       "min":0
     },
+    "VariantInstanceProvisionTimeoutInSeconds":{
+      "type":"integer",
+      "box":true,
+      "max":3600,
+      "min":300
+    },
     "VariantName":{
       "type":"string",
       "max":63,
@@ -48449,6 +50184,17 @@
     "Workforces":{
       "type":"list",
       "member":{"shape":"Workforce"}
+    },
+    "WorkloadSpec":{
+      "type":"structure",
+      "members":{
+        "Inline":{
+          "shape":"String",
+          "documentation":"<p>An inline YAML or JSON string that defines benchmark parameters.</p>"
+        }
+      },
+      "documentation":"<p>The workload specification for benchmark tool configuration. Provide an inline YAML or JSON string.</p>",
+      "union":true
     },
     "WorkspaceSettings":{
       "type":"structure",

@@ -169,6 +169,12 @@ class TestTransferMeta(unittest.TestCase):
         self.transfer_meta.user_context['foo'] = 'bar'
         self.assertEqual(self.transfer_meta.user_context, {'foo': 'bar'})
 
+    def test_full_object_checksum(self):
+        self.assertIsNone(self.transfer_meta.full_object_checksum)
+        checksum = object()
+        self.transfer_meta.provide_full_object_checksum(checksum)
+        self.assertIs(self.transfer_meta.full_object_checksum, checksum)
+
 
 class TestTransferCoordinator(unittest.TestCase):
     def setUp(self):

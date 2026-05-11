@@ -133,6 +133,18 @@
       "documentation":"<p>The channel policy to delete.</p>",
       "idempotent":true
     },
+    "DeleteFunction":{
+      "name":"DeleteFunction",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/function/{FunctionId}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteFunctionRequest"},
+      "output":{"shape":"DeleteFunctionResponse"},
+      "documentation":"<p>Deletes a function. MediaTailor prevents deletion of a function that is still referenced by a playback configuration or by another function. Remove all references before deleting. For more information about functions, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/monetization-functions.html\">Working with functions</a> in the <i>MediaTailor User Guide</i>.</p>",
+      "idempotent":true
+    },
     "DeleteLiveSource":{
       "name":"DeleteLiveSource",
       "http":{
@@ -289,6 +301,18 @@
       "documentation":"<p>Retrieves information about your channel's schedule.</p>",
       "readonly":true
     },
+    "GetFunction":{
+      "name":"GetFunction",
+      "http":{
+        "method":"GET",
+        "requestUri":"/function/{FunctionId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetFunctionRequest"},
+      "output":{"shape":"GetFunctionResponse"},
+      "documentation":"<p>Retrieves the configuration and metadata for a function. For more information about functions, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/monetization-functions.html\">Working with functions</a> in the <i>MediaTailor User Guide</i>.</p>",
+      "readonly":true
+    },
     "GetPlaybackConfiguration":{
       "name":"GetPlaybackConfiguration",
       "http":{
@@ -335,6 +359,18 @@
       "input":{"shape":"ListChannelsRequest"},
       "output":{"shape":"ListChannelsResponse"},
       "documentation":"<p>Retrieves information about the channels that are associated with the current AWS account.</p>",
+      "readonly":true
+    },
+    "ListFunctions":{
+      "name":"ListFunctions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/functions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListFunctionsRequest"},
+      "output":{"shape":"ListFunctionsResponse"},
+      "documentation":"<p>Retrieves all functions associated with your AWS account in the current Region. For more information about functions, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/monetization-functions.html\">Working with functions</a> in the <i>MediaTailor User Guide</i>.</p>",
       "readonly":true
     },
     "ListLiveSources":{
@@ -422,6 +458,18 @@
       "input":{"shape":"PutChannelPolicyRequest"},
       "output":{"shape":"PutChannelPolicyResponse"},
       "documentation":"<p>Creates an IAM policy for the channel. IAM policies are used to control access to your channel.</p>",
+      "idempotent":true
+    },
+    "PutFunction":{
+      "name":"PutFunction",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/function/{FunctionId}",
+        "responseCode":200
+      },
+      "input":{"shape":"PutFunctionRequest"},
+      "output":{"shape":"PutFunctionResponse"},
+      "documentation":"<p>Creates or updates a function. A function defines reusable logic that MediaTailor executes at lifecycle hooks during ad insertion. For more information about functions, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/monetization-functions.html\">Working with functions</a> in the <i>MediaTailor User Guide</i>.</p>",
       "idempotent":true
     },
     "PutPlaybackConfiguration":{
@@ -703,7 +751,9 @@
         "VOD_TIME_BASED_AVAIL_PLAN_SUCCESS",
         "VOD_TIME_BASED_AVAIL_PLAN_WARNING_NO_ADVERTISEMENTS",
         "INTERSTITIAL_VOD_SUCCESS",
-        "INTERSTITIAL_VOD_FAILURE"
+        "INTERSTITIAL_VOD_FAILURE",
+        "PRE_ADS_REQUEST_HOOK_ERROR",
+        "PRE_ADS_REQUEST_FUNCTION_ERROR"
       ]
     },
     "AdsInteractionLog":{
@@ -724,7 +774,9 @@
       "type":"string",
       "enum":[
         "RAW_ADS_RESPONSE",
-        "RAW_ADS_REQUEST"
+        "RAW_ADS_REQUEST",
+        "PRE_ADS_REQUEST_HOOK_SUMMARY",
+        "PRE_ADS_REQUEST_FUNCTION_COMPLETED"
       ]
     },
     "Alert":{
@@ -1347,7 +1399,7 @@
         },
         "Tags":{
           "shape":"__mapOf__string",
-          "documentation":"<p>The tags to assign to the prefetch schedule. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html\">Tagging AWS Elemental MediaTailor Resources</a>.</p>",
+          "documentation":"<p>The tags assigned to the prefetch schedule. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html\">Tagging AWS Elemental MediaTailor Resources</a>.</p>",
           "locationName":"tags"
         }
       }
@@ -1457,7 +1509,7 @@
         },
         "Tags":{
           "shape":"__mapOf__string",
-          "documentation":"<p>The tags to assign to the program. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html\">Tagging AWS Elemental MediaTailor Resources</a>.</p>",
+          "documentation":"<p>The tags assigned to the program. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html\">Tagging AWS Elemental MediaTailor Resources</a>.</p>",
           "locationName":"tags"
         }
       }
@@ -1605,6 +1657,21 @@
         }
       }
     },
+    "CustomOutputConfiguration":{
+      "type":"structure",
+      "required":["Runtime"],
+      "members":{
+        "Runtime":{
+          "shape":"RuntimeType",
+          "documentation":"<p>The expression language used to evaluate expressions in the function configuration. Set this to <code>JSONata</code>.</p>"
+        },
+        "Output":{
+          "shape":"__mapOf__string",
+          "documentation":"<p>A map of output bindings. Each key is a namespaced output path (such as <code>player_params.device_type</code> or <code>temp.variant</code>), and each value is an expression that MediaTailor evaluates at runtime against the current session state. For more information about expression syntax, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/monetization-functions-jsonata.html\">JSONata expression reference</a> in the <i>MediaTailor User Guide</i>.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a <code>CUSTOM_OUTPUT</code> function. MediaTailor evaluates the output expressions against the current session state and commits the results as output bindings. <code>CUSTOM_OUTPUT</code> functions do not make external calls. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/monetization-functions-types-custom-output.html\">CUSTOM_OUTPUT</a> in the <i>MediaTailor User Guide</i>.</p>"
+    },
     "DashConfiguration":{
       "type":"structure",
       "members":{
@@ -1698,6 +1765,22 @@
       }
     },
     "DeleteChannelResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteFunctionRequest":{
+      "type":"structure",
+      "required":["FunctionId"],
+      "members":{
+        "FunctionId":{
+          "shape":"__string",
+          "documentation":"<p>The identifier of the function to delete.</p>",
+          "location":"uri",
+          "locationName":"FunctionId"
+        }
+      }
+    },
+    "DeleteFunctionResponse":{
       "type":"structure",
       "members":{}
     },
@@ -2151,11 +2234,89 @@
         }
       }
     },
+    "EventName":{
+      "type":"string",
+      "enum":[
+        "PRE_SESSION_INITIALIZATION",
+        "PRE_ADS_REQUEST"
+      ]
+    },
     "FillPolicy":{
       "type":"string",
       "enum":[
         "FULL_AVAIL_ONLY",
         "PARTIAL_AVAIL"
+      ]
+    },
+    "Function":{
+      "type":"structure",
+      "required":[
+        "FunctionId",
+        "FunctionType"
+      ],
+      "members":{
+        "FunctionId":{
+          "shape":"__string",
+          "documentation":"<p>The identifier of the function.</p>"
+        },
+        "FunctionType":{
+          "shape":"FunctionType",
+          "documentation":"<p>The type of the function.</p>"
+        },
+        "Description":{
+          "shape":"__string",
+          "documentation":"<p>A description of the function.</p>"
+        },
+        "HttpRequestConfiguration":{
+          "shape":"HttpRequestConfiguration",
+          "documentation":"<p>The configuration for an <code>HTTP_REQUEST</code> function.</p>"
+        },
+        "CustomOutputConfiguration":{
+          "shape":"CustomOutputConfiguration",
+          "documentation":"<p>The configuration for a <code>CUSTOM_OUTPUT</code> function.</p>"
+        },
+        "SequentialExecutorConfiguration":{
+          "shape":"SequentialExecutorConfiguration",
+          "documentation":"<p>The configuration for a <code>SEQUENTIAL_EXECUTOR</code> function.</p>"
+        },
+        "Tags":{
+          "shape":"__mapOf__string",
+          "documentation":"<p>The tags assigned to the function. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html\">Tagging AWS Elemental MediaTailor Resources</a>.</p>",
+          "locationName":"tags"
+        },
+        "Arn":{
+          "shape":"__string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the function.</p>"
+        }
+      },
+      "documentation":"<p>-- Define Mixin --</p>"
+    },
+    "FunctionMapping":{
+      "type":"map",
+      "key":{"shape":"EventName"},
+      "value":{"shape":"__string"}
+    },
+    "FunctionRef":{
+      "type":"structure",
+      "members":{
+        "RunCondition":{
+          "shape":"__string",
+          "documentation":"<p>An optional expression that evaluates to a boolean. MediaTailor evaluates this expression immediately before running the step, using the accumulated state at that point in the sequence. If the expression evaluates to <code>false</code>, MediaTailor skips the step and moves to the next one. If omitted, the step always runs.</p>"
+        },
+        "FunctionId":{
+          "shape":"__string",
+          "documentation":"<p>The identifier of the child function to execute in this step.</p>"
+        }
+      },
+      "documentation":"<p>A reference to a child function within a <code>SEQUENTIAL_EXECUTOR</code> function.</p>"
+    },
+    "FunctionType":{
+      "type":"string",
+      "documentation":"<p>-- Define Enums</p>",
+      "enum":[
+        "HTTP_REQUEST",
+        "CUSTOM_OUTPUT",
+        "SEQUENTIAL_EXECUTOR"
       ]
     },
     "GetChannelPolicyRequest":{
@@ -2227,6 +2388,62 @@
           "documentation":"<p>Pagination token returned by the list request when results exceed the maximum allowed. Use the token to fetch the next page of results.</p>"
         }
       }
+    },
+    "GetFunctionRequest":{
+      "type":"structure",
+      "required":["FunctionId"],
+      "members":{
+        "FunctionId":{
+          "shape":"__string",
+          "documentation":"<p>The identifier of the function.</p>",
+          "location":"uri",
+          "locationName":"FunctionId"
+        }
+      },
+      "documentation":"<p>-- Request/Response DataStructures --</p>"
+    },
+    "GetFunctionResponse":{
+      "type":"structure",
+      "required":[
+        "FunctionId",
+        "FunctionType"
+      ],
+      "members":{
+        "FunctionId":{
+          "shape":"__string",
+          "documentation":"<p>The identifier of the function.</p>"
+        },
+        "FunctionType":{
+          "shape":"FunctionType",
+          "documentation":"<p>The type of the function.</p>"
+        },
+        "Description":{
+          "shape":"__string",
+          "documentation":"<p>A description of the function.</p>"
+        },
+        "HttpRequestConfiguration":{
+          "shape":"HttpRequestConfiguration",
+          "documentation":"<p>The configuration for an <code>HTTP_REQUEST</code> function.</p>"
+        },
+        "CustomOutputConfiguration":{
+          "shape":"CustomOutputConfiguration",
+          "documentation":"<p>The configuration for a <code>CUSTOM_OUTPUT</code> function.</p>"
+        },
+        "SequentialExecutorConfiguration":{
+          "shape":"SequentialExecutorConfiguration",
+          "documentation":"<p>The configuration for a <code>SEQUENTIAL_EXECUTOR</code> function.</p>"
+        },
+        "Tags":{
+          "shape":"__mapOf__string",
+          "documentation":"<p>The tags assigned to the function. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html\">Tagging AWS Elemental MediaTailor Resources</a>.</p>",
+          "locationName":"tags"
+        },
+        "Arn":{
+          "shape":"__string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the function.</p>"
+        }
+      },
+      "documentation":"<p>-- Define Mixin --</p>"
     },
     "GetPlaybackConfigurationRequest":{
       "type":"structure",
@@ -2331,6 +2548,10 @@
         "AdDecisionServerConfiguration":{
           "shape":"AdDecisionServerConfiguration",
           "documentation":"<p>The configuration for customizing HTTP requests to the ad decision server (ADS). This includes settings for request method, headers, body content, and compression options.</p>"
+        },
+        "FunctionMapping":{
+          "shape":"FunctionMapping",
+          "documentation":"<p>A map of lifecycle hook event names to function identifiers. The function mapping specifies which function MediaTailor executes at each lifecycle hook during ad insertion. Valid keys are <code>PRE_SESSION_INITIALIZATION</code> and <code>PRE_ADS_REQUEST</code>. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/monetization-functions-hooks.html\">Functions lifecycle hooks</a> in the <i>MediaTailor User Guide</i>.</p>"
         }
       }
     },
@@ -2482,6 +2703,46 @@
       },
       "documentation":"<p>HTTP request configuration parameters that define how MediaTailor communicates with the ad decision server.</p>"
     },
+    "HttpRequestConfiguration":{
+      "type":"structure",
+      "required":[
+        "Runtime",
+        "MethodType",
+        "RequestTimeoutMilliseconds",
+        "Url"
+      ],
+      "members":{
+        "Runtime":{
+          "shape":"RuntimeType",
+          "documentation":"<p>The expression language used to evaluate expressions in the function configuration. Set this to <code>JSONata</code>.</p>"
+        },
+        "Output":{
+          "shape":"__mapOf__string",
+          "documentation":"<p>A map of output bindings. Each key is a namespaced output path (such as <code>player_params.device_type</code> or <code>temp.identity</code>), and each value is an expression that MediaTailor evaluates at runtime. Output expressions in an <code>HTTP_REQUEST</code> function can reference the <code>response</code> object returned by the HTTP call. For more information about expression syntax, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/monetization-functions-jsonata.html\">JSONata expression reference</a> in the <i>MediaTailor User Guide</i>.</p>"
+        },
+        "MethodType":{
+          "shape":"MethodType",
+          "documentation":"<p>The HTTP method for the request. Valid values: <code>GET</code> and <code>POST</code>.</p>"
+        },
+        "RequestTimeoutMilliseconds":{
+          "shape":"__integer",
+          "documentation":"<p>The maximum time, in milliseconds, that MediaTailor waits for a response from the external service. If the call exceeds this timeout, MediaTailor sets the response status code to <code>null</code> and proceeds with output expression evaluation. Valid values: <code>100</code> to <code>2000</code>.</p>"
+        },
+        "Url":{
+          "shape":"__string",
+          "documentation":"<p>An expression that evaluates to the request URL. Use <code>{%...%}</code> delimiters for dynamic expressions. The maximum length after evaluation is 2,048 characters.</p>"
+        },
+        "Body":{
+          "shape":"__string",
+          "documentation":"<p>An expression that evaluates to the request body. Used with <code>POST</code> requests. The maximum size after evaluation is 64 KB.</p>"
+        },
+        "Headers":{
+          "shape":"__mapOf__string",
+          "documentation":"<p>A map of HTTP header names to expression values. MediaTailor evaluates each header value expression at runtime and includes the result in the outbound HTTP request. Maximum 50 headers.</p>"
+        }
+      },
+      "documentation":"<p>-- Function Configuration DataStructure</p>"
+    },
     "InsertionMode":{
       "type":"string",
       "documentation":"<p>Insertion Mode controls whether players can use stitched or guided ad insertion.</p>",
@@ -2576,6 +2837,36 @@
         "NextToken":{
           "shape":"__string",
           "documentation":"<p>Pagination token returned by the list request when results exceed the maximum allowed. Use the token to fetch the next page of results.</p>"
+        }
+      }
+    },
+    "ListFunctionsRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of functions that you want MediaTailor to return in response to the current request. If there are more than <code>MaxResults</code> functions, use the value of <code>NextToken</code> in the response to get the next page of results.</p> <p>The default value is 100. MediaTailor uses token-based pagination, which means that a response might contain fewer than <code>MaxResults</code> items, including 0 items, even when more results are available. To retrieve all results, you must continue making requests using the <code>NextToken</code> value from each response until the response no longer includes a <code>NextToken</code> value.</p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        },
+        "NextToken":{
+          "shape":"__string",
+          "documentation":"<p>Pagination token returned by the list request when results exceed the maximum allowed. Use the token to fetch the next page of results.</p> <p>For the first <code>ListFunctions</code> request, omit this value. For subsequent requests, get the value of <code>NextToken</code> from the previous response and specify that value for <code>NextToken</code> in the request. Continue making requests until the response no longer includes a <code>NextToken</code> value, which indicates that all results have been retrieved.</p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        }
+      }
+    },
+    "ListFunctionsResponse":{
+      "type":"structure",
+      "members":{
+        "Items":{
+          "shape":"__listOfFunctionsResponse",
+          "documentation":"<p>A list of functions associated with your account in the current Region.</p>"
+        },
+        "NextToken":{
+          "shape":"__string",
+          "documentation":"<p>Pagination token returned by the list request when results exceed the maximum allowed. Use the token to fetch the next page of results.</p> <p>For the first <code>ListFunctions</code> request, omit this value. For subsequent requests, get the value of <code>NextToken</code> from the previous response and specify that value for <code>NextToken</code> in the request. Continue making requests until the response no longer includes a <code>NextToken</code> value, which indicates that all results have been retrieved.</p>"
         }
       }
     },
@@ -2938,18 +3229,31 @@
         "ERROR_SLATE_AD_URL_INTERPOLATION",
         "ERROR_PROFILE_NAME_INTERPOLATION",
         "ERROR_BUMPER_START_INTERPOLATION",
-        "ERROR_BUMPER_END_INTERPOLATION"
+        "ERROR_BUMPER_END_INTERPOLATION",
+        "PRE_SESSION_INIT_HOOK_ERROR",
+        "PRE_SESSION_INIT_FUNCTION_ERROR"
       ]
     },
     "ManifestServiceInteractionLog":{
       "type":"structure",
       "members":{
+        "PublishOptInEventTypes":{
+          "shape":"__manifestServicePublishOptInEventTypesList",
+          "documentation":"<p>Indicates that MediaTailor will emit the selected events in the logs for playback sessions that are initialized with this configuration. These events are not emitted by default and must be explicitly opted in.</p>"
+        },
         "ExcludeEventTypes":{
           "shape":"__manifestServiceExcludeEventTypesList",
           "documentation":"<p>Indicates that MediaTailor won't emit the selected events in the logs for playback sessions that are initialized with this configuration.</p>"
         }
       },
       "documentation":"<p>Settings for customizing what events are included in logs for interactions with the origin server.</p> <p>For more information about manifest service logs, including descriptions of the event types, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/log-types.html\">MediaTailor manifest logs description and event types</a> in Elemental MediaTailor User Guide.</p>"
+    },
+    "ManifestServicePublishOptInEventType":{
+      "type":"string",
+      "enum":[
+        "PRE_SESSION_INIT_HOOK_SUMMARY",
+        "PRE_SESSION_INIT_FUNCTION_COMPLETED"
+      ]
     },
     "MaxResults":{
       "type":"integer",
@@ -2965,6 +3269,13 @@
       ]
     },
     "Method":{
+      "type":"string",
+      "enum":[
+        "GET",
+        "POST"
+      ]
+    },
+    "MethodType":{
       "type":"string",
       "enum":[
         "GET",
@@ -3078,7 +3389,11 @@
           "shape":"AdConditioningConfiguration",
           "documentation":"<p>The setting that indicates what conditioning MediaTailor will perform on ads that the ad decision server (ADS) returns, and what priority MediaTailor uses when inserting ads.</p>"
         },
-        "AdDecisionServerConfiguration":{"shape":"AdDecisionServerConfiguration"}
+        "AdDecisionServerConfiguration":{"shape":"AdDecisionServerConfiguration"},
+        "FunctionMapping":{
+          "shape":"FunctionMapping",
+          "documentation":"<p>A map of lifecycle hook event names to function identifiers. The function mapping specifies which function MediaTailor executes at each lifecycle hook during ad insertion. Valid keys are <code>PRE_SESSION_INITIALIZATION</code> and <code>PRE_ADS_REQUEST</code>. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/monetization-functions-hooks.html\">Functions lifecycle hooks</a> in the <i>MediaTailor User Guide</i>.</p>"
+        }
       },
       "documentation":"<p>A playback configuration. For information about MediaTailor configurations, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/configurations.html\">Working with configurations in AWS Elemental MediaTailor</a>.</p>"
     },
@@ -3217,6 +3532,90 @@
       "type":"structure",
       "members":{}
     },
+    "PutFunctionRequest":{
+      "type":"structure",
+      "required":[
+        "FunctionId",
+        "FunctionType"
+      ],
+      "members":{
+        "FunctionId":{
+          "shape":"__string",
+          "documentation":"<p>The identifier of the function. The identifier must be unique within your account.</p>",
+          "location":"uri",
+          "locationName":"FunctionId"
+        },
+        "FunctionType":{
+          "shape":"FunctionType",
+          "documentation":"<p>The type of the function. The function type determines what the function can do at runtime. Valid values: <code>CUSTOM_OUTPUT</code> evaluates expressions and produces output bindings with no external calls. <code>HTTP_REQUEST</code> makes an HTTP call to an external service and evaluates output expressions that can reference the response. <code>SEQUENTIAL_EXECUTOR</code> runs a sequence of child functions in order, passing data between steps through temporary data. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/monetization-functions-types.html\">Function types and composition</a> in the <i>MediaTailor User Guide</i>.</p>"
+        },
+        "Description":{
+          "shape":"__string",
+          "documentation":"<p>A description of the function.</p>"
+        },
+        "HttpRequestConfiguration":{
+          "shape":"HttpRequestConfiguration",
+          "documentation":"<p>The configuration for an <code>HTTP_REQUEST</code> function. Specifies the HTTP method, URL, headers, body, timeout, and output expressions. Required when <code>FunctionType</code> is <code>HTTP_REQUEST</code>.</p>"
+        },
+        "CustomOutputConfiguration":{
+          "shape":"CustomOutputConfiguration",
+          "documentation":"<p>The configuration for a <code>CUSTOM_OUTPUT</code> function. Specifies the runtime and output expressions. Required when <code>FunctionType</code> is <code>CUSTOM_OUTPUT</code>.</p>"
+        },
+        "SequentialExecutorConfiguration":{
+          "shape":"SequentialExecutorConfiguration",
+          "documentation":"<p>The configuration for a <code>SEQUENTIAL_EXECUTOR</code> function. Specifies the ordered list of child functions to execute, an optional output block, and a timeout. Required when <code>FunctionType</code> is <code>SEQUENTIAL_EXECUTOR</code>.</p>"
+        },
+        "Tags":{
+          "shape":"__mapOf__string",
+          "documentation":"<p>The tags to assign to the function. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html\">Tagging AWS Elemental MediaTailor Resources</a>.</p>",
+          "locationName":"tags"
+        }
+      },
+      "documentation":"<p>-- Define Mixin --</p>"
+    },
+    "PutFunctionResponse":{
+      "type":"structure",
+      "required":[
+        "FunctionId",
+        "FunctionType"
+      ],
+      "members":{
+        "FunctionId":{
+          "shape":"__string",
+          "documentation":"<p>The identifier of the function.</p>"
+        },
+        "FunctionType":{
+          "shape":"FunctionType",
+          "documentation":"<p>The type of the function.</p>"
+        },
+        "Description":{
+          "shape":"__string",
+          "documentation":"<p>A description of the function.</p>"
+        },
+        "HttpRequestConfiguration":{
+          "shape":"HttpRequestConfiguration",
+          "documentation":"<p>The configuration for an <code>HTTP_REQUEST</code> function.</p>"
+        },
+        "CustomOutputConfiguration":{
+          "shape":"CustomOutputConfiguration",
+          "documentation":"<p>The configuration for a <code>CUSTOM_OUTPUT</code> function.</p>"
+        },
+        "SequentialExecutorConfiguration":{
+          "shape":"SequentialExecutorConfiguration",
+          "documentation":"<p>The configuration for a <code>SEQUENTIAL_EXECUTOR</code> function.</p>"
+        },
+        "Tags":{
+          "shape":"__mapOf__string",
+          "documentation":"<p>The tags assigned to the function. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html\">Tagging AWS Elemental MediaTailor Resources</a>.</p>",
+          "locationName":"tags"
+        },
+        "Arn":{
+          "shape":"__string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the function.</p>"
+        }
+      },
+      "documentation":"<p>-- Define Mixin --</p>"
+    },
     "PutPlaybackConfigurationRequest":{
       "type":"structure",
       "required":["Name"],
@@ -3289,6 +3688,10 @@
         "AdDecisionServerConfiguration":{
           "shape":"AdDecisionServerConfiguration",
           "documentation":"<p>The configuration for customizing HTTP requests to the ad decision server (ADS). This includes settings for request method, headers, body content, and compression options.</p>"
+        },
+        "FunctionMapping":{
+          "shape":"FunctionMapping",
+          "documentation":"<p>A map of lifecycle hook event names to function identifiers. The function mapping specifies which function MediaTailor executes at each lifecycle hook during ad insertion. Valid keys are <code>PRE_SESSION_INITIALIZATION</code> and <code>PRE_ADS_REQUEST</code>. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/monetization-functions-hooks.html\">Functions lifecycle hooks</a> in the <i>MediaTailor User Guide</i>.</p>"
         }
       }
     },
@@ -3383,6 +3786,10 @@
         "AdDecisionServerConfiguration":{
           "shape":"AdDecisionServerConfiguration",
           "documentation":"<p>The configuration for customizing HTTP requests to the ad decision server (ADS). This includes settings for request method, headers, body content, and compression options.</p>"
+        },
+        "FunctionMapping":{
+          "shape":"FunctionMapping",
+          "documentation":"<p>A map of lifecycle hook event names to function identifiers. The function mapping specifies which function MediaTailor executes at each lifecycle hook during ad insertion. Valid keys are <code>PRE_SESSION_INITIALIZATION</code> and <code>PRE_ADS_REQUEST</code>. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/monetization-functions-hooks.html\">Functions lifecycle hooks</a> in the <i>MediaTailor User Guide</i>.</p>"
         }
       }
     },
@@ -3525,6 +3932,10 @@
     "ResponseOutputs":{
       "type":"list",
       "member":{"shape":"ResponseOutputItem"}
+    },
+    "RuntimeType":{
+      "type":"string",
+      "enum":["JSONATA"]
     },
     "ScheduleAdBreak":{
       "type":"structure",
@@ -3700,6 +4111,33 @@
     "SegmentationDescriptorList":{
       "type":"list",
       "member":{"shape":"SegmentationDescriptor"}
+    },
+    "SequentialExecutorConfiguration":{
+      "type":"structure",
+      "required":[
+        "Runtime",
+        "FunctionList",
+        "TimeoutMilliseconds"
+      ],
+      "members":{
+        "Runtime":{
+          "shape":"RuntimeType",
+          "documentation":"<p>The expression language used to evaluate expressions in the function configuration. Set this to <code>JSONata</code>.</p>"
+        },
+        "Output":{
+          "shape":"__mapOf__string",
+          "documentation":"<p>An optional map of output bindings that controls which bindings the sequence commits to the session state after all steps complete. If omitted, MediaTailor commits all accumulated output bindings from all child steps.</p>"
+        },
+        "FunctionList":{
+          "shape":"__listOfFunctionsRef",
+          "documentation":"<p>An ordered list of 1 to 10 steps. Each step specifies a child function to execute and an optional run condition expression that controls whether the step runs. MediaTailor executes steps in order, passing data between steps through temporary data.</p>"
+        },
+        "TimeoutMilliseconds":{
+          "shape":"__integer",
+          "documentation":"<p>The maximum time, in milliseconds, for the entire sequence to complete. This timeout covers all steps, including any HTTP calls made by child functions. If the sequence exceeds this timeout, MediaTailor discards all output from the sequence and proceeds with default behavior.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a <code>SEQUENTIAL_EXECUTOR</code> function. A <code>SEQUENTIAL_EXECUTOR</code> runs a sequence of child functions in order, passing data between steps through temporary data. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/monetization-functions-types-sequential-executor.html\">SEQUENTIAL_EXECUTOR</a> in the <i>MediaTailor User Guide</i>.</p>"
     },
     "SlateSource":{
       "type":"structure",
@@ -4457,6 +4895,14 @@
       "type":"list",
       "member":{"shape":"Channel"}
     },
+    "__listOfFunctionsRef":{
+      "type":"list",
+      "member":{"shape":"FunctionRef"}
+    },
+    "__listOfFunctionsResponse":{
+      "type":"list",
+      "member":{"shape":"Function"}
+    },
     "__listOfLiveSource":{
       "type":"list",
       "member":{"shape":"LiveSource"}
@@ -4504,6 +4950,10 @@
     "__manifestServiceExcludeEventTypesList":{
       "type":"list",
       "member":{"shape":"ManifestServiceExcludeEventType"}
+    },
+    "__manifestServicePublishOptInEventTypesList":{
+      "type":"list",
+      "member":{"shape":"ManifestServicePublishOptInEventType"}
     },
     "__mapOf__string":{
       "type":"map",

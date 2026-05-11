@@ -29,13 +29,15 @@ from prompt_toolkit.validation import (
 )
 
 from awscli.customizations.configure.sso import (
-    ConfigureSSOCommand,
-    ConfigureSSOSessionCommand,
     PTKPrompt,
     RequiredInputValidator,
     ScopesValidator,
     SSOSessionConfigurationPrompter,
     StartUrlValidator,
+)
+from awscli.customizations.configure.sso_commands import (
+    ConfigureSSOCommand,
+    ConfigureSSOSessionCommand,
     display_account,
     get_account_sorting_key,
 )
@@ -363,11 +365,15 @@ def account_id_select(account_id):
         expected_choices=sorted(
             [
                 selected_account,
-                {"accountId": "1234567890", "emailAddress": "account2@site.com"},
+                {
+                    "accountId": "1234567890",
+                    "emailAddress": "account2@site.com",
+                },
             ],
             key=get_account_sorting_key,
-        )
+        ),
     )
+
 
 @pytest.fixture
 def role_name_select(role_name):
@@ -636,7 +642,7 @@ class UserInput:
 @dataclasses.dataclass
 class Prompt(UserInput):
     expected_validator_cls: typing.Optional[Validator] = None
-    expected_completions: typing.Optional[typing.List[str]] = None
+    expected_completions: typing.Optional[list[str]] = None
     _expected_message: typing.Optional[str] = dataclasses.field(
         init=False, repr=False, default=None
     )
@@ -739,7 +745,7 @@ class ProfilePrompt(PromptWithDefault):
 
 @dataclasses.dataclass
 class SelectMenu(UserInput):
-    expected_choices: typing.Optional[typing.List[typing.Any]] = None
+    expected_choices: typing.Optional[list[typing.Any]] = None
 
 
 @dataclasses.dataclass
@@ -2239,8 +2245,6 @@ def passes_validator(validator, text):
         (ScopesValidator, "value-1, value-2 value3", None, False),
     ],
 )
-
-
 def test_validators(validator_cls, input_value, default, is_valid):
     validator = validator_cls(default)
     assert passes_validator(validator, input_value) == is_valid

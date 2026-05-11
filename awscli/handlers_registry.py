@@ -21,35 +21,18 @@ Entry formats:
    (module, fn_name, 'init')    call fn(event_handlers)
    (module, fn_name, 'direct')  event_handlers.register(event_pattern, fn)
 """
-
 PLUGIN_REGISTRY = {
     'after-call.data-pipeline.GetPipelineDefinition': [
-        (
-            'awscli.customizations.datapipeline',
-            'register_customizations',
-            'init',
-        )
+        ('awscli.customizations.datapipeline', 'register_customizations', 'init')
     ],
     'after-call.ecs.CreateExpressGatewayService': [
-        (
-            'awscli.customizations.ecs.monitormutatinggatewayservice',
-            'register_monitor_mutating_gateway_service',
-            'init',
-        )
+        ('awscli.customizations.ecs.monitormutatinggatewayservice', 'register_monitor_mutating_gateway_service', 'init')
     ],
     'after-call.ecs.DeleteExpressGatewayService': [
-        (
-            'awscli.customizations.ecs.monitormutatinggatewayservice',
-            'register_monitor_mutating_gateway_service',
-            'init',
-        )
+        ('awscli.customizations.ecs.monitormutatinggatewayservice', 'register_monitor_mutating_gateway_service', 'init')
     ],
     'after-call.ecs.UpdateExpressGatewayService': [
-        (
-            'awscli.customizations.ecs.monitormutatinggatewayservice',
-            'register_monitor_mutating_gateway_service',
-            'init',
-        )
+        ('awscli.customizations.ecs.monitormutatinggatewayservice', 'register_monitor_mutating_gateway_service', 'init')
     ],
     'after-call.iam.CreateVirtualMFADevice': [
         ('awscli.customizations.iamvirtmfa', 'IAMVMFAWrapper', 'init')
@@ -58,77 +41,37 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.s3errormsg', 'register_s3_error_msg', 'init')
     ],
     'before-building-argument-table-parser.ecs.create-express-gateway-service': [
-        (
-            'awscli.customizations.ecs.monitormutatinggatewayservice',
-            'register_monitor_mutating_gateway_service',
-            'init',
-        )
+        ('awscli.customizations.ecs.monitormutatinggatewayservice', 'register_monitor_mutating_gateway_service', 'init')
     ],
     'before-building-argument-table-parser.ecs.delete-express-gateway-service': [
-        (
-            'awscli.customizations.ecs.monitormutatinggatewayservice',
-            'register_monitor_mutating_gateway_service',
-            'init',
-        )
+        ('awscli.customizations.ecs.monitormutatinggatewayservice', 'register_monitor_mutating_gateway_service', 'init')
     ],
     'before-building-argument-table-parser.ecs.update-express-gateway-service': [
-        (
-            'awscli.customizations.ecs.monitormutatinggatewayservice',
-            'register_monitor_mutating_gateway_service',
-            'init',
-        )
+        ('awscli.customizations.ecs.monitormutatinggatewayservice', 'register_monitor_mutating_gateway_service', 'init')
     ],
     'before-building-argument-table-parser.emr.*': [
         ('awscli.customizations.emr.emr', 'emr_initialize', 'init')
     ],
     'before-parameter-build.ec2.BundleInstance': [
-        (
-            'awscli.customizations.ec2.bundleinstance',
-            'register_bundleinstance',
-            'init',
-        )
+        ('awscli.customizations.ec2.bundleinstance', 'register_bundleinstance', 'init')
     ],
     'before-parameter-build.ec2.CreateNetworkAclEntry': [
-        (
-            'awscli.customizations.ec2.protocolarg',
-            'register_protocol_args',
-            'init',
-        )
+        ('awscli.customizations.ec2.protocolarg', 'register_protocol_args', 'init')
     ],
     'before-parameter-build.ec2.ReplaceNetworkAclEntry': [
-        (
-            'awscli.customizations.ec2.protocolarg',
-            'register_protocol_args',
-            'init',
-        )
+        ('awscli.customizations.ec2.protocolarg', 'register_protocol_args', 'init')
     ],
     'before-parameter-build.ec2.RunInstances': [
-        (
-            'awscli.customizations.ec2.addcount',
-            'register_count_events',
-            'init',
-        ),
-        (
-            'awscli.customizations.ec2.runinstances',
-            'register_runinstances',
-            'init',
-        ),
+        ('awscli.customizations.ec2.addcount', 'register_count_events', 'init'),
+        ('awscli.customizations.ec2.runinstances', 'register_runinstances', 'init')
     ],
     'building-argument-table': [
         ('awscli.customizations.cliinput', 'register_cli_input_args', 'init'),
         ('awscli.customizations.paginate', 'register_pagination', 'init'),
-        (
-            'awscli.customizations.generatecliskeleton',
-            'register_generate_cli_skeleton',
-            'init',
-        ),
+        ('awscli.customizations.generatecliskeleton', 'register_generate_cli_skeleton', 'init')
     ],
     'building-argument-table.*': [
-        (
-            'awscli.customizations.streamingoutputarg',
-            'add_streaming_output_arg',
-            'direct',
-        )
+        ('awscli.customizations.streamingoutputarg', 'add_streaming_output_arg', 'direct')
     ],
     'building-argument-table.apigateway.create-rest-api': [
         ('awscli.customizations.argrename', 'register_arg_renames', 'init')
@@ -164,11 +107,7 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.argrename', 'register_arg_renames', 'init')
     ],
     'building-argument-table.cloudwatch.put-metric-data': [
-        (
-            'awscli.customizations.putmetricdata',
-            'register_put_metric_data',
-            'init',
-        )
+        ('awscli.customizations.putmetricdata', 'register_put_metric_data', 'init')
     ],
     'building-argument-table.codepipeline.create-custom-action-type': [
         ('awscli.customizations.argrename', 'register_arg_renames', 'init')
@@ -183,11 +122,7 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.argrename', 'register_arg_renames', 'init')
     ],
     'building-argument-table.configservice.put-configuration-recorder': [
-        (
-            'awscli.customizations.configservice.putconfigurationrecorder',
-            'register_modify_put_configuration_recorder',
-            'init',
-        )
+        ('awscli.customizations.configservice.putconfigurationrecorder', 'register_modify_put_configuration_recorder', 'init')
     ],
     'building-argument-table.controltower.create-landing-zone': [
         ('awscli.customizations.argrename', 'register_arg_renames', 'init')
@@ -199,133 +134,69 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.argrename', 'register_arg_renames', 'init')
     ],
     'building-argument-table.datapipeline.activate-pipeline': [
-        (
-            'awscli.customizations.datapipeline',
-            'register_customizations',
-            'init',
-        )
+        ('awscli.customizations.datapipeline', 'register_customizations', 'init')
     ],
     'building-argument-table.datapipeline.get-pipeline-definition': [
         ('awscli.customizations.argrename', 'register_arg_renames', 'init')
     ],
     'building-argument-table.datapipeline.put-pipeline-definition': [
-        (
-            'awscli.customizations.datapipeline',
-            'register_customizations',
-            'init',
-        )
+        ('awscli.customizations.datapipeline', 'register_customizations', 'init')
     ],
     'building-argument-table.deploy.*': [
         ('awscli.customizations.argrename', 'register_arg_renames', 'init')
     ],
     'building-argument-table.deploy.create-deployment': [
-        (
-            'awscli.customizations.codedeploy.codedeploy',
-            'register_deploy_customizations',
-            'init',
-        )
+        ('awscli.customizations.codedeploy.codedeploy', 'register_deploy_customizations', 'init')
     ],
     'building-argument-table.deploy.get-application-revision': [
-        (
-            'awscli.customizations.codedeploy.codedeploy',
-            'register_deploy_customizations',
-            'init',
-        )
+        ('awscli.customizations.codedeploy.codedeploy', 'register_deploy_customizations', 'init')
     ],
     'building-argument-table.deploy.register-application-revision': [
-        (
-            'awscli.customizations.codedeploy.codedeploy',
-            'register_deploy_customizations',
-            'init',
-        )
+        ('awscli.customizations.codedeploy.codedeploy', 'register_deploy_customizations', 'init')
     ],
     'building-argument-table.ec2.*': [
         ('awscli.customizations.argrename', 'register_arg_renames', 'init'),
-        ('awscli.customizations.toplevelbool', 'register_bool_params', 'init'),
+        ('awscli.customizations.toplevelbool', 'register_bool_params', 'init')
     ],
     'building-argument-table.ec2.authorize-security-group-egress': [
-        (
-            'awscli.customizations.ec2.secgroupsimplify',
-            'register_secgroup',
-            'init',
-        )
+        ('awscli.customizations.ec2.secgroupsimplify', 'register_secgroup', 'init')
     ],
     'building-argument-table.ec2.authorize-security-group-ingress': [
-        (
-            'awscli.customizations.ec2.secgroupsimplify',
-            'register_secgroup',
-            'init',
-        )
+        ('awscli.customizations.ec2.secgroupsimplify', 'register_secgroup', 'init')
     ],
     'building-argument-table.ec2.bundle-instance': [
-        (
-            'awscli.customizations.ec2.bundleinstance',
-            'register_bundleinstance',
-            'init',
-        )
+        ('awscli.customizations.ec2.bundleinstance', 'register_bundleinstance', 'init')
     ],
     'building-argument-table.ec2.create-image': [
         ('awscli.customizations.argrename', 'register_arg_renames', 'init')
     ],
     'building-argument-table.ec2.get-password-data': [
-        (
-            'awscli.customizations.ec2.decryptpassword',
-            'ec2_add_priv_launch_key',
-            'direct',
-        )
+        ('awscli.customizations.ec2.decryptpassword', 'ec2_add_priv_launch_key', 'direct')
     ],
     'building-argument-table.ec2.revoke-security-group-egress': [
-        (
-            'awscli.customizations.ec2.secgroupsimplify',
-            'register_secgroup',
-            'init',
-        )
+        ('awscli.customizations.ec2.secgroupsimplify', 'register_secgroup', 'init')
     ],
     'building-argument-table.ec2.revoke-security-group-ingress': [
-        (
-            'awscli.customizations.ec2.secgroupsimplify',
-            'register_secgroup',
-            'init',
-        )
+        ('awscli.customizations.ec2.secgroupsimplify', 'register_secgroup', 'init')
     ],
     'building-argument-table.ec2.run-instances': [
-        (
-            'awscli.customizations.ec2.addcount',
-            'register_count_events',
-            'init',
-        ),
-        (
-            'awscli.customizations.ec2.runinstances',
-            'register_runinstances',
-            'init',
-        ),
+        ('awscli.customizations.ec2.addcount', 'register_count_events', 'init'),
+        ('awscli.customizations.ec2.runinstances', 'register_runinstances', 'init')
     ],
     'building-argument-table.ecs.*': [
         ('awscli.customizations.argrename', 'register_arg_renames', 'init')
     ],
     'building-argument-table.ecs.create-express-gateway-service': [
-        (
-            'awscli.customizations.ecs.monitormutatinggatewayservice',
-            'register_monitor_mutating_gateway_service',
-            'init',
-        )
+        ('awscli.customizations.ecs.monitormutatinggatewayservice', 'register_monitor_mutating_gateway_service', 'init')
     ],
     'building-argument-table.ecs.delete-express-gateway-service': [
-        (
-            'awscli.customizations.ecs.monitormutatinggatewayservice',
-            'register_monitor_mutating_gateway_service',
-            'init',
-        )
+        ('awscli.customizations.ecs.monitormutatinggatewayservice', 'register_monitor_mutating_gateway_service', 'init')
     ],
     'building-argument-table.ecs.execute-command': [
         ('awscli.customizations.argrename', 'register_arg_renames', 'init')
     ],
     'building-argument-table.ecs.update-express-gateway-service': [
-        (
-            'awscli.customizations.ecs.monitormutatinggatewayservice',
-            'register_monitor_mutating_gateway_service',
-            'init',
-        )
+        ('awscli.customizations.ecs.monitormutatinggatewayservice', 'register_monitor_mutating_gateway_service', 'init')
     ],
     'building-argument-table.eks.create-cluster': [
         ('awscli.customizations.argrename', 'register_arg_renames', 'init')
@@ -379,28 +250,16 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.iamvirtmfa', 'IAMVMFAWrapper', 'init')
     ],
     'building-argument-table.iot.create-certificate-from-csr': [
-        (
-            'awscli.customizations.iot',
-            'register_create_keys_from_csr_arguments',
-            'direct',
-        )
+        ('awscli.customizations.iot', 'register_create_keys_from_csr_arguments', 'direct')
     ],
     'building-argument-table.iot.create-keys-and-certificate': [
-        (
-            'awscli.customizations.iot',
-            'register_create_keys_and_cert_arguments',
-            'direct',
-        )
+        ('awscli.customizations.iot', 'register_create_keys_and_cert_arguments', 'direct')
     ],
     'building-argument-table.iotwireless.*': [
         ('awscli.customizations.argrename', 'register_arg_renames', 'init')
     ],
     'building-argument-table.kinesis.list-streams': [
-        (
-            'awscli.customizations.kinesis',
-            'register_kinesis_list_streams_pagination_backcompat',
-            'init',
-        )
+        ('awscli.customizations.kinesis', 'register_kinesis_list_streams_pagination_backcompat', 'init')
     ],
     'building-argument-table.kinesisanalytics.add-application-output': [
         ('awscli.customizations.argrename', 'register_arg_renames', 'init')
@@ -409,25 +268,13 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.argrename', 'register_arg_renames', 'init')
     ],
     'building-argument-table.lambda.create-function': [
-        (
-            'awscli.customizations.awslambda',
-            'register_lambda_create_function',
-            'init',
-        )
+        ('awscli.customizations.awslambda', 'register_lambda_create_function', 'init')
     ],
     'building-argument-table.lambda.publish-layer-version': [
-        (
-            'awscli.customizations.awslambda',
-            'register_lambda_create_function',
-            'init',
-        )
+        ('awscli.customizations.awslambda', 'register_lambda_create_function', 'init')
     ],
     'building-argument-table.lambda.update-function-code': [
-        (
-            'awscli.customizations.awslambda',
-            'register_lambda_create_function',
-            'init',
-        )
+        ('awscli.customizations.awslambda', 'register_lambda_create_function', 'init')
     ],
     'building-argument-table.lex-models.delete-bot': [
         ('awscli.customizations.argrename', 'register_arg_renames', 'init')
@@ -523,11 +370,7 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.argrename', 'register_arg_renames', 'init')
     ],
     'building-argument-table.quicksight.start-asset-bundle-import-job': [
-        (
-            'awscli.customizations.quicksight',
-            'register_quicksight_asset_bundle_customizations',
-            'init',
-        )
+        ('awscli.customizations.quicksight', 'register_quicksight_asset_bundle_customizations', 'init')
     ],
     'building-argument-table.rds.add-option-to-option-group': [
         ('awscli.customizations.rds', 'register_rds_modify_split', 'init')
@@ -536,18 +379,10 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.rds', 'register_rds_modify_split', 'init')
     ],
     'building-argument-table.rekognition.*': [
-        (
-            'awscli.customizations.rekognition',
-            'register_rekognition_detect_labels',
-            'init',
-        )
+        ('awscli.customizations.rekognition', 'register_rekognition_detect_labels', 'init')
     ],
     'building-argument-table.rekognition.compare-faces': [
-        (
-            'awscli.customizations.rekognition',
-            'register_rekognition_detect_labels',
-            'init',
-        )
+        ('awscli.customizations.rekognition', 'register_rekognition_detect_labels', 'init')
     ],
     'building-argument-table.rekognition.create-stream-processor': [
         ('awscli.customizations.argrename', 'register_arg_renames', 'init')
@@ -583,11 +418,7 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.argrename', 'register_arg_renames', 'init')
     ],
     'building-argument-table.ses.send-email': [
-        (
-            'awscli.customizations.sessendemail',
-            'register_ses_send_email',
-            'init',
-        )
+        ('awscli.customizations.sessendemail', 'register_ses_send_email', 'init')
     ],
     'building-argument-table.sns.subscribe': [
         ('awscli.customizations.argrename', 'register_arg_renames', 'init')
@@ -602,18 +433,10 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.argrename', 'register_arg_renames', 'init')
     ],
     'building-argument-table.translate.import-terminology': [
-        (
-            'awscli.customizations.translate',
-            'register_translate_import_terminology',
-            'init',
-        )
+        ('awscli.customizations.translate', 'register_translate_import_terminology', 'init')
     ],
     'building-argument-table.translate.translate-document': [
-        (
-            'awscli.customizations.translate',
-            'register_translate_import_terminology',
-            'init',
-        )
+        ('awscli.customizations.translate', 'register_translate_import_terminology', 'init')
     ],
     'building-argument-table.workdocs.create-notification-subscription': [
         ('awscli.customizations.argrename', 'register_arg_renames', 'init')
@@ -623,7 +446,7 @@ PLUGIN_REGISTRY = {
     ],
     'building-command-table': [
         ('awscli.customizations.waiters', 'register_add_waiters', 'init'),
-        ('awscli.alias', 'register_alias_commands', 'init'),
+        ('awscli.alias', 'register_alias_commands', 'init')
     ],
     'building-command-table.bedrock-agent-runtime': [
         ('awscli.customizations.removals', 'register_removals', 'init')
@@ -635,11 +458,7 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.removals', 'register_removals', 'init')
     ],
     'building-command-table.cli-dev': [
-        (
-            'awscli.customizations.wizard.commands',
-            'register_wizard_commands',
-            'init',
-        )
+        ('awscli.customizations.wizard.commands', 'register_wizard_commands', 'init')
     ],
     'building-command-table.cloudformation': [
         ('awscli.customizations.cloudformation', 'initialize', 'init')
@@ -650,51 +469,30 @@ PLUGIN_REGISTRY = {
     'building-command-table.cloudtrail': [
         ('awscli.customizations.cloudtrail', 'initialize', 'init')
     ],
+    'building-command-table.cloudwatch': [
+        ('awscli.customizations.cloudwatch', 'register_rename_otel_commands', 'init')
+    ],
     'building-command-table.codeartifact': [
-        (
-            'awscli.customizations.codeartifact',
-            'register_codeartifact_commands',
-            'init',
-        )
+        ('awscli.customizations.codeartifact', 'register_codeartifact_commands', 'init')
     ],
     'building-command-table.codecommit': [
         ('awscli.customizations.codecommit', 'initialize', 'init')
     ],
     'building-command-table.configservice': [
-        (
-            'awscli.customizations.configservice.subscribe',
-            'register_subscribe',
-            'init',
-        ),
-        (
-            'awscli.customizations.configservice.getstatus',
-            'register_get_status',
-            'init',
-        ),
+        ('awscli.customizations.configservice.subscribe', 'register_subscribe', 'init'),
+        ('awscli.customizations.configservice.getstatus', 'register_get_status', 'init')
     ],
     'building-command-table.configure': [
-        (
-            'awscli.customizations.wizard.commands',
-            'register_wizard_commands',
-            'init',
-        )
+        ('awscli.customizations.wizard.commands', 'register_wizard_commands', 'init')
     ],
     'building-command-table.connecthealth': [
         ('awscli.customizations.removals', 'register_removals', 'init')
     ],
     'building-command-table.datapipeline': [
-        (
-            'awscli.customizations.datapipeline',
-            'register_customizations',
-            'init',
-        )
+        ('awscli.customizations.datapipeline', 'register_customizations', 'init')
     ],
     'building-command-table.deploy': [
-        (
-            'awscli.customizations.codedeploy.codedeploy',
-            'register_deploy_customizations',
-            'init',
-        )
+        ('awscli.customizations.codedeploy.codedeploy', 'register_deploy_customizations', 'init')
     ],
     'building-command-table.devops-agent': [
         ('awscli.customizations.removals', 'register_removals', 'init')
@@ -706,31 +504,19 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.dsql', 'register_dsql_customizations', 'init')
     ],
     'building-command-table.dynamodb': [
-        (
-            'awscli.customizations.wizard.commands',
-            'register_wizard_commands',
-            'init',
-        )
+        ('awscli.customizations.wizard.commands', 'register_wizard_commands', 'init')
     ],
     'building-command-table.ec2': [
         ('awscli.customizations.removals', 'register_removals', 'init')
     ],
     'building-command-table.ec2-instance-connect': [
-        (
-            'awscli.customizations.ec2instanceconnect',
-            'register_ec2_instance_connect_commands',
-            'init',
-        )
+        ('awscli.customizations.ec2instanceconnect', 'register_ec2_instance_connect_commands', 'init')
     ],
     'building-command-table.ecr': [
         ('awscli.customizations.ecr', 'register_ecr_commands', 'init')
     ],
     'building-command-table.ecr-public': [
-        (
-            'awscli.customizations.ecr_public',
-            'register_ecr_public_commands',
-            'init',
-        )
+        ('awscli.customizations.ecr_public', 'register_ecr_public_commands', 'init')
     ],
     'building-command-table.ecs': [
         ('awscli.customizations.ecs', 'initialize', 'init')
@@ -740,31 +526,19 @@ PLUGIN_REGISTRY = {
     ],
     'building-command-table.emr': [
         ('awscli.customizations.removals', 'register_removals', 'init'),
-        ('awscli.customizations.emr.emr', 'emr_initialize', 'init'),
+        ('awscli.customizations.emr.emr', 'emr_initialize', 'init')
     ],
     'building-command-table.emr-containers': [
         ('awscli.customizations.emrcontainers', 'initialize', 'init')
     ],
     'building-command-table.events': [
-        (
-            'awscli.customizations.wizard.commands',
-            'register_wizard_commands',
-            'init',
-        )
+        ('awscli.customizations.wizard.commands', 'register_wizard_commands', 'init')
     ],
     'building-command-table.gamelift': [
-        (
-            'awscli.customizations.gamelift',
-            'register_gamelift_commands',
-            'init',
-        )
+        ('awscli.customizations.gamelift', 'register_gamelift_commands', 'init')
     ],
     'building-command-table.iam': [
-        (
-            'awscli.customizations.wizard.commands',
-            'register_wizard_commands',
-            'init',
-        )
+        ('awscli.customizations.wizard.commands', 'register_wizard_commands', 'init')
     ],
     'building-command-table.iotsitewise': [
         ('awscli.customizations.removals', 'register_removals', 'init')
@@ -774,11 +548,7 @@ PLUGIN_REGISTRY = {
     ],
     'building-command-table.lambda': [
         ('awscli.customizations.removals', 'register_removals', 'init'),
-        (
-            'awscli.customizations.wizard.commands',
-            'register_wizard_commands',
-            'init',
-        ),
+        ('awscli.customizations.wizard.commands', 'register_wizard_commands', 'init')
     ],
     'building-command-table.lexv2-runtime': [
         ('awscli.customizations.removals', 'register_removals', 'init')
@@ -788,29 +558,17 @@ PLUGIN_REGISTRY = {
     ],
     'building-command-table.logs': [
         ('awscli.customizations.removals', 'register_removals', 'init'),
-        ('awscli.customizations.logs', 'register_logs_commands', 'init'),
+        ('awscli.customizations.logs', 'register_logs_commands', 'init')
     ],
     'building-command-table.main': [
         ('awscli.customizations.s3.s3', 'register_s3_main', 'init'),
         ('awscli.customizations.dynamodb.ddb', 'register_ddb', 'init'),
-        (
-            'awscli.customizations.configure.configure',
-            'register_configure_cmd',
-            'init',
-        ),
-        (
-            'awscli.customizations.codedeploy.codedeploy',
-            'register_rename_codedeploy',
-            'init',
-        ),
-        (
-            'awscli.customizations.configservice.rename_cmd',
-            'register_rename_config',
-            'init',
-        ),
+        ('awscli.customizations.configure.configure', 'register_configure_cmd', 'init'),
+        ('awscli.customizations.codedeploy.codedeploy', 'register_rename_codedeploy', 'init'),
+        ('awscli.customizations.configservice.rename_cmd', 'register_rename_config', 'init'),
         ('awscli.customizations.history', 'register_history_commands', 'init'),
         ('awscli.customizations.devcommands', 'register_dev_commands', 'init'),
-        ('awscli.customizations.login', 'register_login_cmds', 'init'),
+        ('awscli.customizations.login', 'register_login_cmds', 'init')
     ],
     'building-command-table.polly': [
         ('awscli.customizations.removals', 'register_removals', 'init')
@@ -820,11 +578,7 @@ PLUGIN_REGISTRY = {
     ],
     'building-command-table.rds': [
         ('awscli.customizations.rds', 'register_rds_modify_split', 'init'),
-        (
-            'awscli.customizations.rds',
-            'register_add_generate_db_auth_token',
-            'init',
-        ),
+        ('awscli.customizations.rds', 'register_add_generate_db_auth_token', 'init')
     ],
     'building-command-table.s3_sync': [
         ('awscli.customizations.s3.s3', 'register_s3_sync_strategies', 'init')
@@ -833,124 +587,64 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.removals', 'register_removals', 'init')
     ],
     'building-command-table.servicecatalog': [
-        (
-            'awscli.customizations.servicecatalog',
-            'register_servicecatalog_commands',
-            'init',
-        )
+        ('awscli.customizations.servicecatalog', 'register_servicecatalog_commands', 'init')
     ],
     'building-command-table.ses': [
         ('awscli.customizations.removals', 'register_removals', 'init')
     ],
     'building-command-table.ssm': [
-        (
-            'awscli.customizations.sessionmanager',
-            'register_ssm_session',
-            'init',
-        )
+        ('awscli.customizations.sessionmanager', 'register_ssm_session', 'init')
     ],
     'building-command-table.sso': [
         ('awscli.customizations.sso', 'register_sso_commands', 'init')
     ],
     'calling-command.cloudsearchdomain': [
-        (
-            'awscli.customizations.cloudsearchdomain',
-            'register_cloudsearchdomain',
-            'init',
-        )
+        ('awscli.customizations.cloudsearchdomain', 'register_cloudsearchdomain', 'init')
     ],
     'calling-command.dynamodb.*': [
-        (
-            'awscli.customizations.dynamodb.paginatorfix',
-            'register_dynamodb_paginator_fix',
-            'init',
-        )
+        ('awscli.customizations.dynamodb.paginatorfix', 'register_dynamodb_paginator_fix', 'init')
     ],
     'calling-command.ec2.describe-snapshots': [
-        (
-            'awscli.customizations.ec2.paginate',
-            'register_ec2_page_size_injector',
-            'init',
-        )
+        ('awscli.customizations.ec2.paginate', 'register_ec2_page_size_injector', 'init')
     ],
     'calling-command.ec2.describe-volumes': [
-        (
-            'awscli.customizations.ec2.paginate',
-            'register_ec2_page_size_injector',
-            'init',
-        )
+        ('awscli.customizations.ec2.paginate', 'register_ec2_page_size_injector', 'init')
     ],
     'doc-description': [
         ('awscli.customizations.paginate', 'register_pagination', 'init')
     ],
     'doc-description.ec2.authorize-security-group-egress': [
-        (
-            'awscli.customizations.ec2.secgroupsimplify',
-            'register_secgroup',
-            'init',
-        )
+        ('awscli.customizations.ec2.secgroupsimplify', 'register_secgroup', 'init')
     ],
     'doc-description.ec2.authorize-security-group-ingress': [
-        (
-            'awscli.customizations.ec2.secgroupsimplify',
-            'register_secgroup',
-            'init',
-        )
+        ('awscli.customizations.ec2.secgroupsimplify', 'register_secgroup', 'init')
     ],
     'doc-description.ec2.revoke-security-group-ingress': [
-        (
-            'awscli.customizations.ec2.secgroupsimplify',
-            'register_secgroup',
-            'init',
-        )
+        ('awscli.customizations.ec2.secgroupsimplify', 'register_secgroup', 'init')
     ],
     'doc-description.ec2.revoke-security-groupdoc-ingress': [
-        (
-            'awscli.customizations.ec2.secgroupsimplify',
-            'register_secgroup',
-            'init',
-        )
+        ('awscli.customizations.ec2.secgroupsimplify', 'register_secgroup', 'init')
     ],
     'doc-description.iot-data': [
-        (
-            'awscli.customizations.iot_data',
-            'register_custom_endpoint_note',
-            'init',
-        )
+        ('awscli.customizations.iot_data', 'register_custom_endpoint_note', 'init')
     ],
     'doc-examples.*.*': [
         ('awscli.customizations.addexamples', 'add_examples', 'direct')
     ],
     'doc-option.route53.create-hosted-zone.hosted-zone-config': [
-        (
-            'awscli.customizations.route53',
-            'register_create_hosted_zone_doc_fix',
-            'init',
-        )
+        ('awscli.customizations.route53', 'register_create_hosted_zone_doc_fix', 'init')
     ],
     'doc-output.datapipeline.get-pipeline-definition': [
-        (
-            'awscli.customizations.datapipeline',
-            'register_customizations',
-            'init',
-        )
+        ('awscli.customizations.datapipeline', 'register_customizations', 'init')
     ],
     'doc-output.s3api': [
-        (
-            'awscli.customizations.s3events',
-            'register_document_expires_string',
-            'init',
-        )
+        ('awscli.customizations.s3events', 'register_document_expires_string', 'init')
     ],
     'doc-output.s3api.select-object-content': [
         ('awscli.customizations.s3events', 'register_event_stream_arg', 'init')
     ],
     'doc-title.kms.create-grant': [
-        (
-            'awscli.customizations.kms',
-            'register_fix_kms_create_grant_docs',
-            'init',
-        )
+        ('awscli.customizations.kms', 'register_fix_kms_create_grant_docs', 'init')
     ],
     'operation-args-parsed.cloudfront.create-distribution': [
         ('awscli.customizations.cloudfront', 'register', 'init')
@@ -962,128 +656,60 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.cloudfront', 'register', 'init')
     ],
     'operation-args-parsed.cloudwatch.put-metric-data': [
-        (
-            'awscli.customizations.putmetricdata',
-            'register_put_metric_data',
-            'init',
-        )
+        ('awscli.customizations.putmetricdata', 'register_put_metric_data', 'init')
     ],
     'operation-args-parsed.ec2.authorize-security-group-egress': [
-        (
-            'awscli.customizations.ec2.secgroupsimplify',
-            'register_secgroup',
-            'init',
-        )
+        ('awscli.customizations.ec2.secgroupsimplify', 'register_secgroup', 'init')
     ],
     'operation-args-parsed.ec2.authorize-security-group-ingress': [
-        (
-            'awscli.customizations.ec2.secgroupsimplify',
-            'register_secgroup',
-            'init',
-        )
+        ('awscli.customizations.ec2.secgroupsimplify', 'register_secgroup', 'init')
     ],
     'operation-args-parsed.ec2.bundle-instance': [
-        (
-            'awscli.customizations.ec2.bundleinstance',
-            'register_bundleinstance',
-            'init',
-        )
+        ('awscli.customizations.ec2.bundleinstance', 'register_bundleinstance', 'init')
     ],
     'operation-args-parsed.ec2.revoke-security-group-egress': [
-        (
-            'awscli.customizations.ec2.secgroupsimplify',
-            'register_secgroup',
-            'init',
-        )
+        ('awscli.customizations.ec2.secgroupsimplify', 'register_secgroup', 'init')
     ],
     'operation-args-parsed.ec2.revoke-security-group-ingress': [
-        (
-            'awscli.customizations.ec2.secgroupsimplify',
-            'register_secgroup',
-            'init',
-        )
+        ('awscli.customizations.ec2.secgroupsimplify', 'register_secgroup', 'init')
     ],
     'operation-args-parsed.ec2.run-instances': [
-        (
-            'awscli.customizations.ec2.runinstances',
-            'register_runinstances',
-            'init',
-        )
+        ('awscli.customizations.ec2.runinstances', 'register_runinstances', 'init')
     ],
     'operation-args-parsed.ecs.create-express-gateway-service': [
-        (
-            'awscli.customizations.ecs.monitormutatinggatewayservice',
-            'register_monitor_mutating_gateway_service',
-            'init',
-        )
+        ('awscli.customizations.ecs.monitormutatinggatewayservice', 'register_monitor_mutating_gateway_service', 'init')
     ],
     'operation-args-parsed.ecs.delete-express-gateway-service': [
-        (
-            'awscli.customizations.ecs.monitormutatinggatewayservice',
-            'register_monitor_mutating_gateway_service',
-            'init',
-        )
+        ('awscli.customizations.ecs.monitormutatinggatewayservice', 'register_monitor_mutating_gateway_service', 'init')
     ],
     'operation-args-parsed.ecs.update-express-gateway-service': [
-        (
-            'awscli.customizations.ecs.monitormutatinggatewayservice',
-            'register_monitor_mutating_gateway_service',
-            'init',
-        )
+        ('awscli.customizations.ecs.monitormutatinggatewayservice', 'register_monitor_mutating_gateway_service', 'init')
     ],
     'operation-args-parsed.kinesis.list-streams': [
-        (
-            'awscli.customizations.kinesis',
-            'register_kinesis_list_streams_pagination_backcompat',
-            'init',
-        )
+        ('awscli.customizations.kinesis', 'register_kinesis_list_streams_pagination_backcompat', 'init')
     ],
     'operation-args-parsed.ses.send-email': [
-        (
-            'awscli.customizations.sessendemail',
-            'register_ses_send_email',
-            'init',
-        )
+        ('awscli.customizations.sessendemail', 'register_ses_send_email', 'init')
     ],
     'process-cli-arg': [
         ('awscli.argprocess', 'ParamShorthandParser', 'direct')
     ],
     'process-cli-arg.lambda.update-function-code': [
-        (
-            'awscli.customizations.awslambda',
-            'register_lambda_create_function',
-            'init',
-        )
+        ('awscli.customizations.awslambda', 'register_lambda_create_function', 'init')
     ],
     'session-initialized': [
         ('awscli.paramfile', 'register_uri_param_handler', 'direct'),
-        (
-            'awscli.customizations.binaryformat',
-            'add_binary_formatter',
-            'direct',
-        ),
+        ('awscli.customizations.binaryformat', 'add_binary_formatter', 'direct'),
         ('awscli.clidriver', 'no_pager_handler', 'direct'),
-        (
-            'awscli.customizations.assumerole',
-            'register_assume_role_provider',
-            'init',
-        ),
-        (
-            'awscli.customizations.timestampformat',
-            'register_timestamp_format',
-            'init',
-        ),
+        ('awscli.customizations.assumerole', 'register_assume_role_provider', 'init'),
+        ('awscli.customizations.timestampformat', 'register_timestamp_format', 'init'),
         ('awscli.customizations.history', 'register_history_mode', 'init'),
-        ('awscli.customizations.sso', 'register_sso_commands', 'init'),
+        ('awscli.customizations.sso', 'register_sso_commands', 'init')
     ],
     'top-level-args-parsed': [
-        (
-            'awscli.customizations.globalargs',
-            'register_parse_global_args',
-            'init',
-        ),
-        ('awscli.customizations.cloudfront', 'register', 'init'),
-    ],
+        ('awscli.customizations.globalargs', 'register_parse_global_args', 'init'),
+        ('awscli.customizations.cloudfront', 'register', 'init')
+    ]
 }
 
 # Declarative model of changes made to the command table by plugins
@@ -1100,81 +726,14 @@ PLUGIN_REGISTRY = {
 #   ('add', cmd_name, cmd_module, cmd_class, module, fn_name)
 
 MAIN_COMMAND_TABLE_OPS = [
-    (
-        'rename',
-        's3',
-        's3api',
-        'awscli.customizations.s3.s3',
-        'register_s3_main',
-    ),
-    (
-        'add',
-        's3',
-        'awscli.customizations.s3.s3',
-        'S3',
-        'awscli.customizations.s3.s3',
-        'register_s3_main',
-    ),
-    (
-        'add',
-        'ddb',
-        'awscli.customizations.dynamodb.ddb',
-        'DDB',
-        'awscli.customizations.dynamodb.ddb',
-        'register_ddb',
-    ),
-    (
-        'add',
-        'configure',
-        'awscli.customizations.configure.configure',
-        'ConfigureCommand',
-        'awscli.customizations.configure.configure',
-        'register_configure_cmd',
-    ),
-    (
-        'rename',
-        'codedeploy',
-        'deploy',
-        'awscli.customizations.codedeploy.codedeploy',
-        'register_rename_codedeploy',
-    ),
-    (
-        'rename',
-        'config',
-        'configservice',
-        'awscli.customizations.configservice.rename_cmd',
-        'register_rename_config',
-    ),
-    (
-        'add',
-        'history',
-        'awscli.customizations.history',
-        'HistoryCommand',
-        'awscli.customizations.history',
-        'register_history_commands',
-    ),
-    (
-        'add',
-        'cli-dev',
-        'awscli.customizations.devcommands',
-        'CLIDevCommand',
-        'awscli.customizations.devcommands',
-        'register_dev_commands',
-    ),
-    (
-        'add',
-        'login',
-        'awscli.customizations.login.login',
-        'LoginCommand',
-        'awscli.customizations.login',
-        'register_login_cmds',
-    ),
-    (
-        'add',
-        'logout',
-        'awscli.customizations.login.logout',
-        'LogoutCommand',
-        'awscli.customizations.login',
-        'register_login_cmds',
-    ),
+    ('rename', 's3', 's3api', 'awscli.customizations.s3.s3', 'register_s3_main'),
+    ('add', 's3', 'awscli.customizations.s3.s3', 'S3', 'awscli.customizations.s3.s3', 'register_s3_main'),
+    ('add', 'ddb', 'awscli.customizations.dynamodb.ddb', 'DDB', 'awscli.customizations.dynamodb.ddb', 'register_ddb'),
+    ('add', 'configure', 'awscli.customizations.configure.configure', 'ConfigureCommand', 'awscli.customizations.configure.configure', 'register_configure_cmd'),
+    ('rename', 'codedeploy', 'deploy', 'awscli.customizations.codedeploy.codedeploy', 'register_rename_codedeploy'),
+    ('rename', 'config', 'configservice', 'awscli.customizations.configservice.rename_cmd', 'register_rename_config'),
+    ('add', 'history', 'awscli.customizations.history', 'HistoryCommand', 'awscli.customizations.history', 'register_history_commands'),
+    ('add', 'cli-dev', 'awscli.customizations.devcommands', 'CLIDevCommand', 'awscli.customizations.devcommands', 'register_dev_commands'),
+    ('add', 'login', 'awscli.customizations.login.login', 'LoginCommand', 'awscli.customizations.login', 'register_login_cmds'),
+    ('add', 'logout', 'awscli.customizations.login.logout', 'LogoutCommand', 'awscli.customizations.login', 'register_login_cmds'),
 ]

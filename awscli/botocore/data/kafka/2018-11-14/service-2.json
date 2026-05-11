@@ -2493,6 +2493,26 @@
         "MskClusterArn"
       ]
     },
+    "ApacheKafkaCluster": {
+      "type": "structure",
+      "members": {
+        "ApacheKafkaClusterId": {
+          "shape": "__string",
+          "locationName": "apacheKafkaClusterId",
+          "documentation": "<p>The ID of the Apache Kafka cluster.</p>"
+        },
+        "BootstrapBrokerString": {
+          "shape": "__string",
+          "locationName": "bootstrapBrokerString",
+          "documentation": "<p>The bootstrap broker string of the Apache Kafka cluster.</p>"
+        }
+      },
+      "documentation": "<p>Details of an Apache Kafka Cluster.</p>",
+      "required": [
+        "ApacheKafkaClusterId",
+        "BootstrapBrokerString"
+      ]
+    },
     "BatchAssociateScramSecretRequest": {
       "type": "structure",
       "members": {
@@ -3563,11 +3583,24 @@
           "shape": "__boolean",
           "locationName": "synchroniseConsumerGroupOffsets",
           "documentation": "<p>Enables synchronization of consumer group offsets to target cluster. The translated offsets will be written to topic __consumer_offsets.</p>"
+        },
+        "ConsumerGroupOffsetSyncMode": {
+          "shape": "ConsumerGroupOffsetSyncMode",
+          "locationName": "consumerGroupOffsetSyncMode",
+          "documentation": "<p>The consumer group offset synchronization mode. With LEGACY, offsets are synchronized when producers write to the source cluster. With ENHANCED, consumer offsets are synchronized regardless of producer location. ENHANCED requires a corresponding replicator that replicates data from the target cluster to the source cluster.</p>"
         }
       },
       "documentation": "<p>Details about consumer group replication.</p>",
       "required": [
         "ConsumerGroupsToReplicate"
+      ]
+    },
+    "ConsumerGroupOffsetSyncMode": {
+      "type": "string",
+      "documentation": "<p>The consumer group offset synchronization mode. With LEGACY, offsets are synchronized when producers write to the source cluster. With ENHANCED, consumer offsets are synchronized regardless of producer location. ENHANCED requires a corresponding replicator that replicates data from the target cluster to the source cluster.</p>",
+      "enum": [
+        "LEGACY",
+        "ENHANCED"
       ]
     },
     "ConsumerGroupReplicationUpdate": {
@@ -3841,6 +3874,11 @@
           "shape": "__mapOf__string",
           "locationName": "tags",
           "documentation": "<p>List of tags to attach to created Replicator.</p>"
+        },
+        "LogDelivery": {
+          "shape": "LogDelivery",
+          "locationName": "logDelivery",
+          "documentation": "<p>Configuration for delivering replicator logs to customer destinations.</p>"
         }
       },
       "documentation": "<p>Creates a replicator using the specified configuration.</p>",
@@ -4843,6 +4881,11 @@
           "shape": "__mapOf__string",
           "locationName": "tags",
           "documentation": "<p>List of tags attached to the Replicator.</p>"
+        },
+        "LogDelivery": {
+          "shape": "LogDelivery",
+          "locationName": "logDelivery",
+          "documentation": "<p>Configuration for log delivery.</p>"
         }
       }
     },
@@ -5419,17 +5462,28 @@
           "locationName": "amazonMskCluster",
           "documentation": "<p>Details of an Amazon MSK Cluster.</p>"
         },
+        "ApacheKafkaCluster": {
+          "shape": "ApacheKafkaCluster",
+          "locationName": "apacheKafkaCluster",
+          "documentation": "<p>Details of an Apache Kafka Cluster.</p>"
+        },
         "VpcConfig": {
           "shape": "KafkaClusterClientVpcConfig",
           "locationName": "vpcConfig",
           "documentation": "<p>Details of an Amazon VPC which has network connectivity to the Apache Kafka cluster.</p>"
+        },
+        "ClientAuthentication": {
+          "shape": "KafkaClusterClientAuthentication",
+          "locationName": "clientAuthentication",
+          "documentation": "<p>Details of the client authentication used by the Apache Kafka cluster.</p>"
+        },
+        "EncryptionInTransit": {
+          "shape": "KafkaClusterEncryptionInTransit",
+          "locationName": "encryptionInTransit",
+          "documentation": "<p>Details of encryption in transit to the Apache Kafka cluster.</p>"
         }
       },
-      "documentation": "<p>Information about Kafka Cluster to be used as source / target for replication.</p>",
-      "required": [
-        "VpcConfig",
-        "AmazonMskCluster"
-      ]
+      "documentation": "<p>Information about Kafka Cluster to be used as source / target for replication.</p>"
     },
     "KafkaClusterClientVpcConfig": {
       "type": "structure",
@@ -5450,6 +5504,74 @@
         "SubnetIds"
       ]
     },
+    "KafkaClusterClientAuthentication": {
+      "type": "structure",
+      "members": {
+        "SaslScram": {
+          "shape": "KafkaClusterSaslScramAuthentication",
+          "locationName": "saslScram",
+          "documentation": "<p>Details for SASL/SCRAM client authentication.</p>"
+        }
+      },
+      "documentation": "<p>Details of the client authentication used by the Apache Kafka cluster.</p>",
+      "required": [
+        "SaslScram"
+      ]
+    },
+    "KafkaClusterSaslScramAuthentication": {
+      "type": "structure",
+      "members": {
+        "Mechanism": {
+          "shape": "KafkaClusterSaslScramMechanism",
+          "locationName": "mechanism",
+          "documentation": "<p>The SASL/SCRAM authentication mechanism.</p>"
+        },
+        "SecretArn": {
+          "shape": "__string",
+          "locationName": "secretArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the Secrets Manager secret.</p>"
+        }
+      },
+      "documentation": "<p>Details for SASL/SCRAM client authentication.</p>",
+      "required": [
+        "Mechanism",
+        "SecretArn"
+      ]
+    },
+    "KafkaClusterSaslScramMechanism": {
+      "type": "string",
+      "documentation": "<p>The SASL/SCRAM authentication mechanism.</p>",
+      "enum": [
+        "SHA256",
+        "SHA512"
+      ]
+    },
+    "KafkaClusterEncryptionInTransit": {
+      "type": "structure",
+      "members": {
+        "EncryptionType": {
+          "shape": "KafkaClusterEncryptionInTransitType",
+          "locationName": "encryptionType",
+          "documentation": "<p>The type of encryption in transit to the Apache Kafka cluster.</p>"
+        },
+        "RootCaCertificate": {
+          "shape": "__string",
+          "locationName": "rootCaCertificate",
+          "documentation": "<p>The root CA certificate.</p>"
+        }
+      },
+      "documentation": "<p>Details of encryption in transit to the Apache Kafka cluster.</p>",
+      "required": [
+        "EncryptionType"
+      ]
+    },
+    "KafkaClusterEncryptionInTransitType": {
+      "type": "string",
+      "documentation": "<p>The type of encryption in transit to the Apache Kafka cluster.</p>",
+      "enum": [
+        "TLS"
+      ]
+    },
     "KafkaClusterDescription": {
       "type": "structure",
       "members": {
@@ -5457,6 +5579,11 @@
           "shape": "AmazonMskCluster",
           "locationName": "amazonMskCluster",
           "documentation": "<p>Details of an Amazon MSK Cluster.</p>"
+        },
+        "ApacheKafkaCluster": {
+          "shape": "ApacheKafkaCluster",
+          "locationName": "apacheKafkaCluster",
+          "documentation": "<p>Details of an Apache Kafka Cluster.</p>"
         },
         "KafkaClusterAlias": {
           "shape": "__string",
@@ -5467,6 +5594,16 @@
           "shape": "KafkaClusterClientVpcConfig",
           "locationName": "vpcConfig",
           "documentation": "<p>Details of an Amazon VPC which has network connectivity to the Apache Kafka cluster.</p>"
+        },
+        "ClientAuthentication": {
+          "shape": "KafkaClusterClientAuthentication",
+          "locationName": "clientAuthentication",
+          "documentation": "<p>Details of the client authentication used by the Apache Kafka cluster.</p>"
+        },
+        "EncryptionInTransit": {
+          "shape": "KafkaClusterEncryptionInTransit",
+          "locationName": "encryptionInTransit",
+          "documentation": "<p>Details of encryption in transit to the Apache Kafka cluster.</p>"
         }
       },
       "documentation": "<p>Information about Kafka Cluster used as source / target for replication.</p>"
@@ -5478,6 +5615,11 @@
           "shape": "AmazonMskCluster",
           "locationName": "amazonMskCluster",
           "documentation": "<p>Details of an Amazon MSK Cluster.</p>"
+        },
+        "ApacheKafkaCluster": {
+          "shape": "ApacheKafkaCluster",
+          "locationName": "apacheKafkaCluster",
+          "documentation": "<p>Details of an Apache Kafka Cluster.</p>"
         },
         "KafkaClusterAlias": {
           "shape": "__string",
@@ -6079,6 +6221,100 @@
         "BrokerLogs"
       ]
     },
+    "LogDelivery": {
+      "type": "structure",
+      "members": {
+        "ReplicatorLogDelivery": {
+          "shape": "ReplicatorLogDelivery",
+          "locationName": "replicatorLogDelivery",
+          "documentation": "<p>Configuration for replicator log delivery.</p>"
+        }
+      },
+      "documentation": "<p>Configuration for log delivery to customer destinations.</p>"
+    },
+    "ReplicatorLogDelivery": {
+      "type": "structure",
+      "members": {
+        "CloudWatchLogs": {
+          "shape": "ReplicatorCloudWatchLogs",
+          "locationName": "cloudWatchLogs",
+          "documentation": "<p>Configuration for CloudWatch Logs delivery.</p>"
+        },
+        "Firehose": {
+          "shape": "ReplicatorFirehose",
+          "locationName": "firehose",
+          "documentation": "<p>Configuration for Firehose delivery.</p>"
+        },
+        "S3": {
+          "shape": "ReplicatorS3",
+          "locationName": "s3",
+          "documentation": "<p>Configuration for S3 delivery.</p>"
+        }
+      },
+      "documentation": "<p>Configuration for replicator log delivery.</p>"
+    },
+    "ReplicatorCloudWatchLogs": {
+      "type": "structure",
+      "members": {
+        "Enabled": {
+          "shape": "__boolean",
+          "locationName": "enabled",
+          "documentation": "<p>Whether log delivery to CloudWatch Logs is enabled.</p>"
+        },
+        "LogGroup": {
+          "shape": "__string",
+          "locationName": "logGroup",
+          "documentation": "<p>The CloudWatch log group that is the destination for log delivery.</p>"
+        }
+      },
+      "documentation": "<p>Details about delivering logs to CloudWatch Logs.</p>",
+      "required": [
+        "Enabled"
+      ]
+    },
+    "ReplicatorFirehose": {
+      "type": "structure",
+      "members": {
+        "Enabled": {
+          "shape": "__boolean",
+          "locationName": "enabled",
+          "documentation": "<p>Whether log delivery to Firehose is enabled.</p>"
+        },
+        "DeliveryStream": {
+          "shape": "__string",
+          "locationName": "deliveryStream",
+          "documentation": "<p>The Firehose delivery stream that is the destination for log delivery.</p>"
+        }
+      },
+      "documentation": "<p>Details about delivering logs to Firehose.</p>",
+      "required": [
+        "Enabled"
+      ]
+    },
+    "ReplicatorS3": {
+      "type": "structure",
+      "members": {
+        "Enabled": {
+          "shape": "__boolean",
+          "locationName": "enabled",
+          "documentation": "<p>Whether log delivery to S3 is enabled.</p>"
+        },
+        "Bucket": {
+          "shape": "__string",
+          "locationName": "bucket",
+          "documentation": "<p>The S3 bucket that is the destination for log delivery.</p>"
+        },
+        "Prefix": {
+          "shape": "__string",
+          "locationName": "prefix",
+          "documentation": "<p>The S3 prefix that is the destination for log delivery.</p>"
+        }
+      },
+      "documentation": "<p>Details about delivering logs to S3.</p>",
+      "required": [
+        "Enabled"
+      ]
+    },
     "MutableClusterInfo": {
       "type": "structure",
       "members": {
@@ -6106,6 +6342,11 @@
           "shape": "OpenMonitoring",
           "locationName": "openMonitoring",
           "documentation": "\n            <p>The settings for open monitoring.</p>\n         "
+        },
+        "ZookeeperAccess": {
+          "shape": "ZookeeperAccess",
+          "locationName": "zookeeperAccess",
+          "documentation": "\n            <p>Access control settings for zookeeper</p>\n         "
         },
         "KafkaVersion": {
           "shape": "__string",
@@ -6525,6 +6766,17 @@
         "DUAL"
       ]
     },
+    "ZookeeperAccess": {
+      "type": "structure",
+      "members": {
+        "Enabled": {
+          "shape": "__boolean",
+          "locationName": "enabled",
+          "documentation": "\n            <p>Zookeeper Access was on or off for the cluster</p>\n         "
+        }
+      },
+      "documentation": "\n            <p>Access control settings for zookeeper</p>\n         "
+    },
     "NodeType": {
       "type": "string",
       "documentation": "\n            <p>The broker or Zookeeper node.</p>\n         ",
@@ -6565,6 +6817,11 @@
           "locationName": "sourceKafkaClusterArn",
           "documentation": "<p>The ARN of the source Kafka cluster.</p>"
         },
+        "SourceKafkaClusterId": {
+          "shape": "__string",
+          "locationName": "sourceKafkaClusterId",
+          "documentation": "<p>The ID of the source Kafka cluster.</p>"
+        },
         "TargetCompressionType": {
           "shape": "TargetCompressionType",
           "locationName": "targetCompressionType",
@@ -6574,6 +6831,11 @@
           "shape": "__string",
           "locationName": "targetKafkaClusterArn",
           "documentation": "<p>The ARN of the target Kafka cluster.</p>"
+        },
+        "TargetKafkaClusterId": {
+          "shape": "__string",
+          "locationName": "targetKafkaClusterId",
+          "documentation": "<p>The ID of the target Kafka cluster.</p>"
         },
         "TopicReplication": {
           "shape": "TopicReplication",
@@ -6585,9 +6847,7 @@
       "required": [
         "TargetCompressionType",
         "TopicReplication",
-        "ConsumerGroupReplication",
-        "SourceKafkaClusterArn",
-        "TargetKafkaClusterArn"
+        "ConsumerGroupReplication"
       ]
     },
     "ReplicationInfoDescription": {
@@ -7393,23 +7653,36 @@
           "locationName": "sourceKafkaClusterArn",
           "documentation": "<p>The ARN of the source Kafka cluster.</p>"
         },
+        "SourceKafkaClusterId": {
+          "shape": "__string",
+          "locationName": "sourceKafkaClusterId",
+          "documentation": "<p>The ID of the source Kafka cluster.</p>"
+        },
         "TargetKafkaClusterArn": {
           "shape": "__string",
           "locationName": "targetKafkaClusterArn",
           "documentation": "<p>The ARN of the target Kafka cluster.</p>"
         },
+        "TargetKafkaClusterId": {
+          "shape": "__string",
+          "locationName": "targetKafkaClusterId",
+          "documentation": "<p>The ID of the target Kafka cluster.</p>"
+        },
         "TopicReplication": {
           "shape": "TopicReplicationUpdate",
           "locationName": "topicReplication",
           "documentation": "<p>Updated topic replication information.</p>"
+        },
+        "LogDelivery": {
+          "shape": "LogDelivery",
+          "locationName": "logDelivery",
+          "documentation": "<p>Configuration for delivering replicator logs to customer destinations.</p>"
         }
       },
       "documentation": "<p>Update information relating to replication between a given source and target Kafka cluster.</p>",
       "required": [
         "ReplicatorArn",
-        "SourceKafkaClusterArn",
-        "CurrentVersion",
-        "TargetKafkaClusterArn"
+        "CurrentVersion"
       ]
     },
     "UpdateReplicationInfoResponse": {
@@ -7581,12 +7854,16 @@
           "shape": "__string",
           "locationName": "currentVersion",
           "documentation": "\n            <p>The version of the MSK cluster to update. Cluster versions aren't simple numbers. You can describe an MSK cluster to find its version. When this update operation is successful, it generates a new cluster version.</p>\n         "
+        },
+        "ZookeeperAccess": {
+          "shape": "ZookeeperAccess",
+          "locationName": "zookeeperAccess",
+          "documentation": "\n            <p>Access control settings for zookeeper</p>\n         "
         }
       },
       "documentation": "Request body for UpdateConnectivity.",
       "required": [
         "ClusterArn",
-        "ConnectivityInfo",
         "CurrentVersion"
       ]
     },

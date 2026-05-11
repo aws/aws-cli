@@ -82,6 +82,40 @@ def test_compat_shell_quote_windows(input_string, expected_output):
 @pytest.mark.parametrize(
     "input_string, expected_output",
     (
+        ('', '""'),
+        ('foo', 'foo'),
+        ('foo bar', '"foo bar"'),
+        ('foo\tbar', '"foo\tbar"'),
+        ('"', '"\\""'),
+        ('\\', '\\'),
+        ('\\a', '\\a'),
+        ('\\\\', '\\\\'),
+        ('\\"', '"\\\\\\""'),
+        ('foo&bar', '"foo&bar"'),
+        ('foo|bar', '"foo|bar"'),
+        ('foo>bar', '"foo>bar"'),
+        ('foo<bar', '"foo<bar"'),
+        ('foo^bar', '"foo^bar"'),
+        ('foo(bar)', '"foo(bar)"'),
+        ('foo,bar', '"foo,bar"'),
+        ('foo;bar', '"foo;bar"'),
+        ('foo=bar', '"foo=bar"'),
+        ('foo!bar', '"foo!bar"'),
+        ('foo%PATH%bar', 'foo%PATH%bar'),
+        ('foo\\', 'foo\\'),
+        ('foo bar\\', '"foo bar\\\\"'),
+    ),
+)
+def test_compat_shell_quote_windows_for_cmd_exe(input_string, expected_output):
+    assert (
+        compat_shell_quote(input_string, "win32", shell=True)
+        == expected_output
+    )
+
+
+@pytest.mark.parametrize(
+    "input_string, expected_output",
+    (
         ('', "''"),
         ('*', "'*'"),
         ('foo', 'foo'),

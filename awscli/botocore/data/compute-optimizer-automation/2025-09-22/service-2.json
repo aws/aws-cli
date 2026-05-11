@@ -5,8 +5,11 @@
     "auth":["aws.auth#sigv4"],
     "endpointPrefix":"aco-automation",
     "jsonVersion":"1.0",
-    "protocol":"json",
-    "protocols":["json"],
+    "protocol":"smithy-rpc-v2-cbor",
+    "protocols":[
+      "smithy-rpc-v2-cbor",
+      "json"
+    ],
     "serviceFullName":"Compute Optimizer Automation",
     "serviceId":"Compute Optimizer Automation",
     "signatureVersion":"v4",
@@ -514,6 +517,10 @@
         "message":{"shape":"String"}
       },
       "documentation":"<p> You do not have sufficient permissions to perform this action. </p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
       "exception":true
     },
     "AccountId":{
@@ -1222,6 +1229,10 @@
         "message":{"shape":"String"}
       },
       "documentation":"<p> You are not authorized to perform this action. </p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
       "exception":true
     },
     "GetAutomationEventRequest":{
@@ -1398,6 +1409,10 @@
         "message":{"shape":"String"}
       },
       "documentation":"<p> The specified client token is already in use. </p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
       "exception":true
     },
     "IdempotentParameterMismatchException":{
@@ -1406,6 +1421,10 @@
         "message":{"shape":"String"}
       },
       "documentation":"<p>Exception thrown when the same client token is used with different parameters, indicating a mismatch in idempotent request parameters.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
       "exception":true
     },
     "Integer":{
@@ -1440,6 +1459,7 @@
         "message":{"shape":"String"}
       },
       "documentation":"<p> An internal error occurred while processing the request. </p>",
+      "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
     },
@@ -1449,6 +1469,10 @@
         "message":{"shape":"String"}
       },
       "documentation":"<p> One or more parameter values are not valid. </p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
       "exception":true
     },
     "ListAccountsRequest":{
@@ -1851,6 +1875,10 @@
         "message":{"shape":"String"}
       },
       "documentation":"<p> The operation can only be performed by a management account. </p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
       "exception":true
     },
     "OptInRequiredException":{
@@ -1859,6 +1887,10 @@
         "message":{"shape":"String"}
       },
       "documentation":"<p> The account must be opted in to Compute Optimizer Automation before performing this action. </p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
       "exception":true
     },
     "OrganizationConfiguration":{
@@ -2155,6 +2187,10 @@
         "message":{"shape":"String"}
       },
       "documentation":"<p> The specified resource was not found. </p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
       "exception":true
     },
     "ResourceTagsCriteriaCondition":{
@@ -2304,6 +2340,10 @@
         "message":{"shape":"String"}
       },
       "documentation":"<p> The request would exceed service quotas. </p>",
+      "error":{
+        "httpStatusCode":402,
+        "senderFault":true
+      },
       "exception":true
     },
     "ServiceUnavailableException":{
@@ -2312,6 +2352,7 @@
         "message":{"shape":"String"}
       },
       "documentation":"<p> The service is temporarily unavailable. </p>",
+      "error":{"httpStatusCode":503},
       "exception":true,
       "fault":true
     },
@@ -2516,6 +2557,10 @@
         "message":{"shape":"String"}
       },
       "documentation":"<p> The request was denied due to request throttling. </p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
       "exception":true
     },
     "TimePeriod":{

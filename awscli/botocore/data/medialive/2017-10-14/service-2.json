@@ -16712,6 +16712,11 @@
           "shape": "ChannelEngineVersionResponse",
           "locationName": "channelEngineVersion",
           "documentation": "Current engine version of the encoder for this pipeline."
+        },
+        "MediaConnectRouterOutputConnectionMap": {
+          "shape": "MediaConnectRouterOutputConnections",
+          "locationName": "mediaConnectRouterOutputConnectionMap",
+          "documentation": "A map of output names to the MediaConnect Router connection for this pipeline. Only present for channels with MediaConnect Router outputs."
         }
       },
       "documentation": "Runtime details of a pipeline when a channel is running."
@@ -30601,7 +30606,7 @@
         "ConnectedRouterInputs": {
           "shape": "MediaConnectRouterOutputConnectionMap",
           "locationName": "connectedRouterInputs",
-          "documentation": "Shows the MediaConnect Router Inputs that are connected to this output. This parameter is purely informative, and editing it will have no effect. To connect or disconnect MediaConnect Router Inputs, go to MediaConnect."
+          "documentation": "This parameter is deprecated and unused."
         },
         "ContainerSettings": {
           "shape": "MediaConnectRouterContainerSettings",
@@ -30625,6 +30630,27 @@
         "shape": "MediaConnectRouterOutputDestinationSettings"
       },
       "documentation": "Placeholder documentation for __listOfMediaConnectRouterOutputDestinationSettings"
+    },
+    "MediaConnectRouterOutputConnection": {
+      "type": "structure",
+      "members": {
+        "RouterInputArn": {
+          "shape": "__string",
+          "locationName": "routerInputArn",
+          "documentation": "The ARN of the MediaConnect Router Input connected to this pipeline."
+        }
+      },
+      "documentation": "Connection details for a single pipeline of a MediaConnect Router output."
+    },
+    "MediaConnectRouterOutputConnections": {
+      "type": "map",
+      "documentation": "A map of output names to the MediaConnect Router connection for this pipeline.",
+      "key": {
+        "shape": "__string"
+      },
+      "value": {
+        "shape": "MediaConnectRouterOutputConnection"
+      }
     }
   },
   "documentation": "API for AWS Elemental MediaLive"

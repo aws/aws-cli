@@ -47,3 +47,7 @@ class FatalError(CancelledError):
 
 class S3ValidationError(Exception):
     pass
+
+
+class S3DownloadChecksumError(Exception):
+    pass

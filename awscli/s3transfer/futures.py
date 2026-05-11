@@ -128,6 +128,7 @@ class TransferMeta(BaseTransferMeta):
         self._size = None
         self._user_context = {}
         self._etag = None
+        self._full_object_checksum = None
 
     @property
     def call_args(self):
@@ -171,6 +172,15 @@ class TransferMeta(BaseTransferMeta):
         the etag as the value to GetObject requests.
         """
         self._etag = etag
+
+    @property
+    def full_object_checksum(self):
+        """The full object checksum info"""
+        return self._full_object_checksum
+
+    def provide_full_object_checksum(self, full_object_checksum):
+        """A method to provide the full object checksum"""
+        self._full_object_checksum = full_object_checksum
 
 
 class TransferCoordinator:

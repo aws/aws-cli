@@ -3355,6 +3355,10 @@
           "shape":"EmailMfaSettingsType",
           "documentation":"<p>User preferences for email message MFA. Activates or deactivates email MFA and sets it as the preferred MFA method when multiple methods are available. To activate this setting, your user pool must be in the <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-essentials.html\"> Essentials tier</a> or higher.</p>"
         },
+        "WebAuthnMfaSettings":{
+          "shape":"WebAuthnMfaSettingsType",
+          "documentation":"<p>User preferences for passkey MFA. Activates or deactivates passkey MFA for the user. When activated, passkey authentication requires user verification, and passkey sign-in is available when MFA is required. To activate this setting, the <code>FactorConfiguration</code> of your user pool <code>WebAuthnConfiguration</code> must be <code>MULTI_FACTOR_WITH_USER_VERIFICATION</code>. To activate this setting, your user pool must be in the <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-essentials.html\"> Essentials tier</a> or higher.</p>"
+        },
         "Username":{
           "shape":"UsernameType",
           "documentation":"<p>The name of the user that you want to query or modify. The value of this parameter is typically your user's username, but it can be any of their alias attributes. If <code>username</code> isn't an alias attribute in your user pool, this value must be the <code>sub</code> of a local user or the username of a user from a third-party IdP.</p>"
@@ -6296,7 +6300,7 @@
         },
         "WebAuthnConfiguration":{
           "shape":"WebAuthnConfigurationType",
-          "documentation":"<p>Shows user pool configuration for sign-in with passkey authenticators like biometric devices and security keys. Passkeys are not eligible MFA factors. They are instead an eligible primary sign-in factor for <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/authentication-flows-selection-sdk.html#authentication-flows-selection-choice\">choice-based authentication</a>, or the <code>USER_AUTH</code> flow.</p>"
+          "documentation":"<p>Shows user pool configuration for sign-in with passkey authenticators such as biometric devices and security keys. Includes relying-party configuration, user-verification requirements, and whether passkeys can satisfy MFA requirements.</p>"
         }
       }
     },
@@ -6769,7 +6773,7 @@
     },
     "LanguageIdType":{
       "type":"string",
-      "pattern":"^cognito:(default|english|french|spanish|german|bahasa-indonesia|italian|japanese|korean|portuguese-brazil|chinese-(simplified|traditional))$"
+      "pattern":"^cognito:(default|dutch|english|french|spanish|german|bahasa-indonesia|italian|japanese|korean|portuguese-brazil|chinese-(simplified|traditional))$"
     },
     "LimitExceededException":{
       "type":"structure",
@@ -6792,7 +6796,7 @@
       "type":"map",
       "key":{"shape":"LanguageIdType"},
       "value":{"shape":"LinkUrlType"},
-      "max":12,
+      "max":13,
       "min":1
     },
     "ListDevicesRequest":{
@@ -8327,6 +8331,10 @@
           "shape":"EmailMfaSettingsType",
           "documentation":"<p>User preferences for email message MFA. Activates or deactivates email MFA and sets it as the preferred MFA method when multiple methods are available. To activate this setting, your user pool must be in the <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-essentials.html\"> Essentials tier</a> or higher.</p>"
         },
+        "WebAuthnMfaSettings":{
+          "shape":"WebAuthnMfaSettingsType",
+          "documentation":"<p>User preferences for passkey MFA. Activates or deactivates passkey MFA for the user. When activated, passkey authentication requires user verification, and passkey sign-in is available when MFA is required. To activate this setting, the <code>FactorConfiguration</code> of your user pool <code>WebAuthnConfiguration</code> must be <code>MULTI_FACTOR_WITH_USER_VERIFICATION</code>. To activate this setting, your user pool must be in the <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-essentials.html\"> Essentials tier</a> or higher.</p>"
+        },
         "AccessToken":{
           "shape":"TokenModelType",
           "documentation":"<p>A valid access token that Amazon Cognito issued to the currently signed-in user. Must include a scope claim for <code>aws.cognito.signin.user.admin</code>.</p>"
@@ -8363,7 +8371,7 @@
         },
         "WebAuthnConfiguration":{
           "shape":"WebAuthnConfigurationType",
-          "documentation":"<p>The configuration of your user pool for passkey, or WebAuthn, authentication and registration. You can set this configuration independent of the MFA configuration options in this operation.</p>"
+          "documentation":"<p>The configuration of your user pool for passkey, or WebAuthn, authentication and registration. Includes relying-party configuration, user-verification requirements, and whether passkeys can satisfy MFA requirements.</p>"
         }
       }
     },
@@ -8388,7 +8396,7 @@
         },
         "WebAuthnConfiguration":{
           "shape":"WebAuthnConfigurationType",
-          "documentation":"<p>The configuration of your user pool for passkey, or WebAuthn, sign-in with authenticators like biometric and security-key devices. Includes relying-party configuration and settings for user-verification requirements.</p>"
+          "documentation":"<p>The configuration of your user pool for passkey, or WebAuthn, sign-in with authenticators such as biometric and security-key devices. Includes relying-party configuration and settings for user-verification requirements.</p>"
         }
       }
     },
@@ -10355,6 +10363,10 @@
         "UserVerification":{
           "shape":"UserVerificationType",
           "documentation":"<p>When <code>required</code>, users can only register and sign in users with passkeys that are capable of <a href=\"https://www.w3.org/TR/webauthn-2/#enum-userVerificationRequirement\">user verification</a>. When <code>preferred</code>, your user pool doesn't require the use of authenticators with user verification but encourages it.</p>"
+        },
+        "FactorConfiguration":{
+          "shape":"WebAuthnFactorConfigurationType",
+          "documentation":"<p>Sets whether passkeys can be used as multi-factor authentication (MFA). When set to <code>MULTI_FACTOR_WITH_USER_VERIFICATION</code>, passkey authentication with user verification satisfies MFA requirements. When set to <code>SINGLE_FACTOR</code> or not set, passkeys are a single authentication factor. To activate this setting, your user pool must be in the <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-essentials.html\"> Essentials tier</a> or higher.</p>"
         }
       },
       "documentation":"<p>Settings for authentication (MFA) with passkey, or webauthN, biometric and security-key devices in a user pool. Configures the following:</p> <ul> <li> <p>Configuration for requiring user-verification support in passkeys.</p> </li> <li> <p>The user pool relying-party ID. This is the domain, typically your user pool domain, that user's passkey providers should trust as a receiver of passkey authentication.</p> </li> <li> <p>The providers that you want to allow as origins for passkey authentication.</p> </li> </ul>"
@@ -10412,6 +10424,24 @@
       "type":"integer",
       "max":20,
       "min":0
+    },
+    "WebAuthnFactorConfigurationType":{
+      "type":"string",
+      "documentation":"<p>The configuration of passkey authentication as a single factor or a multi-factor authentication (MFA) method. When set to <code>MULTI_FACTOR_WITH_USER_VERIFICATION</code>, your user pool requires passkey authenticators to perform <a href=\"https://www.w3.org/TR/webauthn-2/#user-verification\">user verification</a>, for example a biometric or PIN. User verification combined with the passkey constitutes multi-factor authentication. When set to <code>SINGLE_FACTOR</code>, passkeys are a single authentication factor.</p>",
+      "enum":[
+        "SINGLE_FACTOR",
+        "MULTI_FACTOR_WITH_USER_VERIFICATION"
+      ]
+    },
+    "WebAuthnMfaSettingsType":{
+      "type":"structure",
+      "members":{
+        "Enabled":{
+          "shape":"BooleanType",
+          "documentation":"<p>Specifies whether passkey MFA is activated for a user. When activated, the user's passkey authentication requires user verification, and passkey sign-in is available when MFA is required. The user must also have at least one other MFA method such as SMS, TOTP, or email activated to prevent account lockout.</p>"
+        }
+      },
+      "documentation":"<p>A user's preference for using passkey, or WebAuthn, multi-factor authentication (MFA). Turns passkey MFA on and off for the user. Unlike other MFA settings types, this type doesn't include a <code>PreferredMfa</code> option because passkey MFA applies only when passkey is the first authentication factor.</p>"
     },
     "WebAuthnNotEnabledException":{
       "type":"structure",

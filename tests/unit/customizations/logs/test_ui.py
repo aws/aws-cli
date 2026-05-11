@@ -1,4 +1,4 @@
-# Copyright 2024 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -15,12 +15,12 @@ import json
 import colorama
 from prompt_toolkit.application import Application
 from prompt_toolkit.buffer import Buffer
+from prompt_toolkit.input import create_pipe_input
 from prompt_toolkit.key_binding import KeyPressEvent
 from prompt_toolkit.output import DummyOutput
-from prompt_toolkit.input import create_pipe_input
 
 from awscli.compat import StringIO
-from awscli.customizations.logs.startlivetail import (
+from awscli.customizations.logs.ui import (
     COLOR_LIST,
     InputState,
     InteractivePrinter,
@@ -247,9 +247,6 @@ class KeywordTest(unittest.TestCase):
         log_event = "This is an INFO log"
         self.keyword = Keyword(text)
 
-        colored_log_event = self.keyword._add_color_to_string(
-            log_event, 11, 15
-        )
         uncolored_log_event = self.keyword._remove_color_from_string(
             log_event, 15, 19
         )
@@ -608,8 +605,10 @@ class InteractiveUITest(unittest.IsolatedAsyncioTestCase):
         self.log_events = []
         self.session_metadata = LiveTailSessionMetadata()
         self.ui = InteractiveUI(
-            self.log_events, self.session_metadata, app_output=DummyOutput(),
-            app_input=create_pipe_input()
+            self.log_events,
+            self.session_metadata,
+            app_output=DummyOutput(),
+            app_input=create_pipe_input(),
         )
 
     def test_update_toolbar(self):

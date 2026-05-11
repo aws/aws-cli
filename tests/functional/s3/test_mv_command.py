@@ -52,6 +52,7 @@ class TestMvCommand(BaseS3TransferCommandTest):
                     {
                         'Bucket': 'bucket',
                         'Key': 'key.txt',
+                        'ChecksumMode': 'ENABLED',
                     },
                 )
             ]
@@ -148,6 +149,7 @@ class TestMvCommand(BaseS3TransferCommandTest):
                     {
                         'Bucket': 'mybucket',
                         'Key': 'mykey',
+                        'ChecksumMode': 'ENABLED',
                         'RequestPayer': 'requester',
                     },
                 ),
@@ -184,7 +186,10 @@ class TestMvCommand(BaseS3TransferCommandTest):
         self.assert_operations_called(
             [
                 self.head_object_request(
-                    'sourcebucket', 'sourcekey', RequestPayer='requester'
+                    'sourcebucket',
+                    'sourcekey',
+                    RequestPayer='requester',
+                    ChecksumMode='ENABLED',
                 ),
                 self.copy_object_request(
                     'sourcebucket',
@@ -221,7 +226,9 @@ class TestMvCommand(BaseS3TransferCommandTest):
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_operations_called(
             [
-                self.head_object_request('sourcebucket', 'sourcekey'),
+                self.head_object_request(
+                    'sourcebucket', 'sourcekey', ChecksumMode='ENABLED'
+                ),
                 self.get_object_tagging_request('sourcebucket', 'sourcekey'),
                 self.create_mpu_request('bucket', 'key', Metadata=metadata),
                 self.upload_part_copy_request(
@@ -275,7 +282,9 @@ class TestMvCommand(BaseS3TransferCommandTest):
         self.run_cmd(cmdline, expected_rc=1)
         self.assert_operations_called(
             [
-                self.head_object_request('sourcebucket', 'sourcekey'),
+                self.head_object_request(
+                    'sourcebucket', 'sourcekey', ChecksumMode='ENABLED'
+                ),
                 self.get_object_tagging_request('sourcebucket', 'sourcekey'),
                 self.create_mpu_request('bucket', 'key', Metadata=metadata),
                 self.upload_part_copy_request(
@@ -431,14 +440,10 @@ class TestMvCommand(BaseS3TransferCommandTest):
         # Verify all multipart copy operations were called
         self.assertEqual(len(self.operations_called), 3)
         self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
-        self.assertEqual(
-            self.operations_called[1][0].name, 'CopyObject'
-        )
+        self.assertEqual(self.operations_called[1][0].name, 'CopyObject')
         self.assertEqual(self.operations_called[1][1]['IfNoneMatch'], '*')
 
-        self.assertEqual(
-            self.operations_called[2][0].name, 'DeleteObject'
-        )
+        self.assertEqual(self.operations_called[2][0].name, 'DeleteObject')
 
     def test_mv_no_overwrite_flag_on_copy_when_small_object_exists_on_target(
         self,
@@ -455,9 +460,7 @@ class TestMvCommand(BaseS3TransferCommandTest):
         # Verify all copy operations were called
         self.assertEqual(len(self.operations_called), 2)
         self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
-        self.assertEqual(
-            self.operations_called[1][0].name, 'CopyObject'
-        )
+        self.assertEqual(self.operations_called[1][0].name, 'CopyObject')
         # Verify the IfNoneMatch condition was set in the CopyObject request
         self.assertEqual(self.operations_called[1][1]['IfNoneMatch'], '*')
 

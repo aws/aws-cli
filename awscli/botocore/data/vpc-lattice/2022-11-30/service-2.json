@@ -1953,6 +1953,10 @@
           "shape":"Ipv4AddressesPerEni",
           "documentation":"<p>The number of IPv4 addresses in each ENI for the resource gateway.</p>"
         },
+        "resourceConfigDnsResolution":{
+          "shape":"ResourceConfigDnsResolution",
+          "documentation":"<p>Indicates how DNS is resolved for resource configurations associated to this resource gateway. ResourceConfigDnsResolution is set at creation time and cannot be changed.</p> <ul> <li> <p> <code>IN_VPC</code> - DNS resolution occurs privately within the resource gateway's VPC. DNS queries for resources behind this resource gateway resolve using the DNS resolvers defined in the VPC's DHCP option sets. Use this when your resource domain names are hosted in private Route 53 hosted zones or on-premises DNS servers reachable from the VPC.</p> </li> <li> <p> <code>PUBLIC</code> - DNS resolution occurs against public DNS resolvers. DNS queries for resources behind this resource gateway resolve using standard public DNS. Use this when your resource domain names are publicly resolvable.</p> </li> </ul>"
+        },
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags for the resource gateway.</p>"
@@ -2003,6 +2007,10 @@
         "ipv4AddressesPerEni":{
           "shape":"Ipv4AddressesPerEni",
           "documentation":"<p>The number of IPv4 addresses in each ENI for the resource gateway.</p>"
+        },
+        "resourceConfigDnsResolution":{
+          "shape":"ResourceConfigDnsResolution",
+          "documentation":"<p>The DNS resolution type for resource configurations that are associated with this resource gateway.</p>"
         }
       }
     },
@@ -3345,6 +3353,14 @@
           "shape":"SubnetList",
           "documentation":"<p>The IDs of the VPC subnets for resource gateway.</p>"
         },
+        "serviceManaged":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the resource gateway is managed by an AWS service.</p>"
+        },
+        "managedBy":{
+          "shape":"String",
+          "documentation":"<p>The AWS service that manages the resource gateway.</p>"
+        },
         "securityGroupIds":{
           "shape":"SecurityGroupList",
           "documentation":"<p>The security group IDs associated with the resource gateway.</p>"
@@ -3356,6 +3372,10 @@
         "ipv4AddressesPerEni":{
           "shape":"Ipv4AddressesPerEni",
           "documentation":"<p>The number of IPv4 addresses in each ENI for the resource gateway.</p>"
+        },
+        "resourceConfigDnsResolution":{
+          "shape":"ResourceConfigDnsResolution",
+          "documentation":"<p>The DNS resolution type for resource configurations that are associated with this resource gateway.</p>"
         },
         "createdAt":{
           "shape":"Timestamp",
@@ -5041,6 +5061,13 @@
       "min":20,
       "pattern":"arn(:[a-z0-9]+([.-][a-z0-9]+)*){2}(:([a-z0-9]+([.-][a-z0-9]+)*)?){2}:((servicenetwork/sn)|(service/svc)|(resourceconfiguration/rcfg))-[0-9a-z]{17}"
     },
+    "ResourceConfigDnsResolution":{
+      "type":"string",
+      "enum":[
+        "IN_VPC",
+        "PUBLIC"
+      ]
+    },
     "ResourceConfigurationArn":{
       "type":"string",
       "max":2048,
@@ -5325,6 +5352,10 @@
         "ipv4AddressesPerEni":{
           "shape":"Ipv4AddressesPerEni",
           "documentation":"<p>The number of IPv4 addresses in each ENI for the resource gateway.</p>"
+        },
+        "resourceConfigDnsResolution":{
+          "shape":"ResourceConfigDnsResolution",
+          "documentation":"<p>The DNS resolution type for resource configurations that are associated with this resource gateway.</p>"
         },
         "createdAt":{
           "shape":"Timestamp",
@@ -6444,7 +6475,7 @@
         },
         "status":{
           "shape":"TargetStatus",
-          "documentation":"<p>The status of the target.</p> <ul> <li> <p> <code>DRAINING</code>: The target is being deregistered. No new connections are sent to this target while current connections are being drained. The default draining time is 5 minutes.</p> </li> <li> <p> <code>UNAVAILABLE</code>: Health checks are unavailable for the target group.</p> </li> <li> <p> <code>HEALTHY</code>: The target is healthy.</p> </li> <li> <p> <code>UNHEALTHY</code>: The target is unhealthy.</p> </li> <li> <p> <code>INITIAL</code>: Initial health checks on the target are being performed.</p> </li> <li> <p> <code>UNUSED</code>: Target group is not used in a service.</p> </li> </ul>"
+          "documentation":"<p>The status of the target.</p> <ul> <li> <p> <code>DRAINING</code>: The target is being deregistered. No new connections are sent to this target while current connections are being drained. The default draining time is 1 minute.</p> </li> <li> <p> <code>UNAVAILABLE</code>: Health checks are unavailable for the target group.</p> </li> <li> <p> <code>HEALTHY</code>: The target is healthy.</p> </li> <li> <p> <code>UNHEALTHY</code>: The target is unhealthy.</p> </li> <li> <p> <code>INITIAL</code>: Initial health checks on the target are being performed.</p> </li> <li> <p> <code>UNUSED</code>: Target group is not used in a service.</p> </li> </ul>"
         },
         "reasonCode":{
           "shape":"String",

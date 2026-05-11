@@ -3,7 +3,7 @@
 The following ``get-storage-configuration`` example gets the composition storage configuration specified by the given ARN (Amazon Resource Name). ::
 
     aws ivs-realtime get-storage-configuration \
-        --name arn "arn:aws:ivs:ap-northeast-1:123456789012:storage-configuration/abcdABCDefgh"
+        --arn "arn:aws:ivs:ap-northeast-1:123456789012:storage-configuration/abcdABCDefgh"
 
 Output::
 

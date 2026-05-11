@@ -115,6 +115,57 @@
       "documentation":"<p>Displays detailed information about a job run.</p>",
       "readonly":true
     },
+    "GetResourceDashboard":{
+      "name":"GetResourceDashboard",
+      "http":{
+        "method":"GET",
+        "requestUri":"/applications/{applicationId}/dashboard",
+        "responseCode":200
+      },
+      "input":{"shape":"GetResourceDashboardRequest"},
+      "output":{"shape":"GetResourceDashboardResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns a URL that you can use to access the application UIs for a specified resource, such as a session.</p> <p>For resources in a running state, the application UI is a live user interface such as the Spark web UI. For terminated resources, the application UI is a persistent application user interface such as the Spark History Server.</p> <note> <p>The URL is valid for one hour after you generate it. To access the application UI after that hour elapses, you must invoke the API again to generate a new URL.</p> </note>",
+      "readonly":true
+    },
+    "GetSession":{
+      "name":"GetSession",
+      "http":{
+        "method":"GET",
+        "requestUri":"/applications/{applicationId}/sessions/{sessionId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetSessionRequest"},
+      "output":{"shape":"GetSessionResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Displays detailed information about a session.</p>",
+      "readonly":true
+    },
+    "GetSessionEndpoint":{
+      "name":"GetSessionEndpoint",
+      "http":{
+        "method":"GET",
+        "requestUri":"/applications/{applicationId}/sessions/{sessionId}/endpoint",
+        "responseCode":200
+      },
+      "input":{"shape":"GetSessionEndpointRequest"},
+      "output":{"shape":"GetSessionEndpointResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns the session endpoint URL and a time-limited authentication token for the specified session. Use the endpoint and token to connect a client to the session. Call this operation again when the authentication token expires to obtain a new token.</p>",
+      "readonly":true
+    },
     "ListApplications":{
       "name":"ListApplications",
       "http":{
@@ -162,6 +213,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Lists job runs based on a set of parameters.</p>",
+      "readonly":true
+    },
+    "ListSessions":{
+      "name":"ListSessions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/applications/{applicationId}/sessions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListSessionsRequest"},
+      "output":{"shape":"ListSessionsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists sessions for the specified application. You can filter sessions by state and creation time.</p>",
       "readonly":true
     },
     "ListTagsForResource":{
@@ -217,6 +285,25 @@
       "documentation":"<p>Starts a job run.</p>",
       "idempotent":true
     },
+    "StartSession":{
+      "name":"StartSession",
+      "http":{
+        "method":"POST",
+        "requestUri":"/applications/{applicationId}/sessions",
+        "responseCode":200
+      },
+      "input":{"shape":"StartSessionRequest"},
+      "output":{"shape":"StartSessionResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates and starts a new session on the specified application. The application must be in the <code>STARTED</code> state or have <code>AutoStart</code> enabled, and have interactive sessions enabled. This operation is supported for EMR release 7.13.0 and later.</p>",
+      "idempotent":true
+    },
     "StopApplication":{
       "name":"StopApplication",
       "http":{
@@ -249,6 +336,23 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Assigns tags to resources. A tag is a label that you assign to an Amazon Web Services resource. Each tag consists of a key and an optional value, both of which you define. Tags enable you to categorize your Amazon Web Services resources by attributes such as purpose, owner, or environment. When you have many resources of the same type, you can quickly identify a specific resource based on the tags you've assigned to it. </p>"
+    },
+    "TerminateSession":{
+      "name":"TerminateSession",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/applications/{applicationId}/sessions/{sessionId}",
+        "responseCode":200
+      },
+      "input":{"shape":"TerminateSessionRequest"},
+      "output":{"shape":"TerminateSessionResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Terminates the specified session. After you terminate a session, it enters the <code>TERMINATING</code> state and then the <code>TERMINATED</code> state. You can still access the Spark History Server for a terminated session through the <code>GetResourceDashboard</code> operation.</p>",
+      "idempotent":true
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -880,6 +984,11 @@
       "min":20,
       "pattern":"arn:(aws[a-zA-Z0-9-]*):kms:[a-zA-Z0-9\\-]*:([0-9]{12}):key\\/[a-zA-Z0-9-]+"
     },
+    "EndpointUrl":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
     "EngineType":{
       "type":"string",
       "max":64,
@@ -1002,6 +1111,127 @@
         "jobRun":{
           "shape":"JobRun",
           "documentation":"<p>The output displays information about the job run.</p>"
+        }
+      }
+    },
+    "GetResourceDashboardRequest":{
+      "type":"structure",
+      "required":[
+        "applicationId",
+        "resourceId",
+        "resourceType"
+      ],
+      "members":{
+        "applicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The ID of the application that the resource belongs to.</p>",
+          "location":"uri",
+          "locationName":"applicationId"
+        },
+        "resourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the resource.</p>",
+          "location":"querystring",
+          "locationName":"resourceId"
+        },
+        "resourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The type of resource to access the dashboard for. Currently, only <code>Session</code> is supported.</p>",
+          "location":"querystring",
+          "locationName":"resourceType"
+        }
+      }
+    },
+    "GetResourceDashboardResponse":{
+      "type":"structure",
+      "members":{
+        "url":{
+          "shape":"Url",
+          "documentation":"<p>A URL to the resource dashboard. For an active resource, this URL opens the live application UI. For a terminated resource, this URL opens the persistent application UI. This value is not included in the response if the URL is not available.</p>"
+        }
+      }
+    },
+    "GetSessionEndpointRequest":{
+      "type":"structure",
+      "required":[
+        "applicationId",
+        "sessionId"
+      ],
+      "members":{
+        "applicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The ID of the application that the session belongs to.</p>",
+          "location":"uri",
+          "locationName":"applicationId"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The ID of the session.</p>",
+          "location":"uri",
+          "locationName":"sessionId"
+        }
+      }
+    },
+    "GetSessionEndpointResponse":{
+      "type":"structure",
+      "required":[
+        "applicationId",
+        "sessionId",
+        "endpoint",
+        "authToken",
+        "authTokenExpiresAt"
+      ],
+      "members":{
+        "applicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The output contains the ID of the application.</p>"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The output contains the ID of the session.</p>"
+        },
+        "endpoint":{
+          "shape":"EndpointUrl",
+          "documentation":"<p>The endpoint URL for connecting to the session.</p>"
+        },
+        "authToken":{
+          "shape":"SessionAuthToken",
+          "documentation":"<p>Authentication token for accessing the session endpoint.</p>"
+        },
+        "authTokenExpiresAt":{
+          "shape":"Date",
+          "documentation":"<p>The expiration time of the authentication token.</p>"
+        }
+      }
+    },
+    "GetSessionRequest":{
+      "type":"structure",
+      "required":[
+        "applicationId",
+        "sessionId"
+      ],
+      "members":{
+        "applicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The ID of the application that the session belongs to.</p>",
+          "location":"uri",
+          "locationName":"applicationId"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The ID of the session.</p>",
+          "location":"uri",
+          "locationName":"sessionId"
+        }
+      }
+    },
+    "GetSessionResponse":{
+      "type":"structure",
+      "required":["session"],
+      "members":{
+        "session":{
+          "shape":"Session",
+          "documentation":"<p>The output displays information about the session.</p>"
         }
       }
     },
@@ -1157,6 +1387,10 @@
         "livyEndpointEnabled":{
           "shape":"Boolean",
           "documentation":"<p>Enables an Apache Livy endpoint that you can connect to and run interactive jobs.</p>"
+        },
+        "sessionEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Enables interactive sessions on the application. When set to <code>true</code>, you can start interactive sessions using the <code>StartSession</code> operation.</p>"
         }
       },
       "documentation":"<p>The configuration to use to enable the different types of interactive use cases in an application.</p>"
@@ -1710,6 +1944,68 @@
         }
       }
     },
+    "ListSessionsRequest":{
+      "type":"structure",
+      "required":["applicationId"],
+      "members":{
+        "applicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The ID of the application to list sessions for.</p>",
+          "location":"uri",
+          "locationName":"applicationId"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of session results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"ListSessionsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of sessions to return in each page of results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "states":{
+          "shape":"SessionStateSet",
+          "documentation":"<p>An optional filter for session states. Note that if this filter contains multiple states, the resulting list will be grouped by the state.</p>",
+          "location":"querystring",
+          "locationName":"states"
+        },
+        "createdAtAfter":{
+          "shape":"Date",
+          "documentation":"<p>The lower bound of the option to filter by creation date and time.</p>",
+          "location":"querystring",
+          "locationName":"createdAtAfter"
+        },
+        "createdAtBefore":{
+          "shape":"Date",
+          "documentation":"<p>The upper bound of the option to filter by creation date and time.</p>",
+          "location":"querystring",
+          "locationName":"createdAtBefore"
+        }
+      }
+    },
+    "ListSessionsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":50,
+      "min":1
+    },
+    "ListSessionsResponse":{
+      "type":"structure",
+      "required":["sessions"],
+      "members":{
+        "sessions":{
+          "shape":"Sessions",
+          "documentation":"<p>The output lists information about the specified sessions.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The output displays the token for the next set of session results. This is required for pagination and is available as a response of the previous request.</p>"
+        }
+      }
+    },
     "ListTagsForResourceRequest":{
       "type":"structure",
       "required":["resourceArn"],
@@ -1904,6 +2200,12 @@
       "min":60,
       "pattern":"arn:(aws[a-zA-Z0-9-]*):emr-serverless:.+:(\\d{12}):\\/applications\\/[0-9a-zA-Z]+(\\/jobruns\\/[0-9a-zA-Z]+)?"
     },
+    "ResourceId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[0-9a-z]+"
+    },
     "ResourceNotFoundException":{
       "type":"structure",
       "required":["message"],
@@ -1916,6 +2218,10 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ResourceType":{
+      "type":"string",
+      "enum":["SESSION"]
     },
     "ResourceUtilization":{
       "type":"structure",
@@ -2014,6 +2320,222 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "Session":{
+      "type":"structure",
+      "required":[
+        "applicationId",
+        "sessionId",
+        "arn",
+        "state",
+        "stateDetails",
+        "releaseLabel",
+        "executionRoleArn",
+        "createdBy",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "applicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The ID of the application that the session belongs to.</p>"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The ID of the session.</p>"
+        },
+        "arn":{
+          "shape":"SessionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the session.</p>"
+        },
+        "name":{
+          "shape":"String256",
+          "documentation":"<p>The optional name of the session.</p>"
+        },
+        "state":{
+          "shape":"SessionState",
+          "documentation":"<p>The state of the session.</p>"
+        },
+        "stateDetails":{
+          "shape":"String1024",
+          "documentation":"<p>Additional details about the current state of the session.</p>"
+        },
+        "releaseLabel":{
+          "shape":"ReleaseLabel",
+          "documentation":"<p>The Amazon EMR release label associated with the session.</p>"
+        },
+        "executionRoleArn":{
+          "shape":"IAMRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the execution role for the session.</p>"
+        },
+        "createdBy":{
+          "shape":"RequestIdentityUserArn",
+          "documentation":"<p>The IAM principal that created the session.</p>"
+        },
+        "createdAt":{
+          "shape":"Date",
+          "documentation":"<p>The date and time that the session was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Date",
+          "documentation":"<p>The date and time that the session was last updated.</p>"
+        },
+        "startedAt":{
+          "shape":"Date",
+          "documentation":"<p>The date and time that the session moved to a running state.</p>"
+        },
+        "endedAt":{
+          "shape":"Date",
+          "documentation":"<p>The date and time that the session was terminated or failed.</p>"
+        },
+        "idleSince":{
+          "shape":"Date",
+          "documentation":"<p>The date and time that the session became idle.</p>"
+        },
+        "configurationOverrides":{
+          "shape":"SessionConfigurationOverrides",
+          "documentation":"<p>The configuration overrides for the session, including runtime configuration properties.</p>"
+        },
+        "networkConfiguration":{
+          "shape":"NetworkConfiguration",
+          "documentation":"<p>The network configuration for customer VPC connectivity for the session.</p>"
+        },
+        "idleTimeoutMinutes":{
+          "shape":"Duration",
+          "documentation":"<p>The idle timeout in minutes for the session. After the session remains idle for this duration, it is automatically terminated.</p>",
+          "box":true
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags assigned to the session.</p>"
+        },
+        "totalResourceUtilization":{
+          "shape":"TotalResourceUtilization",
+          "documentation":"<p>The aggregate vCPU, memory, and storage resources used from the time the session starts to execute, until the time the session terminates, rounded up to the nearest second.</p>"
+        },
+        "billedResourceUtilization":{
+          "shape":"ResourceUtilization",
+          "documentation":"<p>The aggregate vCPU, memory, and storage that Amazon Web Services has billed for the session. The billed resources include a 1-minute minimum usage for workers, plus additional storage over 20 GB per worker. Note that billed resources do not include usage for idle pre-initialized workers.</p>"
+        },
+        "totalExecutionDurationSeconds":{
+          "shape":"Long",
+          "documentation":"<p>The total execution duration of the session in seconds.</p>"
+        }
+      },
+      "documentation":"<p>Information about a session, including the session state, configuration, and timestamps.</p>"
+    },
+    "SessionArn":{
+      "type":"string",
+      "max":1024,
+      "min":60,
+      "pattern":"arn:(aws[a-zA-Z0-9-]*):emr-serverless:.+:(\\d{12}):\\/applications\\/[0-9a-zA-Z]+\\/sessions\\/[0-9a-zA-Z]+"
+    },
+    "SessionAuthToken":{
+      "type":"string",
+      "max":8000,
+      "min":1,
+      "sensitive":true
+    },
+    "SessionConfigurationOverrides":{
+      "type":"structure",
+      "members":{
+        "runtimeConfiguration":{
+          "shape":"ConfigurationList",
+          "documentation":"<p>The runtime configuration for the session. Contains Spark configuration properties specified at session creation time.</p>"
+        }
+      },
+      "documentation":"<p>The configuration overrides for a session.</p>"
+    },
+    "SessionId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[0-9a-z]+"
+    },
+    "SessionState":{
+      "type":"string",
+      "enum":[
+        "SUBMITTED",
+        "STARTING",
+        "STARTED",
+        "IDLE",
+        "BUSY",
+        "FAILED",
+        "TERMINATING",
+        "TERMINATED"
+      ]
+    },
+    "SessionStateSet":{
+      "type":"list",
+      "member":{"shape":"SessionState"},
+      "max":8,
+      "min":1
+    },
+    "SessionSummary":{
+      "type":"structure",
+      "required":[
+        "applicationId",
+        "sessionId",
+        "arn",
+        "state",
+        "stateDetails",
+        "releaseLabel",
+        "executionRoleArn",
+        "createdBy",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "applicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The ID of the application that the session belongs to.</p>"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The ID of the session.</p>"
+        },
+        "arn":{
+          "shape":"SessionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the session.</p>"
+        },
+        "name":{
+          "shape":"String256",
+          "documentation":"<p>The optional name of the session.</p>"
+        },
+        "state":{
+          "shape":"SessionState",
+          "documentation":"<p>The state of the session.</p>"
+        },
+        "stateDetails":{
+          "shape":"String1024",
+          "documentation":"<p>Additional details about the current state of the session.</p>"
+        },
+        "releaseLabel":{
+          "shape":"ReleaseLabel",
+          "documentation":"<p>The Amazon EMR release label associated with the session.</p>"
+        },
+        "executionRoleArn":{
+          "shape":"IAMRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the execution role for the session.</p>"
+        },
+        "createdBy":{
+          "shape":"RequestIdentityUserArn",
+          "documentation":"<p>The IAM principal that created the session.</p>"
+        },
+        "createdAt":{
+          "shape":"Date",
+          "documentation":"<p>The date and time that the session was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Date",
+          "documentation":"<p>The date and time that the session was last updated.</p>"
+        }
+      },
+      "documentation":"<p>The summary of attributes associated with a session.</p>"
+    },
+    "Sessions":{
+      "type":"list",
+      "member":{"shape":"SessionSummary"}
     },
     "ShutdownGracePeriodInSeconds":{
       "type":"integer",
@@ -2141,6 +2663,70 @@
         }
       }
     },
+    "StartSessionRequest":{
+      "type":"structure",
+      "required":[
+        "applicationId",
+        "clientToken",
+        "executionRoleArn"
+      ],
+      "members":{
+        "applicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The ID of the application on which to start the session.</p>",
+          "location":"uri",
+          "locationName":"applicationId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you retry a request that completed successfully using the same client token, the server returns the successful response without performing the operation again.</p>",
+          "idempotencyToken":true
+        },
+        "executionRoleArn":{
+          "shape":"IAMRoleArn",
+          "documentation":"<p>The execution role ARN for the session. Amazon EMR Serverless uses this role to access Amazon Web Services resources on your behalf during session execution.</p>"
+        },
+        "configurationOverrides":{
+          "shape":"SessionConfigurationOverrides",
+          "documentation":"<p>The configuration overrides for the session. Only runtime configuration overrides are supported.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags to assign to the session.</p>"
+        },
+        "idleTimeoutMinutes":{
+          "shape":"Duration",
+          "documentation":"<p>The idle timeout in minutes for the session. After the session remains idle for this duration, Amazon EMR Serverless automatically terminates it.</p>",
+          "box":true
+        },
+        "name":{
+          "shape":"String256",
+          "documentation":"<p>The optional name for the session.</p>"
+        }
+      }
+    },
+    "StartSessionResponse":{
+      "type":"structure",
+      "required":[
+        "applicationId",
+        "sessionId",
+        "arn"
+      ],
+      "members":{
+        "applicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The output contains the application ID on which the session was started.</p>"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The output contains the ID of the session.</p>"
+        },
+        "arn":{
+          "shape":"SessionArn",
+          "documentation":"<p>The output contains the ARN of the session.</p>"
+        }
+      }
+    },
     "StopApplicationRequest":{
       "type":"structure",
       "required":["applicationId"],
@@ -2228,6 +2814,44 @@
       "max":256,
       "min":0,
       "pattern":"[A-Za-z0-9 /_.:=+@-]*"
+    },
+    "TerminateSessionRequest":{
+      "type":"structure",
+      "required":[
+        "applicationId",
+        "sessionId"
+      ],
+      "members":{
+        "applicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The ID of the application that the session belongs to.</p>",
+          "location":"uri",
+          "locationName":"applicationId"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The ID of the session to terminate.</p>",
+          "location":"uri",
+          "locationName":"sessionId"
+        }
+      }
+    },
+    "TerminateSessionResponse":{
+      "type":"structure",
+      "required":[
+        "applicationId",
+        "sessionId"
+      ],
+      "members":{
+        "applicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The output contains the application ID on which the session was terminated.</p>"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The output contains the ID of the terminated session.</p>"
+        }
+      }
     },
     "TotalResourceUtilization":{
       "type":"structure",

@@ -1050,7 +1050,7 @@
         {"shape":"InvalidOperationException"}
       ],
       "documentation":"<p>Retrieves a large logging object (LLO) and streams it back. This API is used to fetch the content of large portions of log events that have been ingested through the PutOpenTelemetryLogs API. When log events contain fields that would cause the total event size to exceed 1MB, CloudWatch Logs automatically processes up to 10 fields, starting with the largest fields. Each field is truncated as needed to keep the total event size as close to 1MB as possible. The excess portions are stored as Large Log Objects (LLOs) and these fields are processed separately and LLO reference system fields (in the format <code>@ptr.$[path.to.field]</code>) are added. The path in the reference field reflects the original JSON structure where the large field was located. For example, this could be <code>@ptr.$['input']['message']</code>, <code>@ptr.$['AAA']['BBB']['CCC']['DDD']</code>, <code>@ptr.$['AAA']</code>, or any other path matching your log structure.</p> <note> <p>The <code>GetLogObject</code> API routes requests using SDK host prefix injection. SDK versions released before April 1, 2026 route to <code>streaming-logs.<i>Region</i>.amazonaws.com</code>, which does not support VPC endpoints. SDK versions released on or after April 1, 2026 route to <code>stream-logs.<i>Region</i>.amazonaws.com</code>, which supports VPC endpoints. To set up a VPC endpoint for this API, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/cloudwatch-logs-and-interface-VPC.html#create-VPC-endpoint-for-CloudWatchLogs\">Creating a VPC endpoint for CloudWatch Logs </a>.</p> </note>",
-      "endpoint":{"hostPrefix":"streaming-"}
+      "endpoint":{"hostPrefix":"stream-"}
     },
     "GetLogRecord":{
       "name":"GetLogRecord",
@@ -1222,7 +1222,7 @@
         {"shape":"InvalidParameterException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Returns a list of log groups in the Region in your account. If you are performing this action in a monitoring account, you can choose to also return log groups from source accounts that are linked to the monitoring account. For more information about using cross-account observability to set up monitoring accounts and source accounts, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html\"> CloudWatch cross-account observability</a>.</p> <p>You can optionally filter the list by log group class, by using regular expressions in your request to match strings in the log group names, by using the fieldIndexes parameter to filter log groups based on which field indexes are configured, by using the dataSources parameter to filter log groups by data source types, and by using the fieldIndexNames parameter to filter by specific field index names.</p> <p>This operation is paginated. By default, your first use of this operation returns 50 results, and includes a token to use in a subsequent operation to return more results.</p>"
+      "documentation":"<p>Returns a list of log groups in the Region in your account. If you are performing this action in a monitoring account, you can choose to also return log groups from source accounts that are linked to the monitoring account. For more information about using cross-account observability to set up monitoring accounts and source accounts, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html\"> CloudWatch cross-account observability</a>.</p> <p>You can optionally filter the results by log group class, log group name pattern, field indexes, data sources, field index names, or log group tags. If you specify more than one filter type, the results include log groups that satisfy all filters.</p> <p>This operation is paginated. By default, your first use of this operation returns 50 results, and includes a token to use in a subsequent operation to return more results.</p>"
     },
     "ListLogGroupsForQuery":{
       "name":"ListLogGroupsForQuery",
@@ -1618,7 +1618,7 @@
         {"shape":"InvalidOperationException"}
       ],
       "documentation":"<p>Starts a Live Tail streaming session for one or more log groups. A Live Tail session returns a stream of log events that have been recently ingested in the log groups. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatchLogs_LiveTail.html\">Use Live Tail to view logs in near real time</a>. </p> <p>The response to this operation is a response stream, over which the server sends live log events and the client receives them.</p> <p>The following objects are sent over the stream:</p> <ul> <li> <p>A single <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_LiveTailSessionStart.html\">LiveTailSessionStart</a> object is sent at the start of the session.</p> </li> <li> <p>Every second, a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_LiveTailSessionUpdate.html\">LiveTailSessionUpdate</a> object is sent. Each of these objects contains an array of the actual log events.</p> <p>If no new log events were ingested in the past second, the <code>LiveTailSessionUpdate</code> object will contain an empty array.</p> <p>The array of log events contained in a <code>LiveTailSessionUpdate</code> can include as many as 500 log events. If the number of log events matching the request exceeds 500 per second, the log events are sampled down to 500 log events to be included in each <code>LiveTailSessionUpdate</code> object.</p> <p>If your client consumes the log events slower than the server produces them, CloudWatch Logs buffers up to 10 <code>LiveTailSessionUpdate</code> events or 5000 log events, after which it starts dropping the oldest events.</p> </li> <li> <p>A <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_StartLiveTailResponseStream.html#CWL-Type-StartLiveTailResponseStream-SessionStreamingException\">SessionStreamingException</a> object is returned if an unknown error occurs on the server side.</p> </li> <li> <p>A <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_StartLiveTailResponseStream.html#CWL-Type-StartLiveTailResponseStream-SessionTimeoutException\">SessionTimeoutException</a> object is returned when the session times out, after it has been kept open for three hours.</p> </li> </ul> <note> <p>The <code>StartLiveTail</code> API routes requests using SDK host prefix injection. SDK versions released before April 1, 2026 route to <code>streaming-logs.<i>Region</i>.amazonaws.com</code>, which does not support VPC endpoints. SDK versions released on or after April 1, 2026 route to <code>stream-logs.<i>Region</i>.amazonaws.com</code>, which supports VPC endpoints. To set up a VPC endpoint for this API, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/cloudwatch-logs-and-interface-VPC.html#create-VPC-endpoint-for-CloudWatchLogs\">Creating a VPC endpoint for CloudWatch Logs </a>.</p> </note> <important> <p>You can end a session before it times out by closing the session stream or by closing the client that is receiving the stream. The session also ends if the established connection between the client and the server breaks.</p> </important> <p>For examples of using an SDK to start a Live Tail session, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/example_cloudwatch-logs_StartLiveTail_section.html\"> Start a Live Tail session using an Amazon Web Services SDK</a>.</p>",
-      "endpoint":{"hostPrefix":"streaming-"}
+      "endpoint":{"hostPrefix":"stream-"}
     },
     "StartQuery":{
       "name":"StartQuery",
@@ -1635,7 +1635,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Starts a query of one or more log groups or data sources using CloudWatch Logs Insights. You specify the log groups or data sources and time range to query and the query string to use. You can query up to 10 data sources in a single query.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax.html\">CloudWatch Logs Insights Query Syntax</a>.</p> <p>After you run a query using <code>StartQuery</code>, the query results are stored by CloudWatch Logs. You can use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetQueryResults.html\">GetQueryResults</a> to retrieve the results of a query, using the <code>queryId</code> that <code>StartQuery</code> returns. </p> <p>Interactive queries started with <code>StartQuery</code> share concurrency limits with automated scheduled query executions. Both types of queries count toward the same regional concurrent query quota, so high scheduled query activity may affect the availability of concurrent slots for interactive queries.</p> <note> <p>To specify the log groups to query, a <code>StartQuery</code> operation must include one of the following:</p> <ul> <li> <p>Either exactly one of the following parameters: <code>logGroupName</code>, <code>logGroupNames</code>, or <code>logGroupIdentifiers</code> </p> </li> <li> <p>Or the <code>queryString</code> must include a <code>SOURCE</code> command to select log groups for the query. The <code>SOURCE</code> command can select log groups based on log group name prefix, account ID, and log class, or select data sources using dataSource syntax in LogsQL, PPL, and SQL. </p> <p>For more information about the <code>SOURCE</code> command, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax-Source.html\">SOURCE</a>.</p> </li> </ul> </note> <p>If you have associated a KMS key with the query results in this account, then <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_StartQuery.html\">StartQuery</a> uses that key to encrypt the results when it stores them. If no key is associated with query results, the query results are encrypted with the default CloudWatch Logs encryption method.</p> <p>Queries time out after 60 minutes of runtime. If your queries are timing out, reduce the time range being searched or partition your query into a number of queries.</p> <p>If you are using CloudWatch cross-account observability, you can use this operation in a monitoring account to start a query in a linked source account. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html\">CloudWatch cross-account observability</a>. For a cross-account <code>StartQuery</code> operation, the query definition must be defined in the monitoring account.</p> <p>You can have up to 100 concurrent CloudWatch Logs insights queries, including queries that have been added to dashboards. </p>"
+      "documentation":"<p>Starts a query of one or more log groups or data sources using CloudWatch Logs Insights. You specify the log groups or data sources and time range to query and the query string to use. You can query up to 10 data sources in a single query.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax.html\">CloudWatch Logs Insights Query Syntax</a>.</p> <p>After you run a query using <code>StartQuery</code>, the query results are stored by CloudWatch Logs. You can use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetQueryResults.html\">GetQueryResults</a> to retrieve the results of a query, using the <code>queryId</code> that <code>StartQuery</code> returns. </p> <p>Interactive queries started with <code>StartQuery</code> share concurrency limits with automated scheduled query executions. Both types of queries count toward the same regional concurrent query quota, so high scheduled query activity may affect the availability of concurrent slots for interactive queries.</p> <note> <p>To specify the log groups to query, a <code>StartQuery</code> operation must include one of the following:</p> <ul> <li> <p>Either exactly one of the following parameters: <code>logGroupName</code>, <code>logGroupNames</code>, or <code>logGroupIdentifiers</code> </p> </li> <li> <p>Or the <code>queryString</code> must include a <code>SOURCE</code> command to select log groups for the query. The <code>SOURCE</code> command can select log groups based on log group name prefix, account ID, and log class, or select data sources using dataSource syntax in LogsQL, PPL, and SQL. In LogsQL, the <code>SOURCE</code> command also supports filtering by log group tags. </p> <p>For more information about the <code>SOURCE</code> command, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax-Source.html\">SOURCE</a>.</p> </li> </ul> </note> <p>If you have associated a KMS key with the query results in this account, then <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_StartQuery.html\">StartQuery</a> uses that key to encrypt the results when it stores them. If no key is associated with query results, the query results are encrypted with the default CloudWatch Logs encryption method.</p> <p>Queries time out after 60 minutes of runtime. If your queries are timing out, reduce the time range being searched or partition your query into a number of queries.</p> <p>If you are using CloudWatch cross-account observability, you can use this operation in a monitoring account to start a query in a linked source account. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html\">CloudWatch cross-account observability</a>. For a cross-account <code>StartQuery</code> operation, the query definition must be defined in the monitoring account.</p> <p>You can have up to 100 concurrent CloudWatch Logs insights queries, including queries that have been added to dashboards. </p>"
     },
     "StopQuery":{
       "name":"StopQuery",
@@ -2333,6 +2333,14 @@
         "allowedSuffixPathFields":{
           "shape":"RecordFields",
           "documentation":"<p>The list of variable fields that can be used in the suffix path of a delivery that delivers to an S3 bucket.</p>"
+        },
+        "deliverySourceConfiguration":{
+          "shape":"DeliverySourceConfigurationSchemas",
+          "documentation":"<p>The schema of the delivery source configuration that is available for this log type. Each element describes a configuration that can be set when calling <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliverySource.html\">PutDeliverySource</a>, including the configuration name, type, and default value.</p>"
+        },
+        "s3TablesIntegration":{
+          "shape":"S3TablesIntegration",
+          "documentation":"<p>The S3 Tables integration configuration for this configuration template, including the datasource name and type.</p>"
         }
       },
       "documentation":"<p>A structure containing information about the deafult settings and available settings that you can use to configure a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_Delivery.html\">delivery</a> or a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_DeliveryDestination.html\">delivery destination</a>.</p>"
@@ -3280,15 +3288,116 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p>The tags that have been assigned to this delivery source.</p>"
+        },
+        "deliverySourceConfiguration":{
+          "shape":"DeliverySourceConfiguration",
+          "documentation":"<p>The map of key-value pairs that configure the delivery source.</p>"
+        },
+        "status":{
+          "shape":"DeliverySourceStatus",
+          "documentation":"<p>The status of the delivery source. A delivery source can have the status <code>ACTIVE</code> or <code>INACTIVE</code>. Note: This value is defined for selective log types.</p>"
+        },
+        "statusReason":{
+          "shape":"DeliverySourceStatusReason",
+          "documentation":"<p>The reason for the status of the delivery source. A status reason of <code>RESOURCE_DELETED</code> indicates that the resource associated with the delivery source has been deleted. Note: This value is defined for selective log types.</p>"
         }
       },
       "documentation":"<p>This structure contains information about one <i>delivery source</i> in your account. A delivery source is an Amazon Web Services resource that sends logs to an Amazon Web Services destination. The destination can be CloudWatch Logs, Amazon S3, or Firehose.</p> <p>Only some Amazon Web Services services support being configured as a delivery source. These services are listed as <b>Supported [V2 Permissions]</b> in the table at <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AWS-logs-and-resource-policy.html\">Enabling logging from Amazon Web Services services.</a> </p> <p>To configure logs delivery between a supported Amazon Web Services service and a destination, you must do the following:</p> <ul> <li> <p>Create a delivery source, which is a logical object that represents the resource that is actually sending the logs. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliverySource.html\">PutDeliverySource</a>.</p> </li> <li> <p>Create a <i>delivery destination</i>, which is a logical object that represents the actual delivery destination. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestination.html\">PutDeliveryDestination</a>.</p> </li> <li> <p>If you are delivering logs cross-account, you must use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestinationPolicy.html\">PutDeliveryDestinationPolicy</a> in the destination account to assign an IAM policy to the destination. This policy allows delivery to that destination. </p> </li> <li> <p>Create a <i>delivery</i> by pairing exactly one delivery source and one delivery destination. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html\">CreateDelivery</a>.</p> </li> </ul> <p>You can configure a single delivery source to send logs to multiple destinations by creating multiple deliveries. You can also create multiple deliveries to configure multiple delivery sources to send logs to the same delivery destination.</p>"
+    },
+    "DeliverySourceConfiguration":{
+      "type":"map",
+      "key":{"shape":"DeliverySourceConfigurationKey"},
+      "value":{"shape":"DeliverySourceConfigurationValue"}
+    },
+    "DeliverySourceConfigurationKey":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "DeliverySourceConfigurationNumericValue":{
+      "type":"double",
+      "box":true
+    },
+    "DeliverySourceConfigurationSchema":{
+      "type":"structure",
+      "required":[
+        "keyName",
+        "valueType",
+        "defaultValue"
+      ],
+      "members":{
+        "keyName":{
+          "shape":"DeliverySourceConfigurationSchemaField",
+          "documentation":"<p>The name of the configuration.</p>"
+        },
+        "valueType":{
+          "shape":"DeliverySourceConfigurationSchemaValueType",
+          "documentation":"<p>The data type of the configuration value. Valid values are <code>string</code>, <code>boolean</code>, <code>int</code>, <code>double</code>, and <code>long</code>.</p>"
+        },
+        "defaultValue":{
+          "shape":"DeliverySourceConfigurationSchemaField",
+          "documentation":"<p>The default value of the configuration that is used when a value is not specified in a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliverySource.html\">PutDeliverySource</a> request.</p>"
+        },
+        "supportedValues":{
+          "shape":"DeliverySourceConfigurationSupportedValues",
+          "documentation":"<p>The list of allowed values for the configuration. Empty for free-form configuration.</p>"
+        },
+        "minValue":{
+          "shape":"DeliverySourceConfigurationNumericValue",
+          "documentation":"<p>The minimum numeric value allowed for the configuration. This applies only when the <code>valueType</code> is a numeric type.</p>"
+        },
+        "maxValue":{
+          "shape":"DeliverySourceConfigurationNumericValue",
+          "documentation":"<p>The maximum numeric value allowed for the configuration. This applies only when the <code>valueType</code> is a numeric type.</p>"
+        }
+      },
+      "documentation":"<p>A structure that describes a single configuration for a log type, including its name, value type, default value, and the range of supported values.</p>"
+    },
+    "DeliverySourceConfigurationSchemaField":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "DeliverySourceConfigurationSchemaValueType":{
+      "type":"string",
+      "enum":[
+        "string",
+        "boolean",
+        "int",
+        "double",
+        "long"
+      ]
+    },
+    "DeliverySourceConfigurationSchemas":{
+      "type":"list",
+      "member":{"shape":"DeliverySourceConfigurationSchema"},
+      "documentation":"<p>A list of <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_DeliverySourceConfigurationSchema.html\">DeliverySourceConfigurationSchema</a> objects that describe the available configuration parameters for a delivery source.</p>"
+    },
+    "DeliverySourceConfigurationSupportedValues":{
+      "type":"list",
+      "member":{"shape":"DeliverySourceConfigurationSchemaField"}
+    },
+    "DeliverySourceConfigurationValue":{
+      "type":"string",
+      "max":255,
+      "min":1
     },
     "DeliverySourceName":{
       "type":"string",
       "max":60,
       "min":1,
       "pattern":"[\\w-]*"
+    },
+    "DeliverySourceStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "INACTIVE"
+      ]
+    },
+    "DeliverySourceStatusReason":{
+      "type":"string",
+      "enum":["RESOURCE_DELETED"]
     },
     "DeliverySources":{
       "type":"list",
@@ -4880,6 +4989,15 @@
         }
       }
     },
+    "GetQueryResultsMaxItems":{
+      "type":"integer",
+      "max":10000,
+      "min":0
+    },
+    "GetQueryResultsNextToken":{
+      "type":"string",
+      "max":1024
+    },
     "GetQueryResultsRequest":{
       "type":"structure",
       "required":["queryId"],
@@ -4887,6 +5005,14 @@
         "queryId":{
           "shape":"QueryId",
           "documentation":"<p>The ID number of the query.</p>"
+        },
+        "nextToken":{
+          "shape":"GetQueryResultsNextToken",
+          "documentation":"<p>The token for the next set of items to return. The token expires after 1 hour.</p>"
+        },
+        "maxItems":{
+          "shape":"GetQueryResultsMaxItems",
+          "documentation":"<p>The maximum number of log events to return in the response. The maximum is 10,000 log events.</p>"
         }
       }
     },
@@ -4912,6 +5038,10 @@
         "encryptionKey":{
           "shape":"EncryptionKey",
           "documentation":"<p>If you associated an KMS key with the CloudWatch Logs Insights query results in this account, this field displays the ARN of the key that's used to encrypt the query results when <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_StartQuery.html\">StartQuery</a> stores them.</p>"
+        },
+        "nextToken":{
+          "shape":"GetQueryResultsNextToken",
+          "documentation":"<p>If there are more log events remaining in the results, the response includes a <code>nextToken</code>. You can use this token in a subsequent <code>GetQueryResults</code> request to get the next set of results.</p>"
         }
       }
     },
@@ -5664,6 +5794,10 @@
         "fieldIndexNames":{
           "shape":"FieldIndexNames",
           "documentation":"<p>An array of field index names to filter log groups that have specific field indexes. Only log groups containing all specified field indexes are returned. You can specify 1 to 20 field index names, each with 1 to 512 characters.</p>"
+        },
+        "logGroupTags":{
+          "shape":"TagFilters",
+          "documentation":"<p>An array of tag filters to return only log groups that have specific tags. Multiple filters are combined with AND logic.</p>"
         }
       }
     },
@@ -7244,15 +7378,19 @@
         },
         "resourceArn":{
           "shape":"Arn",
-          "documentation":"<p>The ARN of the Amazon Web Services resource that is generating and sending logs. For example, <code>arn:aws:workmail:us-east-1:123456789012:organization/m-1234EXAMPLEabcd1234abcd1234abcd1234</code> </p> <p>For the <code>SECURITY_FINDING_LOGS</code> logType, use a wildcard ARN for the hub resource. For example, <code>arn:aws:securityhub:us-east-1:111122223333:hub/*</code> </p>"
+          "documentation":"<p>The ARN of the Amazon Web Services resource that is generating and sending logs. For example, <code>arn:aws:workmail:us-east-1:123456789012:organization/m-1234EXAMPLEabcd1234abcd1234abcd1234</code> </p> <p>For the <code>SECURITY_FINDING_LOGS</code> logType, use a wildcard ARN for the hub resource. For Amazon Web Services Security Hub CSPM, use <code>arn:aws:securityhub:us-east-1:111122223333:hub/*</code> and for Amazon Web Services Security Hub, use <code>arn:aws:securityhub:us-east-1:111122223333:hubv2/*</code> </p>"
         },
         "logType":{
           "shape":"LogType",
-          "documentation":"<p>Defines the type of log that the source is sending.</p> <ul> <li> <p>For Amazon Bedrock Agents, the valid values are <code>APPLICATION_LOGS</code> and <code>EVENT_LOGS</code>.</p> </li> <li> <p>For Amazon Bedrock Knowledge Bases, the valid value is <code>APPLICATION_LOGS</code>.</p> </li> <li> <p>For Amazon Bedrock AgentCore Runtime, the valid values are <code>APPLICATION_LOGS</code>, <code>USAGE_LOGS</code> and <code>TRACES</code>.</p> </li> <li> <p>For Amazon Bedrock AgentCore Tools, the valid values are <code>APPLICATION_LOGS</code>, <code>USAGE_LOGS</code> and <code>TRACES</code>.</p> </li> <li> <p>For Amazon Bedrock AgentCore Identity, the valid values are <code>APPLICATION_LOGS</code> and <code>TRACES</code>.</p> </li> <li> <p>For Amazon Bedrock AgentCore Memory, the valid values are <code>APPLICATION_LOGS</code> and <code>TRACES</code>.</p> </li> <li> <p>For Amazon Bedrock AgentCore Gateway, the valid values are <code>APPLICATION_LOGS</code> and <code>TRACES</code>.</p> </li> <li> <p>For CloudFront, the valid value is <code>ACCESS_LOGS</code>.</p> </li> <li> <p>For DevOps Agent, the valid value is <code>APPLICATION_LOGS</code>.</p> </li> <li> <p>For Amazon CodeWhisperer, the valid value is <code>EVENT_LOGS</code>.</p> </li> <li> <p>For Elemental MediaPackage, the valid values are <code>EGRESS_ACCESS_LOGS</code> and <code>INGRESS_ACCESS_LOGS</code>.</p> </li> <li> <p>For Elemental MediaTailor, the valid values are <code>AD_DECISION_SERVER_LOGS</code>, <code>MANIFEST_SERVICE_LOGS</code>, and <code>TRANSCODE_LOGS</code>.</p> </li> <li> <p>For Amazon EKS Auto Mode, the valid values are <code>AUTO_MODE_BLOCK_STORAGE_LOGS</code>, <code>AUTO_MODE_COMPUTE_LOGS</code>, <code>AUTO_MODE_IPAM_LOGS</code>, and <code>AUTO_MODE_LOAD_BALANCING_LOGS</code>.</p> </li> <li> <p>For Entity Resolution, the valid value is <code>WORKFLOW_LOGS</code>.</p> </li> <li> <p>For IAM Identity Center, the valid value is <code>ERROR_LOGS</code>.</p> </li> <li> <p>For Network Firewall Proxy, the valid values are <code>ALERT_LOGS</code>, <code>ALLOW_LOGS</code>, and <code>DENY_LOGS</code>.</p> </li> <li> <p>For Network Load Balancer, the valid value is <code>NLB_ACCESS_LOGS</code>.</p> </li> <li> <p>For PCS, the valid values are <code>PCS_SCHEDULER_LOGS</code> and <code>PCS_JOBCOMP_LOGS</code>.</p> </li> <li> <p>For Quick, the valid values are <code>CHAT_LOGS</code> and <code>FEEDBACK_LOGS</code>.</p> </li> <li> <p>For Amazon Web Services RTB Fabric, the valid values is <code>APPLICATION_LOGS</code>.</p> </li> <li> <p>For Amazon Q, the valid values are <code>EVENT_LOGS</code> and <code>SYNC_JOB_LOGS</code>.</p> </li> <li> <p>For Amazon Web Services Security Hub CSPM, the valid value is <code>SECURITY_FINDING_LOGS</code>.</p> </li> <li> <p>For Amazon SES mail manager, the valid values are <code>APPLICATION_LOGS</code> and <code>TRAFFIC_POLICY_DEBUG_LOGS</code>.</p> </li> <li> <p>For Amazon WorkMail, the valid values are <code>ACCESS_CONTROL_LOGS</code>, <code>AUTHENTICATION_LOGS</code>, <code>WORKMAIL_AVAILABILITY_PROVIDER_LOGS</code>, <code>WORKMAIL_MAILBOX_ACCESS_LOGS</code>, and <code>WORKMAIL_PERSONAL_ACCESS_TOKEN_LOGS</code>.</p> </li> <li> <p>For Amazon VPC Route Server, the valid value is <code>EVENT_LOGS</code>.</p> </li> </ul>"
+          "documentation":"<p>Defines the type of log that the source is sending.</p> <ul> <li> <p>For Amazon Bedrock Agents, the valid values are <code>APPLICATION_LOGS</code> and <code>EVENT_LOGS</code>.</p> </li> <li> <p>For Amazon Bedrock Knowledge Bases, the valid value is <code>APPLICATION_LOGS</code>.</p> </li> <li> <p>For Amazon Bedrock AgentCore Runtime, the valid values are <code>APPLICATION_LOGS</code>, <code>USAGE_LOGS</code> and <code>TRACES</code>.</p> </li> <li> <p>For Amazon Bedrock AgentCore Tools, the valid values are <code>APPLICATION_LOGS</code>, <code>USAGE_LOGS</code> and <code>TRACES</code>.</p> </li> <li> <p>For Amazon Bedrock AgentCore Identity, the valid values are <code>APPLICATION_LOGS</code> and <code>TRACES</code>.</p> </li> <li> <p>For Amazon Bedrock AgentCore Memory, the valid values are <code>APPLICATION_LOGS</code> and <code>TRACES</code>.</p> </li> <li> <p>For Amazon Bedrock AgentCore Gateway, the valid values are <code>APPLICATION_LOGS</code> and <code>TRACES</code>.</p> </li> <li> <p>For CloudFront, the valid value is <code>ACCESS_LOGS</code>.</p> </li> <li> <p>For DevOps Agent, the valid value is <code>APPLICATION_LOGS</code>.</p> </li> <li> <p>For Amazon CodeWhisperer, the valid value is <code>EVENT_LOGS</code>.</p> </li> <li> <p>For Elemental MediaPackage, the valid values are <code>EGRESS_ACCESS_LOGS</code> and <code>INGRESS_ACCESS_LOGS</code>.</p> </li> <li> <p>For Elemental MediaTailor, the valid values are <code>AD_DECISION_SERVER_LOGS</code>, <code>MANIFEST_SERVICE_LOGS</code>, and <code>TRANSCODE_LOGS</code>.</p> </li> <li> <p>For Amazon EKS Auto Mode, the valid values are <code>AUTO_MODE_BLOCK_STORAGE_LOGS</code>, <code>AUTO_MODE_COMPUTE_LOGS</code>, <code>AUTO_MODE_IPAM_LOGS</code>, and <code>AUTO_MODE_LOAD_BALANCING_LOGS</code>.</p> </li> <li> <p>For Entity Resolution, the valid value is <code>WORKFLOW_LOGS</code>.</p> </li> <li> <p>For IAM Identity Center, the valid value is <code>ERROR_LOGS</code>.</p> </li> <li> <p>For Network Firewall Proxy, the valid values are <code>ALERT_LOGS</code>, <code>ALLOW_LOGS</code>, and <code>DENY_LOGS</code>.</p> </li> <li> <p>For Network Load Balancer, the valid value is <code>NLB_ACCESS_LOGS</code>.</p> </li> <li> <p>For PCS, the valid values are <code>PCS_SCHEDULER_LOGS</code>, <code>PCS_JOBCOMP_LOGS</code>, and <code>PCS_SCHEDULER_AUDIT_LOGS</code>.</p> </li> <li> <p>For Quick, the valid values are <code>CHAT_LOGS</code> and <code>FEEDBACK_LOGS</code>.</p> </li> <li> <p>For Amazon Web Services RTB Fabric, the valid values is <code>APPLICATION_LOGS</code>.</p> </li> <li> <p>For Amazon Q, the valid values are <code>EVENT_LOGS</code> and <code>SYNC_JOB_LOGS</code>.</p> </li> <li> <p>For Amazon Web Services Security Hub CSPM, the valid value is <code>SECURITY_FINDING_LOGS</code>.</p> </li> <li> <p>For Amazon Web Services Security Hub, the valid value is <code>SECURITY_FINDING_LOGS</code>.</p> </li> <li> <p>For Amazon SES mail manager, the valid values are <code>APPLICATION_LOGS</code> and <code>TRAFFIC_POLICY_DEBUG_LOGS</code>.</p> </li> <li> <p>For Amazon WorkMail, the valid values are <code>ACCESS_CONTROL_LOGS</code>, <code>AUTHENTICATION_LOGS</code>, <code>WORKMAIL_AVAILABILITY_PROVIDER_LOGS</code>, <code>WORKMAIL_MAILBOX_ACCESS_LOGS</code>, and <code>WORKMAIL_PERSONAL_ACCESS_TOKEN_LOGS</code>.</p> </li> <li> <p>For Amazon VPC Route Server, the valid value is <code>EVENT_LOGS</code>.</p> </li> </ul>"
         },
         "tags":{
           "shape":"Tags",
           "documentation":"<p>An optional list of key-value pairs to associate with the resource.</p> <p>For more information about tagging, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a> </p>"
+        },
+        "deliverySourceConfiguration":{
+          "shape":"DeliverySourceConfiguration",
+          "documentation":"<p>A map of key-value pairs to configure the delivery source. Both keys and values must be between 1 and 255 characters in length. For example, <code>{\"samplingRate\": \"50\"}</code>.</p>"
         }
       }
     },
@@ -8146,6 +8284,10 @@
         "createdTimeStamp":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp when the data source association was created.</p>"
+        },
+        "parentSourceIdentifier":{
+          "shape":"S3TableIntegrationSourceIdentifier",
+          "documentation":"<p>The identifier of the parent data source for this association.</p>"
         }
       },
       "documentation":"<p>Represents a data source association with an S3 Table Integration, including its status and metadata.</p>"
@@ -8171,6 +8313,30 @@
     "S3TableIntegrationSources":{
       "type":"list",
       "member":{"shape":"S3TableIntegrationSource"}
+    },
+    "S3TablesDatasourceName":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "S3TablesDatasourceType":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "S3TablesIntegration":{
+      "type":"structure",
+      "members":{
+        "datasourceName":{
+          "shape":"S3TablesDatasourceName",
+          "documentation":"<p>The name of the S3 Tables datasource.</p>"
+        },
+        "datasourceType":{
+          "shape":"S3TablesDatasourceType",
+          "documentation":"<p>The type of the S3 Tables datasource.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the S3 Tables integration configuration for a configuration template.</p>"
     },
     "S3Uri":{
       "type":"string",
@@ -8720,6 +8886,45 @@
     "TableFields":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "TagFilter":{
+      "type":"structure",
+      "required":["key"],
+      "members":{
+        "key":{
+          "shape":"TagFilterKey",
+          "documentation":"<p>The tag key to filter on.</p>"
+        },
+        "values":{
+          "shape":"TagFilterValues",
+          "documentation":"<p>An optional list of tag values to filter on.</p> <ul> <li> <p>If you specify a filter that contains more than one value for a key, the response returns log groups that match any of the specified values for that key.</p> </li> <li> <p>If you don't specify values, the response returns all log groups that are tagged with that key, with any or no value.</p> </li> <li> <p>Use <code>*</code> for wildcard matching. For example, <code>prod*</code> matches values that start with <code>prod</code>.</p> </li> <li> <p>Use <code>!</code> as a prefix for negation. For example, <code>!prod</code> matches values that are not <code>prod</code>.</p> </li> <li> <p>Exact matching and negation are case-sensitive. Wildcard matching is case-insensitive.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>A tag filter that specifies a tag key and optional tag values for filtering log groups by tags.</p>"
+    },
+    "TagFilterKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]+)$"
+    },
+    "TagFilterValue":{
+      "type":"string",
+      "max":259,
+      "min":0,
+      "pattern":"^!?\\*?([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)\\*?$"
+    },
+    "TagFilterValues":{
+      "type":"list",
+      "member":{"shape":"TagFilterValue"},
+      "max":5,
+      "min":0
+    },
+    "TagFilters":{
+      "type":"list",
+      "member":{"shape":"TagFilter"},
+      "max":5,
+      "min":1
     },
     "TagKey":{
       "type":"string",

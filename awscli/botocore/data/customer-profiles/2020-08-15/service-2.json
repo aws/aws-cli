@@ -221,6 +221,24 @@
       ],
       "documentation":"<p>Creates a recommender filter. A recommender filter specifies which items to include or exclude from recommendations.</p>"
     },
+    "CreateRecommenderSchema":{
+      "name":"CreateRecommenderSchema",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domains/{DomainName}/recommender-schemas/{RecommenderSchemaName}",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateRecommenderSchemaRequest"},
+      "output":{"shape":"CreateRecommenderSchemaResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates a recommender schema. A recommender schema defines the set of data columns available for training recommenders and filters under a domain.</p>"
+    },
     "CreateSegmentDefinition":{
       "name":"CreateSegmentDefinition",
       "http":{
@@ -515,6 +533,24 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Deletes a recommender filter from a domain.</p>"
+    },
+    "DeleteRecommenderSchema":{
+      "name":"DeleteRecommenderSchema",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/domains/{DomainName}/recommender-schemas/{RecommenderSchemaName}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteRecommenderSchemaRequest"},
+      "output":{"shape":"DeleteRecommenderSchemaResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes a recommender schema from a domain.</p>"
     },
     "DeleteSegmentDefinition":{
       "name":"DeleteSegmentDefinition",
@@ -877,6 +913,25 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Retrieves information about a specific recommender filter in a domain.</p>",
+      "readonly":true
+    },
+    "GetRecommenderSchema":{
+      "name":"GetRecommenderSchema",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/recommender-schemas/{RecommenderSchemaName}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetRecommenderSchemaRequest"},
+      "output":{"shape":"GetRecommenderSchemaResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves information about a specific recommender schema in a domain.</p>",
       "readonly":true
     },
     "GetSegmentDefinition":{
@@ -1364,6 +1419,25 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Returns a list of available recommender recipes that can be used to create recommenders.</p>",
+      "readonly":true
+    },
+    "ListRecommenderSchemas":{
+      "name":"ListRecommenderSchemas",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/recommender-schemas",
+        "responseCode":200
+      },
+      "input":{"shape":"ListRecommenderSchemasRequest"},
+      "output":{"shape":"ListRecommenderSchemasResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns a list of recommender schemas in the specified domain.</p>",
       "readonly":true
     },
     "ListRecommenders":{
@@ -2549,6 +2623,12 @@
       },
       "documentation":"<p>Represents an item in the catalog with its complete set of attributes and metadata.</p>"
     },
+    "ColumnNamesList":{
+      "type":"list",
+      "member":{"shape":"text"},
+      "max":100,
+      "min":1
+    },
     "ComparisonOperator":{
       "type":"string",
       "enum":[
@@ -3352,6 +3432,10 @@
           "shape":"RecommenderFilterExpression",
           "documentation":"<p>The filter expression that defines which items to include or exclude from recommendations.</p>"
         },
+        "RecommenderSchemaName":{
+          "shape":"name",
+          "documentation":"<p>The name of the recommender schema to use for this recommender filter. If not specified, the default schema is used.</p>"
+        },
         "Description":{
           "shape":"sensitiveText",
           "documentation":"<p>A description of the recommender filter.</p>"
@@ -3408,6 +3492,10 @@
           "shape":"sensitiveText",
           "documentation":"<p>The description of the domain object type.</p>"
         },
+        "RecommenderSchemaName":{
+          "shape":"name",
+          "documentation":"<p>The name of the recommender schema to use for this recommender. If not specified, the default schema is used.</p>"
+        },
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
@@ -3421,6 +3509,72 @@
         "RecommenderArn":{
           "shape":"Arn",
           "documentation":"<p>The ARN of the recommender</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      }
+    },
+    "CreateRecommenderSchemaRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "RecommenderSchemaName",
+        "Fields"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "RecommenderSchemaName":{
+          "shape":"name",
+          "documentation":"<p>The name of the recommender schema. The name must be unique within the domain.</p>",
+          "location":"uri",
+          "locationName":"RecommenderSchemaName"
+        },
+        "Fields":{
+          "shape":"RecommenderSchemaFields",
+          "documentation":"<p>A map of dataset type to column definitions that specifies which data columns to include in the schema. Currently only the <code>_webAnalytics</code> key is supported.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      }
+    },
+    "CreateRecommenderSchemaResponse":{
+      "type":"structure",
+      "required":[
+        "RecommenderSchemaArn",
+        "RecommenderSchemaName",
+        "Fields",
+        "CreatedAt",
+        "Status"
+      ],
+      "members":{
+        "RecommenderSchemaArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the recommender schema.</p>"
+        },
+        "RecommenderSchemaName":{
+          "shape":"name",
+          "documentation":"<p>The name of the recommender schema.</p>"
+        },
+        "Fields":{
+          "shape":"RecommenderSchemaFields",
+          "documentation":"<p>A map of dataset type to column definitions included in the schema.</p>"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the recommender schema was created.</p>"
+        },
+        "Status":{
+          "shape":"RecommenderSchemaStatus",
+          "documentation":"<p>The status of the recommender schema.</p>"
         },
         "Tags":{
           "shape":"TagMap",
@@ -4102,6 +4256,31 @@
       "type":"structure",
       "members":{}
     },
+    "DeleteRecommenderSchemaRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "RecommenderSchemaName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "RecommenderSchemaName":{
+          "shape":"name",
+          "documentation":"<p>The name of the recommender schema to delete.</p>",
+          "location":"uri",
+          "locationName":"RecommenderSchemaName"
+        }
+      }
+    },
+    "DeleteRecommenderSchemaResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "DeleteSegmentDefinitionRequest":{
       "type":"structure",
       "required":[
@@ -4424,7 +4603,7 @@
     "EventParametersList":{
       "type":"list",
       "member":{"shape":"EventParameters"},
-      "max":5,
+      "max":10,
       "min":1
     },
     "EventStreamDestinationDetails":{
@@ -6080,6 +6259,10 @@
           "shape":"RecommenderFilterExpression",
           "documentation":"<p>The filter expression that defines which items to include or exclude from recommendations.</p>"
         },
+        "RecommenderSchemaName":{
+          "shape":"name",
+          "documentation":"<p>The name of the recommender schema associated with this recommender filter.</p>"
+        },
         "CreatedAt":{
           "shape":"timestamp",
           "documentation":"<p>The timestamp of when the recommender filter was created.</p>"
@@ -6150,6 +6333,10 @@
           "shape":"RecommenderRecipeName",
           "documentation":"<p>The name of the recipe used by the recommender to generate recommendations.</p>"
         },
+        "RecommenderSchemaName":{
+          "shape":"name",
+          "documentation":"<p>The name of the recommender schema associated with this recommender.</p>"
+        },
         "RecommenderConfig":{
           "shape":"RecommenderConfig",
           "documentation":"<p>The configuration settings for the recommender, including parameters and settings that define its behavior.</p>"
@@ -6185,6 +6372,54 @@
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      }
+    },
+    "GetRecommenderSchemaRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "RecommenderSchemaName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "RecommenderSchemaName":{
+          "shape":"name",
+          "documentation":"<p>The name of the recommender schema to retrieve.</p>",
+          "location":"uri",
+          "locationName":"RecommenderSchemaName"
+        }
+      }
+    },
+    "GetRecommenderSchemaResponse":{
+      "type":"structure",
+      "required":[
+        "RecommenderSchemaName",
+        "Fields",
+        "CreatedAt",
+        "Status"
+      ],
+      "members":{
+        "RecommenderSchemaName":{
+          "shape":"name",
+          "documentation":"<p>The name of the recommender schema.</p>"
+        },
+        "Fields":{
+          "shape":"RecommenderSchemaFields",
+          "documentation":"<p>A map of dataset type to column definitions included in the schema.</p>"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the recommender schema was created.</p>"
+        },
+        "Status":{
+          "shape":"RecommenderSchemaStatus",
+          "documentation":"<p>The status of the recommender schema.</p>"
         }
       }
     },
@@ -6840,6 +7075,13 @@
         "ANY",
         "NONE"
       ]
+    },
+    "IncludedColumns":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"ColumnNamesList"},
+      "max":2,
+      "min":1
     },
     "IncrementalPullConfig":{
       "type":"structure",
@@ -8014,6 +8256,43 @@
         }
       }
     },
+    "ListRecommenderSchemasRequest":{
+      "type":"structure",
+      "required":["DomainName"],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "MaxResults":{
+          "shape":"maxSize100",
+          "documentation":"<p>The maximum number of recommender schemas to return in the response. The default value is 100.</p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        },
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>A token received from a previous ListRecommenderSchemas call to retrieve the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        }
+      }
+    },
+    "ListRecommenderSchemasResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>A token to retrieve the next page of results. Null if there are no more results to retrieve.</p>"
+        },
+        "RecommenderSchemas":{
+          "shape":"RecommenderSchemaSummaryList",
+          "documentation":"<p>A list of recommender schemas and their properties in the specified domain.</p>"
+        }
+      }
+    },
     "ListRecommendersRequest":{
       "type":"structure",
       "required":["DomainName"],
@@ -8576,7 +8855,7 @@
         },
         "Target":{
           "shape":"text",
-          "documentation":"<p>The location of the data in the standard ProfileObject model. For example: _profile.Address.PostalCode.</p>"
+          "documentation":"<p>The location of the data in the standard ProfileObject model. For example: _profile.Address.PostalCode. Do not include sensitive or personally identifiable information (PII) in the target field name.</p>"
         },
         "ContentType":{
           "shape":"FieldContentType",
@@ -9637,6 +9916,10 @@
         "InferenceConfig":{
           "shape":"InferenceConfig",
           "documentation":"<p>Configuration settings for how the recommender handles inference requests.</p>"
+        },
+        "IncludedColumns":{
+          "shape":"IncludedColumns",
+          "documentation":"<p>A map of dataset type to a list of column names to train on. The column names must be a subset of the columns defined in the recommender schema. If not specified, all columns in the schema are used for training. The following columns are always included and do not need to be specified: <code>Item.Id</code>, <code>ItemList[].Id</code>, <code>EventTimestamp</code>, <code>EventType</code>, and <code>EventValue</code>.</p>"
         }
       },
       "documentation":"<p>Configuration settings that define the behavior and parameters of a recommender.</p>"
@@ -9674,7 +9957,7 @@
     },
     "RecommenderFilterAttributeValue":{
       "type":"string",
-      "max":1000,
+      "max":3000,
       "sensitive":true
     },
     "RecommenderFilterExpression":{
@@ -9705,6 +9988,10 @@
         "RecommenderFilterName":{
           "shape":"RecommenderFilterName",
           "documentation":"<p>The name of the recommender filter.</p>"
+        },
+        "RecommenderSchemaName":{
+          "shape":"name",
+          "documentation":"<p>The name of the recommender schema associated with this recommender filter.</p>"
         },
         "RecommenderFilterExpression":{
           "shape":"RecommenderFilterExpression",
@@ -9804,6 +10091,77 @@
       "type":"list",
       "member":{"shape":"RecommenderRecipe"}
     },
+    "RecommenderSchemaField":{
+      "type":"structure",
+      "required":["TargetFieldName"],
+      "members":{
+        "TargetFieldName":{
+          "shape":"text",
+          "documentation":"<p>The name of the target field in the dataset, such as <code>Location.City</code> or <code>Attributes.MealTime</code>.</p>"
+        },
+        "ContentType":{
+          "shape":"ContentType",
+          "documentation":"<p>The data type of the column value. Valid values are <code>String</code> and <code>Number</code>. The default value is <code>String</code>.</p>"
+        },
+        "FeatureType":{
+          "shape":"FeatureType",
+          "documentation":"<p>How the column is treated for model training. Valid values are <code>CATEGORICAL</code> and <code>TEXTUAL</code>.</p>"
+        }
+      },
+      "documentation":"<p>Defines a column in a recommender schema, including the target field name and optional feature and content type settings for training.</p>"
+    },
+    "RecommenderSchemaFieldList":{
+      "type":"list",
+      "member":{"shape":"RecommenderSchemaField"},
+      "max":9,
+      "min":1
+    },
+    "RecommenderSchemaFields":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"RecommenderSchemaFieldList"},
+      "max":1,
+      "min":1
+    },
+    "RecommenderSchemaStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "DELETING"
+      ]
+    },
+    "RecommenderSchemaSummary":{
+      "type":"structure",
+      "required":[
+        "RecommenderSchemaName",
+        "Fields",
+        "CreatedAt",
+        "Status"
+      ],
+      "members":{
+        "RecommenderSchemaName":{
+          "shape":"name",
+          "documentation":"<p>The name of the recommender schema.</p>"
+        },
+        "Fields":{
+          "shape":"RecommenderSchemaFields",
+          "documentation":"<p>A map of dataset type to column definitions included in the schema.</p>"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp when the recommender schema was created.</p>"
+        },
+        "Status":{
+          "shape":"RecommenderSchemaStatus",
+          "documentation":"<p>The current operational status of the recommender schema.</p>"
+        }
+      },
+      "documentation":"<p>Provides a summary of a recommender schema's configuration and current state.</p>"
+    },
+    "RecommenderSchemaSummaryList":{
+      "type":"list",
+      "member":{"shape":"RecommenderSchemaSummary"}
+    },
     "RecommenderStatus":{
       "type":"string",
       "enum":[
@@ -9827,6 +10185,10 @@
         "RecipeName":{
           "shape":"RecommenderRecipeName",
           "documentation":"<p>The name of the recipe used by this recommender.</p>"
+        },
+        "RecommenderSchemaName":{
+          "shape":"name",
+          "documentation":"<p>The name of the recommender schema associated with this recommender.</p>"
         },
         "RecommenderConfig":{
           "shape":"RecommenderConfig",
@@ -10832,7 +11194,14 @@
         "recall",
         "popularity",
         "freshness",
-        "similarity"
+        "similarity",
+        "mean_reciprocal_rank_at_25",
+        "normalized_discounted_cumulative_gain_at_5",
+        "normalized_discounted_cumulative_gain_at_10",
+        "normalized_discounted_cumulative_gain_at_25",
+        "precision_at_5",
+        "precision_at_10",
+        "precision_at_25"
       ]
     },
     "TrainingMetrics":{

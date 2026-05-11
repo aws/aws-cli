@@ -6590,6 +6590,19 @@
             }
         },
         {
+            "documentation": "validates against access point host label",
+            "expect": {
+                "error": "Invalid ARN: The access point name may only contain a-z, A-Z, 0-9 and `-`. Found: `invalid.bucket#`"
+            },
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "Accelerate": false,
+                "Bucket": "arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-01234567890123456:accesspoint:invalid.bucket#"
+            }
+        },
+        {
             "documentation": "object lambda @us-east-1",
             "expect": {
                 "endpoint": {
@@ -10215,6 +10228,73 @@
                 "Region": "us-east-1",
                 "UseFIPS": true,
                 "UseDualStack": true,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": true,
+                "DisableS3ExpressSessionAuth": false
+            }
+        },
+        {
+            "documentation": "Data Plane with bucket containing delimiters",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4-s3express",
+                                "signingName": "s3express",
+                                "signingRegion": "us-east-1",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://my--s3--bucket--abcd-ab1--x-s3.s3express-abcd-ab1.us-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1"
+                    },
+                    "operationName": "GetObject",
+                    "operationParams": {
+                        "Bucket": "my--s3--bucket--abcd-ab1--x-s3",
+                        "Key": "key"
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "Bucket": "my--s3--bucket--abcd-ab1--x-s3",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": false
+            }
+        },
+        {
+            "documentation": "Control plane with with bucket containing delimiters",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-east-1",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://s3express-control.us-east-1.amazonaws.com/my--s3--bucket--abcd-ab1--x-s3"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "Bucket": "my--s3--bucket--abcd-ab1--x-s3",
+                "UseFIPS": false,
+                "UseDualStack": false,
                 "Accelerate": false,
                 "UseS3ExpressControlEndpoint": true,
                 "DisableS3ExpressSessionAuth": false

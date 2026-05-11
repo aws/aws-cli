@@ -31,6 +31,10 @@ supported by the AWS CLI v2 are:
 - CRC32C
 - SHA1
 - SHA256
+- SHA512
+- XXHASH64
+- XXHASH3
+- XXHASH128
 
 Amazon S3 will use the algorithm specified in the header to calculate the checksum of the object. If it
 does not match the checksum provided, the object will not be stored and an error message

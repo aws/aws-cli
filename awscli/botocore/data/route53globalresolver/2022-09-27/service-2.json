@@ -245,6 +245,7 @@
       "errors":[
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"}
@@ -3956,7 +3957,7 @@
       "type":"string",
       "max":39,
       "min":1,
-      "pattern":"(?:[A-F0-9]{1,4}:){7}[A-F0-9]{1,4}"
+      "pattern":"(?:[A-Fa-f0-9]{0,4}:){2,7}[A-Fa-f0-9]{1,4}"
     },
     "IPv6Addresses":{
       "type":"list",
@@ -5080,6 +5081,10 @@
         "ipAddressType":{
           "shape":"GlobalResolverIpAddressType",
           "documentation":"<p>The IP address type for the Global Resolver. Valid values are IPV4 or DUAL_STACK for both IPv4 and IPv6 support.</p>"
+        },
+        "regions":{
+          "shape":"Regions",
+          "documentation":"<p>The list of Amazon Web Services Regions where the Global Resolver will operate. The resolver will be distributed across these Regions to provide global availability and low-latency DNS resolution.</p>"
         }
       }
     },

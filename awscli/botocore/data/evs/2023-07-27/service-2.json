@@ -32,6 +32,22 @@
       "documentation":"<p>Associates an Elastic IP address with a public HCX VLAN. This operation is only allowed for public HCX VLANs at this time.</p>",
       "idempotent":true
     },
+    "CreateEntitlement":{
+      "name":"CreateEntitlement",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateEntitlementRequest"},
+      "output":{"shape":"CreateEntitlementResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Creates a Windows Server License entitlement for virtual machines in an Amazon EVS environment using the provided vCenter Server connector. This is an asynchronous operation. Amazon EVS validates the specified virtual machines before starting usage tracking.</p>",
+      "idempotent":true
+    },
     "CreateEnvironment":{
       "name":"CreateEnvironment",
       "http":{
@@ -44,6 +60,22 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Creates an Amazon EVS environment that runs VCF software, such as SDDC Manager, NSX Manager, and vCenter Server.</p> <p>During environment creation, Amazon EVS performs validations on DNS settings, provisions VLAN subnets and hosts, and deploys the supplied version of VCF.</p> <p>It can take several hours to create an environment. After the deployment completes, you can configure VCF in the vSphere user interface according to your needs.</p> <important> <p>When creating a new environment, the default ESX version for the selected VCF version will be used, you cannot choose a specific ESX version in <code>CreateEnvironment</code> action. When a host has been added with a specific ESX version, it can only be upgraded using vCenter Lifecycle Manager.</p> </important> <note> <p>You cannot use the <code>dedicatedHostId</code> and <code>placementGroupId</code> parameters together in the same <code>CreateEnvironment</code> action. This results in a <code>ValidationException</code> response.</p> </note>",
+      "idempotent":true
+    },
+    "CreateEnvironmentConnector":{
+      "name":"CreateEnvironmentConnector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateEnvironmentConnectorRequest"},
+      "output":{"shape":"CreateEnvironmentConnectorResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Creates a connector for an Amazon EVS environment. A connector establishes a connection to a VCF appliance, such as vCenter, using a fully qualified domain name and an Amazon Web Services Secrets Manager secret that stores the appliance credentials.</p>",
       "idempotent":true
     },
     "CreateEnvironmentHost":{
@@ -61,6 +93,22 @@
       "documentation":"<p>Creates an ESX host and adds it to an Amazon EVS environment. Amazon EVS supports 4-16 hosts per environment.</p> <p>This action can only be used after the Amazon EVS environment is deployed.</p> <p>You can use the <code>dedicatedHostId</code> parameter to specify an Amazon EC2 Dedicated Host for ESX host creation.</p> <p> You can use the <code>placementGroupId</code> parameter to specify a cluster or partition placement group to launch EC2 instances into.</p> <note> <p>If you don't specify an ESX version when adding hosts using <code>CreateEnvironmentHost</code> action, Amazon EVS automatically uses the default ESX version associated with your environment's VCF version. To find the default ESX version for a particular VCF version, use the <code>GetVersions</code> action.</p> </note> <note> <p>You cannot use the <code>dedicatedHostId</code> and <code>placementGroupId</code> parameters together in the same <code>CreateEnvironmentHost</code> action. This results in a <code>ValidationException</code> response.</p> </note>",
       "idempotent":true
     },
+    "DeleteEntitlement":{
+      "name":"DeleteEntitlement",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteEntitlementRequest"},
+      "output":{"shape":"DeleteEntitlementResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes a Windows Server License entitlement for virtual machines in an Amazon EVS environment. Deleting an entitlement stops usage tracking for the specified virtual machines.</p>",
+      "idempotent":true
+    },
     "DeleteEnvironment":{
       "name":"DeleteEnvironment",
       "http":{
@@ -74,6 +122,22 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Deletes an Amazon EVS environment.</p> <p>Amazon EVS environments will only be enabled for deletion once the hosts are deleted. You can delete hosts using the <code>DeleteEnvironmentHost</code> action.</p> <p>Environment deletion also deletes the associated Amazon EVS VLAN subnets and Amazon Web Services Secrets Manager secrets that Amazon EVS created. Amazon Web Services resources that you create are not deleted. These resources may continue to incur costs.</p>",
+      "idempotent":true
+    },
+    "DeleteEnvironmentConnector":{
+      "name":"DeleteEnvironmentConnector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteEnvironmentConnectorRequest"},
+      "output":{"shape":"DeleteEnvironmentConnectorResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes a connector from an Amazon EVS environment.</p> <note> <p>Before deleting a connector, you must remove all entitlements that are associated with the same vCenter.</p> </note>",
       "idempotent":true
     },
     "DeleteEnvironmentHost":{
@@ -137,6 +201,21 @@
       "documentation":"<p>Returns information about VCF versions, ESX versions and EC2 instance types provided by Amazon EVS. For each VCF version, the response also includes the default ESX version and provided EC2 instance types.</p>",
       "readonly":true
     },
+    "ListEnvironmentConnectors":{
+      "name":"ListEnvironmentConnectors",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListEnvironmentConnectorsRequest"},
+      "output":{"shape":"ListEnvironmentConnectorsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists the connectors within an environment. Returns the status of each connector and its applicable checks, among other connector details.</p>",
+      "readonly":true
+    },
     "ListEnvironmentHosts":{
       "name":"ListEnvironmentHosts",
       "http":{
@@ -195,6 +274,21 @@
       "documentation":"<p>Lists the tags for an Amazon EVS resource.</p>",
       "readonly":true
     },
+    "ListVmEntitlements":{
+      "name":"ListVmEntitlements",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListVmEntitlementsRequest"},
+      "output":{"shape":"ListVmEntitlementsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists the Windows Server License entitlements for virtual machines in an Amazon EVS environment. Returns existing entitlements for virtual machines associated with the specified environment and connector.</p>",
+      "readonly":true
+    },
     "TagResource":{
       "name":"TagResource",
       "http":{
@@ -226,6 +320,22 @@
       ],
       "documentation":"<p>Deletes specified tags from an Amazon EVS resource.</p>",
       "idempotent":true
+    },
+    "UpdateEnvironmentConnector":{
+      "name":"UpdateEnvironmentConnector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateEnvironmentConnectorRequest"},
+      "output":{"shape":"UpdateEnvironmentConnectorResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates a connector for an Amazon EVS environment. You can update the Amazon Web Services Secrets Manager secret ARN or the appliance FQDN to reconfigure the connector metadata.</p> <note> <p>You cannot update both the secret and the FQDN in the same request.</p> </note>",
+      "idempotent":true
     }
   },
   "shapes":{
@@ -234,6 +344,12 @@
       "max":26,
       "min":9,
       "pattern":"eipalloc-[a-zA-Z0-9_-]+"
+    },
+    "ApplianceFqdn":{
+      "type":"string",
+      "max":253,
+      "min":1,
+      "pattern":"[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*"
     },
     "Arn":{
       "type":"string",
@@ -321,7 +437,10 @@
         "KEY_REUSE",
         "KEY_COVERAGE",
         "REACHABILITY",
-        "HOST_COUNT"
+        "HOST_COUNT",
+        "VCENTER_REACHABILITY",
+        "VCENTER_VM_SYNC",
+        "VCENTER_VM_EVENT"
       ]
     },
     "ChecksList":{
@@ -348,6 +467,188 @@
         }
       },
       "documentation":"<p>The connectivity configuration for the environment. Amazon EVS requires that you specify two route server peer IDs. During environment creation, the route server endpoints peer with the NSX uplink VLAN for connectivity to the NSX overlay network.</p>"
+    },
+    "Connector":{
+      "type":"structure",
+      "members":{
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The unique ID of the environment that the connector belongs to.</p>"
+        },
+        "connectorId":{
+          "shape":"ConnectorId",
+          "documentation":"<p>The unique ID of the connector.</p>"
+        },
+        "type":{
+          "shape":"ConnectorType",
+          "documentation":"<p>The type of the connector.</p>"
+        },
+        "applianceFqdn":{
+          "shape":"ApplianceFqdn",
+          "documentation":"<p>The fully qualified domain name (FQDN) of the VCF appliance that the connector connects to.</p>"
+        },
+        "secretArn":{
+          "shape":"SecretIdentifier",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager secret that stores the credentials for the VCF appliance.</p>"
+        },
+        "state":{
+          "shape":"ConnectorState",
+          "documentation":"<p>The state of the connector.</p>"
+        },
+        "stateDetails":{
+          "shape":"StateDetails",
+          "documentation":"<p>A detailed description of the connector state.</p>"
+        },
+        "status":{
+          "shape":"CheckResult",
+          "documentation":"<p>The status of the connector.</p>"
+        },
+        "checks":{
+          "shape":"ConnectorsChecksList",
+          "documentation":"<p>A list of checks that are run on the connector.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the connector was created.</p>"
+        },
+        "modifiedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the connector was modified.</p>"
+        }
+      },
+      "documentation":"<p>An object that represents a connector for an Amazon EVS environment. A connector establishes a vCenter connection using the credentials stored in Amazon Web Services Secrets Manager.</p>"
+    },
+    "ConnectorCheck":{
+      "type":"structure",
+      "members":{
+        "type":{
+          "shape":"CheckType",
+          "documentation":"<p>The check type.</p>"
+        },
+        "result":{
+          "shape":"CheckResult",
+          "documentation":"<p>The check result.</p>"
+        },
+        "lastCheckAttempt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time of the last check attempt.</p>"
+        },
+        "impairedSince":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when connector health began to be impaired.</p>"
+        }
+      },
+      "documentation":"<p>A check on a connector to identify connectivity health.</p>"
+    },
+    "ConnectorId":{
+      "type":"string",
+      "pattern":"(cnctr-[a-zA-Z0-9]{10})"
+    },
+    "ConnectorList":{
+      "type":"list",
+      "member":{"shape":"Connector"}
+    },
+    "ConnectorState":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "CREATE_FAILED",
+        "ACTIVE",
+        "UPDATING",
+        "UPDATE_FAILED",
+        "DELETING",
+        "DELETED"
+      ]
+    },
+    "ConnectorType":{
+      "type":"string",
+      "enum":["VCENTER"]
+    },
+    "ConnectorsChecksList":{
+      "type":"list",
+      "member":{"shape":"ConnectorCheck"}
+    },
+    "CreateEntitlementRequest":{
+      "type":"structure",
+      "required":[
+        "environmentId",
+        "connectorId",
+        "entitlementType",
+        "vmIds"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p><note> <p>This parameter is not used in Amazon EVS currently. If you supply input for this parameter, it will have no effect.</p> </note> <p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the entitlement creation request. If you do not specify a client token, a randomly generated token is used for the request to ensure idempotency.</p></p>",
+          "idempotencyToken":true
+        },
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>A unique ID for the environment to create the entitlement in.</p>"
+        },
+        "connectorId":{
+          "shape":"ConnectorId",
+          "documentation":"<p>A unique ID for the connector associated with the entitlement.</p>"
+        },
+        "entitlementType":{
+          "shape":"EntitlementType",
+          "documentation":"<p>The type of entitlement to create.</p>"
+        },
+        "vmIds":{
+          "shape":"VmIdList",
+          "documentation":"<p>The list of VMware vSphere virtual machine managed object IDs to create entitlements for.</p>"
+        }
+      }
+    },
+    "CreateEntitlementResponse":{
+      "type":"structure",
+      "members":{
+        "entitlements":{
+          "shape":"VmEntitlementList",
+          "documentation":"<p>A list of the created entitlements.</p>"
+        }
+      }
+    },
+    "CreateEnvironmentConnectorRequest":{
+      "type":"structure",
+      "required":[
+        "environmentId",
+        "type",
+        "applianceFqdn",
+        "secretIdentifier"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p><note> <p>This parameter is not used in Amazon EVS currently. If you supply input for this parameter, it will have no effect.</p> </note> <p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the connector creation request. If you do not specify a client token, a randomly generated token is used for the request to ensure idempotency.</p></p>",
+          "idempotencyToken":true
+        },
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>A unique ID for the environment to create the connector in.</p>"
+        },
+        "type":{
+          "shape":"ConnectorType",
+          "documentation":"<p>The type of connector to create.</p>"
+        },
+        "applianceFqdn":{
+          "shape":"ApplianceFqdn",
+          "documentation":"<p>The fully qualified domain name (FQDN) of the VCF appliance that the connector targets.</p>"
+        },
+        "secretIdentifier":{
+          "shape":"SecretIdentifier",
+          "documentation":"<p>The ARN or name of the Amazon Web Services Secrets Manager secret that stores the credentials for the VCF appliance.</p> <important> <p>Do not use credentials with Administrator privileges. We recommend using a service account with the minimum required permissions.</p> </important>"
+        }
+      }
+    },
+    "CreateEnvironmentConnectorResponse":{
+      "type":"structure",
+      "members":{
+        "connector":{
+          "shape":"Connector",
+          "documentation":"<p>A description of the created connector.</p>"
+        }
+      }
     },
     "CreateEnvironmentHostRequest":{
       "type":"structure",
@@ -442,7 +743,7 @@
         },
         "licenseInfo":{
           "shape":"LicenseInfoList",
-          "documentation":"<p>The license information that Amazon EVS requires to create an environment. Amazon EVS requires two license keys: a VCF solution key and a vSAN license key. The VCF solution key must cover a minimum of 256 cores. The vSAN license key must provide at least 110 TiB of vSAN capacity.</p> <p>VCF licenses can be used for only one Amazon EVS environment. Amazon EVS does not support reuse of VCF licenses for multiple environments.</p> <p>VCF license information can be retrieved from the Broadcom portal.</p>"
+          "documentation":"<p>The license information that Amazon EVS requires to create an environment. Amazon EVS requires two license keys: a VCF solution key and a vSAN license key. The VCF solution key must meet minimum core requirements, and the vSAN license key must meet minimum capacity requirements for your selected instance type.</p> <p>For information about minimum license requirements, see <a href=\"https://docs.aws.amazon.com/evs/latest/userguide/vcf-license-mgmt.html\">the VCF subscriptions section</a> in the <i>Amazon EVS User Guide</i>.</p> <p>VCF licenses can be used for only one Amazon EVS environment. Amazon EVS does not support reuse of VCF licenses for multiple environments.</p> <p>VCF license information can be retrieved from the Broadcom portal.</p>"
         },
         "initialVlans":{
           "shape":"InitialVlans",
@@ -480,6 +781,82 @@
       "max":25,
       "min":1,
       "pattern":"h-[a-f0-9]{8}([a-f0-9]{9})?"
+    },
+    "DeleteEntitlementRequest":{
+      "type":"structure",
+      "required":[
+        "environmentId",
+        "connectorId",
+        "entitlementType",
+        "vmIds"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p><note> <p>This parameter is not used in Amazon EVS currently. If you supply input for this parameter, it will have no effect.</p> </note> <p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the entitlement deletion request. If you do not specify a client token, a randomly generated token is used for the request to ensure idempotency.</p></p>",
+          "idempotencyToken":true
+        },
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>A unique ID for the environment that the entitlement belongs to.</p>"
+        },
+        "connectorId":{
+          "shape":"ConnectorId",
+          "documentation":"<p>A unique ID for the connector associated with the entitlement.</p>"
+        },
+        "entitlementType":{
+          "shape":"EntitlementType",
+          "documentation":"<p>The type of entitlement to delete.</p>"
+        },
+        "vmIds":{
+          "shape":"VmIdList",
+          "documentation":"<p>The list of VMware vSphere virtual machine managed object IDs to delete entitlements for.</p>"
+        }
+      }
+    },
+    "DeleteEntitlementResponse":{
+      "type":"structure",
+      "members":{
+        "entitlements":{
+          "shape":"VmEntitlementList",
+          "documentation":"<p>A list of the deleted entitlements.</p>"
+        }
+      }
+    },
+    "DeleteEnvironmentConnectorRequest":{
+      "type":"structure",
+      "required":[
+        "environmentId",
+        "connectorId"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p><note> <p>This parameter is not used in Amazon EVS currently. If you supply input for this parameter, it will have no effect.</p> </note> <p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the connector deletion request. If you do not specify a client token, a randomly generated token is used for the request to ensure idempotency.</p></p>",
+          "idempotencyToken":true
+        },
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>A unique ID for the environment that the connector belongs to.</p>"
+        },
+        "connectorId":{
+          "shape":"ConnectorId",
+          "documentation":"<p>A unique ID for the connector to be deleted.</p>"
+        }
+      }
+    },
+    "DeleteEnvironmentConnectorResponse":{
+      "type":"structure",
+      "members":{
+        "connector":{
+          "shape":"Connector",
+          "documentation":"<p>A description of the deleted connector.</p>"
+        },
+        "environmentSummary":{
+          "shape":"EnvironmentSummary",
+          "documentation":"<p>A summary of the environment that the connector was deleted from.</p>"
+        }
+      }
     },
     "DeleteEnvironmentHostRequest":{
       "type":"structure",
@@ -600,6 +977,21 @@
       "type":"list",
       "member":{"shape":"EipAssociation"}
     },
+    "EntitlementStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "CREATED",
+        "DELETED",
+        "AT_RISK",
+        "ENTITLEMENT_REMOVED",
+        "CREATE_FAILED"
+      ]
+    },
+    "EntitlementType":{
+      "type":"string",
+      "enum":["WINDOWS_SERVER"]
+    },
     "Environment":{
       "type":"structure",
       "members":{
@@ -649,7 +1041,7 @@
         },
         "licenseInfo":{
           "shape":"LicenseInfoList",
-          "documentation":"<p> The license information that Amazon EVS requires to create an environment. Amazon EVS requires two license keys: a VCF solution key and a vSAN license key. The VCF solution key must cover a minimum of 256 cores. The vSAN license key must provide at least 110 TiB of vSAN capacity.</p>"
+          "documentation":"<p> The license information that Amazon EVS requires to create an environment. Amazon EVS requires two license keys: a VCF solution key and a vSAN license key. The VCF solution key must meet minimum core requirements, and the vSAN license key must meet minimum capacity requirements for your selected instance type.</p> <p>For information about minimum license requirements, see <a href=\"https://docs.aws.amazon.com/evs/latest/userguide/vcf-license-mgmt.html\">the VCF subscriptions section</a> in the <i>Amazon EVS User Guide</i>.</p>"
         },
         "siteId":{
           "shape":"String",
@@ -752,6 +1144,24 @@
       "type":"list",
       "member":{"shape":"EnvironmentSummary"}
     },
+    "ErrorDetail":{
+      "type":"structure",
+      "required":[
+        "errorCode",
+        "errorMessage"
+      ],
+      "members":{
+        "errorCode":{
+          "shape":"String",
+          "documentation":"<p>The error code.</p>"
+        },
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>The error message.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains error details for an entitlement.</p>"
+    },
     "EsxVersion":{
       "type":"string",
       "max":128,
@@ -818,7 +1228,7 @@
         },
         "instanceType":{
           "shape":"InstanceType",
-          "documentation":"<p>The EC2 instance type of the host.</p> <note> <p>Currently, Amazon EVS supports only the <code>i4i.metal</code> instance type.</p> </note> <note> <p>EC2 instances created through Amazon EVS do not support associating an IAM instance profile.</p> </note>"
+          "documentation":"<p>The EC2 instance type of the host.</p> <note> <p>EC2 instances created through Amazon EVS do not support associating an IAM instance profile.</p> </note>"
         },
         "placementGroupId":{
           "shape":"PlacementGroupId",
@@ -873,7 +1283,7 @@
         },
         "instanceType":{
           "shape":"InstanceType",
-          "documentation":"<p>The EC2 instance type that represents the host.</p> <note> <p>Currently, Amazon EVS supports only the <code>i4i.metal</code> instance type.</p> </note>"
+          "documentation":"<p>The EC2 instance type that represents the host.</p>"
         },
         "placementGroupId":{
           "shape":"PlacementGroupId",
@@ -991,7 +1401,10 @@
     },
     "InstanceType":{
       "type":"string",
-      "enum":["i4i.metal"]
+      "enum":[
+        "i4i.metal",
+        "i7i.metal-24xl"
+      ]
     },
     "InstanceTypeEsxVersionsInfo":{
       "type":"structure",
@@ -1056,11 +1469,11 @@
       "members":{
         "solutionKey":{
           "shape":"SolutionKey",
-          "documentation":"<p> The VCF solution key. This license unlocks VMware VCF product features, including vSphere, NSX, SDDC Manager, and vCenter Server. The VCF solution key must cover a minimum of 256 cores.</p>"
+          "documentation":"<p> The VCF solution key. This license unlocks VMware VCF product features, including vSphere, NSX, SDDC Manager, and vCenter Server. The VCF solution key must meet the instance-type-specific minimum core requirements.</p>"
         },
         "vsanKey":{
           "shape":"VSanLicenseKey",
-          "documentation":"<p> The VSAN license key. This license unlocks vSAN features. The vSAN license key must provide at least 110 TiB of vSAN capacity.</p>"
+          "documentation":"<p> The VSAN license key. This license unlocks vSAN features. The vSAN license key must meet the instance-type-specific minimum capacity requirements.</p>"
         }
       },
       "documentation":"<p> The license information that Amazon EVS requires to create an environment. Amazon EVS requires two license keys: a VCF solution key and a vSAN license key.</p>"
@@ -1070,6 +1483,37 @@
       "member":{"shape":"LicenseInfo"},
       "max":1,
       "min":1
+    },
+    "ListEnvironmentConnectorsRequest":{
+      "type":"structure",
+      "required":["environmentId"],
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A unique pagination token for each page. If <code>nextToken</code> is returned, there are more results available. Make the call again using the returned token with all other arguments unchanged to retrieve the next page. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return. If you specify <code>MaxResults</code> in the request, the response includes information up to the limit specified.</p>"
+        },
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>A unique ID for the environment.</p>"
+        }
+      }
+    },
+    "ListEnvironmentConnectorsResponse":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A unique pagination token for next page results. Make the call again using this token to retrieve the next page.</p>"
+        },
+        "connectors":{
+          "shape":"ConnectorList",
+          "documentation":"<p>A list of connectors in the environment.</p>"
+        }
+      }
     },
     "ListEnvironmentHostsRequest":{
       "type":"structure",
@@ -1182,6 +1626,49 @@
         }
       }
     },
+    "ListVmEntitlementsRequest":{
+      "type":"structure",
+      "required":[
+        "environmentId",
+        "connectorId",
+        "entitlementType"
+      ],
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A unique pagination token for each page. If <code>nextToken</code> is returned, there are more results available. Make the call again using the returned token with all other arguments unchanged to retrieve the next page. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return. If you specify <code>MaxResults</code> in the request, the response includes information up to the limit specified.</p>"
+        },
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>A unique ID for the environment.</p>"
+        },
+        "connectorId":{
+          "shape":"ConnectorId",
+          "documentation":"<p>A unique ID for the connector.</p>"
+        },
+        "entitlementType":{
+          "shape":"EntitlementType",
+          "documentation":"<p>The type of entitlement to list.</p>"
+        }
+      }
+    },
+    "ListVmEntitlementsResponse":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A unique pagination token for next page results. Make the call again using this token to retrieve the next page.</p>"
+        },
+        "entitlements":{
+          "shape":"VmEntitlementList",
+          "documentation":"<p>A list of entitlements for virtual machines in the environment.</p>"
+        }
+      }
+    },
     "MaxResults":{
       "type":"integer",
       "box":true,
@@ -1278,6 +1765,12 @@
         }
       },
       "documentation":"<p>A managed secret that contains the credentials for installing vCenter Server, NSX, and SDDC Manager. During environment creation, the Amazon EVS control plane uses Amazon Web Services Secrets Manager to create, encrypt, validate, and store secrets. If you choose to delete your environment, Amazon EVS also deletes the secrets that are associated with your environment. Amazon EVS does not provide managed rotation of secrets. We recommend that you rotate secrets regularly to ensure that secrets are not long-lived.</p>"
+    },
+    "SecretIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"(arn:aws:secretsmanager:[a-z0-9-]+:[0-9]{12}:secret:[a-zA-Z0-9/_+=.@!-]+|[a-zA-Z0-9/_+=.@!-]+)"
     },
     "SecretList":{
       "type":"list",
@@ -1430,6 +1923,45 @@
     "UntagResourceResponse":{
       "type":"structure",
       "members":{}
+    },
+    "UpdateEnvironmentConnectorRequest":{
+      "type":"structure",
+      "required":[
+        "environmentId",
+        "connectorId"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p><note> <p>This parameter is not used in Amazon EVS currently. If you supply input for this parameter, it will have no effect.</p> </note> <p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the connector update request. If you do not specify a client token, a randomly generated token is used for the request to ensure idempotency.</p></p>",
+          "idempotencyToken":true
+        },
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>A unique ID for the environment that the connector belongs to.</p>"
+        },
+        "connectorId":{
+          "shape":"ConnectorId",
+          "documentation":"<p>A unique ID for the connector to update.</p>"
+        },
+        "applianceFqdn":{
+          "shape":"ApplianceFqdn",
+          "documentation":"<p>The new fully qualified domain name (FQDN) of the VCF appliance that the connector connects to.</p>"
+        },
+        "secretIdentifier":{
+          "shape":"SecretIdentifier",
+          "documentation":"<p>The new ARN or name of the Amazon Web Services Secrets Manager secret that stores the credentials for the VCF appliance.</p>"
+        }
+      }
+    },
+    "UpdateEnvironmentConnectorResponse":{
+      "type":"structure",
+      "members":{
+        "connector":{
+          "shape":"Connector",
+          "documentation":"<p>A description of the updated connector.</p>"
+        }
+      }
     },
     "VSanLicenseKey":{
       "type":"string",
@@ -1652,6 +2184,73 @@
         "DELETED",
         "CREATE_FAILED"
       ]
+    },
+    "VmEntitlement":{
+      "type":"structure",
+      "members":{
+        "vmId":{
+          "shape":"VmId",
+          "documentation":"<p>The unique ID of the virtual machine.</p>"
+        },
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The unique ID of the environment.</p>"
+        },
+        "connectorId":{
+          "shape":"ConnectorId",
+          "documentation":"<p>The unique ID of the connector associated with the entitlement.</p>"
+        },
+        "vmName":{
+          "shape":"VmName",
+          "documentation":"<p>The name of the virtual machine.</p>"
+        },
+        "type":{
+          "shape":"EntitlementType",
+          "documentation":"<p>The type of entitlement.</p>"
+        },
+        "status":{
+          "shape":"EntitlementStatus",
+          "documentation":"<p>The status of the entitlement.</p>"
+        },
+        "lastSyncedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the entitlement was last synced.</p>"
+        },
+        "startedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the entitlement started.</p>"
+        },
+        "stoppedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the entitlement stopped.</p>"
+        },
+        "errorDetail":{
+          "shape":"ErrorDetail",
+          "documentation":"<p>The error details associated with the entitlement, if applicable.</p>"
+        }
+      },
+      "documentation":"<p>An object that represents a Windows Server License entitlement for a virtual machine in an Amazon EVS environment.</p>"
+    },
+    "VmEntitlementList":{
+      "type":"list",
+      "member":{"shape":"VmEntitlement"}
+    },
+    "VmId":{
+      "type":"string",
+      "max":1024,
+      "min":4,
+      "pattern":"vm-[0-9]+"
+    },
+    "VmIdList":{
+      "type":"list",
+      "member":{"shape":"VmId"},
+      "max":100,
+      "min":1
+    },
+    "VmName":{
+      "type":"string",
+      "max":1024,
+      "min":1
     },
     "VpcId":{
       "type":"string",

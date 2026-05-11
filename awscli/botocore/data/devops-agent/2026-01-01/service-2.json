@@ -13,28 +13,6 @@
     "uid":"devops-agent-2026-01-01"
   },
   "operations":{
-    "AllowVendedLogDeliveryForResource":{
-      "name":"AllowVendedLogDeliveryForResource",
-      "http":{
-        "method":"POST",
-        "requestUri":"/allow-vended-log-delivery-for-resource",
-        "responseCode":200
-      },
-      "input":{"shape":"AllowVendedLogDeliveryForResourceInput"},
-      "output":{"shape":"AllowVendedLogDeliveryForResourceOutput"},
-      "errors":[
-        {"shape":"ContentSizeExceededException"},
-        {"shape":"ServiceQuotaExceededException"},
-        {"shape":"ConflictException"},
-        {"shape":"InternalServerException"},
-        {"shape":"AccessDeniedException"},
-        {"shape":"ThrottlingException"},
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"InvalidParameterException"}
-      ],
-      "documentation":"<p>Authorize Ingestion Hub subscription operation.</p>",
-      "endpoint":{"hostPrefix":"cp."}
-    },
     "AssociateService":{
       "name":"AssociateService",
       "http":{
@@ -1241,42 +1219,6 @@
       "min":1,
       "pattern":"[\\p{L}\\p{N}\\p{P}\\p{S}\\p{Z}]+"
     },
-    "AllowVendedLogDeliveryForResourceInput":{
-      "type":"structure",
-      "required":[
-        "resourceArnBeingAuthorized",
-        "deliverySourceArn"
-      ],
-      "members":{
-        "resourceArnBeingAuthorized":{
-          "shape":"String",
-          "documentation":"<p>The ARN of the resource being authorized for vended log delivery.</p>"
-        },
-        "deliverySourceArn":{
-          "shape":"AllowVendedLogDeliveryForResourceInputDeliverySourceArnString",
-          "documentation":"<p>The ARN of the delivery source for vended log delivery.</p>"
-        },
-        "logType":{
-          "shape":"String",
-          "documentation":"<p>The type of log to be delivered.</p>"
-        }
-      },
-      "documentation":"<p>Input for authorizing vended log delivery for a resource.</p>"
-    },
-    "AllowVendedLogDeliveryForResourceInputDeliverySourceArnString":{
-      "type":"string",
-      "pattern":"arn:.*"
-    },
-    "AllowVendedLogDeliveryForResourceOutput":{
-      "type":"structure",
-      "members":{
-        "message":{
-          "shape":"String",
-          "documentation":"<p>A message describing the result of the authorization operation.</p>"
-        }
-      },
-      "documentation":"<p>Output for the vended log delivery authorization operation.</p>"
-    },
     "ApiKeyValue":{
       "type":"string",
       "documentation":"<p>API Key Value for service.</p>",
@@ -1644,10 +1586,7 @@
     },
     "CreateChatRequest":{
       "type":"structure",
-      "required":[
-        "agentSpaceId",
-        "userId"
-      ],
+      "required":["agentSpaceId"],
       "members":{
         "agentSpaceId":{
           "shape":"AgentSpaceId",
@@ -1656,7 +1595,10 @@
         },
         "userId":{
           "shape":"ResourceId",
-          "documentation":"<p>The user identifier for the chat</p>",
+          "documentation":"<p>The user identifier for the chat. This field is deprecated and will be ignored — the service resolves user identity from the authenticated session.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"userId is managed by the service and should not be provided by the caller",
+          "deprecatedSince":"2026-04-15",
           "location":"querystring",
           "locationName":"userId"
         },
@@ -3161,10 +3103,7 @@
     },
     "ListChatsRequest":{
       "type":"structure",
-      "required":[
-        "agentSpaceId",
-        "userId"
-      ],
+      "required":["agentSpaceId"],
       "members":{
         "agentSpaceId":{
           "shape":"AgentSpaceId",
@@ -3173,7 +3112,10 @@
         },
         "userId":{
           "shape":"ResourceId",
-          "documentation":"<p>The user identifier to list chats for</p>",
+          "documentation":"<p>The user identifier to list chats for. This field is deprecated and will be ignored — the service resolves user identity from the authenticated session.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"userId is managed by the service and should not be provided by the caller",
+          "deprecatedSince":"2026-04-15",
           "location":"querystring",
           "locationName":"userId"
         },
@@ -5113,8 +5055,7 @@
       "required":[
         "agentSpaceId",
         "executionId",
-        "content",
-        "userId"
+        "content"
       ],
       "members":{
         "agentSpaceId":{
@@ -5137,7 +5078,10 @@
         },
         "userId":{
           "shape":"ResourceId",
-          "documentation":"<p>Required user identifier</p>"
+          "documentation":"<p>User identifier. This field is deprecated and will be ignored — the service resolves user identity from the authenticated session.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"userId is managed by the service and should not be provided by the caller",
+          "deprecatedSince":"2026-04-15"
         }
       },
       "documentation":"<p>Request structure for sending a chat message</p>"

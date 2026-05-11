@@ -3009,6 +3009,16 @@
       "type":"list",
       "member":{"shape":"MatchedRecord"}
     },
+    "MatchingConfig":{
+      "type":"structure",
+      "members":{
+        "enableTransitiveMatching":{
+          "shape":"Boolean",
+          "documentation":"<p>Enables transitive matching for the rule-based matching workflow. When enabled, records that match through different rules are grouped together into the same match group.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains configuration settings for the matching process in a rule-based matching workflow.</p>"
+    },
     "MatchingWorkflowArn":{
       "type":"string",
       "pattern":"arn:(aws|aws-us-gov|aws-cn):entityresolution:[a-z]{2}-[a-z]{1,10}-[0-9]:[0-9]{12}:(matchingworkflow/[a-zA-Z_0-9-]{1,255})"
@@ -3601,6 +3611,10 @@
         "rules":{
           "shape":"RuleConditionPropertiesRulesList",
           "documentation":"<p> A list of rule objects, each of which have fields <code>ruleName</code> and <code>condition</code>. </p>"
+        },
+        "matchingConfig":{
+          "shape":"MatchingConfig",
+          "documentation":"<p>An object that contains configuration settings for the matching process.</p>"
         }
       },
       "documentation":"<p>The properties of a rule condition that provides the ability to use more complex syntax.</p>"

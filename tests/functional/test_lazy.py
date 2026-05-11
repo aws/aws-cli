@@ -56,8 +56,10 @@ class TestLazyCommandErrorPaths:
     def test_invalid_module_path_raises_on_resolve(self):
         session = mock.MagicMock()
         cmd = LazyCommand(
-            'bad-cmd', session,
-            'awscli.nonexistent.module', 'FakeCommand',
+            'bad-cmd',
+            session,
+            'awscli.nonexistent.module',
+            'FakeCommand',
         )
         with pytest.raises(ModuleNotFoundError):
             cmd([], mock.MagicMock())
@@ -65,8 +67,10 @@ class TestLazyCommandErrorPaths:
     def test_invalid_class_name_raises_on_resolve(self):
         session = mock.MagicMock()
         cmd = LazyCommand(
-            'bad-cmd', session,
-            'awscli.customizations.dynamodb.ddb', 'NonexistentClass',
+            'bad-cmd',
+            session,
+            'awscli.customizations.dynamodb.ddb',
+            'NonexistentClass',
         )
         with pytest.raises(AttributeError):
             cmd([], mock.MagicMock())
@@ -74,8 +78,10 @@ class TestLazyCommandErrorPaths:
     def test_invalid_module_path_raises_on_help(self):
         session = mock.MagicMock()
         cmd = LazyCommand(
-            'bad-cmd', session,
-            'awscli.nonexistent.module', 'FakeCommand',
+            'bad-cmd',
+            session,
+            'awscli.nonexistent.module',
+            'FakeCommand',
         )
         with pytest.raises(ModuleNotFoundError):
             cmd.create_help_command()

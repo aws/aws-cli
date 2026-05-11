@@ -88,7 +88,9 @@ class TestLazyCommandResolution:
         cmd = LazyCommand('cmd', session, 'some.module', 'MyCommand')
         with patch('importlib.import_module', return_value=mock_module):
             result = cmd.create_help_command()
-        assert result == mock_module.MyCommand.return_value.create_help_command()
+        assert (
+            result == mock_module.MyCommand.return_value.create_help_command()
+        )
 
 
 class TestLazyCommandProperties:

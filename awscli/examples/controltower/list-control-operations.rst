@@ -22,7 +22,7 @@ Output::
                 "startTime": "2024-02-19T19:21:09+00:00",
                 "operationType": "ENABLE_CONTROL",
                 "status": "IN_PROGRESS",
-                "statusMessage": "Operation is in progress."
+                "statusMessage": "Operation is in progress",
                 "operationIdentifier": "171ee0b1-e926-486e-9775-005bd244ccXX",
                 "controlIdentifier": "arn:aws:controltower:us-east-1::control/PDKYAANJEWJE",
                 "targetIdentifier": "arn:aws:organizations::123456789012:ou/o-yy67i3pfv2/ou-slt4-fl6miXXX",

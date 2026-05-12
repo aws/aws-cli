@@ -62,7 +62,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 _BUCKET_LISTERS = {
-    constants.STANDARD_BUCKET_LISTER: BucketLister,
+    constants.SINGLE_BUCKET_LISTER: BucketLister,
     constants.THREADED_BUCKET_LISTER: ThreadedBucketLister,
 }
 

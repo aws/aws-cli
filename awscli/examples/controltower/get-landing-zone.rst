@@ -31,12 +31,12 @@ Output::
                     }
                 },
                 "centralizedLogging": {
-                    "accountId": "543210987654",
+                    "accountId": "111122223333",
                     "configurations": {
                         "loggingBucket": {
                             "retentionDays": 365
                         },
-                        "kmsKeyArn": "<arn_of_kms_key",
+                        "kmsKeyArn": "arn:aws:kms:us-east-1:123456789012:key/example-key-id",
                         "accessLoggingBucket": {
                             "retentionDays": 3650
                         }

@@ -115,4 +115,71 @@ Output::
         }
     }
 
+**Example 3: To create an Aurora PostgreSQL DB cluster with Express Configuration**
+
+The following ``create-db-cluster`` example creates an Aurora PostgreSQL-compatible DB cluster with Express Configuration enabled. Unlike the standard create cluster, Express Configuration automatically adds a DB instance ``sample-cluster-instance-1`` for your DB cluster, so you don't need to separately call the ``create-db-instance`` AWS CLI command. ::
+
+    aws rds create-db-cluster \
+        --db-cluster-identifier sample-cluster \
+        --engine aurora-postgresql \
+        --with-express-configuration
+
+Output::
+
+    {
+        "DBCluster": {
+            "AllocatedStorage": 1,
+            "AvailabilityZones": [
+                "us-east-1c",
+                "us-east-1a",
+                "us-east-1b"
+            ],
+            "BackupRetentionPeriod": 7,
+            "DBClusterIdentifier": "sample-cluster",
+            "DBClusterParameterGroup": "default.aurora-postgresql17",
+            "Status": "creating",
+            "MultiAZ": false,
+            "Engine": "aurora-postgresql",
+            "EngineVersion": "17.7",
+            "Port": 5432,
+            "MasterUsername": "postgres",
+            "PreferredBackupWindow": "06:15-06:45",
+            "PreferredMaintenanceWindow": "sat:03:44-sat:04:14",
+            "ReadReplicaIdentifiers": [],
+            "DBClusterMembers": [
+                {
+                    "DBInstanceIdentifier": "sample-cluster-instance-1",
+                    "IsClusterWriter": false,
+                    "DBClusterParameterGroupStatus": "in-sync",
+                    "PromotionTier": 1
+                }
+            ],
+            "VpcSecurityGroups": [],
+            "StorageEncrypted": false,
+            "DbClusterResourceId": "cluster-EXAMPLE4RESOURCE",
+            "DBClusterArn": "arn:aws:rds:us-east-1:123456789012:cluster:sample-cluster",
+            "AssociatedRoles": [],
+            "IAMDatabaseAuthenticationEnabled": true,
+            "ClusterCreateTime": "2026-01-10T22:14:02Z",
+            "EngineMode": "provisioned",
+            "AutoMinorVersionUpgrade": true,
+            "DeletionProtection": false,
+            "HttpEndpointEnabled": false,
+            "CopyTagsToSnapshot": false,
+            "CrossAccountClone": false,
+            "DomainMemberships": [],
+            "TagList": [],
+            "ServerlessV2ScalingConfiguration": {
+                "MinCapacity": 0.0,
+                "MaxCapacity": 16.0,
+                "SecondsUntilAutoPause": 300
+            },
+            "ServerlessV2PlatformVersion": "3",
+            "DatabaseInsightsMode": "standard",
+            "PerformanceInsightsEnabled": false,
+            "LocalWriteForwardingStatus": "disabled",
+            "EngineLifecycleSupport": "open-source-rds-extended-support"
+        }
+    }
+
 For more information, see `Creating an Amazon Aurora DB cluster <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.CreateInstance.html>`__ in the *Amazon Aurora User Guide*.

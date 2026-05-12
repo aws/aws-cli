@@ -1,6 +1,6 @@
 **To get a Control Tower enabled control**
 
-The following ``get-enabled-control`` example get details of an AWS Control Tower enabled control. ::
+The following ``get-enabled-control`` example gets details of an AWS Control Tower enabled control. ::
 
     aws controltower get-enabled-control \
         --enabled-control-identifier arn:aws:controltower:us-east-1:123456789012:enabledcontrol/26RGJRSLXCP1KW8D

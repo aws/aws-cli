@@ -12,6 +12,8 @@ Output::
         "operationIdentifier": "214cde95-5c39-46b9-b429-4fad550a7096"
     }
 
+**Example 2: To update an enabled Control Tower baseline**
+
 For more information, see `Types of baselines <https://docs.aws.amazon.com/controltower/latest/userguide/types-of-baselines.html>`__ in the *AWS Control Tower User Guide*.
 
 **Example 2: To update an enabled Control Tower baseline**

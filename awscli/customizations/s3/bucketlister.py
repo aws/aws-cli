@@ -14,16 +14,15 @@ import io
 import logging
 import threading
 import xml.sax.handler
-from typing import Optional
 from collections import namedtuple
 from dataclasses import dataclass
+from typing import Optional
 from xml.sax.handler import ContentHandler
 
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
 from awscli.compat import queue
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -51,7 +50,7 @@ class BucketLister:
         self._date_parser = date_parser
         self._local_tz = tzlocal()
 
-    def _get_list_objects_kwargs(
+    def _get_list_objects_v2_paginator_kwargs(
         self, bucket, prefix=None, page_size=None, extra_args=None
     ):
         kwargs = {
@@ -64,34 +63,21 @@ class BucketLister:
             kwargs.update(extra_args)
         return kwargs
 
-    def _get_list_objects_v2_request_kwargs(
-        self, bucket, prefix=None, page_size=None, extra_args=None
-    ):
-        kwargs = {'Bucket': bucket}
-        if prefix is not None:
-            kwargs['Prefix'] = prefix
-        if page_size is not None:
-            kwargs['MaxKeys'] = page_size
-        if extra_args is not None:
-            kwargs.update(extra_args)
-        return kwargs
-
     def _yield_page_contents(self, bucket, contents):
         if not contents:
             return
-        local_tz = self._local_tz
         for content in contents:
             source_path = bucket + '/' + content['Key']
             content['LastModified'] = self._date_parser(
                 content['LastModified'],
-                local_tz,
+                self._local_tz,
             )
             yield source_path, content
 
     def list_objects(
         self, bucket, prefix=None, page_size=None, extra_args=None
     ):
-        kwargs = self._get_list_objects_kwargs(
+        kwargs = self._get_list_objects_v2_paginator_kwargs(
             bucket=bucket,
             prefix=prefix,
             page_size=page_size,
@@ -100,11 +86,10 @@ class BucketLister:
         paginator = self._client.get_paginator('list_objects_v2')
         pages = paginator.paginate(**kwargs)
         for page in pages:
-            for item in self._yield_page_contents(
+            yield from self._yield_page_contents(
                 bucket=bucket,
                 contents=page.get('Contents', []),
-            ):
-                yield item
+            )
 
 
 class ThreadedBucketLister(BucketLister):
@@ -142,14 +127,25 @@ class ThreadedBucketLister(BucketLister):
                     break
                 if isinstance(next_item, _ThreadedBucketListerError):
                     raise next_item.exception
-                for item in self._yield_page_contents(
+                yield from self._yield_page_contents(
                     bucket=bucket,
                     contents=next_item.contents,
-                ):
-                    yield item
+                )
         finally:
             stop_event.set()
             producer.join()
+
+    def _get_list_objects_v2_request_kwargs(
+        self, bucket, prefix=None, page_size=None, extra_args=None
+    ):
+        kwargs = {'Bucket': bucket}
+        if prefix is not None:
+            kwargs['Prefix'] = prefix
+        if page_size is not None:
+            kwargs['MaxKeys'] = page_size
+        if extra_args is not None:
+            kwargs.update(extra_args)
+        return kwargs
 
     def _put_page_queue_item(self, page_queue, stop_event, item):
         # In Python 3.13, we have queue.shutdown() to avoid having to poll
@@ -240,7 +236,8 @@ class ListObjectsV2PageTask:
 @dataclass
 class ListObjectsV2PageResponse:
     page_number: int
-    page_response: dict
+    # Either page_response or exception will be non-None.
+    page_response: Optional[dict] = None
     exception: Optional[Exception] = None
 
 
@@ -258,8 +255,7 @@ class _QuickPageListObjectsV2:
         self._shutdown_triggered = False
         self._thread_local = threading.local()
         self._before_parse_unique_id = (
-            'awscli-threaded-bucket-lister-prefetch-before-parse-%s'
-            % id(self)
+            f'awscli-threaded-bucket-lister-prefetch-before-parse-{id(self)}'
         )
         self._threads = [
             threading.Thread(

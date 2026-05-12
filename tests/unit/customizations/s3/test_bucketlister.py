@@ -244,14 +244,12 @@ class TestThreadedBucketList(BaseBucketListTest, unittest.TestCase):
             continuation_token = kwargs.get('ContinuationToken')
             if continuation_token is None:
                 self._emit_before_parse(
-                    (
-                        b'<?xml version="1.0" encoding="UTF-8"?>'
-                        b'<ListBucketResult>'
-                        b'<NextContinuationToken>token-2'
-                        b'</NextContinuationToken>'
-                        b'<IsTruncated>true</IsTruncated>'
-                        b'</ListBucketResult>'
-                    )
+                    b'<?xml version="1.0" encoding="UTF-8"?>'
+                    b'<ListBucketResult>'
+                    b'<NextContinuationToken>token-2'
+                    b'</NextContinuationToken>'
+                    b'<IsTruncated>true</IsTruncated>'
+                    b'</ListBucketResult>'
                 )
                 self.assertTrue(page_two_requested.wait(timeout=1))
                 return {
@@ -392,14 +390,12 @@ class TestThreadedBucketList(BaseBucketListTest, unittest.TestCase):
         def list_objects_v2(**kwargs):
             if 'ContinuationToken' not in kwargs:
                 self._emit_before_parse(
-                    (
-                        b'<?xml version="1.0" encoding="UTF-8"?>'
-                        b'<ListBucketResult>'
-                        b'<NextContinuationToken>token-2'
-                        b'</NextContinuationToken>'
-                        b'<IsTruncated>true</IsTruncated>'
-                        b'</ListBucketResult>'
-                    )
+                    b'<?xml version="1.0" encoding="UTF-8"?>'
+                    b'<ListBucketResult>'
+                    b'<NextContinuationToken>token-2'
+                    b'</NextContinuationToken>'
+                    b'<IsTruncated>true</IsTruncated>'
+                    b'</ListBucketResult>'
                 )
                 return {
                     'Contents': [

@@ -1,6 +1,6 @@
 **To list Control Tower enabled controls**
 
-The following ``list-enabled-controls`` example get details of AWS Control Tower enabled controls. ::
+The following ``list-enabled-controls`` example gets details of AWS Control Tower enabled controls. ::
 
     aws controltower list-enabled-controls \
         --target-identifier arn:aws:organizations::123456789012:ou/o-s64ryxxxxx/ou-oqxx-i5wnxxxx

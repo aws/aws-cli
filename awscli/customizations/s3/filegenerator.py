@@ -19,7 +19,7 @@ from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
 from awscli.compat import queue
-from awscli.customizations.s3.bucketlister import ThreadedBucketLister
+from awscli.customizations.s3.bucketlister import BucketLister
 from awscli.customizations.s3.utils import (
     EPOCH_TIME,
     create_warning,
@@ -134,7 +134,7 @@ class FileGenerator:
     under the same common prefix.  The generator yields corresponding
     ``FileInfo`` objects to send to a ``Comparator`` or ``S3Handler``.
     """
-    _DEFAULT_BUCKET_LISTER_CLS = ThreadedBucketLister
+    _DEFAULT_BUCKET_LISTER_CLS = BucketLister
 
     def __init__(
         self,

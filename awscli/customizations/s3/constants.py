@@ -17,5 +17,5 @@ CLASSIC_TRANSFER_CLIENT = 'classic'
 CRT_TRANSFER_CLIENT = 'crt'
 
 # Constants for bucket_lister configuration
-STANDARD_BUCKET_LISTER = 'standard'
+SINGLE_BUCKET_LISTER = 'single'
 THREADED_BUCKET_LISTER = 'threaded'

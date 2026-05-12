@@ -151,6 +151,19 @@ class ThreadedBucketLister(BucketLister):
             stop_event.set()
             producer.join()
 
+    def _put_page_queue_item(self, page_queue, stop_event, item):
+        # In Python 3.13, we have queue.shutdown() to avoid having to poll
+        # with a timeout like we do below.  Until that's the min version
+        # supported, we need to handle this ourselves and avoid non-timeout
+        # put() calls.
+        while not stop_event.is_set():
+            try:
+                page_queue.put(item, timeout=self._BUFFER_WAIT_SECONDS)
+                return True
+            except queue.Full:
+                continue
+        return False
+
     def _run_producer(self, request_kwargs, page_queue, stop_event):
         quick_pager = _QuickPageListObjectsV2(
             self._client,
@@ -179,17 +192,29 @@ class ThreadedBucketLister(BucketLister):
                     contents = page.get('Contents', [])
                     next_page_number += 1
                     if contents:
-                        page_queue.put(_ThreadedBucketPage(contents=contents))
+                        if not self._put_page_queue_item(
+                            page_queue,
+                            stop_event,
+                            _ThreadedBucketPage(contents=contents),
+                        ):
+                            return
                     is_last_page = not page.get(
                         'IsTruncated'
                     ) or not page.get('NextContinuationToken')
                     if is_last_page:
-                        if not stop_event.is_set():
-                            page_queue.put(_THREADED_BUCKET_LISTER_COMPLETE)
+                        self._put_page_queue_item(
+                            page_queue,
+                            stop_event,
+                            _THREADED_BUCKET_LISTER_COMPLETE,
+                        )
                         return
         except Exception as e:
             if not stop_event.is_set():
-                page_queue.put(_ThreadedBucketListerError(exception=e))
+                self._put_page_queue_item(
+                    page_queue,
+                    stop_event,
+                    _ThreadedBucketListerError(exception=e),
+                )
         finally:
             quick_pager.shutdown()
 
@@ -222,6 +247,7 @@ class ListObjectsV2PageResponse:
 class _QuickPageListObjectsV2:
     _BEFORE_PARSE_EVENT = 'before-parse.s3.ListObjectsV2'
     _REQUEST_WORKER_COMPLETE = object()
+    _BUFFER_WAIT_SECONDS = 0.1
     _MAX_PAGES_BUFFER = 10
 
     def __init__(self, client, stop_event):
@@ -273,6 +299,18 @@ class _QuickPageListObjectsV2:
         except queue.Empty:
             return None
 
+    def _put_completed_page(self, completed_page):
+        while not self._stop_event.is_set():
+            try:
+                self._complete_page_queue.put(
+                    completed_page,
+                    timeout=self._BUFFER_WAIT_SECONDS,
+                )
+                return True
+            except queue.Full:
+                continue
+        return False
+
     def _thread_task_handler(self, task_queue):
         while True:
             task = task_queue.get()
@@ -287,7 +325,7 @@ class _QuickPageListObjectsV2:
         try:
             page = self._client.list_objects_v2(**task.request_kwargs)
         except Exception as e:
-            self._complete_page_queue.put(
+            self._put_completed_page(
                 ListObjectsV2PageResponse(
                     page_number=task.page_number,
                     page_response=None,
@@ -295,12 +333,13 @@ class _QuickPageListObjectsV2:
                 )
             )
             return
-        self._complete_page_queue.put(
+        if not self._put_completed_page(
             ListObjectsV2PageResponse(
                 page_number=task.page_number,
                 page_response=page,
             )
-        )
+        ):
+            return
         if not task.quick_page_scheduled:
             if not page.get('IsTruncated'):
                 return

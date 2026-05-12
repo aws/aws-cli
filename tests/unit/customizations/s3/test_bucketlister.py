@@ -434,3 +434,49 @@ class TestThreadedBucketList(BaseBucketListTest, unittest.TestCase):
         self.assertTrue(page_two_requested.wait(timeout=1))
         allow_page_two.set()
         objects.close()
+
+    def test_closing_lister_stops_when_result_queue_is_full(self):
+        page_twenty_three_requested = threading.Event()
+
+        def list_objects_v2(**kwargs):
+            continuation_token = kwargs.get('ContinuationToken')
+            if continuation_token is None:
+                page_number = 1
+            else:
+                page_number = int(continuation_token.rsplit('-', 1)[1])
+            if page_number == 23:
+                page_twenty_three_requested.set()
+            return {
+                'Contents': [
+                    {
+                        'LastModified': '2014-02-27T04:20:38.000Z',
+                        'Key': f'key-{page_number}',
+                        'Size': page_number,
+                    }
+                ],
+                'IsTruncated': True,
+                'NextContinuationToken': f'token-{page_number + 1}',
+            }
+
+        self.client.list_objects_v2.side_effect = list_objects_v2
+        objects = ThreadedBucketLister(
+            self.client, self.date_parser
+        ).list_objects(bucket='foo')
+
+        self.assertEqual(next(objects)[0], 'foo/key-1')
+        self.assertTrue(page_twenty_three_requested.wait(timeout=2))
+
+        close_errors = []
+
+        def close_objects():
+            try:
+                objects.close()
+            except Exception as e:
+                close_errors.append(e)
+
+        close_thread = threading.Thread(target=close_objects, daemon=True)
+        close_thread.start()
+        close_thread.join(timeout=2)
+
+        self.assertFalse(close_thread.is_alive())
+        self.assertEqual(close_errors, [])

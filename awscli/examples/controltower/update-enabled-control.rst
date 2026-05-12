@@ -3,7 +3,7 @@
 The following ``update-enabled-control`` example updates an AWS Control Tower enabled control. ::
 
     aws controltower update-enabled-control \
-        --enabled-control-identifier arn:aws:controltower:us-east-1:493301538276:enabledcontrol/JSJN8UL0G2MWGRTZ \
+        --enabled-control-identifier arn:aws:controltower:us-east-1:123456789012:enabledcontrol/JSJN8UL0G2MWGRTZ \
         --parameters '[{"key":"AllowedRegions","value":["us-east-1","us-west-1","us-west-2","us-east-2"]}]'
 
 Output::

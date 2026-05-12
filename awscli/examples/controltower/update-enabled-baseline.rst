@@ -14,10 +14,6 @@ Output::
 
 **Example 2: To update an enabled Control Tower baseline**
 
-For more information, see `Types of baselines <https://docs.aws.amazon.com/controltower/latest/userguide/types-of-baselines.html>`__ in the *AWS Control Tower User Guide*.
-
-**Example 2: To update an enabled Control Tower baseline**
-
 The following ``update-enabled-baseline`` example updates an AWS Control Tower enabled baseline if baseline 'IdentityCenterBaseline' is enabled. ::
 
     aws controltower update-enabled-baseline \

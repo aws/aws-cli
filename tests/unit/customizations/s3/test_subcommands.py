@@ -425,7 +425,7 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
             self.destination_listing_client,
         )
 
-    def test_run_uses_standard_bucket_lister_by_default(self):
+    def test_run_uses_single_bucket_lister_by_default(self):
         class StopExecution(Exception):
             pass
 
@@ -471,7 +471,7 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
             BucketLister,
         )
 
-    def test_run_uses_standard_bucket_lister_when_configured(self):
+    def test_run_uses_single_bucket_lister_when_configured(self):
         class StopExecution(Exception):
             pass
 

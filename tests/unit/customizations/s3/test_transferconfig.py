@@ -91,9 +91,9 @@ class TestTransferConfig:
     @pytest.mark.parametrize(
         'provided,resolved',
         [
-            (None, 'standard'),
+            (None, 'single'),
             ('threaded', 'threaded'),
-            ('standard', 'standard'),
+            ('single', 'single'),
         ],
     )
     def test_set_bucket_lister(self, provided, resolved):

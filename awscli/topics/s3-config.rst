@@ -246,15 +246,17 @@ In cases where network IO is the bottleneck, it is recommended to configure
 bucket_lister
 -------------
 
-**Default** - ``standard``
+**Default** - ``single``
 
 Determines the bucket listing implementation to use when the AWS CLI discovers
 S3 objects for transfer commands. Valid choices are:
 
-* ``standard`` - Use the non-threaded bucket lister.
+* ``single`` - Use a single-threaded bucket lister.
   This is the default behavior.
 
-* ``threaded`` - Use a background producer thread to fetch object listing pages.
+* ``threaded`` - Use background producer-consumer threads to retrieve pages of
+  objects from S3.  This may speed up transfer commands that list a large
+  number of objects including recursive downloads, sync, and S3 to S3 copies.
 
 
 use_accelerate_endpoint

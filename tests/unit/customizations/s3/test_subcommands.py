@@ -753,6 +753,14 @@ class CommandParametersTest(unittest.TestCase):
             cmd_params.add_paths(paths)
             self.assertIn('Expected checksum-algorithm parameter to be used with one of following path formats', cm.msg)
 
+    def test_validate_checksum_algorithm_md5_upload(self):
+        paths = [self.file_creator.rootdir, 's3://bucket/key']
+        parameters = {'checksum_algorithm': 'MD5'}
+        cmd_params = CommandParameters('cp', parameters, '')
+        cmd_params.add_paths(paths)
+        self.assertEqual(cmd_params.parameters['checksum_algorithm'], 'MD5')
+
+
     def test_validate_checksum_algorithm_sync_download_error(self):
         paths = ['s3://bucket/key', self.file_creator.rootdir]
         parameters = {'checksum_algorithm': 'CRC32C'}

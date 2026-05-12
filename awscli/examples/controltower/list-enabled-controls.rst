@@ -1,4 +1,4 @@
-**To list Control Tower Eenabled controls**
+**To list Control Tower enabled controls**
 
 The following ``list-enabled-controls`` example get details of AWS Control Tower enabled controls. ::
 

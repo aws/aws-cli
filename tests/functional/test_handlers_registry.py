@@ -59,7 +59,7 @@ def test_main_command_table_plugins_only_register_against_main():
     """
     main_entries = PLUGIN_REGISTRY.get('building-command-table.main', [])
     violations = []
-    for module_path, fn_name, entry_type in main_entries:
+    for module_path, fn_name in main_entries:
         emitter = _AuditEmitter()
         mod = importlib.import_module(module_path)
         fn = getattr(mod, fn_name)
@@ -98,7 +98,7 @@ def test_main_command_table_callbacks_only_add_or_rename():
     main_entries = PLUGIN_REGISTRY.get('building-command-table.main', [])
     violations = []
 
-    for module_path, fn_name, entry_type in main_entries:
+    for module_path, fn_name in main_entries:
         collector = _CallbackCollector('building-command-table.main')
         mod = importlib.import_module(module_path)
         fn = getattr(mod, fn_name)

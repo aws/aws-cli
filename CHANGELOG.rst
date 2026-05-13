@@ -2,6 +2,33 @@
 CHANGELOG
 =========
 
+2.34.46
+=======
+
+* api-change:``connectcases``: Amazon Connect Cases now supports SLA durations of up to 2 years (1,051,200 minutes), increased from the previous maximum of 90 days (129,600 minutes). This enables you to track long-running service level agreements for cases that require extended resolution timelines.
+* api-change:``quicksight``: Adds five new custom permission option for Quick Apps so that these capabilities can be controlled by public SDK and CLI.
+* api-change:``dsql``: Added support for Amazon Aurora DSQL change data capture (CDC) streams that deliver row-level database changes to Amazon Kinesis in JSON format. Includes CreateStream, GetStream, ListStreams, and DeleteStream operations.
+* api-change:``lightsail``: Added OriginIpAddressTypeEnum (ipv4, ipv6, dualstack) and ipAddressType field to Origin and InputOrigin structures for Lightsail CDN distributions. Allows customers to specify how the distribution connects to origins, using IPv4, IPv6, or dualstack networking
+* api-change:``es``: Adds support for AutomatedSnapshotPauseOptions.
+* api-change:``batch``: Adds a billing callout to docs regarding using the CE Scale Down Delay feature
+* api-change:``securityagent``: Add support for code reviews, a new resource type that enables automated security-focused static analysis of source code repositories.
+* api-change:``arc-region-switch``: Adds support for enabling and disabling Lambda event source mappings in Region switch plans.
+* api-change:``glue``: AWS Glue now defaults the job timeout to 480 minutes for Glue version 5.0 and later when no timeout value is specified. The default remains 2,880 minutes for Glue version 4.0 and earlier.
+* api-change:``connectcampaignsv2``: This release added support for Outbound Campaign timezone detection using all available contact methods
+* api-change:``pcs``: Add support for Amazon EC2 Interruptible-ODCR
+* api-change:``billingconductor``: Add ConflictException to UpdateCustomLineItem operation.
+* api-change:``redshift``: Added rg.xlarge and rg.4xlarge to valid NodeType values and updated documentation for CreateCluster, ModifyCluster, ResizeCluster, and RestoreFromClusterSnapshot APIs to reflect RG node type support.
+* api-change:``socialmessaging``: Adds parameters to call the GetWhatsAppMessageTemplate and UpdateWhatsAppMessageTemplate APIs with a template name and language code in place of the template ID. Linked WhatsApp accounts also describe whether the WABA is onboarded to Meta's Marketing Messages API.
+* api-change:``partnercentral-account``: Added ServiceQuotaExceededExceptions for Profile operations
+* api-change:``stepfunctions``: Updated default SDK endpoints for AWS Step Functions in AWS GovCloud (US) regions. The default Dual-Stack endpoints now resolve to "states-fips" prefixed hostnames. There are no changes to service behavior. No customer action is required.
+* api-change:``opensearch``: Adds support for AutomatedSnapshotPauseOptions.
+* api-change:``connect``: This change added three new EventSourceName for schedule notification feature
+* api-change:``rtbfabric``: Customers can now configure custom domain names for their RTB Fabric gateways. This enables partners to use their own branded domain for RTB traffic instead of the default rtbfabric endpoint
+* api-change:``bedrock-agentcore-control``: Adds support for read-only summary APIs for Policy Engine, Policy, and Policy Generation resources, enabling metadata retrieval without KMS decryption for AWS Config integration.
+* api-change:``ec2``: Include length limits in the SDK and documentation for text fields in Image (AMI) APIs such as the image name and description
+* api-change:``sagemaker``: Adds execution role session name mode to reflect user identity in Studio. Adds Flexible Training Plans on Studio apps. Adds restricted model packages to control access to proprietary model artifacts via IAM. Fixed instance type parity between inference endpoints and managed shadow tests.
+
+
 2.34.45
 =======
 

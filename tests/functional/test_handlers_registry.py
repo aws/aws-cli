@@ -64,13 +64,9 @@ def test_all_registry_entries_are_importable():
                 continue
             fn = getattr(mod, fn_name, None)
             if fn is None:
-                violations.append(
-                    f'{module_path}.{fn_name} does not exist'
-                )
+                violations.append(f'{module_path}.{fn_name} does not exist')
             elif not callable(fn):
-                violations.append(
-                    f'{module_path}.{fn_name} is not callable'
-                )
+                violations.append(f'{module_path}.{fn_name} is not callable')
     assert not violations, (
         'The following PLUGIN_REGISTRY entries are invalid:\n'
         + '\n'.join(f'  - {v}' for v in violations)

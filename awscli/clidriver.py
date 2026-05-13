@@ -91,6 +91,7 @@ LOG_FORMAT = (
 )
 HISTORY_RECORDER = get_global_history_recorder()
 METADATA_FILENAME = 'metadata.json'
+INSTALL_FILENAME = 'install.json'
 _NO_AUTO_PROMPT_ARGS = ['help', '--version']
 _CLI_AUTO_PROMPT_OPTION = '--cli-auto-prompt'
 _NO_CLI_AUTO_PROMPT_OPTION = '--no-cli-auto-prompt'
@@ -161,15 +162,23 @@ def resolve_auto_prompt_mode(args, session):
 
 
 def _get_distribution_source():
-    metadata_file = os.path.join(
-        os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data'),
-        METADATA_FILENAME,
-    )
-    metadata = {}
-    if os.path.isfile(metadata_file):
-        with open(metadata_file) as f:
-            metadata = json.load(f)
-    return metadata.get('distribution_source', 'other')
+    # install.json (install-time, written by whichever installer ran on the
+    # user's machine) wins over metadata.json (build-time, baked into the
+    # zip/PKG). This lets install.sh advertise "script-exe" without mutating
+    # the build-time artifact.
+    data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
+    for name in (INSTALL_FILENAME, METADATA_FILENAME):
+        path = os.path.join(data_dir, name)
+        if not os.path.isfile(path):
+            continue
+        with open(path) as f:
+            try:
+                data = json.load(f)
+            except (ValueError, OSError):
+                continue
+        if 'distribution_source' in data:
+            return data['distribution_source']
+    return 'other'
 
 
 def _get_distribution():

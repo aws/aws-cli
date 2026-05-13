@@ -26,3 +26,26 @@ if [ "$ID" == "0" ]; then
     sudo ln -sf "$COMPLETER_PATH" "$COMPLETER_LINK"
     sudo echo "$COMPLETER_LINK" >> "$METADATA_PATH"
 fi
+
+# Write install.json so `aws update` can find install/bin paths without
+# path-walking. install.sh runs the PKG under the hood for script-driven
+# installs and writes a richer install.json itself; in that case it sets
+# AWS_CLI_SKIP_INSTALL_JSON=1 so we skip our write.
+INSTALL_JSON="$PATH_TO_INSTALL/awscli/data/install.json"
+if [ "${AWS_CLI_SKIP_INSTALL_JSON:-}" != "1" ] && \
+   [ -d "$(dirname "$INSTALL_JSON")" ]; then
+    if [ "$ID" == "0" ]; then
+        cat > "$INSTALL_JSON" <<EOF
+{
+  "install_dir": "$PATH_TO_INSTALL",
+  "bin_dir": "$SYMLINK_DIR"
+}
+EOF
+    else
+        cat > "$INSTALL_JSON" <<EOF
+{
+  "install_dir": "$PATH_TO_INSTALL"
+}
+EOF
+    fi
+fi

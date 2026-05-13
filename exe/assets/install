@@ -136,6 +136,27 @@ create_bin_symlinks() {
   ln -sf "$CURRENT_AWS_COMPLETER_EXE" "$BIN_AWS_COMPLETER_EXE"
 }
 
+# Write install.json next to the build-time metadata.json so `aws update`
+# can resolve install/bin paths without path-walking. metadata.json is
+# left untouched.
+#
+# When invoked under install.sh (which writes a richer install.json
+# itself), install.sh sets AWS_CLI_SKIP_INSTALL_JSON=1 so we don't waste
+# a write that's about to be overwritten.
+write_install_json() {
+  if [ "${AWS_CLI_SKIP_INSTALL_JSON:-}" = "1" ]; then
+    return 0
+  fi
+  install_json="$INSTALL_DIST_DIR/awscli/data/install.json"
+  [ -d "$(dirname "$install_json")" ] || return 0
+  cat > "$install_json" <<EOF
+{
+  "install_dir": "$ROOT_INSTALL_DIR",
+  "bin_dir": "$BIN_DIR"
+}
+EOF
+}
+
 die() {
 	err_msg="$1"
 	echo "$err_msg" >&2
@@ -148,6 +169,7 @@ main() {
   check_preexisting_install
   create_install_dir
   create_bin_symlinks
+  write_install_json
   echo "You can now run: $BIN_AWS_EXE --version"
   exit 0
 }

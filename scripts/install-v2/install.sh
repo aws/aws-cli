@@ -19,7 +19,12 @@ readonly DOWNLOAD_BASE_URL="https://awscli.amazonaws.com"
 # string (for backend access-log attribution), the metadata.json
 # distribution_source field, and the runtime user-agent. Keep these aligned
 # so download logs, install metadata, and runtime telemetry correlate.
-readonly DOWNLOAD_QUERY="?src=script-exe"
+#
+# AWS_CLI_DISTRIBUTION_SOURCE_OVERRIDE lets a wrapping invoker (e.g.,
+# `aws update`) override the identifier so single-source attribution flows
+# through both the artifact-download URL and metadata.json.
+readonly DISTRIBUTION_SOURCE="${AWS_CLI_DISTRIBUTION_SOURCE_OVERRIDE:-script-exe}"
+readonly DOWNLOAD_QUERY="?src=${DISTRIBUTION_SOURCE}"
 
 # Apple Developer Team identifier for AWS-signed PKGs (AMZN Mobile LLC).
 # Pinning the team ID prevents any other Apple Developer ID from passing the
@@ -271,7 +276,7 @@ read_distribution_source() {
   local meta
   for meta in \
         "$install_root/awscli/data/metadata.json" \
-        "$install_root/v2/current/awscli/data/metadata.json"; do
+        "$install_root/v2/current/dist/awscli/data/metadata.json"; do
     [ -f "$meta" ] || continue
     local line
     line="$(grep -o '"distribution_source"[[:space:]]*:[[:space:]]*"[^"]*"' "$meta" 2>/dev/null | head -n1)"
@@ -557,6 +562,9 @@ EOF
 }
 
 run_installer() {
+  # The bundled installers also write install.json. We tell them to skip
+  # so our richer post-install write is the only writer for this path.
+  export AWS_CLI_SKIP_INSTALL_JSON=1
   case "$PLATFORM" in
     linux) run_linux_installer ;;
     macos) run_macos_installer ;;
@@ -580,47 +588,40 @@ emit_already_installed_warning() {
   fi
 }
 
-# Best-effort: never fail the script over metadata. Uses python3 if
-# available; silently no-ops otherwise.
-write_metadata() {
-  local install_tree
+# Write install.json next to metadata.json. Build-time metadata.json is
+# left untouched. Schema is owned by the install-time path so we don't
+# need a JSON parser — the values are already constrained (no whitespace
+# in paths, version_resolved is parsed semver, the rest are booleans).
+#
+# The bundled installer also writes install.json by default; we set
+# AWS_CLI_SKIP_INSTALL_JSON=1 when invoking it (see run_*_installer)
+# so this final write is the only one that lands.
+write_install_json() {
+  local install_json
   case "$PLATFORM" in
-    macos) install_tree="$INSTALL_DIR" ;;
-    linux) install_tree="$INSTALL_DIR/v2/current" ;;
+    macos) install_json="$INSTALL_DIR/awscli/data/install.json" ;;
+    linux) install_json="$INSTALL_DIR/v2/current/dist/awscli/data/install.json" ;;
     *)     error 1 "internal error: unknown platform '$PLATFORM'" ;;
   esac
-  local meta="$install_tree/awscli/data/metadata.json"
-  [ -f "$meta" ] || return 0
+  [ -d "$(dirname "$install_json")" ] || return 0
 
-  local version_requested
-  if [ -n "$ARG_VERSION" ]; then
-    version_requested="$ARG_VERSION"
-  else
-    version_requested="latest"
-  fi
+  local system_b quiet_b
+  if [ "$ARG_SYSTEM" -eq 1 ]; then system_b=true; else system_b=false; fi
+  if [ "$ARG_QUIET"  -eq 1 ]; then quiet_b=true;  else quiet_b=false;  fi
 
-  if command -v python3 >/dev/null 2>&1; then
-    python3 - "$meta" "$INSTALL_DIR" "$BIN_DIR" \
-            "$ARG_SYSTEM" "$version_requested" "$POST_INSTALL_VERSION" \
-            "$ARG_QUIET" "$SCRIPT_VERSION" <<'PY' || return 0
-import json, sys
-meta_path = sys.argv[1]
-with open(meta_path) as f:
-    data = json.load(f)
-data["distribution_source"] = "script-exe"
-data["script_install"] = {
-    "install_dir": sys.argv[2],
-    "bin_dir": sys.argv[3],
-    "system": sys.argv[4] == "1",
-    "version_requested": sys.argv[5],
-    "version_resolved": sys.argv[6],
-    "quiet": sys.argv[7] == "1",
-    "script_version": sys.argv[8],
+  cat > "$install_json" <<EOF
+{
+  "distribution_source": "$DISTRIBUTION_SOURCE",
+  "install_dir": "$INSTALL_DIR",
+  "bin_dir": "$BIN_DIR",
+  "script_install": {
+    "system": $system_b,
+    "version_resolved": "$POST_INSTALL_VERSION",
+    "quiet": $quiet_b,
+    "script_version": "$SCRIPT_VERSION"
+  }
 }
-with open(meta_path, "w") as f:
-    json.dump(data, f, indent=2)
-PY
-  fi
+EOF
 }
 
 check_path_precedence() {
@@ -650,7 +651,7 @@ print_path_warning() {
 post_install_checks() {
   verify_install_runs
   emit_already_installed_warning
-  write_metadata
+  write_install_json
   if ! check_path_precedence; then
     print_path_warning
   fi

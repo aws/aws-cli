@@ -50,6 +50,7 @@ from awscli.customizations.configservice.rename_cmd import (
 from awscli.customizations.configservice.subscribe import register_subscribe
 from awscli.customizations.configure.configure import register_configure_cmd
 from awscli.customizations.devcommands import register_dev_commands
+from awscli.customizations.update import register_update_command
 from awscli.customizations.dlm.dlm import dlm_initialize
 from awscli.customizations.dsql import register_dsql_customizations
 from awscli.customizations.dynamodb.ddb import register_ddb
@@ -233,6 +234,7 @@ def awscli_initialize(event_handlers):
     register_ssm_session(event_handlers)
     register_logs_commands(event_handlers)
     register_dev_commands(event_handlers)
+    register_update_command(event_handlers)
     register_wizard_commands(event_handlers)
     register_sso_commands(event_handlers)
     register_dynamodb_paginator_fix(event_handlers)

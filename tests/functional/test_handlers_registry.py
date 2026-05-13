@@ -15,7 +15,7 @@ from collections import OrderedDict
 
 import botocore.session
 
-from awscli.handlers_registry import PLUGIN_REGISTRY
+from awscli.handlers_registry import MAIN_COMMAND_TABLE_OPS, PLUGIN_REGISTRY
 
 
 class _AuditEmitter:
@@ -44,6 +44,63 @@ class _CallbackCollector:
 
     register_first = register
     register_last = register
+
+
+def test_all_registry_entries_are_importable():
+    """Every (module, fn_name) in PLUGIN_REGISTRY must resolve to a
+    callable. This catches typos, stale entries, and missing modules.
+    """
+    violations = []
+    seen = set()
+    for entries in PLUGIN_REGISTRY.values():
+        for module_path, fn_name in entries:
+            if (module_path, fn_name) in seen:
+                continue
+            seen.add((module_path, fn_name))
+            try:
+                mod = importlib.import_module(module_path)
+            except ImportError as e:
+                violations.append(f'{module_path}: {e}')
+                continue
+            fn = getattr(mod, fn_name, None)
+            if fn is None:
+                violations.append(
+                    f'{module_path}.{fn_name} does not exist'
+                )
+            elif not callable(fn):
+                violations.append(
+                    f'{module_path}.{fn_name} is not callable'
+                )
+    assert not violations, (
+        'The following PLUGIN_REGISTRY entries are invalid:\n'
+        + '\n'.join(f'  - {v}' for v in violations)
+    )
+
+
+def test_all_main_command_table_ops_modules_are_importable():
+    """Every module referenced in MAIN_COMMAND_TABLE_OPS 'add' entries
+    must be importable and contain the specified class.
+    """
+    violations = []
+    for op in MAIN_COMMAND_TABLE_OPS:
+        if op[0] != 'add':
+            continue
+        _, cmd_name, cmd_module, cmd_class = op
+        try:
+            mod = importlib.import_module(cmd_module)
+        except ImportError as e:
+            violations.append(f'{cmd_module}: {e}')
+            continue
+        cls_name = cmd_class.split('.')[-1]
+        if not hasattr(mod, cls_name):
+            violations.append(
+                f'{cmd_module}.{cls_name} does not exist '
+                f'(referenced by add {cmd_name!r})'
+            )
+    assert not violations, (
+        'The following MAIN_COMMAND_TABLE_OPS entries are invalid:\n'
+        + '\n'.join(f'  - {v}' for v in violations)
+    )
 
 
 def test_main_command_table_plugins_only_register_against_main():

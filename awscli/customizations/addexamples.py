@@ -34,7 +34,6 @@ LOG = logging.getLogger(__name__)
 
 
 def register_docs_add_examples(event_emitter):
-
     # The following will get fired for every option we are
     # documenting.  It will attempt to add an example_fn on to
     # the parameter object if the parameter supports shorthand

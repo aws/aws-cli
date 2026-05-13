@@ -39,6 +39,8 @@ from awscli.customizations.codeartifact import register_codeartifact_commands
 from awscli.customizations.codecommit import initialize as codecommit_init
 from awscli.customizations.codedeploy.codedeploy import (
     register_codedeploy,
+)
+from awscli.customizations.codedeploy.codedeploy import (
     register_rename_codedeploy as codedeploy_init,
 )
 from awscli.customizations.configservice.getstatus import register_get_status
@@ -60,7 +62,7 @@ from awscli.customizations.dynamodb.paginatorfix import (
 from awscli.customizations.ec2.addcount import register_count_events
 from awscli.customizations.ec2.bundleinstance import register_bundleinstance
 from awscli.customizations.ec2.decryptpassword import (
-    register_ec2_add_priv_launch_key
+    register_ec2_add_priv_launch_key,
 )
 from awscli.customizations.ec2.paginate import register_ec2_page_size_injector
 from awscli.customizations.ec2.protocolarg import register_protocol_args
@@ -118,7 +120,7 @@ from awscli.customizations.removals import register_removals
 from awscli.customizations.route53 import register_create_hosted_zone_doc_fix
 from awscli.customizations.s3.s3 import (
     register_s3_main,
-    register_s3_sync_strategies
+    register_s3_sync_strategies,
 )
 from awscli.customizations.s3errormsg import register_s3_error_msg
 from awscli.customizations.s3events import (
@@ -131,7 +133,9 @@ from awscli.customizations.servicecatalog import (
 from awscli.customizations.sessendemail import register_ses_send_email
 from awscli.customizations.sessionmanager import register_ssm_session
 from awscli.customizations.sso import register_sso_commands
-from awscli.customizations.streamingoutputarg import register_streaming_output_arg
+from awscli.customizations.streamingoutputarg import (
+    register_streaming_output_arg,
+)
 from awscli.customizations.timestampformat import register_timestamp_format
 from awscli.customizations.toplevelbool import register_bool_params
 from awscli.customizations.translate import (

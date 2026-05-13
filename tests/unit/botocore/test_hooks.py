@@ -15,7 +15,6 @@ import functools
 from functools import partial
 
 import pytest
-
 from botocore.hooks import (
     HierarchicalEmitter,
     PrefixTrie,

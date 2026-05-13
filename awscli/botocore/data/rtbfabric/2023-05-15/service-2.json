@@ -35,6 +35,27 @@
       "documentation":"<p>Accepts a link request between gateways.</p> <p>When a requester gateway requests to link with a responder gateway, the responder can use this operation to accept the link request and establish the connection.</p>",
       "idempotent":true
     },
+    "AssociateCertificate":{
+      "name":"AssociateCertificate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/responder-gateway/{gatewayId}/certificate",
+        "responseCode":200
+      },
+      "input":{"shape":"AssociateCertificateRequest"},
+      "output":{"shape":"AssociateCertificateResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Associates an ACM certificate with a responder gateway.</p>",
+      "idempotent":true
+    },
     "CreateInboundExternalLink":{
       "name":"CreateInboundExternalLink",
       "http":{
@@ -77,6 +98,27 @@
       "documentation":"<p>Creates a new link between gateways.</p> <p>Establishes a connection that allows gateways to communicate and exchange bid requests and responses.</p>",
       "idempotent":true
     },
+    "CreateLinkRoutingRule":{
+      "name":"CreateLinkRoutingRule",
+      "http":{
+        "method":"POST",
+        "requestUri":"/responder-gateway/{gatewayId}/link/{linkId}/routing-rule",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateLinkRoutingRuleRequest"},
+      "output":{"shape":"CreateLinkRoutingRuleResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Creates a routing rule for a link.</p> <p>Routing rules use priority-based evaluation where lower priority numbers are evaluated first. Each rule specifies conditions that must all match for the rule to apply.</p>",
+      "idempotent":true
+    },
     "CreateOutboundExternalLink":{
       "name":"CreateOutboundExternalLink",
       "http":{
@@ -91,6 +133,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
@@ -177,6 +220,26 @@
       "documentation":"<p>Deletes a link between gateways.</p> <p>Permanently removes the connection between gateways. This action cannot be undone.</p>",
       "idempotent":true
     },
+    "DeleteLinkRoutingRule":{
+      "name":"DeleteLinkRoutingRule",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/responder-gateway/{gatewayId}/link/{linkId}/routing-rule/{ruleId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteLinkRoutingRuleRequest"},
+      "output":{"shape":"DeleteLinkRoutingRuleResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Deletes a routing rule from a link.</p>",
+      "idempotent":true
+    },
     "DeleteOutboundExternalLink":{
       "name":"DeleteOutboundExternalLink",
       "http":{
@@ -210,6 +273,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
@@ -229,11 +293,52 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Deletes a responder gateway.</p>",
       "idempotent":true
+    },
+    "DisassociateCertificate":{
+      "name":"DisassociateCertificate",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/responder-gateway/{gatewayId}/certificate",
+        "responseCode":200
+      },
+      "input":{"shape":"DisassociateCertificateRequest"},
+      "output":{"shape":"DisassociateCertificateResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Removes a certificate association from a responder gateway.</p>",
+      "idempotent":true
+    },
+    "GetCertificateAssociation":{
+      "name":"GetCertificateAssociation",
+      "http":{
+        "method":"GET",
+        "requestUri":"/responder-gateway/{gatewayId}/certificate",
+        "responseCode":200
+      },
+      "input":{"shape":"GetCertificateAssociationRequest"},
+      "output":{"shape":"GetCertificateAssociationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieves the details of a certificate association with a responder gateway.</p>",
+      "readonly":true
     },
     "GetInboundExternalLink":{
       "name":"GetInboundExternalLink",
@@ -272,6 +377,25 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Retrieves information about a link between gateways.</p> <p>Returns detailed information about the link configuration, status, and associated gateways.</p>",
+      "readonly":true
+    },
+    "GetLinkRoutingRule":{
+      "name":"GetLinkRoutingRule",
+      "http":{
+        "method":"GET",
+        "requestUri":"/responder-gateway/{gatewayId}/link/{linkId}/routing-rule/{ruleId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetLinkRoutingRuleRequest"},
+      "output":{"shape":"GetLinkRoutingRuleResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieves the details of a routing rule for a link.</p>",
       "readonly":true
     },
     "GetOutboundExternalLink":{
@@ -329,6 +453,44 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Retrieves information about a responder gateway.</p>",
+      "readonly":true
+    },
+    "ListCertificateAssociations":{
+      "name":"ListCertificateAssociations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/responder-gateway/{gatewayId}/certificates",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCertificateAssociationsRequest"},
+      "output":{"shape":"ListCertificateAssociationsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists the certificate associations for a responder gateway.</p>",
+      "readonly":true
+    },
+    "ListLinkRoutingRules":{
+      "name":"ListLinkRoutingRules",
+      "http":{
+        "method":"GET",
+        "requestUri":"/responder-gateway/{gatewayId}/link/{linkId}/routing-rules",
+        "responseCode":200
+      },
+      "input":{"shape":"ListLinkRoutingRulesRequest"},
+      "output":{"shape":"ListLinkRoutingRulesResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists the routing rules for a link.</p>",
       "readonly":true
     },
     "ListLinks":{
@@ -500,6 +662,26 @@
       "documentation":"<p>Updates a link module flow.</p>",
       "idempotent":true
     },
+    "UpdateLinkRoutingRule":{
+      "name":"UpdateLinkRoutingRule",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/responder-gateway/{gatewayId}/link/{linkId}/routing-rule/{ruleId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateLinkRoutingRuleRequest"},
+      "output":{"shape":"UpdateLinkRoutingRuleResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Updates a routing rule for a link.</p>",
+      "idempotent":true
+    },
     "UpdateRequesterGateway":{
       "name":"UpdateRequesterGateway",
       "http":{
@@ -647,6 +829,12 @@
       },
       "exception":true
     },
+    "AcmCertificateArn":{
+      "type":"string",
+      "max":256,
+      "min":75,
+      "pattern":"arn:(aws|aws-cn|aws-us-gov):acm:[a-z0-9-]+:[0-9]{12}:certificate/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
     "Action":{
       "type":"structure",
       "members":{
@@ -661,6 +849,53 @@
       },
       "documentation":"<p>Describes a bid action.</p>",
       "union":true
+    },
+    "AssociateCertificateRequest":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "acmCertificateArn",
+        "clientToken"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayId"
+        },
+        "acmCertificateArn":{
+          "shape":"AcmCertificateArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the ACM certificate to associate.</p>"
+        },
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>Specifies a unique, case-sensitive identifier that you provide to ensure the idempotency of the request. This lets you safely retry the request without accidentally performing the same operation a second time. Passing the same value to a later call to an operation requires that you also pass the same value for all other parameters. We recommend that you use a <a href=\"https://wikipedia.org/wiki/Universally_unique_identifier\">UUID type of value</a>.</p> <p>If you don't provide this value, then Amazon Web Services generates a random one for you.</p> <p>If you retry the operation with the same <code>ClientToken</code>, but with different parameters, the retry fails with an <code>IdempotentParameterMismatch</code> error.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "AssociateCertificateResponse":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "acmCertificateArn",
+        "status"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>"
+        },
+        "acmCertificateArn":{
+          "shape":"AcmCertificateArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the ACM certificate.</p>"
+        },
+        "status":{
+          "shape":"CertificateAssociationStatus",
+          "documentation":"<p>The status of the certificate association.</p>"
+        }
+      }
     },
     "AutoScalingGroupName":{
       "type":"string",
@@ -706,6 +941,47 @@
     "Boolean":{
       "type":"boolean",
       "box":true
+    },
+    "CertificateAssociationStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a certificate association with a gateway.</p>",
+      "enum":[
+        "PENDING_ASSOCIATION",
+        "ASSOCIATED",
+        "PENDING_DISASSOCIATION",
+        "DISASSOCIATED",
+        "FAILED"
+      ]
+    },
+    "CertificateAssociationSummary":{
+      "type":"structure",
+      "required":[
+        "acmCertificateArn",
+        "status"
+      ],
+      "members":{
+        "acmCertificateArn":{
+          "shape":"AcmCertificateArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the ACM certificate.</p>"
+        },
+        "status":{
+          "shape":"CertificateAssociationStatus",
+          "documentation":"<p>The status of the certificate association.</p>"
+        },
+        "associatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the certificate was associated.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the certificate association was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Describes a summary of a certificate association.</p>"
+    },
+    "CertificateAssociationSummaryList":{
+      "type":"list",
+      "member":{"shape":"CertificateAssociationSummary"}
     },
     "CertificateAuthorityCertificates":{
       "type":"list",
@@ -901,6 +1177,69 @@
     "CreateLinkResponseCustomerProvidedIdString":{
       "type":"string",
       "pattern":"[a-zA-Z0-9_-]{5,50}"
+    },
+    "CreateLinkRoutingRuleRequest":{
+      "type":"structure",
+      "required":[
+        "clientToken",
+        "gatewayId",
+        "linkId",
+        "priority",
+        "conditions"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>Specifies a unique, case-sensitive identifier that you provide to ensure the idempotency of the request. This lets you safely retry the request without accidentally performing the same operation a second time. Passing the same value to a later call to an operation requires that you also pass the same value for all other parameters. We recommend that you use a <a href=\"https://wikipedia.org/wiki/Universally_unique_identifier\">UUID type of value</a>.</p> <p>If you don't provide this value, then Amazon Web Services generates a random one for you.</p> <p>If you retry the operation with the same <code>ClientToken</code>, but with different parameters, the retry fails with an <code>IdempotentParameterMismatch</code> error.</p>",
+          "idempotencyToken":true
+        },
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayId"
+        },
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The unique identifier of the link.</p>",
+          "location":"uri",
+          "locationName":"linkId"
+        },
+        "priority":{
+          "shape":"RulePriority",
+          "documentation":"<p>The priority of the routing rule. Lower numbers are evaluated first. Valid values are 1 to 1000. Priority must be unique among non-deleted rules within a link.</p>"
+        },
+        "conditions":{
+          "shape":"RuleCondition",
+          "documentation":"<p>The conditions for the routing rule. All specified fields must match for the rule to apply. At least one condition field must be set.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of the key-value pairs of the tag or tags to assign to the resource.</p>"
+        }
+      }
+    },
+    "CreateLinkRoutingRuleResponse":{
+      "type":"structure",
+      "required":[
+        "ruleId",
+        "status",
+        "createdAt"
+      ],
+      "members":{
+        "ruleId":{
+          "shape":"RuleId",
+          "documentation":"<p>The unique identifier of the routing rule.</p>"
+        },
+        "status":{
+          "shape":"RuleStatus",
+          "documentation":"<p>The status of the routing rule.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the routing rule was created.</p>"
+        }
+      }
     },
     "CreateOutboundExternalLinkRequest":{
       "type":"structure",
@@ -1228,6 +1567,51 @@
         }
       }
     },
+    "DeleteLinkRoutingRuleRequest":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "linkId",
+        "ruleId"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayId"
+        },
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The unique identifier of the link.</p>",
+          "location":"uri",
+          "locationName":"linkId"
+        },
+        "ruleId":{
+          "shape":"RuleId",
+          "documentation":"<p>The unique identifier of the routing rule.</p>",
+          "location":"uri",
+          "locationName":"ruleId"
+        }
+      }
+    },
+    "DeleteLinkRoutingRuleResponse":{
+      "type":"structure",
+      "required":[
+        "ruleId",
+        "status"
+      ],
+      "members":{
+        "ruleId":{
+          "shape":"RuleId",
+          "documentation":"<p>The unique identifier of the routing rule.</p>"
+        },
+        "status":{
+          "shape":"RuleStatus",
+          "documentation":"<p>The status of the routing rule.</p>"
+        }
+      }
+    },
     "DeleteOutboundExternalLinkRequest":{
       "type":"structure",
       "required":[
@@ -1321,6 +1705,49 @@
         "status":{
           "shape":"ResponderGatewayStatus",
           "documentation":"<p>The status of the request.</p>"
+        }
+      }
+    },
+    "DisassociateCertificateRequest":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "acmCertificateArn"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayId"
+        },
+        "acmCertificateArn":{
+          "shape":"AcmCertificateArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the ACM certificate to disassociate.</p>",
+          "location":"querystring",
+          "locationName":"acmCertificateArn"
+        }
+      }
+    },
+    "DisassociateCertificateResponse":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "acmCertificateArn",
+        "status"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>"
+        },
+        "acmCertificateArn":{
+          "shape":"AcmCertificateArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the ACM certificate.</p>"
+        },
+        "status":{
+          "shape":"CertificateAssociationStatus",
+          "documentation":"<p>The status of the certificate association.</p>"
         }
       }
     },
@@ -1452,6 +1879,57 @@
         "EXTERNAL",
         "INTERNAL"
       ]
+    },
+    "GetCertificateAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "acmCertificateArn"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayId"
+        },
+        "acmCertificateArn":{
+          "shape":"AcmCertificateArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the ACM certificate.</p>",
+          "location":"querystring",
+          "locationName":"acmCertificateArn"
+        }
+      }
+    },
+    "GetCertificateAssociationResponse":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "acmCertificateArn",
+        "status"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>"
+        },
+        "acmCertificateArn":{
+          "shape":"AcmCertificateArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the ACM certificate.</p>"
+        },
+        "status":{
+          "shape":"CertificateAssociationStatus",
+          "documentation":"<p>The status of the certificate association.</p>"
+        },
+        "associatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the certificate was associated.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the certificate association was last updated.</p>"
+        }
+      }
     },
     "GetInboundExternalLinkRequest":{
       "type":"structure",
@@ -1624,6 +2102,85 @@
         "timeoutInMillis":{
           "shape":"LinkTimeoutInMillis",
           "documentation":"<p>The timeout value in milliseconds.</p>"
+        }
+      }
+    },
+    "GetLinkRoutingRuleRequest":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "linkId",
+        "ruleId"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayId"
+        },
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The unique identifier of the link.</p>",
+          "location":"uri",
+          "locationName":"linkId"
+        },
+        "ruleId":{
+          "shape":"RuleId",
+          "documentation":"<p>The unique identifier of the routing rule.</p>",
+          "location":"uri",
+          "locationName":"ruleId"
+        }
+      }
+    },
+    "GetLinkRoutingRuleResponse":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "linkId",
+        "ruleId",
+        "priority",
+        "conditions",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>"
+        },
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The unique identifier of the link.</p>"
+        },
+        "ruleId":{
+          "shape":"RuleId",
+          "documentation":"<p>The unique identifier of the routing rule.</p>"
+        },
+        "priority":{
+          "shape":"RulePriority",
+          "documentation":"<p>The priority of the routing rule.</p>"
+        },
+        "conditions":{
+          "shape":"RuleCondition",
+          "documentation":"<p>The conditions for the routing rule.</p>"
+        },
+        "status":{
+          "shape":"RuleStatus",
+          "documentation":"<p>The status of the routing rule.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the routing rule was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the routing rule was last updated.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of the key-value pairs for the tag or tags assigned to the specified resource.</p>"
         }
       }
     },
@@ -2130,6 +2687,48 @@
       },
       "documentation":"<p>Describes the settings for a link log.</p>"
     },
+    "LinkRoutingRuleList":{
+      "type":"list",
+      "member":{"shape":"LinkRoutingRuleSummary"}
+    },
+    "LinkRoutingRuleSummary":{
+      "type":"structure",
+      "required":[
+        "ruleId",
+        "priority",
+        "conditions",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "ruleId":{
+          "shape":"RuleId",
+          "documentation":"<p>The unique identifier of the routing rule.</p>"
+        },
+        "priority":{
+          "shape":"RulePriority",
+          "documentation":"<p>The priority of the routing rule.</p>"
+        },
+        "conditions":{
+          "shape":"RuleCondition",
+          "documentation":"<p>The conditions for the routing rule.</p>"
+        },
+        "status":{
+          "shape":"RuleStatus",
+          "documentation":"<p>The status of the routing rule.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the routing rule was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the routing rule was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Summary of a routing rule for list responses</p>"
+    },
     "LinkStatus":{
       "type":"string",
       "enum":[
@@ -2153,6 +2752,102 @@
       "box":true,
       "max":5000,
       "min":100
+    },
+    "ListCertificateAssociationsRequest":{
+      "type":"structure",
+      "required":["gatewayId"],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayId"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken error</i>.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"ListCertificateAssociationsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results that are returned per call. You can use <code>nextToken</code> to obtain further pages of results.</p> <p>This is only an upper limit. The actual number of results returned per call might be fewer than the specified maximum.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListCertificateAssociationsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":10,
+      "min":1
+    },
+    "ListCertificateAssociationsResponse":{
+      "type":"structure",
+      "required":["certificateAssociations"],
+      "members":{
+        "certificateAssociations":{
+          "shape":"CertificateAssociationSummaryList",
+          "documentation":"<p>The list of certificate associations for the gateway.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken error</i>.</p>"
+        }
+      }
+    },
+    "ListLinkRoutingRulesRequest":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "linkId"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayId"
+        },
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The unique identifier of the link.</p>",
+          "location":"uri",
+          "locationName":"linkId"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken error</i>.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"ListLinkRoutingRulesRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results that are returned per call. You can use <code>nextToken</code> to obtain further pages of results.</p> <p>This is only an upper limit. The actual number of results returned per call might be fewer than the specified maximum.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListLinkRoutingRulesRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":10,
+      "min":1
+    },
+    "ListLinkRoutingRulesResponse":{
+      "type":"structure",
+      "members":{
+        "rules":{
+          "shape":"LinkRoutingRuleList",
+          "documentation":"<p>The list of routing rules for the link.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken error</i>.</p>"
+        }
+      }
     },
     "ListLinksRequest":{
       "type":"structure",
@@ -2521,6 +3216,36 @@
       "max":2,
       "min":1
     },
+    "QueryStringKeyValuePair":{
+      "type":"structure",
+      "required":[
+        "key",
+        "value"
+      ],
+      "members":{
+        "key":{
+          "shape":"QueryStringKeyValuePairKeyString",
+          "documentation":"<p>RFC 3986 unreserved characters</p>"
+        },
+        "value":{
+          "shape":"QueryStringKeyValuePairValueString",
+          "documentation":"<p>RFC 3986 unreserved characters</p>"
+        }
+      },
+      "documentation":"<p>Key-value pair for query string matching</p>"
+    },
+    "QueryStringKeyValuePairKeyString":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[A-Za-z0-9._~-]+"
+    },
+    "QueryStringKeyValuePairValueString":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[A-Za-z0-9._~-]+"
+    },
     "RateLimiterModuleParameters":{
       "type":"structure",
       "members":{
@@ -2723,6 +3448,92 @@
       "min":1,
       "pattern":"arn:aws:rtbfabric:[a-zA-Z0-9_-]+:[0-9]{12}:gateway/[a-zA-Z0-9-]+(/link/[a-zA-Z0-9-]+(/routing-rule/[a-zA-Z0-9-]+)?)?"
     },
+    "RuleCondition":{
+      "type":"structure",
+      "members":{
+        "hostHeader":{
+          "shape":"RuleConditionHostHeaderString",
+          "documentation":"<p>Exact host match — RFC 3986 unreserved characters</p>"
+        },
+        "hostHeaderWildcard":{
+          "shape":"RuleConditionHostHeaderWildcardString",
+          "documentation":"<p>Wildcard host pattern (e.g., *.example.com) — RFC 3986 unreserved plus *</p>"
+        },
+        "pathPrefix":{
+          "shape":"RuleConditionPathPrefixString",
+          "documentation":"<p>Path prefix matching — strict starts-with, no wildcard (preferred for new rules). Must start with /; RFC 3986 unreserved plus /</p>"
+        },
+        "pathExact":{
+          "shape":"RuleConditionPathExactString",
+          "documentation":"<p>Exact path match — must start with /; RFC 3986 unreserved plus /</p>"
+        },
+        "queryStringEquals":{
+          "shape":"QueryStringKeyValuePair",
+          "documentation":"<p>Query string key=value pair match (single pair)</p>"
+        },
+        "queryStringExists":{
+          "shape":"RuleConditionQueryStringExistsString",
+          "documentation":"<p>Query string key presence check (any value accepted) — RFC 3986 unreserved characters</p>"
+        }
+      },
+      "documentation":"<p>Conditions bag for a routing rule. All non-null fields must match (AND logic). At least one field must be set (enforced by CP).</p>"
+    },
+    "RuleConditionHostHeaderString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[A-Za-z0-9._~-]+"
+    },
+    "RuleConditionHostHeaderWildcardString":{
+      "type":"string",
+      "max":255,
+      "min":3,
+      "pattern":"[A-Za-z0-9._~*-]+"
+    },
+    "RuleConditionPathExactString":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"/[A-Za-z0-9._~/-]*"
+    },
+    "RuleConditionPathPrefixString":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"/[A-Za-z0-9._~/-]*"
+    },
+    "RuleConditionQueryStringExistsString":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[A-Za-z0-9._~-]+"
+    },
+    "RuleId":{
+      "type":"string",
+      "documentation":"<p>Identifier for a routing rule</p>",
+      "max":30,
+      "min":6,
+      "pattern":"rule-[a-z0-9-]{1,25}"
+    },
+    "RulePriority":{
+      "type":"integer",
+      "documentation":"<p>WAF-style evaluation priority. Lower number = evaluated first (priority 1 before 10). Gaps are allowed (1, 10, 20 is valid). Must be between 1 and 1000 inclusive. Uniqueness per link among non-deleted rules is enforced at the API layer (HTTP 409 on conflict).</p>",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "RuleStatus":{
+      "type":"string",
+      "documentation":"<p>Status of a routing rule</p>",
+      "enum":[
+        "CREATION_IN_PROGRESS",
+        "ACTIVE",
+        "UPDATE_IN_PROGRESS",
+        "DELETION_IN_PROGRESS",
+        "DELETED",
+        "FAILED"
+      ]
+    },
     "SecurityGroupId":{
       "type":"string",
       "max":43,
@@ -2758,7 +3569,7 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"(resourceArn|internalId|(?!aws:)[a-zA-Z0-9+\\-=._:/@]+)"
+      "pattern":"(resourceArn|internalId|[a-zA-Z0-9+\\-=._:/@]+)"
     },
     "TagKeyList":{
       "type":"list",
@@ -2959,6 +3770,66 @@
         "status":{
           "shape":"LinkStatus",
           "documentation":"<p>The status of the request.</p>"
+        }
+      }
+    },
+    "UpdateLinkRoutingRuleRequest":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "linkId",
+        "ruleId",
+        "priority",
+        "conditions"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayId"
+        },
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The unique identifier of the link.</p>",
+          "location":"uri",
+          "locationName":"linkId"
+        },
+        "ruleId":{
+          "shape":"RuleId",
+          "documentation":"<p>The unique identifier of the routing rule.</p>",
+          "location":"uri",
+          "locationName":"ruleId"
+        },
+        "priority":{
+          "shape":"RulePriority",
+          "documentation":"<p>The updated priority of the routing rule. Lower numbers are evaluated first. Valid values are 1 to 1000. Priority must be unique among non-deleted rules within a link.</p>"
+        },
+        "conditions":{
+          "shape":"RuleCondition",
+          "documentation":"<p>The updated conditions for the routing rule. All specified fields must match for the rule to apply. At least one condition field must be set.</p>"
+        }
+      }
+    },
+    "UpdateLinkRoutingRuleResponse":{
+      "type":"structure",
+      "required":[
+        "ruleId",
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "ruleId":{
+          "shape":"RuleId",
+          "documentation":"<p>The unique identifier of the routing rule.</p>"
+        },
+        "status":{
+          "shape":"RuleStatus",
+          "documentation":"<p>The status of the routing rule.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the routing rule was last updated.</p>"
         }
       }
     },

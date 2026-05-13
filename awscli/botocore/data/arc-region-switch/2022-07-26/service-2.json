@@ -922,7 +922,7 @@
         },
         "targetPercent":{
           "shape":"Integer",
-          "documentation":"<p>The target percentage that you specify for EC2 Auto Scaling groups.</p>"
+          "documentation":"<p>The target percentage that you specify for EC2 Auto Scaling groups. The default is 100.</p>"
         },
         "capacityMonitoringApproach":{
           "shape":"Ec2AsgCapacityMonitoringApproach",
@@ -978,7 +978,7 @@
         },
         "targetPercent":{
           "shape":"Integer",
-          "documentation":"<p>The target percentage specified for the configuration.</p>"
+          "documentation":"<p>The target percentage specified for the configuration. The default is 100.</p>"
         },
         "capacityMonitoringApproach":{
           "shape":"EcsCapacityMonitoringApproach",
@@ -1082,7 +1082,7 @@
         },
         "targetPercent":{
           "shape":"EksResourceScalingConfigurationTargetPercentInteger",
-          "documentation":"<p>The target percentage for the configuration.</p>"
+          "documentation":"<p>The target percentage for the configuration. The default is 100.</p>"
         },
         "capacityMonitoringApproach":{
           "shape":"EksCapacityMonitoringApproach",
@@ -1126,6 +1126,36 @@
         "pendingEvaluation",
         "unknown"
       ]
+    },
+    "EventSourceMapping":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "crossAccountRole":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The cross account role for the configuration.</p>"
+        },
+        "externalId":{
+          "shape":"String",
+          "documentation":"<p>The external ID (secret key) for the configuration.</p>"
+        },
+        "arn":{
+          "shape":"EventSourceMappingArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Lambda event source mapping.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Web Services Lambda event source mapping configuration, containing the resource ARN and optional cross-account configuration.</p>"
+    },
+    "EventSourceMappingAction":{
+      "type":"string",
+      "enum":[
+        "enable",
+        "disable"
+      ]
+    },
+    "EventSourceMappingArn":{
+      "type":"string",
+      "pattern":"arn:aws[a-zA-Z-]*:lambda:[a-z0-9-]+:\\d{12}:event-source-mapping:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
     },
     "ExecutionAction":{
       "type":"string",
@@ -1206,6 +1236,10 @@
         "rdsCreateCrossRegionReadReplicaConfig":{
           "shape":"RdsCreateCrossRegionReplicaConfiguration",
           "documentation":"<p>An Amazon RDS create cross-Region replica execution block.</p>"
+        },
+        "lambdaEventSourceMappingConfig":{
+          "shape":"LambdaEventSourceMappingConfiguration",
+          "documentation":"<p>A Lambda event source mapping execution block.</p>"
         }
       },
       "documentation":"<p>Execution block configurations for a workflow in a Region switch plan. An execution block represents a specific type of action to perform during a Region switch.</p>",
@@ -1226,7 +1260,8 @@
         "Route53HealthCheck",
         "DocumentDb",
         "RdsPromoteReadReplica",
-        "RdsCreateCrossRegionReplica"
+        "RdsCreateCrossRegionReplica",
+        "LambdaEventSourceMapping"
       ]
     },
     "ExecutionComment":{
@@ -1756,6 +1791,51 @@
       "documentation":"<p>Defines a Kubernetes resource to scale in an Amazon EKS cluster.</p>"
     },
     "LambdaArn":{"type":"string"},
+    "LambdaEventSourceMappingConfiguration":{
+      "type":"structure",
+      "required":[
+        "action",
+        "regionEventSourceMappings"
+      ],
+      "members":{
+        "timeoutMinutes":{
+          "shape":"LambdaEventSourceMappingConfigurationTimeoutMinutesInteger",
+          "documentation":"<p>The timeout value specified for the configuration.</p>"
+        },
+        "action":{
+          "shape":"EventSourceMappingAction",
+          "documentation":"<p>The action to take - whether to <code>enable</code> or <code>disable</code> an event source mapping.</p>"
+        },
+        "regionEventSourceMappings":{
+          "shape":"RegionEventSourceMappingMap",
+          "documentation":"<p>Per-region configuration for which Lambda event source mapping to enable or disable when activating or deactivating a region.</p>"
+        },
+        "ungraceful":{
+          "shape":"LambdaEventSourceMappingUngraceful",
+          "documentation":"<p>The settings for ungraceful execution.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for Amazon Web Services Lambda event source mappings used in a Region switch plan.</p>"
+    },
+    "LambdaEventSourceMappingConfigurationTimeoutMinutesInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "LambdaEventSourceMappingUngraceful":{
+      "type":"structure",
+      "members":{
+        "behavior":{
+          "shape":"LambdaEventSourceMappingUngracefulBehavior",
+          "documentation":"<p>Set to <code>skip</code> to skip executing this event source mapping step during an ungraceful execution.</p>"
+        }
+      },
+      "documentation":"<p>Specifies whether to skip enabling or disabling an event source mapping during an ungraceful execution.</p>"
+    },
+    "LambdaEventSourceMappingUngracefulBehavior":{
+      "type":"string",
+      "enum":["skip"]
+    },
     "LambdaList":{
       "type":"list",
       "member":{"shape":"Lambdas"},
@@ -2263,6 +2343,13 @@
       "type":"map",
       "key":{"shape":"String"},
       "value":{"shape":"ArcRoutingControlStates"}
+    },
+    "RegionEventSourceMappingMap":{
+      "type":"map",
+      "key":{"shape":"Region"},
+      "value":{"shape":"EventSourceMapping"},
+      "max":2,
+      "min":1
     },
     "RegionList":{
       "type":"list",

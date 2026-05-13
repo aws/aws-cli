@@ -31,6 +31,17 @@
       ],
       "documentation":"<p>Uploads an artifact to an agent space. Artifacts provide additional context for security testing, such as architecture diagrams, API specifications, or configuration files.</p>"
     },
+    "BatchDeleteCodeReviews":{
+      "name":"BatchDeleteCodeReviews",
+      "http":{
+        "method":"POST",
+        "requestUri":"/BatchDeleteCodeReviews",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchDeleteCodeReviewsInput"},
+      "output":{"shape":"BatchDeleteCodeReviewsOutput"},
+      "documentation":"<p>Deletes one or more code reviews from an agent space.</p>"
+    },
     "BatchDeletePentests":{
       "name":"BatchDeletePentests",
       "http":{
@@ -71,6 +82,39 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Retrieves metadata for one or more artifacts in an agent space.</p>"
+    },
+    "BatchGetCodeReviewJobTasks":{
+      "name":"BatchGetCodeReviewJobTasks",
+      "http":{
+        "method":"POST",
+        "requestUri":"/BatchGetCodeReviewJobTasks",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchGetCodeReviewJobTasksInput"},
+      "output":{"shape":"BatchGetCodeReviewJobTasksOutput"},
+      "documentation":"<p>Retrieves information about one or more tasks within a code review job.</p>"
+    },
+    "BatchGetCodeReviewJobs":{
+      "name":"BatchGetCodeReviewJobs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/BatchGetCodeReviewJobs",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchGetCodeReviewJobsInput"},
+      "output":{"shape":"BatchGetCodeReviewJobsOutput"},
+      "documentation":"<p>Retrieves information about one or more code review jobs in an agent space.</p>"
+    },
+    "BatchGetCodeReviews":{
+      "name":"BatchGetCodeReviews",
+      "http":{
+        "method":"POST",
+        "requestUri":"/BatchGetCodeReviews",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchGetCodeReviewsInput"},
+      "output":{"shape":"BatchGetCodeReviewsOutput"},
+      "documentation":"<p>Retrieves information about one or more code reviews in an agent space.</p>"
     },
     "BatchGetFindings":{
       "name":"BatchGetFindings",
@@ -149,6 +193,17 @@
       "input":{"shape":"CreateApplicationRequest"},
       "output":{"shape":"CreateApplicationResponse"},
       "documentation":"<p>Creates a new application. An application is the top-level organizational unit that supports IAM Identity Center integration.</p>"
+    },
+    "CreateCodeReview":{
+      "name":"CreateCodeReview",
+      "http":{
+        "method":"POST",
+        "requestUri":"/CreateCodeReview",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateCodeReviewInput"},
+      "output":{"shape":"CreateCodeReviewOutput"},
+      "documentation":"<p>Creates a new code review configuration in an agent space. A code review defines the parameters for automated security-focused code analysis.</p>"
     },
     "CreateIntegration":{
       "name":"CreateIntegration",
@@ -397,6 +452,39 @@
       "documentation":"<p>Returns a paginated list of artifact summaries for the specified agent space.</p>",
       "readonly":true
     },
+    "ListCodeReviewJobTasks":{
+      "name":"ListCodeReviewJobTasks",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListCodeReviewJobTasks",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCodeReviewJobTasksInput"},
+      "output":{"shape":"ListCodeReviewJobTasksOutput"},
+      "documentation":"<p>Returns a paginated list of task summaries for the specified code review job, optionally filtered by step name or category.</p>"
+    },
+    "ListCodeReviewJobsForCodeReview":{
+      "name":"ListCodeReviewJobsForCodeReview",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListCodeReviewJobsForCodeReview",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCodeReviewJobsForCodeReviewInput"},
+      "output":{"shape":"ListCodeReviewJobsForCodeReviewOutput"},
+      "documentation":"<p>Returns a paginated list of code review job summaries for the specified code review configuration.</p>"
+    },
+    "ListCodeReviews":{
+      "name":"ListCodeReviews",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListCodeReviews",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCodeReviewsInput"},
+      "output":{"shape":"ListCodeReviewsOutput"},
+      "documentation":"<p>Returns a paginated list of code review summaries for the specified agent space.</p>"
+    },
     "ListDiscoveredEndpoints":{
       "name":"ListDiscoveredEndpoints",
       "http":{
@@ -535,6 +623,17 @@
       "output":{"shape":"StartCodeRemediationOutput"},
       "documentation":"<p>Initiates code remediation for one or more security findings. This creates pull requests in integrated repositories to fix the identified vulnerabilities.</p>"
     },
+    "StartCodeReviewJob":{
+      "name":"StartCodeReviewJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/StartCodeReviewJob",
+        "responseCode":200
+      },
+      "input":{"shape":"StartCodeReviewJobInput"},
+      "output":{"shape":"StartCodeReviewJobOutput"},
+      "documentation":"<p>Starts a new code review job for a code review configuration. The job executes the security-focused code analysis defined in the code review.</p>"
+    },
     "StartPentestJob":{
       "name":"StartPentestJob",
       "http":{
@@ -545,6 +644,17 @@
       "input":{"shape":"StartPentestJobInput"},
       "output":{"shape":"StartPentestJobOutput"},
       "documentation":"<p>Starts a new pentest job for a pentest configuration. The job executes the security tests defined in the pentest.</p>"
+    },
+    "StopCodeReviewJob":{
+      "name":"StopCodeReviewJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/StopCodeReviewJob",
+        "responseCode":200
+      },
+      "input":{"shape":"StopCodeReviewJobInput"},
+      "output":{"shape":"StopCodeReviewJobOutput"},
+      "documentation":"<p>Stops a running code review job. The job transitions to a stopping state and then to stopped after cleanup completes.</p>"
     },
     "StopPentestJob":{
       "name":"StopPentestJob",
@@ -602,6 +712,17 @@
       "output":{"shape":"UpdateApplicationResponse"},
       "documentation":"<p>Updates the configuration of an existing application, including the IAM role and default KMS key.</p>",
       "idempotent":true
+    },
+    "UpdateCodeReview":{
+      "name":"UpdateCodeReview",
+      "http":{
+        "method":"POST",
+        "requestUri":"/UpdateCodeReview",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateCodeReviewInput"},
+      "output":{"shape":"UpdateCodeReviewOutput"},
+      "documentation":"<p>Updates an existing code review configuration.</p>"
     },
     "UpdateFinding":{
       "name":"UpdateFinding",
@@ -1073,6 +1194,38 @@
         "AWS_INTERNAL"
       ]
     },
+    "BatchDeleteCodeReviewsInput":{
+      "type":"structure",
+      "required":[
+        "codeReviewIds",
+        "agentSpaceId"
+      ],
+      "members":{
+        "codeReviewIds":{
+          "shape":"CodeReviewIdList",
+          "documentation":"<p>The list of code review identifiers to delete.</p>"
+        },
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space that contains the code reviews to delete.</p>"
+        }
+      },
+      "documentation":"<p>Input for deleting multiple code reviews.</p>"
+    },
+    "BatchDeleteCodeReviewsOutput":{
+      "type":"structure",
+      "members":{
+        "deleted":{
+          "shape":"CodeReviewIdList",
+          "documentation":"<p>The list of identifiers of the code reviews that were successfully deleted.</p>"
+        },
+        "failed":{
+          "shape":"DeleteCodeReviewFailureList",
+          "documentation":"<p>The list of code reviews that failed to delete, including the reason for each failure.</p>"
+        }
+      },
+      "documentation":"<p>Output for the BatchDeleteCodeReviews operation.</p>"
+    },
     "BatchDeletePentestsInput":{
       "type":"structure",
       "required":[
@@ -1156,6 +1309,102 @@
           "documentation":"<p>The list of artifact metadata items that were found.</p>"
         }
       }
+    },
+    "BatchGetCodeReviewJobTasksInput":{
+      "type":"structure",
+      "required":[
+        "agentSpaceId",
+        "codeReviewJobTaskIds"
+      ],
+      "members":{
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space that contains the tasks.</p>"
+        },
+        "codeReviewJobTaskIds":{
+          "shape":"TaskIdList",
+          "documentation":"<p>The list of task identifiers to retrieve.</p>"
+        }
+      },
+      "documentation":"<p>Input for retrieving multiple tasks associated with a code review job.</p>"
+    },
+    "BatchGetCodeReviewJobTasksOutput":{
+      "type":"structure",
+      "members":{
+        "codeReviewJobTasks":{
+          "shape":"CodeReviewJobTaskList",
+          "documentation":"<p>The list of code review job tasks that were found.</p>"
+        },
+        "notFound":{
+          "shape":"TaskIdList",
+          "documentation":"<p>The list of task identifiers that were not found.</p>"
+        }
+      },
+      "documentation":"<p>Output for the BatchGetCodeReviewJobTasks operation.</p>"
+    },
+    "BatchGetCodeReviewJobsInput":{
+      "type":"structure",
+      "required":[
+        "codeReviewJobIds",
+        "agentSpaceId"
+      ],
+      "members":{
+        "codeReviewJobIds":{
+          "shape":"CodeReviewJobIdList",
+          "documentation":"<p>The list of code review job identifiers to retrieve.</p>"
+        },
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space that contains the code review jobs.</p>"
+        }
+      },
+      "documentation":"<p>Input for BatchGetCodeReviewJobs operation.</p>"
+    },
+    "BatchGetCodeReviewJobsOutput":{
+      "type":"structure",
+      "members":{
+        "codeReviewJobs":{
+          "shape":"CodeReviewJobList",
+          "documentation":"<p>The list of code review jobs that were found.</p>"
+        },
+        "notFound":{
+          "shape":"CodeReviewJobIdList",
+          "documentation":"<p>The list of code review job identifiers that were not found.</p>"
+        }
+      },
+      "documentation":"<p>Output for the BatchGetCodeReviewJobs operation.</p>"
+    },
+    "BatchGetCodeReviewsInput":{
+      "type":"structure",
+      "required":[
+        "codeReviewIds",
+        "agentSpaceId"
+      ],
+      "members":{
+        "codeReviewIds":{
+          "shape":"CodeReviewIdList",
+          "documentation":"<p>The list of code review identifiers to retrieve.</p>"
+        },
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space that contains the code reviews.</p>"
+        }
+      },
+      "documentation":"<p>Input for retrieving multiple code reviews by their IDs.</p>"
+    },
+    "BatchGetCodeReviewsOutput":{
+      "type":"structure",
+      "members":{
+        "codeReviews":{
+          "shape":"CodeReviewList",
+          "documentation":"<p>The list of code reviews that were found.</p>"
+        },
+        "notFound":{
+          "shape":"CodeReviewIdList",
+          "documentation":"<p>The list of code review identifiers that were not found.</p>"
+        }
+      },
+      "documentation":"<p>Output for the BatchGetCodeReviews operation.</p>"
     },
     "BatchGetFindingsInput":{
       "type":"structure",
@@ -1347,6 +1596,34 @@
       },
       "documentation":"<p>The Amazon CloudWatch Logs configuration for pentest job logging.</p>"
     },
+    "CodeLocation":{
+      "type":"structure",
+      "required":["filePath"],
+      "members":{
+        "filePath":{
+          "shape":"String",
+          "documentation":"<p>The absolute path to the file containing the code location.</p>"
+        },
+        "lineStart":{
+          "shape":"Integer",
+          "documentation":"<p>The starting line number of the code location.</p>"
+        },
+        "lineEnd":{
+          "shape":"Integer",
+          "documentation":"<p>The ending line number of the code location.</p>"
+        },
+        "label":{
+          "shape":"String",
+          "documentation":"<p>The role of this location in the vulnerability, such as source or sink.</p>"
+        }
+      },
+      "documentation":"<p>Represents a location in source code associated with a security finding.</p>"
+    },
+    "CodeLocationList":{
+      "type":"list",
+      "member":{"shape":"CodeLocation"},
+      "documentation":"<p>List of code locations.</p>"
+    },
     "CodeRemediationStrategy":{
       "type":"string",
       "documentation":"<p>Strategy for automated code remediation.</p>",
@@ -1405,6 +1682,291 @@
         "FAILED"
       ]
     },
+    "CodeReview":{
+      "type":"structure",
+      "required":[
+        "codeReviewId",
+        "agentSpaceId",
+        "title",
+        "assets"
+      ],
+      "members":{
+        "codeReviewId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the code review.</p>"
+        },
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space that contains the code review.</p>"
+        },
+        "title":{
+          "shape":"String",
+          "documentation":"<p>The title of the code review.</p>"
+        },
+        "assets":{
+          "shape":"Assets",
+          "documentation":"<p>The assets included in the code review.</p>"
+        },
+        "serviceRole":{
+          "shape":"ServiceRole",
+          "documentation":"<p>The IAM service role used for the code review.</p>"
+        },
+        "logConfig":{
+          "shape":"CloudWatchLog",
+          "documentation":"<p>The CloudWatch Logs configuration for the code review.</p>"
+        },
+        "codeRemediationStrategy":{
+          "shape":"CodeRemediationStrategy",
+          "documentation":"<p>The code remediation strategy for the code review.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the code review was created, in UTC format.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the code review was last updated, in UTC format.</p>"
+        }
+      },
+      "documentation":"<p>Represents a code review configuration that defines the parameters for automated security-focused code analysis, including target assets and logging configuration.</p>"
+    },
+    "CodeReviewIdList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "documentation":"<p>List of code review IDs.</p>"
+    },
+    "CodeReviewJob":{
+      "type":"structure",
+      "members":{
+        "codeReviewJobId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the code review job.</p>"
+        },
+        "codeReviewId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the code review associated with the job.</p>"
+        },
+        "title":{
+          "shape":"String",
+          "documentation":"<p>The title of the code review job.</p>"
+        },
+        "overview":{
+          "shape":"String",
+          "documentation":"<p>An overview of the code review job results.</p>"
+        },
+        "status":{
+          "shape":"JobStatus",
+          "documentation":"<p>The current status of the code review job.</p>"
+        },
+        "documents":{
+          "shape":"DocumentList",
+          "documentation":"<p>The list of documents providing context for the code review job.</p>"
+        },
+        "sourceCode":{
+          "shape":"SourceCodeRepositoryList",
+          "documentation":"<p>The list of source code repositories analyzed during the code review job.</p>"
+        },
+        "steps":{
+          "shape":"StepList",
+          "documentation":"<p>The list of steps in the code review job execution.</p>"
+        },
+        "executionContext":{
+          "shape":"ExecutionContextList",
+          "documentation":"<p>The execution context messages for the code review job.</p>"
+        },
+        "serviceRole":{
+          "shape":"ServiceRole",
+          "documentation":"<p>The IAM service role used for the code review job.</p>"
+        },
+        "logConfig":{
+          "shape":"CloudWatchLog",
+          "documentation":"<p>The CloudWatch Logs configuration for the code review job.</p>"
+        },
+        "errorInformation":{
+          "shape":"ErrorInformation",
+          "documentation":"<p>Error information if the code review job encountered an error.</p>"
+        },
+        "integratedRepositories":{
+          "shape":"IntegratedRepositoryList",
+          "documentation":"<p>The list of integrated repositories associated with the code review job.</p>"
+        },
+        "codeRemediationStrategy":{
+          "shape":"CodeRemediationStrategy",
+          "documentation":"<p>The code remediation strategy for the code review job.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the code review job was created, in UTC format.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the code review job was last updated, in UTC format.</p>"
+        }
+      },
+      "documentation":"<p>Represents a code review job, which is an execution instance of a code review. A code review job progresses through preflight, static analysis, and finalizing steps.</p>"
+    },
+    "CodeReviewJobIdList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "documentation":"<p>List of code review job IDs.</p>"
+    },
+    "CodeReviewJobList":{
+      "type":"list",
+      "member":{"shape":"CodeReviewJob"},
+      "documentation":"<p>List of code review jobs.</p>"
+    },
+    "CodeReviewJobSummary":{
+      "type":"structure",
+      "required":[
+        "codeReviewJobId",
+        "codeReviewId"
+      ],
+      "members":{
+        "codeReviewJobId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the code review job.</p>"
+        },
+        "codeReviewId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the code review associated with the job.</p>"
+        },
+        "title":{
+          "shape":"String",
+          "documentation":"<p>The title of the code review job.</p>"
+        },
+        "status":{
+          "shape":"JobStatus",
+          "documentation":"<p>The current status of the code review job.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the code review job was created, in UTC format.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the code review job was last updated, in UTC format.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a code review job.</p>"
+    },
+    "CodeReviewJobSummaryList":{
+      "type":"list",
+      "member":{"shape":"CodeReviewJobSummary"},
+      "documentation":"<p>List of code review job summaries.</p>"
+    },
+    "CodeReviewJobTask":{
+      "type":"structure",
+      "required":["taskId"],
+      "members":{
+        "taskId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the task.</p>"
+        },
+        "codeReviewId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the code review associated with the task.</p>"
+        },
+        "codeReviewJobId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the code review job that contains the task.</p>"
+        },
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space.</p>"
+        },
+        "title":{
+          "shape":"String",
+          "documentation":"<p>The title of the task.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the task.</p>"
+        },
+        "categories":{
+          "shape":"CategoryList",
+          "documentation":"<p>The list of categories assigned to the task.</p>"
+        },
+        "riskType":{
+          "shape":"RiskType",
+          "documentation":"<p>The type of security risk the task is testing for.</p>"
+        },
+        "executionStatus":{
+          "shape":"TaskExecutionStatus",
+          "documentation":"<p>The current execution status of the task.</p>"
+        },
+        "logsLocation":{
+          "shape":"LogLocation",
+          "documentation":"<p>The location of the task execution logs.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the task was created, in UTC format.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the task was last updated, in UTC format.</p>"
+        }
+      },
+      "documentation":"<p>Represents an individual security test task within a code review job. Each task targets a specific risk type and executes independently.</p>"
+    },
+    "CodeReviewJobTaskList":{
+      "type":"list",
+      "member":{"shape":"CodeReviewJobTask"},
+      "documentation":"<p>List of code review job tasks.</p>"
+    },
+    "CodeReviewJobTaskSummary":{
+      "type":"structure",
+      "required":["taskId"],
+      "members":{
+        "taskId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the task.</p>"
+        },
+        "codeReviewId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the code review associated with the task.</p>"
+        },
+        "codeReviewJobId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the code review job that contains the task.</p>"
+        },
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space.</p>"
+        },
+        "title":{
+          "shape":"String",
+          "documentation":"<p>The title of the task.</p>"
+        },
+        "riskType":{
+          "shape":"RiskType",
+          "documentation":"<p>The type of security risk the task is testing for.</p>"
+        },
+        "executionStatus":{
+          "shape":"TaskExecutionStatus",
+          "documentation":"<p>The current execution status of the task.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the task was created, in UTC format.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the task was last updated, in UTC format.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a code review job task.</p>"
+    },
+    "CodeReviewJobTaskSummaryList":{
+      "type":"list",
+      "member":{"shape":"CodeReviewJobTaskSummary"},
+      "documentation":"<p>List of code review job task summaries.</p>"
+    },
+    "CodeReviewList":{
+      "type":"list",
+      "member":{"shape":"CodeReview"},
+      "documentation":"<p>List of code reviews.</p>"
+    },
     "CodeReviewSettings":{
       "type":"structure",
       "required":[
@@ -1422,6 +1984,42 @@
         }
       },
       "documentation":"<p>The code review settings for an agent space, controlling which types of scanning are enabled.</p>"
+    },
+    "CodeReviewSummary":{
+      "type":"structure",
+      "required":[
+        "codeReviewId",
+        "agentSpaceId",
+        "title"
+      ],
+      "members":{
+        "codeReviewId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the code review.</p>"
+        },
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space that contains the code review.</p>"
+        },
+        "title":{
+          "shape":"String",
+          "documentation":"<p>The title of the code review.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the code review was created, in UTC format.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the code review was last updated, in UTC format.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a code review.</p>"
+    },
+    "CodeReviewSummaryList":{
+      "type":"list",
+      "member":{"shape":"CodeReviewSummary"},
+      "documentation":"<p>List of code review summaries.</p>"
     },
     "ConfidenceLevel":{
       "type":"string",
@@ -1571,6 +2169,84 @@
           "documentation":"<p>The unique identifier of the created application.</p>"
         }
       }
+    },
+    "CreateCodeReviewInput":{
+      "type":"structure",
+      "required":[
+        "title",
+        "agentSpaceId",
+        "assets"
+      ],
+      "members":{
+        "title":{
+          "shape":"String",
+          "documentation":"<p>The title of the code review.</p>"
+        },
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space to create the code review in.</p>"
+        },
+        "assets":{
+          "shape":"Assets",
+          "documentation":"<p>The assets to include in the code review, such as documents and source code.</p>"
+        },
+        "serviceRole":{
+          "shape":"ServiceRole",
+          "documentation":"<p>The IAM service role to use for the code review.</p>"
+        },
+        "logConfig":{
+          "shape":"CloudWatchLog",
+          "documentation":"<p>The CloudWatch Logs configuration for the code review.</p>"
+        },
+        "codeRemediationStrategy":{
+          "shape":"CodeRemediationStrategy",
+          "documentation":"<p>The code remediation strategy for the code review. Valid values are AUTOMATIC and DISABLED.</p>"
+        }
+      },
+      "documentation":"<p>Input for creating a new code review.</p>"
+    },
+    "CreateCodeReviewOutput":{
+      "type":"structure",
+      "required":["codeReviewId"],
+      "members":{
+        "codeReviewId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the created code review.</p>"
+        },
+        "title":{
+          "shape":"String",
+          "documentation":"<p>The title of the code review.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the code review was created, in UTC format.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the code review was last updated, in UTC format.</p>"
+        },
+        "assets":{
+          "shape":"Assets",
+          "documentation":"<p>The assets included in the code review.</p>"
+        },
+        "serviceRole":{
+          "shape":"ServiceRole",
+          "documentation":"<p>The IAM service role used for the code review.</p>"
+        },
+        "logConfig":{
+          "shape":"CloudWatchLog",
+          "documentation":"<p>The CloudWatch Logs configuration for the code review.</p>"
+        },
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space that contains the code review.</p>"
+        },
+        "codeRemediationStrategy":{
+          "shape":"CodeRemediationStrategy",
+          "documentation":"<p>The code remediation strategy for the code review.</p>"
+        }
+      },
+      "documentation":"<p>Output for the CreateCodeReview operation.</p>"
     },
     "CreateIntegrationInput":{
       "type":"structure",
@@ -1882,6 +2558,25 @@
       "type":"structure",
       "members":{}
     },
+    "DeleteCodeReviewFailure":{
+      "type":"structure",
+      "members":{
+        "codeReviewId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the code review that failed to delete.</p>"
+        },
+        "reason":{
+          "shape":"String",
+          "documentation":"<p>The reason the code review failed to delete.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a code review that failed to delete.</p>"
+    },
+    "DeleteCodeReviewFailureList":{
+      "type":"list",
+      "member":{"shape":"DeleteCodeReviewFailure"},
+      "documentation":"<p>List of code review deletion failures.</p>"
+    },
     "DeleteIntegrationInput":{
       "type":"structure",
       "required":["integrationId"],
@@ -2138,6 +2833,14 @@
           "shape":"String",
           "documentation":"<p>The unique identifier of the pentest job that produced the finding.</p>"
         },
+        "codeReviewId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the code review associated with the finding.</p>"
+        },
+        "codeReviewJobId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the code review job that produced the finding.</p>"
+        },
         "taskId":{
           "shape":"String",
           "documentation":"<p>The unique identifier of the task that produced the finding.</p>"
@@ -2185,6 +2888,10 @@
         "lastUpdatedBy":{
           "shape":"String",
           "documentation":"<p>The identifier of the entity that last updated the finding.</p>"
+        },
+        "codeLocations":{
+          "shape":"CodeLocationList",
+          "documentation":"<p>The file locations involved in the vulnerability, as reported by the code scanner.</p>"
         },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
@@ -2238,6 +2945,14 @@
         "pentestJobId":{
           "shape":"String",
           "documentation":"<p>The unique identifier of the pentest job that produced the finding.</p>"
+        },
+        "codeReviewId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the code review associated with the finding.</p>"
+        },
+        "codeReviewJobId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the code review job that produced the finding.</p>"
         },
         "name":{
           "shape":"String",
@@ -2564,6 +3279,10 @@
         }
       }
     },
+    "Integer":{
+      "type":"integer",
+      "box":true
+    },
     "IntegratedRepository":{
       "type":"structure",
       "required":[
@@ -2836,6 +3555,124 @@
         }
       }
     },
+    "ListCodeReviewJobTasksInput":{
+      "type":"structure",
+      "required":["agentSpaceId"],
+      "members":{
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>"
+        },
+        "codeReviewJobId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the code review job to list tasks for.</p>"
+        },
+        "stepName":{
+          "shape":"StepName",
+          "documentation":"<p>Filter tasks by step name.</p>"
+        },
+        "categoryName":{
+          "shape":"String",
+          "documentation":"<p>Filter tasks by category name.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to use for paginating results that are returned in the response. Set the value of this parameter to null for the first request. For subsequent calls, use the nextToken value returned from the previous request.</p>"
+        }
+      },
+      "documentation":"<p>Input for listing tasks associated with a code review job.</p>"
+    },
+    "ListCodeReviewJobTasksOutput":{
+      "type":"structure",
+      "members":{
+        "codeReviewJobTaskSummaries":{
+          "shape":"CodeReviewJobTaskSummaryList",
+          "documentation":"<p>The list of code review job task summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to use for paginating results that are returned in the response. Set the value of this parameter to null for the first request. For subsequent calls, use the nextToken value returned from the previous request.</p>"
+        }
+      },
+      "documentation":"<p>Output for the ListCodeReviewJobTasks operation.</p>"
+    },
+    "ListCodeReviewJobsForCodeReviewInput":{
+      "type":"structure",
+      "required":[
+        "codeReviewId",
+        "agentSpaceId"
+      ],
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>"
+        },
+        "codeReviewId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the code review to list jobs for.</p>"
+        },
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to use for paginating results that are returned in the response. Set the value of this parameter to null for the first request. For subsequent calls, use the nextToken value returned from the previous request.</p>"
+        }
+      },
+      "documentation":"<p>Input for ListCodeReviewJobsForCodeReview operation.</p>"
+    },
+    "ListCodeReviewJobsForCodeReviewOutput":{
+      "type":"structure",
+      "members":{
+        "codeReviewJobSummaries":{
+          "shape":"CodeReviewJobSummaryList",
+          "documentation":"<p>The list of code review job summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to use for paginating results that are returned in the response. Set the value of this parameter to null for the first request. For subsequent calls, use the nextToken value returned from the previous request.</p>"
+        }
+      },
+      "documentation":"<p>Output for the ListCodeReviewJobsForCodeReview operation.</p>"
+    },
+    "ListCodeReviewsInput":{
+      "type":"structure",
+      "required":["agentSpaceId"],
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to use for paginating results that are returned in the response. Set the value of this parameter to null for the first request. For subsequent calls, use the nextToken value returned from the previous request.</p>"
+        },
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space to list code reviews for.</p>"
+        }
+      },
+      "documentation":"<p>Input for listing code reviews with optional filtering.</p>"
+    },
+    "ListCodeReviewsOutput":{
+      "type":"structure",
+      "members":{
+        "codeReviewSummaries":{
+          "shape":"CodeReviewSummaryList",
+          "documentation":"<p>The list of code review summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to use for paginating results that are returned in the response. Set the value of this parameter to null for the first request. For subsequent calls, use the nextToken value returned from the previous request.</p>"
+        }
+      },
+      "documentation":"<p>Output for the ListCodeReviews operation.</p>"
+    },
     "ListDiscoveredEndpointsInput":{
       "type":"structure",
       "required":[
@@ -2882,10 +3719,7 @@
     },
     "ListFindingsInput":{
       "type":"structure",
-      "required":[
-        "pentestJobId",
-        "agentSpaceId"
-      ],
+      "required":["agentSpaceId"],
       "members":{
         "maxResults":{
           "shape":"MaxResults",
@@ -2894,6 +3728,10 @@
         "pentestJobId":{
           "shape":"String",
           "documentation":"<p>The unique identifier of the pentest job to list findings for.</p>"
+        },
+        "codeReviewJobId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the code review job to list findings for. Mutually exclusive with pentestJobId.</p>"
         },
         "agentSpaceId":{
           "shape":"String",
@@ -3835,7 +4673,6 @@
       "type":"structure",
       "required":[
         "agentSpaceId",
-        "pentestJobId",
         "findingIds"
       ],
       "members":{
@@ -3845,7 +4682,11 @@
         },
         "pentestJobId":{
           "shape":"String",
-          "documentation":"<p>The unique identifier of the pentest job that produced the findings.</p>"
+          "documentation":"<p>The unique identifier of the pentest job that produced the findings. Mutually exclusive with <code>codeReviewJobId</code>.</p>"
+        },
+        "codeReviewJobId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the code review job that produced the findings. Mutually exclusive with <code>pentestJobId</code>.</p>"
         },
         "findingIds":{
           "shape":"FindingIdList",
@@ -3858,6 +4699,62 @@
       "type":"structure",
       "members":{},
       "documentation":"<p>Output for the StartCodeRemediation operation.</p>"
+    },
+    "StartCodeReviewJobInput":{
+      "type":"structure",
+      "required":[
+        "agentSpaceId",
+        "codeReviewId"
+      ],
+      "members":{
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space.</p>"
+        },
+        "codeReviewId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the code review to start a job for.</p>"
+        }
+      },
+      "documentation":"<p>Input for starting the execution of a code review.</p>"
+    },
+    "StartCodeReviewJobOutput":{
+      "type":"structure",
+      "required":[
+        "codeReviewId",
+        "codeReviewJobId"
+      ],
+      "members":{
+        "title":{
+          "shape":"String",
+          "documentation":"<p>The title of the code review job.</p>"
+        },
+        "status":{
+          "shape":"JobStatus",
+          "documentation":"<p>The current status of the code review job.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the code review job was created, in UTC format.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the code review job was last updated, in UTC format.</p>"
+        },
+        "codeReviewId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the code review.</p>"
+        },
+        "codeReviewJobId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the started code review job.</p>"
+        },
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space.</p>"
+        }
+      },
+      "documentation":"<p>Output for the StartCodeReviewJob operation.</p>"
     },
     "StartPentestJobInput":{
       "type":"structure",
@@ -3958,6 +4855,29 @@
         "FAILED",
         "STOPPED"
       ]
+    },
+    "StopCodeReviewJobInput":{
+      "type":"structure",
+      "required":[
+        "agentSpaceId",
+        "codeReviewJobId"
+      ],
+      "members":{
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space.</p>"
+        },
+        "codeReviewJobId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the code review job to stop.</p>"
+        }
+      },
+      "documentation":"<p>Input for stopping the execution of a code review job.</p>"
+    },
+    "StopCodeReviewJobOutput":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Output for the StopCodeReviewJob operation.</p>"
     },
     "StopPentestJobInput":{
       "type":"structure",
@@ -4404,6 +5324,87 @@
           "documentation":"<p>The unique identifier of the updated application.</p>"
         }
       }
+    },
+    "UpdateCodeReviewInput":{
+      "type":"structure",
+      "required":[
+        "codeReviewId",
+        "agentSpaceId"
+      ],
+      "members":{
+        "codeReviewId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the code review to update.</p>"
+        },
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space that contains the code review.</p>"
+        },
+        "title":{
+          "shape":"String",
+          "documentation":"<p>The updated title of the code review.</p>"
+        },
+        "assets":{
+          "shape":"Assets",
+          "documentation":"<p>The updated assets for the code review.</p>"
+        },
+        "serviceRole":{
+          "shape":"ServiceRole",
+          "documentation":"<p>The updated IAM service role for the code review.</p>"
+        },
+        "logConfig":{
+          "shape":"CloudWatchLog",
+          "documentation":"<p>The updated CloudWatch Logs configuration for the code review.</p>"
+        },
+        "codeRemediationStrategy":{
+          "shape":"CodeRemediationStrategy",
+          "documentation":"<p>The updated code remediation strategy for the code review.</p>"
+        }
+      },
+      "documentation":"<p>Input for updating an existing code review.</p>"
+    },
+    "UpdateCodeReviewOutput":{
+      "type":"structure",
+      "required":["codeReviewId"],
+      "members":{
+        "codeReviewId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the code review.</p>"
+        },
+        "title":{
+          "shape":"String",
+          "documentation":"<p>The title of the code review.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the code review was created, in UTC format.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the code review was last updated, in UTC format.</p>"
+        },
+        "assets":{
+          "shape":"Assets",
+          "documentation":"<p>The assets included in the code review.</p>"
+        },
+        "serviceRole":{
+          "shape":"ServiceRole",
+          "documentation":"<p>The IAM service role used for the code review.</p>"
+        },
+        "logConfig":{
+          "shape":"CloudWatchLog",
+          "documentation":"<p>The CloudWatch Logs configuration for the code review.</p>"
+        },
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space that contains the code review.</p>"
+        },
+        "codeRemediationStrategy":{
+          "shape":"CodeRemediationStrategy",
+          "documentation":"<p>The code remediation strategy for the code review.</p>"
+        }
+      },
+      "documentation":"<p>Output for the UpdateCodeReview operation.</p>"
     },
     "UpdateFindingInput":{
       "type":"structure",

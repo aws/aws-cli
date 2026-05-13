@@ -14880,6 +14880,11 @@
         }
       }
     },
+    "CopyImageClientToken":{
+      "type":"string",
+      "max":128,
+      "min":0
+    },
     "CopyImageRequest":{
       "type":"structure",
       "required":[
@@ -14889,12 +14894,12 @@
       ],
       "members":{
         "ClientToken":{
-          "shape":"String",
+          "shape":"CopyImageClientToken",
           "documentation":"<p>Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency in Amazon EC2 API requests</a> in the <i>Amazon EC2 API Reference</i>.</p>",
           "idempotencyToken":true
         },
         "Description":{
-          "shape":"String",
+          "shape":"ImageDescriptionRequest",
           "documentation":"<p>A description for the new AMI.</p>"
         },
         "Encrypted":{
@@ -14908,7 +14913,7 @@
           "locationName":"kmsKeyId"
         },
         "Name":{
-          "shape":"String",
+          "shape":"ImageNameRequest",
           "documentation":"<p>The name of the new AMI.</p>"
         },
         "SourceImageId":{
@@ -16310,12 +16315,12 @@
           "locationName":"instanceId"
         },
         "Name":{
-          "shape":"String",
+          "shape":"ImageNameRequest",
           "documentation":"<p>A name for the new image.</p> <p>Constraints: 3-128 alphanumeric characters, parentheses (()), square brackets ([]), spaces ( ), periods (.), slashes (/), dashes (-), single quotes ('), at-signs (@), or underscores(_)</p>",
           "locationName":"name"
         },
         "Description":{
-          "shape":"String",
+          "shape":"ImageDescriptionRequest",
           "documentation":"<p>A description for the new image.</p>",
           "locationName":"description"
         },
@@ -16340,6 +16345,11 @@
           "locationName":"imageId"
         }
       }
+    },
+    "CreateImageUsageReportClientToken":{
+      "type":"string",
+      "max":128,
+      "min":0
     },
     "CreateImageUsageReportRequest":{
       "type":"structure",
@@ -16367,7 +16377,7 @@
           "locationName":"AccountId"
         },
         "ClientToken":{
-          "shape":"String",
+          "shape":"CreateImageUsageReportClientToken",
           "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure idempotency of the request.</p>",
           "idempotencyToken":true
         },
@@ -18103,7 +18113,7 @@
           "documentation":"<p>The name of the stored AMI object in the bucket.</p>"
         },
         "Name":{
-          "shape":"String",
+          "shape":"ImageNameRequest",
           "documentation":"<p>The name for the restored AMI. The name must be unique for AMIs in the Region for this account. If you do not provide a name, the new AMI gets the same name as the original AMI.</p>"
         },
         "TagSpecifications":{
@@ -41986,7 +41996,7 @@
           "locationName":"MarketplaceProductCode"
         },
         "ImageNames":{
-          "shape":"ImageNameRequestList",
+          "shape":"ImageNameCriteriaRequestList",
           "documentation":"<p>The names of allowed images. Names can include wildcards (<code>?</code> and <code>*</code>).</p> <p>Length: 1–128 characters. With <code>?</code>, the minimum is 3 characters.</p> <p>Valid characters:</p> <ul> <li> <p>Letters: <code>A–Z, a–z</code> </p> </li> <li> <p>Numbers: <code>0–9</code> </p> </li> <li> <p>Special characters: <code>( ) [ ] . / - ' @ _ * ?</code> </p> </li> <li> <p>Spaces</p> </li> </ul> <p>Maximum: 50 values</p>",
           "locationName":"ImageName"
         },
@@ -42007,6 +42017,11 @@
         "shape":"ImageCriterionRequest",
         "locationName":"ImageCriterion"
       }
+    },
+    "ImageDescriptionRequest":{
+      "type":"string",
+      "max":255,
+      "min":0
     },
     "ImageDiskContainer":{
       "type":"structure",
@@ -42119,6 +42134,18 @@
       "documentation":"<p>Information about the AMI.</p>"
     },
     "ImageName":{"type":"string"},
+    "ImageNameCriteriaRequest":{
+      "type":"string",
+      "max":128,
+      "min":0
+    },
+    "ImageNameCriteriaRequestList":{
+      "type":"list",
+      "member":{
+        "shape":"ImageNameCriteriaRequest",
+        "locationName":"item"
+      }
+    },
     "ImageNameList":{
       "type":"list",
       "member":{
@@ -42126,13 +42153,10 @@
         "locationName":"item"
       }
     },
-    "ImageNameRequest":{"type":"string"},
-    "ImageNameRequestList":{
-      "type":"list",
-      "member":{
-        "shape":"ImageNameRequest",
-        "locationName":"item"
-      }
+    "ImageNameRequest":{
+      "type":"string",
+      "max":128,
+      "min":3
     },
     "ImageProvider":{"type":"string"},
     "ImageProviderList":{
@@ -42253,6 +42277,11 @@
         "kernel",
         "ramdisk"
       ]
+    },
+    "ImageUefiDataRequest":{
+      "type":"string",
+      "max":64000,
+      "min":0
     },
     "ImageUsageReport":{
       "type":"structure",
@@ -61373,7 +61402,7 @@
           "documentation":"<p>Set to <code>v2.0</code> to enable Trusted Platform Module (TPM) support. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/nitrotpm.html\">NitroTPM</a> in the <i>Amazon EC2 User Guide</i>.</p>"
         },
         "UefiData":{
-          "shape":"StringType",
+          "shape":"ImageUefiDataRequest",
           "documentation":"<p>Base64 representation of the non-volatile UEFI variable store. To retrieve the UEFI data, use the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_GetInstanceUefiData\">GetInstanceUefiData</a> command. You can inspect and modify the UEFI data by using the <a href=\"https://github.com/awslabs/python-uefivars\">python-uefivars tool</a> on GitHub. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/uefi-secure-boot.html\">UEFI Secure Boot for Amazon EC2 instances</a> in the <i>Amazon EC2 User Guide</i>.</p>"
         },
         "ImdsSupport":{
@@ -61391,12 +61420,12 @@
           "locationName":"dryRun"
         },
         "Name":{
-          "shape":"String",
+          "shape":"ImageNameRequest",
           "documentation":"<p>A name for your AMI.</p> <p>Constraints: 3-128 alphanumeric characters, parentheses (()), square brackets ([]), spaces ( ), periods (.), slashes (/), dashes (-), single quotes ('), at-signs (@), or underscores(_)</p>",
           "locationName":"name"
         },
         "Description":{
-          "shape":"String",
+          "shape":"ImageDescriptionRequest",
           "documentation":"<p>A description for your AMI.</p>",
           "locationName":"description"
         },
@@ -69510,11 +69539,6 @@
         "locationName":"item"
       }
     },
-    "StringType":{
-      "type":"string",
-      "max":64000,
-      "min":0
-    },
     "Subnet":{
       "type":"structure",
       "members":{
@@ -75125,10 +75149,6 @@
           "shape":"DateTime",
           "documentation":"<p>The modification completion or failure time.</p>",
           "locationName":"endTime"
-        },
-        "Operator":{
-          "shape":"OperatorResponse",
-          "locationName":"operator"
         }
       },
       "documentation":"<p>Describes the modification status of an EBS volume.</p>"

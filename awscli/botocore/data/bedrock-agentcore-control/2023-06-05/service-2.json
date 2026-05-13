@@ -1373,6 +1373,25 @@
       "documentation":"<p>Retrieves detailed information about a specific policy engine within the AgentCore Policy system. This operation returns the complete policy engine configuration, metadata, and current status, allowing administrators to review and manage policy engine settings.</p>",
       "readonly":true
     },
+    "GetPolicyEngineSummary":{
+      "name":"GetPolicyEngineSummary",
+      "http":{
+        "method":"GET",
+        "requestUri":"/policy-engine-summaries/{policyEngineId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetPolicyEngineSummaryRequest"},
+      "output":{"shape":"GetPolicyEngineSummaryResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves a metadata-only summary of a specific policy engine without decrypting customer content. This lightweight read operation returns resource identifiers, status, timestamps, and the encryption key ARN, but does not include the description or status reasons. Because this operation does not require access to the customer's KMS key, it is suitable for resource discovery, inventory, and integration scenarios where only metadata is needed.</p>",
+      "readonly":true
+    },
     "GetPolicyGeneration":{
       "name":"GetPolicyGeneration",
       "http":{
@@ -1390,6 +1409,44 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Retrieves information about a policy generation request within the AgentCore Policy system. Policy generation converts natural language descriptions into Cedar policy statements using AI-powered translation, enabling non-technical users to create policies.</p>",
+      "readonly":true
+    },
+    "GetPolicyGenerationSummary":{
+      "name":"GetPolicyGenerationSummary",
+      "http":{
+        "method":"GET",
+        "requestUri":"/policy-engines/{policyEngineId}/policy-generation-summaries/{policyGenerationId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetPolicyGenerationSummaryRequest"},
+      "output":{"shape":"GetPolicyGenerationSummaryResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves a metadata-only summary of a specific policy generation request without decrypting customer content. This lightweight read operation returns resource identifiers, status, timestamps, and findings, but does not include status reasons. Because this operation does not require access to the customer's KMS key, it is suitable for resource discovery, inventory, and integration scenarios where only metadata is needed.</p>",
+      "readonly":true
+    },
+    "GetPolicySummary":{
+      "name":"GetPolicySummary",
+      "http":{
+        "method":"GET",
+        "requestUri":"/policy-engines/{policyEngineId}/policy-summaries/{policyId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetPolicySummaryRequest"},
+      "output":{"shape":"GetPolicySummaryResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves a metadata-only summary of a specific policy without decrypting customer content. This lightweight read operation returns resource identifiers, status, and timestamps, but does not include the policy definition, description, or status reasons. Because this operation does not require access to the customer's KMS key, it is suitable for resource discovery, inventory, and integration scenarios where only metadata is needed.</p>",
       "readonly":true
     },
     "GetRegistry":{
@@ -1879,6 +1936,24 @@
       "documentation":"<p>Retrieves a list of policies within the AgentCore Policy engine. This operation supports pagination and filtering to help administrators manage and discover policies across policy engines. Results can be filtered by policy engine or resource associations.</p>",
       "readonly":true
     },
+    "ListPolicyEngineSummaries":{
+      "name":"ListPolicyEngineSummaries",
+      "http":{
+        "method":"GET",
+        "requestUri":"/policy-engine-summaries",
+        "responseCode":200
+      },
+      "input":{"shape":"ListPolicyEngineSummariesRequest"},
+      "output":{"shape":"ListPolicyEngineSummariesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves a paginated list of metadata-only policy engine summaries without decrypting customer content. This lightweight read operation returns resource identifiers, status, and timestamps for each policy engine, but does not include descriptions or status reasons. Because this operation does not require access to the customer's KMS key, it is suitable for resource discovery, inventory, and integration scenarios where only metadata is needed.</p>",
+      "readonly":true
+    },
     "ListPolicyEngines":{
       "name":"ListPolicyEngines",
       "http":{
@@ -1916,6 +1991,25 @@
       "documentation":"<p>Retrieves a list of generated policy assets from a policy generation request within the AgentCore Policy system. This operation returns the actual Cedar policies and related artifacts produced by the AI-powered policy generation process, allowing users to review and select from multiple generated policy options.</p>",
       "readonly":true
     },
+    "ListPolicyGenerationSummaries":{
+      "name":"ListPolicyGenerationSummaries",
+      "http":{
+        "method":"GET",
+        "requestUri":"/policy-engines/{policyEngineId}/policy-generation-summaries",
+        "responseCode":200
+      },
+      "input":{"shape":"ListPolicyGenerationSummariesRequest"},
+      "output":{"shape":"ListPolicyGenerationSummariesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves a paginated list of metadata-only policy generation summaries within a policy engine without decrypting customer content. This lightweight read operation returns resource identifiers, status, timestamps, and findings for each policy generation, but does not include status reasons. Because this operation does not require access to the customer's KMS key, it is suitable for resource discovery, inventory, and integration scenarios where only metadata is needed.</p>",
+      "readonly":true
+    },
     "ListPolicyGenerations":{
       "name":"ListPolicyGenerations",
       "http":{
@@ -1935,6 +2029,25 @@
       "documentation":"<p>Retrieves a list of policy generation requests within the AgentCore Policy system. This operation supports pagination and filtering to help track and manage AI-powered policy generation operations.</p>",
       "readonly":true
     },
+    "ListPolicySummaries":{
+      "name":"ListPolicySummaries",
+      "http":{
+        "method":"GET",
+        "requestUri":"/policy-engines/{policyEngineId}/policy-summaries",
+        "responseCode":200
+      },
+      "input":{"shape":"ListPolicySummariesRequest"},
+      "output":{"shape":"ListPolicySummariesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves a paginated list of metadata-only policy summaries within a policy engine without decrypting customer content. This lightweight read operation returns resource identifiers, status, and timestamps for each policy, but does not include policy definitions, descriptions, or status reasons. Because this operation does not require access to the customer's KMS key, it is suitable for resource discovery, inventory, and integration scenarios where only metadata is needed.</p>",
+      "readonly":true
+    },
     "ListRegistries":{
       "name":"ListRegistries",
       "http":{
@@ -1950,7 +2063,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists all registries in the account. You can optionally filter results by status using the <code>status</code> parameter.</p>",
+      "documentation":"<p>Lists all registries in the account. You can optionally filter results by status using the <code>status</code> parameter, or by authorizer type using the <code>authorizerType</code> parameter.</p>",
       "readonly":true
     },
     "ListRegistryRecords":{
@@ -3290,7 +3403,10 @@
           "shape":"BrowserNetworkMode",
           "documentation":"<p>The network mode for the browser. This field specifies how the browser connects to the network.</p>"
         },
-        "vpcConfig":{"shape":"VpcConfig"}
+        "vpcConfig":{
+          "shape":"VpcConfig",
+          "documentation":"<p>The VPC configuration for the browser. This configuration is required when the network mode is set to <code>VPC</code>.</p>"
+        }
       },
       "documentation":"<p>The network configuration for a browser. This structure defines how the browser connects to the network.</p>"
     },
@@ -3684,7 +3800,10 @@
           "shape":"CodeInterpreterNetworkMode",
           "documentation":"<p>The network mode for the code interpreter. This field specifies how the code interpreter connects to the network.</p>"
         },
-        "vpcConfig":{"shape":"VpcConfig"}
+        "vpcConfig":{
+          "shape":"VpcConfig",
+          "documentation":"<p>The VPC configuration for the code interpreter. This configuration is required when the network mode is set to <code>VPC</code>.</p>"
+        }
       },
       "documentation":"<p>The network configuration for a code interpreter. This structure defines how the code interpreter connects to the network.</p>"
     },
@@ -3785,7 +3904,7 @@
           "documentation":"<p>The wallet secret provided by Coinbase Developer Platform.</p>"
         }
       },
-      "documentation":"<p>Coinbase CDP configuration - credentials provided by Coinbase Developer Platform</p>"
+      "documentation":"<p>Coinbase CDP configuration — credentials provided by Coinbase Developer Platform.</p>"
     },
     "CoinbaseCdpConfigurationOutput":{
       "type":"structure",
@@ -3802,7 +3921,7 @@
         "apiKeySecretArn":{"shape":"Secret"},
         "walletSecretArn":{"shape":"Secret"}
       },
-      "documentation":"<p>Coinbase CDP configuration output with secret ARNs</p>"
+      "documentation":"<p>Coinbase CDP configuration output with secret ARNs.</p>"
     },
     "CoinbaseCdpWalletSecretType":{
       "type":"string",
@@ -5386,19 +5505,19 @@
       "members":{
         "name":{
           "shape":"CredentialProviderName",
-          "documentation":"<p>Unique name for the payment credential provider</p>"
+          "documentation":"<p>Unique name for the payment credential provider.</p>"
         },
         "credentialProviderVendor":{
           "shape":"PaymentCredentialProviderVendorType",
-          "documentation":"<p>The vendor type (e.g., CoinbaseCDP)</p>"
+          "documentation":"<p>The vendor type for the payment credential provider (e.g., CoinbaseCDP, StripePrivy).</p>"
         },
         "providerConfigurationInput":{
           "shape":"PaymentProviderConfigurationInput",
-          "documentation":"<p>Configuration specific to the vendor, including API credentials</p>"
+          "documentation":"<p>Configuration specific to the vendor, including API credentials.</p>"
         },
         "tags":{
           "shape":"TagsMap",
-          "documentation":"<p>Optional tags for resource organization</p>"
+          "documentation":"<p>Optional tags for resource organization.</p>"
         }
       }
     },
@@ -5415,14 +5534,17 @@
           "shape":"CredentialProviderName",
           "documentation":"<p>The name of the created payment credential provider.</p>"
         },
-        "credentialProviderVendor":{"shape":"PaymentCredentialProviderVendorType"},
+        "credentialProviderVendor":{
+          "shape":"PaymentCredentialProviderVendorType",
+          "documentation":"<p>The vendor type for the created payment credential provider.</p>"
+        },
         "credentialProviderArn":{
           "shape":"PaymentCredentialProviderArnType",
           "documentation":"<p>The Amazon Resource Name (ARN) of the created payment credential provider.</p>"
         },
         "providerConfigurationOutput":{
           "shape":"PaymentProviderConfigurationOutput",
-          "documentation":"<p>Output configuration (contains secret ARNs, excludes actual secret values)</p>"
+          "documentation":"<p>Output configuration (contains secret ARNs, excludes actual secret values).</p>"
         }
       }
     },
@@ -5560,10 +5682,6 @@
           "shape":"PolicyEngineName",
           "documentation":"<p>The customer-assigned name of the created policy engine. This matches the name provided in the request and serves as the human-readable identifier.</p>"
         },
-        "description":{
-          "shape":"Description",
-          "documentation":"<p>A human-readable description of the policy engine's purpose.</p>"
-        },
         "createdAt":{
           "shape":"DateTimestamp",
           "documentation":"<p>The timestamp when the policy engine was created. This is automatically set by the service and used for auditing and lifecycle management.</p>"
@@ -5580,13 +5698,17 @@
           "shape":"PolicyEngineStatus",
           "documentation":"<p>The current status of the policy engine. A status of <code>ACTIVE</code> indicates the policy engine is ready for use.</p>"
         },
-        "statusReasons":{
-          "shape":"PolicyStatusReasons",
-          "documentation":"<p>Additional information about the policy engine status. This provides details about any failures or the current state of the policy engine creation process.</p>"
-        },
         "encryptionKeyArn":{
           "shape":"KmsKeyArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the policy engine data.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A human-readable description of the policy engine's purpose.</p>"
+        },
+        "statusReasons":{
+          "shape":"PolicyStatusReasons",
+          "documentation":"<p>Additional information about the policy engine status. This provides details about any failures or the current state of the policy engine creation process.</p>"
         }
       }
     },
@@ -5633,11 +5755,11 @@
         "policyId",
         "name",
         "policyEngineId",
-        "definition",
         "createdAt",
         "updatedAt",
         "policyArn",
         "status",
+        "definition",
         "statusReasons"
       ],
       "members":{
@@ -5652,14 +5774,6 @@
         "policyEngineId":{
           "shape":"ResourceId",
           "documentation":"<p>The identifier of the policy engine that manages this policy. This confirms the policy engine assignment and is used for policy evaluation routing.</p>"
-        },
-        "definition":{
-          "shape":"PolicyDefinition",
-          "documentation":"<p>The Cedar policy statement that was created. This is the validated policy definition that will be used for agent behavior control and access decisions.</p>"
-        },
-        "description":{
-          "shape":"Description",
-          "documentation":"<p>The human-readable description of the policy's purpose and functionality. This helps administrators understand and manage the policy.</p>"
         },
         "createdAt":{
           "shape":"DateTimestamp",
@@ -5676,6 +5790,14 @@
         "status":{
           "shape":"PolicyStatus",
           "documentation":"<p>The current status of the policy. A status of <code>ACTIVE</code> indicates the policy is ready for use.</p>"
+        },
+        "definition":{
+          "shape":"PolicyDefinition",
+          "documentation":"<p>The Cedar policy statement that was created. This is the validated policy definition that will be used for agent behavior control and access decisions.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The human-readable description of the policy's purpose and functionality. This helps administrators understand and manage the policy.</p>"
         },
         "statusReasons":{
           "shape":"PolicyStatusReasons",
@@ -6149,7 +6271,7 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces associated with the custom memory strategy.</p>",
+          "documentation":"<p>This is a legacy parameter, use <code>namespaceTemplates</code>. The namespaces associated with the custom memory strategy.</p>",
           "deprecated":true,
           "deprecatedMessage":"Use namespaceTemplates instead",
           "deprecatedSince":"2026-03-02"
@@ -6963,10 +7085,6 @@
           "shape":"PolicyEngineName",
           "documentation":"<p>The customer-assigned name of the deleted policy engine.</p>"
         },
-        "description":{
-          "shape":"Description",
-          "documentation":"<p>The human-readable description of the deleted policy engine.</p>"
-        },
         "createdAt":{
           "shape":"DateTimestamp",
           "documentation":"<p>The timestamp when the deleted policy engine was originally created.</p>"
@@ -6983,13 +7101,17 @@
           "shape":"PolicyEngineStatus",
           "documentation":"<p>The status of the policy engine deletion operation. This provides status about any issues that occurred during the deletion process.</p>"
         },
-        "statusReasons":{
-          "shape":"PolicyStatusReasons",
-          "documentation":"<p>Additional information about the deletion status. This provides details about the deletion process or any issues that may have occurred.</p>"
-        },
         "encryptionKeyArn":{
           "shape":"KmsKeyArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the policy engine data.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The human-readable description of the deleted policy engine.</p>"
+        },
+        "statusReasons":{
+          "shape":"PolicyStatusReasons",
+          "documentation":"<p>Additional information about the deletion status. This provides details about the deletion process or any issues that may have occurred.</p>"
         }
       }
     },
@@ -7020,11 +7142,11 @@
         "policyId",
         "name",
         "policyEngineId",
-        "definition",
         "createdAt",
         "updatedAt",
         "policyArn",
         "status",
+        "definition",
         "statusReasons"
       ],
       "members":{
@@ -7039,11 +7161,6 @@
         "policyEngineId":{
           "shape":"ResourceId",
           "documentation":"<p>The identifier of the policy engine from which the policy was deleted. This confirms the policy engine context for the deletion operation.</p>"
-        },
-        "definition":{"shape":"PolicyDefinition"},
-        "description":{
-          "shape":"Description",
-          "documentation":"<p>The human-readable description of the deleted policy.</p>"
         },
         "createdAt":{
           "shape":"DateTimestamp",
@@ -7060,6 +7177,11 @@
         "status":{
           "shape":"PolicyStatus",
           "documentation":"<p>The status of the policy deletion operation. This provides information about any issues that occurred during the deletion process.</p>"
+        },
+        "definition":{"shape":"PolicyDefinition"},
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The human-readable description of the deleted policy.</p>"
         },
         "statusReasons":{
           "shape":"PolicyStatusReasons",
@@ -7316,7 +7438,7 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces for which to create episodes.</p>",
+          "documentation":"<p>This is a legacy parameter, use <code>namespaceTemplates</code>. The namespaces for which to create episodes.</p>",
           "deprecated":true,
           "deprecatedMessage":"Use namespaceTemplates instead",
           "deprecatedSince":"2026-03-02"
@@ -7407,7 +7529,7 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces to use for episodic reflection. Can be less nested than the episodic namespaces.</p>",
+          "documentation":"<p>This is a legacy parameter, use <code>namespaceTemplates</code>. The namespaces to use for episodic reflection. Can be less nested than the episodic namespaces.</p>",
           "deprecated":true,
           "deprecatedMessage":"Use namespaceTemplates instead",
           "deprecatedSince":"2026-03-02"
@@ -7428,7 +7550,7 @@
       "members":{
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces for which to create reflections. Can be less nested than the episodic namespaces.</p>",
+          "documentation":"<p>This is a legacy parameter, use <code>namespaceTemplates</code>. The namespaces for which to create reflections. Can be less nested than the episodic namespaces.</p>",
           "deprecated":true,
           "deprecatedMessage":"Use namespaceTemplates instead",
           "deprecatedSince":"2026-03-02"
@@ -7449,7 +7571,7 @@
       "members":{
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces over which to create reflections. Can be less nested than episode namespaces.</p>",
+          "documentation":"<p>This is a legacy parameter, use <code>namespaceTemplates</code>. The namespaces over which to create reflections. Can be less nested than episode namespaces.</p>",
           "deprecated":true,
           "deprecatedMessage":"Use namespaceTemplates instead",
           "deprecatedSince":"2026-03-02"
@@ -7482,7 +7604,7 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces over which reflections were created. Can be less nested than the episodic namespaces.</p>",
+          "documentation":"<p>This is a legacy parameter. The namespaces over which reflections were created. Can be less nested than the episodic namespaces.</p>",
           "deprecated":true,
           "deprecatedMessage":"Use namespaceTemplates instead",
           "deprecatedSince":"2026-03-02"
@@ -9425,10 +9547,13 @@
           "shape":"PaymentCredentialProviderArnType",
           "documentation":"<p>The Amazon Resource Name (ARN) of the payment credential provider.</p>"
         },
-        "credentialProviderVendor":{"shape":"PaymentCredentialProviderVendorType"},
+        "credentialProviderVendor":{
+          "shape":"PaymentCredentialProviderVendorType",
+          "documentation":"<p>The vendor type for the payment credential provider.</p>"
+        },
         "providerConfigurationOutput":{
           "shape":"PaymentProviderConfigurationOutput",
-          "documentation":"<p>Output configuration (contains secret ARNs, excludes actual secret values)</p>"
+          "documentation":"<p>Output configuration (contains secret ARNs, excludes actual secret values).</p>"
         },
         "createdTime":{
           "shape":"Timestamp",
@@ -9545,10 +9670,6 @@
           "shape":"PolicyEngineName",
           "documentation":"<p>The customer-assigned name of the policy engine. This is the human-readable identifier that was specified when the policy engine was created.</p>"
         },
-        "description":{
-          "shape":"Description",
-          "documentation":"<p>The human-readable description of the policy engine's purpose and scope. This helps administrators understand the policy engine's role in governance.</p>"
-        },
         "createdAt":{
           "shape":"DateTimestamp",
           "documentation":"<p>The timestamp when the policy engine was originally created.</p>"
@@ -9565,9 +9686,66 @@
           "shape":"PolicyEngineStatus",
           "documentation":"<p>The current status of the policy engine.</p>"
         },
+        "encryptionKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the policy engine data.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The human-readable description of the policy engine's purpose and scope. This helps administrators understand the policy engine's role in governance.</p>"
+        },
         "statusReasons":{
           "shape":"PolicyStatusReasons",
           "documentation":"<p>Additional information about the policy engine status. This provides details about any failures or the current state of the policy engine.</p>"
+        }
+      }
+    },
+    "GetPolicyEngineSummaryRequest":{
+      "type":"structure",
+      "required":["policyEngineId"],
+      "members":{
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the policy engine to retrieve the summary for. This must be a valid policy engine ID that exists within the account.</p>",
+          "location":"uri",
+          "locationName":"policyEngineId"
+        }
+      }
+    },
+    "GetPolicyEngineSummaryResponse":{
+      "type":"structure",
+      "required":[
+        "policyEngineId",
+        "name",
+        "createdAt",
+        "updatedAt",
+        "policyEngineArn",
+        "status"
+      ],
+      "members":{
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the policy engine.</p>"
+        },
+        "name":{
+          "shape":"PolicyEngineName",
+          "documentation":"<p>The customer-assigned name of the policy engine.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the policy engine was originally created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the policy engine was last modified.</p>"
+        },
+        "policyEngineArn":{
+          "shape":"PolicyEngineArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the policy engine.</p>"
+        },
+        "status":{
+          "shape":"PolicyEngineStatus",
+          "documentation":"<p>The current status of the policy engine.</p>"
         },
         "encryptionKeyArn":{
           "shape":"KmsKeyArn",
@@ -9642,13 +9820,85 @@
           "shape":"PolicyGenerationStatus",
           "documentation":"<p>The current status of the policy generation. This indicates whether the generation is in progress, completed successfully, or failed during processing.</p>"
         },
-        "statusReasons":{
-          "shape":"PolicyStatusReasons",
-          "documentation":"<p>Additional information about the generation status. This provides details about any failures, warnings, or the current state of the generation process.</p>"
-        },
         "findings":{
           "shape":"String",
           "documentation":"<p>The findings and results from the policy generation process. This includes any issues, recommendations, validation results, or insights from the generated policies.</p>"
+        },
+        "statusReasons":{
+          "shape":"PolicyStatusReasons",
+          "documentation":"<p>Additional information about the generation status. This provides details about any failures, warnings, or the current state of the generation process.</p>"
+        }
+      }
+    },
+    "GetPolicyGenerationSummaryRequest":{
+      "type":"structure",
+      "required":[
+        "policyGenerationId",
+        "policyEngineId"
+      ],
+      "members":{
+        "policyGenerationId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the policy generation request to retrieve the summary for.</p>",
+          "location":"uri",
+          "locationName":"policyGenerationId"
+        },
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the policy engine associated with the policy generation request.</p>",
+          "location":"uri",
+          "locationName":"policyEngineId"
+        }
+      }
+    },
+    "GetPolicyGenerationSummaryResponse":{
+      "type":"structure",
+      "required":[
+        "policyEngineId",
+        "policyGenerationId",
+        "name",
+        "policyGenerationArn",
+        "resource",
+        "createdAt",
+        "updatedAt",
+        "status"
+      ],
+      "members":{
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the policy engine associated with this policy generation.</p>"
+        },
+        "policyGenerationId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the policy generation request.</p>"
+        },
+        "name":{
+          "shape":"PolicyGenerationName",
+          "documentation":"<p>The customer-assigned name for the policy generation request.</p>"
+        },
+        "policyGenerationArn":{
+          "shape":"PolicyGenerationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the policy generation request.</p>"
+        },
+        "resource":{
+          "shape":"Resource",
+          "documentation":"<p>The resource information associated with the policy generation.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the policy generation request was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the policy generation was last updated.</p>"
+        },
+        "status":{
+          "shape":"PolicyGenerationStatus",
+          "documentation":"<p>The current status of the policy generation request.</p>"
+        },
+        "findings":{
+          "shape":"String",
+          "documentation":"<p>The findings from the policy generation process, if available.</p>"
         }
       }
     },
@@ -9679,11 +9929,11 @@
         "policyId",
         "name",
         "policyEngineId",
-        "definition",
         "createdAt",
         "updatedAt",
         "policyArn",
         "status",
+        "definition",
         "statusReasons"
       ],
       "members":{
@@ -9698,14 +9948,6 @@
         "policyEngineId":{
           "shape":"ResourceId",
           "documentation":"<p>The identifier of the policy engine that manages this policy. This confirms the policy engine context for the retrieved policy.</p>"
-        },
-        "definition":{
-          "shape":"PolicyDefinition",
-          "documentation":"<p>The Cedar policy statement that defines the access control rules. This contains the actual policy logic used for agent behavior control and access decisions.</p>"
-        },
-        "description":{
-          "shape":"Description",
-          "documentation":"<p>The human-readable description of the policy's purpose and functionality. This helps administrators understand and manage the policy.</p>"
         },
         "createdAt":{
           "shape":"DateTimestamp",
@@ -9723,9 +9965,80 @@
           "shape":"PolicyStatus",
           "documentation":"<p>The current status of the policy.</p>"
         },
+        "definition":{
+          "shape":"PolicyDefinition",
+          "documentation":"<p>The Cedar policy statement that defines the access control rules. This contains the actual policy logic used for agent behavior control and access decisions.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The human-readable description of the policy's purpose and functionality. This helps administrators understand and manage the policy.</p>"
+        },
         "statusReasons":{
           "shape":"PolicyStatusReasons",
           "documentation":"<p>Additional information about the policy status. This provides details about any failures or the current state of the policy.</p>"
+        }
+      }
+    },
+    "GetPolicySummaryRequest":{
+      "type":"structure",
+      "required":[
+        "policyEngineId",
+        "policyId"
+      ],
+      "members":{
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the policy engine that manages the policy to retrieve the summary for.</p>",
+          "location":"uri",
+          "locationName":"policyEngineId"
+        },
+        "policyId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the policy to retrieve the summary for. This must be a valid policy ID that exists within the specified policy engine.</p>",
+          "location":"uri",
+          "locationName":"policyId"
+        }
+      }
+    },
+    "GetPolicySummaryResponse":{
+      "type":"structure",
+      "required":[
+        "policyId",
+        "name",
+        "policyEngineId",
+        "createdAt",
+        "updatedAt",
+        "policyArn",
+        "status"
+      ],
+      "members":{
+        "policyId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the policy.</p>"
+        },
+        "name":{
+          "shape":"PolicyName",
+          "documentation":"<p>The customer-assigned name of the policy.</p>"
+        },
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the policy engine that manages this policy.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the policy was originally created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the policy was last modified.</p>"
+        },
+        "policyArn":{
+          "shape":"PolicyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the policy.</p>"
+        },
+        "status":{
+          "shape":"PolicyStatus",
+          "documentation":"<p>The current status of the policy.</p>"
         }
       }
     },
@@ -11962,6 +12275,37 @@
         }
       }
     },
+    "ListPolicyEngineSummariesRequest":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A pagination token returned from a previous <a href=\"https://docs.aws.amazon.com/bedrock-agentcore-control/latest/APIReference/API_ListPolicyEngineSummaries.html\">ListPolicyEngineSummaries</a> call. Use this token to retrieve the next page of results when the response is paginated.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of policy engine summaries to return in a single response.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListPolicyEngineSummariesResponse":{
+      "type":"structure",
+      "required":["policyEngines"],
+      "members":{
+        "policyEngines":{
+          "shape":"PolicyEngineSummaryList",
+          "documentation":"<p>An array of policy engine summary objects that exist in the account. Each summary contains resource identifiers, status, and timestamps without customer-encrypted content.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A pagination token that can be used in subsequent <a href=\"https://docs.aws.amazon.com/bedrock-agentcore-control/latest/APIReference/API_ListPolicyEngineSummaries.html\">ListPolicyEngineSummaries</a> calls to retrieve additional results. This token is only present when there are more results available.</p>"
+        }
+      }
+    },
     "ListPolicyEnginesRequest":{
       "type":"structure",
       "members":{
@@ -12039,6 +12383,44 @@
         }
       }
     },
+    "ListPolicyGenerationSummariesRequest":{
+      "type":"structure",
+      "required":["policyEngineId"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A pagination token returned from a previous <a href=\"https://docs.aws.amazon.com/bedrock-agentcore-control/latest/APIReference/API_ListPolicyGenerationSummaries.html\">ListPolicyGenerationSummaries</a> call. Use this token to retrieve the next page of results when the response is paginated.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of policy generation summaries to return in a single response.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the policy engine whose policy generation summaries to retrieve.</p>",
+          "location":"uri",
+          "locationName":"policyEngineId"
+        }
+      }
+    },
+    "ListPolicyGenerationSummariesResponse":{
+      "type":"structure",
+      "required":["policyGenerations"],
+      "members":{
+        "policyGenerations":{
+          "shape":"PolicyGenerationSummaryList",
+          "documentation":"<p>An array of policy generation summary objects that match the specified criteria. Each summary contains resource identifiers, status, timestamps, and findings without customer-encrypted content.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A pagination token that can be used in subsequent <a href=\"https://docs.aws.amazon.com/bedrock-agentcore-control/latest/APIReference/API_ListPolicyGenerationSummaries.html\">ListPolicyGenerationSummaries</a> calls to retrieve additional results. This token is only present when there are more results available.</p>"
+        }
+      }
+    },
     "ListPolicyGenerationsRequest":{
       "type":"structure",
       "required":["policyEngineId"],
@@ -12077,6 +12459,50 @@
         }
       }
     },
+    "ListPolicySummariesRequest":{
+      "type":"structure",
+      "required":["policyEngineId"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A pagination token returned from a previous <a href=\"https://docs.aws.amazon.com/bedrock-agentcore-control/latest/APIReference/API_ListPolicySummaries.html\">ListPolicySummaries</a> call. Use this token to retrieve the next page of results when the response is paginated.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of policy summaries to return in a single response.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the policy engine whose policy summaries to retrieve.</p>",
+          "location":"uri",
+          "locationName":"policyEngineId"
+        },
+        "targetResourceScope":{
+          "shape":"BedrockAgentcoreResourceArn",
+          "documentation":"<p>Optional filter to list policy summaries that apply to a specific resource scope or resource type. This helps narrow down results to those relevant for particular Amazon Web Services resources, agent tools, or operational contexts within the policy engine ecosystem.</p>",
+          "location":"querystring",
+          "locationName":"targetResourceScope"
+        }
+      }
+    },
+    "ListPolicySummariesResponse":{
+      "type":"structure",
+      "required":["policies"],
+      "members":{
+        "policies":{
+          "shape":"PolicySummaryList",
+          "documentation":"<p>An array of policy summary objects that match the specified criteria. Each summary contains resource identifiers, status, and timestamps without customer-encrypted content.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A pagination token that can be used in subsequent <a href=\"https://docs.aws.amazon.com/bedrock-agentcore-control/latest/APIReference/API_ListPolicySummaries.html\">ListPolicySummaries</a> calls to retrieve additional results. This token is only present when there are more results available.</p>"
+        }
+      }
+    },
     "ListRegistriesRequest":{
       "type":"structure",
       "members":{
@@ -12097,6 +12523,12 @@
           "documentation":"<p>Filter registries by their current status. Possible values include <code>CREATING</code>, <code>READY</code>, <code>UPDATING</code>, <code>CREATE_FAILED</code>, <code>UPDATE_FAILED</code>, <code>DELETING</code>, and <code>DELETE_FAILED</code>.</p>",
           "location":"querystring",
           "locationName":"status"
+        },
+        "authorizerType":{
+          "shape":"RegistryAuthorizerType",
+          "documentation":"<p>Filter registries by their authorizer type. Possible values are <code>CUSTOM_JWT</code> and <code>AWS_IAM</code>. For more information about authorizer types, see the <code>RegistryAuthorizerType</code> enum.</p>",
+          "location":"querystring",
+          "locationName":"authorizerType"
         }
       }
     },
@@ -12395,7 +12827,7 @@
           "documentation":"<p>An IAM principal to match against, specified by ARN.</p>"
         }
       },
-      "documentation":"<p>Union for principal matching. Currently supports IAM principal ARN glob matching. Extensible for future principal types (e.g., OAuth client ID).</p>",
+      "documentation":"<p>Union for principal matching. Currently supports IAM principal ARN glob matching.</p>",
       "union":true
     },
     "MatchPrincipals":{
@@ -12691,7 +13123,7 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces associated with the memory strategy.</p>",
+          "documentation":"<p>This is a legacy parameter. The namespaces associated with the memory strategy.</p>",
           "deprecated":true,
           "deprecatedMessage":"Use namespaceTemplates instead",
           "deprecatedSince":"2026-03-02"
@@ -13016,7 +13448,7 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The updated namespaces for the memory strategy.</p>",
+          "documentation":"<p>This is a legacy parameter, use <code>namespaceTemplates</code>. The updated namespaces for the memory strategy.</p>",
           "deprecated":true,
           "deprecatedMessage":"Use namespaceTemplates instead",
           "deprecatedSince":"2026-03-02"
@@ -13256,7 +13688,7 @@
         },
         "grantType":{
           "shape":"OAuthGrantType",
-          "documentation":"<p>Specifies the kind of credentials to use for authorization:</p> <ul> <li> <p> <code>CLIENT_CREDENTIALS</code> - Authorization with a client ID and secret.</p> </li> <li> <p> <code>AUTHORIZATION_CODE</code> - Authorization with a token that is specific to an individual end user.</p> </li> </ul>"
+          "documentation":"<p>Specifies the kind of credentials to use for authorization:</p> <ul> <li> <p> <code>CLIENT_CREDENTIALS</code> - Authorization with a client ID and secret.</p> </li> <li> <p> <code>AUTHORIZATION_CODE</code> - Authorization with a token that is specific to an individual end user.</p> </li> <li> <p> <code>TOKEN_EXCHANGE</code> - Authorization using on-behalf-of token exchange. An inbound user token is exchanged for a downstream access token scoped to the target audience.</p> </li> </ul>"
         },
         "defaultReturnUrl":{
           "shape":"OAuthDefaultReturnUrl",
@@ -13709,7 +14141,10 @@
           "shape":"CredentialProviderName",
           "documentation":"<p>The name of the payment credential provider.</p>"
         },
-        "credentialProviderVendor":{"shape":"PaymentCredentialProviderVendorType"},
+        "credentialProviderVendor":{
+          "shape":"PaymentCredentialProviderVendorType",
+          "documentation":"<p>The vendor type for the payment credential provider.</p>"
+        },
         "credentialProviderArn":{
           "shape":"PaymentCredentialProviderArnType",
           "documentation":"<p>The Amazon Resource Name (ARN) of the payment credential provider.</p>"
@@ -13727,7 +14162,7 @@
     },
     "PaymentCredentialProviderVendorType":{
       "type":"string",
-      "documentation":"<p>Supported vendor types for payment providers using non-standard auth protocols</p>",
+      "documentation":"<p>Supported vendor types for payment providers using non-standard auth protocols.</p>",
       "enum":[
         "CoinbaseCDP",
         "StripePrivy"
@@ -13825,19 +14260,31 @@
     "PaymentProviderConfigurationInput":{
       "type":"structure",
       "members":{
-        "coinbaseCdpConfiguration":{"shape":"CoinbaseCdpConfigurationInput"},
-        "stripePrivyConfiguration":{"shape":"StripePrivyConfigurationInput"}
+        "coinbaseCdpConfiguration":{
+          "shape":"CoinbaseCdpConfigurationInput",
+          "documentation":"<p>The Coinbase CDP configuration.</p>"
+        },
+        "stripePrivyConfiguration":{
+          "shape":"StripePrivyConfigurationInput",
+          "documentation":"<p>The Stripe Privy configuration.</p>"
+        }
       },
-      "documentation":"<p>PROVIDER CONFIGURATION INPUT - Contains secrets for creation/update</p>",
+      "documentation":"<p>Provider configuration input — contains secrets for creation and update. Varies by vendor type.</p>",
       "union":true
     },
     "PaymentProviderConfigurationOutput":{
       "type":"structure",
       "members":{
-        "coinbaseCdpConfiguration":{"shape":"CoinbaseCdpConfigurationOutput"},
-        "stripePrivyConfiguration":{"shape":"StripePrivyConfigurationOutput"}
+        "coinbaseCdpConfiguration":{
+          "shape":"CoinbaseCdpConfigurationOutput",
+          "documentation":"<p>The Coinbase CDP configuration.</p>"
+        },
+        "stripePrivyConfiguration":{
+          "shape":"StripePrivyConfigurationOutput",
+          "documentation":"<p>The Stripe Privy configuration.</p>"
+        }
       },
-      "documentation":"<p>PROVIDER CONFIGURATION OUTPUT - No raw secrets, only ARNs</p>",
+      "documentation":"<p>Provider configuration output — no raw secrets, only ARNs. Varies by vendor type.</p>",
       "union":true
     },
     "PaymentsAuthorizerType":{
@@ -13865,11 +14312,11 @@
         "policyId",
         "name",
         "policyEngineId",
-        "definition",
         "createdAt",
         "updatedAt",
         "policyArn",
         "status",
+        "definition",
         "statusReasons"
       ],
       "members":{
@@ -13884,14 +14331,6 @@
         "policyEngineId":{
           "shape":"ResourceId",
           "documentation":"<p>The identifier of the policy engine that manages this policy. This establishes the policy engine context for policy evaluation and management.</p>"
-        },
-        "definition":{
-          "shape":"PolicyDefinition",
-          "documentation":"<p>The Cedar policy statement that defines the access control rules. This contains the actual policy logic used for agent behavior control and access decisions.</p>"
-        },
-        "description":{
-          "shape":"Description",
-          "documentation":"<p>A human-readable description of the policy's purpose and functionality. Limited to 4,096 characters, this helps administrators understand and manage the policy.</p>"
         },
         "createdAt":{
           "shape":"DateTimestamp",
@@ -13908,6 +14347,14 @@
         "status":{
           "shape":"PolicyStatus",
           "documentation":"<p>The current status of the policy.</p>"
+        },
+        "definition":{
+          "shape":"PolicyDefinition",
+          "documentation":"<p>The Cedar policy statement that defines the access control rules. This contains the actual policy logic used for agent behavior control and access decisions.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A human-readable description of the policy's purpose and functionality. Limited to 4,096 characters, this helps administrators understand and manage the policy.</p>"
         },
         "statusReasons":{
           "shape":"PolicyStatusReasons",
@@ -13957,10 +14404,6 @@
           "shape":"PolicyEngineName",
           "documentation":"<p>The customer-assigned immutable name for the policy engine. This human-readable identifier must be unique within the account and cannot exceed 48 characters.</p>"
         },
-        "description":{
-          "shape":"Description",
-          "documentation":"<p>A human-readable description of the policy engine's purpose and scope. Limited to 4,096 characters, this helps administrators understand the policy engine's role in the overall governance strategy.</p>"
-        },
         "createdAt":{
           "shape":"DateTimestamp",
           "documentation":"<p>The timestamp when the policy engine was originally created. This is automatically set by the service and used for auditing and lifecycle management.</p>"
@@ -13977,13 +14420,17 @@
           "shape":"PolicyEngineStatus",
           "documentation":"<p>The current status of the policy engine.</p>"
         },
-        "statusReasons":{
-          "shape":"PolicyStatusReasons",
-          "documentation":"<p>Additional information about the policy engine status. This provides details about any failures or the current state of the policy engine lifecycle.</p>"
-        },
         "encryptionKeyArn":{
           "shape":"KmsKeyArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the policy engine data.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A human-readable description of the policy engine's purpose and scope. Limited to 4,096 characters, this helps administrators understand the policy engine's role in the overall governance strategy.</p>"
+        },
+        "statusReasons":{
+          "shape":"PolicyStatusReasons",
+          "documentation":"<p>Additional information about the policy engine status. This provides details about any failures or the current state of the policy engine lifecycle.</p>"
         }
       },
       "documentation":"<p>Represents a policy engine resource within the AgentCore Policy system. Policy engines serve as containers for grouping related policies and provide the execution context for policy evaluation and management. Each policy engine can be associated with one Gateway (one engine per Gateway), where it intercepts all agent tool calls and evaluates them against the contained policies before allowing tools to execute. The policy engine maintains the Cedar schema generated from the Gateway's tool manifest, ensuring that policies are validated against the actual tools and parameters available. Policy engines support two enforcement modes that can be configured when associating with a Gateway: log-only mode for testing (evaluates decisions without blocking) and enforce mode for production (actively allows or denies based on policy evaluation).</p>"
@@ -14011,6 +14458,54 @@
         "UPDATE_FAILED",
         "DELETE_FAILED"
       ]
+    },
+    "PolicyEngineSummary":{
+      "type":"structure",
+      "required":[
+        "policyEngineId",
+        "name",
+        "createdAt",
+        "updatedAt",
+        "policyEngineArn",
+        "status"
+      ],
+      "members":{
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for the policy engine.</p>"
+        },
+        "name":{
+          "shape":"PolicyEngineName",
+          "documentation":"<p>The customer-assigned name of the policy engine.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the policy engine was originally created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the policy engine was last modified.</p>"
+        },
+        "policyEngineArn":{
+          "shape":"PolicyEngineArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the policy engine.</p>"
+        },
+        "status":{
+          "shape":"PolicyEngineStatus",
+          "documentation":"<p>The current status of the policy engine.</p>"
+        },
+        "encryptionKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the policy engine data.</p>"
+        }
+      },
+      "documentation":"<p>Represents a metadata-only summary of a policy engine resource. This structure contains resource identifiers, status, and timestamps without customer-encrypted fields such as description or status reasons. Policy engine summaries are returned by operations that do not require access to the customer's KMS key.</p>"
+    },
+    "PolicyEngineSummaryList":{
+      "type":"list",
+      "member":{"shape":"PolicyEngineSummary"},
+      "max":100,
+      "min":0
     },
     "PolicyEngines":{
       "type":"list",
@@ -14064,13 +14559,13 @@
           "shape":"PolicyGenerationStatus",
           "documentation":"<p>The current status of this policy generation request.</p>"
         },
-        "statusReasons":{
-          "shape":"PolicyStatusReasons",
-          "documentation":"<p>Additional information about the generation status.</p>"
-        },
         "findings":{
           "shape":"String",
           "documentation":"<p>Findings and insights from this policy generation process.</p>"
+        },
+        "statusReasons":{
+          "shape":"PolicyStatusReasons",
+          "documentation":"<p>Additional information about the generation status.</p>"
         }
       },
       "documentation":"<p>Represents a policy generation request within the AgentCore Policy system. Tracks the AI-powered conversion of natural language descriptions into Cedar policy statements, enabling users to author policies by describing authorization requirements in plain English. The generation process analyzes the natural language input along with the Gateway's tool context and Cedar schema to produce one or more validated policy options. Each generation request tracks the status of the conversion process and maintains findings about the generated policies, including validation results and potential issues. Generated policy assets remain available for one week after successful generation, allowing time to review and create policies from the generated options.</p>"
@@ -14142,6 +14637,64 @@
         "DELETE_FAILED"
       ]
     },
+    "PolicyGenerationSummary":{
+      "type":"structure",
+      "required":[
+        "policyEngineId",
+        "policyGenerationId",
+        "name",
+        "policyGenerationArn",
+        "resource",
+        "createdAt",
+        "updatedAt",
+        "status"
+      ],
+      "members":{
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the policy engine associated with this generation request.</p>"
+        },
+        "policyGenerationId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for this policy generation request.</p>"
+        },
+        "name":{
+          "shape":"PolicyGenerationName",
+          "documentation":"<p>The customer-assigned name for this policy generation request.</p>"
+        },
+        "policyGenerationArn":{
+          "shape":"PolicyGenerationArn",
+          "documentation":"<p>The ARN of this policy generation request.</p>"
+        },
+        "resource":{
+          "shape":"Resource",
+          "documentation":"<p>The resource information associated with this policy generation.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when this policy generation request was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when this policy generation was last updated.</p>"
+        },
+        "status":{
+          "shape":"PolicyGenerationStatus",
+          "documentation":"<p>The current status of this policy generation request.</p>"
+        },
+        "findings":{
+          "shape":"String",
+          "documentation":"<p>Findings and insights from this policy generation process.</p>"
+        }
+      },
+      "documentation":"<p>Represents a metadata-only summary of a policy generation resource. This structure contains resource identifiers, status, timestamps, and findings without customer-encrypted fields such as status reasons. Policy generation summaries are returned by operations that do not require access to the customer's KMS key.</p>"
+    },
+    "PolicyGenerationSummaryList":{
+      "type":"list",
+      "member":{"shape":"PolicyGenerationSummary"},
+      "max":100,
+      "min":0
+    },
     "PolicyGenerations":{
       "type":"list",
       "member":{"shape":"PolicyGeneration"},
@@ -14169,6 +14722,55 @@
     "PolicyStatusReasons":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "PolicySummary":{
+      "type":"structure",
+      "required":[
+        "policyId",
+        "name",
+        "policyEngineId",
+        "createdAt",
+        "updatedAt",
+        "policyArn",
+        "status"
+      ],
+      "members":{
+        "policyId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for the policy.</p>"
+        },
+        "name":{
+          "shape":"PolicyName",
+          "documentation":"<p>The customer-assigned name of the policy.</p>"
+        },
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the policy engine that manages this policy.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the policy was originally created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the policy was last modified.</p>"
+        },
+        "policyArn":{
+          "shape":"PolicyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the policy.</p>"
+        },
+        "status":{
+          "shape":"PolicyStatus",
+          "documentation":"<p>The current status of the policy.</p>"
+        }
+      },
+      "documentation":"<p>Represents a metadata-only summary of a policy resource. This structure contains resource identifiers, status, and timestamps without customer-encrypted fields such as definition, description, or status reasons. Policy summaries are returned by operations that do not require access to the customer's KMS key.</p>"
+    },
+    "PolicySummaryList":{
+      "type":"list",
+      "member":{"shape":"PolicySummary"},
+      "max":100,
+      "min":0
     },
     "PolicyValidationMode":{
       "type":"string",
@@ -15179,7 +15781,7 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces associated with the semantic memory strategy.</p>",
+          "documentation":"<p>This is a legacy parameter, use <code>namespaceTemplates</code>. The namespaces associated with the semantic memory strategy.</p>",
           "deprecated":true,
           "deprecatedMessage":"Use namespaceTemplates instead",
           "deprecatedSince":"2026-03-02"
@@ -15522,13 +16124,13 @@
           "shape":"PolicyGenerationStatus",
           "documentation":"<p>The initial status of the policy generation request.</p>"
         },
-        "statusReasons":{
-          "shape":"PolicyStatusReasons",
-          "documentation":"<p>Additional information about the generation status.</p>"
-        },
         "findings":{
           "shape":"String",
           "documentation":"<p>Initial findings from the policy generation process.</p>"
+        },
+        "statusReasons":{
+          "shape":"PolicyStatusReasons",
+          "documentation":"<p>Additional information about the generation status.</p>"
         }
       }
     },
@@ -15741,7 +16343,7 @@
           "documentation":"<p>The authorization ID for the Stripe Privy integration.</p>"
         }
       },
-      "documentation":"<p>StripePrivy configuration - credentials provided by Stripe + Privy</p>"
+      "documentation":"<p>Stripe Privy configuration — credentials provided by Stripe and Privy.</p>"
     },
     "StripePrivyConfigurationOutput":{
       "type":"structure",
@@ -15763,7 +16365,7 @@
           "documentation":"<p>The authorization ID for the Stripe Privy integration.</p>"
         }
       },
-      "documentation":"<p>StripePrivy configuration output with secret ARNs</p>"
+      "documentation":"<p>Stripe Privy configuration output with secret ARNs.</p>"
     },
     "SubmitRegistryRecordForApprovalRequest":{
       "type":"structure",
@@ -15864,7 +16466,7 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces associated with the summary memory strategy.</p>",
+          "documentation":"<p>This is a legacy parameter, use <code>namespaceTemplates</code>. The namespaces associated with the summary memory strategy.</p>",
           "deprecated":true,
           "deprecatedMessage":"Use namespaceTemplates instead",
           "deprecatedSince":"2026-03-02"
@@ -17654,10 +18256,13 @@
           "shape":"CredentialProviderName",
           "documentation":"<p>The name of the payment credential provider to update.</p>"
         },
-        "credentialProviderVendor":{"shape":"PaymentCredentialProviderVendorType"},
+        "credentialProviderVendor":{
+          "shape":"PaymentCredentialProviderVendorType",
+          "documentation":"<p>The vendor type for the payment credential provider (e.g., CoinbaseCDP, StripePrivy).</p>"
+        },
         "providerConfigurationInput":{
           "shape":"PaymentProviderConfigurationInput",
-          "documentation":"<p>Configuration specific to the vendor, including API credentials</p>"
+          "documentation":"<p>Configuration specific to the vendor, including API credentials.</p>"
         }
       }
     },
@@ -17676,14 +18281,17 @@
           "shape":"CredentialProviderName",
           "documentation":"<p>The name of the updated payment credential provider.</p>"
         },
-        "credentialProviderVendor":{"shape":"PaymentCredentialProviderVendorType"},
+        "credentialProviderVendor":{
+          "shape":"PaymentCredentialProviderVendorType",
+          "documentation":"<p>The vendor type for the updated payment credential provider.</p>"
+        },
         "credentialProviderArn":{
           "shape":"PaymentCredentialProviderArnType",
           "documentation":"<p>The Amazon Resource Name (ARN) of the updated payment credential provider.</p>"
         },
         "providerConfigurationOutput":{
           "shape":"PaymentProviderConfigurationOutput",
-          "documentation":"<p>Output configuration (contains secret ARNs, excludes actual secret values)</p>"
+          "documentation":"<p>Output configuration (contains secret ARNs, excludes actual secret values).</p>"
         },
         "createdTime":{
           "shape":"Timestamp",
@@ -17807,10 +18415,6 @@
           "shape":"PolicyEngineName",
           "documentation":"<p>The name of the updated policy engine.</p>"
         },
-        "description":{
-          "shape":"Description",
-          "documentation":"<p>The updated description of the policy engine.</p>"
-        },
         "createdAt":{
           "shape":"DateTimestamp",
           "documentation":"<p>The original creation timestamp of the policy engine.</p>"
@@ -17827,13 +18431,17 @@
           "shape":"PolicyEngineStatus",
           "documentation":"<p>The current status of the updated policy engine.</p>"
         },
-        "statusReasons":{
-          "shape":"PolicyStatusReasons",
-          "documentation":"<p>Additional information about the update status.</p>"
-        },
         "encryptionKeyArn":{
           "shape":"KmsKeyArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the policy engine data.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The updated description of the policy engine.</p>"
+        },
+        "statusReasons":{
+          "shape":"PolicyStatusReasons",
+          "documentation":"<p>Additional information about the update status.</p>"
         }
       }
     },
@@ -17876,11 +18484,11 @@
         "policyId",
         "name",
         "policyEngineId",
-        "definition",
         "createdAt",
         "updatedAt",
         "policyArn",
         "status",
+        "definition",
         "statusReasons"
       ],
       "members":{
@@ -17895,14 +18503,6 @@
         "policyEngineId":{
           "shape":"ResourceId",
           "documentation":"<p>The identifier of the policy engine managing the updated policy.</p>"
-        },
-        "definition":{
-          "shape":"PolicyDefinition",
-          "documentation":"<p>The updated Cedar policy statement.</p>"
-        },
-        "description":{
-          "shape":"Description",
-          "documentation":"<p>The updated description of the policy.</p>"
         },
         "createdAt":{
           "shape":"DateTimestamp",
@@ -17919,6 +18519,14 @@
         "status":{
           "shape":"PolicyStatus",
           "documentation":"<p>The current status of the updated policy.</p>"
+        },
+        "definition":{
+          "shape":"PolicyDefinition",
+          "documentation":"<p>The updated Cedar policy statement.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The updated description of the policy.</p>"
         },
         "statusReasons":{
           "shape":"PolicyStatusReasons",
@@ -18514,7 +19122,7 @@
         },
         "namespaces":{
           "shape":"NamespacesList",
-          "documentation":"<p>The namespaces associated with the user preference memory strategy.</p>",
+          "documentation":"<p>This is a legacy parameter, use <code>namespaceTemplates</code>. The namespaces associated with the user preference memory strategy.</p>",
           "deprecated":true,
           "deprecatedMessage":"Use namespaceTemplates instead",
           "deprecatedSince":"2026-03-02"
@@ -18714,6 +19322,10 @@
         "subnets":{
           "shape":"Subnets",
           "documentation":"<p>The subnets associated with the VPC configuration.</p>"
+        },
+        "requireServiceS3Endpoint":{
+          "shape":"Boolean",
+          "documentation":"<p><note> <p>This field applies only to Agent Runtimes. It is not applicable to Browsers or Code Interpreters.</p> </note> <p>Controls whether a service-managed Amazon S3 gateway endpoint is provisioned in the VPC network topology for the agent runtime. This gateway is used by Amazon Bedrock AgentCore Runtime to download code and container images during agent startup.</p> <p>Starting May 5, 2026, Amazon Bedrock AgentCore Runtime is gradually rolling out a change to how network isolation is configured for VPC mode agents. Agent runtimes created on or after this rollout will no longer include the service-managed Amazon S3 gateway. Instead, all network access, including to Amazon S3, is governed exclusively by your VPC configuration. This field cannot be set on agent runtimes created after the rollout. Passing this field in an <code>UpdateAgentRuntime</code> request for these agent runtimes returns a <code>ValidationException</code>.</p> <p>Agent runtimes created before the rollout are not affected and continue to operate with the service-managed Amazon S3 gateway. To enforce full VPC network isolation on these existing agent runtimes, set this field to <code>false</code> via the <code>UpdateAgentRuntime</code> API. Before opting out, ensure your VPC provides the Amazon S3 access required for agent startup. If this field is not specified or is set to <code>true</code>, the service-managed Amazon S3 gateway remains provisioned.</p> <p>This field is only supported in the <code>UpdateAgentRuntime</code> API for pre-rollout agent runtimes. Passing this field in a <code>CreateAgentRuntime</code> request returns a <code>ValidationException</code>.</p></p>"
         }
       },
       "documentation":"<p>VpcConfig for the Agent.</p>"

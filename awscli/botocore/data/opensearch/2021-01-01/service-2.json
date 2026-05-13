@@ -2308,6 +2308,66 @@
       "documentation":"<p>Specifies the Auto-Tune type. Valid value is SCHEDULED_ACTION.</p>",
       "enum":["SCHEDULED_ACTION"]
     },
+    "AutomatedSnapshotPauseOptions":{
+      "type":"structure",
+      "required":["Enabled"],
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether automated snapshot pause is enabled for the domain.</p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the automated snapshot pause begins.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the automated snapshot pause ends.</p>"
+        },
+        "State":{
+          "shape":"PauseState",
+          "documentation":"<p>The current state of the automated snapshot pause. Valid values are <code>Active</code>, <code>Completed</code>, <code>Scheduled</code>, and <code>Disabled</code>.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the automated snapshot pause options for the domain. These options allow you to temporarily pause automated snapshots for a specified time period.</p>"
+    },
+    "AutomatedSnapshotPauseOptionsStatus":{
+      "type":"structure",
+      "required":[
+        "Options",
+        "Status"
+      ],
+      "members":{
+        "Options":{
+          "shape":"AutomatedSnapshotPauseOptions",
+          "documentation":"<p>Automated snapshot pause options for the domain.</p>"
+        },
+        "Status":{
+          "shape":"OptionStatus",
+          "documentation":"<p>The current status of the automated snapshot pause options for the domain.</p>"
+        }
+      },
+      "documentation":"<p>The status of automated snapshot pause options for the domain.</p>"
+    },
+    "AutomatedSnapshotPauseRequestOptions":{
+      "type":"structure",
+      "required":["Enabled"],
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to enable or disable automated snapshot pause for the domain.</p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the automated snapshot pause should begin.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the automated snapshot pause should end. The maximum allowed duration between <code>StartTime</code> and <code>EndTime</code> is 3 days.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the automated snapshot pause request options for the domain.</p> <important> <p>Suspending snapshots reduces data protection. You cannot restore your domain to points in time when snapshots are suspended. Use this feature only for short-term operational needs such as migrations or maintenance windows.</p> </important> <p>Maximum suspension duration: 3 days.</p>"
+    },
     "AvailabilityZone":{
       "type":"string",
       "max":15,
@@ -3018,6 +3078,10 @@
         "DeploymentStrategyOptions":{
           "shape":"DeploymentStrategyOptions",
           "documentation":"<p>Specifies the deployment strategy options for the domain.</p>"
+        },
+        "AutomatedSnapshotPauseOptions":{
+          "shape":"AutomatedSnapshotPauseRequestOptions",
+          "documentation":"<p>Specifies the automated snapshot pause options for the domain.</p> <important> <p>Suspending snapshots reduces data protection. You cannot restore your domain to points in time when snapshots are suspended. Use this feature only for short-term operational needs such as migrations or maintenance windows.</p> </important> <p>Maximum suspension duration: 3 days.</p>"
         }
       }
     },
@@ -4410,6 +4474,10 @@
         "DeploymentStrategyOptions":{
           "shape":"DeploymentStrategyOptionsStatus",
           "documentation":"<p>Specifies <code>DeploymentStrategyOptions</code> for the domain.</p>"
+        },
+        "AutomatedSnapshotPauseOptions":{
+          "shape":"AutomatedSnapshotPauseOptionsStatus",
+          "documentation":"<p>Specifies <code>AutomatedSnapshotPauseOptions</code> for the domain.</p>"
         }
       },
       "documentation":"<p>Container for the configuration of an OpenSearch Service domain.</p>"
@@ -4837,6 +4905,10 @@
         "DeploymentStrategyOptions":{
           "shape":"DeploymentStrategyOptions",
           "documentation":"<p>The current status of the domain's deployment strategy options.</p>"
+        },
+        "AutomatedSnapshotPauseOptions":{
+          "shape":"AutomatedSnapshotPauseOptions",
+          "documentation":"<p>The current status of the domain's automated snapshot pause options.</p>"
         }
       },
       "documentation":"<p>The current status of an OpenSearch Service domain.</p>"
@@ -7544,6 +7616,16 @@
       "pattern":".*",
       "sensitive":true
     },
+    "PauseState":{
+      "type":"string",
+      "documentation":"<p>The state of the automated snapshot pause. Valid values are <code>Active</code>, <code>Completed</code>, <code>Scheduled</code>, and <code>Disabled</code>.</p>",
+      "enum":[
+        "Active",
+        "Completed",
+        "Scheduled",
+        "Disabled"
+      ]
+    },
     "PluginClassName":{
       "type":"string",
       "max":1024
@@ -8869,6 +8951,10 @@
         "DeploymentStrategyOptions":{
           "shape":"DeploymentStrategyOptions",
           "documentation":"<p>Specifies the deployment strategy options for the domain.</p>"
+        },
+        "AutomatedSnapshotPauseOptions":{
+          "shape":"AutomatedSnapshotPauseRequestOptions",
+          "documentation":"<p>Specifies the automated snapshot pause options for the domain.</p> <important> <p>Suspending snapshots reduces data protection. You cannot restore your domain to points in time when snapshots are suspended. Use this feature only for short-term operational needs such as migrations or maintenance windows.</p> </important> <p>Maximum suspension duration: 3 days.</p>"
         }
       },
       "documentation":"<p>Container for the request parameters to the <code>UpdateDomain</code> operation.</p>"

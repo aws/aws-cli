@@ -9983,9 +9983,22 @@
         "Description":{
           "shape":"String",
           "documentation":"<p>A human-readable description of the event.</p>"
+        },
+        "EventLevel":{
+          "shape":"ClusterEventLevel",
+          "documentation":"<p>The severity level of the event. Valid values are <code>Info</code>, <code>Warn</code>, and <code>Error</code>.</p>"
         }
       },
       "documentation":"<p>Detailed information about a specific event in a HyperPod cluster.</p>"
+    },
+    "ClusterEventLevel":{
+      "type":"string",
+      "documentation":"<p>The severity level for a HyperPod cluster event.</p>",
+      "enum":[
+        "Info",
+        "Warn",
+        "Error"
+      ]
     },
     "ClusterEventMaxResults":{
       "type":"integer",
@@ -10048,6 +10061,10 @@
         "Description":{
           "shape":"String",
           "documentation":"<p>A brief, human-readable description of the event.</p>"
+        },
+        "EventLevel":{
+          "shape":"ClusterEventLevel",
+          "documentation":"<p>The severity level of the event. Valid values are <code>Info</code>, <code>Warn</code>, and <code>Error</code>.</p>"
         }
       },
       "documentation":"<p>A summary of an event in a HyperPod cluster.</p>"
@@ -14364,6 +14381,10 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>A list of key value pairs associated with the model group. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a> in the <i>Amazon Web Services General Reference Guide</i>.</p>"
+        },
+        "ManagedConfiguration":{
+          "shape":"ManagedConfiguration",
+          "documentation":"<p>The managed configuration of the model package group.</p>"
         }
       }
     },
@@ -14474,6 +14495,10 @@
         "ModelLifeCycle":{
           "shape":"ModelLifeCycle",
           "documentation":"<p> A structure describing the current state of the model in its life cycle. </p>"
+        },
+        "ManagedStorageType":{
+          "shape":"ManagedStorageType",
+          "documentation":"<p>The storage type of the model package.</p>"
         }
       }
     },
@@ -20843,6 +20868,10 @@
         "ModelPackageGroupStatus":{
           "shape":"ModelPackageGroupStatus",
           "documentation":"<p>The status of the model group.</p>"
+        },
+        "ManagedConfiguration":{
+          "shape":"ManagedConfiguration",
+          "documentation":"<p>The managed configuration of the model package group.</p>"
         }
       }
     },
@@ -20981,6 +21010,10 @@
         "ModelLifeCycle":{
           "shape":"ModelLifeCycle",
           "documentation":"<p> A structure describing the current state of the model in its life cycle. </p>"
+        },
+        "ManagedStorageType":{
+          "shape":"ManagedStorageType",
+          "documentation":"<p>The storage type of the model package.</p>"
         }
       }
     },
@@ -22314,7 +22347,7 @@
         },
         "TargetResources":{
           "shape":"SageMakerResourceNames",
-          "documentation":"<p>The target resources (e.g., SageMaker Training Jobs, SageMaker HyperPod, SageMaker Endpoints) that can use this training plan.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> <li> <p>A training plan for SageMaker endpoints can be used exclusively to provide compute resources to SageMaker endpoints for model deployment.</p> </li> </ul>"
+          "documentation":"<p>The target resources (e.g., SageMaker Training Jobs, SageMaker HyperPod, SageMaker Endpoints, Studio apps) that can use this training plan.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> <li> <p>A training plan for SageMaker endpoints can be used exclusively to provide compute resources to SageMaker endpoints for model deployment.</p> </li> <li> <p>A training plan for Studio apps can be used to launch JupyterLab and Code Editor apps on reserved training plan capacity.</p> </li> </ul>"
         },
         "ReservedCapacitySummaries":{
           "shape":"ReservedCapacitySummaries",
@@ -24534,6 +24567,13 @@
       "enum":[
         "USER_PROFILE_NAME",
         "DISABLED"
+      ]
+    },
+    "ExecutionRoleSessionNameMode":{
+      "type":"string",
+      "enum":[
+        "STATIC",
+        "USER_IDENTITY"
       ]
     },
     "ExecutionStatus":{
@@ -28489,6 +28529,10 @@
           "shape":"AdditionalEnis",
           "documentation":"<p>Information about additional Elastic Network Interfaces (ENIs) associated with the instance.</p>"
         },
+        "InstanceRequirementsEniConfigurations":{
+          "shape":"InstanceRequirementsEniConfigurations",
+          "documentation":"<p>The ENI configurations for the instance types in the instance requirements, grouped by network interface category (for example, ENI-only or EFA with ENIs). At most one configuration per category.</p>"
+        },
         "CapacityReservation":{
           "shape":"CapacityReservation",
           "documentation":"<p>Information about the Capacity Reservation used by the instance.</p>"
@@ -28590,6 +28634,24 @@
       "type":"list",
       "member":{"shape":"InstancePoolSummary"},
       "min":1
+    },
+    "InstanceRequirementsEniConfiguration":{
+      "type":"structure",
+      "members":{
+        "CustomerEni":{
+          "shape":"String",
+          "documentation":"<p>The ID of the customer-managed Elastic Network Interface (ENI) associated with the instance type category.</p>"
+        },
+        "AdditionalEnis":{
+          "shape":"AdditionalEnis",
+          "documentation":"<p>Information about additional Elastic Network Interfaces (ENIs) associated with the instance type category.</p>"
+        }
+      },
+      "documentation":"<p>The customer ENI and additional ENIs associated with a network interface category.</p>"
+    },
+    "InstanceRequirementsEniConfigurations":{
+      "type":"list",
+      "member":{"shape":"InstanceRequirementsEniConfiguration"}
     },
     "InstanceType":{
       "type":"string",
@@ -34177,6 +34239,16 @@
       "min":0,
       "pattern":"\\d+\\.\\d+"
     },
+    "ManagedConfiguration":{
+      "type":"structure",
+      "members":{
+        "ManagedStorageType":{
+          "shape":"ManagedStorageType",
+          "documentation":"<p>The storage type of the model package.</p>"
+        }
+      },
+      "documentation":"<p>The managed configuration of a model package group.</p>"
+    },
     "ManagedInstanceScalingCooldownInMinutes":{
       "type":"integer",
       "box":true,
@@ -34212,6 +34284,10 @@
         "ENABLED",
         "DISABLED"
       ]
+    },
+    "ManagedStorageType":{
+      "type":"string",
+      "enum":["Restricted"]
     },
     "MapString2048":{
       "type":"map",
@@ -36005,6 +36081,10 @@
         "ModelPackageGroupStatus":{
           "shape":"ModelPackageGroupStatus",
           "documentation":"<p>The status of the model group.</p>"
+        },
+        "ManagedConfiguration":{
+          "shape":"ManagedConfiguration",
+          "documentation":"<p>The managed configuration of the model package group.</p>"
         }
       },
       "documentation":"<p>Summary information about a model group.</p>"
@@ -41268,7 +41348,7 @@
       ],
       "members":{
         "InstanceType":{
-          "shape":"InstanceType",
+          "shape":"ProductionVariantInstanceType",
           "documentation":"<p>The instance type the model is deployed to.</p>"
         },
         "InstanceCount":{
@@ -42391,6 +42471,10 @@
         "LifecycleConfigArn":{
           "shape":"StudioLifecycleConfigArn",
           "documentation":"<p> The Amazon Resource Name (ARN) of the Lifecycle Configuration attached to the Resource.</p>"
+        },
+        "TrainingPlanArn":{
+          "shape":"StudioResourceSpecTrainingPlanArn",
+          "documentation":"<p>The ARN of the SageMaker AI Training Plan to use for this app. When you specify a training plan, the app launches on reserved GPU capacity. This field is supported for JupyterLab and CodeEditor app types.</p> <p>For more information about how to reserve GPU capacity with SageMaker AI Training Plans, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/training-plan-utilization-for-studio-apps.html\">Using training plans in Studio applications</a>.</p>"
         }
       },
       "documentation":"<p>Specifies the ARN's of a SageMaker AI image and SageMaker AI image version, and the instance type that the version runs on.</p> <note> <p>When both <code>SageMakerImageVersionArn</code> and <code>SageMakerImageArn</code> are passed, <code>SageMakerImageVersionArn</code> is used. Any updates to <code>SageMakerImageArn</code> will not take effect if <code>SageMakerImageVersionArn</code> already exists in the <code>ResourceSpec</code> because <code>SageMakerImageVersionArn</code> always takes precedence. To clear the value set for <code>SageMakerImageVersionArn</code>, pass <code>None</code> as the value.</p> </note>"
@@ -42802,7 +42886,8 @@
       "enum":[
         "training-job",
         "hyperpod-cluster",
-        "endpoint"
+        "endpoint",
+        "studio-apps"
       ]
     },
     "SageMakerResourceNames":{
@@ -43150,7 +43235,7 @@
         },
         "TargetResources":{
           "shape":"SageMakerResourceNames",
-          "documentation":"<p>The target resources (e.g., SageMaker Training Jobs, SageMaker HyperPod, SageMaker Endpoints) to search for in the offerings.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> <li> <p>A training plan for SageMaker endpoints can be used exclusively to provide compute resources to SageMaker endpoints for model deployment.</p> </li> </ul>"
+          "documentation":"<p>The target resources (e.g., SageMaker Training Jobs, SageMaker HyperPod, SageMaker Endpoints, Studio apps) to search for in the offerings.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> <li> <p>A training plan for SageMaker endpoints can be used exclusively to provide compute resources to SageMaker endpoints for model deployment.</p> </li> <li> <p>A training plan for Studio apps can be used to launch JupyterLab and Code Editor apps on reserved training plan capacity.</p> </li> </ul>"
         },
         "TrainingPlanArn":{
           "shape":"String",
@@ -44703,6 +44788,13 @@
       "type":"list",
       "member":{"shape":"StudioLifecycleConfigDetails"}
     },
+    "StudioResourceSpecTrainingPlanArn":{
+      "type":"string",
+      "documentation":"<p>TrainingPlanArn variant for ResourceSpec that allows &quot;None&quot; to detach a training plan. Based on TrainingPlanArn (min:50, max:2048) but with min:0 and &quot;None&quot; in pattern.</p>",
+      "max":2048,
+      "min":0,
+      "pattern":"(arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:training-plan/.*|None)"
+    },
     "StudioWebPortal":{
       "type":"string",
       "enum":[
@@ -44728,6 +44820,10 @@
         "HiddenSageMakerImageVersionAliases":{
           "shape":"HiddenSageMakerImageVersionAliasesList",
           "documentation":"<p> The version aliases you are hiding from the Studio user interface. </p>"
+        },
+        "ExecutionRoleSessionNameMode":{
+          "shape":"ExecutionRoleSessionNameMode",
+          "documentation":"<p>The execution role session name mode. If this value is set to <code>USER_IDENTITY</code>, the session name of the execution role corresponds to the user's identity. For IAM domains, the session name is the IAM session name used to generate the presigned URL. For IAM Identity Center domains, the session name is the username of the associated IAM Identity Center user. If this value is set to <code>STATIC</code> or is not set, the session name defaults to <code>SageMaker</code>.</p>"
         }
       },
       "documentation":"<p>Studio settings. If these settings are applied on a user level, they take priority over the settings applied on a domain level.</p>"
@@ -45861,6 +45957,10 @@
           "shape":"ResourceConfig",
           "documentation":"<p>Resources, including ML compute instances and ML storage volumes, that are configured for model training.</p>"
         },
+        "WarmPoolStatus":{
+          "shape":"WarmPoolStatus",
+          "documentation":"<p>The status of the warm pool associated with the training job.</p>"
+        },
         "VpcConfig":{
           "shape":"VpcConfig",
           "documentation":"<p>A <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_VpcConfig.html\">VpcConfig</a> object that specifies the VPC that this training job has access to. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html\">Protect Training Jobs by Using an Amazon Virtual Private Cloud</a>.</p>"
@@ -46300,7 +46400,7 @@
         },
         "TargetResources":{
           "shape":"SageMakerResourceNames",
-          "documentation":"<p>The target resources (e.g., SageMaker Training Jobs, SageMaker HyperPod, SageMaker Endpoints) for this training plan offering.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> <li> <p>A training plan for SageMaker endpoints can be used exclusively to provide compute resources to SageMaker endpoints for model deployment.</p> </li> </ul>"
+          "documentation":"<p>The target resources (e.g., SageMaker Training Jobs, SageMaker HyperPod, SageMaker Endpoints, Studio apps) for this training plan offering.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> <li> <p>A training plan for SageMaker endpoints can be used exclusively to provide compute resources to SageMaker endpoints for model deployment.</p> </li> <li> <p>A training plan for Studio apps can be used to launch JupyterLab and Code Editor apps on reserved training plan capacity.</p> </li> </ul>"
         },
         "RequestedStartTimeAfter":{
           "shape":"Timestamp",
@@ -46444,7 +46544,7 @@
         },
         "TargetResources":{
           "shape":"SageMakerResourceNames",
-          "documentation":"<p>The target resources (e.g., training jobs, HyperPod clusters, Endpoints) that can use this training plan.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> <li> <p>A training plan for SageMaker endpoints can be used exclusively to provide compute resources to SageMaker endpoints for model deployment.</p> </li> </ul>"
+          "documentation":"<p>The target resources (e.g., training jobs, HyperPod clusters, Endpoints, Studio apps) that can use this training plan.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> <li> <p>A training plan for SageMaker endpoints can be used exclusively to provide compute resources to SageMaker endpoints for model deployment.</p> </li> <li> <p>A training plan for Studio apps can be used to launch JupyterLab and Code Editor apps on reserved training plan capacity.</p> </li> </ul>"
         },
         "ReservedCapacitySummaries":{
           "shape":"ReservedCapacitySummaries",

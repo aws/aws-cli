@@ -795,6 +795,15 @@ class PresignCommand(S3Command):
 
 class S3TransferCommand(S3Command):
     def _run_main(self, parsed_args, parsed_globals):
+        s3_config = self._session.get_scoped_config().get('s3', {})
+        if not isinstance(s3_config, dict):
+            raise transferconfig.InvalidConfigError(
+                "Invalid value for 's3' in your AWS config file. "
+                "The s3 section must use indented sub-keys, not a plain "
+                "string value. For example:\n\n"
+                "s3 =\n"
+                "  max_concurrent_requests = 10\n"
+            )
         super(S3TransferCommand, self)._run_main(parsed_args, parsed_globals)
         self._convert_path_args(parsed_args)
         params = self._build_call_parameters(parsed_args, {})
@@ -810,7 +819,7 @@ class S3TransferCommand(S3Command):
         cmd_params.add_v2_debug(parsed_globals)
 
         runtime_config = transferconfig.RuntimeConfig().build_config(
-            **self._session.get_scoped_config().get('s3', {}))
+            **s3_config)
         cmd = CommandArchitecture(self._session, self.NAME,
                                   cmd_params.parameters,
                                   runtime_config)

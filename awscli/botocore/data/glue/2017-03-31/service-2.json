@@ -14512,6 +14512,10 @@
         "IncludeRoot":{
           "shape":"NullableBoolean",
           "documentation":"<p>Whether to list the default catalog in the account and region in the response. Defaults to <code>false</code>. When <code>true</code> and <code>ParentCatalogId = NULL | Amazon Web Services Account ID</code>, all catalogs and the default catalog are enumerated in the response.</p> <p>When the <code>ParentCatalogId</code> is not equal to null, and this attribute is passed as <code>false</code> or <code>true</code>, an <code>InvalidInputException</code> is thrown.</p>"
+        },
+        "HasDatabases":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>When <code>true</code>, the response only includes catalogs that can contain databases. Some catalogs are organizational containers that hold only other catalogs, not databases. When this parameter is set to <code>true</code>, those container-only catalogs are excluded, and only catalogs capable of containing databases are returned. Defaults to <code>false</code>.</p>"
         }
       }
     },
@@ -22312,8 +22316,7 @@
     },
     "PartitionIndexList":{
       "type":"list",
-      "member":{"shape":"PartitionIndex"},
-      "max":3
+      "member":{"shape":"PartitionIndex"}
     },
     "PartitionIndexStatus":{
       "type":"string",

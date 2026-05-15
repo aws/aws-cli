@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.45.9
+======
+
+* api-change:``logs``: Updating the max limit for start query api parameter.
+* api-change:``mediapackagev2``: This release adds support for AvailabilityStartTimeConfiguration in MediaPackageV2 DASH manifests
+* api-change:``partnercentral-selling``: Enable TCV intake on Opportunity to improve Opportunities Hygiene and downstream revenue attribution.
+
+
 1.45.8
 ======
 

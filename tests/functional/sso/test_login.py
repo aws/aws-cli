@@ -332,6 +332,17 @@ class TestLoginCommand(BaseSSOTest):
             expected_token=self.access_token,
         )
 
+    def test_login_auth_sso_with_explicit_redirect_port(self):
+        content = self.get_sso_session_config('test-session')
+        self.set_config_file_content(content=content)
+        self.add_oidc_auth_code_responses(self.access_token)
+        self.run_cmd(
+            'sso login --redirect-port 5050 --redirect-host 50.50.50.50'
+        )
+        self.assert_auth_code_fetcher_called_with(
+            server_address=('50.50.50.50', 5050)
+        )
+
     def test_login_auth_sso_with_explicit_sso_session_arg(self):
         content = self.get_sso_session_config(
             'test-session', include_profile=False

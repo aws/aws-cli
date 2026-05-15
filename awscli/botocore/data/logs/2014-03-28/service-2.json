@@ -1097,7 +1097,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Returns the results from the specified query.</p> <p>Only the fields requested in the query are returned, along with a <code>@ptr</code> field, which is the identifier for the log record. You can use the value of <code>@ptr</code> in a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetLogRecord.html\">GetLogRecord</a> operation to get the full log record.</p> <p> <code>GetQueryResults</code> does not start running a query. To run a query, use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_StartQuery.html\">StartQuery</a>. For more information about how long results of previous queries are available, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/cloudwatch_limits_cwl.html\">CloudWatch Logs quotas</a>.</p> <p>If the value of the <code>Status</code> field in the output is <code>Running</code>, this operation returns only partial results. If you see a value of <code>Scheduled</code> or <code>Running</code> for the status, you can retry the operation later to see the final results. </p> <p>This operation is used both for retrieving results from interactive queries and from automated scheduled query executions. Scheduled queries use <code>GetQueryResults</code> internally to retrieve query results for processing and delivery to configured destinations.</p> <p>If you are using CloudWatch cross-account observability, you can use this operation in a monitoring account to start queries in linked source accounts. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html\">CloudWatch cross-account observability</a>.</p>"
+      "documentation":"<p>Returns the results from the specified query.</p> <p>Only the fields requested in the query are returned, along with a <code>@ptr</code> field, which is the identifier for the log record. You can use the value of <code>@ptr</code> in a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetLogRecord.html\">GetLogRecord</a> operation to get the full log record.</p> <p> <code>GetQueryResults</code> does not start running a query. To run a query, use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_StartQuery.html\">StartQuery</a>. For more information about how long results of previous queries are available, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/cloudwatch_limits_cwl.html\">CloudWatch Logs quotas</a>.</p> <p>If the value of the <code>Status</code> field in the output is <code>Running</code>, this operation returns only partial results. If you see a value of <code>Scheduled</code> or <code>Running</code> for the status, you can retry the operation later to see the final results. </p> <p>This operation is used both for retrieving results from interactive queries and from automated scheduled query executions. Scheduled queries use <code>GetQueryResults</code> internally to retrieve query results for processing and delivery to configured destinations.</p> <p>You can retrieve up to 100,000 log event results from a query, if available, by using pagination. Use the <code>nextToken</code> returned in the response to request additional pages of results, with each page returning up to 10,000 log events.</p> <p>If you are using CloudWatch cross-account observability, you can use this operation in a monitoring account to start queries in linked source accounts. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html\">CloudWatch cross-account observability</a>.</p>"
     },
     "GetScheduledQuery":{
       "name":"GetScheduledQuery",
@@ -4269,6 +4269,11 @@
       "max":10000,
       "min":1
     },
+    "EventsLimitStartQuery":{
+      "type":"integer",
+      "max":100000,
+      "min":1
+    },
     "ExecutionStatus":{
       "type":"string",
       "enum":[
@@ -5012,7 +5017,7 @@
         },
         "maxItems":{
           "shape":"GetQueryResultsMaxItems",
-          "documentation":"<p>The maximum number of log events to return in the response. The maximum is 10,000 log events.</p>"
+          "documentation":"<p>The maximum number of log events to return in the response. The maximum is 10,000 log events per request. You can retrieve up to 100,000 log event results from a query by paginating with the <code>nextToken</code>.</p>"
         }
       }
     },
@@ -5041,7 +5046,7 @@
         },
         "nextToken":{
           "shape":"GetQueryResultsNextToken",
-          "documentation":"<p>If there are more log events remaining in the results, the response includes a <code>nextToken</code>. You can use this token in a subsequent <code>GetQueryResults</code> request to get the next set of results.</p>"
+          "documentation":"<p>If there are more log events remaining in the results, the response includes a <code>nextToken</code>. You can use this token in a subsequent <code>GetQueryResults</code> request to get the next set of results. You can retrieve up to 100,000 log event results from a query by paginating with this token.</p>"
         }
       }
     },
@@ -8708,8 +8713,8 @@
           "documentation":"<p>The query string to use. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax.html\">CloudWatch Logs Insights Query Syntax</a>.</p>"
         },
         "limit":{
-          "shape":"EventsLimit",
-          "documentation":"<p>The maximum number of log events to return in the query. If the query string uses the <code>fields</code> command, only the specified fields and their values are returned. The default is 10,000.</p>"
+          "shape":"EventsLimitStartQuery",
+          "documentation":"<p>The maximum number of log events to return in the query. If the query string uses the <code>fields</code> command, only the specified fields and their values are returned. The default is 10,000.</p> <p>The maximum value is 100,000.</p>"
         }
       }
     },

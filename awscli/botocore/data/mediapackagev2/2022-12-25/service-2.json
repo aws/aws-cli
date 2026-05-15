@@ -1061,6 +1061,10 @@
         "UriPathType":{
           "shape":"UriPathType",
           "documentation":"<p>The type of path to use in manifest URIs. <code>LEAF</code> uses leaf-relative paths (for example, <code>index_1.mpd</code>). <code>ROOT</code> uses root-relative paths that include the full path from root (for example, <code>/out/v1/channel-group/channel/endpoint/index_1.mpd</code>). If you don't specify a value, the default is <code>LEAF</code>.</p>"
+        },
+        "AvailabilityStartTimeConfiguration":{
+          "shape":"DashAvailabilityStartTimeConfiguration",
+          "documentation":"<p>The configuration for the DASH <code>availabilityStartTime</code> attribute of the Media Presentation Description (MPD). If you don't specify a value, MediaPackage uses the default availability start time of <code>2024-01-01T00:00:00Z</code>.</p>"
         }
       },
       "documentation":"<p>Create a DASH manifest configuration.</p>"
@@ -1547,6 +1551,17 @@
       "member":{"shape":"CustomAdType"},
       "max":25,
       "min":0
+    },
+    "DashAvailabilityStartTimeConfiguration":{
+      "type":"structure",
+      "members":{
+        "FixedAvailabilityStartTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The fixed availability start time for the DASH manifest, in ISO 8601 date-time format. The value must have hourly granularity, meaning that the minutes, seconds, and fractional seconds must be zero. The value must be on or after <code>2024-01-01T00:00:00Z</code> and must be at least 14 days before the current time.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for the DASH <code>availabilityStartTime</code> attribute of the Media Presentation Description (MPD). Use this configuration to set a custom availability start time for your DASH manifest.</p>",
+      "union":true
     },
     "DashBaseUrl":{
       "type":"structure",
@@ -2400,6 +2415,10 @@
         "UriPathType":{
           "shape":"UriPathType",
           "documentation":"<p>The type of path used in manifest URIs. <code>LEAF</code> indicates leaf-relative paths. <code>ROOT</code> indicates root-relative paths that include the full path from root.</p>"
+        },
+        "AvailabilityStartTimeConfiguration":{
+          "shape":"DashAvailabilityStartTimeConfiguration",
+          "documentation":"<p>The configuration for the DASH <code>availabilityStartTime</code> attribute of the Media Presentation Description (MPD).</p>"
         }
       },
       "documentation":"<p>Retrieve the DASH manifest configuration.</p>"
@@ -3954,6 +3973,10 @@
       "documentation":"<p>To insert an EXT-X-START tag in your HLS playlist, specify a StartTag configuration object with a valid TimeOffset. When you do, you can also optionally specify whether to include a PRECISE value in the EXT-X-START tag.</p>"
     },
     "String":{"type":"string"},
+    "SyntheticTimestamp_date_time":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
     "TagArn":{"type":"string"},
     "TagKey":{"type":"string"},
     "TagKeyList":{

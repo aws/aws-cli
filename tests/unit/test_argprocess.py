@@ -903,6 +903,18 @@ class TestParamUnknownKeyError(unittest.TestCase):
         self.assertIn('Name, Value', str(error))
 
 
+class TestUnpackComplexCliArgWhitespace(BaseArgProcessTest):
+    def test_whitespace_only_structure_raises_param_error(self):
+        p = self.get_param_model('ec2.RunInstances.Placement')
+        with self.assertRaises(ParamError):
+            unpack_cli_arg(p, '   ')
+
+    def test_whitespace_only_list_string_raises_param_error(self):
+        p = self.get_param_model('ec2.RunInstances.BlockDeviceMappings')
+        with self.assertRaises(ParamError):
+            unpack_cli_arg(p, '   ')
+
+
 class TestArgumentPercentEscaping(BaseArgProcessTest):
     def _test_percent_escaping(self, arg_type, arg_class, doc_string):
         argument = self.create_argument(

@@ -188,12 +188,12 @@ def _unpack_json_cli_arg(argument_model, value, cli_name):
 def _unpack_complex_cli_arg(argument_model, value, cli_name):
     type_name = argument_model.type_name
     if type_name == 'structure' or type_name == 'map':
-        if value.lstrip()[0] == '{':
+        if value.lstrip().startswith('{'):
             return _unpack_json_cli_arg(argument_model, value, cli_name)
         raise ParamError(cli_name, f"Invalid JSON:\n{value}")
     elif type_name == 'list':
         if isinstance(value, str):
-            if value.lstrip()[0] == '[':
+            if value.lstrip().startswith('['):
                 return _unpack_json_cli_arg(argument_model, value, cli_name)
         elif isinstance(value, list) and len(value) == 1:
             single_value = value[0].strip()

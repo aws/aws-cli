@@ -55,7 +55,7 @@ class ParamUnknownKeyError(Exception):
     def __init__(self, key, valid_keys):
         valid_keys = ', '.join(valid_keys)
         full_message = (
-            f"Unknown key '{key}', valid choices are: {valid_key}"
+            f"Unknown key '{key}', valid choices are: {valid_keys}"
         )
         super().__init__(full_message)
 

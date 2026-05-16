@@ -896,6 +896,13 @@ class TestJSONValueHeaderParams(BaseArgProcessTest):
             unpack_cli_arg(self.p, value)
 
 
+class TestParamUnknownKeyError(unittest.TestCase):
+    def test_message_includes_valid_keys(self):
+        error = ParamUnknownKeyError('bogus', ['Name', 'Value'])
+        self.assertIn("'bogus'", str(error))
+        self.assertIn('Name, Value', str(error))
+
+
 class TestArgumentPercentEscaping(BaseArgProcessTest):
     def _test_percent_escaping(self, arg_type, arg_class, doc_string):
         argument = self.create_argument(

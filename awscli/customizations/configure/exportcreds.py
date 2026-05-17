@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import csv
+import hashlib
 import io
 import json
 import os
@@ -20,6 +21,8 @@ from datetime import datetime
 
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.exceptions import ConfigurationError
+from awscli.customizations.sso.logout import revoke_sso_token
+from awscli.customizations.sso.utils import SSO_TOKEN_DIR
 
 # Takes botocore's ReadOnlyCredentials and exposes an expiry_time.
 Credentials = namedtuple(
@@ -199,6 +202,21 @@ class ConfigureExportCredentialsCommand(BasicCommand):
             'choices': list(SUPPORTED_FORMATS),
             'default': CredentialProcessFormatter.FORMAT,
         },
+        {
+            'name': 'revoke-sso-token',
+            'action': 'store_true',
+            'default': False,
+            'help_text': (
+                'After exporting credentials, server-side revoke the AWS '
+                'IAM Identity Center access token used to mint them and '
+                'remove its on-disk cache file. This is a no-op for '
+                'profiles that do not resolve credentials through IAM '
+                'Identity Center. Use this to minimize the on-disk '
+                'lifetime of the SSO access token. Note: when used in a '
+                '``credential_process`` configuration, every credential '
+                'refresh will require a new ``aws sso login`` flow.'
+            ),
+        },
     ]
     _RECURSION_VAR = '_AWS_CLI_PROFILE_CHAIN'
     # Two levels is reasonable because you might explicitly run
@@ -280,3 +298,55 @@ class ConfigureExportCredentialsCommand(BasicCommand):
         creds_with_expiry = convert_botocore_credentials(creds)
         formatter = SUPPORTED_FORMATS[parsed_args.format](self._out_stream)
         formatter.display_credentials(creds_with_expiry)
+        if parsed_args.revoke_sso_token:
+            self._revoke_sso_token_for_profile(parsed_globals)
+
+    def _revoke_sso_token_for_profile(self, parsed_globals):
+        # Best-effort: credentials have already been emitted at this point,
+        # so any failure here must not change the exit status. We catch
+        # broadly to cover transport-level errors from the sso.Logout call
+        # (BotoCoreError, EndpointResolutionError, etc.) in addition to
+        # the ``ClientError`` path that ``revoke_sso_token`` already logs.
+        try:
+            self._do_revoke_sso_token_for_profile(parsed_globals)
+        except Exception:
+            pass
+
+    def _do_revoke_sso_token_for_profile(self, parsed_globals):
+        cache_key = self._sso_cache_key_for_current_profile()
+        if cache_key is None:
+            return
+        cache_path = os.path.join(SSO_TOKEN_DIR, cache_key + '.json')
+        try:
+            with open(cache_path) as f:
+                contents = json.load(f)
+        except (OSError, ValueError):
+            return
+        access_token = contents.get('accessToken')
+        sso_region = contents.get('region')
+        if not access_token or not sso_region:
+            return
+        revoke_sso_token(
+            self._session, sso_region, access_token, parsed_globals
+        )
+        try:
+            os.remove(cache_path)
+        except OSError:
+            pass
+
+    def _sso_cache_key_for_current_profile(self):
+        # Returns the SSO token cache key (sha1 digest) for the active
+        # profile, or None if the profile has no IAM Identity Center
+        # configuration. The cache key is computed identically to
+        # ``botocore.utils.SSOTokenLoader``: sha1 of the sso_session name
+        # when present, otherwise sha1 of the legacy sso_start_url.
+        scoped_config = self._session.get_scoped_config()
+        sso_session = scoped_config.get('sso_session')
+        if sso_session:
+            cache_input = sso_session
+        else:
+            sso_start_url = scoped_config.get('sso_start_url')
+            if not sso_start_url:
+                return None
+            cache_input = sso_start_url
+        return hashlib.sha1(cache_input.encode('utf-8')).hexdigest()

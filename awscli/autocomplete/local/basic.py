@@ -17,10 +17,12 @@ from awscli.autocomplete import LazyClientCreator
 from awscli.autocomplete.completer import BaseCompleter, CompletionResult
 from awscli.autocomplete.filters import startswith_filter
 
+HTML_TAG_PATTERN = re.compile('<.*?>')
 
-def strip_html_tags_and_newlines(text):
-    clean = re.compile('<.*?>')
-    return re.sub(clean, '', text).replace('\n', '')
+def strip_html_tags_and_newlines_and_multiple_sentences(text):
+    text = text.split(".", maxsplit=1)[0]
+    text = text.replace('\n', '')
+    return re.sub(HTML_TAG_PATTERN, '', text)
 
 
 class ProfileCompleter(BaseCompleter):
@@ -138,10 +140,9 @@ class FilePathCompleter(BaseCompleter):
 
 class ModelIndexCompleter(BaseCompleter):
     def __init__(
-        self, index, cli_driver_fetcher=None, response_filter=startswith_filter
+        self, index, response_filter=startswith_filter
     ):
         self._index = index
-        self._cli_driver_fetcher = cli_driver_fetcher
         self._filter = response_filter
 
     def complete(self, parsed):
@@ -200,8 +201,14 @@ class ModelIndexCompleter(BaseCompleter):
         lineage = parsed.lineage + [parsed.current_command]
         offset = -len(parsed.current_fragment)
         result = [
-            CompletionResult(name, help_text=full_name, starting_index=offset)
-            for name, full_name in self._index.commands_with_full_name(lineage)
+            CompletionResult(
+                name,
+                help_text=(full_name or help_text),
+                starting_index=offset,
+            )
+            for name, full_name, help_text in self._index.commands_with_full_name(
+                lineage
+            )
         ]
         return result
 
@@ -228,13 +235,6 @@ class ModelIndexCompleter(BaseCompleter):
                     command_name=parsed.current_command,
                     arg_name=arg_name,
                 )
-                help_text = None
-                if self._cli_driver_fetcher:
-                    help_text = strip_html_tags_and_newlines(
-                        self._cli_driver_fetcher.get_argument_documentation(
-                            parsed.lineage, parsed.current_command, arg_name
-                        )
-                    )
                 results.append(
                     self._outfile_filter(
                         CompletionResult(
@@ -242,7 +242,7 @@ class ModelIndexCompleter(BaseCompleter):
                             starting_index=offset,
                             required=arg_data.required,
                             cli_type_name=arg_data.type_name,
-                            help_text=help_text,
+                            help_text=arg_data.help_text,
                         )
                     )
                 )
@@ -259,14 +259,7 @@ class ModelIndexCompleter(BaseCompleter):
         offset = -len(parsed.current_fragment)
         arg_data = self._index.get_global_arg_data()
         global_param_completions = []
-        for arg_name, type_name, *_, help_text in arg_data:
-            help_text = None
-            if self._cli_driver_fetcher:
-                help_text = strip_html_tags_and_newlines(
-                    self._cli_driver_fetcher.get_global_arg_documentation(
-                        arg_name
-                    )
-                )
+        for arg_name, type_name, _, _, help_text, *_ in arg_data:
             global_param_completions.append(
                 CompletionResult(
                     '--%s' % arg_name,
@@ -536,14 +529,11 @@ class ShorthandCompleter(BaseCompleter):
                     member_name,
                     self._VALUE_PREFIXES.get(member.type_name, ''),
                 )
-                results.append(
-                    CompletionResult(
-                        last_key,
-                        help_text=strip_html_tags_and_newlines(
-                            member.documentation
-                        ),
-                        cli_type_name=member.type_name,
-                        display_text=display_text,
+                results.append(CompletionResult(
+                    last_key,
+                    help_text=strip_html_tags_and_newlines_and_multiple_sentences(member.documentation),
+                    cli_type_name=member.type_name,
+                    display_text=display_text
                     )
                 )
         return self._filter(last_key, results)

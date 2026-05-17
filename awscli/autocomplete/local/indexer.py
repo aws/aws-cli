@@ -11,6 +11,8 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.autocomplete.db import DatabaseConnection
+from awscli.autocomplete.local import basic
+from awscli.help import HelpCommand, OperationHelpCommand, ServiceHelpCommand
 
 
 def create_model_indexer(filename):
@@ -32,6 +34,7 @@ class ModelIndexer:
           command TEXT,
           full_name TEXT,
           parent TEXT REFERENCES command_table,
+          help_text TEXT,
           PRIMARY KEY (command, parent)
         );
     """
@@ -42,6 +45,7 @@ class ModelIndexer:
           type_name TEXT,
           command TEXT,
           parent TEXT,
+          help_text TEXT,
           nargs TEXT,
           positional_arg TEXT,
           required INTEGER,
@@ -67,10 +71,11 @@ class ModelIndexer:
         self._create_tables()
         parent = 'aws'
         self._db_connection.execute(
-            'INSERT OR REPLACE INTO command_table (command, parent)'
-            'VALUES (:command, :parent)',
+            'INSERT OR REPLACE INTO command_table (command, parent, help_text)'
+            'VALUES (:command, :parent, :help_text)',
             command=parent,
             parent='',
+            help_text='',
         )
         help_command_table = clidriver.create_help_command().command_table
         command_table = clidriver.subcommand_table
@@ -93,14 +98,17 @@ class ModelIndexer:
             required = 1 if value.required else 0
             self._db_connection.execute(
                 'INSERT INTO param_table '
-                '(argname, type_name, command, parent, nargs, positional_arg,'
+                '(argname, type_name, command, parent, help_text, nargs, positional_arg,'
                 'required)'
-                ' VALUES (:argname, :type_name, :command, :parent, :nargs, '
+                ' VALUES (:argname, :type_name, :command, :parent, :help_text, :nargs, '
                 '         :positional_arg, :required)',
                 argname=name,
                 type_name=value.cli_type_name,
                 command=command,
                 parent=parent,
+                help_text=basic.strip_html_tags_and_newlines_and_multiple_sentences(
+                    value.documentation
+                ),
                 nargs=value.nargs,
                 positional_arg=value.positional_arg,
                 required=required,
@@ -119,12 +127,27 @@ class ModelIndexer:
     ):
         for name, command in command_table.items():
             full_name = self._get_service_full_name(name, help_command_table)
+
+            help = command.create_help_command()
+
+            if isinstance(help, ServiceHelpCommand):
+                help_text = help.obj.documentation
+            elif isinstance(help, OperationHelpCommand):
+                help_text = help.obj.documentation
+            elif isinstance(help, HelpCommand):
+                help_text = help.description
+            else:
+                help_text = ""
+
             self._db_connection.execute(
-                'INSERT INTO command_table (command, parent, full_name) '
-                'VALUES (:command, :parent, :full_name)',
+                'INSERT INTO command_table (command, parent, full_name, help_text) '
+                'VALUES (:command, :parent, :full_name, :help_text)',
                 command=name,
                 parent=parent,
                 full_name=full_name,
+                help_text=basic.strip_html_tags_and_newlines_and_multiple_sentences(
+                    help_text
+                ),
             )
             self._generate_arg_index(
                 command=name, parent=parent, arg_table=command.arg_table

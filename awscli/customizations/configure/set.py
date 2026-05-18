@@ -68,15 +68,19 @@ class ConfigureSetCommand(BasicCommand):
         else:
             # First figure out if it's been scoped to a profile.
             parts = varname.split('.')
-            if parts[0] in ('default', 'profile'):
+            if parts[0] == 'profile':
                 # Then we know we're scoped to a profile.
-                if parts[0] == 'default':
-                    profile = 'default'
-                    remaining = parts[1:]
-                else:
-                    # [profile, profile_name, ...]
-                    profile = parts[1]
-                    remaining = parts[2:]
+                # [profile, profile_name, ...]
+                profile = parts[1]
+                remaining = parts[2:]
+                varname = remaining[0]
+                if len(remaining) == 2:
+                    value = {remaining[1]: value}
+            elif parts[0] == 'default' or \
+                    (self._session.full_config is not None and \
+                     parts[0] in self._session.full_config.get('profiles', {})):
+                profile = parts[0]
+                remaining = parts[1:]
                 varname = remaining[0]
                 if len(remaining) == 2:
                     value = {remaining[1]: value}

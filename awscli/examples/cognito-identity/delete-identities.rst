@@ -1,6 +1,6 @@
-**To delete identity pool**
+**To delete an identity**
 
-This example deletes an identity pool.
+This example deletes an identity from an identity pool.
 
 Command::
 

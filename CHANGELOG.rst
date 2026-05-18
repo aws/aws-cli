@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.45.10
+=======
+
+* api-change:``accessanalyzer``: Services manage service-linked analyzers through dedicated APIs - CreateServiceLinkedAnalyzer and DeleteServiceLinkedAnalyzer that separate service-linked specific operations from customer-managed operations. It also shows up in ListAnalyzers and GetAnalyzer responses.
+* api-change:``connect``: Amazon Connect Cases now supports SLA durations of up to 2 years (1,051,200 minutes), increased from the previous maximum of 90 days (129,600 minutes). This enables you to track long-running service level agreements for cases that require extended resolution timelines.
+* api-change:``ec2``: Amazon VPC IP Address Manager (IPAM) now supports tags on IPAM pool allocations, enabling all standard tagging features for allocations including tag-on-create.
+* api-change:``ecs``: Amazon ECS now supports Pause lifecycle hooks for service deployments, allowing customers to automatically pause deployments at specified stages and use the new ContinueServiceDeployment API to continue or roll back with confidence.
+* api-change:``evs``: Amazon EVS now supports up to 32 hosts per EVS environment, increasing the previous host limit to allow a larger scale of VMware workload deployments and reduce operational overhead.
+* api-change:``ivs``: Adds support for up to 3 mediaTailorPlaybackConfiguration objects in an ad configuration resource
+* api-change:``quicksight``: Support for dataset enrichment and geo spatial in new data preparation experience
+
+
 1.45.9
 ======
 

@@ -4782,6 +4782,22 @@
       "max":20,
       "min":1
     },
+    "AdditionalNotes":{
+      "type":"structure",
+      "members":{
+        "Text":{
+          "shape":"AdditionalNotesText",
+          "documentation":"<p>The additional notes text.</p>"
+        }
+      },
+      "documentation":"<p>Additional notes that provide supplementary context for a column.</p>"
+    },
+    "AdditionalNotesText":{
+      "type":"string",
+      "max":2000,
+      "min":0,
+      "sensitive":true
+    },
     "AggFunction":{
       "type":"structure",
       "members":{
@@ -10141,6 +10157,12 @@
       "max":128,
       "min":1
     },
+    "ColumnNameList":{
+      "type":"list",
+      "member":{"shape":"ColumnName"},
+      "max":2000,
+      "min":1
+    },
     "ColumnOrderingType":{
       "type":"string",
       "enum":[
@@ -10178,6 +10200,40 @@
       "type":"list",
       "member":{"shape":"ColumnSchema"},
       "max":500
+    },
+    "ColumnSemanticProperty":{
+      "type":"structure",
+      "members":{
+        "Description":{
+          "shape":"ColumnDescription",
+          "documentation":"<p>A description of the column.</p>"
+        },
+        "AdditionalNotes":{
+          "shape":"AdditionalNotes",
+          "documentation":"<p>Additional notes for the column.</p>"
+        },
+        "SemanticType":{
+          "shape":"ColumnSemanticType",
+          "documentation":"<p>The semantic type of the column.</p>"
+        }
+      },
+      "documentation":"<p>A semantic property for a column.</p>"
+    },
+    "ColumnSemanticPropertyList":{
+      "type":"list",
+      "member":{"shape":"ColumnSemanticProperty"},
+      "max":3,
+      "min":1
+    },
+    "ColumnSemanticType":{
+      "type":"structure",
+      "members":{
+        "GeographicalRole":{
+          "shape":"GeoSpatialDataRole",
+          "documentation":"<p>The geographical role of the column in the new data preparation experience.</p>"
+        }
+      },
+      "documentation":"<p>The semantic type information for a column in the new data preparation experience.</p>"
     },
     "ColumnSort":{
       "type":"structure",
@@ -13101,6 +13157,22 @@
       },
       "documentation":"<p>A list of custom filter values.</p>"
     },
+    "CustomInstruction":{
+      "type":"structure",
+      "members":{
+        "InlineCustomInstruction":{
+          "shape":"InlineCustomInstruction",
+          "documentation":"<p>An inline custom instruction containing text and optional uploaded document metadata.</p>"
+        }
+      },
+      "documentation":"<p>A custom instruction that provides guidance on how the dataset should be consumed.</p>"
+    },
+    "CustomInstructionList":{
+      "type":"list",
+      "member":{"shape":"CustomInstruction"},
+      "max":2,
+      "min":1
+    },
     "CustomInstructions":{
       "type":"structure",
       "required":["CustomInstructionsString"],
@@ -14427,6 +14499,12 @@
       },
       "documentation":"<p>A filter condition that filters date values within a specified range.</p>"
     },
+    "DataSetDescriptiveText":{
+      "type":"string",
+      "max":500,
+      "min":1,
+      "sensitive":true
+    },
     "DataSetEntityResourceId":{
       "type":"string",
       "max":64,
@@ -14642,6 +14720,37 @@
     "DataSetSearchFilterList":{
       "type":"list",
       "member":{"shape":"DataSetSearchFilter"},
+      "max":1,
+      "min":1
+    },
+    "DataSetSemanticDescription":{
+      "type":"structure",
+      "required":["Text"],
+      "members":{
+        "Text":{
+          "shape":"DataSetDescriptiveText",
+          "documentation":"<p>The descriptive text for the dataset.</p>"
+        }
+      },
+      "documentation":"<p>A description structure for dataset-level semantic metadata.</p>"
+    },
+    "DataSetSemanticMetadata":{
+      "type":"structure",
+      "members":{
+        "Description":{
+          "shape":"DataSetSemanticDescription",
+          "documentation":"<p>A description of the dataset.</p>"
+        },
+        "CustomInstructions":{
+          "shape":"CustomInstructionList",
+          "documentation":"<p>A list of custom instructions that guide how the dataset should be consumed.</p>"
+        }
+      },
+      "documentation":"<p>Semantic metadata for a dataset, including a description and custom instructions.</p>"
+    },
+    "DataSetSemanticMetadataList":{
+      "type":"list",
+      "member":{"shape":"DataSetSemanticMetadata"},
       "max":1,
       "min":1
     },
@@ -25430,6 +25539,27 @@
       "type":"list",
       "member":{"shape":"Ingestion"}
     },
+    "InlineCustomInstruction":{
+      "type":"structure",
+      "required":["InstructionText"],
+      "members":{
+        "InstructionText":{
+          "shape":"InlineCustomInstructionText",
+          "documentation":"<p>The instruction text content.</p>"
+        },
+        "UploadedDocumentMetadata":{
+          "shape":"UploadedDocumentMetadata",
+          "documentation":"<p>Metadata about an uploaded document associated with this instruction.</p>"
+        }
+      },
+      "documentation":"<p>An inline custom instruction with text content and optional file upload metadata.</p>"
+    },
+    "InlineCustomInstructionText":{
+      "type":"string",
+      "max":50000,
+      "min":0,
+      "sensitive":true
+    },
     "InnerFilter":{
       "type":"structure",
       "members":{
@@ -35132,6 +35262,10 @@
         "TableMap":{
           "shape":"SemanticTableMap",
           "documentation":"<p>A map of semantic tables that define the analytical structure.</p>"
+        },
+        "SemanticMetadata":{
+          "shape":"DataSetSemanticMetadataList",
+          "documentation":"<p>The dataset-level semantic metadata, including a description and custom instructions.</p>"
         }
       },
       "documentation":"<p>Configuration for the semantic model that defines how prepared data is structured for analysis and reporting.</p>"
@@ -35154,6 +35288,10 @@
         "RowLevelPermissionConfiguration":{
           "shape":"RowLevelPermissionConfiguration",
           "documentation":"<p>Configuration for row level security that control data access for this semantic table.</p>"
+        },
+        "SemanticMetadata":{
+          "shape":"TableSemanticMetadata",
+          "documentation":"<p>The column-level semantic metadata for this semantic table.</p>"
         }
       },
       "documentation":"<p>A semantic table that represents the final analytical structure of the data.</p>"
@@ -35389,6 +35527,27 @@
         }
       },
       "documentation":"<p>The shape conditional formatting of a filled map visual.</p>"
+    },
+    "SharedColumnSemanticMetadata":{
+      "type":"structure",
+      "required":["ColumnProperties"],
+      "members":{
+        "ColumnNames":{
+          "shape":"ColumnNameList",
+          "documentation":"<p>The names of the columns this metadata applies to.</p>"
+        },
+        "ColumnProperties":{
+          "shape":"ColumnSemanticPropertyList",
+          "documentation":"<p>The semantic properties for the specified columns.</p>"
+        }
+      },
+      "documentation":"<p>Semantic metadata shared across one or more columns.</p>"
+    },
+    "SharedColumnSemanticMetadataList":{
+      "type":"list",
+      "member":{"shape":"SharedColumnSemanticMetadata"},
+      "max":2000,
+      "min":1
     },
     "SharedViewConfigurations":{
       "type":"structure",
@@ -37758,6 +37917,16 @@
         }
       },
       "documentation":"<p>The conditional formatting of a table row.</p>"
+    },
+    "TableSemanticMetadata":{
+      "type":"structure",
+      "members":{
+        "ColumnMetadata":{
+          "shape":"SharedColumnSemanticMetadataList",
+          "documentation":"<p>A list of column semantic metadata entries.</p>"
+        }
+      },
+      "documentation":"<p>Column-level semantic metadata for a semantic table.</p>"
     },
     "TableSideBorderOptions":{
       "type":"structure",
@@ -43593,6 +43762,21 @@
         }
       },
       "documentation":"<p>Information about the format for a source file or files.</p>"
+    },
+    "UploadedDocumentMetadata":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"UploadedDocumentName",
+          "documentation":"<p>The name of the uploaded document.</p>"
+        }
+      },
+      "documentation":"<p>Metadata for an uploaded document associated with a custom instruction.</p>"
+    },
+    "UploadedDocumentName":{
+      "type":"string",
+      "max":127,
+      "min":1
     },
     "User":{
       "type":"structure",

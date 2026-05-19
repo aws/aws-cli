@@ -974,6 +974,11 @@
       "type":"list",
       "member":{"shape":"DataSourceType"}
     },
+    "DegradedWorkspaceReason":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
     "DeleteWorkspaceApiKeyRequest":{
       "type":"structure",
       "required":[
@@ -2539,6 +2544,10 @@
         "kmsKeyId":{
           "shape":"KmsKeyId",
           "documentation":"<p>The ID or ARN of the Key Management Service key used for encrypting workspace data.</p>"
+        },
+        "degradedWorkspaceReason":{
+          "shape":"DegradedWorkspaceReason",
+          "documentation":"<p>If the workspace is in the <code>DEGRADED</code> status, this field describes the reason the workspace is degraded.</p>"
         }
       },
       "documentation":"<p>A structure containing information about an Amazon Managed Grafana workspace in your account.</p>"
@@ -2571,7 +2580,8 @@
         "UPGRADE_FAILED",
         "LICENSE_REMOVAL_FAILED",
         "VERSION_UPDATING",
-        "VERSION_UPDATE_FAILED"
+        "VERSION_UPDATE_FAILED",
+        "DEGRADED"
       ]
     },
     "WorkspaceSummary":{

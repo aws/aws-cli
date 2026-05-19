@@ -2442,7 +2442,14 @@
         },
         "inboundLinksCount":{
           "shape":"Integer",
-          "documentation":"<p>The count of inbound links for the responder gateway.</p>"
+          "documentation":"<p>Deprecated. Use 'linksRequestedCount' instead.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use linksRequestedCount instead",
+          "deprecatedSince":"2026-05-11"
+        },
+        "linksRequestedCount":{
+          "shape":"Integer",
+          "documentation":"<p>The count of requested links waiting for the responder gateway to accept or reject.</p>"
         },
         "gatewayType":{
           "shape":"GatewayType",
@@ -2727,7 +2734,7 @@
           "documentation":"<p>The timestamp of when the routing rule was last updated.</p>"
         }
       },
-      "documentation":"<p>Summary of a routing rule for list responses</p>"
+      "documentation":"<p>A summary of a link routing rule.</p>"
     },
     "LinkStatus":{
       "type":"string",
@@ -3225,14 +3232,14 @@
       "members":{
         "key":{
           "shape":"QueryStringKeyValuePairKeyString",
-          "documentation":"<p>RFC 3986 unreserved characters</p>"
+          "documentation":"<p>The key of the query string parameter to match. Must contain only RFC 3986 unreserved characters.</p>"
         },
         "value":{
           "shape":"QueryStringKeyValuePairValueString",
-          "documentation":"<p>RFC 3986 unreserved characters</p>"
+          "documentation":"<p>The value of the query string parameter to match. Must contain only RFC 3986 unreserved characters.</p>"
         }
       },
-      "documentation":"<p>Key-value pair for query string matching</p>"
+      "documentation":"<p>A key-value pair for query string matching in a routing rule condition.</p>"
     },
     "QueryStringKeyValuePairKeyString":{
       "type":"string",
@@ -3453,30 +3460,30 @@
       "members":{
         "hostHeader":{
           "shape":"RuleConditionHostHeaderString",
-          "documentation":"<p>Exact host match — RFC 3986 unreserved characters</p>"
+          "documentation":"<p>The exact host header value to match.</p>"
         },
         "hostHeaderWildcard":{
           "shape":"RuleConditionHostHeaderWildcardString",
-          "documentation":"<p>Wildcard host pattern (e.g., *.example.com) — RFC 3986 unreserved plus *</p>"
+          "documentation":"<p>A wildcard pattern for host header matching (for example, <code>*.example.com</code>).</p>"
         },
         "pathPrefix":{
           "shape":"RuleConditionPathPrefixString",
-          "documentation":"<p>Path prefix matching — strict starts-with, no wildcard (preferred for new rules). Must start with /; RFC 3986 unreserved plus /</p>"
+          "documentation":"<p>The path prefix to match. The request path must start with this value. Must start with <code>/</code>.</p>"
         },
         "pathExact":{
           "shape":"RuleConditionPathExactString",
-          "documentation":"<p>Exact path match — must start with /; RFC 3986 unreserved plus /</p>"
+          "documentation":"<p>The exact path to match. Must start with <code>/</code>.</p>"
         },
         "queryStringEquals":{
           "shape":"QueryStringKeyValuePair",
-          "documentation":"<p>Query string key=value pair match (single pair)</p>"
+          "documentation":"<p>A query string key-value pair that must be present and match exactly.</p>"
         },
         "queryStringExists":{
           "shape":"RuleConditionQueryStringExistsString",
-          "documentation":"<p>Query string key presence check (any value accepted) — RFC 3986 unreserved characters</p>"
+          "documentation":"<p>A query string key that must be present in the request (any value is accepted).</p>"
         }
       },
-      "documentation":"<p>Conditions bag for a routing rule. All non-null fields must match (AND logic). At least one field must be set (enforced by CP).</p>"
+      "documentation":"<p>The conditions for a routing rule. All specified fields must match for the rule to apply (AND logic). At least one condition field must be set.</p>"
     },
     "RuleConditionHostHeaderString":{
       "type":"string",

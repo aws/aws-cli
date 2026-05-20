@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.34.51
+=======
+
+* enhancement:``cloudtrail validate-logs``: Invalidate log files with data appended to the end of the gzip stream.
+* api-change:``payment-cryptography-data``: GenerateAuthRequestCryptogram API launch.
+* api-change:``mwaa``: Updated API documentation to describe the PublicAndPrivate webserver access mode.
+* api-change:``customer-profiles``: Amazon Connect Customer Profiles adds support for item catalog columns in RecommenderSchema, ExcludedColumns in Create and Update Recommender to specify columns to exclude from training, and the ability to disable automatic retraining by setting TrainingFrequency to 0.
+* api-change:``bedrock-runtime``: Supporting Request Metadata for Invoke Model and Invoke Model with Response Stream
+* api-change:``kms``: AWS KMS now supports creating grants for AWS service principals using new GranteeServicePrincipal and RetiringServicePrincipal parameters. This release adds SourceArn grant constraint and three condition keys for controlling CreateGrant access. For more information, see Grants in AWS KMS.
+
+
 2.34.50
 =======
 

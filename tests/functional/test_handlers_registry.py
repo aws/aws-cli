@@ -15,7 +15,11 @@ from collections import OrderedDict
 
 import botocore.session
 
-from awscli.handlers_registry import MAIN_COMMAND_TABLE_OPS, PLUGIN_REGISTRY
+from awscli.handlers_registry import (
+    CommandTableOp,
+    MAIN_COMMAND_TABLE_OPS,
+    PLUGIN_REGISTRY,
+)
 
 
 class _AuditEmitter:
@@ -79,7 +83,7 @@ def test_all_main_command_table_ops_modules_are_importable():
     """
     violations = []
     for op in MAIN_COMMAND_TABLE_OPS:
-        if op[0] != 'add':
+        if op[0] != CommandTableOp.ADD:
             continue
         _, cmd_name, cmd_module, cmd_class = op
         try:

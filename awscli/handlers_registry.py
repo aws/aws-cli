@@ -20,6 +20,14 @@ event_handlers emitter), then proceeds with normal event dispatch.
 Entry format:
    (module, fn_name)    call fn(event_handlers)
 """
+import enum
+
+
+class CommandTableOp(enum.Enum):
+    """Valid operation types for MAIN_COMMAND_TABLE_OPS entries."""
+
+    ADD = 'add'
+    RENAME = 'rename'
 
 PLUGIN_REGISTRY = {
     'after-call.data-pipeline.GetPipelineDefinition': [
@@ -833,23 +841,25 @@ PLUGIN_REGISTRY = {
 # the command is actually invoked.
 #
 # Entry formats:
-#   ('rename', old_name, new_name)
-#   ('add', cmd_name, cmd_module, cmd_class)
+#   (CommandTableOp.RENAME, old_name, new_name)
+#   (CommandTableOp.ADD, cmd_name, cmd_module, cmd_class)
 
-MAIN_COMMAND_TABLE_OPS = [
-    ('rename', 's3', 's3api'),
-    ('add', 's3', 'awscli.customizations.s3.s3', 'S3'),
-    ('add', 'ddb', 'awscli.customizations.dynamodb.ddb', 'DDB'),
+MAIN_COMMAND_TABLE_OPS: list[
+    tuple[CommandTableOp, str, str] | tuple[CommandTableOp, str, str, str]
+] = [
+    (CommandTableOp.RENAME, 's3', 's3api'),
+    (CommandTableOp.ADD, 's3', 'awscli.customizations.s3.s3', 'S3'),
+    (CommandTableOp.ADD, 'ddb', 'awscli.customizations.dynamodb.ddb', 'DDB'),
     (
-        'add',
+        CommandTableOp.ADD,
         'configure',
         'awscli.customizations.configure.configure',
         'ConfigureCommand',
     ),
-    ('rename', 'codedeploy', 'deploy'),
-    ('rename', 'config', 'configservice'),
-    ('add', 'history', 'awscli.customizations.history', 'HistoryCommand'),
-    ('add', 'cli-dev', 'awscli.customizations.devcommands', 'CLIDevCommand'),
-    ('add', 'login', 'awscli.customizations.login.login', 'LoginCommand'),
-    ('add', 'logout', 'awscli.customizations.login.logout', 'LogoutCommand'),
+    (CommandTableOp.RENAME, 'codedeploy', 'deploy'),
+    (CommandTableOp.RENAME, 'config', 'configservice'),
+    (CommandTableOp.ADD, 'history', 'awscli.customizations.history', 'HistoryCommand'),
+    (CommandTableOp.ADD, 'cli-dev', 'awscli.customizations.devcommands', 'CLIDevCommand'),
+    (CommandTableOp.ADD, 'login', 'awscli.customizations.login.login', 'LoginCommand'),
+    (CommandTableOp.ADD, 'logout', 'awscli.customizations.login.logout', 'LogoutCommand'),
 ]

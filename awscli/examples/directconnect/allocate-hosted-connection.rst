@@ -5,9 +5,9 @@ The following ``allocate-hosted-connection`` example creates a hosted connection
     aws directconnect allocate-hosted-connection \
         --bandwidth 500Mbps \
         --connection-name mydcinterconnect \
-        --owner-account 123456789012 
-        -connection-id dxcon-fgktov66 
-        -vlan 101
+        --owner-account 123456789012 \
+        --connection-id dxcon-fgktov66 \
+        --vlan 101
 
 Output::
 

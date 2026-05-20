@@ -4,7 +4,7 @@ The following ``untag-resource`` example removes the tag with the specified key 
 
     aws iotevents untag-resource \
         --resource-arn arn:aws:iotevents:us-west-2:123456789012:input/PressureInput \
-        --tagkeys deviceType
+        --tag-keys deviceType
 
 This command produces no output.
 

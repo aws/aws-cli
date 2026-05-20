@@ -20,6 +20,7 @@ event_handlers emitter), then proceeds with normal event dispatch.
 Entry format:
    (module, fn_name)    call fn(event_handlers)
 """
+
 import enum
 
 
@@ -28,6 +29,7 @@ class CommandTableOp(enum.Enum):
 
     ADD = 'add'
     RENAME = 'rename'
+
 
 PLUGIN_REGISTRY = {
     'after-call.data-pipeline.GetPipelineDefinition': [
@@ -858,8 +860,28 @@ MAIN_COMMAND_TABLE_OPS: list[
     ),
     (CommandTableOp.RENAME, 'codedeploy', 'deploy'),
     (CommandTableOp.RENAME, 'config', 'configservice'),
-    (CommandTableOp.ADD, 'history', 'awscli.customizations.history', 'HistoryCommand'),
-    (CommandTableOp.ADD, 'cli-dev', 'awscli.customizations.devcommands', 'CLIDevCommand'),
-    (CommandTableOp.ADD, 'login', 'awscli.customizations.login.login', 'LoginCommand'),
-    (CommandTableOp.ADD, 'logout', 'awscli.customizations.login.logout', 'LogoutCommand'),
+    (
+        CommandTableOp.ADD,
+        'history',
+        'awscli.customizations.history',
+        'HistoryCommand',
+    ),
+    (
+        CommandTableOp.ADD,
+        'cli-dev',
+        'awscli.customizations.devcommands',
+        'CLIDevCommand',
+    ),
+    (
+        CommandTableOp.ADD,
+        'login',
+        'awscli.customizations.login.login',
+        'LoginCommand',
+    ),
+    (
+        CommandTableOp.ADD,
+        'logout',
+        'awscli.customizations.login.logout',
+        'LogoutCommand',
+    ),
 ]

@@ -18,6 +18,7 @@ def setup(app):
     app.connect('build-finished', create_sitemap)
     app.sitemap_links = []
     app.set_translator('html', HTMLTranslator)
+    return {'parallel_write_safe': True}
 
 
 def add_html_link(app, pagename, templatename, context, doctree):

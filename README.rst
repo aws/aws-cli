@@ -87,17 +87,8 @@ For tcsh::
 
 You should add this to your startup scripts to enable it for future sessions.
 
-For zsh (Package Manager, e.g. pip installs) please refer to 
-``bin/aws_zsh_completer.sh``.  Source that file, e.g. from your 
-``~/.zshrc``, and make sure you run ``compinit`` before::
-
-    $ source bin/aws_zsh_completer.sh
-
-For now the bash compatibility auto completion (``bashcompinit``) is used.
-For further details please refer to the top of ``bin/aws_zsh_completer.sh``.
-
-For zsh (bundled installer, e.g. zip/pkg), use ``aws_completer``
-directly with ``bashcompinit``::
+For zsh, run ``bashcompinit`` and ``compinit``, then use the built-in
+``complete`` command::
 
     $ autoload bashcompinit && bashcompinit
     $ autoload -Uz compinit && compinit

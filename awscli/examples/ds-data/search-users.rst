@@ -5,7 +5,7 @@ The following ``search-users`` example searches for the specified user in the sp
     aws ds-data search-users \
         --directory-id d-1234567890 \
         --search-attributes 'SamAccountName' \
-        --Search-string 'john.doe'
+        --search-string 'john.doe'
 
 Output::
 

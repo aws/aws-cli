@@ -87,6 +87,21 @@ def setup_module():
     s3.delete_public_access_block(
         Bucket=_SHARED_BUCKET
     )
+    s3.put_bucket_encryption(
+        Bucket=_SHARED_BUCKET,
+        ServerSideEncryptionConfiguration={
+            'Rules': [
+                {
+                    'ApplyServerSideEncryptionByDefault': {
+                        'SSEAlgorithm': 'AES256',
+                    },
+                    'BlockedEncryptionTypes': {
+                        'EncryptionType': ['NONE'],
+                    },
+                }
+            ],
+        },
+    )
 
     # Validate that "_NON_EXISTENT_BUCKET" doesn't exist.
     waiter = s3.get_waiter('bucket_not_exists')
@@ -173,6 +188,13 @@ class BaseS3IntegrationTest(BaseS3CLICommand):
         clear_out_bucket(_SHARED_BUCKET)
         clear_out_bucket(_SHARED_DIR_BUCKET)
         super(BaseS3IntegrationTest, self).setUp()
+
+
+class TestMakeBucketAccountRegionalNamespace(BaseS3IntegrationTest):
+    def test_short_an_suffix_sends_namespace_header(self):
+        p = aws('s3 mb s3://xyz-an')
+        assert p.rc != 0
+        assert 'InvalidBucketNamespace' in p.stderr
 
 
 class TestMoveCommand(BaseS3IntegrationTest):
@@ -1310,10 +1332,17 @@ class TestMbRb(BaseS3IntegrationTest):
         self.assert_no_errors(p)
 
     def test_fail_mb_rb(self):
-        # Choose a bucket name that already exists.
-        p = aws('s3 mb s3://mybucket')
-        self.assertIn("BucketAlreadyExists", p.stderr)
-        self.assertEqual(p.rc, 1)
+        # S3 can intermittently return an `OperationAborted` exception instead of
+        # `BucketAlreadyExists`, so we give this test four attempts
+        for i in range(4):
+            # Choose a bucket name that already exists.
+            p = aws('s3 mb s3://mybucket')
+            if "OperationAborted" not in p.stderr:
+                break
+            time.sleep(2**i)
+        assert "BucketAlreadyExists" in p.stderr
+        assert p.rc == 1
+
 
 
 class TestOutput(BaseS3IntegrationTest):

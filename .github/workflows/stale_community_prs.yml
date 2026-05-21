@@ -1,12 +1,13 @@
 name: 'Check stale community PRs.'
 on: workflow_dispatch
       
-permissions:
-  pull-requests: write
+permissions: {}
 
 jobs:
   stale-implementation-stage:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
       - uses: actions/stale@b5d41d4e1d5dceea10e7104786b73624c18a190f
         with:
@@ -27,6 +28,8 @@ jobs:
           close-pr-label: closed-for-staleness
   stale-review-stage:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
       - uses: actions/stale@b5d41d4e1d5dceea10e7104786b73624c18a190f
         with:

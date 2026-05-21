@@ -437,7 +437,7 @@ REPO_UPGRADE_ON_BOOT = (
     ' specified. On first boot, by default, Amazon Linux AMIs'
     ' connect to package repositories to install security updates'
     ' before other services start. You can set this parameter'
-    ' using <code>--rep-upgrade-on-boot NONE</code> to'
+    ' using <code>--repo-upgrade-on-boot NONE</code> to'
     ' disable these updates. CAUTION: This creates additional'
     ' security risks.</p>'
 )
@@ -531,6 +531,13 @@ AVAILABLE_ONLY_FOR_AMI_VERSIONS = (
 STEP_CONCURRENCY_LEVEL = (
     'This command specifies the step concurrency level of the cluster.'
     'Default is 1 which is non-concurrent.'
+)
+
+STEP_EXECUTION_ROLE_ARN = (
+    '<p>The IAM role ARN that will be used to execute steps on the cluster. '
+    'This parameter applies only to steps included in the <code>Steps</code> '
+    'parameter of this RunJobFlow request. It does not apply to steps added '
+    'later to the cluster.</p>'
 )
 
 MANAGED_SCALING_POLICY = (

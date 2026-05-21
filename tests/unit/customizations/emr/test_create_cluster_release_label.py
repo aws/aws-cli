@@ -1753,6 +1753,26 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         }
         self.assert_params_for_cmd(cmd, result)
 
+    def test_create_cluster_with_step_execution_role_arn(self):
+        cmd = (
+            self.prefix
+            + '--release-label emr-6.7.0 '
+            + '--step-execution-role-arn '
+            + 'arn:aws:iam::123456789012:role/MyStepExecutionRole '
+            + '--instance-groups '
+            + DEFAULT_INSTANCE_GROUPS_ARG
+        )
+        result = {
+            'Name': DEFAULT_CLUSTER_NAME,
+            'Instances': DEFAULT_INSTANCES,
+            'ReleaseLabel': 'emr-6.7.0',
+            'VisibleToAllUsers': True,
+            'Tags': [],
+            'StepExecutionRoleArn':
+                'arn:aws:iam::123456789012:role/MyStepExecutionRole',
+        }
+        self.assert_params_for_cmd(cmd, result)
+
     def test_create_cluster_with_managed_scaling_policy(self):
         cmd = (
             self.prefix

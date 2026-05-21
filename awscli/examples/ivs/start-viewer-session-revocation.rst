@@ -2,7 +2,7 @@
 
 The following ``start-viewer-session-revocation`` example starts the process of revoking the viewer session associated with a specified channel ARN and viewer ID, up to and including the specified session version number. If the version is not provided, it defaults to 0. ::
 
-    aws ivs batch-start-viewer-session-revocation \
+    aws ivs start-viewer-session-revocation \
         --channel-arn arn:aws:ivs:us-west-2:123456789012:channel/abcdABCDefgh \
         --viewer-id abcdefg \
         --viewer-session-versions-less-than-or-equal-to 1234567890

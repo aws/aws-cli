@@ -31,6 +31,7 @@ from awscli.customizations.cloudfront import register as register_cloudfront
 from awscli.customizations.cloudsearch import initialize as cloudsearch_init
 from awscli.customizations.cloudsearchdomain import register_cloudsearchdomain
 from awscli.customizations.cloudtrail import initialize as cloudtrail_init
+from awscli.customizations.cloudwatch import register_rename_otel_commands
 from awscli.customizations.codeartifact import register_codeartifact_commands
 from awscli.customizations.codecommit import initialize as codecommit_init
 from awscli.customizations.codedeploy.codedeploy import (
@@ -208,6 +209,7 @@ def awscli_initialize(event_handlers):
     register_alias_mturk_command(event_handlers)
     register_alias_sagemaker_runtime_command(event_handlers)
     register_alias_socialmessaging_command(event_handlers)
+    register_rename_otel_commands(event_handlers)
     register_servicecatalog_commands(event_handlers)
     register_translate_import_terminology(event_handlers)
     register_history_mode(event_handlers)

@@ -10,11 +10,15 @@ The output shows that the specified root contains two OUs and shows details of e
 		"OrganizationalUnits": [
 			{
 				"Name": "AccountingDepartment",
-				"Arn": "arn:aws:organizations::o-exampleorgid:ou/r-examplerootid111/ou-examplerootid111-exampleouid111"
+				"Arn": "arn:aws:organizations::o-exampleorgid:ou/r-examplerootid111/ou-examplerootid111-exampleouid111",
+				"Id": "ou-examplerootid111-exampleouid111",
+				"Path": "o-exampleorgid/r-examplerootid111/ou-examplerootid111-exampleouid111/"
 			},
 			{
 				"Name": "ProductionDepartment",
-				"Arn": "arn:aws:organizations::o-exampleorgid:ou/r-examplerootid111/ou-examplerootid111-exampleouid222"
+				"Arn": "arn:aws:organizations::o-exampleorgid:ou/r-examplerootid111/ou-examplerootid111-exampleouid222",
+				"Id": "ou-examplerootid111-exampleouid222",
+				"Path": "o-exampleorgid/r-examplerootid111/ou-examplerootid111-exampleouid222/"
 			}
 		]
 	}

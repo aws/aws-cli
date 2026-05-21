@@ -31,7 +31,7 @@ from awscli.customizations.s3.s3handler import S3TransferHandlerFactory
 from awscli.customizations.s3.utils import find_bucket_key, AppendFilter, \
     find_dest_path_comp_key, human_readable_size, \
     RequestParamsMapper, split_s3_bucket_key, block_unsupported_resources, \
-    S3PathResolver
+    S3PathResolver, is_account_regional_namespace_bucket
 from awscli.customizations.utils import uni_print
 from awscli.customizations.s3.syncstrategy.base import MissingFileSync, \
     SizeAndLastModifiedSync, NeverSync, AlwaysSync
@@ -459,7 +459,7 @@ CHECKSUM_MODE = {
 }
 
 CHECKSUM_ALGORITHM = {
-        'name': 'checksum-algorithm', 'choices': ['CRC64NVME', 'CRC32', 'SHA256', 'SHA1', 'CRC32C'],
+        'name': 'checksum-algorithm', 'choices': ['CRC64NVME', 'CRC32', 'SHA256', 'SHA1', 'CRC32C', 'SHA512', 'XXHASH64', 'XXHASH3', 'XXHASH128'],
         'help_text': 'Indicates the algorithm used to create the checksum for the object.'
 }
 
@@ -910,6 +910,9 @@ class MbCommand(S3Command):
         bucket_config = {}
         bucket_tags = self._create_bucket_tags(parsed_args)
 
+        if is_account_regional_namespace_bucket(bucket):
+            params['BucketNamespace'] = 'account-regional'
+
         # Only set LocationConstraint when the region name is not us-east-1.
         # Sending LocationConstraint with value us-east-1 results in an error.
         if self.client.meta.region_name != 'us-east-1':
@@ -1144,6 +1147,27 @@ class CommandArchitecture(object):
                     '#cliv2-migration-s3-copy-metadata.\n\n',
                     out_file=sys.stderr
                 )
+            elif (
+                operation_name == 'upload'
+                and self.parameters.get('checksum_algorithm') is None
+                and self.session.get_config_variable(
+                    'request_checksum_calculation'
+                ) == 'when_supported'
+            ):
+                uni_print(
+                    '\nAWS CLI v2 UPGRADE WARNING: In AWS CLI v2, for '
+                    '`aws s3` commands that upload a file to an S3 bucket, '
+                    'Cyclic Redundancy Check 64 (CRC64NVME) will be used to '
+                    'compute object checksums by default and included in '
+                    'the request. This is different from v1 behavior, where '
+                    'Cyclic Redundancy Check 32 (CRC32) checksums '
+                    'are used. For guidance on retaining v1 behavior '
+                    'in AWS CLI v2, or for more details, see '
+                    'https://docs.aws.amazon.com/cli/latest/userguide/'
+                    'cliv2-migration-changes.html'
+                    '#cliv2-migration-checksums.\n\n',
+                    out_file=sys.stderr
+                )
 
         fgen_kwargs = {
             'client': self._source_client, 'operation_name': operation_name,
@@ -1287,14 +1311,15 @@ class CommandArchitecture(object):
         # SSE-C key and algorithm. Note the reverse FileGenerator does
         # not need any of these because it is used only for sync operations
         # which only use ListObjects which does not require HeadObject.
-        RequestParamsMapper.map_head_object_params(
-            request_parameters['HeadObject'], self.parameters)
         if paths_type == 's3s3':
+            RequestParamsMapper.map_head_object_params_with_copy_source_sse(
+                request_parameters['HeadObject'],
+                self.parameters,
+            )
+        else:
             RequestParamsMapper.map_head_object_params(
-                request_parameters['HeadObject'], {
-                    'sse_c': self.parameters.get('sse_c_copy_source'),
-                    'sse_c_key': self.parameters.get('sse_c_copy_source_key')
-                }
+                request_parameters['HeadObject'],
+                self.parameters,
             )
 
     def _should_handle_case_conflicts(self):

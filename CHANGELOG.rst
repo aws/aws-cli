@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.45.13
+=======
+
+* api-change:``batch``: Clarified CreateComputeEnvironment parameter requirements - serviceRole is required for UNMANAGED compute environments, allocationStrategy is required for EKS compute environments, and compute environments must be created in the ENABLED state.
+* api-change:``bedrock-agentcore-control``: Adds dataset management APIs for creating, versioning, and managing evaluation datasets.
+* api-change:``cleanrooms``: Collaboration creators can update payment configurations without recreating the collaboration. When multiple payer candidates are configured for a cost type, analysis runners can specify the actual payer at submission time, providing granular control over billing.
+* api-change:``cleanroomsml``: Collaboration creators can update payment configurations without recreating the collaboration. When multiple payer candidates are configured for a cost type, analysis runners can specify the actual payer at submission time, providing granular control over billing.
+* api-change:``evs``: A new GetDepotUrl API has been added to retrieve a URL for accessing Amazon EVS custom addon packages. Customers can use this URL to configure vSphere Lifecycle Manager (vLCM) as an online depot source, enabling upgrades of addon components across ESXi hosts.
+* api-change:``mediaconnect``: Adds support for controlling the timecode source of NDI flow outputs.
+* api-change:``sagemaker``: Add support for disabling home EFS file system creation on SageMaker domains.
+* api-change:``verifiedpermissions``: Support hard deleting policy store aliases. Users can now delete an alias and immediately reassign it to a different policy store without waiting for the soft-delete retention period.
+
+
 1.45.12
 =======
 

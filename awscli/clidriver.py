@@ -214,6 +214,13 @@ def _set_user_agent_for_session(session):
     add_session_id_component_to_user_agent_extra(session)
 
 
+def register_no_pager_handler(event_emitter):
+    event_emitter.register(
+        'session-initialized',
+        no_pager_handler,
+    )
+
+
 def no_pager_handler(session, parsed_args, **kwargs):
     if parsed_args.no_cli_pager:
         config_store = session.get_component('config_store')

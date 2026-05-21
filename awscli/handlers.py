@@ -18,14 +18,14 @@ registered with the event system.
 """
 
 from awscli.alias import register_alias_commands
-from awscli.argprocess import ParamShorthandParser
-from awscli.clidriver import no_pager_handler
+from awscli.argprocess import register_param_shorthand_parser
+from awscli.clidriver import register_no_pager_handler
 from awscli.customizations import datapipeline
-from awscli.customizations.addexamples import add_examples
+from awscli.customizations.addexamples import register_docs_add_examples
 from awscli.customizations.argrename import register_arg_renames
 from awscli.customizations.assumerole import register_assume_role_provider
 from awscli.customizations.awslambda import register_lambda_create_function
-from awscli.customizations.binaryformat import add_binary_formatter
+from awscli.customizations.binaryformat import register_init_binary_formatter
 from awscli.customizations.cliinput import register_cli_input_args
 from awscli.customizations.cloudformation import (
     initialize as cloudformation_init,
@@ -38,7 +38,10 @@ from awscli.customizations.cloudwatch import register_rename_otel_commands
 from awscli.customizations.codeartifact import register_codeartifact_commands
 from awscli.customizations.codecommit import initialize as codecommit_init
 from awscli.customizations.codedeploy.codedeploy import (
-    initialize as codedeploy_init,
+    register_codedeploy,
+)
+from awscli.customizations.codedeploy.codedeploy import (
+    register_rename_codedeploy as codedeploy_init,
 )
 from awscli.customizations.configservice.getstatus import register_get_status
 from awscli.customizations.configservice.putconfigurationrecorder import (
@@ -58,7 +61,9 @@ from awscli.customizations.dynamodb.paginatorfix import (
 )
 from awscli.customizations.ec2.addcount import register_count_events
 from awscli.customizations.ec2.bundleinstance import register_bundleinstance
-from awscli.customizations.ec2.decryptpassword import ec2_add_priv_launch_key
+from awscli.customizations.ec2.decryptpassword import (
+    register_ec2_add_priv_launch_key,
+)
 from awscli.customizations.ec2.paginate import register_ec2_page_size_injector
 from awscli.customizations.ec2.protocolarg import register_protocol_args
 from awscli.customizations.ec2.runinstances import register_runinstances
@@ -88,8 +93,8 @@ from awscli.customizations.history import (
 )
 from awscli.customizations.iamvirtmfa import IAMVMFAWrapper
 from awscli.customizations.iot import (
-    register_create_keys_and_cert_arguments,
-    register_create_keys_from_csr_arguments,
+    register_iot_create_keys_and_cert_args,
+    register_iot_create_keys_from_csr,
 )
 from awscli.customizations.iot_data import register_custom_endpoint_note
 from awscli.customizations.kinesis import (
@@ -113,7 +118,10 @@ from awscli.customizations.rekognition import (
 )
 from awscli.customizations.removals import register_removals
 from awscli.customizations.route53 import register_create_hosted_zone_doc_fix
-from awscli.customizations.s3.s3 import s3_plugin_initialize
+from awscli.customizations.s3.s3 import (
+    register_s3_main,
+    register_s3_sync_strategies,
+)
 from awscli.customizations.s3errormsg import register_s3_error_msg
 from awscli.customizations.s3events import (
     register_document_expires_string,
@@ -125,7 +133,9 @@ from awscli.customizations.servicecatalog import (
 from awscli.customizations.sessendemail import register_ses_send_email
 from awscli.customizations.sessionmanager import register_ssm_session
 from awscli.customizations.sso import register_sso_commands
-from awscli.customizations.streamingoutputarg import add_streaming_output_arg
+from awscli.customizations.streamingoutputarg import (
+    register_streaming_output_arg,
+)
 from awscli.customizations.timestampformat import register_timestamp_format
 from awscli.customizations.toplevelbool import register_bool_params
 from awscli.customizations.translate import (
@@ -133,42 +143,28 @@ from awscli.customizations.translate import (
 )
 from awscli.customizations.waiters import register_add_waiters
 from awscli.customizations.wizard.commands import register_wizard_commands
-from awscli.paramfile import register_uri_param_handler
+from awscli.paramfile import register_init_uri_param_handler
 
 
 def awscli_initialize(event_handlers):
-    event_handlers.register('session-initialized', register_uri_param_handler)
-    event_handlers.register('session-initialized', add_binary_formatter)
-    event_handlers.register('session-initialized', no_pager_handler)
-    param_shorthand = ParamShorthandParser()
-    event_handlers.register('process-cli-arg', param_shorthand)
-    # The s3 error mesage needs to registered before the
+    register_init_uri_param_handler(event_handlers)
+    register_init_binary_formatter(event_handlers)
+    register_no_pager_handler(event_handlers)
+    register_param_shorthand_parser(event_handlers)
+    # The s3 error message needs to registered before the
     # generic error handler.
     register_s3_error_msg(event_handlers)
-    #    # The following will get fired for every option we are
-    #    # documenting.  It will attempt to add an example_fn on to
-    #    # the parameter object if the parameter supports shorthand
-    #    # syntax.  The documentation event handlers will then use
-    #    # the examplefn to generate the sample shorthand syntax
-    #    # in the docs.  Registering here should ensure that this
-    #    # handler gets called first but it still feels a bit brittle.
-    #    event_handlers.register('doc-option-example.*.*.*',
-    #                            param_shorthand.add_example_fn)
-    event_handlers.register('doc-examples.*.*', add_examples)
+    register_docs_add_examples(event_handlers)
     register_cli_input_args(event_handlers)
-    event_handlers.register(
-        'building-argument-table.*', add_streaming_output_arg
-    )
+    register_streaming_output_arg(event_handlers)
     register_count_events(event_handlers)
-    event_handlers.register(
-        'building-argument-table.ec2.get-password-data',
-        ec2_add_priv_launch_key,
-    )
+    register_ec2_add_priv_launch_key(event_handlers)
     register_parse_global_args(event_handlers)
     register_pagination(event_handlers)
     register_secgroup(event_handlers)
     register_bundleinstance(event_handlers)
-    s3_plugin_initialize(event_handlers)
+    register_s3_main(event_handlers)
+    register_s3_sync_strategies(event_handlers)
     register_ddb(event_handlers)
     register_runinstances(event_handlers)
     register_removals(event_handlers)
@@ -199,6 +195,7 @@ def awscli_initialize(event_handlers):
     register_assume_role_provider(event_handlers)
     register_add_waiters(event_handlers)
     codedeploy_init(event_handlers)
+    register_codedeploy(event_handlers)
     register_subscribe(event_handlers)
     register_get_status(event_handlers)
     register_rename_config(event_handlers)
@@ -210,14 +207,8 @@ def awscli_initialize(event_handlers):
     register_codeartifact_commands(event_handlers)
     codecommit_init(event_handlers)
     register_custom_endpoint_note(event_handlers)
-    event_handlers.register(
-        'building-argument-table.iot.create-keys-and-certificate',
-        register_create_keys_and_cert_arguments,
-    )
-    event_handlers.register(
-        'building-argument-table.iot.create-certificate-from-csr',
-        register_create_keys_from_csr_arguments,
-    )
+    register_iot_create_keys_and_cert_args(event_handlers)
+    register_iot_create_keys_from_csr(event_handlers)
     register_cloudfront(event_handlers)
     register_gamelift_commands(event_handlers)
     register_ec2_page_size_injector(event_handlers)

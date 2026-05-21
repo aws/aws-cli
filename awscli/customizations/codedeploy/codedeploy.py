@@ -22,11 +22,11 @@ from awscli.customizations.codedeploy.register import Register
 from awscli.customizations.codedeploy.uninstall import Uninstall
 
 
-def initialize(cli):
-    """
-    The entry point for CodeDeploy high level commands.
-    """
+def register_rename_codedeploy(cli):
     cli.register('building-command-table.main', change_name)
+
+
+def register_codedeploy(cli):
     cli.register('building-command-table.deploy', inject_commands)
     cli.register(
         'building-argument-table.deploy.get-application-revision',

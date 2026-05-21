@@ -1005,6 +1005,21 @@
       ],
       "documentation":"<p>Removes license included application(s) association(s) from an image builder instance.</p>"
     },
+    "DrainSessionInstance":{
+      "name":"DrainSessionInstance",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DrainSessionInstanceRequest"},
+      "output":{"shape":"DrainSessionInstanceResult"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"OperationNotPermittedException"}
+      ],
+      "documentation":"<p>Drains the instance hosting the specified streaming session. The instance stops accepting new sessions while existing sessions continue uninterrupted. Once all sessions end, the instance is reclaimed and replaced. This only applies to multi-session fleets.</p>"
+    },
     "EnableUser":{
       "name":"EnableUser",
       "http":{
@@ -1492,6 +1507,95 @@
         }
       },
       "documentation":"<p>The collection of license usage records.</p>"
+    },
+    "AgentAccessConfig":{
+      "type":"structure",
+      "required":[
+        "Settings",
+        "ScreenResolution",
+        "ScreenImageFormat"
+      ],
+      "members":{
+        "Settings":{
+          "shape":"AgentAccessSettingList",
+          "documentation":"<p>The list of agent access settings that define permissions for each agent action. You must specify at least one setting.</p>"
+        },
+        "S3BucketArn":{
+          "shape":"S3BucketArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon S3 bucket where agent screenshots are stored. Required when ScreenshotsUploadEnabled is true.</p>"
+        },
+        "ScreenshotsUploadEnabled":{
+          "shape":"BooleanObject",
+          "documentation":"<p>Indicates whether screenshot uploads to Amazon S3 are enabled for agent sessions.</p>"
+        },
+        "ScreenResolution":{
+          "shape":"ScreenResolution",
+          "documentation":"<p>The screen resolution for the agent streaming environment.</p>"
+        },
+        "ScreenImageFormat":{
+          "shape":"ScreenImageFormat",
+          "documentation":"<p>The image format for agent screen captures.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for agent access on a stack. Agent access enables AI agents to interact with desktop applications during streaming sessions.</p>"
+    },
+    "AgentAccessConfigForUpdate":{
+      "type":"structure",
+      "members":{
+        "Settings":{
+          "shape":"AgentAccessSettingList",
+          "documentation":"<p>The list of agent access settings that define permissions for each agent action.</p>"
+        },
+        "S3BucketArn":{
+          "shape":"S3BucketArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon S3 bucket where agent screenshots are stored.</p>"
+        },
+        "ScreenshotsUploadEnabled":{
+          "shape":"BooleanObject",
+          "documentation":"<p>Indicates whether screenshot uploads to Amazon S3 are enabled for agent sessions.</p>"
+        },
+        "ScreenResolution":{
+          "shape":"ScreenResolution",
+          "documentation":"<p>The screen resolution for the agent streaming environment.</p>"
+        },
+        "ScreenImageFormat":{
+          "shape":"ScreenImageFormat",
+          "documentation":"<p>The image format for agent screen captures.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for updating agent access on a stack. This type supports partial updates, so you only need to specify the fields you want to change.</p>"
+    },
+    "AgentAccessSetting":{
+      "type":"structure",
+      "required":[
+        "AgentAction",
+        "Permission"
+      ],
+      "members":{
+        "AgentAction":{
+          "shape":"AgentAction",
+          "documentation":"<p>The agent action to configure. Valid values are COMPUTER_VISION and COMPUTER_INPUT. If you enable COMPUTER_INPUT, you must also enable COMPUTER_VISION.</p>"
+        },
+        "Permission":{
+          "shape":"Permission",
+          "documentation":"<p>Whether the agent action is enabled or disabled.</p>"
+        }
+      },
+      "documentation":"<p>A permission setting for an agent action. Each setting specifies an agent action and whether it is enabled or disabled.</p>"
+    },
+    "AgentAccessSettingList":{
+      "type":"list",
+      "member":{"shape":"AgentAccessSetting"},
+      "documentation":"<p>A list of AgentAccessSetting objects.</p>",
+      "min":1
+    },
+    "AgentAction":{
+      "type":"string",
+      "documentation":"<p>The type of agent action.</p> <ul> <li> <p>COMPUTER_VISION - Allows agents to take screenshots of the desktop.</p> </li> <li> <p>COMPUTER_INPUT - Allows agents to click, type, and scroll on the desktop. Requires COMPUTER_VISION to also be enabled.</p> </li> </ul>",
+      "enum":[
+        "COMPUTER_VISION",
+        "COMPUTER_INPUT"
+      ]
     },
     "AgentSoftwareVersion":{
       "type":"string",
@@ -2178,6 +2282,18 @@
         "ActualUserSessions":{
           "shape":"Integer",
           "documentation":"<p>The total number of session slots that are available for streaming or are currently streaming.</p> <p>ActualUserSessionCapacity = AvailableUserSessionCapacity + ActiveUserSessions</p> <p>This only applies to multi-session fleets.</p>"
+        },
+        "Draining":{
+          "shape":"Integer",
+          "documentation":"<p>The number of instances in drain mode. This only applies to multi-session fleets.</p>"
+        },
+        "DrainModeActiveUserSessions":{
+          "shape":"Integer",
+          "documentation":"<p>The number of active user sessions on instances in drain mode. This only applies to multi-session fleets.</p>"
+        },
+        "DrainModeUnusedUserSessions":{
+          "shape":"Integer",
+          "documentation":"<p>The number of unused session slots on instances in drain mode that cannot be used for user session provisioning. This only applies to multi-session fleets.</p>"
         }
       },
       "documentation":"<p>Describes the capacity status for a fleet.</p>"
@@ -2884,7 +3000,11 @@
           "shape":"StreamingExperienceSettings",
           "documentation":"<p>The streaming protocol you want your stack to prefer. This can be UDP or TCP. Currently, UDP is only supported in the Windows native client.</p>"
         },
-        "ContentRedirection":{"shape":"ContentRedirection"}
+        "ContentRedirection":{"shape":"ContentRedirection"},
+        "AgentAccessConfig":{
+          "shape":"AgentAccessConfig",
+          "documentation":"<p>The configuration for agent access on the stack. If specified, agent access is enabled for the stack.</p>"
+        }
       }
     },
     "CreateStackResult":{
@@ -4106,6 +4226,20 @@
       "member":{"shape":"Domain"},
       "max":50
     },
+    "DrainSessionInstanceRequest":{
+      "type":"structure",
+      "required":["SessionId"],
+      "members":{
+        "SessionId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the streaming session.</p>"
+        }
+      }
+    },
+    "DrainSessionInstanceResult":{
+      "type":"structure",
+      "members":{}
+    },
     "DryRunOperationException":{
       "type":"structure",
       "members":{
@@ -4944,6 +5078,15 @@
       "documentation":"<p>The image can't be updated because it's not compatible for updates.</p>",
       "exception":true
     },
+    "InstanceDrainStatus":{
+      "type":"string",
+      "documentation":"<p>Possible values for the drain status of a streaming instance.</p>",
+      "enum":[
+        "ACTIVE",
+        "DRAINING",
+        "NOT_APPLICABLE"
+      ]
+    },
     "InstanceType":{
       "type":"string",
       "pattern":"^[a-zA-Z0-9-]+(\\.[a-z0-9-]+)+\\.(small|medium|large|xlarge|\\d+xlarge|metal)$"
@@ -5347,6 +5490,10 @@
       "min":3,
       "pattern":"^[0-9a-z\\.\\-]*(?<!\\.)$"
     },
+    "S3BucketArn":{
+      "type":"string",
+      "pattern":"^arn:aws(?:\\-cn|\\-iso\\-b|\\-iso|\\-us\\-gov)?:s3:::[a-z0-9][a-z0-9.\\-]{1,61}[a-z0-9]$"
+    },
     "S3Key":{
       "type":"string",
       "max":1024,
@@ -5366,6 +5513,19 @@
         }
       },
       "documentation":"<p>Describes the S3 location.</p>"
+    },
+    "ScreenImageFormat":{
+      "type":"string",
+      "documentation":"<p>The image format for agent screen captures.</p> <ul> <li> <p>PNG - PNG format.</p> </li> <li> <p>JPEG - JPEG format.</p> </li> </ul>",
+      "enum":[
+        "PNG",
+        "JPEG"
+      ]
+    },
+    "ScreenResolution":{
+      "type":"string",
+      "documentation":"<p>The screen resolution for the agent streaming environment.</p> <ul> <li> <p>W_1280xH_720 - 1280 x 720 pixels.</p> </li> </ul>",
+      "enum":["W_1280xH_720"]
     },
     "ScriptDetails":{
       "type":"structure",
@@ -5471,6 +5631,10 @@
         "InstanceId":{
           "shape":"String",
           "documentation":"<p>The identifier for the instance hosting the session.</p>"
+        },
+        "InstanceDrainStatus":{
+          "shape":"InstanceDrainStatus",
+          "documentation":"<p>The drain status of the instance hosting the streaming session. This only applies to multi-session fleets.</p>"
         }
       },
       "documentation":"<p>Describes a streaming session.</p>"
@@ -5619,12 +5783,17 @@
         "ContentRedirection":{
           "shape":"ContentRedirection",
           "documentation":"<p>Configuration for bidirectional URL redirection between the streaming session and the local client. Use HostToClient to redirect URLs from the remote desktop to the local browser.</p>"
+        },
+        "AgentAccessConfig":{
+          "shape":"AgentAccessConfig",
+          "documentation":"<p>The agent access configuration of the stack, if agent access is enabled.</p>"
         }
       },
       "documentation":"<p>Describes a stack.</p>"
     },
     "StackAttribute":{
       "type":"string",
+      "documentation":"<p>The stack attributes to delete.</p> <ul> <li> <p>STORAGE_CONNECTORS</p> </li> <li> <p>STORAGE_CONNECTOR_HOMEFOLDERS</p> </li> <li> <p>STORAGE_CONNECTOR_GOOGLE_DRIVE</p> </li> <li> <p>STORAGE_CONNECTOR_ONE_DRIVE</p> </li> <li> <p>REDIRECT_URL</p> </li> <li> <p>FEEDBACK_URL</p> </li> <li> <p>THEME_NAME</p> </li> <li> <p>USER_SETTINGS</p> </li> <li> <p>EMBED_HOST_DOMAINS</p> </li> <li> <p>IAM_ROLE_ARN</p> </li> <li> <p>ACCESS_ENDPOINTS</p> </li> <li> <p>STREAMING_EXPERIENCE_SETTINGS</p> </li> <li> <p>AGENT_ACCESS_CONFIG</p> </li> </ul>",
       "enum":[
         "STORAGE_CONNECTORS",
         "STORAGE_CONNECTOR_HOMEFOLDERS",
@@ -5638,7 +5807,8 @@
         "IAM_ROLE_ARN",
         "ACCESS_ENDPOINTS",
         "STREAMING_EXPERIENCE_SETTINGS",
-        "CONTENT_REDIRECTION"
+        "CONTENT_REDIRECTION",
+        "AGENT_ACCESS_CONFIG"
       ]
     },
     "StackAttributes":{
@@ -6404,6 +6574,11 @@
         "StreamingExperienceSettings":{
           "shape":"StreamingExperienceSettings",
           "documentation":"<p>The streaming protocol you want your stack to prefer. This can be UDP or TCP. Currently, UDP is only supported in the Windows native client.</p>"
+        },
+        "ContentRedirection":{"shape":"ContentRedirection"},
+        "AgentAccessConfig":{
+          "shape":"AgentAccessConfigForUpdate",
+          "documentation":"<p>The configuration for agent access on the stack. Specify this to update agent access settings. To remove agent access, use AttributesToDelete with the AGENT_ACCESS_CONFIG value.</p>"
         }
       }
     },

@@ -136,6 +136,14 @@ class TestConfigureSetCommand(unittest.TestCase):
             self.fake_credentials_filename,
         )
 
+    def test_security_token_written_to_shared_credentials_file(self):
+        set_command = ConfigureSetCommand(self.session, self.config_writer)
+        set_command(args=['aws_security_token', 'foo'], parsed_globals=None)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': 'default', 'aws_security_token': 'foo'},
+            self.fake_credentials_filename,
+        )
+
     def test_access_key_written_to_shared_credentials_file_profile(self):
         set_command = ConfigureSetCommand(self.session, self.config_writer)
         set_command(
@@ -203,5 +211,38 @@ class TestConfigureSetCommand(unittest.TestCase):
         )
         self.config_writer.update_config.assert_called_with(
             {'__section__': "profile 'some\tprofile'", 'region': 'us-west-2'},
+            'myconfigfile',
+        )
+
+    def test_set_top_level_property_in_subsection(self):
+        set_command = ConfigureSetCommand(self.session, self.config_writer)
+        set_command(
+            args=['sso_region', 'us-west-2', '--sso-session', 'my-session'],
+            parsed_globals=None,
+        )
+        self.config_writer.update_config.assert_called_with(
+            {
+                '__section__': 'sso-session my-session',
+                'sso_region': 'us-west-2',
+            },
+            'myconfigfile',
+        )
+
+    def test_set_nested_property_in_subsection(self):
+        set_command = ConfigureSetCommand(self.session, self.config_writer)
+        set_command(
+            args=[
+                '--services',
+                'my-services',
+                's3.endpoint_url',
+                'http://localhost:4566',
+            ],
+            parsed_globals=None,
+        )
+        self.config_writer.update_config.assert_called_with(
+            {
+                '__section__': 'services my-services',
+                's3': {'endpoint_url': 'http://localhost:4566'},
+            },
             'myconfigfile',
         )

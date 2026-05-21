@@ -1335,6 +1335,11 @@
         }
       }
     },
+    "Document":{
+      "type":"structure",
+      "members":{},
+      "document":true
+    },
     "EncryptionConfiguration":{
       "type":"structure",
       "required":["sseAlgorithm"],
@@ -2136,11 +2141,14 @@
     },
     "IcebergMetadata":{
       "type":"structure",
-      "required":["schema"],
       "members":{
         "schema":{
           "shape":"IcebergSchema",
-          "documentation":"<p>The schema for an Iceberg table.</p>"
+          "documentation":"<p>The schema for an Iceberg table. Use this property to define table schemas with primitive types only. For schemas that include nested or complex types such as <code>struct</code>, <code>list</code>, or <code>map</code>, use <code>schemaV2</code> instead.</p>"
+        },
+        "schemaV2":{
+          "shape":"IcebergSchemaV2",
+          "documentation":"<p>The schema for an Iceberg table using the V2 format. Use this property to define table schemas that include nested or complex data types such as <code>struct</code>, <code>list</code>, or <code>map</code>, in addition to primitive types. For schemas with only primitive types, you can use either <code>schema</code> or <code>schemaV2</code>.</p>"
         },
         "partitionSpec":{
           "shape":"IcebergPartitionSpec",
@@ -2223,6 +2231,34 @@
         }
       },
       "documentation":"<p>Contains details about the schema for an Iceberg table.</p>"
+    },
+    "IcebergSchemaV2":{
+      "type":"structure",
+      "required":[
+        "type",
+        "fields"
+      ],
+      "members":{
+        "type":{
+          "shape":"SchemaV2FieldType",
+          "documentation":"<p>The type of the top-level schema, which is always a <code>struct</code> type as defined in the <a href=\"https://iceberg.apache.org/spec/#schemas-and-data-types\">Apache Iceberg specification</a>. This value must be <code>struct</code>.</p>"
+        },
+        "fields":{
+          "shape":"SchemaV2FieldList",
+          "documentation":"<p>The schema fields for the table. Each field defines a column in the table, including its name, type, and whether it is required.</p>"
+        },
+        "schemaId":{
+          "shape":"Integer",
+          "documentation":"<p>An optional unique identifier for the schema. Schema IDs are used by Apache Iceberg to track schema evolution.</p>",
+          "locationName":"schema-id"
+        },
+        "identifierFieldIds":{
+          "shape":"IntegerList",
+          "documentation":"<p>A list of field IDs that are used as the identifier fields for the table. Identifier fields uniquely identify a row in the table.</p>",
+          "locationName":"identifier-field-ids"
+        }
+      },
+      "documentation":"<p>Contains details about the schema for an Iceberg table using the V2 format. This schema format supports nested and complex data types such as <code>struct</code>, <code>list</code>, and <code>map</code>, in addition to primitive types.</p>"
     },
     "IcebergSnapshotManagementSettings":{
       "type":"structure",
@@ -2315,6 +2351,10 @@
     "Integer":{
       "type":"integer",
       "box":true
+    },
+    "IntegerList":{
+      "type":"list",
+      "member":{"shape":"Integer"}
     },
     "InternalServerErrorException":{
       "type":"structure",
@@ -3090,6 +3130,46 @@
     "SchemaFieldList":{
       "type":"list",
       "member":{"shape":"SchemaField"}
+    },
+    "SchemaV2Field":{
+      "type":"structure",
+      "required":[
+        "id",
+        "name",
+        "type",
+        "required"
+      ],
+      "members":{
+        "id":{
+          "shape":"Integer",
+          "documentation":"<p>The unique identifier for the schema field. Field IDs are used by Apache Iceberg to track schema evolution and maintain compatibility across schema changes.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the field.</p>"
+        },
+        "type":{
+          "shape":"Document",
+          "documentation":"<p>The data type of the field. This can be a primitive type string such as <code>boolean</code>, <code>int</code>, <code>long</code>, <code>float</code>, <code>double</code>, <code>string</code>, <code>binary</code>, <code>date</code>, <code>timestamp</code>, or <code>timestamptz</code>, or a complex type represented as a JSON object for nested types such as <code>struct</code>, <code>list</code>, or <code>map</code>. For more information, see the <a href=\"https://iceberg.apache.org/spec/#schemas-and-data-types\">Apache Iceberg schemas and data types documentation</a>.</p>"
+        },
+        "required":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean value that specifies whether values are required for each row in this field. If this is <code>true</code>, the field does not allow null values.</p>"
+        },
+        "doc":{
+          "shape":"String",
+          "documentation":"<p>An optional description of the field.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a schema field in the V2 format. This field format supports nested and complex data types such as <code>struct</code>, <code>list</code>, and <code>map</code>, in addition to primitive types.</p>"
+    },
+    "SchemaV2FieldList":{
+      "type":"list",
+      "member":{"shape":"SchemaV2Field"}
+    },
+    "SchemaV2FieldType":{
+      "type":"string",
+      "enum":["struct"]
     },
     "StorageClass":{
       "type":"string",

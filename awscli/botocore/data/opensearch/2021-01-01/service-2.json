@@ -428,6 +428,25 @@
       ],
       "documentation":"<p>Deletes an Amazon OpenSearch Service-managed interface VPC endpoint.</p>"
     },
+    "DeregisterCapability":{
+      "name":"DeregisterCapability",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/2021-01-01/opensearch/application/{ApplicationId}/capability/deregister/{CapabilityName}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeregisterCapabilityRequest"},
+      "output":{"shape":"DeregisterCapabilityResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"DisabledOperationException"}
+      ],
+      "documentation":"<p>Deregisters a capability from an OpenSearch UI application. This operation removes the capability and its associated configuration.</p>"
+    },
     "DescribeDomain":{
       "name":"DescribeDomain",
       "http":{
@@ -742,6 +761,24 @@
         {"shape":"DisabledOperationException"}
       ],
       "documentation":"<p>Retrieves the configuration and status of an existing OpenSearch application.</p>"
+    },
+    "GetCapability":{
+      "name":"GetCapability",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2021-01-01/opensearch/application/{ApplicationId}/capability/{CapabilityName}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetCapabilityRequest"},
+      "output":{"shape":"GetCapabilityResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"DisabledOperationException"}
+      ],
+      "documentation":"<p>Retrieves information about a registered capability for an OpenSearch UI application, including its configuration and current status.</p>"
     },
     "GetCompatibleVersions":{
       "name":"GetCompatibleVersions",
@@ -1183,6 +1220,26 @@
       ],
       "documentation":"<p>Sets the default application to the application with the specified ARN.</p> <p> To remove the default application, use the <code>GetDefaultApplicationSetting</code> operation to get the current default and then call the <code>PutDefaultApplicationSetting</code> with the current applications ARN and the <code>setAsDefault</code> parameter set to <code>false</code>.</p>"
     },
+    "RegisterCapability":{
+      "name":"RegisterCapability",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2021-01-01/opensearch/application/{ApplicationId}/capability/register",
+        "responseCode":200
+      },
+      "input":{"shape":"RegisterCapabilityRequest"},
+      "output":{"shape":"RegisterCapabilityResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"DisabledOperationException"}
+      ],
+      "documentation":"<p>Registers a capability for an OpenSearch UI application. Use this operation to enable specific capabilities, such as AI features, for a given application. The capability configuration defines the type and settings of the capability to register. For more information about the AI features, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/application-ai-assistant.html\">Agentic AI for OpenSearch UI</a>.</p>"
+    },
     "RejectInboundConnection":{
       "name":"RejectInboundConnection",
       "http":{
@@ -1227,6 +1284,23 @@
         {"shape":"BaseException"}
       ],
       "documentation":"<p>Revokes access to an Amazon OpenSearch Service domain that was provided through an interface VPC endpoint.</p>"
+    },
+    "RollbackServiceSoftwareUpdate":{
+      "name":"RollbackServiceSoftwareUpdate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2021-01-01/opensearch/serviceSoftwareUpdate/rollback"
+      },
+      "input":{"shape":"RollbackServiceSoftwareUpdateRequest"},
+      "output":{"shape":"RollbackServiceSoftwareUpdateResponse"},
+      "errors":[
+        {"shape":"BaseException"},
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"DisabledOperationException"}
+      ],
+      "documentation":"<p>Rolls back a service software update for a domain to the previous version. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/service-software.html\">Service software updates in Amazon OpenSearch Service</a>.</p>"
     },
     "StartDomainMaintenance":{
       "name":"StartDomainMaintenance",
@@ -1446,6 +1520,11 @@
     }
   },
   "shapes":{
+    "AIConfig":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Configuration settings for AI-powered capabilities of an OpenSearch UI application.</p>"
+    },
     "AIMLOptionsInput":{
       "type":"structure",
       "members":{
@@ -1861,6 +1940,10 @@
       "member":{"shape":"AppConfig"},
       "max":200
     },
+    "ApplicationId":{
+      "type":"string",
+      "pattern":"[a-z0-9]{3,30}"
+    },
     "ApplicationName":{
       "type":"string",
       "max":30,
@@ -1996,6 +2079,10 @@
         "Service":{
           "shape":"AWSServicePrincipal",
           "documentation":"<p>The Amazon Web Services service SP to grant access to.</p>"
+        },
+        "ServiceOptions":{
+          "shape":"ServiceOptions",
+          "documentation":"<p>The options for the service, including the supported Regions for the endpoint access.</p>"
         }
       }
     },
@@ -2019,6 +2106,10 @@
         "Principal":{
           "shape":"String",
           "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_principal.html\">IAM principal</a> that is allowed access to the domain.</p>"
+        },
+        "ServiceOptions":{
+          "shape":"ServiceOptions",
+          "documentation":"<p>The options for the service, including the supported Regions for the endpoint access.</p>"
         }
       },
       "documentation":"<p>Information about an Amazon Web Services account or service that has access to an Amazon OpenSearch Service domain through the use of an interface VPC endpoint.</p>"
@@ -2217,6 +2308,66 @@
       "documentation":"<p>Specifies the Auto-Tune type. Valid value is SCHEDULED_ACTION.</p>",
       "enum":["SCHEDULED_ACTION"]
     },
+    "AutomatedSnapshotPauseOptions":{
+      "type":"structure",
+      "required":["Enabled"],
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether automated snapshot pause is enabled for the domain.</p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the automated snapshot pause begins.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the automated snapshot pause ends.</p>"
+        },
+        "State":{
+          "shape":"PauseState",
+          "documentation":"<p>The current state of the automated snapshot pause. Valid values are <code>Active</code>, <code>Completed</code>, <code>Scheduled</code>, and <code>Disabled</code>.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the automated snapshot pause options for the domain. These options allow you to temporarily pause automated snapshots for a specified time period.</p>"
+    },
+    "AutomatedSnapshotPauseOptionsStatus":{
+      "type":"structure",
+      "required":[
+        "Options",
+        "Status"
+      ],
+      "members":{
+        "Options":{
+          "shape":"AutomatedSnapshotPauseOptions",
+          "documentation":"<p>Automated snapshot pause options for the domain.</p>"
+        },
+        "Status":{
+          "shape":"OptionStatus",
+          "documentation":"<p>The current status of the automated snapshot pause options for the domain.</p>"
+        }
+      },
+      "documentation":"<p>The status of automated snapshot pause options for the domain.</p>"
+    },
+    "AutomatedSnapshotPauseRequestOptions":{
+      "type":"structure",
+      "required":["Enabled"],
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to enable or disable automated snapshot pause for the domain.</p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the automated snapshot pause should begin.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the automated snapshot pause should end. The maximum allowed duration between <code>StartTime</code> and <code>EndTime</code> is 3 days.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the automated snapshot pause request options for the domain.</p> <important> <p>Suspending snapshots reduces data protection. You cannot restore your domain to points in time when snapshots are suspended. Use this feature only for short-term operational needs such as migrations or maintenance windows.</p> </important> <p>Maximum suspension duration: 3 days.</p>"
+    },
     "AvailabilityZone":{
       "type":"string",
       "max":15,
@@ -2351,6 +2502,83 @@
     "CancelledChangePropertyList":{
       "type":"list",
       "member":{"shape":"CancelledChangeProperty"}
+    },
+    "CapabilityBaseRequestConfig":{
+      "type":"structure",
+      "members":{
+        "aiConfig":{
+          "shape":"AIConfig",
+          "documentation":"<p>Configuration settings for AI-powered capabilities.</p>"
+        }
+      },
+      "documentation":"<p>The base configuration for registering a capability. Contains capability-specific configuration such as AI settings.</p>",
+      "union":true
+    },
+    "CapabilityBaseResponseConfig":{
+      "type":"structure",
+      "members":{
+        "aiConfig":{
+          "shape":"AIConfig",
+          "documentation":"<p>Configuration settings for AI-powered capabilities.</p>"
+        }
+      },
+      "documentation":"<p>The base configuration returned for a registered capability.</p>",
+      "union":true
+    },
+    "CapabilityExtendedResponseConfig":{
+      "type":"structure",
+      "members":{
+        "aiConfig":{
+          "shape":"AIConfig",
+          "documentation":"<p>Configuration settings for AI-powered capabilities.</p>"
+        }
+      },
+      "documentation":"<p>The extended configuration returned for a registered capability, including additional details beyond the base configuration.</p>",
+      "union":true
+    },
+    "CapabilityFailure":{
+      "type":"structure",
+      "members":{
+        "reason":{
+          "shape":"CapabilityFailureReason",
+          "documentation":"<p>The reason for the capability failure. Possible values: <code>KMS_KEY_INSUFFICIENT_PERMISSION</code>.</p>"
+        },
+        "details":{
+          "shape":"CapabilityFailureDetails",
+          "documentation":"<p>Additional details about the capability failure.</p>"
+        }
+      },
+      "documentation":"<p>Information about a capability failure.</p>"
+    },
+    "CapabilityFailureDetails":{"type":"string"},
+    "CapabilityFailureReason":{
+      "type":"string",
+      "enum":["KMS_KEY_INSUFFICIENT_PERMISSION"]
+    },
+    "CapabilityFailures":{
+      "type":"list",
+      "member":{"shape":"CapabilityFailure"},
+      "documentation":"<p>A list of failures associated with a capability.</p>"
+    },
+    "CapabilityName":{
+      "type":"string",
+      "documentation":"<p>The name of a capability. Must be between 3 and 30 characters and contain only alphanumeric characters and hyphens.</p>",
+      "max":30,
+      "min":3,
+      "pattern":"^[a-zA-Z0-9-]+$"
+    },
+    "CapabilityStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a capability. Possible values: <code>creating</code>, <code>create_failed</code>, <code>active</code>, <code>updating</code>, <code>update_failed</code>, <code>deleting</code>, <code>delete_failed</code>.</p>",
+      "enum":[
+        "creating",
+        "create_failed",
+        "active",
+        "updating",
+        "update_failed",
+        "deleting",
+        "delete_failed"
+      ]
     },
     "ChangeProgressDetails":{
       "type":"structure",
@@ -2850,6 +3078,10 @@
         "DeploymentStrategyOptions":{
           "shape":"DeploymentStrategyOptions",
           "documentation":"<p>Specifies the deployment strategy options for the domain.</p>"
+        },
+        "AutomatedSnapshotPauseOptions":{
+          "shape":"AutomatedSnapshotPauseRequestOptions",
+          "documentation":"<p>Specifies the automated snapshot pause options for the domain.</p> <important> <p>Suspending snapshots reduces data protection. You cannot restore your domain to points in time when snapshots are suspended. Use this feature only for short-term operational needs such as migrations or maintenance windows.</p> </important> <p>Maximum suspension duration: 3 days.</p>"
         }
       }
     },
@@ -3393,6 +3625,38 @@
       "type":"string",
       "max":128,
       "min":2
+    },
+    "DeregisterCapabilityRequest":{
+      "type":"structure",
+      "required":[
+        "applicationId",
+        "capabilityName"
+      ],
+      "members":{
+        "applicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The unique identifier of the OpenSearch UI application to deregister the capability from.</p>",
+          "location":"uri",
+          "locationName":"ApplicationId"
+        },
+        "capabilityName":{
+          "shape":"CapabilityName",
+          "documentation":"<p>The name of the capability to deregister.</p>",
+          "location":"uri",
+          "locationName":"CapabilityName"
+        }
+      },
+      "documentation":"<p>Container for the parameters to the <code>DeregisterCapability</code> operation.</p>"
+    },
+    "DeregisterCapabilityResponse":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"CapabilityStatus",
+          "documentation":"<p>The status of the deregistration operation. Returns <code>deleting</code> when the capability is being removed.</p>"
+        }
+      },
+      "documentation":"<p>The result of a <code>DeregisterCapability</code> request.</p>"
     },
     "DescribeDomainAutoTunesRequest":{
       "type":"structure",
@@ -4210,6 +4474,10 @@
         "DeploymentStrategyOptions":{
           "shape":"DeploymentStrategyOptionsStatus",
           "documentation":"<p>Specifies <code>DeploymentStrategyOptions</code> for the domain.</p>"
+        },
+        "AutomatedSnapshotPauseOptions":{
+          "shape":"AutomatedSnapshotPauseOptionsStatus",
+          "documentation":"<p>Specifies <code>AutomatedSnapshotPauseOptions</code> for the domain.</p>"
         }
       },
       "documentation":"<p>Container for the configuration of an OpenSearch Service domain.</p>"
@@ -4223,7 +4491,7 @@
         },
         "TLSSecurityPolicy":{
           "shape":"TLSSecurityPolicy",
-          "documentation":"<p>Specify the TLS security policy to apply to the HTTPS endpoint of the domain. The policy can be one of the following values:</p> <ul> <li> <p> <b>Policy-Min-TLS-1-0-2019-07:</b> TLS security policy that supports TLS version 1.0 to TLS version 1.2</p> </li> <li> <p> <b>Policy-Min-TLS-1-2-2019-07:</b> TLS security policy that supports only TLS version 1.2</p> </li> <li> <p> <b>Policy-Min-TLS-1-2-PFS-2023-10:</b> TLS security policy that supports TLS version 1.2 to TLS version 1.3 with perfect forward secrecy cipher suites</p> </li> </ul>"
+          "documentation":"<p>Specify the TLS security policy to apply to the HTTPS endpoint of the domain. The policy can be one of the following values:</p> <ul> <li> <p> <b>Policy-Min-TLS-1-0-2019-07:</b> TLS security policy that supports TLS version 1.0 to TLS version 1.2</p> </li> <li> <p> <b>Policy-Min-TLS-1-2-2019-07:</b> TLS security policy that supports only TLS version 1.2</p> </li> <li> <p> <b>Policy-Min-TLS-1-2-PFS-2023-10:</b> TLS security policy that supports TLS version 1.2 to TLS version 1.3 with perfect forward secrecy cipher suites</p> </li> <li> <p> <b>Policy-Min-TLS-1-2-RFC9151-FIPS-2024-08:</b> TLS security policy that supports TLS version 1.3 with FIPS</p> </li> </ul>"
         },
         "CustomEndpointEnabled":{
           "shape":"Boolean",
@@ -4637,6 +4905,10 @@
         "DeploymentStrategyOptions":{
           "shape":"DeploymentStrategyOptions",
           "documentation":"<p>The current status of the domain's deployment strategy options.</p>"
+        },
+        "AutomatedSnapshotPauseOptions":{
+          "shape":"AutomatedSnapshotPauseOptions",
+          "documentation":"<p>The current status of the domain's automated snapshot pause options.</p>"
         }
       },
       "documentation":"<p>The current status of an OpenSearch Service domain.</p>"
@@ -4932,6 +5204,54 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the application's data at rest.</p>"
         }
       }
+    },
+    "GetCapabilityRequest":{
+      "type":"structure",
+      "required":[
+        "applicationId",
+        "capabilityName"
+      ],
+      "members":{
+        "applicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The unique identifier of the OpenSearch UI application.</p>",
+          "location":"uri",
+          "locationName":"ApplicationId"
+        },
+        "capabilityName":{
+          "shape":"CapabilityName",
+          "documentation":"<p>The name of the capability to retrieve information about.</p>",
+          "location":"uri",
+          "locationName":"CapabilityName"
+        }
+      },
+      "documentation":"<p>Container for the parameters to the <code>GetCapability</code> operation.</p>"
+    },
+    "GetCapabilityResponse":{
+      "type":"structure",
+      "members":{
+        "capabilityName":{
+          "shape":"CapabilityName",
+          "documentation":"<p>The name of the capability.</p>"
+        },
+        "applicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The unique identifier of the OpenSearch UI application.</p>"
+        },
+        "status":{
+          "shape":"CapabilityStatus",
+          "documentation":"<p>The current status of the capability. Possible values: <code>creating</code>, <code>create_failed</code>, <code>active</code>, <code>updating</code>, <code>update_failed</code>, <code>deleting</code>, <code>delete_failed</code>.</p>"
+        },
+        "capabilityConfig":{
+          "shape":"CapabilityExtendedResponseConfig",
+          "documentation":"<p>The configuration settings for the capability, including capability-specific settings such as AI configuration.</p>"
+        },
+        "failures":{
+          "shape":"CapabilityFailures",
+          "documentation":"<p>A list of failures associated with the capability, if any. Each failure includes a reason and details about what went wrong.</p>"
+        }
+      },
+      "documentation":"<p>The result of a <code>GetCapability</code> request. Contains details about the capability.</p>"
     },
     "GetCompatibleVersionsRequest":{
       "type":"structure",
@@ -5374,6 +5694,10 @@
           "shape":"IdentityCenterInstanceARN",
           "documentation":"<p>The Amazon Resource Name (ARN) of the IAM Identity Center instance.</p>"
         },
+        "IdentityCenterInstanceRegion":{
+          "shape":"Region",
+          "documentation":"<p>The Region of the IAM Identity Center instance.</p>"
+        },
         "SubjectKey":{
           "shape":"SubjectKeyIdCOption",
           "documentation":"<p>Specifies the attribute that contains the subject identifier (such as username, user ID, or email) in IAM Identity Center.</p>"
@@ -5403,6 +5727,10 @@
         "IdentityCenterInstanceARN":{
           "shape":"IdentityCenterInstanceARN",
           "documentation":"<p>The ARN of the IAM Identity Center instance used to create an OpenSearch UI application that uses IAM Identity Center for authentication.</p>"
+        },
+        "IdentityCenterInstanceRegion":{
+          "shape":"Region",
+          "documentation":"<p>The Region of the IAM Identity Center instance.</p>"
         },
         "SubjectKey":{
           "shape":"SubjectKeyIdCOption",
@@ -5822,6 +6150,10 @@
           "shape":"RolesKey",
           "documentation":"<p>Element of the JWT assertion to use for roles.</p>"
         },
+        "JwksUrl":{
+          "shape":"JwksUrl",
+          "documentation":"<p>The URL endpoint that hosts the JSON Web Key Set (JWKS) containing public keys used to verify JWT signatures.</p>"
+        },
         "PublicKey":{
           "shape":"String",
           "documentation":"<p>Element of the JWT assertion used by the cluster to verify JWT signatures.</p>"
@@ -5844,12 +6176,22 @@
           "shape":"String",
           "documentation":"<p>The key used for matching the JWT roles attribute.</p>"
         },
+        "JwksUrl":{
+          "shape":"JwksUrl",
+          "documentation":"<p>The configured JWKS URL endpoint from which the cluster retrieves public keys to verify JWT requests.</p>"
+        },
         "PublicKey":{
           "shape":"String",
           "documentation":"<p>The key used to verify the signature of incoming JWT requests.</p>"
         }
       },
       "documentation":"<p>Describes the JWT options configured for the domain.</p>"
+    },
+    "JwksUrl":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"^$|^https://(?!(?:10|127|169\\.254|192\\.168|172\\.(?:1[6-9]|2[0-9]|3[01]))\\.)[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\\.[a-zA-Z]{2,}(?::[0-9]{1,5})?(?:/[a-zA-Z0-9\\-._~%!$&'()*+,;=:']*)?$"
     },
     "KeyStoreAccessOption":{
       "type":"structure",
@@ -7274,6 +7616,16 @@
       "pattern":".*",
       "sensitive":true
     },
+    "PauseState":{
+      "type":"string",
+      "documentation":"<p>The state of the automated snapshot pause. Valid values are <code>Active</code>, <code>Completed</code>, <code>Scheduled</code>, and <code>Disabled</code>.</p>",
+      "enum":[
+        "Active",
+        "Completed",
+        "Scheduled",
+        "Disabled"
+      ]
+    },
     "PluginClassName":{
       "type":"string",
       "max":1024
@@ -7432,9 +7784,61 @@
     "ReferencePath":{"type":"string"},
     "Region":{
       "type":"string",
+      "documentation":"<p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p>",
       "max":30,
       "min":5,
       "pattern":"[a-z][a-z0-9\\-]+"
+    },
+    "RegionsList":{
+      "type":"list",
+      "member":{"shape":"Region"}
+    },
+    "RegisterCapabilityRequest":{
+      "type":"structure",
+      "required":[
+        "applicationId",
+        "capabilityName",
+        "capabilityConfig"
+      ],
+      "members":{
+        "applicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The unique identifier of the OpenSearch UI application to register the capability for.</p>",
+          "location":"uri",
+          "locationName":"ApplicationId"
+        },
+        "capabilityName":{
+          "shape":"CapabilityName",
+          "documentation":"<p>The name of the capability to register. Must be between 3 and 30 characters and contain only alphanumeric characters and hyphens. This identifies the type of capability being enabled for the application. For registering AI Assistant capability, use <code>ai-capability</code> </p>"
+        },
+        "capabilityConfig":{
+          "shape":"CapabilityBaseRequestConfig",
+          "documentation":"<p>The configuration settings for the capability being registered. This includes capability-specific settings such as AI configuration.</p>"
+        }
+      },
+      "documentation":"<p>Container for the parameters to the <code>RegisterCapability</code> operation.</p>"
+    },
+    "RegisterCapabilityResponse":{
+      "type":"structure",
+      "members":{
+        "capabilityName":{
+          "shape":"CapabilityName",
+          "documentation":"<p>The name of the registered capability.</p>"
+        },
+        "applicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The unique identifier of the OpenSearch UI application.</p>"
+        },
+        "status":{
+          "shape":"CapabilityStatus",
+          "documentation":"<p>The current status of the capability. Possible values: <code>creating</code>, <code>create_failed</code>, <code>active</code>, <code>updating</code>, <code>update_failed</code>, <code>deleting</code>, <code>delete_failed</code>.</p>"
+        },
+        "capabilityConfig":{
+          "shape":"CapabilityBaseResponseConfig",
+          "documentation":"<p>The configuration settings for the registered capability.</p>"
+        }
+      },
+      "documentation":"<p>The result of a <code>RegisterCapability</code> request. Contains details about the registered capability.</p>"
     },
     "RejectInboundConnectionRequest":{
       "type":"structure",
@@ -7644,6 +8048,10 @@
         "Service":{
           "shape":"AWSServicePrincipal",
           "documentation":"<p>The service SP to revoke access from.</p>"
+        },
+        "ServiceOptions":{
+          "shape":"ServiceOptions",
+          "documentation":"<p>The options for the service, including the supported Regions for the endpoint access.</p>"
         }
       }
     },
@@ -7676,6 +8084,49 @@
         "NO_ROLLBACK",
         "DEFAULT_ROLLBACK"
       ]
+    },
+    "RollbackServiceSoftwareOptions":{
+      "type":"structure",
+      "members":{
+        "CurrentVersion":{
+          "shape":"String",
+          "documentation":"<p>The current service software version on the domain.</p>"
+        },
+        "NewVersion":{
+          "shape":"String",
+          "documentation":"<p>The service software version that the domain will roll back to.</p>"
+        },
+        "RollbackAvailable":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether a service software rollback is available for the domain.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A description of the rollback status.</p>"
+        }
+      },
+      "documentation":"<p>Details about the rollback options for a service software update.</p>"
+    },
+    "RollbackServiceSoftwareUpdateRequest":{
+      "type":"structure",
+      "required":["DomainName"],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The name of the domain to roll back the service software update on.</p>"
+        }
+      },
+      "documentation":"<p>Container for the request parameters to the <code>RollbackServiceSoftwareUpdate</code> operation.</p>"
+    },
+    "RollbackServiceSoftwareUpdateResponse":{
+      "type":"structure",
+      "members":{
+        "RollbackServiceSoftwareOptions":{
+          "shape":"RollbackServiceSoftwareOptions",
+          "documentation":"<p>The rollback options for the service software update.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the rolled-back service software update.</p>"
     },
     "S3BucketName":{
       "type":"string",
@@ -7926,6 +8377,23 @@
       },
       "documentation":"<p>Configuration for serverless vector acceleration, which provides <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/gpu-acceleration-vector-index.html\">GPU-accelerated</a> vector search capabilities for improved performance on vector workloads.</p>"
     },
+    "ServiceOptions":{
+      "type":"structure",
+      "members":{
+        "SupportedRegions":{
+          "shape":"RegionsList",
+          "documentation":"<p>The list of supported Regions for the service.</p>"
+        }
+      },
+      "documentation":"<p>Options for the service, such as the supported Regions.</p>"
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>An exception for when a request would cause a service quota to be exceeded.</p>",
+      "error":{"httpStatusCode":402},
+      "exception":true
+    },
     "ServiceSoftwareOptions":{
       "type":"structure",
       "members":{
@@ -8026,6 +8494,10 @@
         "AutoSoftwareUpdateEnabled":{
           "shape":"Boolean",
           "documentation":"<p>Whether automatic service software updates are enabled for the domain.</p>"
+        },
+        "UseLatestServiceSoftwareForBlueGreen":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the domain should use the latest service software version during a blue/green deployment. If enabled, the domain will automatically use the latest available service software when a blue/green deployment is triggered.</p>"
         }
       },
       "documentation":"<p>Options for configuring service software updates for a domain.</p>"
@@ -8190,7 +8662,8 @@
       "enum":[
         "Policy-Min-TLS-1-0-2019-07",
         "Policy-Min-TLS-1-2-2019-07",
-        "Policy-Min-TLS-1-2-PFS-2023-10"
+        "Policy-Min-TLS-1-2-PFS-2023-10",
+        "Policy-Min-TLS-1-2-RFC9151-FIPS-2024-08"
       ]
     },
     "Tag":{
@@ -8478,6 +8951,10 @@
         "DeploymentStrategyOptions":{
           "shape":"DeploymentStrategyOptions",
           "documentation":"<p>Specifies the deployment strategy options for the domain.</p>"
+        },
+        "AutomatedSnapshotPauseOptions":{
+          "shape":"AutomatedSnapshotPauseRequestOptions",
+          "documentation":"<p>Specifies the automated snapshot pause options for the domain.</p> <important> <p>Suspending snapshots reduces data protection. You cannot restore your domain to points in time when snapshots are suspended. Use this feature only for short-term operational needs such as migrations or maintenance windows.</p> </important> <p>Maximum suspension duration: 3 days.</p>"
         }
       },
       "documentation":"<p>Container for the request parameters to the <code>UpdateDomain</code> operation.</p>"
@@ -8846,6 +9323,10 @@
         "SecurityGroupIds":{
           "shape":"StringList",
           "documentation":"<p>The list of security group IDs associated with the VPC endpoints for the domain.</p>"
+        },
+        "EgressEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether egress traffic from the domain is routed through the customer VPC. When <code>true</code>, outbound traffic flows through the VPC. When <code>false</code>, outbound traffic goes through the public internet.</p>"
         }
       },
       "documentation":"<p>Information about the subnets and security groups for an Amazon OpenSearch Service domain provisioned within a virtual private cloud (VPC). For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/vpc.html\">Launching your Amazon OpenSearch Service domains using a VPC</a>. This information only exists if the domain was created with <code>VPCOptions</code>.</p>"
@@ -8878,6 +9359,10 @@
         "SecurityGroupIds":{
           "shape":"StringList",
           "documentation":"<p>The list of security group IDs associated with the VPC endpoints for the domain. If you do not provide a security group ID, OpenSearch Service uses the default security group for the VPC.</p>"
+        },
+        "EgressEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Controls whether egress traffic from the domain is routed through the customer VPC. When <code>true</code>, outbound traffic flows through the VPC. When <code>false</code>, outbound traffic goes through the public internet.</p>"
         }
       },
       "documentation":"<p>Options to specify the subnets and security groups for an Amazon OpenSearch Service VPC endpoint. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/vpc.html\">Launching your Amazon OpenSearch Service domains using a VPC</a>.</p>"

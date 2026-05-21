@@ -18,7 +18,10 @@ from pathlib import Path
 import pytest
 from botocore import xform_name
 from botocore.config import Config
-from botocore.endpoint_provider import EndpointProvider
+from botocore.endpoint_provider import (
+    S3_UNREFERENCED_PARAMS,
+    EndpointProvider,
+)
 from botocore.exceptions import (
     BotoCoreError,
     ClientError,
@@ -295,3 +298,34 @@ def test_end_to_end_test_cases_yielding_errors(
             except (ClientError, ResponseParserError):
                 pass
         assert len(http_stubber.requests) == 0
+
+
+def _collect_refs_from_rules(rules):
+    """Recursively collect all {\"ref\": \"...\"} values from rules."""
+    refs = set()
+    if isinstance(rules, dict):
+        if 'ref' in rules:
+            refs.add(rules['ref'])
+        for value in rules.values():
+            refs.update(_collect_refs_from_rules(value))
+    elif isinstance(rules, list):
+        for item in rules:
+            refs.update(_collect_refs_from_rules(item))
+    return refs
+
+
+@pytest.mark.validates_model
+def test_s3_unreferenced_endpoint_ruleset_params():
+    """Assert that the set of known S3 endpoint ruleset parameters that are
+    not used in the rules hasn't changed. These are set in the
+    S3_UNREFERENCED_PARAMS constant to prevent them from influencing the cache.
+    """
+    ruleset = LOADER.load_service_model('s3', 'endpoint-rule-set-1')
+    all_params = set(ruleset['parameters'].keys())
+    referenced = _collect_refs_from_rules(ruleset['rules'])
+    unreferenced = all_params - referenced
+    assert unreferenced == S3_UNREFERENCED_PARAMS, (
+        "The set of unused S3 endpoints parameters have changed, examine the "
+        "implication of this on endpoint caching behavior before updating"
+        "S3_UNREFERENCED_PARAMS."
+    )

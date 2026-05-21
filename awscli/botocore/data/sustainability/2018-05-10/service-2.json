@@ -1,0 +1,418 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2018-05-10",
+    "auth":[
+      "aws.auth#sigv4a",
+      "aws.auth#sigv4"
+    ],
+    "endpointPrefix":"sustainability",
+    "protocol":"rest-json",
+    "protocols":["rest-json"],
+    "serviceFullName":"AWS Sustainability",
+    "serviceId":"Sustainability",
+    "signatureVersion":"v4",
+    "signingName":"sustainability",
+    "uid":"sustainability-2018-05-10"
+  },
+  "operations":{
+    "GetEstimatedCarbonEmissions":{
+      "name":"GetEstimatedCarbonEmissions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/estimated-carbon-emissions",
+        "responseCode":200
+      },
+      "input":{"shape":"GetEstimatedCarbonEmissionsRequest"},
+      "output":{"shape":"GetEstimatedCarbonEmissionsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns estimated carbon emission values based on customer grouping and filtering parameters. We recommend using pagination to ensure that the operation returns quickly and successfully. </p>",
+      "readonly":true
+    },
+    "GetEstimatedCarbonEmissionsDimensionValues":{
+      "name":"GetEstimatedCarbonEmissionsDimensionValues",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/estimated-carbon-emissions-dimension-values",
+        "responseCode":200
+      },
+      "input":{"shape":"GetEstimatedCarbonEmissionsDimensionValuesRequest"},
+      "output":{"shape":"GetEstimatedCarbonEmissionsDimensionValuesResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns the possible dimension values available for a customer's account. We recommend using pagination to ensure that the operation returns quickly and successfully. </p>",
+      "readonly":true
+    }
+  },
+  "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{
+          "shape":"String",
+          "locationName":"message"
+        }
+      },
+      "documentation":"<p>You do not have sufficient access to perform this action.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "Dimension":{
+      "type":"string",
+      "documentation":"<p>Specifies the dimensions available for grouping and filtering emissions data.</p>",
+      "enum":[
+        "USAGE_ACCOUNT_ID",
+        "REGION",
+        "SERVICE"
+      ]
+    },
+    "DimensionEntry":{
+      "type":"structure",
+      "required":[
+        "Dimension",
+        "Value"
+      ],
+      "members":{
+        "Dimension":{
+          "shape":"Dimension",
+          "documentation":"<p>The dimension type that categorizes this entry.</p>"
+        },
+        "Value":{
+          "shape":"String",
+          "documentation":"<p> The value for the specified dimension. Valid values vary based on the dimension type (e.g., <code>us-east-1</code> for the <code>REGION</code> dimension, <code>AmazonEC2</code> for the <code>SERVICE</code> dimension). </p>"
+        }
+      },
+      "documentation":"<p>Represents a dimension and its corresponding value.</p>"
+    },
+    "DimensionEntryList":{
+      "type":"list",
+      "member":{"shape":"DimensionEntry"}
+    },
+    "DimensionList":{
+      "type":"list",
+      "member":{"shape":"Dimension"}
+    },
+    "DimensionListMap":{
+      "type":"map",
+      "key":{"shape":"Dimension"},
+      "value":{"shape":"DimensionValueList"}
+    },
+    "DimensionValueList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "DimensionsMap":{
+      "type":"map",
+      "key":{"shape":"Dimension"},
+      "value":{"shape":"String"}
+    },
+    "Double":{
+      "type":"double",
+      "box":true
+    },
+    "Emissions":{
+      "type":"structure",
+      "required":[
+        "Value",
+        "Unit"
+      ],
+      "members":{
+        "Value":{
+          "shape":"Double",
+          "documentation":"<p>The numeric value of the emissions quantity.</p>"
+        },
+        "Unit":{
+          "shape":"EmissionsUnit",
+          "documentation":"<p>The unit of measurement for the emissions value.</p>"
+        }
+      },
+      "documentation":"<p>Represents a carbon emissions quantity with its value and unit of measurement.</p>"
+    },
+    "EmissionsMap":{
+      "type":"map",
+      "key":{"shape":"EmissionsType"},
+      "value":{"shape":"Emissions"}
+    },
+    "EmissionsType":{
+      "type":"string",
+      "documentation":"<p>Specifies the types of carbon emissions calculations available.</p>",
+      "enum":[
+        "TOTAL_LBM_CARBON_EMISSIONS",
+        "TOTAL_MBM_CARBON_EMISSIONS",
+        "TOTAL_SCOPE_1_CARBON_EMISSIONS",
+        "TOTAL_SCOPE_2_LBM_CARBON_EMISSIONS",
+        "TOTAL_SCOPE_2_MBM_CARBON_EMISSIONS",
+        "TOTAL_SCOPE_3_LBM_CARBON_EMISSIONS",
+        "TOTAL_SCOPE_3_MBM_CARBON_EMISSIONS"
+      ]
+    },
+    "EmissionsTypeList":{
+      "type":"list",
+      "member":{"shape":"EmissionsType"}
+    },
+    "EmissionsUnit":{
+      "type":"string",
+      "documentation":"<p>Specifies the unit of measurement for emissions.</p>",
+      "enum":["MTCO2e"]
+    },
+    "EstimatedCarbonEmissions":{
+      "type":"structure",
+      "required":[
+        "TimePeriod",
+        "DimensionsValues",
+        "ModelVersion",
+        "EmissionsValues"
+      ],
+      "members":{
+        "TimePeriod":{
+          "shape":"TimePeriod",
+          "documentation":"<p>The reporting period for emission values.</p>"
+        },
+        "DimensionsValues":{
+          "shape":"DimensionsMap",
+          "documentation":"<p>The dimensions used to group emissions values.</p>"
+        },
+        "ModelVersion":{
+          "shape":"ModelVersion",
+          "documentation":"<p>The semantic version-formatted string that indicates the methodology version used to calculate the emission values. </p> <note> <p> The AWS Sustainability service reflects the most recent model version for every month. You will not see two entries for the same month with different <code>ModelVersion</code> values. To track the evolution of the methodology and compare emission values from previous versions, we recommend creating a <a href=\"https://docs.aws.amazon.com/cur/latest/userguide/what-is-data-exports.html\">Data Export</a>. </p> </note>"
+        },
+        "EmissionsValues":{
+          "shape":"EmissionsMap",
+          "documentation":"<p>The emissions values for the requested emissions types.</p>"
+        }
+      },
+      "documentation":"<p>Contains estimated carbon emissions data for a specific time period and dimension grouping.</p>"
+    },
+    "EstimatedCarbonEmissionsList":{
+      "type":"list",
+      "member":{"shape":"EstimatedCarbonEmissions"}
+    },
+    "FilterExpression":{
+      "type":"structure",
+      "members":{
+        "Dimensions":{
+          "shape":"DimensionListMap",
+          "documentation":"<p>Filters emission values by specific dimension values.</p>"
+        }
+      },
+      "documentation":"<p>Filters emission values by specific dimension values.</p>"
+    },
+    "GetEstimatedCarbonEmissionsDimensionValuesRequest":{
+      "type":"structure",
+      "required":[
+        "TimePeriod",
+        "Dimensions"
+      ],
+      "members":{
+        "TimePeriod":{
+          "shape":"TimePeriod",
+          "documentation":"<p>The date range for fetching the dimension values.</p>"
+        },
+        "Dimensions":{
+          "shape":"DimensionList",
+          "documentation":"<p>The dimensions available for grouping estimated carbon emissions.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. Default is 40.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token specifying which page of results to return in the response. If no token is provided, the default page is the first page. </p>"
+        }
+      }
+    },
+    "GetEstimatedCarbonEmissionsDimensionValuesResponse":{
+      "type":"structure",
+      "members":{
+        "Results":{
+          "shape":"DimensionEntryList",
+          "documentation":"<p>The list of possible dimensions over which the emissions data is aggregated.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token indicating there are additional pages available. You can use the token in a following request to fetch the next set of results. </p>"
+        }
+      }
+    },
+    "GetEstimatedCarbonEmissionsRequest":{
+      "type":"structure",
+      "required":["TimePeriod"],
+      "members":{
+        "TimePeriod":{
+          "shape":"TimePeriod",
+          "documentation":"<p>The date range for fetching estimated carbon emissions.</p>"
+        },
+        "GroupBy":{
+          "shape":"DimensionList",
+          "documentation":"<p>The dimensions available for grouping estimated carbon emissions.</p>"
+        },
+        "FilterBy":{
+          "shape":"FilterExpression",
+          "documentation":"<p>The criteria for filtering estimated carbon emissions.</p>"
+        },
+        "EmissionsTypes":{
+          "shape":"EmissionsTypeList",
+          "documentation":"<p>The emission types to include in the results. If absent, returns <code>TOTAL_LBM_CARBON_EMISSIONS</code> and <code>TOTAL_MBM_CARBON_EMISSIONS</code> emissions types. </p>"
+        },
+        "Granularity":{
+          "shape":"TimeGranularity",
+          "documentation":"<p>The time granularity for the results. If absent, uses <code>MONTHLY</code> time granularity.</p>"
+        },
+        "GranularityConfiguration":{
+          "shape":"GranularityConfiguration",
+          "documentation":"<p>Configuration for fiscal year calculations when using <code>YEARLY_FISCAL</code> or <code>QUARTERLY_FISCAL</code> granularity. </p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. Default is 40.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token specifying which page of results to return in the response. If no token is provided, the default page is the first page. </p>"
+        }
+      }
+    },
+    "GetEstimatedCarbonEmissionsResponse":{
+      "type":"structure",
+      "required":["Results"],
+      "members":{
+        "Results":{
+          "shape":"EstimatedCarbonEmissionsList",
+          "documentation":"<p>The result of the requested inputs.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token indicating there are additional pages available. You can use the token in a following request to fetch the next set of results. </p>"
+        }
+      }
+    },
+    "GranularityConfiguration":{
+      "type":"structure",
+      "members":{
+        "FiscalYearStartMonth":{
+          "shape":"Month",
+          "documentation":"<p> The month (1-12) when the fiscal year begins. Used for <code>YEARLY_FISCAL</code> and <code>QUARTERLY_FISCAL</code> granularity. Defaults to 1 (January). </p>"
+        }
+      },
+      "documentation":"<p> Contains configuration for the fiscal year granularities (e.g., <code>YEARLY_FISCAL</code>, <code>QUARTERLY_FISCAL</code>. </p>"
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{
+          "shape":"String",
+          "locationName":"message"
+        }
+      },
+      "documentation":"<p>The request processing has failed because of an unknown error, exception, or failure.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true,
+      "retryable":{"throttling":false}
+    },
+    "MaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":5000,
+      "min":1
+    },
+    "ModelVersion":{
+      "type":"string",
+      "pattern":"v(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?"
+    },
+    "Month":{
+      "type":"integer",
+      "box":true,
+      "max":12,
+      "min":1
+    },
+    "NextToken":{
+      "type":"string",
+      "max":2000,
+      "min":1
+    },
+    "String":{"type":"string"},
+    "ThrottlingException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{
+          "shape":"String",
+          "locationName":"message"
+        }
+      },
+      "documentation":"<p>The request was denied due to request throttling.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true,
+      "retryable":{"throttling":false}
+    },
+    "TimeGranularity":{
+      "type":"string",
+      "documentation":"<p>Specifies the time period over which emissions data is aggregated.</p>",
+      "enum":[
+        "YEARLY_CALENDAR",
+        "YEARLY_FISCAL",
+        "QUARTERLY_CALENDAR",
+        "QUARTERLY_FISCAL",
+        "MONTHLY"
+      ]
+    },
+    "TimePeriod":{
+      "type":"structure",
+      "required":[
+        "Start",
+        "End"
+      ],
+      "members":{
+        "Start":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start (inclusive) of the time period. ISO-8601 formatted timestamp, for example: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> </p>"
+        },
+        "End":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end (exclusive) of the time period. ISO-8601 formatted timestamp, for example: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> </p>"
+        }
+      },
+      "documentation":"<p>Represents a duration of time defined by start and end timestamps.</p>"
+    },
+    "Timestamp":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
+    "ValidationException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{
+          "shape":"String",
+          "locationName":"message"
+        }
+      },
+      "documentation":"<p>The input fails to satisfy the constraints specified by an Amazon Web Services service.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    }
+  },
+  "documentation":"<p>The AWS Sustainability service provides programmatic access to estimated carbon emissions data for your Amazon Web Services usage. Use the AWS Sustainability service to retrieve, analyze, and track the carbon footprint of your cloud infrastructure over time. </p> <p>With the AWS Sustainability service, you can:</p> <ul> <li> <p>Retrieve estimated carbon emissions for your Amazon Web Services usage across different time periods </p> </li> <li> <p>Group emissions data by dimensions such as account, region, and service</p> </li> <li> <p>Filter emissions data to focus on specific accounts, regions, or services</p> </li> <li> <p>Access multiple emissions calculation methodologies including Location-based Method (LBM) and Market-based Method (MBM) </p> </li> <li> <p>Aggregate emissions data at various time granularities including monthly, quarterly, and yearly periods </p> </li> </ul> <p> The API supports pagination for efficient data retrieval and provides dimension values to help you understand the available grouping and filtering options for your account. </p> <p> All emissions values are calculated using methodologies aligned with the Greenhouse Gas (GHG) Protocol and are provided in metric tons of carbon dioxide-equivalent (MTCO2e). </p>"
+}

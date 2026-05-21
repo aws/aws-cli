@@ -93,6 +93,7 @@ def register_removals(event_handler):
         remove_commands=[
             'invoke-code-interpreter',
             'invoke-agent-runtime-command',
+            'invoke-harness',
         ],
     )
     cmd_remover.remove(

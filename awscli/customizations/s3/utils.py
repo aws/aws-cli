@@ -62,6 +62,10 @@ _S3_OBJECT_LAMBDA_TO_BUCKET_KEY_REGEX = re.compile(
 )
 
 
+def is_account_regional_namespace_bucket(bucket):
+    return bucket.endswith('-an')
+
+
 def human_readable_size(value):
     """Convert a size in bytes into a human readable format.
 
@@ -528,6 +532,7 @@ class RequestParamsMapper:
         """Map CLI params to HeadObject request params"""
         cls._set_sse_c_request_params(request_params, cli_params)
         cls._set_request_payer_param(request_params, cli_params)
+        cls._set_checksum_mode_param(request_params, cli_params)
 
     @classmethod
     def map_head_object_params_with_copy_source_sse(

@@ -85,6 +85,22 @@
       ],
       "documentation":"<p>Creates an Outpost.</p> <p>You can specify either an Availability one or an AZ ID.</p>"
     },
+    "CreateRenewal":{
+      "name":"CreateRenewal",
+      "http":{
+        "method":"POST",
+        "requestUri":"/renewals"
+      },
+      "input":{"shape":"CreateRenewalInput"},
+      "output":{"shape":"CreateRenewalOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Creates a renewal contract for the specified Outpost.</p>"
+    },
     "CreateSite":{
       "name":"CreateSite",
       "http":{
@@ -261,6 +277,22 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Gets the instance types that an Outpost can support in <code>InstanceTypeCapacity</code>. This will generally include instance types that are not currently configured and therefore cannot be launched with the current Outpost capacity configuration.</p>"
+    },
+    "GetRenewalPricing":{
+      "name":"GetRenewalPricing",
+      "http":{
+        "method":"GET",
+        "requestUri":"/outpost/{OutpostIdentifier}/renewal-pricing"
+      },
+      "input":{"shape":"GetRenewalPricingInput"},
+      "output":{"shape":"GetRenewalPricingOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Gets all available renewal pricing options for the specified Outpost.</p>"
     },
     "GetSite":{
       "name":"GetSite",
@@ -819,12 +851,31 @@
       "enum":[
         "ACTIVE",
         "RETIRING",
-        "ISOLATED"
+        "ISOLATED",
+        "INSTALLING"
       ]
     },
     "AssetType":{
       "type":"string",
-      "enum":["COMPUTE"]
+      "enum":[
+        "COMPUTE",
+        "STORAGE",
+        "POWERSHELF",
+        "SWITCH",
+        "NETWORKING"
+      ]
+    },
+    "AssetTypeList":{
+      "type":"list",
+      "member":{"shape":"AssetType"},
+      "max":5,
+      "min":1
+    },
+    "AutoFillIdempotencyToken":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^.*$"
     },
     "AvailabilityZone":{
       "type":"string",
@@ -1110,7 +1161,8 @@
       "enum":[
         "ACTIVE",
         "ISOLATED",
-        "RETIRING"
+        "RETIRING",
+        "INSTALLING"
       ]
     },
     "ComputeAttributes":{
@@ -1122,7 +1174,7 @@
         },
         "State":{
           "shape":"ComputeAssetState",
-          "documentation":"<p>The state.</p> <ul> <li> <p>ACTIVE - The asset is available and can provide capacity for new compute resources.</p> </li> <li> <p>ISOLATED - The asset is undergoing maintenance and can't provide capacity for new compute resources. Existing compute resources on the asset are not affected.</p> </li> <li> <p>RETIRING - The underlying hardware for the asset is degraded. Capacity for new compute resources is reduced. Amazon Web Services sends notifications for resources that must be stopped before the asset can be replaced.</p> </li> </ul>"
+          "documentation":"<p>The state.</p> <ul> <li> <p>ACTIVE - The asset is available and can provide capacity for new compute resources.</p> </li> <li> <p>ISOLATED - The asset is undergoing maintenance and can't provide capacity for new compute resources. Existing compute resources on the asset are not affected.</p> </li> <li> <p>RETIRING - The underlying hardware for the asset is degraded. Capacity for new compute resources is reduced. Amazon Web Services sends notifications for resources that must be stopped before the asset can be replaced.</p> </li> <li> <p>INSTALLING - The asset is being installed and can't yet provide capacity for new compute resources.</p> </li> </ul>"
         },
         "InstanceFamilies":{
           "shape":"InstanceFamilies",
@@ -1279,6 +1331,58 @@
         "Outpost":{"shape":"Outpost"}
       }
     },
+    "CreateRenewalInput":{
+      "type":"structure",
+      "required":[
+        "PaymentOption",
+        "PaymentTerm",
+        "OutpostIdentifier"
+      ],
+      "members":{
+        "PaymentOption":{
+          "shape":"PaymentOption",
+          "documentation":"<p>The payment option.</p>"
+        },
+        "PaymentTerm":{
+          "shape":"PaymentTerm",
+          "documentation":"<p>The payment term.</p>"
+        },
+        "OutpostIdentifier":{
+          "shape":"OutpostIdentifier",
+          "documentation":"<p>The ID or ARN of the Outpost.</p>"
+        },
+        "ClientToken":{
+          "shape":"AutoFillIdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateRenewalOutput":{
+      "type":"structure",
+      "members":{
+        "PaymentOption":{
+          "shape":"PaymentOption",
+          "documentation":"<p>The payment option.</p>"
+        },
+        "PaymentTerm":{
+          "shape":"PaymentTerm",
+          "documentation":"<p>The payment term.</p>"
+        },
+        "OutpostId":{
+          "shape":"OutpostIdOnly",
+          "documentation":"<p>The ID of the Outpost.</p>"
+        },
+        "UpfrontPrice":{
+          "shape":"NullableFloat",
+          "documentation":"<p>The upfront price of the renewal.</p>"
+        },
+        "MonthlyRecurringPrice":{
+          "shape":"NullableFloat",
+          "documentation":"<p>The monthly recurring price of the renewal.</p>"
+        }
+      }
+    },
     "CreateSiteInput":{
       "type":"structure",
       "required":["Name"],
@@ -1402,7 +1506,7 @@
       "type":"string",
       "max":10,
       "min":1,
-      "pattern":"[a-z0-9]+"
+      "pattern":"^[a-z0-9]+$"
     },
     "FiberOpticCableType":{
       "type":"string",
@@ -1586,6 +1690,14 @@
         "ContractEndDate":{
           "shape":"String",
           "documentation":"<p>The date the current contract term ends for the specified Outpost. You must start the renewal or decommission process at least 5 business days before the current term for your Amazon Web Services Outposts ends. Failing to complete these steps at least 5 business days before the current term ends might result in unanticipated charges.</p>"
+        },
+        "PaymentTerm":{
+          "shape":"PaymentTerm",
+          "documentation":"<p>The payment term.</p>"
+        },
+        "PaymentOption":{
+          "shape":"PaymentOption",
+          "documentation":"<p>The payment option.</p>"
         }
       }
     },
@@ -1680,6 +1792,31 @@
       "members":{
         "InstanceTypes":{"shape":"InstanceTypeListDefinition"},
         "NextToken":{"shape":"Token"}
+      }
+    },
+    "GetRenewalPricingInput":{
+      "type":"structure",
+      "required":["OutpostIdentifier"],
+      "members":{
+        "OutpostIdentifier":{
+          "shape":"OutpostIdentifier",
+          "documentation":"<p>The ID or ARN of the Outpost.</p>",
+          "location":"uri",
+          "locationName":"OutpostIdentifier"
+        }
+      }
+    },
+    "GetRenewalPricingOutput":{
+      "type":"structure",
+      "members":{
+        "PricingResult":{
+          "shape":"PricingResult",
+          "documentation":"<p>The result of the pricing request.</p>"
+        },
+        "PricingOptions":{
+          "shape":"PricingOptionList",
+          "documentation":"<p>The pricing options for the specified Outpost.</p>"
+        }
       }
     },
     "GetSiteAddressInput":{
@@ -2049,6 +2186,12 @@
           "documentation":"<p>Filters the results by state.</p>",
           "location":"querystring",
           "locationName":"StatusFilter"
+        },
+        "AssetTypeFilter":{
+          "shape":"AssetTypeList",
+          "documentation":"<p>Filters the results by asset type.</p> <ul> <li> <p>COMPUTE - Server asset used for customer compute </p> </li> <li> <p>STORAGE - Server asset used by storage services </p> </li> <li> <p>POWERSHELF - Powershelf assets </p> </li> <li> <p>SWITCH - Switch assets </p> </li> <li> <p>NETWORKING - Asset managed by Amazon Web Services for networking purposes </p> </li> </ul>",
+          "location":"querystring",
+          "locationName":"AssetTypeFilter"
         }
       }
     },
@@ -2364,6 +2507,10 @@
       "exception":true
     },
     "NullableDouble":{"type":"double"},
+    "NullableFloat":{
+      "type":"float",
+      "box":true
+    },
     "OpticalStandard":{
       "type":"string",
       "enum":[
@@ -2633,7 +2780,36 @@
         "THREE_PHASE"
       ]
     },
+    "PricingOption":{
+      "type":"structure",
+      "members":{
+        "PricingType":{
+          "shape":"QuotePricingType",
+          "documentation":"<p>The type of pricing model.</p>"
+        },
+        "SubscriptionPricingDetails":{
+          "shape":"SubscriptionPricingDetails",
+          "documentation":"<p>The subscription pricing details for this pricing option.</p>"
+        }
+      },
+      "documentation":"<p>A pricing option for the specified Outpost.</p>"
+    },
+    "PricingOptionList":{
+      "type":"list",
+      "member":{"shape":"PricingOption"}
+    },
+    "PricingResult":{
+      "type":"string",
+      "enum":[
+        "PRICED",
+        "UNABLE_TO_PRICE"
+      ]
+    },
     "Quantity":{"type":"string"},
+    "QuotePricingType":{
+      "type":"string",
+      "enum":["SUBSCRIPTION"]
+    },
     "RackElevation":{
       "type":"float",
       "box":true,
@@ -2990,7 +3166,7 @@
     "StatusList":{
       "type":"list",
       "member":{"shape":"AssetState"},
-      "max":3,
+      "max":5,
       "min":1
     },
     "String":{
@@ -3012,7 +3188,7 @@
         },
         "SubscriptionStatus":{
           "shape":"SubscriptionStatus",
-          "documentation":"<p>The status of subscription which can be one of the following:</p> <ul> <li> <p> <b>INACTIVE</b> - Subscription requests that are inactive.</p> </li> <li> <p> <b>ACTIVE</b> - Subscription requests that are in progress and have an end date in the future.</p> </li> <li> <p> <b>CANCELLED</b> - Subscription requests that are cancelled.</p> </li> </ul>"
+          "documentation":"<p>The status of subscription which can be one of the following:</p> <ul> <li> <p> <b>INACTIVE</b> - Subscription requests that are inactive.</p> </li> <li> <p> <b>ACTIVE</b> - Subscription requests that are in progress and have an end date in the future.</p> </li> <li> <p> <b>PENDING</b> - Subscription has been created but billing has not yet commenced because the subscription begin date has not been reached.</p> </li> <li> <p> <b>CANCELLED</b> - Subscription requests that are cancelled.</p> </li> </ul>"
         },
         "OrderIds":{
           "shape":"OrderIdList",
@@ -3041,10 +3217,33 @@
       "type":"list",
       "member":{"shape":"Subscription"}
     },
+    "SubscriptionPricingDetails":{
+      "type":"structure",
+      "members":{
+        "PaymentOption":{
+          "shape":"PaymentOption",
+          "documentation":"<p>The payment option.</p>"
+        },
+        "PaymentTerm":{
+          "shape":"PaymentTerm",
+          "documentation":"<p>The payment term.</p>"
+        },
+        "UpfrontPrice":{
+          "shape":"NullableFloat",
+          "documentation":"<p>The upfront price.</p>"
+        },
+        "MonthlyRecurringPrice":{
+          "shape":"NullableFloat",
+          "documentation":"<p>The monthly recurring price.</p>"
+        }
+      },
+      "documentation":"<p>The pricing details for a subscription.</p>"
+    },
     "SubscriptionStatus":{
       "type":"string",
       "enum":[
         "ACTIVE",
+        "PENDING",
         "INACTIVE",
         "CANCELLED"
       ]

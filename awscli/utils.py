@@ -21,6 +21,7 @@ import signal
 import sys
 from subprocess import PIPE, Popen
 
+import ruamel.yaml
 from botocore.configprovider import BaseProvider
 from botocore.useragent import UserAgentComponent
 from botocore.utils import (
@@ -486,6 +487,95 @@ def dump_yaml_to_str(yaml, data):
     stream = StringIO()
     yaml.dump(data, stream)
     return stream.getvalue()
+
+
+class SafeLineBreakEmitter(ruamel.yaml.emitter.Emitter):
+    """Emitter that always uses backslash escapes at line breaks in
+    double-quoted scalars.
+
+    Derived from ruamel.yaml's Emitter.write_double_quoted (MIT license).
+
+    ruamel.yaml >= 0.17.23 added a heuristic that sometimes omits the
+    trailing backslash when wrapping long double-quoted strings, relying
+    on YAML line-folding rules to preserve the value. Consumers that don't
+    properly parse the value may experience failures.
+
+    This subclass restores the pre-0.17.23 behaviour of unconditionally
+    emitting a backslash at every line break in double-quoted scalars.
+    """
+
+    def write_double_quoted(self, text, split=True):
+        if self.root_context:
+            if self.requested_indent is not None:
+                self.write_line_break()
+                if self.requested_indent != 0:
+                    self.write_indent()
+        self.write_indicator('"', True)
+        start = end = 0
+        while end <= len(text):
+            ch = None
+            if end < len(text):
+                ch = text[end]
+            if (
+                ch is None
+                or ch in '"\\\x85\u2028\u2029\ufeff'
+                or not (
+                    '\x20' <= ch <= '\x7e'
+                    or (
+                        self.allow_unicode
+                        and (
+                            ('\xa0' <= ch <= '\ud7ff')
+                            or ('\ue000' <= ch <= '\ufffd')
+                            or ('\U00010000' <= ch <= '\U0010ffff')
+                        )
+                    )
+                )
+            ):
+                if start < end:
+                    data = text[start:end]
+                    self.column += len(data)
+                    if bool(self.encoding):
+                        data = data.encode(self.encoding)
+                    self.stream.write(data)
+                    start = end
+                if ch is not None:
+                    if ch in self.ESCAPE_REPLACEMENTS:
+                        data = '\\' + self.ESCAPE_REPLACEMENTS[ch]
+                    elif ch <= '\xff':
+                        data = '\\x%02X' % ord(ch)
+                    elif ch <= '\uffff':
+                        data = '\\u%04X' % ord(ch)
+                    else:
+                        data = '\\U%08X' % ord(ch)
+                    self.column += len(data)
+                    if bool(self.encoding):
+                        data = data.encode(self.encoding)
+                    self.stream.write(data)
+                    start = end + 1
+            if (
+                0 < end < len(text) - 1
+                and (ch == ' ' or start >= end)
+                and self.column + (end - start) > self.best_width
+                and split
+            ):
+                data = text[start:end] + '\\'
+                if start < end:
+                    start = end
+                self.column += len(data)
+                if bool(self.encoding):
+                    data = data.encode(self.encoding)
+                self.stream.write(data)
+                self.write_indent()
+                self.whitespace = False
+                self.indention = False
+                if text[start] == ' ':
+                    data = '\\'
+                    self.column += len(data)
+                    if bool(self.encoding):
+                        data = data.encode(self.encoding)
+                    self.stream.write(data)
+            end += 1
+        self.write_indicator('"', False)
 
 
 class ShapeWalker:

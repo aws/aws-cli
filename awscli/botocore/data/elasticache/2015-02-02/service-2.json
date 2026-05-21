@@ -2639,7 +2639,7 @@
         },
         "TargetServerlessCacheSnapshotName":{
           "shape":"String",
-          "documentation":"<p>The identifier for the snapshot to be created. Available for Valkey, Redis OSS and Serverless Memcached only.</p>"
+          "documentation":"<p>The identifier for the snapshot to be created. Available for Valkey, Redis OSS and Serverless Memcached only. This value is stored as a lowercase string.</p>"
         },
         "KmsKeyId":{
           "shape":"String",
@@ -2673,7 +2673,7 @@
         },
         "TargetSnapshotName":{
           "shape":"String",
-          "documentation":"<p>A name for the snapshot copy. ElastiCache does not permit overwriting a snapshot, therefore this name must be unique within its context - ElastiCache or an Amazon S3 bucket if exporting.</p>"
+          "documentation":"<p>A name for the snapshot copy. ElastiCache does not permit overwriting a snapshot, therefore this name must be unique within its context - ElastiCache or an Amazon S3 bucket if exporting. This value is stored as a lowercase string.</p>"
         },
         "TargetBucket":{
           "shape":"String",
@@ -2839,7 +2839,7 @@
       "members":{
         "CacheParameterGroupName":{
           "shape":"String",
-          "documentation":"<p>A user-specified name for the cache parameter group.</p>"
+          "documentation":"<p>A user-specified name for the cache parameter group. This value is stored as a lowercase string.</p>"
         },
         "CacheParameterGroupFamily":{
           "shape":"String",
@@ -2940,7 +2940,7 @@
         },
         "PrimaryReplicationGroupId":{
           "shape":"String",
-          "documentation":"<p>The name of the primary cluster that accepts writes and will replicate updates to the secondary cluster.</p>"
+          "documentation":"<p>The name of the primary cluster that accepts writes and will replicate updates to the secondary cluster. This value is stored as a lowercase string.</p>"
         }
       }
     },
@@ -3075,7 +3075,7 @@
         },
         "AtRestEncryptionEnabled":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A flag that enables encryption at rest when set to <code>true</code>.</p> <p>You cannot modify the value of <code>AtRestEncryptionEnabled</code> after the replication group is created. To enable encryption at rest on a replication group you must set <code>AtRestEncryptionEnabled</code> to <code>true</code> when you create the replication group. </p> <p> <b>Required:</b> Only available when creating a replication group in an Amazon VPC using Valkey 7.2 and later, Redis OSS version <code>3.2.6</code>, or Redis OSS <code>4.x</code> and later.</p> <p>Default: <code>true</code> when using Valkey, <code>false</code> when using Redis OSS</p>"
+          "documentation":"<p>A flag that enables encryption at rest when set to <code>true</code>.</p> <p>You cannot modify the value of <code>AtRestEncryptionEnabled</code> after the replication group is created. To enable encryption at rest on a replication group you must set <code>AtRestEncryptionEnabled</code> to <code>true</code> when you create the replication group. </p> <p> <b>Required:</b> Only available when creating a replication group in an Amazon VPC using Valkey <code>7.2</code> and later, Redis OSS version <code>3.2.6</code>, or Redis OSS <code>4.x</code> and later.</p> <p>Default: <code>true</code> when using Valkey, <code>false</code> when using Redis OSS</p>"
         },
         "KmsKeyId":{
           "shape":"String",
@@ -3175,11 +3175,15 @@
         },
         "SnapshotRetentionLimit":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The number of snapshots that will be retained for the serverless cache that is being created. As new snapshots beyond this limit are added, the oldest snapshots will be deleted on a rolling basis. Available for Valkey, Redis OSS and Serverless Memcached only.</p>"
+          "documentation":"<p>The number of days for which ElastiCache retains automatic snapshots before deleting them. Available for Valkey, Redis OSS and Serverless Memcached only. The maximum value allowed is 35 days.</p>"
         },
         "DailySnapshotTime":{
           "shape":"String",
           "documentation":"<p>The daily time that snapshots will be created from the new serverless cache. By default this number is populated with 0, i.e. no snapshots will be created on an automatic daily basis. Available for Valkey, Redis OSS and Serverless Memcached only.</p>"
+        },
+        "NetworkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>The IP protocol version used by the serverless cache. Must be either <code>ipv4</code> | <code>ipv6</code> | <code>dual_stack</code>. <code>ipv6</code> is only supported with ipv6-only subnets. If not specified, defaults to <code>ipv4</code>, unless all provided subnets are IPv6-only, in which case it defaults to <code>ipv6</code>. </p>"
         }
       }
     },
@@ -3201,7 +3205,7 @@
       "members":{
         "ServerlessCacheSnapshotName":{
           "shape":"String",
-          "documentation":"<p>The name for the snapshot being created. Must be unique for the customer account. Available for Valkey, Redis OSS and Serverless Memcached only. Must be between 1 and 255 characters.</p>"
+          "documentation":"<p>The name for the snapshot being created. Must be unique for the customer account. Available for Valkey, Redis OSS and Serverless Memcached only. Must be between 1 and 255 characters. This value is stored as a lowercase string.</p>"
         },
         "ServerlessCacheName":{
           "shape":"String",
@@ -3240,7 +3244,7 @@
         },
         "SnapshotName":{
           "shape":"String",
-          "documentation":"<p>A name for the snapshot being created.</p>"
+          "documentation":"<p>A name for the snapshot being created. This value is stored as a lowercase string.</p>"
         },
         "KmsKeyId":{
           "shape":"String",
@@ -3268,7 +3272,7 @@
       "members":{
         "UserGroupId":{
           "shape":"String",
-          "documentation":"<p>The ID of the user group.</p>"
+          "documentation":"<p>The ID of the user group. This value is stored as a lowercase string.</p>"
         },
         "Engine":{
           "shape":"EngineType",
@@ -3295,7 +3299,7 @@
       "members":{
         "UserId":{
           "shape":"UserId",
-          "documentation":"<p>The ID of the user.</p>"
+          "documentation":"<p>The ID of the user. This value is stored as a lowercase string.</p>"
         },
         "UserName":{
           "shape":"UserName",
@@ -5244,7 +5248,7 @@
         },
         "Engine":{
           "shape":"String",
-          "documentation":"<p>Modifies the engine listed in a global replication group message. The options are redis, memcached or valkey.</p>"
+          "documentation":"<p>Modifies the engine listed in a global replication group message. The options are valkey, memcached or redis.</p>"
         },
         "EngineVersion":{
           "shape":"String",
@@ -5333,7 +5337,7 @@
         },
         "Engine":{
           "shape":"String",
-          "documentation":"<p>Modifies the engine listed in a replication group message. The options are redis, memcached or valkey.</p>"
+          "documentation":"<p>Modifies the engine listed in a replication group message. The options are valkey, memcached or redis.</p>"
         },
         "EngineVersion":{
           "shape":"String",
@@ -5483,7 +5487,7 @@
         },
         "Engine":{
           "shape":"String",
-          "documentation":"<p>Modifies the engine listed in a serverless cache request. The options are redis, memcached or valkey.</p>"
+          "documentation":"<p>Modifies the engine listed in a serverless cache request. The options are valkey, memcached or redis.</p>"
         },
         "MajorEngineVersion":{
           "shape":"String",
@@ -6401,7 +6405,7 @@
         },
         "Engine":{
           "shape":"String",
-          "documentation":"<p>The engine used in a replication group. The options are redis, memcached or valkey.</p>"
+          "documentation":"<p>The engine used in a replication group. The options are valkey, memcached or redis.</p>"
         }
       },
       "documentation":"<p>Contains all of the attributes of a specific Valkey or Redis OSS replication group.</p>",
@@ -6887,11 +6891,15 @@
         },
         "SnapshotRetentionLimit":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The current setting for the number of serverless cache snapshots the system will retain. Available for Valkey, Redis OSS and Serverless Memcached only.</p>"
+          "documentation":"<p>The number of days for which ElastiCache retains automatic snapshots before deleting them. Available for Valkey, Redis OSS and Serverless Memcached only. The maximum value allowed is 35 days.</p>"
         },
         "DailySnapshotTime":{
           "shape":"String",
           "documentation":"<p>The daily time that a cache snapshot will be created. Default is NULL, i.e. snapshots will not be created at a specific time on a daily basis. Available for Valkey, Redis OSS and Serverless Memcached only.</p>"
+        },
+        "NetworkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>The type of IP address protocol used by the serverless cache. Must be either <code>ipv4</code> | <code>ipv6</code> | <code>dual_stack</code>. <code>ipv6</code> is only supported with IPv6-only subnets. If not specified, defaults to <code>ipv4</code>, unless all provided subnets are IPv6-only, in which case it defaults to <code>ipv6</code>.</p>"
         }
       },
       "documentation":"<p>The resource representing a serverless cache.</p>"

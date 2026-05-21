@@ -513,6 +513,10 @@
         "statusCode":{
           "shape":"Integer",
           "documentation":"<p>The status code for the response.</p>"
+        },
+        "linkedWhatsAppBusinessAccountId":{
+          "shape":"LinkedWhatsAppBusinessAccountId",
+          "documentation":"<p>The ID of the WhatsApp Business Account that was linked to your Amazon Web Services account.</p>"
         }
       }
     },
@@ -826,10 +830,7 @@
     },
     "GetWhatsAppMessageTemplateInput":{
       "type":"structure",
-      "required":[
-        "metaTemplateId",
-        "id"
-      ],
+      "required":["id"],
       "members":{
         "metaTemplateId":{
           "shape":"MetaTemplateId",
@@ -842,6 +843,18 @@
           "documentation":"<p>The ID of the WhatsApp Business Account associated with this template.</p>",
           "location":"querystring",
           "locationName":"id"
+        },
+        "templateName":{
+          "shape":"MetaTemplateName",
+          "documentation":"<p>The name of the message template. Use together with <code>templateLanguageCode</code> as an alternative to <code>metaTemplateId</code> to identify a template.</p>",
+          "location":"querystring",
+          "locationName":"templateName"
+        },
+        "templateLanguageCode":{
+          "shape":"MetaTemplateLanguage",
+          "documentation":"<p>The language code of the message template (for example, <code>en</code> or <code>en_US</code>). Use together with <code>templateName</code> as an alternative to <code>metaTemplateId</code> to identify a template.</p>",
+          "location":"querystring",
+          "locationName":"templateLanguageCode"
         }
       }
     },
@@ -1038,6 +1051,10 @@
           "shape":"WhatsAppBusinessAccountEventDestinations",
           "documentation":"<p>The event destinations for the linked WhatsApp Business Account.</p>"
         },
+        "marketingMessagesOnboardingStatus":{
+          "shape":"WhatsAppBusinessAccountMarketingMessagesOnboardingStatus",
+          "documentation":"<p>The onboarding status for the Marketing Messages API. This value is fetched from Meta and indicates whether the WhatsApp Business Account is onboarded for Meta's Marketing Messages API.</p>"
+        },
         "phoneNumbers":{
           "shape":"WhatsAppPhoneNumberSummaryList",
           "documentation":"<p>The phone numbers associated with the Linked WhatsApp Business Account.</p>"
@@ -1118,6 +1135,10 @@
         "eventDestinations":{
           "shape":"WhatsAppBusinessAccountEventDestinations",
           "documentation":"<p>The event destinations for the linked WhatsApp Business Account.</p>"
+        },
+        "marketingMessagesOnboardingStatus":{
+          "shape":"WhatsAppBusinessAccountMarketingMessagesOnboardingStatus",
+          "documentation":"<p>The onboarding status for the Marketing Messages API. This value is fetched from Meta and indicates whether the WhatsApp Business Account is onboarded for Meta's Marketing Messages API.</p>"
         }
       },
       "documentation":"<p>The details of a linked WhatsApp Business Account.</p>"
@@ -1818,10 +1839,7 @@
     },
     "UpdateWhatsAppMessageTemplateInput":{
       "type":"structure",
-      "required":[
-        "id",
-        "metaTemplateId"
-      ],
+      "required":["id"],
       "members":{
         "id":{
           "shape":"LinkedWhatsAppBusinessAccountId",
@@ -1830,6 +1848,14 @@
         "metaTemplateId":{
           "shape":"MetaTemplateId",
           "documentation":"<p>The numeric ID of the template assigned by Meta.</p>"
+        },
+        "templateName":{
+          "shape":"MetaTemplateName",
+          "documentation":"<p>The name of the message template. Use together with <code>templateLanguageCode</code> as an alternative to <code>metaTemplateId</code> to identify a template.</p>"
+        },
+        "templateLanguageCode":{
+          "shape":"MetaTemplateLanguage",
+          "documentation":"<p>The language code of the message template (for example, <code>en</code> or <code>en_US</code>). Use together with <code>templateName</code> as an alternative to <code>metaTemplateId</code> to identify a template.</p>"
         },
         "parameterFormat":{
           "shape":"MetaParameterFormat",
@@ -1940,6 +1966,11 @@
       "min":1
     },
     "WhatsAppBusinessAccountLinkDate":{"type":"timestamp"},
+    "WhatsAppBusinessAccountMarketingMessagesOnboardingStatus":{
+      "type":"string",
+      "max":100,
+      "min":0
+    },
     "WhatsAppBusinessAccountName":{
       "type":"string",
       "max":200,

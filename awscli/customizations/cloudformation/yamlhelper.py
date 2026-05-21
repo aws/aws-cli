@@ -16,7 +16,7 @@ import ruamel.yaml
 from botocore.compat import OrderedDict, json
 from ruamel.yaml.resolver import ScalarNode, SequenceNode
 
-from awscli.utils import dump_yaml_to_str
+from awscli.utils import SafeLineBreakEmitter, dump_yaml_to_str
 
 
 def intrinsics_multi_constructor(loader, tag_prefix, node):
@@ -87,6 +87,7 @@ def yaml_dump(dict_to_dump):
 
     yaml = ruamel.yaml.YAML(typ="safe", pure=True)
     yaml.default_flow_style = False
+    yaml.Emitter = SafeLineBreakEmitter
     yaml.Representer = FlattenAliasRepresenter
     _add_yaml_1_1_boolean_resolvers(yaml.Resolver)
     yaml.Representer.add_representer(OrderedDict, _dict_representer)

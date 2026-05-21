@@ -98,7 +98,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a domain, which is a container for all customer data, such as customer profile attributes, object types, profile keys, and encryption keys. You can create multiple domains, and each domain can have multiple third-party integrations.</p> <p>Each Amazon Connect instance can be associated with only one domain. Multiple Amazon Connect instances can be associated with one domain.</p> <p>Use this API or <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_UpdateDomain.html\">UpdateDomain</a> to enable <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html\">identity resolution</a>: set <code>Matching</code> to true.</p> <p>To prevent cross-service impersonation when you call this API, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cross-service-confused-deputy-prevention.html\">Cross-service confused deputy prevention</a> for sample policies that you should apply. </p> <note> <p>It is not possible to associate a Customer Profiles domain with an Amazon Connect Instance directly from the API. If you would like to create a domain and associate a Customer Profiles domain, use the Amazon Connect admin website. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/enable-customer-profiles.html#enable-customer-profiles-step1\">Enable Customer Profiles</a>.</p> <p>Each Amazon Connect instance can be associated with only one domain. Multiple Amazon Connect instances can be associated with one domain.</p> </note>"
+      "documentation":"<p>Creates a domain, which is a container for all customer data, such as customer profile attributes, object types, profile keys, and encryption keys. You can create multiple domains, and each domain can have multiple third-party integrations.</p> <p>Each Connect Customer instance can be associated with only one domain. Multiple Connect Customer instances can be associated with one domain.</p> <p>Use this API or <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_UpdateDomain.html\">UpdateDomain</a> to enable <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html\">identity resolution</a>: set <code>Matching</code> to true.</p> <p>To prevent cross-service impersonation when you call this API, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cross-service-confused-deputy-prevention.html\">Cross-service confused deputy prevention</a> for sample policies that you should apply. </p> <note> <p>It is not possible to associate a Customer Profiles domain with an Amazon Connect Instance directly from the API. If you would like to create a domain and associate a Customer Profiles domain, use the Amazon Connect admin website. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/enable-customer-profiles.html#enable-customer-profiles-step1\">Enable Customer Profiles</a>.</p> <p>Each Amazon Connect instance can be associated with only one domain. Multiple Amazon Connect instances can be associated with one domain.</p> </note>"
     },
     "CreateDomainLayout":{
       "name":"CreateDomainLayout",
@@ -132,7 +132,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates an event stream, which is a subscription to real-time events, such as when profiles are created and updated through Amazon Connect Customer Profiles.</p> <p>Each event stream can be associated with only one Kinesis Data Stream destination in the same region and Amazon Web Services account as the customer profiles domain</p>"
+      "documentation":"<p>Creates an event stream, which is a subscription to real-time events, such as when profiles are created and updated through Connect Customer Customer Profiles.</p> <p>Each event stream can be associated with only one Kinesis Data Stream destination in the same region and Amazon Web Services account as the customer profiles domain</p>"
     },
     "CreateEventTrigger":{
       "name":"CreateEventTrigger",
@@ -220,6 +220,24 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Creates a recommender filter. A recommender filter specifies which items to include or exclude from recommendations.</p>"
+    },
+    "CreateRecommenderSchema":{
+      "name":"CreateRecommenderSchema",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domains/{DomainName}/recommender-schemas/{RecommenderSchemaName}",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateRecommenderSchemaRequest"},
+      "output":{"shape":"CreateRecommenderSchemaResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates a recommender schema. A recommender schema defines the set of data columns available for training recommenders and filters under a domain.</p>"
     },
     "CreateSegmentDefinition":{
       "name":"CreateSegmentDefinition",
@@ -515,6 +533,24 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Deletes a recommender filter from a domain.</p>"
+    },
+    "DeleteRecommenderSchema":{
+      "name":"DeleteRecommenderSchema",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/domains/{DomainName}/recommender-schemas/{RecommenderSchemaName}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteRecommenderSchemaRequest"},
+      "output":{"shape":"DeleteRecommenderSchemaResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes a recommender schema from a domain.</p>"
     },
     "DeleteSegmentDefinition":{
       "name":"DeleteSegmentDefinition",
@@ -877,6 +913,25 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Retrieves information about a specific recommender filter in a domain.</p>",
+      "readonly":true
+    },
+    "GetRecommenderSchema":{
+      "name":"GetRecommenderSchema",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/recommender-schemas/{RecommenderSchemaName}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetRecommenderSchemaRequest"},
+      "output":{"shape":"GetRecommenderSchemaResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves information about a specific recommender schema in a domain.</p>",
       "readonly":true
     },
     "GetSegmentDefinition":{
@@ -1364,6 +1419,25 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Returns a list of available recommender recipes that can be used to create recommenders.</p>",
+      "readonly":true
+    },
+    "ListRecommenderSchemas":{
+      "name":"ListRecommenderSchemas",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/recommender-schemas",
+        "responseCode":200
+      },
+      "input":{"shape":"ListRecommenderSchemasRequest"},
+      "output":{"shape":"ListRecommenderSchemasResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns a list of recommender schemas in the specified domain.</p>",
       "readonly":true
     },
     "ListRecommenders":{
@@ -2549,6 +2623,12 @@
       },
       "documentation":"<p>Represents an item in the catalog with its complete set of attributes and metadata.</p>"
     },
+    "ColumnNamesList":{
+      "type":"list",
+      "member":{"shape":"text"},
+      "max":100,
+      "min":1
+    },
     "ComparisonOperator":{
       "type":"string",
       "enum":[
@@ -2956,7 +3036,7 @@
         },
         "RuleBasedMatching":{
           "shape":"RuleBasedMatchingRequest",
-          "documentation":"<p>The process of matching duplicate profiles using the Rule-Based matching. If <code>RuleBasedMatching</code> = true, Amazon Connect Customer Profiles will start to match and merge your profiles according to your configuration in the <code>RuleBasedMatchingRequest</code>. You can use the <code>ListRuleBasedMatches</code> and <code>GetSimilarProfiles</code> API to return and review the results. Also, if you have configured <code>ExportingConfig</code> in the <code>RuleBasedMatchingRequest</code>, you can download the results from S3.</p>"
+          "documentation":"<p>The process of matching duplicate profiles using the Rule-Based matching. If <code>RuleBasedMatching</code> = true, Connect Customer Customer Profiles will start to match and merge your profiles according to your configuration in the <code>RuleBasedMatchingRequest</code>. You can use the <code>ListRuleBasedMatches</code> and <code>GetSimilarProfiles</code> API to return and review the results. Also, if you have configured <code>ExportingConfig</code> in the <code>RuleBasedMatchingRequest</code>, you can download the results from S3.</p>"
         },
         "DataStore":{
           "shape":"DataStoreRequest",
@@ -2999,7 +3079,7 @@
         },
         "RuleBasedMatching":{
           "shape":"RuleBasedMatchingResponse",
-          "documentation":"<p>The process of matching duplicate profiles using the Rule-Based matching. If <code>RuleBasedMatching</code> = true, Amazon Connect Customer Profiles will start to match and merge your profiles according to your configuration in the <code>RuleBasedMatchingRequest</code>. You can use the <code>ListRuleBasedMatches</code> and <code>GetSimilarProfiles</code> API to return and review the results. Also, if you have configured <code>ExportingConfig</code> in the <code>RuleBasedMatchingRequest</code>, you can download the results from S3.</p>"
+          "documentation":"<p>The process of matching duplicate profiles using the Rule-Based matching. If <code>RuleBasedMatching</code> = true, Connect Customer Customer Profiles will start to match and merge your profiles according to your configuration in the <code>RuleBasedMatchingRequest</code>. You can use the <code>ListRuleBasedMatches</code> and <code>GetSimilarProfiles</code> API to return and review the results. Also, if you have configured <code>ExportingConfig</code> in the <code>RuleBasedMatchingRequest</code>, you can download the results from S3.</p>"
         },
         "DataStore":{
           "shape":"DataStoreResponse",
@@ -3352,6 +3432,10 @@
           "shape":"RecommenderFilterExpression",
           "documentation":"<p>The filter expression that defines which items to include or exclude from recommendations.</p>"
         },
+        "RecommenderSchemaName":{
+          "shape":"name",
+          "documentation":"<p>The name of the recommender schema to use for this recommender filter. If not specified, the default schema is used.</p>"
+        },
         "Description":{
           "shape":"sensitiveText",
           "documentation":"<p>A description of the recommender filter.</p>"
@@ -3408,6 +3492,10 @@
           "shape":"sensitiveText",
           "documentation":"<p>The description of the domain object type.</p>"
         },
+        "RecommenderSchemaName":{
+          "shape":"name",
+          "documentation":"<p>The name of the recommender schema to use for this recommender. If not specified, the default schema is used.</p>"
+        },
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
@@ -3421,6 +3509,72 @@
         "RecommenderArn":{
           "shape":"Arn",
           "documentation":"<p>The ARN of the recommender</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      }
+    },
+    "CreateRecommenderSchemaRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "RecommenderSchemaName",
+        "Fields"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "RecommenderSchemaName":{
+          "shape":"name",
+          "documentation":"<p>The name of the recommender schema. The name must be unique within the domain.</p>",
+          "location":"uri",
+          "locationName":"RecommenderSchemaName"
+        },
+        "Fields":{
+          "shape":"RecommenderSchemaFields",
+          "documentation":"<p>A map of dataset type to column definitions that specifies which data columns to include in the schema. The <code>_webAnalytics</code> and <code>_catalogItem</code> keys are supported.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      }
+    },
+    "CreateRecommenderSchemaResponse":{
+      "type":"structure",
+      "required":[
+        "RecommenderSchemaArn",
+        "RecommenderSchemaName",
+        "Fields",
+        "CreatedAt",
+        "Status"
+      ],
+      "members":{
+        "RecommenderSchemaArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the recommender schema.</p>"
+        },
+        "RecommenderSchemaName":{
+          "shape":"name",
+          "documentation":"<p>The name of the recommender schema.</p>"
+        },
+        "Fields":{
+          "shape":"RecommenderSchemaFields",
+          "documentation":"<p>A map of dataset type to column definitions included in the schema.</p>"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the recommender schema was created.</p>"
+        },
+        "Status":{
+          "shape":"RecommenderSchemaStatus",
+          "documentation":"<p>The status of the recommender schema.</p>"
         },
         "Tags":{
           "shape":"TagMap",
@@ -3463,6 +3617,10 @@
         "SegmentSqlQuery":{
           "shape":"sensitiveString1To50000",
           "documentation":"<p>The segment SQL query.</p>"
+        },
+        "SegmentSort":{
+          "shape":"SegmentSort",
+          "documentation":"<p>The segment sort.</p>"
         },
         "Tags":{
           "shape":"TagMap",
@@ -3578,7 +3736,7 @@
         },
         "DestinationUri":{
           "shape":"string1To255",
-          "documentation":"<p>The destination to which the segment will be exported. This field must be provided if the request is not submitted from the Amazon Connect Admin Website.</p>"
+          "documentation":"<p>The destination to which the segment will be exported. This field must be provided if the request is not submitted from the Connect Customer Admin Website.</p>"
         }
       }
     },
@@ -3638,7 +3796,7 @@
     },
     "CustomAttributes":{
       "type":"map",
-      "key":{"shape":"typeName"},
+      "key":{"shape":"string1To255"},
       "value":{"shape":"AttributeDimension"}
     },
     "DataFormat":{
@@ -4098,6 +4256,31 @@
       "type":"structure",
       "members":{}
     },
+    "DeleteRecommenderSchemaRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "RecommenderSchemaName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "RecommenderSchemaName":{
+          "shape":"name",
+          "documentation":"<p>The name of the recommender schema to delete.</p>",
+          "location":"uri",
+          "locationName":"RecommenderSchemaName"
+        }
+      }
+    },
+    "DeleteRecommenderSchemaResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "DeleteSegmentDefinitionRequest":{
       "type":"structure",
       "required":[
@@ -4420,7 +4603,7 @@
     "EventParametersList":{
       "type":"list",
       "member":{"shape":"EventParameters"},
-      "max":5,
+      "max":10,
       "min":1
     },
     "EventStreamDestinationDetails":{
@@ -5325,7 +5508,7 @@
         },
         "RuleBasedMatching":{
           "shape":"RuleBasedMatchingResponse",
-          "documentation":"<p>The process of matching duplicate profiles using the Rule-Based matching. If <code>RuleBasedMatching</code> = true, Amazon Connect Customer Profiles will start to match and merge your profiles according to your configuration in the <code>RuleBasedMatchingRequest</code>. You can use the <code>ListRuleBasedMatches</code> and <code>GetSimilarProfiles</code> API to return and review the results. Also, if you have configured <code>ExportingConfig</code> in the <code>RuleBasedMatchingRequest</code>, you can download the results from S3.</p>"
+          "documentation":"<p>The process of matching duplicate profiles using the Rule-Based matching. If <code>RuleBasedMatching</code> = true, Connect Customer Customer Profiles will start to match and merge your profiles according to your configuration in the <code>RuleBasedMatchingRequest</code>. You can use the <code>ListRuleBasedMatches</code> and <code>GetSimilarProfiles</code> API to return and review the results. Also, if you have configured <code>ExportingConfig</code> in the <code>RuleBasedMatchingRequest</code>, you can download the results from S3.</p>"
         },
         "DataStore":{
           "shape":"DataStoreResponse",
@@ -6076,6 +6259,10 @@
           "shape":"RecommenderFilterExpression",
           "documentation":"<p>The filter expression that defines which items to include or exclude from recommendations.</p>"
         },
+        "RecommenderSchemaName":{
+          "shape":"name",
+          "documentation":"<p>The name of the recommender schema associated with this recommender filter.</p>"
+        },
         "CreatedAt":{
           "shape":"timestamp",
           "documentation":"<p>The timestamp of when the recommender filter was created.</p>"
@@ -6146,6 +6333,10 @@
           "shape":"RecommenderRecipeName",
           "documentation":"<p>The name of the recipe used by the recommender to generate recommendations.</p>"
         },
+        "RecommenderSchemaName":{
+          "shape":"name",
+          "documentation":"<p>The name of the recommender schema associated with this recommender.</p>"
+        },
         "RecommenderConfig":{
           "shape":"RecommenderConfig",
           "documentation":"<p>The configuration settings for the recommender, including parameters and settings that define its behavior.</p>"
@@ -6181,6 +6372,54 @@
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      }
+    },
+    "GetRecommenderSchemaRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "RecommenderSchemaName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "RecommenderSchemaName":{
+          "shape":"name",
+          "documentation":"<p>The name of the recommender schema to retrieve.</p>",
+          "location":"uri",
+          "locationName":"RecommenderSchemaName"
+        }
+      }
+    },
+    "GetRecommenderSchemaResponse":{
+      "type":"structure",
+      "required":[
+        "RecommenderSchemaName",
+        "Fields",
+        "CreatedAt",
+        "Status"
+      ],
+      "members":{
+        "RecommenderSchemaName":{
+          "shape":"name",
+          "documentation":"<p>The name of the recommender schema.</p>"
+        },
+        "Fields":{
+          "shape":"RecommenderSchemaFields",
+          "documentation":"<p>A map of dataset type to column definitions included in the schema.</p>"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the recommender schema was created.</p>"
+        },
+        "Status":{
+          "shape":"RecommenderSchemaStatus",
+          "documentation":"<p>The status of the recommender schema.</p>"
         }
       }
     },
@@ -6228,6 +6467,11 @@
           "shape":"SegmentGroup",
           "documentation":"<p>The segment criteria associated with this definition.</p>",
           "locationName":"SegmentGroups"
+        },
+        "SegmentSort":{
+          "shape":"SegmentSort",
+          "documentation":"<p>The segment sort.</p>",
+          "locationName":"SegmentSort"
         },
         "SegmentDefinitionArn":{
           "shape":"SegmentDefinitionArn",
@@ -6426,7 +6670,7 @@
         },
         "DestinationUri":{
           "shape":"string1To255",
-          "documentation":"<p>The destination to which the segment will be exported. This field must be provided if the request is not submitted from the Amazon Connect Admin Website.</p>"
+          "documentation":"<p>The destination to which the segment will be exported. This field must be provided if the request is not submitted from the Connect Customer Admin Website.</p>"
         }
       }
     },
@@ -6832,6 +7076,13 @@
         "NONE"
       ]
     },
+    "IncludedColumns":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"ColumnNamesList"},
+      "max":2,
+      "min":1
+    },
     "IncrementalPullConfig":{
       "type":"structure",
       "members":{
@@ -6855,7 +7106,7 @@
     "InferenceConfigMinProvisionedTPSInteger":{
       "type":"integer",
       "box":true,
-      "max":500,
+      "max":1000,
       "min":1
     },
     "IntegrationConfig":{
@@ -8005,6 +8256,43 @@
         }
       }
     },
+    "ListRecommenderSchemasRequest":{
+      "type":"structure",
+      "required":["DomainName"],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "MaxResults":{
+          "shape":"maxSize100",
+          "documentation":"<p>The maximum number of recommender schemas to return in the response. The default value is 100.</p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        },
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>A token received from a previous ListRecommenderSchemas call to retrieve the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        }
+      }
+    },
+    "ListRecommenderSchemasResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>A token to retrieve the next page of results. Null if there are no more results to retrieve.</p>"
+        },
+        "RecommenderSchemas":{
+          "shape":"RecommenderSchemaSummaryList",
+          "documentation":"<p>A list of recommender schemas and their properties in the specified domain.</p>"
+        }
+      }
+    },
     "ListRecommendersRequest":{
       "type":"structure",
       "required":["DomainName"],
@@ -8567,7 +8855,7 @@
         },
         "Target":{
           "shape":"text",
-          "documentation":"<p>The location of the data in the standard ProfileObject model. For example: _profile.Address.PostalCode.</p>"
+          "documentation":"<p>The location of the data in the standard ProfileObject model. For example: _profile.Address.PostalCode. Do not include sensitive or personally identifiable information (PII) in the target field name.</p>"
         },
         "ContentType":{
           "shape":"FieldContentType",
@@ -9623,11 +9911,19 @@
         },
         "TrainingFrequency":{
           "shape":"RecommenderConfigTrainingFrequencyInteger",
-          "documentation":"<p>How often the recommender should retrain its model with new data.</p>"
+          "documentation":"<p>How often the recommender should retrain its model with new data. If set to 0, automatic retraining will not be enabled.</p>"
         },
         "InferenceConfig":{
           "shape":"InferenceConfig",
           "documentation":"<p>Configuration settings for how the recommender handles inference requests.</p>"
+        },
+        "IncludedColumns":{
+          "shape":"IncludedColumns",
+          "documentation":"<p>A map of dataset type to a list of column names to train on. The <code>_webAnalytics</code> and <code>_catalogItem</code> keys are supported. The column names must be a subset of the columns defined in the recommender schema. If not specified, all columns in the schema are used for training. The following columns are always included in training and do not need to be specified: <code>Item.Id</code>, <code>EventTimestamp</code>, and <code>EventType</code> for <code>_webAnalytics</code>; <code>Id</code> for <code>_catalogItem</code>. Mutually exclusive with ExcludedColumns — both cannot be specified in the same request.</p>"
+        },
+        "ExcludedColumns":{
+          "shape":"IncludedColumns",
+          "documentation":"<p>A map of dataset type to a list of column names to exclude from training. The <code>_webAnalytics</code> and <code>_catalogItem</code> keys are supported. The column names must be valid columns defined in the recommender schema. All columns in the schema except the listed columns will be used for training. The following columns are mandatory and cannot be excluded: <code>Item.Id</code>, <code>EventTimestamp</code>, and <code>EventType</code> for <code>_webAnalytics</code>; <code>Id</code> for <code>_catalogItem</code>. Mutually exclusive with IncludedColumns — both cannot be specified in the same request.</p>"
         }
       },
       "documentation":"<p>Configuration settings that define the behavior and parameters of a recommender.</p>"
@@ -9636,7 +9932,7 @@
       "type":"integer",
       "box":true,
       "max":30,
-      "min":1
+      "min":0
     },
     "RecommenderContext":{
       "type":"map",
@@ -9665,7 +9961,7 @@
     },
     "RecommenderFilterAttributeValue":{
       "type":"string",
-      "max":1000,
+      "max":3000,
       "sensitive":true
     },
     "RecommenderFilterExpression":{
@@ -9696,6 +9992,10 @@
         "RecommenderFilterName":{
           "shape":"RecommenderFilterName",
           "documentation":"<p>The name of the recommender filter.</p>"
+        },
+        "RecommenderSchemaName":{
+          "shape":"name",
+          "documentation":"<p>The name of the recommender schema associated with this recommender filter.</p>"
         },
         "RecommenderFilterExpression":{
           "shape":"RecommenderFilterExpression",
@@ -9795,6 +10095,77 @@
       "type":"list",
       "member":{"shape":"RecommenderRecipe"}
     },
+    "RecommenderSchemaField":{
+      "type":"structure",
+      "required":["TargetFieldName"],
+      "members":{
+        "TargetFieldName":{
+          "shape":"text",
+          "documentation":"<p>The name of the target field in the dataset, such as <code>Location.City</code> or <code>Attributes.MealTime</code>.</p>"
+        },
+        "ContentType":{
+          "shape":"ContentType",
+          "documentation":"<p>The data type of the column value. Valid values are <code>String</code> and <code>Number</code>. The default value is <code>String</code>.</p>"
+        },
+        "FeatureType":{
+          "shape":"FeatureType",
+          "documentation":"<p>How the column is treated for model training. Valid values are <code>CATEGORICAL</code> and <code>TEXTUAL</code>.</p>"
+        }
+      },
+      "documentation":"<p>Defines a column in a recommender schema, including the target field name and optional feature and content type settings for training.</p>"
+    },
+    "RecommenderSchemaFieldList":{
+      "type":"list",
+      "member":{"shape":"RecommenderSchemaField"},
+      "max":9,
+      "min":1
+    },
+    "RecommenderSchemaFields":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"RecommenderSchemaFieldList"},
+      "max":2,
+      "min":1
+    },
+    "RecommenderSchemaStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "DELETING"
+      ]
+    },
+    "RecommenderSchemaSummary":{
+      "type":"structure",
+      "required":[
+        "RecommenderSchemaName",
+        "Fields",
+        "CreatedAt",
+        "Status"
+      ],
+      "members":{
+        "RecommenderSchemaName":{
+          "shape":"name",
+          "documentation":"<p>The name of the recommender schema.</p>"
+        },
+        "Fields":{
+          "shape":"RecommenderSchemaFields",
+          "documentation":"<p>A map of dataset type to column definitions included in the schema.</p>"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp when the recommender schema was created.</p>"
+        },
+        "Status":{
+          "shape":"RecommenderSchemaStatus",
+          "documentation":"<p>The current operational status of the recommender schema.</p>"
+        }
+      },
+      "documentation":"<p>Provides a summary of a recommender schema's configuration and current state.</p>"
+    },
+    "RecommenderSchemaSummaryList":{
+      "type":"list",
+      "member":{"shape":"RecommenderSchemaSummary"}
+    },
     "RecommenderStatus":{
       "type":"string",
       "enum":[
@@ -9818,6 +10189,10 @@
         "RecipeName":{
           "shape":"RecommenderRecipeName",
           "documentation":"<p>The name of the recipe used by this recommender.</p>"
+        },
+        "RecommenderSchemaName":{
+          "shape":"name",
+          "documentation":"<p>The name of the recommender schema associated with this recommender.</p>"
         },
         "RecommenderConfig":{
           "shape":"RecommenderConfig",
@@ -10310,6 +10685,34 @@
         "FAILED"
       ]
     },
+    "SegmentSort":{
+      "type":"structure",
+      "required":["Attributes"],
+      "members":{
+        "Attributes":{
+          "shape":"SortAttributeList",
+          "documentation":"<p>A list of attributes used to sort the segments and their ordering preferences.</p>",
+          "locationName":"Attributes"
+        }
+      },
+      "documentation":"<p>Defines how segments should be sorted and ordered in the results.</p>",
+      "sensitive":true
+    },
+    "SegmentSortDataType":{
+      "type":"string",
+      "enum":[
+        "STRING",
+        "NUMBER",
+        "DATE"
+      ]
+    },
+    "SegmentSortOrder":{
+      "type":"string",
+      "enum":[
+        "ASC",
+        "DESC"
+      ]
+    },
     "SegmentType":{
       "type":"string",
       "enum":[
@@ -10353,6 +10756,49 @@
         }
       },
       "documentation":"<p>The properties that are applied when ServiceNow is being used as a source.</p>"
+    },
+    "SortAttribute":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Order"
+      ],
+      "members":{
+        "Name":{
+          "shape":"fieldName",
+          "documentation":"<p>The name of the attribute to sort by.</p>",
+          "locationName":"Name"
+        },
+        "DataType":{
+          "shape":"SegmentSortDataType",
+          "documentation":"<p>The data type of the sort attribute (e.g., string, number, date).</p>",
+          "locationName":"DataType"
+        },
+        "Order":{
+          "shape":"SegmentSortOrder",
+          "documentation":"<p>The sort order for the attribute (ascending or descending).</p>",
+          "locationName":"Order"
+        },
+        "Type":{
+          "shape":"SortAttributeType",
+          "documentation":"<p>The type of attribute (e.g., profile, calculated).</p>",
+          "locationName":"Type"
+        }
+      },
+      "documentation":"<p>Defines the characteristics and rules for sorting by a specific attribute.</p>"
+    },
+    "SortAttributeList":{
+      "type":"list",
+      "member":{"shape":"SortAttribute"},
+      "max":10,
+      "min":1
+    },
+    "SortAttributeType":{
+      "type":"string",
+      "enum":[
+        "PROFILE",
+        "CALCULATED"
+      ]
     },
     "SourceConnectorProperties":{
       "type":"structure",
@@ -10752,7 +11198,14 @@
         "recall",
         "popularity",
         "freshness",
-        "similarity"
+        "similarity",
+        "mean_reciprocal_rank_at_25",
+        "normalized_discounted_cumulative_gain_at_5",
+        "normalized_discounted_cumulative_gain_at_10",
+        "normalized_discounted_cumulative_gain_at_25",
+        "precision_at_5",
+        "precision_at_10",
+        "precision_at_25"
       ]
     },
     "TrainingMetrics":{
@@ -11096,7 +11549,7 @@
         },
         "RuleBasedMatching":{
           "shape":"RuleBasedMatchingRequest",
-          "documentation":"<p>The process of matching duplicate profiles using the rule-Based matching. If <code>RuleBasedMatching</code> = true, Amazon Connect Customer Profiles will start to match and merge your profiles according to your configuration in the <code>RuleBasedMatchingRequest</code>. You can use the <code>ListRuleBasedMatches</code> and <code>GetSimilarProfiles</code> API to return and review the results. Also, if you have configured <code>ExportingConfig</code> in the <code>RuleBasedMatchingRequest</code>, you can download the results from S3.</p>"
+          "documentation":"<p>The process of matching duplicate profiles using the rule-Based matching. If <code>RuleBasedMatching</code> = true, Connect Customer Customer Profiles will start to match and merge your profiles according to your configuration in the <code>RuleBasedMatchingRequest</code>. You can use the <code>ListRuleBasedMatches</code> and <code>GetSimilarProfiles</code> API to return and review the results. Also, if you have configured <code>ExportingConfig</code> in the <code>RuleBasedMatchingRequest</code>, you can download the results from S3.</p>"
         },
         "DataStore":{
           "shape":"DataStoreRequest",
@@ -11138,7 +11591,7 @@
         },
         "RuleBasedMatching":{
           "shape":"RuleBasedMatchingResponse",
-          "documentation":"<p>The process of matching duplicate profiles using the rule-Based matching. If <code>RuleBasedMatching</code> = true, Amazon Connect Customer Profiles will start to match and merge your profiles according to your configuration in the <code>RuleBasedMatchingRequest</code>. You can use the <code>ListRuleBasedMatches</code> and <code>GetSimilarProfiles</code> API to return and review the results. Also, if you have configured <code>ExportingConfig</code> in the <code>RuleBasedMatchingRequest</code>, you can download the results from S3.</p>"
+          "documentation":"<p>The process of matching duplicate profiles using the rule-Based matching. If <code>RuleBasedMatching</code> = true, Connect Customer Customer Profiles will start to match and merge your profiles according to your configuration in the <code>RuleBasedMatchingRequest</code>. You can use the <code>ListRuleBasedMatches</code> and <code>GetSimilarProfiles</code> API to return and review the results. Also, if you have configured <code>ExportingConfig</code> in the <code>RuleBasedMatchingRequest</code>, you can download the results from S3.</p>"
         },
         "DataStore":{
           "shape":"DataStoreResponse",
@@ -11791,5 +12244,5 @@
       "pattern":"[a-f0-9]{32}"
     }
   },
-  "documentation":"<fullname>Amazon Connect Customer Profiles</fullname> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_Operations_Amazon_Connect_Customer_Profiles.html\">Customer Profiles actions</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_Types_Amazon_Connect_Customer_Profiles.html\">Customer Profiles data types</a> </p> </li> </ul> <p>Amazon Connect Customer Profiles is a unified customer profile for your contact center that has pre-built connectors powered by AppFlow that make it easy to combine customer information from third party applications, such as Salesforce (CRM), ServiceNow (ITSM), and your enterprise resource planning (ERP), with contact history from your Amazon Connect contact center. </p> <p>For more information about the Amazon Connect Customer Profiles feature, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/customer-profiles.html\">Use Customer Profiles</a> in the <i>Amazon Connect Administrator's Guide</i>. </p>"
+  "documentation":"<fullname>Connect Customer Customer Profiles</fullname> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_Operations_Amazon_Connect_Customer_Profiles.html\">Customer Profiles actions</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_Types_Amazon_Connect_Customer_Profiles.html\">Customer Profiles data types</a> </p> </li> </ul> <p>Connect Customer Customer Profiles is a unified customer profile for your contact center that has pre-built connectors powered by AppFlow that make it easy to combine customer information from third party applications, such as Salesforce (CRM), ServiceNow (ITSM), and your enterprise resource planning (ERP), with contact history from your Connect Customer contact center. </p> <p>For more information about the Connect Customer Customer Profiles feature, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/customer-profiles.html\">Use Customer Profiles</a> in the <i>Connect Customer Administrator's Guide</i>. </p>"
 }

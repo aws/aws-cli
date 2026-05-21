@@ -189,6 +189,24 @@
       "endpoint":{"hostPrefix":"routes."},
       "readonly":true
     },
+    "CancelJob":{
+      "name":"CancelJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/metadata/v0/jobs/cancel-job",
+        "responseCode":200
+      },
+      "input":{"shape":"CancelJobRequest"},
+      "output":{"shape":"CancelJobResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p> <code>CancelJob</code> cancels a job that is currently running or pending. If the job is already in a terminal state (<code>Completed</code>, <code>Failed</code>, or <code>Cancelled</code>), the operation returns successfully with the current status.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/jobs-concepts.html\">Job concepts</a> in the <i>Amazon Location Service Developer Guide</i>.</p>",
+      "endpoint":{"hostPrefix":"metadata."}
+    },
     "CreateGeofenceCollection":{
       "name":"CreateGeofenceCollection",
       "http":{
@@ -654,6 +672,26 @@
       "endpoint":{"hostPrefix":"geofencing."},
       "readonly":true
     },
+    "GetJob":{
+      "name":"GetJob",
+      "http":{
+        "method":"GET",
+        "requestUri":"/metadata/v0/jobs/{JobId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetJobRequest"},
+      "output":{"shape":"GetJobResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p> <code>GetJob</code> retrieves detailed information about a specific job, including its current status, configuration, and error information if the job failed.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/jobs-concepts.html\">Job concepts</a> in the <i>Amazon Location Service Developer Guide</i>.</p>",
+      "endpoint":{"hostPrefix":"metadata."},
+      "readonly":true
+    },
     "GetMapGlyphs":{
       "name":"GetMapGlyphs",
       "http":{
@@ -810,6 +848,25 @@
       ],
       "documentation":"<p>Lists geofences stored in a given geofence collection.</p>",
       "endpoint":{"hostPrefix":"geofencing."},
+      "readonly":true
+    },
+    "ListJobs":{
+      "name":"ListJobs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/metadata/v0/jobs/list-jobs",
+        "responseCode":200
+      },
+      "input":{"shape":"ListJobsRequest"},
+      "output":{"shape":"ListJobsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p> <code>ListJobs</code> retrieves a list of jobs with optional filtering and pagination support.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/jobs-concepts.html\">Job concepts</a> in the <i>Amazon Location Service Developer Guide</i>.</p>",
+      "endpoint":{"hostPrefix":"metadata."},
       "readonly":true
     },
     "ListKeys":{
@@ -1027,6 +1084,25 @@
       "endpoint":{"hostPrefix":"places."},
       "readonly":true
     },
+    "StartJob":{
+      "name":"StartJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/metadata/v0/jobs",
+        "responseCode":200
+      },
+      "input":{"shape":"StartJobRequest"},
+      "output":{"shape":"StartJobResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p> <code>StartJob</code> starts a new asynchronous bulk processing job. You specify the input data location in Amazon S3, the action to perform, and the output location where results are written.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/jobs-concepts.html\">Job concepts</a> in the <i>Amazon Location Service Developer Guide</i>.</p>",
+      "endpoint":{"hostPrefix":"metadata."},
+      "idempotent":true
+    },
     "TagResource":{
       "name":"TagResource",
       "http":{
@@ -1232,11 +1308,11 @@
       "members":{
         "Package":{
           "shape":"AndroidPackageName",
-          "documentation":"<p>Unique package name for an Android app.</p>"
+          "documentation":"<p>Unique package name identifier for an Android app.</p> <p>Example: <code>com.mydomain.appname</code> </p>"
         },
         "CertificateFingerprint":{
           "shape":"Sha1CertificateFingerprint",
-          "documentation":"<p>20 byte SHA-1 certificate fingerprint associated with the Android app signing certificate.</p>"
+          "documentation":"<p>20 byte SHA-1 certificate fingerprint associated with the Android app signing certificate.</p> <p>Example: <code>BB:0D:AC:74:D3:21:E1:43:67:71:9B:62:91:AF:A1:66:6E:44:5D:75</code> </p>"
         }
       },
       "documentation":"<p>Unique identifying information for an Android app. Consists of a package name and a 20 byte SHA-1 certificate fingerprint.</p>"
@@ -1335,7 +1411,7 @@
       "members":{
         "BundleId":{
           "shape":"AppleBundleId",
-          "documentation":"<p>The unique identifier of the app across all Apple platforms (iOS, macOS, tvOS, watchOS, etc.)</p>"
+          "documentation":"<p>The unique identifier of the app across all Apple platforms (iOS, macOS, tvOS and watchOS).</p> <p>Example: <code>com.mydomain.appname</code> </p>"
         }
       },
       "documentation":"<p>Unique identifying information for an Apple app (iOS, macOS, tvOS and watchOS). Consists of an Apple Bundle ID.</p>"
@@ -2158,6 +2234,38 @@
       },
       "documentation":"<p>Contains details about additional route preferences for requests that specify <code>TravelMode</code> as <code>Truck</code>.</p>"
     },
+    "CancelJobRequest":{
+      "type":"structure",
+      "required":["JobId"],
+      "members":{
+        "JobId":{
+          "shape":"JobId",
+          "documentation":"<p>The unique identifier of the job to cancel.</p>"
+        }
+      }
+    },
+    "CancelJobResponse":{
+      "type":"structure",
+      "required":[
+        "JobArn",
+        "JobId",
+        "Status"
+      ],
+      "members":{
+        "JobArn":{
+          "shape":"GeoArn",
+          "documentation":"<p>Amazon Resource Name (ARN) of the cancelled job.</p>"
+        },
+        "JobId":{
+          "shape":"JobId",
+          "documentation":"<p>Unique job identifier.</p>"
+        },
+        "Status":{
+          "shape":"JobStatus",
+          "documentation":"<p>Job status after cancellation request.</p>"
+        }
+      }
+    },
     "CellSignals":{
       "type":"structure",
       "required":["LteCellDetails"],
@@ -2193,6 +2301,12 @@
       },
       "documentation":"<p>A circle on the earth, as defined by a center point and a radius.</p>",
       "sensitive":true
+    },
+    "ClientToken":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[!-~]+"
     },
     "ConflictException":{
       "type":"structure",
@@ -3643,6 +3757,90 @@
         }
       }
     },
+    "GetJobRequest":{
+      "type":"structure",
+      "required":["JobId"],
+      "members":{
+        "JobId":{
+          "shape":"JobId",
+          "documentation":"<p>The unique identifier of the job to retrieve.</p>",
+          "location":"uri",
+          "locationName":"JobId"
+        }
+      }
+    },
+    "GetJobResponse":{
+      "type":"structure",
+      "required":[
+        "Action",
+        "CreatedAt",
+        "ExecutionRoleArn",
+        "InputOptions",
+        "JobArn",
+        "JobId",
+        "OutputOptions",
+        "Status",
+        "UpdatedAt"
+      ],
+      "members":{
+        "Action":{
+          "shape":"JobAction",
+          "documentation":"<p>Action performed by the job.</p>"
+        },
+        "ActionOptions":{
+          "shape":"JobActionOptions",
+          "documentation":"<p>Additional options for configuring job action parameters.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Job creation time in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sss</code>.</p>"
+        },
+        "EndedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Job completion time in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sss</code>. Only returned for jobs in a terminal status: <code>Completed</code> | <code>Failed</code> | <code>Cancelled</code>.</p>"
+        },
+        "Error":{
+          "shape":"JobError",
+          "documentation":"<p>Error information if the job failed.</p>"
+        },
+        "ExecutionRoleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>IAM role used for permissions when running the job.</p>"
+        },
+        "InputOptions":{
+          "shape":"JobInputOptions",
+          "documentation":"<p>Input configuration.</p>"
+        },
+        "JobArn":{
+          "shape":"GeoArn",
+          "documentation":"<p>Amazon Resource Name (ARN) of the specified job.</p>"
+        },
+        "JobId":{
+          "shape":"JobId",
+          "documentation":"<p>Unique job identifier.</p>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>Job name (if provided during creation).</p>"
+        },
+        "OutputOptions":{
+          "shape":"JobOutputOptions",
+          "documentation":"<p>Output configuration.</p>"
+        },
+        "Status":{
+          "shape":"JobStatus",
+          "documentation":"<p>Current job status.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Last update time in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sss</code>.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>Tags and corresponding values associated with the specified job.</p>"
+        }
+      }
+    },
     "GetMapGlyphsRequest":{
       "type":"structure",
       "required":[
@@ -3917,6 +4115,7 @@
         }
       }
     },
+    "IamRoleArn":{"type":"string"},
     "Id":{
       "type":"string",
       "max":100,
@@ -3971,6 +4170,136 @@
       "exception":true,
       "fault":true,
       "retryable":{"throttling":false}
+    },
+    "JobAction":{
+      "type":"string",
+      "enum":["ValidateAddress"]
+    },
+    "JobActionOptions":{
+      "type":"structure",
+      "members":{
+        "ValidateAddress":{
+          "shape":"ValidateAddressActionOptions",
+          "documentation":"<p>Options specific to address validation jobs.</p>"
+        }
+      },
+      "documentation":"<p>Additional options for configuring job action parameters.</p>"
+    },
+    "JobError":{
+      "type":"structure",
+      "required":["Code"],
+      "members":{
+        "Code":{
+          "shape":"JobErrorCode",
+          "documentation":"<p>Error code indicating the type of error that occurred.</p>"
+        },
+        "Messages":{
+          "shape":"JobErrorMessagesList",
+          "documentation":"<p>Error messages providing details about the failure.</p>"
+        }
+      },
+      "documentation":"<p>Error information for failed jobs.</p>"
+    },
+    "JobErrorCode":{
+      "type":"string",
+      "enum":[
+        "ValidationError",
+        "InternalServerError"
+      ]
+    },
+    "JobErrorMessage":{
+      "type":"string",
+      "max":200,
+      "min":1
+    },
+    "JobErrorMessagesList":{
+      "type":"list",
+      "member":{"shape":"JobErrorMessage"},
+      "max":4,
+      "min":1
+    },
+    "JobId":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "pattern":"[-._\\w]+"
+    },
+    "JobInputFormat":{
+      "type":"string",
+      "enum":["Parquet"]
+    },
+    "JobInputLocation":{
+      "type":"string",
+      "max":300,
+      "min":0,
+      "pattern":"(arn:aws(-[a-z]+)*:[a-z0-9-]+:[a-z0-9-]*:(\\d{12})?:[\\w/+=,.-]+|s3://[a-z0-9][a-z0-9._-]{2,254}(/[^/]+)*/?)"
+    },
+    "JobInputOptions":{
+      "type":"structure",
+      "required":[
+        "Location",
+        "Format"
+      ],
+      "members":{
+        "Location":{
+          "shape":"JobInputLocation",
+          "documentation":"<p>S3 ARN or URI where input files are stored.</p> <note> <p>The Amazon S3 bucket must be created in the same Amazon Web Services region where you plan to run your job.</p> </note>"
+        },
+        "Format":{
+          "shape":"JobInputFormat",
+          "documentation":"<p>Input data format. Currently only <code>Parquet</code> is supported.</p> <note> <p>Input files have a limitation of 10gb per file, and 1gb per Parquet row-group within the file.</p> </note>"
+        }
+      },
+      "documentation":"<p>Configuration for input data location and format.</p> <note> <p>Input files have a limitation of 10gb per file, and 1gb per Parquet row-group within the file.</p> </note>"
+    },
+    "JobOutputFormat":{
+      "type":"string",
+      "enum":["Parquet"]
+    },
+    "JobOutputLocation":{
+      "type":"string",
+      "max":300,
+      "min":0,
+      "pattern":"(arn:aws(-[a-z]+)*:[a-z0-9-]+:[a-z0-9-]*:(\\d{12})?:[\\w/+=,.-]+|s3://[a-z0-9][a-z0-9._-]{2,254}(/[^/]+)*/)"
+    },
+    "JobOutputOptions":{
+      "type":"structure",
+      "required":[
+        "Format",
+        "Location"
+      ],
+      "members":{
+        "Format":{
+          "shape":"JobOutputFormat",
+          "documentation":"<p>Output data format. Currently only \"Parquet\" is supported.</p>"
+        },
+        "Location":{
+          "shape":"JobOutputLocation",
+          "documentation":"<p>S3 ARN or URI where output files will be written.</p> <note> <p>The Amazon S3 bucket must exist in the same Amazon Web Services region where you plan to run your job.</p> </note>"
+        }
+      },
+      "documentation":"<p>Configuration for output data location and format.</p>"
+    },
+    "JobStatus":{
+      "type":"string",
+      "enum":[
+        "Pending",
+        "Running",
+        "Completed",
+        "Failed",
+        "Cancelling",
+        "Cancelled"
+      ]
+    },
+    "JobsFilter":{
+      "type":"structure",
+      "members":{
+        "JobStatus":{
+          "shape":"JobStatus",
+          "documentation":"<p>Filter by job status.</p>"
+        }
+      },
+      "documentation":"<p>Criteria for filtering jobs.</p>"
     },
     "KmsKeyId":{
       "type":"string",
@@ -4303,6 +4632,116 @@
           "documentation":"<p>A pagination token indicating there are additional pages available. You can use the token in a following request to fetch the next set of results. </p>"
         }
       }
+    },
+    "ListJobsRequest":{
+      "type":"structure",
+      "members":{
+        "Filter":{
+          "shape":"JobsFilter",
+          "documentation":"<p>An optional structure containing criteria by which to filter job results.</p>"
+        },
+        "MaxResults":{
+          "shape":"ListJobsRequestMaxResultsInteger",
+          "documentation":"<p>Maximum number of jobs to return.</p>"
+        },
+        "NextToken":{
+          "shape":"LargeToken",
+          "documentation":"<p>The pagination token specifying which page of results to return in the response. If no token is provided, the default page is the first page.</p>"
+        }
+      }
+    },
+    "ListJobsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListJobsResponse":{
+      "type":"structure",
+      "required":["Entries"],
+      "members":{
+        "Entries":{
+          "shape":"ListJobsResponseEntryList",
+          "documentation":"<p>List of jobs in your Amazon Web Services account.</p>"
+        },
+        "NextToken":{
+          "shape":"LargeToken",
+          "documentation":"<p>Token for retrieving the next page (present if more results available).</p>"
+        }
+      }
+    },
+    "ListJobsResponseEntry":{
+      "type":"structure",
+      "required":[
+        "Action",
+        "CreatedAt",
+        "ExecutionRoleArn",
+        "InputOptions",
+        "JobId",
+        "JobArn",
+        "OutputOptions",
+        "Status",
+        "UpdatedAt"
+      ],
+      "members":{
+        "Action":{
+          "shape":"JobAction",
+          "documentation":"<p>Action performed by the job.</p>"
+        },
+        "ActionOptions":{
+          "shape":"JobActionOptions",
+          "documentation":"<p>Additional options for configuring job action parameters.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Job creation time in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sss</code>.</p>"
+        },
+        "ExecutionRoleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>IAM role used for job execution.</p>"
+        },
+        "EndedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Job completion time in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sss</code>. Only returned for jobs in a terminal status: <code>Completed</code> | <code>Failed</code> | <code>Cancelled</code>.</p>"
+        },
+        "Error":{
+          "shape":"JobError",
+          "documentation":"<p>Error information if the job failed.</p>"
+        },
+        "InputOptions":{
+          "shape":"JobInputOptions",
+          "documentation":"<p>Input configuration.</p>"
+        },
+        "JobId":{
+          "shape":"JobId",
+          "documentation":"<p>Unique job identifier.</p>"
+        },
+        "JobArn":{
+          "shape":"GeoArn",
+          "documentation":"<p>Amazon Resource Name (ARN) of the job.</p>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>Job name (if provided during creation).</p>"
+        },
+        "OutputOptions":{
+          "shape":"JobOutputOptions",
+          "documentation":"<p>Output configuration.</p>"
+        },
+        "Status":{
+          "shape":"JobStatus",
+          "documentation":"<p>Current job status.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Last update time in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sss</code>.</p>"
+        }
+      },
+      "documentation":"<p>Job summary information returned in list operations.</p>"
+    },
+    "ListJobsResponseEntryList":{
+      "type":"list",
+      "member":{"shape":"ListJobsResponseEntry"}
     },
     "ListKeysRequest":{
       "type":"structure",
@@ -5752,6 +6191,77 @@
         "MilesPerHour"
       ]
     },
+    "StartJobRequest":{
+      "type":"structure",
+      "required":[
+        "Action",
+        "ExecutionRoleArn",
+        "InputOptions",
+        "OutputOptions"
+      ],
+      "members":{
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique identifier for this request to ensure idempotency.</p>",
+          "idempotencyToken":true
+        },
+        "Action":{
+          "shape":"JobAction",
+          "documentation":"<p>The action to perform on the input data.</p>"
+        },
+        "ActionOptions":{
+          "shape":"JobActionOptions",
+          "documentation":"<p>Additional parameters that can be requested for each result.</p>"
+        },
+        "ExecutionRoleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that Amazon Location Service assumes during job processing. Amazon Location Service uses this role to access the input and output locations specified for the job.</p> <note> <p>The IAM role must be created in the same Amazon Web Services account where you plan to run your job.</p> </note> <p>For more information about configuring IAM roles for Amazon Location jobs, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/configure-iam-role-policy-credentials.html\">Configure IAM permissions</a> in the <i>Amazon Location Service Developer Guide</i>.</p>"
+        },
+        "InputOptions":{
+          "shape":"JobInputOptions",
+          "documentation":"<p>Configuration for input data location and format.</p> <note> <p>Input files have a limitation of 10gb per file, and 1gb per Parquet row-group within the file.</p> </note>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>An optional name for the job resource.</p>"
+        },
+        "OutputOptions":{
+          "shape":"JobOutputOptions",
+          "documentation":"<p>Configuration for output data location and format.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>Tags and corresponding values to be associated with the job.</p>"
+        }
+      }
+    },
+    "StartJobResponse":{
+      "type":"structure",
+      "required":[
+        "CreatedAt",
+        "JobArn",
+        "JobId",
+        "Status"
+      ],
+      "members":{
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Job creation time in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sss</code>.</p>"
+        },
+        "JobArn":{
+          "shape":"GeoArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the job resource. Used when you need to specify a resource across all Amazon Web Services.</p> <p>Format example: <code>arn:aws:geo:region:account-id:job/ExampleJob</code> </p>"
+        },
+        "JobId":{
+          "shape":"JobId",
+          "documentation":"<p>Unique job identifier.</p>"
+        },
+        "Status":{
+          "shape":"JobStatus",
+          "documentation":"<p>Initial job status (always \"Pending\" for new jobs).</p>"
+        }
+      }
+    },
     "Status":{
       "type":"string",
       "enum":[
@@ -6324,6 +6834,29 @@
     "Uuid":{
       "type":"string",
       "pattern":"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
+    },
+    "ValidateAddressActionOptions":{
+      "type":"structure",
+      "members":{
+        "AdditionalFeatures":{
+          "shape":"ValidateAddressAdditionalFeatureList",
+          "documentation":"<p>A list of optional additional parameters that can be requested for each result.</p> <p>Values:</p> <ul> <li> <p> <code>Position</code> - Return the position coordinates of the address if available.</p> </li> <li> <p> <code>CountrySpecificAttributes</code> - Return additional information about the address specific to the country of origin.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Options specific to address validation jobs.</p>"
+    },
+    "ValidateAddressAdditionalFeature":{
+      "type":"string",
+      "enum":[
+        "Position",
+        "CountrySpecificAttributes"
+      ]
+    },
+    "ValidateAddressAdditionalFeatureList":{
+      "type":"list",
+      "member":{"shape":"ValidateAddressAdditionalFeature"},
+      "max":2,
+      "min":1
     },
     "ValidationException":{
       "type":"structure",

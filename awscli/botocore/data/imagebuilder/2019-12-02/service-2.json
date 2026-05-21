@@ -793,7 +793,9 @@
       "errors":[
         {"shape":"ServiceException"},
         {"shape":"ClientException"},
-        {"shape":"ServiceUnavailableException"}
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"}
       ],
       "documentation":"<p>Import a Windows operating system image from a verified Microsoft ISO disk file. The following disk images are supported:</p> <ul> <li> <p>Windows 11 Enterprise</p> </li> </ul>"
     },
@@ -1729,7 +1731,7 @@
     },
     "ClientToken":{
       "type":"string",
-      "max":36,
+      "max":64,
       "min":1
     },
     "Component":{
@@ -2532,6 +2534,10 @@
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags of the image pipeline.</p>"
+        },
+        "imageTags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags to be applied to the images produced by this pipeline.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -4453,6 +4459,10 @@
           "shape":"ImageScanningConfiguration",
           "documentation":"<p>Contains settings for vulnerability scans.</p>"
         },
+        "imageTags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags to be applied to the images produced by this pipeline.</p>"
+        },
         "executionRole":{
           "shape":"RoleNameOrArn",
           "documentation":"<p>The name or Amazon Resource Name (ARN) for the IAM role you create that grants Image Builder access to perform workflow actions.</p>"
@@ -5051,7 +5061,7 @@
       ],
       "members":{
         "name":{
-          "shape":"NonEmptyString",
+          "shape":"ResourceName",
           "documentation":"<p>The name of the image resource that's created from the import.</p>"
         },
         "semanticVersion":{
@@ -5089,6 +5099,14 @@
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>Tags that are attached to image resources created from the import.</p>"
+        },
+        "registerImageOptions":{
+          "shape":"RegisterImageOptions",
+          "documentation":"<p>Configures Secure Boot and UEFI settings for the imported image.</p>"
+        },
+        "windowsConfiguration":{
+          "shape":"WindowsConfiguration",
+          "documentation":"<p>Specifies Windows settings for ISO imports.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -5509,7 +5527,8 @@
         },
         "setDefaultVersion":{
           "shape":"Boolean",
-          "documentation":"<p>Set the specified Amazon EC2 launch template as the default launch template for the specified account.</p>"
+          "documentation":"<p>Set the specified Amazon EC2 launch template as the default launch template for the specified account.</p>",
+          "box":true
         }
       },
       "documentation":"<p>Identifies an Amazon EC2 launch template to use for a specific account.</p>"
@@ -6157,7 +6176,7 @@
           "box":true
         },
         "nextToken":{
-          "shape":"NonEmptyString",
+          "shape":"PaginationToken",
           "documentation":"<p>A token to specify where to start paginating. This is the nextToken from a previously truncated response.</p>"
         }
       }
@@ -7252,6 +7271,20 @@
       "type":"list",
       "member":{"shape":"NonEmptyString"}
     },
+    "RegisterImageOptions":{
+      "type":"structure",
+      "members":{
+        "secureBootEnabled":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Specifies whether Secure Boot is enabled for the output AMI. The default value is <code>true</code>. To disable Secure Boot for custom unsigned drivers, set this value to <code>false</code>.</p>"
+        },
+        "uefiData":{
+          "shape":"UefiData",
+          "documentation":"<p>A Base64-encoded representation of the non-volatile UEFI variable store. You can specify this parameter only when <code>secureBootEnabled</code> is <code>true</code> or unspecified. You can inspect and modify the UEFI data by using the <a href=\"https://github.com/awslabs/python-uefivars\">python-uefivars tool on GitHub</a>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/uefi-variables.html\">UEFI variables for Amazon EC2 instances</a>.</p>"
+        }
+      },
+      "documentation":"<p>Controls Secure Boot and UEFI data settings for the resulting image during ISO imports. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/uefi-secure-boot.html\">UEFI Secure Boot for Amazon EC2 instances</a> in the <i> <i>Amazon EC2 User Guide</i> </i>.</p>"
+    },
     "Remediation":{
       "type":"structure",
       "members":{
@@ -7818,6 +7851,11 @@
       "error":{"httpStatusCode":429},
       "exception":true
     },
+    "UefiData":{
+      "type":"string",
+      "max":64000,
+      "min":0
+    },
     "UntagResourceRequest":{
       "type":"structure",
       "required":[
@@ -7955,6 +7993,10 @@
         "executionRole":{
           "shape":"RoleNameOrArn",
           "documentation":"<p>The name or Amazon Resource Name (ARN) for the IAM role you create that grants Image Builder access to perform workflow actions.</p>"
+        },
+        "imageTags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags to be applied to the images produced by this pipeline.</p>"
         }
       }
     },
@@ -8197,6 +8239,22 @@
     "WildcardVersionNumber":{
       "type":"string",
       "pattern":"^(?:[0-9]+|x)\\.(?:[0-9]+|x)\\.(?:[0-9]+|x)$"
+    },
+    "WindowsConfiguration":{
+      "type":"structure",
+      "required":["imageIndex"],
+      "members":{
+        "imageIndex":{
+          "shape":"WindowsConfigurationImageIndex",
+          "documentation":"<p>The 1-based index that specifies which Windows edition to install from a multi-edition Windows ISO file. A Windows ISO can contain a <code>.wim</code> file with multiple image indexes, each representing a different edition.</p>"
+        }
+      },
+      "documentation":"<p>Windows-specific configuration settings for an ISO import, including the edition to install from a multi-edition Windows ISO file.</p>"
+    },
+    "WindowsConfigurationImageIndex":{
+      "type":"long",
+      "max":4294967295,
+      "min":1
     },
     "Workflow":{
       "type":"structure",

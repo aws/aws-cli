@@ -4165,6 +4165,17 @@
         "custom"
       ]
     },
+    "CacheTagConfig":{
+      "type":"structure",
+      "required":["HeaderName"],
+      "members":{
+        "HeaderName":{
+          "shape":"string",
+          "documentation":"<p>The name of the HTTP header that your origin includes in responses. CloudFront uses this header to extract cache tags. The header value must contain comma-separated tag values (for example, <code>product:electronics, category:tv, brand:example</code>).</p>"
+        }
+      },
+      "documentation":"<p>A complex type that specifies the HTTP header name from which CloudFront extracts cache tags from origin responses. When you add <code>CacheTagConfig</code> to a distribution, CloudFront reads the specified header from origin responses, parses the comma-separated tag values, and stores them with the cached object. You can then invalidate cached objects by tag using the <code>CreateInvalidation</code> API.</p>"
+    },
     "CachedMethods":{
       "type":"structure",
       "required":[
@@ -5402,7 +5413,8 @@
         "FunctionCode":{
           "shape":"FunctionBlob",
           "documentation":"<p>The function code. For more information about writing a CloudFront function, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/writing-function-code.html\">Writing function code for CloudFront Functions</a> in the <i>Amazon CloudFront Developer Guide</i>.</p>"
-        }
+        },
+        "Tags":{"shape":"Tags"}
       }
     },
     "CreateFunctionResult":{
@@ -5551,7 +5563,8 @@
         "ImportSource":{
           "shape":"ImportSource",
           "documentation":"<p>The S3 bucket that provides the source for the import. The source must be in a valid JSON format.</p>"
-        }
+        },
+        "Tags":{"shape":"Tags"}
       }
     },
     "CreateKeyValueStoreResult":{
@@ -5872,6 +5885,10 @@
         "CaCertificatesBundleSource":{
           "shape":"CaCertificatesBundleSource",
           "documentation":"<p>The CA certificates bundle source for the trust store.</p>"
+        },
+        "UseClientCertificateOCSPEndpoint":{
+          "shape":"boolean",
+          "documentation":"<p>A Boolean that determines whether to use the CA certificate's OCSP endpoint to check certificate revocation status.</p>"
         },
         "Tags":{"shape":"Tags"}
       }
@@ -6916,6 +6933,10 @@
         "ConnectionFunctionAssociation":{
           "shape":"ConnectionFunctionAssociation",
           "documentation":"<p>The distribution's connection function association.</p>"
+        },
+        "CacheTagConfig":{
+          "shape":"CacheTagConfig",
+          "documentation":"<p>Configuration for cache tag extraction from origin responses. When specified, CloudFront reads the header named in <code>HeaderName</code> from origin responses and stores the comma-separated values as cache tags on the object.</p> <p>Distributions without <code>CacheTagConfig</code> do not extract tags. When <code>CacheTagConfig</code> is removed from a distribution via <code>UpdateDistribution</code>, CloudFront stops extracting tags from origin responses.</p> <note> <p>Changing the <code>HeaderName</code> on an existing distribution does not retroactively affect previously cached objects. Tag-based invalidations will not apply to objects already cached using a previous header. To ensure tag invalidations function after updating the header name, use path-based invalidations to recache all objects that use cache tags.</p> </note>"
         }
       },
       "documentation":"<p>A distribution configuration.</p>"
@@ -15023,6 +15044,10 @@
         "Reason":{
           "shape":"string",
           "documentation":"<p>The trust store's reason.</p>"
+        },
+        "UseClientCertificateOCSPEndpoint":{
+          "shape":"boolean",
+          "documentation":"<p>A Boolean that determines whether the trust store uses the CA certificate's OCSP endpoint to check certificate revocation status.</p>"
         }
       },
       "documentation":"<p>A trust store.</p>"
@@ -15234,6 +15259,10 @@
         "IpAddressType":{
           "shape":"IpAddressType",
           "documentation":"<p>The IP address type for the Anycast static IP list. You can specify one of the following options:</p> <ul> <li> <p> <code>ipv4</code> only</p> </li> <li> <p> <code>ipv6</code> only</p> </li> <li> <p> <code>dualstack</code> - Allocate a list of both IPv4 and IPv6 addresses</p> </li> </ul>"
+        },
+        "IpamCidrConfigs":{
+          "shape":"IpamCidrConfigList",
+          "documentation":"<p>A list of IPAM CIDR configurations that specify the IP address ranges and IPAM pool settings for updating the Anycast static IP list.</p>"
         },
         "IfMatch":{
           "shape":"string",
@@ -16154,7 +16183,6 @@
       "type":"structure",
       "required":[
         "Id",
-        "CaCertificatesBundleSource",
         "IfMatch"
       ],
       "members":{
@@ -16169,6 +16197,12 @@
           "documentation":"<p>The CA certificates bundle source.</p>",
           "locationName":"CaCertificatesBundleSource",
           "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+        },
+        "UseClientCertificateOCSPEndpoint":{
+          "shape":"boolean",
+          "documentation":"<p>A Boolean that determines whether to use the CA certificate's OCSP endpoint to check certificate revocation status.</p>",
+          "location":"header",
+          "locationName":"UseClientCertificateOCSPEndpoint"
         },
         "IfMatch":{
           "shape":"string",
@@ -16310,7 +16344,7 @@
         },
         "SSLSupportMethod":{
           "shape":"SSLSupportMethod",
-          "documentation":"<p>If the distribution uses <code>Aliases</code> (alternate domain names or CNAMEs), specify which viewers the distribution accepts HTTPS connections from.</p> <ul> <li> <p> <code>sni-only</code> – The distribution accepts HTTPS connections from only viewers that support <a href=\"https://en.wikipedia.org/wiki/Server_Name_Indication\">server name indication (SNI)</a>. This is recommended. Most browsers and clients support SNI.</p> </li> <li> <p> <code>vip</code> – The distribution accepts HTTPS connections from all viewers including those that don't support SNI. This is not recommended, and results in additional monthly charges from CloudFront.</p> </li> <li> <p> <code>static-ip</code> - Do not specify this value unless your distribution has been enabled for this feature by the CloudFront team. If you have a use case that requires static IP addresses for a distribution, contact CloudFront through the <a href=\"https://console.aws.amazon.com/support/home\">Amazon Web ServicesSupport Center</a>.</p> </li> </ul> <p>If the distribution uses the CloudFront domain name such as <code>d111111abcdef8.cloudfront.net</code>, don't set a value for this field.</p>"
+          "documentation":"<p>If the distribution uses <code>Aliases</code> (alternate domain names or CNAMEs), specify which viewers the distribution accepts HTTPS connections from.</p> <ul> <li> <p> <code>sni-only</code> – The distribution accepts HTTPS connections from only viewers that support <a href=\"https://en.wikipedia.org/wiki/Server_Name_Indication\">server name indication (SNI)</a>. This is recommended. Most browsers and clients support SNI.</p> </li> <li> <p> <code>vip</code> – The distribution accepts HTTPS connections from all viewers including those that don't support SNI. This is not recommended, and results in additional monthly charges from CloudFront.</p> </li> <li> <p> <code>static-ip</code> - Do not specify this value unless your distribution has been enabled for this feature by the CloudFront team. If you have a use case that requires static IP addresses for a distribution, contact CloudFront through the <a href=\"https://console.aws.amazon.com/support/home\">Amazon Web Services Support Center</a>.</p> </li> </ul> <p>If the distribution uses the CloudFront domain name such as <code>d111111abcdef8.cloudfront.net</code>, don't set a value for this field.</p>"
         },
         "MinimumProtocolVersion":{
           "shape":"MinimumProtocolVersion",
@@ -16347,7 +16381,8 @@
       "type":"string",
       "enum":[
         "required",
-        "optional"
+        "optional",
+        "passthrough"
       ]
     },
     "ViewerProtocolPolicy":{

@@ -653,6 +653,69 @@ class TestSyncCommand(BaseS3TransferCommandTest):
             self.operations_called[1][1]['ChecksumAlgorithm'], 'SHA256'
         )
 
+    def test_upload_with_checksum_algorithm_sha512(self):
+        self.files.create_file('foo.txt', 'contents')
+        cmdline = f'{self.prefix} {self.files.rootdir} s3://bucket/ --checksum-algorithm SHA512'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[1][0].name, 'PutObject')
+        self.assertEqual(
+            self.operations_called[1][1]['ChecksumAlgorithm'], 'SHA512'
+        )
+
+    def test_upload_with_checksum_algorithm_crc32(self):
+        self.files.create_file('foo.txt', 'contents')
+        cmdline = f'{self.prefix} {self.files.rootdir} s3://bucket/ --checksum-algorithm CRC32'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[1][0].name, 'PutObject')
+        self.assertEqual(
+            self.operations_called[1][1]['ChecksumAlgorithm'], 'CRC32'
+        )
+
+    def test_upload_with_checksum_algorithm_crc32c(self):
+        self.files.create_file('foo.txt', 'contents')
+        cmdline = f'{self.prefix} {self.files.rootdir} s3://bucket/ --checksum-algorithm CRC32C'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[1][0].name, 'PutObject')
+        self.assertEqual(
+            self.operations_called[1][1]['ChecksumAlgorithm'], 'CRC32C'
+        )
+
+    def test_upload_with_checksum_algorithm_crc64nvme(self):
+        self.files.create_file('foo.txt', 'contents')
+        cmdline = f'{self.prefix} {self.files.rootdir} s3://bucket/ --checksum-algorithm CRC64NVME'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[1][0].name, 'PutObject')
+        self.assertEqual(
+            self.operations_called[1][1]['ChecksumAlgorithm'], 'CRC64NVME'
+        )
+
+    def test_upload_with_checksum_algorithm_xxhash3(self):
+        self.files.create_file('foo.txt', 'contents')
+        cmdline = f'{self.prefix} {self.files.rootdir} s3://bucket/ --checksum-algorithm XXHASH3'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[1][0].name, 'PutObject')
+        self.assertEqual(
+            self.operations_called[1][1]['ChecksumAlgorithm'], 'XXHASH3'
+        )
+
+    def test_upload_with_checksum_algorithm_xxhash64(self):
+        self.files.create_file('foo.txt', 'contents')
+        cmdline = f'{self.prefix} {self.files.rootdir} s3://bucket/ --checksum-algorithm XXHASH64'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[1][0].name, 'PutObject')
+        self.assertEqual(
+            self.operations_called[1][1]['ChecksumAlgorithm'], 'XXHASH64'
+        )
+
+    def test_upload_with_checksum_algorithm_xxhash128(self):
+        self.files.create_file('foo.txt', 'contents')
+        cmdline = f'{self.prefix} {self.files.rootdir} s3://bucket/ --checksum-algorithm XXHASH128'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[1][0].name, 'PutObject')
+        self.assertEqual(
+            self.operations_called[1][1]['ChecksumAlgorithm'], 'XXHASH128'
+        )
+
     def test_download_with_checksum_mode_sha1(self):
         self.parsed_responses = [
             self.list_objects_response(['bucket']),
@@ -689,6 +752,60 @@ class TestSyncCommand(BaseS3TransferCommandTest):
             ('ChecksumMode', 'ENABLED'), self.operations_called[1][1].items()
         )
 
+    def test_download_with_checksum_mode_sha512(self):
+        self.parsed_responses = [
+            self.list_objects_response(['bucket']),
+            # Mocked GetObject response with a checksum algorithm specified
+            {
+                'ETag': 'foo-1',
+                'ChecksumSHA512': 'checksum',
+                'Body': BytesIO(b'foo'),
+            },
+        ]
+        cmdline = f'{self.prefix} s3://bucket/foo {self.files.rootdir} --checksum-mode ENABLED'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
+        self.assertEqual(self.operations_called[1][0].name, 'GetObject')
+        self.assertIn(
+            ('ChecksumMode', 'ENABLED'), self.operations_called[1][1].items()
+        )
+
+    def test_download_with_checksum_mode_crc32(self):
+        self.parsed_responses = [
+            self.list_objects_response(['bucket']),
+            # Mocked GetObject response with a checksum algorithm specified
+            {
+                'ETag': 'foo-1',
+                'ChecksumCRC32': 'checksum',
+                'Body': BytesIO(b'foo'),
+            },
+        ]
+        cmdline = f'{self.prefix} s3://bucket/foo {self.files.rootdir} --checksum-mode ENABLED'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
+        self.assertEqual(self.operations_called[1][0].name, 'GetObject')
+        self.assertIn(
+            ('ChecksumMode', 'ENABLED'), self.operations_called[1][1].items()
+        )
+
+    def test_download_with_checksum_mode_crc32c(self):
+        self.parsed_responses = [
+            self.list_objects_response(['bucket']),
+            # Mocked GetObject response with a checksum algorithm specified
+            {
+                'ETag': 'foo-1',
+                'ChecksumCRC32C': 'checksum',
+                'Body': BytesIO(b'foo'),
+            },
+        ]
+        cmdline = f'{self.prefix} s3://bucket/foo {self.files.rootdir} --checksum-mode ENABLED'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
+        self.assertEqual(self.operations_called[1][0].name, 'GetObject')
+        self.assertIn(
+            ('ChecksumMode', 'ENABLED'), self.operations_called[1][1].items()
+        )
+
     def test_download_with_checksum_mode_crc64nvme(self):
         self.parsed_responses = [
             self.list_objects_response(['bucket']),
@@ -701,6 +818,61 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         ]
         cmdline = f'{self.prefix} s3://bucket/foo {self.files.rootdir} --checksum-mode ENABLED'
         self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
+        self.assertEqual(self.operations_called[1][0].name, 'GetObject')
+        self.assertIn(
+            ('ChecksumMode', 'ENABLED'), self.operations_called[1][1].items()
+        )
+
+    def test_download_with_checksum_mode_xxhash3(self):
+        self.parsed_responses = [
+            self.list_objects_response(['bucket']),
+            # Mocked GetObject response with a checksum algorithm specified
+            {
+                'ETag': 'foo-1',
+                'ChecksumXXHASH3': 'checksum',
+                'Body': BytesIO(b'foo'),
+            },
+        ]
+        cmdline = f'{self.prefix} s3://bucket/foo {self.files.rootdir} --checksum-mode ENABLED'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
+        self.assertEqual(self.operations_called[1][0].name, 'GetObject')
+        self.assertIn(
+            ('ChecksumMode', 'ENABLED'), self.operations_called[1][1].items()
+        )
+
+    def test_download_with_checksum_mode_xxhash64(self):
+        self.parsed_responses = [
+            self.list_objects_response(['bucket']),
+            # Mocked GetObject response with a checksum algorithm specified
+            {
+                'ETag': 'foo-1',
+                'ChecksumXXHASH64': 'checksum',
+                'Body': BytesIO(b'foo'),
+            },
+        ]
+        cmdline = f'{self.prefix} s3://bucket/foo {self.files.rootdir} --checksum-mode ENABLED'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
+        self.assertEqual(self.operations_called[1][0].name, 'GetObject')
+        self.assertIn(
+            ('ChecksumMode', 'ENABLED'), self.operations_called[1][1].items()
+        )
+
+    def test_download_with_checksum_mode_xxhash128(self):
+        self.parsed_responses = [
+            self.list_objects_response(['bucket']),
+            # Mocked GetObject response with a checksum algorithm specified
+            {
+                'ETag': 'foo-1',
+                'ChecksumXXHASH128': 'checksum',
+                'Body': BytesIO(b'foo'),
+            },
+        ]
+        cmdline = f'{self.prefix} s3://bucket/foo {self.files.rootdir} --checksum-mode ENABLED'
+        self.run_cmd(cmdline, expected_rc=0)
+
         self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
         self.assertEqual(self.operations_called[1][0].name, 'GetObject')
         self.assertIn(

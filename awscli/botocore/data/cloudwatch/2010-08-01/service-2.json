@@ -75,11 +75,10 @@
       },
       "errors":[
         {"shape":"InvalidParameterValueException"},
-        {"shape":"DashboardNotFoundError"},
         {"shape":"InternalServiceFault"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Deletes all dashboards that you specify. You can specify up to 100 dashboards to delete. If there is an error during this call, no dashboards are deleted.</p>"
+      "documentation":"<p>Deletes all dashboards that you specify. You can specify up to 100 dashboards to delete. If there is an error during this call, the operation attempts to delete as many dashboards as possible.</p>"
     },
     "DeleteInsightRules":{
       "name":"DeleteInsightRules",
@@ -386,6 +385,19 @@
       },
       "documentation":"<p>You can use the <code>GetMetricWidgetImage</code> API to retrieve a snapshot graph of one or more Amazon CloudWatch metrics as a bitmap image. You can then embed this image into your services and products, such as wiki pages, reports, and documents. You could also retrieve images regularly, such as every minute, and create your own custom live dashboard.</p> <p>The graph you retrieve can include all CloudWatch metric graph features, including metric math and horizontal and vertical annotations.</p> <p>There is a limit of 20 transactions per second for this API. Each <code>GetMetricWidgetImage</code> action has the following limits:</p> <ul> <li> <p>As many as 100 metrics in the graph.</p> </li> <li> <p>Up to 100 KB uncompressed payload.</p> </li> </ul>"
     },
+    "GetOTelEnrichment":{
+      "name":"GetOTelEnrichment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetOTelEnrichmentInput"},
+      "output":{
+        "shape":"GetOTelEnrichmentOutput",
+        "resultWrapper":"GetOTelEnrichmentResult"
+      },
+      "documentation":"<p>Returns the current status of vended metric enrichment for the account, including whether CloudWatch vended metrics are enriched with resource ARN and resource tag labels and queryable using PromQL. For the list of supported resources, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/UsingResourceTagsForTelemetry.html\">Supported Amazon Web Services infrastructure metrics</a>.</p>"
+    },
     "ListAlarmMuteRules":{
       "name":"ListAlarmMuteRules",
       "http":{
@@ -490,7 +502,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServiceFault"}
       ],
-      "documentation":"<p>Displays the tags associated with a CloudWatch resource. Currently, alarms and Contributor Insights rules support tagging.</p>"
+      "documentation":"<p>Displays the tags associated with a CloudWatch resource. Currently, alarms, dashboards, metric streams and Contributor Insights rules support tagging.</p>"
     },
     "PutAlarmMuteRule":{
       "name":"PutAlarmMuteRule",
@@ -502,7 +514,7 @@
       "errors":[
         {"shape":"LimitExceededFault"}
       ],
-      "documentation":"<p>Creates or updates an alarm mute rule.</p> <p>Alarm mute rules automatically mute alarm actions during predefined time windows. When a mute rule is active, targeted alarms continue to evaluate metrics and transition between states, but their configured actions (such as Amazon SNS notifications or Auto Scaling actions) are muted.</p> <p>You can create mute rules with recurring schedules using <code>cron</code> expressions or one-time mute windows using <code>at</code> expressions. Each mute rule can target up to 100 specific alarms by name.</p> <p>If you specify a rule name that already exists, this operation updates the existing rule with the new configuration.</p> <p> <b>Permissions</b> </p> <p>To create or update a mute rule, you must have the <code>cloudwatch:PutAlarmMuteRule</code> permission on two types of resources: the alarm mute rule resource itself, and each alarm that the rule targets.</p> <p>For example, If you want to allow a user to create mute rules that target only specific alarms named \"WebServerCPUAlarm\" and \"DatabaseConnectionAlarm\", you would create an IAM policy with one statement granting <code>cloudwatch:PutAlarmMuteRule</code> on the alarm mute rule resource (<code>arn:aws:cloudwatch:[REGION]:123456789012:alarm-mute:*</code>), and another statement granting <code>cloudwatch:PutAlarmMuteRule</code> on the targeted alarm resources (<code>arn:aws:cloudwatch:[REGION]:123456789012:alarm:WebServerCPUAlarm</code> and <code>arn:aws:cloudwatch:[REGION]:123456789012:alarm:DatabaseConnectionAlarm</code>).</p> <p>You can also use IAM policy conditions to allow targeting alarms based on resource tags. For example, you can restrict users to create/update mute rules to only target alarms that have a specific tag key-value pair, such as <code>Team=TeamA</code>.</p>"
+      "documentation":"<p>Creates or updates an alarm mute rule.</p> <p>Alarm mute rules automatically mute alarm actions during predefined time windows. When a mute rule is active, targeted alarms continue to evaluate metrics and transition between states, but their configured actions (such as Amazon SNS notifications or Auto Scaling actions) are muted.</p> <p>You can create mute rules with recurring schedules using <code>cron</code> expressions or one-time mute windows using <code>at</code> expressions. Each mute rule can target up to 100 specific alarms by name.</p> <p>If you specify a rule name that already exists, this operation updates the existing rule with the new configuration.</p> <p> <b>Permissions</b> </p> <p>To create or update a mute rule, you must have the <code>cloudwatch:PutAlarmMuteRule</code> permission on two types of resources: the alarm mute rule resource itself, and each alarm that the rule targets.</p> <p>For example, If you want to allow a user to create mute rules that target only specific alarms named \"WebServerCPUAlarm\" and \"DatabaseConnectionAlarm\", you would create an IAM policy with one statement granting <code>cloudwatch:PutAlarmMuteRule</code> on the alarm mute rule resource (<code>arn:aws:cloudwatch:[REGION]:123456789012:alarm-mute-rule:*</code>), and another statement granting <code>cloudwatch:PutAlarmMuteRule</code> on the targeted alarm resources (<code>arn:aws:cloudwatch:[REGION]:123456789012:alarm:WebServerCPUAlarm</code> and <code>arn:aws:cloudwatch:[REGION]:123456789012:alarm:DatabaseConnectionAlarm</code>).</p> <p>You can also use IAM policy conditions to allow targeting alarms based on resource tags. For example, you can restrict users to create/update mute rules to only target alarms that have a specific tag key-value pair, such as <code>Team=TeamA</code>.</p>"
     },
     "PutAnomalyDetector":{
       "name":"PutAnomalyDetector",
@@ -599,7 +611,7 @@
       "errors":[
         {"shape":"LimitExceededFault"}
       ],
-      "documentation":"<p>Creates or updates an alarm and associates it with the specified metric, metric math expression, anomaly detection model, or Metrics Insights query. For more information about using a Metrics Insights query for an alarm, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Create_Metrics_Insights_Alarm.html\">Create alarms on Metrics Insights queries</a>.</p> <p>Alarms based on anomaly detection models cannot have Auto Scaling actions.</p> <p>When this operation creates an alarm, the alarm state is immediately set to <code>INSUFFICIENT_DATA</code>. The alarm is then evaluated and its state is set appropriately. Any actions associated with the new state are then executed.</p> <p>When you update an existing alarm, its state is left unchanged, but the update completely overwrites the previous configuration of the alarm.</p> <p>If you are an IAM user, you must have Amazon EC2 permissions for some alarm operations:</p> <ul> <li> <p>The <code>iam:CreateServiceLinkedRole</code> permission for all alarms with EC2 actions</p> </li> <li> <p>The <code>iam:CreateServiceLinkedRole</code> permissions to create an alarm with Systems Manager OpsItem or response plan actions.</p> </li> </ul> <p>The first time you create an alarm in the Amazon Web Services Management Console, the CLI, or by using the PutMetricAlarm API, CloudWatch creates the necessary service-linked role for you. The service-linked roles are called <code>AWSServiceRoleForCloudWatchEvents</code> and <code>AWSServiceRoleForCloudWatchAlarms_ActionSSM</code>. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_terms-and-concepts.html#iam-term-service-linked-role\">Amazon Web Services service-linked role</a>.</p> <p>Each <code>PutMetricAlarm</code> action has a maximum uncompressed payload of 120 KB.</p> <p> <b>Cross-account alarms</b> </p> <p>You can set an alarm on metrics in the current account, or in another account. To create a cross-account alarm that watches a metric in a different account, you must have completed the following pre-requisites:</p> <ul> <li> <p>The account where the metrics are located (the <i>sharing account</i>) must already have a sharing role named <b>CloudWatch-CrossAccountSharingRole</b>. If it does not already have this role, you must create it using the instructions in <b>Set up a sharing account</b> in <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Cross-Account-Cross-Region.html#enable-cross-account-cross-Region\"> Cross-account cross-Region CloudWatch console</a>. The policy for that role must grant access to the ID of the account where you are creating the alarm. </p> </li> <li> <p>The account where you are creating the alarm (the <i>monitoring account</i>) must already have a service-linked role named <b>AWSServiceRoleForCloudWatchCrossAccount</b> to allow CloudWatch to assume the sharing role in the sharing account. If it does not, you must create it following the directions in <b>Set up a monitoring account</b> in <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Cross-Account-Cross-Region.html#enable-cross-account-cross-Region\"> Cross-account cross-Region CloudWatch console</a>.</p> </li> </ul>"
+      "documentation":"<p>Creates or updates an alarm and associates it with the specified metric, metric math expression, anomaly detection model, Metrics Insights query, or PromQL query. For more information about using a Metrics Insights query for an alarm, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Create_Metrics_Insights_Alarm.html\">Create alarms on Metrics Insights queries</a>.</p> <p>Alarms based on anomaly detection models cannot have Auto Scaling actions.</p> <p>When this operation creates an alarm, the alarm state is immediately set to <code>INSUFFICIENT_DATA</code>. For PromQL alarms, the alarm state is instead immediately set to <code>OK</code>. The alarm is then evaluated and its state is set appropriately. Any actions associated with the new state are then executed.</p> <p>When you update an existing alarm, its state is left unchanged, but the update completely overwrites the previous configuration of the alarm.</p> <p>If you are an IAM user, you must have Amazon EC2 permissions for some alarm operations:</p> <ul> <li> <p>The <code>iam:CreateServiceLinkedRole</code> permission for all alarms with EC2 actions</p> </li> <li> <p>The <code>iam:CreateServiceLinkedRole</code> permissions to create an alarm with Systems Manager OpsItem or response plan actions.</p> </li> </ul> <p>The first time you create an alarm in the Amazon Web Services Management Console, the CLI, or by using the PutMetricAlarm API, CloudWatch creates the necessary service-linked role for you. The service-linked roles are called <code>AWSServiceRoleForCloudWatchEvents</code> and <code>AWSServiceRoleForCloudWatchAlarms_ActionSSM</code>. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_terms-and-concepts.html#iam-term-service-linked-role\">Amazon Web Services service-linked role</a>.</p> <p>Each <code>PutMetricAlarm</code> action has a maximum uncompressed payload of 120 KB.</p> <p> <b>Cross-account alarms</b> </p> <p>You can set an alarm on metrics in the current account, or in another account. To create a cross-account alarm that watches a metric in a different account, you must have completed the following pre-requisites:</p> <ul> <li> <p>The account where the metrics are located (the <i>sharing account</i>) must already have a sharing role named <b>CloudWatch-CrossAccountSharingRole</b>. If it does not already have this role, you must create it using the instructions in <b>Set up a sharing account</b> in <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Cross-Account-Cross-Region.html#enable-cross-account-cross-Region\"> Cross-account cross-Region CloudWatch console</a>. The policy for that role must grant access to the ID of the account where you are creating the alarm. </p> </li> <li> <p>The account where you are creating the alarm (the <i>monitoring account</i>) must already have a service-linked role named <b>AWSServiceRoleForCloudWatchCrossAccount</b> to allow CloudWatch to assume the sharing role in the sharing account. If it does not, you must create it following the directions in <b>Set up a monitoring account</b> in <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Cross-Account-Cross-Region.html#enable-cross-account-cross-Region\"> Cross-account cross-Region CloudWatch console</a>.</p> </li> </ul>"
     },
     "PutMetricData":{
       "name":"PutMetricData",
@@ -668,6 +680,19 @@
       ],
       "documentation":"<p>Starts the streaming of metrics for one or more of your metric streams.</p>"
     },
+    "StartOTelEnrichment":{
+      "name":"StartOTelEnrichment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartOTelEnrichmentInput"},
+      "output":{
+        "shape":"StartOTelEnrichmentOutput",
+        "resultWrapper":"StartOTelEnrichmentResult"
+      },
+      "documentation":"<p>Enables enrichment and PromQL access for CloudWatch vended metrics for <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/UsingResourceTagsForTelemetry.html\">supported Amazon Web Services resources</a> in the account. Once enabled, metrics that contain a resource identifier dimension (for example, EC2 <code>CPUUtilization</code> with an <code>InstanceId</code> dimension) are enriched with resource ARN and resource tag labels and become queryable using PromQL.</p> <p>Before calling this operation, you must enable resource tags on telemetry for your account. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/EnableResourceTagsOnTelemetry.html\">Enable resource tags on telemetry</a>.</p>"
+    },
     "StopMetricStreams":{
       "name":"StopMetricStreams",
       "http":{
@@ -685,6 +710,19 @@
         {"shape":"MissingRequiredParameterException"}
       ],
       "documentation":"<p>Stops the streaming of metrics for one or more of your metric streams.</p>"
+    },
+    "StopOTelEnrichment":{
+      "name":"StopOTelEnrichment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StopOTelEnrichmentInput"},
+      "output":{
+        "shape":"StopOTelEnrichmentOutput",
+        "resultWrapper":"StopOTelEnrichmentResult"
+      },
+      "documentation":"<p>Disables enrichment and PromQL access for CloudWatch vended metrics for <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/UsingResourceTagsForTelemetry.html\">supported Amazon Web Services resources</a> in the account. After disabling, these metrics are no longer enriched with resource ARN and resource tag labels, and cannot be queried using PromQL.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -704,7 +742,7 @@
         {"shape":"InternalServiceFault"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Assigns one or more tags (key-value pairs) to the specified CloudWatch resource. Currently, the only CloudWatch resources that can be tagged are alarms and Contributor Insights rules.</p> <p>Tags can help you organize and categorize your resources. You can also use them to scope user permissions by granting a user permission to access or change only resources with certain tag values.</p> <p>Tags don't have any semantic meaning to Amazon Web Services and are interpreted strictly as strings of characters.</p> <p>You can use the <code>TagResource</code> action with an alarm that already has tags. If you specify a new tag key for the alarm, this tag is appended to the list of tags associated with the alarm. If you specify a tag key that is already associated with the alarm, the new tag value that you specify replaces the previous value for that tag.</p> <p>You can associate as many as 50 tags with a CloudWatch resource.</p>"
+      "documentation":"<p>Assigns one or more tags (key-value pairs) to the specified CloudWatch resource. Currently, the only CloudWatch resources that can be tagged are alarms, dashboards, metric streams and Contributor Insights rules.</p> <p>Tags can help you organize and categorize your resources. You can also use them to scope user permissions by granting a user permission to access or change only resources with certain tag values.</p> <p>Tags don't have any semantic meaning to Amazon Web Services and are interpreted strictly as strings of characters.</p> <p>You can use the <code>TagResource</code> action with an alarm that already has tags. If you specify a new tag key for the alarm, this tag is appended to the list of tags associated with the alarm. If you specify a tag key that is already associated with the alarm, the new tag value that you specify replaces the previous value for that tag.</p> <p>You can associate as many as 50 tags with a CloudWatch resource.</p>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -724,7 +762,7 @@
         {"shape":"InternalServiceFault"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Removes one or more tags from the specified resource.</p>"
+      "documentation":"<p>Removes one or more tags from the specified resource. Currently, alarms, dashboards, metric streams and Contributor Insights rules support tagging.</p>"
     }
   },
   "shapes":{
@@ -897,6 +935,25 @@
       "type":"list",
       "member":{"shape":"AlarmName"},
       "max":100
+    },
+    "AlarmPromQLCriteria":{
+      "type":"structure",
+      "required":["Query"],
+      "members":{
+        "Query":{
+          "shape":"Query",
+          "documentation":"<p>The PromQL query that the alarm evaluates. The query must return a result of vector type. Each entry in the vector result represents an alarm contributor.</p>"
+        },
+        "PendingPeriod":{
+          "shape":"PendingPeriod",
+          "documentation":"<p>The duration, in seconds, that a contributor must be continuously breaching before it transitions to the <code>ALARM</code> state.</p>"
+        },
+        "RecoveryPeriod":{
+          "shape":"RecoveryPeriod",
+          "documentation":"<p>The duration, in seconds, that a contributor must continuously not be breaching before it transitions back to the <code>OK</code> state.</p>"
+        }
+      },
+      "documentation":"<p>Contains the configuration that determines how a PromQL alarm evaluates its contributors, including the query to run and the durations that define when contributors transition between states.</p>"
     },
     "AlarmRule":{
       "type":"string",
@@ -1184,7 +1241,8 @@
       "type":"map",
       "key":{"shape":"AttributeName"},
       "value":{"shape":"AttributeValue"},
-      "max":30
+      "max":150,
+      "min":0
     },
     "ContributorId":{
       "type":"string",
@@ -1900,6 +1958,22 @@
       "max":255,
       "min":1
     },
+    "EvaluationCriteria":{
+      "type":"structure",
+      "members":{
+        "PromQLCriteria":{
+          "shape":"AlarmPromQLCriteria",
+          "documentation":"<p>The PromQL criteria for the alarm evaluation.</p>"
+        }
+      },
+      "documentation":"<p>The evaluation criteria for an alarm. This is a union type that currently supports <code>PromQLCriteria</code>.</p>",
+      "union":true
+    },
+    "EvaluationInterval":{
+      "type":"integer",
+      "max":3600,
+      "min":10
+    },
     "EvaluationPeriods":{
       "type":"integer",
       "min":1
@@ -2280,6 +2354,20 @@
         "MetricWidgetImage":{
           "shape":"MetricWidgetImage",
           "documentation":"<p>The image of the graph, in the output format specified. The output is base64-encoded.</p>"
+        }
+      }
+    },
+    "GetOTelEnrichmentInput":{
+      "type":"structure",
+      "members":{}
+    },
+    "GetOTelEnrichmentOutput":{
+      "type":"structure",
+      "required":["Status"],
+      "members":{
+        "Status":{
+          "shape":"OTelEnrichmentStatus",
+          "documentation":"<p>The status of OTel enrichment for the account. Valid values are <code>Running</code> (enrichment is enabled) and <code>Stopped</code> (enrichment is disabled).</p>"
         }
       }
     },
@@ -2800,7 +2888,7 @@
       "members":{
         "ResourceARN":{
           "shape":"AmazonResourceName",
-          "documentation":"<p>The ARN of the CloudWatch resource that you want to view tags for.</p> <p>The ARN format of an alarm is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:alarm:<i>alarm-name</i> </code> </p> <p>The ARN format of a Contributor Insights rule is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:insight-rule/<i>insight-rule-name</i> </code> </p> <p>For more information about ARN format, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/list_amazoncloudwatch.html#amazoncloudwatch-resources-for-iam-policies\"> Resource Types Defined by Amazon CloudWatch</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+          "documentation":"<p>The ARN of the CloudWatch resource that you want to view tags for.</p> <p>The ARN format of an alarm is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:alarm:<i>alarm-name</i> </code> </p> <p>The ARN format of a Contributor Insights rule is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:insight-rule/<i>insight-rule-name</i> </code> </p> <p>The ARN format of a dashboard is <code>arn:aws:cloudwatch::<i>account-id</i>:dashboard/<i>dashboard-name</i> </code> </p> <p>The ARN format of a metric stream is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:metric-stream/<i>metric-stream-name</i> </code> </p> <p>For more information about ARN format, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/list_amazoncloudwatch.html#amazoncloudwatch-resources-for-iam-policies\"> Resource Types Defined by Amazon CloudWatch</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         }
       }
     },
@@ -3025,7 +3113,7 @@
         },
         "TreatMissingData":{
           "shape":"TreatMissingData",
-          "documentation":"<p>Sets how this alarm is to handle missing data points. The valid values are <code>breaching</code>, <code>notBreaching</code>, <code>ignore</code>, and <code>missing</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html#alarms-and-missing-data\">Configuring how CloudWatch alarms treat missing data</a>.</p> <p>If this parameter is omitted, the default behavior of <code>missing</code> is used.</p>"
+          "documentation":"<p>Sets how this alarm is to handle missing data points. The valid values are <code>breaching</code>, <code>notBreaching</code>, <code>ignore</code>, and <code>missing</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html#alarms-and-missing-data\">Configuring how CloudWatch alarms treat missing data</a>.</p> <p>If this parameter is omitted, the default behavior of <code>missing</code> is used.</p> <note> <p>This parameter is not applicable to PromQL alarms.</p> </note>"
         },
         "EvaluateLowSampleCountPercentile":{
           "shape":"EvaluateLowSampleCountPercentile",
@@ -3046,6 +3134,14 @@
         "StateTransitionedTimestamp":{
           "shape":"Timestamp",
           "documentation":"<p>The date and time that the alarm's <code>StateValue</code> most recently changed.</p>"
+        },
+        "EvaluationCriteria":{
+          "shape":"EvaluationCriteria",
+          "documentation":"<p>The evaluation criteria for the alarm.</p>"
+        },
+        "EvaluationInterval":{
+          "shape":"EvaluationInterval",
+          "documentation":"<p>The frequency, in seconds, at which the alarm is evaluated.</p>"
         }
       },
       "documentation":"<p>The details about a metric alarm.</p>",
@@ -3078,7 +3174,9 @@
         "Metrics",
         "ThresholdMetricId",
         "EvaluationState",
-        "StateTransitionedTimestamp"
+        "StateTransitionedTimestamp",
+        "EvaluationCriteria",
+        "EvaluationInterval"
       ]
     },
     "MetricAlarms":{
@@ -3453,6 +3551,14 @@
       "pattern":"[^:].*"
     },
     "NextToken":{"type":"string"},
+    "OTelEnrichmentStatus":{
+      "type":"string",
+      "documentation":"<p>The status of OTel enrichment for the account.</p>",
+      "enum":[
+        "Running",
+        "Stopped"
+      ]
+    },
     "OutputFormat":{"type":"string"},
     "OwningAccounts":{
       "type":"list",
@@ -3479,6 +3585,11 @@
         }
       },
       "documentation":"<p>This array is empty if the API operation was successful for all the rules specified in the request. If the operation could not process one of the rules, the following data is returned for each of those rules.</p>"
+    },
+    "PendingPeriod":{
+      "type":"integer",
+      "max":86400,
+      "min":0
     },
     "Period":{
       "type":"integer",
@@ -3514,11 +3625,11 @@
         },
         "StartDate":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time after which the mute rule takes effect. If not specified, the mute rule takes effect immediately upon creation and the mutes are applied as per the schedule expression. This date and time is interpreted according to the schedule timezone, or UTC if no timezone is specified.</p>"
+          "documentation":"<p>The date and time after which the mute rule takes effect, specified as a timestamp in ISO 8601 format (for example, <code>2026-04-15T08:00:00Z</code>). If not specified, the mute rule takes effect immediately upon creation and the mutes are applied as per the schedule expression.</p>"
         },
         "ExpireDate":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time when the mute rule expires and is no longer evaluated. After this time, the rule status becomes EXPIRED and will no longer mute the targeted alarms. This date and time is interpreted according to the schedule timezone, or UTC if no timezone is specified.</p>"
+          "documentation":"<p>The date and time when the mute rule expires and is no longer evaluated, specified as a timestamp in ISO 8601 format (for example, <code>2026-12-31T23:59:59Z</code>). After this time, the rule status becomes EXPIRED and will no longer mute the targeted alarms.</p>"
         }
       }
     },
@@ -3638,6 +3749,10 @@
         "DashboardBody":{
           "shape":"DashboardBody",
           "documentation":"<p>The detailed information about the dashboard in JSON format, including the widgets to include and their location on the dashboard. This parameter is required.</p> <p>For more information about the syntax, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/CloudWatch-Dashboard-Body-Structure.html\">Dashboard Body Structure and Syntax</a>.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of key-value pairs to associate with the dashboard. You can associate as many as 50 tags with a dashboard.</p> <p>Tags can help you organize and categorize your dashboards. You can also use them to scope user permissions by granting a user permission to access or change only dashboards with certain tag values.</p> <p>You can use this parameter only when creating a new dashboard. If you specify <code>Tags</code> when updating an existing dashboard, the tag updates are ignored. To add or update tags on an existing dashboard, use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_TagResource.html\">TagResource</a>. To remove tags, use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_UntagResource.html\">UntagResource</a>.</p>"
         }
       }
     },
@@ -3704,11 +3819,7 @@
     },
     "PutMetricAlarmInput":{
       "type":"structure",
-      "required":[
-        "AlarmName",
-        "EvaluationPeriods",
-        "ComparisonOperator"
-      ],
+      "required":["AlarmName"],
       "members":{
         "AlarmName":{
           "shape":"AlarmName",
@@ -3736,7 +3847,7 @@
         },
         "MetricName":{
           "shape":"MetricName",
-          "documentation":"<p>The name for the metric associated with the alarm. For each <code>PutMetricAlarm</code> operation, you must specify either <code>MetricName</code> or a <code>Metrics</code> array.</p> <p>If you are creating an alarm based on a math expression, you cannot specify this parameter, or any of the <code>Namespace</code>, <code>Dimensions</code>, <code>Period</code>, <code>Unit</code>, <code>Statistic</code>, or <code>ExtendedStatistic</code> parameters. Instead, you specify all this information in the <code>Metrics</code> array.</p>"
+          "documentation":"<p>The name for the metric associated with the alarm. For each <code>PutMetricAlarm</code> operation, you must specify either <code>MetricName</code>, a <code>Metrics</code> array, or an <code>EvaluationCriteria</code>.</p> <p>If you are creating an alarm based on a math expression, you cannot specify this parameter, or any of the <code>Namespace</code>, <code>Dimensions</code>, <code>Period</code>, <code>Unit</code>, <code>Statistic</code>, or <code>ExtendedStatistic</code> parameters. Instead, you specify all this information in the <code>Metrics</code> array.</p>"
         },
         "Namespace":{
           "shape":"Namespace",
@@ -3780,7 +3891,7 @@
         },
         "TreatMissingData":{
           "shape":"TreatMissingData",
-          "documentation":"<p> Sets how this alarm is to handle missing data points. If <code>TreatMissingData</code> is omitted, the default behavior of <code>missing</code> is used. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html#alarms-and-missing-data\">Configuring How CloudWatch Alarms Treats Missing Data</a>.</p> <p>Valid Values: <code>breaching | notBreaching | ignore | missing</code> </p> <note> <p>Alarms that evaluate metrics in the <code>AWS/DynamoDB</code> namespace always <code>ignore</code> missing data even if you choose a different option for <code>TreatMissingData</code>. When an <code>AWS/DynamoDB</code> metric has missing data, alarms that evaluate that metric remain in their current state.</p> </note>"
+          "documentation":"<p> Sets how this alarm is to handle missing data points. If <code>TreatMissingData</code> is omitted, the default behavior of <code>missing</code> is used. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html#alarms-and-missing-data\">Configuring How CloudWatch Alarms Treats Missing Data</a>.</p> <p>Valid Values: <code>breaching | notBreaching | ignore | missing</code> </p> <note> <p>Alarms that evaluate metrics in the <code>AWS/DynamoDB</code> namespace always <code>ignore</code> missing data even if you choose a different option for <code>TreatMissingData</code>. When an <code>AWS/DynamoDB</code> metric has missing data, alarms that evaluate that metric remain in their current state.</p> </note> <note> <p>This parameter is not applicable to PromQL alarms.</p> </note>"
         },
         "EvaluateLowSampleCountPercentile":{
           "shape":"EvaluateLowSampleCountPercentile",
@@ -3788,7 +3899,7 @@
         },
         "Metrics":{
           "shape":"MetricDataQueries",
-          "documentation":"<p>An array of <code>MetricDataQuery</code> structures that enable you to create an alarm based on the result of a metric math expression. For each <code>PutMetricAlarm</code> operation, you must specify either <code>MetricName</code> or a <code>Metrics</code> array.</p> <p>Each item in the <code>Metrics</code> array either retrieves a metric or performs a math expression.</p> <p>One item in the <code>Metrics</code> array is the expression that the alarm watches. You designate this expression by setting <code>ReturnData</code> to true for this object in the array. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_MetricDataQuery.html\">MetricDataQuery</a>.</p> <p>If you use the <code>Metrics</code> parameter, you cannot include the <code>Namespace</code>, <code>MetricName</code>, <code>Dimensions</code>, <code>Period</code>, <code>Unit</code>, <code>Statistic</code>, or <code>ExtendedStatistic</code> parameters of <code>PutMetricAlarm</code> in the same operation. Instead, you retrieve the metrics you are using in your math expression as part of the <code>Metrics</code> array.</p>"
+          "documentation":"<p>An array of <code>MetricDataQuery</code> structures that enable you to create an alarm based on the result of a metric math expression. For each <code>PutMetricAlarm</code> operation, you must specify either <code>MetricName</code>, a <code>Metrics</code> array, or an <code>EvaluationCriteria</code>.</p> <p>Each item in the <code>Metrics</code> array either retrieves a metric or performs a math expression.</p> <p>One item in the <code>Metrics</code> array is the expression that the alarm watches. You designate this expression by setting <code>ReturnData</code> to true for this object in the array. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_MetricDataQuery.html\">MetricDataQuery</a>.</p> <p>If you use the <code>Metrics</code> parameter, you cannot include the <code>Namespace</code>, <code>MetricName</code>, <code>Dimensions</code>, <code>Period</code>, <code>Unit</code>, <code>Statistic</code>, or <code>ExtendedStatistic</code> parameters of <code>PutMetricAlarm</code> in the same operation. Instead, you retrieve the metrics you are using in your math expression as part of the <code>Metrics</code> array.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -3797,6 +3908,14 @@
         "ThresholdMetricId":{
           "shape":"MetricId",
           "documentation":"<p>If this is an alarm based on an anomaly detection model, make this value match the ID of the <code>ANOMALY_DETECTION_BAND</code> function.</p> <p>For an example of how to use this parameter, see the <b>Anomaly Detection Model Alarm</b> example on this page.</p> <p>If your alarm uses this parameter, it cannot have Auto Scaling actions.</p>"
+        },
+        "EvaluationCriteria":{
+          "shape":"EvaluationCriteria",
+          "documentation":"<p>The evaluation criteria for the alarm. For each <code>PutMetricAlarm</code> operation, you must specify either <code>MetricName</code>, a <code>Metrics</code> array, or an <code>EvaluationCriteria</code>.</p> <p>If you use the <code>EvaluationCriteria</code> parameter, you cannot include the <code>Namespace</code>, <code>MetricName</code>, <code>Dimensions</code>, <code>Period</code>, <code>Unit</code>, <code>Statistic</code>, <code>ExtendedStatistic</code>, <code>Metrics</code>, <code>Threshold</code>, <code>ComparisonOperator</code>, <code>ThresholdMetricId</code>, <code>EvaluationPeriods</code>, or <code>DatapointsToAlarm</code> parameters of <code>PutMetricAlarm</code> in the same operation. Instead, all evaluation parameters are defined within this structure.</p> <p>For an example of how to use this parameter, see the <b>PromQL alarm</b> example on this page.</p>"
+        },
+        "EvaluationInterval":{
+          "shape":"EvaluationInterval",
+          "documentation":"<p>The frequency, in seconds, at which the alarm is evaluated. Valid values are 10, 20, 30, and any multiple of 60.</p> <p>This parameter is required for alarms that use <code>EvaluationCriteria</code>, and cannot be specified for alarms configured with <code>MetricName</code> or <code>Metrics</code>.</p>"
         }
       }
     },
@@ -3879,6 +3998,11 @@
         }
       }
     },
+    "Query":{
+      "type":"string",
+      "max":10000,
+      "min":1
+    },
     "Range":{
       "type":"structure",
       "required":[
@@ -3904,6 +4028,11 @@
     "RecentlyActive":{
       "type":"string",
       "enum":["PT3H"]
+    },
+    "RecoveryPeriod":{
+      "type":"integer",
+      "max":86400,
+      "min":0
     },
     "ResourceId":{"type":"string"},
     "ResourceList":{
@@ -4087,6 +4216,14 @@
       "type":"structure",
       "members":{}
     },
+    "StartOTelEnrichmentInput":{
+      "type":"structure",
+      "members":{}
+    },
+    "StartOTelEnrichmentOutput":{
+      "type":"structure",
+      "members":{}
+    },
     "Stat":{"type":"string"},
     "StateReason":{
       "type":"string",
@@ -4173,6 +4310,14 @@
       "type":"structure",
       "members":{}
     },
+    "StopOTelEnrichmentInput":{
+      "type":"structure",
+      "members":{}
+    },
+    "StopOTelEnrichmentOutput":{
+      "type":"structure",
+      "members":{}
+    },
     "StorageResolution":{
       "type":"integer",
       "min":1
@@ -4219,7 +4364,7 @@
       "members":{
         "ResourceARN":{
           "shape":"AmazonResourceName",
-          "documentation":"<p>The ARN of the CloudWatch resource that you're adding tags to.</p> <p>The ARN format of an alarm is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:alarm:<i>alarm-name</i> </code> </p> <p>The ARN format of a Contributor Insights rule is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:insight-rule/<i>insight-rule-name</i> </code> </p> <p>For more information about ARN format, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/list_amazoncloudwatch.html#amazoncloudwatch-resources-for-iam-policies\"> Resource Types Defined by Amazon CloudWatch</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+          "documentation":"<p>The ARN of the CloudWatch resource that you're adding tags to.</p> <p>The ARN format of an alarm is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:alarm:<i>alarm-name</i> </code> </p> <p>The ARN format of a Contributor Insights rule is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:insight-rule/<i>insight-rule-name</i> </code> </p> <p>The ARN format of a dashboard is <code>arn:aws:cloudwatch::<i>account-id</i>:dashboard/<i>dashboard-name</i> </code> </p> <p>The ARN format of a metric stream is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:metric-stream/<i>metric-stream-name</i> </code> </p> <p>For more information about ARN format, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/list_amazoncloudwatch.html#amazoncloudwatch-resources-for-iam-policies\"> Resource Types Defined by Amazon CloudWatch</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -4267,7 +4412,7 @@
       "members":{
         "ResourceARN":{
           "shape":"AmazonResourceName",
-          "documentation":"<p>The ARN of the CloudWatch resource that you're removing tags from.</p> <p>The ARN format of an alarm is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:alarm:<i>alarm-name</i> </code> </p> <p>The ARN format of a Contributor Insights rule is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:insight-rule/<i>insight-rule-name</i> </code> </p> <p>For more information about ARN format, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/list_amazoncloudwatch.html#amazoncloudwatch-resources-for-iam-policies\"> Resource Types Defined by Amazon CloudWatch</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+          "documentation":"<p>The ARN of the CloudWatch resource that you're removing tags from.</p> <p>The ARN format of an alarm is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:alarm:<i>alarm-name</i> </code> </p> <p>The ARN format of a Contributor Insights rule is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:insight-rule/<i>insight-rule-name</i> </code> </p> <p>The ARN format of a dashboard is <code>arn:aws:cloudwatch::<i>account-id</i>:dashboard/<i>dashboard-name</i> </code> </p> <p>The ARN format of a metric stream is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:metric-stream/<i>metric-stream-name</i> </code> </p> <p>For more information about ARN format, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/list_amazoncloudwatch.html#amazoncloudwatch-resources-for-iam-policies\"> Resource Types Defined by Amazon CloudWatch</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         },
         "TagKeys":{
           "shape":"TagKeyList",

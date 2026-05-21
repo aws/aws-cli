@@ -106,6 +106,25 @@
       ],
       "documentation":"<p>Creates a new event destination in a configuration set.</p> <p>An event destination is a location where you send message events. The event options are Amazon CloudWatch, Amazon Data Firehose, or Amazon SNS. For example, when a message is delivered successfully, you can send information about that event to an event destination, or send notifications to endpoints that are subscribed to an Amazon SNS topic. </p> <p>You can only create one event destination at a time. You must provide a value for a single event destination using either <code>CloudWatchLogsDestination</code>, <code>KinesisFirehoseDestination</code> or <code>SnsDestination</code>. If an event destination isn't provided then an exception is returned.</p> <p>Each configuration set can contain between 0 and 5 event destinations. Each event destination can contain a reference to a single destination, such as a CloudWatch or Firehose destination.</p>"
     },
+    "CreateNotifyConfiguration":{
+      "name":"CreateNotifyConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateNotifyConfigurationRequest"},
+      "output":{"shape":"CreateNotifyConfigurationResult"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a new notify configuration for managed messaging. A notify configuration defines the settings for sending templated messages, including the display name, use case, enabled channels, and enabled countries.</p>"
+    },
     "CreateOptOutList":{
       "name":"CreateOptOutList",
       "http":{
@@ -160,6 +179,25 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Create a new protect configuration. By default all country rule sets for each capability are set to <code>ALLOW</code>. Update the country rule sets using <code>UpdateProtectConfigurationCountryRuleSet</code>. A protect configurations name is stored as a Tag with the key set to <code>Name</code> and value as the name of the protect configuration.</p>"
+    },
+    "CreateRcsAgent":{
+      "name":"CreateRcsAgent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateRcsAgentRequest"},
+      "output":{"shape":"CreateRcsAgentResult"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a new RCS agent for sending rich messages through the RCS channel. The RCS agent serves as an origination identity for sending RCS messages to your recipients.</p>"
     },
     "CreateRegistration":{
       "name":"CreateRegistration",
@@ -247,6 +285,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"},
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
@@ -372,6 +411,40 @@
       ],
       "documentation":"<p>Deletes an account-level monthly spending limit override for sending multimedia messages (MMS). Deleting a spend limit override will set the <code>EnforcedLimit</code> to equal the <code>MaxLimit</code>, which is controlled by Amazon Web Services. For more information on spend limits (quotas) see <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/quotas.html\">Quotas for Server Migration Service</a> in the <i>Server Migration Service User Guide</i>.</p>"
     },
+    "DeleteNotifyConfiguration":{
+      "name":"DeleteNotifyConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteNotifyConfigurationRequest"},
+      "output":{"shape":"DeleteNotifyConfigurationResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes an existing notify configuration.</p> <p>If deletion protection is enabled, an error is returned.</p>"
+    },
+    "DeleteNotifyMessageSpendLimitOverride":{
+      "name":"DeleteNotifyMessageSpendLimitOverride",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteNotifyMessageSpendLimitOverrideRequest"},
+      "output":{"shape":"DeleteNotifyMessageSpendLimitOverrideResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes an account-level monthly spending limit override for sending notify messages. Deleting a spend limit override will set the <code>EnforcedLimit</code> to equal the <code>MaxLimit</code>, which is controlled by Amazon Web Services. For more information on spend limits (quotas) see <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/quotas.html\">Quotas </a> in the <i>End User Messaging SMS User Guide</i>.</p>"
+    },
     "DeleteOptOutList":{
       "name":"DeleteOptOutList",
       "http":{
@@ -460,6 +533,24 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Permanently delete the protect configuration rule set number override.</p>"
+    },
+    "DeleteRcsAgent":{
+      "name":"DeleteRcsAgent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteRcsAgentRequest"},
+      "output":{"shape":"DeleteRcsAgentResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes an existing RCS agent. If deletion protection is enabled, an error is returned.</p>"
     },
     "DeleteRegistration":{
       "name":"DeleteRegistration",
@@ -648,6 +739,40 @@
       ],
       "documentation":"<p>Describes the specified keywords or all keywords on your origination phone number or pool.</p> <p>A keyword is a word that you can search for on a particular phone number or pool. It is also a specific word or phrase that an end user can send to your number to elicit a response, such as an informational message or a special offer. When your number receives a message that begins with a keyword, End User Messaging SMS responds with a customizable message.</p> <p>If you specify a keyword that isn't valid, an error is returned.</p>"
     },
+    "DescribeNotifyConfigurations":{
+      "name":"DescribeNotifyConfigurations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeNotifyConfigurationsRequest"},
+      "output":{"shape":"DescribeNotifyConfigurationsResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Describes the specified notify configurations or all notify configurations in your account.</p> <p>If you specify notify configuration IDs, the output includes information for only the specified notify configurations. If you specify filters, the output includes information for only those notify configurations that meet the filter criteria. If you don't specify notify configuration IDs or filters, the output includes information for all notify configurations.</p> <p>If you specify a notify configuration ID that isn't valid, an error is returned.</p>"
+    },
+    "DescribeNotifyTemplates":{
+      "name":"DescribeNotifyTemplates",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeNotifyTemplatesRequest"},
+      "output":{"shape":"DescribeNotifyTemplatesResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Describes the specified notify templates or all notify templates in your account.</p> <p>If you specify template IDs, the output includes information for only the specified notify templates. If you specify filters, the output includes information for only those notify templates that meet the filter criteria. If you don't specify template IDs or filters, the output includes information for all notify templates.</p> <p>If you specify a template ID that isn't valid, an error is returned.</p>"
+    },
     "DescribeOptOutLists":{
       "name":"DescribeOptOutLists",
       "http":{
@@ -732,6 +857,40 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Retrieves the protect configurations that match any of filters. If a filter isn’t provided then all protect configurations are returned.</p>"
+    },
+    "DescribeRcsAgentCountryLaunchStatus":{
+      "name":"DescribeRcsAgentCountryLaunchStatus",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeRcsAgentCountryLaunchStatusRequest"},
+      "output":{"shape":"DescribeRcsAgentCountryLaunchStatusResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the per-country launch status of an RCS agent, including carrier-level details for each country.</p>"
+    },
+    "DescribeRcsAgents":{
+      "name":"DescribeRcsAgents",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeRcsAgentsRequest"},
+      "output":{"shape":"DescribeRcsAgentsResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the specified RCS agents or all RCS agents associated with your Amazon Web Services account.</p> <p>If you specify RCS agent IDs, the output includes information for only the specified RCS agents. If you specify filters, the output includes information for only those RCS agents that meet the filter criteria. If you don't specify RCS agent IDs or filters, the output includes information for all RCS agents.</p>"
     },
     "DescribeRegistrationAttachments":{
       "name":"DescribeRegistrationAttachments",
@@ -987,6 +1146,22 @@
       ],
       "documentation":"<p>Retrieves the JSON text of the resource-based policy document attached to the End User Messaging SMS resource. A shared resource can be a Pool, Opt-out list, Sender Id, or Phone number.</p>"
     },
+    "ListNotifyCountries":{
+      "name":"ListNotifyCountries",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListNotifyCountriesRequest"},
+      "output":{"shape":"ListNotifyCountriesResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists countries that support notify messaging. You can optionally filter by channel, use case, or tier.</p>"
+    },
     "ListPoolOriginationIdentities":{
       "name":"ListPoolOriginationIdentities",
       "http":{
@@ -1120,6 +1295,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"},
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
@@ -1272,6 +1448,44 @@
       ],
       "documentation":"<p>Creates a new multimedia message (MMS) and sends it to a recipient's phone number. </p>"
     },
+    "SendNotifyTextMessage":{
+      "name":"SendNotifyTextMessage",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"SendNotifyTextMessageRequest"},
+      "output":{"shape":"SendNotifyTextMessageResult"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Sends a templated text message through a notify configuration to a recipient's phone number.</p>"
+    },
+    "SendNotifyVoiceMessage":{
+      "name":"SendNotifyVoiceMessage",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"SendNotifyVoiceMessageRequest"},
+      "output":{"shape":"SendNotifyVoiceMessageResult"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Sends a templated voice message through a notify configuration to a recipient's phone number.</p>"
+    },
     "SendTextMessage":{
       "name":"SendTextMessage",
       "http":{
@@ -1394,6 +1608,22 @@
       ],
       "documentation":"<p>Sets an account level monthly spend limit override for sending MMS messages. The requested spend limit must be less than or equal to the <code>MaxLimit</code>, which is set by Amazon Web Services. </p>"
     },
+    "SetNotifyMessageSpendLimitOverride":{
+      "name":"SetNotifyMessageSpendLimitOverride",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"SetNotifyMessageSpendLimitOverrideRequest"},
+      "output":{"shape":"SetNotifyMessageSpendLimitOverrideResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Sets an account level monthly spend limit override for sending notify messages. The requested spend limit must be less than or equal to the <code>MaxLimit</code>, which is set by Amazon Web Services. </p>"
+    },
     "SetTextMessageSpendLimitOverride":{
       "name":"SetTextMessageSpendLimitOverride",
       "http":{
@@ -1497,6 +1727,24 @@
       ],
       "documentation":"<p>Updates an existing event destination in a configuration set. You can update the IAM role ARN for CloudWatch Logs and Firehose. You can also enable or disable the event destination.</p> <p>You may want to update an event destination to change its matching event types or updating the destination resource ARN. You can't change an event destination's type between CloudWatch Logs, Firehose, and Amazon SNS.</p>"
     },
+    "UpdateNotifyConfiguration":{
+      "name":"UpdateNotifyConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateNotifyConfigurationRequest"},
+      "output":{"shape":"UpdateNotifyConfigurationResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates an existing notify configuration. You can update the default template, pool association, enabled channels, enabled countries, and deletion protection settings.</p>"
+    },
     "UpdatePhoneNumber":{
       "name":"UpdatePhoneNumber",
       "http":{
@@ -1566,6 +1814,24 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Update a country rule set to <code>ALLOW</code>, <code>BLOCK</code>, <code>MONITOR</code>, or <code>FILTER</code> messages to be sent to the specified destination counties. You can update one or multiple countries at a time. The updates are only applied to the specified NumberCapability type.</p>"
+    },
+    "UpdateRcsAgent":{
+      "name":"UpdateRcsAgent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateRcsAgentRequest"},
+      "output":{"shape":"UpdateRcsAgentResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates the configuration of an existing RCS agent. You can update the opt-out list, deletion protection, two-way messaging settings, and self-managed opt-outs configuration.</p>"
     },
     "UpdateSenderId":{
       "name":"UpdateSenderId",
@@ -1702,8 +1968,7 @@
       "type":"structure",
       "required":[
         "PoolId",
-        "OriginationIdentity",
-        "IsoCountryCode"
+        "OriginationIdentity"
       ],
       "members":{
         "PoolId":{
@@ -1716,7 +1981,7 @@
         },
         "IsoCountryCode":{
           "shape":"IsoCountryCode",
-          "documentation":"<p>The new two-character code, in ISO 3166-1 alpha-2 format, for the country or region of the origination identity.</p>"
+          "documentation":"<p>The new two-character code, in ISO 3166-1 alpha-2 format, for the country or region of the origination identity. This field is optional and is not required for origination identity types that are not country-specific, such as RCS agents.</p>"
         },
         "ClientToken":{
           "shape":"ClientToken",
@@ -1878,6 +2143,37 @@
           "documentation":"<p>Describes the type of phone number. Valid values are: MOBILE, LANDLINE, OTHER, and INVALID. Avoid sending SMS or voice messages to INVALID phone numbers, as these numbers are unlikely to belong to actual recipients.</p>"
         }
       }
+    },
+    "CarrierStatus":{
+      "type":"string",
+      "documentation":"<p>The carrier-level launch status.</p> <ul> <li> <p> <code>PENDING</code>: The carrier launch is pending.</p> </li> <li> <p> <code>ACTIVE</code>: The carrier launch is active.</p> </li> <li> <p> <code>REJECTED</code>: The carrier launch was rejected.</p> </li> </ul>",
+      "enum":[
+        "PENDING",
+        "ACTIVE",
+        "REJECTED"
+      ]
+    },
+    "CarrierStatusInformation":{
+      "type":"structure",
+      "required":[
+        "CarrierName",
+        "Status"
+      ],
+      "members":{
+        "CarrierName":{
+          "shape":"String",
+          "documentation":"<p>The name of the carrier.</p>"
+        },
+        "Status":{
+          "shape":"CarrierStatus",
+          "documentation":"<p>The launch status for this carrier.</p>"
+        }
+      },
+      "documentation":"<p>Contains carrier-level launch status details for an RCS agent within a country.</p>"
+    },
+    "CarrierStatusInformationList":{
+      "type":"list",
+      "member":{"shape":"CarrierStatusInformation"}
     },
     "ClientToken":{
       "type":"string",
@@ -2047,7 +2343,10 @@
         "PHONE_NUMBER_NOT_IN_REGISTRATION_REGION",
         "REGISTRATION_ALREADY_SUBMITTED",
         "REGISTRATION_NOT_COMPLETE",
+        "RESOURCE_ALREADY_ASSOCIATED",
         "SENDER_ID_ASSOCIATED_TO_POOL",
+        "RCS_AGENT_ASSOCIATED_TO_POOL",
+        "POOL_ASSOCIATED_TO_NOTIFY_CONFIGURATION",
         "RESOURCE_ALREADY_EXISTS",
         "RESOURCE_DELETION_NOT_ALLOWED",
         "RESOURCE_MODIFICATION_NOT_ALLOWED",
@@ -2062,7 +2361,9 @@
         "PROTECT_CONFIGURATION_ASSOCIATED_WITH_CONFIGURATION_SET",
         "PROTECT_CONFIGURATION_NOT_ASSOCIATED_WITH_CONFIGURATION_SET",
         "DESTINATION_COUNTRY_BLOCKED_BY_PROTECT_CONFIGURATION",
-        "DESTINATION_PHONE_NUMBER_BLOCKED_BY_PROTECT_NUMBER_OVERRIDE"
+        "DESTINATION_PHONE_NUMBER_BLOCKED_BY_PROTECT_NUMBER_OVERRIDE",
+        "RCS_AGENT_ALREADY_ASSOCIATED_TO_REGISTRATION_TYPE",
+        "NOTIFY_CONFIGURATION_NOT_ACTIVE"
       ]
     },
     "ContextKey":{
@@ -2083,6 +2384,82 @@
       "max":800,
       "min":1,
       "pattern":"(?!\\s)^[\\s\\S]+(?<!\\s)"
+    },
+    "CountryLaunchStatus":{
+      "type":"string",
+      "documentation":"<p>The per-country launch status of an RCS agent.</p> <ul> <li> <p> <code>CREATED</code>: The country launch has been created.</p> </li> <li> <p> <code>PENDING</code>: The country launch is pending.</p> </li> <li> <p> <code>PARTIAL</code>: The country launch is partially active.</p> </li> <li> <p> <code>ACTIVE</code>: The country launch is active.</p> </li> <li> <p> <code>REJECTED</code>: The country launch was rejected.</p> </li> </ul>",
+      "enum":[
+        "CREATED",
+        "PENDING",
+        "PARTIAL",
+        "ACTIVE",
+        "REJECTED"
+      ]
+    },
+    "CountryLaunchStatusFilter":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Values"
+      ],
+      "members":{
+        "Name":{
+          "shape":"CountryLaunchStatusFilterName",
+          "documentation":"<p>The name of the attribute to filter on.</p>"
+        },
+        "Values":{
+          "shape":"FilterValueList",
+          "documentation":"<p>An array values to filter for.</p>"
+        }
+      },
+      "documentation":"<p>The information for a country launch status that meets a specified criteria.</p>"
+    },
+    "CountryLaunchStatusFilterList":{
+      "type":"list",
+      "member":{"shape":"CountryLaunchStatusFilter"},
+      "max":20,
+      "min":0
+    },
+    "CountryLaunchStatusFilterName":{
+      "type":"string",
+      "documentation":"<p>The filter name for filtering country launch statuses. The available filter names are:</p> <ul> <li> <p> <code>country-launch-status</code>: Filter by country launch status.</p> </li> </ul>",
+      "enum":["country-launch-status"]
+    },
+    "CountryLaunchStatusInformation":{
+      "type":"structure",
+      "required":[
+        "IsoCountryCode",
+        "Status",
+        "RegistrationId",
+        "CarrierStatus"
+      ],
+      "members":{
+        "IsoCountryCode":{
+          "shape":"IsoCountryCode",
+          "documentation":"<p>The two-character code, in ISO 3166-1 alpha-2 format, for the country or region.</p>"
+        },
+        "Status":{
+          "shape":"CountryLaunchStatus",
+          "documentation":"<p>The launch status for this country.</p>"
+        },
+        "RcsPlatformId":{
+          "shape":"String",
+          "documentation":"<p>The RCS platform identifier for this country.</p>"
+        },
+        "RegistrationId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the registration associated with this country launch.</p>"
+        },
+        "CarrierStatus":{
+          "shape":"CarrierStatusInformationList",
+          "documentation":"<p>An array of CarrierStatusInformation objects containing carrier-level launch status details.</p>"
+        }
+      },
+      "documentation":"<p>Contains per-country launch status details for an RCS agent.</p>"
+    },
+    "CountryLaunchStatusInformationList":{
+      "type":"list",
+      "member":{"shape":"CountryLaunchStatusInformation"}
     },
     "CreateConfigurationSetRequest":{
       "type":"structure",
@@ -2180,6 +2557,130 @@
         }
       }
     },
+    "CreateNotifyConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "DisplayName",
+        "UseCase",
+        "EnabledChannels"
+      ],
+      "members":{
+        "DisplayName":{
+          "shape":"NotifyConfigurationDisplayName",
+          "documentation":"<p>The display name to associate with the notify configuration.</p>"
+        },
+        "UseCase":{
+          "shape":"NotifyConfigurationUseCase",
+          "documentation":"<p>The use case for the notify configuration.</p>"
+        },
+        "DefaultTemplateId":{
+          "shape":"NotifyTemplateId",
+          "documentation":"<p>The default template identifier to associate with the notify configuration. If specified, this template is used when sending messages without an explicit template identifier.</p>"
+        },
+        "PoolId":{
+          "shape":"PoolIdOrArn",
+          "documentation":"<p>The identifier of the pool to associate with the notify configuration.</p>"
+        },
+        "EnabledCountries":{
+          "shape":"IsoCountryCodeList",
+          "documentation":"<p>An array of two-character ISO country codes, in ISO 3166-1 alpha-2 format, that are enabled for the notify configuration.</p>"
+        },
+        "EnabledChannels":{
+          "shape":"NotifyEnabledChannelsList",
+          "documentation":"<p>An array of channels to enable for the notify configuration. Supported values include <code>SMS</code> and <code>VOICE</code>.</p>"
+        },
+        "DeletionProtectionEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>By default this is set to false. When set to true the notify configuration can't be deleted. You can change this value using the <a>UpdateNotifyConfiguration</a> action.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don't specify a client token, a randomly generated token is used for the request to ensure idempotency.</p>",
+          "idempotencyToken":true
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of tags (key and value pairs) associated with the notify configuration.</p>"
+        }
+      }
+    },
+    "CreateNotifyConfigurationResult":{
+      "type":"structure",
+      "required":[
+        "NotifyConfigurationArn",
+        "NotifyConfigurationId",
+        "DisplayName",
+        "UseCase",
+        "EnabledChannels",
+        "Tier",
+        "TierUpgradeStatus",
+        "Status",
+        "DeletionProtectionEnabled",
+        "CreatedTimestamp"
+      ],
+      "members":{
+        "NotifyConfigurationArn":{
+          "shape":"NotifyConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the notify configuration.</p>"
+        },
+        "NotifyConfigurationId":{
+          "shape":"NotifyConfigurationId",
+          "documentation":"<p>The unique identifier for the notify configuration.</p>"
+        },
+        "DisplayName":{
+          "shape":"NotifyConfigurationDisplayName",
+          "documentation":"<p>The display name associated with the notify configuration.</p>"
+        },
+        "UseCase":{
+          "shape":"NotifyConfigurationUseCase",
+          "documentation":"<p>The use case for the notify configuration.</p>"
+        },
+        "DefaultTemplateId":{
+          "shape":"NotifyTemplateId",
+          "documentation":"<p>The default template identifier associated with the notify configuration.</p>"
+        },
+        "PoolId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the pool associated with the notify configuration.</p>"
+        },
+        "EnabledCountries":{
+          "shape":"IsoCountryCodeList",
+          "documentation":"<p>An array of two-character ISO country codes, in ISO 3166-1 alpha-2 format, that are enabled for the notify configuration.</p>"
+        },
+        "EnabledChannels":{
+          "shape":"NotifyEnabledChannelsList",
+          "documentation":"<p>An array of channels enabled for the notify configuration. Supported values include <code>SMS</code> and <code>VOICE</code>.</p>"
+        },
+        "Tier":{
+          "shape":"NotifyConfigurationTier",
+          "documentation":"<p>The tier of the notify configuration.</p>"
+        },
+        "TierUpgradeStatus":{
+          "shape":"TierUpgradeStatus",
+          "documentation":"<p>The tier upgrade status of the notify configuration.</p>"
+        },
+        "Status":{
+          "shape":"NotifyConfigurationStatus",
+          "documentation":"<p>The current status of the notify configuration.</p>"
+        },
+        "RejectionReason":{
+          "shape":"String",
+          "documentation":"<p>The reason the notify configuration was rejected, if applicable.</p>"
+        },
+        "DeletionProtectionEnabled":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>When set to true deletion protection is enabled. By default this is set to false. </p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of tags (key and value pairs) associated with the notify configuration.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the notify configuration was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        }
+      }
+    },
     "CreateOptOutListRequest":{
       "type":"structure",
       "required":["OptOutListName"],
@@ -2224,7 +2725,6 @@
       "type":"structure",
       "required":[
         "OriginationIdentity",
-        "IsoCountryCode",
         "MessageType"
       ],
       "members":{
@@ -2234,7 +2734,7 @@
         },
         "IsoCountryCode":{
           "shape":"IsoCountryCode",
-          "documentation":"<p>The new two-character code, in ISO 3166-1 alpha-2 format, for the country or region of the new pool.</p>"
+          "documentation":"<p>The new two-character code, in ISO 3166-1 alpha-2 format, for the country or region of the new pool. This field is optional and is not required for origination identity types that are not country-specific, such as RCS agents.</p>"
         },
         "MessageType":{
           "shape":"MessageType",
@@ -2363,6 +2863,86 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>An array of key and value pair tags that are associated with the resource.</p>"
+        }
+      }
+    },
+    "CreateRcsAgentRequest":{
+      "type":"structure",
+      "members":{
+        "DeletionProtectionEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>By default this is set to false. When set to true the RCS agent can't be deleted. You can change this value using the <a>UpdateRcsAgent</a> action.</p>"
+        },
+        "OptOutListName":{
+          "shape":"OptOutListNameOrArn",
+          "documentation":"<p>The OptOutList to associate with the RCS agent. Valid values are either OptOutListName or OptOutListArn.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of tags (key and value pairs) associated with the RCS agent.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don't specify a client token, a randomly generated token is used for the request to ensure idempotency.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateRcsAgentResult":{
+      "type":"structure",
+      "required":[
+        "RcsAgentArn",
+        "RcsAgentId",
+        "Status",
+        "DeletionProtectionEnabled",
+        "CreatedTimestamp",
+        "SelfManagedOptOutsEnabled",
+        "TwoWayEnabled"
+      ],
+      "members":{
+        "RcsAgentArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the newly created RCS agent.</p>"
+        },
+        "RcsAgentId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the RCS agent.</p>"
+        },
+        "Status":{
+          "shape":"RcsAgentStatus",
+          "documentation":"<p>The current status of the RCS agent.</p>"
+        },
+        "DeletionProtectionEnabled":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>When set to true deletion protection is enabled. By default this is set to false.</p>"
+        },
+        "OptOutListName":{
+          "shape":"OptOutListName",
+          "documentation":"<p>The name of the OptOutList associated with the RCS agent.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the RCS agent was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        },
+        "SelfManagedOptOutsEnabled":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>By default this is set to false. When set to true you're responsible for responding to HELP and STOP requests. You're also responsible for tracking and honoring opt-out requests.</p>"
+        },
+        "TwoWayChannelArn":{
+          "shape":"TwoWayChannelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the two way channel.</p>"
+        },
+        "TwoWayChannelRole":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>An optional IAM Role Arn for a service to assume, to be able to post inbound SMS messages.</p>"
+        },
+        "TwoWayEnabled":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>By default this is set to false. When set to true you can receive incoming text messages from your end recipients.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of tags (key and value pairs) associated with the RCS agent.</p>"
         }
       }
     },
@@ -2595,6 +3175,10 @@
           "shape":"PhoneNumber",
           "documentation":"<p>The verified destination phone number, in E.164 format.</p>"
         },
+        "RcsAgentId":{
+          "shape":"RcsAgentIdOrArn",
+          "documentation":"<p>The unique identifier of the RCS agent to associate with the verified destination number. You can use either the RcsAgentId or RcsAgentArn.</p>"
+        },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>An array of tags (key and value pairs) to associate with the destination number.</p>"
@@ -2631,6 +3215,10 @@
         "Status":{
           "shape":"VerificationStatus",
           "documentation":"<p>The status of the verified destination phone number.</p> <ul> <li> <p> <code>PENDING</code>: The phone number hasn't been verified yet.</p> </li> <li> <p> <code>VERIFIED</code>: The phone number is verified and can receive messages.</p> </li> </ul>"
+        },
+        "RcsAgentId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the RCS agent associated with the verified destination number.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -2841,6 +3429,102 @@
       "members":{}
     },
     "DeleteMediaMessageSpendLimitOverrideResult":{
+      "type":"structure",
+      "members":{
+        "MonthlyLimit":{
+          "shape":"MonthlyLimit",
+          "documentation":"<p>The current monthly limit, in US dollars.</p>"
+        }
+      }
+    },
+    "DeleteNotifyConfigurationRequest":{
+      "type":"structure",
+      "required":["NotifyConfigurationId"],
+      "members":{
+        "NotifyConfigurationId":{
+          "shape":"NotifyConfigurationIdOrArn",
+          "documentation":"<p>The identifier of the notify configuration to delete. The NotifyConfigurationId can be found using the <a>DescribeNotifyConfigurations</a> operation.</p>"
+        }
+      }
+    },
+    "DeleteNotifyConfigurationResult":{
+      "type":"structure",
+      "required":[
+        "NotifyConfigurationArn",
+        "NotifyConfigurationId",
+        "DisplayName",
+        "UseCase",
+        "EnabledChannels",
+        "Tier",
+        "TierUpgradeStatus",
+        "Status",
+        "DeletionProtectionEnabled",
+        "CreatedTimestamp"
+      ],
+      "members":{
+        "NotifyConfigurationArn":{
+          "shape":"NotifyConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the notify configuration.</p>"
+        },
+        "NotifyConfigurationId":{
+          "shape":"NotifyConfigurationId",
+          "documentation":"<p>The unique identifier for the notify configuration.</p>"
+        },
+        "DisplayName":{
+          "shape":"NotifyConfigurationDisplayName",
+          "documentation":"<p>The display name associated with the notify configuration.</p>"
+        },
+        "UseCase":{
+          "shape":"NotifyConfigurationUseCase",
+          "documentation":"<p>The use case for the notify configuration.</p>"
+        },
+        "DefaultTemplateId":{
+          "shape":"NotifyTemplateId",
+          "documentation":"<p>The default template identifier associated with the notify configuration.</p>"
+        },
+        "PoolId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the pool associated with the notify configuration.</p>"
+        },
+        "EnabledCountries":{
+          "shape":"IsoCountryCodeList",
+          "documentation":"<p>An array of two-character ISO country codes, in ISO 3166-1 alpha-2 format, that are enabled for the notify configuration.</p>"
+        },
+        "EnabledChannels":{
+          "shape":"NotifyEnabledChannelsList",
+          "documentation":"<p>An array of channels enabled for the notify configuration. Supported values include <code>SMS</code> and <code>VOICE</code>.</p>"
+        },
+        "Tier":{
+          "shape":"NotifyConfigurationTier",
+          "documentation":"<p>The tier of the notify configuration.</p>"
+        },
+        "TierUpgradeStatus":{
+          "shape":"TierUpgradeStatus",
+          "documentation":"<p>The tier upgrade status of the notify configuration.</p>"
+        },
+        "Status":{
+          "shape":"NotifyConfigurationStatus",
+          "documentation":"<p>The current status of the notify configuration.</p>"
+        },
+        "RejectionReason":{
+          "shape":"String",
+          "documentation":"<p>The reason the notify configuration was rejected, if applicable.</p>"
+        },
+        "DeletionProtectionEnabled":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>When set to true deletion protection is enabled. By default this is set to false. </p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the notify configuration was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        }
+      }
+    },
+    "DeleteNotifyMessageSpendLimitOverrideRequest":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteNotifyMessageSpendLimitOverrideResult":{
       "type":"structure",
       "members":{
         "MonthlyLimit":{
@@ -3073,6 +3757,70 @@
         "ExpirationTimestamp":{
           "shape":"Timestamp",
           "documentation":"<p>The time when the resource-based policy was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        }
+      }
+    },
+    "DeleteRcsAgentRequest":{
+      "type":"structure",
+      "required":["RcsAgentId"],
+      "members":{
+        "RcsAgentId":{
+          "shape":"RcsAgentIdOrArn",
+          "documentation":"<p>The unique identifier of the RCS agent to delete. You can use either the RcsAgentId or RcsAgentArn.</p>"
+        }
+      }
+    },
+    "DeleteRcsAgentResult":{
+      "type":"structure",
+      "required":[
+        "RcsAgentArn",
+        "RcsAgentId",
+        "Status",
+        "CreatedTimestamp",
+        "DeletionProtectionEnabled",
+        "SelfManagedOptOutsEnabled",
+        "TwoWayEnabled"
+      ],
+      "members":{
+        "RcsAgentArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the deleted RCS agent.</p>"
+        },
+        "RcsAgentId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the deleted RCS agent.</p>"
+        },
+        "Status":{
+          "shape":"RcsAgentStatus",
+          "documentation":"<p>The current status of the RCS agent.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the RCS agent was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        },
+        "DeletionProtectionEnabled":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>When set to true deletion protection is enabled. By default this is set to false.</p>"
+        },
+        "OptOutListName":{
+          "shape":"OptOutListName",
+          "documentation":"<p>The name of the OptOutList that was associated with the deleted RCS agent.</p>"
+        },
+        "SelfManagedOptOutsEnabled":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>By default this is set to false. When set to true you're responsible for responding to HELP and STOP requests. You're also responsible for tracking and honoring opt-out requests.</p>"
+        },
+        "TwoWayChannelArn":{
+          "shape":"TwoWayChannelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the two way channel.</p>"
+        },
+        "TwoWayChannelRole":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>An optional IAM Role Arn for a service to assume, to be able to post inbound SMS messages.</p>"
+        },
+        "TwoWayEnabled":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>By default this is set to false. When set to true you can receive incoming text messages from your end recipients.</p>"
         }
       }
     },
@@ -3461,6 +4209,74 @@
         }
       }
     },
+    "DescribeNotifyConfigurationsRequest":{
+      "type":"structure",
+      "members":{
+        "NotifyConfigurationIds":{
+          "shape":"NotifyConfigurationIdList",
+          "documentation":"<p>An array of notify configuration IDs to describe.</p>"
+        },
+        "Filters":{
+          "shape":"NotifyConfigurationFilterList",
+          "documentation":"<p>An array of NotifyConfigurationFilter objects to filter the results on.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results. You don't need to supply a value for this field in the initial request.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per each request.</p>"
+        }
+      }
+    },
+    "DescribeNotifyConfigurationsResult":{
+      "type":"structure",
+      "members":{
+        "NotifyConfigurations":{
+          "shape":"NotifyConfigurationInformationList",
+          "documentation":"<p>An array of NotifyConfigurationInformation objects that contain the results.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results. If this field is empty then there are no more results.</p>"
+        }
+      }
+    },
+    "DescribeNotifyTemplatesRequest":{
+      "type":"structure",
+      "members":{
+        "TemplateIds":{
+          "shape":"NotifyTemplateIdList",
+          "documentation":"<p>An array of template IDs to describe.</p>"
+        },
+        "Filters":{
+          "shape":"NotifyTemplateFilterList",
+          "documentation":"<p>An array of NotifyTemplateFilter objects to filter the results on.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results. You don't need to supply a value for this field in the initial request.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per each request.</p>"
+        }
+      }
+    },
+    "DescribeNotifyTemplatesResult":{
+      "type":"structure",
+      "members":{
+        "NotifyTemplates":{
+          "shape":"NotifyTemplateInformationList",
+          "documentation":"<p>An array of NotifyTemplateInformation objects that contain the results.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results. If this field is empty then there are no more results.</p>"
+        }
+      }
+    },
     "DescribeOptOutListsRequest":{
       "type":"structure",
       "members":{
@@ -3649,6 +4465,95 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>The token to be used for the next set of paginated results. You don't need to supply a value for this field in the initial request.</p>"
+        }
+      }
+    },
+    "DescribeRcsAgentCountryLaunchStatusRequest":{
+      "type":"structure",
+      "required":["RcsAgentId"],
+      "members":{
+        "RcsAgentId":{
+          "shape":"RcsAgentIdOrArn",
+          "documentation":"<p>The unique identifier of the RCS agent. You can use either the RcsAgentId or RcsAgentArn.</p>"
+        },
+        "IsoCountryCodes":{
+          "shape":"IsoCountryCodeList",
+          "documentation":"<p>An array of two-character ISO country codes, in ISO 3166-1 alpha-2 format, to filter the results.</p>"
+        },
+        "Filters":{
+          "shape":"CountryLaunchStatusFilterList",
+          "documentation":"<p>An array of CountryLaunchStatusFilter objects to filter the results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per each request.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results. You don't need to supply a value for this field in the initial request.</p>"
+        }
+      }
+    },
+    "DescribeRcsAgentCountryLaunchStatusResult":{
+      "type":"structure",
+      "required":[
+        "RcsAgentId",
+        "RcsAgentArn"
+      ],
+      "members":{
+        "RcsAgentId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the RCS agent.</p>"
+        },
+        "RcsAgentArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the RCS agent.</p>"
+        },
+        "CountryLaunchStatus":{
+          "shape":"CountryLaunchStatusInformationList",
+          "documentation":"<p>An array of CountryLaunchStatusInformation objects that contain the per-country launch status details.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results. If this field is empty then there are no more results.</p>"
+        }
+      }
+    },
+    "DescribeRcsAgentsRequest":{
+      "type":"structure",
+      "members":{
+        "RcsAgentIds":{
+          "shape":"RcsAgentIdList",
+          "documentation":"<p>An array of unique identifiers for the RCS agents. This is an array of strings that can be either the RcsAgentId or RcsAgentArn.</p>"
+        },
+        "Owner":{
+          "shape":"Owner",
+          "documentation":"<p>Use <code>SELF</code> to filter the list of RCS agents to ones your account owns or use <code>SHARED</code> to filter on RCS agents shared with your account. The <code>Owner</code> and <code>RcsAgentIds</code> parameters can't be used at the same time.</p>"
+        },
+        "Filters":{
+          "shape":"RcsAgentFilterList",
+          "documentation":"<p>An array of RcsAgentFilter objects to filter the results.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results. You don't need to supply a value for this field in the initial request.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per each request.</p>"
+        }
+      }
+    },
+    "DescribeRcsAgentsResult":{
+      "type":"structure",
+      "members":{
+        "RcsAgents":{
+          "shape":"RcsAgentInformationList",
+          "documentation":"<p>An array of RcsAgentInformation objects that contain the details for the requested RCS agents.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results. If this field is empty then there are no more results.</p>"
         }
       }
     },
@@ -4099,8 +5004,7 @@
       "type":"structure",
       "required":[
         "PoolId",
-        "OriginationIdentity",
-        "IsoCountryCode"
+        "OriginationIdentity"
       ],
       "members":{
         "PoolId":{
@@ -4113,7 +5017,7 @@
         },
         "IsoCountryCode":{
           "shape":"IsoCountryCode",
-          "documentation":"<p>The two-character code, in ISO 3166-1 alpha-2 format, for the country or region. </p>"
+          "documentation":"<p>The two-character code, in ISO 3166-1 alpha-2 format, for the country or region. This field is optional and is not required for origination identity types that are not country-specific, such as RCS agents.</p>"
         },
         "ClientToken":{
           "shape":"ClientToken",
@@ -4479,6 +5383,12 @@
       "min":2,
       "pattern":"[A-Z]{2}"
     },
+    "IsoCountryCodeList":{
+      "type":"list",
+      "member":{"shape":"IsoCountryCode"},
+      "max":300,
+      "min":0
+    },
     "Keyword":{
       "type":"string",
       "max":30,
@@ -4595,6 +5505,44 @@
         "ZH_CN",
         "ZH_TW"
       ]
+    },
+    "ListNotifyCountriesRequest":{
+      "type":"structure",
+      "members":{
+        "Channels":{
+          "shape":"NotifyEnabledChannelsList",
+          "documentation":"<p>An array of channels to filter the results by.</p>"
+        },
+        "UseCases":{
+          "shape":"NotifyUseCaseList",
+          "documentation":"<p>An array of use cases to filter the results by.</p>"
+        },
+        "Tier":{
+          "shape":"NotifyConfigurationTier",
+          "documentation":"<p>The tier to filter the results by.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results. You don't need to supply a value for this field in the initial request.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per each request.</p>"
+        }
+      }
+    },
+    "ListNotifyCountriesResult":{
+      "type":"structure",
+      "members":{
+        "NotifyCountries":{
+          "shape":"NotifyCountryInformationList",
+          "documentation":"<p>An array of NotifyCountryInformation objects that contain the results.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results. If this field is empty then there are no more results.</p>"
+        }
+      }
     },
     "ListPoolOriginationIdentitiesRequest":{
       "type":"structure",
@@ -4860,18 +5808,406 @@
       "max":200,
       "min":1
     },
+    "NotifyConfigurationArn":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"arn:\\S+"
+    },
+    "NotifyConfigurationDisplayName":{
+      "type":"string",
+      "max":15,
+      "min":1,
+      "pattern":"[A-Za-z0-9_ -]+"
+    },
+    "NotifyConfigurationFilter":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Values"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NotifyConfigurationFilterName",
+          "documentation":"<p>The name of the attribute to filter on.</p>"
+        },
+        "Values":{
+          "shape":"FilterValueList",
+          "documentation":"<p>An array values to filter for.</p>"
+        }
+      },
+      "documentation":"<p>The information for notify configurations that meet a specified criteria.</p>"
+    },
+    "NotifyConfigurationFilterList":{
+      "type":"list",
+      "member":{"shape":"NotifyConfigurationFilter"},
+      "max":20,
+      "min":0
+    },
+    "NotifyConfigurationFilterName":{
+      "type":"string",
+      "documentation":"<p>The filter name for filtering notify configurations. The available filter names are:</p> <ul> <li> <p> <code>default-pool</code>: Filter by the default pool.</p> </li> <li> <p> <code>default-template</code>: Filter by the default template.</p> </li> <li> <p> <code>deletion-protection-enabled</code>: Filter by deletion protection status.</p> </li> <li> <p> <code>display-name</code>: Filter by display name.</p> </li> <li> <p> <code>enabled-channels</code>: Filter by enabled channels.</p> </li> <li> <p> <code>enabled-countries</code>: Filter by enabled countries.</p> </li> <li> <p> <code>status</code>: Filter by status.</p> </li> <li> <p> <code>tier-upgrade-status</code>: Filter by tier upgrade status.</p> </li> <li> <p> <code>use-case</code>: Filter by use case.</p> </li> </ul>",
+      "enum":[
+        "display-name",
+        "enabled-countries",
+        "enabled-channels",
+        "default-template",
+        "default-pool",
+        "use-case",
+        "status",
+        "deletion-protection-enabled",
+        "tier-upgrade-status"
+      ]
+    },
+    "NotifyConfigurationId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z0-9_-]+"
+    },
+    "NotifyConfigurationIdList":{
+      "type":"list",
+      "member":{"shape":"NotifyConfigurationIdOrArn"},
+      "max":5,
+      "min":0
+    },
+    "NotifyConfigurationIdOrArn":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[A-Za-z0-9_:/-]+"
+    },
+    "NotifyConfigurationInformation":{
+      "type":"structure",
+      "required":[
+        "NotifyConfigurationArn",
+        "NotifyConfigurationId",
+        "DisplayName",
+        "UseCase",
+        "EnabledChannels",
+        "Tier",
+        "TierUpgradeStatus",
+        "Status",
+        "DeletionProtectionEnabled",
+        "CreatedTimestamp"
+      ],
+      "members":{
+        "NotifyConfigurationArn":{
+          "shape":"NotifyConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the notify configuration.</p>"
+        },
+        "NotifyConfigurationId":{
+          "shape":"NotifyConfigurationId",
+          "documentation":"<p>The unique identifier for the notify configuration.</p>"
+        },
+        "DisplayName":{
+          "shape":"NotifyConfigurationDisplayName",
+          "documentation":"<p>The display name associated with the notify configuration.</p>"
+        },
+        "UseCase":{
+          "shape":"NotifyConfigurationUseCase",
+          "documentation":"<p>The use case for the notify configuration.</p>"
+        },
+        "DefaultTemplateId":{
+          "shape":"NotifyTemplateId",
+          "documentation":"<p>The default template identifier associated with the notify configuration.</p>"
+        },
+        "PoolId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the pool associated with the notify configuration.</p>"
+        },
+        "EnabledCountries":{
+          "shape":"IsoCountryCodeList",
+          "documentation":"<p>An array of two-character ISO country codes, in ISO 3166-1 alpha-2 format, that are enabled for the notify configuration.</p>"
+        },
+        "EnabledChannels":{
+          "shape":"NotifyEnabledChannelsList",
+          "documentation":"<p>An array of channels enabled for the notify configuration. Supported values include <code>SMS</code> and <code>VOICE</code>.</p>"
+        },
+        "Tier":{
+          "shape":"NotifyConfigurationTier",
+          "documentation":"<p>The tier of the notify configuration.</p>"
+        },
+        "TierUpgradeStatus":{
+          "shape":"TierUpgradeStatus",
+          "documentation":"<p>The tier upgrade status of the notify configuration.</p>"
+        },
+        "Status":{
+          "shape":"NotifyConfigurationStatus",
+          "documentation":"<p>The current status of the notify configuration.</p>"
+        },
+        "RejectionReason":{
+          "shape":"String",
+          "documentation":"<p>The reason the notify configuration was rejected, if applicable.</p>"
+        },
+        "DeletionProtectionEnabled":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>When set to true deletion protection is enabled. By default this is set to false. </p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the notify configuration was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        }
+      },
+      "documentation":"<p>The information for a notify configuration in an Amazon Web Services account.</p>"
+    },
+    "NotifyConfigurationInformationList":{
+      "type":"list",
+      "member":{"shape":"NotifyConfigurationInformation"},
+      "max":100,
+      "min":1
+    },
+    "NotifyConfigurationStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a notify configuration.</p> <ul> <li> <p> <code>PENDING</code> - The notify configuration is pending review.</p> </li> <li> <p> <code>ACTIVE</code> - The notify configuration is active and can be used.</p> </li> <li> <p> <code>REJECTED</code> - The notify configuration was rejected.</p> </li> <li> <p> <code>REQUIRES_VERIFICATION</code> - The notify configuration requires verification.</p> </li> </ul>",
+      "enum":[
+        "PENDING",
+        "ACTIVE",
+        "REJECTED",
+        "REQUIRES_VERIFICATION"
+      ]
+    },
+    "NotifyConfigurationTier":{
+      "type":"string",
+      "documentation":"<p>The tier of a notify configuration.</p> <ul> <li> <p> <code>BASIC</code> - Basic tier.</p> </li> <li> <p> <code>ADVANCED</code> - Advanced tier.</p> </li> </ul>",
+      "enum":[
+        "BASIC",
+        "ADVANCED"
+      ]
+    },
+    "NotifyConfigurationTierList":{
+      "type":"list",
+      "member":{"shape":"NotifyConfigurationTier"},
+      "max":2,
+      "min":1
+    },
+    "NotifyConfigurationUseCase":{
+      "type":"string",
+      "documentation":"<p>The use case for a notify configuration.</p> <ul> <li> <p> <code>CODE_VERIFICATION</code> - Code verification use case.</p> </li> </ul>",
+      "enum":["CODE_VERIFICATION"]
+    },
+    "NotifyCountryInformation":{
+      "type":"structure",
+      "required":[
+        "IsoCountryCode",
+        "CountryName",
+        "SupportedChannels",
+        "SupportedUseCases",
+        "SupportedTiers",
+        "CustomerOwnedIdentityRequired"
+      ],
+      "members":{
+        "IsoCountryCode":{
+          "shape":"IsoCountryCode",
+          "documentation":"<p>The two-character code, in ISO 3166-1 alpha-2 format, for the country or region.</p>"
+        },
+        "CountryName":{
+          "shape":"String",
+          "documentation":"<p>The name of the country.</p>"
+        },
+        "SupportedChannels":{
+          "shape":"NotifyEnabledChannelsList",
+          "documentation":"<p>An array of supported channels for the country. Supported values include <code>SMS</code> and <code>VOICE</code>.</p>"
+        },
+        "SupportedUseCases":{
+          "shape":"NotifyUseCaseList",
+          "documentation":"<p>An array of supported use cases for the country.</p>"
+        },
+        "SupportedTiers":{
+          "shape":"NotifyTierList",
+          "documentation":"<p>An array of supported tiers for the country.</p>"
+        },
+        "CustomerOwnedIdentityRequired":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>Whether a customer-owned identity is required to send notify messages to this country.</p>"
+        }
+      },
+      "documentation":"<p>The information for a country that supports notify messaging.</p>"
+    },
+    "NotifyCountryInformationList":{
+      "type":"list",
+      "member":{"shape":"NotifyCountryInformation"},
+      "max":300,
+      "min":0
+    },
+    "NotifyEnabledChannelsList":{
+      "type":"list",
+      "member":{"shape":"NumberCapability"},
+      "max":4,
+      "min":1
+    },
+    "NotifyLanguageCode":{
+      "type":"string",
+      "max":5,
+      "min":2,
+      "pattern":"[a-z]{2}(-[A-Z]{2})?"
+    },
+    "NotifyPoolIdOrUnset":{
+      "type":"string",
+      "documentation":"<p>A pool identifier (ID or ARN) or the special value UNSET_DEFAULT_POOL_FOR_NOTIFY. Pass UNSET_DEFAULT_POOL_FOR_NOTIFY to clear the default pool from a NotifyConfiguration. This shape is used exclusively in UpdateNotifyConfigurationRequest.</p>",
+      "max":256,
+      "min":1,
+      "pattern":"([A-Za-z0-9_:/-]+|UNSET_DEFAULT_POOL_FOR_NOTIFY)"
+    },
+    "NotifyTemplateFilter":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Values"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NotifyTemplateFilterName",
+          "documentation":"<p>The name of the attribute to filter on.</p>"
+        },
+        "Values":{
+          "shape":"FilterValueList",
+          "documentation":"<p>An array values to filter for.</p>"
+        }
+      },
+      "documentation":"<p>The information for notify templates that meet a specified criteria.</p>"
+    },
+    "NotifyTemplateFilterList":{
+      "type":"list",
+      "member":{"shape":"NotifyTemplateFilter"},
+      "max":20,
+      "min":0
+    },
+    "NotifyTemplateFilterName":{
+      "type":"string",
+      "documentation":"<p>The filter name for filtering notify templates. The available filter names are:</p> <ul> <li> <p> <code>channels</code>: Filter by channels.</p> </li> <li> <p> <code>language-code</code>: Filter by language code.</p> </li> <li> <p> <code>supported-countries</code>: Filter by supported countries.</p> </li> <li> <p> <code>supported-voice-ids</code>: Filter by supported voice IDs.</p> </li> <li> <p> <code>template-type</code>: Filter by template type.</p> </li> <li> <p> <code>tier-access</code>: Filter by tier access.</p> </li> </ul>",
+      "enum":[
+        "template-type",
+        "channels",
+        "tier-access",
+        "supported-countries",
+        "language-code",
+        "supported-voice-ids"
+      ]
+    },
+    "NotifyTemplateId":{
+      "type":"string",
+      "documentation":"<p>Template identifier for notify templates. In UpdateNotifyConfiguration, pass UNSET_DEFAULT_TEMPLATE to clear the default template. The UNSET_DEFAULT_TEMPLATE value is only accepted by UpdateNotifyConfiguration.</p>",
+      "max":256,
+      "min":0,
+      "pattern":"([A-Za-z0-9_-]*|UNSET_DEFAULT_TEMPLATE)"
+    },
+    "NotifyTemplateIdList":{
+      "type":"list",
+      "member":{"shape":"NotifyTemplateId"},
+      "max":10,
+      "min":1
+    },
+    "NotifyTemplateInformation":{
+      "type":"structure",
+      "required":[
+        "TemplateId",
+        "Version",
+        "TemplateType",
+        "Channels",
+        "CreatedTimestamp"
+      ],
+      "members":{
+        "TemplateId":{
+          "shape":"NotifyTemplateId",
+          "documentation":"<p>The unique identifier for the template.</p>"
+        },
+        "Version":{
+          "shape":"NotifyTemplateVersion",
+          "documentation":"<p>The version of the template.</p>"
+        },
+        "TemplateType":{
+          "shape":"NotifyTemplateType",
+          "documentation":"<p>The type of the template.</p>"
+        },
+        "Channels":{
+          "shape":"NumberCapabilityList",
+          "documentation":"<p>The channels for the template. Supported values are <code>SMS</code> and <code>VOICE</code>.</p>"
+        },
+        "TierAccess":{
+          "shape":"NotifyConfigurationTierList",
+          "documentation":"<p>The tier access level for the template.</p>"
+        },
+        "Status":{
+          "shape":"NotifyTemplateStatus",
+          "documentation":"<p>The current status of the template.</p>"
+        },
+        "SupportedCountries":{
+          "shape":"IsoCountryCodeList",
+          "documentation":"<p>An array of supported country codes for the template.</p>"
+        },
+        "LanguageCode":{
+          "shape":"NotifyLanguageCode",
+          "documentation":"<p>The language code for the template.</p>"
+        },
+        "Content":{
+          "shape":"TemplateContent",
+          "documentation":"<p>The content of the template.</p>"
+        },
+        "Variables":{
+          "shape":"TemplateVariablesMap",
+          "documentation":"<p>An array of template variable metadata for the template.</p>"
+        },
+        "SupportedVoiceIds":{
+          "shape":"VoiceIdList",
+          "documentation":"<p>An array of supported voice IDs for voice templates.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the notify template was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        }
+      },
+      "documentation":"<p>The information for a system-managed notify template in an Amazon Web Services account.</p>"
+    },
+    "NotifyTemplateInformationList":{
+      "type":"list",
+      "member":{"shape":"NotifyTemplateInformation"},
+      "max":100,
+      "min":0
+    },
+    "NotifyTemplateStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a notify template.</p> <ul> <li> <p> <code>ACTIVE</code> - The template is active and available for use.</p> </li> <li> <p> <code>INACTIVE</code> - The template is inactive.</p> </li> </ul>",
+      "enum":[
+        "ACTIVE",
+        "INACTIVE"
+      ]
+    },
+    "NotifyTemplateType":{
+      "type":"string",
+      "documentation":"<p>The type of a notify template.</p> <ul> <li> <p> <code>OTP_VERIFICATION</code> - OTP verification template type.</p> </li> </ul>",
+      "enum":["OTP_VERIFICATION"]
+    },
+    "NotifyTemplateVersion":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "NotifyTierList":{
+      "type":"list",
+      "member":{"shape":"NotifyConfigurationTier"},
+      "max":2,
+      "min":1
+    },
+    "NotifyUseCaseList":{
+      "type":"list",
+      "member":{"shape":"NotifyConfigurationUseCase"},
+      "max":4,
+      "min":1
+    },
     "NumberCapability":{
       "type":"string",
       "enum":[
         "SMS",
         "VOICE",
-        "MMS"
+        "MMS",
+        "RCS"
       ]
     },
     "NumberCapabilityList":{
       "type":"list",
       "member":{"shape":"NumberCapability"},
-      "max":3,
+      "max":4,
       "min":1
     },
     "NumberStatus":{
@@ -5019,7 +6355,7 @@
         },
         "IsoCountryCode":{
           "shape":"IsoCountryCode",
-          "documentation":"<p>The two-character code, in ISO 3166-1 alpha-2 format, for the country or region. </p>"
+          "documentation":"<p>The two-character code, in ISO 3166-1 alpha-2 format, for the country or region. This field is optional and may not be present for origination identity types that are not country-specific, such as RCS agents.</p>"
         },
         "NumberCapabilities":{
           "shape":"NumberCapabilityList",
@@ -5268,8 +6604,8 @@
     "PoolIdOrArn":{
       "type":"string",
       "max":256,
-      "min":1,
-      "pattern":"[A-Za-z0-9_:/-]+"
+      "min":0,
+      "pattern":"[A-Za-z0-9_:/-]*"
     },
     "PoolInformation":{
       "type":"structure",
@@ -5877,6 +7213,133 @@
         }
       }
     },
+    "RcsAgentFilter":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Values"
+      ],
+      "members":{
+        "Name":{
+          "shape":"RcsAgentFilterName",
+          "documentation":"<p>The name of the attribute to filter on.</p>"
+        },
+        "Values":{
+          "shape":"FilterValueList",
+          "documentation":"<p>An array values to filter for.</p>"
+        }
+      },
+      "documentation":"<p>The information for an RCS agent that meets a specified criteria.</p>"
+    },
+    "RcsAgentFilterList":{
+      "type":"list",
+      "member":{"shape":"RcsAgentFilter"},
+      "max":20,
+      "min":0
+    },
+    "RcsAgentFilterName":{
+      "type":"string",
+      "documentation":"<p>The filter name for filtering RCS agents. The available filter names are:</p> <ul> <li> <p> <code>deletion-protection-enabled</code>: Filter by deletion protection status.</p> </li> <li> <p> <code>opt-out-list-name</code>: Filter by the opt-out list name.</p> </li> <li> <p> <code>self-managed-opt-outs-enabled</code>: Filter by self-managed opt-outs status.</p> </li> <li> <p> <code>status</code>: Filter by RCS agent status.</p> </li> <li> <p> <code>two-way-channel-arn</code>: Filter by the two-way channel ARN.</p> </li> <li> <p> <code>two-way-enabled</code>: Filter by two-way enabled status.</p> </li> </ul>",
+      "enum":[
+        "status",
+        "two-way-enabled",
+        "self-managed-opt-outs-enabled",
+        "opt-out-list-name",
+        "deletion-protection-enabled",
+        "two-way-channel-arn"
+      ]
+    },
+    "RcsAgentIdList":{
+      "type":"list",
+      "member":{"shape":"RcsAgentIdOrArn"},
+      "max":5,
+      "min":0
+    },
+    "RcsAgentIdOrArn":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[A-Za-z0-9_:/-]+"
+    },
+    "RcsAgentInformation":{
+      "type":"structure",
+      "required":[
+        "RcsAgentArn",
+        "RcsAgentId",
+        "Status",
+        "CreatedTimestamp",
+        "DeletionProtectionEnabled",
+        "SelfManagedOptOutsEnabled",
+        "TwoWayEnabled"
+      ],
+      "members":{
+        "RcsAgentArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the RCS agent.</p>"
+        },
+        "RcsAgentId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the RCS agent.</p>"
+        },
+        "Status":{
+          "shape":"RcsAgentStatus",
+          "documentation":"<p>The current status of the RCS agent.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the RCS agent was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        },
+        "DeletionProtectionEnabled":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>When set to true the RCS agent can't be deleted.</p>"
+        },
+        "OptOutListName":{
+          "shape":"OptOutListName",
+          "documentation":"<p>The name of the OptOutList associated with the RCS agent.</p>"
+        },
+        "SelfManagedOptOutsEnabled":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>When set to true you're responsible for responding to HELP and STOP requests. You're also responsible for tracking and honoring opt-out requests.</p>"
+        },
+        "TwoWayChannelArn":{
+          "shape":"TwoWayChannelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the two way channel.</p>"
+        },
+        "TwoWayChannelRole":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>An optional IAM Role Arn for a service to assume, to be able to post inbound SMS messages.</p>"
+        },
+        "TwoWayEnabled":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>When set to true you can receive incoming text messages from your end recipients using the TwoWayChannelArn.</p>"
+        },
+        "PoolId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the pool associated with the RCS agent.</p>"
+        },
+        "TestingAgent":{
+          "shape":"TestingAgentInformation",
+          "documentation":"<p>The testing agent information associated with the RCS agent.</p>"
+        }
+      },
+      "documentation":"<p>The information for an RCS agent in an Amazon Web Services account.</p>"
+    },
+    "RcsAgentInformationList":{
+      "type":"list",
+      "member":{"shape":"RcsAgentInformation"}
+    },
+    "RcsAgentStatus":{
+      "type":"string",
+      "documentation":"<p>The current status of the RCS agent.</p> <ul> <li> <p> <code>CREATED</code>: The RCS agent has been created.</p> </li> <li> <p> <code>PENDING</code>: The RCS agent is pending review.</p> </li> <li> <p> <code>TESTING</code>: The RCS agent is in testing.</p> </li> <li> <p> <code>PARTIAL</code>: The RCS agent is partially active.</p> </li> <li> <p> <code>ACTIVE</code>: The RCS agent is active and available for use.</p> </li> <li> <p> <code>DELETED</code>: The RCS agent has been deleted.</p> </li> </ul>",
+      "enum":[
+        "CREATED",
+        "PENDING",
+        "TESTING",
+        "PARTIAL",
+        "ACTIVE",
+        "DELETED"
+      ]
+    },
     "RegistrationAssociationBehavior":{
       "type":"string",
       "enum":[
@@ -6019,6 +7482,10 @@
         "CreatedTimestamp":{
           "shape":"Timestamp",
           "documentation":"<p>The time when the registration attachment was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        },
+        "AttachmentUrl":{
+          "shape":"String",
+          "documentation":"<p>The URL to the document that's associated with the registration attachment.</p>"
         }
       },
       "documentation":"<p>Provides information on the specified registration attachments.</p>"
@@ -6182,7 +7649,7 @@
         },
         "Feedback":{
           "shape":"String",
-          "documentation":"<p>Feedback provided for this specific field during the registration review process. This may include validation errors, suggestions for improvement, or additional requirements.</p>"
+          "documentation":"<p>Generative AI feedback information provided for this specific field during the registration review process. This may include validation errors, suggestions for improvement, or additional requirements.</p>"
         }
       },
       "documentation":"<p>Provides the values of the specified field.</p>"
@@ -6505,7 +7972,7 @@
         },
         "Feedback":{
           "shape":"String",
-          "documentation":"<p>Feedback information provided during the registration review process. This includes comments, suggestions, or additional requirements.</p>"
+          "documentation":"<p>Generative AI feedback information provided during the registration review process. This includes comments, suggestions, or additional requirements.</p>"
         }
       },
       "documentation":"<p>Provides information about the specified version of the registration.</p>"
@@ -6538,7 +8005,8 @@
         "DISCARDED",
         "DENIED",
         "REVOKED",
-        "ARCHIVED"
+        "ARCHIVED",
+        "REQUIRES_OFFLINE_REVIEW"
       ]
     },
     "RegistrationVersionStatusHistory":{
@@ -6984,6 +8452,7 @@
     },
     "ResourceType":{
       "type":"string",
+      "documentation":"<p>The type of resource.</p> <ul> <li> <p> <code>phone-number</code>: A phone number resource.</p> </li> <li> <p> <code>sender-id</code>: A sender ID resource.</p> </li> <li> <p> <code>rcs-agent</code>: An RCS agent resource.</p> </li> </ul>",
       "enum":[
         "account",
         "phone-number",
@@ -6998,9 +8467,12 @@
         "registration-attachment",
         "verified-destination-number",
         "protect-configuration",
+        "notify-configuration",
+        "notify-template",
         "message-template",
         "policy",
-        "message"
+        "message",
+        "rcs-agent"
       ]
     },
     "SectionPath":{
@@ -7178,6 +8650,136 @@
         "MessageId":{
           "shape":"String",
           "documentation":"<p>The unique identifier for the message.</p>"
+        }
+      }
+    },
+    "SendNotifyTextMessageRequest":{
+      "type":"structure",
+      "required":[
+        "NotifyConfigurationId",
+        "DestinationPhoneNumber",
+        "TemplateVariables"
+      ],
+      "members":{
+        "NotifyConfigurationId":{
+          "shape":"NotifyConfigurationIdOrArn",
+          "documentation":"<p>The unique identifier of the notify configuration to use for sending the message. This can be either the NotifyConfigurationId or NotifyConfigurationArn.</p>"
+        },
+        "DestinationPhoneNumber":{
+          "shape":"PhoneNumber",
+          "documentation":"<p>The destination phone number in E.164 format.</p>"
+        },
+        "TemplateId":{
+          "shape":"NotifyTemplateId",
+          "documentation":"<p>The unique identifier of the template to use for the message.</p>"
+        },
+        "TemplateVariables":{
+          "shape":"TemplateVariableSubstitutionMap",
+          "documentation":"<p>A map of template variable names and their values. All variable values are passed as strings regardless of the declared variable type. For example, pass <code>INTEGER</code> values as <code>\"42\"</code> and <code>BOOLEAN</code> values as <code>\"true\"</code> or <code>\"false\"</code>.</p>"
+        },
+        "TimeToLive":{
+          "shape":"TimeToLive",
+          "documentation":"<p>How long the text message is valid for, in seconds. By default this is 72 hours.</p>"
+        },
+        "Context":{
+          "shape":"ContextMap",
+          "documentation":"<p>You can specify custom data in this field. If you do, that data is logged to the event destination.</p>"
+        },
+        "ConfigurationSetName":{
+          "shape":"ConfigurationSetNameOrArn",
+          "documentation":"<p>The name of the configuration set to use. This can be either the ConfigurationSetName or ConfigurationSetArn.</p>"
+        },
+        "DryRun":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>When set to true, the message is checked and validated, but isn't sent to the end recipient.</p>"
+        },
+        "MessageFeedbackEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Set to true to enable message feedback for the message. When a user receives the message you need to update the message status using <a>PutMessageFeedback</a>.</p>"
+        }
+      }
+    },
+    "SendNotifyTextMessageResult":{
+      "type":"structure",
+      "members":{
+        "MessageId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the message.</p>"
+        },
+        "TemplateId":{
+          "shape":"NotifyTemplateId",
+          "documentation":"<p>The unique identifier of the template used for the message.</p>"
+        },
+        "ResolvedMessageBody":{
+          "shape":"String",
+          "documentation":"<p>The message body after template variable substitution has been applied.</p>"
+        }
+      }
+    },
+    "SendNotifyVoiceMessageRequest":{
+      "type":"structure",
+      "required":[
+        "NotifyConfigurationId",
+        "DestinationPhoneNumber",
+        "TemplateVariables"
+      ],
+      "members":{
+        "NotifyConfigurationId":{
+          "shape":"NotifyConfigurationIdOrArn",
+          "documentation":"<p>The unique identifier of the notify configuration to use for sending the message. This can be either the NotifyConfigurationId or NotifyConfigurationArn.</p>"
+        },
+        "DestinationPhoneNumber":{
+          "shape":"PhoneNumber",
+          "documentation":"<p>The destination phone number in E.164 format.</p>"
+        },
+        "TemplateId":{
+          "shape":"NotifyTemplateId",
+          "documentation":"<p>The unique identifier of the template to use for the message.</p>"
+        },
+        "TemplateVariables":{
+          "shape":"TemplateVariableSubstitutionMap",
+          "documentation":"<p>A map of template variable names and their values. All variable values are passed as strings regardless of the declared variable type. For example, pass <code>INTEGER</code> values as <code>\"42\"</code> and <code>BOOLEAN</code> values as <code>\"true\"</code> or <code>\"false\"</code>.</p>"
+        },
+        "VoiceId":{
+          "shape":"VoiceId",
+          "documentation":"<p>The voice ID to use for the voice message.</p>"
+        },
+        "TimeToLive":{
+          "shape":"TimeToLive",
+          "documentation":"<p>How long the voice message is valid for, in seconds. By default this is 72 hours.</p>"
+        },
+        "Context":{
+          "shape":"ContextMap",
+          "documentation":"<p>You can specify custom data in this field. If you do, that data is logged to the event destination.</p>"
+        },
+        "ConfigurationSetName":{
+          "shape":"ConfigurationSetNameOrArn",
+          "documentation":"<p>The name of the configuration set to use. This can be either the ConfigurationSetName or ConfigurationSetArn.</p>"
+        },
+        "DryRun":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>When set to true, the message is checked and validated, but isn't sent to the end recipient.</p>"
+        },
+        "MessageFeedbackEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Set to true to enable message feedback for the message. When a user receives the message you need to update the message status using <a>PutMessageFeedback</a>.</p>"
+        }
+      }
+    },
+    "SendNotifyVoiceMessageResult":{
+      "type":"structure",
+      "members":{
+        "MessageId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the message.</p>"
+        },
+        "TemplateId":{
+          "shape":"NotifyTemplateId",
+          "documentation":"<p>The unique identifier of the template used for the message.</p>"
+        },
+        "ResolvedMessageBody":{
+          "shape":"String",
+          "documentation":"<p>The message body after template variable substitution has been applied.</p>"
         }
       }
     },
@@ -7453,17 +9055,21 @@
         "ASSOCIATIONS_PER_REGISTRATION",
         "CONFIGURATION_SETS_PER_ACCOUNT",
         "DAILY_DESTINATION_CALL_LIMIT",
+        "DAILY_NOTIFY_TIER_MESSAGE_LIMIT",
         "EVENT_DESTINATIONS_PER_CONFIGURATION_SET",
         "KEYWORDS_PER_PHONE_NUMBER",
         "KEYWORDS_PER_POOL",
         "MONTHLY_SPEND_LIMIT_REACHED_FOR_MEDIA",
+        "MONTHLY_SPEND_LIMIT_REACHED_FOR_NOTIFY",
         "MONTHLY_SPEND_LIMIT_REACHED_FOR_TEXT",
         "MONTHLY_SPEND_LIMIT_REACHED_FOR_VOICE",
+        "NOTIFY_CONFIGURATIONS_PER_ACCOUNT",
         "OPT_OUT_LISTS_PER_ACCOUNT",
         "ORIGINATION_IDENTITIES_PER_POOL",
         "PHONE_NUMBERS_PER_ACCOUNT",
         "PHONE_NUMBERS_PER_REGISTRATION",
         "POOLS_PER_ACCOUNT",
+        "RCS_AGENTS_PER_ACCOUNT",
         "REGISTRATION_ATTACHMENTS_CREATED_PER_DAY",
         "REGISTRATION_ATTACHMENTS_PER_ACCOUNT",
         "REGISTRATION_VERSIONS_CREATED_PER_DAY",
@@ -7623,6 +9229,25 @@
         }
       }
     },
+    "SetNotifyMessageSpendLimitOverrideRequest":{
+      "type":"structure",
+      "required":["MonthlyLimit"],
+      "members":{
+        "MonthlyLimit":{
+          "shape":"MonthlyLimit",
+          "documentation":"<p>The new monthly limit to enforce on notify messages.</p>"
+        }
+      }
+    },
+    "SetNotifyMessageSpendLimitOverrideResult":{
+      "type":"structure",
+      "members":{
+        "MonthlyLimit":{
+          "shape":"MonthlyLimit",
+          "documentation":"<p>The current monthly limit, in US dollars.</p>"
+        }
+      }
+    },
     "SetTextMessageSpendLimitOverrideRequest":{
       "type":"structure",
       "required":["MonthlyLimit"],
@@ -7715,7 +9340,8 @@
       "enum":[
         "TEXT_MESSAGE_MONTHLY_SPEND_LIMIT",
         "VOICE_MESSAGE_MONTHLY_SPEND_LIMIT",
-        "MEDIA_MESSAGE_MONTHLY_SPEND_LIMIT"
+        "MEDIA_MESSAGE_MONTHLY_SPEND_LIMIT",
+        "NOTIFY_MESSAGE_MONTHLY_SPEND_LIMIT"
       ]
     },
     "String":{"type":"string"},
@@ -7873,6 +9499,132 @@
       "min":0,
       "pattern":".*"
     },
+    "TemplateContent":{
+      "type":"string",
+      "max":4096,
+      "min":1
+    },
+    "TemplateVariableMetadata":{
+      "type":"structure",
+      "required":[
+        "Type",
+        "Required"
+      ],
+      "members":{
+        "Type":{
+          "shape":"TemplateVariableType",
+          "documentation":"<p>The type of the variable.</p>"
+        },
+        "Required":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>Whether the variable is required.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A description of the variable.</p>"
+        },
+        "MaxLength":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum length for string variables.</p>"
+        },
+        "MinValue":{
+          "shape":"Integer",
+          "documentation":"<p>The minimum value for numeric variables.</p>"
+        },
+        "MaxValue":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum value for numeric variables.</p>"
+        },
+        "DefaultValue":{
+          "shape":"String",
+          "documentation":"<p>The default value for the variable.</p>"
+        },
+        "Pattern":{
+          "shape":"String",
+          "documentation":"<p>The regex pattern the variable value must match.</p>"
+        },
+        "Sample":{
+          "shape":"String",
+          "documentation":"<p>A sample value for the variable.</p>"
+        },
+        "Source":{
+          "shape":"TemplateVariableSource",
+          "documentation":"<p>The source of the variable, either <code>CUSTOMER</code> or <code>SYSTEM</code>.</p>"
+        }
+      },
+      "documentation":"<p>Contains metadata about a template variable.</p>"
+    },
+    "TemplateVariableName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z0-9_]+"
+    },
+    "TemplateVariableSource":{
+      "type":"string",
+      "documentation":"<p>The source of a template variable value.</p> <ul> <li> <p> <code>CUSTOMER</code> - The variable value is provided by the customer.</p> </li> <li> <p> <code>SYSTEM</code> - The variable value is provided by the system.</p> </li> </ul>",
+      "enum":[
+        "CUSTOMER",
+        "SYSTEM"
+      ]
+    },
+    "TemplateVariableSubstitutionMap":{
+      "type":"map",
+      "key":{"shape":"TemplateVariableName"},
+      "value":{"shape":"TemplateVariableValue"},
+      "max":20,
+      "min":0
+    },
+    "TemplateVariableType":{
+      "type":"string",
+      "documentation":"<p>The type of a template variable.</p> <ul> <li> <p> <code>STRING</code> - String variable type.</p> </li> <li> <p> <code>INTEGER</code> - Integer variable type.</p> </li> <li> <p> <code>BOOLEAN</code> - Boolean variable type.</p> </li> </ul>",
+      "enum":[
+        "STRING",
+        "INTEGER",
+        "BOOLEAN"
+      ]
+    },
+    "TemplateVariableValue":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "TemplateVariablesMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"TemplateVariableMetadata"}
+    },
+    "TestingAgentInformation":{
+      "type":"structure",
+      "required":[
+        "Status",
+        "RegistrationId"
+      ],
+      "members":{
+        "Status":{
+          "shape":"TestingAgentStatus",
+          "documentation":"<p>The current status of the testing agent.</p>"
+        },
+        "TestingAgentId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the testing agent.</p>"
+        },
+        "RegistrationId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the registration associated with the testing agent.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the testing agent associated with an RCS agent.</p>"
+    },
+    "TestingAgentStatus":{
+      "type":"string",
+      "documentation":"<p>The current status of the testing agent.</p> <ul> <li> <p> <code>CREATED</code>: The testing agent has been created.</p> </li> <li> <p> <code>PENDING</code>: The testing agent is pending activation.</p> </li> <li> <p> <code>ACTIVE</code>: The testing agent is active and available for use.</p> </li> </ul>",
+      "enum":[
+        "CREATED",
+        "PENDING",
+        "ACTIVE"
+      ]
+    },
     "TextMessageBody":{
       "type":"string",
       "max":1600,
@@ -7921,6 +9673,16 @@
       "documentation":"<p>An error that occurred because too many requests were sent during a certain amount of time.</p>",
       "exception":true,
       "retryable":{"throttling":true}
+    },
+    "TierUpgradeStatus":{
+      "type":"string",
+      "documentation":"<p>The tier upgrade status of a notify configuration.</p> <ul> <li> <p> <code>BASIC</code> - Currently at basic tier.</p> </li> <li> <p> <code>PENDING_UPGRADE</code> - Upgrade to advanced tier is pending.</p> </li> <li> <p> <code>ADVANCED</code> - Currently at advanced tier.</p> </li> <li> <p> <code>REJECTED</code> - Tier upgrade was rejected.</p> </li> </ul>",
+      "enum":[
+        "BASIC",
+        "PENDING_UPGRADE",
+        "ADVANCED",
+        "REJECTED"
+      ]
     },
     "TimeToLive":{
       "type":"integer",
@@ -8007,6 +9769,109 @@
         "EventDestination":{
           "shape":"EventDestination",
           "documentation":"<p>An EventDestination object containing the details of where events will be logged. </p>"
+        }
+      }
+    },
+    "UpdateNotifyConfigurationRequest":{
+      "type":"structure",
+      "required":["NotifyConfigurationId"],
+      "members":{
+        "NotifyConfigurationId":{
+          "shape":"NotifyConfigurationIdOrArn",
+          "documentation":"<p>The identifier of the notify configuration to update. The NotifyConfigurationId can be found using the <a>DescribeNotifyConfigurations</a> operation.</p>"
+        },
+        "DefaultTemplateId":{
+          "shape":"NotifyTemplateId",
+          "documentation":"<p>The template ID to set as the default, or the special value UNSET_DEFAULT_TEMPLATE to clear the current default template.</p>"
+        },
+        "PoolId":{
+          "shape":"NotifyPoolIdOrUnset",
+          "documentation":"<p>The pool ID or ARN to associate, or the special value UNSET_DEFAULT_POOL_FOR_NOTIFY to clear the current default pool.</p>"
+        },
+        "EnabledCountries":{
+          "shape":"IsoCountryCodeList",
+          "documentation":"<p>An array of two-character ISO country codes, in ISO 3166-1 alpha-2 format, that are enabled for the notify configuration.</p>"
+        },
+        "EnabledChannels":{
+          "shape":"NotifyEnabledChannelsList",
+          "documentation":"<p>An array of channels to enable for the notify configuration. Supported values include <code>SMS</code> and <code>VOICE</code>.</p>"
+        },
+        "DeletionProtectionEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>When set to true the notify configuration can't be deleted.</p>"
+        }
+      }
+    },
+    "UpdateNotifyConfigurationResult":{
+      "type":"structure",
+      "required":[
+        "NotifyConfigurationArn",
+        "NotifyConfigurationId",
+        "DisplayName",
+        "UseCase",
+        "EnabledChannels",
+        "Tier",
+        "TierUpgradeStatus",
+        "Status",
+        "DeletionProtectionEnabled",
+        "CreatedTimestamp"
+      ],
+      "members":{
+        "NotifyConfigurationArn":{
+          "shape":"NotifyConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the notify configuration.</p>"
+        },
+        "NotifyConfigurationId":{
+          "shape":"NotifyConfigurationId",
+          "documentation":"<p>The unique identifier for the notify configuration.</p>"
+        },
+        "DisplayName":{
+          "shape":"NotifyConfigurationDisplayName",
+          "documentation":"<p>The display name associated with the notify configuration.</p>"
+        },
+        "UseCase":{
+          "shape":"NotifyConfigurationUseCase",
+          "documentation":"<p>The use case for the notify configuration.</p>"
+        },
+        "DefaultTemplateId":{
+          "shape":"NotifyTemplateId",
+          "documentation":"<p>The default template identifier associated with the notify configuration.</p>"
+        },
+        "PoolId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the pool associated with the notify configuration.</p>"
+        },
+        "EnabledCountries":{
+          "shape":"IsoCountryCodeList",
+          "documentation":"<p>An array of two-character ISO country codes, in ISO 3166-1 alpha-2 format, that are enabled for the notify configuration.</p>"
+        },
+        "EnabledChannels":{
+          "shape":"NotifyEnabledChannelsList",
+          "documentation":"<p>An array of channels enabled for the notify configuration. Supported values include <code>SMS</code> and <code>VOICE</code>.</p>"
+        },
+        "Tier":{
+          "shape":"NotifyConfigurationTier",
+          "documentation":"<p>The tier of the notify configuration.</p>"
+        },
+        "TierUpgradeStatus":{
+          "shape":"TierUpgradeStatus",
+          "documentation":"<p>The tier upgrade status of the notify configuration.</p>"
+        },
+        "Status":{
+          "shape":"NotifyConfigurationStatus",
+          "documentation":"<p>The current status of the notify configuration.</p>"
+        },
+        "RejectionReason":{
+          "shape":"String",
+          "documentation":"<p>The reason the notify configuration was rejected, if applicable.</p>"
+        },
+        "DeletionProtectionEnabled":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>When set to true deletion protection is enabled. By default this is set to false. </p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the notify configuration was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
         }
       }
     },
@@ -8311,6 +10176,94 @@
         }
       }
     },
+    "UpdateRcsAgentRequest":{
+      "type":"structure",
+      "required":["RcsAgentId"],
+      "members":{
+        "RcsAgentId":{
+          "shape":"RcsAgentIdOrArn",
+          "documentation":"<p>The unique identifier of the RCS agent to update. You can use either the RcsAgentId or RcsAgentArn.</p>"
+        },
+        "DeletionProtectionEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>By default this is set to false. When set to true the RCS agent can't be deleted.</p>"
+        },
+        "OptOutListName":{
+          "shape":"OptOutListNameOrArn",
+          "documentation":"<p>The OptOutList to associate with the RCS agent. Valid values are either OptOutListName or OptOutListArn.</p>"
+        },
+        "SelfManagedOptOutsEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>By default this is set to false. When set to true you're responsible for responding to HELP and STOP requests. You're also responsible for tracking and honoring opt-out requests.</p>"
+        },
+        "TwoWayChannelArn":{
+          "shape":"TwoWayChannelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the two way channel.</p>"
+        },
+        "TwoWayChannelRole":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>An optional IAM Role Arn for a service to assume, to be able to post inbound SMS messages.</p>"
+        },
+        "TwoWayEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>By default this is set to false. When set to true you can receive incoming text messages from your end recipients.</p>"
+        }
+      }
+    },
+    "UpdateRcsAgentResult":{
+      "type":"structure",
+      "required":[
+        "RcsAgentArn",
+        "RcsAgentId",
+        "Status",
+        "CreatedTimestamp",
+        "DeletionProtectionEnabled",
+        "SelfManagedOptOutsEnabled",
+        "TwoWayEnabled"
+      ],
+      "members":{
+        "RcsAgentArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the updated RCS agent.</p>"
+        },
+        "RcsAgentId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the RCS agent.</p>"
+        },
+        "Status":{
+          "shape":"RcsAgentStatus",
+          "documentation":"<p>The current status of the RCS agent.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the RCS agent was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        },
+        "DeletionProtectionEnabled":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>When set to true deletion protection is enabled. By default this is set to false.</p>"
+        },
+        "OptOutListName":{
+          "shape":"OptOutListName",
+          "documentation":"<p>The name of the OptOutList associated with the RCS agent.</p>"
+        },
+        "SelfManagedOptOutsEnabled":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>By default this is set to false. When set to true you're responsible for responding to HELP and STOP requests. You're also responsible for tracking and honoring opt-out requests.</p>"
+        },
+        "TwoWayChannelArn":{
+          "shape":"TwoWayChannelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the two way channel.</p>"
+        },
+        "TwoWayChannelRole":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>An optional IAM Role Arn for a service to assume, to be able to post inbound SMS messages.</p>"
+        },
+        "TwoWayEnabled":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>By default this is set to false. When set to true you can receive incoming text messages from your end recipients.</p>"
+        }
+      }
+    },
     "UpdateSenderIdRequest":{
       "type":"structure",
       "required":[
@@ -8421,7 +10374,9 @@
       "enum":[
         "CANNOT_ADD_OPTED_OUT_NUMBER",
         "CANNOT_PARSE",
+        "CHANNEL_NOT_ENABLED",
         "COUNTRY_CODE_MISMATCH",
+        "COUNTRY_NOT_ENABLED",
         "DESTINATION_COUNTRY_BLOCKED",
         "FIELD_VALIDATION_FAILED",
         "ATTACHMENT_TYPE_NOT_SUPPORTED",
@@ -8485,7 +10440,8 @@
       "type":"string",
       "enum":[
         "PENDING",
-        "VERIFIED"
+        "VERIFIED",
+        "UNSUPPORTED"
       ]
     },
     "VerifiedDestinationNumberFilter":{
@@ -8514,7 +10470,11 @@
     },
     "VerifiedDestinationNumberFilterName":{
       "type":"string",
-      "enum":["status"]
+      "documentation":"<p>The filter name for filtering verified destination numbers. The available filter names are:</p> <ul> <li> <p> <code>status</code>: Filter by verification status.</p> </li> <li> <p> <code>rcs-agent-id</code>: Filter by the RCS agent identifier.</p> </li> </ul>",
+      "enum":[
+        "status",
+        "rcs-agent-id"
+      ]
     },
     "VerifiedDestinationNumberIdList":{
       "type":"list",
@@ -8553,6 +10513,10 @@
         "Status":{
           "shape":"VerificationStatus",
           "documentation":"<p>The status of the verified destination phone number.</p> <ul> <li> <p> <code>PENDING</code>: The phone number hasn't been verified yet.</p> </li> <li> <p> <code>VERIFIED</code>: The phone number is verified and can receive messages.</p> </li> </ul>"
+        },
+        "RcsAgentId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the RCS agent associated with the verified destination number.</p>"
         },
         "CreatedTimestamp":{
           "shape":"Timestamp",
@@ -8677,6 +10641,12 @@
         "ZEINA",
         "ZHIYU"
       ]
+    },
+    "VoiceIdList":{
+      "type":"list",
+      "member":{"shape":"VoiceId"},
+      "max":60,
+      "min":0
     },
     "VoiceMessageBody":{
       "type":"string",

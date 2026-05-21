@@ -154,6 +154,7 @@ class BaseHandlerTest(unittest.TestCase):
             'userCode': self.user_code,
             'verificationUri': self.verification_uri,
             'verificationUriComplete': self.verification_uri_complete,
+            'cross_device_flag': '--use-device-code',
         }
 
     def assert_text_in_output(self, *args):

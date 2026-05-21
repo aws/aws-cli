@@ -393,6 +393,11 @@ class FileGenerator:
         try:
             params = {'Bucket': bucket, 'Key': key}
             params.update(self.request_parameters.get('HeadObject', {}))
+            if (
+                self._client.meta.config.response_checksum_validation
+                == 'when_supported'
+            ):
+                params.setdefault('ChecksumMode', 'ENABLED')
             response = self._client.head_object(**params)
         except ClientError as e:
             # We want to try to give a more helpful error message.

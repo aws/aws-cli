@@ -225,7 +225,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Create a provisioning profile for a device to execute the provisioning flows using a provisioning template. The provisioning template is a document that defines the set of resources and policies applied to a device during the provisioning process.</p>"
+      "documentation":"<p>Create a provisioning profile for executing device provisioning flows. The provisioning profile is a document that defines the set of resources and policies applied to a device during the provisioning process.</p>"
     },
     "DeleteAccountAssociation":{
       "name":"DeleteAccountAssociation",
@@ -427,6 +427,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"},
         {"shape":"UnauthorizedException"},
+        {"shape":"ConflictException"},
         {"shape":"ServiceUnavailableException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
@@ -853,7 +854,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Get a provisioning profile by template name.</p>",
+      "documentation":"<p>Get details of a provisioning profile.</p>",
       "readonly":true
     },
     "GetRuntimeLogConfiguration":{
@@ -1815,7 +1816,7 @@
         },
         "GeneralAuthorizationUpdate":{
           "shape":"GeneralAuthorizationUpdate",
-          "documentation":"<p>The General Authorization update information containing authorization materials to add or update in Kinesis Data Streams.</p>"
+          "documentation":"<p>The General Authorization update information containing authorization materials to add or update.</p>"
         }
       },
       "documentation":"<p>The updated authentication configuration details for a connector destination.</p>"
@@ -2769,7 +2770,10 @@
         },
         "Capabilities":{
           "shape":"Capabilities",
-          "documentation":"<p>The capabilities of the device such as light bulb.</p>"
+          "documentation":"<p>The capabilities of the device such as light bulb.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Capabilities has been deprecated, use CapabilityReport instead",
+          "deprecatedSince":"06-25-2025"
         },
         "ClientToken":{
           "shape":"ClientToken",
@@ -2955,15 +2959,15 @@
         },
         "CaCertificate":{
           "shape":"CaCertificate",
-          "documentation":"<p>The id of the certificate authority (CA) certificate.</p>"
+          "documentation":"<p>The body of the PEM-encoded certificate authority (CA) certificate.</p>"
         },
         "ClaimCertificate":{
           "shape":"ClaimCertificate",
-          "documentation":"<p>The claim certificate.</p>"
+          "documentation":"<p>The body of the PEM-encoded claim certificate. If a claim certificate is provided, it will be used for the provisioning profile. Otherwise, a claim certificate will be generated.</p>"
         },
         "Name":{
           "shape":"ProvisioningProfileName",
-          "documentation":"<p>The name of the provisioning template.</p>"
+          "documentation":"<p>The name of the provisioning profile.</p>"
         },
         "ClientToken":{
           "shape":"ClientToken",
@@ -2981,11 +2985,11 @@
       "members":{
         "Arn":{
           "shape":"ProvisioningProfileArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the provisioning template used in the provisioning profile.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the provisioning profile.</p>"
         },
         "Name":{
           "shape":"ProvisioningProfileName",
-          "documentation":"<p>The name of the provisioning template.</p>"
+          "documentation":"<p>The name of the provisioning profile.</p>"
         },
         "ProvisioningType":{
           "shape":"ProvisioningType",
@@ -2995,13 +2999,17 @@
           "shape":"ProvisioningProfileId",
           "documentation":"<p>The identifier of the provisioning profile.</p>"
         },
+        "Status":{
+          "shape":"ProvisioningProfileStatus",
+          "documentation":"<p>The status of a provisioning profile.</p>"
+        },
         "ClaimCertificate":{
           "shape":"ClaimCertificate",
-          "documentation":"<p>The id of the claim certificate.</p>"
+          "documentation":"<p>The body of the PEM-encoded claim certificate.</p>"
         },
         "ClaimCertificatePrivateKey":{
           "shape":"ClaimCertificatePrivateKey",
-          "documentation":"<p>The private key of the claim certificate. This is stored securely on the device for validating the connection endpoint with IoT managed integrations using the public key.</p>"
+          "documentation":"<p>The private key of the claim certificate. This may be stored securely on the device for validating the connection endpoint with IoT managed integrations using the public key.</p>"
         }
       }
     },
@@ -3207,7 +3215,7 @@
       "members":{
         "Identifier":{
           "shape":"ProvisioningProfileId",
-          "documentation":"<p>The name of the provisioning template.</p>",
+          "documentation":"<p>The id of the provisioning profile.</p>",
           "location":"uri",
           "locationName":"Identifier"
         }
@@ -4074,7 +4082,10 @@
         },
         "Capabilities":{
           "shape":"Capabilities",
-          "documentation":"<p>The capabilities of the device such as light bulb.</p>"
+          "documentation":"<p>The capabilities of the device such as light bulb.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Capabilities has been deprecated, use CapabilityReport instead",
+          "deprecatedSince":"06-25-2025"
         },
         "CapabilityReport":{
           "shape":"CapabilityReport",
@@ -4477,7 +4488,7 @@
       "members":{
         "Identifier":{
           "shape":"ProvisioningProfileId",
-          "documentation":"<p>The provisioning template the device uses for the provisioning process.</p>",
+          "documentation":"<p>The id of a provisioning profile.</p>",
           "location":"uri",
           "locationName":"Identifier"
         }
@@ -4488,11 +4499,11 @@
       "members":{
         "Arn":{
           "shape":"ProvisioningProfileArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the provisioning template used in the provisioning profile.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the provisioning profile.</p>"
         },
         "Name":{
           "shape":"ProvisioningProfileName",
-          "documentation":"<p>The name of the provisioning template.</p>"
+          "documentation":"<p>The name of the provisioning profile.</p>"
         },
         "ProvisioningType":{
           "shape":"ProvisioningType",
@@ -4502,9 +4513,13 @@
           "shape":"ProvisioningProfileId",
           "documentation":"<p>The provisioning profile id.</p>"
         },
+        "Status":{
+          "shape":"ProvisioningProfileStatus",
+          "documentation":"<p>The status of a provisioning profile.</p>"
+        },
         "ClaimCertificate":{
           "shape":"ClaimCertificate",
-          "documentation":"<p>The id of the claim certificate.</p>"
+          "documentation":"<p>The body of the PEM-encoded claim certificate.</p>"
         },
         "Tags":{
           "shape":"TagsMap",
@@ -6342,12 +6357,22 @@
       "min":1,
       "pattern":"[0-9A-Za-z_-]+"
     },
+    "ProvisioningProfileStatus":{
+      "type":"string",
+      "enum":[
+        "CREATE_IN_PROGRESS",
+        "CREATE_FAILED",
+        "CREATED",
+        "DELETE_IN_PROGRESS",
+        "DELETE_FAILED"
+      ]
+    },
     "ProvisioningProfileSummary":{
       "type":"structure",
       "members":{
         "Name":{
           "shape":"ProvisioningProfileName",
-          "documentation":"<p>The name of the provisioning template.</p>"
+          "documentation":"<p>The name of the provisioning profile.</p>"
         },
         "Id":{
           "shape":"ProvisioningProfileId",
@@ -6355,11 +6380,15 @@
         },
         "Arn":{
           "shape":"ProvisioningProfileArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the provisioning template used in the provisioning profile.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the provisioning profile.</p>"
         },
         "ProvisioningType":{
           "shape":"ProvisioningType",
           "documentation":"<p>The type of provisioning workflow the device uses for onboarding to IoT managed integrations.</p>"
+        },
+        "Status":{
+          "shape":"ProvisioningProfileStatus",
+          "documentation":"<p>The status of a provisioning profile.</p>"
         }
       },
       "documentation":"<p>Structure describing a provisioning profile. </p>"
@@ -7461,7 +7490,10 @@
         },
         "Capabilities":{
           "shape":"Capabilities",
-          "documentation":"<p>The capabilities of the device such as light bulb.</p>"
+          "documentation":"<p>The capabilities of the device such as light bulb.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Capabilities has been deprecated, use CapabilityReport instead",
+          "deprecatedSince":"06-25-2025"
         },
         "Classification":{
           "shape":"Classification",

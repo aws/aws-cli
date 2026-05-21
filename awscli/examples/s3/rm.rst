@@ -54,7 +54,6 @@ Output::
 **Example 5: Delete an object from an S3 access point**
 
 The following ``rm`` command deletes a single object (``mykey``) from the access point (``myaccesspoint``). ::
-The following ``rm`` command deletes a single object (``mykey``) from the access point (``myaccesspoint``). ::
 
     aws s3 rm s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/mykey
 

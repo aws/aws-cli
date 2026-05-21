@@ -18,6 +18,7 @@ import io
 import operator
 from contextlib import contextmanager
 from sys import getrefcount
+from unittest.mock import Mock
 
 import botocore
 import pytest
@@ -1625,7 +1626,7 @@ class TestS3RegionRedirector(unittest.TestCase):
                 'rules': [],
             },
             partition_data={},
-            service_model=None,
+            service_model=Mock(service_name='test'),
             builtins={},
             client_context=None,
             event_emitter=None,
@@ -3635,6 +3636,7 @@ class TestSSOTokenFetcher(unittest.TestCase):
             expiresAt=self._expires_at(600),
             verificationUri='https://sso.fake/device',
             verificationUriComplete='https://sso.fake/device?user_code=foo',
+            cross_device_flag=None,
         )
 
     def test_fetch_token_authorization_expires(self):

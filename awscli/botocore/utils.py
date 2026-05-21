@@ -3405,6 +3405,7 @@ class SSOTokenFetcher(BaseSSOTokenFetcher):
             'verificationUri': response['verificationUri'],
             'verificationUriComplete': response['verificationUriComplete'],
             'expiresAt': self._time_fetcher() + expires_in,
+            'cross_device_flag': None,
         }
         if 'interval' in response:
             authorization['interval'] = response['interval']
@@ -3682,6 +3683,7 @@ class SSOTokenFetcherAuth(BaseSSOTokenFetcher):
             'verificationUri': authorization_uri,
             'verificationUriComplete': authorization_uri,
             'userCode': None,
+            'cross_device_flag': '--use-device-code',
         }
 
         # Open/display the link, then block until the redirect uri is hit and

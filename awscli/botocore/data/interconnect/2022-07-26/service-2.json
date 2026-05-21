@@ -1,0 +1,1194 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2022-07-26",
+    "auth":["aws.auth#sigv4"],
+    "endpointPrefix":"interconnect",
+    "jsonVersion":"1.0",
+    "protocol":"smithy-rpc-v2-cbor",
+    "protocols":[
+      "smithy-rpc-v2-cbor",
+      "json"
+    ],
+    "serviceFullName":"Interconnect",
+    "serviceId":"Interconnect",
+    "signatureVersion":"v4",
+    "signingName":"interconnect",
+    "targetPrefix":"Interconnect",
+    "uid":"interconnect-2022-07-26"
+  },
+  "operations":{
+    "AcceptConnectionProposal":{
+      "name":"AcceptConnectionProposal",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AcceptConnectionProposalRequest"},
+      "output":{"shape":"AcceptConnectionProposalResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InterconnectClientException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InterconnectValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InterconnectServerException"}
+      ],
+      "documentation":"<p>Accepts a connection proposal which was generated at a supported partner's portal.</p> <p>The proposal contains the Environment and bandwidth that were chosen on the partner's portal and cannot be modified.</p> <p>Upon accepting the proposal a connection will be made between the AWS network as accessed via the selected Attach Point and the network previously selected network on the partner's portal.</p>",
+      "idempotent":true
+    },
+    "CreateConnection":{
+      "name":"CreateConnection",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateConnectionRequest"},
+      "output":{"shape":"CreateConnectionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InterconnectClientException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InterconnectValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InterconnectServerException"}
+      ],
+      "documentation":"<p>Initiates the process to create a Connection across the specified Environment. </p> <p>The Environment dictates the specified partner and location to which the other end of the connection should attach. You can see a list of the available Environments by calling <a>ListEnvironments</a> </p> <p>The Attach Point specifies where within the AWS Network your connection will logically connect.</p> <p>After a successful call to this method, the resulting <a>Connection</a> will return an Activation Key which will need to be brought to the specific partner's portal to confirm the <a>Connection</a> on both sides. (See <a>Environment$activationPageUrl</a> for a direct link to the partner portal). </p>",
+      "idempotent":true
+    },
+    "DeleteConnection":{
+      "name":"DeleteConnection",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteConnectionRequest"},
+      "output":{"shape":"DeleteConnectionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InterconnectClientException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InterconnectValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InterconnectServerException"}
+      ],
+      "documentation":"<p>Deletes an existing Connection with the supplied identifier.</p> <p>This operation will also inform the remote partner of your intention to delete your connection. Note, the partner may still require you to delete to fully clean up resources, but the network connectivity provided by the <a>Connection</a> will cease to exist.</p>",
+      "idempotent":true
+    },
+    "DescribeConnectionProposal":{
+      "name":"DescribeConnectionProposal",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeConnectionProposalRequest"},
+      "output":{"shape":"DescribeConnectionProposalResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InterconnectClientException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InterconnectValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InterconnectServerException"}
+      ],
+      "documentation":"<p>Describes the details of a connection proposal generated at a partner's portal.</p>",
+      "readonly":true
+    },
+    "GetConnection":{
+      "name":"GetConnection",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetConnectionRequest"},
+      "output":{"shape":"GetConnectionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InterconnectClientException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InterconnectValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InterconnectServerException"}
+      ],
+      "documentation":"<p>Describes the current state of a Connection resource as specified by the identifier. </p>",
+      "readonly":true
+    },
+    "GetEnvironment":{
+      "name":"GetEnvironment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetEnvironmentRequest"},
+      "output":{"shape":"GetEnvironmentResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InterconnectClientException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InterconnectValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InterconnectServerException"}
+      ],
+      "documentation":"<p>Describes a specific <a>Environment</a> </p>",
+      "readonly":true
+    },
+    "ListAttachPoints":{
+      "name":"ListAttachPoints",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListAttachPointsRequest"},
+      "output":{"shape":"ListAttachPointsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InterconnectClientException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InterconnectValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InterconnectServerException"}
+      ],
+      "documentation":"<p>Lists all Attach Points the caller has access to that are valid for the specified <a>Environment</a>.</p>",
+      "readonly":true
+    },
+    "ListConnections":{
+      "name":"ListConnections",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListConnectionsRequest"},
+      "output":{"shape":"ListConnectionsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InterconnectClientException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InterconnectValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InterconnectServerException"}
+      ],
+      "documentation":"<p>Lists all connection objects to which the caller has access.</p> <p>Allows for optional filtering by the following properties:</p> <ul> <li> <p> <code>state</code> </p> </li> <li> <p> <code>environmentId</code> </p> </li> <li> <p> <code>provider</code> </p> </li> <li> <p> <code>attach point</code> </p> </li> </ul> <p>Only <a>Connection</a> objects matching all filters will be returned.</p>",
+      "readonly":true
+    },
+    "ListEnvironments":{
+      "name":"ListEnvironments",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListEnvironmentsRequest"},
+      "output":{"shape":"ListEnvironmentsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InterconnectClientException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InterconnectValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InterconnectServerException"}
+      ],
+      "documentation":"<p>Lists all of the environments that can produce connections that will land in the called AWS region.</p>",
+      "readonly":true
+    },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InterconnectClientException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InterconnectValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InterconnectServerException"}
+      ],
+      "documentation":"<p>List all current tags on the specified resource. Currently this supports <a>Connection</a> resources. </p>",
+      "readonly":true
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "output":{"shape":"TagResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InterconnectClientException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InterconnectValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InterconnectServerException"}
+      ],
+      "documentation":"<p>Add new tags to the specified resource.</p>"
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "output":{"shape":"UntagResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InterconnectClientException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InterconnectValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InterconnectServerException"}
+      ],
+      "documentation":"<p>Removes tags from the specified resource.</p>"
+    },
+    "UpdateConnection":{
+      "name":"UpdateConnection",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateConnectionRequest"},
+      "output":{"shape":"UpdateConnectionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InterconnectClientException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InterconnectValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InterconnectServerException"}
+      ],
+      "documentation":"<p>Modifies an existing connection. Currently we support modifications to the connection's description and/or bandwidth.</p>",
+      "idempotent":true
+    }
+  },
+  "shapes":{
+    "AcceptConnectionProposalRequest":{
+      "type":"structure",
+      "required":[
+        "attachPoint",
+        "activationKey"
+      ],
+      "members":{
+        "attachPoint":{
+          "shape":"AttachPoint",
+          "documentation":"<p>The Attach Point to which the connection should be associated.</p>"
+        },
+        "activationKey":{
+          "shape":"ActivationKey",
+          "documentation":"<p>An Activation Key that was generated on a supported partner's portal. This key captures the desired parameters from the initial creation request.</p> <p>The details of this request can be described using with <a>DescribeConnectionProposal</a>. </p>"
+        },
+        "description":{
+          "shape":"ConnectionDescription",
+          "documentation":"<p>A description to distinguish this <a>Connection</a>.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags to associate with the resulting <a>Connection</a>.</p>"
+        },
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>Idempotency token used for the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "AcceptConnectionProposalResponse":{
+      "type":"structure",
+      "members":{
+        "connection":{
+          "shape":"Connection",
+          "documentation":"<p>The created <a>Connection</a> object.</p>"
+        }
+      }
+    },
+    "AccessDeniedException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The calling principal is not allowed to access the specified resource, or the resource does not exist.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ActivationKey":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "sensitive":true
+    },
+    "AmazonResourceName":{
+      "type":"string",
+      "max":150,
+      "min":59,
+      "pattern":"arn:aws[a-z-]*:interconnect:[^:]+:[0-9]{12}:connection/(mcc|lmcc)-[a-z0-9]{8}"
+    },
+    "AttachPoint":{
+      "type":"structure",
+      "members":{
+        "directConnectGateway":{
+          "shape":"DirectConnectGatewayAttachPoint",
+          "documentation":"<p>Identifies an DirectConnect Gateway attach point by DirectConnectGatewayID.</p>"
+        },
+        "arn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>Identifies an attach point by full ARN.</p>"
+        }
+      },
+      "documentation":"<p>Identifies an attach point to use with a Connection.</p>",
+      "union":true
+    },
+    "AttachPointDescriptor":{
+      "type":"structure",
+      "required":[
+        "type",
+        "identifier",
+        "name"
+      ],
+      "members":{
+        "type":{
+          "shape":"AttachPointType",
+          "documentation":"<p>The type of this AttachPoint, which will dictate the syntax of the identifier.</p> <p>Current types include:</p> <ul> <li> <p>ARN</p> </li> <li> <p>DirectConnect Gateway</p> </li> </ul>"
+        },
+        "identifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier for the specific type of the AttachPoint.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The descriptive name of the identifier attach point.</p>"
+        }
+      },
+      "documentation":"<p>Describes a possible Attach Point for a Connection.</p>"
+    },
+    "AttachPointDescriptorList":{
+      "type":"list",
+      "member":{"shape":"AttachPointDescriptor"}
+    },
+    "AttachPointType":{
+      "type":"string",
+      "enum":["DirectConnectGateway"]
+    },
+    "BandwidthList":{
+      "type":"list",
+      "member":{"shape":"ConnectionBandwidth"}
+    },
+    "Bandwidths":{
+      "type":"structure",
+      "members":{
+        "available":{
+          "shape":"BandwidthList",
+          "documentation":"<p>The list of currently available bandwidths.</p>"
+        },
+        "supported":{
+          "shape":"BandwidthList",
+          "documentation":"<p>The list of all bandwidths that this environment plans to support</p>"
+        }
+      },
+      "documentation":"<p>Contains the details about the available and supported bandwidths.</p>"
+    },
+    "BillingTier":{
+      "type":"integer",
+      "box":true,
+      "max":8,
+      "min":0
+    },
+    "CloudServiceProvider":{
+      "type":"string",
+      "max":32,
+      "min":0
+    },
+    "Connection":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "description",
+        "bandwidth",
+        "attachPoint",
+        "environmentId",
+        "provider",
+        "location",
+        "type",
+        "state",
+        "sharedId",
+        "ownerAccount",
+        "activationKey"
+      ],
+      "members":{
+        "id":{
+          "shape":"ConnectionId",
+          "documentation":"<p>The short identifier of the connection object.</p>"
+        },
+        "arn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>An ARN of a <a>Connection</a> object.</p>"
+        },
+        "description":{
+          "shape":"ConnectionDescription",
+          "documentation":"<p>A descriptive name for the connection.</p>"
+        },
+        "bandwidth":{
+          "shape":"ConnectionBandwidth",
+          "documentation":"<p>The specific selected bandwidth of this connection.</p>"
+        },
+        "attachPoint":{
+          "shape":"AttachPoint",
+          "documentation":"<p>The Attach Point to which the connection should be associated.\"</p>"
+        },
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The specific <a>Environment</a> this connection is placed upon.</p>"
+        },
+        "provider":{
+          "shape":"Provider",
+          "documentation":"<p>The provider on the remote side of this <a>Connection</a>.</p>"
+        },
+        "location":{
+          "shape":"Location",
+          "documentation":"<p>The provider specific location on the remote side of this <a>Connection</a> </p>"
+        },
+        "type":{
+          "shape":"ProductType",
+          "documentation":"<p>The specific product type of this <a>Connection</a>.</p>"
+        },
+        "state":{
+          "shape":"ConnectionState",
+          "documentation":"<ul> <li> <p> <code>requested</code>: The initial state of a connection. The state will remain here until the Connection is accepted on the Partner portal.</p> </li> <li> <p> <code>pending</code>: The connection has been accepted and is being provisioned between AWS and the Partner.</p> </li> <li> <p> <code>available</code>: The connection has been fully provisioned between AWS and the Partner.</p> </li> <li> <p> <code>deleting</code>: The connection is being deleted.</p> </li> <li> <p> <code>deleted</code>: The connection has been deleted.</p> </li> <li> <p> <code>failed</code>: The connection has failed to be created.</p> </li> <li> <p> <code>updating</code>: The connection is being updated.</p> </li> </ul>"
+        },
+        "sharedId":{
+          "shape":"ConnectionSharedId",
+          "documentation":"<p>An identifier used by both AWS and the remote partner to identify the specific connection.</p>"
+        },
+        "billingTier":{
+          "shape":"BillingTier",
+          "documentation":"<p>The billing tier this connection is currently assigned.</p>"
+        },
+        "ownerAccount":{
+          "shape":"OwnerAccountId",
+          "documentation":"<p>The account that owns this <a>Connection</a> </p>"
+        },
+        "activationKey":{
+          "shape":"ActivationKey",
+          "documentation":"<p>The Activation Key associated to this connection.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags on the <a>Connection</a> </p>"
+        }
+      },
+      "documentation":"<p>The object describing the provided connectivity from the AWS region to the partner location.</p>"
+    },
+    "ConnectionBandwidth":{
+      "type":"string",
+      "max":8,
+      "min":1,
+      "pattern":"\\d+[MG]bps"
+    },
+    "ConnectionDescription":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[-a-zA-Z0-9_ ]+"
+    },
+    "ConnectionId":{
+      "type":"string",
+      "max":32,
+      "min":1,
+      "pattern":"(mcc|lmcc)-[a-z0-9]{8}"
+    },
+    "ConnectionSharedId":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
+    },
+    "ConnectionState":{
+      "type":"string",
+      "enum":[
+        "available",
+        "requested",
+        "pending",
+        "down",
+        "deleting",
+        "deleted",
+        "failed",
+        "updating"
+      ]
+    },
+    "ConnectionSummariesList":{
+      "type":"list",
+      "member":{"shape":"ConnectionSummary"}
+    },
+    "ConnectionSummary":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "description",
+        "bandwidth",
+        "attachPoint",
+        "environmentId",
+        "provider",
+        "location",
+        "type",
+        "state",
+        "sharedId"
+      ],
+      "members":{
+        "id":{
+          "shape":"ConnectionId",
+          "documentation":"<p>The identifier of the requested <a>Connection</a> </p>"
+        },
+        "arn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The ARN of the <a>Connection</a> </p>"
+        },
+        "description":{
+          "shape":"ConnectionDescription",
+          "documentation":"<p>A descriptive name of the <a>Connection</a> </p>"
+        },
+        "bandwidth":{
+          "shape":"ConnectionBandwidth",
+          "documentation":"<p>The bandwidth of the <a>Connection</a> </p>"
+        },
+        "attachPoint":{
+          "shape":"AttachPoint",
+          "documentation":"<p>The Attach Point to which the connection should be associated.</p>"
+        },
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The <a>Environment</a> that this <a>Connection</a> is created on.</p>"
+        },
+        "provider":{
+          "shape":"Provider",
+          "documentation":"<p>The provider on the remote end of this <a>Connection</a> </p>"
+        },
+        "location":{
+          "shape":"Location",
+          "documentation":"<p>The provider specific location at the remote end of this <a>Connection</a> </p>"
+        },
+        "type":{
+          "shape":"ProductType",
+          "documentation":"<p>The product variant supplied by this resource.</p>"
+        },
+        "state":{
+          "shape":"ConnectionState",
+          "documentation":"<ul> <li> <p> <code>requested</code>: The initial state of a connection. The state will remain here until the Connection is accepted on the Partner portal.</p> </li> <li> <p> <code>pending</code>: The connection has been accepted and is being provisioned between AWS and the Partner.</p> </li> <li> <p> <code>available</code>: The connection has been fully provisioned between AWS and the Partner.</p> </li> <li> <p> <code>deleting</code>: The connection is being deleted.</p> </li> <li> <p> <code>deleted</code>: The connection has been deleted.</p> </li> <li> <p> <code>failed</code>: The connection has failed to be created.</p> </li> <li> <p> <code>updating</code>: The connection is being updated.</p> </li> </ul>"
+        },
+        "sharedId":{
+          "shape":"ConnectionSharedId",
+          "documentation":"<p>An identifier used by both AWS and the remote partner to identify the specific connection.</p>"
+        },
+        "billingTier":{
+          "shape":"BillingTier",
+          "documentation":"<p>The billing tier this connection is currently assigned.</p>"
+        }
+      },
+      "documentation":"<p>Summarized view of a Connection object.</p>"
+    },
+    "CreateConnectionRequest":{
+      "type":"structure",
+      "required":[
+        "bandwidth",
+        "attachPoint",
+        "environmentId"
+      ],
+      "members":{
+        "description":{
+          "shape":"ConnectionDescription",
+          "documentation":"<p>A description to distinguish this <a>Connection</a>.</p>"
+        },
+        "bandwidth":{
+          "shape":"ConnectionBandwidth",
+          "documentation":"<p>The desired bandwidth of the requested <a>Connection</a> </p>"
+        },
+        "attachPoint":{
+          "shape":"AttachPoint",
+          "documentation":"<p>The Attach Point to which the connection should be associated.\"</p>"
+        },
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The identifier of the <a>Environment</a> across which this <a>Connection</a> should be created.</p> <p>The available <a>Environment</a> objects can be determined using <a>ListEnvironments</a>.</p>"
+        },
+        "remoteAccount":{
+          "shape":"RemoteAccountIdentifier",
+          "documentation":"<p>Account and/or principal identifying information that can be verified by the partner of this specific Environment.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tag to associate with the resulting <a>Connection</a>.</p>"
+        },
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>Idempotency token used for the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateConnectionResponse":{
+      "type":"structure",
+      "members":{
+        "connection":{
+          "shape":"Connection",
+          "documentation":"<p>The resulting <a>Connection</a>.</p>"
+        }
+      }
+    },
+    "DeleteConnectionRequest":{
+      "type":"structure",
+      "required":["identifier"],
+      "members":{
+        "identifier":{
+          "shape":"ConnectionId",
+          "documentation":"<p>The identifier of the <a>Connection</a> to be deleted. </p>"
+        },
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>Idempotency token used for the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "DeleteConnectionResponse":{
+      "type":"structure",
+      "required":["connection"],
+      "members":{
+        "connection":{
+          "shape":"Connection",
+          "documentation":"<p>The <a>Connection</a> object that has been marked for deletion.</p>"
+        }
+      }
+    },
+    "DescribeConnectionProposalRequest":{
+      "type":"structure",
+      "required":["activationKey"],
+      "members":{
+        "activationKey":{
+          "shape":"ActivationKey",
+          "documentation":"<p>An Activation Key that was generated on a supported partner's portal. This key captures the desired parameters from the initial creation request.</p>"
+        }
+      }
+    },
+    "DescribeConnectionProposalResponse":{
+      "type":"structure",
+      "required":[
+        "bandwidth",
+        "environmentId",
+        "provider",
+        "location"
+      ],
+      "members":{
+        "bandwidth":{
+          "shape":"ConnectionBandwidth",
+          "documentation":"<p>The bandwidth of the proposed <a>Connection</a>. </p>"
+        },
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The identifier of the <a>Environment</a> upon which the <a>Connection</a> would be placed if this proposal were accepted.</p>"
+        },
+        "provider":{
+          "shape":"Provider",
+          "documentation":"<p>The partner provider of the specific <a>Environment</a> of the proposal.</p>"
+        },
+        "location":{
+          "shape":"Location",
+          "documentation":"<p>The partner specific location distinguisher of the specific <a>Environment</a> of the proposal.</p>"
+        }
+      }
+    },
+    "DirectConnectGatewayAttachPoint":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
+    },
+    "Environment":{
+      "type":"structure",
+      "required":[
+        "provider",
+        "location",
+        "environmentId",
+        "state",
+        "bandwidths",
+        "type"
+      ],
+      "members":{
+        "provider":{
+          "shape":"Provider",
+          "documentation":"<p>The provider on the remote side of this <a>Connection</a>.</p>"
+        },
+        "location":{
+          "shape":"Location",
+          "documentation":"<p>The provider specific location on the remote side of this <a>Connection</a>.</p>"
+        },
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The identifier of this <a>Environment</a> </p>"
+        },
+        "state":{
+          "shape":"EnvironmentState",
+          "documentation":"<p>The state of the <a>Environment</a>. Possible values:</p> <ul> <li> <p> <code>available</code>: The environment is available and new <a>Connection</a> objects can be requested.</p> </li> <li> <p> <code>limited</code>: The environment is available, but overall capacity is limited. The set of available bandwidths </p> </li> <li> <p> <code>unavailable</code>: The environment is currently unavailable.</p> </li> </ul>"
+        },
+        "bandwidths":{
+          "shape":"Bandwidths",
+          "documentation":"<p>The sets of bandwidths that are available and supported on this environment.</p>"
+        },
+        "type":{
+          "shape":"ProductType",
+          "documentation":"<p>The specific product type of <a>Connection</a> objects provided by this <a>Environment</a>.</p>"
+        },
+        "activationPageUrl":{
+          "shape":"String",
+          "documentation":"<p>An HTTPS URL on the remote partner portal where the Activation Key should be brought to complete the creation process.</p>"
+        },
+        "remoteIdentifierType":{
+          "shape":"RemoteAccountIdentifierType",
+          "documentation":"<p>The type of identifying information that should be supplied to the <code>remoteAccount</code> parameter of a <a>CreateConnection</a> call for this specific Environment.</p>"
+        }
+      },
+      "documentation":"<p>Defines the logical topology that an AWS Interconnect Connection is created upon.</p> <p>Specifically, an Environment defines the partner The remote Cloud Service Provider of this resource. or The remote Last Mile Provider of this resource. and the region or location specification to which an AWS Interconnect Connection can be made.</p>"
+    },
+    "EnvironmentId":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "EnvironmentList":{
+      "type":"list",
+      "member":{"shape":"Environment"}
+    },
+    "EnvironmentState":{
+      "type":"string",
+      "enum":[
+        "available",
+        "limited",
+        "unavailable"
+      ]
+    },
+    "GetConnectionRequest":{
+      "type":"structure",
+      "required":["identifier"],
+      "members":{
+        "identifier":{
+          "shape":"ConnectionId",
+          "documentation":"<p>The identifier of the requested <a>Connection</a> </p>"
+        }
+      }
+    },
+    "GetConnectionResponse":{
+      "type":"structure",
+      "members":{
+        "connection":{
+          "shape":"Connection",
+          "documentation":"<p>The existing <a>Connection</a> resource.</p>"
+        }
+      }
+    },
+    "GetEnvironmentRequest":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The identifier of the specific <a>Environment</a> to describe.</p>"
+        }
+      }
+    },
+    "GetEnvironmentResponse":{
+      "type":"structure",
+      "required":["environment"],
+      "members":{
+        "environment":{
+          "shape":"Environment",
+          "documentation":"<p>The requested <a>Environment</a> structure.</p>"
+        }
+      }
+    },
+    "InterconnectClientException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request was denied due to incorrect client supplied parameters.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "InterconnectServerException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request resulted in an exception internal to the service.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true
+    },
+    "InterconnectValidationException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The input fails to satisfy the constraints specified.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "LastMileProvider":{
+      "type":"string",
+      "max":32,
+      "min":0
+    },
+    "ListAttachPointsRequest":{
+      "type":"structure",
+      "required":["environmentId"],
+      "members":{
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The identifier of the <a>Environment</a> for which to list valid Attach Points.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The max number of list results in a single paginated response.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A pagination token from a previous paginated response indicating you wish to get the next page.</p>"
+        }
+      }
+    },
+    "ListAttachPointsResponse":{
+      "type":"structure",
+      "required":["attachPoints"],
+      "members":{
+        "attachPoints":{
+          "shape":"AttachPointDescriptorList",
+          "documentation":"<p>The valid <a>AttachPoint</a> </p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A pagination token indicating that there are more results that can be fetched.</p>"
+        }
+      }
+    },
+    "ListConnectionsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The max number of list results in a single paginated response.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A pagination token from a previous paginated response indicating you wish to get the next page of results.</p>"
+        },
+        "state":{
+          "shape":"ConnectionState",
+          "documentation":"<p>Filter the results to only include <a>Connection</a> objects in the given <a>Connection$state</a>.</p>"
+        },
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>Filter the results to only include <a>Connection</a> objects on the given <a>Environment</a>.</p>"
+        },
+        "provider":{
+          "shape":"Provider",
+          "documentation":"<p>Filter the results to only include <a>Connection</a> objects to the given <a>Provider</a>.</p>"
+        },
+        "attachPoint":{
+          "shape":"AttachPoint",
+          "documentation":"<p>Filter results to only include <a>Connection</a> objects attached to the given <a>AttachPoint</a>.</p>"
+        }
+      }
+    },
+    "ListConnectionsResponse":{
+      "type":"structure",
+      "members":{
+        "connections":{
+          "shape":"ConnectionSummariesList",
+          "documentation":"<p>The resulting list of <a>Connection</a> objects.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A pagination token for use in subsequent calls to fetch the next page of results.</p>"
+        }
+      }
+    },
+    "ListEnvironmentsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The max number of list results in a single paginated response.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A pagination token from a previous paginated response indicating you wish to get the next page of results.</p>"
+        },
+        "provider":{
+          "shape":"Provider",
+          "documentation":"<p>Filter results to only include <a>Environment</a> objects that connect to the <a>Provider</a>.</p>"
+        },
+        "location":{
+          "shape":"Location",
+          "documentation":"<p>Filter results to only include <a>Environment</a> objects that connect to a given location distiguisher.</p>"
+        }
+      }
+    },
+    "ListEnvironmentsResponse":{
+      "type":"structure",
+      "required":["environments"],
+      "members":{
+        "environments":{
+          "shape":"EnvironmentList",
+          "documentation":"<p>The list of matching <a>Environment</a> objects.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token for use in subsequent calls to fetch the next page of results.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The resource ARN for which to list tags. </p>"
+        }
+      }
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "members":{
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags on the specified ARN.</p>"
+        }
+      }
+    },
+    "Location":{
+      "type":"string",
+      "max":255,
+      "min":0
+    },
+    "MaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "NextToken":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "OwnerAccountId":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"[0-9]{12}"
+    },
+    "ProductType":{
+      "type":"string",
+      "max":32,
+      "min":5
+    },
+    "Provider":{
+      "type":"structure",
+      "members":{
+        "cloudServiceProvider":{
+          "shape":"CloudServiceProvider",
+          "documentation":"<p>The provider's name. Specifically, connections to/from this Cloud Service Provider will be considered Multicloud connections.</p>"
+        },
+        "lastMileProvider":{
+          "shape":"LastMileProvider",
+          "documentation":"<p>The provider's name. Specifically, connections to/from this Last Mile Provider will be considered LastMile connections.</p>"
+        }
+      },
+      "documentation":"<p>Describes the respective AWS Interconnect Partner organization.</p>",
+      "union":true
+    },
+    "RemoteAccountIdentifier":{
+      "type":"structure",
+      "members":{
+        "identifier":{
+          "shape":"RemoteOwnerAccount",
+          "documentation":"<p>A generic bit of identifying information. Can be used in place of any of the more specific types.</p>"
+        }
+      },
+      "documentation":"<p>The types of identifiers that may be needed for remote account specification.</p>",
+      "union":true
+    },
+    "RemoteAccountIdentifierType":{
+      "type":"string",
+      "enum":[
+        "account",
+        "email"
+      ]
+    },
+    "RemoteOwnerAccount":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[-a-zA-Z0-9_@\\.]+"
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request specifies a resource that does not exist on the server.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The requested operation would result in the calling principal exceeding their allotted quota.</p>",
+      "error":{
+        "httpStatusCode":402,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "String":{"type":"string"},
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "TagKeyList":{
+      "type":"list",
+      "member":{"shape":"TagKey"}
+    },
+    "TagMap":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"}
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "tags"
+      ],
+      "members":{
+        "arn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The ARN of the resource that should receive the new tags.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>A map of tags to apply to the specified resource.</p>"
+        }
+      }
+    },
+    "TagResourceResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "TagValue":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request was denied due to request throttling.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "tagKeys"
+      ],
+      "members":{
+        "arn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The ARN of the resource from which the specified tags should be removed.</p>"
+        },
+        "tagKeys":{
+          "shape":"TagKeyList",
+          "documentation":"<p>The list of tag keys that should be removed from the resource.</p>"
+        }
+      }
+    },
+    "UntagResourceResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "UpdateConnectionRequest":{
+      "type":"structure",
+      "required":["identifier"],
+      "members":{
+        "identifier":{
+          "shape":"ConnectionId",
+          "documentation":"<p>The identifier of the <a>Connection</a> that should be updated.</p>"
+        },
+        "description":{
+          "shape":"ConnectionDescription",
+          "documentation":"<p>An updated description to apply to the <a>Connection</a> </p>"
+        },
+        "bandwidth":{
+          "shape":"ConnectionBandwidth",
+          "documentation":"<p>Request a new bandwidth size on the given <a>Connection</a>.</p> <p>Note that changes to the size may be subject to additional policy, and does require the remote partner provider to acknowledge and permit this new bandwidth size.</p>"
+        },
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>Idempotency token used for the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "UpdateConnectionResponse":{
+      "type":"structure",
+      "members":{
+        "connection":{
+          "shape":"Connection",
+          "documentation":"<p>The resulting updated <a>Connection</a> </p>"
+        }
+      }
+    }
+  },
+  "documentation":"<p>Provides managed connections between your AWS network resources and select partner network resources.</p>"
+}

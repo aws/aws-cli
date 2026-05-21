@@ -13,28 +13,6 @@
     "uid":"devops-agent-2026-01-01"
   },
   "operations":{
-    "AllowVendedLogDeliveryForResource":{
-      "name":"AllowVendedLogDeliveryForResource",
-      "http":{
-        "method":"POST",
-        "requestUri":"/allow-vended-log-delivery-for-resource",
-        "responseCode":200
-      },
-      "input":{"shape":"AllowVendedLogDeliveryForResourceInput"},
-      "output":{"shape":"AllowVendedLogDeliveryForResourceOutput"},
-      "errors":[
-        {"shape":"ContentSizeExceededException"},
-        {"shape":"ServiceQuotaExceededException"},
-        {"shape":"ConflictException"},
-        {"shape":"InternalServerException"},
-        {"shape":"AccessDeniedException"},
-        {"shape":"ThrottlingException"},
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"InvalidParameterException"}
-      ],
-      "documentation":"<p>Authorize Ingestion Hub subscription operation. Looks to see if the derived accountId from FAS has an AgentSpace.</p>",
-      "endpoint":{"hostPrefix":"cp."}
-    },
     "AssociateService":{
       "name":"AssociateService",
       "http":{
@@ -51,9 +29,9 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Adds a specific service association to an AgentSpace. It overwrites the existing association of the same service. Returns 201 Created on success.</p>",
       "endpoint":{"hostPrefix":"cp."}
@@ -74,8 +52,8 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ThrottlingException"},
         {"shape":"InvalidParameterException"},
+        {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Creates a new AgentSpace with the specified name and description. Duplicate space names are allowed.</p>",
@@ -146,8 +124,8 @@
         {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Creates a Private Connection to a target resource.</p>",
       "endpoint":{"hostPrefix":"cp."},
@@ -249,30 +227,6 @@
       "endpoint":{"hostPrefix":"cp."},
       "readonly":true
     },
-    "DescribeSupportLevel":{
-      "name":"DescribeSupportLevel",
-      "http":{
-        "method":"POST",
-        "requestUri":"/support/agent-space/{agentSpaceId}/tasks/{taskId}/supportLevel",
-        "responseCode":201
-      },
-      "input":{"shape":"DescribeSupportLevelRequest"},
-      "output":{"shape":"DescribeSupportLevelResponse"},
-      "errors":[
-        {"shape":"ValidationException"},
-        {"shape":"ContentSizeExceededException"},
-        {"shape":"ServiceQuotaExceededException"},
-        {"shape":"ConflictException"},
-        {"shape":"InternalServerException"},
-        {"shape":"AccessDeniedException"},
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"},
-        {"shape":"InvalidParameterException"}
-      ],
-      "documentation":"<p>Describe the support level of a CloudSmith customer account.</p>",
-      "endpoint":{"hostPrefix":"dp."},
-      "idempotent":true
-    },
     "DisableOperatorApp":{
       "name":"DisableOperatorApp",
       "http":{
@@ -290,8 +244,8 @@
         {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Disable the Operator App for the specified AgentSpace</p>",
       "endpoint":{"hostPrefix":"cp."},
@@ -339,35 +293,11 @@
         {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Enable the Operator App to access the given AgentSpace</p>",
       "endpoint":{"hostPrefix":"cp."}
-    },
-    "EndChatForCase":{
-      "name":"EndChatForCase",
-      "http":{
-        "method":"POST",
-        "requestUri":"/support/agent-space/{agentSpaceId}/tasks/{taskId}/end-chat-for-case",
-        "responseCode":200
-      },
-      "input":{"shape":"EndChatForCaseRequest"},
-      "output":{"shape":"EndChatForCaseResponse"},
-      "errors":[
-        {"shape":"ValidationException"},
-        {"shape":"ContentSizeExceededException"},
-        {"shape":"ServiceQuotaExceededException"},
-        {"shape":"ConflictException"},
-        {"shape":"InternalServerException"},
-        {"shape":"AccessDeniedException"},
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"},
-        {"shape":"InvalidParameterException"}
-      ],
-      "documentation":"<p>End a chat session for a support case in the specified agent space</p>",
-      "endpoint":{"hostPrefix":"dp."},
-      "idempotent":true
     },
     "GetAccountUsage":{
       "name":"GetAccountUsage",
@@ -482,8 +412,8 @@
         {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Get the full auth configuration of operator including any enabled auth flow</p>",
       "endpoint":{"hostPrefix":"cp."},
@@ -537,30 +467,6 @@
       "endpoint":{"hostPrefix":"cp."},
       "readonly":true
     },
-    "InitiateChatForCase":{
-      "name":"InitiateChatForCase",
-      "http":{
-        "method":"POST",
-        "requestUri":"/support/agent-space/{agentSpaceId}/tasks/{taskId}/chats",
-        "responseCode":201
-      },
-      "input":{"shape":"InitiateChatForCaseRequest"},
-      "output":{"shape":"InitiateChatForCaseResponse"},
-      "errors":[
-        {"shape":"ValidationException"},
-        {"shape":"ContentSizeExceededException"},
-        {"shape":"ServiceQuotaExceededException"},
-        {"shape":"ConflictException"},
-        {"shape":"InternalServerException"},
-        {"shape":"AccessDeniedException"},
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"},
-        {"shape":"InvalidParameterException"}
-      ],
-      "documentation":"<p>Initiate a chat for support case in the specified agent space</p>",
-      "endpoint":{"hostPrefix":"dp."},
-      "idempotent":true
-    },
     "ListAgentSpaces":{
       "name":"ListAgentSpaces",
       "http":{
@@ -578,8 +484,8 @@
         {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Lists all AgentSpaces with optional pagination.</p>",
       "endpoint":{"hostPrefix":"cp."},
@@ -626,8 +532,8 @@
         {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Lists backlog tasks in the specified agent space with optional filtering and sorting</p>",
       "endpoint":{"hostPrefix":"dp."}
@@ -672,8 +578,8 @@
         {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>List executions</p>",
       "endpoint":{"hostPrefix":"dp."}
@@ -695,8 +601,8 @@
         {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Lists goals in the specified agent space with optional filtering</p>",
       "endpoint":{"hostPrefix":"dp."}
@@ -718,8 +624,8 @@
         {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>List journal records for a specific execution</p>",
       "endpoint":{"hostPrefix":"dp."}
@@ -764,8 +670,8 @@
         {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Lists all Private Connections in the caller's account.</p>",
       "endpoint":{"hostPrefix":"cp."},
@@ -788,8 +694,8 @@
         {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Lists recommendations for the specified agent space</p>",
       "endpoint":{"hostPrefix":"dp."}
@@ -811,8 +717,8 @@
         {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>List a list of registered service on the account level.</p>",
       "endpoint":{"hostPrefix":"cp."},
@@ -835,8 +741,8 @@
         {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"InvalidParameterException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Lists tags for the specified AWS DevOps Agent resource.</p>",
       "endpoint":{"hostPrefix":"cp."},
@@ -882,8 +788,8 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>This operation registers the specified service</p>",
@@ -929,8 +835,8 @@
         {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"InvalidParameterException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Adds or overwrites tags for the specified AWS DevOps Agent resource.</p>",
       "endpoint":{"hostPrefix":"cp."},
@@ -953,8 +859,8 @@
         {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"InvalidParameterException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Removes tags from the specified AWS DevOps Agent resource.</p>",
       "endpoint":{"hostPrefix":"cp."},
@@ -1072,7 +978,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InvalidParameterException"}
       ],
-      "documentation":"<p>Update the external Identity Provider configuration for the Operator App</p>"
+      "documentation":"<p>Update the external Identity Provider configuration for the Operator App</p>",
+      "endpoint":{"hostPrefix":"cp."}
     },
     "UpdatePrivateConnectionCertificate":{
       "name":"UpdatePrivateConnectionCertificate",
@@ -1317,42 +1224,6 @@
       "min":1,
       "pattern":"[\\p{L}\\p{N}\\p{P}\\p{S}\\p{Z}]+"
     },
-    "AllowVendedLogDeliveryForResourceInput":{
-      "type":"structure",
-      "required":[
-        "resourceArnBeingAuthorized",
-        "deliverySourceArn"
-      ],
-      "members":{
-        "resourceArnBeingAuthorized":{
-          "shape":"String",
-          "documentation":"<p>The ARN of the resource being authorized for vended log delivery.</p>"
-        },
-        "deliverySourceArn":{
-          "shape":"AllowVendedLogDeliveryForResourceInputDeliverySourceArnString",
-          "documentation":"<p>The ARN of the delivery source for vended log delivery.</p>"
-        },
-        "logType":{
-          "shape":"String",
-          "documentation":"<p>The type of log to be delivered.</p>"
-        }
-      },
-      "documentation":"<p>Input for authorizing vended log delivery for a resource.</p>"
-    },
-    "AllowVendedLogDeliveryForResourceInputDeliverySourceArnString":{
-      "type":"string",
-      "pattern":"arn:.*"
-    },
-    "AllowVendedLogDeliveryForResourceOutput":{
-      "type":"structure",
-      "members":{
-        "message":{
-          "shape":"String",
-          "documentation":"<p>A message describing the result of the authorization operation.</p>"
-        }
-      },
-      "documentation":"<p>Output for the vended log delivery authorization operation.</p>"
-    },
     "ApiKeyValue":{
       "type":"string",
       "documentation":"<p>API Key Value for service.</p>",
@@ -1478,13 +1349,6 @@
         "idp"
       ]
     },
-    "AwsRegion":{
-      "type":"string",
-      "documentation":"<p>AWS region identifier.</p>",
-      "max":50,
-      "min":1,
-      "pattern":"[a-z]{2,4}(-[a-z]+)+-\\d+"
-    },
     "AzureConfiguration":{
       "type":"structure",
       "required":["subscriptionId"],
@@ -1576,35 +1440,12 @@
       "type":"list",
       "member":{"shape":"ChatExecution"}
     },
-    "ChatParticipantConnection":{
-      "type":"structure",
-      "required":[
-        "initialContactId",
-        "participantId",
-        "participantToken"
-      ],
-      "members":{
-        "initialContactId":{
-          "shape":"String",
-          "documentation":"<p>The identifier of the contact in this instance of Amazon Connect</p>"
-        },
-        "participantId":{
-          "shape":"String",
-          "documentation":"<p>The identifier for a chat participant</p>"
-        },
-        "participantToken":{
-          "shape":"String",
-          "documentation":"<p>The token used by the chat participant to call CreateParticipantConnection</p>"
-        }
-      },
-      "documentation":"<p>Represents a chat participant connection with all its properties and metadata</p>"
-    },
     "ClientId":{
       "type":"string",
       "documentation":"<p>Client ID for service authentication.</p>",
       "max":255,
       "min":1,
-      "pattern":"[a-zA-Z0-9._-]+",
+      "pattern":"[\\u0020-\\u007E]+",
       "sensitive":true
     },
     "ClientSecret":{
@@ -1750,10 +1591,7 @@
     },
     "CreateChatRequest":{
       "type":"structure",
-      "required":[
-        "agentSpaceId",
-        "userId"
-      ],
+      "required":["agentSpaceId"],
       "members":{
         "agentSpaceId":{
           "shape":"AgentSpaceId",
@@ -1762,7 +1600,10 @@
         },
         "userId":{
           "shape":"ResourceId",
-          "documentation":"<p>The user identifier for the chat</p>",
+          "documentation":"<p>The user identifier for the chat. This field is deprecated and will be ignored — the service resolves user identity from the authenticated session.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"userId is managed by the service and should not be provided by the caller",
+          "deprecatedSince":"2026-04-15",
           "location":"querystring",
           "locationName":"userId"
         },
@@ -1861,6 +1702,29 @@
         }
       },
       "documentation":"<p>Output containing the newly created Private Connection summary.</p>"
+    },
+    "CustomHeaderName":{
+      "type":"string",
+      "documentation":"<p>HTTP header name. Allows alphanumeric characters, hyphens, and underscores.</p>",
+      "max":256,
+      "min":1,
+      "pattern":"[a-zA-Z0-9-_]+"
+    },
+    "CustomHeaderValue":{
+      "type":"string",
+      "documentation":"<p>Value type for custom headers.</p>",
+      "max":4096,
+      "min":1,
+      "pattern":"[!-~]([ \\t]*[!-~])*",
+      "sensitive":true
+    },
+    "CustomHeaders":{
+      "type":"map",
+      "key":{"shape":"CustomHeaderName"},
+      "value":{"shape":"CustomHeaderValue"},
+      "documentation":"<p>Custom headers map.</p>",
+      "max":10,
+      "min":0
     },
     "DatadogAuthorizationConfig":{
       "type":"structure",
@@ -2046,47 +1910,6 @@
         }
       },
       "documentation":"<p>Output containing the Private Connection details.</p>"
-    },
-    "DescribeSupportLevelRequest":{
-      "type":"structure",
-      "required":[
-        "agentSpaceId",
-        "taskId"
-      ],
-      "members":{
-        "agentSpaceId":{
-          "shape":"AgentSpaceId",
-          "documentation":"<p>The unique identifier for the agent space containing the task</p>",
-          "location":"uri",
-          "locationName":"agentSpaceId"
-        },
-        "taskId":{
-          "shape":"String",
-          "documentation":"<p>The unique identifier for this task</p>",
-          "location":"uri",
-          "locationName":"taskId"
-        }
-      },
-      "documentation":"<p>Request structure for desribing support level for an account</p>"
-    },
-    "DescribeSupportLevelResponse":{
-      "type":"structure",
-      "required":["supportLevel"],
-      "members":{
-        "supportLevel":{
-          "shape":"SupportLevel",
-          "documentation":"<p>The account's support level</p>"
-        },
-        "mosaicSupportLevel":{
-          "shape":"SupportLevel",
-          "documentation":"<p>The account's Mosaic equivalent support level</p>"
-        },
-        "activeSubscription":{
-          "shape":"Boolean",
-          "documentation":"<p>Whether or not the account's subscription is active</p>"
-        }
-      },
-      "documentation":"<p>Response structure containing detailed support level for an account</p>"
     },
     "Description":{
       "type":"string",
@@ -2306,60 +2129,6 @@
       },
       "documentation":"<p>Output containing the enabled Operator App configuration.</p>"
     },
-    "EndChatForCaseRequest":{
-      "type":"structure",
-      "required":[
-        "agentSpaceId",
-        "taskId"
-      ],
-      "members":{
-        "agentSpaceId":{
-          "shape":"AgentSpaceId",
-          "documentation":"<p>The unique identifier for the agent space containing the task</p>",
-          "location":"uri",
-          "locationName":"agentSpaceId"
-        },
-        "taskId":{
-          "shape":"String",
-          "documentation":"<p>The unique identifier for the task execution to end</p>",
-          "location":"uri",
-          "locationName":"taskId"
-        },
-        "reason":{
-          "shape":"String",
-          "documentation":"<p>Reason for ending the chat session (optional, defaults to 'Chat Ended by CloudSmith')</p>"
-        },
-        "requester":{
-          "shape":"String",
-          "documentation":"<p>Who initiated the chat end request (optional, defaults to 'CloudSmith')</p>"
-        },
-        "clientToken":{
-          "shape":"String",
-          "documentation":"<p>Client-provided token for idempotent operations</p>",
-          "idempotencyToken":true
-        }
-      },
-      "documentation":"<p>Request structure for ending a chat session</p>"
-    },
-    "EndChatForCaseResponse":{
-      "type":"structure",
-      "required":["isDisconnected"],
-      "members":{
-        "isDisconnected":{
-          "shape":"Boolean",
-          "documentation":"<p>Whether the chat session was successfully ended</p>"
-        },
-        "executionId":{
-          "shape":"String",
-          "documentation":"<p>The execution ID that was ended</p>"
-        },
-        "errorMessage":{
-          "shape":"String",
-          "documentation":"<p>Error message if the disconnect failed</p>"
-        }
-      },
-      "documentation":"<p>Response structure for end chat operation</p>"
-    },
     "EventChannelConfiguration":{
       "type":"structure",
       "members":{},
@@ -2505,6 +2274,10 @@
         "monthlyAccountSystemLearningHours":{
           "shape":"UsageMetric",
           "documentation":"<p>Monthly system learning hours usage and limit for an account</p>"
+        },
+        "monthlyAccountOnDemandHours":{
+          "shape":"UsageMetric",
+          "documentation":"<p>Monthly on-demand hours usage and limit for an account</p>"
         },
         "usagePeriodStartTime":{
           "shape":"DateTime",
@@ -3102,44 +2875,6 @@
       "min":1,
       "sensitive":true
     },
-    "InitiateChatForCaseRequest":{
-      "type":"structure",
-      "required":[
-        "agentSpaceId",
-        "taskId"
-      ],
-      "members":{
-        "agentSpaceId":{
-          "shape":"AgentSpaceId",
-          "documentation":"<p>The unique identifier for the agent space containing the task</p>",
-          "location":"uri",
-          "locationName":"agentSpaceId"
-        },
-        "taskId":{
-          "shape":"String",
-          "documentation":"<p>The unique identifier for this task</p>",
-          "location":"uri",
-          "locationName":"taskId"
-        },
-        "clientToken":{
-          "shape":"String",
-          "documentation":"<p>Client-provided token for idempotent operations</p>",
-          "idempotencyToken":true
-        }
-      },
-      "documentation":"<p>Request structure for initiating a chat for support case</p>"
-    },
-    "InitiateChatForCaseResponse":{
-      "type":"structure",
-      "required":["chatParticipantConnection"],
-      "members":{
-        "chatParticipantConnection":{
-          "shape":"ChatParticipantConnection",
-          "documentation":"<p>The newly created chat participant connection</p>"
-        }
-      },
-      "documentation":"<p>Response structure containing the chat participant connection</p>"
-    },
     "Integer":{
       "type":"integer",
       "box":true
@@ -3352,7 +3087,7 @@
         },
         "filter":{
           "shape":"TaskFilter",
-          "documentation":"<p>Filter criteria to apply when listing tasks</p> <p>Filtering restrictions:</p> <ul> <li>Each filter field list is limited to a single value</li> <li>Filtering by Priority and Status at the same time when not filtering by Type is not permitted</li> <li>Timestamp filters (createdAfter, createdBefore) can be combined with other filters when not sorting by priority</li> </ul>"
+          "documentation":"<p>Filter criteria to apply when listing tasks Filtering restrictions: - Each filter field list is limited to a single value - Filtering by Priority and Status at the same time when not filtering by Type is not permitted - Timestamp filters (createdAfter, createdBefore) can be combined with other filters when not sorting by priority</p>"
         },
         "limit":{
           "shape":"ListBacklogTasksRequestLimitInteger",
@@ -3364,7 +3099,7 @@
         },
         "sortField":{
           "shape":"TaskSortField",
-          "documentation":"<p>Field to sort by</p> <pre><code>Sorting restrictions: </code></pre> <ul> <li>Only sorting on createdAt is supported when using priority or status filters alone.</li> <li>Sorting by priority is not supported when using Timestamp filters (createdAfter, createdBefore)</li> </ul>"
+          "documentation":"<p>Field to sort by Sorting restrictions: - Only sorting on createdAt is supported when using priority or status filters alone. - Sorting by priority is not supported when using Timestamp filters (createdAfter, createdBefore)</p>"
         },
         "order":{
           "shape":"TaskSortOrder",
@@ -3396,10 +3131,7 @@
     },
     "ListChatsRequest":{
       "type":"structure",
-      "required":[
-        "agentSpaceId",
-        "userId"
-      ],
+      "required":["agentSpaceId"],
       "members":{
         "agentSpaceId":{
           "shape":"AgentSpaceId",
@@ -3408,7 +3140,10 @@
         },
         "userId":{
           "shape":"ResourceId",
-          "documentation":"<p>The user identifier to list chats for</p>",
+          "documentation":"<p>The user identifier to list chats for. This field is deprecated and will be ignored — the service resolves user identity from the authenticated session.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"userId is managed by the service and should not be provided by the caller",
+          "deprecatedSince":"2026-04-15",
           "location":"querystring",
           "locationName":"userId"
         },
@@ -3875,7 +3610,7 @@
       "type":"string",
       "documentation":"<p>API Key Value for service.</p>",
       "min":1,
-      "pattern":"[a-zA-Z0-9+/=._-]+(\\s[a-zA-Z0-9+/=._-]+)?",
+      "pattern":"[!-~]([ \\t]*[!-~])*",
       "sensitive":true
     },
     "MCPServerAuthorizationConfig":{
@@ -3965,6 +3700,22 @@
       "documentation":"<p>Token value for authentication.</p>",
       "pattern":"[\\S]+",
       "sensitive":true
+    },
+    "MCPServerConfiguration":{
+      "type":"structure",
+      "required":["tools"],
+      "members":{
+        "tools":{
+          "shape":"MCPToolsList",
+          "documentation":"<p>List of MCP tools can be used with the association.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for Model Context Protocol (MCP) server integration.</p>"
+    },
+    "MCPServerDatadogConfiguration":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Mixin for webhook update support.</p>"
     },
     "MCPServerDetails":{
       "type":"structure",
@@ -4056,7 +3807,8 @@
     },
     "MCPServerNewRelicConfigurationAccountIdString":{
       "type":"string",
-      "min":6,
+      "max":7,
+      "min":3,
       "pattern":"[0-9]+"
     },
     "MCPServerNewRelicConfigurationEndpointString":{
@@ -4183,8 +3935,8 @@
       ],
       "members":{
         "region":{
-          "shape":"AwsRegion",
-          "documentation":"<p>AWS region for SigV4 signing.</p>"
+          "shape":"SigV4Region",
+          "documentation":"<p>AWS region for SigV4 signing. Use '*' for SigV4a multi-region signing.</p>"
         },
         "service":{
           "shape":"MCPServerSigV4AuthorizationConfigServiceString",
@@ -4193,6 +3945,10 @@
         "roleArn":{
           "shape":"RoleArn",
           "documentation":"<p>IAM role ARN to assume for SigV4 signing.</p>"
+        },
+        "customHeaders":{
+          "shape":"CustomHeaders",
+          "documentation":"<p>Custom headers for the SigV4 MCP server.</p>"
         }
       },
       "documentation":"<p>Authorization configuration for SigV4-authenticated MCP server.</p>"
@@ -4201,6 +3957,17 @@
       "type":"string",
       "max":100,
       "min":1
+    },
+    "MCPServerSigV4Configuration":{
+      "type":"structure",
+      "required":["tools"],
+      "members":{
+        "tools":{
+          "shape":"MCPToolsList",
+          "documentation":"<p>List of MCP tools available for the association.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for SigV4-authenticated MCP server integration.</p>"
     },
     "MCPServerSigV4ServiceDetails":{
       "type":"structure",
@@ -4245,6 +4012,11 @@
       "type":"string",
       "pattern":"[a-zA-Z0-9_-]+"
     },
+    "MCPServerSplunkConfiguration":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Mixin for webhook update support.</p>"
+    },
     "MCPToolsList":{
       "type":"list",
       "member":{"shape":"MCPToolsListMemberString"},
@@ -4253,61 +4025,6 @@
     "MCPToolsListMemberString":{
       "type":"string",
       "pattern":"[a-zA-Z0-9_-]+"
-    },
-    "MSTeamsChannel":{
-      "type":"structure",
-      "required":[
-        "channelName",
-        "channelId"
-      ],
-      "members":{
-        "channelName":{
-          "shape":"String",
-          "documentation":"<p>MS Teams channel name</p>"
-        },
-        "channelId":{
-          "shape":"Guid",
-          "documentation":"<p>MS Teams Channel ID</p>"
-        }
-      },
-      "documentation":"<p>Represents a Teams channel with its ID and name.</p>"
-    },
-    "MSTeamsConfiguration":{
-      "type":"structure",
-      "required":[
-        "teamId",
-        "teamName",
-        "transmissionTarget"
-      ],
-      "members":{
-        "teamId":{
-          "shape":"Guid",
-          "documentation":"<p>Associated MS Teams teams ID</p>"
-        },
-        "teamName":{
-          "shape":"String",
-          "documentation":"<p>Associated MS Teams team name</p>"
-        },
-        "transmissionTarget":{
-          "shape":"MSTeamsTransmissionTarget",
-          "documentation":"<p>Transmission targets for agent notification</p>"
-        }
-      },
-      "documentation":"<p>Configuration for MS Teams workspace integration.</p>"
-    },
-    "MSTeamsTransmissionTarget":{
-      "type":"structure",
-      "members":{
-        "opsOncallTarget":{
-          "shape":"MSTeamsChannel",
-          "documentation":"<p>Destination for On-call Agent(Ops1)</p>"
-        },
-        "opsSRETarget":{
-          "shape":"MSTeamsChannel",
-          "documentation":"<p>Destination for SRE Agent (Ops1.5)</p>"
-        }
-      },
-      "documentation":"<p>Defines MS Teams channels for different types of agent notifications.</p>"
     },
     "MaxIpv4AddressesPerEni":{
       "type":"integer",
@@ -4388,6 +4105,8 @@
     },
     "NewRelicApiKeyConfigAccountIdString":{
       "type":"string",
+      "max":7,
+      "min":3,
       "pattern":"[0-9]+"
     },
     "NewRelicApiKeyConfigApiKeyString":{
@@ -4587,7 +4306,7 @@
     },
     "PortRange":{
       "type":"string",
-      "documentation":"<p>TCP port range expression (single port or range e.g. '443' or '8080-8090'). Valid port values are 0-65535, enforced at runtime.</p>",
+      "documentation":"<p>TCP port range expression (single port or range e.g. '443' or '8080-8090'). Valid port values are 1-65535, enforced at runtime.</p>",
       "min":1,
       "pattern":"((\\d{1,5}\\-\\d{1,5})|(\\d+))"
     },
@@ -4769,6 +4488,14 @@
           "shape":"String",
           "documentation":"<p>Additional context for recommendation</p>"
         },
+        "rankPosition":{
+          "shape":"RecommendationRankPositionInteger",
+          "documentation":"<p>Position in ranked list (1 = highest priority)</p>"
+        },
+        "rankedAt":{
+          "shape":"BackLogTimestamp",
+          "documentation":"<p>Timestamp when the recommendation was last ranked</p>"
+        },
         "createdAt":{
           "shape":"BackLogTimestamp",
           "documentation":"<p>Timestamp when this recommendation was created</p>"
@@ -4816,6 +4543,11 @@
         "MEDIUM",
         "LOW"
       ]
+    },
+    "RecommendationRankPositionInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
     },
     "RecommendationStatus":{
       "type":"string",
@@ -5124,8 +4856,8 @@
           "documentation":"<p>Optional description for the MCP server.</p>"
         },
         "region":{
-          "shape":"AwsRegion",
-          "documentation":"<p>AWS region for SigV4 signing.</p>"
+          "shape":"SigV4Region",
+          "documentation":"<p>AWS region for SigV4 signing. Use '*' for SigV4a multi-region signing.</p>"
         },
         "service":{
           "shape":"RegisteredMCPServerSigV4DetailsServiceString",
@@ -5134,6 +4866,10 @@
         "roleArn":{
           "shape":"RoleArn",
           "documentation":"<p>IAM role ARN to assume for SigV4 signing.</p>"
+        },
+        "customHeaders":{
+          "shape":"CustomHeaders",
+          "documentation":"<p>Custom headers for the SigV4 MCP server.</p>"
         }
       },
       "documentation":"<p>Details specific to a registered SigV4-authenticated MCP server.</p>"
@@ -5265,10 +5001,10 @@
     },
     "ResourceConfigurationArn":{
       "type":"string",
-      "documentation":"<p>Resource Configuration ARN.</p>",
+      "documentation":"<p>The ID or ARN of the Resource Configuration.</p>",
       "max":2048,
       "min":20,
-      "pattern":"arn:[a-z0-9\\-]+:vpc-lattice:[a-zA-Z0-9\\-]+:\\d{12}:resourceconfiguration/rcfg-[0-9a-z]{17}"
+      "pattern":"(arn:[a-z0-9\\-]+:vpc-lattice:[a-zA-Z0-9\\-]+:\\d{12}:resourceconfiguration/rcfg-[0-9a-z]{17}|rcfg-[0-9a-z]{17})"
     },
     "ResourceGatewayArn":{
       "type":"string",
@@ -5333,7 +5069,7 @@
       "members":{
         "resourceConfigurationId":{
           "shape":"ResourceConfigurationArn",
-          "documentation":"<p>The ARN of the Resource Configuration.</p>"
+          "documentation":"<p>The ID or ARN of the resource configuration.</p>"
         },
         "certificate":{
           "shape":"CertificateString",
@@ -5488,7 +5224,7 @@
           "documentation":"<p>Emitted when a content block is complete</p>"
         }
       },
-      "documentation":"<p>Event stream for chat message responses using the content block model. Events follow a lifecycle: responseCreated -&gt; responseInProgress -&gt; (contentBlockStart/contentBlockDelta/contentBlockStop events) -&gt; responseCompleted|responseFailed</p> <p>SendMessage always uses content block mode — legacy per-field events (outputTextDelta, functionCallArgumentsDelta, etc.) are not emitted.</p>",
+      "documentation":"<p>Event stream for chat message responses using the content block model. Events follow a lifecycle: responseCreated -&gt; responseInProgress -&gt; (contentBlockStart/contentBlockDelta/contentBlockStop events) -&gt; responseCompleted|responseFailed SendMessage always uses content block mode — legacy per-field events (outputTextDelta, functionCallArgumentsDelta, etc.) are not emitted.</p>",
       "eventstream":true
     },
     "SendMessageHeartbeatEvent":{
@@ -5512,8 +5248,7 @@
       "required":[
         "agentSpaceId",
         "executionId",
-        "content",
-        "userId"
+        "content"
       ],
       "members":{
         "agentSpaceId":{
@@ -5536,7 +5271,10 @@
         },
         "userId":{
           "shape":"ResourceId",
-          "documentation":"<p>Required user identifier</p>"
+          "documentation":"<p>User identifier. This field is deprecated and will be ignored — the service resolves user identity from the authenticated session.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"userId is managed by the service and should not be provided by the caller",
+          "deprecatedSince":"2026-04-15"
         }
       },
       "documentation":"<p>Request structure for sending a chat message</p>"
@@ -5676,7 +5414,6 @@
         "slack",
         "azure",
         "azuredevops",
-        "msteams",
         "dynatrace",
         "servicenow",
         "pagerduty",
@@ -5722,9 +5459,21 @@
           "shape":"MCPServerNewRelicConfiguration",
           "documentation":"<p>NewRelic instance integration configuration.</p>"
         },
+        "mcpserverdatadog":{
+          "shape":"MCPServerDatadogConfiguration",
+          "documentation":"<p>Datadog MCP server integration configuration.</p>"
+        },
+        "mcpserver":{
+          "shape":"MCPServerConfiguration",
+          "documentation":"<p>MCP (Model Context Protocol) server integration configuration.</p>"
+        },
         "gitlab":{
           "shape":"GitLabConfiguration",
           "documentation":"<p>GitLab project integration configuration.</p>"
+        },
+        "mcpserversplunk":{
+          "shape":"MCPServerSplunkConfiguration",
+          "documentation":"<p>Splunk MCP server integration configuration.</p>"
         },
         "eventChannel":{
           "shape":"EventChannelConfiguration",
@@ -5746,9 +5495,9 @@
           "shape":"PagerDutyConfiguration",
           "documentation":"<p>PagerDuty integration configuration</p>"
         },
-        "msteams":{
-          "shape":"MSTeamsConfiguration",
-          "documentation":"<p>MS Teams integration configuration</p>"
+        "mcpserversigv4":{
+          "shape":"MCPServerSigV4Configuration",
+          "documentation":"<p>SigV4-authenticated MCP server integration configuration.</p>"
         }
       },
       "documentation":"<p>Union of all supported service configuration types. Each service has its own specific configuration structure.</p>",
@@ -5966,6 +5715,13 @@
       },
       "exception":true
     },
+    "SigV4Region":{
+      "type":"string",
+      "documentation":"<p>AWS region identifier or wildcard (*) for SigV4a multi-region signing.</p>",
+      "max":50,
+      "min":1,
+      "pattern":"(\\*|[a-z]{2,4}(-[a-z]+)+-\\d+)"
+    },
     "SlackChannel":{
       "type":"structure",
       "required":["channelId"],
@@ -6072,24 +5828,6 @@
       "max":24,
       "min":15,
       "pattern":"subnet-(([0-9a-z]{8})|([0-9a-z]{17}))"
-    },
-    "SupportLevel":{
-      "type":"structure",
-      "required":[
-        "code",
-        "name"
-      ],
-      "members":{
-        "code":{
-          "shape":"String",
-          "documentation":"<p>The support level code</p>"
-        },
-        "name":{
-          "shape":"String",
-          "documentation":"<p>The support level name</p>"
-        }
-      },
-      "documentation":"<p>Represents a support level with all its properties and metadata</p>"
     },
     "SyntheticTimestamp_date_time":{
       "type":"timestamp",
@@ -6766,7 +6504,7 @@
           "documentation":"<p>A list of specific failures encountered while validating the input. A member can appear in this list more than once if it failed to satisfy multiple constraints.</p>"
         }
       },
-      "documentation":"<p>A standard error for input validation failures. This should be thrown by services when a member of the input structure falls outside of the modeled or documented constraints.</p>",
+      "documentation":"<p>The input fails to satisfy the constraints specified by the service.</p>",
       "exception":true
     },
     "ValidationExceptionField":{
@@ -6864,5 +6602,5 @@
       "documentation":"<p>A list of Association Webhook resources.</p>"
     }
   },
-  "documentation":"<p>AWS DevOps Agent is a frontier agent that resolves and proactively prevents incidents, continuously improving reliability and performance. AWS DevOps Agent investigates incidents and identifies operational improvements as an experienced DevOps engineer.</p> <p>The agent works by:</p> <ul> <li>Learning your resources and their relationships.</li> <li>Working with your observability tools, runbooks, code repositories, and CI/CD pipelines.</li> <li>Correlating telemetry, code, and deployment data to understand relationships between your application resources.</li> <li>Supporting applications in multicloud and hybrid environments.</li> </ul>"
+  "documentation":"<p>AWS DevOps Agent is your always-available operations teammate. It resolves and proactively prevents incidents, optimizes application reliability and performance, and handles on-demand SRE tasks across AWS, multicloud, and on-premises environments. AWS DevOps Agent investigates incidents as an experienced DevOps engineer would. It learns your applications and their relationships. It works with your observability tools, runbooks, code repositories, and CI/CD pipelines. The agent correlates telemetry, code, and deployment data across all of them. </p>"
 }

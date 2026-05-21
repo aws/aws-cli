@@ -32,6 +32,7 @@ from awscli.utils import (
     InstanceMetadataRegionFetcher,
     LazyPager,
     OutputStreamFactory,
+    SafeLineBreakEmitter,
     ShapeRecordingVisitor,
     ShapeWalker,
     add_command_lineage_to_user_agent_extra,
@@ -644,11 +645,12 @@ class TestIMDSRegionProvider(BaseIMDSRegionTest):
         provider.provide()
         args, _ = self._send.call_args
         self.assertIn('http://myendpoint/', args[0].url)
-    
+
     def test_can_set_imds_service_endpoint_custom(self):
         driver = create_clidriver()
         driver.session.set_config_variable(
-            'ec2_metadata_service_endpoint', 'http://myendpoint')
+            'ec2_metadata_service_endpoint', 'http://myendpoint'
+        )
         self.add_imds_token_response()
         self.add_get_region_imds_response()
         provider = IMDSRegionProvider(driver.session)
@@ -857,6 +859,28 @@ class TestDumpYamlToStr(unittest.TestCase):
         expected_result = "A: 1\nparameter: something\n"
         result = dump_yaml_to_str(self.yaml, obj)
         self.assertEqual(result, expected_result)
+
+
+@pytest.fixture
+def yaml_safe_emitter():
+    yaml = ruamel.yaml.YAML(typ="safe", pure=True)
+    yaml.default_flow_style = False
+    yaml.Emitter = SafeLineBreakEmitter
+    yaml.width = 25
+    return yaml
+
+
+class TestSafeLineBreakEmitter:
+    def test_backslash_at_every_line_break(self, yaml_safe_emitter):
+        data = {"key": "hello\nworld foo bar baz"}
+        output = dump_yaml_to_str(yaml_safe_emitter, data)
+        assert output == 'key: "hello\\nworld foo bar\\\n  \\ baz"\n'
+
+    def test_roundtrip_with_multiline_content(self, yaml_safe_emitter):
+        original = "line1\nline2 with spaces\nline3"
+        output = dump_yaml_to_str(yaml_safe_emitter, {"key": original})
+        result = ruamel.yaml.YAML(typ="safe", pure=True).load(output)
+        assert result["key"] == original
 
 
 class TestShapeWalker(BaseShapeTest):

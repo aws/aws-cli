@@ -1383,6 +1383,25 @@
       ],
       "documentation":"<p>Describes an existing import job.</p> <p>Poll job descriptions after starting a job to know when it has succeeded or failed. Job descriptions are available for 14 days after job starts.</p>"
     },
+    "DescribeAutomationJob":{
+      "name":"DescribeAutomationJob",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/automation-groups/{AutomationGroupId}/automations/{AutomationId}/jobs/{JobId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeAutomationJobRequest"},
+      "output":{"shape":"DescribeAutomationJobResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves the status and details of a specified automation job, including its status and outputs.</p>",
+      "readonly":true
+    },
     "DescribeBrand":{
       "name":"DescribeBrand",
       "http":{
@@ -3309,6 +3328,25 @@
       ],
       "documentation":"<p>Starts an Asset Bundle import job.</p> <p>An Asset Bundle import job imports specified Amazon Quick Sight assets into an Amazon Quick Sight account. You can also choose to import a naming prefix and specified configuration overrides. The assets that are contained in the bundle file that you provide are used to create or update a new or existing asset in your Amazon Quick Sight account. Each Amazon Quick Sight account can run up to 5 import jobs concurrently.</p> <p>The API caller must have the necessary <code>\"create\"</code>, <code>\"describe\"</code>, and <code>\"update\"</code> permissions in their IAM role to access each resource type that is contained in the bundle file before the resources can be imported.</p>"
     },
+    "StartAutomationJob":{
+      "name":"StartAutomationJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/automation-groups/{AutomationGroupId}/automations/{AutomationId}/jobs",
+        "responseCode":200
+      },
+      "input":{"shape":"StartAutomationJobRequest"},
+      "output":{"shape":"StartAutomationJobResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Starts a new job for a specified automation. The job runs the automation with the provided input payload.</p>"
+    },
     "StartDashboardSnapshotJob":{
       "name":"StartDashboardSnapshotJob",
       "http":{
@@ -4744,6 +4782,22 @@
       "max":20,
       "min":1
     },
+    "AdditionalNotes":{
+      "type":"structure",
+      "members":{
+        "Text":{
+          "shape":"AdditionalNotesText",
+          "documentation":"<p>The additional notes text.</p>"
+        }
+      },
+      "documentation":"<p>Additional notes that provide supplementary context for a column.</p>"
+    },
+    "AdditionalNotesText":{
+      "type":"string",
+      "max":2000,
+      "min":0,
+      "sensitive":true
+    },
     "AggFunction":{
       "type":"structure",
       "members":{
@@ -5073,6 +5127,10 @@
         "Sheets":{
           "shape":"SheetDefinitionList",
           "documentation":"<p>An array of sheet definitions for an analysis. Each <code>SheetDefinition</code> provides detailed information about a sheet within this analysis.</p>"
+        },
+        "TooltipSheets":{
+          "shape":"TooltipSheetDefinitionList",
+          "documentation":"<p>An array of tooltip sheet definitions for an analysis. Each <code>TooltipSheetDefinition</code> provides detailed information about a tooltip sheet within this analysis.</p>"
         },
         "CalculatedFields":{
           "shape":"CalculatedFields",
@@ -6911,6 +6969,10 @@
           "shape":"RoleArn",
           "documentation":"<p>Use the <code>RoleArn</code> structure to override an account-wide role for a specific Athena data source. For example, say an account administrator has turned off all Athena access with an account-wide role. The administrator can then use <code>RoleArn</code> to bypass the account-wide role and allow Athena access for the single Athena data source that is specified in the structure, even if the account-wide role forbidding Athena access is still active.</p>"
         },
+        "ConsumerAccountRoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>Use <code>ConsumerAccountRoleArn</code> to perform cross-account Athena access. This is an IAM role ARN in the same AWS account as the Athena resources you want to access. Provide this along with <code>RoleArn</code> to enable role-chaining, where Amazon Quick Sight first assumes the <code>RoleArn</code> and then assumes the <code>ConsumerAccountRoleArn</code> to access Athena resources.</p>"
+        },
         "IdentityCenterConfiguration":{
           "shape":"IdentityCenterConfiguration",
           "documentation":"<p>An optional parameter that configures IAM Identity Center authentication to grant Quick Sight access to your workgroup.</p> <p>This parameter can only be specified if your Quick Sight account is configured with IAM Identity Center.</p>"
@@ -7040,6 +7102,7 @@
       "type":"string",
       "enum":[
         "PASSWORD",
+        "KEYPAIR",
         "TOKEN",
         "X509"
       ]
@@ -7155,6 +7218,20 @@
     "AuthorizedTargetsList":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "AutomateId":{
+      "type":"string",
+      "pattern":"[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}"
+    },
+    "AutomationJobStatus":{
+      "type":"string",
+      "enum":[
+        "FAILED",
+        "RUNNING",
+        "SUCCEEDED",
+        "QUEUED",
+        "STOPPED"
+      ]
     },
     "AwsAccountId":{
       "type":"string",
@@ -8326,6 +8403,12 @@
         "CREATE_FAILED"
       ]
     },
+    "CACertificatesBundleS3Uri":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"^s3://.+/.+"
+    },
     "CIDR":{
       "type":"string",
       "pattern":"^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(3[0-2]|[1-2][0-9]|[1-9]))$"
@@ -8576,6 +8659,26 @@
         "Flow":{
           "shape":"CapabilityState",
           "documentation":"<p>The ability to perform flow-related actions.</p>"
+        },
+        "Apps":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to perform apps-related actions.</p>"
+        },
+        "CreateAndUpdateApps":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to create or update apps.</p>"
+        },
+        "ShareApps":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to share apps with other users.</p>"
+        },
+        "InvokeAppsAIInference":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to add and invoke AI inference in new and existing apps.</p>"
+        },
+        "AccessAppsNativeDataStore":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to access the native data store for new and existing apps.</p>"
         },
         "PublishWithoutApproval":{
           "shape":"CapabilityState",
@@ -9313,6 +9416,14 @@
           "shape":"CapabilityState",
           "documentation":"<p>The ability to perform space-related actions.</p>"
         },
+        "CreateSpaces":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to create spaces.</p>"
+        },
+        "ShareSpaces":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to share spaces with other users and groups.</p>"
+        },
         "ChatAgent":{
           "shape":"CapabilityState",
           "documentation":"<p>The ability to perform chat-related actions.</p>"
@@ -9320,6 +9431,10 @@
         "CreateChatAgents":{
           "shape":"CapabilityState",
           "documentation":"<p>The ability to create chat agents.</p>"
+        },
+        "ShareChatAgents":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to share chat agents with other users and groups.</p>"
         },
         "Research":{
           "shape":"CapabilityState",
@@ -9336,6 +9451,18 @@
         "ManageSharedFolders":{
           "shape":"CapabilityState",
           "documentation":"<p>The ability to create, update, delete and view shared folders (both restricted and unrestricted), ability to add any asset to shared folders, and ability to share the folders.</p> <p> <b>Note:</b> This does <i>not</i> prevent inheriting access to assets that others share with them through folder membership.</p>"
+        },
+        "GenerateAnalyses":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to generate analysis using AI</p>"
+        },
+        "Story":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to perform Story-related actions.</p>"
+        },
+        "Scenario":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to perform Scenario-related actions.</p>"
         }
       },
       "documentation":"<p>A set of actions that correspond to Amazon Quick Sight permissions.</p>"
@@ -10030,6 +10157,12 @@
       "max":128,
       "min":1
     },
+    "ColumnNameList":{
+      "type":"list",
+      "member":{"shape":"ColumnName"},
+      "max":2000,
+      "min":1
+    },
     "ColumnOrderingType":{
       "type":"string",
       "enum":[
@@ -10067,6 +10200,40 @@
       "type":"list",
       "member":{"shape":"ColumnSchema"},
       "max":500
+    },
+    "ColumnSemanticProperty":{
+      "type":"structure",
+      "members":{
+        "Description":{
+          "shape":"ColumnDescription",
+          "documentation":"<p>A description of the column.</p>"
+        },
+        "AdditionalNotes":{
+          "shape":"AdditionalNotes",
+          "documentation":"<p>Additional notes for the column.</p>"
+        },
+        "SemanticType":{
+          "shape":"ColumnSemanticType",
+          "documentation":"<p>The semantic type of the column.</p>"
+        }
+      },
+      "documentation":"<p>A semantic property for a column.</p>"
+    },
+    "ColumnSemanticPropertyList":{
+      "type":"list",
+      "member":{"shape":"ColumnSemanticProperty"},
+      "max":3,
+      "min":1
+    },
+    "ColumnSemanticType":{
+      "type":"structure",
+      "members":{
+        "GeographicalRole":{
+          "shape":"GeoSpatialDataRole",
+          "documentation":"<p>The geographical role of the column in the new data preparation experience.</p>"
+        }
+      },
+      "documentation":"<p>The semantic type information for a column in the new data preparation experience.</p>"
     },
     "ColumnSort":{
       "type":"structure",
@@ -10824,6 +10991,73 @@
       "type":"list",
       "member":{"shape":"ColumnIdentifier"},
       "max":4,
+      "min":1
+    },
+    "ControlSortConfiguration":{
+      "type":"structure",
+      "members":{
+        "SelectableValuesSort":{
+          "shape":"SelectableValuesSort",
+          "documentation":"<p>The sort configuration for user-specified values in the control. Use this option to sort values that are manually entered by users in a dropdown or list control.</p>"
+        },
+        "ControlColumnSort":{
+          "shape":"AggregationSortConfiguration",
+          "documentation":"<p>The sort configuration for controls that are tied to a dataset column. Use this option to sort control values by an aggregate of a column.</p>"
+        }
+      },
+      "documentation":"<p>The sort configuration for control values. This is a tagged union type. Specify either <code>SelectableValuesSort</code> or <code>ControlColumnSort</code>, but not both.</p>"
+    },
+    "ControlSortConfigurationList":{
+      "type":"list",
+      "member":{"shape":"ControlSortConfiguration"},
+      "max":1
+    },
+    "ControlSortDirection":{
+      "type":"string",
+      "enum":[
+        "ASC",
+        "DESC",
+        "USER_DEFINED_ORDER"
+      ]
+    },
+    "ControlTitleFontConfiguration":{
+      "type":"structure",
+      "members":{
+        "FontConfiguration":{
+          "shape":"FontConfiguration",
+          "documentation":"<p>Configures the font settings for the control title.</p>"
+        },
+        "TextAlignment":{
+          "shape":"HorizontalTextAlignment",
+          "documentation":"<p>Determines the alignment of the control title.</p>"
+        }
+      },
+      "documentation":"<p>Configures the display properties of the control title.</p>"
+    },
+    "ControlTitleFormatText":{
+      "type":"structure",
+      "members":{
+        "PlainText":{
+          "shape":"ControlTitlePlainText",
+          "documentation":"<p>The plain text format of the title text.</p>"
+        },
+        "RichText":{
+          "shape":"ControlTitleRichText",
+          "documentation":"<p>The rich text format of the title text.</p>"
+        }
+      },
+      "documentation":"<p>The title format text configuration for a sheet control. This is a tagged union type. Specify either <code>PlainText</code> or <code>RichText</code>, but not both.</p>"
+    },
+    "ControlTitlePlainText":{
+      "type":"string",
+      "documentation":"<p>The plain text title for a sheet control.</p>",
+      "max":2048,
+      "min":1
+    },
+    "ControlTitleRichText":{
+      "type":"string",
+      "documentation":"<p>The rich text title for a sheet control.</p>",
+      "max":4096,
       "min":1
     },
     "Coordinate":{
@@ -12923,6 +13157,22 @@
       },
       "documentation":"<p>A list of custom filter values.</p>"
     },
+    "CustomInstruction":{
+      "type":"structure",
+      "members":{
+        "InlineCustomInstruction":{
+          "shape":"InlineCustomInstruction",
+          "documentation":"<p>An inline custom instruction containing text and optional uploaded document metadata.</p>"
+        }
+      },
+      "documentation":"<p>A custom instruction that provides guidance on how the dataset should be consumed.</p>"
+    },
+    "CustomInstructionList":{
+      "type":"list",
+      "member":{"shape":"CustomInstruction"},
+      "max":2,
+      "min":1
+    },
     "CustomInstructions":{
       "type":"structure",
       "required":["CustomInstructionsString"],
@@ -13113,6 +13363,17 @@
         "ENABLED",
         "DISABLED"
       ]
+    },
+    "DashboardCustomizationSummaryConfigurations":{
+      "type":"structure",
+      "required":["Enabled"],
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>The enabled status of the dashboard customization summary configuration for an embedded Quick Sight dashboard.</p>"
+        }
+      },
+      "documentation":"<p>The dashboard customization summary configuration for an embedded Quick Sight dashboard.</p>"
     },
     "DashboardCustomizationVisualOptions":{
       "type":"structure",
@@ -13403,6 +13664,10 @@
         "Sheets":{
           "shape":"SheetDefinitionList",
           "documentation":"<p>An array of sheet definitions for a dashboard.</p>"
+        },
+        "TooltipSheets":{
+          "shape":"TooltipSheetDefinitionList",
+          "documentation":"<p>An array of tooltip sheet definitions for a dashboard.</p>"
         },
         "CalculatedFields":{
           "shape":"CalculatedFields",
@@ -14234,6 +14499,12 @@
       },
       "documentation":"<p>A filter condition that filters date values within a specified range.</p>"
     },
+    "DataSetDescriptiveText":{
+      "type":"string",
+      "max":500,
+      "min":1,
+      "sensitive":true
+    },
     "DataSetEntityResourceId":{
       "type":"string",
       "max":64,
@@ -14449,6 +14720,37 @@
     "DataSetSearchFilterList":{
       "type":"list",
       "member":{"shape":"DataSetSearchFilter"},
+      "max":1,
+      "min":1
+    },
+    "DataSetSemanticDescription":{
+      "type":"structure",
+      "required":["Text"],
+      "members":{
+        "Text":{
+          "shape":"DataSetDescriptiveText",
+          "documentation":"<p>The descriptive text for the dataset.</p>"
+        }
+      },
+      "documentation":"<p>A description structure for dataset-level semantic metadata.</p>"
+    },
+    "DataSetSemanticMetadata":{
+      "type":"structure",
+      "members":{
+        "Description":{
+          "shape":"DataSetSemanticDescription",
+          "documentation":"<p>A description of the dataset.</p>"
+        },
+        "CustomInstructions":{
+          "shape":"CustomInstructionList",
+          "documentation":"<p>A list of custom instructions that guide how the dataset should be consumed.</p>"
+        }
+      },
+      "documentation":"<p>Semantic metadata for a dataset, including a description and custom instructions.</p>"
+    },
+    "DataSetSemanticMetadataList":{
+      "type":"list",
+      "member":{"shape":"DataSetSemanticMetadata"},
       "max":1,
       "min":1
     },
@@ -14700,6 +15002,10 @@
         "WebProxyCredentials":{
           "shape":"WebProxyCredentials",
           "documentation":"<p>The credentials for connecting through a web proxy server.</p>"
+        },
+        "OAuthClientCredentials":{
+          "shape":"OAuthClientCredentials",
+          "documentation":"<p>The OAuth client credentials for connecting to a data source using OAuth 2.0 client credentials (2LO) authentication. For more information, see <code> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_OAuthClientCredentials.html\">OAuthClientCredentials</a> </code>.</p>"
         }
       },
       "documentation":"<p>Data source credentials. This is a variant type structure. For this structure to be valid, only one of the attributes can be non-null.</p>",
@@ -14803,6 +15109,10 @@
         "S3Parameters":{
           "shape":"S3Parameters",
           "documentation":"<p>The parameters for S3.</p>"
+        },
+        "S3TablesParameters":{
+          "shape":"S3TablesParameters",
+          "documentation":"<p>The parameters for S3 Tables.</p>"
         },
         "S3KnowledgeBaseParameters":{
           "shape":"S3KnowledgeBaseParameters",
@@ -14966,6 +15276,7 @@
         "PRESTO",
         "REDSHIFT",
         "S3",
+        "S3_TABLES",
         "SALESFORCE",
         "SERVICENOW",
         "SNOWFLAKE",
@@ -15717,10 +16028,7 @@
     },
     "DefaultFilterControlConfiguration":{
       "type":"structure",
-      "required":[
-        "Title",
-        "ControlOptions"
-      ],
+      "required":["ControlOptions"],
       "members":{
         "Title":{
           "shape":"SheetControlTitle",
@@ -15729,6 +16037,10 @@
         "ControlOptions":{
           "shape":"DefaultFilterControlOptions",
           "documentation":"<p>The control option for the <code>DefaultFilterControlConfiguration</code>.</p>"
+        },
+        "ControlTitleFormatText":{
+          "shape":"ControlTitleFormatText",
+          "documentation":"<p>The title text format configuration for the default filter control.</p>"
         }
       },
       "documentation":"<p>The default configuration for all dependent controls of the filter.</p>"
@@ -15785,6 +16097,10 @@
         "CommitMode":{
           "shape":"CommitMode",
           "documentation":"<p>The visibility configuration of the Apply button on a <code>FilterDropDownControl</code>.</p>"
+        },
+        "ControlSortConfigurations":{
+          "shape":"ControlSortConfigurationList",
+          "documentation":"<p>The sort configuration for the values displayed in the control. Only one sort configuration can be applied per control.</p>"
         }
       },
       "documentation":"<p>The default options that correspond to the <code>Dropdown</code> filter control type.</p>"
@@ -15803,6 +16119,10 @@
         "SelectableValues":{
           "shape":"FilterSelectableValues",
           "documentation":"<p>A list of selectable values that are used in a control.</p>"
+        },
+        "ControlSortConfigurations":{
+          "shape":"ControlSortConfigurationList",
+          "documentation":"<p>The sort configuration for the values displayed in the control. Only one sort configuration can be applied per control.</p>"
         }
       },
       "documentation":"<p>The default options that correspond to the <code>List</code> filter control type.</p>"
@@ -17930,6 +18250,94 @@
         "Warnings":{
           "shape":"AssetBundleImportJobWarningList",
           "documentation":"<p>An array of warning records that describe all permitted errors that are encountered during the import job.</p>"
+        }
+      }
+    },
+    "DescribeAutomationJobRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "AutomationGroupId",
+        "AutomationId",
+        "JobId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the automation job.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "AutomationGroupId":{
+          "shape":"AutomateId",
+          "documentation":"<p>The ID of the automation group that contains the automation.</p>",
+          "location":"uri",
+          "locationName":"AutomationGroupId"
+        },
+        "AutomationId":{
+          "shape":"AutomateId",
+          "documentation":"<p>The ID of the automation that the job belongs to.</p>",
+          "location":"uri",
+          "locationName":"AutomationId"
+        },
+        "IncludeInputPayload":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean value that indicates whether to include the input payload in the response. If set to <code>true</code>, the input payload will be included. If set to <code>false</code>, the input payload will be returned as <code>null</code>.</p>",
+          "location":"querystring",
+          "locationName":"includeInputPayload"
+        },
+        "IncludeOutputPayload":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean value that indicates whether to include the output payload in the response. If set to <code>true</code>, the output payload will be included. If set to <code>false</code>, the output payload will be returned as <code>null</code>.</p>",
+          "location":"querystring",
+          "locationName":"includeOutputPayload"
+        },
+        "JobId":{
+          "shape":"AutomateId",
+          "documentation":"<p>The ID of the automation job to describe.</p>",
+          "location":"uri",
+          "locationName":"JobId"
+        }
+      }
+    },
+    "DescribeAutomationJobResponse":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "JobStatus"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the automation job.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the automation job was created.</p>"
+        },
+        "StartedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the automation job started running.</p>"
+        },
+        "EndedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the automation job finished running.</p>"
+        },
+        "JobStatus":{
+          "shape":"AutomationJobStatus",
+          "documentation":"<p>The current status of the automation job.</p>"
+        },
+        "InputPayload":{
+          "shape":"SensitiveIOPayload",
+          "documentation":"<p>The input payload that was provided when the automation job was started. This field is only included when <code>IncludeInputPayload</code> is set to <code>true</code> in the request.</p>"
+        },
+        "OutputPayload":{
+          "shape":"SensitiveIOPayload",
+          "documentation":"<p>The output payload that was generated by the automation job. This field is only included when <code>IncludeOutputPayload</code> is set to <code>true</code> in the request.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
         }
       }
     },
@@ -21063,7 +21471,6 @@
       "type":"structure",
       "required":[
         "FilterControlId",
-        "Title",
         "SourceFilterId"
       ],
       "members":{
@@ -21090,6 +21497,10 @@
         "CommitMode":{
           "shape":"CommitMode",
           "documentation":"<p>The visibility configurationof the Apply button on a <code>DateTimePickerControl</code>.</p>"
+        },
+        "ControlTitleFormatText":{
+          "shape":"ControlTitleFormatText",
+          "documentation":"<p>The title text format configuration for the control.</p>"
         }
       },
       "documentation":"<p>A control from a date filter that is used to specify date and time.</p>"
@@ -21098,7 +21509,6 @@
       "type":"structure",
       "required":[
         "FilterControlId",
-        "Title",
         "SourceFilterId"
       ],
       "members":{
@@ -21133,6 +21543,14 @@
         "CommitMode":{
           "shape":"CommitMode",
           "documentation":"<p>The visibility configuration of the Apply button on a <code>FilterDropDownControl</code>.</p>"
+        },
+        "ControlSortConfigurations":{
+          "shape":"ControlSortConfigurationList",
+          "documentation":"<p>The sort configuration for the values displayed in the control. Only one sort configuration can be applied per control.</p>"
+        },
+        "ControlTitleFormatText":{
+          "shape":"ControlTitleFormatText",
+          "documentation":"<p>The title text format configuration for the control.</p>"
         }
       },
       "documentation":"<p>A control to display a dropdown list with buttons that are used to select a single value.</p>"
@@ -21206,7 +21624,6 @@
       "type":"structure",
       "required":[
         "FilterControlId",
-        "Title",
         "SourceFilterId"
       ],
       "members":{
@@ -21237,6 +21654,14 @@
         "CascadingControlConfiguration":{
           "shape":"CascadingControlConfiguration",
           "documentation":"<p>The values that are displayed in a control can be configured to only show values that are valid based on what's selected in other controls.</p>"
+        },
+        "ControlSortConfigurations":{
+          "shape":"ControlSortConfigurationList",
+          "documentation":"<p>The sort configuration for the values displayed in the control. Only one sort configuration can be applied per control.</p>"
+        },
+        "ControlTitleFormatText":{
+          "shape":"ControlTitleFormatText",
+          "documentation":"<p>The title text format configuration for the control.</p>"
         }
       },
       "documentation":"<p>A control to display a list of buttons or boxes. This is used to select either a single value or multiple values.</p>"
@@ -21316,7 +21741,6 @@
       "type":"structure",
       "required":[
         "FilterControlId",
-        "Title",
         "SourceFilterId"
       ],
       "members":{
@@ -21339,6 +21763,10 @@
         "CommitMode":{
           "shape":"CommitMode",
           "documentation":"<p>The visibility configuration of the Apply button on a <code>FilterRelativeDateTimeControl</code>.</p>"
+        },
+        "ControlTitleFormatText":{
+          "shape":"ControlTitleFormatText",
+          "documentation":"<p>The title text format configuration for the control.</p>"
         }
       },
       "documentation":"<p>A control from a date filter that is used to specify the relative date.</p>"
@@ -21371,7 +21799,6 @@
       "type":"structure",
       "required":[
         "FilterControlId",
-        "Title",
         "SourceFilterId",
         "MaximumValue",
         "MinimumValue",
@@ -21409,6 +21836,10 @@
         "StepSize":{
           "shape":"Double",
           "documentation":"<p>The number of increments that the slider bar is divided into.</p>"
+        },
+        "ControlTitleFormatText":{
+          "shape":"ControlTitleFormatText",
+          "documentation":"<p>The title text format configuration for the control.</p>"
         }
       },
       "documentation":"<p>A control to display a horizontal toggle bar. This is used to change a value by sliding the toggle.</p>"
@@ -21417,7 +21848,6 @@
       "type":"structure",
       "required":[
         "FilterControlId",
-        "Title",
         "SourceFilterId"
       ],
       "members":{
@@ -21440,6 +21870,10 @@
         "DisplayOptions":{
           "shape":"TextAreaControlDisplayOptions",
           "documentation":"<p>The display options of a control.</p>"
+        },
+        "ControlTitleFormatText":{
+          "shape":"ControlTitleFormatText",
+          "documentation":"<p>The title text format configuration for the control.</p>"
         }
       },
       "documentation":"<p>A control to display a text box that is used to enter multiple entries.</p>"
@@ -21448,7 +21882,6 @@
       "type":"structure",
       "required":[
         "FilterControlId",
-        "Title",
         "SourceFilterId"
       ],
       "members":{
@@ -21467,6 +21900,10 @@
         "DisplayOptions":{
           "shape":"TextFieldControlDisplayOptions",
           "documentation":"<p>The display options of a control.</p>"
+        },
+        "ControlTitleFormatText":{
+          "shape":"ControlTitleFormatText",
+          "documentation":"<p>The title text format configuration for the control.</p>"
         }
       },
       "documentation":"<p>A control to display a text box that is used to enter a single entry.</p>"
@@ -21759,7 +22196,7 @@
       "type":"structure",
       "members":{
         "FontFamily":{
-          "shape":"String",
+          "shape":"LimitedString",
           "documentation":"<p>Determines the font family settings.</p>"
         }
       },
@@ -21789,7 +22226,7 @@
           "documentation":"<p>Determines the text display face that is inherited by the given font family.</p>"
         },
         "FontFamily":{
-          "shape":"String",
+          "shape":"LimitedString",
           "documentation":"<p>The font family that you want to use.</p>"
         }
       },
@@ -23766,6 +24203,10 @@
         "SessionExpiresAt":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp at which the session will expire.</p>"
+        },
+        "ContextRegion":{
+          "shape":"Region",
+          "documentation":"<p>The region in which the context is to be used. Use this parameter to obtain an identity context for cross-region use.</p> <p>The specified region must meet the following conditions:</p> <ul> <li> <p>The region must be in the same Amazon Web Services partition as the region you are calling from. Cross-partition requests are not supported. For example, you cannot specify a region in the <code>aws-cn</code> partition when calling from a region in the <code>aws</code> partition.</p> </li> <li> <p>It must be a valid Amazon QuickSight supported region.</p> </li> <li> <p>The calling customer account must be enabled in the specified context region.</p> </li> <li> <p>This parameter is not supported when calling from an opt-in region.</p> </li> </ul>"
         }
       },
       "documentation":"<p>///////////////////////// /////////////////////////</p>"
@@ -25097,6 +25538,27 @@
     "Ingestions":{
       "type":"list",
       "member":{"shape":"Ingestion"}
+    },
+    "InlineCustomInstruction":{
+      "type":"structure",
+      "required":["InstructionText"],
+      "members":{
+        "InstructionText":{
+          "shape":"InlineCustomInstructionText",
+          "documentation":"<p>The instruction text content.</p>"
+        },
+        "UploadedDocumentMetadata":{
+          "shape":"UploadedDocumentMetadata",
+          "documentation":"<p>Metadata about an uploaded document associated with this instruction.</p>"
+        }
+      },
+      "documentation":"<p>An inline custom instruction with text content and optional file upload metadata.</p>"
+    },
+    "InlineCustomInstructionText":{
+      "type":"string",
+      "max":50000,
+      "min":0,
+      "sensitive":true
     },
     "InnerFilter":{
       "type":"structure",
@@ -29607,6 +30069,36 @@
       },
       "documentation":"<p>The measure type field with numerical type columns.</p>"
     },
+    "OAuthClientCredentials":{
+      "type":"structure",
+      "members":{
+        "ClientId":{
+          "shape":"OAuthClientId",
+          "documentation":"<p>The client ID of the OAuth 2.0 application that is registered with the data source provider.</p>"
+        },
+        "ClientSecret":{
+          "shape":"OAuthClientSecret",
+          "documentation":"<p>The client secret of the OAuth 2.0 application that is registered with the data source provider.</p>"
+        },
+        "Username":{
+          "shape":"OAuthUsername",
+          "documentation":"<p>The username of the account that is used for OAuth 2.0 client credentials authentication with the data source provider.</p>"
+        }
+      },
+      "documentation":"<p>The OAuth 2.0 client credentials used for authenticating a data source connection. Use this structure to provide a client ID, client secret, and username directly instead of referencing a secret stored in Amazon Secrets Manager. This structure supports data sources that use two-legged OAuth (2LO) authentication, such as Snowflake.</p>"
+    },
+    "OAuthClientId":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "sensitive":true
+    },
+    "OAuthClientSecret":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "sensitive":true
+    },
     "OAuthParameters":{
       "type":"structure",
       "required":["TokenProviderUrl"],
@@ -29623,6 +30115,10 @@
         "IdentityProviderResourceUri":{
           "shape":"IdentityProviderResourceUri",
           "documentation":"<p>The resource uri of the identity provider.</p>"
+        },
+        "IdentityProviderCACertificatesBundleS3Uri":{
+          "shape":"CACertificatesBundleS3Uri",
+          "documentation":"<p>The S3 URI of the identity provider's CA certificates bundle in PEM format. Use this parameter to provide a custom CA certificate bundle for the identity provider when the default trust store does not include the required certificates.</p>"
         }
       },
       "documentation":"<p>An object that contains information needed to create a data source connection that uses OAuth client credentials. This option is available for data source connections that are made with Snowflake and Starburst.</p>"
@@ -29631,6 +30127,12 @@
       "type":"string",
       "max":128,
       "min":1
+    },
+    "OAuthUsername":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "sensitive":true
     },
     "OnClause":{
       "type":"string",
@@ -29924,7 +30426,6 @@
       "type":"structure",
       "required":[
         "ParameterControlId",
-        "Title",
         "SourceParameterName"
       ],
       "members":{
@@ -29943,6 +30444,10 @@
         "DisplayOptions":{
           "shape":"DateTimePickerControlDisplayOptions",
           "documentation":"<p>The display options of a control.</p>"
+        },
+        "ControlTitleFormatText":{
+          "shape":"ControlTitleFormatText",
+          "documentation":"<p>The title text format configuration for the control.</p>"
         }
       },
       "documentation":"<p>A control from a date parameter that specifies date and time.</p>"
@@ -29978,7 +30483,6 @@
       "type":"structure",
       "required":[
         "ParameterControlId",
-        "Title",
         "SourceParameterName"
       ],
       "members":{
@@ -30013,6 +30517,14 @@
         "CommitMode":{
           "shape":"CommitMode",
           "documentation":"<p>The visibility configuration of the Apply button on a <code>ParameterDropDownControl</code>.</p>"
+        },
+        "ControlSortConfigurations":{
+          "shape":"ControlSortConfigurationList",
+          "documentation":"<p>The sort configuration for the values displayed in the control. Only one sort configuration can be applied per control.</p>"
+        },
+        "ControlTitleFormatText":{
+          "shape":"ControlTitleFormatText",
+          "documentation":"<p>The title text format configuration for the control.</p>"
         }
       },
       "documentation":"<p>A control to display a dropdown list with buttons that are used to select a single value.</p>"
@@ -30021,7 +30533,6 @@
       "type":"structure",
       "required":[
         "ParameterControlId",
-        "Title",
         "SourceParameterName"
       ],
       "members":{
@@ -30052,6 +30563,14 @@
         "CascadingControlConfiguration":{
           "shape":"CascadingControlConfiguration",
           "documentation":"<p>The values that are displayed in a control can be configured to only show values that are valid based on what's selected in other controls.</p>"
+        },
+        "ControlSortConfigurations":{
+          "shape":"ControlSortConfigurationList",
+          "documentation":"<p>The sort configuration for the values displayed in the control. Only one sort configuration can be applied per control.</p>"
+        },
+        "ControlTitleFormatText":{
+          "shape":"ControlTitleFormatText",
+          "documentation":"<p>The title text format configuration for the control.</p>"
         }
       },
       "documentation":"<p>A control to display a list with buttons or boxes that are used to select either a single value or multiple values.</p>"
@@ -30085,7 +30604,6 @@
       "type":"structure",
       "required":[
         "ParameterControlId",
-        "Title",
         "SourceParameterName",
         "MaximumValue",
         "MinimumValue",
@@ -30119,6 +30637,10 @@
         "StepSize":{
           "shape":"Double",
           "documentation":"<p>The number of increments that the slider bar is divided into.</p>"
+        },
+        "ControlTitleFormatText":{
+          "shape":"ControlTitleFormatText",
+          "documentation":"<p>The title text format configuration for the control.</p>"
         }
       },
       "documentation":"<p>A control to display a horizontal toggle bar. This is used to change a value by sliding the toggle.</p>"
@@ -30127,7 +30649,6 @@
       "type":"structure",
       "required":[
         "ParameterControlId",
-        "Title",
         "SourceParameterName"
       ],
       "members":{
@@ -30150,6 +30671,10 @@
         "DisplayOptions":{
           "shape":"TextAreaControlDisplayOptions",
           "documentation":"<p>The display options of a control.</p>"
+        },
+        "ControlTitleFormatText":{
+          "shape":"ControlTitleFormatText",
+          "documentation":"<p>The title text format configuration for the control.</p>"
         }
       },
       "documentation":"<p>A control to display a text box that is used to enter multiple entries.</p>"
@@ -30158,7 +30683,6 @@
       "type":"structure",
       "required":[
         "ParameterControlId",
-        "Title",
         "SourceParameterName"
       ],
       "members":{
@@ -30177,6 +30701,10 @@
         "DisplayOptions":{
           "shape":"TextFieldControlDisplayOptions",
           "documentation":"<p>The display options of a control.</p>"
+        },
+        "ControlTitleFormatText":{
+          "shape":"ControlTitleFormatText",
+          "documentation":"<p>The title text format configuration for the control.</p>"
         }
       },
       "documentation":"<p>A control to display a text box that is used to enter a single entry.</p>"
@@ -30780,6 +31308,7 @@
           "shape":"PivotTablePaginatedReportOptions",
           "documentation":"<p>The paginated report options for a pivot table visual.</p>"
         },
+        "Tooltip":{"shape":"TooltipOptions"},
         "DashboardCustomizationVisualOptions":{
           "shape":"DashboardCustomizationVisualOptions",
           "documentation":"<p>The options that define customizations available to dashboard readers for a specific visual</p>"
@@ -32636,6 +33165,10 @@
         "documentation":"<p>A list of <code>RefreshSchedule</code> objects.</p>"
       }
     },
+    "Region":{
+      "type":"string",
+      "pattern":"[a-z]+-[a-z]+-[0-9]{1}"
+    },
     "RegisterUserRequest":{
       "type":"structure",
       "required":[
@@ -32766,6 +33299,10 @@
         "ThresholdAlerts":{
           "shape":"ThresholdAlertsConfigurations",
           "documentation":"<p>The threshold alerts configuration for an embedded Quick Sight dashboard.</p>"
+        },
+        "DashboardCustomizationSummary":{
+          "shape":"DashboardCustomizationSummaryConfigurations",
+          "documentation":"<p>The dashboard customization summary configuration for an embedded Quick Sight console.</p>"
         }
       },
       "documentation":"<p>The feature configurations of an embedded Amazon Quick Sight console.</p>"
@@ -32815,6 +33352,10 @@
         "ThresholdAlerts":{
           "shape":"ThresholdAlertsConfigurations",
           "documentation":"<p>The threshold alerts configuration for an Quick Sight embedded dashboard.</p>"
+        },
+        "DashboardCustomizationSummary":{
+          "shape":"DashboardCustomizationSummaryConfigurations",
+          "documentation":"<p>The dashboard customization summary configuration for an embedded Quick Sight dashboard.</p>"
         }
       },
       "documentation":"<p>The feature configuration for an embedded dashboard.</p>"
@@ -33577,6 +34118,20 @@
         }
       },
       "documentation":"<p>A physical table type for an S3 data source.</p>"
+    },
+    "S3TableBucketArn":{
+      "type":"string",
+      "pattern":"^(arn:aws[-a-z0-9]*:[a-z0-9]+:[-a-z0-9]*:[0-9]{12}:bucket/[a-zA-Z0-9-_]{3,63})$"
+    },
+    "S3TablesParameters":{
+      "type":"structure",
+      "members":{
+        "TableBucketArn":{
+          "shape":"S3TableBucketArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the S3 Tables bucket.</p>"
+        }
+      },
+      "documentation":"<p>The parameters for S3 Tables.</p>"
     },
     "S3Uri":{
       "type":"string",
@@ -34563,6 +35118,17 @@
       "type":"string",
       "enum":["ALL_VALUES"]
     },
+    "SelectableValuesSort":{
+      "type":"structure",
+      "required":["Direction"],
+      "members":{
+        "Direction":{
+          "shape":"ControlSortDirection",
+          "documentation":"<p>The sort direction for the selectable values. Choose one of the following options:</p> <ul> <li> <p> <code>ASC</code>: Sort in ascending order.</p> </li> <li> <p> <code>DESC</code>: Sort in descending order.</p> </li> <li> <p> <code>USER_DEFINED_ORDER</code>: Preserve the order in which the values were entered.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The sort configuration for selectable values in a control.</p>"
+    },
     "SelectedFieldList":{
       "type":"list",
       "member":{"shape":"FieldId"},
@@ -34587,7 +35153,8 @@
       "type":"string",
       "enum":[
         "BASIC",
-        "DETAILED"
+        "DETAILED",
+        "SHEET"
       ]
     },
     "SelfUpgradeAdminAction":{
@@ -34695,6 +35262,10 @@
         "TableMap":{
           "shape":"SemanticTableMap",
           "documentation":"<p>A map of semantic tables that define the analytical structure.</p>"
+        },
+        "SemanticMetadata":{
+          "shape":"DataSetSemanticMetadataList",
+          "documentation":"<p>The dataset-level semantic metadata, including a description and custom instructions.</p>"
         }
       },
       "documentation":"<p>Configuration for the semantic model that defines how prepared data is structured for analysis and reporting.</p>"
@@ -34717,6 +35288,10 @@
         "RowLevelPermissionConfiguration":{
           "shape":"RowLevelPermissionConfiguration",
           "documentation":"<p>Configuration for row level security that control data access for this semantic table.</p>"
+        },
+        "SemanticMetadata":{
+          "shape":"TableSemanticMetadata",
+          "documentation":"<p>The column-level semantic metadata for this semantic table.</p>"
         }
       },
       "documentation":"<p>A semantic table that represents the final analytical structure of the data.</p>"
@@ -34777,6 +35352,13 @@
     },
     "SensitiveDoubleObject":{
       "type":"double",
+      "sensitive":true
+    },
+    "SensitiveIOPayload":{
+      "type":"string",
+      "max":7000000,
+      "min":1,
+      "pattern":"[\\s\\S]*[{\\[].*[}\\]]\\s*",
       "sensitive":true
     },
     "SensitiveLong":{
@@ -34946,6 +35528,27 @@
       },
       "documentation":"<p>The shape conditional formatting of a filled map visual.</p>"
     },
+    "SharedColumnSemanticMetadata":{
+      "type":"structure",
+      "required":["ColumnProperties"],
+      "members":{
+        "ColumnNames":{
+          "shape":"ColumnNameList",
+          "documentation":"<p>The names of the columns this metadata applies to.</p>"
+        },
+        "ColumnProperties":{
+          "shape":"ColumnSemanticPropertyList",
+          "documentation":"<p>The semantic properties for the specified columns.</p>"
+        }
+      },
+      "documentation":"<p>Semantic metadata shared across one or more columns.</p>"
+    },
+    "SharedColumnSemanticMetadataList":{
+      "type":"list",
+      "member":{"shape":"SharedColumnSemanticMetadata"},
+      "max":2000,
+      "min":1
+    },
     "SharedViewConfigurations":{
       "type":"structure",
       "required":["Enabled"],
@@ -35073,7 +35676,7 @@
     "SheetControlTitle":{
       "type":"string",
       "max":2048,
-      "min":1
+      "min":0
     },
     "SheetControlsOption":{
       "type":"structure",
@@ -35419,6 +36022,16 @@
       "type":"string",
       "max":1024,
       "min":1
+    },
+    "SheetTooltip":{
+      "type":"structure",
+      "members":{
+        "SheetId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The sheet ID of the tooltip sheet that is used by the tooltip.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of the sheet tooltip.</p>"
     },
     "SheetVisualScopingConfiguration":{
       "type":"structure",
@@ -36033,6 +36646,54 @@
       },
       "documentation":"<p>The parameters for Spark.</p>"
     },
+    "SparklineAxisBehavior":{
+      "type":"string",
+      "enum":[
+        "SHARED",
+        "INDEPENDENT"
+      ]
+    },
+    "SparklineVisualType":{
+      "type":"string",
+      "enum":[
+        "LINE",
+        "AREA_LINE"
+      ]
+    },
+    "SparklinesOptions":{
+      "type":"structure",
+      "required":[
+        "FieldId",
+        "XAxisField"
+      ],
+      "members":{
+        "FieldId":{
+          "shape":"FieldId",
+          "documentation":"<p>The field ID of the value column that the sparkline is applied to.</p>"
+        },
+        "XAxisField":{"shape":"DimensionField"},
+        "YAxisBehavior":{
+          "shape":"SparklineAxisBehavior",
+          "documentation":"<p>Determines whether the Y axis is shared across all sparklines or independent for each sparkline.</p>"
+        },
+        "VisualType":{
+          "shape":"SparklineVisualType",
+          "documentation":"<p>The type of the sparkline. Valid values are <code>LINE</code> and <code>AREA_LINE</code>.</p>"
+        },
+        "LineColor":{
+          "shape":"HexColor",
+          "documentation":"<p>The color of the sparkline line.</p>"
+        },
+        "LineInterpolation":{
+          "shape":"LineInterpolation",
+          "documentation":"<p>The interpolation style for the sparkline line.</p>"
+        },
+        "AllPointsMarker":{"shape":"LineChartMarkerStyleSettings"},
+        "MaxValueMarker":{"shape":"LineChartMarkerStyleSettings"},
+        "MinValueMarker":{"shape":"LineChartMarkerStyleSettings"}
+      },
+      "documentation":"<p>The options for sparklines in a table.</p>"
+    },
     "SpatialStaticFile":{
       "type":"structure",
       "required":["StaticFileId"],
@@ -36288,6 +36949,64 @@
           "shape":"StatusCode",
           "documentation":"<p>The HTTP status of the response.</p>",
           "location":"statusCode"
+        }
+      }
+    },
+    "StartAutomationJobRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "AutomationGroupId",
+        "AutomationId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the automation.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "AutomationGroupId":{
+          "shape":"AutomateId",
+          "documentation":"<p>The ID of the automation group that contains the automation to run.</p>",
+          "location":"uri",
+          "locationName":"AutomationGroupId"
+        },
+        "AutomationId":{
+          "shape":"AutomateId",
+          "documentation":"<p>The ID of the automation to run.</p>",
+          "location":"uri",
+          "locationName":"AutomationId"
+        },
+        "InputPayload":{
+          "shape":"SensitiveIOPayload",
+          "documentation":"<p>The input payload for the automation job, provided as a JSON string.</p>"
+        }
+      }
+    },
+    "StartAutomationJobResponse":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "JobId"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the automation job.</p>"
+        },
+        "JobId":{
+          "shape":"AutomateId",
+          "documentation":"<p>The ID of the automation job that was started.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
         }
       }
     },
@@ -36907,6 +37626,7 @@
           "shape":"TableInlineVisualizationList",
           "documentation":"<p>A collection of inline visualizations to display within a chart.</p>"
         },
+        "Tooltip":{"shape":"TooltipOptions"},
         "DashboardCustomizationVisualOptions":{
           "shape":"DashboardCustomizationVisualOptions",
           "documentation":"<p>The options that define customizations available to dashboard readers for a specific visual</p>"
@@ -37088,6 +37808,10 @@
         "DataBars":{
           "shape":"DataBarsOptions",
           "documentation":"<p>The configuration of the inline visualization of the data bars within a chart.</p>"
+        },
+        "Sparklines":{
+          "shape":"SparklinesOptions",
+          "documentation":"<p>The configuration of the inline visualization of the sparklines within a chart.</p>"
         }
       },
       "documentation":"<p>The inline visualization of a specific type to display within a chart.</p>"
@@ -37193,6 +37917,16 @@
         }
       },
       "documentation":"<p>The conditional formatting of a table row.</p>"
+    },
+    "TableSemanticMetadata":{
+      "type":"structure",
+      "members":{
+        "ColumnMetadata":{
+          "shape":"SharedColumnSemanticMetadataList",
+          "documentation":"<p>A list of column semantic metadata entries.</p>"
+        }
+      },
+      "documentation":"<p>Column-level semantic metadata for a semantic table.</p>"
     },
     "TableSideBorderOptions":{
       "type":"structure",
@@ -37641,6 +38375,10 @@
         "Sheets":{
           "shape":"SheetDefinitionList",
           "documentation":"<p>An array of sheet definitions for a template.</p>"
+        },
+        "TooltipSheets":{
+          "shape":"TooltipSheetDefinitionList",
+          "documentation":"<p>An array of tooltip sheet definitions for a template.</p>"
         },
         "CalculatedFields":{
           "shape":"CalculatedFields",
@@ -38354,9 +39092,61 @@
         "FieldBasedTooltip":{
           "shape":"FieldBasedTooltip",
           "documentation":"<p>The setup for the detailed tooltip. The tooltip setup is always saved. The display type is decided based on the tooltip type.</p>"
-        }
+        },
+        "SheetTooltip":{"shape":"SheetTooltip"}
       },
       "documentation":"<p>The display options for the visual tooltip.</p>"
+    },
+    "TooltipSheetDefinition":{
+      "type":"structure",
+      "required":["SheetId"],
+      "members":{
+        "SheetId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The unique identifier of a tooltip sheet.</p>"
+        },
+        "Name":{
+          "shape":"SheetName",
+          "documentation":"<p>The name of the tooltip sheet. This name is displayed on the sheet's tab in the Quick console.</p>"
+        },
+        "Visuals":{
+          "shape":"TooltipSheetVisualList",
+          "documentation":"<p>A list of the visuals that are on a tooltip sheet.</p>"
+        },
+        "TextBoxes":{
+          "shape":"TooltipSheetTextBoxList",
+          "documentation":"<p>The text boxes that are on a tooltip sheet.</p>"
+        },
+        "Images":{
+          "shape":"TooltipSheetImageList",
+          "documentation":"<p>A list of images on a tooltip sheet.</p>"
+        },
+        "Layouts":{
+          "shape":"LayoutList",
+          "documentation":"<p>Layouts define how the components of a tooltip sheet are arranged.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/types-of-layout.html\">Types of layout</a> in the <i>Amazon Quick Suite User Guide</i>.</p>"
+        }
+      },
+      "documentation":"<p>A tooltip sheet is an object that contains a set of visuals that are used as a tooltip. Every analysis and dashboard must contain at least one non-tooltip sheet.</p>"
+    },
+    "TooltipSheetDefinitionList":{
+      "type":"list",
+      "member":{"shape":"TooltipSheetDefinition"},
+      "max":50
+    },
+    "TooltipSheetImageList":{
+      "type":"list",
+      "member":{"shape":"SheetImage"},
+      "max":5
+    },
+    "TooltipSheetTextBoxList":{
+      "type":"list",
+      "member":{"shape":"SheetTextBox"},
+      "max":5
+    },
+    "TooltipSheetVisualList":{
+      "type":"list",
+      "member":{"shape":"Visual"},
+      "max":5
     },
     "TooltipTarget":{
       "type":"string",
@@ -40000,6 +40790,10 @@
         "VisualSubtitleFontConfiguration":{
           "shape":"VisualSubtitleFontConfiguration",
           "documentation":"<p>Configures the display properties of the visual sub-title.</p>"
+        },
+        "ControlTitleFontConfiguration":{
+          "shape":"ControlTitleFontConfiguration",
+          "documentation":"<p>Configures the display properties of the control title.</p>"
         }
       },
       "documentation":"<p>Determines the typography options.</p>"
@@ -42968,6 +43762,21 @@
         }
       },
       "documentation":"<p>Information about the format for a source file or files.</p>"
+    },
+    "UploadedDocumentMetadata":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"UploadedDocumentName",
+          "documentation":"<p>The name of the uploaded document.</p>"
+        }
+      },
+      "documentation":"<p>Metadata for an uploaded document associated with a custom instruction.</p>"
+    },
+    "UploadedDocumentName":{
+      "type":"string",
+      "max":127,
+      "min":1
     },
     "User":{
       "type":"structure",

@@ -59,3 +59,15 @@ will produce the following updated config file::
     [profile testing2]
     region = us-west-2
     cli_pager =
+
+To set a parameter in a sub-section, use one of the available sub-section parameters (``--services`` or ``--sso-session``).
+
+For example, to set the ``sso_start_url`` in the ``my-sso-sesssion`` SSO session sub-section, the following command can be used::
+
+    aws configure set --sso-session my-sso-session sso_start_url https://my-sso-portal.awsapps.com/start
+
+To set a nested property, use dotted notation for the parameter name along with a sub-section parameter.
+For example, to set the a service specific endpoint URL for EC2 in a services sub-section called ``my-services``, the following command can be used::
+
+    aws configure set --services my-services ec2.endpoint_url http://localhost:4567
+

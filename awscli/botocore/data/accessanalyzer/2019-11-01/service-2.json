@@ -170,6 +170,26 @@
       "documentation":"<p>Creates an archive rule for the specified analyzer. Archive rules automatically archive new findings that meet the criteria you define when you create the rule.</p> <p>To learn about filter keys that you can use to create an archive rule, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-reference-filter-keys.html\">IAM Access Analyzer filter keys</a> in the <b>IAM User Guide</b>.</p>",
       "idempotent":true
     },
+    "CreateServiceLinkedAnalyzer":{
+      "name":"CreateServiceLinkedAnalyzer",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/service-linked-analyzer",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateServiceLinkedAnalyzerRequest"},
+      "output":{"shape":"CreateServiceLinkedAnalyzerResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates a service-linked analyzer managed by an Amazon Web Services service. This operation can only be invoked by authorized Amazon Web Services services. Direct customer invocation returns <code>AccessDeniedException</code>.</p> <p>Service-linked analyzers enable Amazon Web Services services to create and manage analyzers on behalf of customers. The lifecycle of these analyzers is managed by the calling service.</p>",
+      "idempotent":true
+    },
     "DeleteAnalyzer":{
       "name":"DeleteAnalyzer",
       "http":{
@@ -204,6 +224,25 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Deletes the specified archive rule.</p>",
+      "idempotent":true
+    },
+    "DeleteServiceLinkedAnalyzer":{
+      "name":"DeleteServiceLinkedAnalyzer",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/service-linked-analyzer/{analyzerName}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteServiceLinkedAnalyzerRequest"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes a service-linked analyzer. This operation can be invoked by both authorized Amazon Web Services services and customers.</p> <p>When invoked by a customer, IAM Access Analyzer performs a callback to the managing service to verify whether the analyzer is still in use and can be deleted. If the service indicates the analyzer is still in use, the deletion is rejected with <code>ConflictException</code>.</p>",
       "idempotent":true
     },
     "GenerateFindingRecommendation":{
@@ -1156,6 +1195,12 @@
       "documentation":"<p>Contains information about the configuration of an analyzer for an Amazon Web Services organization or account.</p>",
       "union":true
     },
+    "AnalyzerName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[A-Za-z_][A-Za-z0-9_.-]*"
+    },
     "AnalyzerStatus":{
       "type":"string",
       "enum":[
@@ -1180,7 +1225,7 @@
           "documentation":"<p>The ARN of the analyzer.</p>"
         },
         "name":{
-          "shape":"Name",
+          "shape":"AnalyzerName",
           "documentation":"<p>The name of the analyzer.</p>"
         },
         "type":{
@@ -1214,6 +1259,10 @@
         "configuration":{
           "shape":"AnalyzerConfiguration",
           "documentation":"<p>Specifies if the analyzer is an external access, unused access, or internal access analyzer. The <a href=\"https://docs.aws.amazon.com/access-analyzer/latest/APIReference/API_GetAnalyzer.html\">GetAnalyzer</a> action includes this property in its response if a configuration is specified, while the <a href=\"https://docs.aws.amazon.com/access-analyzer/latest/APIReference/API_ListAnalyzers.html\">ListAnalyzers</a> action omits it.</p>"
+        },
+        "managedBy":{
+          "shape":"String",
+          "documentation":"<p>The service principal that manages this analyzer (for example, <code>securityhubv2.amazonaws.com</code>). This field is only present for service-linked analyzers and is not included for customer-managed analyzers.</p>"
         }
       },
       "documentation":"<p>Contains information about the analyzer.</p>"
@@ -1629,7 +1678,7 @@
       ],
       "members":{
         "analyzerName":{
-          "shape":"Name",
+          "shape":"AnalyzerName",
           "documentation":"<p>The name of the analyzer to create.</p>"
         },
         "type":{
@@ -1675,7 +1724,7 @@
       ],
       "members":{
         "analyzerName":{
-          "shape":"Name",
+          "shape":"AnalyzerName",
           "documentation":"<p>The name of the created analyzer.</p>",
           "location":"uri",
           "locationName":"analyzerName"
@@ -1695,6 +1744,40 @@
         }
       },
       "documentation":"<p>Creates an archive rule.</p>"
+    },
+    "CreateServiceLinkedAnalyzerRequest":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "type":{
+          "shape":"Type",
+          "documentation":"<p>The type of analyzer to create. Valid values are <code>ACCOUNT_UNUSED_ACCESS</code> and <code>ORGANIZATION_UNUSED_ACCESS</code>.</p>"
+        },
+        "archiveRules":{
+          "shape":"InlineArchiveRulesList",
+          "documentation":"<p>Specifies the archive rules to add for the analyzer. Archive rules automatically archive findings that meet the criteria you define for the rule.</p>"
+        },
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>A client token.</p>",
+          "idempotencyToken":true
+        },
+        "configuration":{
+          "shape":"AnalyzerConfiguration",
+          "documentation":"<p>Specifies the configuration of the analyzer. The specified scope of unused access is used for the configuration.</p>"
+        }
+      },
+      "documentation":"<p>Creates a service-linked analyzer.</p>"
+    },
+    "CreateServiceLinkedAnalyzerResponse":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"AnalyzerArn",
+          "documentation":"<p>The ARN of the service-linked analyzer that was created by the request. The analyzer name follows the format <code>_AccessAnalyzerFor{ServiceName}-{Id}</code> where <code>Id</code> is a randomly generated identifier.</p>"
+        }
+      },
+      "documentation":"<p>The response to the request to create a service-linked analyzer.</p>"
     },
     "Criterion":{
       "type":"structure",
@@ -1723,7 +1806,7 @@
       "required":["analyzerName"],
       "members":{
         "analyzerName":{
-          "shape":"Name",
+          "shape":"AnalyzerName",
           "documentation":"<p>The name of the analyzer to delete.</p>",
           "location":"uri",
           "locationName":"analyzerName"
@@ -1746,7 +1829,7 @@
       ],
       "members":{
         "analyzerName":{
-          "shape":"Name",
+          "shape":"AnalyzerName",
           "documentation":"<p>The name of the analyzer that associated with the archive rule to delete.</p>",
           "location":"uri",
           "locationName":"analyzerName"
@@ -1766,6 +1849,26 @@
         }
       },
       "documentation":"<p>Deletes an archive rule.</p>"
+    },
+    "DeleteServiceLinkedAnalyzerRequest":{
+      "type":"structure",
+      "required":["analyzerName"],
+      "members":{
+        "analyzerName":{
+          "shape":"AnalyzerName",
+          "documentation":"<p>The name of the service-linked analyzer to delete. Service-linked analyzer names follow the format <code>_AccessAnalyzerFor{ServiceName}-{Id}</code>.</p>",
+          "location":"uri",
+          "locationName":"analyzerName"
+        },
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>A client token.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
+        }
+      },
+      "documentation":"<p>Deletes a service-linked analyzer.</p>"
     },
     "DynamodbStreamConfiguration":{
       "type":"structure",
@@ -2418,7 +2521,7 @@
       "required":["analyzerName"],
       "members":{
         "analyzerName":{
-          "shape":"Name",
+          "shape":"AnalyzerName",
           "documentation":"<p>The name of the analyzer retrieved.</p>",
           "location":"uri",
           "locationName":"analyzerName"
@@ -2445,7 +2548,7 @@
       ],
       "members":{
         "analyzerName":{
-          "shape":"Name",
+          "shape":"AnalyzerName",
           "documentation":"<p>The name of the analyzer to retrieve rules from.</p>",
           "location":"uri",
           "locationName":"analyzerName"
@@ -3291,7 +3394,7 @@
       "required":["analyzerName"],
       "members":{
         "analyzerName":{
-          "shape":"Name",
+          "shape":"AnalyzerName",
           "documentation":"<p>The name of the analyzer to retrieve rules from.</p>",
           "location":"uri",
           "locationName":"analyzerName"
@@ -4549,7 +4652,7 @@
       "required":["analyzerName"],
       "members":{
         "analyzerName":{
-          "shape":"Name",
+          "shape":"AnalyzerName",
           "documentation":"<p>The name of the analyzer to modify.</p>",
           "location":"uri",
           "locationName":"analyzerName"
@@ -4572,7 +4675,7 @@
       ],
       "members":{
         "analyzerName":{
-          "shape":"Name",
+          "shape":"AnalyzerName",
           "documentation":"<p>The name of the analyzer to update the archive rules for.</p>",
           "location":"uri",
           "locationName":"analyzerName"

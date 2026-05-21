@@ -44,6 +44,16 @@
       "output":{"shape":"AcceptReservedInstancesExchangeQuoteResult"},
       "documentation":"<p>Accepts the Convertible Reserved Instance exchange quote described in the <a>GetReservedInstancesExchangeQuote</a> call.</p>"
     },
+    "AcceptTransitGatewayClientVpnAttachment":{
+      "name":"AcceptTransitGatewayClientVpnAttachment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AcceptTransitGatewayClientVpnAttachmentRequest"},
+      "output":{"shape":"AcceptTransitGatewayClientVpnAttachmentResult"},
+      "documentation":"<p>Accepts a Transit Gateway attachment request for a Client VPN endpoint. The Transit Gateway owner must accept the attachment request before the Client VPN endpoint can route traffic through the Transit Gateway.</p>"
+    },
     "AcceptTransitGatewayMulticastDomainAssociations":{
       "name":"AcceptTransitGatewayMulticastDomainAssociations",
       "http":{
@@ -460,7 +470,7 @@
       },
       "input":{"shape":"BundleInstanceRequest"},
       "output":{"shape":"BundleInstanceResult"},
-      "documentation":"<p>Bundles an Amazon instance store-backed Windows instance.</p> <p>During bundling, only the root device volume (C:\\) is bundled. Data on other instance store volumes is not preserved.</p> <note> <p>This action is not applicable for Linux/Unix instances or Windows instances that are backed by Amazon EBS.</p> </note>"
+      "documentation":"<p>Bundles an Amazon instance store-backed Windows instance.</p> <p>During bundling, only the root device volume (C:\\) is bundled. Data on other instance store volumes is not preserved.</p> <note> <p>This action is no longer supported. To create an AMI, use <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateImage.html\">CreateImage</a>. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/creating-an-ami-ebs.html\"> Create an Amazon EBS-backed AMI</a> in the <i>Amazon EC2 User Guide</i>.</p> </note>"
     },
     "CancelBundleTask":{
       "name":"CancelBundleTask",
@@ -2284,6 +2294,16 @@
       "output":{"shape":"DeleteTransitGatewayResult"},
       "documentation":"<p>Deletes the specified transit gateway.</p>"
     },
+    "DeleteTransitGatewayClientVpnAttachment":{
+      "name":"DeleteTransitGatewayClientVpnAttachment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteTransitGatewayClientVpnAttachmentRequest"},
+      "output":{"shape":"DeleteTransitGatewayClientVpnAttachmentResult"},
+      "documentation":"<p>Deletes a Transit Gateway attachment for a Client VPN endpoint. The Transit Gateway owner can delete the attachment to remove the association between the Client VPN endpoint and the Transit Gateway.</p>"
+    },
     "DeleteTransitGatewayConnect":{
       "name":"DeleteTransitGatewayConnect",
       "http":{
@@ -3317,7 +3337,7 @@
       },
       "input":{"shape":"DescribeInstanceTypesRequest"},
       "output":{"shape":"DescribeInstanceTypesResult"},
-      "documentation":"<p>Describes the specified instance types. By default, all instance types for the current Region are described. Alternatively, you can filter the results.</p>"
+      "documentation":"<p>Describes the specified instance types. By default, all instance types for the current Region are described. Alternatively, you can filter the results. To include instance types that are not supported in the current Region, set <code>IncludeUnsupportedInRegion</code> to <code>true</code>.</p>"
     },
     "DescribeInstances":{
       "name":"DescribeInstances",
@@ -3368,6 +3388,16 @@
       "input":{"shape":"DescribeIpamPoliciesRequest"},
       "output":{"shape":"DescribeIpamPoliciesResult"},
       "documentation":"<p>Describes one or more IPAM policies.</p> <p>An IPAM policy is a set of rules that define how public IPv4 addresses from IPAM pools are allocated to Amazon Web Services resources. Each rule maps an Amazon Web Services service to IPAM pools that the service will use to get IP addresses. A single policy can have multiple rules and be applied to multiple Amazon Web Services Regions. If the IPAM pool run out of addresses then the services fallback to Amazon-provided IP addresses. A policy can be applied to an individual Amazon Web Services account or an entity within Amazon Web Services Organizations.</p>"
+    },
+    "DescribeIpamPoolAllocations":{
+      "name":"DescribeIpamPoolAllocations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeIpamPoolAllocationsRequest"},
+      "output":{"shape":"DescribeIpamPoolAllocationsResult"},
+      "documentation":"<p>Describes IPAM pool allocations. You can describe all allocations owned by you across all pools, or you can describe specific allocations by ID.</p> <p>If you specify <code>IpamPoolAllocationIds</code>, the results include only the specified allocations. If you do not specify <code>IpamPoolAllocationIds</code>, the results include all allocations owned by you. You can use <code>Filters</code> to narrow the results.</p> <note> <p>This action returns only allocations directly owned by you. To view all allocations in a pool you own or that has been shared with you, including allocations owned by other accounts, use <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_GetIpamPoolAllocations.html\">GetIpamPoolAllocations</a>.</p> </note>"
     },
     "DescribeIpamPools":{
       "name":"DescribeIpamPools",
@@ -5291,6 +5321,16 @@
       "output":{"shape":"GetCapacityManagerMetricDimensionsResult"},
       "documentation":"<p> Retrieves the available dimension values for capacity metrics within a specified time range. This is useful for discovering what accounts, regions, instance families, and other dimensions have data available for filtering and grouping. </p>"
     },
+    "GetCapacityManagerMonitoredTagKeys":{
+      "name":"GetCapacityManagerMonitoredTagKeys",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetCapacityManagerMonitoredTagKeysRequest"},
+      "output":{"shape":"GetCapacityManagerMonitoredTagKeysResult"},
+      "documentation":"<p> Retrieves the tag keys that are currently being monitored by EC2 Capacity Manager. Monitored tag keys are included as dimensions in capacity metric data, enabling you to group and filter metrics by tag values. </p>"
+    },
     "GetCapacityReservationUsage":{
       "name":"GetCapacityReservationUsage",
       "http":{
@@ -5620,6 +5660,16 @@
       "input":{"shape":"GetManagedPrefixListEntriesRequest"},
       "output":{"shape":"GetManagedPrefixListEntriesResult"},
       "documentation":"<p>Gets information about the entries for a specified managed prefix list.</p>"
+    },
+    "GetManagedResourceVisibility":{
+      "name":"GetManagedResourceVisibility",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetManagedResourceVisibilityRequest"},
+      "output":{"shape":"GetManagedResourceVisibilityResult"},
+      "documentation":"<p>Retrieves the managed resource visibility configuration for the account. The response indicates whether managed resources are hidden or visible by default.</p>"
     },
     "GetNetworkInsightsAccessScopeAnalysisFindings":{
       "name":"GetNetworkInsightsAccessScopeAnalysisFindings",
@@ -6267,6 +6317,16 @@
       "output":{"shape":"ModifyIpamPoolResult"},
       "documentation":"<p>Modify the configurations of an IPAM pool.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/mod-pool-ipam.html\">Modify a pool</a> in the <i>Amazon VPC IPAM User Guide</i>. </p>"
     },
+    "ModifyIpamPoolAllocation":{
+      "name":"ModifyIpamPoolAllocation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyIpamPoolAllocationRequest"},
+      "output":{"shape":"ModifyIpamPoolAllocationResult"},
+      "documentation":"<p>Modifies the description of an IPAM pool allocation. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/modify-alloc-ipam.html\">Modify an IPAM pool allocation</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>"
+    },
     "ModifyIpamPrefixListResolver":{
       "name":"ModifyIpamPrefixListResolver",
       "http":{
@@ -6346,6 +6406,16 @@
       "input":{"shape":"ModifyManagedPrefixListRequest"},
       "output":{"shape":"ModifyManagedPrefixListResult"},
       "documentation":"<p>Modifies the specified managed prefix list.</p> <p>Adding or removing entries in a prefix list creates a new version of the prefix list. Changing the name of the prefix list does not affect the version.</p> <p>If you specify a current version number that does not match the true current version number, the request fails.</p>"
+    },
+    "ModifyManagedResourceVisibility":{
+      "name":"ModifyManagedResourceVisibility",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyManagedResourceVisibilityRequest"},
+      "output":{"shape":"ModifyManagedResourceVisibilityResult"},
+      "documentation":"<p>Modifies the managed resource visibility configuration for the account. Use this operation to control whether managed resources are hidden or visible by default. Visibility settings are account-wide and affect all IAM principals uniformly. Hidden resources remain fully operational and billable.</p>"
     },
     "ModifyNetworkInterfaceAttribute":{
       "name":"ModifyNetworkInterfaceAttribute",
@@ -6941,6 +7011,16 @@
       "output":{"shape":"RejectCapacityReservationBillingOwnershipResult"},
       "documentation":"<p>Rejects a request to assign billing of the available capacity of a shared Capacity Reservation to your account. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/assign-billing.html\"> Billing assignment for shared Amazon EC2 Capacity Reservations</a>.</p>"
     },
+    "RejectTransitGatewayClientVpnAttachment":{
+      "name":"RejectTransitGatewayClientVpnAttachment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RejectTransitGatewayClientVpnAttachmentRequest"},
+      "output":{"shape":"RejectTransitGatewayClientVpnAttachmentResult"},
+      "documentation":"<p>Rejects a Transit Gateway attachment request for a Client VPN endpoint. The Transit Gateway owner can reject the attachment request to prevent the Client VPN endpoint from routing traffic through the Transit Gateway.</p>"
+    },
     "RejectTransitGatewayMulticastDomainAssociations":{
       "name":"RejectTransitGatewayMulticastDomainAssociations",
       "http":{
@@ -7471,6 +7551,16 @@
       "output":{"shape":"UnmonitorInstancesResult"},
       "documentation":"<p>Disables detailed monitoring for a running instance. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-cloudwatch.html\">Monitoring your instances and volumes</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
+    "UpdateCapacityManagerMonitoredTagKeys":{
+      "name":"UpdateCapacityManagerMonitoredTagKeys",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateCapacityManagerMonitoredTagKeysRequest"},
+      "output":{"shape":"UpdateCapacityManagerMonitoredTagKeysResult"},
+      "documentation":"<p> Activates or deactivates tag keys for monitoring by EC2 Capacity Manager. Activated tag keys are included as dimensions in capacity metric data, enabling you to group and filter metrics by tag values. </p>"
+    },
     "UpdateCapacityManagerOrganizationsAccess":{
       "name":"UpdateCapacityManagerOrganizationsAccess",
       "http":{
@@ -7731,6 +7821,30 @@
         }
       },
       "documentation":"<p>The result of the exchange and whether it was <code>successful</code>.</p>"
+    },
+    "AcceptTransitGatewayClientVpnAttachmentRequest":{
+      "type":"structure",
+      "required":["TransitGatewayAttachmentId"],
+      "members":{
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The ID of the Transit Gateway attachment.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "AcceptTransitGatewayClientVpnAttachmentResult":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayClientVpnAttachment":{
+          "shape":"TransitGatewayClientVpnAttachment",
+          "documentation":"<p>Information about the Transit Gateway Client VPN attachment.</p>",
+          "locationName":"transitGatewayClientVpnAttachment"
+        }
+      }
     },
     "AcceptTransitGatewayMulticastDomainAssociationsRequest":{
       "type":"structure",
@@ -8679,6 +8793,11 @@
           "shape":"IpamPoolAllocationDisallowedCidrs",
           "documentation":"<p>Exclude a particular CIDR range from being returned by the pool. Disallowed CIDRs are only allowed if using netmask length for allocation.</p>",
           "locationName":"DisallowedCidr"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> <p>If you specify tags, the request is authorized against the allocation resource in addition to the pool resource.</p>",
+          "locationName":"TagSpecification"
         }
       }
     },
@@ -9512,10 +9631,7 @@
     },
     "AssociateClientVpnTargetNetworkRequest":{
       "type":"structure",
-      "required":[
-        "ClientVpnEndpointId",
-        "SubnetId"
-      ],
+      "required":["ClientVpnEndpointId"],
       "members":{
         "ClientVpnEndpointId":{
           "shape":"ClientVpnEndpointId",
@@ -9523,7 +9639,7 @@
         },
         "SubnetId":{
           "shape":"SubnetId",
-          "documentation":"<p>The ID of the subnet to associate with the Client VPN endpoint.</p>"
+          "documentation":"<p>The ID of the subnet to associate with the Client VPN endpoint. Required for VPC-based endpoints. For Transit Gateway-based endpoints, use <code>AvailabilityZone</code> or <code>AvailabilityZoneId</code> instead.</p>"
         },
         "ClientToken":{
           "shape":"String",
@@ -9533,6 +9649,14 @@
         "DryRun":{
           "shape":"Boolean",
           "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "AvailabilityZone":{
+          "shape":"AvailabilityZoneName",
+          "documentation":"<p>The Availability Zone name for the Transit Gateway association. Required if when associating an Availability Zone with a Client VPN endpoint that uses a Transit Gateway. You cannot specify both <code>SubnetId</code> and <code>AvailabilityZone</code>.</p>"
+        },
+        "AvailabilityZoneId":{
+          "shape":"AvailabilityZoneId",
+          "documentation":"<p>The Availability Zone ID for the Transit Gateway association. Required if when associating an Availability Zone with a Client VPN endpoint that uses a Transit Gateway. You cannot specify both <code>AvailabilityZone</code> and <code>AvailabilityZoneId</code>.</p>"
         }
       }
     },
@@ -12558,6 +12682,11 @@
           "documentation":"<p> The Amazon Web Services account ID that owns the capacity resource. </p>",
           "locationName":"accountId"
         },
+        "AccountName":{
+          "shape":"String",
+          "documentation":"<p> The name of the Amazon Web Services account that owns the capacity resource. This dimension is only available when Organizations access is enabled for Capacity Manager. </p>",
+          "locationName":"accountName"
+        },
         "InstanceFamily":{
           "shape":"String",
           "documentation":"<p> The EC2 instance family of the capacity resource. </p>",
@@ -12627,9 +12756,61 @@
           "shape":"String",
           "documentation":"<p> The Amazon Web Services account ID that is financially responsible for unused capacity reservation costs. </p>",
           "locationName":"reservationUnusedFinancialOwner"
+        },
+        "Tags":{
+          "shape":"CapacityManagerTagDimensionSet",
+          "documentation":"<p> The tags associated with the capacity resource, represented as key-value pairs. Only tags that have been activated for monitoring via <code>UpdateCapacityManagerMonitoredTagKeys</code> are included. </p>",
+          "locationName":"tagSet"
         }
       },
       "documentation":"<p> Represents dimension values for capacity metrics, including resource identifiers, geographic information, and reservation details used for grouping and filtering capacity data. </p>"
+    },
+    "CapacityManagerMonitoredTagKey":{
+      "type":"structure",
+      "members":{
+        "TagKey":{
+          "shape":"String",
+          "documentation":"<p> The tag key being monitored. </p>",
+          "locationName":"tagKey"
+        },
+        "Status":{
+          "shape":"CapacityManagerMonitoredTagKeyStatus",
+          "documentation":"<p> The current status of the monitored tag key. Valid values are <code>activating</code>, <code>activated</code>, <code>deactivating</code>, and <code>suspended</code>. </p>",
+          "locationName":"status"
+        },
+        "StatusMessage":{
+          "shape":"String",
+          "documentation":"<p> A message providing additional details about the current status of the monitored tag key. </p>",
+          "locationName":"statusMessage"
+        },
+        "CapacityManagerProvided":{
+          "shape":"Boolean",
+          "documentation":"<p> Indicates whether this tag key is provided by Capacity Manager by default, rather than being user-activated. </p>",
+          "locationName":"capacityManagerProvided"
+        },
+        "EarliestDatapointTimestamp":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p> The earliest timestamp from which tag data is available for queries, in UTC ISO 8601 format. </p>",
+          "locationName":"earliestDatapointTimestamp"
+        }
+      },
+      "documentation":"<p> Describes a tag key that is being monitored by Capacity Manager, including its activation status and the earliest available data point. </p>"
+    },
+    "CapacityManagerMonitoredTagKeyList":{
+      "type":"list",
+      "member":{
+        "shape":"CapacityManagerMonitoredTagKey",
+        "locationName":"item"
+      }
+    },
+    "CapacityManagerMonitoredTagKeyStatus":{
+      "type":"string",
+      "enum":[
+        "activating",
+        "activated",
+        "deactivating",
+        "suspended"
+      ]
     },
     "CapacityManagerStatus":{
       "type":"string",
@@ -12637,6 +12818,29 @@
         "enabled",
         "disabled"
       ]
+    },
+    "CapacityManagerTagDimension":{
+      "type":"structure",
+      "members":{
+        "Key":{
+          "shape":"String",
+          "documentation":"<p> The tag key. </p>",
+          "locationName":"key"
+        },
+        "Value":{
+          "shape":"String",
+          "documentation":"<p> The tag value. </p>",
+          "locationName":"value"
+        }
+      },
+      "documentation":"<p> A key-value pair representing a tag associated with a capacity resource in Capacity Manager. </p>"
+    },
+    "CapacityManagerTagDimensionSet":{
+      "type":"list",
+      "member":{
+        "shape":"CapacityManagerTagDimension",
+        "locationName":"item"
+      }
     },
     "CapacityReservation":{
       "type":"structure",
@@ -13739,6 +13943,20 @@
         "revoking"
       ]
     },
+    "ClientVpnAvailabilityZoneIdSet":{
+      "type":"list",
+      "member":{
+        "shape":"AvailabilityZoneId",
+        "locationName":"item"
+      }
+    },
+    "ClientVpnAvailabilityZoneSet":{
+      "type":"list",
+      "member":{
+        "shape":"AvailabilityZoneName",
+        "locationName":"item"
+      }
+    },
     "ClientVpnConnection":{
       "type":"structure",
       "members":{
@@ -13991,6 +14209,11 @@
           "shape":"TrafficIpAddressType",
           "documentation":"<p>The IP address type of the Client VPN endpoint. Possible values are either <code>ipv4</code> for IPv4 addressing only, <code>ipv6</code> for IPv6 addressing only, or <code>dual-stack</code> for both IPv4 and IPv6 addressing.</p>",
           "locationName":"trafficIpAddressType"
+        },
+        "TransitGatewayConfiguration":{
+          "shape":"TransitGatewayConfigurationDescribeEndpointStructure",
+          "documentation":"<p>The Transit Gateway configuration for the Client VPN endpoint.</p>",
+          "locationName":"transitGatewayConfiguration"
         }
       },
       "documentation":"<p>Describes a Client VPN endpoint.</p>"
@@ -14031,7 +14254,7 @@
       "members":{
         "Code":{
           "shape":"ClientVpnEndpointStatusCode",
-          "documentation":"<p>The state of the Client VPN endpoint. Possible states include:</p> <ul> <li> <p> <code>pending-associate</code> - The Client VPN endpoint has been created but no target networks have been associated. The Client VPN endpoint cannot accept connections.</p> </li> <li> <p> <code>available</code> - The Client VPN endpoint has been created and a target network has been associated. The Client VPN endpoint can accept connections.</p> </li> <li> <p> <code>deleting</code> - The Client VPN endpoint is being deleted. The Client VPN endpoint cannot accept connections.</p> </li> <li> <p> <code>deleted</code> - The Client VPN endpoint has been deleted. The Client VPN endpoint cannot accept connections.</p> </li> </ul>",
+          "documentation":"<p>The state of the Client VPN endpoint. Possible states include:</p> <ul> <li> <p> <code>pending-associate</code> - The Client VPN endpoint has been created but no target networks have been associated. The Client VPN endpoint cannot accept connections.</p> </li> <li> <p> <code>available</code> - The Client VPN endpoint has been created and a target network has been associated. The Client VPN endpoint can accept connections.</p> </li> <li> <p> <code>deleting</code> - The Client VPN endpoint is being deleted. The Client VPN endpoint cannot accept connections.</p> </li> <li> <p> <code>deleted</code> - The Client VPN endpoint has been deleted. The Client VPN endpoint cannot accept connections.</p> </li> <li> <p> <code>pending</code> - The Client VPN endpoint has been created with a Transit Gateway configuration and is waiting for the Transit Gateway attachment to be accepted. The Client VPN endpoint cannot accept connections.</p> </li> </ul>",
           "locationName":"code"
         },
         "Message":{
@@ -14048,7 +14271,8 @@
         "pending-associate",
         "available",
         "deleting",
-        "deleted"
+        "deleted",
+        "pending"
       ]
     },
     "ClientVpnRoute":{
@@ -14088,6 +14312,11 @@
           "shape":"String",
           "documentation":"<p>A brief description of the route.</p>",
           "locationName":"description"
+        },
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The ID of the Transit Gateway attachment, if the route targets a Transit Gateway.</p>",
+          "locationName":"transitGatewayAttachmentId"
         }
       },
       "documentation":"<p>Information about a Client VPN endpoint route.</p>"
@@ -14318,10 +14547,15 @@
       "type":"string",
       "pattern":"[a-z]{2}-[a-z]+-[1-9]+"
     },
+    "ConditionValue":{
+      "type":"string",
+      "max":300,
+      "min":0
+    },
     "ConditionValueList":{
       "type":"list",
       "member":{
-        "shape":"String",
+        "shape":"ConditionValue",
         "locationName":"item"
       },
       "max":10,
@@ -14671,6 +14905,11 @@
         }
       }
     },
+    "CopyImageClientToken":{
+      "type":"string",
+      "max":128,
+      "min":0
+    },
     "CopyImageRequest":{
       "type":"structure",
       "required":[
@@ -14680,12 +14919,12 @@
       ],
       "members":{
         "ClientToken":{
-          "shape":"String",
+          "shape":"CopyImageClientToken",
           "documentation":"<p>Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency in Amazon EC2 API requests</a> in the <i>Amazon EC2 API Reference</i>.</p>",
           "idempotencyToken":true
         },
         "Description":{
-          "shape":"String",
+          "shape":"ImageDescriptionRequest",
           "documentation":"<p>A description for the new AMI.</p>"
         },
         "Encrypted":{
@@ -14699,7 +14938,7 @@
           "locationName":"kmsKeyId"
         },
         "Name":{
-          "shape":"String",
+          "shape":"ImageNameRequest",
           "documentation":"<p>The name of the new AMI.</p>"
         },
         "SourceImageId":{
@@ -15428,6 +15667,10 @@
         "TrafficIpAddressType":{
           "shape":"TrafficIpAddressType",
           "documentation":"<p>The IP address type for traffic within the Client VPN tunnel. Valid values are <code>ipv4</code> (default) for IPv4 traffic only, <code>ipv6</code> for IPv6 addressing only, or <code>dual-stack</code> for both IPv4 and IPv6 traffic. When set to <code>dual-stack</code>, clients can access both IPv4 and IPv6 resources through the VPN .</p>"
+        },
+        "TransitGatewayConfiguration":{
+          "shape":"TransitGatewayConfigurationInputStructure",
+          "documentation":"<p>The Transit Gateway configuration for the Client VPN endpoint. Use this parameter to associate the endpoint with a Transit Gateway instead of a VPC. You cannot specify both <code>TransitGatewayConfiguration</code> and <code>VpcId</code>/<code>SecurityGroupIds</code>.</p>"
         }
       }
     },
@@ -15455,8 +15698,7 @@
       "type":"structure",
       "required":[
         "ClientVpnEndpointId",
-        "DestinationCidrBlock",
-        "TargetVpcSubnetId"
+        "DestinationCidrBlock"
       ],
       "members":{
         "ClientVpnEndpointId":{
@@ -15469,7 +15711,7 @@
         },
         "TargetVpcSubnetId":{
           "shape":"SubnetId",
-          "documentation":"<p>The ID of the subnet through which you want to route traffic. The specified subnet must be an existing target network of the Client VPN endpoint.</p> <p>Alternatively, if you're adding a route for the local network, specify <code>local</code>.</p>"
+          "documentation":"<p>The ID of the subnet through which you want to route traffic. The specified subnet must be an existing target network of the Client VPN endpoint.</p> <p>Alternatively, if you're adding a route for the local network, specify <code>local</code>.</p> <p>This parameter is required for VPC-based Client VPN endpoints. For Transit Gateway-based endpoints, this parameter is not required.</p>"
         },
         "Description":{
           "shape":"String",
@@ -16098,12 +16340,12 @@
           "locationName":"instanceId"
         },
         "Name":{
-          "shape":"String",
+          "shape":"ImageNameRequest",
           "documentation":"<p>A name for the new image.</p> <p>Constraints: 3-128 alphanumeric characters, parentheses (()), square brackets ([]), spaces ( ), periods (.), slashes (/), dashes (-), single quotes ('), at-signs (@), or underscores(_)</p>",
           "locationName":"name"
         },
         "Description":{
-          "shape":"String",
+          "shape":"ImageDescriptionRequest",
           "documentation":"<p>A description for the new image.</p>",
           "locationName":"description"
         },
@@ -16128,6 +16370,11 @@
           "locationName":"imageId"
         }
       }
+    },
+    "CreateImageUsageReportClientToken":{
+      "type":"string",
+      "max":128,
+      "min":0
     },
     "CreateImageUsageReportRequest":{
       "type":"structure",
@@ -16155,7 +16402,7 @@
           "locationName":"AccountId"
         },
         "ClientToken":{
-          "shape":"String",
+          "shape":"CreateImageUsageReportClientToken",
           "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure idempotency of the request.</p>",
           "idempotencyToken":true
         },
@@ -17891,7 +18138,7 @@
           "documentation":"<p>The name of the stored AMI object in the bucket.</p>"
         },
         "Name":{
-          "shape":"String",
+          "shape":"ImageNameRequest",
           "documentation":"<p>The name for the restored AMI. The name must be unique for AMIs in the Region for this account. If you do not provide a name, the new AMI gets the same name as the original AMI.</p>"
         },
         "TagSpecifications":{
@@ -22656,6 +22903,30 @@
         }
       }
     },
+    "DeleteTransitGatewayClientVpnAttachmentRequest":{
+      "type":"structure",
+      "required":["TransitGatewayAttachmentId"],
+      "members":{
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The ID of the Transit Gateway attachment.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DeleteTransitGatewayClientVpnAttachmentResult":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayClientVpnAttachment":{
+          "shape":"TransitGatewayClientVpnAttachment",
+          "documentation":"<p>Information about the Transit Gateway Client VPN attachment.</p>",
+          "locationName":"transitGatewayClientVpnAttachment"
+        }
+      }
+    },
     "DeleteTransitGatewayConnectPeerRequest":{
       "type":"structure",
       "required":["TransitGatewayConnectPeerId"],
@@ -26591,6 +26862,10 @@
           "shape":"String",
           "documentation":"<p>The token returned from a previous paginated request. Pagination continues from the end of the items returned by the previous request.</p>"
         },
+        "IncludeManagedResources":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether to include managed resources in the output. If this parameter is set to <code>true</code>, the output includes resources that are managed by Amazon Web Services services, even if managed resource visibility is set to hidden.</p>"
+        },
         "DryRun":{
           "shape":"Boolean",
           "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>",
@@ -26748,6 +27023,10 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>The token returned from a previous paginated request. Pagination continues from the end of the items returned by the previous request.</p>"
+        },
+        "IncludeUnsupportedInRegion":{
+          "shape":"IncludeUnsupportedInRegion",
+          "documentation":"<p>If <code>true</code>, the response includes instance types that are not supported in the current Region, in addition to the supported types. Default: <code>false</code>.</p>"
         }
       }
     },
@@ -26773,6 +27052,10 @@
           "shape":"InstanceIdStringList",
           "documentation":"<p>The instance IDs.</p> <p>Default: Describes all your instances.</p>",
           "locationName":"InstanceId"
+        },
+        "IncludeManagedResources":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether to include managed resources in the output. If this parameter is set to <code>true</code>, the output includes resources that are managed by Amazon Web Services services, even if managed resource visibility is set to hidden.</p>"
         },
         "DryRun":{
           "shape":"Boolean",
@@ -26980,6 +27263,53 @@
         }
       }
     },
+    "DescribeIpamPoolAllocationsMaxResults":{
+      "type":"integer",
+      "max":100000,
+      "min":1000
+    },
+    "DescribeIpamPoolAllocationsRequest":{
+      "type":"structure",
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamPoolAllocationIds":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The IDs of the IPAM pool allocations you want to describe.</p>",
+          "locationName":"IpamPoolAllocationId"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>One or more filters for the request. For more information about filtering, see <a href=\"https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-filter.html\">Filtering CLI output</a>.</p>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"DescribeIpamPoolAllocationsMaxResults",
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "DescribeIpamPoolAllocationsResult":{
+      "type":"structure",
+      "members":{
+        "IpamPoolAllocations":{
+          "shape":"IpamPoolAllocationSet",
+          "documentation":"<p>Information about the IPAM pool allocations.</p>",
+          "locationName":"ipamPoolAllocationSet"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
     "DescribeIpamPoolsRequest":{
       "type":"structure",
       "members":{
@@ -26994,7 +27324,7 @@
         },
         "MaxResults":{
           "shape":"IpamMaxResults",
-          "documentation":"<p>The maximum number of results to return in the request.</p>"
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -27208,7 +27538,7 @@
         },
         "MaxResults":{
           "shape":"IpamMaxResults",
-          "documentation":"<p>The maximum number of results to return in the request.</p>"
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -27250,7 +27580,7 @@
         },
         "MaxResults":{
           "shape":"IpamMaxResults",
-          "documentation":"<p>The maximum number of results to return in the request.</p>"
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -27403,6 +27733,10 @@
         "ResolveAlias":{
           "shape":"Boolean",
           "documentation":"<p>If <code>true</code>, and if a Systems Manager parameter is specified for <code>ImageId</code>, the AMI ID is displayed in the response for <code>imageId</code>.</p> <p>If <code>false</code>, and if a Systems Manager parameter is specified for <code>ImageId</code>, the parameter is displayed in the response for <code>imageId</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-launch-template.html#use-an-ssm-parameter-instead-of-an-ami-id\">Use a Systems Manager parameter instead of an AMI ID</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>Default: <code>false</code> </p>"
+        },
+        "IncludeManagedResources":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether to include managed resources in the output. If this parameter is set to <code>true</code>, the output includes resources that are managed by Amazon Web Services services, even if managed resource visibility is set to hidden.</p>"
         }
       }
     },
@@ -27455,6 +27789,10 @@
         "MaxResults":{
           "shape":"DescribeLaunchTemplatesMaxResults",
           "documentation":"<p>The maximum number of results to return in a single call. To retrieve the remaining results, make another call with the returned <code>NextToken</code> value. This value can be between 1 and 200.</p>"
+        },
+        "IncludeManagedResources":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether to include managed resources in the output. If this parameter is set to <code>true</code>, the output includes resources that are managed by Amazon Web Services services, even if managed resource visibility is set to hidden.</p>"
         }
       }
     },
@@ -28358,6 +28696,10 @@
         "MaxResults":{
           "shape":"DescribeNetworkInterfacesMaxResults",
           "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. You cannot specify this parameter and the network interface IDs parameter in the same request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
+        },
+        "IncludeManagedResources":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether to include managed resources in the output. If this parameter is set to <code>true</code>, the output includes resources that are managed by Amazon Web Services services, even if managed resource visibility is set to hidden.</p>"
         },
         "DryRun":{
           "shape":"Boolean",
@@ -31110,6 +31452,10 @@
           "documentation":"<p>The IDs of the volumes.</p> <p>Default: Describes all your volumes.</p>",
           "locationName":"VolumeId"
         },
+        "IncludeManagedResources":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether to include managed resources in the output. If this parameter is set to <code>true</code>, the output includes resources that are managed by Amazon Web Services services, even if managed resource visibility is set to hidden.</p>"
+        },
         "DryRun":{
           "shape":"Boolean",
           "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>",
@@ -31186,6 +31532,10 @@
           "shape":"VolumeIdStringList",
           "documentation":"<p>The volume IDs. If not specified, then all volumes are included in the response.</p>",
           "locationName":"VolumeId"
+        },
+        "IncludeManagedResources":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether to include managed resources in the output. If this parameter is set to <code>true</code>, the output includes resources that are managed by Amazon Web Services services, even if managed resource visibility is set to hidden.</p>"
         },
         "DryRun":{
           "shape":"Boolean",
@@ -35245,7 +35595,7 @@
         },
         "OrganizationTargetId":{
           "shape":"String",
-          "documentation":"<p>The ID of the Amazon Web Services Organizations target for which to enable the IPAM policy. This parameter is required only when IPAM is integrated with Amazon Web Services Organizations. When IPAM is not integrated with Amazon Web Services Organizations, omit this parameter and the policy will apply to the current account.</p> <p>A target can be an individual Amazon Web Services account or an entity within an Amazon Web Services Organization to which an IPAM policy can be applied.</p>"
+          "documentation":"<p>A target can be an individual Amazon Web Services account or an entity within an Amazon Web Services Organization to which an IPAM policy can be applied.</p> <p>The ID of the Amazon Web Services Organizations target for which to enable the IPAM policy. This parameter is required only when IPAM is integrated with Amazon Web Services Organizations. When IPAM is not integrated with Amazon Web Services Organizations, omit this parameter and the policy will apply to the current account.</p>"
         }
       }
     },
@@ -36569,6 +36919,7 @@
         "resource-region",
         "availability-zone-id",
         "account-id",
+        "account-name",
         "instance-family",
         "instance-type",
         "instance-platform",
@@ -36583,7 +36934,9 @@
         "reservation-state",
         "reservation-instance-match-criteria",
         "reservation-unused-financial-owner"
-      ]
+      ],
+      "max":300,
+      "min":0
     },
     "FilterList":{
       "type":"list",
@@ -38020,6 +38373,43 @@
         }
       }
     },
+    "GetCapacityManagerMonitoredTagKeysRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"GetCapacityManagerMonitoredTagKeysRequestMaxResults",
+          "documentation":"<p> The maximum number of results to return in a single call. To retrieve the remaining results, make another call with the returned <code>NextToken</code> value. If not specified, up to 1000 results are returned. </p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p> The token for the next page of results. Use the value returned from a previous call to retrieve additional results. </p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p> Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>. </p>"
+        }
+      }
+    },
+    "GetCapacityManagerMonitoredTagKeysRequestMaxResults":{
+      "type":"integer",
+      "max":1000,
+      "min":1
+    },
+    "GetCapacityManagerMonitoredTagKeysResult":{
+      "type":"structure",
+      "members":{
+        "CapacityManagerTagKeys":{
+          "shape":"CapacityManagerMonitoredTagKeyList",
+          "documentation":"<p> The list of tag keys being monitored by Capacity Manager, including their current status and metadata. </p>",
+          "locationName":"capacityManagerTagKeySet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p> The token to use to retrieve the next page of results. This value is null when there are no more results to return. </p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
     "GetCapacityReservationUsageRequest":{
       "type":"structure",
       "required":["CapacityReservationId"],
@@ -39079,7 +39469,7 @@
         },
         "MaxResults":{
           "shape":"IpamMaxResults",
-          "documentation":"<p>The maximum number of results to return in the request.</p>"
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -39250,7 +39640,7 @@
         },
         "MaxResults":{
           "shape":"IpamMaxResults",
-          "documentation":"<p>The maximum number of results to return in the request.</p>"
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -39401,6 +39791,25 @@
           "shape":"NextToken",
           "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
           "locationName":"nextToken"
+        }
+      }
+    },
+    "GetManagedResourceVisibilityRequest":{
+      "type":"structure",
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "GetManagedResourceVisibilityResult":{
+      "type":"structure",
+      "members":{
+        "Visibility":{
+          "shape":"ManagedResourceVisibilitySettings",
+          "documentation":"<p>The managed resource visibility settings for the account.</p>",
+          "locationName":"visibility"
         }
       }
     },
@@ -40578,6 +40987,7 @@
         "resource-region",
         "availability-zone-id",
         "account-id",
+        "account-name",
         "instance-family",
         "instance-type",
         "instance-platform",
@@ -40592,7 +41002,9 @@
         "reservation-state",
         "reservation-instance-match-criteria",
         "reservation-unused-financial-owner"
-      ]
+      ],
+      "max":300,
+      "min":0
     },
     "GroupBySet":{
       "type":"list",
@@ -41656,7 +42068,7 @@
           "locationName":"MarketplaceProductCode"
         },
         "ImageNames":{
-          "shape":"ImageNameRequestList",
+          "shape":"ImageNameCriteriaRequestList",
           "documentation":"<p>The names of allowed images. Names can include wildcards (<code>?</code> and <code>*</code>).</p> <p>Length: 1–128 characters. With <code>?</code>, the minimum is 3 characters.</p> <p>Valid characters:</p> <ul> <li> <p>Letters: <code>A–Z, a–z</code> </p> </li> <li> <p>Numbers: <code>0–9</code> </p> </li> <li> <p>Special characters: <code>( ) [ ] . / - ' @ _ * ?</code> </p> </li> <li> <p>Spaces</p> </li> </ul> <p>Maximum: 50 values</p>",
           "locationName":"ImageName"
         },
@@ -41677,6 +42089,11 @@
         "shape":"ImageCriterionRequest",
         "locationName":"ImageCriterion"
       }
+    },
+    "ImageDescriptionRequest":{
+      "type":"string",
+      "max":255,
+      "min":0
     },
     "ImageDiskContainer":{
       "type":"structure",
@@ -41789,6 +42206,18 @@
       "documentation":"<p>Information about the AMI.</p>"
     },
     "ImageName":{"type":"string"},
+    "ImageNameCriteriaRequest":{
+      "type":"string",
+      "max":128,
+      "min":0
+    },
+    "ImageNameCriteriaRequestList":{
+      "type":"list",
+      "member":{
+        "shape":"ImageNameCriteriaRequest",
+        "locationName":"item"
+      }
+    },
     "ImageNameList":{
       "type":"list",
       "member":{
@@ -41796,13 +42225,10 @@
         "locationName":"item"
       }
     },
-    "ImageNameRequest":{"type":"string"},
-    "ImageNameRequestList":{
-      "type":"list",
-      "member":{
-        "shape":"ImageNameRequest",
-        "locationName":"item"
-      }
+    "ImageNameRequest":{
+      "type":"string",
+      "max":128,
+      "min":3
     },
     "ImageProvider":{"type":"string"},
     "ImageProviderList":{
@@ -41923,6 +42349,11 @@
         "kernel",
         "ramdisk"
       ]
+    },
+    "ImageUefiDataRequest":{
+      "type":"string",
+      "max":64000,
+      "min":0
     },
     "ImageUsageReport":{
       "type":"structure",
@@ -42900,6 +43331,7 @@
       },
       "documentation":"<p>Describes an import volume task.</p>"
     },
+    "IncludeUnsupportedInRegion":{"type":"boolean"},
     "InferenceAcceleratorInfo":{
       "type":"structure",
       "members":{
@@ -46876,6 +47308,11 @@
           "shape":"RebootMigrationSupport",
           "documentation":"<p>Indicates whether reboot migration during a user-initiated reboot is supported for instances that have a scheduled <code>system-reboot</code> event. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/schedevents_actions_reboot.html#reboot-migration\">Enable or disable reboot migration</a> in the <i>Amazon EC2 User Guide</i>.</p>",
           "locationName":"rebootMigrationSupport"
+        },
+        "SupportedInRegion":{
+          "shape":"SupportedInRegion",
+          "documentation":"<p>Indicates whether the instance type is supported in the current Region.</p>",
+          "locationName":"supportedInRegion"
         }
       },
       "documentation":"<p>Describes the instance type.</p>"
@@ -48225,6 +48662,11 @@
           "shape":"String",
           "documentation":"<p>The owner of the resource.</p>",
           "locationName":"resourceOwner"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags for the IPAM pool allocation.</p>",
+          "locationName":"tagSet"
         }
       },
       "documentation":"<p>In IPAM, an allocation is a CIDR assignment from an IPAM pool to another IPAM pool or to a resource.</p>"
@@ -52568,6 +53010,24 @@
         "locationName":"item"
       }
     },
+    "ManagedResourceDefaultVisibility":{
+      "type":"string",
+      "enum":[
+        "hidden",
+        "visible"
+      ]
+    },
+    "ManagedResourceVisibilitySettings":{
+      "type":"structure",
+      "members":{
+        "DefaultVisibility":{
+          "shape":"ManagedResourceDefaultVisibility",
+          "documentation":"<p>The default visibility setting for managed resources. A value of <code>hidden</code> indicates that managed resources are not included in Describe operation responses by default. A value of <code>visible</code> indicates that managed resources are included by default.</p>",
+          "locationName":"defaultVisibility"
+        }
+      },
+      "documentation":"<p>Describes the managed resource visibility settings for the account.</p>"
+    },
     "MarketType":{
       "type":"string",
       "enum":[
@@ -53149,6 +53609,10 @@
         "DisconnectOnSessionTimeout":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the client VPN session is disconnected after the maximum timeout specified in <code>sessionTimeoutHours</code> is reached. If <code>true</code>, users are prompted to reconnect client VPN. If <code>false</code>, client VPN attempts to reconnect automatically. The default value is <code>true</code>.</p>"
+        },
+        "TransitGatewayConfiguration":{
+          "shape":"TransitGatewayConfigurationInputStructure",
+          "documentation":"<p>The Transit Gateway configuration for the Client VPN endpoint. This option is currently not supported.</p>"
         }
       }
     },
@@ -53499,7 +53963,7 @@
           "locationName":"attribute"
         },
         "Value":{
-          "shape":"String",
+          "shape":"ModifyInstanceAttributeValue",
           "documentation":"<p>A new value for the attribute. Use only with the <code>kernel</code>, <code>ramdisk</code>, <code>userData</code>, <code>disableApiTermination</code>, or <code>instanceInitiatedShutdownBehavior</code> attribute.</p>",
           "locationName":"value"
         },
@@ -53559,6 +54023,16 @@
           "locationName":"enaSupport"
         }
       }
+    },
+    "ModifyInstanceAttributeUserDataRequest":{
+      "type":"structure",
+      "members":{
+        "Value":{"shape":"ModifyInstanceAttributeValue"}
+      }
+    },
+    "ModifyInstanceAttributeValue":{
+      "type":"string",
+      "sensitive":true
     },
     "ModifyInstanceCapacityReservationAttributesRequest":{
       "type":"structure",
@@ -54045,6 +54519,34 @@
         }
       }
     },
+    "ModifyIpamPoolAllocationRequest":{
+      "type":"structure",
+      "required":["IpamPoolAllocationId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamPoolAllocationId":{
+          "shape":"IpamPoolAllocationId",
+          "documentation":"<p>The ID of the IPAM pool allocation you want to modify.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>The new description for the IPAM pool allocation. If you submit a <code>null</code> value, the description is removed from the allocation.</p>"
+        }
+      }
+    },
+    "ModifyIpamPoolAllocationResult":{
+      "type":"structure",
+      "members":{
+        "IpamPoolAllocation":{
+          "shape":"IpamPoolAllocation",
+          "documentation":"<p>The modified IPAM pool allocation.</p>",
+          "locationName":"ipamPoolAllocation"
+        }
+      }
+    },
     "ModifyIpamPoolRequest":{
       "type":"structure",
       "required":["IpamPoolId"],
@@ -54481,6 +54983,30 @@
           "shape":"ManagedPrefixList",
           "documentation":"<p>Information about the prefix list.</p>",
           "locationName":"prefixList"
+        }
+      }
+    },
+    "ModifyManagedResourceVisibilityRequest":{
+      "type":"structure",
+      "required":["DefaultVisibility"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "DefaultVisibility":{
+          "shape":"ManagedResourceDefaultVisibility",
+          "documentation":"<p>The default visibility setting for managed resources. Valid values: <code>hidden</code> | <code>visible</code>.</p>"
+        }
+      }
+    },
+    "ModifyManagedResourceVisibilityResult":{
+      "type":"structure",
+      "members":{
+        "Visibility":{
+          "shape":"ManagedResourceVisibilitySettings",
+          "documentation":"<p>The updated managed resource visibility settings for the account.</p>",
+          "locationName":"visibility"
         }
       }
     },
@@ -56293,6 +56819,10 @@
         "RemoteIpv6NetworkCidr":{
           "shape":"String",
           "documentation":"<p>The IPv6 CIDR on the Amazon Web Services side of the VPN connection.</p> <p>Default: <code>::/0</code> </p>"
+        },
+        "TunnelBandwidth":{
+          "shape":"VpnTunnelBandwidth",
+          "documentation":"<p>The desired bandwidth specification for the VPN connection. <code>standard</code> supports up to 1.25 Gbps per tunnel, while <code>large</code> supports up to 5 Gbps per tunnel. Large bandwidth is only available for VPN connections attached to a transit gateway or to Cloud WAN. The default value is <code>standard</code>.</p>"
         },
         "DryRun":{
           "shape":"Boolean",
@@ -58555,6 +59085,11 @@
           "shape":"String",
           "documentation":"<p>If <code>managed</code> is <code>true</code>, then the principal is returned. The principal is the service provider that manages the resource.</p>",
           "locationName":"principal"
+        },
+        "HiddenByDefault":{
+          "shape":"Boolean",
+          "documentation":"<p>If <code>true</code>, the resource is hidden by default based on the managed resource visibility settings for the account.</p>",
+          "locationName":"hiddenByDefault"
         }
       },
       "documentation":"<p>Describes whether the resource is managed by a service provider and, if so, describes the service provider that manages it.</p>"
@@ -60972,7 +61507,7 @@
           "documentation":"<p>Set to <code>v2.0</code> to enable Trusted Platform Module (TPM) support. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/nitrotpm.html\">NitroTPM</a> in the <i>Amazon EC2 User Guide</i>.</p>"
         },
         "UefiData":{
-          "shape":"StringType",
+          "shape":"ImageUefiDataRequest",
           "documentation":"<p>Base64 representation of the non-volatile UEFI variable store. To retrieve the UEFI data, use the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_GetInstanceUefiData\">GetInstanceUefiData</a> command. You can inspect and modify the UEFI data by using the <a href=\"https://github.com/awslabs/python-uefivars\">python-uefivars tool</a> on GitHub. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/uefi-secure-boot.html\">UEFI Secure Boot for Amazon EC2 instances</a> in the <i>Amazon EC2 User Guide</i>.</p>"
         },
         "ImdsSupport":{
@@ -60990,12 +61525,12 @@
           "locationName":"dryRun"
         },
         "Name":{
-          "shape":"String",
+          "shape":"ImageNameRequest",
           "documentation":"<p>A name for your AMI.</p> <p>Constraints: 3-128 alphanumeric characters, parentheses (()), square brackets ([]), spaces ( ), periods (.), slashes (/), dashes (-), single quotes ('), at-signs (@), or underscores(_)</p>",
           "locationName":"name"
         },
         "Description":{
-          "shape":"String",
+          "shape":"ImageDescriptionRequest",
           "documentation":"<p>A description for your AMI.</p>",
           "locationName":"description"
         },
@@ -61231,6 +61766,30 @@
           "shape":"Boolean",
           "documentation":"<p>Returns <code>true</code> if the request succeeds; otherwise, it returns an error.</p>",
           "locationName":"return"
+        }
+      }
+    },
+    "RejectTransitGatewayClientVpnAttachmentRequest":{
+      "type":"structure",
+      "required":["TransitGatewayAttachmentId"],
+      "members":{
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The ID of the Transit Gateway attachment.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "RejectTransitGatewayClientVpnAttachmentResult":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayClientVpnAttachment":{
+          "shape":"TransitGatewayClientVpnAttachment",
+          "documentation":"<p>Information about the Transit Gateway Client VPN attachment.</p>",
+          "locationName":"transitGatewayClientVpnAttachment"
         }
       }
     },
@@ -63421,7 +63980,8 @@
         "secondary-network",
         "secondary-subnet",
         "capacity-manager-data-export",
-        "vpn-concentrator"
+        "vpn-concentrator",
+        "ipam-pool-allocation"
       ]
     },
     "ResourceTypeOption":{
@@ -69085,11 +69645,6 @@
         "locationName":"item"
       }
     },
-    "StringType":{
-      "type":"string",
-      "max":64000,
-      "min":0
-    },
     "Subnet":{
       "type":"structure",
       "members":{
@@ -69534,6 +70089,7 @@
         "locationName":"item"
       }
     },
+    "SupportedInRegion":{"type":"boolean"},
     "SupportedIpAddressTypes":{
       "type":"list",
       "member":{
@@ -69813,6 +70369,16 @@
           "shape":"ValueStringList",
           "documentation":"<p>The IDs of the security groups applied to the target network association.</p>",
           "locationName":"securityGroups"
+        },
+        "AvailabilityZones":{
+          "shape":"ClientVpnAvailabilityZoneSet",
+          "documentation":"<p>The Availability Zone names for the target network association, if the Client VPN endpoint uses a Transit Gateway.</p>",
+          "locationName":"availabilityZoneSet"
+        },
+        "AvailabilityZoneIds":{
+          "shape":"ClientVpnAvailabilityZoneIdSet",
+          "documentation":"<p>The Availability Zone IDs for the target network association, if the Client VPN endpoint uses a Transit Gateway.</p>",
+          "locationName":"availabilityZoneIdSet"
         }
       },
       "documentation":"<p>Describes a target network associated with a Client VPN endpoint.</p>"
@@ -70699,7 +71265,8 @@
         "connect",
         "peering",
         "tgw-peering",
-        "network-function"
+        "network-function",
+        "client-vpn"
       ]
     },
     "TransitGatewayAttachmentState":{
@@ -70720,12 +71287,105 @@
         "failing"
       ]
     },
+    "TransitGatewayAttachmentStatusType":{
+      "type":"string",
+      "enum":[
+        "pending-acceptance",
+        "pending",
+        "rejected",
+        "available",
+        "deleting",
+        "deleted"
+      ]
+    },
     "TransitGatewayCidrBlockStringList":{
       "type":"list",
       "member":{
         "shape":"String",
         "locationName":"item"
       }
+    },
+    "TransitGatewayClientVpnAttachment":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The ID of the Transit Gateway attachment.</p>",
+          "locationName":"transitGatewayAttachmentId"
+        },
+        "TransitGatewayId":{
+          "shape":"TransitGatewayId",
+          "documentation":"<p>The ID of the Transit Gateway.</p>",
+          "locationName":"transitGatewayId"
+        },
+        "ClientVpnEndpointId":{
+          "shape":"ClientVpnEndpointId",
+          "documentation":"<p>The ID of the Client VPN endpoint.</p>",
+          "locationName":"clientVpnEndpointId"
+        },
+        "ClientVpnOwnerId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the Client VPN endpoint.</p>",
+          "locationName":"clientVpnOwnerId"
+        },
+        "State":{
+          "shape":"TransitGatewayAttachmentStatusType",
+          "documentation":"<p>The state of the Transit Gateway attachment.</p>",
+          "locationName":"state"
+        },
+        "CreationTime":{
+          "shape":"String",
+          "documentation":"<p>The date and time the Transit Gateway attachment was created.</p>",
+          "locationName":"creationTime"
+        }
+      },
+      "documentation":"<p>Describes a Transit Gateway attachment for a Client VPN endpoint.</p>"
+    },
+    "TransitGatewayConfigurationDescribeEndpointStructure":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayId":{
+          "shape":"TransitGatewayId",
+          "documentation":"<p>The ID of the Transit Gateway.</p>",
+          "locationName":"transitGatewayId"
+        },
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The ID of the Transit Gateway attachment.</p>",
+          "locationName":"transitGatewayAttachmentId"
+        },
+        "AvailabilityZones":{
+          "shape":"ClientVpnAvailabilityZoneSet",
+          "documentation":"<p>The Availability Zone names for the Transit Gateway association.</p>",
+          "locationName":"availabilityZoneSet"
+        },
+        "AvailabilityZoneIds":{
+          "shape":"ClientVpnAvailabilityZoneIdSet",
+          "documentation":"<p>The Availability Zone IDs for the Transit Gateway association.</p>",
+          "locationName":"availabilityZoneIdSet"
+        }
+      },
+      "documentation":"<p>Describes the Transit Gateway configuration for a Client VPN endpoint.</p>"
+    },
+    "TransitGatewayConfigurationInputStructure":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayId":{
+          "shape":"TransitGatewayId",
+          "documentation":"<p>The ID of the Transit Gateway to associate with the Client VPN endpoint.</p>"
+        },
+        "AvailabilityZones":{
+          "shape":"ClientVpnAvailabilityZoneSet",
+          "documentation":"<p>The Availability Zone names for the Transit Gateway association. You can specify up to the maximum number of Availability Zones supported by the Transit Gateway. You cannot specify both <code>AvailabilityZones</code> and <code>AvailabilityZoneIds</code>.</p>",
+          "locationName":"AvailabilityZone"
+        },
+        "AvailabilityZoneIds":{
+          "shape":"ClientVpnAvailabilityZoneIdSet",
+          "documentation":"<p>The Availability Zone IDs for the Transit Gateway association. You can specify up to the maximum number of Availability Zones supported by the Transit Gateway. You cannot specify both <code>AvailabilityZones</code> and <code>AvailabilityZoneIds</code>.</p>",
+          "locationName":"AvailabilityZoneId"
+        }
+      },
+      "documentation":"<p>The Transit Gateway configuration for a Client VPN endpoint.</p>"
     },
     "TransitGatewayConnect":{
       "type":"structure",
@@ -72793,6 +73453,40 @@
         "locationName":"item"
       }
     },
+    "UpdateCapacityManagerMonitoredTagKeysRequest":{
+      "type":"structure",
+      "members":{
+        "ActivateTagKeys":{
+          "shape":"ValueStringList",
+          "documentation":"<p> The tag keys to activate for monitoring. Once activated, these tag keys will be included as dimensions in capacity metric data. </p>",
+          "locationName":"ActivateTagKey"
+        },
+        "DeactivateTagKeys":{
+          "shape":"ValueStringList",
+          "documentation":"<p> The tag keys to deactivate. Deactivated tag keys will no longer be included as dimensions in capacity metric data. </p>",
+          "locationName":"DeactivateTagKey"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p> Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>. </p>"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p> Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. </p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "UpdateCapacityManagerMonitoredTagKeysResult":{
+      "type":"structure",
+      "members":{
+        "CapacityManagerTagKeys":{
+          "shape":"CapacityManagerMonitoredTagKeyList",
+          "documentation":"<p> The list of tag keys affected by the update, including their current status and metadata. </p>",
+          "locationName":"capacityManagerTagKeySet"
+        }
+      }
+    },
     "UpdateCapacityManagerOrganizationsAccessRequest":{
       "type":"structure",
       "required":["OrganizationsAccess"],
@@ -74561,6 +75255,10 @@
           "shape":"DateTime",
           "documentation":"<p>The modification completion or failure time.</p>",
           "locationName":"endTime"
+        },
+        "Operator":{
+          "shape":"OperatorResponse",
+          "locationName":"operator"
         }
       },
       "documentation":"<p>Describes the modification status of an EBS volume.</p>"
@@ -74874,6 +75572,11 @@
           "shape":"String",
           "documentation":"<p>The ID of the Availability Zone.</p>",
           "locationName":"availabilityZoneId"
+        },
+        "Operator":{
+          "shape":"OperatorResponse",
+          "documentation":"<p>The service provider that manages the resource.</p>",
+          "locationName":"operator"
         }
       },
       "documentation":"<p>Describes the volume status.</p>"

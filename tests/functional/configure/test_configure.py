@@ -84,6 +84,16 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
         )
         self.assertEqual(stdout.strip(), "testing_access_key")
 
+    def test_get_command_with_nonexisting_profile(self):
+        self.set_config_file_contents(
+            "\n[default]\naws_access_key_id=default_access_key\n\n"
+        )
+        _, stderr, _ = self.run_cmd(
+            "configure get --profile doesntexist sso_region",
+            expected_rc=255,
+        )
+        self.assertIn("could not be found", stderr)
+
     def test_get_with_fq_name(self):
         # test get configs with fully qualified name.
         self.set_config_file_contents(
@@ -129,10 +139,64 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
         )
         self.assertEqual(stdout.strip(), "testing_access_key")
 
+    def test_get_command_with_subsection(self):
+        self.set_config_file_contents(
+            "\n"
+            "[default]\n"
+            "aws_access_key_id=default_access_key\n"
+            "\n"
+            "[sso-session my-sso-session]\n"
+            "sso_region = us-west-2\n"
+        )
+        stdout, _, _ = self.run_cmd(
+            "configure get --sso-session my-sso-session sso_region",
+        )
+        self.assertEqual(stdout.strip(), "us-west-2")
+
+    def test_get_command_with_subsection_nested_property(self):
+        self.set_config_file_contents(
+            "\n"
+            "[default]\n"
+            "aws_access_key_id=default_access_key\n"
+            "\n"
+            "[services my-services]\n"
+            "ec2 = \n"
+            "    endpoint_url = http://localhost:4567/"
+        )
+        stdout, _, _ = self.run_cmd(
+            "configure get --services my-services ec2.endpoint_url",
+        )
+        self.assertEqual(stdout.strip(), "http://localhost:4567/")
+
+    def test_get_command_with_nonexisting_subsection(self):
+        self.set_config_file_contents(
+            "\n[default]\naws_access_key_id=default_access_key\n\n"
+        )
+        _, stderr, _ = self.run_cmd(
+            "configure get --sso-session my-sso-session sso_region",
+            expected_rc=255,
+        )
+        self.assertIn("could not be found", stderr)
+
+    def test_get_command_with_subsection_set_nonexisting_subsection(self):
+        self.set_config_file_contents(
+            "\n"
+            "[default]\n"
+            "aws_access_key_id=default_access_key\n"
+            "\n"
+            "[sso-session my-sso-session]\n"
+            "sso_region = us-west-2\n"
+        )
+        _, stderr, _ = self.run_cmd(
+            "configure get --services my-services ec2.endpoint_url",
+            expected_rc=255,
+        )
+        self.assertIn("could not be found", stderr)
+
     def test_set_with_config_file_no_exist(self):
         self.run_cmd("configure set region us-west-1")
         self.assertEqual(
-            "[default]\n" "region = us-west-1\n",
+            "[default]\nregion = us-west-1\n",
             self.get_config_file_contents(),
         )
 
@@ -141,7 +205,7 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
             "configure set endpoint http://www.example.com",
         )
         self.assertEqual(
-            "[default]\n" "endpoint = http://www.example.com\n",
+            "[default]\nendpoint = http://www.example.com\n",
             self.get_config_file_contents(),
         )
 
@@ -151,15 +215,15 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
 
         self.run_cmd("configure set region us-west-1")
         self.assertEqual(
-            "[default]\n" "region = us-west-1\n",
+            "[default]\nregion = us-west-1\n",
             self.get_config_file_contents(),
         )
 
     def test_set_with_updating_value(self):
-        self.set_config_file_contents("[default]\n" "region = us-west-2\n")
+        self.set_config_file_contents("[default]\nregion = us-west-2\n")
         self.run_cmd("configure set region us-west-1")
         self.assertEqual(
-            "[default]\n" "region = us-west-1\n",
+            "[default]\nregion = us-west-1\n",
             self.get_config_file_contents(),
         )
 
@@ -175,7 +239,7 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
             ]
         )
         self.assertEqual(
-            "[profile 'test with spaces']\n" "region = us-west-1\n",
+            "[profile 'test with spaces']\nregion = us-west-1\n",
             self.get_config_file_contents(),
         )
 
@@ -191,7 +255,7 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
             ]
         )
         self.assertEqual(
-            "[profile 'space test']\n" "un =\n" "    known = us-west-1\n",
+            "[profile 'space test']\nun =\n    known = us-west-1\n",
             self.get_config_file_contents(),
         )
 
@@ -205,7 +269,7 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
             ]
         )
         self.assertEqual(
-            "[profile 'test with spaces']\n" "region = us-west-1\n",
+            "[profile 'test with spaces']\nregion = us-west-1\n",
             self.get_config_file_contents(),
         )
 
@@ -214,7 +278,7 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
             "configure set region us-west-1 --profile testing",
         )
         self.assertEqual(
-            "[profile testing]\n" "region = us-west-1\n",
+            "[profile testing]\nregion = us-west-1\n",
             self.get_config_file_contents(),
         )
 
@@ -223,7 +287,7 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
             "configure set profile.testing.region us-west-2",
         )
         self.assertEqual(
-            "[profile testing]\n" "region = us-west-2\n",
+            "[profile testing]\nregion = us-west-2\n",
             self.get_config_file_contents(),
         )
 
@@ -232,7 +296,7 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
             "configure set default.s3.signature_version s3v4",
         )
         self.assertEqual(
-            "[default]\n" "s3 =\n" "    signature_version = s3v4\n",
+            "[default]\ns3 =\n    signature_version = s3v4\n",
             self.get_config_file_contents(),
         )
 
@@ -258,7 +322,7 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
 
     def test_set_with_new_profile(self):
         self.set_config_file_contents(
-            "[default]\n" "s3 =\n" "    signature_version = s3v4\n"
+            "[default]\ns3 =\n    signature_version = s3v4\n"
         )
         self.run_cmd(
             "configure set profile.dev.s3.signature_version s3v4",
@@ -275,19 +339,19 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
 
     def test_override_existing_value(self):
         self.set_config_file_contents(
-            "[default]\n" "s3 =\n" "    signature_version = v4\n"
+            "[default]\ns3 =\n    signature_version = v4\n"
         )
         self.run_cmd(
             "configure set default.s3.signature_version NEWVALUE",
         )
         self.assertEqual(
-            "[default]\n" "s3 =\n" "    signature_version = NEWVALUE\n",
+            "[default]\ns3 =\n    signature_version = NEWVALUE\n",
             self.get_config_file_contents(),
         )
 
     def test_get_nested_attribute(self):
         self.set_config_file_contents(
-            "[default]\n" "s3 =\n" "    signature_version = v4\n"
+            "[default]\ns3 =\n    signature_version = v4\n"
         )
         stdout, _, _ = self.run_cmd(
             "configure get default.s3.signature_version"
@@ -298,6 +362,135 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
             "configure get default.bad.doesnotexist", expected_rc=1
         )
         self.assertEqual(stdout, "")
+
+    def test_set_with_subsection_no_name_provided(self):
+        _, stderr, _ = self.run_cmd(
+            [
+                "configure",
+                "set",
+                "--sso-session",
+                '',
+                "space",
+                "test",
+            ],
+            expected_rc=252,
+        )
+        self.assertIn("Invalid value for --sso-session", stderr)
+
+    def test_set_deeply_nested_property_in_subsection_results_in_error(self):
+        self.set_config_file_contents(
+            "[services my-services]\nec2 =\n    endpoint_url = localhost\n"
+        )
+
+        _, stderr, _ = self.run_cmd(
+            [
+                "configure",
+                "set",
+                "--services",
+                'my-services',
+                "s3.express.endpoint_url",
+                "localhost",
+            ],
+            expected_rc=252,
+        )
+        self.assertIn(
+            "Found more than two parts in the property to set.", stderr
+        )
+
+    def test_set_with_two_subsections_specified_results_in_error(self):
+        _, stderr, _ = self.run_cmd(
+            [
+                "configure",
+                "set",
+                "--sso-session",
+                'my-sso',
+                "--services",
+                'my-services',
+                "space",
+                "test",
+            ],
+            expected_rc=252,
+        )
+        self.assertIn(
+            "cannot be specified when one of the following keys are also specified:",
+            stderr,
+        )
+
+    def test_set_updates_existing_property_in_subsection(self):
+        self.set_config_file_contents(
+            "[sso-session my-sso-session]\nsso_region = us-west-2\n"
+        )
+
+        self.run_cmd(
+            [
+                "configure",
+                "set",
+                "--sso-session",
+                'my-sso-session',
+                "sso_region",
+                "eu-central-1",
+            ],
+            expected_rc=0,
+        )
+        self.assertEqual(
+            "[sso-session my-sso-session]\nsso_region = eu-central-1\n",
+            self.get_config_file_contents(),
+        )
+    def test_set_rejects_newline_in_value(self):
+        _, stderr, _ = self.run_cmd(
+            ["configure", "set", "region", "us-east-1\nus-west-2"],
+            expected_rc=255,
+        )
+        self.assertIn("newline", stderr)
+        # To avoid leaking sensitive values,
+        # values should not appear in stderr.
+        self.assertNotIn("us-east-1\nus-west-2", stderr)
+
+    def test_set_rejects_carriage_return_in_value(self):
+        _, stderr, _ = self.run_cmd(
+            ["configure", "set", "region", "us-east-1\rus-west-2"],
+            expected_rc=255,
+        )
+        self.assertIn("newline", stderr)
+        # To avoid leaking sensitive values,
+        # values should not appear in stderr.
+        self.assertNotIn("us-east-1\rus-west-2", stderr)
+
+    def test_set_rejects_newline_in_nested_value(self):
+        _, stderr, _ = self.run_cmd(
+            ["configure", "set", "default.s3.signature_version", "s3v4\nfoo"],
+            expected_rc=255,
+        )
+        self.assertIn("newline", stderr)
+        # To avoid leaking sensitive values,
+        # values should not appear in stderr.
+        self.assertNotIn("s3v4\nfoo", stderr)
+
+    def test_newline_injection_does_not_write_injected_key_to_file(self):
+        # Simulates: aws configure set output $'table\nregion = us-east-1'
+        # The injected key must not appear anywhere in the config file.
+        self.set_config_file_contents("[default]\n")
+        self.run_cmd(
+            ["configure", "set", "output", "table\nregion = us-east-1"],
+            expected_rc=255,
+        )
+        contents = self.get_config_file_contents()
+        self.assertNotIn("region", contents)
+
+    def test_newline_injection_does_not_set_injected_key_in_parsed_config(self):
+        # Even if the file were somehow written, the injected key must not be
+        # readable back via 'configure get'.
+        self.set_config_file_contents("[default]\n")
+        self.run_cmd(
+            ["configure", "set", "output", "table\nregion = us-east-1"],
+            expected_rc=255,
+        )
+        # Re-create the driver so it re-reads the (unchanged) config file.
+        self.driver = create_clidriver()
+        stdout, _, _ = self.run_cmd(
+            "configure get region", expected_rc=1
+        )
+        self.assertEqual(stdout.strip(), "")
 
 
 class TestConfigureHasArgTable(unittest.TestCase):

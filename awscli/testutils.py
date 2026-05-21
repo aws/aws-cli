@@ -198,6 +198,21 @@ def create_bucket(session, name=None, region=None):
             pass
         else:
             raise
+    client.put_bucket_encryption(
+        Bucket=bucket_name,
+        ServerSideEncryptionConfiguration={
+            'Rules': [
+                {
+                    'ApplyServerSideEncryptionByDefault': {
+                        'SSEAlgorithm': 'AES256',
+                    },
+                    'BlockedEncryptionTypes': {
+                        'EncryptionType': ['NONE'],
+                    },
+                }
+            ],
+        },
+    )
     client.delete_public_access_block(Bucket=bucket_name)
     return bucket_name
 

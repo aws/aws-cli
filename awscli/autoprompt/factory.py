@@ -28,6 +28,7 @@ from prompt_toolkit.layout.menus import (
 from prompt_toolkit.layout.processors import BeforeInput
 from prompt_toolkit.widgets import SearchToolbar, VerticalLine
 
+from awscli.autoprompt.exceptions import PrompterKeyboardInterrupt
 from awscli.autoprompt.filters import (
     doc_section_visible,
     doc_window_has_focus,
@@ -44,10 +45,6 @@ from awscli.autoprompt.widgets import (
     TitleLine,
     ToolbarWidget,
 )
-
-
-class PrompterKeyboardInterrupt(KeyboardInterrupt):
-    pass
 
 
 class CLIPromptBuffer(Buffer):

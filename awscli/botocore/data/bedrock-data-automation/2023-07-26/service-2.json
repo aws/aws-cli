@@ -72,6 +72,26 @@
       "documentation":"<p>Creates a new version of an existing Amazon Bedrock Data Automation Blueprint</p>",
       "idempotent":true
     },
+    "CreateDataAutomationLibrary":{
+      "name":"CreateDataAutomationLibrary",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/data-automation-libraries/",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateDataAutomationLibraryRequest"},
+      "output":{"shape":"CreateDataAutomationLibraryResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates an Amazon Bedrock Data Automation Library</p>",
+      "idempotent":true
+    },
     "CreateDataAutomationProject":{
       "name":"CreateDataAutomationProject",
       "http":{
@@ -109,6 +129,26 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Deletes an existing Amazon Bedrock Data Automation Blueprint</p>",
+      "idempotent":true
+    },
+    "DeleteDataAutomationLibrary":{
+      "name":"DeleteDataAutomationLibrary",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/data-automation-libraries/{libraryArn}/",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteDataAutomationLibraryRequest"},
+      "output":{"shape":"DeleteDataAutomationLibraryResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes an existing Amazon Bedrock Data Automation Library</p>",
       "idempotent":true
     },
     "DeleteDataAutomationProject":{
@@ -168,6 +208,63 @@
       "documentation":"<p>API used to get blueprint optimization status.</p>",
       "readonly":true
     },
+    "GetDataAutomationLibrary":{
+      "name":"GetDataAutomationLibrary",
+      "http":{
+        "method":"POST",
+        "requestUri":"/data-automation-libraries/{libraryArn}/",
+        "responseCode":200
+      },
+      "input":{"shape":"GetDataAutomationLibraryRequest"},
+      "output":{"shape":"GetDataAutomationLibraryResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Gets an existing Amazon Bedrock Data Automation Library</p>",
+      "readonly":true
+    },
+    "GetDataAutomationLibraryEntity":{
+      "name":"GetDataAutomationLibraryEntity",
+      "http":{
+        "method":"POST",
+        "requestUri":"/data-automation-libraries/{libraryArn}/entityType/{entityType}/entities/{entityId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetDataAutomationLibraryEntityRequest"},
+      "output":{"shape":"GetDataAutomationLibraryEntityResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Gets an existing entity based on entity type from the library</p>",
+      "readonly":true
+    },
+    "GetDataAutomationLibraryIngestionJob":{
+      "name":"GetDataAutomationLibraryIngestionJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/data-automation-libraries/{libraryArn}/library-ingestion-jobs/{jobArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetDataAutomationLibraryIngestionJobRequest"},
+      "output":{"shape":"GetDataAutomationLibraryIngestionJobResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>API used to get status of data automation library ingestion job</p>",
+      "readonly":true
+    },
     "GetDataAutomationProject":{
       "name":"GetDataAutomationProject",
       "http":{
@@ -207,6 +304,27 @@
       "documentation":"<p>Invoke an async job to perform Blueprint Optimization</p>",
       "idempotent":true
     },
+    "InvokeDataAutomationLibraryIngestionJob":{
+      "name":"InvokeDataAutomationLibraryIngestionJob",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/data-automation-libraries/{libraryArn}/library-ingestion-jobs/",
+        "responseCode":201
+      },
+      "input":{"shape":"InvokeDataAutomationLibraryIngestionJobRequest"},
+      "output":{"shape":"InvokeDataAutomationLibraryIngestionJobResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Async API: Invoke data automation library ingestion job</p>",
+      "idempotent":true
+    },
     "ListBlueprints":{
       "name":"ListBlueprints",
       "http":{
@@ -224,6 +342,62 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Lists all existing Amazon Bedrock Data Automation Blueprints</p>",
+      "readonly":true
+    },
+    "ListDataAutomationLibraries":{
+      "name":"ListDataAutomationLibraries",
+      "http":{
+        "method":"POST",
+        "requestUri":"/data-automation-libraries/",
+        "responseCode":200
+      },
+      "input":{"shape":"ListDataAutomationLibrariesRequest"},
+      "output":{"shape":"ListDataAutomationLibrariesResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists all existing Amazon Bedrock Data Automation Libraries</p>",
+      "readonly":true
+    },
+    "ListDataAutomationLibraryEntities":{
+      "name":"ListDataAutomationLibraryEntities",
+      "http":{
+        "method":"POST",
+        "requestUri":"/data-automation-libraries/{libraryArn}/entityType/{entityType}/entities/",
+        "responseCode":200
+      },
+      "input":{"shape":"ListDataAutomationLibraryEntitiesRequest"},
+      "output":{"shape":"ListDataAutomationLibraryEntitiesResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists all stored entities in the library</p>",
+      "readonly":true
+    },
+    "ListDataAutomationLibraryIngestionJobs":{
+      "name":"ListDataAutomationLibraryIngestionJobs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/data-automation-libraries/{libraryArn}/library-ingestion-jobs/",
+        "responseCode":200
+      },
+      "input":{"shape":"ListDataAutomationLibraryIngestionJobsRequest"},
+      "output":{"shape":"ListDataAutomationLibraryIngestionJobsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists all data automation library ingestion jobs</p>",
       "readonly":true
     },
     "ListDataAutomationProjects":{
@@ -318,6 +492,26 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Updates an existing Amazon Bedrock Data Automation Blueprint</p>",
+      "idempotent":true
+    },
+    "UpdateDataAutomationLibrary":{
+      "name":"UpdateDataAutomationLibrary",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/data-automation-libraries/{libraryArn}/",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateDataAutomationLibraryRequest"},
+      "output":{"shape":"UpdateDataAutomationLibraryResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates an existing Amazon Bedrock Data Automation Library</p>",
       "idempotent":true
     },
     "UpdateDataAutomationProject":{
@@ -762,6 +956,29 @@
       },
       "documentation":"<p>Create Blueprint Version Response</p>"
     },
+    "CreateDataAutomationLibraryRequest":{
+      "type":"structure",
+      "required":["libraryName"],
+      "members":{
+        "libraryName":{"shape":"DataAutomationLibraryName"},
+        "libraryDescription":{"shape":"DataAutomationLibraryDescription"},
+        "clientToken":{
+          "shape":"ClientToken",
+          "idempotencyToken":true
+        },
+        "encryptionConfiguration":{"shape":"EncryptionConfiguration"},
+        "tags":{"shape":"TagList"}
+      },
+      "documentation":"<p>Create DataAutomationLibrary Request</p>"
+    },
+    "CreateDataAutomationLibraryResponse":{
+      "type":"structure",
+      "members":{
+        "libraryArn":{"shape":"DataAutomationLibraryArn"},
+        "status":{"shape":"DataAutomationLibraryStatus"}
+      },
+      "documentation":"<p>Create DataAutomationLibrary Response</p>"
+    },
     "CreateDataAutomationProjectRequest":{
       "type":"structure",
       "required":[
@@ -776,6 +993,7 @@
         "standardOutputConfiguration":{"shape":"StandardOutputConfiguration"},
         "customOutputConfiguration":{"shape":"CustomOutputConfiguration"},
         "overrideConfiguration":{"shape":"OverrideConfiguration"},
+        "dataAutomationLibraryConfiguration":{"shape":"DataAutomationLibraryConfiguration"},
         "clientToken":{
           "shape":"ClientToken",
           "idempotencyToken":true
@@ -801,6 +1019,199 @@
         "blueprints":{"shape":"BlueprintItems"}
       },
       "documentation":"<p>Custom output configuration</p>"
+    },
+    "DataAutomationLibrary":{
+      "type":"structure",
+      "required":[
+        "libraryArn",
+        "creationTime",
+        "libraryName",
+        "status"
+      ],
+      "members":{
+        "libraryArn":{"shape":"DataAutomationLibraryArn"},
+        "creationTime":{"shape":"DateTimestamp"},
+        "libraryName":{"shape":"DataAutomationLibraryName"},
+        "libraryDescription":{"shape":"DataAutomationLibraryDescription"},
+        "status":{"shape":"DataAutomationLibraryStatus"},
+        "entityTypes":{"shape":"EntityTypeInfoList"},
+        "kmsKeyId":{"shape":"KmsKeyId"},
+        "kmsEncryptionContext":{"shape":"KmsEncryptionContext"}
+      },
+      "documentation":"<p>Contains the information of a DataAutomationLibrary.</p>"
+    },
+    "DataAutomationLibraryArn":{
+      "type":"string",
+      "documentation":"<p>ARN generated at the server side when a DataAutomationLibrary is created</p>",
+      "max":128,
+      "min":0,
+      "pattern":"arn:aws(|-cn|-iso|-iso-[a-z]|-us-gov):bedrock:[a-zA-Z0-9-]*:[0-9]{12}:data-automation-library/[a-zA-Z0-9-]{12,36}"
+    },
+    "DataAutomationLibraryConfiguration":{
+      "type":"structure",
+      "members":{
+        "libraries":{"shape":"DataAutomationLibraryItems"}
+      },
+      "documentation":"<p>DataAutomation Library configuration</p>"
+    },
+    "DataAutomationLibraryDescription":{
+      "type":"string",
+      "documentation":"<p>Description of the DataAutomationLibrary</p>",
+      "max":300,
+      "min":0,
+      "pattern":"[a-zA-Z0-9\\s!\"\\#\\$%'&\\(\\)\\*\\+\\,\\-\\./:;=\\?@\\[\\\\\\]\\^_`\\{\\|\\}~><À-ÖØ-Üßà-öø-üẞ¿¡Œ-œ°£¥₹€§©ª®™¹±-µ✓⑆-⑉฿₽₱₦₣₩₫₺]*",
+      "sensitive":true
+    },
+    "DataAutomationLibraryEntitySummaries":{
+      "type":"list",
+      "member":{"shape":"DataAutomationLibraryEntitySummary"},
+      "documentation":"<p>List of entity summary object</p>"
+    },
+    "DataAutomationLibraryEntitySummary":{
+      "type":"structure",
+      "members":{
+        "vocabulary":{"shape":"VocabularyEntitySummary"}
+      },
+      "documentation":"<p>Summarized information about an entity</p>",
+      "union":true
+    },
+    "DataAutomationLibraryFilter":{
+      "type":"structure",
+      "required":["libraryArn"],
+      "members":{
+        "libraryArn":{"shape":"DataAutomationLibraryArn"}
+      },
+      "documentation":"<p>Data Automation Library Filter</p>"
+    },
+    "DataAutomationLibraryIngestionJob":{
+      "type":"structure",
+      "required":[
+        "jobArn",
+        "creationTime",
+        "entityType",
+        "operationType",
+        "jobStatus",
+        "outputConfiguration"
+      ],
+      "members":{
+        "jobArn":{
+          "shape":"DataAutomationLibraryIngestionJobArn",
+          "documentation":"<p>ARN of the DataAutomationLibraryIngestionJob</p>"
+        },
+        "creationTime":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>Timestamp when the DataAutomationLibraryIngestionJob was created</p>"
+        },
+        "entityType":{
+          "shape":"EntityType",
+          "documentation":"<p>The entity type associated with DataAutomationLibraryIngestionJob</p>"
+        },
+        "operationType":{
+          "shape":"LibraryIngestionJobOperationType",
+          "documentation":"<p>The operation associated with DataAutomationLibraryIngestionJob</p>"
+        },
+        "jobStatus":{
+          "shape":"LibraryIngestionJobStatus",
+          "documentation":"<p>The status of the DataAutomationLibraryIngestionJob</p>"
+        },
+        "outputConfiguration":{
+          "shape":"OutputConfiguration",
+          "documentation":"<p>Output configuration of DataAutomationLibraryIngestionJob</p>"
+        },
+        "completionTime":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>Timestamp when the DataAutomationLibraryIngestionJob was completed</p>"
+        },
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>Error message</p>"
+        },
+        "errorType":{
+          "shape":"String",
+          "documentation":"<p>Error type</p>"
+        }
+      },
+      "documentation":"<p>Contains the information of a DataAutomationLibraryIngestionJob</p>"
+    },
+    "DataAutomationLibraryIngestionJobArn":{
+      "type":"string",
+      "documentation":"<p>ARN of the DataAutomationLibraryIngestionJob</p>",
+      "max":128,
+      "min":0,
+      "pattern":"arn:aws(|-cn|-iso|-iso-[a-z]|-us-gov):bedrock:[a-zA-Z0-9-]*:[0-9]{12}:data-automation-library-ingestion-job/[a-zA-Z0-9-]{12,36}"
+    },
+    "DataAutomationLibraryIngestionJobSummaries":{
+      "type":"list",
+      "member":{"shape":"DataAutomationLibraryIngestionJobSummary"},
+      "documentation":"<p>List of DataAutomationLibraryIngestionJobSummary objects</p>"
+    },
+    "DataAutomationLibraryIngestionJobSummary":{
+      "type":"structure",
+      "required":[
+        "jobArn",
+        "jobStatus",
+        "entityType",
+        "operationType",
+        "creationTime"
+      ],
+      "members":{
+        "jobArn":{"shape":"DataAutomationLibraryIngestionJobArn"},
+        "jobStatus":{"shape":"LibraryIngestionJobStatus"},
+        "entityType":{"shape":"EntityType"},
+        "operationType":{"shape":"LibraryIngestionJobOperationType"},
+        "creationTime":{"shape":"DateTimestamp"},
+        "completionTime":{"shape":"DateTimestamp"}
+      },
+      "documentation":"<p>Summary of a DataAutomationLibraryIngestionJob</p>"
+    },
+    "DataAutomationLibraryItem":{
+      "type":"structure",
+      "required":["libraryArn"],
+      "members":{
+        "libraryArn":{"shape":"DataAutomationLibraryArn"}
+      },
+      "documentation":"<p>DataAutomationLibrary Item</p>"
+    },
+    "DataAutomationLibraryItems":{
+      "type":"list",
+      "member":{"shape":"DataAutomationLibraryItem"},
+      "documentation":"<p>List of DataAutomationLibrary Items</p>",
+      "max":1,
+      "min":0
+    },
+    "DataAutomationLibraryName":{
+      "type":"string",
+      "documentation":"<p>Name of the DataAutomationLibrary</p>",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9-_]+",
+      "sensitive":true
+    },
+    "DataAutomationLibraryStatus":{
+      "type":"string",
+      "documentation":"<p>Status of DataAutomationLibrary</p>",
+      "enum":[
+        "ACTIVE",
+        "DELETING"
+      ]
+    },
+    "DataAutomationLibrarySummaries":{
+      "type":"list",
+      "member":{"shape":"DataAutomationLibrarySummary"},
+      "documentation":"<p>List of DataAutomationLibrarySummary objects</p>"
+    },
+    "DataAutomationLibrarySummary":{
+      "type":"structure",
+      "required":[
+        "libraryArn",
+        "creationTime"
+      ],
+      "members":{
+        "libraryArn":{"shape":"DataAutomationLibraryArn"},
+        "libraryName":{"shape":"DataAutomationLibraryName"},
+        "creationTime":{"shape":"DateTimestamp"}
+      },
+      "documentation":"<p>Summary of a DataAutomationLibrary</p>"
     },
     "DataAutomationProfileArn":{
       "type":"string",
@@ -829,6 +1240,7 @@
         "standardOutputConfiguration":{"shape":"StandardOutputConfiguration"},
         "customOutputConfiguration":{"shape":"CustomOutputConfiguration"},
         "overrideConfiguration":{"shape":"OverrideConfiguration"},
+        "dataAutomationLibraryConfiguration":{"shape":"DataAutomationLibraryConfiguration"},
         "status":{"shape":"DataAutomationProjectStatus"},
         "kmsKeyId":{"shape":"KmsKeyId"},
         "kmsEncryptionContext":{"shape":"KmsEncryptionContext"}
@@ -949,6 +1361,27 @@
       "members":{},
       "documentation":"<p>Delete Blueprint Response</p>"
     },
+    "DeleteDataAutomationLibraryRequest":{
+      "type":"structure",
+      "required":["libraryArn"],
+      "members":{
+        "libraryArn":{
+          "shape":"DataAutomationLibraryArn",
+          "documentation":"<p>ARN generated at the server side when a DataAutomationLibrary is created</p>",
+          "location":"uri",
+          "locationName":"libraryArn"
+        }
+      },
+      "documentation":"<p>Delete DataAutomationLibrary Request</p>"
+    },
+    "DeleteDataAutomationLibraryResponse":{
+      "type":"structure",
+      "members":{
+        "libraryArn":{"shape":"DataAutomationLibraryArn"},
+        "status":{"shape":"DataAutomationLibraryStatus"}
+      },
+      "documentation":"<p>Delete DataAutomationLibrary Response</p>"
+    },
     "DeleteDataAutomationProjectRequest":{
       "type":"structure",
       "required":["projectArn"],
@@ -970,6 +1403,14 @@
         "status":{"shape":"DataAutomationProjectStatus"}
       },
       "documentation":"<p>Delete DataAutomationProject Response</p>"
+    },
+    "DeleteEntitiesInfo":{
+      "type":"structure",
+      "required":["entityIds"],
+      "members":{
+        "entityIds":{"shape":"EntityIdList"}
+      },
+      "documentation":"<p>Input for entities needed to be deleted</p>"
     },
     "DesiredModality":{
       "type":"string",
@@ -1113,6 +1554,70 @@
       "min":1,
       "pattern":".*\\S.*"
     },
+    "EntityDescription":{
+      "type":"string",
+      "documentation":"<p>Description of the entity</p>",
+      "max":300,
+      "min":0,
+      "pattern":"[a-zA-Z0-9\\s!\"\\#\\$%'&\\(\\)\\*\\+\\,\\-\\./:;=\\?@\\[\\\\\\]\\^_`\\{\\|\\}~><À-ÖØ-Üßà-öø-üẞ¿¡Œ-œ°£¥₹€§©ª®™¹±-µ✓⑆-⑉฿₽₱₦₣₩₫₺]*",
+      "sensitive":true
+    },
+    "EntityDetails":{
+      "type":"structure",
+      "members":{
+        "vocabulary":{"shape":"VocabularyEntity"}
+      },
+      "documentation":"<p>Detailed information about an entity</p>",
+      "union":true
+    },
+    "EntityId":{
+      "type":"string",
+      "documentation":"<p>Unique identifier for the entity</p>",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9-_]+"
+    },
+    "EntityIdList":{
+      "type":"list",
+      "member":{"shape":"EntityId"},
+      "documentation":"<p>List of EntityId</p>",
+      "max":1000,
+      "min":1
+    },
+    "EntityMetadata":{
+      "type":"string",
+      "documentation":"<p>JSON string representing relevant metadata for the entity type</p>"
+    },
+    "EntityType":{
+      "type":"string",
+      "documentation":"<p>Entity types supported in DataAutomationLibraries</p>",
+      "enum":["VOCABULARY"]
+    },
+    "EntityTypeInfo":{
+      "type":"structure",
+      "required":["entityType"],
+      "members":{
+        "entityType":{"shape":"EntityType"},
+        "entityMetadata":{"shape":"EntityMetadata"}
+      },
+      "documentation":"<p>Information about an entity type in the DataAutomationLibrary</p>"
+    },
+    "EntityTypeInfoList":{
+      "type":"list",
+      "member":{"shape":"EntityTypeInfo"},
+      "documentation":"<p>List of info for each entity type in the DataAutomationLibrary</p>"
+    },
+    "EventBridgeConfiguration":{
+      "type":"structure",
+      "required":["eventBridgeEnabled"],
+      "members":{
+        "eventBridgeEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Event bridge flag.</p>"
+        }
+      },
+      "documentation":"<p>Event bridge configuration.</p>"
+    },
     "GetBlueprintOptimizationStatusRequest":{
       "type":"structure",
       "required":["invocationArn"],
@@ -1176,6 +1681,97 @@
         "blueprint":{"shape":"Blueprint"}
       },
       "documentation":"<p>Get Blueprint Response</p>"
+    },
+    "GetDataAutomationLibraryEntityRequest":{
+      "type":"structure",
+      "required":[
+        "libraryArn",
+        "entityType",
+        "entityId"
+      ],
+      "members":{
+        "libraryArn":{
+          "shape":"DataAutomationLibraryArn",
+          "documentation":"<p>ARN generated at the server side when a DataAutomationLibrary is created</p>",
+          "location":"uri",
+          "locationName":"libraryArn"
+        },
+        "entityType":{
+          "shape":"EntityType",
+          "documentation":"<p>The entity type for which the entity is requested</p>",
+          "location":"uri",
+          "locationName":"entityType"
+        },
+        "entityId":{
+          "shape":"EntityId",
+          "documentation":"<p>Unique identifier for the entity</p>",
+          "location":"uri",
+          "locationName":"entityId"
+        }
+      },
+      "documentation":"<p>Get DataAutomationLibraryEntity Request</p>"
+    },
+    "GetDataAutomationLibraryEntityResponse":{
+      "type":"structure",
+      "members":{
+        "entity":{
+          "shape":"EntityDetails",
+          "documentation":"<p>Detailed information about the entity</p>"
+        }
+      },
+      "documentation":"<p>Get DataAutomationLibraryEntity Response</p>"
+    },
+    "GetDataAutomationLibraryIngestionJobRequest":{
+      "type":"structure",
+      "required":[
+        "libraryArn",
+        "jobArn"
+      ],
+      "members":{
+        "libraryArn":{
+          "shape":"DataAutomationLibraryArn",
+          "documentation":"<p>ARN generated at the server side when a DataAutomationLibrary is created</p>",
+          "location":"uri",
+          "locationName":"libraryArn"
+        },
+        "jobArn":{
+          "shape":"DataAutomationLibraryIngestionJobArn",
+          "documentation":"<p>ARN of the DataAutomationLibraryIngestionJob</p>",
+          "location":"uri",
+          "locationName":"jobArn"
+        }
+      },
+      "documentation":"<p>Get DataAutomationLibraryIngestionJob Request</p>"
+    },
+    "GetDataAutomationLibraryIngestionJobResponse":{
+      "type":"structure",
+      "members":{
+        "job":{
+          "shape":"DataAutomationLibraryIngestionJob",
+          "documentation":"<p>Contains the information of a library ingestion job</p>"
+        }
+      },
+      "documentation":"<p>Get DataAutomationLibraryIngestionJob Response</p>"
+    },
+    "GetDataAutomationLibraryRequest":{
+      "type":"structure",
+      "required":["libraryArn"],
+      "members":{
+        "libraryArn":{
+          "shape":"DataAutomationLibraryArn",
+          "documentation":"<p>ARN generated at the server side when a DataAutomationLibrary is created</p>",
+          "location":"uri",
+          "locationName":"libraryArn"
+        }
+      },
+      "documentation":"<p>Get DataAutomationLibrary Request</p>"
+    },
+    "GetDataAutomationLibraryResponse":{
+      "type":"structure",
+      "members":{
+        "library":{"shape":"DataAutomationLibrary"}
+      },
+      "documentation":"<p>Get DataAutomationLibrary Response</p>"
     },
     "GetDataAutomationProjectRequest":{
       "type":"structure",
@@ -1281,6 +1877,29 @@
       },
       "documentation":"<p>Standard Output Configuration of Image</p>"
     },
+    "InlinePayload":{
+      "type":"structure",
+      "members":{
+        "upsertEntitiesInfo":{"shape":"UpsertEntitiesInfo"},
+        "deleteEntitiesInfo":{"shape":"DeleteEntitiesInfo"}
+      },
+      "documentation":"<p>Input payload structure definition</p>",
+      "union":true
+    },
+    "InputConfiguration":{
+      "type":"structure",
+      "members":{
+        "s3Object":{
+          "shape":"S3Object",
+          "documentation":"<p>S3 object</p>"
+        },
+        "inlinePayload":{
+          "shape":"InlinePayload",
+          "documentation":"<p>Input Payload</p>"
+        }
+      },
+      "documentation":"<p>Input configuration for DataAutomationLibraryIngestionJob</p>"
+    },
     "InternalServerException":{
       "type":"structure",
       "members":{
@@ -1338,6 +1957,64 @@
       },
       "documentation":"<p>Invoke Blueprint Optimization Async Response</p>"
     },
+    "InvokeDataAutomationLibraryIngestionJobRequest":{
+      "type":"structure",
+      "required":[
+        "libraryArn",
+        "inputConfiguration",
+        "entityType",
+        "operationType",
+        "outputConfiguration"
+      ],
+      "members":{
+        "libraryArn":{
+          "shape":"DataAutomationLibraryArn",
+          "documentation":"<p>ARN generated at the server side when a DataAutomationLibrary is created</p>",
+          "location":"uri",
+          "locationName":"libraryArn"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Idempotency token</p>",
+          "idempotencyToken":true
+        },
+        "inputConfiguration":{
+          "shape":"InputConfiguration",
+          "documentation":"<p>Input configuration of DataAutomationLibraryIngestionJob request</p>"
+        },
+        "entityType":{
+          "shape":"EntityType",
+          "documentation":"<p>The entity type for which DataAutomationLibraryIngestionJob is being run</p>"
+        },
+        "operationType":{
+          "shape":"LibraryIngestionJobOperationType",
+          "documentation":"<p>The operation to be performed by DataAutomationLibraryIngestionJob</p>"
+        },
+        "outputConfiguration":{
+          "shape":"OutputConfiguration",
+          "documentation":"<p>Output configuration of DataAutomationLibraryIngestionJob</p>"
+        },
+        "notificationConfiguration":{
+          "shape":"NotificationConfiguration",
+          "documentation":"<p>Notification configuration.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>List of tags</p>"
+        }
+      },
+      "documentation":"<p>Invoke DataAutomationLibraryIngestionJob Request</p>"
+    },
+    "InvokeDataAutomationLibraryIngestionJobResponse":{
+      "type":"structure",
+      "members":{
+        "jobArn":{
+          "shape":"DataAutomationLibraryIngestionJobArn",
+          "documentation":"<p>ARN of the DataAutomationLibraryIngestionJob</p>"
+        }
+      },
+      "documentation":"<p>Invoke DataAutomationLibraryIngestionJob Response</p>"
+    },
     "KmsEncryptionContext":{
       "type":"map",
       "key":{"shape":"EncryptionContextKey"},
@@ -1369,6 +2046,24 @@
         "HK"
       ]
     },
+    "LibraryIngestionJobOperationType":{
+      "type":"string",
+      "documentation":"<p>DataAutomationLibraryIngestionJob operation type</p>",
+      "enum":[
+        "UPSERT",
+        "DELETE"
+      ]
+    },
+    "LibraryIngestionJobStatus":{
+      "type":"string",
+      "documentation":"<p>Status of DataAutomationLibraryIngestionJob</p>",
+      "enum":[
+        "IN_PROGRESS",
+        "COMPLETED",
+        "COMPLETED_WITH_ERRORS",
+        "FAILED"
+      ]
+    },
     "ListBlueprintsRequest":{
       "type":"structure",
       "members":{
@@ -1390,6 +2085,96 @@
       },
       "documentation":"<p>List Blueprint Response</p>"
     },
+    "ListDataAutomationLibrariesRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{"shape":"MaxResults"},
+        "nextToken":{"shape":"NextToken"},
+        "projectFilter":{"shape":"DataAutomationProjectFilter"}
+      },
+      "documentation":"<p>List DataAutomationLibraries Request</p>"
+    },
+    "ListDataAutomationLibrariesResponse":{
+      "type":"structure",
+      "members":{
+        "libraries":{"shape":"DataAutomationLibrarySummaries"},
+        "nextToken":{"shape":"NextToken"}
+      },
+      "documentation":"<p>List DataAutomationLibraries Response</p>"
+    },
+    "ListDataAutomationLibraryEntitiesRequest":{
+      "type":"structure",
+      "required":[
+        "libraryArn",
+        "entityType"
+      ],
+      "members":{
+        "libraryArn":{
+          "shape":"DataAutomationLibraryArn",
+          "documentation":"<p>ARN generated at the server side when a DataAutomationLibrary is created</p>",
+          "location":"uri",
+          "locationName":"libraryArn"
+        },
+        "entityType":{
+          "shape":"EntityType",
+          "documentation":"<p>The entity type for which the entity list is requested</p>",
+          "location":"uri",
+          "locationName":"entityType"
+        },
+        "maxResults":{"shape":"MaxResults"},
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Pagination token for retrieving the next set of results</p>"
+        }
+      },
+      "documentation":"<p>List DataAutomationLibraryEntities Request</p>"
+    },
+    "ListDataAutomationLibraryEntitiesResponse":{
+      "type":"structure",
+      "members":{
+        "entities":{
+          "shape":"DataAutomationLibraryEntitySummaries",
+          "documentation":"<p>List of entities</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Pagination token for retrieving the next set of results</p>"
+        }
+      },
+      "documentation":"<p>List DataAutomationLibraryEntities Response</p>"
+    },
+    "ListDataAutomationLibraryIngestionJobsRequest":{
+      "type":"structure",
+      "required":["libraryArn"],
+      "members":{
+        "libraryArn":{
+          "shape":"DataAutomationLibraryArn",
+          "documentation":"<p>ARN generated at the server side when a DataAutomationLibrary is created</p>",
+          "location":"uri",
+          "locationName":"libraryArn"
+        },
+        "maxResults":{"shape":"MaxResults"},
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Pagination token for retrieving the next set of results</p>"
+        }
+      },
+      "documentation":"<p>List DataAutomationLibraryIngestionJobs Request</p>"
+    },
+    "ListDataAutomationLibraryIngestionJobsResponse":{
+      "type":"structure",
+      "members":{
+        "jobs":{
+          "shape":"DataAutomationLibraryIngestionJobSummaries",
+          "documentation":"<p>List of data automation library ingestion jobs</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Pagination token for retrieving the next set of results</p>"
+        }
+      },
+      "documentation":"<p>List DataAutomationLibraryIngestionJobs Response</p>"
+    },
     "ListDataAutomationProjectsRequest":{
       "type":"structure",
       "members":{
@@ -1397,7 +2182,8 @@
         "nextToken":{"shape":"NextToken"},
         "projectStageFilter":{"shape":"DataAutomationProjectStageFilter"},
         "blueprintFilter":{"shape":"BlueprintFilter"},
-        "resourceOwner":{"shape":"ResourceOwner"}
+        "resourceOwner":{"shape":"ResourceOwner"},
+        "libraryFilter":{"shape":"DataAutomationLibraryFilter"}
       },
       "documentation":"<p>List DataAutomationProject Request</p>"
     },
@@ -1458,6 +2244,28 @@
       "type":"string",
       "documentation":"<p>Non Blank String</p>",
       "pattern":"[\\s\\S]+"
+    },
+    "NotificationConfiguration":{
+      "type":"structure",
+      "required":["eventBridgeConfiguration"],
+      "members":{
+        "eventBridgeConfiguration":{
+          "shape":"EventBridgeConfiguration",
+          "documentation":"<p>Event bridge configuration.</p>"
+        }
+      },
+      "documentation":"<p>Notification configuration.</p>"
+    },
+    "OutputConfiguration":{
+      "type":"structure",
+      "required":["s3Uri"],
+      "members":{
+        "s3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>S3 Uri</p>"
+        }
+      },
+      "documentation":"<p>Output configuration for DataAutomationLibraryIngestionJob</p>"
     },
     "OverrideConfiguration":{
       "type":"structure",
@@ -1536,6 +2344,37 @@
         "PII",
         "ENTITY_TYPE"
       ]
+    },
+    "Phrase":{
+      "type":"structure",
+      "required":["text"],
+      "members":{
+        "text":{"shape":"PhraseText"},
+        "displayAsText":{"shape":"PhraseDisplayAsText"}
+      },
+      "documentation":"<p>Phrase structure for vocabulary</p>"
+    },
+    "PhraseDisplayAsText":{
+      "type":"string",
+      "documentation":"<p>Text to configure how phrase is displayed in Transcript</p>",
+      "max":256,
+      "min":1,
+      "pattern":".*.+.*",
+      "sensitive":true
+    },
+    "PhraseList":{
+      "type":"list",
+      "member":{"shape":"Phrase"},
+      "documentation":"<p>List of phrases</p>",
+      "min":1
+    },
+    "PhraseText":{
+      "type":"string",
+      "documentation":"<p>Text content of the phrase</p>",
+      "max":256,
+      "min":1,
+      "pattern":".*.+.*",
+      "sensitive":true
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -1731,7 +2570,7 @@
       "documentation":"<p>ARN of a taggable resource</p>",
       "max":1011,
       "min":20,
-      "pattern":"arn:aws(|-cn|-iso|-iso-[a-z]|-us-gov):bedrock:[a-z0-9-]*:[0-9]{12}:(blueprint|data-automation-project|blueprint-optimization-invocation)/[a-zA-Z0-9-]{12,36}"
+      "pattern":"arn:aws(|-cn|-iso|-iso-[a-z]|-us-gov):bedrock:[a-z0-9-]*:[0-9]{12}:(blueprint|data-automation-project|blueprint-optimization-invocation|data-automation-library|data-automation-library-ingestion-job)/[a-zA-Z0-9-]{12,36}"
     },
     "ThrottlingException":{
       "type":"structure",
@@ -1805,6 +2644,32 @@
       },
       "documentation":"<p>Update Blueprint Response</p>"
     },
+    "UpdateDataAutomationLibraryRequest":{
+      "type":"structure",
+      "required":["libraryArn"],
+      "members":{
+        "libraryArn":{
+          "shape":"DataAutomationLibraryArn",
+          "documentation":"<p>ARN generated at the server side when a DataAutomationLibrary is created</p>",
+          "location":"uri",
+          "locationName":"libraryArn"
+        },
+        "libraryDescription":{"shape":"DataAutomationLibraryDescription"},
+        "clientToken":{
+          "shape":"ClientToken",
+          "idempotencyToken":true
+        }
+      },
+      "documentation":"<p>Update DataAutomationLibrary Request</p>"
+    },
+    "UpdateDataAutomationLibraryResponse":{
+      "type":"structure",
+      "members":{
+        "libraryArn":{"shape":"DataAutomationLibraryArn"},
+        "status":{"shape":"DataAutomationLibraryStatus"}
+      },
+      "documentation":"<p>Update DataAutomationLibrary Response</p>"
+    },
     "UpdateDataAutomationProjectRequest":{
       "type":"structure",
       "required":[
@@ -1823,6 +2688,7 @@
         "standardOutputConfiguration":{"shape":"StandardOutputConfiguration"},
         "customOutputConfiguration":{"shape":"CustomOutputConfiguration"},
         "overrideConfiguration":{"shape":"OverrideConfiguration"},
+        "dataAutomationLibraryConfiguration":{"shape":"DataAutomationLibraryConfiguration"},
         "encryptionConfiguration":{"shape":"EncryptionConfiguration"}
       },
       "documentation":"<p>Update DataAutomationProject Request</p>"
@@ -1836,6 +2702,21 @@
         "status":{"shape":"DataAutomationProjectStatus"}
       },
       "documentation":"<p>Update DataAutomationProject Response</p>"
+    },
+    "UpsertEntitiesInfo":{
+      "type":"list",
+      "member":{"shape":"UpsertEntityInfo"},
+      "documentation":"<p>List of UpsertEntityInfo for upserting data in a DataAutomationLibraryIngestionJob</p>",
+      "max":10,
+      "min":1
+    },
+    "UpsertEntityInfo":{
+      "type":"structure",
+      "members":{
+        "vocabulary":{"shape":"VocabularyEntityInfo"}
+      },
+      "documentation":"<p>Input configuration for upserting data in a DataAutomationLibraryIngestionJob</p>",
+      "union":true
     },
     "ValidationException":{
       "type":"structure",
@@ -1947,6 +2828,50 @@
         "generativeField":{"shape":"VideoStandardGenerativeField"}
       },
       "documentation":"<p>Standard Output Configuration of Video</p>"
+    },
+    "VocabularyEntity":{
+      "type":"structure",
+      "members":{
+        "entityId":{"shape":"EntityId"},
+        "description":{"shape":"EntityDescription"},
+        "language":{"shape":"Language"},
+        "phrases":{"shape":"PhraseList"},
+        "lastModifiedTime":{"shape":"DateTimestamp"}
+      },
+      "documentation":"<p>Vocabulary entity with detailed information</p>"
+    },
+    "VocabularyEntityInfo":{
+      "type":"structure",
+      "required":[
+        "language",
+        "phrases"
+      ],
+      "members":{
+        "entityId":{"shape":"EntityId"},
+        "description":{"shape":"EntityDescription"},
+        "language":{"shape":"Language"},
+        "phrases":{"shape":"PhraseList"}
+      },
+      "documentation":"<p>Vocabulary entity info with detailed information</p>"
+    },
+    "VocabularyEntitySummary":{
+      "type":"structure",
+      "members":{
+        "entityId":{"shape":"EntityId"},
+        "description":{"shape":"EntityDescription"},
+        "language":{"shape":"Language"},
+        "numOfPhrases":{
+          "shape":"VocabularyEntitySummaryNumOfPhrasesInteger",
+          "documentation":"<p>num of phrases in the entity</p>"
+        },
+        "lastModifiedTime":{"shape":"DateTimestamp"}
+      },
+      "documentation":"<p>Summary of a Vocabulary entity</p>"
+    },
+    "VocabularyEntitySummaryNumOfPhrasesInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
     }
   },
   "documentation":"<p>Amazon Bedrock Data Automation BuildTime</p>"

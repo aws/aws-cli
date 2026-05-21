@@ -16,6 +16,23 @@
     "uid":"bedrock-2023-04-20"
   },
   "operations":{
+    "BatchDeleteAdvancedPromptOptimizationJob":{
+      "name":"BatchDeleteAdvancedPromptOptimizationJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/advanced-prompt-optimization-job/batch-delete",
+        "responseCode":202
+      },
+      "input":{"shape":"BatchDeleteAdvancedPromptOptimizationJobRequest"},
+      "output":{"shape":"BatchDeleteAdvancedPromptOptimizationJobResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Batch delete the specified advanced prompt optimization jobs.</p>"
+    },
     "BatchDeleteEvaluationJob":{
       "name":"BatchDeleteEvaluationJob",
       "http":{
@@ -52,6 +69,28 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Cancels a running Automated Reasoning policy build workflow. This stops the policy generation process and prevents further processing of the source documents.</p>",
+      "idempotent":true
+    },
+    "CreateAdvancedPromptOptimizationJob":{
+      "name":"CreateAdvancedPromptOptimizationJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/advanced-prompt-optimization-jobs",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateAdvancedPromptOptimizationJobRequest"},
+      "output":{"shape":"CreateAdvancedPromptOptimizationJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"TooManyTagsException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates an asynchronous batch job for advanced prompt optimization.</p>",
       "idempotent":true
     },
     "CreateAutomatedReasoningPolicy":{
@@ -688,6 +727,25 @@
       "documentation":"<p>Deletes a Provisioned Throughput. You can't delete a Provisioned Throughput before the commitment term is over. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html\">Provisioned Throughput</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>",
       "idempotent":true
     },
+    "DeleteResourcePolicy":{
+      "name":"DeleteResourcePolicy",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/resource-policy/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteResourcePolicyRequest"},
+      "output":{"shape":"DeleteResourcePolicyResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes a previously created Bedrock resource policy.</p>",
+      "idempotent":true
+    },
     "DeregisterMarketplaceModelEndpoint":{
       "name":"DeregisterMarketplaceModelEndpoint",
       "http":{
@@ -724,6 +782,25 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Exports the policy definition for an Automated Reasoning policy version. Returns the complete policy definition including rules, variables, and custom variable types in a structured format.</p>",
+      "readonly":true
+    },
+    "GetAdvancedPromptOptimizationJob":{
+      "name":"GetAdvancedPromptOptimizationJob",
+      "http":{
+        "method":"GET",
+        "requestUri":"/advanced-prompt-optimization-jobs/{jobIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAdvancedPromptOptimizationJobRequest"},
+      "output":{"shape":"GetAdvancedPromptOptimizationJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves the details and status of an advanced prompt optimization job.</p>",
       "readonly":true
     },
     "GetAutomatedReasoningPolicy":{
@@ -1161,6 +1238,25 @@
       "documentation":"<p>Returns details for a Provisioned Throughput. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html\">Provisioned Throughput</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>",
       "readonly":true
     },
+    "GetResourcePolicy":{
+      "name":"GetResourcePolicy",
+      "http":{
+        "method":"GET",
+        "requestUri":"/resource-policy/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetResourcePolicyRequest"},
+      "output":{"shape":"GetResourcePolicyResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Gets the resource policy document for a Bedrock resource</p>",
+      "readonly":true
+    },
     "GetUseCaseForModelAccess":{
       "name":"GetUseCaseForModelAccess",
       "http":{
@@ -1177,6 +1273,24 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Get usecase for model access.</p>",
+      "readonly":true
+    },
+    "ListAdvancedPromptOptimizationJobs":{
+      "name":"ListAdvancedPromptOptimizationJobs",
+      "http":{
+        "method":"GET",
+        "requestUri":"/advanced-prompt-optimization-jobs",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAdvancedPromptOptimizationJobsRequest"},
+      "output":{"shape":"ListAdvancedPromptOptimizationJobsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists all advanced prompt optimization jobs for the account.</p>",
       "readonly":true
     },
     "ListAutomatedReasoningPolicies":{
@@ -1605,6 +1719,25 @@
       "documentation":"<p>Set the configuration values for model invocation logging.</p>",
       "idempotent":true
     },
+    "PutResourcePolicy":{
+      "name":"PutResourcePolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/resource-policy",
+        "responseCode":201
+      },
+      "input":{"shape":"PutResourcePolicyRequest"},
+      "output":{"shape":"PutResourcePolicyResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Adds a resource policy for a Bedrock resource.</p>",
+      "idempotent":true
+    },
     "PutUseCaseForModelAccess":{
       "name":"PutUseCaseForModelAccess",
       "http":{
@@ -1680,6 +1813,25 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Initiates a test workflow to validate Automated Reasoning policy tests. The workflow executes the specified tests against the policy and generates validation results.</p>"
+    },
+    "StopAdvancedPromptOptimizationJob":{
+      "name":"StopAdvancedPromptOptimizationJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/advanced-prompt-optimization-jobs/{jobIdentifier}/stop",
+        "responseCode":200
+      },
+      "input":{"shape":"StopAdvancedPromptOptimizationJobRequest"},
+      "output":{"shape":"StopAdvancedPromptOptimizationJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Stops an in-progress advanced prompt optimization job.</p>"
     },
     "StopEvaluationJob":{
       "name":"StopEvaluationJob",
@@ -1939,8 +2091,7 @@
       "type":"structure",
       "required":[
         "guardrailIdentifier",
-        "guardrailVersion",
-        "inputTags"
+        "guardrailVersion"
       ],
       "members":{
         "guardrailIdentifier":{
@@ -1951,9 +2102,9 @@
           "shape":"GuardrailNumericalVersion",
           "documentation":"<p>Numerical guardrail version.</p>"
         },
-        "inputTags":{
-          "shape":"InputTags",
-          "documentation":"<p>Whether to honor or ignore input tags at runtime.</p>"
+        "selectiveContentGuarding":{
+          "shape":"SelectiveContentGuarding",
+          "documentation":"<p>Selective content guarding controls for enforced guardrails.</p>"
         },
         "modelEnforcement":{
           "shape":"ModelEnforcement",
@@ -1979,7 +2130,14 @@
         },
         "inputTags":{
           "shape":"InputTags",
-          "documentation":"<p>Whether to honor or ignore input tags at runtime.</p>"
+          "documentation":"<p>Whether to honor or ignore input tags at runtime.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This field is being deprecated and will be removed once customers transition their existing policies to the new schema.",
+          "deprecatedSince":"2026-04-03"
+        },
+        "selectiveContentGuarding":{
+          "shape":"SelectiveContentGuarding",
+          "documentation":"<p>Selective content guarding controls for enforced guardrails.</p>"
         },
         "guardrailVersion":{
           "shape":"GuardrailNumericalVersion",
@@ -2041,6 +2199,112 @@
       "type":"structure",
       "members":{},
       "document":true
+    },
+    "AdvancedPromptOptimizationInputConfig":{
+      "type":"structure",
+      "required":["s3Uri"],
+      "members":{
+        "s3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>S3 URI of the input JSONL file.</p>"
+        }
+      },
+      "documentation":"<p>Input data configuration for the advanced prompt optimization job.</p>"
+    },
+    "AdvancedPromptOptimizationJobArn":{
+      "type":"string",
+      "documentation":"<p>ARN of the advanced prompt optimization job.</p>",
+      "max":1011,
+      "min":0,
+      "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:advanced-prompt-optimization-job/[a-z0-9]{12}"
+    },
+    "AdvancedPromptOptimizationJobDescription":{
+      "type":"string",
+      "documentation":"<p>Description of the advanced prompt optimization job.</p>",
+      "max":500,
+      "min":1
+    },
+    "AdvancedPromptOptimizationJobIdentifier":{
+      "type":"string",
+      "documentation":"<p>ARN or ID of the advanced prompt optimization job.</p>",
+      "max":1011,
+      "min":0,
+      "pattern":"((arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:advanced-prompt-optimization-job/)?[a-z0-9]{12})"
+    },
+    "AdvancedPromptOptimizationJobIdentifiers":{
+      "type":"list",
+      "member":{"shape":"AdvancedPromptOptimizationJobIdentifier"},
+      "documentation":"<p>List of advanced prompt optimization job identifiers.</p>",
+      "max":25,
+      "min":1
+    },
+    "AdvancedPromptOptimizationJobName":{
+      "type":"string",
+      "documentation":"<p>Name of the advanced prompt optimization job.</p>",
+      "max":100,
+      "min":1,
+      "pattern":"[a-zA-Z0-9][a-zA-Z0-9.+-]*"
+    },
+    "AdvancedPromptOptimizationJobStatus":{
+      "type":"string",
+      "documentation":"<p>Status of the advanced prompt optimization job.</p>",
+      "enum":[
+        "InProgress",
+        "Completed",
+        "Failed",
+        "PartiallyCompleted",
+        "Stopping",
+        "Stopped",
+        "Deleting"
+      ]
+    },
+    "AdvancedPromptOptimizationJobSummaries":{
+      "type":"list",
+      "member":{"shape":"AdvancedPromptOptimizationJobSummary"},
+      "documentation":"<p>List of advanced prompt optimization job summaries.</p>"
+    },
+    "AdvancedPromptOptimizationJobSummary":{
+      "type":"structure",
+      "required":[
+        "jobArn",
+        "jobName",
+        "jobStatus",
+        "creationTime"
+      ],
+      "members":{
+        "jobArn":{
+          "shape":"AdvancedPromptOptimizationJobArn",
+          "documentation":"<p>ARN of the advanced prompt optimization job.</p>"
+        },
+        "jobName":{
+          "shape":"AdvancedPromptOptimizationJobName",
+          "documentation":"<p>Name of the advanced prompt optimization job.</p>"
+        },
+        "jobStatus":{
+          "shape":"AdvancedPromptOptimizationJobStatus",
+          "documentation":"<p>Status of the advanced prompt optimization job.</p>"
+        },
+        "creationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Creation time of the advanced prompt optimization job.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Last modified time of the advanced prompt optimization job.</p>"
+        }
+      },
+      "documentation":"<p>Summary of an advanced prompt optimization job.</p>"
+    },
+    "AdvancedPromptOptimizationOutputConfig":{
+      "type":"structure",
+      "required":["s3Uri"],
+      "members":{
+        "s3Uri":{
+          "shape":"S3UriFolder",
+          "documentation":"<p>S3 URI prefix for the output location.</p>"
+        }
+      },
+      "documentation":"<p>Output data configuration for the advanced prompt optimization job.</p>"
     },
     "AgreementAvailability":{
       "type":"structure",
@@ -4369,6 +4633,89 @@
       "min":1,
       "pattern":"(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2})/[a-z0-9]{12})|(:foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2})))|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2})|(([0-9a-zA-Z][_-]?)+)"
     },
+    "BatchDeleteAdvancedPromptOptimizationJobError":{
+      "type":"structure",
+      "required":[
+        "jobIdentifier",
+        "code"
+      ],
+      "members":{
+        "jobIdentifier":{
+          "shape":"AdvancedPromptOptimizationJobIdentifier",
+          "documentation":"<p>Identifier of the job that failed to delete.</p>"
+        },
+        "code":{
+          "shape":"String",
+          "documentation":"<p>Error code for the deletion failure.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>Error message describing the deletion failure.</p>"
+        }
+      },
+      "documentation":"<p>Batch deletion error for an advanced prompt optimization job.</p>"
+    },
+    "BatchDeleteAdvancedPromptOptimizationJobErrors":{
+      "type":"list",
+      "member":{"shape":"BatchDeleteAdvancedPromptOptimizationJobError"},
+      "documentation":"<p>List of batch deletion errors for advanced prompt optimization jobs.</p>",
+      "max":25,
+      "min":0
+    },
+    "BatchDeleteAdvancedPromptOptimizationJobItem":{
+      "type":"structure",
+      "required":[
+        "jobIdentifier",
+        "jobStatus"
+      ],
+      "members":{
+        "jobIdentifier":{
+          "shape":"AdvancedPromptOptimizationJobIdentifier",
+          "documentation":"<p>Identifier of the deleted job.</p>"
+        },
+        "jobStatus":{
+          "shape":"AdvancedPromptOptimizationJobStatus",
+          "documentation":"<p>Status of the deleted job.</p>"
+        }
+      },
+      "documentation":"<p>Successfully deleted advanced prompt optimization job.</p>"
+    },
+    "BatchDeleteAdvancedPromptOptimizationJobItems":{
+      "type":"list",
+      "member":{"shape":"BatchDeleteAdvancedPromptOptimizationJobItem"},
+      "documentation":"<p>List of successfully deleted advanced prompt optimization jobs.</p>",
+      "max":25,
+      "min":0
+    },
+    "BatchDeleteAdvancedPromptOptimizationJobRequest":{
+      "type":"structure",
+      "required":["jobIdentifiers"],
+      "members":{
+        "jobIdentifiers":{
+          "shape":"AdvancedPromptOptimizationJobIdentifiers",
+          "documentation":"<p>List of advanced prompt optimization job identifiers to delete.</p>"
+        }
+      },
+      "documentation":"<p>Batch Delete Advanced Prompt Optimization Jobs Request</p>"
+    },
+    "BatchDeleteAdvancedPromptOptimizationJobResponse":{
+      "type":"structure",
+      "required":[
+        "errors",
+        "advancedPromptOptimizationJobs"
+      ],
+      "members":{
+        "errors":{
+          "shape":"BatchDeleteAdvancedPromptOptimizationJobErrors",
+          "documentation":"<p>List of errors encountered during batch deletion.</p>"
+        },
+        "advancedPromptOptimizationJobs":{
+          "shape":"BatchDeleteAdvancedPromptOptimizationJobItems",
+          "documentation":"<p>List of successfully deleted advanced prompt optimization jobs.</p>"
+        }
+      },
+      "documentation":"<p>Batch Delete Advanced Prompt Optimization Jobs Response</p>"
+    },
     "BatchDeleteEvaluationJobError":{
       "type":"structure",
       "required":[
@@ -4598,6 +4945,62 @@
     "ContentType":{
       "type":"string",
       "pattern":".*[a-z]{1,20}/.{1,20}.*"
+    },
+    "CreateAdvancedPromptOptimizationJobRequest":{
+      "type":"structure",
+      "required":[
+        "jobName",
+        "inputConfig",
+        "outputConfig",
+        "modelConfigurations"
+      ],
+      "members":{
+        "jobName":{
+          "shape":"AdvancedPromptOptimizationJobName",
+          "documentation":"<p>Name of the advanced prompt optimization job.</p>"
+        },
+        "jobDescription":{
+          "shape":"AdvancedPromptOptimizationJobDescription",
+          "documentation":"<p>Description of the advanced prompt optimization job.</p>"
+        },
+        "clientToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>Idempotency token for the request.</p>",
+          "idempotencyToken":true
+        },
+        "inputConfig":{
+          "shape":"AdvancedPromptOptimizationInputConfig",
+          "documentation":"<p>Input data configuration for the advanced prompt optimization job.</p>"
+        },
+        "outputConfig":{
+          "shape":"AdvancedPromptOptimizationOutputConfig",
+          "documentation":"<p>Output data configuration for the advanced prompt optimization job.</p>"
+        },
+        "encryptionKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>KMS key ARN for encrypting output data.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>Tags to associate with the job.</p>"
+        },
+        "modelConfigurations":{
+          "shape":"ModelConfigurations",
+          "documentation":"<p>Model configurations for advanced prompt optimization.</p>"
+        }
+      },
+      "documentation":"<p>Create Advanced Prompt Optimization Job Request</p>"
+    },
+    "CreateAdvancedPromptOptimizationJobResponse":{
+      "type":"structure",
+      "required":["jobArn"],
+      "members":{
+        "jobArn":{
+          "shape":"AdvancedPromptOptimizationJobArn",
+          "documentation":"<p>ARN of the created advanced prompt optimization job.</p>"
+        }
+      },
+      "documentation":"<p>Create Advanced Prompt Optimization Job Response</p>"
     },
     "CreateAutomatedReasoningPolicyRequest":{
       "type":"structure",
@@ -6054,6 +6457,22 @@
       "type":"structure",
       "members":{}
     },
+    "DeleteResourcePolicyRequest":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourcePolicyResourceArn",
+          "documentation":"<p>The ARN of the Bedrock resource to which this resource policy applies.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "DeleteResourcePolicyResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "DeregisterMarketplaceModelEndpointRequest":{
       "type":"structure",
       "required":["endpointArn"],
@@ -6952,6 +7371,78 @@
         }
       },
       "documentation":"<p>The configuration details for response generation based on retrieved text chunks.</p>"
+    },
+    "GetAdvancedPromptOptimizationJobRequest":{
+      "type":"structure",
+      "required":["jobIdentifier"],
+      "members":{
+        "jobIdentifier":{
+          "shape":"AdvancedPromptOptimizationJobIdentifier",
+          "documentation":"<p>ARN or ID of the advanced prompt optimization job.</p>",
+          "location":"uri",
+          "locationName":"jobIdentifier"
+        }
+      },
+      "documentation":"<p>Get Advanced Prompt Optimization Job Request</p>"
+    },
+    "GetAdvancedPromptOptimizationJobResponse":{
+      "type":"structure",
+      "required":[
+        "jobArn",
+        "jobName",
+        "jobStatus",
+        "inputConfig",
+        "outputConfig",
+        "creationTime",
+        "modelConfigurations"
+      ],
+      "members":{
+        "jobArn":{
+          "shape":"AdvancedPromptOptimizationJobArn",
+          "documentation":"<p>ARN of the advanced prompt optimization job.</p>"
+        },
+        "jobName":{
+          "shape":"AdvancedPromptOptimizationJobName",
+          "documentation":"<p>Name of the advanced prompt optimization job.</p>"
+        },
+        "jobDescription":{
+          "shape":"AdvancedPromptOptimizationJobDescription",
+          "documentation":"<p>Description of the advanced prompt optimization job.</p>"
+        },
+        "jobStatus":{
+          "shape":"AdvancedPromptOptimizationJobStatus",
+          "documentation":"<p>Status of the advanced prompt optimization job.</p>"
+        },
+        "inputConfig":{
+          "shape":"AdvancedPromptOptimizationInputConfig",
+          "documentation":"<p>Input data configuration for the advanced prompt optimization job.</p>"
+        },
+        "outputConfig":{
+          "shape":"AdvancedPromptOptimizationOutputConfig",
+          "documentation":"<p>Output data configuration for the advanced prompt optimization job.</p>"
+        },
+        "encryptionKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>KMS key ARN used for encrypting output data.</p>"
+        },
+        "creationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Creation time of the advanced prompt optimization job.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Last modified time of the advanced prompt optimization job.</p>"
+        },
+        "failureMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>Failure message if the advanced prompt optimization job failed.</p>"
+        },
+        "modelConfigurations":{
+          "shape":"ModelConfigurations",
+          "documentation":"<p>Model configurations for advanced prompt optimization.</p>"
+        }
+      },
+      "documentation":"<p>Get Advanced Prompt Optimization Job Response</p>"
     },
     "GetAutomatedReasoningPolicyAnnotationsRequest":{
       "type":"structure",
@@ -8210,6 +8701,22 @@
         "modelInvocationType":{
           "shape":"ModelInvocationType",
           "documentation":"<p>The invocation endpoint for ModelInvocationJob</p>"
+        },
+        "totalRecordCount":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The total number of records in the batch inference job.</p>"
+        },
+        "processedRecordCount":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The number of records that have been processed in the batch inference job.</p>"
+        },
+        "successRecordCount":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The number of records that were successfully processed in the batch inference job.</p>"
+        },
+        "errorRecordCount":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The number of records that failed to process in the batch inference job.</p>"
         }
       }
     },
@@ -8370,6 +8877,27 @@
         "commitmentExpirationTime":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp for when the commitment term for the Provisioned Throughput expires.</p>"
+        }
+      }
+    },
+    "GetResourcePolicyRequest":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourcePolicyResourceArn",
+          "documentation":"<p>The ARN of the Bedrock resource to which this resource policy applies.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "GetResourcePolicyResponse":{
+      "type":"structure",
+      "members":{
+        "resourcePolicy":{
+          "shape":"ResourcePolicyDocument",
+          "documentation":"<p>The JSON string representing the Bedrock resource policy.</p>"
         }
       }
     },
@@ -9781,6 +10309,56 @@
       "member":{"shape":"IncludedModelId"},
       "min":1
     },
+    "InferenceConfiguration":{
+      "type":"structure",
+      "members":{
+        "maxTokens":{
+          "shape":"InferenceConfigurationMaxTokensInteger",
+          "documentation":"<p>The maximum number of tokens to generate.</p>"
+        },
+        "temperature":{
+          "shape":"InferenceConfigurationTemperatureFloat",
+          "documentation":"<p>The temperature for sampling.</p>"
+        },
+        "topP":{
+          "shape":"InferenceConfigurationTopPFloat",
+          "documentation":"<p>The top-p value for nucleus sampling.</p>"
+        },
+        "stopSequences":{
+          "shape":"InferenceConfigurationStopSequencesList",
+          "documentation":"<p>Stop sequences that end generation.</p>"
+        }
+      },
+      "documentation":"<p>Inference configuration for a model.</p>"
+    },
+    "InferenceConfigurationMaxTokensInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "InferenceConfigurationStopSequencesList":{
+      "type":"list",
+      "member":{"shape":"InferenceConfigurationStopSequencesListMemberString"},
+      "documentation":"<p>A list of non-empty strings.</p>",
+      "max":2500,
+      "min":0
+    },
+    "InferenceConfigurationStopSequencesListMemberString":{
+      "type":"string",
+      "min":1
+    },
+    "InferenceConfigurationTemperatureFloat":{
+      "type":"float",
+      "box":true,
+      "max":1,
+      "min":0
+    },
+    "InferenceConfigurationTopPFloat":{
+      "type":"float",
+      "box":true,
+      "max":1,
+      "min":0
+    },
     "InferenceProfileArn":{
       "type":"string",
       "max":2048,
@@ -10150,6 +10728,50 @@
         }
       },
       "documentation":"<p>The legal term of the agreement.</p>"
+    },
+    "ListAdvancedPromptOptimizationJobsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>Maximum number of results to return.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Pagination token for the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "sortBy":{
+          "shape":"SortJobsBy",
+          "documentation":"<p>Field to sort by in the returned list of jobs.</p>",
+          "location":"querystring",
+          "locationName":"sortBy"
+        },
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>Sort order for the results.</p>",
+          "location":"querystring",
+          "locationName":"sortOrder"
+        }
+      },
+      "documentation":"<p>List Advanced Prompt Optimization Jobs Request</p>"
+    },
+    "ListAdvancedPromptOptimizationJobsResponse":{
+      "type":"structure",
+      "members":{
+        "jobSummaries":{
+          "shape":"AdvancedPromptOptimizationJobSummaries",
+          "documentation":"<p>List of advanced prompt optimization job summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Pagination token for the next page of results.</p>"
+        }
+      },
+      "documentation":"<p>List Advanced Prompt Optimization Jobs Response</p>"
     },
     "ListAutomatedReasoningPoliciesRequest":{
       "type":"structure",
@@ -11433,6 +12055,32 @@
       "min":20,
       "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/((imported)|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}))(([:][a-z0-9-]{1,63}){0,2})?/[a-z0-9]{12})|(:foundation-model/[a-z0-9-]{1,63}[.]{1}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2}))"
     },
+    "ModelConfiguration":{
+      "type":"structure",
+      "required":["modelId"],
+      "members":{
+        "modelId":{
+          "shape":"BedrockModelId",
+          "documentation":"<p>The model ID.</p>"
+        },
+        "inferenceConfig":{
+          "shape":"InferenceConfiguration",
+          "documentation":"<p>Inference configuration for the model.</p>"
+        },
+        "additionalModelRequestFields":{
+          "shape":"AdditionalModelRequestFields",
+          "documentation":"<p>Additional model request fields.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for a model used in advanced prompt optimization.</p>"
+    },
+    "ModelConfigurations":{
+      "type":"list",
+      "member":{"shape":"ModelConfiguration"},
+      "documentation":"<p>Model configurations for advanced prompt optimization.</p>",
+      "max":5,
+      "min":1
+    },
     "ModelCopyJobArn":{
       "type":"string",
       "max":1011,
@@ -11902,6 +12550,22 @@
         "modelInvocationType":{
           "shape":"ModelInvocationType",
           "documentation":"<p>The invocation endpoint for ModelInvocationJob</p>"
+        },
+        "totalRecordCount":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The total number of records in the batch inference job.</p>"
+        },
+        "processedRecordCount":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The number of records that have been processed in the batch inference job.</p>"
+        },
+        "successRecordCount":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The number of records that were successfully processed in the batch inference job.</p>"
+        },
+        "errorRecordCount":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The number of records that failed to process in the batch inference job.</p>"
         }
       },
       "documentation":"<p>A summary of a batch inference job.</p>"
@@ -11954,6 +12618,12 @@
     "NonBlankString":{
       "type":"string",
       "pattern":"[\\s\\S]*"
+    },
+    "NonNegativeLong":{
+      "type":"long",
+      "documentation":"<p>A non-negative long value.</p>",
+      "box":true,
+      "min":0
     },
     "Offer":{
       "type":"structure",
@@ -12313,6 +12983,32 @@
       "type":"structure",
       "members":{}
     },
+    "PutResourcePolicyRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "resourcePolicy"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourcePolicyResourceArn",
+          "documentation":"<p>The ARN of the Bedrock resource to which this resource policy applies.</p>"
+        },
+        "resourcePolicy":{
+          "shape":"ResourcePolicyDocument",
+          "documentation":"<p>The JSON string representing the Bedrock resource policy.</p>"
+        }
+      }
+    },
+    "PutResourcePolicyResponse":{
+      "type":"structure",
+      "members":{
+        "resourceArn":{
+          "shape":"ResourcePolicyResourceArn",
+          "documentation":"<p>The ARN of the Bedrock resource to which this resource policy applies.</p>"
+        }
+      }
+    },
     "PutUseCaseForModelAccessRequest":{
       "type":"structure",
       "required":["formData"],
@@ -12664,6 +13360,17 @@
       },
       "exception":true
     },
+    "ResourcePolicyDocument":{
+      "type":"string",
+      "max":20480,
+      "min":1,
+      "pattern":"[    -ÿ]+"
+    },
+    "ResourcePolicyResourceArn":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
     "RetrievalFilter":{
       "type":"structure",
       "members":{
@@ -12843,6 +13550,12 @@
       "min":1,
       "pattern":"s3://[a-z0-9][-.a-z0-9]{1,61}[a-z0-9](?:/[-!_*'().a-z0-9A-Z]+(?:/[-!_*'().a-z0-9A-Z]+)*)?/?"
     },
+    "S3UriFolder":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"s3://[a-z0-9][-.a-z0-9]{1,61}[a-z0-9](?:/[-!_*'().a-z0-9A-Z]+(?:/[-!_*'().a-z0-9A-Z]+)*)?/"
+    },
     "SageMakerEndpoint":{
       "type":"structure",
       "required":[
@@ -12898,6 +13611,27 @@
       "member":{"shape":"SecurityGroupId"},
       "max":5,
       "min":1
+    },
+    "SelectiveContentGuarding":{
+      "type":"structure",
+      "members":{
+        "system":{
+          "shape":"SelectiveGuardingMode",
+          "documentation":"<p>Selective guarding mode for system prompts.\"</p>"
+        },
+        "messages":{
+          "shape":"SelectiveGuardingMode",
+          "documentation":"<p>Selective guarding mode for user messages.</p>"
+        }
+      },
+      "documentation":"<p>Selective content guarding controls for enforced guardrails.</p>"
+    },
+    "SelectiveGuardingMode":{
+      "type":"string",
+      "enum":[
+        "SELECTIVE",
+        "COMPREHENSIVE"
+      ]
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
@@ -13055,6 +13789,24 @@
         }
       },
       "documentation":"<p>For a Distillation job, the status details for sub-tasks of the job. Possible statuses for each sub-task include the following:</p> <ul> <li> <p>NotStarted</p> </li> <li> <p>InProgress</p> </li> <li> <p>Completed</p> </li> <li> <p>Stopping</p> </li> <li> <p>Stopped</p> </li> <li> <p>Failed</p> </li> </ul>"
+    },
+    "StopAdvancedPromptOptimizationJobRequest":{
+      "type":"structure",
+      "required":["jobIdentifier"],
+      "members":{
+        "jobIdentifier":{
+          "shape":"AdvancedPromptOptimizationJobIdentifier",
+          "documentation":"<p>ARN or ID of the advanced prompt optimization job to stop.</p>",
+          "location":"uri",
+          "locationName":"jobIdentifier"
+        }
+      },
+      "documentation":"<p>Stop Advanced Prompt Optimization Job Request</p>"
+    },
+    "StopAdvancedPromptOptimizationJobResponse":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Stop Advanced Prompt Optimization Job Response</p>"
     },
     "StopEvaluationJobRequest":{
       "type":"structure",

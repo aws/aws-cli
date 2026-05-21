@@ -75,6 +75,10 @@ raw_input = input
 OUTPUT_ENCODING_ENV_VAR = 'AWS_CLI_OUTPUT_ENCODING'
 PYTHONUTF8_ENV_VAR = 'PYTHONUTF8'
 
+# cmd.exe characters that require double-quoting to be treated as literals.
+# https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/cmd
+_WIN_CMD_UNSAFE_CHARS = set('&<>[]|{}^=;!\'()+,`~ \t')
+
 LOG = logging.getLogger(__name__)
 
 
@@ -261,13 +265,14 @@ def compat_input(prompt):
         # This is unused directly when the user pastes the cross-device
         # verification code, which may be longer than some terminal's buffers
         import readline  # noqa: F401
+
         return raw_input()
     except ImportError:
         LOG.debug('readline module not available')
         return raw_input()
 
 
-def compat_shell_quote(s, platform=None):
+def compat_shell_quote(s, platform=None, shell=False):
     """Return a shell-escaped version of the string *s*
 
     Unfortunately `shlex.quote` doesn't support Windows, so this method
@@ -277,13 +282,15 @@ def compat_shell_quote(s, platform=None):
         platform = sys.platform
 
     if platform == "win32":
-        return _windows_shell_quote(s)
+        if shell:
+            return _windows_cmd_shell_quote(s)
+        return _windows_argv_quote(s)
     else:
         return shlex.quote(s)
 
 
-def _windows_shell_quote(s):
-    """Return a Windows shell-escaped version of the string *s*
+def _windows_argv_quote(s):
+    """Return a Windows argv-escaped version of the string *s*
 
     Windows has potentially bizarre rules depending on where you look. When
     spawning a process via the Windows C runtime the rules are as follows:
@@ -305,37 +312,37 @@ def _windows_shell_quote(s):
         return '""'
 
     buff = []
-    num_backspaces = 0
+    num_backslashes = 0
     for character in s:
         if character == '\\':
             # We can't simply append backslashes because we don't know if
             # they will need to be escaped. Instead we separately keep track
             # of how many we've seen.
-            num_backspaces += 1
+            num_backslashes += 1
         elif character == '"':
-            if num_backspaces > 0:
+            if num_backslashes > 0:
                 # The backslashes are part of a chain that lead up to a
                 # double quote, so they need to be escaped.
-                buff.append('\\' * (num_backspaces * 2))
-                num_backspaces = 0
+                buff.append('\\' * (num_backslashes * 2))
+                num_backslashes = 0
 
             # The double quote also needs to be escaped. The fact that we're
             # seeing it at all means that it must have been escaped in the
             # original source.
             buff.append('\\"')
         else:
-            if num_backspaces > 0:
+            if num_backslashes > 0:
                 # The backslashes aren't part of a chain leading up to a
                 # double quote, so they can be inserted directly without
                 # being escaped.
-                buff.append('\\' * num_backspaces)
-                num_backspaces = 0
+                buff.append('\\' * num_backslashes)
+                num_backslashes = 0
             buff.append(character)
 
-    # There may be some leftover backspaces if they were on the trailing
+    # There may be some leftover backslashes if they were on the trailing
     # end, so they're added back in here.
-    if num_backspaces > 0:
-        buff.append('\\' * num_backspaces)
+    if num_backslashes > 0:
+        buff.append('\\' * num_backslashes)
 
     new_s = ''.join(buff)
     if ' ' in new_s or '\t' in new_s:
@@ -343,6 +350,60 @@ def _windows_shell_quote(s):
         # quoted.
         return '"%s"' % new_s
     return new_s
+
+
+def _windows_cmd_shell_quote(s):
+    """Return a Windows shell-escaped version of the string *s* that is
+    safe to pass through cmd.exe
+
+    Handles two interpretation layers:
+      1. cmd.exe metacharacters - neutralized by double-quoting when
+         the string contains any cmd.exe special characters.
+      2. MSVC C runtime argv parsing - backslash/double-quote escaping
+         so the target process receives the correct argument.
+
+    Note: cmd.exe %VAR% expansion and !VAR! delayed expansion
+    cannot be reliably escaped inside double quotes on the
+    command line and are not handled here.
+
+    :param s: A string to escape
+    :return: An escaped string
+    """
+    if not s:
+        return '""'
+
+    buff = []
+    num_backslashes = 0
+    needs_quoting = False
+    for character in s:
+        if character == '\\':
+            num_backslashes += 1
+        elif character == '"':
+            if num_backslashes > 0:
+                buff.append('\\' * (num_backslashes * 2))
+                num_backslashes = 0
+            buff.append('\\"')
+            needs_quoting = True
+        else:
+            if num_backslashes > 0:
+                buff.append('\\' * num_backslashes)
+                num_backslashes = 0
+            if character in _WIN_CMD_UNSAFE_CHARS:
+                needs_quoting = True
+            buff.append(character)
+
+    if needs_quoting:
+        # Trailing backslashes must be doubled when we append a closing
+        # double quote — without doubling, a trailing backslash would
+        # escape the closing quote.
+        if num_backslashes > 0:
+            buff.append('\\' * (num_backslashes * 2))
+        inner = ''.join(buff)
+        return f'"{inner}"'
+
+    if num_backslashes > 0:
+        buff.append('\\' * num_backslashes)
+    return ''.join(buff)
 
 
 def get_popen_kwargs_for_pager_cmd(pager_cmd=None):

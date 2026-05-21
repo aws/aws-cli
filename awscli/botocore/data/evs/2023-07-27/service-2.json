@@ -171,6 +171,22 @@
       "documentation":"<p>Disassociates an Elastic IP address from a public HCX VLAN. This operation is only allowed for public HCX VLANs at this time.</p>",
       "idempotent":true
     },
+    "GetDepotUrl":{
+      "name":"GetDepotUrl",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetDepotUrlRequest"},
+      "output":{"shape":"GetDepotUrlResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns a URL and authentication token for accessing the Amazon EVS Custom Addon depot. Configure the depot URL as a download source in vSphere Lifecycle Manager (vLCM) to sync and install the Amazon EVS Custom Addon.</p> <p>The depot URL remains active until you rotate the authentication token by calling this action with <code>rotate</code> set to <code>true</code>.</p>",
+      "readonly":true
+    },
     "GetEnvironment":{
       "name":"GetEnvironment",
       "http":{
@@ -1171,6 +1187,37 @@
       "type":"list",
       "member":{"shape":"String"}
     },
+    "GetDepotUrlRequest":{
+      "type":"structure",
+      "required":["environmentId"],
+      "members":{
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The unique ID of the Amazon EVS environment to get the depot URL for.</p>"
+        },
+        "rotate":{
+          "shape":"Boolean",
+          "documentation":"<p>Revokes the current authentication token and returns a new depot URL with a new token. Previously issued depot URLs will stop working within 5 minutes of rotation.</p>"
+        }
+      }
+    },
+    "GetDepotUrlResponse":{
+      "type":"structure",
+      "required":[
+        "depotUrl",
+        "token"
+      ],
+      "members":{
+        "depotUrl":{
+          "shape":"String",
+          "documentation":"<p>The URL for accessing the Amazon EVS Custom Addon depot. This URL includes the authentication token as a path component.</p>"
+        },
+        "token":{
+          "shape":"String",
+          "documentation":"<p>The authentication token for depot access. This token is included in the depot URL and is used to authenticate requests.</p>"
+        }
+      }
+    },
     "GetEnvironmentRequest":{
       "type":"structure",
       "required":["environmentId"],
@@ -1812,7 +1859,8 @@
     },
     "SolutionKey":{
       "type":"string",
-      "pattern":"[a-zA-Z0-9]{5}-[a-zA-Z0-9]{5}-[a-zA-Z0-9]{5}-[a-zA-Z0-9]{5}-[a-zA-Z0-9]{5}"
+      "pattern":"[a-zA-Z0-9]{5}-[a-zA-Z0-9]{5}-[a-zA-Z0-9]{5}-[a-zA-Z0-9]{5}-[a-zA-Z0-9]{5}",
+      "sensitive":true
     },
     "StateDetails":{"type":"string"},
     "String":{"type":"string"},
@@ -1965,7 +2013,8 @@
     },
     "VSanLicenseKey":{
       "type":"string",
-      "pattern":"[a-zA-Z0-9]{5}-[a-zA-Z0-9]{5}-[a-zA-Z0-9]{5}-[a-zA-Z0-9]{5}-[a-zA-Z0-9]{5}"
+      "pattern":"[a-zA-Z0-9]{5}-[a-zA-Z0-9]{5}-[a-zA-Z0-9]{5}-[a-zA-Z0-9]{5}-[a-zA-Z0-9]{5}",
+      "sensitive":true
     },
     "ValidationException":{
       "type":"structure",

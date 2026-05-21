@@ -2225,6 +2225,11 @@
         "RouterIntegrationTransitEncryption":{
           "shape":"FlowTransitEncryption",
           "locationName":"routerIntegrationTransitEncryption"
+        },
+        "NdiOutputTimecodeSource":{
+          "shape":"NdiOutputTimecodeSource",
+          "documentation":"<p>Controls how MediaConnect generates timecodes for NDI output frames. If you don't specify this field, MediaConnect uses <code>EMBEDDED_TIMECODE</code>.</p> <ul> <li> <p> <code>EMBEDDED_TIMECODE</code> (default) - Preserves timecodes from the input transport stream. The timecodes must be embedded in the video stream as SEI timing messages. If no embedded timecode is detected, MediaConnect uses the UTC system time instead.</p> </li> <li> <p> <code>UTC_SYSTEM_TIME</code> - Generates timecodes based on the system clock time when each frame is sent.</p> </li> </ul>",
+          "locationName":"ndiOutputTimecodeSource"
         }
       },
       "documentation":"<p> A request to add an output to a flow.</p>"
@@ -3146,7 +3151,8 @@
     "CreateRouterNetworkInterfaceRequestNameString":{
       "type":"string",
       "max":128,
-      "min":1
+      "min":1,
+      "pattern":"[a-zA-Z0-9]([a-zA-Z0-9\\-_]*[a-zA-Z0-9])?"
     },
     "CreateRouterNetworkInterfaceResponse":{
       "type":"structure",
@@ -6538,6 +6544,13 @@
       },
       "documentation":"<p> Detailed information about a single media stream that is part of an NDI® source. This includes details about the stream type, codec, resolution, frame rate, audio channels, and sample rate. </p>"
     },
+    "NdiOutputTimecodeSource":{
+      "type":"string",
+      "enum":[
+        "EMBEDDED_TIMECODE",
+        "UTC_SYSTEM_TIME"
+      ]
+    },
     "NdiSourceInfo":{
       "type":"structure",
       "required":["SourceName"],
@@ -6860,12 +6873,16 @@
       "required":["Cidr"],
       "members":{
         "Cidr":{
-          "shape":"String",
+          "shape":"PublicRouterNetworkInterfaceRuleCidrString",
           "documentation":"<p>The CIDR block that is allowed to access the public router network interface.</p>",
           "locationName":"cidr"
         }
       },
       "documentation":"<p>A rule that allows a specific CIDR block to access the public router network interface.</p>"
+    },
+    "PublicRouterNetworkInterfaceRuleCidrString":{
+      "type":"string",
+      "pattern":"(?:[0-9]{1,3}\\.){3}[0-9]{1,3}/([0-9]|[12][0-9]|3[0-2])"
     },
     "PurchaseOfferingRequest":{
       "type":"structure",
@@ -9604,6 +9621,11 @@
           "shape":"NdiSourceSettings",
           "documentation":"<p> The settings for the NDI source. This includes the exact name of the upstream NDI sender that you want to connect to your source. </p>",
           "locationName":"ndiSourceSettings"
+        },
+        "NdiOutputTimecodeSource":{
+          "shape":"NdiOutputTimecodeSource",
+          "documentation":"<p>The timecode source for NDI output frames. For NDI outputs, this field is always present and defaults to <code>EMBEDDED_TIMECODE</code>.</p> <ul> <li> <p> <code>EMBEDDED_TIMECODE</code> - Preserves timecodes from the input transport stream. The timecodes must be embedded in the video stream as SEI timing messages. If no embedded timecode is detected, MediaConnect uses the UTC system time instead.</p> </li> <li> <p> <code>UTC_SYSTEM_TIME</code> - Generates timecodes based on the system clock time when each frame is sent.</p> </li> </ul>",
+          "locationName":"ndiOutputTimecodeSource"
         }
       },
       "documentation":"<p> Attributes related to the transport stream that are used in a source or output.</p>"
@@ -10340,6 +10362,11 @@
         "RouterIntegrationTransitEncryption":{
           "shape":"FlowTransitEncryption",
           "locationName":"routerIntegrationTransitEncryption"
+        },
+        "NdiOutputTimecodeSource":{
+          "shape":"NdiOutputTimecodeSource",
+          "documentation":"<p>Controls how MediaConnect generates timecodes for NDI output frames. If you don't specify this field, MediaConnect leaves the value unchanged.</p> <ul> <li> <p> <code>EMBEDDED_TIMECODE</code> - Preserves timecodes from the input transport stream. The timecodes must be embedded in the video stream as SEI timing messages. If no embedded timecode is detected, MediaConnect uses the UTC system time instead.</p> </li> <li> <p> <code>UTC_SYSTEM_TIME</code> - Generates timecodes based on the system clock time when each frame is sent.</p> </li> </ul>",
+          "locationName":"ndiOutputTimecodeSource"
         }
       }
     },
@@ -10755,7 +10782,8 @@
     "UpdateRouterNetworkInterfaceRequestNameString":{
       "type":"string",
       "max":128,
-      "min":1
+      "min":1,
+      "pattern":"[a-zA-Z0-9]([a-zA-Z0-9\\-_]*[a-zA-Z0-9])?"
     },
     "UpdateRouterNetworkInterfaceResponse":{
       "type":"structure",

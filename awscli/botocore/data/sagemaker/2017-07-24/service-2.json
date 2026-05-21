@@ -13111,6 +13111,10 @@
           "shape":"AppSecurityGroupManagement",
           "documentation":"<p>The entity that creates and manages the required security groups for inter-app communication in <code>VPCOnly</code> mode. Required when <code>CreateDomain.AppNetworkAccessType</code> is <code>VPCOnly</code> and <code>DomainSettings.RStudioServerProDomainSettings.DomainExecutionRoleArn</code> is provided. If setting up the domain for use with RStudio, this value must be set to <code>Service</code>.</p>"
         },
+        "HomeEfsFileSystemCreation":{
+          "shape":"HomeEfsFileSystemCreation",
+          "documentation":"<p>Indicates whether to create a home EFS file system for the domain. Defaults to <code>Enabled</code>. Set to <code>Disabled</code> to skip EFS creation and reduce domain creation time. You can enable EFS later by calling <code>UpdateDomain</code>.</p>"
+        },
         "TagPropagation":{
           "shape":"TagPropagation",
           "documentation":"<p>Indicates whether custom tag propagation is supported for the domain. Defaults to <code>DISABLED</code>.</p>"
@@ -14667,7 +14671,7 @@
         },
         "PlatformIdentifier":{
           "shape":"PlatformIdentifier",
-          "documentation":"<p>The platform identifier of the notebook instance runtime environment. The default value is <code>notebook-al2-v2</code>.</p>"
+          "documentation":"<p>The platform identifier of the notebook instance runtime environment. The default value is <code>notebook-al2023-v1</code>.</p>"
         },
         "InstanceMetadataServiceConfiguration":{
           "shape":"InstanceMetadataServiceConfiguration",
@@ -18933,6 +18937,10 @@
         "AppSecurityGroupManagement":{
           "shape":"AppSecurityGroupManagement",
           "documentation":"<p>The entity that creates and manages the required security groups for inter-app communication in <code>VPCOnly</code> mode. Required when <code>CreateDomain.AppNetworkAccessType</code> is <code>VPCOnly</code> and <code>DomainSettings.RStudioServerProDomainSettings.DomainExecutionRoleArn</code> is provided.</p>"
+        },
+        "HomeEfsFileSystemCreation":{
+          "shape":"HomeEfsFileSystemCreation",
+          "documentation":"<p>Indicates whether a home EFS file system is created for the domain.</p>"
         },
         "TagPropagation":{
           "shape":"TagPropagation",
@@ -25874,6 +25882,14 @@
         }
       },
       "documentation":"<p>Stores the holiday featurization attributes applicable to each item of time-series datasets during the training of a forecasting model. This allows the model to identify patterns associated with specific holidays.</p>"
+    },
+    "HomeEfsFileSystemCreation":{
+      "type":"string",
+      "documentation":"<p>Indicates whether a home EFS file system is created for the domain.</p>",
+      "enum":[
+        "Enabled",
+        "Disabled"
+      ]
     },
     "HookParameters":{
       "type":"map",
@@ -48302,6 +48318,10 @@
         "TagPropagation":{
           "shape":"TagPropagation",
           "documentation":"<p>Indicates whether custom tag propagation is supported for the domain. Defaults to <code>DISABLED</code>.</p>"
+        },
+        "HomeEfsFileSystemCreation":{
+          "shape":"HomeEfsFileSystemCreation",
+          "documentation":"<p>Indicates whether to create a home EFS file system for the domain. You can change from <code>Disabled</code> to <code>Enabled</code> to provision EFS on demand, but you cannot change from <code>Enabled</code> to <code>Disabled</code>.</p>"
         },
         "VpcId":{
           "shape":"VpcId",

@@ -20,17 +20,10 @@ mcp-servers:
             "SONARQUBE_PROJECT_KEY",
             "mcp/sonarqube"]
     env:
-      SONARQUBE_TOKEN: $GITHUB_COPILOT_OIDC_MCP_TOKEN
+      SONARQUBE_TOKEN: ${{ secrets.COPILOT_MCP_SONARQUBE_TOKEN }}
       SONARQUBE_ORG: ${{ vars.COPILOT_MCP_SONARQUBE_ORG }}
       SONARQUBE_PROJECT_KEY: ${{ vars.COPILOT_MCP_SONARQUBE_PROJECT_KEY }}
     tools: ["*"]
-    oidc:
-      audience: https://sonarcloud.io
-      agent-only-subject: false
-      endpoints:
-        exchange: https://api.sonarcloud.io/authentication/token
-      grant-type: urn:ietf:params:oauth:grant-type:jwt-bearer
-      repo-only-subject: false
 ---
 You are a specialized assistant that helps users improve **code quality and security** on the changes flowing through this repository, using **SonarQube Cloud**. You operate inside GitHub AgentHQ, so your primary context is pull requests, branches, and individual files — not local IDE state.
 

@@ -416,19 +416,27 @@ class JSONSerializer(Serializer):
         map_obj = self.MAP_TYPE()
         serialized[key] = map_obj
         for sub_key, sub_value in value.items():
-            self._serialize(map_obj, sub_value, shape.value, sub_key)
+            if sub_value is None:
+                map_obj[sub_key] = None
+            else:
+                self._serialize(map_obj, sub_value, shape.value, sub_key)
 
     def _serialize_type_list(self, serialized, value, shape, key):
         list_obj = []
         serialized[key] = list_obj
         for list_item in value:
-            wrapper = {}
-            # The JSON list serialization is the only case where we aren't
-            # setting a key on a dict.  We handle this by using
-            # a __current__ key on a wrapper dict to serialize each
-            # list item before appending it to the serialized list.
-            self._serialize(wrapper, list_item, shape.member, "__current__")
-            list_obj.append(wrapper["__current__"])
+            if list_item is None:
+                list_obj.append(None)
+            else:
+                wrapper = {}
+                # The JSON list serialization is the only case where we aren't
+                # setting a key on a dict.  We handle this by using
+                # a __current__ key on a wrapper dict to serialize each
+                # list item before appending it to the serialized list.
+                self._serialize(
+                    wrapper, list_item, shape.member, "__current__"
+                )
+                list_obj.append(wrapper["__current__"])
 
     def _default_serialize(self, serialized, value, shape, key):
         serialized[key] = value
@@ -539,7 +547,14 @@ class CBORSerializer(Serializer):
         else:
             serialized.extend(initial_byte + length.to_bytes(num_bytes, "big"))
         for item in value:
-            self._serialize_data_item(serialized, item, shape.member)
+            if item is None:
+                serialized.extend(
+                    self._get_initial_byte(
+                        self.FLOAT_AND_SIMPLE_MAJOR_TYPE, 22
+                    )
+                )
+            else:
+                self._serialize_data_item(serialized, item, shape.member)
 
     def _serialize_type_map(self, serialized, value, shape, key):
         length = len(value)
@@ -555,7 +570,14 @@ class CBORSerializer(Serializer):
             serialized.extend(initial_byte + length.to_bytes(num_bytes, "big"))
         for key_item, item in value.items():
             self._serialize_data_item(serialized, key_item, shape.key)
-            self._serialize_data_item(serialized, item, shape.value)
+            if item is None:
+                serialized.extend(
+                    self._get_initial_byte(
+                        self.FLOAT_AND_SIMPLE_MAJOR_TYPE, 22
+                    )
+                )
+            else:
+                self._serialize_data_item(serialized, item, shape.value)
 
     def _serialize_type_structure(self, serialized, value, shape, key):
         if key is not None:

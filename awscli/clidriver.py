@@ -626,7 +626,7 @@ class CLIDriver:
         self._set_logging(getattr(args, 'debug', False))
 
     def _set_logging(self, debug):
-        loggers_list = ['botocore', 'awscli', 's3transfer', 'urllib3']
+        loggers_list = ['botocore', 'awscli', 's3transfer', 'urllib3', 'awscrt']
         if debug:
             for logger_name in loggers_list:
                 set_stream_logger(

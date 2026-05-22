@@ -191,3 +191,24 @@ class TestConfigureSetCommand(unittest.TestCase):
         self.config_writer.update_config.assert_called_with(
             {'__section__': "profile 'some\tprofile'", 'region': 'us-west-2'},
             'myconfigfile')
+
+    def test_configure_set_command_dotted_with_existing_profile(self):
+        self.session.full_config['profiles']['emr-dev'] = {}
+        set_command = ConfigureSetCommand(
+            self.session, self.config_writer)
+        set_command(
+            args=['emr-dev.emr.instance_profile', 'my_ip_emr'],
+            parsed_globals=None)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': 'profile emr-dev',
+             'emr': {'instance_profile': 'my_ip_emr'}}, 'myconfigfile')
+
+    def test_configure_set_command_dotted_with_existing_profile_no_nesting(self):
+        self.session.full_config['profiles']['emr-dev'] = {}
+        set_command = ConfigureSetCommand(
+            self.session, self.config_writer)
+        set_command(
+            args=['emr-dev.region', 'us-west-2'], parsed_globals=None)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': 'profile emr-dev',
+             'region': 'us-west-2'}, 'myconfigfile')

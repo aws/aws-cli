@@ -693,6 +693,47 @@ class S3FileGeneratorTest(BaseAWSCommandParamsTest):
         call_kwargs = self.client.head_object.call_args[1]
         self.assertEqual(call_kwargs['ChecksumMode'], 'ENABLED')
 
+    def test_s3_directory_uses_configured_bucket_lister(self):
+        listing_client = mock.Mock()
+        bucket_lister = mock.Mock()
+        bucket_lister.return_value.list_objects.return_value = []
+        file_gen = FileGenerator(
+            self.client,
+            '',
+            listing_client=listing_client,
+            bucket_lister_cls=bucket_lister,
+        )
+
+        list(file_gen.list_objects(self.bucket + '/', dir_op=True))
+
+        bucket_lister.assert_called_once_with(listing_client)
+
+    def test_s3_single_file_still_uses_normal_client(self):
+        input_s3_file = {
+            'src': {'path': self.file1, 'type': 's3'},
+            'dest': {'path': 'text1.txt', 'type': 'local'},
+            'dir_op': False,
+            'use_src_name': False,
+        }
+        listing_client = mock.Mock()
+        self.client = mock.Mock()
+        self.client.meta.config.response_checksum_validation = 'when_required'
+        self.client.head_object.return_value = {
+            'ContentLength': 100,
+            'LastModified': '2014-01-09T20:45:49.000Z',
+            'ETag': 'etag',
+        }
+
+        files = list(
+            FileGenerator(
+                self.client, '', listing_client=listing_client
+            ).call(input_s3_file)
+        )
+
+        self.assertEqual(len(files), 1)
+        self.client.head_object.assert_called_once()
+        listing_client.head_object.assert_not_called()
+
     def test_s3_directory(self):
         """
         Generates s3 files under a common prefix. Also it ensures that

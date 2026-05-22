@@ -26,8 +26,8 @@ import logging
 from botocore.hooks import HierarchicalEmitter, PrefixTrie
 
 from awscli.handlers_registry import (
-    CommandTableOp,
     PLUGIN_REGISTRY,
+    CommandTableOp,
 )
 from awscli.lazy import LazyCommand
 

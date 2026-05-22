@@ -469,7 +469,7 @@ class NpmLogin(BaseLogin):
     @classmethod
     def get_scope(cls, namespace):
         # Regex for valid scope name
-        valid_scope_name = re.compile('^(@[a-z0-9-~][a-z0-9-._~]*)')
+        valid_scope_name = re.compile('^(@[a-zA-Z0-9-~][a-zA-Z0-9-._~]*)')
 
         if namespace is None:
             return namespace
@@ -484,6 +484,12 @@ class NpmLogin(BaseLogin):
             raise ValueError(
                 'Invalid scope name, scope must contain URL-safe '
                 'characters, no leading dots or underscores'
+            )
+        
+        if not scope.islower():
+            sys.stderr.write(
+                'Warning: scope name "%s" can no longer contain '
+                'capital letters.\n' % scope
             )
 
         return scope

@@ -6007,6 +6007,10 @@
         "lakehouseProperties":{
           "shape":"LakehousePropertiesInput",
           "documentation":"<p>The lakehouse properties of a connection.</p>"
+        },
+        "vpcProperties":{
+          "shape":"VpcPropertiesInput",
+          "documentation":"<p>The VPC properties of a connection.</p>"
         }
       },
       "documentation":"<p>The properties of a connection.</p>",
@@ -6066,6 +6070,10 @@
         "lakehouseProperties":{
           "shape":"LakehousePropertiesOutput",
           "documentation":"<p>The lakehouse properties of a connection.</p>"
+        },
+        "vpcProperties":{
+          "shape":"VpcPropertiesOutput",
+          "documentation":"<p>The VPC properties of a connection.</p>"
         }
       },
       "documentation":"<p>The properties of a connection.</p>",
@@ -6109,6 +6117,10 @@
         "lakehouseProperties":{
           "shape":"LakehousePropertiesPatch",
           "documentation":"<p>The lakehouse properties of a connection properties patch.</p>"
+        },
+        "vpcProperties":{
+          "shape":"VpcPropertiesPatch",
+          "documentation":"<p>The VPC properties of a connection properties patch.</p>"
         }
       },
       "documentation":"<p>The connection properties patch.</p>",
@@ -6225,7 +6237,8 @@
         "VERTICA",
         "WORKFLOWS_MWAA",
         "AMAZON_Q",
-        "MLFLOW"
+        "MLFLOW",
+        "VPC"
       ]
     },
     "CreateAccountPoolInput":{
@@ -23324,6 +23337,12 @@
         }
       }
     },
+    "SecurityGroupId":{
+      "type":"string",
+      "max":32,
+      "min":0,
+      "pattern":"sg-[a-z0-9]+"
+    },
     "SecurityGroupIdList":{
       "type":"list",
       "member":{"shape":"SecurityGroupIdListMemberString"},
@@ -28060,6 +28079,89 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "VpcConnectionSubnetIdList":{
+      "type":"list",
+      "member":{"shape":"SubnetId"},
+      "max":16,
+      "min":1
+    },
+    "VpcId":{
+      "type":"string",
+      "max":32,
+      "min":0,
+      "pattern":"vpc-[a-z0-9]+"
+    },
+    "VpcPropertiesInput":{
+      "type":"structure",
+      "required":[
+        "vpcId",
+        "subnetIds"
+      ],
+      "members":{
+        "vpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>The identifier of the VPC. Must match the pattern <code>^vpc-[a-z0-9]+$</code>. Maximum length of 32.</p>"
+        },
+        "subnetIds":{
+          "shape":"VpcConnectionSubnetIdList",
+          "documentation":"<p>The subnet IDs of the VPC connection. You can specify between 1 and 16 subnet IDs.</p>"
+        },
+        "securityGroupId":{
+          "shape":"SecurityGroupId",
+          "documentation":"<p>The security group ID of the VPC connection. Must match the pattern <code>^sg-[a-z0-9]+$</code>. Maximum length of 32.</p>"
+        }
+      },
+      "documentation":"<p>The VPC connection properties used when creating a connection.</p>"
+    },
+    "VpcPropertiesOutput":{
+      "type":"structure",
+      "required":[
+        "vpcId",
+        "subnetIds",
+        "status"
+      ],
+      "members":{
+        "vpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>The identifier of the VPC.</p>"
+        },
+        "subnetIds":{
+          "shape":"VpcConnectionSubnetIdList",
+          "documentation":"<p>The subnet IDs of the VPC connection.</p>"
+        },
+        "status":{
+          "shape":"ConnectionStatus",
+          "documentation":"<p>The status of the VPC connection.</p>"
+        },
+        "securityGroupId":{
+          "shape":"SecurityGroupId",
+          "documentation":"<p>The security group ID of the VPC connection.</p>"
+        },
+        "glueConnectionNames":{
+          "shape":"GlueConnectionNames",
+          "documentation":"<p>The Amazon Web Services Glue connection names associated with the VPC connection.</p>"
+        }
+      },
+      "documentation":"<p>The VPC connection properties returned in responses.</p>"
+    },
+    "VpcPropertiesPatch":{
+      "type":"structure",
+      "members":{
+        "vpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>The identifier of the VPC.</p>"
+        },
+        "subnetIds":{
+          "shape":"VpcConnectionSubnetIdList",
+          "documentation":"<p>The subnet IDs of the VPC connection.</p>"
+        },
+        "securityGroupId":{
+          "shape":"SecurityGroupId",
+          "documentation":"<p>The security group ID of the VPC connection.</p>"
+        }
+      },
+      "documentation":"<p>The VPC connection properties used when updating a connection.</p>"
     },
     "WorkflowsMwaaPropertiesInput":{
       "type":"structure",

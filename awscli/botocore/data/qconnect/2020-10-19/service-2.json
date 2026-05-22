@@ -6346,6 +6346,15 @@
       "type":"list",
       "member":{"shape":"GroupingValue"}
     },
+    "GuardrailAction":{
+      "type":"string",
+      "documentation":"<p>The outcome of a guardrail assessment.</p>",
+      "enum":[
+        "NONE",
+        "BLOCKED",
+        "MASKED"
+      ]
+    },
     "GuardrailContentFilterConfig":{
       "type":"structure",
       "required":[
@@ -6523,6 +6532,46 @@
       ],
       "sensitive":true
     },
+    "GuardrailPolicyResult":{
+      "type":"structure",
+      "required":[
+        "policyType",
+        "action"
+      ],
+      "members":{
+        "policyType":{
+          "shape":"GuardrailPolicyType",
+          "documentation":"<p>The type of guardrail policy that was evaluated.</p>"
+        },
+        "action":{
+          "shape":"GuardrailAction",
+          "documentation":"<p>Outcome of this specific policy.</p>"
+        },
+        "details":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Policy-specific detail.</p>"
+        }
+      },
+      "documentation":"<p>Per-policy guardrail assessment result. Captures which policy triggered, its outcome, and a policy-specific detail string.</p>"
+    },
+    "GuardrailPolicyResultList":{
+      "type":"list",
+      "member":{"shape":"GuardrailPolicyResult"},
+      "max":50,
+      "min":0
+    },
+    "GuardrailPolicyType":{
+      "type":"string",
+      "documentation":"<p>Classification of a guardrail policy.</p>",
+      "enum":[
+        "CONTENT_FILTER",
+        "TOPIC",
+        "WORD",
+        "SENSITIVE_INFORMATION_PII",
+        "SENSITIVE_INFORMATION_REGEX",
+        "CONTEXTUAL_GROUNDING"
+      ]
+    },
     "GuardrailRegexConfig":{
       "type":"structure",
       "required":[
@@ -6584,6 +6633,14 @@
         "ANONYMIZE"
       ],
       "sensitive":true
+    },
+    "GuardrailSource":{
+      "type":"string",
+      "documentation":"<p>Content source for a guardrail assessment.</p>",
+      "enum":[
+        "INPUT",
+        "OUTPUT"
+      ]
     },
     "GuardrailTopicConfig":{
       "type":"structure",
@@ -11231,6 +11288,10 @@
         "timeToFirstTokenMs":{
           "shape":"Integer",
           "documentation":"<p>Time to first token in milliseconds, measured from when Amazon Bedrock was invoked to when the first token was returned</p>"
+        },
+        "guardrailAssessments":{
+          "shape":"SpanGuardrailAssessmentList",
+          "documentation":"<p>Guardrail assessments for the inference span. Absent on other span types and when no AI Guardrail is attached to the AI Agent.</p>"
         }
       },
       "documentation":"<p>Contextual attributes capturing operation details, LLM configuration, usage metrics, and conversation data</p>"
@@ -11276,6 +11337,44 @@
     "SpanFinishReasonList":{
       "type":"list",
       "member":{"shape":"NonEmptyString"},
+      "max":10,
+      "min":0
+    },
+    "SpanGuardrailAssessment":{
+      "type":"structure",
+      "required":[
+        "guardrailId",
+        "guardrailName",
+        "source",
+        "action"
+      ],
+      "members":{
+        "guardrailId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Unique AI Guardrail identifier.</p>"
+        },
+        "guardrailName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Customer-defined display name of the AI Guardrail resource.</p>"
+        },
+        "source":{
+          "shape":"GuardrailSource",
+          "documentation":"<p>Content source the guardrail was evaluated against.</p>"
+        },
+        "action":{
+          "shape":"GuardrailAction",
+          "documentation":"<p>Outcome of the guardrail assessment.</p>"
+        },
+        "policies":{
+          "shape":"GuardrailPolicyResultList",
+          "documentation":"<p>Per-policy assessment results. Absent or empty when action is NONE.</p>"
+        }
+      },
+      "documentation":"<p>Result of a single guardrail assessment, covering either the input (customer/user message) or the output (LLM response) of a Bedrock Converse call.</p>"
+    },
+    "SpanGuardrailAssessmentList":{
+      "type":"list",
+      "member":{"shape":"SpanGuardrailAssessment"},
       "max":10,
       "min":0
     },

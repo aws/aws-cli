@@ -2893,6 +2893,10 @@
           "shape":"CodeLocationList",
           "documentation":"<p>The file locations involved in the vulnerability, as reported by the code scanner.</p>"
         },
+        "verificationScript":{
+          "shape":"VerificationScript",
+          "documentation":"<p>The verification script metadata for reproducing the finding, including download URL, instructions, and required environment variables.</p>"
+        },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The date and time the finding was created, in UTC format.</p>"
@@ -5704,6 +5708,47 @@
         }
       },
       "documentation":"<p>Contains the verification details for a target domain, including the verification method and provider-specific details.</p>"
+    },
+    "VerificationScript":{
+      "type":"structure",
+      "members":{
+        "scriptType":{
+          "shape":"String",
+          "documentation":"<p>The type of script. Valid values are python and bash.</p>"
+        },
+        "scriptUrl":{
+          "shape":"String",
+          "documentation":"<p>URL to download the verification script.</p>"
+        },
+        "instructions":{
+          "shape":"String",
+          "documentation":"<p>Instructions for running the verification script, including prerequisites and how to interpret results.</p>"
+        },
+        "envVars":{
+          "shape":"VerificationScriptEnvVarList",
+          "documentation":"<p>The list of environment variables required to run the verification script.</p>"
+        }
+      },
+      "documentation":"<p>Contains metadata for a verification script that can be used to reproduce a security finding.</p>"
+    },
+    "VerificationScriptEnvVar":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the environment variable.</p>"
+        },
+        "value":{
+          "shape":"String",
+          "documentation":"<p>The value of the environment variable.</p>"
+        }
+      },
+      "documentation":"<p>Represents an environment variable required to run a verification script.</p>"
+    },
+    "VerificationScriptEnvVarList":{
+      "type":"list",
+      "member":{"shape":"VerificationScriptEnvVar"},
+      "documentation":"<p>List of environment variables required to run a verification script.</p>"
     },
     "VerifyTargetDomainInput":{
       "type":"structure",

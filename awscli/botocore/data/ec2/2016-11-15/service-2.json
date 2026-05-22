@@ -17076,7 +17076,7 @@
           "idempotencyToken":true
         },
         "LaunchTemplateName":{
-          "shape":"LaunchTemplateName",
+          "shape":"String",
           "documentation":"<p>A name for the launch template.</p>"
         },
         "VersionDescription":{
@@ -53943,6 +53943,10 @@
           "shape":"AttributeBooleanValue",
           "documentation":"<p>Enable or disable source/destination checks, which ensure that the instance is either the source or the destination of any traffic that it receives. If the value is <code>true</code>, source/destination checks are enabled; otherwise, they are disabled. The default value is <code>true</code>. You must disable source/destination checks if the instance runs services such as network address translation, routing, or firewalls.</p>"
         },
+        "EnclaveOptions":{
+          "shape":"EnclaveOptionsRequest",
+          "documentation":"<p>Enables or disables the instance for Amazon Web Services Nitro Enclaves. For more information, see the <a href=\"https://docs.aws.amazon.com/enclaves/latest/user/nitro-enclave.html\">Amazon Web Services Nitro Enclaves User Guide</a>.</p>"
+        },
         "DisableApiStop":{
           "shape":"AttributeBooleanValue",
           "documentation":"<p>Indicates whether an instance is enabled for stop protection. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-stop-protection.html\">Enable stop protection for your instance</a>.</p> <p/>"
@@ -53993,7 +53997,7 @@
           "locationName":"ramdisk"
         },
         "UserData":{
-          "shape":"BlobAttributeValue",
+          "shape":"SecureBlobAttributeValue",
           "documentation":"<p>Changes the instance's user data to the specified value. User data must be base64-encoded. Depending on the tool or SDK that you're using, the base64-encoding might be performed for you. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-add-user-data.html\">Work with instance user data</a>.</p>",
           "locationName":"userData"
         },
@@ -54027,8 +54031,12 @@
     "ModifyInstanceAttributeUserDataRequest":{
       "type":"structure",
       "members":{
-        "Value":{"shape":"ModifyInstanceAttributeValue"}
-      }
+        "Value":{
+          "shape":"ModifyInstanceAttributeValue",
+          "documentation":"<p>The value of the data.</p>"
+        }
+      },
+      "documentation":"<p>Describes Base64-encoded binary data.</p>"
     },
     "ModifyInstanceAttributeValue":{
       "type":"string",
@@ -65895,7 +65903,7 @@
           "locationName":"prefix"
         },
         "UploadPolicy":{
-          "shape":"Blob",
+          "shape":"SecureBlob",
           "documentation":"<p>An Amazon S3 upload policy that gives Amazon EC2 permission to upload items into Amazon S3 on your behalf.</p>",
           "locationName":"uploadPolicy"
         },
@@ -67022,6 +67030,19 @@
     "SecretArn":{
       "type":"string",
       "pattern":"^(?=.{20,2048}$)arn:aws[a-z-]*:secretsmanager:[a-z0-9-]+:\\d{12}:secret:[a-zA-Z0-9/_+=.@-]+"
+    },
+    "SecureBlob":{
+      "type":"blob",
+      "sensitive":true
+    },
+    "SecureBlobAttributeValue":{
+      "type":"structure",
+      "members":{
+        "Value":{
+          "shape":"SecureBlob",
+          "locationName":"value"
+        }
+      }
     },
     "SecurityGroup":{
       "type":"structure",
@@ -77359,5 +77380,5 @@
     "totalGpuMemory":{"type":"integer"},
     "totalInferenceMemory":{"type":"integer"}
   },
-  "documentation":"<fullname>Amazon Elastic Compute Cloud</fullname> <p>You can access the features of Amazon Elastic Compute Cloud (Amazon EC2) programmatically. For more information, see the <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide\">Amazon EC2 Developer Guide</a>.</p>"
+  "documentation":"<fullname>Amazon Elastic Compute Cloud</fullname> <p>This is the <i>Amazon EC2 API Reference</i>. It provides descriptions, API request parameters, and the XML response for each of the Amazon EC2 Query API actions. Note that the Amazon EC2 API includes actions for Amazon EC2 plus additional services, such as Amazon EBS and Amazon VPC.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p>To learn about using the Query API, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-low-level-api.html\">Using the API for Amazon EC2</a>.</p> </li> <li> <p>To learn about the permissions required to call an Amazon EC2 API action, see <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonec2.html\">Actions, resources, and condition keys for Amazon EC2</a>.</p> </li> <li> <p>To get the list of API actions by service and resource, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/OperationList-query.html\">Actions by service</a>.</p> </li> <li> <p>To get the alphabetical list of API actions, see .</p> </li> <li> <p>To get descriptions of the API error codes, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/errors-overview.html\">Error codes for the Amazon EC2 API</a>.</p> </li> </ul> <p>Alternatively, use one of the following methods to access the Amazon EC2 API, instead of using the Query API directly:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/cli/latest/reference/ec2/\">Amazon Web Services CLI Command Reference - ec2 commands</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/AWS_EC2.html\">CloudFormation - Amazon EC2 resource type reference</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/powershell/v5/reference/items/EC2_cmdlets.html\">Amazon Web Services Tools for PowerShell Cmdlet Reference - Amazon EC2 cmdlets</a> </p> </li> <li> <p> <a href=\"https://builder.aws.com/build/tools\">Amazon Web Services SDKs</a> </p> </li> </ul>"
 }

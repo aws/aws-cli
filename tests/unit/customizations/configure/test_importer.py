@@ -98,7 +98,9 @@ class TestConfigureImportCommand(unittest.TestCase):
             f.write('User name,Access key ID,Secret access key\nuser,AKID,SAK')
         try:
             with self.assertRaises(ValueError) as cm:
-                self.import_command(args=['--csv', 'temp_creds.csv'], parsed_globals=None)
+                self.import_command(
+                    args=['--csv', 'temp_creds.csv'], parsed_globals=None
+                )
             self.assertIn("without the 'file://' prefix", str(cm.exception))
         finally:
             os.remove('temp_creds.csv')
@@ -106,18 +108,33 @@ class TestConfigureImportCommand(unittest.TestCase):
     def test_inline_csv_succeeds(self):
         csv_string = 'User name,Access key ID,Secret access key\nuser,AKID,SAK'
         self.import_command(args=['--csv', csv_string], parsed_globals=None)
-        self.assertIn('Successfully imported 1 profile', self.stdout.getvalue())
+        self.assertIn(
+            'Successfully imported 1 profile', self.stdout.getvalue()
+        )
 
     def test_csv_content_from_file_succeeds(self):
         with open('temp_creds.csv', 'w') as f:
             f.write('User name,Access key ID,Secret access key\nuser,AKID,SAK')
         try:
-            with open('temp_creds.csv', 'r') as f:
+            with open('temp_creds.csv') as f:
                 contents = f.read()
             self.import_command(args=['--csv', contents], parsed_globals=None)
-            self.assertIn('Successfully imported 1 profile', self.stdout.getvalue())
+            self.assertIn(
+                'Successfully imported 1 profile', self.stdout.getvalue()
+            )
         finally:
             os.remove('temp_creds.csv')
+
+    @mock.patch('awscli.customizations.configure.importer.warn_if_permissive')
+    def test_warn_called_once_when_importing_credentials(self, mock_warn):
+        rows = (
+            'PROF1,PW,AKID1,SAK1,https://console.link\n'
+            'PROF2,PW,AKID2,SAK2,https://console.link\n'
+        )
+        content = CSV_HEADERS + rows
+        self.import_command(args=['--csv', content], parsed_globals=None)
+        mock_warn.assert_called_once_with(self.fake_credentials_filename)
+
 
 class TestCSVCredentialParser(unittest.TestCase):
     def setUp(self):
@@ -134,8 +151,7 @@ class TestCSVCredentialParser(unittest.TestCase):
 
     def test_csv_parser_simple(self):
         contents = (
-            'User name,Access key ID,Secret access key\n'
-            'PROFILENAME,AKID,SAK\n'
+            'User name,Access key ID,Secret access key\nPROFILENAME,AKID,SAK\n'
         )
         self.assert_parse_matches_expected(contents)
 

@@ -192,14 +192,18 @@ class ConfigureSetCommand(BasicCommand):
                 # Otherwise it's something in the [plugin] section
                 profile, varname = parts
         config_filename = self._get_config_file('config_file')
+        check_permissions = False
         if varname in self._WRITE_TO_CREDS_FILE:
             # When writing to the creds file, the section is just the profile
             section = profile
             config_filename = self._get_config_file('credentials_file')
+            check_permissions = True
         elif profile in PREDEFINED_SECTION_NAMES or profile == 'default':
             section = profile
         else:
             section = profile_to_section(profile)
         updated_config = {'__section__': section, varname: value}
-        self._config_writer.update_config(updated_config, config_filename)
+        self._config_writer.update_config(
+            updated_config, config_filename, check_permissions=check_permissions
+        )
         return 0

@@ -318,7 +318,7 @@ class Endpoint:
             request_dict=request_dict,
         )
         handler_response = first_non_none_response(responses)
-        if handler_response is None:
+        if handler_response is None or handler_response is False:
             return False
         else:
             # Request needs to be retried, and we need to sleep

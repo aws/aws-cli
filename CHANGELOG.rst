@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.45.14
+=======
+
+* api-change:``datazone``: Add support for VPC connection
+* api-change:``ec2``: The ModifyInstanceAttribute API now supports modification of EnclaveOptions for the instance as a typed parameter.
+* api-change:``gameliftstreams``: Added new Gen6 stream classes based on the EC2 G6e instance family. These classes are designed for streaming high-fidelity, graphically demanding games and applications that benefit from additional GPU memory and performance.
+* api-change:``invoicing``: Adds support for idempotency with a new ClientToken field for the CreateInvoiceUnit, DeleteInvoiceUnit, UpdateInvoiceUnit, DeleteProcurementPortalPreference, PutProcurementPortalPreference, and UpdateProcurementPortalPreferenceStatus APIs.
+* api-change:``pi``: Added ListPerformanceAnalysisReportRecommendations API to retrieve recommendations for a performance analysis report. Added analysis configuration support to CreatePerformanceAnalysisReport for enhanced analysis types such as vacuum analysis.
+* api-change:``qconnect``: Added guardrail assessment results to inference spans in the ListSpans API. You can now see which AI Guardrail policies were evaluated, whether content was blocked or masked, and per-policy details for each Bedrock Converse call
+* api-change:``securityagent``: Adds support for verification scripts on penetration test findings. Customers can now download executable scripts to independently reproduce confirmed vulnerabilities, with instructions and required environment variables provided for each finding.
+* enhancement:configure: Warn if the credentials file has permissions beyond the default of 0o600 when modifying the file. Fixes `#10019 <https://github.com/aws/aws-cli/issues/10019>`__.
+
+
 1.45.13
 =======
 

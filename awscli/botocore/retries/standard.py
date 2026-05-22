@@ -123,12 +123,12 @@ class RetryHandler:
     }
 
     def __init__(
-            self,
-            retry_policy,
-            retry_event_adapter,
-            retry_quota,
-            service_name=None,
-            sleep=time.sleep,
+        self,
+        retry_policy,
+        retry_event_adapter,
+        retry_quota,
+        service_name=None,
+        sleep=time.sleep,
     ):
         self._retry_policy = retry_policy
         self._retry_event_adapter = retry_event_adapter

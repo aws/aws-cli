@@ -10,11 +10,11 @@ test_standard.py and this file will be removed.
 from collections import Counter
 
 import pytest
-
 from botocore import configprovider
 from botocore.awsrequest import AWSResponse
 from botocore.exceptions import ReadTimeoutError
 from botocore.retries import quota, standard
+
 from tests import BaseEnvVar, mock, unittest
 
 

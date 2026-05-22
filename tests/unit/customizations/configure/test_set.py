@@ -70,6 +70,30 @@ class TestConfigureSetCommand(unittest.TestCase):
             {'__section__': 'profile emr-dev', 'emr':
                 {'instance_profile': 'my_ip_emr'}}, 'myconfigfile')
 
+    def test_configure_set_dotted_with_profile_name_prefix(self):
+        # Mirrors configure get syntax (test_dotted_get_with_profile).
+        self.session.full_config = {'profiles': {'emr-dev': {
+            'emr': {'instance_profile': 'old_ip'}}}}
+        set_command = ConfigureSetCommand(
+            self.session, self.config_writer)
+        set_command(
+            args=['emr-dev.emr.instance_profile', 'my_ip_emr'],
+            parsed_globals=None)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': 'profile emr-dev', 'emr':
+                {'instance_profile': 'my_ip_emr'}}, 'myconfigfile')
+
+    def test_configure_set_dotted_profile_name_two_part_varname(self):
+        self.session.full_config = {'profiles': {'emr-dev': {
+            'region': 'us-west-1'}}}
+        set_command = ConfigureSetCommand(
+            self.session, self.config_writer)
+        set_command(
+            args=['emr-dev.region', 'us-west-2'], parsed_globals=None)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': 'profile emr-dev', 'region': 'us-west-2'},
+            'myconfigfile')
+
     def test_configure_set_with_profile(self):
         self.session.profile = 'testing'
         set_command = ConfigureSetCommand(

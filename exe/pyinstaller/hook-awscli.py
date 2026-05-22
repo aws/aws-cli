@@ -2,6 +2,8 @@ import os
 
 from PyInstaller.utils import hooks
 
+from awscli.handlers_registry import PLUGIN_REGISTRY
+
 hiddenimports = [
     'docutils',
     'urllib',
@@ -27,6 +29,14 @@ alias_packages_plugins = hooks.collect_submodules(
     'awscli.botocore'
 ) + hooks.collect_submodules('awscli.s3transfer')
 hiddenimports += alias_packages_plugins
+
+# handlers.py uses importlib.import_module at runtime to load customization
+# modules, so PyInstaller cannot discover them statically. Collect all module
+# paths referenced in handlers_registry.py as hidden imports.
+registry_modules = {
+    entry[0] for entries in PLUGIN_REGISTRY.values() for entry in entries
+}
+hiddenimports += registry_modules
 
 
 # Completion model files are only used at build time to generate the

@@ -14,7 +14,11 @@ import copy
 import functools
 from functools import partial
 
-from botocore.hooks import HierarchicalEmitter, first_non_none_response
+from botocore.hooks import (
+    HierarchicalEmitter,
+    PrefixTrie,
+    first_non_none_response,
+)
 
 from tests import unittest
 
@@ -582,6 +586,54 @@ class TestWildcardHandlers(unittest.TestCase):
         self.assertEqual(
             copied.emit_until_response('a.b', b='return-val')[1], 'return-val'
         )
+
+
+class TestPrefixTrie(unittest.TestCase):
+    def setUp(self):
+        self.trie = PrefixTrie()
+
+    def test_append_and_prefix_search_exact_match(self):
+        self.trie.append_item('building-command-table.main', 'handler1')
+        results = self.trie.prefix_search('building-command-table.main')
+        self.assertIn('handler1', results)
+
+    def test_prefix_search_matches_parent(self):
+        self.trie.append_item('building-command-table', 'handler1')
+        results = self.trie.prefix_search('building-command-table.main')
+        self.assertIn('handler1', results)
+
+    def test_prefix_search_does_not_match_sibling(self):
+        self.trie.append_item('building-command-table.ecs', 'handler1')
+        results = self.trie.prefix_search('building-command-table.main')
+        self.assertNotIn('handler1', results)
+
+    def test_prefix_search_does_not_match_child(self):
+        self.trie.append_item('building-command-table.main.sub', 'handler1')
+        results = self.trie.prefix_search('building-command-table.main')
+        self.assertNotIn('handler1', results)
+
+    def test_wildcard_match(self):
+        self.trie.append_item('building-command-table.*', 'handler1')
+        results = self.trie.prefix_search('building-command-table.main')
+        self.assertIn('handler1', results)
+
+    def test_multiple_items_at_same_key(self):
+        self.trie.append_item('building-command-table.main', 'handler1')
+        self.trie.append_item('building-command-table.main', 'handler2')
+        results = self.trie.prefix_search('building-command-table.main')
+        self.assertIn('handler1', results)
+        self.assertIn('handler2', results)
+
+    def test_multiple_levels_all_returned(self):
+        self.trie.append_item('building-command-table', 'parent')
+        self.trie.append_item('building-command-table.main', 'exact')
+        results = self.trie.prefix_search('building-command-table.main')
+        self.assertIn('parent', results)
+        self.assertIn('exact', results)
+
+    def test_empty_trie_returns_empty(self):
+        results = self.trie.prefix_search('building-command-table.main')
+        self.assertEqual(len(results), 0)
 
 
 if __name__ == '__main__':

@@ -11543,6 +11543,10 @@
           "shape":"RegionalParameterMap",
           "documentation":"<p>The regional parameters of the environment blueprint.</p>"
         },
+        "allowUserProvidedConfigurations":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether user-provided resource configurations are allowed for the environment blueprint.</p>"
+        },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The timestamp of when an environment blueprint was created.</p>"
@@ -11550,6 +11554,10 @@
         "updatedAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The timestamp of when the environment blueprint was updated.</p>"
+        },
+        "resourceConfigurations":{
+          "shape":"ResourceConfigurations",
+          "documentation":"<p>The resource configurations of the environment blueprint.</p>"
         },
         "provisioningConfigurations":{
           "shape":"ProvisioningConfigurationList",
@@ -13524,6 +13532,10 @@
           "shape":"RegionalParameterMap",
           "documentation":"<p>The regional parameters of the blueprint.</p>"
         },
+        "allowUserProvidedConfigurations":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether user-provided resource configurations are allowed for the environment blueprint.</p>"
+        },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The timestamp of when this blueprint was created.</p>"
@@ -13531,6 +13543,10 @@
         "updatedAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The timestamp of when this blueprint was upated.</p>"
+        },
+        "resourceConfigurations":{
+          "shape":"ResourceConfigurations",
+          "documentation":"<p>The resource configurations of the environment blueprint.</p>"
         },
         "provisioningConfigurations":{
           "shape":"ProvisioningConfigurationList",
@@ -21374,6 +21390,14 @@
           "shape":"RegionalParameterMap",
           "documentation":"<p>The regional parameters in the environment blueprint.</p>"
         },
+        "resourceConfigurations":{
+          "shape":"PutResourceConfigurations",
+          "documentation":"<p>The resource configurations of the environment blueprint.</p>"
+        },
+        "allowUserProvidedConfigurations":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether user-provided resource configurations are allowed for the environment blueprint.</p>"
+        },
         "globalParameters":{
           "shape":"GlobalParameterMap",
           "documentation":"<p>Region-agnostic environment blueprint parameters. </p>"
@@ -21419,6 +21443,10 @@
           "shape":"RegionalParameterMap",
           "documentation":"<p>The regional parameters in the environment blueprint.</p>"
         },
+        "allowUserProvidedConfigurations":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether user-provided resource configurations are allowed for the environment blueprint.</p>"
+        },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The timestamp of when the environment blueprint was created.</p>"
@@ -21427,11 +21455,53 @@
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The timestamp of when the environment blueprint was updated.</p>"
         },
+        "resourceConfigurations":{
+          "shape":"ResourceConfigurations",
+          "documentation":"<p>The resource configurations of the environment blueprint.</p>"
+        },
         "provisioningConfigurations":{
           "shape":"ProvisioningConfigurationList",
           "documentation":"<p>The provisioning configuration of a blueprint.</p>"
         }
       }
+    },
+    "PutResourceConfiguration":{
+      "type":"structure",
+      "required":[
+        "name",
+        "region",
+        "parameters"
+      ],
+      "members":{
+        "name":{
+          "shape":"PutResourceConfigurationNameString",
+          "documentation":"<p>The name of the resource configuration.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>The description of the resource configuration.</p>"
+        },
+        "region":{
+          "shape":"RegionName",
+          "documentation":"<p>The Amazon Web Services Region of the resource configuration.</p>"
+        },
+        "parameters":{
+          "shape":"ResourceConfigurationParameterMap",
+          "documentation":"<p>The parameters of the resource configuration.</p>"
+        }
+      },
+      "documentation":"<p>The resource configuration that is used to configure the environment blueprint.</p>"
+    },
+    "PutResourceConfigurationNameString":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "PutResourceConfigurations":{
+      "type":"list",
+      "member":{"shape":"PutResourceConfiguration"},
+      "max":10,
+      "min":0
     },
     "QueryGraphInput":{
       "type":"structure",
@@ -22280,6 +22350,49 @@
         }
       },
       "documentation":"<p>The details of a provisioned resource of this Amazon DataZone environment.</p>"
+    },
+    "ResourceConfiguration":{
+      "type":"structure",
+      "required":[
+        "identifier",
+        "name",
+        "region",
+        "parameters"
+      ],
+      "members":{
+        "identifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the resource configuration.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the resource configuration.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>The description of the resource configuration.</p>"
+        },
+        "region":{
+          "shape":"RegionName",
+          "documentation":"<p>The Amazon Web Services Region of the resource configuration.</p>"
+        },
+        "parameters":{
+          "shape":"ResourceConfigurationParameterMap",
+          "documentation":"<p>The parameters of the resource configuration.</p>"
+        }
+      },
+      "documentation":"<p>The details of the resource configuration.</p>"
+    },
+    "ResourceConfigurationParameterMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"}
+    },
+    "ResourceConfigurations":{
+      "type":"list",
+      "member":{"shape":"ResourceConfiguration"},
+      "max":10,
+      "min":0
     },
     "ResourceList":{
       "type":"list",

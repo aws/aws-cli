@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.45.15
+=======
+
+* api-change:``backup``: Launching S3 PITR malware scanning support for AWS Backup
+* api-change:``batch``: Increase the maximum value of jobExecutionTimeoutMinutes to support longer job timeouts during compute environment infrastructure updates.
+* api-change:``budgets``: AWS Budget Name Validation Documentation Updates.
+* api-change:``datazone``: Added resourceConfigurations and allowUserProvidedConfigurations fields to environment blueprint configuration APIs, enabling customers who migrated from V1 to V2 domains to update resource configurations (such as lineage schedules) programmatically via the SDK.
+* api-change:``guardduty``: Add malware scan support for Continuous Backups, also known as Point-In-Time Recovery Points (PITR).
+* api-change:``resourcegroupstaggingapi``: The GetResources API now returns MissingTagKeys in ComplianceDetails, listing tag keys defined as required in the ReportRequiredTagBlock block of the effective tag policy that are absent from the resource.
+
+
 1.45.14
 =======
 

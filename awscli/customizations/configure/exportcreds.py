@@ -209,10 +209,16 @@ class ConfigureExportCredentialsCommand(BasicCommand):
             'help_text': (
                 'After exporting credentials, server-side revoke the AWS '
                 'IAM Identity Center access token used to mint them and '
-                'remove its on-disk cache file. This is a no-op for '
+                'remove its on-disk cache file. The token is cached per SSO '
+                'session, so this revokes the shared session token: any '
+                'other profile bound to the same ``sso_session`` (or legacy '
+                '``sso_start_url``), including in other shells, will need to '
+                'run ``aws sso login`` again. For assume-role profiles the '
+                'token is resolved by following ``source_profile`` to the '
+                'IAM Identity Center-backed profile. This is a no-op for '
                 'profiles that do not resolve credentials through IAM '
-                'Identity Center. Use this to minimize the on-disk '
-                'lifetime of the SSO access token. Note: when used in a '
+                'Identity Center. Use this to minimize the on-disk lifetime '
+                'of the SSO access token. Note: when used in a '
                 '``credential_process`` configuration, every credential '
                 'refresh will require a new ``aws sso login`` flow.'
             ),
@@ -335,18 +341,38 @@ class ConfigureExportCredentialsCommand(BasicCommand):
             pass
 
     def _sso_cache_key_for_current_profile(self):
-        # Returns the SSO token cache key (sha1 digest) for the active
-        # profile, or None if the profile has no IAM Identity Center
-        # configuration. The cache key is computed identically to
+        # Walks the credential-resolution chain to the profile that carries
+        # the IAM Identity Center configuration and returns its SSO token
+        # cache key (sha1 digest), or None if no profile in the chain
+        # resolves through IAM Identity Center.
+        #
+        # The active profile may not hold the SSO config itself: an
+        # assume-role profile (``role_arn`` + ``source_profile``) inherits
+        # its SSO token from the source profile, possibly through several
+        # hops. We follow ``source_profile`` until we find the profile with
+        # ``sso_session`` (or the legacy ``sso_start_url``), guarding against
+        # cycles in malformed configs.
+        #
+        # The cache key is computed identically to
         # ``botocore.utils.SSOTokenLoader``: sha1 of the sso_session name
         # when present, otherwise sha1 of the legacy sso_start_url.
-        scoped_config = self._session.get_scoped_config()
-        sso_session = scoped_config.get('sso_session')
-        if sso_session:
-            cache_input = sso_session
-        else:
-            sso_start_url = scoped_config.get('sso_start_url')
-            if not sso_start_url:
+        profiles = self._session.full_config.get('profiles', {})
+        config = self._session.get_scoped_config()
+        seen_profiles = set()
+        while True:
+            sso_session = config.get('sso_session')
+            if sso_session:
+                cache_input = sso_session
+                break
+            sso_start_url = config.get('sso_start_url')
+            if sso_start_url:
+                cache_input = sso_start_url
+                break
+            source_profile = config.get('source_profile')
+            if source_profile is None or source_profile in seen_profiles:
                 return None
-            cache_input = sso_start_url
+            seen_profiles.add(source_profile)
+            config = profiles.get(source_profile)
+            if config is None:
+                return None
         return hashlib.sha1(cache_input.encode('utf-8')).hexdigest()

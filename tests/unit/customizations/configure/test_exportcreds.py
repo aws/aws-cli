@@ -426,6 +426,28 @@ class TestRevokeSSOTokenFlag(unittest.TestCase):
             'full': {},
         }
 
+    def _assume_role_chain_profile_config(self):
+        # Active profile assumes a role and sources its SSO token from
+        # another profile via ``source_profile``; that source profile is
+        # the one holding the IAM Identity Center config.
+        return {
+            'scoped': {
+                'role_arn': 'arn:aws:iam::123456789012:role/target',
+                'source_profile': 'sso-base',
+            },
+            'full': {
+                'profiles': {
+                    'sso-base': {'sso_session': 'my-session'},
+                },
+                'sso_sessions': {
+                    'my-session': {
+                        'sso_region': 'us-east-1',
+                        'sso_start_url': 'https://example.awsapps.com/start',
+                    }
+                },
+            },
+        }
+
     def _wire_profile(self, profile_config):
         self.session.get_scoped_config.return_value = profile_config['scoped']
         self.session.full_config = profile_config['full']
@@ -482,6 +504,69 @@ class TestRevokeSSOTokenFlag(unittest.TestCase):
     def test_no_op_when_cache_file_missing(self):
         self._wire_profile(self._sso_session_profile_config())
         # No cache file written.
+        rc = self.export_creds_cmd(
+            args=['--revoke-sso-token'], parsed_globals=self.global_args
+        )
+        self.assertEqual(rc, 0)
+        self.session.create_client.assert_not_called()
+
+    def test_revokes_token_via_source_profile_chain(self):
+        # An assume-role profile resolves its SSO token through
+        # ``source_profile``; the token under that source profile's session
+        # must be the one revoked.
+        self._wire_profile(self._assume_role_chain_profile_config())
+        cache_path = self._write_token_cache(
+            start_url='https://example.awsapps.com/start',
+            session_name='my-session',
+            contents={'accessToken': 'chained-token', 'region': 'us-east-1'},
+        )
+        sso_client = mock.Mock()
+        self.session.create_client.return_value = sso_client
+
+        rc = self.export_creds_cmd(
+            args=['--revoke-sso-token'], parsed_globals=self.global_args
+        )
+
+        self.assertEqual(rc, 0)
+        sso_client.logout.assert_called_once_with(accessToken='chained-token')
+        self.assertFalse(os.path.exists(cache_path))
+
+    def test_no_op_when_source_profile_chain_has_no_sso(self):
+        # Assume-role chain that bottoms out at a non-SSO profile must not
+        # revoke anything.
+        self._wire_profile(
+            {
+                'scoped': {
+                    'role_arn': 'arn:aws:iam::123456789012:role/target',
+                    'source_profile': 'static-base',
+                },
+                'full': {
+                    'profiles': {
+                        'static-base': {'aws_access_key_id': 'AKID'},
+                    },
+                },
+            }
+        )
+        rc = self.export_creds_cmd(
+            args=['--revoke-sso-token'], parsed_globals=self.global_args
+        )
+        self.assertEqual(rc, 0)
+        self.session.create_client.assert_not_called()
+
+    def test_no_op_on_source_profile_cycle(self):
+        # A malformed config where source_profile forms a cycle must
+        # terminate and revoke nothing rather than loop forever.
+        self._wire_profile(
+            {
+                'scoped': {'source_profile': 'a'},
+                'full': {
+                    'profiles': {
+                        'a': {'source_profile': 'b'},
+                        'b': {'source_profile': 'a'},
+                    },
+                },
+            }
+        )
         rc = self.export_creds_cmd(
             args=['--revoke-sso-token'], parsed_globals=self.global_args
         )

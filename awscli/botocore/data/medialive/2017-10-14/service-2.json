@@ -7319,6 +7319,10 @@
         "TeletextSourceSettings": {
           "shape": "TeletextSourceSettings",
           "locationName": "teletextSourceSettings"
+        },
+        "SmartSubtitleSourceSettings": {
+          "shape": "SmartSubtitleSourceSettings",
+          "locationName": "smartSubtitleSourceSettings"
         }
       },
       "documentation": "Caption Selector Settings"
@@ -30524,6 +30528,11 @@
           "shape": "__string",
           "locationName": "feedArn",
           "documentation": "The ARN of the feed resource that is associated with this channel. The feed is a resource in the Elemental Inference service."
+        },
+        "AudioFeedInputs": {
+          "shape": "__listOfAudioFeedInput",
+          "locationName": "audioFeedInputs",
+          "documentation": "A list of audio feed inputs that map audio selectors in the channel to feed inputs on the associated Elemental Inference feed."
         }
       },
       "documentation": "Configures Elemental Inference features in a channel."
@@ -30535,6 +30544,11 @@
           "shape": "__string",
           "locationName": "feedArn",
           "documentation": "The ARN of the feed resource that is associated with this channel. The feed is a resource in the Elemental Inference service."
+        },
+        "AudioFeedInputs": {
+          "shape": "__listOfAudioFeedInput",
+          "locationName": "audioFeedInputs",
+          "documentation": "A list of audio feed inputs that map audio selectors in the channel to feed inputs on the associated Elemental Inference feed."
         }
       },
       "documentation": "Configures Elemental Inference features in a channel."
@@ -30631,6 +30645,13 @@
       },
       "documentation": "Placeholder documentation for __listOfMediaConnectRouterOutputDestinationSettings"
     },
+    "__listOfOutputLocationRef": {
+      "type": "list",
+      "member": {
+        "shape": "OutputLocationRef"
+      },
+      "documentation": "Placeholder documentation for __listOfOutputLocationRef"
+    },
     "MediaConnectRouterOutputConnection": {
       "type": "structure",
       "members": {
@@ -30651,6 +30672,53 @@
       "value": {
         "shape": "MediaConnectRouterOutputConnection"
       }
+    },
+    "AudioFeedInput": {
+      "type": "structure",
+      "members": {
+        "AudioSelectorName": {
+          "shape": "__string",
+          "locationName": "audioSelectorName",
+          "documentation": "The name of the audio selector in the channel that will be sent to the Elemental Inference feed input."
+        },
+        "FeedInput": {
+          "shape": "__string",
+          "locationName": "feedInput",
+          "documentation": "The name of the feed input on the Elemental Inference feed that will receive the audio from the specified audio selector."
+        }
+      },
+      "documentation": "Maps an audio selector in the channel to a feed input on the associated Elemental Inference feed."
+    },
+    "CaptionSynchronizationMode": {
+      "type": "string",
+      "documentation": "Controls how MediaLive synchronizes Elemental Inference generated subtitles with video output.\n\nvideo_aligned_captions - MediaLive delays video to ensure captions are synchronized with\n     audio and video.\nno_video_delay - MediaLive does not delay video for caption alignment. Captions output\n     timing is adjusted to align with video as captions become available.",
+      "enum": [
+        "NO_VIDEO_DELAY",
+        "VIDEO_ALIGNED_CAPTIONS"
+      ]
+    },
+    "SmartSubtitleSourceSettings": {
+      "type": "structure",
+      "members": {
+        "CaptionSynchronizationMode": {
+          "shape": "CaptionSynchronizationMode",
+          "locationName": "captionSynchronizationMode",
+          "documentation": "Controls whether MediaLive delays video to synchronize captions with audio and video output."
+        },
+        "InferenceFeedOutput": {
+          "shape": "__string",
+          "locationName": "inferenceFeedOutput",
+          "documentation": "The name of the Elemental Inference feed output that supplies subtitle input into this caption selector."
+        }
+      },
+      "documentation": "Smart Subtitle Source Settings"
+    },
+    "__listOfAudioFeedInput": {
+      "type": "list",
+      "member": {
+        "shape": "AudioFeedInput"
+      },
+      "documentation": "Placeholder documentation for __listOfAudioFeedInput"
     }
   },
   "documentation": "API for AWS Elemental MediaLive"

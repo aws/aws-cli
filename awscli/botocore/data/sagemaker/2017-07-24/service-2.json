@@ -5339,7 +5339,8 @@
         "ml.p5.4xlarge",
         "ml.p5.48xlarge",
         "ml.p5e.48xlarge",
-        "ml.p5en.48xlarge"
+        "ml.p5en.48xlarge",
+        "ml.p6-b200.48xlarge"
       ]
     },
     "AIRecommendationInstanceTypeList":{
@@ -10069,6 +10070,14 @@
       },
       "documentation":"<p>A summary of an event in a HyperPod cluster.</p>"
     },
+    "ClusterFSxLustreDeletionPolicy":{
+      "type":"string",
+      "documentation":"<p>The deletion policy for the Amazon FSx for Lustre file system used in the shared environment of restricted instance groups (RIG).</p>",
+      "enum":[
+        "DeleteIfNotUsed",
+        "Keep"
+      ]
+    },
     "ClusterFsxLustreConfig":{
       "type":"structure",
       "required":[
@@ -11181,6 +11190,28 @@
       "max":100,
       "min":1
     },
+    "ClusterRestrictedInstanceGroupsConfig":{
+      "type":"structure",
+      "required":["SharedEnvironmentConfig"],
+      "members":{
+        "SharedEnvironmentConfig":{
+          "shape":"ClusterSharedEnvironmentConfig",
+          "documentation":"<p>The shared environment configuration for the restricted instance groups (RIG).</p>"
+        }
+      },
+      "documentation":"<p>The configuration for the restricted instance groups (RIG) in the SageMaker HyperPod cluster.</p>"
+    },
+    "ClusterRestrictedInstanceGroupsConfigOutput":{
+      "type":"structure",
+      "required":["SharedEnvironmentConfig"],
+      "members":{
+        "SharedEnvironmentConfig":{
+          "shape":"ClusterSharedEnvironmentConfigDetails",
+          "documentation":"<p>The shared environment configuration details for the restricted instance groups (RIG).</p>"
+        }
+      },
+      "documentation":"<p>The output configuration for the restricted instance groups (RIG) in the SageMaker HyperPod cluster.</p>"
+    },
     "ClusterSchedulerConfigArn":{
       "type":"string",
       "max":256,
@@ -11248,6 +11279,46 @@
     "ClusterSchedulerPriorityClassName":{
       "type":"string",
       "pattern":"[a-z0-9]([-a-z0-9]*[a-z0-9]){0,39}?"
+    },
+    "ClusterSharedEnvironmentConfig":{
+      "type":"structure",
+      "required":[
+        "FSxLustreDeletionPolicy",
+        "FSxLustreConfig"
+      ],
+      "members":{
+        "FSxLustreDeletionPolicy":{
+          "shape":"ClusterFSxLustreDeletionPolicy",
+          "documentation":"<p>The deletion policy for the Amazon FSx for Lustre file system in the shared environment.</p>"
+        },
+        "FSxLustreConfig":{
+          "shape":"FSxLustreConfig",
+          "documentation":"<p>Configuration settings for an Amazon FSx for Lustre file system in the shared environment.</p>"
+        }
+      },
+      "documentation":"<p>The shared environment configuration for the restricted instance groups (RIG).</p>"
+    },
+    "ClusterSharedEnvironmentConfigDetails":{
+      "type":"structure",
+      "members":{
+        "CurrentFSxLustreConfig":{
+          "shape":"FSxLustreConfig",
+          "documentation":"<p>The current Amazon FSx for Lustre file system configuration in the shared environment.</p>"
+        },
+        "DesiredFSxLustreConfig":{
+          "shape":"FSxLustreConfig",
+          "documentation":"<p>The desired Amazon FSx for Lustre file system configuration in the shared environment.</p>"
+        },
+        "CurrentFSxLustreDeletionPolicy":{
+          "shape":"ClusterFSxLustreDeletionPolicy",
+          "documentation":"<p>The current deletion policy for the Amazon FSx for Lustre file system in the shared environment.</p>"
+        },
+        "DesiredFSxLustreDeletionPolicy":{
+          "shape":"ClusterFSxLustreDeletionPolicy",
+          "documentation":"<p>The desired deletion policy for the Amazon FSx for Lustre file system in the shared environment.</p>"
+        }
+      },
+      "documentation":"<p>The shared environment configuration details for the restricted instance groups (RIG).</p>"
     },
     "ClusterSlurmConfig":{
       "type":"structure",
@@ -12695,6 +12766,10 @@
         "RestrictedInstanceGroups":{
           "shape":"ClusterRestrictedInstanceGroupSpecifications",
           "documentation":"<p>The specialized instance groups for training models like Amazon Nova to be created in the SageMaker HyperPod cluster.</p>"
+        },
+        "RestrictedInstanceGroupsConfig":{
+          "shape":"ClusterRestrictedInstanceGroupsConfig",
+          "documentation":"<p>The configuration for the restricted instance groups (RIG) in the SageMaker HyperPod cluster.</p>"
         },
         "VpcConfig":{
           "shape":"VpcConfig",
@@ -18264,6 +18339,10 @@
         "RestrictedInstanceGroups":{
           "shape":"ClusterRestrictedInstanceGroupDetailsList",
           "documentation":"<p>The specialized instance groups for training models like Amazon Nova to be created in the SageMaker HyperPod cluster.</p>"
+        },
+        "RestrictedInstanceGroupsConfig":{
+          "shape":"ClusterRestrictedInstanceGroupsConfigOutput",
+          "documentation":"<p>The configuration for the restricted instance groups (RIG) in the SageMaker HyperPod cluster.</p>"
         },
         "VpcConfig":{"shape":"VpcConfig"},
         "Orchestrator":{
@@ -42213,6 +42292,10 @@
           "shape":"AvailabilityZone",
           "documentation":"<p>The availability zone for the reserved capacity.</p>"
         },
+        "AvailabilityZoneId":{
+          "shape":"AvailabilityZoneId",
+          "documentation":"<p>The Availability Zone ID of the reserved capacity.</p>"
+        },
         "DurationHours":{
           "shape":"ReservedCapacityDurationHours",
           "documentation":"<p>The number of whole hours in the total duration for this reserved capacity.</p>"
@@ -47999,6 +48082,10 @@
         "RestrictedInstanceGroups":{
           "shape":"ClusterRestrictedInstanceGroupSpecifications",
           "documentation":"<p>The specialized instance groups for training models like Amazon Nova to be created in the SageMaker HyperPod cluster.</p>"
+        },
+        "RestrictedInstanceGroupsConfig":{
+          "shape":"ClusterRestrictedInstanceGroupsConfig",
+          "documentation":"<p>The configuration for the restricted instance groups (RIG) in the SageMaker HyperPod cluster.</p>"
         },
         "TieredStorageConfig":{
           "shape":"ClusterTieredStorageConfig",

@@ -2328,6 +2328,10 @@
         "gpuIds":{
           "shape":"GpuIds",
           "documentation":"<p>The IDs of each GPU assigned to the container.</p>"
+        },
+        "neuronDeviceIds":{
+          "shape":"NeuronDeviceIds",
+          "documentation":"<p>The IDs of each Neuron device assigned to the container.</p>"
         }
       },
       "documentation":"<p>A Docker container that's part of a task.</p>"
@@ -2502,7 +2506,7 @@
         },
         "resourceRequirements":{
           "shape":"ResourceRequirements",
-          "documentation":"<p>The type and amount of a resource to assign to a container. The only supported resource is a GPU.</p>"
+          "documentation":"<p>The type and amount of a resource to assign to a container. The supported resources are GPUs and Neuron devices.</p>"
         },
         "firelensConfiguration":{
           "shape":"FirelensConfiguration",
@@ -2713,7 +2717,7 @@
         },
         "resourceRequirements":{
           "shape":"ResourceRequirements",
-          "documentation":"<p>The type and amount of a resource to assign to a container, instead of the default value from the task definition. The only supported resource is a GPU.</p>"
+          "documentation":"<p>The type and amount of a resource to assign to a container, instead of the default value from the task definition. The supported resources are GPUs and Neuron devices.</p>"
         }
       },
       "documentation":"<p>The overrides that are sent to a container. An empty container override can be passed in. An example of an empty container override is <code>{\"containerOverrides\": [ ] }</code>. If a non-empty container override is specified, the <code>name</code> parameter must be included.</p> <p>You can use Secrets Manager or Amazon Web Services Systems Manager Parameter Store to store the sensitive data. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/secrets-envvar.html\">Retrieve secrets through environment variables</a> in the Amazon ECS Developer Guide.</p>"
@@ -7794,6 +7798,10 @@
         "none"
       ]
     },
+    "NeuronDeviceIds":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "NoUpdateAvailableException":{
       "type":"structure",
       "members":{
@@ -7887,18 +7895,21 @@
       "members":{
         "id":{
           "shape":"String",
-          "documentation":"<p>The ID for the GPUs on the container instance. The available GPU IDs can also be obtained on the container instance in the <code>/var/lib/ecs/gpu/nvidia_gpu_info.json</code> file.</p>"
+          "documentation":"<p>The ID for the GPU or Neuron device on the container instance. For GPUs, the available GPU IDs can also be obtained on the container instance in the <code>/var/lib/ecs/gpu/nvidia_gpu_info.json</code> file. For Neuron devices, the ID corresponds to the device index (for example, <code>0</code> for <code>/dev/neuron0</code>).</p>"
         },
         "type":{
           "shape":"PlatformDeviceType",
-          "documentation":"<p>The type of device that's available on the container instance. The only supported value is <code>GPU</code>.</p>"
+          "documentation":"<p>The type of device that's available on the container instance. The supported values are <code>GPU</code> and <code>NEURON_DEVICE</code>.</p>"
         }
       },
-      "documentation":"<p>The devices that are available on the container instance. The only supported device type is a GPU.</p>"
+      "documentation":"<p>The devices that are available on the container instance. The supported device types are GPUs and Neuron devices.</p>"
     },
     "PlatformDeviceType":{
       "type":"string",
-      "enum":["GPU"]
+      "enum":[
+        "GPU",
+        "NEURON_DEVICE"
+      ]
     },
     "PlatformDevices":{
       "type":"list",
@@ -8175,7 +8186,7 @@
         },
         "platformDevices":{
           "shape":"PlatformDevices",
-          "documentation":"<p>The devices that are available on the container instance. The only supported device type is a GPU.</p>"
+          "documentation":"<p>The devices that are available on the container instance. The supported device types are GPUs and Neuron devices.</p>"
         },
         "tags":{
           "shape":"Tags",
@@ -8441,14 +8452,14 @@
       "members":{
         "value":{
           "shape":"String",
-          "documentation":"<p>The value for the specified resource type.</p> <p>When the type is <code>GPU</code>, the value is the number of physical <code>GPUs</code> the Amazon ECS container agent reserves for the container. The number of GPUs that's reserved for all containers in a task can't exceed the number of available GPUs on the container instance that the task is launched on.</p> <p>When the type is <code>InferenceAccelerator</code>, the <code>value</code> matches the <code>deviceName</code> for an <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_InferenceAccelerator.html\">InferenceAccelerator</a> specified in a task definition.</p>"
+          "documentation":"<p>The value for the specified resource type.</p> <p>When the type is <code>GPU</code>, the value is the number of physical <code>GPUs</code> the Amazon ECS container agent reserves for the container. The number of GPUs that's reserved for all containers in a task can't exceed the number of available GPUs on the container instance that the task is launched on. You can also specify <code>ALL</code> to allocate all available GPUs on the instance to the container.</p> <p>When the type is <code>NeuronDevice</code>, the value must be <code>ALL</code>. This allocates all available Neuron devices on the instance to the container. Only one container in a task can specify <code>NeuronDevice</code> resources. This resource type is only supported on Managed Instances.</p> <p>When the type is <code>InferenceAccelerator</code>, the <code>value</code> matches the <code>deviceName</code> for an <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_InferenceAccelerator.html\">InferenceAccelerator</a> specified in a task definition.</p>"
         },
         "type":{
           "shape":"ResourceType",
           "documentation":"<p>The type of resource to assign to a container. </p>"
         }
       },
-      "documentation":"<p>The type and amount of a resource to assign to a container. The supported resource types are GPUs and Elastic Inference accelerators. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-gpu.html\">Working with GPUs on Amazon ECS</a> or <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-inference.html\">Working with Amazon Elastic Inference on Amazon ECS</a> in the <i>Amazon Elastic Container Service Developer Guide</i> </p>"
+      "documentation":"<p>The type and amount of a resource to assign to a container. The supported resource types are GPUs, Neuron devices, and Elastic Inference accelerators. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-gpu.html\">Working with GPUs on Amazon ECS</a> or <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-inference.html\">Working with Amazon Elastic Inference on Amazon ECS</a> in the <i>Amazon Elastic Container Service Developer Guide</i> </p>"
     },
     "ResourceRequirements":{
       "type":"list",
@@ -8458,7 +8469,8 @@
       "type":"string",
       "enum":[
         "GPU",
-        "InferenceAccelerator"
+        "InferenceAccelerator",
+        "NeuronDevice"
       ]
     },
     "Resources":{

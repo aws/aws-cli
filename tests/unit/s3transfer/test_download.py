@@ -16,6 +16,9 @@ import os
 import shutil
 import tempfile
 from io import BytesIO
+from types import SimpleNamespace
+
+import pytest
 
 from awscrt import checksums as crt_checksums
 from botocore.config import Config
@@ -35,6 +38,7 @@ from s3transfer.download import (
     DownloadSeekableOutputManager,
     DownloadSpecialFilenameOutputManager,
     DownloadSubmissionTask,
+    GetObjectFirstChunkOnDoneCallback,
     GetObjectTask,
     ImmediatelyWriteIOGetObjectTask,
     IOCloseTask,
@@ -471,13 +475,15 @@ class TestDownloadSubmissionTask(BaseSubmissionTaskTest):
 
     def add_get_responses(self):
         chunksize = self.config.multipart_chunksize
-        for i in range(0, len(self.content), chunksize):
-            if i + chunksize > len(self.content):
-                stream = BytesIO(self.content[i:])
-                self.stubber.add_response('get_object', {'Body': stream})
-            else:
-                stream = BytesIO(self.content[i : i + chunksize])
-                self.stubber.add_response('get_object', {'Body': stream})
+        total_size = len(self.content)
+        for i in range(0, total_size, chunksize):
+            end = min(i + chunksize, total_size)
+            stream = BytesIO(self.content[i:end])
+            content_range = f'bytes {i}-{end - 1}/{total_size}'
+            self.stubber.add_response(
+                'get_object',
+                {'Body': stream, 'ContentRange': content_range},
+            )
 
     def configure_for_ranged_get(self):
         self.config.multipart_threshold = 1
@@ -591,7 +597,6 @@ class TestDownloadSubmissionTask(BaseSubmissionTaskTest):
             {'config': Config(response_checksum_validation='when_required')}
         )
         self.configure_for_ranged_get()
-        self.add_head_object_response()
         self.add_get_responses()
         expected_b64 = self._compute_content_crc32_b64()
         self.extra_args['ChecksumMode'] = 'ENABLED'
@@ -616,7 +621,6 @@ class TestDownloadSubmissionTask(BaseSubmissionTaskTest):
             {'config': Config(response_checksum_validation='when_required')}
         )
         self.configure_for_ranged_get()
-        self.add_head_object_response()
         self.add_get_responses()
         checksum_info = FullObjectChecksum('crc32', 'wrong==')
         self.transfer_future.meta.provide_full_object_checksum(checksum_info)
@@ -1151,3 +1155,72 @@ class TestDeferQueue(unittest.TestCase):
                 {'offset': 1, 'data': 'bar'},
             ],
         )
+
+
+@pytest.fixture
+def first_chunk_callback():
+    """Builds a GetObjectFirstChunkOnDoneCallback with mocked collaborators.
+
+    The callback's defensive fallbacks (no response, transfer already done,
+    missing task) are race-window behaviours that the synchronous stubber
+    in functional tests cannot reproduce, so they are exercised here against
+    the callback's contract directly.
+    """
+    io_executor = mock.Mock()
+    transfer_coordinator = mock.Mock()
+    download_output_manager = mock.Mock()
+    final_task = mock.sentinel.final_task
+    download_output_manager.get_final_io_task.return_value = final_task
+    callback = GetObjectFirstChunkOnDoneCallback(
+        transfer_future=mock.Mock(),
+        download_output_manager=download_output_manager,
+        io_executor=io_executor,
+        transfer_coordinator=transfer_coordinator,
+        client=mock.Mock(),
+        config=mock.Mock(),
+        request_executor=mock.Mock(),
+        bandwidth_limiter=None,
+        fileobj=mock.Mock(),
+        progress_callbacks=[],
+        get_object_tag=None,
+    )
+    return SimpleNamespace(
+        callback=callback,
+        io_executor=io_executor,
+        transfer_coordinator=transfer_coordinator,
+        final_task=final_task,
+    )
+
+
+def test_first_chunk_callback_without_task_raises(first_chunk_callback):
+    with pytest.raises(RuntimeError, match='set_task'):
+        first_chunk_callback.callback()
+
+
+def test_first_chunk_callback_with_no_response_submits_final_task(
+    first_chunk_callback,
+):
+    task = mock.Mock()
+    task.get_response.return_value = None
+    first_chunk_callback.callback.set_task(task)
+
+    first_chunk_callback.callback()
+
+    first_chunk_callback.transfer_coordinator.submit.assert_called_once_with(
+        first_chunk_callback.io_executor, first_chunk_callback.final_task
+    )
+
+
+def test_first_chunk_callback_when_transfer_done_submits_final_task(
+    first_chunk_callback,
+):
+    task = mock.Mock()
+    task.get_response.return_value = {'ContentLength': 5, 'ETag': 'e'}
+    first_chunk_callback.callback.set_task(task)
+    first_chunk_callback.transfer_coordinator.done.return_value = True
+
+    first_chunk_callback.callback()
+
+    first_chunk_callback.transfer_coordinator.submit.assert_called_once_with(
+        first_chunk_callback.io_executor, first_chunk_callback.final_task
+    )

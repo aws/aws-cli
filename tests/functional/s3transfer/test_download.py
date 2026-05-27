@@ -18,6 +18,7 @@ import tempfile
 import time
 from io import BytesIO
 
+from botocore.client import Config
 from botocore.exceptions import ClientError
 from s3transfer.checksums import FullObjectChecksum
 from s3transfer.compat import SOCKET_ERROR
@@ -38,6 +39,7 @@ from tests import (
     RecordingOSUtils,
     RecordingSubscriber,
     StreamWithError,
+    StubbedClientTest,
     skip_if_using_serial_implementation,
     skip_if_windows,
 )
@@ -581,7 +583,7 @@ class TestRangedDownload(BaseDownloadTest):
         )
         with self.assertRaises(S3ValidationError) as e:
             future.result()
-        self.assertIn('does not match content range', str(e.exception))
+        self.assertIn('does not match requested start', str(e.exception))
 
     def test_download_raises_if_etag_validation_fails(self):
         expected_params = {
@@ -721,3 +723,199 @@ class TestRangedDownload(BaseDownloadTest):
         with self.assertRaises(S3DownloadChecksumError):
             future.result()
         self.assertFalse(os.path.exists(self.filename))
+
+
+class TestDownloadResponseChecksumValidationWhenRequired(StubbedClientTest):
+    """Exercises the HEAD-less download path enabled when a client is
+    configured with ``response_checksum_validation="when_required"``.
+
+    Note: unlike ``TestDownloadResponseChecksumValidationWhenRequired`` in the integ suite (which
+    subclasses ``TestDownload`` to re-run every inherited test method under
+    the alternate config), this class does not re-use the other functional
+    download tests. It only inherits ``StubbedClientTest`` for stubber setup
+    helpers and defines its own targeted tests below. The inherited
+    ``TestDownload`` / ``TestRangedDownload`` functional tests hard-code
+    HEAD-request expectations in their stubs, which do not apply when the
+    HEAD-less branch is taken.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.reset_stubber_with_new_client(
+            {'config': Config(response_checksum_validation="when_required")}
+        )
+        self.config = TransferConfig(max_request_concurrency=1)
+        self.manager = TransferManager(self.client, self.config)
+        self.tempdir = tempfile.mkdtemp()
+        self.filename = os.path.join(self.tempdir, 'myfile')
+        self.bucket = 'mybucket'
+        self.key = 'mykey'
+        self.etag = 'myetag'
+        self.content = b'my content'
+
+    def tearDown(self):
+        super().tearDown()
+        shutil.rmtree(self.tempdir)
+
+    def test_single_chunk_download_skips_head(self):
+        chunk_size = self.config.multipart_chunksize
+        self.stubber.add_response(
+            method='get_object',
+            service_response={
+                'Body': BytesIO(self.content),
+                'ContentRange': f'bytes 0-{len(self.content) - 1}/{len(self.content)}',
+                'ETag': self.etag,
+            },
+            expected_params={
+                'Bucket': self.bucket,
+                'Key': self.key,
+                'Range': f'bytes=0-{chunk_size - 1}',
+            },
+        )
+
+        future = self.manager.download(self.bucket, self.key, self.filename)
+        future.result()
+
+        with open(self.filename, 'rb') as f:
+            self.assertEqual(self.content, f.read())
+
+    def test_empty_object_download_skips_second_get(self):
+        chunk_size = self.config.multipart_chunksize
+        # S3 returns InvalidRange for a ranged GET on a 0-byte object;
+        # the download path must surface an empty file without a retry GET.
+        self.stubber.add_client_error(
+            method='get_object',
+            service_error_code='InvalidRange',
+            service_message='The requested range is not satisfiable',
+            expected_params={
+                'Bucket': self.bucket,
+                'Key': self.key,
+                'Range': f'bytes=0-{chunk_size - 1}',
+            },
+        )
+
+        future = self.manager.download(self.bucket, self.key, self.filename)
+        future.result()
+
+        with open(self.filename, 'rb') as f:
+            self.assertEqual(b'', f.read())
+        self.assertEqual(future.meta.size, 0)
+
+    def test_multipart_download_schedules_remaining_chunks(self):
+        # Object larger than a single chunk should trigger scheduling of
+        # additional ranged GETs from _schedule_remaining_chunks, each
+        # carrying the IfMatch header from the first-chunk response ETag.
+        chunk_size = self.config.multipart_chunksize
+        total_size = chunk_size * 2 + 7
+        content = b'x' * total_size
+        self.stubber.add_response(
+            method='get_object',
+            service_response={
+                'Body': BytesIO(content[:chunk_size]),
+                'ContentRange': f'bytes 0-{chunk_size - 1}/{total_size}',
+                'ETag': self.etag,
+            },
+            expected_params={
+                'Bucket': self.bucket,
+                'Key': self.key,
+                'Range': f'bytes=0-{chunk_size - 1}',
+            },
+        )
+        for i in (1, 2):
+            start = i * chunk_size
+            end = min(start + chunk_size, total_size) - 1
+            range_header = (
+                f'bytes={start}-' if i == 2 else f'bytes={start}-{end}'
+            )
+            self.stubber.add_response(
+                method='get_object',
+                service_response={'Body': BytesIO(content[start : end + 1])},
+                expected_params={
+                    'Bucket': self.bucket,
+                    'Key': self.key,
+                    'Range': range_header,
+                    'IfMatch': self.etag,
+                },
+            )
+
+        future = self.manager.download(self.bucket, self.key, self.filename)
+        future.result()
+
+        with open(self.filename, 'rb') as f:
+            self.assertEqual(content, f.read())
+
+    def test_first_get_uses_ifmatch_when_etag_provided(self):
+        # If the caller pre-provides the ETag (e.g. via a subscriber from a
+        # prior HEAD), the first GET must also carry IfMatch.
+        chunk_size = self.config.multipart_chunksize
+        self.stubber.add_response(
+            method='get_object',
+            service_response={
+                'Body': BytesIO(self.content),
+                'ContentRange': f'bytes 0-{len(self.content) - 1}/{len(self.content)}',
+                'ETag': self.etag,
+            },
+            expected_params={
+                'Bucket': self.bucket,
+                'Key': self.key,
+                'Range': f'bytes=0-{chunk_size - 1}',
+                'IfMatch': self.etag,
+            },
+        )
+
+        future = self.manager.download(
+            self.bucket,
+            self.key,
+            self.filename,
+            subscribers=[ETagProvider(self.etag)],
+        )
+        future.result()
+
+    def test_zero_length_response_writes_empty_file(self):
+        # Some callers may return a successful 0-byte response (ContentLength
+        # 0) instead of InvalidRange; the download must still produce the
+        # output file by forcing the DeferredOpenFile open.
+        chunk_size = self.config.multipart_chunksize
+        self.stubber.add_response(
+            method='get_object',
+            service_response={
+                'Body': BytesIO(b''),
+                'ContentLength': 0,
+                'ETag': self.etag,
+            },
+            expected_params={
+                'Bucket': self.bucket,
+                'Key': self.key,
+                'Range': f'bytes=0-{chunk_size - 1}',
+            },
+        )
+
+        future = self.manager.download(self.bucket, self.key, self.filename)
+        future.result()
+
+        with open(self.filename, 'rb') as f:
+            self.assertEqual(b'', f.read())
+        self.assertEqual(future.meta.size, 0)
+
+    def test_download_raises_if_content_range_mismatch(self):
+        # The first-chunk response's ContentRange must match what we asked
+        # for. A mismatched start surfaces S3ValidationError via future.result().
+        chunk_size = self.config.multipart_chunksize
+        self.stubber.add_response(
+            method='get_object',
+            service_response={
+                'Body': BytesIO(self.content),
+                'ContentRange': f'bytes 100-{len(self.content) - 1}/{len(self.content)}',
+                'ETag': self.etag,
+            },
+            expected_params={
+                'Bucket': self.bucket,
+                'Key': self.key,
+                'Range': f'bytes=0-{chunk_size - 1}',
+            },
+        )
+
+        future = self.manager.download(self.bucket, self.key, self.filename)
+        with self.assertRaises(S3ValidationError) as e:
+            future.result()
+        self.assertIn('does not match requested start', str(e.exception))

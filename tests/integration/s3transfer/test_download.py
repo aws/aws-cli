@@ -16,7 +16,9 @@ import threading
 import time
 from concurrent.futures import CancelledError
 
-from s3transfer.manager import TransferConfig
+from botocore.client import Config
+
+from s3transfer.manager import TransferConfig, TransferManager
 
 from tests import (
     NonSeekableWriter,
@@ -38,6 +40,25 @@ class TestDownload(BaseTransferManagerIntegTest):
         self.config = TransferConfig(
             multipart_threshold=self.multipart_threshold
         )
+
+    def test_download_empty_object(self):
+        transfer_manager = self.create_transfer_manager(self.config)
+
+        # Upload a 0-byte object
+        self.client.put_object(
+            Bucket=self.bucket_name, Key='empty.txt', Body=b''
+        )
+        self.addCleanup(self.delete_object, 'empty.txt')
+
+        download_path = os.path.join(self.files.rootdir, 'empty.txt')
+        future = transfer_manager.download(
+            self.bucket_name, 'empty.txt', download_path
+        )
+        future.result()
+
+        with open(download_path, 'rb') as f:
+            self.assertEqual(b'', f.read())
+        self.assertEqual(future.meta.size, 0)
 
     def test_below_threshold(self):
         transfer_manager = self.create_transfer_manager(self.config)
@@ -283,3 +304,26 @@ class TestDownload(BaseTransferManagerIntegTest):
                 'Should have been able to download to /dev/null but received '
                 f'following exception {e}'
             )
+
+
+class TestDownloadResponseChecksumValidationWhenRequired(TestDownload):
+    """Re-runs every test method inherited from ``TestDownload`` against the
+    HEAD-less download path.
+
+    Subclassing, not duplication: each ``test_*`` method defined on
+    ``TestDownload`` is discovered again here and executed with the overridden
+    ``create_transfer_manager`` below, which hands the ``TransferManager`` a
+    client configured with ``response_checksum_validation='when_required'``.
+    That config toggle is what activates the HEAD-less branch in
+    ``DownloadSubmissionTask._submit``, so these tests exercise the same
+    end-to-end behaviour as ``TestDownload`` but through the alternate code
+    path.
+    """
+
+    def create_transfer_manager(self, config=None):
+        client = self.session.create_client(
+            's3',
+            self.region,
+            config=Config(response_checksum_validation='when_required'),
+        )
+        return TransferManager(client, config=config)

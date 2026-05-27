@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.34.55
+=======
+
+* api-change:``medialive``: AWS Elemental MediaLive now supports Smart Subtitles, a new caption source that uses AWS Elemental Inference to automatically generate WebVTT and TTML captions from source audio. Available in English, Spanish, French, German, Italian, and Portuguese.
+* api-change:``elementalinference``: Added support for smart subtitles in Elemental Inference, enabling automatic generation of subtitles for media content. Available in English, Spanish, French, German, Italian, and Portuguese.
+* api-change:``ecs``: Add support for Neuron device resource requirements for Amazon ECS
+* api-change:``sagemaker``: Adds shared environment support for Restricted Instance Groups (RIGs) on SageMaker HyperPod, enabling cross-RIG workload scheduling and FSx sharing. This unlocks shared CPU-GPU environments needed for cost-efficient RL training (e.g., Nova Forge). Adds p6 instance support for recommendation jobs
+* api-change:``bedrock-data-automation``: Matcher Fallback extends the CustomOutputConfiguration for the Document modality in DataAutomationProjects, enabling a fallback blueprint when no match is found. A FALLBACK match status is returned, improving the matching experience and guaranteeing customers always receive CustomOutputResults.
+* api-change:``organizations``: AWS Organizations now emits CloudTrail events (AccountJoinedOrganization, AccountDepartedOrganization) to the management account for membership changes, including join and departure method and timestamp.
+* api-change:``opensearch``: OpenSearch will now support multi-segment paths in JWKS URLs.
+
+
 2.34.54
 =======
 

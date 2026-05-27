@@ -17,7 +17,6 @@ import time
 from concurrent.futures import CancelledError
 
 from botocore.client import Config
-
 from s3transfer.manager import TransferConfig, TransferManager
 
 from tests import (

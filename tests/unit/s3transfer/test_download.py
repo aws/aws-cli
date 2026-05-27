@@ -19,7 +19,6 @@ from io import BytesIO
 from types import SimpleNamespace
 
 import pytest
-
 from awscrt import checksums as crt_checksums
 from botocore.config import Config
 from s3transfer.bandwidth import BandwidthLimiter

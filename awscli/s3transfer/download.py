@@ -608,15 +608,15 @@ class DownloadSubmissionTask(SubmissionTask):
         return range_param
 
     def _submit_first_chunk_request(
-            self,
-            client,
-            config,
-            osutil,
-            request_executor,
-            io_executor,
-            download_output_manager,
-            transfer_future,
-            bandwidth_limiter,
+        self,
+        client,
+        config,
+        osutil,
+        request_executor,
+        io_executor,
+        download_output_manager,
+        transfer_future,
+        bandwidth_limiter,
     ):
         call_args = transfer_future.meta.call_args
 

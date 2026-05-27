@@ -14,11 +14,11 @@ import logging
 import os
 import sys
 
+from awscli.handlers_registry import PLUGIN_REGISTRY
 from awscli.lazy_emitter import LazyInitEmitter
 
 log = logging.getLogger('awscli.plugin')
 
-BUILTIN_PLUGINS = {'__builtin__': 'awscli.handlers'}
 CLI_LEGACY_PLUGIN_PATH = 'cli_legacy_plugin_path'
 
 
@@ -35,8 +35,8 @@ def load_plugins(plugin_mapping, event_hooks=None, include_builtins=True):
         passed in ``event_hooks`` will be used to initialize plugins.
 
     :type include_builtins: bool
-    :param include_builtins: If True, the builtin awscli plugins (specified in
-        ``BUILTIN_PLUGINS``) will be included in the list of plugins to load.
+    :param include_builtins: If True, the built-in plugin registry will be
+        loaded into the emitter.
 
     :rtype: LazyInitEmitter
     :return: An event emitter object.
@@ -45,7 +45,7 @@ def load_plugins(plugin_mapping, event_hooks=None, include_builtins=True):
     if event_hooks is None:
         event_hooks = LazyInitEmitter()
     if include_builtins:
-        _load_plugins(BUILTIN_PLUGINS, event_hooks)
+        event_hooks.load_registry(PLUGIN_REGISTRY)
     plugin_path = plugin_mapping.pop(CLI_LEGACY_PLUGIN_PATH, None)
     if plugin_path is not None:
         _add_plugin_path_to_sys_path(plugin_path)

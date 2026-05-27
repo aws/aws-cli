@@ -15,7 +15,11 @@ from collections import OrderedDict
 
 import botocore.session
 
-from awscli.handlers_registry import PLUGIN_REGISTRY
+from awscli.handlers_registry import (
+    CommandTableOp,
+    MAIN_COMMAND_TABLE_OPS,
+    PLUGIN_REGISTRY,
+)
 
 
 class _AuditEmitter:

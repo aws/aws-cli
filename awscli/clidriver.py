@@ -64,11 +64,13 @@ from awscli.errorhandler import (
     construct_entry_point_handlers_chain,
 )
 from awscli.formatter import get_formatter
+from awscli.handlers_registry import MAIN_COMMAND_TABLE_OPS
 from awscli.help import (
     OperationHelpCommand,
     ProviderHelpCommand,
     ServiceHelpCommand,
 )
+from awscli.lazy_emitter import LazyInitEmitter
 from awscli.logger import (
     disable_crt_logging,
     enable_crt_logging,
@@ -117,7 +119,10 @@ def create_clidriver(args=None):
         parser = FirstPassGlobalArgParser()
         args, _ = parser.parse_known_args(args)
         debug = args.debug
-    session = botocore.session.Session()
+    lazy_emitter = LazyInitEmitter(
+        main_command_table_ops=MAIN_COMMAND_TABLE_OPS
+    )
+    session = botocore.session.Session(event_hooks=lazy_emitter)
     _set_user_agent_for_session(session)
     load_plugins(
         session.full_config.get('plugins', {}),

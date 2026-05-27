@@ -29,6 +29,8 @@ def mock_module():
 
 class TestLazyInitEmitterPrefixMatching:
     def test_bare_prefix_entry_initialized_on_dotted_emit(self, mock_module):
+        # Entry registered against 'building-command-table' (bare prefix)
+        # should be initialized when 'building-command-table.main' is emitted.
         registry = {
             'building-command-table': [
                 ('test.module', 'my_init'),
@@ -59,6 +61,8 @@ class TestLazyInitEmitterPrefixMatching:
         mock_module.my_init.assert_called_once()
 
     def test_unrelated_entry_not_initialized(self, mock_module):
+        # Entry registered against 'building-command-table.ecs' should NOT
+        # be initialized when 'building-command-table.main' is emitted.
         registry = {
             'building-command-table.ecs': [
                 ('test.module', 'my_init'),
@@ -74,6 +78,9 @@ class TestLazyInitEmitterPrefixMatching:
         mock_module.my_init.assert_not_called()
 
     def test_multiple_prefix_levels_all_initialized(self, mock_module):
+        # Both 'building-command-table' and 'building-command-table.main'
+        # entries should be initialized when 'building-command-table.main'
+        # is emitted.
         mock_module.other_init = MagicMock()
         registry = {
             'building-command-table': [
@@ -136,7 +143,9 @@ class TestMainCommandTableOps:
                 session=session,
             )
 
+        # The heavy module should NOT have been imported via _ensure_initialized
         imp.assert_not_called()
+        # But the entry should be marked as initialized
         assert emitter.initialized_count == 1
 
     def test_rename_op_applied_to_command_table(self):
@@ -197,6 +206,8 @@ class TestMainCommandTableOps:
     def test_main_ops_skips_covered_but_initializes_bare_prefix(
         self, mock_module
     ):
+        # Entries registered against bare 'building-command-table' must
+        # still be initialized even when main_ops are applied.
         registry = {
             'building-command-table': [
                 ('global.module', 'register_global'),
@@ -218,6 +229,9 @@ class TestMainCommandTableOps:
         mock_global.register_global = MagicMock()
 
         def import_side_effect(mod_path):
+            # Ensures that no module besides global.module
+            # (including heavy.module) are imported. heavy.module should not be
+            # imported because it is present in main_command_table_ops.
             if mod_path == 'global.module':
                 return mock_global
             raise AssertionError(f'Unexpected import of {mod_path!r}')

@@ -295,6 +295,50 @@ class TestConfigFileWriter(unittest.TestCase):
             '    other = foo\n'
             '    signature_version = newval\n')
 
+    def test_add_to_empty_nested_block(self):
+        original = (
+            '[default]\n'
+            's3 =\n'
+        )
+        self.assert_update_config(
+            original, {'__section__': 'default',
+                       's3': {'signature_version': 'newval'}},
+            '[default]\n'
+            's3 =\n'
+            '    signature_version = newval\n')
+
+    def test_add_to_nested_block_with_comment(self):
+        original = (
+            '[default]\n'
+            's3 =\n'
+            '# comment\n'
+            '    other = foo\n'
+        )
+        self.assert_update_config(
+            original, {'__section__': 'default',
+                       's3': {'signature_version': 'newval'}},
+            '[default]\n'
+            's3 =\n'
+            '# comment\n'
+            '    other = foo\n'
+            '    signature_version = newval\n')
+
+    def test_add_to_nested_block_before_next_section(self):
+        original = (
+            '[default]\n'
+            's3 =\n'
+            '[profile foo]\n'
+            'foo = bar\n'
+        )
+        self.assert_update_config(
+            original, {'__section__': 'default',
+                       's3': {'signature_version': 'newval'}},
+            '[default]\n'
+            's3 =\n'
+            '    signature_version = newval\n'
+            '[profile foo]\n'
+            'foo = bar\n')
+
     def test_update_nested_attribute(self):
         original = (
             '[default]\n'

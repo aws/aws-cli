@@ -21,20 +21,11 @@ import os
 from botocore import utils
 from botocore.exceptions import InvalidConfigError
 
-try:
-    # This is not a public interface and is subject to abrupt breaking changes.
-    # Currently it's only available to internal users for testing and validation.
-    # Any usage is not advised or supported in external code bases.
-    from botocore.customizations.retries import DEFAULT_NEW_RETRIES
-except ImportError:
-    DEFAULT_NEW_RETRIES = False
-
-
 def _resolve_new_retries():
     _env_new_retries = os.environ.get('AWS_NEW_RETRIES_2026')
     if _env_new_retries is not None:
         return _env_new_retries.lower() == 'true'
-    return DEFAULT_NEW_RETRIES
+    return False
 
 
 NEW_RETRIES_ENABLED = _resolve_new_retries()

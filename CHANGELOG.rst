@@ -2,6 +2,26 @@
 CHANGELOG
 =========
 
+1.45.17
+=======
+
+* api-change:``appstream``: Amazon WorkSpaces Applications now supports BYOL (Bring Your Own License). This enables customers to import their own WorkSpaces images and use them in WorkSpaces Applications.
+* api-change:``bedrock``: Add support for ModelPackageArn in Bedrock's CreateCustomModel API
+* api-change:``bedrock-agentcore``: Added Harness support for LiteLLM model configuration for third-party model providers. Added S3 and Git skill source types. Added Responses API format for OpenAI and Bedrock models. Added runtimeUserId and runtimeClientError to InvokeHarness.
+* api-change:``bedrock-agentcore-control``: Added Harness support for LiteLLM model configuration for third-party model providers. Added S3 and Git skill source types. Added Responses API format for OpenAI and Bedrock models. Added runtimeUserId parameter to InvokeHarness for end-user identification.
+* api-change:``bedrock-runtime``: Support system role in message
+* api-change:``controlcatalog``: AWS Control Catalog - Added GovernedProviders response field and inclusion filter to GetControl and ListControls APIs to identify and filter by cloud provider. Added ParameterRequirementSummary response field indicating parameter requirements.
+* api-change:``customer-profiles``: BatchPutProfileObject API adds multiple profile objects to a domain of a given ObjectType in a single API call.
+* api-change:``deadline``: Added support for persistent storage on Service-Managed Fleets, allowing customers to configure persistent storage that preserves data across worker sessions which reduces job startup times for workloads with large software installations or asset caches.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``iot``: Adds new connectivity-related fields to Fleet Indexing API requests and responses.
+* api-change:``iot-data``: Adding GetConnection, ListSubscriptions, and SendDirectMessage APIs to IoT Data Plane
+* api-change:``opensearchserverless``: Adds support for deletion protection on collections, ability to create NEXTGEN collection groups and autoscaling visibility for NEXTGEN collection groups
+* api-change:``pcs``: This release adds support for configuring scaleDownIdleTimeInSeconds at the compute node group level, allowing customers to set different idle timeouts per node group. Previously this setting was only available at the cluster level.
+* api-change:``resiliencehubv2``: This is the initial SDK release for the next generation of Resilience Hub.
+* api-change:``s3control``: Update the minimum value of MinStorageBytesPercentage in StorageLensPrefixLevel.SelectionCriteria from 0.1 to 1, aligning the model with the documented contract.
+
+
 1.45.16
 =======
 

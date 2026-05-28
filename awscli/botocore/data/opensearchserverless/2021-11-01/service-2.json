@@ -854,6 +854,15 @@
       "max":1011,
       "min":1
     },
+    "AutoscalingStatus":{
+      "type":"string",
+      "documentation":"<p>The autoscaling status of an OpenSearch Serverless collection group: <code>ACTION_SCALING_UP</code>, <code>ACTION_SCALING_DOWN</code>, or <code>NO_ACTION</code>.</p>",
+      "enum":[
+        "ACTION_SCALING_UP",
+        "ACTION_SCALING_DOWN",
+        "NO_ACTION"
+      ]
+    },
     "BatchGetCollectionGroupRequest":{
       "type":"structure",
       "members":{
@@ -979,6 +988,20 @@
       "type":"boolean",
       "box":true
     },
+    "CapacityDetails":{
+      "type":"structure",
+      "members":{
+        "capacityInOcu":{
+          "shape":"Float",
+          "documentation":"<p>The current capacity in OpenSearch Compute Units (OCUs).</p>"
+        },
+        "autoscalingStatus":{
+          "shape":"AutoscalingStatus",
+          "documentation":"<p>The current autoscaling status for the collection group.</p>"
+        }
+      },
+      "documentation":"<p>Capacity details for an OpenSearch Serverless collection group, including the current capacity and autoscaling status.</p>"
+    },
     "CapacityLimits":{
       "type":"structure",
       "members":{
@@ -1032,6 +1055,10 @@
         "standbyReplicas":{
           "shape":"StandbyReplicas",
           "documentation":"<p>Details about an OpenSearch Serverless collection.</p>"
+        },
+        "deletionProtection":{
+          "shape":"DeletionProtection",
+          "documentation":"<p>Indicates whether deletion protection is <code>ENABLED</code> or <code>DISABLED</code> for the collection.</p>"
         },
         "vectorOptions":{
           "shape":"VectorOptions",
@@ -1124,19 +1151,19 @@
       "type":"structure",
       "members":{
         "maxIndexingCapacityInOCU":{
-          "shape":"CollectionGroupIndexingCapacityValue",
+          "shape":"CollectionGroupMaxIndexingCapacityValue",
           "documentation":"<p>The maximum indexing capacity for collections in the group.</p>"
         },
         "maxSearchCapacityInOCU":{
-          "shape":"CollectionGroupSearchCapacityValue",
+          "shape":"CollectionGroupMaxSearchCapacityValue",
           "documentation":"<p>The maximum search capacity for collections in the group.</p>"
         },
         "minIndexingCapacityInOCU":{
-          "shape":"CollectionGroupIndexingCapacityValue",
+          "shape":"CollectionGroupMinIndexingCapacityValue",
           "documentation":"<p>The minimum indexing capacity for collections in the group.</p>"
         },
         "minSearchCapacityInOCU":{
-          "shape":"CollectionGroupSearchCapacityValue",
+          "shape":"CollectionGroupMinSearchCapacityValue",
           "documentation":"<p>The minimum search capacity for collections in the group.</p>"
         }
       },
@@ -1177,9 +1204,17 @@
           "shape":"CollectionGroupCapacityLimits",
           "documentation":"<p>The capacity limits for the collection group, in OpenSearch Compute Units (OCUs).</p>"
         },
+        "currentCapacity":{
+          "shape":"CurrentCapacity",
+          "documentation":"<p>Current search and indexing capacity for the collection group.</p>"
+        },
         "numberOfCollections":{
           "shape":"Integer",
           "documentation":"<p>The number of collections associated with the collection group.</p>"
+        },
+        "generation":{
+          "shape":"ServerlessGeneration",
+          "documentation":"<p>The generation of Amazon OpenSearch Serverless for the collection group.</p>"
         }
       },
       "documentation":"<p>Details about a collection group.</p>"
@@ -1226,10 +1261,25 @@
       "max":100,
       "min":1
     },
-    "CollectionGroupIndexingCapacityValue":{
+    "CollectionGroupMaxIndexingCapacityValue":{
       "type":"float",
       "box":true,
       "min":1
+    },
+    "CollectionGroupMaxSearchCapacityValue":{
+      "type":"float",
+      "box":true,
+      "min":1
+    },
+    "CollectionGroupMinIndexingCapacityValue":{
+      "type":"float",
+      "box":true,
+      "min":0
+    },
+    "CollectionGroupMinSearchCapacityValue":{
+      "type":"float",
+      "box":true,
+      "min":0
     },
     "CollectionGroupName":{
       "type":"string",
@@ -1241,11 +1291,6 @@
       "type":"list",
       "member":{"shape":"CollectionGroupName"},
       "max":100,
-      "min":1
-    },
-    "CollectionGroupSearchCapacityValue":{
-      "type":"float",
-      "box":true,
       "min":1
     },
     "CollectionGroupSummaries":{
@@ -1275,7 +1320,11 @@
           "shape":"Long",
           "documentation":"<p>The Epoch time when the collection group was created.</p>"
         },
-        "capacityLimits":{"shape":"CollectionGroupCapacityLimits"}
+        "capacityLimits":{"shape":"CollectionGroupCapacityLimits"},
+        "generation":{
+          "shape":"ServerlessGeneration",
+          "documentation":"<p>The generation of Amazon OpenSearch Serverless for the collection group.</p>"
+        }
       },
       "documentation":"<p>Summary information about a collection group.</p>"
     },
@@ -1293,7 +1342,7 @@
     },
     "CollectionName":{
       "type":"string",
-      "max":32,
+      "max":64,
       "min":3,
       "pattern":"[a-z][a-z0-9-]+"
     },
@@ -1450,6 +1499,10 @@
           "shape":"StandbyReplicas",
           "documentation":"<p>Creates details about an OpenSearch Serverless collection.</p>"
         },
+        "deletionProtection":{
+          "shape":"DeletionProtection",
+          "documentation":"<p>Indicates whether deletion protection is <code>ENABLED</code> or <code>DISABLED</code> for the collection.</p>"
+        },
         "vectorOptions":{
           "shape":"VectorOptions",
           "documentation":"<p>Configuration options for vector search capabilities in the collection.</p>"
@@ -1503,6 +1556,10 @@
         "capacityLimits":{
           "shape":"CollectionGroupCapacityLimits",
           "documentation":"<p>The capacity limits for the collection group, in OpenSearch Compute Units (OCUs).</p>"
+        },
+        "generation":{
+          "shape":"ServerlessGeneration",
+          "documentation":"<p>The generation of Amazon OpenSearch Serverless for the collection group.</p>"
         }
       },
       "documentation":"<p>Details about the created collection group.</p>"
@@ -1533,6 +1590,10 @@
         "capacityLimits":{
           "shape":"CollectionGroupCapacityLimits",
           "documentation":"<p>The capacity limits for the collection group, in OpenSearch Compute Units (OCUs). These limits control the maximum and minimum capacity for collections within the group.</p>"
+        },
+        "generation":{
+          "shape":"ServerlessGeneration",
+          "documentation":"<p>The generation of Amazon OpenSearch Serverless for the collection group. Valid values are <code>CLASSIC</code> and <code>NEXTGEN</code>.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -1590,6 +1651,10 @@
         "encryptionConfig":{
           "shape":"EncryptionConfig",
           "documentation":"<p>Encryption settings for the collection.</p>"
+        },
+        "deletionProtection":{
+          "shape":"DeletionProtection",
+          "documentation":"<p>Indicates whether to enable deletion protection for the collection. When set to <code>ENABLED</code>, the collection cannot be deleted.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -1841,6 +1906,20 @@
         }
       }
     },
+    "CurrentCapacity":{
+      "type":"structure",
+      "members":{
+        "search":{
+          "shape":"CapacityDetails",
+          "documentation":"<p>The search capacity for the collection group.</p>"
+        },
+        "indexing":{
+          "shape":"CapacityDetails",
+          "documentation":"<p>The indexing capacity for the collection group.</p>"
+        }
+      },
+      "documentation":"<p>Current search and indexing capacity for an OpenSearch Serverless collection group. Measured in OpenSearch Compute Units (OCUs).</p>"
+    },
     "DeleteAccessPolicyRequest":{
       "type":"structure",
       "required":[
@@ -1881,6 +1960,10 @@
         "status":{
           "shape":"CollectionStatus",
           "documentation":"<p>The current status of the collection.</p>"
+        },
+        "deletionProtection":{
+          "shape":"DeletionProtection",
+          "documentation":"<p>Indicates whether deletion protection is <code>ENABLED</code> or <code>DISABLED</code> for the collection.</p>"
         }
       },
       "documentation":"<p>Details about a deleted OpenSearch Serverless collection.</p>"
@@ -2062,6 +2145,14 @@
         }
       }
     },
+    "DeletionProtection":{
+      "type":"string",
+      "documentation":"<p>Indicates whether deletion protection is <code>ENABLED</code> or <code>DISABLED</code> for the collection. When deletion protection is <code>ENABLED</code>, the collection cannot be deleted.</p>",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "Document":{
       "type":"structure",
       "members":{},
@@ -2160,6 +2251,10 @@
         }
       },
       "documentation":"<p>FIPS-compliant endpoint URLs for an OpenSearch Serverless collection. These endpoints ensure all data transmission uses FIPS 140-3 validated cryptographic implementations, meeting federal security requirements for government workloads.</p>"
+    },
+    "Float":{
+      "type":"float",
+      "box":true
     },
     "GetAccessPolicyRequest":{
       "type":"structure",
@@ -2899,7 +2994,7 @@
     "Resource":{"type":"string"},
     "ResourceName":{
       "type":"string",
-      "pattern":"index/[a-z][a-z0-9-]{3,32}/([a-z;0-9&$%][+.~=\\-_a-z;0-9&$%]*)"
+      "pattern":"index/[a-z][a-z0-9-]{3,63}/([a-z;0-9&$%][+.~=\\-_a-z;0-9&$%]*)"
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -3151,6 +3246,13 @@
         "network"
       ]
     },
+    "ServerlessGeneration":{
+      "type":"string",
+      "enum":[
+        "CLASSIC",
+        "NEXTGEN"
+      ]
+    },
     "ServerlessVectorAccelerationStatus":{
       "type":"string",
       "documentation":"<p>Specifies whether serverless vector acceleration is enabled for the collection.</p>",
@@ -3389,6 +3491,10 @@
         "lastModifiedDate":{
           "shape":"Long",
           "documentation":"<p>The date and time when the collection was last modified.</p>"
+        },
+        "deletionProtection":{
+          "shape":"DeletionProtection",
+          "documentation":"<p>Indicates whether deletion protection is <code>ENABLED</code> or <code>DISABLED</code> for the collection.</p>"
         }
       },
       "documentation":"<p>Details about an updated OpenSearch Serverless collection.</p>"
@@ -3423,6 +3529,10 @@
         "lastModifiedDate":{
           "shape":"Long",
           "documentation":"<p>The date and time when the collection group was last modified.</p>"
+        },
+        "generation":{
+          "shape":"ServerlessGeneration",
+          "documentation":"<p>The generation of Amazon OpenSearch Serverless for the collection group.</p>"
         }
       },
       "documentation":"<p>Details about the updated collection group.</p>"
@@ -3479,6 +3589,10 @@
         "vectorOptions":{
           "shape":"VectorOptions",
           "documentation":"<p>Configuration options for vector search capabilities in the collection.</p>"
+        },
+        "deletionProtection":{
+          "shape":"DeletionProtection",
+          "documentation":"<p>Indicates whether to enable or disable deletion protection for the collection. When set to <code>ENABLED</code>, the collection cannot be deleted.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",

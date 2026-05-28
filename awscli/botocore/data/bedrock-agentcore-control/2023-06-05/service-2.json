@@ -4354,6 +4354,10 @@
         "description":{
           "shape":"ConfigurationBundleDescription",
           "documentation":"<p>The description of the configuration bundle.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the configuration bundle was created.</p>"
         }
       },
       "documentation":"<p>Summary information about a configuration bundle.</p>"
@@ -11244,7 +11248,7 @@
       "type":"structure",
       "members":{
         "browserArn":{
-          "shape":"BrowserArn",
+          "shape":"HarnessBrowserArn",
           "documentation":"<p>If not populated, the built-in Browser ARN is used.</p>"
         }
       },
@@ -11254,7 +11258,7 @@
       "type":"structure",
       "members":{
         "codeInterpreterArn":{
-          "shape":"CodeInterpreterArn",
+          "shape":"HarnessCodeInterpreterArn",
           "documentation":"<p>If not populated, the built-in Code Interpreter ARN is used.</p>"
         }
       },
@@ -11378,6 +11382,14 @@
       "type":"string",
       "pattern":"arn:([^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:harness/[a-zA-Z][a-zA-Z0-9_]{0,39}-[a-zA-Z0-9]{10}"
     },
+    "HarnessBedrockApiFormat":{
+      "type":"string",
+      "enum":[
+        "converse_stream",
+        "responses",
+        "chat_completions"
+      ]
+    },
     "HarnessBedrockModelConfig":{
       "type":"structure",
       "required":["modelId"],
@@ -11397,9 +11409,27 @@
         "topP":{
           "shape":"TopP",
           "documentation":"<p>The topP set when calling the model.</p>"
+        },
+        "apiFormat":{
+          "shape":"HarnessBedrockApiFormat",
+          "documentation":"<p>The API format to use when calling the Bedrock provider.</p>"
+        },
+        "additionalParams":{
+          "shape":"Document",
+          "documentation":"<p>Provider-specific parameters passed through to the model provider unchanged.</p>"
         }
       },
       "documentation":"<p>Configuration for an Amazon Bedrock model provider.</p>"
+    },
+    "HarnessBrowserArn":{
+      "type":"string",
+      "documentation":"<p>Browser ARN for Harness tool configuration. Accepts both managed (aws.browser.v1) and custom browser ARNs.</p>",
+      "pattern":"arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:(aws|[0-9]{12}):browser(-custom)?/(aws\\.browser\\.v1|[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10})"
+    },
+    "HarnessCodeInterpreterArn":{
+      "type":"string",
+      "documentation":"<p>Code Interpreter ARN for Harness tool configuration. Accepts both managed (aws.codeinterpreter.v1) and custom code interpreter ARNs.</p>",
+      "pattern":"arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:(aws|[0-9]{12}):code-interpreter(-custom)?/(aws\\.codeinterpreter\\.v1|[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10})"
     },
     "HarnessEnvironmentArtifact":{
       "type":"structure",
@@ -11442,7 +11472,10 @@
           "shape":"Unit",
           "documentation":"<p>No authentication.</p>"
         },
-        "oauth":{"shape":"OAuthCredentialProvider"}
+        "oauth":{
+          "shape":"OAuthCredentialProvider",
+          "documentation":"<p>Use OAuth credentials for outbound authentication to the gateway.</p>"
+        }
       },
       "documentation":"<p>Authentication method for calling a Gateway.</p>",
       "union":true
@@ -11509,6 +11542,47 @@
       "min":1,
       "sensitive":true
     },
+    "HarnessLiteLlmApiBase":{
+      "type":"string",
+      "max":16383,
+      "min":1,
+      "sensitive":true
+    },
+    "HarnessLiteLlmModelConfig":{
+      "type":"structure",
+      "required":["modelId"],
+      "members":{
+        "modelId":{
+          "shape":"ModelId",
+          "documentation":"<p>The LiteLLM model identifier (e.g., \"anthropic/claude-3-sonnet\").</p>"
+        },
+        "apiKeyArn":{
+          "shape":"ApiKeyArn",
+          "documentation":"<p>The ARN of the API key in AgentCore Identity for authenticating with the model provider.</p>"
+        },
+        "apiBase":{
+          "shape":"HarnessLiteLlmApiBase",
+          "documentation":"<p>The base URL for the model provider's API endpoint.</p>"
+        },
+        "maxTokens":{
+          "shape":"MaxTokens",
+          "documentation":"<p>The maximum number of tokens to allow in the generated response per iteration.</p>"
+        },
+        "temperature":{
+          "shape":"Temperature",
+          "documentation":"<p>The temperature to set when calling the model.</p>"
+        },
+        "topP":{
+          "shape":"TopP",
+          "documentation":"<p>The topP set when calling the model.</p>"
+        },
+        "additionalParams":{
+          "shape":"Document",
+          "documentation":"<p>Provider-specific parameters passed through to the model provider unchanged.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for a LiteLLM model provider, enabling connection to third-party model providers.</p>"
+    },
     "HarnessMemoryConfiguration":{
       "type":"structure",
       "members":{
@@ -11534,6 +11608,10 @@
         "geminiModelConfig":{
           "shape":"HarnessGeminiModelConfig",
           "documentation":"<p>Configuration for a Google Gemini model.</p>"
+        },
+        "liteLlmModelConfig":{
+          "shape":"HarnessLiteLlmModelConfig",
+          "documentation":"<p>The LiteLLM model configuration for connecting to third-party model providers.</p>"
         }
       },
       "documentation":"<p>Specification of which model to use.</p>",
@@ -11542,6 +11620,13 @@
     "HarnessName":{
       "type":"string",
       "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,39}"
+    },
+    "HarnessOpenAiApiFormat":{
+      "type":"string",
+      "enum":[
+        "chat_completions",
+        "responses"
+      ]
     },
     "HarnessOpenAiModelConfig":{
       "type":"structure",
@@ -11569,6 +11654,14 @@
         "topP":{
           "shape":"TopP",
           "documentation":"<p>The topP set when calling the model.</p>"
+        },
+        "apiFormat":{
+          "shape":"HarnessOpenAiApiFormat",
+          "documentation":"<p>The API format to use when calling the OpenAI provider.</p>"
+        },
+        "additionalParams":{
+          "shape":"Document",
+          "documentation":"<p>Provider-specific parameters passed through to the model provider unchanged.</p>"
         }
       },
       "documentation":"<p>Configuration for an OpenAI model provider. Requires an API key stored in AgentCore Identity.</p>"
@@ -11600,14 +11693,77 @@
         "path":{
           "shape":"HarnessSkillPath",
           "documentation":"<p>The filesystem path to the skill definition.</p>"
+        },
+        "s3":{
+          "shape":"HarnessSkillS3Source",
+          "documentation":"<p>An S3 source containing the skill.</p>"
+        },
+        "git":{
+          "shape":"HarnessSkillGitSource",
+          "documentation":"<p>A git repository containing the skill.</p>"
         }
       },
       "documentation":"<p>A skill available to the agent.</p>",
       "union":true
     },
+    "HarnessSkillGitAuth":{
+      "type":"structure",
+      "required":["credentialArn"],
+      "members":{
+        "credentialArn":{
+          "shape":"ApiKeyArn",
+          "documentation":"<p>The ARN of the credential in AgentCore Identity containing the password or personal access token.</p>"
+        },
+        "username":{
+          "shape":"String",
+          "documentation":"<p>Username for authentication. Defaults to 'oauth2' if not specified.</p>"
+        }
+      },
+      "documentation":"<p>Authentication configuration for accessing a private git repository.</p>"
+    },
+    "HarnessSkillGitSource":{
+      "type":"structure",
+      "required":["url"],
+      "members":{
+        "url":{
+          "shape":"HarnessSkillGitUrl",
+          "documentation":"<p>The HTTPS URL of the git repository.</p>"
+        },
+        "path":{
+          "shape":"String",
+          "documentation":"<p>Subdirectory within the repository containing the skill.</p>"
+        },
+        "auth":{
+          "shape":"HarnessSkillGitAuth",
+          "documentation":"<p>Authentication configuration for private repositories.</p>"
+        }
+      },
+      "documentation":"<p>A git repository source for a skill.</p>"
+    },
+    "HarnessSkillGitUrl":{
+      "type":"string",
+      "min":8,
+      "pattern":"https://.*"
+    },
     "HarnessSkillPath":{
       "type":"string",
       "min":1
+    },
+    "HarnessSkillS3Source":{
+      "type":"structure",
+      "required":["uri"],
+      "members":{
+        "uri":{
+          "shape":"HarnessSkillS3Uri",
+          "documentation":"<p>The S3 URI pointing to the skill directory (e.g., s3://bucket/skills/my-skill/).</p>"
+        }
+      },
+      "documentation":"<p>An S3 source for a skill.</p>"
+    },
+    "HarnessSkillS3Uri":{
+      "type":"string",
+      "min":5,
+      "pattern":"s3://.*"
     },
     "HarnessSkills":{
       "type":"list",

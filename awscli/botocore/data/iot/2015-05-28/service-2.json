@@ -6125,7 +6125,7 @@
         },
         "batchAcrossTopics":{
           "shape":"BatchAcrossTopics",
-          "documentation":"<p>Whether to allow batching messages from different MQTT topics into a single HTTP request. By default, only messages from the same topic are batched together. The default value is <code>false</code>.</p>"
+          "documentation":"<p>Whether to allow batching messages from different MQTT topics into a single HTTP request. By default, only messages from the same topic are batched together. The default value is <code>false</code>.</p> <note> <p>When <code>batchAcrossTopics</code> is enabled, the error payload format changes: the <code>topic</code> field moves from the top level to inside each entry in the <code>payloadsWithMetadata</code> array, since each message in the batch may originate from a different topic.</p> </note> <note> <p>Messages are always batched within the scope of the same account, rule name, target HTTP endpoint URL, and billing group. Messages that differ in any of these attributes are never combined into the same batch, regardless of the <code>batchAcrossTopics</code> setting.</p> </note>"
         }
       },
       "documentation":"<p>Configuration settings for batching.</p>"
@@ -7496,6 +7496,16 @@
       "min":1,
       "pattern":"[a-zA-Z0-9:_-]+",
       "sensitive":true
+    },
+    "ConnectivityFilter":{
+      "type":"structure",
+      "members":{
+        "includeSocketInformation":{
+          "shape":"FleetIndexingApiList",
+          "documentation":"<p>A list of fleet indexing APIs for which to enable socket information retrieval. Currently, the only supported value is <code>GET_THING_CONNECTIVITY_DATA</code>.</p>"
+        }
+      },
+      "documentation":"<p>Provides connectivity filter selections for the fleet indexing configuration.</p>"
     },
     "ConnectivityTimestamp":{"type":"long"},
     "ConsecutiveDatapointsToAlarm":{
@@ -11698,6 +11708,7 @@
         "MQTT_KEEP_ALIVE_TIMEOUT",
         "SERVER_ERROR",
         "SERVER_INITIATED_DISCONNECT",
+        "API_INITIATED_DISCONNECT",
         "THROTTLED",
         "WEBSOCKET_TTL_EXPIRATION",
         "CUSTOMAUTH_TTL_EXPIRATION",
@@ -12194,6 +12205,14 @@
       "pattern":"([\\n\\t])|(\\r\\n)|(,)"
     },
     "Flag":{"type":"boolean"},
+    "FleetIndexingApi":{
+      "type":"string",
+      "enum":["GET_THING_CONNECTIVITY_DATA"]
+    },
+    "FleetIndexingApiList":{
+      "type":"list",
+      "member":{"shape":"FleetIndexingApi"}
+    },
     "FleetMetricArn":{"type":"string"},
     "FleetMetricDescription":{
       "type":"string",
@@ -12994,6 +13013,10 @@
           "documentation":"<p>The name of your IoT thing.</p>",
           "location":"uri",
           "locationName":"thingName"
+        },
+        "includeSocketInformation":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies if socket information (sourcePort, targetPort, sourceIp, targetIp, vpcEndpointId) should be included in the GetThingConnectivityData response. Set to <code>true</code> to include socket information. Set to <code>false</code> to omit socket information. By default, this is set to <code>false</code>.</p>"
         }
       }
     },
@@ -13010,11 +13033,47 @@
         },
         "timestamp":{
           "shape":"Timestamp",
-          "documentation":"<p>The timestamp of when the event occurred.</p>"
+          "documentation":"<p>The timestamp of when the event occurred. When you enable or update the indexing configuration, this value might be the Unix epoch time (0) for devices that have never connected or have been disconnected for more than an hour.</p>"
         },
         "disconnectReason":{
           "shape":"DisconnectReasonValue",
-          "documentation":"<p>The reason why the client is disconnecting.</p>"
+          "documentation":"<p>The reason why the client is disconnecting. When you enable or update the indexing configuration, this value might be <code>UNKNOWN</code> for devices that have never connected or have been disconnected for more than an hour.</p>"
+        },
+        "sourceIp":{
+          "shape":"SourceIp",
+          "documentation":"<p>The IP address of the client that initiated the connection.</p>"
+        },
+        "sourcePort":{
+          "shape":"SourcePort",
+          "documentation":"<p>The client's source port.</p>"
+        },
+        "targetIp":{
+          "shape":"TargetIp",
+          "documentation":"<p>The IP address of the Amazon Web Services IoT Core endpoint that the client connected to.</p>"
+        },
+        "targetPort":{
+          "shape":"TargetPort",
+          "documentation":"<p>The port number of the Amazon Web Services IoT Core endpoint that the client connected to.</p>"
+        },
+        "vpcEndpointId":{
+          "shape":"VpcEndpointId",
+          "documentation":"<p>The ID of the VPC endpoint. Present for clients connected to Amazon Web Services IoT Core via a VPC endpoint.</p>"
+        },
+        "keepAliveDuration":{
+          "shape":"KeepAliveDuration",
+          "documentation":"<p>The keep-alive interval in seconds that the client specified when establishing the connection.</p>"
+        },
+        "cleanSession":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the client is using a clean session. Returns <code>true</code> for clean sessions.</p>"
+        },
+        "sessionExpiry":{
+          "shape":"SessionExpiry",
+          "documentation":"<p>The session expiry interval in seconds for the MQTT client connection. This value indicates how long the session will remain active after the client disconnects.</p>"
+        },
+        "clientId":{
+          "shape":"ClientId",
+          "documentation":"<p>The unique identifier of the MQTT client.</p>"
         }
       }
     },
@@ -13313,6 +13372,10 @@
         "geoLocations":{
           "shape":"GeoLocationsFilter",
           "documentation":"<p>The list of geolocation targets that you select to index. The default maximum number of geolocation targets for indexing is <code>1</code>. To increase the limit, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/iot_device_management.html#fleet-indexing-limits\">Amazon Web Services IoT Device Management Quotas</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+        },
+        "connectivity":{
+          "shape":"ConnectivityFilter",
+          "documentation":"<p>Provides additional connectivity filter selections for the fleet indexing configuration.</p>"
         }
       },
       "documentation":"<p>Provides additional selections for named shadows and geolocation data. </p> <p>To add named shadows to your fleet indexing configuration, set <code>namedShadowIndexingMode</code> to be ON and specify your shadow names in <code>namedShadowNames</code> filter.</p> <p>To add geolocation data to your fleet indexing configuration: </p> <ul> <li> <p>If you store geolocation data in a class/unnamed shadow, set <code>thingIndexingMode</code> to be <code>REGISTRY_AND_SHADOW</code> and specify your geolocation data in <code>geoLocations</code> filter. </p> </li> <li> <p>If you store geolocation data in a named shadow, set <code>namedShadowIndexingMode</code> to be <code>ON</code>, add the shadow name in <code>namedShadowNames</code> filter, and specify your geolocation data in <code>geoLocations</code> filter. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/managing-fleet-index.html\">Managing fleet indexing</a>.</p> </li> </ul>"
@@ -14039,6 +14102,7 @@
       "max":100,
       "min":1
     },
+    "KeepAliveDuration":{"type":"integer"},
     "Key":{"type":"string"},
     "KeyName":{
       "type":"string",
@@ -19433,6 +19497,7 @@
       "exception":true,
       "fault":true
     },
+    "SessionExpiry":{"type":"long"},
     "SetAsActive":{"type":"boolean"},
     "SetAsActiveFlag":{"type":"boolean"},
     "SetAsDefault":{"type":"boolean"},
@@ -19621,6 +19686,14 @@
         "ASCENDING",
         "DESCENDING"
       ]
+    },
+    "SourceIp":{
+      "type":"string",
+      "sensitive":true
+    },
+    "SourcePort":{
+      "type":"integer",
+      "sensitive":true
     },
     "SqlParseException":{
       "type":"structure",
@@ -20183,6 +20256,14 @@
         "LonLat"
       ]
     },
+    "TargetIp":{
+      "type":"string",
+      "sensitive":true
+    },
+    "TargetPort":{
+      "type":"integer",
+      "sensitive":true
+    },
     "TargetSelection":{
       "type":"string",
       "enum":[
@@ -20453,11 +20534,27 @@
         },
         "timestamp":{
           "shape":"ConnectivityTimestamp",
-          "documentation":"<p>The epoch time (in milliseconds) when the thing last connected or disconnected. If the thing has been disconnected for approximately an hour, the time value might be missing.</p>"
+          "documentation":"<p>The epoch time (in milliseconds) when the thing last connected or disconnected. If the thing has been disconnected for approximately an hour, the time value might be missing. When you enable or update the indexing configuration, this value might be <code>0</code> (the Unix epoch time) for devices that have never connected or have been disconnected for more than an hour.</p>"
         },
         "disconnectReason":{
           "shape":"DisconnectReason",
-          "documentation":"<p>The reason why the client is disconnected. If the thing has been disconnected for approximately an hour, the <code>disconnectReason</code> value might be missing.</p>"
+          "documentation":"<p>The reason why the client is disconnected. When you enable or update the indexing configuration, this value might be missing for devices that have never connected or have been disconnected for more than an hour.</p>"
+        },
+        "keepAliveDuration":{
+          "shape":"KeepAliveDuration",
+          "documentation":"<p>The keep-alive interval in seconds that the client specified when establishing the connection.</p>"
+        },
+        "cleanSession":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the client is using a clean session. Returns <code>true</code> for clean sessions.</p>"
+        },
+        "sessionExpiry":{
+          "shape":"SessionExpiry",
+          "documentation":"<p>The session expiry interval in seconds for the MQTT client connection. This value indicates how long the session will remain active after the client disconnects.</p>"
+        },
+        "clientId":{
+          "shape":"ClientId",
+          "documentation":"<p>The unique identifier of the MQTT client.</p>"
         }
       },
       "documentation":"<p>The connectivity status of the thing.</p>"
@@ -22780,6 +22877,10 @@
         }
       },
       "documentation":"<p>The summary of a virtual private cloud (VPC) destination.</p>"
+    },
+    "VpcEndpointId":{
+      "type":"string",
+      "sensitive":true
     },
     "VpcId":{"type":"string"},
     "WaitingForDataCollectionChecksCount":{"type":"integer"},

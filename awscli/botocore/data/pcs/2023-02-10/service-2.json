@@ -772,6 +772,10 @@
     "ComputeNodeGroupSlurmConfiguration":{
       "type":"structure",
       "members":{
+        "scaleDownIdleTimeInSeconds":{
+          "shape":"ComputeNodeGroupSlurmConfigurationScaleDownIdleTimeInSecondsInteger",
+          "documentation":"<p>The time (in seconds) before an idle node is scaled down. If not specified, the cluster-level setting applies. This overrides the cluster-level <code>scaleDownIdleTimeInSeconds</code> setting. A value of <code>-1</code> removes the override and applies the cluster-level setting to this compute node group. Requires Slurm version 25.11 or later.</p>"
+        },
         "slurmCustomSettings":{
           "shape":"SlurmCustomSettings",
           "documentation":"<p>Additional Slurm-specific configuration that directly maps to Slurm settings.</p>"
@@ -782,12 +786,28 @@
     "ComputeNodeGroupSlurmConfigurationRequest":{
       "type":"structure",
       "members":{
+        "scaleDownIdleTimeInSeconds":{
+          "shape":"ComputeNodeGroupSlurmConfigurationRequestScaleDownIdleTimeInSecondsInteger",
+          "documentation":"<p>The time (in seconds) before an idle node is scaled down. If not specified, the cluster-level setting applies. This overrides the cluster-level <code>scaleDownIdleTimeInSeconds</code> setting. A value of <code>-1</code> removes the override and applies the cluster-level setting to this compute node group. Requires Slurm version 25.11 or later.</p>"
+        },
         "slurmCustomSettings":{
           "shape":"SlurmCustomSettings",
           "documentation":"<p>Additional Slurm-specific configuration that directly maps to Slurm settings.</p>"
         }
       },
       "documentation":"<p>Additional options related to the Slurm scheduler.</p>"
+    },
+    "ComputeNodeGroupSlurmConfigurationRequestScaleDownIdleTimeInSecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":10000000,
+      "min":-1
+    },
+    "ComputeNodeGroupSlurmConfigurationScaleDownIdleTimeInSecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":10000000,
+      "min":-1
     },
     "ComputeNodeGroupStatus":{
       "type":"string",
@@ -2175,12 +2195,22 @@
     "UpdateComputeNodeGroupSlurmConfigurationRequest":{
       "type":"structure",
       "members":{
+        "scaleDownIdleTimeInSeconds":{
+          "shape":"UpdateComputeNodeGroupSlurmConfigurationRequestScaleDownIdleTimeInSecondsInteger",
+          "documentation":"<p>The time (in seconds) before an idle node is scaled down. If not specified, the cluster-level setting applies. This overrides the cluster-level <code>scaleDownIdleTimeInSeconds</code> setting. A value of <code>-1</code> removes the override and applies the cluster-level setting to this compute node group. Requires Slurm version 25.11 or later.</p>"
+        },
         "slurmCustomSettings":{
           "shape":"SlurmCustomSettings",
           "documentation":"<p>Additional Slurm-specific configuration that directly maps to Slurm settings.</p>"
         }
       },
       "documentation":"<p>Additional options related to the Slurm scheduler.</p>"
+    },
+    "UpdateComputeNodeGroupSlurmConfigurationRequestScaleDownIdleTimeInSecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":10000000,
+      "min":-1
     },
     "UpdateQueueRequest":{
       "type":"structure",

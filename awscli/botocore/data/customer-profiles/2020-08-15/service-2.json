@@ -66,6 +66,23 @@
       ],
       "documentation":"<p>Get a batch of profiles.</p>"
     },
+    "BatchPutProfileObject":{
+      "name":"BatchPutProfileObject",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/domains/{DomainName}/profiles/objects/batch-put-profile-object"
+      },
+      "input":{"shape":"BatchPutProfileObjectRequest"},
+      "output":{"shape":"BatchPutProfileObjectResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Adds multiple profile objects to a domain of a given ObjectType in a single API call.</p> <p>When adding a specific profile object, like a Contact Record, an inferred profile can get created if it is not mapped to an existing profile. The resulting profile will only have a phone number populated in the standard ProfileObject. Any additional Contact Records with the same phone number will be mapped to the same inferred profile.</p> <p>When a ProfileObject is created and if a ProfileObjectType already exists for the ProfileObject, it will provide data to a standard profile depending on the ProfileObjectType definition.</p> <p>BatchPutProfileObject needs an ObjectType, which can be created using PutProfileObjectType.</p>"
+    },
     "CreateCalculatedAttributeDefinition":{
       "name":"CreateCalculatedAttributeDefinition",
       "http":{
@@ -1860,6 +1877,11 @@
       "min":1,
       "pattern":"^[a-zA-Z0-9_-]+$"
     },
+    "responseCode":{
+      "type":"integer",
+      "max":599,
+      "min":200
+    },
     "AccessDeniedException":{
       "type":"structure",
       "members":{
@@ -2471,6 +2493,115 @@
           "documentation":"<p>Array of Profile Objects.</p>"
         }
       }
+    },
+    "BatchPutProfileObjectErrorItem":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Code"
+      ],
+      "members":{
+        "Id":{
+          "shape":"name",
+          "documentation":"<p>The unique identifier of the item in the batch request that failed.</p>"
+        },
+        "Code":{
+          "shape":"responseCode",
+          "documentation":"<p>The HTTP status code for the error.</p>"
+        },
+        "Message":{
+          "shape":"text",
+          "documentation":"<p>A message describing the error.</p>"
+        }
+      },
+      "documentation":"<p>An item that failed to be added to the domain.</p>"
+    },
+    "BatchPutProfileObjectErrorList":{
+      "type":"list",
+      "member":{"shape":"BatchPutProfileObjectErrorItem"}
+    },
+    "BatchPutProfileObjectRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "ObjectTypeName",
+        "Items"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "ObjectTypeName":{
+          "shape":"typeName",
+          "documentation":"<p>The name of the profile object type.</p>"
+        },
+        "Items":{
+          "shape":"BatchPutProfileObjectRequestItemList",
+          "documentation":"<p>A list of items to add to the domain.</p>"
+        }
+      }
+    },
+    "BatchPutProfileObjectRequestItem":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Object"
+      ],
+      "members":{
+        "Id":{
+          "shape":"name",
+          "documentation":"<p>A unique identifier for this item in the batch request. Used to correlate items in the response.</p>"
+        },
+        "Object":{
+          "shape":"stringifiedJson",
+          "documentation":"<p>A string that is serialized from a JSON object.</p>"
+        }
+      },
+      "documentation":"<p>An item to add to the domain as part of a batch request.</p>"
+    },
+    "BatchPutProfileObjectRequestItemList":{
+      "type":"list",
+      "member":{"shape":"BatchPutProfileObjectRequestItem"},
+      "max":10,
+      "min":1
+    },
+    "BatchPutProfileObjectResponse":{
+      "type":"structure",
+      "members":{
+        "Successful":{
+          "shape":"BatchPutProfileObjectResponseList",
+          "documentation":"<p>A list of items that were successfully added to the domain.</p>"
+        },
+        "Failed":{
+          "shape":"BatchPutProfileObjectErrorList",
+          "documentation":"<p>A list of items that failed to be added to the domain.</p>"
+        }
+      }
+    },
+    "BatchPutProfileObjectResponseItem":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "ProfileObjectUniqueKey"
+      ],
+      "members":{
+        "Id":{
+          "shape":"name",
+          "documentation":"<p>The unique identifier of the item in the batch request.</p>"
+        },
+        "ProfileObjectUniqueKey":{
+          "shape":"string1To255",
+          "documentation":"<p>The unique identifier of the profile object generated by the service.</p>"
+        }
+      },
+      "documentation":"<p>An item that was successfully added to the domain.</p>"
+    },
+    "BatchPutProfileObjectResponseList":{
+      "type":"list",
+      "member":{"shape":"BatchPutProfileObjectResponseItem"}
     },
     "Batches":{
       "type":"list",
@@ -8949,7 +9080,7 @@
           "documentation":"<p>The unit of time.</p>"
         },
         "Value":{
-          "shape":"maxSize24",
+          "shape":"maxSize60",
           "documentation":"<p>The amount of time of the specified unit.</p>"
         },
         "MaxInvocationsPerProfile":{
@@ -8966,6 +9097,7 @@
     "PeriodUnit":{
       "type":"string",
       "enum":[
+        "MINUTES",
         "HOURS",
         "DAYS",
         "WEEKS",
@@ -12089,14 +12221,14 @@
       "max":1000,
       "min":1
     },
-    "maxSize24":{
-      "type":"integer",
-      "max":24,
-      "min":1
-    },
     "maxSize500":{
       "type":"integer",
       "max":500,
+      "min":1
+    },
+    "maxSize60":{
+      "type":"integer",
+      "max":60,
       "min":1
     },
     "message":{"type":"string"},

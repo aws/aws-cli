@@ -758,6 +758,7 @@
       "output":{"shape":"InvokeHarnessResponse"},
       "errors":[
         {"shape":"AccessDeniedException"},
+        {"shape":"RuntimeClientError"},
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
@@ -1714,7 +1715,7 @@
     },
     "BatchEvaluationArn":{
       "type":"string",
-      "documentation":"<p>ARN for a batch evaluation</p>"
+      "documentation":"<p>The Amazon Resource Name (ARN) of a batch evaluation.</p>"
     },
     "BatchEvaluationDescription":{
       "type":"string",
@@ -1723,16 +1724,17 @@
     },
     "BatchEvaluationId":{
       "type":"string",
-      "documentation":"<p>Unique identifier for a batch evaluation (name-prefixed format)</p>",
+      "documentation":"<p>The unique identifier for a batch evaluation.</p>",
       "pattern":"[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
     },
     "BatchEvaluationName":{
       "type":"string",
-      "documentation":"<p>Human-readable name for a batch evaluation</p>",
+      "documentation":"<p>A human-readable name for a batch evaluation.</p>",
       "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,47}"
     },
     "BatchEvaluationStatus":{
       "type":"string",
+      "documentation":"<p>The lifecycle status of a batch evaluation job.</p>",
       "enum":[
         "PENDING",
         "IN_PROGRESS",
@@ -1981,10 +1983,6 @@
         "FAILED"
       ]
     },
-    "BrowserArn":{
-      "type":"string",
-      "pattern":"arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:(aws|[0-9]{12}):browser(-custom)?/(aws\\.browser\\.v1|[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10})"
-    },
     "BrowserEnterprisePolicies":{
       "type":"list",
       "member":{"shape":"BrowserEnterprisePolicy"},
@@ -2212,6 +2210,7 @@
     },
     "CloudWatchLogsFilterOperator":{
       "type":"string",
+      "documentation":"<p>The comparison operator used to filter CloudWatch Logs entries.</p>",
       "enum":[
         "Equals",
         "NotEquals",
@@ -2322,10 +2321,6 @@
         }
       },
       "documentation":"<p>CloudWatch Logs destination for batch evaluation results.</p>"
-    },
-    "CodeInterpreterArn":{
-      "type":"string",
-      "pattern":"arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:(aws|[0-9]{12}):code-interpreter(-custom)?/(aws\\.codeinterpreter\\.v1|[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10})"
     },
     "CodeInterpreterResult":{
       "type":"structure",
@@ -3081,7 +3076,7 @@
       "members":{
         "cloudWatchLogs":{
           "shape":"CloudWatchLogsSource",
-          "documentation":"<p>Pull session spans from CloudWatch</p>"
+          "documentation":"<p>Configuration for pulling agent session traces from CloudWatch Logs.</p>"
         }
       },
       "documentation":"<p>Configuration for the data source used in evaluation.</p>",
@@ -3380,8 +3375,7 @@
     "Document":{
       "type":"structure",
       "members":{},
-      "document":true,
-      "sensitive":true
+      "document":true
     },
     "DomainPattern":{
       "type":"string",
@@ -3602,7 +3596,10 @@
       "type":"structure",
       "required":["context"],
       "members":{
-        "context":{"shape":"Context"},
+        "context":{
+          "shape":"Context",
+          "documentation":"<p> The span context that identifies which session or trace this reference input applies to, used for correlating ground truth with agent output. </p>"
+        },
         "expectedResponse":{
           "shape":"EvaluationContent",
           "documentation":"<p> The expected response for trace-level evaluation. Built-in evaluators that support this field compare the agent's actual response against this value for assessment. Custom evaluators can access it through the <code>{expected_response}</code> placeholder in their instructions. </p>"
@@ -3621,6 +3618,7 @@
     "EvaluationReferenceInputs":{
       "type":"list",
       "member":{"shape":"EvaluationReferenceInput"},
+      "documentation":"<p> A list of reference inputs containing ground truth data for evaluation. </p>",
       "max":1000,
       "min":1,
       "sensitive":true
@@ -3683,7 +3681,8 @@
     },
     "EvaluationResults":{
       "type":"list",
-      "member":{"shape":"EvaluationResultContent"}
+      "member":{"shape":"EvaluationResultContent"},
+      "documentation":"<p> A list of evaluation results from the evaluators applied to the session. </p>"
     },
     "EvaluationTarget":{
       "type":"structure",
@@ -4939,7 +4938,7 @@
       "members":{
         "inline":{
           "shape":"InlineGroundTruth",
-          "documentation":"<p>Provide ground truth inline</p>"
+          "documentation":"<p>Inline ground truth data provided directly in the request.</p>"
         }
       },
       "documentation":"<p>Where to pull ground truth from.</p>",
@@ -4979,7 +4978,7 @@
       "type":"structure",
       "members":{
         "browserArn":{
-          "shape":"BrowserArn",
+          "shape":"HarnessBrowserArn",
           "documentation":"<p>If not populated, the built-in Browser ARN is used.</p>"
         }
       },
@@ -4989,7 +4988,7 @@
       "type":"structure",
       "members":{
         "codeInterpreterArn":{
-          "shape":"CodeInterpreterArn",
+          "shape":"HarnessCodeInterpreterArn",
           "documentation":"<p>If not populated, the built-in Code Interpreter ARN is used.</p>"
         }
       },
@@ -5024,6 +5023,14 @@
       "type":"string",
       "pattern":"arn:([^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:harness/[a-zA-Z][a-zA-Z0-9_]{0,39}-[a-zA-Z0-9]{10}"
     },
+    "HarnessBedrockApiFormat":{
+      "type":"string",
+      "enum":[
+        "converse_stream",
+        "responses",
+        "chat_completions"
+      ]
+    },
     "HarnessBedrockModelConfig":{
       "type":"structure",
       "required":["modelId"],
@@ -5043,9 +5050,27 @@
         "topP":{
           "shape":"TopP",
           "documentation":"<p>The topP set when calling the model.</p>"
+        },
+        "apiFormat":{
+          "shape":"HarnessBedrockApiFormat",
+          "documentation":"<p>The API format to use when calling the Bedrock provider.</p>"
+        },
+        "additionalParams":{
+          "shape":"Document",
+          "documentation":"<p>Provider-specific parameters passed through to the model provider unchanged.</p>"
         }
       },
       "documentation":"<p>Configuration for an Amazon Bedrock model provider.</p>"
+    },
+    "HarnessBrowserArn":{
+      "type":"string",
+      "documentation":"<p>Browser ARN for Harness tool configuration. Accepts both managed (aws.browser.v1) and custom browser ARNs.</p>",
+      "pattern":"arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:(aws|[0-9]{12}):browser(-custom)?/(aws\\.browser\\.v1|[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10})"
+    },
+    "HarnessCodeInterpreterArn":{
+      "type":"string",
+      "documentation":"<p>Code Interpreter ARN for Harness tool configuration. Accepts both managed (aws.codeinterpreter.v1) and custom code interpreter ARNs.</p>",
+      "pattern":"arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:(aws|[0-9]{12}):code-interpreter(-custom)?/(aws\\.codeinterpreter\\.v1|[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10})"
     },
     "HarnessContentBlock":{
       "type":"structure",
@@ -5246,6 +5271,47 @@
       "min":1,
       "sensitive":true
     },
+    "HarnessLiteLlmApiBase":{
+      "type":"string",
+      "max":16383,
+      "min":1,
+      "sensitive":true
+    },
+    "HarnessLiteLlmModelConfig":{
+      "type":"structure",
+      "required":["modelId"],
+      "members":{
+        "modelId":{
+          "shape":"ModelId",
+          "documentation":"<p>The LiteLLM model identifier (e.g., \"anthropic/claude-3-sonnet\").</p>"
+        },
+        "apiKeyArn":{
+          "shape":"ApiKeyArn",
+          "documentation":"<p>The ARN of the API key in AgentCore Identity for authenticating with the model provider.</p>"
+        },
+        "apiBase":{
+          "shape":"HarnessLiteLlmApiBase",
+          "documentation":"<p>The base URL for the model provider's API endpoint.</p>"
+        },
+        "maxTokens":{
+          "shape":"MaxTokens",
+          "documentation":"<p>The maximum number of tokens to allow in the generated response per iteration.</p>"
+        },
+        "temperature":{
+          "shape":"Temperature",
+          "documentation":"<p>The temperature to set when calling the model.</p>"
+        },
+        "topP":{
+          "shape":"TopP",
+          "documentation":"<p>The topP set when calling the model.</p>"
+        },
+        "additionalParams":{
+          "shape":"Document",
+          "documentation":"<p>Provider-specific parameters passed through to the model provider unchanged.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for a LiteLLM model provider, enabling connection to third-party model providers.</p>"
+    },
     "HarnessMessage":{
       "type":"structure",
       "required":[
@@ -5325,10 +5391,21 @@
         "geminiModelConfig":{
           "shape":"HarnessGeminiModelConfig",
           "documentation":"<p>Configuration for a Google Gemini model.</p>"
+        },
+        "liteLlmModelConfig":{
+          "shape":"HarnessLiteLlmModelConfig",
+          "documentation":"<p>The LiteLLM model configuration for connecting to third-party model providers.</p>"
         }
       },
       "documentation":"<p>Specification of which model to use.</p>",
       "union":true
+    },
+    "HarnessOpenAiApiFormat":{
+      "type":"string",
+      "enum":[
+        "chat_completions",
+        "responses"
+      ]
     },
     "HarnessOpenAiModelConfig":{
       "type":"structure",
@@ -5356,6 +5433,14 @@
         "topP":{
           "shape":"TopP",
           "documentation":"<p>The topP set when calling the model.</p>"
+        },
+        "apiFormat":{
+          "shape":"HarnessOpenAiApiFormat",
+          "documentation":"<p>The API format to use when calling the OpenAI provider.</p>"
+        },
+        "additionalParams":{
+          "shape":"Document",
+          "documentation":"<p>Provider-specific parameters passed through to the model provider unchanged.</p>"
         }
       },
       "documentation":"<p>Configuration for an OpenAI model provider. Requires an API key stored in AgentCore Identity.</p>"
@@ -5439,14 +5524,77 @@
         "path":{
           "shape":"HarnessSkillPath",
           "documentation":"<p>The filesystem path to the skill definition.</p>"
+        },
+        "s3":{
+          "shape":"HarnessSkillS3Source",
+          "documentation":"<p>An S3 source containing the skill.</p>"
+        },
+        "git":{
+          "shape":"HarnessSkillGitSource",
+          "documentation":"<p>A git repository containing the skill.</p>"
         }
       },
       "documentation":"<p>A skill available to the agent.</p>",
       "union":true
     },
+    "HarnessSkillGitAuth":{
+      "type":"structure",
+      "required":["credentialArn"],
+      "members":{
+        "credentialArn":{
+          "shape":"ApiKeyArn",
+          "documentation":"<p>The ARN of the credential in AgentCore Identity containing the password or personal access token.</p>"
+        },
+        "username":{
+          "shape":"String",
+          "documentation":"<p>Username for authentication. Defaults to 'oauth2' if not specified.</p>"
+        }
+      },
+      "documentation":"<p>Authentication configuration for accessing a private git repository.</p>"
+    },
+    "HarnessSkillGitSource":{
+      "type":"structure",
+      "required":["url"],
+      "members":{
+        "url":{
+          "shape":"HarnessSkillGitUrl",
+          "documentation":"<p>The HTTPS URL of the git repository.</p>"
+        },
+        "path":{
+          "shape":"String",
+          "documentation":"<p>Subdirectory within the repository containing the skill.</p>"
+        },
+        "auth":{
+          "shape":"HarnessSkillGitAuth",
+          "documentation":"<p>Authentication configuration for private repositories.</p>"
+        }
+      },
+      "documentation":"<p>A git repository source for a skill.</p>"
+    },
+    "HarnessSkillGitUrl":{
+      "type":"string",
+      "min":8,
+      "pattern":"https://.*"
+    },
     "HarnessSkillPath":{
       "type":"string",
       "min":1
+    },
+    "HarnessSkillS3Source":{
+      "type":"structure",
+      "required":["uri"],
+      "members":{
+        "uri":{
+          "shape":"HarnessSkillS3Uri",
+          "documentation":"<p>The S3 URI pointing to the skill directory (e.g., s3://bucket/skills/my-skill/).</p>"
+        }
+      },
+      "documentation":"<p>An S3 source for a skill.</p>"
+    },
+    "HarnessSkillS3Uri":{
+      "type":"string",
+      "min":5,
+      "pattern":"s3://.*"
     },
     "HarnessSkills":{
       "type":"list",
@@ -5841,7 +5989,7 @@
         },
         "expectedTrajectory":{
           "shape":"EvaluationExpectedTrajectory",
-          "documentation":"<p>expectedTrajectory for evaluation, reuses common model EvaluationExpectedTrajectory</p>"
+          "documentation":"<p>The expected tool call sequence for trajectory evaluation.</p>"
         },
         "turns":{
           "shape":"InlineGroundTruthTurnsList",
@@ -6418,10 +6566,16 @@
           "locationName":"harnessArn"
         },
         "runtimeSessionId":{
-          "shape":"SessionId",
+          "shape":"InvokeHarnessRequestRuntimeSessionIdString",
           "documentation":"<p>The session ID for the invocation. Use the same session ID across requests to continue a conversation.</p>",
           "location":"header",
           "locationName":"X-Amzn-Bedrock-AgentCore-Runtime-Session-Id"
+        },
+        "runtimeUserId":{
+          "shape":"String",
+          "documentation":"<p>An identifier for the end user making the request. This value is passed through to the runtime container.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-Bedrock-AgentCore-Runtime-User-Id"
         },
         "messages":{
           "shape":"HarnessMessages",
@@ -6465,6 +6619,12 @@
         }
       }
     },
+    "InvokeHarnessRequestRuntimeSessionIdString":{
+      "type":"string",
+      "max":100,
+      "min":33,
+      "pattern":"[a-zA-Z0-9][a-zA-Z0-9-_]*"
+    },
     "InvokeHarnessResponse":{
       "type":"structure",
       "required":["stream"],
@@ -6505,7 +6665,10 @@
         },
         "internalServerException":{"shape":"InternalServerException"},
         "validationException":{"shape":"ValidationException"},
-        "runtimeClientError":{"shape":"RuntimeClientError"}
+        "runtimeClientError":{
+          "shape":"RuntimeClientError",
+          "documentation":"<p>An error returned by the runtime container during agent execution.</p>"
+        }
       },
       "documentation":"<p>The streaming events returned by a harness invocation.</p>",
       "eventstream":true
@@ -7328,6 +7491,12 @@
       "min":1,
       "sensitive":true
     },
+    "MemoryDocument":{
+      "type":"structure",
+      "members":{},
+      "document":true,
+      "sensitive":true
+    },
     "MemoryId":{
       "type":"string",
       "min":12,
@@ -8103,7 +8272,7 @@
           "documentation":"<p>The conversational content of the payload.</p>"
         },
         "blob":{
-          "shape":"Document",
+          "shape":"MemoryDocument",
           "documentation":"<p>The binary content of the payload.</p>"
         }
       },
@@ -8774,6 +8943,7 @@
     },
     "RecommendationStatus":{
       "type":"string",
+      "documentation":"<p>The lifecycle status of a recommendation.</p>",
       "enum":[
         "PENDING",
         "IN_PROGRESS",
@@ -8841,6 +9011,7 @@
     },
     "RecommendationType":{
       "type":"string",
+      "documentation":"<p>The type of recommendation to generate.</p>",
       "enum":[
         "SYSTEM_PROMPT_RECOMMENDATION",
         "TOOL_DESCRIPTION_RECOMMENDATION"

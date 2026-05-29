@@ -18,7 +18,9 @@ from awscli.testutils import BaseAWSHelpOutputTest, mock
 
 # Derive test parameters from MAIN_COMMAND_TABLE_OPS.
 _ADD_OPS = [op for op in MAIN_COMMAND_TABLE_OPS if op[0] == CommandTableOp.ADD]
-_RENAME_OPS = [op for op in MAIN_COMMAND_TABLE_OPS if op[0] == CommandTableOp.RENAME]
+_RENAME_OPS = [
+    op for op in MAIN_COMMAND_TABLE_OPS if op[0] == CommandTableOp.RENAME
+]
 _ADD_CMD_NAMES = [op[1] for op in _ADD_OPS]
 _RENAME_NEW_NAMES = [op[2] for op in _RENAME_OPS]
 

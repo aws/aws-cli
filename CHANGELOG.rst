@@ -2,6 +2,22 @@
 CHANGELOG
 =========
 
+2.34.57
+=======
+
+* bugfix:s3: Fix false negative in parent-directory escape detection that allowed keys like ``/../foo`` to bypass warning during downloads
+* api-change:``omics``: Add engineSettings to StartRun and GetRun. Add profiles and profileParameterTemplates to GetWorkflow and GetWorkflowVersion.
+* api-change:``bedrock-agentcore-control``: Reference your own AWS Secrets Manager secrets when configuring credential providers, giving you control over encryption, rotation, and access policies instead of using service-managed secrets.
+* api-change:``groundstation``: Adds support for Alpha-5 satellite number encoding in the Two-Line Element ephemeris format.
+* api-change:``rds-data``: RDS Data API arrays (longValues, doubleValues, stringValues, booleanValues) in ExecuteStatement responses now correctly support null elements. Runtime change for JS v3 and .NET. Compile-time change for C plus plus, .NET, Kotlin, Rust. No impact for Java, Python, Ruby, PHP, Go.
+* enhancement:Retries: Introduced ``AWS_NEW_RETRIES_2026``, an opt-in environment variable (defaults to ``false``) that activates updated standard retry mode behavior. When set to ``true``, the standard retry mode uses lower initial backoff delays (50ms base instead of 1s for non-throttling errors), applies service-specific max attempt overrides, and honors the ``x-amz-retry-after`` response header for server-guided retry timing.
+* api-change:``bedrock``: Automated Reasoning checks - Added two build workflows for policies. Iterative Refine Policy uses AI to update policy definitions based on test results and feedback. Resolve Policy Ambiguities consolidates ambiguous variables in Automated Reasoning policies, a common source of ambiguous validation.
+* api-change:``route53resolver``: Added BatchCreateFirewallRule, BatchUpdateFirewallRule, BatchDeleteFirewallRule, and ListFirewallRuleTypes APIs. Added FirewallRuleType support to Firewall Rule APIs.
+* api-change:``sesv2``: This release introduces support for Tenant Suppression Lists
+* enhancement:botocore: Update protocol tests to latest and handle null values in sparse map serialization and deserialization
+* api-change:``quicksight``: Adds support for creating, updating, describing, listing, and deleting an OAuthClientApplication resource, a new quicksight resource that allows customers to store OAuth configurations to connect to their databases via 3 Legged OAuth.
+
+
 2.34.56
 =======
 

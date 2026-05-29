@@ -322,8 +322,10 @@ class BaseTransferRequestSubmitter(object):
         # normpath() will use the OS path separator so we
         # need to take that into account when checking for a parent prefix.
         parent_prefix = '..' + os.path.sep
-        escapes_cwd = os.path.normpath(fileinfo.compare_key).startswith(
-            parent_prefix)
+        # Anchor compare_key against '.' (the destination directory root)
+        # to avoid false negatives on paths like '/../foo'
+        normalized = os.path.normpath('.' + os.path.sep + fileinfo.compare_key)
+        escapes_cwd = normalized.startswith(parent_prefix)
         if escapes_cwd:
             warning = create_warning(
                 fileinfo.compare_key, "File references a parent directory.")

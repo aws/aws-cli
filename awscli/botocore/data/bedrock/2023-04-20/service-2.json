@@ -3056,6 +3056,12 @@
       "min":0,
       "sensitive":true
     },
+    "AutomatedReasoningPolicyBuildFeedback":{
+      "type":"string",
+      "max":4000,
+      "min":0,
+      "sensitive":true
+    },
     "AutomatedReasoningPolicyBuildLog":{
       "type":"structure",
       "required":["entries"],
@@ -3391,7 +3397,9 @@
         "REFINE_POLICY",
         "IMPORT_POLICY",
         "GENERATE_FIDELITY_REPORT",
-        "GENERATE_POLICY_SCENARIOS"
+        "GENERATE_POLICY_SCENARIOS",
+        "RESOLVE_POLICY_AMBIGUITIES",
+        "ITERATIVELY_REFINE_POLICY"
       ]
     },
     "AutomatedReasoningPolicyConflictedRuleIdList":{
@@ -3938,6 +3946,27 @@
         }
       },
       "documentation":"<p>An annotation for processing and incorporating new content into an Automated Reasoning policy.</p>"
+    },
+    "AutomatedReasoningPolicyIterativeRefinementContent":{
+      "type":"structure",
+      "required":["documents"],
+      "members":{
+        "documents":{
+          "shape":"AutomatedReasoningPolicyIterativeRefinementDocumentList",
+          "documentation":"<p>Source documents used for iterative policy refinement. These documents provide context for refining the policy definition.</p>"
+        },
+        "feedback":{
+          "shape":"AutomatedReasoningPolicyBuildFeedback",
+          "documentation":"<p>Optional feedback to guide the iterative refinement workflow. Provide specific instructions or constraints for policy refinement.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for an iterative policy refinement workflow, including source documents to process and optional feedback to guide the refinement.</p>"
+    },
+    "AutomatedReasoningPolicyIterativeRefinementDocumentList":{
+      "type":"list",
+      "member":{"shape":"AutomatedReasoningPolicyBuildWorkflowDocument"},
+      "max":5,
+      "min":1
     },
     "AutomatedReasoningPolicyJustificationList":{
       "type":"list",
@@ -4622,6 +4651,10 @@
         "generateFidelityReportContent":{
           "shape":"AutomatedReasoningPolicyGenerateFidelityReportContent",
           "documentation":"<p>The content configuration for generating a fidelity report workflow. This can include source documents to analyze or an existing fidelity report to update with a new policy definition.</p>"
+        },
+        "iterativeRefinementContent":{
+          "shape":"AutomatedReasoningPolicyIterativeRefinementContent",
+          "documentation":"<p>Content configuration to start an iterative policy refinement workflow that uses generative AI to automatically make changes to the policy based on test results and the optional feedback provided.</p>"
         }
       },
       "documentation":"<p>Defines the content and configuration for different types of policy build workflows.</p>",

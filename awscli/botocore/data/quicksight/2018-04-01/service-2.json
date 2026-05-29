@@ -392,6 +392,26 @@
       ],
       "documentation":"<p>(Enterprise edition only) Creates a new namespace for you to use with Amazon Quick Sight.</p> <p>A namespace allows you to isolate the Quick Sight users and groups that are registered for that namespace. Users that access the namespace can share assets only with other users or groups in the same namespace. They can't see users and groups in other namespaces. You can create a namespace after your Amazon Web Services account is subscribed to Quick Sight. The namespace must be unique within the Amazon Web Services account. By default, there is a limit of 100 namespaces per Amazon Web Services account. To increase your limit, create a ticket with Amazon Web Services Support. </p>"
     },
+    "CreateOAuthClientApplication":{
+      "name":"CreateOAuthClientApplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/oauth-client-applications"
+      },
+      "input":{"shape":"CreateOAuthClientApplicationRequest"},
+      "output":{"shape":"CreateOAuthClientApplicationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceExistsException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Creates an OAuthClientApplication.</p>"
+    },
     "CreateRefreshSchedule":{
       "name":"CreateRefreshSchedule",
       "http":{
@@ -944,6 +964,24 @@
         {"shape":"ResourceUnavailableException"}
       ],
       "documentation":"<p>Deletes a namespace and the users and groups that are associated with the namespace. This is an asynchronous process. Assets including dashboards, analyses, datasets and data sources are not deleted. To delete these assets, you use the API operations for the relevant asset. </p>"
+    },
+    "DeleteOAuthClientApplication":{
+      "name":"DeleteOAuthClientApplication",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/accounts/{AwsAccountId}/oauth-client-applications/{OAuthClientApplicationId}"
+      },
+      "input":{"shape":"DeleteOAuthClientApplicationRequest"},
+      "output":{"shape":"DeleteOAuthClientApplicationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Deletes an OAuthClientApplication.</p>"
     },
     "DeleteRefreshSchedule":{
       "name":"DeleteRefreshSchedule",
@@ -1875,6 +1913,23 @@
       ],
       "documentation":"<p>Describes the current namespace.</p>"
     },
+    "DescribeOAuthClientApplication":{
+      "name":"DescribeOAuthClientApplication",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/oauth-client-applications/{OAuthClientApplicationId}"
+      },
+      "input":{"shape":"DescribeOAuthClientApplicationRequest"},
+      "output":{"shape":"DescribeOAuthClientApplicationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Describes an OAuthClientApplication.</p>"
+    },
     "DescribeQPersonalizationConfiguration":{
       "name":"DescribeQPersonalizationConfiguration",
       "http":{
@@ -2748,6 +2803,24 @@
         {"shape":"ResourceUnavailableException"}
       ],
       "documentation":"<p>Lists the namespaces for the specified Amazon Web Services account. This operation doesn't list deleted namespaces.</p>"
+    },
+    "ListOAuthClientApplications":{
+      "name":"ListOAuthClientApplications",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/oauth-client-applications"
+      },
+      "input":{"shape":"ListOAuthClientApplicationsRequest"},
+      "output":{"shape":"ListOAuthClientApplicationsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Lists all OAuthClientApplications in the current Amazon Web Services Region that belong to this Amazon Web Services account.</p>"
     },
     "ListRefreshSchedules":{
       "name":"ListRefreshSchedules",
@@ -3986,6 +4059,25 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Updates a customer managed key in a Quick Sight account.</p>"
+    },
+    "UpdateOAuthClientApplication":{
+      "name":"UpdateOAuthClientApplication",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/accounts/{AwsAccountId}/oauth-client-applications/{OAuthClientApplicationId}"
+      },
+      "input":{"shape":"UpdateOAuthClientApplicationRequest"},
+      "output":{"shape":"UpdateOAuthClientApplicationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Updates an OAuthClientApplication.</p>"
     },
     "UpdatePublicSharingSettings":{
       "name":"UpdatePublicSharingSettings",
@@ -12261,6 +12353,93 @@
         }
       }
     },
+    "CreateOAuthClientApplicationRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "OAuthClientApplicationId",
+        "Name",
+        "OAuthClientAuthenticationType",
+        "ClientId",
+        "ClientSecret",
+        "OAuthTokenEndpointUrl"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "OAuthClientApplicationId":{
+          "shape":"OAuthClientApplicationId",
+          "documentation":"<p>An ID for the OAuthClientApplication that you want to create. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The display name for the OAuthClientApplication.</p>"
+        },
+        "OAuthClientAuthenticationType":{
+          "shape":"OAuthClientAuthenticationType",
+          "documentation":"<p>The authentication type to use for the OAuthClientApplication. This determines the OAuth 2.0 grant flow that is used when the data source connects to the identity provider. Valid values are <code>TOKEN</code>.</p>"
+        },
+        "ClientId":{
+          "shape":"OAuthClientId",
+          "documentation":"<p>The client ID of the OAuth application that is registered with the identity provider.</p>"
+        },
+        "ClientSecret":{
+          "shape":"OAuthClientSecret",
+          "documentation":"<p>The client secret of the OAuth application that is registered with the identity provider.</p>"
+        },
+        "OAuthTokenEndpointUrl":{
+          "shape":"OAuthTokenEndpointUrl",
+          "documentation":"<p>The token endpoint URL of the identity provider that is used to obtain access tokens.</p>"
+        },
+        "OAuthAuthorizationEndpointUrl":{
+          "shape":"OAuthAuthorizationEndpointUrl",
+          "documentation":"<p>The authorization endpoint URL of the identity provider that is used to obtain authorization codes.</p>"
+        },
+        "OAuthScopes":{
+          "shape":"OAuthScopesString",
+          "documentation":"<p>The OAuth scopes that are requested when the OAuthClientApplication obtains an access token from the identity provider.</p>"
+        },
+        "DataSourceType":{
+          "shape":"DataSourceType",
+          "documentation":"<p>The type of data source that the OAuthClientApplication is used with. Valid values are <code>SNOWFLAKE</code>.</p>"
+        },
+        "IdentityProviderVpcConnectionProperties":{"shape":"VpcConnectionProperties"},
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Contains a map of the key-value pairs for the resource tag or tags assigned to the OAuthClientApplication.</p>"
+        }
+      }
+    },
+    "CreateOAuthClientApplicationResponse":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the OAuthClientApplication.</p>"
+        },
+        "OAuthClientApplicationId":{
+          "shape":"OAuthClientApplicationId",
+          "documentation":"<p>The ID of the OAuthClientApplication. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "CreationStatus":{
+          "shape":"ResourceStatus",
+          "documentation":"<p>The status of creating the OAuthClientApplication.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
     "CreateRefreshScheduleRequest":{
       "type":"structure",
       "required":[
@@ -17059,6 +17238,49 @@
         }
       }
     },
+    "DeleteOAuthClientApplicationRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "OAuthClientApplicationId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "OAuthClientApplicationId":{
+          "shape":"OAuthClientApplicationId",
+          "documentation":"<p>The ID of the OAuthClientApplication that you want to delete.</p>",
+          "location":"uri",
+          "locationName":"OAuthClientApplicationId"
+        }
+      }
+    },
+    "DeleteOAuthClientApplicationResponse":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the OAuthClientApplication that you deleted.</p>"
+        },
+        "OAuthClientApplicationId":{
+          "shape":"OAuthClientApplicationId",
+          "documentation":"<p>The ID of the OAuthClientApplication. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
     "DeleteRefreshScheduleRequest":{
       "type":"structure",
       "required":[
@@ -19566,6 +19788,45 @@
         "Namespace":{
           "shape":"NamespaceInfoV2",
           "documentation":"<p>The information about the namespace that you're describing. The response includes the namespace ARN, name, Amazon Web Services Region, creation status, and identity store. <code>DescribeNamespace</code> also works for namespaces that are in the process of being created. For incomplete namespaces, this API operation lists the namespace error types and messages associated with the creation process.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
+    "DescribeOAuthClientApplicationRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "OAuthClientApplicationId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "OAuthClientApplicationId":{
+          "shape":"OAuthClientApplicationId",
+          "documentation":"<p>The ID of the OAuthClientApplication that you want to describe.</p>",
+          "location":"uri",
+          "locationName":"OAuthClientApplicationId"
+        }
+      }
+    },
+    "DescribeOAuthClientApplicationResponse":{
+      "type":"structure",
+      "members":{
+        "OAuthClientApplication":{
+          "shape":"OAuthClientApplication",
+          "documentation":"<p>The information about the OAuthClientApplication.</p>"
         },
         "RequestId":{
           "shape":"String",
@@ -28050,6 +28311,53 @@
         }
       }
     },
+    "ListOAuthClientApplicationsRequest":{
+      "type":"structure",
+      "required":["AwsAccountId"],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token that can be used in a subsequent request.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"max-results"
+        }
+      }
+    },
+    "ListOAuthClientApplicationsResponse":{
+      "type":"structure",
+      "members":{
+        "OAuthClientApplications":{
+          "shape":"OAuthClientApplicationSummaryList",
+          "documentation":"<p>A list of OAuthClientApplication summaries.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token that can be used in a subsequent request.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
     "ListRefreshSchedulesRequest":{
       "type":"structure",
       "required":[
@@ -30069,6 +30377,109 @@
       },
       "documentation":"<p>The measure type field with numerical type columns.</p>"
     },
+    "OAuthAuthorizationEndpointUrl":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"^https://[^\\p{Cc}]+",
+      "sensitive":true
+    },
+    "OAuthClientApplication":{
+      "type":"structure",
+      "members":{
+        "OAuthClientApplicationId":{
+          "shape":"OAuthClientApplicationId",
+          "documentation":"<p>The ID of the OAuthClientApplication. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The display name of the OAuthClientApplication.</p>"
+        },
+        "OAuthClientAuthenticationType":{
+          "shape":"OAuthClientAuthenticationType",
+          "documentation":"<p>The OAuth client authentication type used by the OAuthClientApplication. Valid values are <code>TOKEN</code>.</p>"
+        },
+        "OAuthTokenEndpointUrl":{
+          "shape":"OAuthTokenEndpointUrl",
+          "documentation":"<p>The token endpoint URL of the identity provider that is used to obtain access tokens.</p>"
+        },
+        "OAuthAuthorizationEndpointUrl":{
+          "shape":"OAuthAuthorizationEndpointUrl",
+          "documentation":"<p>The authorization endpoint URL of the identity provider that is used to obtain authorization codes.</p>"
+        },
+        "OAuthScopes":{
+          "shape":"OAuthScopesString",
+          "documentation":"<p>The OAuth scopes that are requested when the OAuthClientApplication obtains an access token from the identity provider.</p>"
+        },
+        "DataSourceType":{
+          "shape":"DataSourceType",
+          "documentation":"<p>The type of data source that the OAuthClientApplication is used with. Valid values are <code>SNOWFLAKE</code>.</p>"
+        },
+        "IdentityProviderVpcConnectionProperties":{"shape":"VpcConnectionProperties"},
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the OAuthClientApplication was created.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the OAuthClientApplication was last updated.</p>"
+        },
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the OAuthClientApplication.</p>"
+        }
+      },
+      "documentation":"<p>An OAuth client application that is used to authenticate connections to a data source through an OAuth identity provider.</p>"
+    },
+    "OAuthClientApplicationId":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[^/][^\\p{Cc}]*"
+    },
+    "OAuthClientApplicationSummary":{
+      "type":"structure",
+      "members":{
+        "OAuthClientApplicationId":{
+          "shape":"OAuthClientApplicationId",
+          "documentation":"<p>The ID of the OAuthClientApplication. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The display name of the OAuthClientApplication.</p>"
+        },
+        "OAuthClientAuthenticationType":{
+          "shape":"OAuthClientAuthenticationType",
+          "documentation":"<p>The OAuth client authentication type used by the OAuthClientApplication. Valid values are <code>TOKEN</code>.</p>"
+        },
+        "DataSourceType":{
+          "shape":"DataSourceType",
+          "documentation":"<p>The type of data source that the OAuthClientApplication is used with. Valid values are <code>SNOWFLAKE</code>.</p>"
+        },
+        "IdentityProviderVpcConnectionProperties":{"shape":"VpcConnectionProperties"},
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the OAuthClientApplication was created.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the OAuthClientApplication was last updated.</p>"
+        },
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the OAuthClientApplication.</p>"
+        }
+      },
+      "documentation":"<p>A summary of an OAuthClientApplication.</p>"
+    },
+    "OAuthClientApplicationSummaryList":{
+      "type":"list",
+      "member":{"shape":"OAuthClientApplicationSummary"}
+    },
+    "OAuthClientAuthenticationType":{
+      "type":"string",
+      "enum":["TOKEN"]
+    },
     "OAuthClientCredentials":{
       "type":"structure",
       "members":{
@@ -30091,12 +30502,14 @@
       "type":"string",
       "max":256,
       "min":1,
+      "pattern":"[^\\p{Cc}]+",
       "sensitive":true
     },
     "OAuthClientSecret":{
       "type":"string",
       "max":2048,
       "min":1,
+      "pattern":"[^\\p{Cc}]+",
       "sensitive":true
     },
     "OAuthParameters":{
@@ -30127,6 +30540,19 @@
       "type":"string",
       "max":128,
       "min":1
+    },
+    "OAuthScopesString":{
+      "type":"string",
+      "max":4096,
+      "min":1,
+      "pattern":"[^\\p{Cc}]+"
+    },
+    "OAuthTokenEndpointUrl":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"^https://[^\\p{Cc}]+",
+      "sensitive":true
     },
     "OAuthUsername":{
       "type":"string",
@@ -42686,6 +43112,83 @@
       "type":"list",
       "member":{"shape":"ResourcePermission"},
       "max":100
+    },
+    "UpdateOAuthClientApplicationRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "OAuthClientApplicationId",
+        "Name"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "OAuthClientApplicationId":{
+          "shape":"OAuthClientApplicationId",
+          "documentation":"<p>The ID of the OAuthClientApplication that you want to update.</p>",
+          "location":"uri",
+          "locationName":"OAuthClientApplicationId"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The display name for the OAuthClientApplication.</p>"
+        },
+        "ClientId":{
+          "shape":"OAuthClientId",
+          "documentation":"<p>The client ID of the OAuth application that is registered with the identity provider.</p>"
+        },
+        "ClientSecret":{
+          "shape":"OAuthClientSecret",
+          "documentation":"<p>The client secret of the OAuth application that is registered with the identity provider.</p>"
+        },
+        "OAuthTokenEndpointUrl":{
+          "shape":"OAuthTokenEndpointUrl",
+          "documentation":"<p>The token endpoint URL of the identity provider that is used to obtain access tokens.</p>"
+        },
+        "OAuthAuthorizationEndpointUrl":{
+          "shape":"OAuthAuthorizationEndpointUrl",
+          "documentation":"<p>The authorization endpoint URL of the identity provider that is used to obtain authorization codes.</p>"
+        },
+        "OAuthScopes":{
+          "shape":"OAuthScopesString",
+          "documentation":"<p>The OAuth scopes that are requested when the OAuthClientApplication obtains an access token from the identity provider.</p>"
+        },
+        "DataSourceType":{
+          "shape":"DataSourceType",
+          "documentation":"<p>The type of data source that the OAuthClientApplication is used with. Valid values are <code>SNOWFLAKE</code>.</p>"
+        },
+        "IdentityProviderVpcConnectionProperties":{"shape":"VpcConnectionProperties"}
+      }
+    },
+    "UpdateOAuthClientApplicationResponse":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the OAuthClientApplication.</p>"
+        },
+        "OAuthClientApplicationId":{
+          "shape":"OAuthClientApplicationId",
+          "documentation":"<p>The ID of the OAuthClientApplication. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "UpdateStatus":{
+          "shape":"ResourceStatus",
+          "documentation":"<p>The status of updating the OAuthClientApplication.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
     },
     "UpdatePublicSharingSettingsRequest":{
       "type":"structure",

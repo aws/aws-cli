@@ -280,7 +280,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"BadRequestException"}
       ],
-      "documentation":"<p>Create a tenant.</p> <p> <i>Tenants</i> are logical containers that group related SES resources together. Each tenant can have its own set of resources like email identities, configuration sets, and templates, along with reputation metrics and sending status. This helps isolate and manage email sending for different customers or business units within your Amazon SES API v2 account.</p>"
+      "documentation":"<p>Create a tenant.</p> <p> <i>Tenants</i> are logical containers that group related SES resources together. Each tenant can have its own set of resources like email identities, configuration sets, and templates, along with reputation metrics and sending status. This helps isolate and manage email sending for different customers or business units within your Amazon SES API v2 account.</p> <p>You can optionally specify <code>SuppressionAttributes</code> to configure tenant-level suppression at creation time. When tenant-level suppression is enabled, Amazon SES maintains a separate suppression list for the tenant instead of using the account-level suppression list.</p>"
     },
     "CreateTenantResourceAssociation":{
       "name":"CreateTenantResourceAssociation",
@@ -466,7 +466,7 @@
         {"shape":"BadRequestException"},
         {"shape":"TooManyRequestsException"}
       ],
-      "documentation":"<p>Removes an email address from the suppression list for your account.</p>"
+      "documentation":"<p>Removes an email address from the suppression list for your account or for a specific tenant. To target a tenant's suppression list, specify the <code>TenantName</code> parameter. If you omit <code>TenantName</code>, the address is removed from the account-level suppression list.</p>"
     },
     "DeleteTenant":{
       "name":"DeleteTenant",
@@ -764,7 +764,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"BadRequestException"}
       ],
-      "documentation":"<p>Displays the template object (which includes the subject line, HTML part and text part) for the template you specify.</p> <p>You can execute this operation no more than once per second.</p>"
+      "documentation":"<p>Displays the template object (which includes the subject line, HTML part and text part) for the template you specify.</p> <p>You can execute this operation no more than 50 times per second.</p>"
     },
     "GetExportJob":{
       "name":"GetExportJob",
@@ -854,7 +854,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"NotFoundException"}
       ],
-      "documentation":"<p>Retrieves information about a specific email address that's on the suppression list for your account.</p>"
+      "documentation":"<p>Retrieves information about a specific email address that's on the suppression list for your account or for a specific tenant. To target a tenant's suppression list, specify the <code>TenantName</code> parameter. If you omit <code>TenantName</code>, the operation targets the account-level suppression list.</p>"
     },
     "GetTenant":{
       "name":"GetTenant",
@@ -869,7 +869,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"BadRequestException"}
       ],
-      "documentation":"<p>Get information about a specific tenant, including the tenant's name, ID, ARN, creation timestamp, tags, and sending status.</p>"
+      "documentation":"<p>Get information about a specific tenant, including the tenant's name, ID, ARN, creation timestamp, tags, sending status, and suppression attributes.</p>"
     },
     "ListConfigurationSets":{
       "name":"ListConfigurationSets",
@@ -1097,9 +1097,10 @@
       "errors":[
         {"shape":"BadRequestException"},
         {"shape":"TooManyRequestsException"},
-        {"shape":"InvalidNextTokenException"}
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"NotFoundException"}
       ],
-      "documentation":"<p>Retrieves a list of email addresses that are on the suppression list for your account.</p>"
+      "documentation":"<p>Retrieves a list of email addresses that are on the suppression list for your account or for a specific tenant. To target a tenant's suppression list, specify the <code>TenantName</code> parameter. If you omit <code>TenantName</code>, the operation targets the account-level suppression list.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -1290,7 +1291,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"BadRequestException"}
       ],
-      "documentation":"<p>Specify the account suppression list preferences for a configuration set.</p>"
+      "documentation":"<p>Specify the suppression list preferences for a configuration set. You can also use this operation to specify a <code>SuppressionScope</code> to override the suppression scope of the tenant or account for emails sent using this configuration set.</p>"
     },
     "PutConfigurationSetTrackingOptions":{
       "name":"PutConfigurationSetTrackingOptions",
@@ -1471,9 +1472,25 @@
       "output":{"shape":"PutSuppressedDestinationResponse"},
       "errors":[
         {"shape":"BadRequestException"},
-        {"shape":"TooManyRequestsException"}
+        {"shape":"TooManyRequestsException"},
+        {"shape":"NotFoundException"}
       ],
-      "documentation":"<p>Adds an email address to the suppression list for your account.</p>"
+      "documentation":"<p>Adds an email address to the suppression list for your account or for a specific tenant. To target a tenant's suppression list, specify the <code>TenantName</code> parameter. If you omit <code>TenantName</code>, the address is added to the account-level suppression list.</p>"
+    },
+    "PutTenantSuppressionAttributes":{
+      "name":"PutTenantSuppressionAttributes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/email/tenant/suppression"
+      },
+      "input":{"shape":"PutTenantSuppressionAttributesRequest"},
+      "output":{"shape":"PutTenantSuppressionAttributesResponse"},
+      "errors":[
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Configure the suppression list preferences for a tenant. Use this operation to enable or disable tenant-level suppression, or to change the suppressed reasons for a tenant.</p> <p>When you set the suppression scope to <code>TENANT</code>, Amazon SES maintains a separate suppression list for the tenant. When you set the scope to <code>ACCOUNT</code>, the tenant uses the account-level suppression list.</p>"
     },
     "SendBulkEmail":{
       "name":"SendBulkEmail",
@@ -2144,7 +2161,7 @@
       "members":{
         "DimensionName":{
           "shape":"DimensionName",
-          "documentation":"<p>The name of an Amazon CloudWatch dimension associated with an email sending metric. The name has to meet the following criteria:</p> <ul> <li> <p>It can only contain ASCII letters (a–z, A–Z), numbers (0–9), underscores (_), or dashes (-).</p> </li> <li> <p>It can contain no more than 256 characters.</p> </li> </ul>"
+          "documentation":"<p>The name of an Amazon CloudWatch dimension associated with an email sending metric. The name has to meet the following criteria:</p> <ul> <li> <p>It can only contain ASCII letters (a–z, A–Z), numbers (0–9), underscores (_), or dashes (-).</p> </li> <li> <p>It can contain no more than 255 characters.</p> </li> </ul>"
         },
         "DimensionValueSource":{
           "shape":"DimensionValueSource",
@@ -2152,7 +2169,7 @@
         },
         "DefaultDimensionValue":{
           "shape":"DefaultDimensionValue",
-          "documentation":"<p>The default value of the dimension that is published to Amazon CloudWatch if you don't provide the value of the dimension when you send an email. This value has to meet the following criteria:</p> <ul> <li> <p>Can only contain ASCII letters (a–z, A–Z), numbers (0–9), underscores (_), or dashes (-), at signs (@), and periods (.).</p> </li> <li> <p>It can contain no more than 256 characters.</p> </li> </ul>"
+          "documentation":"<p>The default value of the dimension that is published to Amazon CloudWatch if you don't provide the value of the dimension when you send an email. This value has to meet the following criteria:</p> <ul> <li> <p>Can only contain ASCII letters (a–z, A–Z), numbers (0–9), underscores (_), or dashes (-), at signs (@), and periods (.).</p> </li> <li> <p>It can contain no more than 255 characters.</p> </li> </ul>"
         }
       },
       "documentation":"<p>An object that defines the dimension configuration to use when you send email events to Amazon CloudWatch.</p>"
@@ -2347,7 +2364,10 @@
           "shape":"TagList",
           "documentation":"<p>An array of objects that define the tags (keys and values) to associate with the configuration set.</p>"
         },
-        "SuppressionOptions":{"shape":"SuppressionOptions"},
+        "SuppressionOptions":{
+          "shape":"SuppressionOptions",
+          "documentation":"<p>An object that contains information about the suppression list preferences for the configuration set. You can optionally include a <code>SuppressionScope</code> to override the tenant or account suppression scope for emails sent using this configuration set.</p>"
+        },
         "VdmOptions":{
           "shape":"VdmOptions",
           "documentation":"<p>An object that defines the VDM options for emails that you send using the configuration set.</p>"
@@ -2743,6 +2763,10 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>An array of objects that define the tags (keys and values) to associate with the tenant</p>"
+        },
+        "SuppressionAttributes":{
+          "shape":"TenantSuppressionAttributes",
+          "documentation":"<p>An object that contains information about the suppression list preferences for the tenant. Use this to configure tenant-level suppression at creation time.</p>"
         }
       },
       "documentation":"<p>Represents a request to create a tenant.</p> <p> <i>Tenants</i> are logical containers that group related SES resources together. Each tenant can have its own set of resources like email identities, configuration sets, and templates, along with reputation metrics and sending status. This helps isolate and manage email sending for different customers or business units within your Amazon SES API v2 account.</p>"
@@ -2796,7 +2820,8 @@
         "SendingStatus":{
           "shape":"SendingStatus",
           "documentation":"<p>The status of email sending capability for the tenant.</p>"
-        }
+        },
+        "SuppressionAttributes":{"shape":"TenantSuppressionAttributes"}
       },
       "documentation":"<p>Information about a newly created tenant.</p>"
     },
@@ -2937,7 +2962,7 @@
     },
     "DefaultDimensionValue":{
       "type":"string",
-      "documentation":"<p>The default value of the dimension that is published to Amazon CloudWatch if you don't provide the value of the dimension when you send an email. This value has to meet the following criteria:</p> <ul> <li> <p>It can only contain ASCII letters (a–z, A–Z), numbers (0–9), underscores (_), or dashes (-).</p> </li> <li> <p>It can contain no more than 256 characters.</p> </li> </ul>"
+      "documentation":"<p>The default value of the dimension that is published to Amazon CloudWatch if you don't provide the value of the dimension when you send an email. This value has to meet the following criteria:</p> <ul> <li> <p>It can only contain ASCII letters (a–z, A–Z), numbers (0–9), underscores (_), or dashes (-).</p> </li> <li> <p>It can contain no more than 255 characters.</p> </li> </ul>"
     },
     "DeleteConfigurationSetEventDestinationRequest":{
       "type":"structure",
@@ -3153,12 +3178,18 @@
       "members":{
         "EmailAddress":{
           "shape":"EmailAddress",
-          "documentation":"<p>The suppressed email destination to remove from the account suppression list.</p>",
+          "documentation":"<p>The suppressed email destination to remove from the suppression list for your account or for the specified tenant.</p>",
           "location":"uri",
           "locationName":"EmailAddress"
+        },
+        "TenantName":{
+          "shape":"TenantName",
+          "documentation":"<p>The name of the tenant whose suppression list you want to remove the address from. If you omit this parameter, the address is removed from the account-level suppression list.</p>",
+          "location":"querystring",
+          "locationName":"TenantName"
         }
       },
-      "documentation":"<p>A request to remove an email address from the suppression list for your account.</p>"
+      "documentation":"<p>A request to remove an email address from the suppression list for your account or for a specific tenant.</p>"
     },
     "DeleteSuppressedDestinationResponse":{
       "type":"structure",
@@ -3322,7 +3353,7 @@
     "DiagnosticCode":{"type":"string"},
     "DimensionName":{
       "type":"string",
-      "documentation":"<p>The name of an Amazon CloudWatch dimension associated with an email sending metric. The name has to meet the following criteria:</p> <ul> <li> <p>It can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>It can contain no more than 256 characters.</p> </li> </ul>"
+      "documentation":"<p>The name of an Amazon CloudWatch dimension associated with an email sending metric. The name has to meet the following criteria:</p> <ul> <li> <p>It can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>It can contain no more than 255 characters.</p> </li> </ul>"
     },
     "DimensionValueSource":{
       "type":"string",
@@ -4169,7 +4200,7 @@
         },
         "SuppressionOptions":{
           "shape":"SuppressionOptions",
-          "documentation":"<p>An object that contains information about the suppression list preferences for your account.</p>"
+          "documentation":"<p>An object that contains information about the suppression list preferences for your account or for a specific tenant.</p>"
         },
         "VdmOptions":{
           "shape":"VdmOptions",
@@ -4927,12 +4958,18 @@
       "members":{
         "EmailAddress":{
           "shape":"EmailAddress",
-          "documentation":"<p>The email address that's on the account suppression list.</p>",
+          "documentation":"<p>The email address that's on the suppression list for your account or for the specified tenant.</p>",
           "location":"uri",
           "locationName":"EmailAddress"
+        },
+        "TenantName":{
+          "shape":"TenantName",
+          "documentation":"<p>The name of the tenant whose suppression list you want to query. If you omit this parameter, the operation targets the account-level suppression list.</p>",
+          "location":"querystring",
+          "locationName":"TenantName"
         }
       },
-      "documentation":"<p>A request to retrieve information about an email address that's on the suppression list for your account.</p>"
+      "documentation":"<p>A request to retrieve information about an email address that's on the suppression list for your account or for a specific tenant.</p>"
     },
     "GetSuppressedDestinationResponse":{
       "type":"structure",
@@ -5834,9 +5871,15 @@
     "ListSuppressedDestinationsRequest":{
       "type":"structure",
       "members":{
+        "TenantName":{
+          "shape":"TenantName",
+          "documentation":"<p>The name of the tenant whose suppression list you want to retrieve. If you omit this parameter, the operation targets the account-level suppression list.</p>",
+          "location":"querystring",
+          "locationName":"TenantName"
+        },
         "Reasons":{
           "shape":"SuppressionListReasons",
-          "documentation":"<p>The factors that caused the email address to be added to .</p>",
+          "documentation":"<p>The factors that caused the email address to be added to the suppression list for your account or for a specific tenant.</p>",
           "location":"querystring",
           "locationName":"Reason"
         },
@@ -5865,7 +5908,7 @@
           "locationName":"PageSize"
         }
       },
-      "documentation":"<p>A request to obtain a list of email destinations that are on the suppression list for your account.</p>"
+      "documentation":"<p>A request to obtain a list of email destinations that are on the suppression list for your account or for a specific tenant.</p>"
     },
     "ListSuppressedDestinationsResponse":{
       "type":"structure",
@@ -5876,7 +5919,7 @@
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A token that indicates that there are additional email addresses on the suppression list for your account. To view additional suppressed addresses, issue another request to <code>ListSuppressedDestinations</code>, and pass this token in the <code>NextToken</code> parameter.</p>"
+          "documentation":"<p>A token that indicates that there are additional email addresses on the suppression list for your account or for the specified tenant. To view additional suppressed addresses, issue another request to <code>ListSuppressedDestinations</code>, and pass this token in the <code>NextToken</code> parameter.</p>"
         }
       },
       "documentation":"<p>A list of suppressed email addresses.</p>"
@@ -6705,16 +6748,20 @@
           "location":"uri",
           "locationName":"ConfigurationSetName"
         },
+        "SuppressionScope":{
+          "shape":"SuppressionListScope",
+          "documentation":"<p>The suppression scope for the configuration set. This overrides the tenant or account suppression scope for emails sent using this configuration set. Can be one of the following:</p> <ul> <li> <p> <code>TENANT</code> – Use the tenant's suppression list.</p> </li> <li> <p> <code>ACCOUNT</code> – Use the account-level suppression list.</p> </li> </ul>"
+        },
         "SuppressedReasons":{
           "shape":"SuppressionListReasons",
-          "documentation":"<p>A list that contains the reasons that email addresses are automatically added to the suppression list for your account. This list can contain any or all of the following:</p> <ul> <li> <p> <code>COMPLAINT</code> – Amazon SES adds an email address to the suppression list for your account when a message sent to that address results in a complaint.</p> </li> <li> <p> <code>BOUNCE</code> – Amazon SES adds an email address to the suppression list for your account when a message sent to that address results in a hard bounce.</p> </li> </ul>"
+          "documentation":"<p>A list that contains the reasons that email addresses are automatically added to the suppression list for your account or for a specific tenant. This list can contain any or all of the following:</p> <ul> <li> <p> <code>COMPLAINT</code> – Amazon SES adds an email address to the suppression list for your account or for a specific tenant when a message sent to that address results in a complaint.</p> </li> <li> <p> <code>BOUNCE</code> – Amazon SES adds an email address to the suppression list for your account or for a specific tenant when a message sent to that address results in a hard bounce.</p> </li> </ul>"
         },
         "ValidationOptions":{
           "shape":"SuppressionValidationOptions",
           "documentation":"<p>An object that contains information about the email address suppression preferences for the configuration set in the current Amazon Web Services Region.</p>"
         }
       },
-      "documentation":"<p>A request to change the account suppression list preferences for a specific configuration set.</p>"
+      "documentation":"<p>A request to change the suppression list preferences for a specific configuration set.</p>"
     },
     "PutConfigurationSetSuppressionOptionsResponse":{
       "type":"structure",
@@ -7004,19 +7051,47 @@
       "members":{
         "EmailAddress":{
           "shape":"EmailAddress",
-          "documentation":"<p>The email address that should be added to the suppression list for your account.</p>"
+          "documentation":"<p>The email address that should be added to the suppression list for your account or for the specified tenant.</p>"
         },
         "Reason":{
           "shape":"SuppressionListReason",
-          "documentation":"<p>The factors that should cause the email address to be added to the suppression list for your account.</p>"
+          "documentation":"<p>The factors that should cause the email address to be added to the suppression list for your account or for the specified tenant.</p>"
+        },
+        "TenantName":{
+          "shape":"TenantName",
+          "documentation":"<p>The name of the tenant whose suppression list you want to add the address to. If you omit this parameter, the address is added to the account-level suppression list.</p>"
         }
       },
-      "documentation":"<p>A request to add an email destination to the suppression list for your account.</p>"
+      "documentation":"<p>A request to add an email destination to the suppression list for your account or for a specific tenant.</p>"
     },
     "PutSuppressedDestinationResponse":{
       "type":"structure",
       "members":{},
       "documentation":"<p>An HTTP 200 response if the request succeeds, or an error message if the request fails.</p>"
+    },
+    "PutTenantSuppressionAttributesRequest":{
+      "type":"structure",
+      "required":["TenantName"],
+      "members":{
+        "TenantName":{
+          "shape":"TenantName",
+          "documentation":"<p>The name of the tenant to configure suppression list preferences for.</p>"
+        },
+        "SuppressedReasons":{
+          "shape":"SuppressionListReasons",
+          "documentation":"<p>A list that contains the reasons that email addresses are automatically added to the suppression list for the tenant. This list can contain any or all of the following:</p> <ul> <li> <p> <code>COMPLAINT</code> – Amazon SES adds an email address to the suppression list when a message sent to that address results in a complaint.</p> </li> <li> <p> <code>BOUNCE</code> – Amazon SES adds an email address to the suppression list when a message sent to that address results in a hard bounce.</p> </li> </ul>"
+        },
+        "SuppressionScope":{
+          "shape":"SuppressionListScope",
+          "documentation":"<p>The suppression scope for the tenant. Specify <code>TENANT</code> to use the tenant's own suppression list, or <code>ACCOUNT</code> to use the account-level suppression list.</p> <note> <p>If you don't specify a suppression scope, the tenant defaults to <code>ACCOUNT</code> scope and uses the account-level suppression list.</p> </note>"
+        }
+      },
+      "documentation":"<p>A request to configure the suppression list preferences for a tenant.</p>"
+    },
+    "PutTenantSuppressionAttributesResponse":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>If the action is successful, the service sends back an HTTP 200 response with an empty HTTP body.</p>"
     },
     "QueryErrorCode":{
       "type":"string",
@@ -7650,11 +7725,11 @@
       "members":{
         "EmailAddress":{
           "shape":"EmailAddress",
-          "documentation":"<p>The email address that is on the suppression list for your account.</p>"
+          "documentation":"<p>The email address that is on the suppression list for your account or for a specific tenant.</p>"
         },
         "Reason":{
           "shape":"SuppressionListReason",
-          "documentation":"<p>The reason that the address was added to the suppression list for your account.</p>"
+          "documentation":"<p>The reason that the address was added to the suppression list for your account or for a specific tenant.</p>"
         },
         "LastUpdateTime":{
           "shape":"Timestamp",
@@ -7662,24 +7737,28 @@
         },
         "Attributes":{
           "shape":"SuppressedDestinationAttributes",
-          "documentation":"<p>An optional value that can contain additional information about the reasons that the address was added to the suppression list for your account.</p>"
+          "documentation":"<p>An optional value that can contain additional information about the reasons that the address was added to the suppression list for your account or for a specific tenant.</p>"
+        },
+        "TenantName":{
+          "shape":"TenantName",
+          "documentation":"<p>The name of the tenant that the suppressed destination belongs to. This field is present only when the suppressed destination is on a tenant's suppression list.</p>"
         }
       },
-      "documentation":"<p>An object that contains information about an email address that is on the suppression list for your account.</p>"
+      "documentation":"<p>An object that contains information about an email address that is on the suppression list for your account or for a specific tenant.</p>"
     },
     "SuppressedDestinationAttributes":{
       "type":"structure",
       "members":{
         "MessageId":{
           "shape":"OutboundMessageId",
-          "documentation":"<p>The unique identifier of the email message that caused the email address to be added to the suppression list for your account.</p>"
+          "documentation":"<p>The unique identifier of the email message that caused the email address to be added to the suppression list for your account or for a specific tenant.</p>"
         },
         "FeedbackId":{
           "shape":"FeedbackId",
-          "documentation":"<p>A unique identifier that's generated when an email address is added to the suppression list for your account.</p>"
+          "documentation":"<p>A unique identifier that's generated when an email address is added to the suppression list for your account or for a specific tenant.</p>"
         }
       },
-      "documentation":"<p>An object that contains additional attributes that are related an email address that is on the suppression list for your account.</p>"
+      "documentation":"<p>An object that contains additional attributes that are related an email address that is on the suppression list for your account or for a specific tenant.</p>"
     },
     "SuppressedDestinationSummaries":{
       "type":"list",
@@ -7695,11 +7774,11 @@
       "members":{
         "EmailAddress":{
           "shape":"EmailAddress",
-          "documentation":"<p>The email address that's on the suppression list for your account.</p>"
+          "documentation":"<p>The email address that's on the suppression list for your account or for a specific tenant.</p>"
         },
         "Reason":{
           "shape":"SuppressionListReason",
-          "documentation":"<p>The reason that the address was added to the suppression list for your account.</p>"
+          "documentation":"<p>The reason that the address was added to the suppression list for your account or for a specific tenant.</p>"
         },
         "LastUpdateTime":{
           "shape":"Timestamp",
@@ -7775,7 +7854,7 @@
     },
     "SuppressionListReason":{
       "type":"string",
-      "documentation":"<p>The reason that the address was added to the suppression list for your account. The value can be one of the following:</p> <ul> <li> <p> <code>COMPLAINT</code> – Amazon SES added an email address to the suppression list for your account because a message sent to that address results in a complaint.</p> </li> <li> <p> <code>BOUNCE</code> – Amazon SES added an email address to the suppression list for your account because a message sent to that address results in a hard bounce.</p> </li> </ul>",
+      "documentation":"<p>The reason that the address was added to the suppression list for your account or for a specific tenant. The value can be one of the following:</p> <ul> <li> <p> <code>COMPLAINT</code> – Amazon SES added an email address to the suppression list for your account or for a specific tenant because a message sent to that address results in a complaint.</p> </li> <li> <p> <code>BOUNCE</code> – Amazon SES added an email address to the suppression list for your account or for a specific tenant because a message sent to that address results in a hard bounce.</p> </li> </ul>",
       "enum":[
         "BOUNCE",
         "COMPLAINT"
@@ -7785,16 +7864,28 @@
       "type":"list",
       "member":{"shape":"SuppressionListReason"}
     },
+    "SuppressionListScope":{
+      "type":"string",
+      "documentation":"<p>The suppression scope that determines which suppression list Amazon SES uses. Can be one of the following:</p> <ul> <li> <p> <code>TENANT</code> – Use the tenant's own suppression list.</p> </li> <li> <p> <code>ACCOUNT</code> – Use the account-level suppression list.</p> </li> </ul>",
+      "enum":[
+        "ACCOUNT",
+        "TENANT"
+      ]
+    },
     "SuppressionOptions":{
       "type":"structure",
       "members":{
         "SuppressedReasons":{
           "shape":"SuppressionListReasons",
-          "documentation":"<p>A list that contains the reasons that email addresses are automatically added to the suppression list for your account. This list can contain any or all of the following:</p> <ul> <li> <p> <code>COMPLAINT</code> – Amazon SES adds an email address to the suppression list for your account when a message sent to that address results in a complaint.</p> </li> <li> <p> <code>BOUNCE</code> – Amazon SES adds an email address to the suppression list for your account when a message sent to that address results in a hard bounce.</p> </li> </ul>"
+          "documentation":"<p>A list that contains the reasons that email addresses are automatically added to the suppression list for your account or for a specific tenant. This list can contain any or all of the following:</p> <ul> <li> <p> <code>COMPLAINT</code> – Amazon SES adds an email address to the suppression list for your account or for a specific tenant when a message sent to that address results in a complaint.</p> </li> <li> <p> <code>BOUNCE</code> – Amazon SES adds an email address to the suppression list for your account or for a specific tenant when a message sent to that address results in a hard bounce.</p> </li> </ul>"
+        },
+        "SuppressionScope":{
+          "shape":"SuppressionListScope",
+          "documentation":"<p>The suppression scope for the configuration set. This overrides the tenant or account suppression scope for emails sent using this configuration set. Can be one of the following:</p> <ul> <li> <p> <code>TENANT</code> – Use the tenant's suppression list.</p> </li> <li> <p> <code>ACCOUNT</code> – Use the account-level suppression list.</p> </li> </ul>"
         },
         "ValidationOptions":{"shape":"SuppressionValidationOptions"}
       },
-      "documentation":"<p>An object that contains information about the suppression list preferences for your account.</p>"
+      "documentation":"<p>An object that contains information about the suppression list preferences for your account or for a specific tenant.</p>"
     },
     "SuppressionValidationAttributes":{
       "type":"structure",
@@ -7927,6 +8018,10 @@
         "SendingStatus":{
           "shape":"SendingStatus",
           "documentation":"<p>The status of sending capability for the tenant.</p>"
+        },
+        "SuppressionAttributes":{
+          "shape":"TenantSuppressionAttributes",
+          "documentation":"<p>An object that contains information about the suppression list preferences for the tenant.</p>"
         }
       },
       "documentation":"<p>A structure that contains details about a tenant.</p>"
@@ -7982,6 +8077,20 @@
       "type":"list",
       "member":{"shape":"TenantResource"},
       "documentation":"<p>A list of resources associated with a tenant.</p>"
+    },
+    "TenantSuppressionAttributes":{
+      "type":"structure",
+      "members":{
+        "SuppressedReasons":{
+          "shape":"SuppressionListReasons",
+          "documentation":"<p>A list that contains the reasons that email addresses are automatically added to the suppression list for the tenant. This list can contain any or all of the following:</p> <ul> <li> <p> <code>COMPLAINT</code> – Amazon SES adds an email address to the suppression list when a message sent to that address results in a complaint.</p> </li> <li> <p> <code>BOUNCE</code> – Amazon SES adds an email address to the suppression list when a message sent to that address results in a hard bounce.</p> </li> </ul>"
+        },
+        "SuppressionScope":{
+          "shape":"SuppressionListScope",
+          "documentation":"<p>The suppression scope for the tenant. Can be one of the following:</p> <ul> <li> <p> <code>TENANT</code> – The tenant uses its own suppression list.</p> </li> <li> <p> <code>ACCOUNT</code> – The tenant uses the account-level suppression list.</p> </li> </ul> <note> <p>If you don't specify a suppression scope, the tenant defaults to <code>ACCOUNT</code> scope and uses the account-level suppression list.</p> </note>"
+        }
+      },
+      "documentation":"<p>An object that contains the suppression list preferences for a tenant.</p>"
     },
     "TestRenderEmailTemplateRequest":{
       "type":"structure",

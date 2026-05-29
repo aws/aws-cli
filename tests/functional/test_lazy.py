@@ -12,13 +12,13 @@
 # language governing permissions and limitations under the License.
 import pytest
 
-from awscli.handlers_registry import MAIN_COMMAND_TABLE_OPS
+from awscli.handlers_registry import MAIN_COMMAND_TABLE_OPS, CommandTableOp
 from awscli.lazy import LazyCommand
 from awscli.testutils import BaseAWSHelpOutputTest, mock
 
 # Derive test parameters from MAIN_COMMAND_TABLE_OPS.
-_ADD_OPS = [op for op in MAIN_COMMAND_TABLE_OPS if op[0] == 'add']
-_RENAME_OPS = [op for op in MAIN_COMMAND_TABLE_OPS if op[0] == 'rename']
+_ADD_OPS = [op for op in MAIN_COMMAND_TABLE_OPS if op[0] == CommandTableOp.ADD]
+_RENAME_OPS = [op for op in MAIN_COMMAND_TABLE_OPS if op[0] == CommandTableOp.RENAME]
 _ADD_CMD_NAMES = [op[1] for op in _ADD_OPS]
 _RENAME_NEW_NAMES = [op[2] for op in _RENAME_OPS]
 

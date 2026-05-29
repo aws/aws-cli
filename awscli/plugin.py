@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import importlib
 import logging
 import os
 import sys
@@ -45,7 +46,12 @@ def load_plugins(plugin_mapping, event_hooks=None, include_builtins=True):
     if event_hooks is None:
         event_hooks = LazyInitEmitter()
     if include_builtins:
-        event_hooks.load_registry(PLUGIN_REGISTRY)
+        if isinstance(event_hooks, LazyInitEmitter):
+            event_hooks.load_registry(PLUGIN_REGISTRY)
+        else:
+            # When the event emitter is not a LazyInitEmitter, we fall back
+            # to eagerly loading all plugins in the registry.
+            _eager_load_registry(event_hooks)
     plugin_path = plugin_mapping.pop(CLI_LEGACY_PLUGIN_PATH, None)
     if plugin_path is not None:
         _add_plugin_path_to_sys_path(plugin_path)
@@ -56,6 +62,19 @@ def load_plugins(plugin_mapping, event_hooks=None, include_builtins=True):
             "importing additional plugins."
         )
     return event_hooks
+
+
+def _eager_load_registry(event_hooks):
+    """Eagerly initialize all plugins from the plugin registry."""
+    seen = set()
+    for event_pattern, entries in PLUGIN_REGISTRY.items():
+        for entry in entries:
+            if entry not in seen:
+                seen.add(entry)
+                module_path, fn_name = entry
+                mod = importlib.import_module(module_path)
+                fn = getattr(mod, fn_name)
+                fn(event_hooks)
 
 
 def _load_plugins(plugin_mapping, event_hooks):

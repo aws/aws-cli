@@ -30,7 +30,7 @@ alias_packages_plugins = hooks.collect_submodules(
 ) + hooks.collect_submodules('awscli.s3transfer')
 hiddenimports += alias_packages_plugins
 
-# handlers.py uses importlib.import_module at runtime to load customization
+# plugin.py uses importlib.import_module at runtime to load customization
 # modules, so PyInstaller cannot discover them statically. Collect all module
 # paths referenced in handlers_registry.py as hidden imports.
 registry_modules = {

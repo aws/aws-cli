@@ -561,6 +561,27 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
         future = self.transfer_request_submitter.submit(fileinfo)
         self.assertIsInstance(self.result_queue.get(), DryRunResult)
 
+    def test_warn_and_ignore_on_leading_slash_parent_reference(self):
+        fileinfo = self.create_file_info('/../foo.txt')
+        future = self.transfer_request_submitter.submit(fileinfo)
+        warning_result = self.result_queue.get()
+        self.assertIsInstance(warning_result, WarningResult)
+        self.assert_no_downloads_happened()
+
+    def test_warn_and_ignore_on_leading_slash_stacked_parent_reference(self):
+        fileinfo = self.create_file_info('/../../../foo/bar.txt')
+        future = self.transfer_request_submitter.submit(fileinfo)
+        warning_result = self.result_queue.get()
+        self.assertIsInstance(warning_result, WarningResult)
+        self.assert_no_downloads_happened()
+
+    def test_warn_and_ignore_on_double_leading_slash_parent_reference(self):
+        fileinfo = self.create_file_info('//../foo')
+        future = self.transfer_request_submitter.submit(fileinfo)
+        warning_result = self.result_queue.get()
+        self.assertIsInstance(warning_result, WarningResult)
+        self.assert_no_downloads_happened()
+
     def test_dry_run(self):
         self.cli_params['dryrun'] = True
         self.transfer_request_submitter = DownloadRequestSubmitter(

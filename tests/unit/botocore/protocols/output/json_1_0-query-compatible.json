@@ -37,6 +37,7 @@
         "cases": [
             {
                 "id": "QueryCompatibleAwsJson10NoCustomCodeError",
+                "description": "Parses simple errors with no query error code",
                 "given": {
                     "name": "QueryCompatibleOperation",
                     "http": {
@@ -50,7 +51,6 @@
                         }
                     ]
                 },
-                "description": "Parses simple errors with no query error code",
                 "errorCode": "NoCustomCodeError",
                 "errorMessage": "Hi",
                 "error": {
@@ -109,6 +109,7 @@
         "cases": [
             {
                 "id": "QueryCompatibleAwsJson10CustomCodeError",
+                "description": "Parses simple errors with query error code",
                 "given": {
                     "name": "QueryCompatibleOperation",
                     "http": {
@@ -122,7 +123,6 @@
                         }
                     ]
                 },
-                "description": "Parses simple errors with query error code",
                 "errorCode": "Customized",
                 "errorMessage": "Hi",
                 "error": {
@@ -131,8 +131,8 @@
                 "response": {
                     "status_code": 400,
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.0",
-                        "x-amzn-query-error": "Customized;Sender"
+                        "x-amzn-query-error": "Customized;Sender",
+                        "Content-Type": "application/x-amz-json-1.0"
                     },
                     "body": "{\n    \"__type\": \"aws.protocoltests.json10#CustomCodeError\",\n    \"message\": \"Hi\"\n}"
                 }

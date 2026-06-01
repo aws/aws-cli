@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.45.19
+=======
+
+* api-change:``cognito-idp``: Add support for multi-region replication, enabling synchronization of user data and configurations to a secondary user pool in a standby Region. Add support for customer managed keys (CMK) in AWS KMS for encrypting user pool data at rest.
+* api-change:``marketplace-agreement``: Adding Entitlements in SearchAgreements Response
+* api-change:``quicksight``: This release adds public APIs for Amazon QuickSight Spaces, Agents, and Flows. Spaces APIs enable management of curated resource collections. Agents APIs provide lifecycle control over AI-powered agents that leverage Spaces. Flows APIs add CRUDL APIs for automated workflows.
+
+
 1.45.18
 =======
 

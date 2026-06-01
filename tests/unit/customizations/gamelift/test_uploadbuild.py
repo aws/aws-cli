@@ -304,6 +304,38 @@ class TestZipDirectory(unittest.TestCase):
         zip_directory(self.zip_file, self.dir_root)
         self.assert_contents_of_zip_file([filename])
 
+    def test_symlinked_files_are_not_archived(self):
+        self.add_to_directory('foo')
+        outside_file = self.file_creator.create_file(
+            'outside-secret', 'secret contents')
+        linked_file = os.path.join(self.dir_root, 'linked-secret')
+        try:
+            os.symlink(outside_file, linked_file)
+        except OSError as e:
+            raise unittest.SkipTest(
+                f'Unable to create symlink on this platform: {e}')
+
+        zip_directory(self.zip_file, self.dir_root)
+
+        self.assert_contents_of_zip_file(['foo'])
+
+    def test_symlinked_directories_are_not_archived(self):
+        self.add_to_directory('foo')
+        outside_dir = os.path.join(self.file_creator.rootdir, 'outside')
+        os.makedirs(outside_dir)
+        with open(os.path.join(outside_dir, 'secret'), 'w') as f:
+            f.write('secret contents')
+        linked_dir = os.path.join(self.dir_root, 'linked-dir')
+        try:
+            os.symlink(outside_dir, linked_dir, target_is_directory=True)
+        except OSError as e:
+            raise unittest.SkipTest(
+                f'Unable to create symlink on this platform: {e}')
+
+        zip_directory(self.zip_file, self.dir_root)
+
+        self.assert_contents_of_zip_file(['foo'])
+
 
 class TestValidateDirectory(unittest.TestCase):
     def setUp(self):

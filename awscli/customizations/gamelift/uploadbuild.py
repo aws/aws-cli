@@ -136,8 +136,14 @@ def zip_directory(zipfile_name, source_root):
         zip_file = zipfile.ZipFile(f, 'w', zipfile.ZIP_DEFLATED, True)
         with contextlib.closing(zip_file) as zf:
             for root, dirs, files in os.walk(source_root):
+                dirs[:] = [
+                    dirname for dirname in dirs
+                    if not os.path.islink(os.path.join(root, dirname))
+                ]
                 for filename in files:
                     full_path = os.path.join(root, filename)
+                    if os.path.islink(full_path):
+                        continue
                     relative_path = os.path.relpath(
                         full_path, source_root)
                     zf.write(full_path, relative_path)

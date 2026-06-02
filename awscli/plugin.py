@@ -45,7 +45,9 @@ def load_plugins(plugin_mapping, event_hooks=None, include_builtins=True):
     if event_hooks is None:
         event_hooks = HierarchicalEmitter()
     if include_builtins:
+        event_hooks.emit('before-load-plugins')
         _load_plugins(BUILTIN_PLUGINS, event_hooks)
+        event_hooks.emit('after-load-plugins')
     plugin_path = plugin_mapping.pop(CLI_LEGACY_PLUGIN_PATH, None)
     if plugin_path is not None:
         _add_plugin_path_to_sys_path(plugin_path)

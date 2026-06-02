@@ -490,7 +490,7 @@
       },
       "input":{"shape":"CancelCapacityReservationRequest"},
       "output":{"shape":"CancelCapacityReservationResult"},
-      "documentation":"<p>Cancels the specified Capacity Reservation, releases the reserved capacity, and changes the Capacity Reservation's state to <code>cancelled</code>.</p> <p>You can cancel a Capacity Reservation that is in the following states:</p> <ul> <li> <p> <code>assessing</code> </p> </li> <li> <p> <code>active</code> and there is no commitment duration or the commitment duration has elapsed. You can't cancel a future-dated Capacity Reservation during the commitment duration.</p> </li> </ul> <note> <p>You can't modify or cancel a Capacity Block. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-capacity-blocks.html\">Capacity Blocks for ML</a>.</p> </note> <p>If a future-dated Capacity Reservation enters the <code>delayed</code> state, the commitment duration is waived, and you can cancel it as soon as it enters the <code>active</code> state.</p> <p>Instances running in the reserved capacity continue running until you stop them. Stopped instances that target the Capacity Reservation can no longer launch. Modify these instances to either target a different Capacity Reservation, launch On-Demand Instance capacity, or run in any open Capacity Reservation that has matching attributes and sufficient capacity.</p>"
+      "documentation":"<p>Cancels the specified Capacity Reservation, releases the reserved capacity, and changes the Capacity Reservation's state to <code>cancelled</code>.</p> <p>You can cancel a Capacity Reservation that is in the following states:</p> <ul> <li> <p> <code>assessing</code> </p> </li> <li> <p> <code>scheduled</code> </p> </li> <li> <p> <code>active</code> and there is no commitment duration or the commitment duration has elapsed.</p> </li> <li> <p> <code>active</code> during the commitment duration, if you provide a cancellation quote ID and accept the cancellation charges. Use <code>CreateCapacityReservationCancellationQuote</code> to generate a quote. The Capacity Reservation transitions to <code>cancelling</code> while charges are applied.</p> </li> </ul> <note> <p>You can't modify or cancel a Capacity Block. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-capacity-blocks.html\">Capacity Blocks for ML</a>.</p> </note> <p>If a future-dated Capacity Reservation enters the <code>delayed</code> state, the commitment duration is waived, and you can cancel it as soon as it enters the <code>active</code> state.</p> <p>Instances running in the reserved capacity continue running until you stop them. Stopped instances that target the Capacity Reservation can no longer launch. Modify these instances to either target a different Capacity Reservation, launch On-Demand Instance capacity, or run in any open Capacity Reservation that has matching attributes and sufficient capacity.</p>"
     },
     "CancelCapacityReservationFleets":{
       "name":"CancelCapacityReservationFleets",
@@ -659,6 +659,16 @@
       "input":{"shape":"CreateCapacityReservationBySplittingRequest"},
       "output":{"shape":"CreateCapacityReservationBySplittingResult"},
       "documentation":"<p> Create a new Capacity Reservation by splitting the capacity of the source Capacity Reservation. The new Capacity Reservation will have the same attributes as the source Capacity Reservation except for tags. The source Capacity Reservation must be <code>active</code> and owned by your Amazon Web Services account. </p>"
+    },
+    "CreateCapacityReservationCancellationQuote":{
+      "name":"CreateCapacityReservationCancellationQuote",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateCapacityReservationCancellationQuoteRequest"},
+      "output":{"shape":"CreateCapacityReservationCancellationQuoteResult"},
+      "documentation":"<p>Generates a cancellation quote for a future-dated Capacity Reservation that is within its commitment duration. The quote includes the cancellation terms and a quote ID that you can pass to the <code>CancelCapacityReservation</code> action. Cancellation quotes are valid for 24 hours.</p>"
     },
     "CreateCapacityReservationFleet":{
       "name":"CreateCapacityReservationFleet",
@@ -2818,6 +2828,16 @@
       "input":{"shape":"DescribeCapacityReservationBillingRequestsRequest"},
       "output":{"shape":"DescribeCapacityReservationBillingRequestsResult"},
       "documentation":"<p>Describes a request to assign the billing of the unused capacity of a Capacity Reservation. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/transfer-billing.html\"> Billing assignment for shared Amazon EC2 Capacity Reservations</a>.</p>"
+    },
+    "DescribeCapacityReservationCancellationQuotes":{
+      "name":"DescribeCapacityReservationCancellationQuotes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeCapacityReservationCancellationQuotesRequest"},
+      "output":{"shape":"DescribeCapacityReservationCancellationQuotesResult"},
+      "documentation":"<p>Describes one or more Capacity Reservation cancellation quotes. The results describe only the quotes that you have previously generated by using the <code>CreateCapacityReservationCancellationQuote</code> action.</p>"
     },
     "DescribeCapacityReservationFleets":{
       "name":"DescribeCapacityReservationFleets",
@@ -8851,7 +8871,8 @@
       "type":"string",
       "enum":[
         "used",
-        "future"
+        "future",
+        "cancelling"
       ]
     },
     "AllowedImagesSettingsDisabledState":{
@@ -9223,6 +9244,10 @@
         "enable",
         "disable"
       ]
+    },
+    "ApplyCancellationCharges":{
+      "type":"string",
+      "enum":["commitment-wind-down"]
     },
     "ApplySecurityGroupsToClientVpnTargetNetworkRequest":{
       "type":"structure",
@@ -11800,6 +11825,14 @@
         "DryRun":{
           "shape":"Boolean",
           "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "ApplyCancellationCharges":{
+          "shape":"ApplyCancellationCharges",
+          "documentation":"<p>Specifies the cancellation charge type to apply when cancelling a future-dated Capacity Reservation during its commitment duration. Possible values include <code>commitment-wind-down</code>, which continues billing for the remaining commitment duration without delivering capacity.</p>"
+        },
+        "QuoteId":{
+          "shape":"CapacityReservationCancellationQuoteId",
+          "documentation":"<p>The ID of the cancellation quote to use for the cancellation. You can generate a cancellation quote by using the <code>CreateCapacityReservationCancellationQuote</code> action. The cancellation quote must be in an <code>active</code> state.</p>"
         }
       }
     },
@@ -12098,6 +12131,44 @@
         }
       },
       "documentation":"<p>Contains the output of CancelSpotInstanceRequests.</p>"
+    },
+    "CancellationTerms":{
+      "type":"structure",
+      "members":{
+        "CancellationType":{
+          "shape":"ApplyCancellationCharges",
+          "documentation":"<p>The type of cancellation charge. Possible values include <code>commitment-wind-down</code>.</p>",
+          "locationName":"cancellationType"
+        },
+        "ReservationState":{
+          "shape":"String",
+          "documentation":"<p>The state that the Capacity Reservation will transition to after cancellation.</p>",
+          "locationName":"reservationState"
+        },
+        "CommittedInstanceCount":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The number of instances under commitment after cancellation.</p>",
+          "locationName":"committedInstanceCount"
+        },
+        "ChargeCommitmentDurationHours":{
+          "shape":"BoxedLong",
+          "documentation":"<p>The number of hours for which cancellation charges will apply.</p>",
+          "locationName":"chargeCommitmentDurationHours"
+        },
+        "ChargeEndDate":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time at which cancellation charges will stop.</p>",
+          "locationName":"chargeEndDate"
+        }
+      },
+      "documentation":"<p>Describes the cancellation terms for cancelling a future-dated Capacity Reservation during its commitment duration.</p>"
+    },
+    "CancellationTermsSet":{
+      "type":"list",
+      "member":{
+        "shape":"CancellationTerms",
+        "locationName":"item"
+      }
     },
     "CancelledSpotInstanceRequest":{
       "type":"structure",
@@ -12907,7 +12978,7 @@
         },
         "State":{
           "shape":"CapacityReservationState",
-          "documentation":"<p>The current state of the Capacity Reservation. A Capacity Reservation can be in one of the following states:</p> <ul> <li> <p> <code>active</code> - The capacity is available for use.</p> </li> <li> <p> <code>expired</code> - The Capacity Reservation expired automatically at the date and time specified in your reservation request. The reserved capacity is no longer available for your use.</p> </li> <li> <p> <code>cancelled</code> - The Capacity Reservation was canceled. The reserved capacity is no longer available for your use.</p> </li> <li> <p> <code>pending</code> - The Capacity Reservation request was successful but the capacity provisioning is still pending.</p> </li> <li> <p> <code>failed</code> - The Capacity Reservation request has failed. A request can fail due to request parameters that are not valid, capacity constraints, or instance limit constraints. You can view a failed request for 60 minutes.</p> </li> <li> <p> <code>scheduled</code> - (<i>Future-dated Capacity Reservations</i>) The future-dated Capacity Reservation request was approved and the Capacity Reservation is scheduled for delivery on the requested start date.</p> </li> <li> <p> <code>payment-pending</code> - (<i>Capacity Blocks</i>) The upfront payment has not been processed yet.</p> </li> <li> <p> <code>payment-failed</code> - (<i>Capacity Blocks</i>) The upfront payment was not processed in the 12-hour time frame. Your Capacity Block was released.</p> </li> <li> <p> <code>assessing</code> - (<i>Future-dated Capacity Reservations</i>) Amazon EC2 is assessing your request for a future-dated Capacity Reservation.</p> </li> <li> <p> <code>delayed</code> - (<i>Future-dated Capacity Reservations</i>) Amazon EC2 encountered a delay in provisioning the requested future-dated Capacity Reservation. Amazon EC2 is unable to deliver the requested capacity by the requested start date and time.</p> </li> <li> <p> <code>unsupported</code> - (<i>Future-dated Capacity Reservations</i>) Amazon EC2 can't support the future-dated Capacity Reservation request due to capacity constraints. You can view unsupported requests for 30 days. The Capacity Reservation will not be delivered.</p> </li> </ul>",
+          "documentation":"<p>The current state of the Capacity Reservation. A Capacity Reservation can be in one of the following states:</p> <ul> <li> <p> <code>active</code> - The capacity is available for use.</p> </li> <li> <p> <code>expired</code> - The Capacity Reservation expired automatically at the date and time specified in your reservation request. The reserved capacity is no longer available for your use.</p> </li> <li> <p> <code>cancelled</code> - The Capacity Reservation was canceled. The reserved capacity is no longer available for your use.</p> </li> <li> <p> <code>pending</code> - The Capacity Reservation request was successful but the capacity provisioning is still pending.</p> </li> <li> <p> <code>failed</code> - The Capacity Reservation request has failed. A request can fail due to request parameters that are not valid, capacity constraints, or instance limit constraints. You can view a failed request for 60 minutes.</p> </li> <li> <p> <code>scheduled</code> - (<i>Future-dated Capacity Reservations</i>) The future-dated Capacity Reservation request was approved and the Capacity Reservation is scheduled for delivery on the requested start date.</p> </li> <li> <p> <code>payment-pending</code> - (<i>Capacity Blocks</i>) The upfront payment has not been processed yet.</p> </li> <li> <p> <code>payment-failed</code> - (<i>Capacity Blocks</i>) The upfront payment was not processed in the 12-hour time frame. Your Capacity Block was released.</p> </li> <li> <p> <code>assessing</code> - (<i>Future-dated Capacity Reservations</i>) Amazon EC2 is assessing your request for a future-dated Capacity Reservation.</p> </li> <li> <p> <code>delayed</code> - (<i>Future-dated Capacity Reservations</i>) Amazon EC2 encountered a delay in provisioning the requested future-dated Capacity Reservation. Amazon EC2 is unable to deliver the requested capacity by the requested start date and time.</p> </li> <li> <p> <code>unsupported</code> - (<i>Future-dated Capacity Reservations</i>) Amazon EC2 can't support the future-dated Capacity Reservation request due to capacity constraints. You can view unsupported requests for 30 days. The Capacity Reservation will not be delivered.</p> </li> <li> <p> <code>cancelling</code> - (<i>Future-dated Capacity Reservations</i>) The Capacity Reservation is being cancelled. Capacity has been released but charges continue for the commitment wind-down period. The reservation transitions to <code>cancelled</code> when the wind-down completes.</p> </li> </ul>",
           "locationName":"state"
         },
         "StartDate":{
@@ -13062,6 +13133,75 @@
         "expired"
       ]
     },
+    "CapacityReservationCancellationQuote":{
+      "type":"structure",
+      "members":{
+        "CapacityReservationCancellationQuoteId":{
+          "shape":"CapacityReservationCancellationQuoteId",
+          "documentation":"<p>The ID of the cancellation quote.</p>",
+          "locationName":"capacityReservationCancellationQuoteId"
+        },
+        "CapacityReservationId":{
+          "shape":"CapacityReservationId",
+          "documentation":"<p>The ID of the Capacity Reservation associated with the cancellation quote.</p>",
+          "locationName":"capacityReservationId"
+        },
+        "CreateTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time at which the cancellation quote was created.</p>",
+          "locationName":"createTime"
+        },
+        "ExpirationTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time at which the cancellation quote expires.</p>",
+          "locationName":"expirationTime"
+        },
+        "QuoteState":{
+          "shape":"CapacityReservationCancellationQuoteState",
+          "documentation":"<p>The state of the cancellation quote. Possible values include <code>pending</code>, <code>active</code>, and <code>expired</code>.</p>",
+          "locationName":"quoteState"
+        },
+        "CurrentConfiguration":{
+          "shape":"CapacityReservationConfiguration",
+          "documentation":"<p>The current configuration of the Capacity Reservation.</p>",
+          "locationName":"currentConfiguration"
+        },
+        "CancellationTerms":{
+          "shape":"CancellationTermsSet",
+          "documentation":"<p>The cancellation terms associated with the quote, including the fee type and charge details.</p>",
+          "locationName":"cancellationTermSet"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags assigned to the cancellation quote.</p>",
+          "locationName":"tagSet"
+        }
+      },
+      "documentation":"<p>Describes a Capacity Reservation cancellation quote, which provides the cancellation terms for cancelling a future-dated Capacity Reservation during its commitment duration.</p>"
+    },
+    "CapacityReservationCancellationQuoteId":{"type":"string"},
+    "CapacityReservationCancellationQuoteIdSet":{
+      "type":"list",
+      "member":{
+        "shape":"CapacityReservationCancellationQuoteId",
+        "locationName":"item"
+      }
+    },
+    "CapacityReservationCancellationQuoteResponseSet":{
+      "type":"list",
+      "member":{
+        "shape":"CapacityReservationCancellationQuote",
+        "locationName":"item"
+      }
+    },
+    "CapacityReservationCancellationQuoteState":{
+      "type":"string",
+      "enum":[
+        "pending",
+        "active",
+        "expired"
+      ]
+    },
     "CapacityReservationCommitmentDuration":{
       "type":"long",
       "max":200000000,
@@ -13082,6 +13222,22 @@
         }
       },
       "documentation":"<p>Information about your commitment for a future-dated Capacity Reservation.</p>"
+    },
+    "CapacityReservationConfiguration":{
+      "type":"structure",
+      "members":{
+        "InstanceCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of instances in the Capacity Reservation.</p>",
+          "locationName":"instanceCount"
+        },
+        "ReservationState":{
+          "shape":"String",
+          "documentation":"<p>The current state of the Capacity Reservation.</p>",
+          "locationName":"reservationState"
+        }
+      },
+      "documentation":"<p>Describes the configuration of a Capacity Reservation.</p>"
     },
     "CapacityReservationDeliveryPreference":{
       "type":"string",
@@ -13373,6 +13529,7 @@
         "assessing",
         "delayed",
         "unsupported",
+        "cancelling",
         "unavailable"
       ]
     },
@@ -14711,7 +14868,7 @@
       "members":{
         "TcpEstablishedTimeout":{
           "shape":"Integer",
-          "documentation":"<p>Timeout (in seconds) for idle TCP connections in an established state. Min: 60 seconds. Max: 432000 seconds (5 days). Default: 432000 seconds. Recommended: Less than 432000 seconds.</p>",
+          "documentation":"<p>Timeout (in seconds) for idle TCP connections in an established state. Min: 60 seconds. Max: 432000 seconds (5 days). Default: 350 seconds for Nitro v6 instance types (excluding P6e-GB200); 432000 seconds for all other instance types (including P6e-GB200). Recommended: Less than 432000 seconds.</p>",
           "locationName":"tcpEstablishedTimeout"
         },
         "UdpStreamTimeout":{
@@ -14732,7 +14889,7 @@
       "members":{
         "TcpEstablishedTimeout":{
           "shape":"Integer",
-          "documentation":"<p>Timeout (in seconds) for idle TCP connections in an established state. Min: 60 seconds. Max: 432000 seconds (5 days). Default: 432000 seconds. Recommended: Less than 432000 seconds.</p>",
+          "documentation":"<p>Timeout (in seconds) for idle TCP connections in an established state. Min: 60 seconds. Max: 432000 seconds (5 days). Default: 350 seconds for Nitro v6 instance types (excluding P6e-GB200); 432000 seconds for all other instance types (including P6e-GB200). Recommended: Less than 432000 seconds.</p>",
           "locationName":"tcpEstablishedTimeout"
         },
         "UdpTimeout":{
@@ -14753,7 +14910,7 @@
       "members":{
         "TcpEstablishedTimeout":{
           "shape":"Integer",
-          "documentation":"<p>Timeout (in seconds) for idle TCP connections in an established state. Min: 60 seconds. Max: 432000 seconds (5 days). Default: 432000 seconds. Recommended: Less than 432000 seconds.</p>"
+          "documentation":"<p>Timeout (in seconds) for idle TCP connections in an established state. Min: 60 seconds. Max: 432000 seconds (5 days). Default: 350 seconds for Nitro v6 instance types (excluding P6e-GB200); 432000 seconds for all other instance types (including P6e-GB200). Recommended: Less than 432000 seconds.</p>"
         },
         "UdpStreamTimeout":{
           "shape":"Integer",
@@ -14771,7 +14928,7 @@
       "members":{
         "TcpEstablishedTimeout":{
           "shape":"Integer",
-          "documentation":"<p>Timeout (in seconds) for idle TCP connections in an established state. Min: 60 seconds. Max: 432000 seconds (5 days). Default: 432000 seconds. Recommended: Less than 432000 seconds.</p>",
+          "documentation":"<p>Timeout (in seconds) for idle TCP connections in an established state. Min: 60 seconds. Max: 432000 seconds (5 days). Default: 350 seconds for Nitro v6 instance types (excluding P6e-GB200); 432000 seconds for all other instance types (including P6e-GB200). Recommended: Less than 432000 seconds.</p>",
           "locationName":"tcpEstablishedTimeout"
         },
         "UdpStreamTimeout":{
@@ -15327,6 +15484,40 @@
           "shape":"Integer",
           "documentation":"<p> The number of instances in the new Capacity Reservation. The number of instances in the source Capacity Reservation was reduced by this amount. </p>",
           "locationName":"instanceCount"
+        }
+      }
+    },
+    "CreateCapacityReservationCancellationQuoteRequest":{
+      "type":"structure",
+      "required":["CapacityReservationId"],
+      "members":{
+        "CapacityReservationId":{
+          "shape":"CapacityReservationId",
+          "documentation":"<p>The ID of the Capacity Reservation.</p>"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensure Idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>The tags to apply to the cancellation quote.</p>",
+          "locationName":"TagSpecification"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "CreateCapacityReservationCancellationQuoteResult":{
+      "type":"structure",
+      "members":{
+        "CapacityReservationCancellationQuote":{
+          "shape":"CapacityReservationCancellationQuote",
+          "documentation":"<p>Information about the Capacity Reservation cancellation quote.</p>",
+          "locationName":"capacityReservationCancellationQuote"
         }
       }
     },
@@ -24574,6 +24765,53 @@
           "shape":"CapacityReservationBillingRequestSet",
           "documentation":"<p>Information about the request.</p>",
           "locationName":"capacityReservationBillingRequestSet"
+        }
+      }
+    },
+    "DescribeCapacityReservationCancellationQuotesRequest":{
+      "type":"structure",
+      "members":{
+        "CapacityReservationCancellationQuoteIds":{
+          "shape":"CapacityReservationCancellationQuoteIdSet",
+          "documentation":"<p>The IDs of the cancellation quotes to describe.</p>",
+          "locationName":"CapacityReservationCancellationQuoteId"
+        },
+        "MaxResults":{
+          "shape":"DescribeCapacityReservationCancellationQuotesRequestMaxResults",
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>One or more filters. Filter names and values are case-sensitive.</p>",
+          "locationName":"Filter"
+        }
+      }
+    },
+    "DescribeCapacityReservationCancellationQuotesRequestMaxResults":{
+      "type":"integer",
+      "max":1000,
+      "min":1
+    },
+    "DescribeCapacityReservationCancellationQuotesResult":{
+      "type":"structure",
+      "members":{
+        "CapacityReservationCancellationQuotes":{
+          "shape":"CapacityReservationCancellationQuoteResponseSet",
+          "documentation":"<p>Information about the Capacity Reservation cancellation quotes.</p>",
+          "locationName":"capacityReservationCancellationQuoteSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
         }
       }
     },
@@ -38467,7 +38705,7 @@
         },
         "State":{
           "shape":"CapacityReservationState",
-          "documentation":"<p>The current state of the Capacity Reservation. A Capacity Reservation can be in one of the following states:</p> <ul> <li> <p> <code>active</code> - The capacity is available for use.</p> </li> <li> <p> <code>expired</code> - The Capacity Reservation expired automatically at the date and time specified in your reservation request. The reserved capacity is no longer available for your use.</p> </li> <li> <p> <code>cancelled</code> - The Capacity Reservation was canceled. The reserved capacity is no longer available for your use.</p> </li> <li> <p> <code>pending</code> - The Capacity Reservation request was successful but the capacity provisioning is still pending.</p> </li> <li> <p> <code>failed</code> - The Capacity Reservation request has failed. A request can fail due to request parameters that are not valid, capacity constraints, or instance limit constraints. You can view a failed request for 60 minutes.</p> </li> <li> <p> <code>scheduled</code> - (<i>Future-dated Capacity Reservations</i>) The future-dated Capacity Reservation request was approved and the Capacity Reservation is scheduled for delivery on the requested start date.</p> </li> <li> <p> <code>payment-pending</code> - (<i>Capacity Blocks</i>) The upfront payment has not been processed yet.</p> </li> <li> <p> <code>payment-failed</code> - (<i>Capacity Blocks</i>) The upfront payment was not processed in the 12-hour time frame. Your Capacity Block was released.</p> </li> <li> <p> <code>assessing</code> - (<i>Future-dated Capacity Reservations</i>) Amazon EC2 is assessing your request for a future-dated Capacity Reservation.</p> </li> <li> <p> <code>delayed</code> - (<i>Future-dated Capacity Reservations</i>) Amazon EC2 encountered a delay in provisioning the requested future-dated Capacity Reservation. Amazon EC2 is unable to deliver the requested capacity by the requested start date and time.</p> </li> <li> <p> <code>unsupported</code> - (<i>Future-dated Capacity Reservations</i>) Amazon EC2 can't support the future-dated Capacity Reservation request due to capacity constraints. You can view unsupported requests for 30 days. The Capacity Reservation will not be delivered.</p> </li> </ul>",
+          "documentation":"<p>The current state of the Capacity Reservation. A Capacity Reservation can be in one of the following states:</p> <ul> <li> <p> <code>active</code> - The capacity is available for use.</p> </li> <li> <p> <code>expired</code> - The Capacity Reservation expired automatically at the date and time specified in your reservation request. The reserved capacity is no longer available for your use.</p> </li> <li> <p> <code>cancelled</code> - The Capacity Reservation was canceled. The reserved capacity is no longer available for your use.</p> </li> <li> <p> <code>pending</code> - The Capacity Reservation request was successful but the capacity provisioning is still pending.</p> </li> <li> <p> <code>failed</code> - The Capacity Reservation request has failed. A request can fail due to request parameters that are not valid, capacity constraints, or instance limit constraints. You can view a failed request for 60 minutes.</p> </li> <li> <p> <code>scheduled</code> - (<i>Future-dated Capacity Reservations</i>) The future-dated Capacity Reservation request was approved and the Capacity Reservation is scheduled for delivery on the requested start date.</p> </li> <li> <p> <code>payment-pending</code> - (<i>Capacity Blocks</i>) The upfront payment has not been processed yet.</p> </li> <li> <p> <code>payment-failed</code> - (<i>Capacity Blocks</i>) The upfront payment was not processed in the 12-hour time frame. Your Capacity Block was released.</p> </li> <li> <p> <code>assessing</code> - (<i>Future-dated Capacity Reservations</i>) Amazon EC2 is assessing your request for a future-dated Capacity Reservation.</p> </li> <li> <p> <code>delayed</code> - (<i>Future-dated Capacity Reservations</i>) Amazon EC2 encountered a delay in provisioning the requested future-dated Capacity Reservation. Amazon EC2 is unable to deliver the requested capacity by the requested start date and time.</p> </li> <li> <p> <code>unsupported</code> - (<i>Future-dated Capacity Reservations</i>) Amazon EC2 can't support the future-dated Capacity Reservation request due to capacity constraints. You can view unsupported requests for 30 days. The Capacity Reservation will not be delivered.</p> </li> <li> <p> <code>cancelling</code> - (<i>Future-dated Capacity Reservations</i>) The Capacity Reservation is being cancelled. Capacity has been released but charges continue for the commitment wind-down period. The reservation transitions to <code>cancelled</code> when the wind-down completes.</p> </li> </ul>",
           "locationName":"state"
         },
         "InstanceUsages":{
@@ -63989,7 +64227,8 @@
         "secondary-subnet",
         "capacity-manager-data-export",
         "vpn-concentrator",
-        "ipam-pool-allocation"
+        "ipam-pool-allocation",
+        "capacity-reservation-cancellation-quote"
       ]
     },
     "ResourceTypeOption":{

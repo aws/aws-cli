@@ -9419,6 +9419,12 @@
       },
       "documentation":"<p>Contains details about the backup recovery point.</p>"
     },
+    "RelatedFilePathsList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":25,
+      "min":1
+    },
     "RemoteAccountDetails":{
       "type":"structure",
       "members":{
@@ -9931,6 +9937,21 @@
           "shape":"String",
           "documentation":"<p>The suspicious file path for which the threat intelligence details were found.</p>",
           "locationName":"threatFilePath"
+        },
+        "FileOperation":{
+          "shape":"String",
+          "documentation":"<p>Represents the type of file operation that triggered the finding, such as Write, Delete, Rename, Link, or Symlink.</p>",
+          "locationName":"fileOperation"
+        },
+        "FilePath":{
+          "shape":"String",
+          "documentation":"<p>The path of the sensitive file that was modified. Modification includes write, delete, rename, link, or symlink operations. This field is indexed for filtering.</p>",
+          "locationName":"filePath"
+        },
+        "RelatedFilePaths":{
+          "shape":"RelatedFilePathsList",
+          "documentation":"<p>All file paths modified by the same process that triggered the finding, up to a maximum of 25 paths.</p>",
+          "locationName":"relatedFilePaths"
         }
       },
       "documentation":"<p>Additional information about the suspicious activity.</p>"

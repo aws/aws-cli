@@ -2088,7 +2088,8 @@
         "LastModified":{
           "shape":"Timestamp",
           "documentation":"<p>The date and time when the capacity provider was last modified.</p>"
-        }
+        },
+        "PropagateTags":{"shape":"PropagateTags"}
       },
       "documentation":"<p>A capacity provider manages compute resources for Lambda functions.</p>"
     },
@@ -2686,6 +2687,10 @@
         "Tags":{
           "shape":"Tags",
           "documentation":"<p>A list of tags to associate with the capacity provider.</p>"
+        },
+        "PropagateTags":{
+          "shape":"PropagateTags",
+          "documentation":"<p>The tag propagation configuration for the capacity provider. Specifies tags to apply to managed resources at launch.</p>"
         }
       }
     },
@@ -7319,6 +7324,34 @@
       "min":12,
       "pattern":"o-[a-z0-9]{10,32}"
     },
+    "PropagateTags":{
+      "type":"structure",
+      "members":{
+        "Mode":{
+          "shape":"PropagateTagsMode",
+          "documentation":"<p>The tag propagation mode. Set to <code>Explicit</code> to propagate the tags specified in <code>ExplicitTags</code> to managed resources. Set to <code>None</code> to disable tag propagation.</p>"
+        },
+        "ExplicitTags":{
+          "shape":"PropagateTagsExplicitTagsMap",
+          "documentation":"<p>A list of tags to apply to managed resources when <code>Mode</code> is set to <code>Explicit</code>. You can specify up to 40 tags.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for tag propagation to managed resources launched by the capacity provider.</p>"
+    },
+    "PropagateTagsExplicitTagsMap":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"},
+      "max":40,
+      "min":0
+    },
+    "PropagateTagsMode":{
+      "type":"string",
+      "enum":[
+        "None",
+        "Explicit"
+      ]
+    },
     "ProvisionedConcurrencyConfigList":{
       "type":"list",
       "member":{"shape":"ProvisionedConcurrencyConfigListItem"}
@@ -8933,7 +8966,8 @@
         "CapacityProviderScalingConfig":{
           "shape":"CapacityProviderScalingConfig",
           "documentation":"<p>The updated scaling configuration for the capacity provider.</p>"
-        }
+        },
+        "PropagateTags":{"shape":"PropagateTags"}
       }
     },
     "UpdateCapacityProviderResponse":{

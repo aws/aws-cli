@@ -626,6 +626,21 @@
       ],
       "documentation":"<p>Starts a recommendation job. You can create either an instance recommendation or load test job.</p>"
     },
+    "CreateJob":{
+      "name":"CreateJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateJobRequest"},
+      "output":{"shape":"CreateJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"},
+        {"shape":"ResourceInUse"},
+        {"shape":"ResourceLimitExceeded"}
+      ],
+      "documentation":"<p>Creates a model customization job in Amazon SageMaker. A job runs a workload based on the job category and configuration you provide. You specify the job category, a schema-versioned configuration document, and an IAM role that grants Amazon SageMaker permission to access resources on your behalf.</p> <p>Use the <code>AgentRFT</code> category to fine-tune a model using multi-turn reinforcement learning with reward signals. Use the <code>AgentRFTEvaluation</code> category to evaluate a fine-tuned or base model by running multi-turn rollouts against a held-out prompt dataset and computing metrics such as pass@k and mean reward.</p> <p>Before creating a job, call <code>ListJobSchemaVersions</code> and <code>DescribeJobSchemaVersion</code> to retrieve the configuration schema for your job category. The <code>JobConfigDocument</code> must conform to the schema specified by <code>JobConfigSchemaVersion</code>.</p> <p>The following operations are related to <code>CreateJob</code>:</p> <ul> <li> <p> <code>DescribeJob</code> </p> </li> <li> <p> <code>ListJobs</code> </p> </li> <li> <p> <code>StopJob</code> </p> </li> <li> <p> <code>DeleteJob</code> </p> </li> <li> <p> <code>ListJobSchemaVersions</code> </p> </li> <li> <p> <code>DescribeJobSchemaVersion</code> </p> </li> </ul>"
+    },
     "CreateLabelingJob":{
       "name":"CreateLabelingJob",
       "http":{
@@ -1504,6 +1519,21 @@
       ],
       "documentation":"<p>Deletes an inference experiment.</p> <note> <p> This operation does not delete your endpoint, variants, or any underlying resources. This operation only deletes the metadata of your experiment. </p> </note>"
     },
+    "DeleteJob":{
+      "name":"DeleteJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteJobRequest"},
+      "output":{"shape":"DeleteJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"},
+        {"shape":"ResourceInUse"}
+      ],
+      "documentation":"<p>Deletes a job. This operation is idempotent. If the job is currently running, you must stop it before deleting it by calling <code>StopJob</code>.</p> <p>The following operations are related to <code>DeleteJob</code>:</p> <ul> <li> <p> <code>CreateJob</code> </p> </li> <li> <p> <code>StopJob</code> </p> </li> <li> <p> <code>DescribeJob</code> </p> </li> </ul>",
+      "idempotent":true
+    },
     "DeleteMlflowApp":{
       "name":"DeleteMlflowApp",
       "http":{
@@ -2327,6 +2357,34 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p>Provides the results of the Inference Recommender job. One or more recommendation jobs are returned.</p>"
+    },
+    "DescribeJob":{
+      "name":"DescribeJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeJobRequest"},
+      "output":{"shape":"DescribeJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Returns detailed information about a job, including its current status, secondary status, configuration, and timestamps. Use <code>SecondaryStatus</code> for granular progress tracking and <code>SecondaryStatusTransitions</code> to see the full history of status changes with timestamps.</p> <p>The following operations are related to <code>DescribeJob</code>:</p> <ul> <li> <p> <code>CreateJob</code> </p> </li> <li> <p> <code>ListJobs</code> </p> </li> <li> <p> <code>StopJob</code> </p> </li> <li> <p> <code>DeleteJob</code> </p> </li> </ul>",
+      "readonly":true
+    },
+    "DescribeJobSchemaVersion":{
+      "name":"DescribeJobSchemaVersion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeJobSchemaVersionRequest"},
+      "output":{"shape":"DescribeJobSchemaVersionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Returns the JSON schema for a specified job category and schema version. Use this schema to validate your <code>JobConfigDocument</code> before calling <code>CreateJob</code>. If you don't specify a schema version, the latest version is returned. The schema defines required fields, allowed values, and constraints for the job configuration.</p> <p>The following operations are related to <code>DescribeJobSchemaVersion</code>:</p> <ul> <li> <p> <code>ListJobSchemaVersions</code> </p> </li> <li> <p> <code>CreateJob</code> </p> </li> </ul>",
+      "readonly":true
     },
     "DescribeLabelingJob":{
       "name":"DescribeLabelingJob",
@@ -3353,6 +3411,31 @@
       "output":{"shape":"ListInferenceRecommendationsJobsResponse"},
       "documentation":"<p>Lists recommendation jobs that satisfy various filters.</p>"
     },
+    "ListJobSchemaVersions":{
+      "name":"ListJobSchemaVersions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListJobSchemaVersionsRequest"},
+      "output":{"shape":"ListJobSchemaVersionsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Lists available configuration schema versions for a specified job category. Use the schema versions with <code>DescribeJobSchemaVersion</code> to retrieve the full schema document.</p> <p>The following operations are related to <code>ListJobSchemaVersions</code>:</p> <ul> <li> <p> <code>DescribeJobSchemaVersion</code> </p> </li> <li> <p> <code>CreateJob</code> </p> </li> </ul>",
+      "readonly":true
+    },
+    "ListJobs":{
+      "name":"ListJobs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListJobsRequest"},
+      "output":{"shape":"ListJobsResponse"},
+      "documentation":"<p>Lists jobs in a specified category. You can filter results by creation time, last modified time, name, and status. Results are sorted by the field you specify in <code>SortBy</code>. Use pagination to retrieve large result sets efficiently.</p> <p>The following operations are related to <code>ListJobs</code>:</p> <ul> <li> <p> <code>CreateJob</code> </p> </li> <li> <p> <code>DescribeJob</code> </p> </li> </ul>",
+      "readonly":true
+    },
     "ListLabelingJobs":{
       "name":"ListLabelingJobs",
       "http":{
@@ -4179,6 +4262,19 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p>Stops an Inference Recommender job.</p>"
+    },
+    "StopJob":{
+      "name":"StopJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StopJobRequest"},
+      "output":{"shape":"StopJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Stops a running job. When you call <code>StopJob</code>, Amazon SageMaker sets the job status to <code>Stopping</code>. After the job stops, the status changes to <code>Stopped</code>. Partial results may be available in the output location if the job was in progress. To delete a stopped job, call <code>DeleteJob</code>.</p> <p>The following operations are related to <code>StopJob</code>:</p> <ul> <li> <p> <code>CreateJob</code> </p> </li> <li> <p> <code>DescribeJob</code> </p> </li> <li> <p> <code>DeleteJob</code> </p> </li> </ul>"
     },
     "StopLabelingJob":{
       "name":"StopLabelingJob",
@@ -14036,6 +14132,52 @@
         }
       }
     },
+    "CreateJobRequest":{
+      "type":"structure",
+      "required":[
+        "JobName",
+        "RoleArn",
+        "JobCategory",
+        "JobConfigSchemaVersion",
+        "JobConfigDocument"
+      ],
+      "members":{
+        "JobName":{
+          "shape":"JobName",
+          "documentation":"<p>The name of the job. The name must be unique within your account and Amazon Web Services Region.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that Amazon SageMaker assumes to perform the job. The role must have the necessary permissions to access the resources required by the job configuration.</p>"
+        },
+        "JobCategory":{
+          "shape":"JobCategory",
+          "documentation":"<p>The category of the job. The category determines the type of workload that the job runs.</p>"
+        },
+        "JobConfigSchemaVersion":{
+          "shape":"JobSchemaVersion",
+          "documentation":"<p>The version of the configuration schema to use for the job configuration document. Use <code>ListJobSchemaVersions</code> to get available schema versions for a job category.</p>"
+        },
+        "JobConfigDocument":{
+          "shape":"JobConfigDocument",
+          "documentation":"<p>The JSON configuration document for the job. The document must conform to the schema specified by <code>JobConfigSchemaVersion</code>. Use <code>DescribeJobSchemaVersion</code> to retrieve the schema for validation.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of key-value pairs to apply to the job as tags. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services Resources</a>.</p>"
+        }
+      }
+    },
+    "CreateJobResponse":{
+      "type":"structure",
+      "required":["JobArn"],
+      "members":{
+        "JobArn":{
+          "shape":"JobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the job.</p>"
+        }
+      }
+    },
     "CreateLabelingJobRequest":{
       "type":"structure",
       "required":[
@@ -16933,6 +17075,27 @@
           "documentation":"<p>The ARN of the deleted inference experiment.</p>"
         }
       }
+    },
+    "DeleteJobRequest":{
+      "type":"structure",
+      "required":[
+        "JobName",
+        "JobCategory"
+      ],
+      "members":{
+        "JobName":{
+          "shape":"JobName",
+          "documentation":"<p>The name of the job to delete.</p>"
+        },
+        "JobCategory":{
+          "shape":"JobCategory",
+          "documentation":"<p>The category of the job to delete.</p>"
+        }
+      }
+    },
+    "DeleteJobResponse":{
+      "type":"structure",
+      "members":{}
     },
     "DeleteMlflowAppRequest":{
       "type":"structure",
@@ -20304,6 +20467,132 @@
         "EndpointPerformances":{
           "shape":"EndpointPerformances",
           "documentation":"<p>The performance results from running an Inference Recommender job on an existing endpoint.</p>"
+        }
+      }
+    },
+    "DescribeJobRequest":{
+      "type":"structure",
+      "required":[
+        "JobName",
+        "JobCategory"
+      ],
+      "members":{
+        "JobName":{
+          "shape":"JobName",
+          "documentation":"<p>The name of the job to describe.</p>"
+        },
+        "JobCategory":{
+          "shape":"JobCategory",
+          "documentation":"<p>The category of the job.</p>"
+        }
+      }
+    },
+    "DescribeJobResponse":{
+      "type":"structure",
+      "required":[
+        "JobName",
+        "JobArn",
+        "RoleArn",
+        "JobCategory",
+        "JobConfigSchemaVersion",
+        "CreationTime",
+        "LastModifiedTime",
+        "JobStatus",
+        "SecondaryStatus",
+        "SecondaryStatusTransitions"
+      ],
+      "members":{
+        "JobName":{
+          "shape":"JobName",
+          "documentation":"<p>The name of the job.</p>"
+        },
+        "JobArn":{
+          "shape":"JobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the job.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the IAM role associated with the job.</p>"
+        },
+        "JobCategory":{
+          "shape":"JobCategory",
+          "documentation":"<p>The category of the job.</p>"
+        },
+        "JobConfigSchemaVersion":{
+          "shape":"JobSchemaVersion",
+          "documentation":"<p>The schema version used for the job configuration document.</p>"
+        },
+        "JobConfigDocument":{
+          "shape":"JobConfigDocument",
+          "documentation":"<p>The JSON configuration document for the job.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the job was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the job was last modified.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the job ended.</p>"
+        },
+        "JobStatus":{
+          "shape":"JobStatus",
+          "documentation":"<p>The current status of the job.</p>"
+        },
+        "SecondaryStatus":{
+          "shape":"JobSecondaryStatus",
+          "documentation":"<p>The detailed secondary status of the job, providing more granular information about the job's progress. Secondary statuses may change between releases.</p>"
+        },
+        "SecondaryStatusTransitions":{
+          "shape":"JobSecondaryStatusTransitions",
+          "documentation":"<p>A list of secondary status transitions for the job, with timestamps and optional status messages.</p>"
+        },
+        "FailureReason":{
+          "shape":"FailureReason",
+          "documentation":"<p>If the job failed, the reason it failed.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags associated with the job.</p>"
+        }
+      }
+    },
+    "DescribeJobSchemaVersionRequest":{
+      "type":"structure",
+      "required":["JobCategory"],
+      "members":{
+        "JobCategory":{
+          "shape":"JobCategory",
+          "documentation":"<p>The category of the job schema to describe.</p>"
+        },
+        "JobConfigSchemaVersion":{
+          "shape":"JobSchemaVersion",
+          "documentation":"<p>The version of the schema to retrieve. If not specified, the latest version is returned.</p>"
+        }
+      }
+    },
+    "DescribeJobSchemaVersionResponse":{
+      "type":"structure",
+      "required":[
+        "JobCategory",
+        "JobConfigSchemaVersion",
+        "JobConfigSchema"
+      ],
+      "members":{
+        "JobCategory":{
+          "shape":"JobCategory",
+          "documentation":"<p>The category of the job schema.</p>"
+        },
+        "JobConfigSchemaVersion":{
+          "shape":"JobSchemaVersion",
+          "documentation":"<p>The version of the schema.</p>"
+        },
+        "JobConfigSchema":{
+          "shape":"JobConfigDocument",
+          "documentation":"<p>The JSON schema document that defines the structure of the job configuration.</p>"
         }
       }
     },
@@ -29010,10 +29299,51 @@
       "max":256,
       "min":1
     },
+    "JobArn":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"arn:(aws[a-z\\-]*):sagemaker:[a-z0-9\\-]+:[0-9]{12}:job/[a-zA-Z0-9]+/[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}"
+    },
+    "JobCategory":{
+      "type":"string",
+      "enum":[
+        "AgentRFT",
+        "AgentRFTEvaluation"
+      ]
+    },
+    "JobConfigDocument":{
+      "type":"string",
+      "max":262144,
+      "min":1
+    },
+    "JobConfigSchemaVersionSummary":{
+      "type":"structure",
+      "required":["JobConfigSchemaVersion"],
+      "members":{
+        "JobConfigSchemaVersion":{
+          "shape":"JobSchemaVersion",
+          "documentation":"<p>The version of the job configuration schema.</p>"
+        }
+      },
+      "documentation":"<p>Provides summary information about a job configuration schema version.</p>"
+    },
+    "JobConfigSchemas":{
+      "type":"list",
+      "member":{"shape":"JobConfigSchemaVersionSummary"},
+      "max":100,
+      "min":0
+    },
     "JobDurationInSeconds":{
       "type":"integer",
       "box":true,
       "min":1
+    },
+    "JobName":{
+      "type":"string",
+      "max":63,
+      "min":1,
+      "pattern":"[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}"
     },
     "JobReferenceCode":{
       "type":"string",
@@ -29025,6 +29355,139 @@
       "max":255,
       "min":1,
       "pattern":".+"
+    },
+    "JobSchemaVersion":{
+      "type":"string",
+      "max":16,
+      "min":5,
+      "pattern":"\\d+\\.\\d+\\.\\d+"
+    },
+    "JobSecondaryStatus":{
+      "type":"string",
+      "enum":[
+        "Starting",
+        "Downloading",
+        "Training",
+        "Uploading",
+        "Stopping",
+        "Stopped",
+        "MaxRuntimeExceeded",
+        "Interrupted",
+        "Failed",
+        "Completed",
+        "Restarting",
+        "Pending",
+        "Evaluating",
+        "Deleting",
+        "DeleteFailed"
+      ]
+    },
+    "JobSecondaryStatusTransition":{
+      "type":"structure",
+      "required":[
+        "Status",
+        "StartTime"
+      ],
+      "members":{
+        "Status":{
+          "shape":"JobSecondaryStatus",
+          "documentation":"<p>The secondary status of the job at this transition point.</p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the status transition started.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the status transition ended.</p>"
+        },
+        "StatusMessage":{
+          "shape":"String",
+          "documentation":"<p>A detailed message about the status transition.</p>"
+        }
+      },
+      "documentation":"<p>Represents a secondary status transition for a job. Jobs progress through multiple secondary statuses during execution. Each transition records the status, start time, optional end time, and an optional message with additional details.</p>"
+    },
+    "JobSecondaryStatusTransitions":{
+      "type":"list",
+      "member":{"shape":"JobSecondaryStatusTransition"},
+      "max":100,
+      "min":0
+    },
+    "JobStatus":{
+      "type":"string",
+      "enum":[
+        "InProgress",
+        "Completed",
+        "Failed",
+        "Stopping",
+        "Stopped",
+        "Deleting",
+        "DeleteFailed"
+      ]
+    },
+    "JobStepMetadata":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"String1024",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the SageMaker job that was run by this step execution.</p>"
+        }
+      },
+      "documentation":"<p>Metadata for a SageMaker job step.</p>"
+    },
+    "JobSummaries":{
+      "type":"list",
+      "member":{"shape":"JobSummary"},
+      "max":100,
+      "min":0
+    },
+    "JobSummary":{
+      "type":"structure",
+      "required":[
+        "JobArn",
+        "JobName",
+        "JobCategory",
+        "JobStatus",
+        "JobSecondaryStatus",
+        "CreationTime",
+        "LastModifiedTime"
+      ],
+      "members":{
+        "JobArn":{
+          "shape":"JobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the job.</p>"
+        },
+        "JobName":{
+          "shape":"JobName",
+          "documentation":"<p>The name of the job.</p>"
+        },
+        "JobCategory":{
+          "shape":"JobCategory",
+          "documentation":"<p>The category of the job.</p>"
+        },
+        "JobStatus":{
+          "shape":"JobStatus",
+          "documentation":"<p>The current status of the job.</p>"
+        },
+        "JobSecondaryStatus":{
+          "shape":"JobSecondaryStatus",
+          "documentation":"<p>The secondary status of the job, providing more granular information about the job's progress. Secondary statuses may change between releases.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the job was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the job was last modified.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the job ended.</p>"
+        }
+      },
+      "documentation":"<p>Provides summary information about a job, returned by the <code>ListJobs</code> operation. Use <code>DescribeJob</code> to get full details for a specific job.</p>"
     },
     "JobType":{
       "type":"string",
@@ -31960,6 +32423,102 @@
         "CreationTime",
         "Status"
       ]
+    },
+    "ListJobSchemaVersionsRequest":{
+      "type":"structure",
+      "required":["JobCategory"],
+      "members":{
+        "JobCategory":{
+          "shape":"JobCategory",
+          "documentation":"<p>The category of job schemas to list.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the previous response was truncated, this token retrieves the next set of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of schema versions to return in the response. The default value is 5.</p>"
+        }
+      }
+    },
+    "ListJobSchemaVersionsResponse":{
+      "type":"structure",
+      "required":["JobConfigSchemas"],
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response is truncated, this token retrieves the next set of results.</p>"
+        },
+        "JobConfigSchemas":{
+          "shape":"JobConfigSchemas",
+          "documentation":"<p>An array of <code>JobConfigSchemaVersionSummary</code> objects listing the available schema versions.</p>"
+        }
+      }
+    },
+    "ListJobsRequest":{
+      "type":"structure",
+      "required":["JobCategory"],
+      "members":{
+        "JobCategory":{
+          "shape":"JobCategory",
+          "documentation":"<p>The category of jobs to list.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the previous response was truncated, this token retrieves the next set of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of jobs to return in the response. The default value is 50.</p>"
+        },
+        "CreationTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>A filter that returns only jobs created after the specified time.</p>"
+        },
+        "CreationTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>A filter that returns only jobs created before the specified time.</p>"
+        },
+        "LastModifiedTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>A filter that returns only jobs modified after the specified time.</p>"
+        },
+        "LastModifiedTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>A filter that returns only jobs modified before the specified time.</p>"
+        },
+        "NameContains":{
+          "shape":"NameContains",
+          "documentation":"<p>A string in the job name to filter results. Only jobs whose name contains the specified string are returned.</p>"
+        },
+        "SortBy":{
+          "shape":"SortBy",
+          "documentation":"<p>The field to sort results by.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sort order for results. Valid values are <code>Ascending</code> and <code>Descending</code>.</p>"
+        },
+        "StatusEquals":{
+          "shape":"JobStatus",
+          "documentation":"<p>A filter that returns only jobs with the specified status.</p>"
+        }
+      }
+    },
+    "ListJobsResponse":{
+      "type":"structure",
+      "required":["JobSummaries"],
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response is truncated, this token retrieves the next set of results.</p>"
+        },
+        "JobSummaries":{
+          "shape":"JobSummaries",
+          "documentation":"<p>An array of <code>JobSummary</code> objects that provide summary information about the jobs.</p>"
+        }
+      }
     },
     "ListLabelingJobsForWorkteamRequest":{
       "type":"structure",
@@ -39252,6 +39811,10 @@
         "Lineage":{
           "shape":"LineageMetadata",
           "documentation":"<p> The metadata of the lineage used in pipeline execution step. </p>"
+        },
+        "Job":{
+          "shape":"JobStepMetadata",
+          "documentation":"<p>The metadata for a SageMaker job used in a pipeline execution step.</p>"
         }
       },
       "documentation":"<p>Metadata for a step execution.</p>"
@@ -44627,6 +45190,27 @@
           "documentation":"<p>The name of the job you want to stop.</p>"
         }
       }
+    },
+    "StopJobRequest":{
+      "type":"structure",
+      "required":[
+        "JobName",
+        "JobCategory"
+      ],
+      "members":{
+        "JobName":{
+          "shape":"JobName",
+          "documentation":"<p>The name of the job to stop.</p>"
+        },
+        "JobCategory":{
+          "shape":"JobCategory",
+          "documentation":"<p>The category of the job to stop.</p>"
+        }
+      }
+    },
+    "StopJobResponse":{
+      "type":"structure",
+      "members":{}
     },
     "StopLabelingJobRequest":{
       "type":"structure",

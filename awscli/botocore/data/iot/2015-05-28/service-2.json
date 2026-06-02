@@ -2563,7 +2563,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"IndexNotReadyException"}
       ],
-      "documentation":"<p>Retrieves the live connectivity status per device.</p>"
+      "documentation":"<p>Retrieves the live connectivity status per device. If a device has never connected to IoT Core or was disconnected for more than 1 hour before fleet indexing's <code>thingConnectivityIndexingMode</code> was enabled, the response will have the <code>connected</code> field set to <code>false</code> with no additional session details.</p>"
     },
     "GetTopicRule":{
       "name":"GetTopicRule",
@@ -3859,7 +3859,7 @@
         {"shape":"InvalidQueryException"},
         {"shape":"IndexNotReadyException"}
       ],
-      "documentation":"<p>The query search index.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">SearchIndex</a> action.</p>"
+      "documentation":"<p>Searches the specified index.</p> <p>If a device has never connected to IoT Core or was disconnected for more than 1 hour before fleet indexing's <code>thingConnectivityIndexingMode</code> was enabled, the <code>connectivity</code> object for this device in the response will have the <code>connected</code> field set to <code>false</code> with no additional session details.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">SearchIndex</a> action.</p>"
     },
     "SetDefaultAuthorizer":{
       "name":"SetDefaultAuthorizer",
@@ -13033,11 +13033,11 @@
         },
         "timestamp":{
           "shape":"Timestamp",
-          "documentation":"<p>The timestamp of when the event occurred. When you enable or update the indexing configuration, this value might be the Unix epoch time (0) for devices that have never connected or have been disconnected for more than an hour.</p>"
+          "documentation":"<p>The timestamp of when the device connected or disconnected.</p>"
         },
         "disconnectReason":{
           "shape":"DisconnectReasonValue",
-          "documentation":"<p>The reason why the client is disconnecting. When you enable or update the indexing configuration, this value might be <code>UNKNOWN</code> for devices that have never connected or have been disconnected for more than an hour.</p>"
+          "documentation":"<p>The reason that the client is disconnected.</p>"
         },
         "sourceIp":{
           "shape":"SourceIp",
@@ -20534,11 +20534,11 @@
         },
         "timestamp":{
           "shape":"ConnectivityTimestamp",
-          "documentation":"<p>The epoch time (in milliseconds) when the thing last connected or disconnected. If the thing has been disconnected for approximately an hour, the time value might be missing. When you enable or update the indexing configuration, this value might be <code>0</code> (the Unix epoch time) for devices that have never connected or have been disconnected for more than an hour.</p>"
+          "documentation":"<p>The epoch time (in milliseconds) when the thing last connected or disconnected.</p>"
         },
         "disconnectReason":{
           "shape":"DisconnectReason",
-          "documentation":"<p>The reason why the client is disconnected. When you enable or update the indexing configuration, this value might be missing for devices that have never connected or have been disconnected for more than an hour.</p>"
+          "documentation":"<p>The reason that the client is disconnected.</p>"
         },
         "keepAliveDuration":{
           "shape":"KeepAliveDuration",

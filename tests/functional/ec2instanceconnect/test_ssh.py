@@ -128,6 +128,25 @@ def describe_ipv6_instance_response():
     return get_describe_ipv6_instance_response()
 
 
+def get_describe_ipv6_only_instance_response():
+    return """
+     <DescribeInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2016-11-15/">
+         <reservationSet>
+             <item>
+                 <instancesSet>
+                     <item>
+                         <instanceId>i-123</instanceId>
+                         <subnetId>subnet-123</subnetId>
+                         <vpcId>vpc-123</vpcId>
+                         <ipv6Address>2600:1f10:4f8e:db01:73f5:6b9d:c0da:1c27</ipv6Address>
+                     </item>
+                 </instancesSet>
+             </item>
+         </reservationSet>
+     </DescribeInstancesResponse>
+     """
+
+
 @pytest.fixture
 def describe_no_ip_instance_response():
     return """
@@ -524,6 +543,36 @@ class TestSSHCommand:
                     'ec2-user@10.0.0.0',
                 ],
                 id='Open-Tunnel: select private IP when connection type eice',
+            ),
+            pytest.param(
+                get_describe_ipv6_only_instance_response(),
+                get_describe_eice_response(),
+                get_request_params_for_describe_eice(),
+                [
+                    "ec2-instance-connect",
+                    "ssh",
+                    "--instance-id",
+                    "i-123",
+                    "--private-key-file",
+                    "/tmp/ssh-file",
+                    "--connection-type",
+                    "eice",
+                ],
+                [
+                    'ssh',
+                    '-o',
+                    'ServerAliveInterval=5',
+                    '-p',
+                    '22',
+                    '-i',
+                    '/tmp/ssh-file',
+                    '-o',
+                    'ProxyCommand=aws ec2-instance-connect open-tunnel --instance-id i-123 '
+                    '--private-ip-address 2600:1f10:4f8e:db01:73f5:6b9d:c0da:1c27 --remote-port 22 '
+                    '--instance-connect-endpoint-id eice-123 --instance-connect-endpoint-dns-name dns.com',
+                    'ec2-user@2600:1f10:4f8e:db01:73f5:6b9d:c0da:1c27',
+                ],
+                id='Open-Tunnel: fall back to IPv6 when connection type eice and no private IPv4',
             ),
             pytest.param(
                 get_describe_private_instance_response(),

@@ -279,6 +279,45 @@ def describe_instance_response():
 
 
 @pytest.fixture
+def describe_ipv6_only_instance_response():
+    return """
+    <DescribeInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2016-11-15/">
+        <reservationSet>
+            <item>
+                <instancesSet>
+                    <item>
+                        <instanceId>i-123</instanceId>
+                        <subnetId>subnet-123</subnetId>
+                        <vpcId>vpc-123</vpcId>
+                        <ipv6Address>2600:1f10:4f8e:db01:73f5:6b9d:c0da:1c27</ipv6Address>
+                    </item>
+                </instancesSet>
+            </item>
+        </reservationSet>
+    </DescribeInstancesResponse>
+    """
+
+
+@pytest.fixture
+def describe_no_ip_instance_response():
+    return """
+    <DescribeInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2016-11-15/">
+        <reservationSet>
+            <item>
+                <instancesSet>
+                    <item>
+                        <instanceId>i-123</instanceId>
+                        <subnetId>subnet-123</subnetId>
+                        <vpcId>vpc-123</vpcId>
+                    </item>
+                </instancesSet>
+            </item>
+        </reservationSet>
+    </DescribeInstancesResponse>
+    """
+
+
+@pytest.fixture
 def request_params_for_describe_instance():
     return {'InstanceIds': ['i-123']}
 
@@ -816,3 +855,67 @@ class TestOpenTunnel:
 
         assert 253 == result.rc
         assert "Unable to find FIPS Endpoint" in result.stderr
+
+    def test_falls_back_to_ipv6_when_no_private_ipv4(
+        self,
+        cli_runner,
+        mock_crt_websocket,
+        connect_patch,
+        io_patch,
+        describe_ipv6_only_instance_response,
+        describe_eice_response,
+        dns_name,
+        datetime_utcnow_patch,
+    ):
+        cli_runner.env["AWS_USE_FIPS_ENDPOINT"] = "false"
+        cmdline = [
+            "ec2-instance-connect",
+            "open-tunnel",
+            "--instance-id",
+            "i-123",
+            "--max-tunnel-duration",
+            "1",
+        ]
+        cli_runner.add_response(
+            HTTPResponse(body=describe_ipv6_only_instance_response)
+        )
+        cli_runner.add_response(HTTPResponse(body=describe_eice_response))
+
+        test_server_input = b"Test Server Output"
+        mock_crt_websocket.add_output_from_server(test_server_input)
+        mock_crt_websocket.add_shutdown_from_server()
+
+        with connect_patch, io_patch:
+            result = cli_runner.run(cmdline)
+
+        assert 0 == result.rc
+        assert_url(dns_name, mock_crt_websocket.url)
+        parsed_qs = urllib.parse.parse_qs(
+            urllib.parse.urlparse(mock_crt_websocket.url).query
+        )
+        assert parsed_qs["privateIpAddress"] == [
+            "2600:1f10:4f8e:db01:73f5:6b9d:c0da:1c27"
+        ]
+
+    def test_command_fails_when_instance_has_no_ip_address(
+        self,
+        cli_runner,
+        describe_no_ip_instance_response,
+    ):
+        cmdline = [
+            "ec2-instance-connect",
+            "open-tunnel",
+            "--instance-id",
+            "i-123",
+        ]
+        cli_runner.add_response(
+            HTTPResponse(body=describe_no_ip_instance_response)
+        )
+
+        result = cli_runner.run(cmdline)
+
+        assert 252 == result.rc
+        assert (
+            "Unable to find any IP address on the instance to connect to."
+            in result.stderr
+        )

@@ -46,6 +46,7 @@ from awscli.customizations.s3.subscribers import (
     ReplaceTaggingDirectiveSubscriber,
     SetMetadataDirectivePropsSubscriber,
     SetTagsSubscriber,
+    get_copy_source_head_object,
 )
 from awscli.testutils import FileCreator, mock, unittest
 from tests.unit.customizations.s3 import (
@@ -414,6 +415,66 @@ class BaseCopyPropsSubscriberTest(unittest.TestCase):
 
     def set_cli_params_to_recursive_copy(self):
         self.cli_params['dir_op'] = True
+
+
+class TestGetCopySourceHeadObject(BaseCopyPropsSubscriberTest):
+    def setUp(self):
+        super(TestGetCopySourceHeadObject, self).setUp()
+        self.source_client = mock.Mock()
+
+    def test_returns_cached_response_without_calling_head_object(self):
+        cached_response = {'ContentType': 'from-cache'}
+        response = get_copy_source_head_object(
+            self.future,
+            self.source_client,
+            self.cli_params,
+            cached_response=cached_response,
+        )
+        self.assertEqual(response, cached_response)
+        self.assertFalse(self.source_client.head_object.called)
+
+    def test_fetches_head_object_when_not_cached(self):
+        self.source_client.head_object.return_value = {'TagCount': 1}
+        response = get_copy_source_head_object(
+            self.future, self.source_client, self.cli_params
+        )
+        self.assertEqual(response, {'TagCount': 1})
+        self.source_client.head_object.assert_called_once_with(
+            Bucket=self.source_bucket, Key=self.source_key
+        )
+
+    def test_memoizes_fetched_response_on_user_context(self):
+        self.source_client.head_object.return_value = {'TagCount': 1}
+        first = get_copy_source_head_object(
+            self.future, self.source_client, self.cli_params
+        )
+        second = get_copy_source_head_object(
+            self.future, self.source_client, self.cli_params
+        )
+        self.assertIs(first, second)
+        self.source_client.head_object.assert_called_once_with(
+            Bucket=self.source_bucket, Key=self.source_key
+        )
+
+    def test_maps_copy_source_sse_params_to_head_object(self):
+        self.cli_params.update(
+            {
+                'sse_c_copy_source': 'AES256',
+                'sse_c_copy_source_key': 'source-key',
+                'sse_c': 'AES256',
+                'sse_c_key': 'destination-key',
+            }
+        )
+        self.source_client.head_object.return_value = {}
+        get_copy_source_head_object(
+            self.future, self.source_client, self.cli_params
+        )
+        self.source_client.head_object.assert_called_once_with(
+            Bucket=self.source_bucket,
+            Key=self.source_key,
+            SSECustomerAlgorithm='AES256',
+            SSECustomerKey='source-key',
+        )
 
 
 class TestCopyPropsSubscriberFactory(BaseCopyPropsSubscriberTest):

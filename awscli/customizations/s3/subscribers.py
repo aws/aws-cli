@@ -242,6 +242,35 @@ class DirectoryCreatorSubscriber(BaseSubscriber):
                 )
 
 
+_SOURCE_HEAD_OBJECT_CONTEXT_KEY = 'source_head_object_response'
+
+
+def get_copy_source_head_object(
+    future, source_client, cli_params, cached_response=None
+):
+    user_context = future.meta.user_context
+    if _SOURCE_HEAD_OBJECT_CONTEXT_KEY not in user_context:
+        if cached_response is None:
+            cached_response = _head_copy_source(
+                future, source_client, cli_params
+            )
+        user_context[_SOURCE_HEAD_OBJECT_CONTEXT_KEY] = cached_response
+    return user_context[_SOURCE_HEAD_OBJECT_CONTEXT_KEY]
+
+
+def _head_copy_source(future, source_client, cli_params):
+    copy_source = future.meta.call_args.copy_source
+    head_object_params = {
+        'Bucket': copy_source['Bucket'],
+        'Key': copy_source['Key'],
+    }
+    utils.RequestParamsMapper.map_head_object_params_with_copy_source_sse(
+        head_object_params,
+        cli_params,
+    )
+    return source_client.head_object(**head_object_params)
+
+
 class CopyPropsSubscriberFactory:
     def __init__(self, client, transfer_config, cli_params):
         self._client = client
@@ -278,16 +307,17 @@ class CopyPropsSubscriberFactory:
         ]
 
     def _create_metadata_directive_props_subscriber(self, fileinfo):
-        subscriber_kwargs = {
-            'client': fileinfo.source_client,
-            'transfer_config': self._transfer_config,
-            'cli_params': self._cli_params,
-        }
-        if not self._cli_params.get('dir_op'):
-            subscriber_kwargs['head_object_response'] = (
-                fileinfo.associated_response_data
-            )
-        return SetMetadataDirectivePropsSubscriber(**subscriber_kwargs)
+        return SetMetadataDirectivePropsSubscriber(
+            client=fileinfo.source_client,
+            transfer_config=self._transfer_config,
+            cli_params=self._cli_params,
+            head_object_response=self._cached_head_object_response(fileinfo),
+        )
+
+    def _cached_head_object_response(self, fileinfo):
+        if self._cli_params.get('dir_op'):
+            return None
+        return fileinfo.associated_response_data
 
 
 class ReplaceDirectiveSubscriber(BaseSubscriber):
@@ -342,18 +372,12 @@ class SetMetadataDirectivePropsSubscriber(BaseSubscriber):
         return False
 
     def _get_head_object_response(self, future):
-        if self._head_object_response is not None:
-            return self._head_object_response
-        copy_source = future.meta.call_args.copy_source
-        head_object_params = {
-            'Bucket': copy_source['Bucket'],
-            'Key': copy_source['Key'],
-        }
-        utils.RequestParamsMapper.map_head_object_params_with_copy_source_sse(
-            head_object_params,
+        return get_copy_source_head_object(
+            future,
+            self._client,
             self._cli_params,
+            cached_response=self._head_object_response,
         )
-        return self._client.head_object(**head_object_params)
 
     def _inject_metadata_props(self, future, head_object_response):
         request_args = future.meta.call_args.extra_args

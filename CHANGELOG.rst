@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.45.21
+=======
+
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``geo-routes``: Add "standardRegionalEndpoints" back to fix 'Could not connect to the endpoint URL'
+
+
 1.45.20
 =======
 

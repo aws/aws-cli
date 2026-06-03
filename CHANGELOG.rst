@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+2.34.60
+=======
+
+* api-change:``geo-routes``: Add "standardRegionalEndpoints" back to fix 'Could not connect to the endpoint URL'
+
+
 2.34.59
 =======
 

@@ -2,6 +2,29 @@
 CHANGELOG
 =========
 
+2.34.62
+=======
+
+* api-change:``appflow``: Adding new BDD representation of endpoint ruleset
+* api-change:``glue``: AWS Glue Interactive Sessions now supports Apache Spark Connect, enabling remote Spark execution over gRPC with minimal client-side dependencies. Adds GetSessionEndpoint and GetDashboardUrl APIs. Modifies CreateSession now accepts SPARK CONNECT session type.
+* api-change:``kendra``: Adding new BDD representation of endpoint ruleset
+* api-change:``efs``: Adding new BDD representation of endpoint ruleset
+* api-change:``cloudformation``: Adding new BDD representation of endpoint ruleset
+* api-change:``workspaces``: Adding new BDD representation of endpoint ruleset
+* api-change:``wickr``: AWS Wickr now allows network administrators to configure a maximum session duration for non-SSO users in security groups, and display customizable consent popups to users at login for terms of use or compliance acknowledgements.
+* api-change:``appintegrations``: Adding new BDD representation of endpoint ruleset
+* api-change:``auditmanager``: Adding new BDD representation of endpoint ruleset
+* api-change:``config``: AWS Config now supports internal service-linked rules, allowing AWS service partners to deploy Config rules for customers and use the evaluation results to build enhanced features.
+* api-change:``sns``: Adding new BDD representation of endpoint ruleset
+* api-change:``guardduty``: Remove unsupported RDS field for filter
+* api-change:``connectparticipant``: Adding new BDD representation of endpoint ruleset
+* api-change:``ivs``: adds UpdateAdConfiguration operation to AWS IVS low-latency APIs
+* api-change:``chime-sdk-voice``: Adding new BDD representation of endpoint ruleset
+* api-change:``workdocs``: Adding new BDD representation of endpoint ruleset
+* api-change:``emr``: Added support for Spark Connect interactive sessions on Amazon EMR on EC2 with new APIs - StartSession, GetSession, GetSessionEndpoint, ListSessions, and TerminateSession. Added sessionEnabled field in RunJobFlow and DescribeCluster to enable Spark Connect endpoints on EMR clusters.
+* api-change:``sagemaker``: Adds the IncludedData parameter to DescribeModelCard and DescribeModelPackage. Set it to MetadataOnly to retrieve a model card without decrypt permission on the customer managed AWS KMS key (default AllData returns full content). Adds support for the MTRL Job resource in SageMaker Search.
+
+
 2.34.61
 =======
 

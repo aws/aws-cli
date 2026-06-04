@@ -578,6 +578,27 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         result = self.run_cmd(cmd, 255)
         self.assertEqual(expected_error_msg, result[1])
 
+    def test_session_enabled(self):
+        cmd = DEFAULT_CMD + '--session-enabled'
+        result = copy.deepcopy(DEFAULT_RESULT)
+        result['SessionEnabled'] = True
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_no_session_enabled(self):
+        cmd = DEFAULT_CMD + '--no-session-enabled'
+        result = copy.deepcopy(DEFAULT_RESULT)
+        result['SessionEnabled'] = False
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_session_enabled_and_no_session_enabled(self):
+        cmd = DEFAULT_CMD + '--session-enabled --no-session-enabled'
+        expected_error_msg = (
+            '\naws: error: cannot use both --session-enabled'
+            ' and --no-session-enabled options together.\n'
+        )
+        result = self.run_cmd(cmd, 255)
+        self.assertEqual(expected_error_msg, result[1])
+
     def test_tags(self):
         cmd = DEFAULT_CMD.split() + ['--tags', 'k1=v1', 'k2', 'k3=spaces  v3']
         result = copy.deepcopy(DEFAULT_RESULT)

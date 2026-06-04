@@ -50,7 +50,7 @@ Output::
             },
             "Status": "RUNNING",
             "InstanceConfiguration": {
-                "CPU": "1 vCPU",
+                "Cpu": "1 vCPU",
                 "Memory": "3 GB"
             }
         }

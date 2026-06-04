@@ -2,7 +2,7 @@
     "version": "1",
     "testCases": [
         {
-            "documentation": "Returns regional endpoint for us-east-1",
+            "documentation": "Returns endpoint for us-east-1",
             "expect": {
                 "endpoint": {
                     "url": "https://agent-toolkit.us-east-1.api.aws"
@@ -13,25 +13,23 @@
             }
         },
         {
-            "documentation": "Returns regional endpoint for us-west-2",
+            "documentation": "Returns error for us-west-2",
             "expect": {
-                "endpoint": {
-                    "url": "https://agent-toolkit.us-west-2.api.aws"
-                }
+                "error": "AgentToolkit is only available in us-east-1"
             },
             "params": {
                 "Region": "us-west-2"
             }
         },
         {
-            "documentation": "Overrides endpoint",
+            "documentation": "Overrides endpoint regardless of region",
             "expect": {
                 "endpoint": {
                     "url": "https://override.agent-toolkit.api.aws"
                 }
             },
             "params": {
-                "Region": "us-east-1",
+                "Region": "us-west-2",
                 "Endpoint": "https://override.agent-toolkit.api.aws"
             }
         }

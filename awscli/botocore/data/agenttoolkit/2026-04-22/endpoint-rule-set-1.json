@@ -1,37 +1,60 @@
 {
-    "version": "1",
-    "testCases": [
+    "version": "1.0",
+    "parameters": {
+        "Endpoint": {
+            "type": "String",
+            "builtIn": "SDK::Endpoint",
+            "required": false,
+            "documentation": "Override the endpoint URL"
+        },
+        "Region": {
+            "required": true,
+            "type": "String",
+            "builtIn": "AWS::Region",
+            "documentation": "AWS region"
+        }
+    },
+    "rules": [
         {
-            "documentation": "Returns endpoint for us-east-1",
-            "expect": {
-                "endpoint": {
-                    "url": "https://agent-toolkit.us-east-1.api.aws"
+            "documentation": "Use custom endpoint if provided",
+            "type": "endpoint",
+            "conditions": [
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "Endpoint"
+                        }
+                    ]
                 }
-            },
-            "params": {
-                "Region": "us-east-1"
+            ],
+            "endpoint": {
+                "url": "{Endpoint}"
             }
         },
         {
-            "documentation": "Returns error for us-west-2",
-            "expect": {
-                "error": "AgentToolkit is only available in us-east-1"
-            },
-            "params": {
-                "Region": "us-west-2"
+            "documentation": "Default endpoint for us-east-1",
+            "type": "endpoint",
+            "conditions": [
+                {
+                    "fn": "stringEquals",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        },
+                        "us-east-1"
+                    ]
+                }
+            ],
+            "endpoint": {
+                "url": "https://agent-toolkit.us-east-1.api.aws"
             }
         },
         {
-            "documentation": "Overrides endpoint regardless of region",
-            "expect": {
-                "endpoint": {
-                    "url": "https://override.agent-toolkit.api.aws"
-                }
-            },
-            "params": {
-                "Region": "us-west-2",
-                "Endpoint": "https://override.agent-toolkit.api.aws"
-            }
+            "documentation": "Error for unsupported regions",
+            "type": "error",
+            "conditions": [],
+            "error": "AgentToolkit is only available in us-east-1"
         }
     ]
 }

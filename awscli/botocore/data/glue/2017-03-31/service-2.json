@@ -811,7 +811,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"ValidationException"},
         {"shape":"AlreadyExistsException"},
-        {"shape":"ResourceNumberLimitExceededException"}
+        {"shape":"ResourceNumberLimitExceededException"},
+        {"shape":"OperationNotSupportedException"}
       ],
       "documentation":"<p>Creates a new session.</p>"
     },
@@ -1876,6 +1877,24 @@
       ],
       "documentation":"<p>Retrieves the details of a custom pattern by specifying its name.</p>"
     },
+    "GetDashboardUrl":{
+      "name":"GetDashboardUrl",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetDashboardUrlRequest"},
+      "output":{"shape":"GetDashboardUrlResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"OperationNotSupportedException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Retrieves the URL for the Spark monitoring dashboard for a Glue resource.</p>",
+      "readonly":true
+    },
     "GetDataCatalogEncryptionSettings":{
       "name":"GetDataCatalogEncryptionSettings",
       "http":{
@@ -2556,6 +2575,26 @@
         {"shape":"InvalidInputException"}
       ],
       "documentation":"<p>Retrieves the session.</p>"
+    },
+    "GetSessionEndpoint":{
+      "name":"GetSessionEndpoint",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetSessionEndpointRequest"},
+      "output":{"shape":"GetSessionEndpointResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationNotSupportedException"},
+        {"shape":"IllegalSessionStateException"}
+      ],
+      "documentation":"<p>Returns the Spark Connect endpoint URL and authentication token for an interactive session.</p>",
+      "readonly":true
     },
     "GetStatement":{
       "name":"GetStatement",
@@ -3546,6 +3585,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"ValidationException"},
         {"shape":"ResourceNumberLimitExceededException"},
+        {"shape":"OperationNotSupportedException"},
+        {"shape":"SessionBusyException"},
         {"shape":"IllegalSessionStateException"}
       ],
       "documentation":"<p>Executes the statement.</p>"
@@ -10392,6 +10433,10 @@
         "RequestOrigin":{
           "shape":"OrchestrationNameString",
           "documentation":"<p>The origin of the request. </p>"
+        },
+        "SessionType":{
+          "shape":"SessionType",
+          "documentation":"<p>The type of session to create.</p>"
         }
       },
       "documentation":"<p>Request to create a new session.</p>"
@@ -14939,6 +14984,37 @@
         }
       }
     },
+    "GetDashboardUrlRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceId",
+        "ResourceType"
+      ],
+      "members":{
+        "ResourceId":{
+          "shape":"NameString",
+          "documentation":"<p>The unique identifier of the resource for which to retrieve the dashboard URL.</p>"
+        },
+        "ResourceType":{
+          "shape":"GlueResourceType",
+          "documentation":"<p>The type of the resource. Valid values are <code>SESSION</code> and <code>JOB</code>.</p>"
+        },
+        "RequestOrigin":{
+          "shape":"OrchestrationNameString",
+          "documentation":"<p>The origin of the request. </p>"
+        }
+      }
+    },
+    "GetDashboardUrlResponse":{
+      "type":"structure",
+      "required":["Url"],
+      "members":{
+        "Url":{
+          "shape":"SensitiveUrl",
+          "documentation":"<p>The URL for the Spark monitoring dashboard.</p>"
+        }
+      }
+    },
     "GetDataCatalogEncryptionSettingsRequest":{
       "type":"structure",
       "members":{
@@ -16512,6 +16588,26 @@
         }
       }
     },
+    "GetSessionEndpointRequest":{
+      "type":"structure",
+      "required":["SessionId"],
+      "members":{
+        "SessionId":{
+          "shape":"NameString",
+          "documentation":"<p>The unique identifier of the interactive session.</p>"
+        }
+      }
+    },
+    "GetSessionEndpointResponse":{
+      "type":"structure",
+      "required":["SparkConnect"],
+      "members":{
+        "SparkConnect":{
+          "shape":"SessionEndpoint",
+          "documentation":"<p>The Spark Connect endpoint details for the session.</p>"
+        }
+      }
+    },
     "GetSessionRequest":{
       "type":"structure",
       "required":["Id"],
@@ -17376,6 +17472,13 @@
       "max":10240,
       "min":1,
       "pattern":"arn:aws(-(cn|us-gov|iso(-[bef])?))?:glue:.*"
+    },
+    "GlueResourceType":{
+      "type":"string",
+      "enum":[
+        "JOB",
+        "SESSION"
+      ]
     },
     "GlueSchema":{
       "type":"structure",
@@ -25271,6 +25374,16 @@
       "max":1000,
       "min":1
     },
+    "SensitiveString":{
+      "type":"string",
+      "max":16384,
+      "sensitive":true
+    },
+    "SensitiveUrl":{
+      "type":"string",
+      "max":40000,
+      "sensitive":true
+    },
     "Separator":{
       "type":"string",
       "enum":[
@@ -25381,9 +25494,24 @@
         "ProfileName":{
           "shape":"NameString",
           "documentation":"<p>The name of an Glue usage profile associated with the session.</p>"
+        },
+        "SessionType":{
+          "shape":"SessionType",
+          "documentation":"<p>The type of the session.</p>"
         }
       },
       "documentation":"<p>The period in which a remote Spark runtime environment is running.</p>"
+    },
+    "SessionBusyException":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"OrchestrationMessageString",
+          "documentation":"<p>A message describing the problem.</p>"
+        }
+      },
+      "documentation":"<p>The session is currently busy processing another request and cannot accept new operations.</p>",
+      "exception":true
     },
     "SessionCommand":{
       "type":"structure",
@@ -25398,6 +25526,29 @@
         }
       },
       "documentation":"<p>The <code>SessionCommand</code> that runs the job.</p>"
+    },
+    "SessionEndpoint":{
+      "type":"structure",
+      "required":[
+        "Url",
+        "AuthToken",
+        "AuthTokenExpirationTime"
+      ],
+      "members":{
+        "Url":{
+          "shape":"SparkConnectEndpointUrl",
+          "documentation":"<p>The Spark Connect endpoint URL for the session.</p>"
+        },
+        "AuthToken":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The authentication token to include in requests to the Spark Connect endpoint.</p>"
+        },
+        "AuthTokenExpirationTime":{
+          "shape":"TimestampValue",
+          "documentation":"<p>The time at which the authentication token expires.</p>"
+        }
+      },
+      "documentation":"<p>Contains the Spark Connect endpoint details for an interactive session, including the URL and authentication credentials.</p>"
     },
     "SessionIdList":{
       "type":"list",
@@ -25416,6 +25567,13 @@
         "TIMEOUT",
         "STOPPING",
         "STOPPED"
+      ]
+    },
+    "SessionType":{
+      "type":"string",
+      "enum":[
+        "LIVY",
+        "SPARK_CONNECT"
       ]
     },
     "SettingSource":{
@@ -25726,6 +25884,11 @@
     "SourceTableFieldsList":{
       "type":"list",
       "member":{"shape":"String128"}
+    },
+    "SparkConnectEndpointUrl":{
+      "type":"string",
+      "max":2048,
+      "pattern":"^sc://.*$"
     },
     "SparkConnectorSource":{
       "type":"structure",

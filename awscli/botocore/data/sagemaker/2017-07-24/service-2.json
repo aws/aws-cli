@@ -2472,7 +2472,7 @@
       "errors":[
         {"shape":"ResourceNotFound"}
       ],
-      "documentation":"<p>Describes the content, creation time, and security configuration of an Amazon SageMaker Model Card.</p>"
+      "documentation":"<p>Describes the content, creation time, and security configuration of an Amazon SageMaker Model Card.</p> <important> <p>To retrieve only metadata about a model card without requiring <code>kms:Decrypt</code> permission on the associated customer-managed Amazon Web Services KMS key, set <code>IncludedData</code> to <code>MetadataOnly</code>. The default is <code>AllData</code>, which returns the full model card <code>Content</code> and requires <code>kms:Decrypt</code> permission when a customer-managed key is configured.</p> </important>"
     },
     "DescribeModelCardExportJob":{
       "name":"DescribeModelCardExportJob",
@@ -2508,7 +2508,7 @@
       },
       "input":{"shape":"DescribeModelPackageInput"},
       "output":{"shape":"DescribeModelPackageOutput"},
-      "documentation":"<p>Returns a description of the specified model package, which is used to create SageMaker models or list them on Amazon Web Services Marketplace.</p> <important> <p>If you provided a KMS Key ID when you created your model package, you will see the <a href=\"https://docs.aws.amazon.com/kms/latest/APIReference/API_Decrypt.html\">KMS Decrypt</a> API call in your CloudTrail logs when you use this API.</p> </important> <p>To create models in SageMaker, buyers can subscribe to model packages listed on Amazon Web Services Marketplace.</p>"
+      "documentation":"<p>Returns a description of the specified model package, which is used to create SageMaker models or list them on Amazon Web Services Marketplace.</p> <important> <p>If you provided a KMS Key ID when you created your model package, you will see the <a href=\"https://docs.aws.amazon.com/kms/latest/APIReference/API_Decrypt.html\">KMS Decrypt</a> API call in your CloudTrail logs when you use this API. To call this operation without requiring <code>kms:Decrypt</code> permission on the customer-managed key, set <code>IncludedData</code> to <code>MetadataOnly</code>; the response is returned with the embedded <code>ModelCard.ModelCardContent</code> field sanitized.</p> </important> <p>To create models in SageMaker, buyers can subscribe to model packages listed on Amazon Web Services Marketplace.</p>"
     },
     "DescribeModelPackageGroup":{
       "name":"DescribeModelPackageGroup",
@@ -21027,6 +21027,10 @@
           "shape":"Integer",
           "documentation":"<p>The version of the model card to describe. If a version is not provided, then the latest version of the model card is described.</p>",
           "box":true
+        },
+        "IncludedData":{
+          "shape":"IncludedData",
+          "documentation":"<p>Specifies the level of model card data to include in the response. Use this parameter to call <code>DescribeModelCard</code> without requiring <code>kms:Decrypt</code> permission on the customer-managed Amazon Web Services KMS key.</p> <ul> <li> <p> <code>AllData</code>: Returns the full model card <code>Content</code>. This option requires <code>kms:Decrypt</code> permission on the customer-managed key, if one is associated with the model card. This is the default.</p> </li> <li> <p> <code>MetadataOnly</code>: Returns the model card with sanitized <code>Content</code> that includes only a small set of unencrypted metadata fields. This option does not require <code>kms:Decrypt</code> permission. For the list of fields preserved in the response, see <code>Content</code>.</p> </li> </ul> <p>If you don't specify a value, SageMaker returns <code>AllData</code>.</p>"
         }
       }
     },
@@ -21057,7 +21061,7 @@
         },
         "Content":{
           "shape":"ModelCardContent",
-          "documentation":"<p>The content of the model card.</p>"
+          "documentation":"<p>The content of the model card. Content is provided as a string in the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/model-cards.html#model-cards-json-schema\">model card JSON schema</a>.</p> <p>When you set <code>IncludedData</code> to <code>MetadataOnly</code> in the request, SageMaker returns a sanitized version of <code>Content</code> that includes only the following JSON paths, when present in the model card:</p> <ul> <li> <p> <code>model_overview.model_id</code> </p> </li> <li> <p> <code>model_overview.model_name</code> </p> </li> <li> <p> <code>intended_uses.risk_rating</code> </p> </li> <li> <p> <code>model_package_details.model_package_group_name</code> </p> </li> <li> <p> <code>model_package_details.model_package_arn</code> </p> </li> </ul> <p>All other fields are removed from <code>Content</code> when <code>IncludedData</code> is <code>MetadataOnly</code>, including model description, training details, evaluation details, business details, and additional information. To retrieve the complete <code>Content</code>, set <code>IncludedData</code> to <code>AllData</code> or omit the parameter.</p>"
         },
         "ModelCardStatus":{
           "shape":"ModelCardStatus",
@@ -21258,6 +21262,10 @@
         "ModelPackageName":{
           "shape":"VersionedArnOrName",
           "documentation":"<p>The name or Amazon Resource Name (ARN) of the model package to describe.</p> <p>When you specify a name, the name must have 1 to 63 characters. Valid characters are a-z, A-Z, 0-9, and - (hyphen).</p>"
+        },
+        "IncludedData":{
+          "shape":"IncludedData",
+          "documentation":"<p>Specifies the level of model package data to include in the response. Use this parameter to call <code>DescribeModelPackage</code> on a model package that has an associated model card without requiring <code>kms:Decrypt</code> permission on the customer-managed KMS key associated with the embedded model card.</p> <ul> <li> <p> <code>AllData</code>: Returns the full model package response, including the unredacted <code>ModelCard.ModelCardContent</code>. This option requires <code>kms:Decrypt</code> permission on the customer-managed key, if one is associated with the embedded model card. This is the default.</p> </li> <li> <p> <code>MetadataOnly</code>: Returns the full model package response, but with the embedded <code>ModelCard.ModelCardContent</code> sanitized to include only a small set of unencrypted metadata fields. This option does not require <code>kms:Decrypt</code> permission. All other top-level response fields, including <code>InferenceSpecification</code>, <code>ModelMetrics</code>, <code>DriftCheckBaselines</code>, and <code>SecurityConfig</code>, are returned unchanged. For the list of fields preserved within <code>ModelCardContent</code>, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeModelPackage.html#sagemaker-DescribeModelPackage-response-ModelCard\">ModelCard</a>.</p> </li> </ul> <p>If you don't specify a value, SageMaker returns <code>AllData</code>.</p>"
         }
       }
     },
@@ -21381,7 +21389,7 @@
         },
         "ModelCard":{
           "shape":"ModelPackageModelCard",
-          "documentation":"<p>The model card associated with the model package. Since <code>ModelPackageModelCard</code> is tied to a model package, it is a specific usage of a model card and its schema is simplified compared to the schema of <code>ModelCard</code>. The <code>ModelPackageModelCard</code> schema does not include <code>model_package_details</code>, and <code>model_overview</code> is composed of the <code>model_creator</code> and <code>model_artifact</code> properties. For more information about the model package model card schema, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry-details.html#model-card-schema\">Model package model card schema</a>. For more information about the model card associated with the model package, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry-details.html\">View the Details of a Model Version</a>.</p>"
+          "documentation":"<p>The model card associated with the model package. Since <code>ModelPackageModelCard</code> is tied to a model package, it is a specific usage of a model card and its schema is simplified compared to the schema of <code>ModelCard</code>. The <code>ModelPackageModelCard</code> schema does not include <code>model_package_details</code>, and <code>model_overview</code> is composed of the <code>model_creator</code> and <code>model_artifact</code> properties. For more information about the model package model card schema, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry-details.html#model-card-schema\">Model package model card schema</a>. For more information about the model card associated with the model package, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry-details.html\">View the Details of a Model Version</a>.</p> <p>When you set <code>IncludedData</code> to <code>MetadataOnly</code> in the request, <code>ModelCardStatus</code> is preserved and <code>ModelCardContent</code> is sanitized to include only the following JSON paths, when present in the model card:</p> <ul> <li> <p> <code>model_overview.model_id</code> </p> </li> <li> <p> <code>model_overview.model_name</code> </p> </li> <li> <p> <code>intended_uses.risk_rating</code> </p> </li> <li> <p> <code>model_package_details.model_package_group_name</code> </p> </li> <li> <p> <code>model_package_details.model_package_arn</code> </p> </li> </ul> <p>Because the <code>ModelPackageModelCard</code> schema does not include <code>model_package_details</code> and limits <code>model_overview</code> to <code>model_creator</code> and <code>model_artifact</code>, the sanitized <code>ModelCardContent</code> for a model package typically contains only <code>intended_uses.risk_rating</code> if it was provided when the model card was created. To retrieve the complete <code>ModelCardContent</code>, set <code>IncludedData</code> to <code>AllData</code> or omit the parameter.</p>"
         },
         "ModelLifeCycle":{
           "shape":"ModelLifeCycle",
@@ -27889,6 +27897,13 @@
       "type":"boolean",
       "box":true
     },
+    "IncludedData":{
+      "type":"string",
+      "enum":[
+        "AllData",
+        "MetadataOnly"
+      ]
+    },
     "InferenceComponentArn":{
       "type":"string",
       "max":2048,
@@ -29298,6 +29313,68 @@
       "type":"string",
       "max":256,
       "min":1
+    },
+    "Job":{
+      "type":"structure",
+      "members":{
+        "JobName":{
+          "shape":"JobName",
+          "documentation":"<p>The name of the job.</p>"
+        },
+        "JobArn":{
+          "shape":"JobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the job.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the IAM role associated with the job.</p>"
+        },
+        "JobCategory":{
+          "shape":"JobCategory",
+          "documentation":"<p>The category of the job.</p>"
+        },
+        "JobConfigSchemaVersion":{
+          "shape":"JobSchemaVersion",
+          "documentation":"<p>The schema version used for the job configuration document.</p>"
+        },
+        "JobConfigDocument":{
+          "shape":"JobConfigDocument",
+          "documentation":"<p>The JSON configuration document for the job.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the job was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the job was last modified.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the job ended.</p>"
+        },
+        "JobStatus":{
+          "shape":"JobStatus",
+          "documentation":"<p>The current status of the job.</p>"
+        },
+        "SecondaryStatus":{
+          "shape":"JobSecondaryStatus",
+          "documentation":"<p>The detailed secondary status of the job, providing more granular information about the job's progress.</p>"
+        },
+        "SecondaryStatusTransitions":{
+          "shape":"JobSecondaryStatusTransitions",
+          "documentation":"<p>A list of secondary status transitions for the job, with timestamps and optional status messages.</p>"
+        },
+        "FailureReason":{
+          "shape":"FailureReason",
+          "documentation":"<p>If the job failed, the reason it failed.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags associated with the job.</p>"
+        }
+      },
+      "documentation":"<p>Search shape for Job. Mirrors DescribeJobResponse fields. If you update DescribeJobResponse, update this structure as well.</p>"
     },
     "JobArn":{
       "type":"string",
@@ -43163,7 +43240,8 @@
         "Project",
         "HyperParameterTuningJob",
         "ModelCard",
-        "PipelineVersion"
+        "PipelineVersion",
+        "Job"
       ]
     },
     "ResponseMIMEType":{
@@ -43795,7 +43873,8 @@
           "shape":"ModelCard",
           "documentation":"<p>An Amazon SageMaker Model Card that documents details about a machine learning model.</p>"
         },
-        "Model":{"shape":"ModelDashboardModel"}
+        "Model":{"shape":"ModelDashboardModel"},
+        "Job":{"shape":"Job"}
       },
       "documentation":"<p>A single resource returned as part of the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_Search.html\">Search</a> API response.</p>"
     },

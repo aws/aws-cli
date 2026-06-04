@@ -679,6 +679,27 @@
       "documentation":"<p>Removes tags from the resource with the specified ARN.</p>",
       "idempotent":true
     },
+    "UpdateAdConfiguration":{
+      "name":"UpdateAdConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/UpdateAdConfiguration",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateAdConfigurationRequest"},
+      "output":{"shape":"UpdateAdConfigurationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"PendingVerification"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Updates a specified ad configuration.</p>"
+    },
     "UpdateChannel":{
       "name":"UpdateChannel",
       "http":{
@@ -803,7 +824,7 @@
         },
         "mediaTailorPlaybackConfigurations":{
           "shape":"MediaTailorPlaybackConfigurationsList",
-          "documentation":"<p>List of integration configurations with media tailor resources.</p>"
+          "documentation":"<p>List of integration configurations with MediaTailor resources. The first item in the list is the default playback configuration used for the ad configuration. To select a different configuration per viewing session, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/private-channels-generate-tokens.html\">Generate and Sign IVS Playback Tokens</a>.</p>"
         },
         "tags":{
           "shape":"Tags",
@@ -845,7 +866,7 @@
         },
         "mediaTailorPlaybackConfigurations":{
           "shape":"MediaTailorPlaybackConfigurationsList",
-          "documentation":"<p>List of integration configurations with media tailor resources.</p>"
+          "documentation":"<p>List of integration configurations with MediaTailor resources. The first item in the list is the default playback configuration used for the ad configuration. To select a different configuration per viewing session, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/private-channels-generate-tokens.html\">Generate and Sign IVS Playback Tokens</a>.</p>"
         },
         "tags":{
           "shape":"Tags",
@@ -1179,7 +1200,7 @@
         },
         "type":{
           "shape":"ChannelType",
-          "documentation":"<p>Channel type, which determines the allowable resolution and bitrate. <i>If you exceed the allowable input resolution or bitrate, the stream probably will disconnect immediately.</i> Default: <code>STANDARD</code>. For details, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyAPIReference/channel-types.html\">Channel Types</a>.</p>"
+          "documentation":"<p>Channel type, which determines the allowable resolution and bitrate. <i>If you exceed the allowable input resolution or bitrate, the stream probably will disconnect immediately.</i> Default: <code>STANDARD</code>. For details, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/channel-types.html\">Channel Types</a>.</p>"
         },
         "recordingConfigurationArn":{
           "shape":"ChannelRecordingConfigurationArn",
@@ -1375,7 +1396,7 @@
         },
         "type":{
           "shape":"ChannelType",
-          "documentation":"<p>Channel type, which determines the allowable resolution and bitrate. <i>If you exceed the allowable input resolution or bitrate, the stream probably will disconnect immediately.</i> Default: <code>STANDARD</code>. For details, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyAPIReference/channel-types.html\">Channel Types</a>.</p>"
+          "documentation":"<p>Channel type, which determines the allowable resolution and bitrate. <i>If you exceed the allowable input resolution or bitrate, the stream probably will disconnect immediately.</i> Default: <code>STANDARD</code>. For details, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/channel-types.html\">Channel Types</a>.</p>"
         },
         "preset":{
           "shape":"TranscodePreset",
@@ -1485,7 +1506,7 @@
         },
         "mediaTailorPlaybackConfigurations":{
           "shape":"MediaTailorPlaybackConfigurationsList",
-          "documentation":"<p>List of integration configurations with media tailor resources.</p>"
+          "documentation":"<p>List of integration configurations with MediaTailor resources. The first item in the list is the default playback configuration used for the ad configuration. To select a different configuration per viewing session, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/private-channels-generate-tokens.html\">Generate and Sign IVS Playback Tokens</a>.</p>"
         },
         "tags":{
           "shape":"Tags",
@@ -1516,7 +1537,7 @@
         },
         "type":{
           "shape":"ChannelType",
-          "documentation":"<p>Channel type, which determines the allowable resolution and bitrate. <i>If you exceed the allowable input resolution or bitrate, the stream probably will disconnect immediately.</i> Default: <code>STANDARD</code>. For details, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyAPIReference/channel-types.html\">Channel Types</a>.</p>"
+          "documentation":"<p>Channel type, which determines the allowable resolution and bitrate. <i>If you exceed the allowable input resolution or bitrate, the stream probably will disconnect immediately.</i> Default: <code>STANDARD</code>. For details, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/channel-types.html\">Channel Types</a>.</p>"
         },
         "authorized":{
           "shape":"Boolean",
@@ -1969,7 +1990,7 @@
         },
         "durationSeconds":{
           "shape":"AdDurationSeconds",
-          "documentation":"<p>Maximum duration of the ad break, in seconds.</p>"
+          "documentation":"<p>Duration of the ad break, in seconds.</p>"
         }
       }
     },
@@ -3011,7 +3032,7 @@
         },
         "exceptionMessage":{
           "shape":"errorMessage",
-          "documentation":"<p/>"
+          "documentation":"<p>The service is temporarily unavailable.</p>"
         }
       },
       "documentation":"<p/>",
@@ -3599,6 +3620,34 @@
       "type":"structure",
       "members":{}
     },
+    "UpdateAdConfigurationRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"AdConfigurationArn",
+          "documentation":"<p>ARN of the ad configuration to be updated.</p>"
+        },
+        "name":{
+          "shape":"AdConfigurationName",
+          "documentation":"<p>Ad configuration name. The value does not need to be unique.</p>"
+        },
+        "mediaTailorPlaybackConfigurations":{
+          "shape":"MediaTailorPlaybackConfigurationsList",
+          "documentation":"<p>List of integration configurations with MediaTailor resources. The first item in the list is the default playback configuration used for the ad configuration. To select a different configuration per viewing session, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/private-channels-generate-tokens.html\">Generate and Sign IVS Playback Tokens</a>.</p>"
+        }
+      }
+    },
+    "UpdateAdConfigurationResponse":{
+      "type":"structure",
+      "required":["adConfiguration"],
+      "members":{
+        "adConfiguration":{
+          "shape":"AdConfiguration",
+          "documentation":"<p>Object specifying the updated ad configuration.</p>"
+        }
+      }
+    },
     "UpdateChannelRequest":{
       "type":"structure",
       "required":["arn"],
@@ -3617,7 +3666,7 @@
         },
         "type":{
           "shape":"ChannelType",
-          "documentation":"<p>Channel type, which determines the allowable resolution and bitrate. <i>If you exceed the allowable input resolution or bitrate, the stream probably will disconnect immediately.</i> Default: <code>STANDARD</code>. For details, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyAPIReference/channel-types.html\">Channel Types</a>.</p>"
+          "documentation":"<p>Channel type, which determines the allowable resolution and bitrate. <i>If you exceed the allowable input resolution or bitrate, the stream probably will disconnect immediately.</i> Default: <code>STANDARD</code>. For details, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/channel-types.html\">Channel Types</a>.</p>"
         },
         "authorized":{
           "shape":"Boolean",

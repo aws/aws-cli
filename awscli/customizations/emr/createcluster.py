@@ -232,6 +232,17 @@ class CreateCluster(Command):
             'action': 'store_true',
             'group_name': 'extended-support',
         },
+        {
+            'name': 'session-enabled',
+            'action': 'store_true',
+            'group_name': 'session-enabled',
+            'help_text': helptext.SESSION_ENABLED,
+        },
+        {
+            'name': 'no-session-enabled',
+            'action': 'store_true',
+            'group_name': 'session-enabled',
+        },
     ]
     SYNOPSIS = BasicCommand.FROM_FILE('emr', 'create-cluster-synopsis.txt')
     EXAMPLES = BasicCommand.FROM_FILE('emr', 'create-cluster-examples.rst')
@@ -546,6 +557,14 @@ class CreateCluster(Command):
                 '--extended-support',
                 parsed_args.no_extended_support,
                 '--no-extended-support',
+            )
+
+        if parsed_args.session_enabled or parsed_args.no_session_enabled:
+            params['SessionEnabled'] = emrutils.apply_boolean_options(
+                parsed_args.session_enabled,
+                '--session-enabled',
+                parsed_args.no_session_enabled,
+                '--no-session-enabled',
             )
 
         if parsed_args.managed_scaling_policy is not None:

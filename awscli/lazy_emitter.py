@@ -83,6 +83,7 @@ class LazyInitEmitter(HierarchicalEmitter):
         if command_table is None or session is None:
             return
 
+        super()._emit('before-load-plugins.building-command-table.main', {})
         for op in self._main_ops:
             if op[0] == CommandTableOp.RENAME:
                 _, old_name, new_name = op
@@ -110,6 +111,7 @@ class LazyInitEmitter(HierarchicalEmitter):
             if entry not in self._initialized:
                 self._initialized.add(entry)
                 self._pending_count -= 1
+        super()._emit('after-load-plugins.building-command-table.main', {})
 
     def _ensure_initialized(self, event_name):
         """Initialize any plugins whose event patterns match event_name."""
@@ -119,20 +121,22 @@ class LazyInitEmitter(HierarchicalEmitter):
         if candidates is None:
             candidates = self._init_trie.prefix_search(event_name)
             self._init_cache[event_name] = candidates
-        for entry in candidates:
-            if entry not in self._initialized:
-                self._initialized.add(entry)
-                self._pending_count -= 1
-                module_path, fn_name = entry
-                logger.debug(
-                    'Lazy-initializing plugin %s.%s for event %s',
-                    module_path,
-                    fn_name,
-                    event_name,
-                )
-                mod = importlib.import_module(module_path)
-                fn = getattr(mod, fn_name)
-                fn(self)
+            super()._emit(f'before-load-plugins.{event_name}', {})
+            for entry in candidates:
+                if entry not in self._initialized:
+                    self._initialized.add(entry)
+                    self._pending_count -= 1
+                    module_path, fn_name = entry
+                    logger.debug(
+                        'Lazy-initializing plugin %s.%s for event %s',
+                        module_path,
+                        fn_name,
+                        event_name,
+                    )
+                    mod = importlib.import_module(module_path)
+                    fn = getattr(mod, fn_name)
+                    fn(self)
+            super()._emit(f'after-load-plugins.{event_name}', {})
 
     def _emit(self, event_name, kwargs, stop_on_response=False):
         if (

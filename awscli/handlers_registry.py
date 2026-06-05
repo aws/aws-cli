@@ -20,6 +20,7 @@ event_handlers emitter), then proceeds with normal event dispatch.
 Entry format:
    (module, fn_name)    call fn(event_handlers)
 """
+
 from __future__ import annotations
 
 import enum

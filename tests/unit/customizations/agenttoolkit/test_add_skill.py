@@ -313,6 +313,7 @@ def test_add_skill_skips_symlinked_existing_install(tmp_path):
     rc, output = _run_add(configs, ['--skill-name', 'aws-s3'])
     assert rc == 0
     assert 'aws-s3 is already installed (v1)' in output
+    assert 'update-skill --skill-name aws-s3' in output
     assert link.is_symlink()
     assert (target / 'SKILL.md').read_text() == 'old'
 

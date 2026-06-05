@@ -189,9 +189,10 @@ def install_skill(
                         version_note = f' ({installed})' if installed else ''
                         stream.write(
                             f'  {skill_name} is already installed'
-                            f'{version_note}. Run "aws agent-toolkit '
-                            f'update-skill --skill-name {skill_name}" to '
-                            f'update, or remove it first to reinstall.\n'
+                            f'{version_note} at {real_dir}. Run '
+                            f'"aws agent-toolkit update-skill '
+                            f'--skill-name {skill_name}" to update, '
+                            f'or remove it first to reinstall.\n'
                         )
                     continue
                 shutil.rmtree(real_dir)

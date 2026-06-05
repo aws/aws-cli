@@ -1643,6 +1643,10 @@
         "description":{
           "shape":"ResourceDescription",
           "documentation":"<p>The description of the ML input channel.</p>"
+        },
+        "payerConfiguration":{
+          "shape":"PayerConfiguration",
+          "documentation":"<p>The payer configuration for the ML input channel.</p>"
         }
       },
       "documentation":"<p>Provides summary information about an ML input channel in a collaboration.</p>"
@@ -1795,6 +1799,10 @@
           "shape":"String",
           "documentation":"<p>Details about the logs status for the trained model inference job.</p>"
         },
+        "mlModelInferencePayerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID of the member that is responsible for paying for model inference costs.</p>"
+        },
         "createTime":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The time at which the trained model inference job was created.</p>"
@@ -1875,6 +1883,10 @@
         "creatorAccountId":{
           "shape":"AccountId",
           "documentation":"<p>The account ID of the member that created the trained model.</p>"
+        },
+        "mlModelTrainingPayerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID of the member that is responsible for paying for model training costs.</p>"
         }
       },
       "documentation":"<p>Provides summary information about a trained model in a collaboration.</p>"
@@ -2421,6 +2433,10 @@
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>The optional metadata that you apply to the resource to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50.</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8.</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>Do not use aws:, AWS:, or any upper or lowercase combination of such as a prefix for keys as it is reserved for AWS use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has aws as its prefix but the key does not, then Clean Rooms ML considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of aws do not count against your tags per resource limit.</p> </li> </ul>"
+        },
+        "payerConfiguration":{
+          "shape":"PayerConfiguration",
+          "documentation":"<p>The payer configuration for the ML input channel. Determines which member account pays for compute and synthetic data costs.</p>"
         }
       }
     },
@@ -2509,6 +2525,10 @@
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>The optional metadata that you apply to the resource to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50.</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8.</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>Do not use aws:, AWS:, or any upper or lowercase combination of such as a prefix for keys as it is reserved for AWS use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has aws as its prefix but the key does not, then Clean Rooms ML considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of aws do not count against your tags per resource limit.</p> </li> </ul>"
+        },
+        "mlModelTrainingPayerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID of the member that is responsible for paying for model training costs.</p>"
         }
       }
     },
@@ -3172,6 +3192,10 @@
           "shape":"SyntheticDataConfiguration",
           "documentation":"<p>The synthetic data configuration for this ML input channel, including parameters for generating privacy-preserving synthetic data and evaluation scores for measuring the privacy of the generated data.</p>"
         },
+        "payerConfiguration":{
+          "shape":"PayerConfiguration",
+          "documentation":"<p>The payer configuration for the ML input channel.</p>"
+        },
         "createTime":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The time at which the ML input channel was created.</p>"
@@ -3313,6 +3337,10 @@
         "trainingContainerImageDigest":{
           "shape":"String",
           "documentation":"<p>Information about the training container image.</p>"
+        },
+        "mlModelTrainingPayerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID of the member that is responsible for paying for model training costs.</p>"
         },
         "createTime":{
           "shape":"SyntheticTimestamp_date_time",
@@ -3700,6 +3728,10 @@
           "shape":"SyntheticDataConfiguration",
           "documentation":"<p>The synthetic data configuration for this ML input channel, including parameters for generating privacy-preserving synthetic data and evaluation scores for measuring the privacy of the generated data.</p>"
         },
+        "payerConfiguration":{
+          "shape":"PayerConfiguration",
+          "documentation":"<p>The payer configuration for the ML input channel.</p>"
+        },
         "createTime":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The time at which the ML input channel was created.</p>"
@@ -3888,6 +3920,10 @@
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>The optional metadata that you applied to the resource to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50.</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8.</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>Do not use aws:, AWS:, or any upper or lowercase combination of such as a prefix for keys as it is reserved for AWS use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has aws as its prefix but the key does not, then Clean Rooms ML considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of aws do not count against your tags per resource limit.</p> </li> </ul>"
+        },
+        "mlModelInferencePayerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID of the member that is responsible for paying for model inference costs.</p>"
         }
       }
     },
@@ -4000,6 +4036,10 @@
         "trainingContainerImageDigest":{
           "shape":"String",
           "documentation":"<p>Information about the training image container.</p>"
+        },
+        "mlModelTrainingPayerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID of the member that is responsible for paying for model training costs.</p>"
         },
         "createTime":{
           "shape":"SyntheticTimestamp_date_time",
@@ -5393,6 +5433,10 @@
         "description":{
           "shape":"ResourceDescription",
           "documentation":"<p>The description of the ML input channel.</p>"
+        },
+        "payerConfiguration":{
+          "shape":"PayerConfiguration",
+          "documentation":"<p>The payer configuration for the ML input channel.</p>"
         }
       },
       "documentation":"<p>Provides summary information about the ML input channel.</p>"
@@ -5642,6 +5686,20 @@
       "type":"string",
       "max":1000,
       "min":0
+    },
+    "PayerConfiguration":{
+      "type":"structure",
+      "members":{
+        "computePayerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID of the member that is responsible for paying compute costs.</p>"
+        },
+        "syntheticDataPayerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID of the member that is responsible for paying synthetic data generation costs.</p>"
+        }
+      },
+      "documentation":"<p>Specifies which member accounts are responsible for paying for compute and synthetic data generation costs in a Clean Rooms ML collaboration.</p>"
     },
     "PolicyExistenceCondition":{
       "type":"string",
@@ -6130,6 +6188,10 @@
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>The optional metadata that you apply to the resource to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50.</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8.</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>Do not use aws:, AWS:, or any upper or lowercase combination of such as a prefix for keys as it is reserved for AWS use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has aws as its prefix but the key does not, then Clean Rooms ML considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of aws do not count against your tags per resource limit.</p> </li> </ul>"
+        },
+        "mlModelInferencePayerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID of the member that is responsible for paying for model inference costs.</p>"
         }
       }
     },
@@ -6535,6 +6597,10 @@
           "shape":"String",
           "documentation":"<p>Details about the log status for the trained model inference job.</p>"
         },
+        "mlModelInferencePayerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID of the member that is responsible for paying for model inference costs.</p>"
+        },
         "createTime":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The time at which the trained model inference job was created.</p>"
@@ -6664,6 +6730,10 @@
         "configuredModelAlgorithmAssociationArn":{
           "shape":"ConfiguredModelAlgorithmAssociationArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the configured model algorithm association that was used to create this trained model.</p>"
+        },
+        "mlModelTrainingPayerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID of the member that is responsible for paying for model training costs.</p>"
         }
       },
       "documentation":"<p>Summary information about the trained model.</p>"

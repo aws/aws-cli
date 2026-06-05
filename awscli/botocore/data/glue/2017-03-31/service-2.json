@@ -811,7 +811,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"ValidationException"},
         {"shape":"AlreadyExistsException"},
-        {"shape":"ResourceNumberLimitExceededException"}
+        {"shape":"ResourceNumberLimitExceededException"},
+        {"shape":"OperationNotSupportedException"}
       ],
       "documentation":"<p>Creates a new session.</p>"
     },
@@ -1876,6 +1877,24 @@
       ],
       "documentation":"<p>Retrieves the details of a custom pattern by specifying its name.</p>"
     },
+    "GetDashboardUrl":{
+      "name":"GetDashboardUrl",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetDashboardUrlRequest"},
+      "output":{"shape":"GetDashboardUrlResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"OperationNotSupportedException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Retrieves the URL for the Spark monitoring dashboard for a Glue resource.</p>",
+      "readonly":true
+    },
     "GetDataCatalogEncryptionSettings":{
       "name":"GetDataCatalogEncryptionSettings",
       "http":{
@@ -2556,6 +2575,26 @@
         {"shape":"InvalidInputException"}
       ],
       "documentation":"<p>Retrieves the session.</p>"
+    },
+    "GetSessionEndpoint":{
+      "name":"GetSessionEndpoint",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetSessionEndpointRequest"},
+      "output":{"shape":"GetSessionEndpointResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationNotSupportedException"},
+        {"shape":"IllegalSessionStateException"}
+      ],
+      "documentation":"<p>Returns the Spark Connect endpoint URL and authentication token for an interactive session.</p>",
+      "readonly":true
     },
     "GetStatement":{
       "name":"GetStatement",
@@ -3546,6 +3585,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"ValidationException"},
         {"shape":"ResourceNumberLimitExceededException"},
+        {"shape":"OperationNotSupportedException"},
+        {"shape":"SessionBusyException"},
         {"shape":"IllegalSessionStateException"}
       ],
       "documentation":"<p>Executes the statement.</p>"
@@ -4554,7 +4595,7 @@
         },
         "Timeout":{
           "shape":"Timeout",
-          "documentation":"<p>The <code>JobRun</code> timeout in minutes. This is the maximum time that a job run can consume resources before it is terminated and enters <code>TIMEOUT</code> status. This overrides the timeout value set in the parent job.</p> <p>Jobs must have timeout values less than 7 days or 10080 minutes. Otherwise, the jobs will throw an exception.</p> <p>When the value is left blank, the timeout is defaulted to 2880 minutes.</p> <p>Any existing Glue jobs that had a timeout value greater than 7 days will be defaulted to 7 days. For instance if you have specified a timeout of 20 days for a batch job, it will be stopped on the 7th day.</p> <p>For streaming jobs, if you have set up a maintenance window, it will be restarted during the maintenance window after 7 days.</p>"
+          "documentation":"<p>The <code>JobRun</code> timeout in minutes. This is the maximum time that a job run can consume resources before it is terminated and enters <code>TIMEOUT</code> status. This overrides the timeout value set in the parent job.</p> <p>Jobs must have timeout values less than 7 days or 10080 minutes. Otherwise, the jobs will throw an exception.</p> <p>When the value is left blank, the timeout is defaulted to 2,880 minutes for Glue version 4.0 and earlier, or 480 minutes for Glue version 5.0 and later.</p> <p>Any existing Glue jobs that had a timeout value greater than 7 days will be defaulted to 7 days. For instance if you have specified a timeout of 20 days for a batch job, it will be stopped on the 7th day.</p> <p>For streaming jobs, if you have set up a maintenance window, it will be restarted during the maintenance window after 7 days.</p>"
         },
         "SecurityConfiguration":{
           "shape":"NameString",
@@ -9921,7 +9962,7 @@
         },
         "Timeout":{
           "shape":"Timeout",
-          "documentation":"<p>The job timeout in minutes. This is the maximum time that a job run can consume resources before it is terminated and enters <code>TIMEOUT</code> status.</p> <p>Jobs must have timeout values less than 7 days or 10080 minutes. Otherwise, the jobs will throw an exception.</p> <p>When the value is left blank, the timeout is defaulted to 2880 minutes.</p> <p>Any existing Glue jobs that had a timeout value greater than 7 days will be defaulted to 7 days. For instance if you have specified a timeout of 20 days for a batch job, it will be stopped on the 7th day.</p> <p>For streaming jobs, if you have set up a maintenance window, it will be restarted during the maintenance window after 7 days.</p>"
+          "documentation":"<p>The job timeout in minutes. This is the maximum time that a job run can consume resources before it is terminated and enters <code>TIMEOUT</code> status.</p> <p>Jobs must have timeout values less than 7 days or 10080 minutes. Otherwise, the jobs will throw an exception.</p> <p>When the value is left blank, the timeout is defaulted to 2,880 minutes for Glue version 4.0 and earlier, or 480 minutes for Glue version 5.0 and later.</p> <p>Any existing Glue jobs that had a timeout value greater than 7 days will be defaulted to 7 days. For instance if you have specified a timeout of 20 days for a batch job, it will be stopped on the 7th day.</p> <p>For streaming jobs, if you have set up a maintenance window, it will be restarted during the maintenance window after 7 days.</p>"
         },
         "MaxCapacity":{
           "shape":"NullableDouble",
@@ -10392,6 +10433,10 @@
         "RequestOrigin":{
           "shape":"OrchestrationNameString",
           "documentation":"<p>The origin of the request. </p>"
+        },
+        "SessionType":{
+          "shape":"SessionType",
+          "documentation":"<p>The type of session to create.</p>"
         }
       },
       "documentation":"<p>Request to create a new session.</p>"
@@ -14512,6 +14557,10 @@
         "IncludeRoot":{
           "shape":"NullableBoolean",
           "documentation":"<p>Whether to list the default catalog in the account and region in the response. Defaults to <code>false</code>. When <code>true</code> and <code>ParentCatalogId = NULL | Amazon Web Services Account ID</code>, all catalogs and the default catalog are enumerated in the response.</p> <p>When the <code>ParentCatalogId</code> is not equal to null, and this attribute is passed as <code>false</code> or <code>true</code>, an <code>InvalidInputException</code> is thrown.</p>"
+        },
+        "HasDatabases":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>When <code>true</code>, the response only includes catalogs that can contain databases. Some catalogs are organizational containers that hold only other catalogs, not databases. When this parameter is set to <code>true</code>, those container-only catalogs are excluded, and only catalogs capable of containing databases are returned. Defaults to <code>false</code>.</p>"
         }
       }
     },
@@ -14932,6 +14981,37 @@
         "ContextWords":{
           "shape":"ContextWords",
           "documentation":"<p>A list of context words if specified when you created the custom pattern. If none of these context words are found within the vicinity of the regular expression the data will not be detected as sensitive data.</p>"
+        }
+      }
+    },
+    "GetDashboardUrlRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceId",
+        "ResourceType"
+      ],
+      "members":{
+        "ResourceId":{
+          "shape":"NameString",
+          "documentation":"<p>The unique identifier of the resource for which to retrieve the dashboard URL.</p>"
+        },
+        "ResourceType":{
+          "shape":"GlueResourceType",
+          "documentation":"<p>The type of the resource. Valid values are <code>SESSION</code> and <code>JOB</code>.</p>"
+        },
+        "RequestOrigin":{
+          "shape":"OrchestrationNameString",
+          "documentation":"<p>The origin of the request. </p>"
+        }
+      }
+    },
+    "GetDashboardUrlResponse":{
+      "type":"structure",
+      "required":["Url"],
+      "members":{
+        "Url":{
+          "shape":"SensitiveUrl",
+          "documentation":"<p>The URL for the Spark monitoring dashboard.</p>"
         }
       }
     },
@@ -16508,6 +16588,26 @@
         }
       }
     },
+    "GetSessionEndpointRequest":{
+      "type":"structure",
+      "required":["SessionId"],
+      "members":{
+        "SessionId":{
+          "shape":"NameString",
+          "documentation":"<p>The unique identifier of the interactive session.</p>"
+        }
+      }
+    },
+    "GetSessionEndpointResponse":{
+      "type":"structure",
+      "required":["SparkConnect"],
+      "members":{
+        "SparkConnect":{
+          "shape":"SessionEndpoint",
+          "documentation":"<p>The Spark Connect endpoint details for the session.</p>"
+        }
+      }
+    },
     "GetSessionRequest":{
       "type":"structure",
       "required":["Id"],
@@ -17372,6 +17472,13 @@
       "max":10240,
       "min":1,
       "pattern":"arn:aws(-(cn|us-gov|iso(-[bef])?))?:glue:.*"
+    },
+    "GlueResourceType":{
+      "type":"string",
+      "enum":[
+        "JOB",
+        "SESSION"
+      ]
     },
     "GlueSchema":{
       "type":"structure",
@@ -18993,7 +19100,7 @@
         },
         "Timeout":{
           "shape":"Timeout",
-          "documentation":"<p>The job timeout in minutes. This is the maximum time that a job run can consume resources before it is terminated and enters <code>TIMEOUT</code> status.</p> <p>Jobs must have timeout values less than 7 days or 10080 minutes. Otherwise, the jobs will throw an exception.</p> <p>When the value is left blank, the timeout is defaulted to 2880 minutes.</p> <p>Any existing Glue jobs that had a timeout value greater than 7 days will be defaulted to 7 days. For instance if you have specified a timeout of 20 days for a batch job, it will be stopped on the 7th day.</p> <p>For streaming jobs, if you have set up a maintenance window, it will be restarted during the maintenance window after 7 days.</p>"
+          "documentation":"<p>The job timeout in minutes. This is the maximum time that a job run can consume resources before it is terminated and enters <code>TIMEOUT</code> status.</p> <p>Jobs must have timeout values less than 7 days or 10080 minutes. Otherwise, the jobs will throw an exception.</p> <p>When the value is left blank, the timeout is defaulted to 2,880 minutes for Glue version 4.0 and earlier, or 480 minutes for Glue version 5.0 and later.</p> <p>Any existing Glue jobs that had a timeout value greater than 7 days will be defaulted to 7 days. For instance if you have specified a timeout of 20 days for a batch job, it will be stopped on the 7th day.</p> <p>For streaming jobs, if you have set up a maintenance window, it will be restarted during the maintenance window after 7 days.</p>"
         },
         "MaxCapacity":{
           "shape":"NullableDouble",
@@ -19217,7 +19324,7 @@
         },
         "Timeout":{
           "shape":"Timeout",
-          "documentation":"<p>The <code>JobRun</code> timeout in minutes. This is the maximum time that a job run can consume resources before it is terminated and enters <code>TIMEOUT</code> status. This value overrides the timeout value set in the parent job.</p> <p>Jobs must have timeout values less than 7 days or 10080 minutes. Otherwise, the jobs will throw an exception.</p> <p>When the value is left blank, the timeout is defaulted to 2880 minutes.</p> <p>Any existing Glue jobs that had a timeout value greater than 7 days will be defaulted to 7 days. For instance if you have specified a timeout of 20 days for a batch job, it will be stopped on the 7th day.</p> <p>For streaming jobs, if you have set up a maintenance window, it will be restarted during the maintenance window after 7 days.</p>"
+          "documentation":"<p>The <code>JobRun</code> timeout in minutes. This is the maximum time that a job run can consume resources before it is terminated and enters <code>TIMEOUT</code> status. This value overrides the timeout value set in the parent job.</p> <p>Jobs must have timeout values less than 7 days or 10080 minutes. Otherwise, the jobs will throw an exception.</p> <p>When the value is left blank, the timeout is defaulted to 2,880 minutes for Glue version 4.0 and earlier, or 480 minutes for Glue version 5.0 and later.</p> <p>Any existing Glue jobs that had a timeout value greater than 7 days will be defaulted to 7 days. For instance if you have specified a timeout of 20 days for a batch job, it will be stopped on the 7th day.</p> <p>For streaming jobs, if you have set up a maintenance window, it will be restarted during the maintenance window after 7 days.</p>"
         },
         "MaxCapacity":{
           "shape":"NullableDouble",
@@ -19348,7 +19455,7 @@
         },
         "Timeout":{
           "shape":"Timeout",
-          "documentation":"<p>The job timeout in minutes. This is the maximum time that a job run can consume resources before it is terminated and enters <code>TIMEOUT</code> status.</p> <p>Jobs must have timeout values less than 7 days or 10080 minutes. Otherwise, the jobs will throw an exception.</p> <p>When the value is left blank, the timeout is defaulted to 2880 minutes.</p> <p>Any existing Glue jobs that had a timeout value greater than 7 days will be defaulted to 7 days. For instance if you have specified a timeout of 20 days for a batch job, it will be stopped on the 7th day.</p> <p>For streaming jobs, if you have set up a maintenance window, it will be restarted during the maintenance window after 7 days.</p>"
+          "documentation":"<p>The job timeout in minutes. This is the maximum time that a job run can consume resources before it is terminated and enters <code>TIMEOUT</code> status.</p> <p>Jobs must have timeout values less than 7 days or 10080 minutes. Otherwise, the jobs will throw an exception.</p> <p>When the value is left blank, the timeout is defaulted to 2,880 minutes for Glue version 4.0 and earlier, or 480 minutes for Glue version 5.0 and later.</p> <p>Any existing Glue jobs that had a timeout value greater than 7 days will be defaulted to 7 days. For instance if you have specified a timeout of 20 days for a batch job, it will be stopped on the 7th day.</p> <p>For streaming jobs, if you have set up a maintenance window, it will be restarted during the maintenance window after 7 days.</p>"
         },
         "MaxCapacity":{
           "shape":"NullableDouble",
@@ -22312,8 +22419,7 @@
     },
     "PartitionIndexList":{
       "type":"list",
-      "member":{"shape":"PartitionIndex"},
-      "max":3
+      "member":{"shape":"PartitionIndex"}
     },
     "PartitionIndexStatus":{
       "type":"string",
@@ -25268,6 +25374,16 @@
       "max":1000,
       "min":1
     },
+    "SensitiveString":{
+      "type":"string",
+      "max":16384,
+      "sensitive":true
+    },
+    "SensitiveUrl":{
+      "type":"string",
+      "max":40000,
+      "sensitive":true
+    },
     "Separator":{
       "type":"string",
       "enum":[
@@ -25378,9 +25494,24 @@
         "ProfileName":{
           "shape":"NameString",
           "documentation":"<p>The name of an Glue usage profile associated with the session.</p>"
+        },
+        "SessionType":{
+          "shape":"SessionType",
+          "documentation":"<p>The type of the session.</p>"
         }
       },
       "documentation":"<p>The period in which a remote Spark runtime environment is running.</p>"
+    },
+    "SessionBusyException":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"OrchestrationMessageString",
+          "documentation":"<p>A message describing the problem.</p>"
+        }
+      },
+      "documentation":"<p>The session is currently busy processing another request and cannot accept new operations.</p>",
+      "exception":true
     },
     "SessionCommand":{
       "type":"structure",
@@ -25395,6 +25526,29 @@
         }
       },
       "documentation":"<p>The <code>SessionCommand</code> that runs the job.</p>"
+    },
+    "SessionEndpoint":{
+      "type":"structure",
+      "required":[
+        "Url",
+        "AuthToken",
+        "AuthTokenExpirationTime"
+      ],
+      "members":{
+        "Url":{
+          "shape":"SparkConnectEndpointUrl",
+          "documentation":"<p>The Spark Connect endpoint URL for the session.</p>"
+        },
+        "AuthToken":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The authentication token to include in requests to the Spark Connect endpoint.</p>"
+        },
+        "AuthTokenExpirationTime":{
+          "shape":"TimestampValue",
+          "documentation":"<p>The time at which the authentication token expires.</p>"
+        }
+      },
+      "documentation":"<p>Contains the Spark Connect endpoint details for an interactive session, including the URL and authentication credentials.</p>"
     },
     "SessionIdList":{
       "type":"list",
@@ -25413,6 +25567,13 @@
         "TIMEOUT",
         "STOPPING",
         "STOPPED"
+      ]
+    },
+    "SessionType":{
+      "type":"string",
+      "enum":[
+        "LIVY",
+        "SPARK_CONNECT"
       ]
     },
     "SettingSource":{
@@ -25723,6 +25884,11 @@
     "SourceTableFieldsList":{
       "type":"list",
       "member":{"shape":"String128"}
+    },
+    "SparkConnectEndpointUrl":{
+      "type":"string",
+      "max":2048,
+      "pattern":"^sc://.*$"
     },
     "SparkConnectorSource":{
       "type":"structure",
@@ -26221,7 +26387,7 @@
         },
         "Timeout":{
           "shape":"Timeout",
-          "documentation":"<p>The <code>JobRun</code> timeout in minutes. This is the maximum time that a job run can consume resources before it is terminated and enters <code>TIMEOUT</code> status. This value overrides the timeout value set in the parent job. </p> <p>Jobs must have timeout values less than 7 days or 10080 minutes. Otherwise, the jobs will throw an exception.</p> <p>When the value is left blank, the timeout is defaulted to 2880 minutes.</p> <p>Any existing Glue jobs that had a timeout value greater than 7 days will be defaulted to 7 days. For instance if you have specified a timeout of 20 days for a batch job, it will be stopped on the 7th day.</p> <p>For streaming jobs, if you have set up a maintenance window, it will be restarted during the maintenance window after 7 days.</p>"
+          "documentation":"<p>The <code>JobRun</code> timeout in minutes. This is the maximum time that a job run can consume resources before it is terminated and enters <code>TIMEOUT</code> status. This value overrides the timeout value set in the parent job. </p> <p>Jobs must have timeout values less than 7 days or 10080 minutes. Otherwise, the jobs will throw an exception.</p> <p>When the value is left blank, the timeout is defaulted to 2,880 minutes for Glue version 4.0 and earlier, or 480 minutes for Glue version 5.0 and later.</p> <p>Any existing Glue jobs that had a timeout value greater than 7 days will be defaulted to 7 days. For instance if you have specified a timeout of 20 days for a batch job, it will be stopped on the 7th day.</p> <p>For streaming jobs, if you have set up a maintenance window, it will be restarted during the maintenance window after 7 days.</p>"
         },
         "MaxCapacity":{
           "shape":"NullableDouble",

@@ -124,7 +124,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a policy store. A policy store is a container for policy resources.</p> <note> <p>Although <a href=\"https://docs.cedarpolicy.com/schema/schema.html#namespace\">Cedar supports multiple namespaces</a>, Verified Permissions currently supports only one namespace per policy store.</p> </note> <note> <p>Verified Permissions is <i> <a href=\"https://wikipedia.org/wiki/Eventual_consistency\">eventually consistent</a> </i>. It can take a few seconds for a new or changed element to propagate through the service and be visible in the results of other Verified Permissions operations.</p> </note>",
+      "documentation":"<p>Creates a policy store. A policy store is a container for policy resources.</p> <note> <p>As of May 2026, Verified Permissions has aligned with Cedar and now supports multiple namespaces.</p> </note> <note> <p>Verified Permissions is <i> <a href=\"https://wikipedia.org/wiki/Eventual_consistency\">eventually consistent</a> </i>. It can take a few seconds for a new or changed element to propagate through the service and be visible in the results of other Verified Permissions operations.</p> </note>",
       "idempotent":true
     },
     "CreatePolicyStoreAlias":{
@@ -238,7 +238,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Deletes the specified policy store alias.</p> <p>This operation is idempotent. If you specify a policy store alias that does not exist, the request response will still return a successful HTTP 200 status code.</p> <p>When a policy store alias is deleted, it enters the <code>PendingDeletion</code> state. When a policy store alias is in the <code>PendingDeletion</code> state, new policy store aliases cannot be created with the same name. If the policy store alias is used in an API that has a <code>policyStoreId</code> field, the operation will fail with a <code>ResourceNotFound</code> exception.</p>",
+      "documentation":"<p>Deletes the specified policy store alias.</p> <p>This operation is idempotent. If you specify a policy store alias that does not exist, the request response will still return a successful HTTP 200 status code.</p> <p>By default, when a policy store alias is deleted, it enters the <code>PendingDeletion</code> state. When a policy store alias is in the <code>PendingDeletion</code> state, new policy store aliases cannot be created with the same name. If the policy store alias is used in an API that has a <code>policyStoreId</code> field, the operation will fail with a <code>ResourceNotFound</code> exception.</p> <p>To immediately delete a policy store alias and bypass the <code>PendingDeletion</code> state, set the <code>deletionMode</code> parameter to <code>HardDelete</code>.</p> <important> <p>Verified Permissions is eventually consistent. If you hard delete a policy store alias and then immediately recreate it to be associated with a different policy store, requests that reference this alias may continue to be evaluated against the previously associated policy store for a short period of time.</p> </important>",
       "idempotent":true
     },
     "DeletePolicyTemplate":{
@@ -1727,6 +1727,10 @@
         "aliasName":{
           "shape":"Alias",
           "documentation":"<p>Specifies the name of the policy store alias that you want to delete.</p> <note> <p>The alias name must always be prefixed with <code>policy-store-alias/</code>.</p> </note>"
+        },
+        "deletionMode":{
+          "shape":"DeletionMode",
+          "documentation":"<p>Specifies the deletion mode for the policy store alias. The valid values are:</p> <ul> <li> <p> <b>SoftDelete</b> – The policy store alias enters the <code>PendingDeletion</code> state. This is the default behavior when no <code>deletionMode</code> is specified.</p> </li> <li> <p> <b>HardDelete</b> – The policy store alias is immediately deleted, bypassing the <code>PendingDeletion</code> state.</p> </li> </ul>"
         }
       }
     },
@@ -1768,6 +1772,14 @@
     "DeletePolicyTemplateOutput":{
       "type":"structure",
       "members":{}
+    },
+    "DeletionMode":{
+      "type":"string",
+      "documentation":"<p>The deletion mode for a resource. The valid values are:</p> <ul> <li> <p> <b>SoftDelete</b> – The resource enters the <code>PendingDeletion</code> state. This is the default behavior.</p> </li> <li> <p> <b>HardDelete</b> – The resource is immediately deleted, bypassing the <code>PendingDeletion</code> state.</p> </li> </ul>",
+      "enum":[
+        "SoftDelete",
+        "HardDelete"
+      ]
     },
     "DeletionProtection":{
       "type":"string",
@@ -3108,7 +3120,7 @@
           "documentation":"<p>The OIDC configuration for processing identity (ID) tokens. Contains allowed client ID claims, for example <code>1example23456789</code>, and the claim that you want to map to the principal, for example <code>sub</code>.</p>"
         }
       },
-      "documentation":"<p>The token type that you want to process from your OIDC identity provider. Your policy store can process either identity (ID) or access tokens from a given OIDC identity source.</p> <p>This data type is part of a <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_OpenIdConnectConfigurationItem.html\">OpenIdConnectConfigurationItem</a> structure, which is a parameter of <a href=\"http://amazonaws.com/verifiedpermissions/latest/apireference/API_ListIdentitySources.html\">ListIdentitySources</a>.</p>",
+      "documentation":"<p>The token type that you want to process from your OIDC identity provider. Your policy store can process either identity (ID) or access tokens from a given OIDC identity source.</p> <p>This data type is part of a <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_OpenIdConnectConfigurationItem.html\">OpenIdConnectConfigurationItem</a> structure, which is a parameter of <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ListIdentitySources.html\">ListIdentitySources</a>.</p>",
       "union":true
     },
     "OpenIdIssuer":{

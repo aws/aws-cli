@@ -271,7 +271,7 @@ class TestConfigureMFALoginCommand(unittest.TestCase):
         }
 
         self.config_writer.update_config.assert_called_with(
-            expected_values, '/tmp/credentials'
+            expected_values, '/tmp/credentials', check_permissions=True
         )
 
     def test_serial_number_from_parameter(self):
@@ -567,3 +567,38 @@ class TestConfigureMFALoginCommand(unittest.TestCase):
             self.assertEqual(rc, 1)
             all_writes = ''.join(str(call) for call in mock_stderr.write.call_args_list)
             self.assertIn("aws: [ERROR]: AWS Access Key ID is required", all_writes)
+
+    def test_check_permissions_when_writing_temporary_credentials(self):
+        self.prompter.get_credential_value.side_effect = [
+            'arn:aws:iam::123456789012:mfa/user',
+            '123456',
+        ]
+        self.prompter.get_value.return_value = 'session-test'
+
+        expiration = datetime.datetime(2023, 5, 19, 18, 6, 10)
+        sts_response = {
+            'Credentials': {
+                'AccessKeyId': 'ASIAIOSFODNN7EXAMPLE',
+                'SecretAccessKey': 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYzEXAMPLEKEY',
+                'SessionToken': 'SESSION_TOKEN',
+                'Expiration': expiration,
+            }
+        }
+
+        sts_client = mock.Mock()
+        sts_client.get_session_token.return_value = sts_response
+        self.session.create_client.return_value = sts_client
+
+        with mock.patch('sys.stdin.isatty', return_value=True):
+            with mock.patch(
+                'os.path.expanduser', return_value='/tmp/credentials'
+            ):
+                with mock.patch('sys.stdout'):
+                    rc = self.command._run_main(
+                        self.parsed_args, self.parsed_globals
+                    )
+
+        self.assertEqual(rc, 0)
+        self.config_writer.update_config.assert_called_once_with(
+            mock.ANY, '/tmp/credentials', check_permissions=True
+        )

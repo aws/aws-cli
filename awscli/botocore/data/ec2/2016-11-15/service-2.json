@@ -490,7 +490,7 @@
       },
       "input":{"shape":"CancelCapacityReservationRequest"},
       "output":{"shape":"CancelCapacityReservationResult"},
-      "documentation":"<p>Cancels the specified Capacity Reservation, releases the reserved capacity, and changes the Capacity Reservation's state to <code>cancelled</code>.</p> <p>You can cancel a Capacity Reservation that is in the following states:</p> <ul> <li> <p> <code>assessing</code> </p> </li> <li> <p> <code>active</code> and there is no commitment duration or the commitment duration has elapsed. You can't cancel a future-dated Capacity Reservation during the commitment duration.</p> </li> </ul> <note> <p>You can't modify or cancel a Capacity Block. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-capacity-blocks.html\">Capacity Blocks for ML</a>.</p> </note> <p>If a future-dated Capacity Reservation enters the <code>delayed</code> state, the commitment duration is waived, and you can cancel it as soon as it enters the <code>active</code> state.</p> <p>Instances running in the reserved capacity continue running until you stop them. Stopped instances that target the Capacity Reservation can no longer launch. Modify these instances to either target a different Capacity Reservation, launch On-Demand Instance capacity, or run in any open Capacity Reservation that has matching attributes and sufficient capacity.</p>"
+      "documentation":"<p>Cancels the specified Capacity Reservation, releases the reserved capacity, and changes the Capacity Reservation's state to <code>cancelled</code>.</p> <p>You can cancel a Capacity Reservation that is in the following states:</p> <ul> <li> <p> <code>assessing</code> </p> </li> <li> <p> <code>scheduled</code> </p> </li> <li> <p> <code>active</code> and there is no commitment duration or the commitment duration has elapsed.</p> </li> <li> <p> <code>active</code> during the commitment duration, if you provide a cancellation quote ID and accept the cancellation charges. Use <code>CreateCapacityReservationCancellationQuote</code> to generate a quote. The Capacity Reservation transitions to <code>cancelling</code> while charges are applied.</p> </li> </ul> <note> <p>You can't modify or cancel a Capacity Block. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-capacity-blocks.html\">Capacity Blocks for ML</a>.</p> </note> <p>If a future-dated Capacity Reservation enters the <code>delayed</code> state, the commitment duration is waived, and you can cancel it as soon as it enters the <code>active</code> state.</p> <p>Instances running in the reserved capacity continue running until you stop them. Stopped instances that target the Capacity Reservation can no longer launch. Modify these instances to either target a different Capacity Reservation, launch On-Demand Instance capacity, or run in any open Capacity Reservation that has matching attributes and sufficient capacity.</p>"
     },
     "CancelCapacityReservationFleets":{
       "name":"CancelCapacityReservationFleets",
@@ -659,6 +659,16 @@
       "input":{"shape":"CreateCapacityReservationBySplittingRequest"},
       "output":{"shape":"CreateCapacityReservationBySplittingResult"},
       "documentation":"<p> Create a new Capacity Reservation by splitting the capacity of the source Capacity Reservation. The new Capacity Reservation will have the same attributes as the source Capacity Reservation except for tags. The source Capacity Reservation must be <code>active</code> and owned by your Amazon Web Services account. </p>"
+    },
+    "CreateCapacityReservationCancellationQuote":{
+      "name":"CreateCapacityReservationCancellationQuote",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateCapacityReservationCancellationQuoteRequest"},
+      "output":{"shape":"CreateCapacityReservationCancellationQuoteResult"},
+      "documentation":"<p>Generates a cancellation quote for a future-dated Capacity Reservation that is within its commitment duration. The quote includes the cancellation terms and a quote ID that you can pass to the <code>CancelCapacityReservation</code> action. Cancellation quotes are valid for 24 hours.</p>"
     },
     "CreateCapacityReservationFleet":{
       "name":"CreateCapacityReservationFleet",
@@ -2819,6 +2829,16 @@
       "output":{"shape":"DescribeCapacityReservationBillingRequestsResult"},
       "documentation":"<p>Describes a request to assign the billing of the unused capacity of a Capacity Reservation. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/transfer-billing.html\"> Billing assignment for shared Amazon EC2 Capacity Reservations</a>.</p>"
     },
+    "DescribeCapacityReservationCancellationQuotes":{
+      "name":"DescribeCapacityReservationCancellationQuotes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeCapacityReservationCancellationQuotesRequest"},
+      "output":{"shape":"DescribeCapacityReservationCancellationQuotesResult"},
+      "documentation":"<p>Describes one or more Capacity Reservation cancellation quotes. The results describe only the quotes that you have previously generated by using the <code>CreateCapacityReservationCancellationQuote</code> action.</p>"
+    },
     "DescribeCapacityReservationFleets":{
       "name":"DescribeCapacityReservationFleets",
       "http":{
@@ -3388,6 +3408,16 @@
       "input":{"shape":"DescribeIpamPoliciesRequest"},
       "output":{"shape":"DescribeIpamPoliciesResult"},
       "documentation":"<p>Describes one or more IPAM policies.</p> <p>An IPAM policy is a set of rules that define how public IPv4 addresses from IPAM pools are allocated to Amazon Web Services resources. Each rule maps an Amazon Web Services service to IPAM pools that the service will use to get IP addresses. A single policy can have multiple rules and be applied to multiple Amazon Web Services Regions. If the IPAM pool run out of addresses then the services fallback to Amazon-provided IP addresses. A policy can be applied to an individual Amazon Web Services account or an entity within Amazon Web Services Organizations.</p>"
+    },
+    "DescribeIpamPoolAllocations":{
+      "name":"DescribeIpamPoolAllocations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeIpamPoolAllocationsRequest"},
+      "output":{"shape":"DescribeIpamPoolAllocationsResult"},
+      "documentation":"<p>Describes IPAM pool allocations. You can describe all allocations owned by you across all pools, or you can describe specific allocations by ID.</p> <p>If you specify <code>IpamPoolAllocationIds</code>, the results include only the specified allocations. If you do not specify <code>IpamPoolAllocationIds</code>, the results include all allocations owned by you. You can use <code>Filters</code> to narrow the results.</p> <note> <p>This action returns only allocations directly owned by you. To view all allocations in a pool you own or that has been shared with you, including allocations owned by other accounts, use <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_GetIpamPoolAllocations.html\">GetIpamPoolAllocations</a>.</p> </note>"
     },
     "DescribeIpamPools":{
       "name":"DescribeIpamPools",
@@ -6307,6 +6337,16 @@
       "output":{"shape":"ModifyIpamPoolResult"},
       "documentation":"<p>Modify the configurations of an IPAM pool.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/mod-pool-ipam.html\">Modify a pool</a> in the <i>Amazon VPC IPAM User Guide</i>. </p>"
     },
+    "ModifyIpamPoolAllocation":{
+      "name":"ModifyIpamPoolAllocation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyIpamPoolAllocationRequest"},
+      "output":{"shape":"ModifyIpamPoolAllocationResult"},
+      "documentation":"<p>Modifies the description of an IPAM pool allocation. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/modify-alloc-ipam.html\">Modify an IPAM pool allocation</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>"
+    },
     "ModifyIpamPrefixListResolver":{
       "name":"ModifyIpamPrefixListResolver",
       "http":{
@@ -8773,6 +8813,11 @@
           "shape":"IpamPoolAllocationDisallowedCidrs",
           "documentation":"<p>Exclude a particular CIDR range from being returned by the pool. Disallowed CIDRs are only allowed if using netmask length for allocation.</p>",
           "locationName":"DisallowedCidr"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> <p>If you specify tags, the request is authorized against the allocation resource in addition to the pool resource.</p>",
+          "locationName":"TagSpecification"
         }
       }
     },
@@ -8826,7 +8871,8 @@
       "type":"string",
       "enum":[
         "used",
-        "future"
+        "future",
+        "cancelling"
       ]
     },
     "AllowedImagesSettingsDisabledState":{
@@ -9198,6 +9244,10 @@
         "enable",
         "disable"
       ]
+    },
+    "ApplyCancellationCharges":{
+      "type":"string",
+      "enum":["commitment-wind-down"]
     },
     "ApplySecurityGroupsToClientVpnTargetNetworkRequest":{
       "type":"structure",
@@ -11775,6 +11825,14 @@
         "DryRun":{
           "shape":"Boolean",
           "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "ApplyCancellationCharges":{
+          "shape":"ApplyCancellationCharges",
+          "documentation":"<p>Specifies the cancellation charge type to apply when cancelling a future-dated Capacity Reservation during its commitment duration. Possible values include <code>commitment-wind-down</code>, which continues billing for the remaining commitment duration without delivering capacity.</p>"
+        },
+        "QuoteId":{
+          "shape":"CapacityReservationCancellationQuoteId",
+          "documentation":"<p>The ID of the cancellation quote to use for the cancellation. You can generate a cancellation quote by using the <code>CreateCapacityReservationCancellationQuote</code> action. The cancellation quote must be in an <code>active</code> state.</p>"
         }
       }
     },
@@ -12073,6 +12131,44 @@
         }
       },
       "documentation":"<p>Contains the output of CancelSpotInstanceRequests.</p>"
+    },
+    "CancellationTerms":{
+      "type":"structure",
+      "members":{
+        "CancellationType":{
+          "shape":"ApplyCancellationCharges",
+          "documentation":"<p>The type of cancellation charge. Possible values include <code>commitment-wind-down</code>.</p>",
+          "locationName":"cancellationType"
+        },
+        "ReservationState":{
+          "shape":"String",
+          "documentation":"<p>The state that the Capacity Reservation will transition to after cancellation.</p>",
+          "locationName":"reservationState"
+        },
+        "CommittedInstanceCount":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The number of instances under commitment after cancellation.</p>",
+          "locationName":"committedInstanceCount"
+        },
+        "ChargeCommitmentDurationHours":{
+          "shape":"BoxedLong",
+          "documentation":"<p>The number of hours for which cancellation charges will apply.</p>",
+          "locationName":"chargeCommitmentDurationHours"
+        },
+        "ChargeEndDate":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time at which cancellation charges will stop.</p>",
+          "locationName":"chargeEndDate"
+        }
+      },
+      "documentation":"<p>Describes the cancellation terms for cancelling a future-dated Capacity Reservation during its commitment duration.</p>"
+    },
+    "CancellationTermsSet":{
+      "type":"list",
+      "member":{
+        "shape":"CancellationTerms",
+        "locationName":"item"
+      }
     },
     "CancelledSpotInstanceRequest":{
       "type":"structure",
@@ -12882,7 +12978,7 @@
         },
         "State":{
           "shape":"CapacityReservationState",
-          "documentation":"<p>The current state of the Capacity Reservation. A Capacity Reservation can be in one of the following states:</p> <ul> <li> <p> <code>active</code> - The capacity is available for use.</p> </li> <li> <p> <code>expired</code> - The Capacity Reservation expired automatically at the date and time specified in your reservation request. The reserved capacity is no longer available for your use.</p> </li> <li> <p> <code>cancelled</code> - The Capacity Reservation was canceled. The reserved capacity is no longer available for your use.</p> </li> <li> <p> <code>pending</code> - The Capacity Reservation request was successful but the capacity provisioning is still pending.</p> </li> <li> <p> <code>failed</code> - The Capacity Reservation request has failed. A request can fail due to request parameters that are not valid, capacity constraints, or instance limit constraints. You can view a failed request for 60 minutes.</p> </li> <li> <p> <code>scheduled</code> - (<i>Future-dated Capacity Reservations</i>) The future-dated Capacity Reservation request was approved and the Capacity Reservation is scheduled for delivery on the requested start date.</p> </li> <li> <p> <code>payment-pending</code> - (<i>Capacity Blocks</i>) The upfront payment has not been processed yet.</p> </li> <li> <p> <code>payment-failed</code> - (<i>Capacity Blocks</i>) The upfront payment was not processed in the 12-hour time frame. Your Capacity Block was released.</p> </li> <li> <p> <code>assessing</code> - (<i>Future-dated Capacity Reservations</i>) Amazon EC2 is assessing your request for a future-dated Capacity Reservation.</p> </li> <li> <p> <code>delayed</code> - (<i>Future-dated Capacity Reservations</i>) Amazon EC2 encountered a delay in provisioning the requested future-dated Capacity Reservation. Amazon EC2 is unable to deliver the requested capacity by the requested start date and time.</p> </li> <li> <p> <code>unsupported</code> - (<i>Future-dated Capacity Reservations</i>) Amazon EC2 can't support the future-dated Capacity Reservation request due to capacity constraints. You can view unsupported requests for 30 days. The Capacity Reservation will not be delivered.</p> </li> </ul>",
+          "documentation":"<p>The current state of the Capacity Reservation. A Capacity Reservation can be in one of the following states:</p> <ul> <li> <p> <code>active</code> - The capacity is available for use.</p> </li> <li> <p> <code>expired</code> - The Capacity Reservation expired automatically at the date and time specified in your reservation request. The reserved capacity is no longer available for your use.</p> </li> <li> <p> <code>cancelled</code> - The Capacity Reservation was canceled. The reserved capacity is no longer available for your use.</p> </li> <li> <p> <code>pending</code> - The Capacity Reservation request was successful but the capacity provisioning is still pending.</p> </li> <li> <p> <code>failed</code> - The Capacity Reservation request has failed. A request can fail due to request parameters that are not valid, capacity constraints, or instance limit constraints. You can view a failed request for 60 minutes.</p> </li> <li> <p> <code>scheduled</code> - (<i>Future-dated Capacity Reservations</i>) The future-dated Capacity Reservation request was approved and the Capacity Reservation is scheduled for delivery on the requested start date.</p> </li> <li> <p> <code>payment-pending</code> - (<i>Capacity Blocks</i>) The upfront payment has not been processed yet.</p> </li> <li> <p> <code>payment-failed</code> - (<i>Capacity Blocks</i>) The upfront payment was not processed in the 12-hour time frame. Your Capacity Block was released.</p> </li> <li> <p> <code>assessing</code> - (<i>Future-dated Capacity Reservations</i>) Amazon EC2 is assessing your request for a future-dated Capacity Reservation.</p> </li> <li> <p> <code>delayed</code> - (<i>Future-dated Capacity Reservations</i>) Amazon EC2 encountered a delay in provisioning the requested future-dated Capacity Reservation. Amazon EC2 is unable to deliver the requested capacity by the requested start date and time.</p> </li> <li> <p> <code>unsupported</code> - (<i>Future-dated Capacity Reservations</i>) Amazon EC2 can't support the future-dated Capacity Reservation request due to capacity constraints. You can view unsupported requests for 30 days. The Capacity Reservation will not be delivered.</p> </li> <li> <p> <code>cancelling</code> - (<i>Future-dated Capacity Reservations</i>) The Capacity Reservation is being cancelled. Capacity has been released but charges continue for the commitment wind-down period. The reservation transitions to <code>cancelled</code> when the wind-down completes.</p> </li> </ul>",
           "locationName":"state"
         },
         "StartDate":{
@@ -13037,6 +13133,75 @@
         "expired"
       ]
     },
+    "CapacityReservationCancellationQuote":{
+      "type":"structure",
+      "members":{
+        "CapacityReservationCancellationQuoteId":{
+          "shape":"CapacityReservationCancellationQuoteId",
+          "documentation":"<p>The ID of the cancellation quote.</p>",
+          "locationName":"capacityReservationCancellationQuoteId"
+        },
+        "CapacityReservationId":{
+          "shape":"CapacityReservationId",
+          "documentation":"<p>The ID of the Capacity Reservation associated with the cancellation quote.</p>",
+          "locationName":"capacityReservationId"
+        },
+        "CreateTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time at which the cancellation quote was created.</p>",
+          "locationName":"createTime"
+        },
+        "ExpirationTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time at which the cancellation quote expires.</p>",
+          "locationName":"expirationTime"
+        },
+        "QuoteState":{
+          "shape":"CapacityReservationCancellationQuoteState",
+          "documentation":"<p>The state of the cancellation quote. Possible values include <code>pending</code>, <code>active</code>, and <code>expired</code>.</p>",
+          "locationName":"quoteState"
+        },
+        "CurrentConfiguration":{
+          "shape":"CapacityReservationConfiguration",
+          "documentation":"<p>The current configuration of the Capacity Reservation.</p>",
+          "locationName":"currentConfiguration"
+        },
+        "CancellationTerms":{
+          "shape":"CancellationTermsSet",
+          "documentation":"<p>The cancellation terms associated with the quote, including the fee type and charge details.</p>",
+          "locationName":"cancellationTermSet"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags assigned to the cancellation quote.</p>",
+          "locationName":"tagSet"
+        }
+      },
+      "documentation":"<p>Describes a Capacity Reservation cancellation quote, which provides the cancellation terms for cancelling a future-dated Capacity Reservation during its commitment duration.</p>"
+    },
+    "CapacityReservationCancellationQuoteId":{"type":"string"},
+    "CapacityReservationCancellationQuoteIdSet":{
+      "type":"list",
+      "member":{
+        "shape":"CapacityReservationCancellationQuoteId",
+        "locationName":"item"
+      }
+    },
+    "CapacityReservationCancellationQuoteResponseSet":{
+      "type":"list",
+      "member":{
+        "shape":"CapacityReservationCancellationQuote",
+        "locationName":"item"
+      }
+    },
+    "CapacityReservationCancellationQuoteState":{
+      "type":"string",
+      "enum":[
+        "pending",
+        "active",
+        "expired"
+      ]
+    },
     "CapacityReservationCommitmentDuration":{
       "type":"long",
       "max":200000000,
@@ -13057,6 +13222,22 @@
         }
       },
       "documentation":"<p>Information about your commitment for a future-dated Capacity Reservation.</p>"
+    },
+    "CapacityReservationConfiguration":{
+      "type":"structure",
+      "members":{
+        "InstanceCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of instances in the Capacity Reservation.</p>",
+          "locationName":"instanceCount"
+        },
+        "ReservationState":{
+          "shape":"String",
+          "documentation":"<p>The current state of the Capacity Reservation.</p>",
+          "locationName":"reservationState"
+        }
+      },
+      "documentation":"<p>Describes the configuration of a Capacity Reservation.</p>"
     },
     "CapacityReservationDeliveryPreference":{
       "type":"string",
@@ -13348,6 +13529,7 @@
         "assessing",
         "delayed",
         "unsupported",
+        "cancelling",
         "unavailable"
       ]
     },
@@ -14686,7 +14868,7 @@
       "members":{
         "TcpEstablishedTimeout":{
           "shape":"Integer",
-          "documentation":"<p>Timeout (in seconds) for idle TCP connections in an established state. Min: 60 seconds. Max: 432000 seconds (5 days). Default: 432000 seconds. Recommended: Less than 432000 seconds.</p>",
+          "documentation":"<p>Timeout (in seconds) for idle TCP connections in an established state. Min: 60 seconds. Max: 432000 seconds (5 days). Default: 350 seconds for Nitro v6 instance types (excluding P6e-GB200); 432000 seconds for all other instance types (including P6e-GB200). Recommended: Less than 432000 seconds.</p>",
           "locationName":"tcpEstablishedTimeout"
         },
         "UdpStreamTimeout":{
@@ -14707,7 +14889,7 @@
       "members":{
         "TcpEstablishedTimeout":{
           "shape":"Integer",
-          "documentation":"<p>Timeout (in seconds) for idle TCP connections in an established state. Min: 60 seconds. Max: 432000 seconds (5 days). Default: 432000 seconds. Recommended: Less than 432000 seconds.</p>",
+          "documentation":"<p>Timeout (in seconds) for idle TCP connections in an established state. Min: 60 seconds. Max: 432000 seconds (5 days). Default: 350 seconds for Nitro v6 instance types (excluding P6e-GB200); 432000 seconds for all other instance types (including P6e-GB200). Recommended: Less than 432000 seconds.</p>",
           "locationName":"tcpEstablishedTimeout"
         },
         "UdpTimeout":{
@@ -14728,7 +14910,7 @@
       "members":{
         "TcpEstablishedTimeout":{
           "shape":"Integer",
-          "documentation":"<p>Timeout (in seconds) for idle TCP connections in an established state. Min: 60 seconds. Max: 432000 seconds (5 days). Default: 432000 seconds. Recommended: Less than 432000 seconds.</p>"
+          "documentation":"<p>Timeout (in seconds) for idle TCP connections in an established state. Min: 60 seconds. Max: 432000 seconds (5 days). Default: 350 seconds for Nitro v6 instance types (excluding P6e-GB200); 432000 seconds for all other instance types (including P6e-GB200). Recommended: Less than 432000 seconds.</p>"
         },
         "UdpStreamTimeout":{
           "shape":"Integer",
@@ -14746,7 +14928,7 @@
       "members":{
         "TcpEstablishedTimeout":{
           "shape":"Integer",
-          "documentation":"<p>Timeout (in seconds) for idle TCP connections in an established state. Min: 60 seconds. Max: 432000 seconds (5 days). Default: 432000 seconds. Recommended: Less than 432000 seconds.</p>",
+          "documentation":"<p>Timeout (in seconds) for idle TCP connections in an established state. Min: 60 seconds. Max: 432000 seconds (5 days). Default: 350 seconds for Nitro v6 instance types (excluding P6e-GB200); 432000 seconds for all other instance types (including P6e-GB200). Recommended: Less than 432000 seconds.</p>",
           "locationName":"tcpEstablishedTimeout"
         },
         "UdpStreamTimeout":{
@@ -14880,6 +15062,11 @@
         }
       }
     },
+    "CopyImageClientToken":{
+      "type":"string",
+      "max":128,
+      "min":0
+    },
     "CopyImageRequest":{
       "type":"structure",
       "required":[
@@ -14889,12 +15076,12 @@
       ],
       "members":{
         "ClientToken":{
-          "shape":"String",
+          "shape":"CopyImageClientToken",
           "documentation":"<p>Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency in Amazon EC2 API requests</a> in the <i>Amazon EC2 API Reference</i>.</p>",
           "idempotencyToken":true
         },
         "Description":{
-          "shape":"String",
+          "shape":"ImageDescriptionRequest",
           "documentation":"<p>A description for the new AMI.</p>"
         },
         "Encrypted":{
@@ -14908,7 +15095,7 @@
           "locationName":"kmsKeyId"
         },
         "Name":{
-          "shape":"String",
+          "shape":"ImageNameRequest",
           "documentation":"<p>The name of the new AMI.</p>"
         },
         "SourceImageId":{
@@ -15297,6 +15484,40 @@
           "shape":"Integer",
           "documentation":"<p> The number of instances in the new Capacity Reservation. The number of instances in the source Capacity Reservation was reduced by this amount. </p>",
           "locationName":"instanceCount"
+        }
+      }
+    },
+    "CreateCapacityReservationCancellationQuoteRequest":{
+      "type":"structure",
+      "required":["CapacityReservationId"],
+      "members":{
+        "CapacityReservationId":{
+          "shape":"CapacityReservationId",
+          "documentation":"<p>The ID of the Capacity Reservation.</p>"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensure Idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>The tags to apply to the cancellation quote.</p>",
+          "locationName":"TagSpecification"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "CreateCapacityReservationCancellationQuoteResult":{
+      "type":"structure",
+      "members":{
+        "CapacityReservationCancellationQuote":{
+          "shape":"CapacityReservationCancellationQuote",
+          "documentation":"<p>Information about the Capacity Reservation cancellation quote.</p>",
+          "locationName":"capacityReservationCancellationQuote"
         }
       }
     },
@@ -16310,12 +16531,12 @@
           "locationName":"instanceId"
         },
         "Name":{
-          "shape":"String",
+          "shape":"ImageNameRequest",
           "documentation":"<p>A name for the new image.</p> <p>Constraints: 3-128 alphanumeric characters, parentheses (()), square brackets ([]), spaces ( ), periods (.), slashes (/), dashes (-), single quotes ('), at-signs (@), or underscores(_)</p>",
           "locationName":"name"
         },
         "Description":{
-          "shape":"String",
+          "shape":"ImageDescriptionRequest",
           "documentation":"<p>A description for the new image.</p>",
           "locationName":"description"
         },
@@ -16340,6 +16561,11 @@
           "locationName":"imageId"
         }
       }
+    },
+    "CreateImageUsageReportClientToken":{
+      "type":"string",
+      "max":128,
+      "min":0
     },
     "CreateImageUsageReportRequest":{
       "type":"structure",
@@ -16367,7 +16593,7 @@
           "locationName":"AccountId"
         },
         "ClientToken":{
-          "shape":"String",
+          "shape":"CreateImageUsageReportClientToken",
           "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure idempotency of the request.</p>",
           "idempotencyToken":true
         },
@@ -17041,7 +17267,7 @@
           "idempotencyToken":true
         },
         "LaunchTemplateName":{
-          "shape":"LaunchTemplateName",
+          "shape":"String",
           "documentation":"<p>A name for the launch template.</p>"
         },
         "VersionDescription":{
@@ -18103,7 +18329,7 @@
           "documentation":"<p>The name of the stored AMI object in the bucket.</p>"
         },
         "Name":{
-          "shape":"String",
+          "shape":"ImageNameRequest",
           "documentation":"<p>The name for the restored AMI. The name must be unique for AMIs in the Region for this account. If you do not provide a name, the new AMI gets the same name as the original AMI.</p>"
         },
         "TagSpecifications":{
@@ -24542,6 +24768,53 @@
         }
       }
     },
+    "DescribeCapacityReservationCancellationQuotesRequest":{
+      "type":"structure",
+      "members":{
+        "CapacityReservationCancellationQuoteIds":{
+          "shape":"CapacityReservationCancellationQuoteIdSet",
+          "documentation":"<p>The IDs of the cancellation quotes to describe.</p>",
+          "locationName":"CapacityReservationCancellationQuoteId"
+        },
+        "MaxResults":{
+          "shape":"DescribeCapacityReservationCancellationQuotesRequestMaxResults",
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>One or more filters. Filter names and values are case-sensitive.</p>",
+          "locationName":"Filter"
+        }
+      }
+    },
+    "DescribeCapacityReservationCancellationQuotesRequestMaxResults":{
+      "type":"integer",
+      "max":1000,
+      "min":1
+    },
+    "DescribeCapacityReservationCancellationQuotesResult":{
+      "type":"structure",
+      "members":{
+        "CapacityReservationCancellationQuotes":{
+          "shape":"CapacityReservationCancellationQuoteResponseSet",
+          "documentation":"<p>Information about the Capacity Reservation cancellation quotes.</p>",
+          "locationName":"capacityReservationCancellationQuoteSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
     "DescribeCapacityReservationFleetsMaxResults":{
       "type":"integer",
       "max":100,
@@ -27228,6 +27501,53 @@
         }
       }
     },
+    "DescribeIpamPoolAllocationsMaxResults":{
+      "type":"integer",
+      "max":100000,
+      "min":1000
+    },
+    "DescribeIpamPoolAllocationsRequest":{
+      "type":"structure",
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamPoolAllocationIds":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The IDs of the IPAM pool allocations you want to describe.</p>",
+          "locationName":"IpamPoolAllocationId"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>One or more filters for the request. For more information about filtering, see <a href=\"https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-filter.html\">Filtering CLI output</a>.</p>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"DescribeIpamPoolAllocationsMaxResults",
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "DescribeIpamPoolAllocationsResult":{
+      "type":"structure",
+      "members":{
+        "IpamPoolAllocations":{
+          "shape":"IpamPoolAllocationSet",
+          "documentation":"<p>Information about the IPAM pool allocations.</p>",
+          "locationName":"ipamPoolAllocationSet"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
     "DescribeIpamPoolsRequest":{
       "type":"structure",
       "members":{
@@ -27242,7 +27562,7 @@
         },
         "MaxResults":{
           "shape":"IpamMaxResults",
-          "documentation":"<p>The maximum number of results to return in the request.</p>"
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -27456,7 +27776,7 @@
         },
         "MaxResults":{
           "shape":"IpamMaxResults",
-          "documentation":"<p>The maximum number of results to return in the request.</p>"
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -27498,7 +27818,7 @@
         },
         "MaxResults":{
           "shape":"IpamMaxResults",
-          "documentation":"<p>The maximum number of results to return in the request.</p>"
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -38385,7 +38705,7 @@
         },
         "State":{
           "shape":"CapacityReservationState",
-          "documentation":"<p>The current state of the Capacity Reservation. A Capacity Reservation can be in one of the following states:</p> <ul> <li> <p> <code>active</code> - The capacity is available for use.</p> </li> <li> <p> <code>expired</code> - The Capacity Reservation expired automatically at the date and time specified in your reservation request. The reserved capacity is no longer available for your use.</p> </li> <li> <p> <code>cancelled</code> - The Capacity Reservation was canceled. The reserved capacity is no longer available for your use.</p> </li> <li> <p> <code>pending</code> - The Capacity Reservation request was successful but the capacity provisioning is still pending.</p> </li> <li> <p> <code>failed</code> - The Capacity Reservation request has failed. A request can fail due to request parameters that are not valid, capacity constraints, or instance limit constraints. You can view a failed request for 60 minutes.</p> </li> <li> <p> <code>scheduled</code> - (<i>Future-dated Capacity Reservations</i>) The future-dated Capacity Reservation request was approved and the Capacity Reservation is scheduled for delivery on the requested start date.</p> </li> <li> <p> <code>payment-pending</code> - (<i>Capacity Blocks</i>) The upfront payment has not been processed yet.</p> </li> <li> <p> <code>payment-failed</code> - (<i>Capacity Blocks</i>) The upfront payment was not processed in the 12-hour time frame. Your Capacity Block was released.</p> </li> <li> <p> <code>assessing</code> - (<i>Future-dated Capacity Reservations</i>) Amazon EC2 is assessing your request for a future-dated Capacity Reservation.</p> </li> <li> <p> <code>delayed</code> - (<i>Future-dated Capacity Reservations</i>) Amazon EC2 encountered a delay in provisioning the requested future-dated Capacity Reservation. Amazon EC2 is unable to deliver the requested capacity by the requested start date and time.</p> </li> <li> <p> <code>unsupported</code> - (<i>Future-dated Capacity Reservations</i>) Amazon EC2 can't support the future-dated Capacity Reservation request due to capacity constraints. You can view unsupported requests for 30 days. The Capacity Reservation will not be delivered.</p> </li> </ul>",
+          "documentation":"<p>The current state of the Capacity Reservation. A Capacity Reservation can be in one of the following states:</p> <ul> <li> <p> <code>active</code> - The capacity is available for use.</p> </li> <li> <p> <code>expired</code> - The Capacity Reservation expired automatically at the date and time specified in your reservation request. The reserved capacity is no longer available for your use.</p> </li> <li> <p> <code>cancelled</code> - The Capacity Reservation was canceled. The reserved capacity is no longer available for your use.</p> </li> <li> <p> <code>pending</code> - The Capacity Reservation request was successful but the capacity provisioning is still pending.</p> </li> <li> <p> <code>failed</code> - The Capacity Reservation request has failed. A request can fail due to request parameters that are not valid, capacity constraints, or instance limit constraints. You can view a failed request for 60 minutes.</p> </li> <li> <p> <code>scheduled</code> - (<i>Future-dated Capacity Reservations</i>) The future-dated Capacity Reservation request was approved and the Capacity Reservation is scheduled for delivery on the requested start date.</p> </li> <li> <p> <code>payment-pending</code> - (<i>Capacity Blocks</i>) The upfront payment has not been processed yet.</p> </li> <li> <p> <code>payment-failed</code> - (<i>Capacity Blocks</i>) The upfront payment was not processed in the 12-hour time frame. Your Capacity Block was released.</p> </li> <li> <p> <code>assessing</code> - (<i>Future-dated Capacity Reservations</i>) Amazon EC2 is assessing your request for a future-dated Capacity Reservation.</p> </li> <li> <p> <code>delayed</code> - (<i>Future-dated Capacity Reservations</i>) Amazon EC2 encountered a delay in provisioning the requested future-dated Capacity Reservation. Amazon EC2 is unable to deliver the requested capacity by the requested start date and time.</p> </li> <li> <p> <code>unsupported</code> - (<i>Future-dated Capacity Reservations</i>) Amazon EC2 can't support the future-dated Capacity Reservation request due to capacity constraints. You can view unsupported requests for 30 days. The Capacity Reservation will not be delivered.</p> </li> <li> <p> <code>cancelling</code> - (<i>Future-dated Capacity Reservations</i>) The Capacity Reservation is being cancelled. Capacity has been released but charges continue for the commitment wind-down period. The reservation transitions to <code>cancelled</code> when the wind-down completes.</p> </li> </ul>",
           "locationName":"state"
         },
         "InstanceUsages":{
@@ -39387,7 +39707,7 @@
         },
         "MaxResults":{
           "shape":"IpamMaxResults",
-          "documentation":"<p>The maximum number of results to return in the request.</p>"
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -39558,7 +39878,7 @@
         },
         "MaxResults":{
           "shape":"IpamMaxResults",
-          "documentation":"<p>The maximum number of results to return in the request.</p>"
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -41986,7 +42306,7 @@
           "locationName":"MarketplaceProductCode"
         },
         "ImageNames":{
-          "shape":"ImageNameRequestList",
+          "shape":"ImageNameCriteriaRequestList",
           "documentation":"<p>The names of allowed images. Names can include wildcards (<code>?</code> and <code>*</code>).</p> <p>Length: 1–128 characters. With <code>?</code>, the minimum is 3 characters.</p> <p>Valid characters:</p> <ul> <li> <p>Letters: <code>A–Z, a–z</code> </p> </li> <li> <p>Numbers: <code>0–9</code> </p> </li> <li> <p>Special characters: <code>( ) [ ] . / - ' @ _ * ?</code> </p> </li> <li> <p>Spaces</p> </li> </ul> <p>Maximum: 50 values</p>",
           "locationName":"ImageName"
         },
@@ -42007,6 +42327,11 @@
         "shape":"ImageCriterionRequest",
         "locationName":"ImageCriterion"
       }
+    },
+    "ImageDescriptionRequest":{
+      "type":"string",
+      "max":255,
+      "min":0
     },
     "ImageDiskContainer":{
       "type":"structure",
@@ -42119,6 +42444,18 @@
       "documentation":"<p>Information about the AMI.</p>"
     },
     "ImageName":{"type":"string"},
+    "ImageNameCriteriaRequest":{
+      "type":"string",
+      "max":128,
+      "min":0
+    },
+    "ImageNameCriteriaRequestList":{
+      "type":"list",
+      "member":{
+        "shape":"ImageNameCriteriaRequest",
+        "locationName":"item"
+      }
+    },
     "ImageNameList":{
       "type":"list",
       "member":{
@@ -42126,13 +42463,10 @@
         "locationName":"item"
       }
     },
-    "ImageNameRequest":{"type":"string"},
-    "ImageNameRequestList":{
-      "type":"list",
-      "member":{
-        "shape":"ImageNameRequest",
-        "locationName":"item"
-      }
+    "ImageNameRequest":{
+      "type":"string",
+      "max":128,
+      "min":3
     },
     "ImageProvider":{"type":"string"},
     "ImageProviderList":{
@@ -42253,6 +42587,11 @@
         "kernel",
         "ramdisk"
       ]
+    },
+    "ImageUefiDataRequest":{
+      "type":"string",
+      "max":64000,
+      "min":0
     },
     "ImageUsageReport":{
       "type":"structure",
@@ -48561,6 +48900,11 @@
           "shape":"String",
           "documentation":"<p>The owner of the resource.</p>",
           "locationName":"resourceOwner"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags for the IPAM pool allocation.</p>",
+          "locationName":"tagSet"
         }
       },
       "documentation":"<p>In IPAM, an allocation is a CIDR assignment from an IPAM pool to another IPAM pool or to a resource.</p>"
@@ -53837,6 +54181,10 @@
           "shape":"AttributeBooleanValue",
           "documentation":"<p>Enable or disable source/destination checks, which ensure that the instance is either the source or the destination of any traffic that it receives. If the value is <code>true</code>, source/destination checks are enabled; otherwise, they are disabled. The default value is <code>true</code>. You must disable source/destination checks if the instance runs services such as network address translation, routing, or firewalls.</p>"
         },
+        "EnclaveOptions":{
+          "shape":"EnclaveOptionsRequest",
+          "documentation":"<p>Enables or disables the instance for Amazon Web Services Nitro Enclaves. For more information, see the <a href=\"https://docs.aws.amazon.com/enclaves/latest/user/nitro-enclave.html\">Amazon Web Services Nitro Enclaves User Guide</a>.</p>"
+        },
         "DisableApiStop":{
           "shape":"AttributeBooleanValue",
           "documentation":"<p>Indicates whether an instance is enabled for stop protection. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-stop-protection.html\">Enable stop protection for your instance</a>.</p> <p/>"
@@ -53887,7 +54235,7 @@
           "locationName":"ramdisk"
         },
         "UserData":{
-          "shape":"BlobAttributeValue",
+          "shape":"SecureBlobAttributeValue",
           "documentation":"<p>Changes the instance's user data to the specified value. User data must be base64-encoded. Depending on the tool or SDK that you're using, the base64-encoding might be performed for you. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-add-user-data.html\">Work with instance user data</a>.</p>",
           "locationName":"userData"
         },
@@ -53921,8 +54269,12 @@
     "ModifyInstanceAttributeUserDataRequest":{
       "type":"structure",
       "members":{
-        "Value":{"shape":"ModifyInstanceAttributeValue"}
-      }
+        "Value":{
+          "shape":"ModifyInstanceAttributeValue",
+          "documentation":"<p>The value of the data.</p>"
+        }
+      },
+      "documentation":"<p>Describes Base64-encoded binary data.</p>"
     },
     "ModifyInstanceAttributeValue":{
       "type":"string",
@@ -54410,6 +54762,34 @@
           "shape":"IpamPolicyDocument",
           "documentation":"<p>The modified IPAM policy containing the updated allocation rules.</p>",
           "locationName":"ipamPolicyDocument"
+        }
+      }
+    },
+    "ModifyIpamPoolAllocationRequest":{
+      "type":"structure",
+      "required":["IpamPoolAllocationId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamPoolAllocationId":{
+          "shape":"IpamPoolAllocationId",
+          "documentation":"<p>The ID of the IPAM pool allocation you want to modify.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>The new description for the IPAM pool allocation. If you submit a <code>null</code> value, the description is removed from the allocation.</p>"
+        }
+      }
+    },
+    "ModifyIpamPoolAllocationResult":{
+      "type":"structure",
+      "members":{
+        "IpamPoolAllocation":{
+          "shape":"IpamPoolAllocation",
+          "documentation":"<p>The modified IPAM pool allocation.</p>",
+          "locationName":"ipamPoolAllocation"
         }
       }
     },
@@ -61373,7 +61753,7 @@
           "documentation":"<p>Set to <code>v2.0</code> to enable Trusted Platform Module (TPM) support. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/nitrotpm.html\">NitroTPM</a> in the <i>Amazon EC2 User Guide</i>.</p>"
         },
         "UefiData":{
-          "shape":"StringType",
+          "shape":"ImageUefiDataRequest",
           "documentation":"<p>Base64 representation of the non-volatile UEFI variable store. To retrieve the UEFI data, use the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_GetInstanceUefiData\">GetInstanceUefiData</a> command. You can inspect and modify the UEFI data by using the <a href=\"https://github.com/awslabs/python-uefivars\">python-uefivars tool</a> on GitHub. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/uefi-secure-boot.html\">UEFI Secure Boot for Amazon EC2 instances</a> in the <i>Amazon EC2 User Guide</i>.</p>"
         },
         "ImdsSupport":{
@@ -61391,12 +61771,12 @@
           "locationName":"dryRun"
         },
         "Name":{
-          "shape":"String",
+          "shape":"ImageNameRequest",
           "documentation":"<p>A name for your AMI.</p> <p>Constraints: 3-128 alphanumeric characters, parentheses (()), square brackets ([]), spaces ( ), periods (.), slashes (/), dashes (-), single quotes ('), at-signs (@), or underscores(_)</p>",
           "locationName":"name"
         },
         "Description":{
-          "shape":"String",
+          "shape":"ImageDescriptionRequest",
           "documentation":"<p>A description for your AMI.</p>",
           "locationName":"description"
         },
@@ -63846,7 +64226,9 @@
         "secondary-network",
         "secondary-subnet",
         "capacity-manager-data-export",
-        "vpn-concentrator"
+        "vpn-concentrator",
+        "ipam-pool-allocation",
+        "capacity-reservation-cancellation-quote"
       ]
     },
     "ResourceTypeOption":{
@@ -65760,7 +66142,7 @@
           "locationName":"prefix"
         },
         "UploadPolicy":{
-          "shape":"Blob",
+          "shape":"SecureBlob",
           "documentation":"<p>An Amazon S3 upload policy that gives Amazon EC2 permission to upload items into Amazon S3 on your behalf.</p>",
           "locationName":"uploadPolicy"
         },
@@ -66887,6 +67269,19 @@
     "SecretArn":{
       "type":"string",
       "pattern":"^(?=.{20,2048}$)arn:aws[a-z-]*:secretsmanager:[a-z0-9-]+:\\d{12}:secret:[a-zA-Z0-9/_+=.@-]+"
+    },
+    "SecureBlob":{
+      "type":"blob",
+      "sensitive":true
+    },
+    "SecureBlobAttributeValue":{
+      "type":"structure",
+      "members":{
+        "Value":{
+          "shape":"SecureBlob",
+          "locationName":"value"
+        }
+      }
     },
     "SecurityGroup":{
       "type":"structure",
@@ -69509,11 +69904,6 @@
         "shape":"String",
         "locationName":"item"
       }
-    },
-    "StringType":{
-      "type":"string",
-      "max":64000,
-      "min":0
     },
     "Subnet":{
       "type":"structure",
@@ -77229,5 +77619,5 @@
     "totalGpuMemory":{"type":"integer"},
     "totalInferenceMemory":{"type":"integer"}
   },
-  "documentation":"<fullname>Amazon Elastic Compute Cloud</fullname> <p>You can access the features of Amazon Elastic Compute Cloud (Amazon EC2) programmatically. For more information, see the <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide\">Amazon EC2 Developer Guide</a>.</p>"
+  "documentation":"<fullname>Amazon Elastic Compute Cloud</fullname> <p>This is the <i>Amazon EC2 API Reference</i>. It provides descriptions, API request parameters, and the XML response for each of the Amazon EC2 Query API actions. Note that the Amazon EC2 API includes actions for Amazon EC2 plus additional services, such as Amazon EBS and Amazon VPC.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p>To learn about using the Query API, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-low-level-api.html\">Using the API for Amazon EC2</a>.</p> </li> <li> <p>To learn about the permissions required to call an Amazon EC2 API action, see <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonec2.html\">Actions, resources, and condition keys for Amazon EC2</a>.</p> </li> <li> <p>To get the list of API actions by service and resource, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/OperationList-query.html\">Actions by service</a>.</p> </li> <li> <p>To get the alphabetical list of API actions, see .</p> </li> <li> <p>To get descriptions of the API error codes, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/errors-overview.html\">Error codes for the Amazon EC2 API</a>.</p> </li> </ul> <p>Alternatively, use one of the following methods to access the Amazon EC2 API, instead of using the Query API directly:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/cli/latest/reference/ec2/\">Amazon Web Services CLI Command Reference - ec2 commands</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/AWS_EC2.html\">CloudFormation - Amazon EC2 resource type reference</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/powershell/v5/reference/items/EC2_cmdlets.html\">Amazon Web Services Tools for PowerShell Cmdlet Reference - Amazon EC2 cmdlets</a> </p> </li> <li> <p> <a href=\"https://builder.aws.com/build/tools\">Amazon Web Services SDKs</a> </p> </li> </ul>"
 }

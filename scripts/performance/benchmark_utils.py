@@ -7,7 +7,6 @@ import time
 
 import psutil
 
-from awscli.clidriver import AWSCLIEntryPoint, create_clidriver
 from scripts.performance import BaseBenchmarkSuite
 from scripts.performance.simple_stubbed_tests import (
     JSONStubbedBenchmarkSuite,
@@ -169,6 +168,21 @@ class Summarizer:
                 worker_results['first_client_invocation_time']
                 - worker_results['start_time'],
             ),
+            'plugins.load.time': Metric(
+                'Total time spent loading all built-in plugins.',
+                'Seconds',
+                worker_results['load_plugins_time'],
+            ),
+            'imports.static.time': Metric(
+                'Total time spent on static Python imports.',
+                'Seconds',
+                worker_results['static_imports_time'],
+            ),
+            'client.creation.time': Metric(
+                'Total time spent creating a botocore client.',
+                'Seconds',
+                worker_results['create-client-time'],
+            ),
         }
         # reset data state
         self._samples.clear()
@@ -264,21 +278,72 @@ class BenchmarkHarness:
         Runs a CLI command and logs CLI-specific metrics to a file.
         """
         first_client_invocation_time = None
+        create_client_start_time = None
+        create_client_end_time = None
+        plugin_import_start_time = None
+        plugin_import_end_time = None
         start_time = time.time()
-        driver = create_clidriver()
-        event_emitter = driver.session.get_component('event_emitter')
+
+        before_imports = start_time
+        # We import from awscli lazily to ensure import time is measured in
+        # total runtime.
+        from awscli.botocore.hooks import HierarchicalEmitter
+        from awscli.clidriver import AWSCLIEntryPoint, create_clidriver
+        after_imports = time.time()
 
         def _log_invocation_time(params, request_signer, model, **kwargs):
             nonlocal first_client_invocation_time
             if first_client_invocation_time is None:
                 first_client_invocation_time = time.time()
 
-        event_emitter.register_last(
+        def _log_create_client_start(**kwargs):
+            nonlocal create_client_start_time
+            if create_client_start_time is None:
+                create_client_start_time = time.time()
+
+        def _log_create_client_end(**kwargs):
+            nonlocal create_client_end_time
+            if create_client_end_time is None:
+                create_client_end_time = time.time()
+
+        def _log_import_plugins_start(**kwargs):
+            nonlocal plugin_import_start_time
+            if plugin_import_start_time is None:
+                plugin_import_start_time = time.time()
+
+        def _log_import_plugins_end(**kwargs):
+            nonlocal plugin_import_end_time
+            if plugin_import_end_time is None:
+                plugin_import_end_time = time.time()
+
+        event_hooks = HierarchicalEmitter()
+        event_hooks.register_last(
             'before-call',
             _log_invocation_time,
             'benchmarks.log-invocation-time',
         )
+        event_hooks.register_last(
+            'before-create-client',
+            _log_create_client_start,
+            'benchmarks.log-before-create-client',
+        )
+        event_hooks.register_last(
+            'after-create-client',
+            _log_create_client_end,
+            'benchmarks.log-after-create-client',
+        )
+        event_hooks.register_last(
+            'before-load-plugins',
+            _log_import_plugins_start,
+            'benchmarks.log-before-load-plugins',
+        )
+        event_hooks.register_last(
+            'after-load-plugins',
+            _log_import_plugins_end,
+            'benchmarks.log-after-load-plugins',
+        )
 
+        driver = create_clidriver(event_hooks=event_hooks)
         rc = AWSCLIEntryPoint(driver).main(cmd)
         end_time = time.time()
 
@@ -291,6 +356,15 @@ class BenchmarkHarness:
                         'start_time': start_time,
                         'end_time': end_time,
                         'first_client_invocation_time': first_client_invocation_time,
+                        'load_plugins_time': (
+                            plugin_import_end_time - plugin_import_start_time
+                        ),
+                        'static_imports_time': (
+                            after_imports - before_imports
+                        ),
+                        'create-client-time': (
+                            create_client_end_time - create_client_start_time
+                        )
                     }
                 )
             )
@@ -333,20 +407,16 @@ class BenchmarkHarness:
                         os.dup2(err.fileno(), sys.stderr.fileno())
                     else:
                         with open(
-                            os.path.abspath(
-                                os.path.join(
-                                    args.debug_dir,
-                                    f'{benchmark["name"]}-{iteration}.txt',
-                                )
+                            os.path.join(
+                                args.debug_dir,
+                                f'{benchmark["name"]}-{iteration}.txt',
                             ),
                             'w',
                         ) as f:
                             with open(
-                                os.path.abspath(
-                                    os.path.join(
-                                        args.debug_dir,
-                                        f'{benchmark["name"]}-{iteration}-err.txt',
-                                    )
+                                os.path.join(
+                                    args.debug_dir,
+                                    f'{benchmark["name"]}-{iteration}-err.txt',
                                 ),
                                 'w',
                             ) as f_err:

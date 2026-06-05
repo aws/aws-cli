@@ -127,6 +127,27 @@
       "documentation":"<p>Creates an action connector that enables Amazon Quick Sight to connect to external services and perform actions. Action connectors support various authentication methods and can be configured with specific actions from supported connector types like Amazon S3, Salesforce, JIRA.</p>",
       "idempotent":true
     },
+    "CreateAgent":{
+      "name":"CreateAgent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/agents",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateAgentRequest"},
+      "output":{"shape":"CreateAgentResponse"},
+      "errors":[
+        {"shape":"ResourceExistsException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Creates an agent in Amazon QuickSight.</p>"
+    },
     "CreateAnalysis":{
       "name":"CreateAnalysis",
       "http":{
@@ -250,6 +271,27 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Creates a data source.</p>"
+    },
+    "CreateFlow":{
+      "name":"CreateFlow",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/flows",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateFlowRequest"},
+      "output":{"shape":"CreateFlowResponse"},
+      "errors":[
+        {"shape":"ResourceExistsException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Creates a new flow in the specified Amazon Web Services account. Creates both a DRAFT and PUBLISHED (auto-published) version.</p> <p>This operation is idempotent. Supply a <code>ClientToken</code> to safely retry without creating duplicate resources.</p>"
     },
     "CreateFolder":{
       "name":"CreateFolder",
@@ -392,6 +434,26 @@
       ],
       "documentation":"<p>(Enterprise edition only) Creates a new namespace for you to use with Amazon Quick Sight.</p> <p>A namespace allows you to isolate the Quick Sight users and groups that are registered for that namespace. Users that access the namespace can share assets only with other users or groups in the same namespace. They can't see users and groups in other namespaces. You can create a namespace after your Amazon Web Services account is subscribed to Quick Sight. The namespace must be unique within the Amazon Web Services account. By default, there is a limit of 100 namespaces per Amazon Web Services account. To increase your limit, create a ticket with Amazon Web Services Support. </p>"
     },
+    "CreateOAuthClientApplication":{
+      "name":"CreateOAuthClientApplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/oauth-client-applications"
+      },
+      "input":{"shape":"CreateOAuthClientApplicationRequest"},
+      "output":{"shape":"CreateOAuthClientApplicationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceExistsException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Creates an OAuthClientApplication.</p>"
+    },
     "CreateRefreshSchedule":{
       "name":"CreateRefreshSchedule",
       "http":{
@@ -430,6 +492,27 @@
         {"shape":"ResourceUnavailableException"}
       ],
       "documentation":"<p>Use <code>CreateRoleMembership</code> to add an existing Quick Sight group to an existing role.</p>"
+    },
+    "CreateSpace":{
+      "name":"CreateSpace",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/accounts/{AwsAccountId}/spaces",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateSpaceRequest"},
+      "output":{"shape":"CreateSpaceResponse"},
+      "errors":[
+        {"shape":"ResourceExistsException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Creates a new Amazon QuickSight space. A space is a collection of resources that can be used to organize and manage QuickSight assets.</p>",
+      "idempotent":true
     },
     "CreateTemplate":{
       "name":"CreateTemplate",
@@ -647,6 +730,26 @@
       ],
       "documentation":"<p>Hard deletes an action connector, making it unrecoverable. This operation removes the connector and all its associated configurations. Any resources currently using this action connector will no longer be able to perform actions through it.</p>"
     },
+    "DeleteAgent":{
+      "name":"DeleteAgent",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/accounts/{AwsAccountId}/agents/{AgentId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteAgentRequest"},
+      "output":{"shape":"DeleteAgentResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes an agent.</p>",
+      "idempotent":true
+    },
     "DeleteAnalysis":{
       "name":"DeleteAnalysis",
       "http":{
@@ -814,6 +917,26 @@
       ],
       "documentation":"<p>Deletes a linked Amazon Q Business application from an Quick Sight account</p>"
     },
+    "DeleteFlow":{
+      "name":"DeleteFlow",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/accounts/{AwsAccountId}/flows/{FlowId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteFlowRequest"},
+      "output":{"shape":"DeleteFlowResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Permanently deletes a flow from the specified Amazon Web Services account. This operation cannot be undone.</p>",
+      "idempotent":true
+    },
     "DeleteFolder":{
       "name":"DeleteFolder",
       "http":{
@@ -945,6 +1068,24 @@
       ],
       "documentation":"<p>Deletes a namespace and the users and groups that are associated with the namespace. This is an asynchronous process. Assets including dashboards, analyses, datasets and data sources are not deleted. To delete these assets, you use the API operations for the relevant asset. </p>"
     },
+    "DeleteOAuthClientApplication":{
+      "name":"DeleteOAuthClientApplication",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/accounts/{AwsAccountId}/oauth-client-applications/{OAuthClientApplicationId}"
+      },
+      "input":{"shape":"DeleteOAuthClientApplicationRequest"},
+      "output":{"shape":"DeleteOAuthClientApplicationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Deletes an OAuthClientApplication.</p>"
+    },
     "DeleteRefreshSchedule":{
       "name":"DeleteRefreshSchedule",
       "http":{
@@ -1000,6 +1141,25 @@
         {"shape":"ResourceUnavailableException"}
       ],
       "documentation":"<p>Removes a group from a role.</p>"
+    },
+    "DeleteSpace":{
+      "name":"DeleteSpace",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v1/accounts/{AwsAccountId}/spaces/{SpaceId}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteSpaceRequest"},
+      "output":{"shape":"DeleteSpaceResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes an Amazon QuickSight space.</p>",
+      "idempotent":true
     },
     "DeleteTemplate":{
       "name":"DeleteTemplate",
@@ -1296,6 +1456,46 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Retrieves the permissions configuration for an action connector, showing which users, groups, and namespaces have access and what operations they can perform.</p>",
+      "readonly":true
+    },
+    "DescribeAgent":{
+      "name":"DescribeAgent",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/agents/{AgentId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeAgentRequest"},
+      "output":{"shape":"DescribeAgentResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Describes an agent.</p>",
+      "readonly":true
+    },
+    "DescribeAgentPermissions":{
+      "name":"DescribeAgentPermissions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/agents/{AgentId}/permissions",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeAgentPermissionsRequest"},
+      "output":{"shape":"DescribeAgentPermissionsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Describes the resource permissions for an agent.</p>",
       "readonly":true
     },
     "DescribeAnalysis":{
@@ -1694,6 +1894,25 @@
       ],
       "documentation":"<p>Describes a Amazon Q Business application that is linked to an Quick Sight account.</p>"
     },
+    "DescribeFlow":{
+      "name":"DescribeFlow",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/flows/{FlowId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeFlowRequest"},
+      "output":{"shape":"DescribeFlowResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns the full details of a flow for the latest version of the requested publish state.</p>",
+      "readonly":true
+    },
     "DescribeFolder":{
       "name":"DescribeFolder",
       "http":{
@@ -1875,6 +2094,23 @@
       ],
       "documentation":"<p>Describes the current namespace.</p>"
     },
+    "DescribeOAuthClientApplication":{
+      "name":"DescribeOAuthClientApplication",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/oauth-client-applications/{OAuthClientApplicationId}"
+      },
+      "input":{"shape":"DescribeOAuthClientApplicationRequest"},
+      "output":{"shape":"DescribeOAuthClientApplicationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Describes an OAuthClientApplication.</p>"
+    },
     "DescribeQPersonalizationConfiguration":{
       "name":"DescribeQPersonalizationConfiguration",
       "http":{
@@ -1967,6 +2203,44 @@
         {"shape":"ResourceUnavailableException"}
       ],
       "documentation":"<p>Describes the self-upgrade configuration for a Quick account.</p>"
+    },
+    "DescribeSpace":{
+      "name":"DescribeSpace",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/accounts/{AwsAccountId}/spaces/{SpaceId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeSpaceRequest"},
+      "output":{"shape":"DescribeSpaceResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Describes an Amazon QuickSight space.</p>",
+      "readonly":true
+    },
+    "DescribeSpacePermissions":{
+      "name":"DescribeSpacePermissions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/accounts/{AwsAccountId}/spaces/{SpaceId}/permissions",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeSpacePermissionsRequest"},
+      "output":{"shape":"DescribeSpacePermissionsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Describes the permissions for an Amazon QuickSight space.</p>",
+      "readonly":true
     },
     "DescribeTemplate":{
       "name":"DescribeTemplate",
@@ -2386,6 +2660,27 @@
       "documentation":"<p>Lists all action connectors in the specified Amazon Web Services account. Returns summary information for each connector including its name, type, creation time, and status.</p>",
       "readonly":true
     },
+    "ListAgents":{
+      "name":"ListAgents",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/agents",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAgentsRequest"},
+      "output":{"shape":"ListAgentsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"UnsupportedUserEditionException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists all agents in an Amazon QuickSight account.</p>",
+      "readonly":true
+    },
     "ListAnalyses":{
       "name":"ListAnalyses",
       "http":{
@@ -2749,6 +3044,24 @@
       ],
       "documentation":"<p>Lists the namespaces for the specified Amazon Web Services account. This operation doesn't list deleted namespaces.</p>"
     },
+    "ListOAuthClientApplications":{
+      "name":"ListOAuthClientApplications",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/oauth-client-applications"
+      },
+      "input":{"shape":"ListOAuthClientApplicationsRequest"},
+      "output":{"shape":"ListOAuthClientApplicationsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Lists all OAuthClientApplications in the current Amazon Web Services Region that belong to this Amazon Web Services account.</p>"
+    },
     "ListRefreshSchedules":{
       "name":"ListRefreshSchedules",
       "http":{
@@ -2808,6 +3121,44 @@
         {"shape":"ResourceUnavailableException"}
       ],
       "documentation":"<p>Lists all self-upgrade requests for a Quick account.</p>"
+    },
+    "ListSpaceResources":{
+      "name":"ListSpaceResources",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/accounts/{AwsAccountId}/spaces/{SpaceId}/resources",
+        "responseCode":200
+      },
+      "input":{"shape":"ListSpaceResourcesRequest"},
+      "output":{"shape":"ListSpaceResourcesResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists the resources in an Amazon QuickSight space.</p>",
+      "readonly":true
+    },
+    "ListSpaces":{
+      "name":"ListSpaces",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/accounts/{AwsAccountId}/spaces",
+        "responseCode":200
+      },
+      "input":{"shape":"ListSpacesRequest"},
+      "output":{"shape":"ListSpacesResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists all Amazon QuickSight spaces in an Amazon Web Services account.</p>",
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -3142,6 +3493,26 @@
       "documentation":"<p>Searches for action connectors in the specified Amazon Web Services account using filters. You can search by connector name, type, or user permissions.</p>",
       "readonly":true
     },
+    "SearchAgents":{
+      "name":"SearchAgents",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/search/agents",
+        "responseCode":200
+      },
+      "input":{"shape":"SearchAgentsRequest"},
+      "output":{"shape":"SearchAgentsResponse"},
+      "errors":[
+        {"shape":"ResourceExistsException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Searches for agents based on specified filters.</p>",
+      "readonly":true
+    },
     "SearchAnalyses":{
       "name":"SearchAnalyses",
       "http":{
@@ -3271,6 +3642,25 @@
         {"shape":"ResourceUnavailableException"}
       ],
       "documentation":"<p>Use the <code>SearchGroups</code> operation to search groups in a specified Quick Sight namespace using the supplied filters.</p>"
+    },
+    "SearchSpaces":{
+      "name":"SearchSpaces",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/accounts/{AwsAccountId}/search/spaces",
+        "responseCode":200
+      },
+      "input":{"shape":"SearchSpacesRequest"},
+      "output":{"shape":"SearchSpacesResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Searches for Amazon QuickSight spaces that match the specified filters.</p>",
+      "readonly":true
     },
     "SearchTopics":{
       "name":"SearchTopics",
@@ -3516,6 +3906,50 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Updates the permissions for an action connector by granting or revoking access for specific users and groups. You can control who can view, use, or manage the action connector.</p>"
+    },
+    "UpdateAgent":{
+      "name":"UpdateAgent",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/accounts/{AwsAccountId}/agents/{AgentId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateAgentRequest"},
+      "output":{"shape":"UpdateAgentResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Updates an existing agent.</p>"
+    },
+    "UpdateAgentPermissions":{
+      "name":"UpdateAgentPermissions",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/accounts/{AwsAccountId}/agents/{AgentId}/permissions",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateAgentPermissionsRequest"},
+      "output":{"shape":"UpdateAgentPermissionsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"UnsupportedUserEditionException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Updates the resource permissions for an agent.</p>",
+      "idempotent":true
     },
     "UpdateAnalysis":{
       "name":"UpdateAnalysis",
@@ -3841,6 +4275,27 @@
       ],
       "documentation":"<p>Updates a Amazon Q Business application that is linked to a Quick Sight account.</p>"
     },
+    "UpdateFlow":{
+      "name":"UpdateFlow",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/accounts/{AwsAccountId}/flows/{FlowId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateFlowRequest"},
+      "output":{"shape":"UpdateFlowResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Updates an existing flow. Supply only the fields you want to change. Updates both DRAFT and PUBLISHED versions. When <code>FlowDefinition</code> is provided, all existing steps are replaced with the new definition.</p>",
+      "idempotent":true
+    },
     "UpdateFlowPermissions":{
       "name":"UpdateFlowPermissions",
       "http":{
@@ -3986,6 +4441,25 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Updates a customer managed key in a Quick Sight account.</p>"
+    },
+    "UpdateOAuthClientApplication":{
+      "name":"UpdateOAuthClientApplication",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/accounts/{AwsAccountId}/oauth-client-applications/{OAuthClientApplicationId}"
+      },
+      "input":{"shape":"UpdateOAuthClientApplicationRequest"},
+      "output":{"shape":"UpdateOAuthClientApplicationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Updates an OAuthClientApplication.</p>"
     },
     "UpdatePublicSharingSettings":{
       "name":"UpdatePublicSharingSettings",
@@ -4137,6 +4611,69 @@
         {"shape":"ResourceUnavailableException"}
       ],
       "documentation":"<p>Updates the self-upgrade configuration for a Quick account.</p>"
+    },
+    "UpdateSpace":{
+      "name":"UpdateSpace",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v1/accounts/{AwsAccountId}/spaces/{SpaceId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateSpaceRequest"},
+      "output":{"shape":"UpdateSpaceResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Updates the metadata of an Amazon QuickSight space.</p>",
+      "idempotent":true
+    },
+    "UpdateSpacePermissions":{
+      "name":"UpdateSpacePermissions",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v1/accounts/{AwsAccountId}/spaces/{SpaceId}/permissions",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateSpacePermissionsRequest"},
+      "output":{"shape":"UpdateSpacePermissionsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"UnsupportedUserEditionException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Updates the permissions for an Amazon QuickSight space.</p>",
+      "idempotent":true
+    },
+    "UpdateSpaceResources":{
+      "name":"UpdateSpaceResources",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v1/accounts/{AwsAccountId}/spaces/{SpaceId}/resources",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateSpaceResourcesRequest"},
+      "output":{"shape":"UpdateSpaceResourcesResponse"},
+      "errors":[
+        {"shape":"ResourceExistsException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Adds or removes resources from an Amazon QuickSight space.</p>"
     },
     "UpdateTemplate":{
       "name":"UpdateTemplate",
@@ -4780,6 +5317,242 @@
       "type":"list",
       "member":{"shape":"ShortRestrictiveResourceId"},
       "max":20,
+      "min":1
+    },
+    "AdditionalNotes":{
+      "type":"structure",
+      "members":{
+        "Text":{
+          "shape":"AdditionalNotesText",
+          "documentation":"<p>The additional notes text.</p>"
+        }
+      },
+      "documentation":"<p>Additional notes that provide supplementary context for a column.</p>"
+    },
+    "AdditionalNotesText":{
+      "type":"string",
+      "max":2000,
+      "min":0,
+      "sensitive":true
+    },
+    "Agent":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Arn",
+        "AgentId",
+        "AgentLifecycle",
+        "AgentStatus",
+        "CreatedAt",
+        "Creator",
+        "UpdatedAt"
+      ],
+      "members":{
+        "Spaces":{
+          "shape":"AgentSpacesList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the spaces attached to the agent.</p>"
+        },
+        "ActionConnectors":{
+          "shape":"AgentActionConnectorsList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the action connectors attached to the agent.</p>"
+        },
+        "Description":{
+          "shape":"AgentDescription",
+          "documentation":"<p>A description of the agent.</p>"
+        },
+        "IconId":{
+          "shape":"IconId",
+          "documentation":"<p>The icon identifier for the agent.</p>"
+        },
+        "Name":{
+          "shape":"AgentName",
+          "documentation":"<p>The name of the agent.</p>"
+        },
+        "StarterPrompts":{
+          "shape":"StarterPromptList",
+          "documentation":"<p>A list of starter prompts that are displayed to users when they begin interacting with the agent.</p>"
+        },
+        "WelcomeMessage":{
+          "shape":"WelcomeMessage",
+          "documentation":"<p>The welcome message that is displayed when a user starts a conversation with the agent.</p>"
+        },
+        "Arn":{
+          "shape":"AgentArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the agent.</p>"
+        },
+        "AgentId":{
+          "shape":"AgentId",
+          "documentation":"<p>The unique identifier for the agent.</p>"
+        },
+        "AgentLifecycle":{
+          "shape":"AgentLifecycle",
+          "documentation":"<p>The lifecycle state of the agent. Valid values are <code>PREVIEW</code> and <code>PUBLISHED</code>.</p>"
+        },
+        "AgentStatus":{
+          "shape":"AgentStatus",
+          "documentation":"<p>The status of the agent.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the agent was created.</p>"
+        },
+        "Creator":{
+          "shape":"String",
+          "documentation":"<p>The identity of the user who created the agent.</p>"
+        },
+        "CustomPromptInterface":{
+          "shape":"CustomPromptInterface",
+          "documentation":"<p>The custom prompt interface configuration for the agent.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"String",
+          "documentation":"<p>An error message associated with the agent, if applicable.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the agent was last updated.</p>"
+        }
+      },
+      "documentation":"<p>An agent resource in Amazon QuickSight that provides AI-powered conversational experiences.</p>"
+    },
+    "AgentActionConnectorsList":{
+      "type":"list",
+      "member":{"shape":"Arn"},
+      "max":10,
+      "min":0
+    },
+    "AgentArn":{
+      "type":"string",
+      "max":1284,
+      "min":0,
+      "pattern":"arn:[a-z0-9-\\.]{1,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}"
+    },
+    "AgentDescription":{
+      "type":"string",
+      "max":1000,
+      "min":0,
+      "pattern":"\\P{C}*"
+    },
+    "AgentId":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[0-9a-zA-Z-_.+]+"
+    },
+    "AgentLifecycle":{
+      "type":"string",
+      "enum":[
+        "PREVIEW",
+        "PUBLISHED"
+      ]
+    },
+    "AgentName":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"(?!\\s*$).+"
+    },
+    "AgentOwnershipFilterAttribute":{
+      "type":"string",
+      "enum":[
+        "DIRECT_QUICKSIGHT_OWNER",
+        "DIRECT_QUICKSIGHT_VIEWER_OR_OWNER",
+        "DIRECT_QUICKSIGHT_SOLE_OWNER",
+        "AGENT_NAME"
+      ]
+    },
+    "AgentSearchFilter":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"AgentOwnershipFilterAttribute",
+          "documentation":"<p>The name of the field to filter on.</p>"
+        },
+        "Operator":{
+          "shape":"ComparisonOperator",
+          "documentation":"<p>The comparison operator to use for the filter.</p>"
+        },
+        "Value":{
+          "shape":"String",
+          "documentation":"<p>The value to filter on.</p>"
+        }
+      },
+      "documentation":"<p>A filter to apply when searching agents.</p>"
+    },
+    "AgentSearchFilterList":{
+      "type":"list",
+      "member":{"shape":"AgentSearchFilter"},
+      "max":1,
+      "min":1
+    },
+    "AgentSpacesList":{
+      "type":"list",
+      "member":{"shape":"Arn"},
+      "max":10,
+      "min":0
+    },
+    "AgentStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "UPDATING",
+        "FAILED",
+        "CREATING"
+      ]
+    },
+    "AgentSummaries":{
+      "type":"list",
+      "member":{"shape":"AgentSummary"}
+    },
+    "AgentSummary":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "AgentId",
+        "Name",
+        "CreatedAt",
+        "UpdatedAt"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"AgentArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the agent.</p>"
+        },
+        "AgentId":{
+          "shape":"AgentId",
+          "documentation":"<p>The unique identifier for the agent.</p>"
+        },
+        "Name":{
+          "shape":"AgentName",
+          "documentation":"<p>The name of the agent.</p>"
+        },
+        "Description":{
+          "shape":"AgentDescription",
+          "documentation":"<p>A description of the agent.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the agent was created.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the agent was last updated.</p>"
+        },
+        "IconId":{
+          "shape":"IconId",
+          "documentation":"<p>The icon identifier for the agent.</p>"
+        }
+      },
+      "documentation":"<p>A summary of an agent, including its identifier, name, and metadata.</p>"
+    },
+    "AgentSummaryList":{
+      "type":"list",
+      "member":{"shape":"AgentSummary"}
+    },
+    "AgentsMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
       "min":1
     },
     "AggFunction":{
@@ -8644,6 +9417,26 @@
           "shape":"CapabilityState",
           "documentation":"<p>The ability to perform flow-related actions.</p>"
         },
+        "Apps":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to perform apps-related actions.</p>"
+        },
+        "CreateAndUpdateApps":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to create or update apps.</p>"
+        },
+        "ShareApps":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to share apps with other users.</p>"
+        },
+        "InvokeAppsAIInference":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to add and invoke AI inference in new and existing apps.</p>"
+        },
+        "AccessAppsNativeDataStore":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to access the native data store for new and existing apps.</p>"
+        },
         "PublishWithoutApproval":{
           "shape":"CapabilityState",
           "documentation":"<p>The ability to enable approvals for flow share.</p>"
@@ -10121,6 +10914,12 @@
       "max":128,
       "min":1
     },
+    "ColumnNameList":{
+      "type":"list",
+      "member":{"shape":"ColumnName"},
+      "max":2000,
+      "min":1
+    },
     "ColumnOrderingType":{
       "type":"string",
       "enum":[
@@ -10158,6 +10957,40 @@
       "type":"list",
       "member":{"shape":"ColumnSchema"},
       "max":500
+    },
+    "ColumnSemanticProperty":{
+      "type":"structure",
+      "members":{
+        "Description":{
+          "shape":"ColumnDescription",
+          "documentation":"<p>A description of the column.</p>"
+        },
+        "AdditionalNotes":{
+          "shape":"AdditionalNotes",
+          "documentation":"<p>Additional notes for the column.</p>"
+        },
+        "SemanticType":{
+          "shape":"ColumnSemanticType",
+          "documentation":"<p>The semantic type of the column.</p>"
+        }
+      },
+      "documentation":"<p>A semantic property for a column.</p>"
+    },
+    "ColumnSemanticPropertyList":{
+      "type":"list",
+      "member":{"shape":"ColumnSemanticProperty"},
+      "max":3,
+      "min":1
+    },
+    "ColumnSemanticType":{
+      "type":"structure",
+      "members":{
+        "GeographicalRole":{
+          "shape":"GeoSpatialDataRole",
+          "documentation":"<p>The geographical role of the column in the new data preparation experience.</p>"
+        }
+      },
+      "documentation":"<p>The semantic type information for a column in the new data preparation experience.</p>"
     },
     "ColumnSort":{
       "type":"structure",
@@ -10565,6 +11398,13 @@
         "PERCENT_OF_TOTAL",
         "RUNNING_SUM",
         "MOVING_AVERAGE"
+      ]
+    },
+    "ComparisonOperator":{
+      "type":"string",
+      "enum":[
+        "StringEquals",
+        "StringLike"
       ]
     },
     "Computation":{
@@ -11260,6 +12100,105 @@
         }
       }
     },
+    "CreateAgentRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "AgentId",
+        "Name"
+      ],
+      "members":{
+        "Spaces":{
+          "shape":"CreateAgentRequestSpacesList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the spaces to attach to the agent.</p>"
+        },
+        "ActionConnectors":{
+          "shape":"CreateAgentRequestActionConnectorsList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the action connectors to attach to the agent.</p>"
+        },
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the agent.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "AgentId":{
+          "shape":"AgentId",
+          "documentation":"<p>A unique identifier for the agent.</p>"
+        },
+        "Name":{
+          "shape":"AgentName",
+          "documentation":"<p>The name of the agent.</p>"
+        },
+        "Description":{
+          "shape":"AgentDescription",
+          "documentation":"<p>A description of the agent.</p>"
+        },
+        "IconId":{
+          "shape":"IconId",
+          "documentation":"<p>The icon identifier for the agent.</p>"
+        },
+        "StarterPrompts":{
+          "shape":"StarterPromptList",
+          "documentation":"<p>A list of starter prompts that are displayed to users when they begin interacting with the agent.</p>"
+        },
+        "WelcomeMessage":{
+          "shape":"WelcomeMessage",
+          "documentation":"<p>The welcome message that is displayed when a user starts a conversation with the agent.</p>"
+        },
+        "AgentLifecycle":{
+          "shape":"AgentLifecycle",
+          "documentation":"<p>The lifecycle state of the agent. Valid values are <code>PREVIEW</code> and <code>PUBLISHED</code>.</p>"
+        },
+        "CustomPromptInput":{
+          "shape":"CustomPromptInput",
+          "documentation":"<p>The custom prompt configuration for the agent.</p>"
+        }
+      }
+    },
+    "CreateAgentRequestActionConnectorsList":{
+      "type":"list",
+      "member":{"shape":"Arn"},
+      "max":10,
+      "min":0
+    },
+    "CreateAgentRequestSpacesList":{
+      "type":"list",
+      "member":{"shape":"Arn"},
+      "max":10,
+      "min":0
+    },
+    "CreateAgentResponse":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "AgentId",
+        "AgentStatus",
+        "AgentName"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"AgentArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the agent.</p>"
+        },
+        "AgentId":{
+          "shape":"AgentId",
+          "documentation":"<p>The unique identifier for the agent.</p>"
+        },
+        "AgentStatus":{
+          "shape":"AgentStatus",
+          "documentation":"<p>The status of the agent.</p>"
+        },
+        "AgentName":{
+          "shape":"AgentName",
+          "documentation":"<p>The name of the agent.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
     "CreateAnalysisRequest":{
       "type":"structure",
       "required":[
@@ -11770,6 +12709,74 @@
         }
       }
     },
+    "CreateFlowRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "Name",
+        "FlowDefinition"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account where you want to create the flow.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "Name":{
+          "shape":"TitleInput",
+          "documentation":"<p>The display name for the flow.</p>"
+        },
+        "Description":{
+          "shape":"FlowDescriptionInput",
+          "documentation":"<p>The description for the flow.</p>"
+        },
+        "FlowDefinition":{
+          "shape":"SensitiveDocument",
+          "documentation":"<p>The definition of the flow, specifying the steps and configurations. This is the flow definition in Quick Flow's internal format. The format is subject to change.</p> <note> <p>Always derive or depend on the flow definition from the <code>DescribeFlow</code> operation to ensure you are working with the latest format.</p> </note>"
+        },
+        "Permissions":{
+          "shape":"PermissionsList",
+          "documentation":"<p>Initial permissions for the flow. If omitted, the flow is created without any permissions.</p>"
+        },
+        "ClientToken":{
+          "shape":"CreateFlowRequestClientTokenString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateFlowRequestClientTokenString":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "CreateFlowResponse":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "FlowId"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the flow.</p>"
+        },
+        "FlowId":{
+          "shape":"FlowId",
+          "documentation":"<p>The unique identifier of the flow.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
     "CreateFolderMembershipRequest":{
       "type":"structure",
       "required":[
@@ -12185,6 +13192,93 @@
         }
       }
     },
+    "CreateOAuthClientApplicationRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "OAuthClientApplicationId",
+        "Name",
+        "OAuthClientAuthenticationType",
+        "ClientId",
+        "ClientSecret",
+        "OAuthTokenEndpointUrl"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "OAuthClientApplicationId":{
+          "shape":"OAuthClientApplicationId",
+          "documentation":"<p>An ID for the OAuthClientApplication that you want to create. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The display name for the OAuthClientApplication.</p>"
+        },
+        "OAuthClientAuthenticationType":{
+          "shape":"OAuthClientAuthenticationType",
+          "documentation":"<p>The authentication type to use for the OAuthClientApplication. This determines the OAuth 2.0 grant flow that is used when the data source connects to the identity provider. Valid values are <code>TOKEN</code>.</p>"
+        },
+        "ClientId":{
+          "shape":"OAuthClientId",
+          "documentation":"<p>The client ID of the OAuth application that is registered with the identity provider.</p>"
+        },
+        "ClientSecret":{
+          "shape":"OAuthClientSecret",
+          "documentation":"<p>The client secret of the OAuth application that is registered with the identity provider.</p>"
+        },
+        "OAuthTokenEndpointUrl":{
+          "shape":"OAuthTokenEndpointUrl",
+          "documentation":"<p>The token endpoint URL of the identity provider that is used to obtain access tokens.</p>"
+        },
+        "OAuthAuthorizationEndpointUrl":{
+          "shape":"OAuthAuthorizationEndpointUrl",
+          "documentation":"<p>The authorization endpoint URL of the identity provider that is used to obtain authorization codes.</p>"
+        },
+        "OAuthScopes":{
+          "shape":"OAuthScopesString",
+          "documentation":"<p>The OAuth scopes that are requested when the OAuthClientApplication obtains an access token from the identity provider.</p>"
+        },
+        "DataSourceType":{
+          "shape":"DataSourceType",
+          "documentation":"<p>The type of data source that the OAuthClientApplication is used with. Valid values are <code>SNOWFLAKE</code>.</p>"
+        },
+        "IdentityProviderVpcConnectionProperties":{"shape":"VpcConnectionProperties"},
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Contains a map of the key-value pairs for the resource tag or tags assigned to the OAuthClientApplication.</p>"
+        }
+      }
+    },
+    "CreateOAuthClientApplicationResponse":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the OAuthClientApplication.</p>"
+        },
+        "OAuthClientApplicationId":{
+          "shape":"OAuthClientApplicationId",
+          "documentation":"<p>The ID of the OAuthClientApplication. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "CreationStatus":{
+          "shape":"ResourceStatus",
+          "documentation":"<p>The status of creating the OAuthClientApplication.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
     "CreateRefreshScheduleRequest":{
       "type":"structure",
       "required":[
@@ -12279,6 +13373,52 @@
           "shape":"StatusCode",
           "documentation":"<p>The HTTP status of the request.</p>",
           "location":"statusCode"
+        }
+      }
+    },
+    "CreateSpaceRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "SpaceId",
+        "Name"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the space.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "SpaceId":{
+          "shape":"PublicSpaceId",
+          "documentation":"<p>The ID of the space. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "Name":{
+          "shape":"SpaceName",
+          "documentation":"<p>A display name for the space.</p>"
+        },
+        "Description":{
+          "shape":"SpaceDescription",
+          "documentation":"<p>A description of the space.</p>"
+        }
+      }
+    },
+    "CreateSpaceResponse":{
+      "type":"structure",
+      "required":["spaceId"],
+      "members":{
+        "spaceId":{
+          "shape":"PublicSpaceId",
+          "documentation":"<p>The ID of the space.</p>"
+        },
+        "spaceArn":{
+          "shape":"PublicSpaceArn",
+          "documentation":"<p>The ARN of the space.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
         }
       }
     },
@@ -13081,6 +14221,22 @@
       },
       "documentation":"<p>A list of custom filter values.</p>"
     },
+    "CustomInstruction":{
+      "type":"structure",
+      "members":{
+        "InlineCustomInstruction":{
+          "shape":"InlineCustomInstruction",
+          "documentation":"<p>An inline custom instruction containing text and optional uploaded document metadata.</p>"
+        }
+      },
+      "documentation":"<p>A custom instruction that provides guidance on how the dataset should be consumed.</p>"
+    },
+    "CustomInstructionList":{
+      "type":"list",
+      "member":{"shape":"CustomInstruction"},
+      "max":2,
+      "min":1
+    },
     "CustomInstructions":{
       "type":"structure",
       "required":["CustomInstructionsString"],
@@ -13162,6 +14318,118 @@
       "max":64,
       "min":1,
       "pattern":"^[a-zA-Z0-9+=,.@_-]+$"
+    },
+    "CustomPromptInput":{
+      "type":"structure",
+      "members":{
+        "ExistingPrompt":{
+          "shape":"CustomPromptProfile",
+          "documentation":"<p>An existing custom prompt profile to use for the agent.</p>"
+        },
+        "NewPrompt":{
+          "shape":"CustomPromptInputParameters",
+          "documentation":"<p>New custom prompt parameters to configure for the agent.</p>"
+        }
+      },
+      "documentation":"<p>The custom prompt input for an agent. This is a union type that can be either an existing prompt profile or new prompt parameters.</p>",
+      "sensitive":true,
+      "union":true
+    },
+    "CustomPromptInputParameters":{
+      "type":"structure",
+      "members":{
+        "ResponseLength":{
+          "shape":"StyleDescription",
+          "documentation":"<p>Instructions for the desired response length.</p>"
+        },
+        "OutputStyle":{
+          "shape":"StyleDescription",
+          "documentation":"<p>Instructions for the desired output style.</p>"
+        },
+        "Identity":{
+          "shape":"StyleDescription",
+          "documentation":"<p>Instructions that define the agent's identity and persona.</p>"
+        },
+        "Tone":{
+          "shape":"StyleDescription",
+          "documentation":"<p>Instructions for the desired tone of responses.</p>"
+        },
+        "CustomInstructions":{
+          "shape":"StyleDescription",
+          "documentation":"<p>Custom instructions for the agent's behavior.</p>"
+        }
+      },
+      "documentation":"<p>The parameters for configuring a custom prompt for an agent.</p>"
+    },
+    "CustomPromptInterface":{
+      "type":"structure",
+      "required":[
+        "ModelProfileId",
+        "SubscriptionId",
+        "QbsAwsAccountId"
+      ],
+      "members":{
+        "ModelProfileId":{
+          "shape":"ModelProfileId",
+          "documentation":"<p>The identifier of the model profile.</p>"
+        },
+        "SubscriptionId":{
+          "shape":"SubscriptionId",
+          "documentation":"<p>The subscription identifier.</p>"
+        },
+        "QbsAwsAccountId":{
+          "shape":"QbsAwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID for the Q Business service.</p>"
+        },
+        "ResponseLength":{
+          "shape":"StyleDescription",
+          "documentation":"<p>Instructions for the desired response length.</p>"
+        },
+        "OutputStyle":{
+          "shape":"StyleDescription",
+          "documentation":"<p>Instructions for the desired output style.</p>"
+        },
+        "Identity":{
+          "shape":"StyleDescription",
+          "documentation":"<p>Instructions that define the agent's identity and persona.</p>"
+        },
+        "Tone":{
+          "shape":"StyleDescription",
+          "documentation":"<p>Instructions for the desired tone of responses.</p>"
+        },
+        "CustomInstructions":{
+          "shape":"StyleDescription",
+          "documentation":"<p>Custom instructions for the agent's behavior.</p>"
+        },
+        "promptSummary":{
+          "shape":"SensitiveText",
+          "documentation":"<p>A summary of the custom prompt configuration.</p>"
+        }
+      },
+      "documentation":"<p>The custom prompt interface configuration that defines how an agent's prompt is configured.</p>"
+    },
+    "CustomPromptProfile":{
+      "type":"structure",
+      "required":[
+        "ModelProfileId",
+        "SubscriptionId",
+        "QbsAwsAccountId"
+      ],
+      "members":{
+        "ModelProfileId":{
+          "shape":"ModelProfileId",
+          "documentation":"<p>The identifier of the model profile.</p>"
+        },
+        "SubscriptionId":{
+          "shape":"SubscriptionId",
+          "documentation":"<p>The subscription identifier.</p>"
+        },
+        "QbsAwsAccountId":{
+          "shape":"QbsAwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID for the Q Business service.</p>"
+        }
+      },
+      "documentation":"<p>A reference to an existing custom prompt profile.</p>"
     },
     "CustomSql":{
       "type":"structure",
@@ -14407,6 +15675,12 @@
       },
       "documentation":"<p>A filter condition that filters date values within a specified range.</p>"
     },
+    "DataSetDescriptiveText":{
+      "type":"string",
+      "max":500,
+      "min":1,
+      "sensitive":true
+    },
     "DataSetEntityResourceId":{
       "type":"string",
       "max":64,
@@ -14622,6 +15896,37 @@
     "DataSetSearchFilterList":{
       "type":"list",
       "member":{"shape":"DataSetSearchFilter"},
+      "max":1,
+      "min":1
+    },
+    "DataSetSemanticDescription":{
+      "type":"structure",
+      "required":["Text"],
+      "members":{
+        "Text":{
+          "shape":"DataSetDescriptiveText",
+          "documentation":"<p>The descriptive text for the dataset.</p>"
+        }
+      },
+      "documentation":"<p>A description structure for dataset-level semantic metadata.</p>"
+    },
+    "DataSetSemanticMetadata":{
+      "type":"structure",
+      "members":{
+        "Description":{
+          "shape":"DataSetSemanticDescription",
+          "documentation":"<p>A description of the dataset.</p>"
+        },
+        "CustomInstructions":{
+          "shape":"CustomInstructionList",
+          "documentation":"<p>A list of custom instructions that guide how the dataset should be consumed.</p>"
+        }
+      },
+      "documentation":"<p>Semantic metadata for a dataset, including a description and custom instructions.</p>"
+    },
+    "DataSetSemanticMetadataList":{
+      "type":"list",
+      "member":{"shape":"DataSetSemanticMetadata"},
       "max":1,
       "min":1
     },
@@ -16282,6 +17587,36 @@
         }
       }
     },
+    "DeleteAgentRequest":{
+      "type":"structure",
+      "required":[
+        "AgentId",
+        "AwsAccountId"
+      ],
+      "members":{
+        "AgentId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the agent to delete.</p>",
+          "location":"uri",
+          "locationName":"AgentId"
+        },
+        "AwsAccountId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the agent.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        }
+      }
+    },
+    "DeleteAgentResponse":{
+      "type":"structure",
+      "members":{
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
     "DeleteAnalysisRequest":{
       "type":"structure",
       "required":[
@@ -16632,6 +17967,41 @@
         }
       }
     },
+    "DeleteFlowRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "FlowId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the flow that you are deleting.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "FlowId":{
+          "shape":"FlowId",
+          "documentation":"<p>The unique identifier of the flow to delete.</p>",
+          "location":"uri",
+          "locationName":"FlowId"
+        }
+      }
+    },
+    "DeleteFlowResponse":{
+      "type":"structure",
+      "members":{
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
     "DeleteFolderMembershipRequest":{
       "type":"structure",
       "required":[
@@ -16930,6 +18300,49 @@
         }
       }
     },
+    "DeleteOAuthClientApplicationRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "OAuthClientApplicationId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "OAuthClientApplicationId":{
+          "shape":"OAuthClientApplicationId",
+          "documentation":"<p>The ID of the OAuthClientApplication that you want to delete.</p>",
+          "location":"uri",
+          "locationName":"OAuthClientApplicationId"
+        }
+      }
+    },
+    "DeleteOAuthClientApplicationResponse":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the OAuthClientApplication that you deleted.</p>"
+        },
+        "OAuthClientApplicationId":{
+          "shape":"OAuthClientApplicationId",
+          "documentation":"<p>The ID of the OAuthClientApplication. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
     "DeleteRefreshScheduleRequest":{
       "type":"structure",
       "required":[
@@ -17067,6 +18480,45 @@
           "shape":"StatusCode",
           "documentation":"<p>The HTTP status of the request.</p>",
           "location":"statusCode"
+        }
+      }
+    },
+    "DeleteSpaceRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "SpaceId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the space.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "SpaceId":{
+          "shape":"PublicSpaceId",
+          "documentation":"<p>The ID of the space that you want to delete.</p>",
+          "location":"uri",
+          "locationName":"SpaceId"
+        }
+      }
+    },
+    "DeleteSpaceResponse":{
+      "type":"structure",
+      "required":["spaceId"],
+      "members":{
+        "spaceId":{
+          "shape":"PublicSpaceId",
+          "documentation":"<p>The ID of the space.</p>"
+        },
+        "spaceArn":{
+          "shape":"PublicSpaceArn",
+          "documentation":"<p>The ARN of the space.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
         }
       }
     },
@@ -17782,6 +19234,89 @@
           "shape":"StatusCode",
           "documentation":"<p>The HTTP status code of the request.</p>",
           "location":"statusCode"
+        }
+      }
+    },
+    "DescribeAgentPermissionsRequest":{
+      "type":"structure",
+      "required":[
+        "AgentId",
+        "AwsAccountId"
+      ],
+      "members":{
+        "AgentId":{
+          "shape":"AgentId",
+          "documentation":"<p>The unique identifier for the agent.</p>",
+          "location":"uri",
+          "locationName":"AgentId"
+        },
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the agent.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        }
+      }
+    },
+    "DescribeAgentPermissionsResponse":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "AgentId",
+        "Permissions",
+        "RequestId"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"AgentArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the agent.</p>"
+        },
+        "AgentId":{
+          "shape":"AgentId",
+          "documentation":"<p>The unique identifier for the agent.</p>"
+        },
+        "Permissions":{
+          "shape":"ResourcePermissionList",
+          "documentation":"<p>The resource permissions for the agent.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
+    "DescribeAgentRequest":{
+      "type":"structure",
+      "required":[
+        "AgentId",
+        "AwsAccountId"
+      ],
+      "members":{
+        "AgentId":{
+          "shape":"AgentId",
+          "documentation":"<p>The unique identifier for the agent.</p>",
+          "location":"uri",
+          "locationName":"AgentId"
+        },
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the agent.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        }
+      }
+    },
+    "DescribeAgentResponse":{
+      "type":"structure",
+      "required":["Agent"],
+      "members":{
+        "Agent":{
+          "shape":"Agent",
+          "documentation":"<p>The full details of the agent, including its configuration, status, and associations.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
         }
       }
     },
@@ -18954,6 +20489,53 @@
         }
       }
     },
+    "DescribeFlowRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "FlowId",
+        "PublishState"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the flow that you are describing.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "FlowId":{
+          "shape":"FlowId",
+          "documentation":"<p>The unique identifier of the flow.</p>",
+          "location":"uri",
+          "locationName":"FlowId"
+        },
+        "PublishState":{
+          "shape":"FlowPublishState",
+          "documentation":"<p>The publish state of the flow version to describe. Valid values are <code>DRAFT</code>, <code>PUBLISHED</code>, or <code>PENDING_APPROVAL</code>.</p>",
+          "location":"querystring",
+          "locationName":"publish-state"
+        }
+      }
+    },
+    "DescribeFlowResponse":{
+      "type":"structure",
+      "required":["Flow"],
+      "members":{
+        "Flow":{
+          "shape":"FlowDetail",
+          "documentation":"<p>The full details of the flow.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
     "DescribeFolderPermissionsRequest":{
       "type":"structure",
       "required":[
@@ -19449,6 +21031,45 @@
         }
       }
     },
+    "DescribeOAuthClientApplicationRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "OAuthClientApplicationId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "OAuthClientApplicationId":{
+          "shape":"OAuthClientApplicationId",
+          "documentation":"<p>The ID of the OAuthClientApplication that you want to describe.</p>",
+          "location":"uri",
+          "locationName":"OAuthClientApplicationId"
+        }
+      }
+    },
+    "DescribeOAuthClientApplicationResponse":{
+      "type":"structure",
+      "members":{
+        "OAuthClientApplication":{
+          "shape":"OAuthClientApplication",
+          "documentation":"<p>The information about the OAuthClientApplication.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
     "DescribeQPersonalizationConfigurationRequest":{
       "type":"structure",
       "required":["AwsAccountId"],
@@ -19640,6 +21261,105 @@
           "shape":"StatusCode",
           "documentation":"<p>The HTTP status of the request.</p>",
           "location":"statusCode"
+        }
+      }
+    },
+    "DescribeSpacePermissionsRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "SpaceId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the space.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "SpaceId":{
+          "shape":"PublicSpaceId",
+          "documentation":"<p>The ID of the space that you want to describe permissions for.</p>",
+          "location":"uri",
+          "locationName":"SpaceId"
+        }
+      }
+    },
+    "DescribeSpacePermissionsResponse":{
+      "type":"structure",
+      "required":["spaceId"],
+      "members":{
+        "spaceId":{
+          "shape":"PublicSpaceId",
+          "documentation":"<p>The ID of the space.</p>"
+        },
+        "spaceArn":{
+          "shape":"PublicSpaceArn",
+          "documentation":"<p>The ARN of the space.</p>"
+        },
+        "Permissions":{
+          "shape":"ResourcePermissionList",
+          "documentation":"<p>A list of resource permissions for the space.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
+    "DescribeSpaceRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "SpaceId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the space.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "SpaceId":{
+          "shape":"PublicSpaceId",
+          "documentation":"<p>The ID of the space that you want to describe.</p>",
+          "location":"uri",
+          "locationName":"SpaceId"
+        },
+        "MaxContributors":{
+          "shape":"MaxContributors",
+          "documentation":"<p>The maximum number of contributors to include in the response.</p>",
+          "location":"querystring",
+          "locationName":"maxContributors"
+        }
+      }
+    },
+    "DescribeSpaceResponse":{
+      "type":"structure",
+      "required":[
+        "spaceId",
+        "Space"
+      ],
+      "members":{
+        "spaceId":{
+          "shape":"PublicSpaceId",
+          "documentation":"<p>The ID of the space.</p>"
+        },
+        "spaceArn":{
+          "shape":"PublicSpaceArn",
+          "documentation":"<p>The ARN of the space.</p>"
+        },
+        "Space":{
+          "shape":"SpaceDetails",
+          "documentation":"<p>The details of the space.</p>"
+        },
+        "Contributors":{
+          "shape":"SpaceContributorList",
+          "documentation":"<p>A list of contributors to the space.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
         }
       }
     },
@@ -20833,6 +22553,54 @@
       },
       "documentation":"<p>An entry that appears when a <code>KeyRegistration</code> update to Quick Sight fails.</p>"
     },
+    "FailedSpaceResourceOperation":{
+      "type":"structure",
+      "required":[
+        "ResourceType",
+        "ErrorMessage"
+      ],
+      "members":{
+        "ResourceType":{
+          "shape":"SpaceQuickSightResourceType",
+          "documentation":"<p>The type of the resource.</p>"
+        },
+        "ResourceDetails":{
+          "shape":"SpaceQuickSightResourceDetails",
+          "documentation":"<p>The details of the resource.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"String",
+          "documentation":"<p>The error message that describes why the operation failed.</p>"
+        }
+      },
+      "documentation":"<p>A resource operation that failed.</p>"
+    },
+    "FailedSpaceResourceOperations":{
+      "type":"list",
+      "member":{"shape":"FailedSpaceResourceOperation"}
+    },
+    "FailedToUpdateAssociation":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"String",
+          "documentation":"<p>The ARN that could not be added or removed.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"String",
+          "documentation":"<p>A description of the failure.</p>"
+        },
+        "ErrorCode":{
+          "shape":"String",
+          "documentation":"<p>The error code for the failure.</p>"
+        }
+      },
+      "documentation":"<p>Information about a per-ARN failure when updating agent associations.</p>"
+    },
+    "FailedToUpdateAssociationList":{
+      "type":"list",
+      "member":{"shape":"FailedToUpdateAssociation"}
+    },
     "FieldBarSeriesItem":{
       "type":"structure",
       "required":["FieldId"],
@@ -21818,6 +23586,70 @@
       "type":"string",
       "max":1024,
       "min":0
+    },
+    "FlowDescriptionInput":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "pattern":"(?!\\s+$)[^{}\"\\\\<>]*"
+    },
+    "FlowDetail":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "FlowId",
+        "Name",
+        "PublishState",
+        "CreatedTime",
+        "FlowDefinition"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the flow.</p>"
+        },
+        "FlowId":{
+          "shape":"FlowId",
+          "documentation":"<p>The unique identifier of the flow.</p>"
+        },
+        "Name":{
+          "shape":"Title",
+          "documentation":"<p>The display name of the flow.</p>"
+        },
+        "Description":{
+          "shape":"FlowDescription",
+          "documentation":"<p>The description of the flow.</p>"
+        },
+        "PublishState":{
+          "shape":"FlowPublishState",
+          "documentation":"<p>The publish state of the flow. Valid values are <code>DRAFT</code>, <code>PUBLISHED</code>, or <code>PENDING_APPROVAL</code>.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time this flow was created.</p>"
+        },
+        "CreatedBy":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the principal who created the flow.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The last time this flow was modified.</p>"
+        },
+        "LastUpdatedBy":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the last principal who updated the flow.</p>"
+        },
+        "FlowDefinition":{
+          "shape":"SensitiveDocument",
+          "documentation":"<p>The definition of the flow, specifying the steps and configurations. This is the flow definition in Quick Flow's internal format. The format is subject to change.</p>"
+        },
+        "StepAliases":{
+          "shape":"StepAliasList",
+          "documentation":"<p>A list of step alias mappings for the flow.</p>"
+        }
+      },
+      "documentation":"<p>The full details of a flow, including its definition specifying the steps.</p>"
     },
     "FlowId":{
       "type":"string",
@@ -24930,6 +26762,11 @@
         "X"
       ]
     },
+    "IconId":{
+      "type":"string",
+      "max":200,
+      "min":1
+    },
     "Identifier":{
       "type":"structure",
       "required":["Identity"],
@@ -25409,6 +27246,27 @@
     "Ingestions":{
       "type":"list",
       "member":{"shape":"Ingestion"}
+    },
+    "InlineCustomInstruction":{
+      "type":"structure",
+      "required":["InstructionText"],
+      "members":{
+        "InstructionText":{
+          "shape":"InlineCustomInstructionText",
+          "documentation":"<p>The instruction text content.</p>"
+        },
+        "UploadedDocumentMetadata":{
+          "shape":"UploadedDocumentMetadata",
+          "documentation":"<p>Metadata about an uploaded document associated with this instruction.</p>"
+        }
+      },
+      "documentation":"<p>An inline custom instruction with text content and optional file upload metadata.</p>"
+    },
+    "InlineCustomInstructionText":{
+      "type":"string",
+      "max":50000,
+      "min":0,
+      "sensitive":true
     },
     "InnerFilter":{
       "type":"structure",
@@ -26831,6 +28689,54 @@
         }
       }
     },
+    "ListAgentsRequest":{
+      "type":"structure",
+      "required":["AwsAccountId"],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the agents.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "MaxResults":{
+          "shape":"ListAgentsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return.</p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        }
+      }
+    },
+    "ListAgentsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListAgentsResponse":{
+      "type":"structure",
+      "required":["AgentSummaries"],
+      "members":{
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "AgentSummaries":{
+          "shape":"AgentSummaries",
+          "documentation":"<p>A list of agent summaries.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        }
+      }
+    },
     "ListAnalysesRequest":{
       "type":"structure",
       "required":["AwsAccountId"],
@@ -27900,6 +29806,53 @@
         }
       }
     },
+    "ListOAuthClientApplicationsRequest":{
+      "type":"structure",
+      "required":["AwsAccountId"],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token that can be used in a subsequent request.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"max-results"
+        }
+      }
+    },
+    "ListOAuthClientApplicationsResponse":{
+      "type":"structure",
+      "members":{
+        "OAuthClientApplications":{
+          "shape":"OAuthClientApplicationSummaryList",
+          "documentation":"<p>A list of OAuthClientApplication summaries.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token that can be used in a subsequent request.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
     "ListRefreshSchedulesRequest":{
       "type":"structure",
       "required":[
@@ -28055,6 +30008,105 @@
           "shape":"StatusCode",
           "documentation":"<p>The HTTP status of the request.</p>",
           "location":"statusCode"
+        }
+      }
+    },
+    "ListSpaceResourcesRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "SpaceId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the space.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "SpaceId":{
+          "shape":"PublicSpaceId",
+          "documentation":"<p>The ID of the space that you want to list resources for.</p>",
+          "location":"uri",
+          "locationName":"SpaceId"
+        }
+      }
+    },
+    "ListSpaceResourcesResponse":{
+      "type":"structure",
+      "required":[
+        "spaceId",
+        "SpaceResources"
+      ],
+      "members":{
+        "spaceId":{
+          "shape":"PublicSpaceId",
+          "documentation":"<p>The ID of the space.</p>"
+        },
+        "spaceArn":{
+          "shape":"PublicSpaceArn",
+          "documentation":"<p>The ARN of the space.</p>"
+        },
+        "SpaceResources":{
+          "shape":"SpaceResourceSummaries",
+          "documentation":"<p>A list of resource summaries in the space.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
+    "ListSpacesRequest":{
+      "type":"structure",
+      "required":["AwsAccountId"],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the spaces.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        },
+        "MaxResults":{
+          "shape":"SpacesMaxResults",
+          "documentation":"<p>The maximum number of results to return.</p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        }
+      }
+    },
+    "ListSpacesResponse":{
+      "type":"structure",
+      "required":[
+        "spaceId",
+        "SpaceSummaries"
+      ],
+      "members":{
+        "spaceId":{
+          "shape":"PublicSpaceId",
+          "documentation":"<p>The ID of the space.</p>"
+        },
+        "spaceArn":{
+          "shape":"PublicSpaceArn",
+          "documentation":"<p>The ARN of the space.</p>"
+        },
+        "SpaceSummaries":{
+          "shape":"SpaceSummaries",
+          "documentation":"<p>A list of space summaries.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
         }
       }
     },
@@ -29010,6 +31062,12 @@
       },
       "documentation":"<p>The parameters for MariaDB.</p>"
     },
+    "MaxContributors":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
     "MaxResults":{
       "type":"integer",
       "max":100,
@@ -29182,6 +31240,12 @@
         "SHOW_AS_ZERO",
         "SHOW_AS_BLANK"
       ]
+    },
+    "ModelProfileId":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"[a-zA-Z0-9][a-zA-Z0-9-]{35}"
     },
     "MySqlParameters":{
       "type":"structure",
@@ -29539,6 +31603,11 @@
         }
       },
       "documentation":"<p>The configuration that overrides the existing default values for a dataset parameter that is inherited from another dataset.</p>"
+    },
+    "NextToken":{
+      "type":"string",
+      "max":800,
+      "min":1
     },
     "NonEmptyString":{
       "type":"string",
@@ -29919,6 +31988,109 @@
       },
       "documentation":"<p>The measure type field with numerical type columns.</p>"
     },
+    "OAuthAuthorizationEndpointUrl":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"^https://[^\\p{Cc}]+",
+      "sensitive":true
+    },
+    "OAuthClientApplication":{
+      "type":"structure",
+      "members":{
+        "OAuthClientApplicationId":{
+          "shape":"OAuthClientApplicationId",
+          "documentation":"<p>The ID of the OAuthClientApplication. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The display name of the OAuthClientApplication.</p>"
+        },
+        "OAuthClientAuthenticationType":{
+          "shape":"OAuthClientAuthenticationType",
+          "documentation":"<p>The OAuth client authentication type used by the OAuthClientApplication. Valid values are <code>TOKEN</code>.</p>"
+        },
+        "OAuthTokenEndpointUrl":{
+          "shape":"OAuthTokenEndpointUrl",
+          "documentation":"<p>The token endpoint URL of the identity provider that is used to obtain access tokens.</p>"
+        },
+        "OAuthAuthorizationEndpointUrl":{
+          "shape":"OAuthAuthorizationEndpointUrl",
+          "documentation":"<p>The authorization endpoint URL of the identity provider that is used to obtain authorization codes.</p>"
+        },
+        "OAuthScopes":{
+          "shape":"OAuthScopesString",
+          "documentation":"<p>The OAuth scopes that are requested when the OAuthClientApplication obtains an access token from the identity provider.</p>"
+        },
+        "DataSourceType":{
+          "shape":"DataSourceType",
+          "documentation":"<p>The type of data source that the OAuthClientApplication is used with. Valid values are <code>SNOWFLAKE</code>.</p>"
+        },
+        "IdentityProviderVpcConnectionProperties":{"shape":"VpcConnectionProperties"},
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the OAuthClientApplication was created.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the OAuthClientApplication was last updated.</p>"
+        },
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the OAuthClientApplication.</p>"
+        }
+      },
+      "documentation":"<p>An OAuth client application that is used to authenticate connections to a data source through an OAuth identity provider.</p>"
+    },
+    "OAuthClientApplicationId":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[^/][^\\p{Cc}]*"
+    },
+    "OAuthClientApplicationSummary":{
+      "type":"structure",
+      "members":{
+        "OAuthClientApplicationId":{
+          "shape":"OAuthClientApplicationId",
+          "documentation":"<p>The ID of the OAuthClientApplication. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The display name of the OAuthClientApplication.</p>"
+        },
+        "OAuthClientAuthenticationType":{
+          "shape":"OAuthClientAuthenticationType",
+          "documentation":"<p>The OAuth client authentication type used by the OAuthClientApplication. Valid values are <code>TOKEN</code>.</p>"
+        },
+        "DataSourceType":{
+          "shape":"DataSourceType",
+          "documentation":"<p>The type of data source that the OAuthClientApplication is used with. Valid values are <code>SNOWFLAKE</code>.</p>"
+        },
+        "IdentityProviderVpcConnectionProperties":{"shape":"VpcConnectionProperties"},
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the OAuthClientApplication was created.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the OAuthClientApplication was last updated.</p>"
+        },
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the OAuthClientApplication.</p>"
+        }
+      },
+      "documentation":"<p>A summary of an OAuthClientApplication.</p>"
+    },
+    "OAuthClientApplicationSummaryList":{
+      "type":"list",
+      "member":{"shape":"OAuthClientApplicationSummary"}
+    },
+    "OAuthClientAuthenticationType":{
+      "type":"string",
+      "enum":["TOKEN"]
+    },
     "OAuthClientCredentials":{
       "type":"structure",
       "members":{
@@ -29941,12 +32113,14 @@
       "type":"string",
       "max":256,
       "min":1,
+      "pattern":"[^\\p{Cc}]+",
       "sensitive":true
     },
     "OAuthClientSecret":{
       "type":"string",
       "max":2048,
       "min":1,
+      "pattern":"[^\\p{Cc}]+",
       "sensitive":true
     },
     "OAuthParameters":{
@@ -29977,6 +32151,19 @@
       "type":"string",
       "max":128,
       "min":1
+    },
+    "OAuthScopesString":{
+      "type":"string",
+      "max":4096,
+      "min":1,
+      "pattern":"[^\\p{Cc}]+"
+    },
+    "OAuthTokenEndpointUrl":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"^https://[^\\p{Cc}]+",
+      "sensitive":true
     },
     "OAuthUsername":{
       "type":"string",
@@ -31977,6 +34164,18 @@
         "MEASURE"
       ]
     },
+    "PublicSpaceArn":{
+      "type":"string",
+      "max":512,
+      "min":0,
+      "pattern":"arn:[a-z0-9-\\.]{1,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}"
+    },
+    "PublicSpaceId":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[0-9a-zA-Z-_=.+]+"
+    },
     "PurchaseMode":{
       "type":"string",
       "enum":[
@@ -32106,6 +34305,12 @@
         "ENABLED",
         "DISABLED"
       ]
+    },
+    "QbsAwsAccountId":{
+      "type":"string",
+      "max":15,
+      "min":15,
+      "pattern":"QBS[0-9]{12}"
     },
     "Query":{
       "type":"string",
@@ -34378,6 +36583,54 @@
         }
       }
     },
+    "SearchAgentsRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "Filters"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the agents.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "Filters":{
+          "shape":"AgentSearchFilterList",
+          "documentation":"<p>The filters to apply when searching agents.</p>"
+        },
+        "MaxResults":{
+          "shape":"AgentsMaxResults",
+          "documentation":"<p>The maximum number of results to return.</p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        }
+      }
+    },
+    "SearchAgentsResponse":{
+      "type":"structure",
+      "members":{
+        "AgentSummaries":{
+          "shape":"AgentSummaryList",
+          "documentation":"<p>A list of agent summaries.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
     "SearchAnalysesRequest":{
       "type":"structure",
       "required":[
@@ -34773,6 +37026,62 @@
         }
       }
     },
+    "SearchSpacesRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "Filters"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the spaces.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        },
+        "MaxResults":{
+          "shape":"SpacesMaxResults",
+          "documentation":"<p>The maximum number of results to return.</p>"
+        },
+        "Filters":{
+          "shape":"SpaceQuicksightSearchFilters",
+          "documentation":"<p>The filters to apply to the search.</p>"
+        }
+      }
+    },
+    "SearchSpacesResponse":{
+      "type":"structure",
+      "required":[
+        "spaceId",
+        "SpaceSummaries"
+      ],
+      "members":{
+        "spaceId":{
+          "shape":"PublicSpaceId",
+          "documentation":"<p>The ID of the space.</p>"
+        },
+        "spaceArn":{
+          "shape":"PublicSpaceArn",
+          "documentation":"<p>The ARN of the space.</p>"
+        },
+        "SpaceSummaries":{
+          "shape":"SpaceSummaries",
+          "documentation":"<p>A list of space summaries that match the search criteria.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
     "SearchTopicsRequest":{
       "type":"structure",
       "required":[
@@ -35112,6 +37421,10 @@
         "TableMap":{
           "shape":"SemanticTableMap",
           "documentation":"<p>A map of semantic tables that define the analytical structure.</p>"
+        },
+        "SemanticMetadata":{
+          "shape":"DataSetSemanticMetadataList",
+          "documentation":"<p>The dataset-level semantic metadata, including a description and custom instructions.</p>"
         }
       },
       "documentation":"<p>Configuration for the semantic model that defines how prepared data is structured for analysis and reporting.</p>"
@@ -35134,6 +37447,10 @@
         "RowLevelPermissionConfiguration":{
           "shape":"RowLevelPermissionConfiguration",
           "documentation":"<p>Configuration for row level security that control data access for this semantic table.</p>"
+        },
+        "SemanticMetadata":{
+          "shape":"TableSemanticMetadata",
+          "documentation":"<p>The column-level semantic metadata for this semantic table.</p>"
         }
       },
       "documentation":"<p>A semantic table that represents the final analytical structure of the data.</p>"
@@ -35184,6 +37501,12 @@
       },
       "documentation":"<p>A structure that represents a semantic type.</p>"
     },
+    "SensitiveDocument":{
+      "type":"structure",
+      "members":{},
+      "document":true,
+      "sensitive":true
+    },
     "SensitiveDouble":{
       "type":"double",
       "sensitive":true
@@ -35229,6 +37552,10 @@
       "member":{"shape":"SensitiveString"}
     },
     "SensitiveStringObject":{
+      "type":"string",
+      "sensitive":true
+    },
+    "SensitiveText":{
       "type":"string",
       "sensitive":true
     },
@@ -35369,6 +37696,27 @@
         }
       },
       "documentation":"<p>The shape conditional formatting of a filled map visual.</p>"
+    },
+    "SharedColumnSemanticMetadata":{
+      "type":"structure",
+      "required":["ColumnProperties"],
+      "members":{
+        "ColumnNames":{
+          "shape":"ColumnNameList",
+          "documentation":"<p>The names of the columns this metadata applies to.</p>"
+        },
+        "ColumnProperties":{
+          "shape":"ColumnSemanticPropertyList",
+          "documentation":"<p>The semantic properties for the specified columns.</p>"
+        }
+      },
+      "documentation":"<p>Semantic metadata shared across one or more columns.</p>"
+    },
+    "SharedColumnSemanticMetadataList":{
+      "type":"list",
+      "member":{"shape":"SharedColumnSemanticMetadata"},
+      "max":2000,
+      "min":1
     },
     "SharedViewConfigurations":{
       "type":"structure",
@@ -36427,6 +38775,299 @@
       "max":32,
       "min":1
     },
+    "SpaceContributor":{
+      "type":"structure",
+      "required":["rawFileSizeBytes"],
+      "members":{
+        "userName":{
+          "shape":"String",
+          "documentation":"<p>The user name of the contributor.</p>"
+        },
+        "rawFileSizeBytes":{
+          "shape":"Long",
+          "documentation":"<p>The raw file size in bytes contributed by the user.</p>",
+          "box":true
+        },
+        "percentage":{
+          "shape":"Double",
+          "documentation":"<p>The percentage of total contributions made by the user.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>A contributor to an Amazon QuickSight space.</p>"
+    },
+    "SpaceContributorList":{
+      "type":"list",
+      "member":{"shape":"SpaceContributor"}
+    },
+    "SpaceDescription":{
+      "type":"string",
+      "max":1000,
+      "min":0,
+      "pattern":"[\\P{C}\\n\\r\\t\\f\\v\\p{Cf}]*",
+      "sensitive":true
+    },
+    "SpaceDetails":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"SpaceName",
+          "documentation":"<p>The display name of the space.</p>"
+        },
+        "description":{
+          "shape":"SpaceDescription",
+          "documentation":"<p>The description of the space.</p>"
+        },
+        "resources":{
+          "shape":"SpaceQuickSightResources",
+          "documentation":"<p>The resources in the space.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the space was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the space was last updated.</p>"
+        },
+        "consumedSourceSize":{
+          "shape":"Long",
+          "documentation":"<p>The total consumed source size in bytes.</p>",
+          "box":true
+        },
+        "consumedSourceDocCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of consumed source documents.</p>",
+          "box":true
+        },
+        "createdBy":{
+          "shape":"String",
+          "documentation":"<p>The user who created the space.</p>"
+        },
+        "createdByArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the user who created the space.</p>"
+        }
+      },
+      "documentation":"<p>The details of an Amazon QuickSight space.</p>"
+    },
+    "SpaceName":{
+      "type":"string",
+      "max":1000,
+      "min":1,
+      "pattern":"[\\P{C}\\n\\r\\t\\f\\v\\p{Cf}]*"
+    },
+    "SpaceQuickSightResource":{
+      "type":"structure",
+      "required":[
+        "resourceType",
+        "resourceDetails"
+      ],
+      "members":{
+        "resourceType":{
+          "shape":"SpaceQuickSightResourceType",
+          "documentation":"<p>The type of the QuickSight resource.</p>"
+        },
+        "resourceDetails":{
+          "shape":"SpaceQuickSightResourceDetails",
+          "documentation":"<p>The details of the QuickSight resource.</p>"
+        }
+      },
+      "documentation":"<p>A QuickSight resource that is associated with a space.</p>"
+    },
+    "SpaceQuickSightResourceDetails":{
+      "type":"structure",
+      "members":{
+        "resourceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the QuickSight resource.</p>"
+        }
+      },
+      "documentation":"<p>The details of a QuickSight resource in a space.</p>",
+      "union":true
+    },
+    "SpaceQuickSightResourceType":{
+      "type":"string",
+      "enum":[
+        "TOPIC",
+        "DASHBOARD",
+        "KNOWLEDGE_BASE",
+        "SPACE",
+        "ACTION_CONNECTOR",
+        "DATA_SET",
+        "ARTIFACT"
+      ]
+    },
+    "SpaceQuickSightResources":{
+      "type":"list",
+      "member":{"shape":"SpaceQuickSightResource"}
+    },
+    "SpaceQuickSightSearchFilterName":{
+      "type":"string",
+      "enum":[
+        "SPACE_ID",
+        "SPACE_NAME",
+        "DIRECT_QUICKSIGHT_OWNER",
+        "DIRECT_QUICKSIGHT_VIEWER_OR_OWNER",
+        "DIRECT_QUICKSIGHT_SOLE_OWNER",
+        "CONTRIBUTED_BY",
+        "CONSUMED_SOURCE_SIZE",
+        "CREATED_BY"
+      ]
+    },
+    "SpaceQuicksightSearchFilter":{
+      "type":"structure",
+      "required":[
+        "name",
+        "operator",
+        "value"
+      ],
+      "members":{
+        "name":{
+          "shape":"SpaceQuickSightSearchFilterName",
+          "documentation":"<p>The name of the filter field to use.</p>"
+        },
+        "operator":{
+          "shape":"SpaceSearchOperator",
+          "documentation":"<p>The comparison operator to use for the filter.</p>"
+        },
+        "value":{
+          "shape":"String",
+          "documentation":"<p>The value to use for the filter.</p>"
+        }
+      },
+      "documentation":"<p>A filter to use when searching for spaces.</p>"
+    },
+    "SpaceQuicksightSearchFilters":{
+      "type":"list",
+      "member":{"shape":"SpaceQuicksightSearchFilter"},
+      "max":2,
+      "min":1
+    },
+    "SpaceResourceOperation":{
+      "type":"structure",
+      "required":[
+        "ResourceType",
+        "ResourceDetails"
+      ],
+      "members":{
+        "ResourceType":{
+          "shape":"SpaceQuickSightResourceType",
+          "documentation":"<p>The type of the resource.</p>"
+        },
+        "ResourceDetails":{
+          "shape":"SpaceQuickSightResourceDetails",
+          "documentation":"<p>The details of the resource.</p>"
+        }
+      },
+      "documentation":"<p>An operation to perform on a resource in a space.</p>"
+    },
+    "SpaceResourceOperations":{
+      "type":"list",
+      "member":{"shape":"SpaceResourceOperation"}
+    },
+    "SpaceResourceSummaries":{
+      "type":"list",
+      "member":{"shape":"SpaceResourceSummary"}
+    },
+    "SpaceResourceSummary":{
+      "type":"structure",
+      "required":[
+        "ResourceType",
+        "ResourceDetails"
+      ],
+      "members":{
+        "ResourceType":{
+          "shape":"SpaceQuickSightResourceType",
+          "documentation":"<p>The type of the resource.</p>"
+        },
+        "ResourceDetails":{
+          "shape":"SpaceQuickSightResourceDetails",
+          "documentation":"<p>The details of the resource.</p>"
+        },
+        "ResourceName":{
+          "shape":"String",
+          "documentation":"<p>The name of the resource.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the resource was last updated.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a resource in a space.</p>"
+    },
+    "SpaceSearchOperator":{
+      "type":"string",
+      "enum":[
+        "STRING_EQUALS",
+        "STRING_LIKE",
+        "NUMBER_RANGE"
+      ]
+    },
+    "SpaceSummaries":{
+      "type":"list",
+      "member":{"shape":"SpaceSummary"}
+    },
+    "SpaceSummary":{
+      "type":"structure",
+      "required":["spaceId"],
+      "members":{
+        "spaceId":{
+          "shape":"PublicSpaceId",
+          "documentation":"<p>The ID of the space.</p>"
+        },
+        "spaceArn":{
+          "shape":"PublicSpaceArn",
+          "documentation":"<p>The ARN of the space.</p>"
+        },
+        "name":{
+          "shape":"SpaceName",
+          "documentation":"<p>The display name of the space.</p>"
+        },
+        "description":{
+          "shape":"SpaceDescription",
+          "documentation":"<p>The description of the space.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the space was last updated.</p>"
+        },
+        "consumedSourceSize":{
+          "shape":"Long",
+          "documentation":"<p>The total consumed source size in bytes.</p>",
+          "box":true
+        },
+        "consumedSourceDocCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of consumed source documents.</p>",
+          "box":true
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the space was created.</p>"
+        },
+        "createdBy":{
+          "shape":"String",
+          "documentation":"<p>The user who created the space.</p>"
+        },
+        "createdByArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the user who created the space.</p>"
+        },
+        "resourcesCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of resources in the space.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>A summary of an Amazon QuickSight space.</p>"
+    },
+    "SpacesMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":500,
+      "min":1
+    },
     "Spacing":{
       "type":"structure",
       "members":{
@@ -36930,6 +39571,18 @@
         }
       }
     },
+    "StarterPrompt":{
+      "type":"string",
+      "max":100,
+      "min":0
+    },
+    "StarterPromptList":{
+      "type":"list",
+      "member":{"shape":"StarterPrompt"},
+      "max":3,
+      "min":0,
+      "sensitive":true
+    },
     "StatePersistenceConfigurations":{
       "type":"structure",
       "required":["Enabled"],
@@ -37017,6 +39670,33 @@
       ]
     },
     "StatusCode":{"type":"integer"},
+    "StepAliasList":{
+      "type":"list",
+      "member":{"shape":"StepAliasMapping"}
+    },
+    "StepAliasMapping":{
+      "type":"structure",
+      "required":[
+        "StepId",
+        "StepAlias"
+      ],
+      "members":{
+        "StepId":{
+          "shape":"StepId",
+          "documentation":"<p>The unique identifier of the step.</p>"
+        },
+        "StepAlias":{
+          "shape":"String",
+          "documentation":"<p>The alias for the step.</p>"
+        }
+      },
+      "documentation":"<p>A mapping between a step identifier and its alias in a flow.</p>"
+    },
+    "StepId":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
     "String":{"type":"string"},
     "StringDatasetParameter":{
       "type":"structure",
@@ -37168,6 +39848,13 @@
       },
       "documentation":"<p>The configuration that defines the default value of a <code>String</code> parameter when a value has not been set.</p>"
     },
+    "StyleDescription":{
+      "type":"string",
+      "max":350000,
+      "min":5,
+      "pattern":"[\\s\\S]*",
+      "sensitive":true
+    },
     "StyledCellType":{
       "type":"string",
       "enum":[
@@ -37187,6 +39874,12 @@
       "member":{"shape":"SubnetId"},
       "max":15,
       "min":2
+    },
+    "SubscriptionId":{
+      "type":"string",
+      "max":32,
+      "min":32,
+      "pattern":"[a-z0-9]+"
     },
     "SubtotalOptions":{
       "type":"structure",
@@ -37738,6 +40431,16 @@
         }
       },
       "documentation":"<p>The conditional formatting of a table row.</p>"
+    },
+    "TableSemanticMetadata":{
+      "type":"structure",
+      "members":{
+        "ColumnMetadata":{
+          "shape":"SharedColumnSemanticMetadataList",
+          "documentation":"<p>A list of column semantic metadata entries.</p>"
+        }
+      },
+      "documentation":"<p>Column-level semantic metadata for a semantic table.</p>"
     },
     "TableSideBorderOptions":{
       "type":"structure",
@@ -38864,6 +41567,12 @@
       "type":"string",
       "max":128,
       "min":1
+    },
+    "TitleInput":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"(?!\\s+$)[^{}\"\\\\<>]*"
     },
     "TokenProviderUrl":{
       "type":"string",
@@ -41146,6 +43855,200 @@
         }
       }
     },
+    "UpdateAgentPermissionsRequest":{
+      "type":"structure",
+      "required":[
+        "AgentId",
+        "AwsAccountId"
+      ],
+      "members":{
+        "AgentId":{
+          "shape":"AgentId",
+          "documentation":"<p>The unique identifier for the agent.</p>",
+          "location":"uri",
+          "locationName":"AgentId"
+        },
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the agent.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "GrantPermissions":{
+          "shape":"UpdateAgentPermissionsRequestGrantPermissionsList",
+          "documentation":"<p>The resource permissions that you want to grant on the agent.</p>"
+        },
+        "RevokePermissions":{
+          "shape":"UpdateAgentPermissionsRequestRevokePermissionsList",
+          "documentation":"<p>The resource permissions that you want to revoke from the agent.</p>"
+        }
+      }
+    },
+    "UpdateAgentPermissionsRequestGrantPermissionsList":{
+      "type":"list",
+      "member":{"shape":"ResourcePermission"},
+      "max":100,
+      "min":0
+    },
+    "UpdateAgentPermissionsRequestRevokePermissionsList":{
+      "type":"list",
+      "member":{"shape":"ResourcePermission"},
+      "max":100,
+      "min":0
+    },
+    "UpdateAgentPermissionsResponse":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "AgentId"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"AgentArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the agent.</p>"
+        },
+        "AgentId":{
+          "shape":"AgentId",
+          "documentation":"<p>The unique identifier for the agent.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Permissions":{
+          "shape":"ResourcePermissionList",
+          "documentation":"<p>The resource permissions for the agent.</p>"
+        }
+      }
+    },
+    "UpdateAgentRequest":{
+      "type":"structure",
+      "required":[
+        "AgentId",
+        "AwsAccountId",
+        "Name"
+      ],
+      "members":{
+        "AgentId":{
+          "shape":"AgentId",
+          "documentation":"<p>The unique identifier for the agent to update.</p>",
+          "location":"uri",
+          "locationName":"AgentId"
+        },
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the agent.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "Name":{
+          "shape":"AgentName",
+          "documentation":"<p>The name of the agent.</p>"
+        },
+        "Description":{
+          "shape":"AgentDescription",
+          "documentation":"<p>A description of the agent.</p>"
+        },
+        "IconId":{
+          "shape":"IconId",
+          "documentation":"<p>The icon identifier for the agent.</p>"
+        },
+        "StarterPrompts":{
+          "shape":"StarterPromptList",
+          "documentation":"<p>A list of starter prompts that are displayed to users when they begin interacting with the agent.</p>"
+        },
+        "WelcomeMessage":{
+          "shape":"WelcomeMessage",
+          "documentation":"<p>The welcome message that is displayed when a user starts a conversation with the agent.</p>"
+        },
+        "CustomPromptInput":{
+          "shape":"CustomPromptInput",
+          "documentation":"<p>The custom prompt configuration for the agent.</p>"
+        },
+        "SpacesToAdd":{
+          "shape":"UpdateAgentRequestSpacesToAddList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the spaces to attach to the agent.</p>"
+        },
+        "SpacesToRemove":{
+          "shape":"UpdateAgentRequestSpacesToRemoveList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the spaces to detach from the agent.</p>"
+        },
+        "ActionConnectorsToAdd":{
+          "shape":"UpdateAgentRequestActionConnectorsToAddList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the action connectors to attach to the agent.</p>"
+        },
+        "ActionConnectorsToRemove":{
+          "shape":"UpdateAgentRequestActionConnectorsToRemoveList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the action connectors to detach from the agent.</p>"
+        }
+      }
+    },
+    "UpdateAgentRequestActionConnectorsToAddList":{
+      "type":"list",
+      "member":{"shape":"Arn"},
+      "max":10,
+      "min":0
+    },
+    "UpdateAgentRequestActionConnectorsToRemoveList":{
+      "type":"list",
+      "member":{"shape":"Arn"},
+      "max":10,
+      "min":0
+    },
+    "UpdateAgentRequestSpacesToAddList":{
+      "type":"list",
+      "member":{"shape":"Arn"},
+      "max":10,
+      "min":0
+    },
+    "UpdateAgentRequestSpacesToRemoveList":{
+      "type":"list",
+      "member":{"shape":"Arn"},
+      "max":10,
+      "min":0
+    },
+    "UpdateAgentResponse":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "AgentId",
+        "AgentStatus"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"AgentArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the agent.</p>"
+        },
+        "AgentId":{
+          "shape":"AgentId",
+          "documentation":"<p>The unique identifier for the agent.</p>"
+        },
+        "AgentStatus":{
+          "shape":"AgentStatus",
+          "documentation":"<p>The status of the agent.</p>"
+        },
+        "FailedToAddSpaces":{
+          "shape":"FailedToUpdateAssociationList",
+          "documentation":"<p>A list of per-ARN failures from the spaces that were requested to be added.</p>"
+        },
+        "FailedToRemoveSpaces":{
+          "shape":"FailedToUpdateAssociationList",
+          "documentation":"<p>A list of per-ARN failures from the spaces that were requested to be removed.</p>"
+        },
+        "FailedToAddActionConnectors":{
+          "shape":"FailedToUpdateAssociationList",
+          "documentation":"<p>A list of per-ARN failures from the action connectors that were requested to be added.</p>"
+        },
+        "FailedToRemoveActionConnectors":{
+          "shape":"FailedToUpdateAssociationList",
+          "documentation":"<p>A list of per-ARN failures from the action connectors that were requested to be removed.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
     "UpdateAnalysisPermissionsRequest":{
       "type":"structure",
       "required":[
@@ -42146,6 +45049,75 @@
         }
       }
     },
+    "UpdateFlowRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "FlowId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the flow that you are updating.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "FlowId":{
+          "shape":"FlowId",
+          "documentation":"<p>The unique identifier of the flow to update.</p>",
+          "location":"uri",
+          "locationName":"FlowId"
+        },
+        "Name":{
+          "shape":"TitleInput",
+          "documentation":"<p>Updated display name for the flow. Omit to preserve the existing name.</p>"
+        },
+        "Description":{
+          "shape":"FlowDescriptionInput",
+          "documentation":"<p>Updated description for the flow. Omit to preserve the existing description.</p>"
+        },
+        "FlowDefinition":{
+          "shape":"SensitiveDocument",
+          "documentation":"<p>The definition of the flow, specifying the steps and configurations. This is the flow definition in Quick Flow's internal format. The format is subject to change. When provided, all existing steps are replaced. Omit to preserve the existing definition.</p> <note> <p>Always derive or depend on the flow definition from the <code>DescribeFlow</code> operation to ensure you are working with the latest format.</p> </note>"
+        },
+        "ClientToken":{
+          "shape":"UpdateFlowRequestClientTokenString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "UpdateFlowRequestClientTokenString":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "UpdateFlowResponse":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "FlowId"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the flow.</p>"
+        },
+        "FlowId":{
+          "shape":"FlowId",
+          "documentation":"<p>The unique identifier of the flow.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
     "UpdateFolderPermissionsRequest":{
       "type":"structure",
       "required":[
@@ -42498,6 +45470,83 @@
       "member":{"shape":"ResourcePermission"},
       "max":100
     },
+    "UpdateOAuthClientApplicationRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "OAuthClientApplicationId",
+        "Name"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "OAuthClientApplicationId":{
+          "shape":"OAuthClientApplicationId",
+          "documentation":"<p>The ID of the OAuthClientApplication that you want to update.</p>",
+          "location":"uri",
+          "locationName":"OAuthClientApplicationId"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The display name for the OAuthClientApplication.</p>"
+        },
+        "ClientId":{
+          "shape":"OAuthClientId",
+          "documentation":"<p>The client ID of the OAuth application that is registered with the identity provider.</p>"
+        },
+        "ClientSecret":{
+          "shape":"OAuthClientSecret",
+          "documentation":"<p>The client secret of the OAuth application that is registered with the identity provider.</p>"
+        },
+        "OAuthTokenEndpointUrl":{
+          "shape":"OAuthTokenEndpointUrl",
+          "documentation":"<p>The token endpoint URL of the identity provider that is used to obtain access tokens.</p>"
+        },
+        "OAuthAuthorizationEndpointUrl":{
+          "shape":"OAuthAuthorizationEndpointUrl",
+          "documentation":"<p>The authorization endpoint URL of the identity provider that is used to obtain authorization codes.</p>"
+        },
+        "OAuthScopes":{
+          "shape":"OAuthScopesString",
+          "documentation":"<p>The OAuth scopes that are requested when the OAuthClientApplication obtains an access token from the identity provider.</p>"
+        },
+        "DataSourceType":{
+          "shape":"DataSourceType",
+          "documentation":"<p>The type of data source that the OAuthClientApplication is used with. Valid values are <code>SNOWFLAKE</code>.</p>"
+        },
+        "IdentityProviderVpcConnectionProperties":{"shape":"VpcConnectionProperties"}
+      }
+    },
+    "UpdateOAuthClientApplicationResponse":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the OAuthClientApplication.</p>"
+        },
+        "OAuthClientApplicationId":{
+          "shape":"OAuthClientApplicationId",
+          "documentation":"<p>The ID of the OAuthClientApplication. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "UpdateStatus":{
+          "shape":"ResourceStatus",
+          "documentation":"<p>The status of updating the OAuthClientApplication.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
     "UpdatePublicSharingSettingsRequest":{
       "type":"structure",
       "required":["AwsAccountId"],
@@ -42820,6 +45869,155 @@
           "shape":"StatusCode",
           "documentation":"<p>The HTTP status of the request.</p>",
           "location":"statusCode"
+        }
+      }
+    },
+    "UpdateSpacePermissionsRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "SpaceId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the space.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "SpaceId":{
+          "shape":"PublicSpaceId",
+          "documentation":"<p>The ID of the space that you want to update permissions for.</p>",
+          "location":"uri",
+          "locationName":"SpaceId"
+        },
+        "GrantPermissions":{
+          "shape":"ResourcePermissionList",
+          "documentation":"<p>The permissions that you want to grant on the space.</p>"
+        },
+        "RevokePermissions":{
+          "shape":"ResourcePermissionList",
+          "documentation":"<p>The permissions that you want to revoke from the space.</p>"
+        }
+      }
+    },
+    "UpdateSpacePermissionsResponse":{
+      "type":"structure",
+      "required":["spaceId"],
+      "members":{
+        "spaceId":{
+          "shape":"PublicSpaceId",
+          "documentation":"<p>The ID of the space.</p>"
+        },
+        "spaceArn":{
+          "shape":"PublicSpaceArn",
+          "documentation":"<p>The ARN of the space.</p>"
+        },
+        "permissions":{
+          "shape":"ResourcePermissionList",
+          "documentation":"<p>The updated permissions for the space.</p>"
+        },
+        "requestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
+    "UpdateSpaceRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "SpaceId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the space.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "SpaceId":{
+          "shape":"PublicSpaceId",
+          "documentation":"<p>The ID of the space that you want to update.</p>",
+          "location":"uri",
+          "locationName":"SpaceId"
+        },
+        "Name":{
+          "shape":"SpaceName",
+          "documentation":"<p>A new display name for the space.</p>"
+        },
+        "Description":{
+          "shape":"SpaceDescription",
+          "documentation":"<p>A new description for the space.</p>"
+        }
+      }
+    },
+    "UpdateSpaceResourcesRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "SpaceId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the space.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "SpaceId":{
+          "shape":"PublicSpaceId",
+          "documentation":"<p>The ID of the space that you want to update resources for.</p>",
+          "location":"uri",
+          "locationName":"SpaceId"
+        },
+        "AddResources":{
+          "shape":"SpaceResourceOperations",
+          "documentation":"<p>A list of resources to add to the space.</p>"
+        },
+        "RemoveResources":{
+          "shape":"SpaceResourceOperations",
+          "documentation":"<p>A list of resources to remove from the space.</p>"
+        }
+      }
+    },
+    "UpdateSpaceResourcesResponse":{
+      "type":"structure",
+      "required":["spaceId"],
+      "members":{
+        "spaceId":{
+          "shape":"PublicSpaceId",
+          "documentation":"<p>The ID of the space.</p>"
+        },
+        "spaceArn":{
+          "shape":"PublicSpaceArn",
+          "documentation":"<p>The ARN of the space.</p>"
+        },
+        "FailedResourceOperations":{
+          "shape":"FailedSpaceResourceOperations",
+          "documentation":"<p>A list of resource operations that failed.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
+    "UpdateSpaceResponse":{
+      "type":"structure",
+      "required":["spaceId"],
+      "members":{
+        "spaceId":{
+          "shape":"PublicSpaceId",
+          "documentation":"<p>The ID of the space.</p>"
+        },
+        "spaceArn":{
+          "shape":"PublicSpaceArn",
+          "documentation":"<p>The ARN of the space.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
         }
       }
     },
@@ -43573,6 +46771,21 @@
         }
       },
       "documentation":"<p>Information about the format for a source file or files.</p>"
+    },
+    "UploadedDocumentMetadata":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"UploadedDocumentName",
+          "documentation":"<p>The name of the uploaded document.</p>"
+        }
+      },
+      "documentation":"<p>Metadata for an uploaded document associated with a custom instruction.</p>"
+    },
+    "UploadedDocumentName":{
+      "type":"string",
+      "max":127,
+      "min":1
     },
     "User":{
       "type":"structure",
@@ -44543,6 +47756,12 @@
         }
       },
       "documentation":"<p>The credentials for authenticating with a web proxy server.</p>"
+    },
+    "WelcomeMessage":{
+      "type":"string",
+      "max":300,
+      "min":0,
+      "sensitive":true
     },
     "WhatIfPointScenario":{
       "type":"structure",

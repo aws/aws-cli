@@ -55,7 +55,7 @@ class TestDocsGetter(unittest.TestCase):
     def test_get_service_command_docs(self):
         parsed_args = self.parser.parse('aws ec2')
         actual_docs = self.docs_getter.get_docs(parsed_args)
-        expected_docs = 'Elastic Compute Cloud'
+        expected_docs = 'Amazon EC2'
         self.assertIn(expected_docs, actual_docs)
 
     def test_get_service_operation_docs(self):
@@ -67,7 +67,7 @@ class TestDocsGetter(unittest.TestCase):
     def test_get_service_command_docs_with_invalid_service_operation(self):
         parsed_args = self.parser.parse('aws ec2 fake')
         actual_docs = self.docs_getter.get_docs(parsed_args)
-        expected_docs = 'Elastic Compute Cloud'
+        expected_docs = 'Amazon EC2'
         self.assertIn(expected_docs, actual_docs)
 
     def test_get_top_level_aws_docs_if_no_command_specified(self):

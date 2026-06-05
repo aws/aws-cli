@@ -21,8 +21,16 @@ import os
 from botocore import utils
 from botocore.exceptions import InvalidConfigError
 
-logger = logging.getLogger(__name__)
+def _resolve_new_retries():
+    _env_new_retries = os.environ.get('AWS_NEW_RETRIES_2026')
+    if _env_new_retries is not None:
+        return _env_new_retries.lower() == 'true'
+    return False
 
+
+NEW_RETRIES_ENABLED = _resolve_new_retries()
+
+logger = logging.getLogger(__name__)
 
 #: A default dictionary that maps the logical names for session variables
 #: to the specific environment variables and configuration file names

@@ -16,6 +16,23 @@
     "uid":"bedrock-2023-04-20"
   },
   "operations":{
+    "BatchDeleteAdvancedPromptOptimizationJob":{
+      "name":"BatchDeleteAdvancedPromptOptimizationJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/advanced-prompt-optimization-job/batch-delete",
+        "responseCode":202
+      },
+      "input":{"shape":"BatchDeleteAdvancedPromptOptimizationJobRequest"},
+      "output":{"shape":"BatchDeleteAdvancedPromptOptimizationJobResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes one or more advanced prompt optimization jobs.</p>"
+    },
     "BatchDeleteEvaluationJob":{
       "name":"BatchDeleteEvaluationJob",
       "http":{
@@ -52,6 +69,28 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Cancels a running Automated Reasoning policy build workflow. This stops the policy generation process and prevents further processing of the source documents.</p>",
+      "idempotent":true
+    },
+    "CreateAdvancedPromptOptimizationJob":{
+      "name":"CreateAdvancedPromptOptimizationJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/advanced-prompt-optimization-jobs",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateAdvancedPromptOptimizationJobRequest"},
+      "output":{"shape":"CreateAdvancedPromptOptimizationJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"TooManyTagsException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates an advanced prompt optimization job. The job optimizes your prompt templates for specific models using your evaluation dataset and criteria.</p>",
       "idempotent":true
     },
     "CreateAutomatedReasoningPolicy":{
@@ -138,7 +177,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Creates a new custom model in Amazon Bedrock. After the model is active, you can use it for inference.</p> <p>To use the model for inference, you must purchase Provisioned Throughput for it. You can't use On-demand inference with these custom models. For more information about Provisioned Throughput, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html\">Provisioned Throughput</a>.</p> <p>The model appears in <code>ListCustomModels</code> with a <code>customizationType</code> of <code>imported</code>. To track the status of the new model, you use the <code>GetCustomModel</code> API operation. The model can be in the following states:</p> <ul> <li> <p> <code>Creating</code> - Initial state during validation and registration</p> </li> <li> <p> <code>Active</code> - Model is ready for use in inference</p> </li> <li> <p> <code>Failed</code> - Creation process encountered an error</p> </li> </ul> <p> <b>Related APIs</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GetCustomModel.html\">GetCustomModel</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_ListCustomModels.html\">ListCustomModels</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_DeleteCustomModel.html\">DeleteCustomModel</a> </p> </li> </ul>",
+      "documentation":"<p>Creates a new custom model in Amazon Bedrock. After the model is active, you can use it for inference.</p> <p>You can provide the model data source in one of the following ways:</p> <ul> <li> <p> <code>customModelDataSource</code> — Specify a SageMaker AI model package ARN. Amazon Bedrock resolves the model package to retrieve the model artifacts. This is the preferred method for new SageMaker AI training outputs.</p> </li> <li> <p> <code>modelSourceConfig</code> — Specify an Amazon S3 URI pointing to the Amazon-managed Amazon S3 bucket containing your model artifacts.</p> </li> </ul> <p>To use the model for inference, you must purchase Provisioned Throughput for it. You can't use On-demand inference with these custom models. For more information about Provisioned Throughput, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html\">Provisioned Throughput</a>.</p> <p>The model appears in <code>ListCustomModels</code> with a <code>customizationType</code> of <code>imported</code>. To track the status of the new model, you use the <code>GetCustomModel</code> API operation. The model can be in the following states:</p> <ul> <li> <p> <code>Creating</code> - Initial state during validation and registration</p> </li> <li> <p> <code>Active</code> - Model is ready for use in inference</p> </li> <li> <p> <code>Failed</code> - Creation process encountered an error</p> </li> </ul> <p> <b>Related APIs</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GetCustomModel.html\">GetCustomModel</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_ListCustomModels.html\">ListCustomModels</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_DeleteCustomModel.html\">DeleteCustomModel</a> </p> </li> </ul>",
       "idempotent":true
     },
     "CreateCustomModelDeployment":{
@@ -745,6 +784,25 @@
       "documentation":"<p>Exports the policy definition for an Automated Reasoning policy version. Returns the complete policy definition including rules, variables, and custom variable types in a structured format.</p>",
       "readonly":true
     },
+    "GetAdvancedPromptOptimizationJob":{
+      "name":"GetAdvancedPromptOptimizationJob",
+      "http":{
+        "method":"GET",
+        "requestUri":"/advanced-prompt-optimization-jobs/{jobIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAdvancedPromptOptimizationJobRequest"},
+      "output":{"shape":"GetAdvancedPromptOptimizationJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Gets information about an advanced prompt optimization job.</p>",
+      "readonly":true
+    },
     "GetAutomatedReasoningPolicy":{
       "name":"GetAutomatedReasoningPolicy",
       "http":{
@@ -1215,6 +1273,24 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Get usecase for model access.</p>",
+      "readonly":true
+    },
+    "ListAdvancedPromptOptimizationJobs":{
+      "name":"ListAdvancedPromptOptimizationJobs",
+      "http":{
+        "method":"GET",
+        "requestUri":"/advanced-prompt-optimization-jobs",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAdvancedPromptOptimizationJobsRequest"},
+      "output":{"shape":"ListAdvancedPromptOptimizationJobsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists the advanced prompt optimization jobs in your account.</p>",
       "readonly":true
     },
     "ListAutomatedReasoningPolicies":{
@@ -1738,6 +1814,25 @@
       ],
       "documentation":"<p>Initiates a test workflow to validate Automated Reasoning policy tests. The workflow executes the specified tests against the policy and generates validation results.</p>"
     },
+    "StopAdvancedPromptOptimizationJob":{
+      "name":"StopAdvancedPromptOptimizationJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/advanced-prompt-optimization-jobs/{jobIdentifier}/stop",
+        "responseCode":200
+      },
+      "input":{"shape":"StopAdvancedPromptOptimizationJobRequest"},
+      "output":{"shape":"StopAdvancedPromptOptimizationJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Stops an advanced prompt optimization job that is in progress.</p>"
+    },
     "StopEvaluationJob":{
       "name":"StopEvaluationJob",
       "http":{
@@ -2104,6 +2199,112 @@
       "type":"structure",
       "members":{},
       "document":true
+    },
+    "AdvancedPromptOptimizationInputConfig":{
+      "type":"structure",
+      "required":["s3Uri"],
+      "members":{
+        "s3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The S3 URI of the JSONL input file containing prompt templates and evaluation samples.</p>"
+        }
+      },
+      "documentation":"<p>Contains the input data configuration for an advanced prompt optimization job.</p>"
+    },
+    "AdvancedPromptOptimizationJobArn":{
+      "type":"string",
+      "documentation":"<p>The Amazon Resource Name (ARN) of an advanced prompt optimization job.</p>",
+      "max":1011,
+      "min":0,
+      "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:advanced-prompt-optimization-job/[a-z0-9]{12}"
+    },
+    "AdvancedPromptOptimizationJobDescription":{
+      "type":"string",
+      "documentation":"<p>The description of an advanced prompt optimization job.</p>",
+      "max":500,
+      "min":1
+    },
+    "AdvancedPromptOptimizationJobIdentifier":{
+      "type":"string",
+      "documentation":"<p>The ARN or ID of an advanced prompt optimization job.</p>",
+      "max":1011,
+      "min":0,
+      "pattern":"((arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:advanced-prompt-optimization-job/)?[a-z0-9]{12})"
+    },
+    "AdvancedPromptOptimizationJobIdentifiers":{
+      "type":"list",
+      "member":{"shape":"AdvancedPromptOptimizationJobIdentifier"},
+      "documentation":"<p>A list of advanced prompt optimization job identifiers.</p>",
+      "max":25,
+      "min":1
+    },
+    "AdvancedPromptOptimizationJobName":{
+      "type":"string",
+      "documentation":"<p>The name of an advanced prompt optimization job.</p>",
+      "max":100,
+      "min":1,
+      "pattern":"[a-zA-Z0-9][a-zA-Z0-9.+-]*"
+    },
+    "AdvancedPromptOptimizationJobStatus":{
+      "type":"string",
+      "documentation":"<p>The status of an advanced prompt optimization job.</p>",
+      "enum":[
+        "InProgress",
+        "Completed",
+        "Failed",
+        "PartiallyCompleted",
+        "Stopping",
+        "Stopped",
+        "Deleting"
+      ]
+    },
+    "AdvancedPromptOptimizationJobSummaries":{
+      "type":"list",
+      "member":{"shape":"AdvancedPromptOptimizationJobSummary"},
+      "documentation":"<p>A list of advanced prompt optimization job summaries.</p>"
+    },
+    "AdvancedPromptOptimizationJobSummary":{
+      "type":"structure",
+      "required":[
+        "jobArn",
+        "jobName",
+        "jobStatus",
+        "creationTime"
+      ],
+      "members":{
+        "jobArn":{
+          "shape":"AdvancedPromptOptimizationJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the job.</p>"
+        },
+        "jobName":{
+          "shape":"AdvancedPromptOptimizationJobName",
+          "documentation":"<p>The name of the job.</p>"
+        },
+        "jobStatus":{
+          "shape":"AdvancedPromptOptimizationJobStatus",
+          "documentation":"<p>The status of the job.</p>"
+        },
+        "creationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the job was created.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the job was last modified.</p>"
+        }
+      },
+      "documentation":"<p>Contains a summary of an advanced prompt optimization job.</p>"
+    },
+    "AdvancedPromptOptimizationOutputConfig":{
+      "type":"structure",
+      "required":["s3Uri"],
+      "members":{
+        "s3Uri":{
+          "shape":"S3UriFolder",
+          "documentation":"<p>The S3 URI prefix where the optimization results will be written.</p>"
+        }
+      },
+      "documentation":"<p>Contains the output data configuration for an advanced prompt optimization job.</p>"
     },
     "AgreementAvailability":{
       "type":"structure",
@@ -2855,6 +3056,12 @@
       "min":0,
       "sensitive":true
     },
+    "AutomatedReasoningPolicyBuildFeedback":{
+      "type":"string",
+      "max":4000,
+      "min":0,
+      "sensitive":true
+    },
     "AutomatedReasoningPolicyBuildLog":{
       "type":"structure",
       "required":["entries"],
@@ -3190,7 +3397,9 @@
         "REFINE_POLICY",
         "IMPORT_POLICY",
         "GENERATE_FIDELITY_REPORT",
-        "GENERATE_POLICY_SCENARIOS"
+        "GENERATE_POLICY_SCENARIOS",
+        "RESOLVE_POLICY_AMBIGUITIES",
+        "ITERATIVELY_REFINE_POLICY"
       ]
     },
     "AutomatedReasoningPolicyConflictedRuleIdList":{
@@ -3737,6 +3946,27 @@
         }
       },
       "documentation":"<p>An annotation for processing and incorporating new content into an Automated Reasoning policy.</p>"
+    },
+    "AutomatedReasoningPolicyIterativeRefinementContent":{
+      "type":"structure",
+      "required":["documents"],
+      "members":{
+        "documents":{
+          "shape":"AutomatedReasoningPolicyIterativeRefinementDocumentList",
+          "documentation":"<p>Source documents used for iterative policy refinement. These documents provide context for refining the policy definition.</p>"
+        },
+        "feedback":{
+          "shape":"AutomatedReasoningPolicyBuildFeedback",
+          "documentation":"<p>Optional feedback to guide the iterative refinement workflow. Provide specific instructions or constraints for policy refinement.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for an iterative policy refinement workflow, including source documents to process and optional feedback to guide the refinement.</p>"
+    },
+    "AutomatedReasoningPolicyIterativeRefinementDocumentList":{
+      "type":"list",
+      "member":{"shape":"AutomatedReasoningPolicyBuildWorkflowDocument"},
+      "max":5,
+      "min":1
     },
     "AutomatedReasoningPolicyJustificationList":{
       "type":"list",
@@ -4421,6 +4651,10 @@
         "generateFidelityReportContent":{
           "shape":"AutomatedReasoningPolicyGenerateFidelityReportContent",
           "documentation":"<p>The content configuration for generating a fidelity report workflow. This can include source documents to analyze or an existing fidelity report to update with a new policy definition.</p>"
+        },
+        "iterativeRefinementContent":{
+          "shape":"AutomatedReasoningPolicyIterativeRefinementContent",
+          "documentation":"<p>Content configuration to start an iterative policy refinement workflow that uses generative AI to automatically make changes to the policy based on test results and the optional feedback provided.</p>"
         }
       },
       "documentation":"<p>Defines the content and configuration for different types of policy build workflows.</p>",
@@ -4431,6 +4665,89 @@
       "max":2048,
       "min":1,
       "pattern":"(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2})/[a-z0-9]{12})|(:foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2})))|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2})|(([0-9a-zA-Z][_-]?)+)"
+    },
+    "BatchDeleteAdvancedPromptOptimizationJobError":{
+      "type":"structure",
+      "required":[
+        "jobIdentifier",
+        "code"
+      ],
+      "members":{
+        "jobIdentifier":{
+          "shape":"AdvancedPromptOptimizationJobIdentifier",
+          "documentation":"<p>The identifier of the job that could not be deleted.</p>"
+        },
+        "code":{
+          "shape":"String",
+          "documentation":"<p>The error code for the deletion failure.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A message describing the error.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about an error that occurred when deleting an advanced prompt optimization job.</p>"
+    },
+    "BatchDeleteAdvancedPromptOptimizationJobErrors":{
+      "type":"list",
+      "member":{"shape":"BatchDeleteAdvancedPromptOptimizationJobError"},
+      "documentation":"<p>A list of errors from a batch delete operation on advanced prompt optimization jobs.</p>",
+      "max":25,
+      "min":0
+    },
+    "BatchDeleteAdvancedPromptOptimizationJobItem":{
+      "type":"structure",
+      "required":[
+        "jobIdentifier",
+        "jobStatus"
+      ],
+      "members":{
+        "jobIdentifier":{
+          "shape":"AdvancedPromptOptimizationJobIdentifier",
+          "documentation":"<p>The identifier of the deleted job.</p>"
+        },
+        "jobStatus":{
+          "shape":"AdvancedPromptOptimizationJobStatus",
+          "documentation":"<p>The status of the deleted job.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a successfully deleted advanced prompt optimization job.</p>"
+    },
+    "BatchDeleteAdvancedPromptOptimizationJobItems":{
+      "type":"list",
+      "member":{"shape":"BatchDeleteAdvancedPromptOptimizationJobItem"},
+      "documentation":"<p>A list of successfully deleted advanced prompt optimization jobs.</p>",
+      "max":25,
+      "min":0
+    },
+    "BatchDeleteAdvancedPromptOptimizationJobRequest":{
+      "type":"structure",
+      "required":["jobIdentifiers"],
+      "members":{
+        "jobIdentifiers":{
+          "shape":"AdvancedPromptOptimizationJobIdentifiers",
+          "documentation":"<p>A list of advanced prompt optimization job identifiers (ARNs or IDs) to delete.</p>"
+        }
+      },
+      "documentation":"<p>Batch Delete Advanced Prompt Optimization Jobs Request</p>"
+    },
+    "BatchDeleteAdvancedPromptOptimizationJobResponse":{
+      "type":"structure",
+      "required":[
+        "errors",
+        "advancedPromptOptimizationJobs"
+      ],
+      "members":{
+        "errors":{
+          "shape":"BatchDeleteAdvancedPromptOptimizationJobErrors",
+          "documentation":"<p>A list of errors encountered during batch deletion.</p>"
+        },
+        "advancedPromptOptimizationJobs":{
+          "shape":"BatchDeleteAdvancedPromptOptimizationJobItems",
+          "documentation":"<p>A list of successfully deleted advanced prompt optimization jobs.</p>"
+        }
+      },
+      "documentation":"<p>Batch Delete Advanced Prompt Optimization Jobs Response</p>"
     },
     "BatchDeleteEvaluationJobError":{
       "type":"structure",
@@ -4661,6 +4978,62 @@
     "ContentType":{
       "type":"string",
       "pattern":".*[a-z]{1,20}/.{1,20}.*"
+    },
+    "CreateAdvancedPromptOptimizationJobRequest":{
+      "type":"structure",
+      "required":[
+        "jobName",
+        "inputConfig",
+        "outputConfig",
+        "modelConfigurations"
+      ],
+      "members":{
+        "jobName":{
+          "shape":"AdvancedPromptOptimizationJobName",
+          "documentation":"<p>A name for the advanced prompt optimization job.</p>"
+        },
+        "jobDescription":{
+          "shape":"AdvancedPromptOptimizationJobDescription",
+          "documentation":"<p>A description of the advanced prompt optimization job.</p>"
+        },
+        "clientToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, Amazon Bedrock ignores the request but does not return an error.</p>",
+          "idempotencyToken":true
+        },
+        "inputConfig":{
+          "shape":"AdvancedPromptOptimizationInputConfig",
+          "documentation":"<p>Specifies the S3 location of your JSONL input file containing prompt templates and evaluation samples.</p>"
+        },
+        "outputConfig":{
+          "shape":"AdvancedPromptOptimizationOutputConfig",
+          "documentation":"<p>Specifies the S3 location where optimization results will be stored.</p>"
+        },
+        "encryptionKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used for encrypting the output data. If not specified, the output is encrypted with an Amazon-owned KMS key.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>Tags to associate with the advanced prompt optimization job.</p>"
+        },
+        "modelConfigurations":{
+          "shape":"ModelConfigurations",
+          "documentation":"<p>A list of model configurations specifying the target models for prompt optimization. You can specify up to 5 models.</p>"
+        }
+      },
+      "documentation":"<p>Create Advanced Prompt Optimization Job Request</p>"
+    },
+    "CreateAdvancedPromptOptimizationJobResponse":{
+      "type":"structure",
+      "required":["jobArn"],
+      "members":{
+        "jobArn":{
+          "shape":"AdvancedPromptOptimizationJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created advanced prompt optimization job.</p>"
+        }
+      },
+      "documentation":"<p>Create Advanced Prompt Optimization Job Response</p>"
     },
     "CreateAutomatedReasoningPolicyRequest":{
       "type":"structure",
@@ -4893,10 +5266,7 @@
     },
     "CreateCustomModelRequest":{
       "type":"structure",
-      "required":[
-        "modelName",
-        "modelSourceConfig"
-      ],
+      "required":["modelName"],
       "members":{
         "modelName":{
           "shape":"CustomModelName",
@@ -4906,13 +5276,17 @@
           "shape":"ModelDataSource",
           "documentation":"<p>The data source for the model. The Amazon S3 URI in the model source must be for the Amazon-managed Amazon S3 bucket containing your model artifacts.</p>"
         },
+        "customModelDataSource":{
+          "shape":"CustomModelDataSource",
+          "documentation":"<p>The data source for the custom model. Use this field to specify a SageMaker AI model package ARN as the source for your custom model. Amazon Bedrock resolves the model package to retrieve the model artifacts.</p> <p>You can specify either <code>customModelDataSource</code> or <code>modelSourceConfig</code>, but not both.</p>"
+        },
         "modelKmsKeyArn":{
           "shape":"KmsKeyArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the customer managed KMS key to encrypt the custom model. If you don't provide a KMS key, Amazon Bedrock uses an Amazon Web Services-managed KMS key to encrypt the model. </p> <p>If you provide a customer managed KMS key, your Amazon Bedrock service role must have permissions to use it. For more information see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/encryption-import-model.html\">Encryption of imported models</a>. </p>"
         },
         "roleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM service role that Amazon Bedrock assumes to perform tasks on your behalf. This role must have permissions to access the Amazon S3 bucket containing your model artifacts and the KMS key (if specified). For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-import-iam-role.html\">Setting up an IAM service role for importing models</a> in the Amazon Bedrock User Guide.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM service role that Amazon Bedrock assumes to perform tasks on your behalf. This role must have permissions to access the Amazon S3 bucket containing your model artifacts and the KMS key (if specified). For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-import-iam-role.html\">Setting up an IAM service role for importing models</a> in the Amazon Bedrock User Guide.</p> <p>This field is required when you use <code>modelSourceConfig</code> with an Amazon S3 data source. It is not required when you use <code>customModelDataSource</code> with a model package ARN, because Amazon Bedrock uses its own credentials to access the model artifacts.</p>"
         },
         "modelTags":{
           "shape":"TagList",
@@ -5645,6 +6019,17 @@
       "max":1011,
       "min":20,
       "pattern":"arn:aws(|-us-gov|-cn|-iso|-iso-b):bedrock:[a-z0-9-]{1,20}:[0-9]{12}:custom-model/(imported|[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2})/[a-z0-9]{12}"
+    },
+    "CustomModelDataSource":{
+      "type":"structure",
+      "members":{
+        "modelPackageArnDataSource":{
+          "shape":"ModelPackageArnDataSource",
+          "documentation":"<p>A SageMaker AI model package ARN as the data source for the custom model. When you specify a model package ARN, Amazon Bedrock resolves the model package to retrieve the model artifacts.</p>"
+        }
+      },
+      "documentation":"<p>The data source for a custom model. This is a union type that supports the following member:</p> <ul> <li> <p> <code>modelPackageArnDataSource</code> — Specifies a SageMaker AI model package as the data source.</p> </li> </ul>",
+      "union":true
     },
     "CustomModelDeploymentArn":{
       "type":"string",
@@ -7031,6 +7416,78 @@
         }
       },
       "documentation":"<p>The configuration details for response generation based on retrieved text chunks.</p>"
+    },
+    "GetAdvancedPromptOptimizationJobRequest":{
+      "type":"structure",
+      "required":["jobIdentifier"],
+      "members":{
+        "jobIdentifier":{
+          "shape":"AdvancedPromptOptimizationJobIdentifier",
+          "documentation":"<p>The ARN or ID of the advanced prompt optimization job.</p>",
+          "location":"uri",
+          "locationName":"jobIdentifier"
+        }
+      },
+      "documentation":"<p>Get Advanced Prompt Optimization Job Request</p>"
+    },
+    "GetAdvancedPromptOptimizationJobResponse":{
+      "type":"structure",
+      "required":[
+        "jobArn",
+        "jobName",
+        "jobStatus",
+        "inputConfig",
+        "outputConfig",
+        "creationTime",
+        "modelConfigurations"
+      ],
+      "members":{
+        "jobArn":{
+          "shape":"AdvancedPromptOptimizationJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the advanced prompt optimization job.</p>"
+        },
+        "jobName":{
+          "shape":"AdvancedPromptOptimizationJobName",
+          "documentation":"<p>The name of the advanced prompt optimization job.</p>"
+        },
+        "jobDescription":{
+          "shape":"AdvancedPromptOptimizationJobDescription",
+          "documentation":"<p>The description of the advanced prompt optimization job.</p>"
+        },
+        "jobStatus":{
+          "shape":"AdvancedPromptOptimizationJobStatus",
+          "documentation":"<p>The status of the advanced prompt optimization job.</p>"
+        },
+        "inputConfig":{
+          "shape":"AdvancedPromptOptimizationInputConfig",
+          "documentation":"<p>The input data configuration for the optimization job.</p>"
+        },
+        "outputConfig":{
+          "shape":"AdvancedPromptOptimizationOutputConfig",
+          "documentation":"<p>The output data configuration for the optimization job.</p>"
+        },
+        "encryptionKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the output data.</p>"
+        },
+        "creationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the advanced prompt optimization job was created.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the advanced prompt optimization job was last modified.</p>"
+        },
+        "failureMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>If the job failed, a message describing the reason for the failure.</p>"
+        },
+        "modelConfigurations":{
+          "shape":"ModelConfigurations",
+          "documentation":"<p>The model configurations used in the optimization job.</p>"
+        }
+      },
+      "documentation":"<p>Get Advanced Prompt Optimization Job Response</p>"
     },
     "GetAutomatedReasoningPolicyAnnotationsRequest":{
       "type":"structure",
@@ -9897,6 +10354,56 @@
       "member":{"shape":"IncludedModelId"},
       "min":1
     },
+    "InferenceConfiguration":{
+      "type":"structure",
+      "members":{
+        "maxTokens":{
+          "shape":"InferenceConfigurationMaxTokensInteger",
+          "documentation":"<p>The maximum number of tokens to allow in the generated response. The default value is the maximum allowed value for the model that you are using.</p>"
+        },
+        "temperature":{
+          "shape":"InferenceConfigurationTemperatureFloat",
+          "documentation":"<p>The likelihood of the model selecting higher-probability options while generating a response. A lower value makes the model more likely to choose higher-probability options, while a higher value makes the model more likely to choose lower-probability options.</p>"
+        },
+        "topP":{
+          "shape":"InferenceConfigurationTopPFloat",
+          "documentation":"<p>The percentage of most-likely candidates that the model considers for the next token. For example, if you choose a value of 0.8 for <code>topP</code>, the model selects from the top 80% of the probability distribution of tokens that could be next in the sequence.</p>"
+        },
+        "stopSequences":{
+          "shape":"InferenceConfigurationStopSequencesList",
+          "documentation":"<p>A list of stop sequences. A stop sequence is a sequence of characters that causes the model to stop generating the response.</p>"
+        }
+      },
+      "documentation":"<p>Base inference parameters to pass to a model. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\">Inference parameters for foundation models</a>.</p>"
+    },
+    "InferenceConfigurationMaxTokensInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "InferenceConfigurationStopSequencesList":{
+      "type":"list",
+      "member":{"shape":"InferenceConfigurationStopSequencesListMemberString"},
+      "documentation":"<p>A list of non-empty strings.</p>",
+      "max":2500,
+      "min":0
+    },
+    "InferenceConfigurationStopSequencesListMemberString":{
+      "type":"string",
+      "min":1
+    },
+    "InferenceConfigurationTemperatureFloat":{
+      "type":"float",
+      "box":true,
+      "max":1,
+      "min":0
+    },
+    "InferenceConfigurationTopPFloat":{
+      "type":"float",
+      "box":true,
+      "max":1,
+      "min":0
+    },
     "InferenceProfileArn":{
       "type":"string",
       "max":2048,
@@ -10266,6 +10773,50 @@
         }
       },
       "documentation":"<p>The legal term of the agreement.</p>"
+    },
+    "ListAdvancedPromptOptimizationJobsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in the response.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, use this token in a subsequent request to get the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "sortBy":{
+          "shape":"SortJobsBy",
+          "documentation":"<p>The field to sort the results by.</p>",
+          "location":"querystring",
+          "locationName":"sortBy"
+        },
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sort order for the results.</p>",
+          "location":"querystring",
+          "locationName":"sortOrder"
+        }
+      },
+      "documentation":"<p>List Advanced Prompt Optimization Jobs Request</p>"
+    },
+    "ListAdvancedPromptOptimizationJobsResponse":{
+      "type":"structure",
+      "members":{
+        "jobSummaries":{
+          "shape":"AdvancedPromptOptimizationJobSummaries",
+          "documentation":"<p>A list of advanced prompt optimization job summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, use this token in a subsequent request to get the next set of results.</p>"
+        }
+      },
+      "documentation":"<p>List Advanced Prompt Optimization Jobs Response</p>"
     },
     "ListAutomatedReasoningPoliciesRequest":{
       "type":"structure",
@@ -11549,6 +12100,32 @@
       "min":20,
       "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/((imported)|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}))(([:][a-z0-9-]{1,63}){0,2})?/[a-z0-9]{12})|(:foundation-model/[a-z0-9-]{1,63}[.]{1}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2}))"
     },
+    "ModelConfiguration":{
+      "type":"structure",
+      "required":["modelId"],
+      "members":{
+        "modelId":{
+          "shape":"BedrockModelId",
+          "documentation":"<p>The ID of the model to use for optimization.</p>"
+        },
+        "inferenceConfig":{
+          "shape":"InferenceConfiguration",
+          "documentation":"<p>The inference configuration for the model, including parameters such as maximum tokens, temperature, and top-p.</p>"
+        },
+        "additionalModelRequestFields":{
+          "shape":"AdditionalModelRequestFields",
+          "documentation":"<p>Additional model request fields. Use this to pass model-specific parameters that are not included in the standard inference configuration.</p>"
+        }
+      },
+      "documentation":"<p>Contains the configuration for a model used in an advanced prompt optimization job, including the model ID and inference parameters.</p>"
+    },
+    "ModelConfigurations":{
+      "type":"list",
+      "member":{"shape":"ModelConfiguration"},
+      "documentation":"<p>A list of model configurations for advanced prompt optimization.</p>",
+      "max":5,
+      "min":1
+    },
     "ModelCopyJobArn":{
       "type":"string",
       "max":1011,
@@ -12068,6 +12645,21 @@
       "max":63,
       "min":1,
       "pattern":"([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63})"
+    },
+    "ModelPackageArn":{
+      "type":"string",
+      "pattern":"arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]{9,16}:[0-9]{12}:model-package/[\\S]{1,2048}"
+    },
+    "ModelPackageArnDataSource":{
+      "type":"structure",
+      "required":["modelPackageArn"],
+      "members":{
+        "modelPackageArn":{
+          "shape":"ModelPackageArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the SageMaker AI model package. The ARN must be for a model package of <code>restricted</code> type.</p> <p>To use a model package ARN, you must have the <code>sagemaker:DescribeModelPackage</code> and <code>sagemaker:AccessModelPackageData</code> permissions on the model package resource.</p>"
+        }
+      },
+      "documentation":"<p>Contains the Amazon Resource Name (ARN) of a SageMaker AI model package to use as the data source for a custom model.</p>"
     },
     "ModelSourceIdentifier":{
       "type":"string",
@@ -13018,6 +13610,12 @@
       "min":1,
       "pattern":"s3://[a-z0-9][-.a-z0-9]{1,61}[a-z0-9](?:/[-!_*'().a-z0-9A-Z]+(?:/[-!_*'().a-z0-9A-Z]+)*)?/?"
     },
+    "S3UriFolder":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"s3://[a-z0-9][-.a-z0-9]{1,61}[a-z0-9](?:/[-!_*'().a-z0-9A-Z]+(?:/[-!_*'().a-z0-9A-Z]+)*)?/"
+    },
     "SageMakerEndpoint":{
       "type":"structure",
       "required":[
@@ -13251,6 +13849,24 @@
         }
       },
       "documentation":"<p>For a Distillation job, the status details for sub-tasks of the job. Possible statuses for each sub-task include the following:</p> <ul> <li> <p>NotStarted</p> </li> <li> <p>InProgress</p> </li> <li> <p>Completed</p> </li> <li> <p>Stopping</p> </li> <li> <p>Stopped</p> </li> <li> <p>Failed</p> </li> </ul>"
+    },
+    "StopAdvancedPromptOptimizationJobRequest":{
+      "type":"structure",
+      "required":["jobIdentifier"],
+      "members":{
+        "jobIdentifier":{
+          "shape":"AdvancedPromptOptimizationJobIdentifier",
+          "documentation":"<p>The ARN or ID of the advanced prompt optimization job to stop.</p>",
+          "location":"uri",
+          "locationName":"jobIdentifier"
+        }
+      },
+      "documentation":"<p>Stop Advanced Prompt Optimization Job Request</p>"
+    },
+    "StopAdvancedPromptOptimizationJobResponse":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Stop Advanced Prompt Optimization Job Response</p>"
     },
     "StopEvaluationJobRequest":{
       "type":"structure",

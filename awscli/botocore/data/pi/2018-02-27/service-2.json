@@ -151,6 +151,21 @@
       ],
       "documentation":"<p>Retrieve metrics of the specified types that can be queried for a specified DB instance. </p>"
     },
+    "ListPerformanceAnalysisReportRecommendations":{
+      "name":"ListPerformanceAnalysisReportRecommendations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListPerformanceAnalysisReportRecommendationsRequest"},
+      "output":{"shape":"ListPerformanceAnalysisReportRecommendationsResponse"},
+      "errors":[
+        {"shape":"InvalidArgumentException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"NotAuthorizedException"}
+      ],
+      "documentation":"<p>Retrieves recommendations for a performance analysis report.</p>"
+    },
     "ListPerformanceAnalysisReports":{
       "name":"ListPerformanceAnalysisReports",
       "http":{
@@ -340,8 +355,7 @@
       "required":[
         "ServiceType",
         "Identifier",
-        "StartTime",
-        "EndTime"
+        "StartTime"
       ],
       "members":{
         "ServiceType":{
@@ -1050,6 +1064,53 @@
         }
       }
     },
+    "ListPerformanceAnalysisReportRecommendationsRequest":{
+      "type":"structure",
+      "required":[
+        "ServiceType",
+        "Identifier",
+        "AnalysisReportId"
+      ],
+      "members":{
+        "ServiceType":{
+          "shape":"ServiceType",
+          "documentation":"<p>The Amazon Web Services service for which Performance Insights returns metrics. Valid value is <code>RDS</code>.</p>"
+        },
+        "Identifier":{
+          "shape":"IdentifierString",
+          "documentation":"<p>An immutable identifier for a data source that is unique for an Amazon Web Services Region. Performance Insights gathers metrics from this data source. In the console, the identifier is shown as <i>ResourceID</i>. When you call <code>DescribeDBInstances</code>, the identifier is returned as <code>DbiResourceId</code>.</p> <p>To use a DB instance as a data source, specify its <code>DbiResourceId</code> value. For example, specify <code>db-ABCDEFGHIJKLMNOPQRSTU1VW2X</code>.</p>"
+        },
+        "AnalysisReportId":{
+          "shape":"AnalysisReportId",
+          "documentation":"<p>A unique identifier of the created analysis report. For example, <code>report-12345678901234567</code> </p>"
+        },
+        "RecommendationIds":{
+          "shape":"RecommendationIdList",
+          "documentation":"<p>A list of recommendation identifiers to filter the results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of items to return in the response. If more items exist than the specified <code>MaxResults</code> value, a pagination token is included in the response so that the remaining results can be retrieved. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the token, up to the value specified by <code>MaxResults</code>.</p>"
+        }
+      }
+    },
+    "ListPerformanceAnalysisReportRecommendationsResponse":{
+      "type":"structure",
+      "members":{
+        "Recommendations":{
+          "shape":"RecommendationList",
+          "documentation":"<p>The list of recommendations for the analysis report.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the token, up to the value specified by <code>MaxResults</code>.</p>"
+        }
+      }
+    },
     "ListPerformanceAnalysisReportsRequest":{
       "type":"structure",
       "required":[
@@ -1261,9 +1322,17 @@
         "RecommendationDescription":{
           "shape":"MarkdownString",
           "documentation":"<p>The recommendation details to help resolve the performance issue. For example, <code>Investigate the following SQLs that contributed to 100% of the total DBLoad during that time period: sql-id</code> </p>"
+        },
+        "RecommendationDetails":{
+          "shape":"MarkdownString",
+          "documentation":"<p>Detailed information about the recommendation, including steps to resolve the performance issue.</p>"
         }
       },
       "documentation":"<p>The list of recommendations for the insight.</p>"
+    },
+    "RecommendationIdList":{
+      "type":"list",
+      "member":{"shape":"String"}
     },
     "RecommendationList":{
       "type":"list",

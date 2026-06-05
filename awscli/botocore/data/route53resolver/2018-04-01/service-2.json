@@ -93,6 +93,57 @@
       ],
       "documentation":"<p>Associates a Resolver rule with a VPC. When you associate a rule with a VPC, Resolver forwards all DNS queries for the domain name that is specified in the rule and that originate in the VPC. The queries are forwarded to the IP addresses for the DNS resolvers that are specified in the rule. For more information about rules, see <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_CreateResolverRule.html\">CreateResolverRule</a>. </p>"
     },
+    "BatchCreateFirewallRule":{
+      "name":"BatchCreateFirewallRule",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchCreateFirewallRuleRequest"},
+      "output":{"shape":"BatchCreateFirewallRuleResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceErrorException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates multiple DNS Firewall rules in the specified rule group.</p>"
+    },
+    "BatchDeleteFirewallRule":{
+      "name":"BatchDeleteFirewallRule",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchDeleteFirewallRuleRequest"},
+      "output":{"shape":"BatchDeleteFirewallRuleResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceErrorException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes multiple DNS Firewall rules from the specified rule group.</p>"
+    },
+    "BatchUpdateFirewallRule":{
+      "name":"BatchUpdateFirewallRule",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchUpdateFirewallRuleRequest"},
+      "output":{"shape":"BatchUpdateFirewallRuleResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceErrorException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Updates multiple DNS Firewall rules in the specified rule group.</p>"
+    },
     "CreateFirewallDomainList":{
       "name":"CreateFirewallDomainList",
       "http":{
@@ -770,6 +821,22 @@
       ],
       "documentation":"<p>Retrieves the minimal high-level information for the rule groups that you have defined. </p> <p>A single call might return only a partial list of the rule groups. For information, see <code>MaxResults</code>. </p>"
     },
+    "ListFirewallRuleTypes":{
+      "name":"ListFirewallRuleTypes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListFirewallRuleTypesRequest"},
+      "output":{"shape":"ListFirewallRuleTypesResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceErrorException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves the available rule types that can be used in DNS Firewall rules.</p>"
+    },
     "ListFirewallRules":{
       "name":"ListFirewallRules",
       "http":{
@@ -1389,6 +1456,141 @@
         "USE_LOCAL_RESOURCE_SETTING"
       ]
     },
+    "BatchCreateFirewallRuleError":{
+      "type":"structure",
+      "members":{
+        "FirewallRule":{
+          "shape":"CreateFirewallRuleEntry",
+          "documentation":"<p>The firewall rule entry that caused the error.</p>"
+        },
+        "Code":{
+          "shape":"String",
+          "documentation":"<p>The error code for the failure.</p>"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A message that provides details about the error.</p>"
+        }
+      },
+      "documentation":"<p>An error that occurred while creating a firewall rule in a batch operation.</p>"
+    },
+    "BatchCreateFirewallRuleErrors":{
+      "type":"list",
+      "member":{"shape":"BatchCreateFirewallRuleError"}
+    },
+    "BatchCreateFirewallRuleRequest":{
+      "type":"structure",
+      "required":["CreateFirewallRuleEntries"],
+      "members":{
+        "CreateFirewallRuleEntries":{
+          "shape":"CreateFirewallRuleEntries",
+          "documentation":"<p>The list of firewall rules to create.</p>"
+        }
+      }
+    },
+    "BatchCreateFirewallRuleResponse":{
+      "type":"structure",
+      "members":{
+        "CreatedFirewallRules":{
+          "shape":"FirewallRules",
+          "documentation":"<p>The firewall rules that were successfully created by the request.</p>"
+        },
+        "CreateErrors":{
+          "shape":"BatchCreateFirewallRuleErrors",
+          "documentation":"<p>A list of errors that occurred while creating the firewall rules.</p>"
+        }
+      }
+    },
+    "BatchDeleteFirewallRuleError":{
+      "type":"structure",
+      "members":{
+        "FirewallRule":{
+          "shape":"DeleteFirewallRuleEntry",
+          "documentation":"<p>The firewall rule entry that caused the error.</p>"
+        },
+        "Code":{
+          "shape":"String",
+          "documentation":"<p>The error code for the failure.</p>"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A message that provides details about the error.</p>"
+        }
+      },
+      "documentation":"<p>An error that occurred while deleting a firewall rule in a batch operation.</p>"
+    },
+    "BatchDeleteFirewallRuleErrors":{
+      "type":"list",
+      "member":{"shape":"BatchDeleteFirewallRuleError"}
+    },
+    "BatchDeleteFirewallRuleRequest":{
+      "type":"structure",
+      "required":["DeleteFirewallRuleEntries"],
+      "members":{
+        "DeleteFirewallRuleEntries":{
+          "shape":"DeleteFirewallRuleEntries",
+          "documentation":"<p>The list of firewall rules to delete.</p>"
+        }
+      }
+    },
+    "BatchDeleteFirewallRuleResponse":{
+      "type":"structure",
+      "members":{
+        "DeletedFirewallRules":{
+          "shape":"FirewallRules",
+          "documentation":"<p>The firewall rules that were successfully deleted by the request.</p>"
+        },
+        "DeleteErrors":{
+          "shape":"BatchDeleteFirewallRuleErrors",
+          "documentation":"<p>A list of errors that occurred while deleting the firewall rules.</p>"
+        }
+      }
+    },
+    "BatchUpdateFirewallRuleError":{
+      "type":"structure",
+      "members":{
+        "FirewallRule":{
+          "shape":"UpdateFirewallRuleEntry",
+          "documentation":"<p>The firewall rule entry that caused the error.</p>"
+        },
+        "Code":{
+          "shape":"String",
+          "documentation":"<p>The error code for the failure.</p>"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A message that provides details about the error.</p>"
+        }
+      },
+      "documentation":"<p>An error that occurred while updating a firewall rule in a batch operation.</p>"
+    },
+    "BatchUpdateFirewallRuleErrors":{
+      "type":"list",
+      "member":{"shape":"BatchUpdateFirewallRuleError"}
+    },
+    "BatchUpdateFirewallRuleRequest":{
+      "type":"structure",
+      "required":["UpdateFirewallRuleEntries"],
+      "members":{
+        "UpdateFirewallRuleEntries":{
+          "shape":"UpdateFirewallRuleEntries",
+          "documentation":"<p>The list of firewall rules to update.</p>"
+        }
+      }
+    },
+    "BatchUpdateFirewallRuleResponse":{
+      "type":"structure",
+      "members":{
+        "UpdatedFirewallRules":{
+          "shape":"FirewallRules",
+          "documentation":"<p>The firewall rules that were successfully updated by the request.</p>"
+        },
+        "UpdateErrors":{
+          "shape":"BatchUpdateFirewallRuleErrors",
+          "documentation":"<p>A list of errors that occurred while updating the firewall rules.</p>"
+        }
+      }
+    },
     "BlockOverrideDnsType":{
       "type":"string",
       "enum":["CNAME"]
@@ -1412,6 +1614,10 @@
       ]
     },
     "Boolean":{"type":"boolean"},
+    "Category":{
+      "type":"string",
+      "max":256
+    },
     "ConfidenceThreshold":{
       "type":"string",
       "enum":[
@@ -1460,6 +1666,93 @@
           "documentation":"<p>The domain list that you just created.</p>"
         }
       }
+    },
+    "CreateFirewallRuleEntries":{
+      "type":"list",
+      "member":{"shape":"CreateFirewallRuleEntry"}
+    },
+    "CreateFirewallRuleEntry":{
+      "type":"structure",
+      "required":[
+        "CreatorRequestId",
+        "FirewallRuleGroupId",
+        "Priority",
+        "Action",
+        "Name"
+      ],
+      "members":{
+        "CreatorRequestId":{
+          "shape":"CreatorRequestId",
+          "documentation":"<p>A unique string that identifies the request and that allows you to retry failed requests without the risk of running the operation twice. <code>CreatorRequestId</code> can be any unique string, for example, a date/time stamp.</p>"
+        },
+        "FirewallRuleGroupId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the firewall rule group where you want to create the rule.</p>"
+        },
+        "FirewallDomainListId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the domain list that you want to use in the rule. This setting is mutually exclusive with <code>DnsThreatProtection</code> and <code>FirewallRuleType</code>.</p>",
+          "box":true
+        },
+        "Priority":{
+          "shape":"Priority",
+          "documentation":"<p>The setting that determines the processing order of the rule in the rule group. DNS Firewall processes the rules in a rule group by order of priority, starting from the lowest setting.</p>"
+        },
+        "Action":{
+          "shape":"Action",
+          "documentation":"<p>The action that DNS Firewall should take on a DNS query when it matches one of the domains in the rule's domain list, or a threat in a DNS Firewall Advanced rule:</p> <ul> <li> <p> <code>ALLOW</code> - Permit the request to go through. Not available for DNS Firewall Advanced rules.</p> </li> <li> <p> <code>ALERT</code> - Permit the request and send metrics and logs to CloudWatch.</p> </li> <li> <p> <code>BLOCK</code> - Disallow the request. This option requires additional details in the rule's <code>BlockResponse</code>.</p> </li> </ul>"
+        },
+        "BlockResponse":{
+          "shape":"BlockResponse",
+          "documentation":"<p>The way that you want DNS Firewall to block the request, used with the rule action setting <code>BLOCK</code>.</p> <ul> <li> <p> <code>NODATA</code> - Respond indicating that the query was successful, but no response is available for it.</p> </li> <li> <p> <code>NXDOMAIN</code> - Respond indicating that the domain name that's in the query doesn't exist.</p> </li> <li> <p> <code>OVERRIDE</code> - Provide a custom override in the response. This option requires custom handling details in the rule's <code>BlockOverride*</code> settings.</p> </li> </ul>",
+          "box":true
+        },
+        "BlockOverrideDomain":{
+          "shape":"BlockOverrideDomain",
+          "documentation":"<p>The custom DNS record to send back in response to the query. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.</p>",
+          "box":true
+        },
+        "BlockOverrideDnsType":{
+          "shape":"BlockOverrideDnsType",
+          "documentation":"<p>The DNS record's type. This determines the format of the record value that you provided in <code>BlockOverrideDomain</code>. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.</p>",
+          "box":true
+        },
+        "BlockOverrideTtl":{
+          "shape":"BlockOverrideTtl",
+          "documentation":"<p>The recommended amount of time, in seconds, for the DNS resolver or web browser to cache the provided override record. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.</p> <p>This setting is required if the <code>BlockResponse</code> setting is <code>OVERRIDE</code>.</p>",
+          "box":true
+        },
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>A name that lets you identify the rule in the rule group.</p>"
+        },
+        "FirewallDomainRedirectionAction":{
+          "shape":"FirewallDomainRedirectionAction",
+          "documentation":"<p>How you want the rule to evaluate DNS redirection in the DNS redirection chain, such as CNAME or DNAME.</p> <p> <code>INSPECT_REDIRECTION_DOMAIN</code>: (Default) inspects all domains in the redirection chain. The individual domains in the redirection chain must be added to the domain list.</p> <p> <code>TRUST_REDIRECTION_DOMAIN</code>: Inspects only the first domain in the redirection chain. You don't need to add the subsequent domains in the redirection list to the domain list.</p>",
+          "box":true
+        },
+        "Qtype":{
+          "shape":"Qtype",
+          "documentation":"<p>The DNS query type you want the rule to evaluate. Allowed values are:</p> <ul> <li> <p>A: Returns an IPv4 address.</p> </li> <li> <p>AAAA: Returns an IPv6 address.</p> </li> <li> <p>CAA: Restricts CAs that can create SSL/TLS certifications for the domain.</p> </li> <li> <p>CNAME: Returns another domain name.</p> </li> <li> <p>DS: Record that identifies the DNSSEC signing key of a delegated zone.</p> </li> <li> <p>MX: Specifies mail servers.</p> </li> <li> <p>NAPTR: Regular-expression-based rewriting of domain names.</p> </li> <li> <p>NS: Authoritative name servers.</p> </li> <li> <p>PTR: Maps an IP address to a domain name.</p> </li> <li> <p>SOA: Start of authority record for the zone.</p> </li> <li> <p>SPF: Lists the servers authorized to send emails from a domain.</p> </li> <li> <p>SRV: Application specific values that identify servers.</p> </li> <li> <p>TXT: Verifies email senders and application-specific values.</p> </li> <li> <p>A query type you define by using the DNS type ID, for example 28 for AAAA. The values must be defined as TYPENUMBER, where the NUMBER can be 1-65534, for example, TYPE28. For more information, see <a href=\"https://en.wikipedia.org/wiki/List_of_DNS_record_types\">List of DNS record types</a>.</p> </li> </ul>",
+          "box":true
+        },
+        "DnsThreatProtection":{
+          "shape":"DnsThreatProtection",
+          "documentation":"<p>The type of the DNS Firewall Advanced rule. This setting is mutually exclusive with <code>FirewallDomainListId</code> and <code>FirewallRuleType</code>. Valid values are:</p> <ul> <li> <p> <code>DGA</code>: Domain generation algorithms detection. DGAs are used by attackers to generate a large number of domains to launch malware attacks.</p> </li> <li> <p> <code>DNS_TUNNELING</code>: DNS tunneling detection. DNS tunneling is used by attackers to exfiltrate data from the client by using the DNS tunnel without making a network connection to the client.</p> </li> <li> <p> <code>DICT_DGA</code>: Dictionary-based domain generation algorithms detection. Dictionary DGAs use wordlists to generate domains that appear more legitimate, making them harder to detect than traditional DGAs.</p> </li> </ul>",
+          "box":true
+        },
+        "ConfidenceThreshold":{
+          "shape":"ConfidenceThreshold",
+          "documentation":"<p>The confidence threshold for DNS Firewall Advanced. You must provide this value when you create or update a DNS Firewall Advanced rule. The confidence level values mean:</p> <ul> <li> <p> <code>LOW</code>: Provides the highest detection rate for threats, but also increases false positives.</p> </li> <li> <p> <code>MEDIUM</code>: Provides a balance between detecting threats and false positives.</p> </li> <li> <p> <code>HIGH</code>: Detects only the most well corroborated threats with a low rate of false positives.</p> </li> </ul>",
+          "box":true
+        },
+        "FirewallRuleType":{
+          "shape":"FirewallRuleType",
+          "documentation":"<p>The rule type configuration for the firewall rule. This setting is mutually exclusive with the top-level <code>FirewallDomainListId</code> and <code>DnsThreatProtection</code> fields.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>The details for creating a single firewall rule in a batch operation.</p>"
     },
     "CreateFirewallRuleGroupRequest":{
       "type":"structure",
@@ -1556,7 +1849,7 @@
         },
         "Qtype":{
           "shape":"Qtype",
-          "documentation":"<p> The DNS query type you want the rule to evaluate. Allowed values are; </p> <ul> <li> <p> A: Returns an IPv4 address.</p> </li> <li> <p>AAAA: Returns an Ipv6 address.</p> </li> <li> <p>CAA: Restricts CAs that can create SSL/TLS certifications for the domain.</p> </li> <li> <p>CNAME: Returns another domain name.</p> </li> <li> <p>DS: Record that identifies the DNSSEC signing key of a delegated zone.</p> </li> <li> <p>MX: Specifies mail servers.</p> </li> <li> <p>NAPTR: Regular-expression-based rewriting of domain names.</p> </li> <li> <p>NS: Authoritative name servers.</p> </li> <li> <p>PTR: Maps an IP address to a domain name.</p> </li> <li> <p>SOA: Start of authority record for the zone.</p> </li> <li> <p>SPF: Lists the servers authorized to send emails from a domain.</p> </li> <li> <p>SRV: Application specific values that identify servers.</p> </li> <li> <p>TXT: Verifies email senders and application-specific values.</p> </li> <li> <p>A query type you define by using the DNS type ID, for example 28 for AAAA. The values must be defined as TYPENUMBER, where the NUMBER can be 1-65334, for example, TYPE28. For more information, see <a href=\"https://en.wikipedia.org/wiki/List_of_DNS_record_types\">List of DNS record types</a>.</p> </li> </ul>",
+          "documentation":"<p> The DNS query type you want the rule to evaluate. Allowed values are; </p> <ul> <li> <p> A: Returns an IPv4 address.</p> </li> <li> <p>AAAA: Returns an Ipv6 address.</p> </li> <li> <p>CAA: Restricts CAs that can create SSL/TLS certifications for the domain.</p> </li> <li> <p>CNAME: Returns another domain name.</p> </li> <li> <p>DS: Record that identifies the DNSSEC signing key of a delegated zone.</p> </li> <li> <p>MX: Specifies mail servers.</p> </li> <li> <p>NAPTR: Regular-expression-based rewriting of domain names.</p> </li> <li> <p>NS: Authoritative name servers.</p> </li> <li> <p>PTR: Maps an IP address to a domain name.</p> </li> <li> <p>SOA: Start of authority record for the zone.</p> </li> <li> <p>SPF: Lists the servers authorized to send emails from a domain.</p> </li> <li> <p>SRV: Application specific values that identify servers.</p> </li> <li> <p>TXT: Verifies email senders and application-specific values.</p> </li> <li> <p>A query type you define by using the DNS type ID, for example 28 for AAAA. The values must be defined as TYPENUMBER, where the NUMBER can be 1-65534, for example, TYPE28. For more information, see <a href=\"https://en.wikipedia.org/wiki/List_of_DNS_record_types\">List of DNS record types</a>.</p> </li> </ul>",
           "box":true
         },
         "DnsThreatProtection":{
@@ -1567,6 +1860,11 @@
         "ConfidenceThreshold":{
           "shape":"ConfidenceThreshold",
           "documentation":"<p> The confidence threshold for DNS Firewall Advanced. You must provide this value when you create a DNS Firewall Advanced rule. The confidence level values mean: </p> <ul> <li> <p> <code>LOW</code>: Provides the highest detection rate for threats, but also increases false positives.</p> </li> <li> <p> <code>MEDIUM</code>: Provides a balance between detecting threats and false positives.</p> </li> <li> <p> <code>HIGH</code>: Detects only the most well corroborated threats with a low rate of false positives. </p> </li> </ul>",
+          "box":true
+        },
+        "FirewallRuleType":{
+          "shape":"FirewallRuleType",
+          "documentation":"<p>The rule type configuration for the firewall rule. This setting is mutually exclusive with the top-level <code>FirewallDomainListId</code> and <code>DnsThreatProtection</code> fields.</p>",
           "box":true
         }
       }
@@ -1833,6 +2131,35 @@
         }
       }
     },
+    "DeleteFirewallRuleEntries":{
+      "type":"list",
+      "member":{"shape":"DeleteFirewallRuleEntry"}
+    },
+    "DeleteFirewallRuleEntry":{
+      "type":"structure",
+      "required":["FirewallRuleGroupId"],
+      "members":{
+        "FirewallRuleGroupId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the firewall rule group for the rule.</p>"
+        },
+        "FirewallDomainListId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the domain list that's used in the rule.</p>",
+          "box":true
+        },
+        "FirewallThreatProtectionId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the DNS Firewall Advanced rule.</p>",
+          "box":true
+        },
+        "Qtype":{
+          "shape":"Qtype",
+          "documentation":"<p>The DNS query type that the rule evaluates.</p>"
+        }
+      },
+      "documentation":"<p>The details for deleting a single firewall rule in a batch operation.</p>"
+    },
     "DeleteFirewallRuleGroupRequest":{
       "type":"structure",
       "required":["FirewallRuleGroupId"],
@@ -1872,7 +2199,7 @@
         },
         "Qtype":{
           "shape":"Qtype",
-          "documentation":"<p> The DNS query type that the rule you are deleting evaluates. Allowed values are; </p> <ul> <li> <p> A: Returns an IPv4 address.</p> </li> <li> <p>AAAA: Returns an Ipv6 address.</p> </li> <li> <p>CAA: Restricts CAs that can create SSL/TLS certifications for the domain.</p> </li> <li> <p>CNAME: Returns another domain name.</p> </li> <li> <p>DS: Record that identifies the DNSSEC signing key of a delegated zone.</p> </li> <li> <p>MX: Specifies mail servers.</p> </li> <li> <p>NAPTR: Regular-expression-based rewriting of domain names.</p> </li> <li> <p>NS: Authoritative name servers.</p> </li> <li> <p>PTR: Maps an IP address to a domain name.</p> </li> <li> <p>SOA: Start of authority record for the zone.</p> </li> <li> <p>SPF: Lists the servers authorized to send emails from a domain.</p> </li> <li> <p>SRV: Application specific values that identify servers.</p> </li> <li> <p>TXT: Verifies email senders and application-specific values.</p> </li> <li> <p>A query type you define by using the DNS type ID, for example 28 for AAAA. The values must be defined as TYPENUMBER, where the NUMBER can be 1-65334, for example, TYPE28. For more information, see <a href=\"https://en.wikipedia.org/wiki/List_of_DNS_record_types\">List of DNS record types</a>.</p> </li> </ul>"
+          "documentation":"<p> The DNS query type that the rule you are deleting evaluates. Allowed values are; </p> <ul> <li> <p> A: Returns an IPv4 address.</p> </li> <li> <p>AAAA: Returns an Ipv6 address.</p> </li> <li> <p>CAA: Restricts CAs that can create SSL/TLS certifications for the domain.</p> </li> <li> <p>CNAME: Returns another domain name.</p> </li> <li> <p>DS: Record that identifies the DNSSEC signing key of a delegated zone.</p> </li> <li> <p>MX: Specifies mail servers.</p> </li> <li> <p>NAPTR: Regular-expression-based rewriting of domain names.</p> </li> <li> <p>NS: Authoritative name servers.</p> </li> <li> <p>PTR: Maps an IP address to a domain name.</p> </li> <li> <p>SOA: Start of authority record for the zone.</p> </li> <li> <p>SPF: Lists the servers authorized to send emails from a domain.</p> </li> <li> <p>SRV: Application specific values that identify servers.</p> </li> <li> <p>TXT: Verifies email senders and application-specific values.</p> </li> <li> <p>A query type you define by using the DNS type ID, for example 28 for AAAA. The values must be defined as TYPENUMBER, where the NUMBER can be 1-65534, for example, TYPE28. For more information, see <a href=\"https://en.wikipedia.org/wiki/List_of_DNS_record_types\">List of DNS record types</a>.</p> </li> </ul>"
         }
       }
     },
@@ -2063,6 +2390,10 @@
         }
       }
     },
+    "DisplayName":{
+      "type":"string",
+      "max":256
+    },
     "Dns64Enabled":{"type":"boolean"},
     "DnsThreatProtection":{
       "type":"string",
@@ -2072,10 +2403,40 @@
         "DICTIONARY_DGA"
       ]
     },
+    "DnsThreatProtectionRuleTypeConfig":{
+      "type":"structure",
+      "required":[
+        "Value",
+        "ConfidenceThreshold"
+      ],
+      "members":{
+        "Value":{
+          "shape":"DnsThreatProtectionRuleTypeValue",
+          "documentation":"<p>The type of DNS threat protection. Valid values are:</p> <ul> <li> <p> <code>DGA</code>: Domain generation algorithms detection. DGAs are used by attackers to generate a large number of domains to launch malware attacks.</p> </li> <li> <p> <code>DNS_TUNNELING</code>: DNS tunneling detection. DNS tunneling is used by attackers to exfiltrate data from the client by using the DNS tunnel without making a network connection to the client.</p> </li> <li> <p> <code>DICT_DGA</code>: Dictionary-based domain generation algorithms detection. Dictionary DGAs use wordlists to generate domains that appear more legitimate, making them harder to detect than traditional DGAs.</p> </li> </ul>"
+        },
+        "ConfidenceThreshold":{
+          "shape":"ConfidenceThreshold",
+          "documentation":"<p>The confidence threshold for DNS Firewall Advanced. You must provide this value when you create or update a DNS Firewall Advanced rule. The confidence level values mean:</p> <ul> <li> <p> <code>LOW</code>: Provides the highest detection rate for threats, but also increases false positives.</p> </li> <li> <p> <code>MEDIUM</code>: Provides a balance between detecting threats and false positives.</p> </li> <li> <p> <code>HIGH</code>: Detects only the most well corroborated threats with a low rate of false positives.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The configuration for a DNS threat protection rule type within the rule type framework.</p>"
+    },
+    "DnsThreatProtectionRuleTypeValue":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
     "DomainListFileUrl":{
       "type":"string",
       "max":1024,
       "min":1
+    },
+    "DomainListType":{
+      "type":"string",
+      "enum":[
+        "THREAT",
+        "CONTENT"
+      ]
     },
     "DomainName":{
       "type":"string",
@@ -2114,6 +2475,38 @@
     "Filters":{
       "type":"list",
       "member":{"shape":"Filter"}
+    },
+    "FirewallAdvancedContentCategoryConfig":{
+      "type":"structure",
+      "required":["Category"],
+      "members":{
+        "Category":{
+          "shape":"FirewallAdvancedContentCategoryValue",
+          "documentation":"<p>The content category identifier. To retrieve the list of available content categories, call <a>ListFirewallRuleTypes</a> with <code>RuleType</code> set to <code>FirewallAdvancedContentCategory</code>.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a content category-based filtering rule. This specifies which content category to use for DNS query evaluation.</p>"
+    },
+    "FirewallAdvancedContentCategoryValue":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "FirewallAdvancedThreatCategoryConfig":{
+      "type":"structure",
+      "required":["Category"],
+      "members":{
+        "Category":{
+          "shape":"FirewallAdvancedThreatCategoryValue",
+          "documentation":"<p>The threat category identifier. To retrieve the list of available threat categories, call <a>ListFirewallRuleTypes</a> with <code>RuleType</code> set to <code>FirewallAdvancedThreatCategory</code>.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a threat category-based filtering rule. This specifies which threat category to use for DNS query evaluation.</p>"
+    },
+    "FirewallAdvancedThreatCategoryValue":{
+      "type":"string",
+      "max":128,
+      "min":1
     },
     "FirewallConfig":{
       "type":"structure",
@@ -2187,6 +2580,14 @@
         "ModificationTime":{
           "shape":"Rfc3339TimeString",
           "documentation":"<p>The date and time that the domain list was last modified, in Unix time format and Coordinated Universal Time (UTC). </p>"
+        },
+        "Category":{
+          "shape":"Category",
+          "documentation":"<p>The category of the domain list.</p>"
+        },
+        "ManagedListType":{
+          "shape":"DomainListType",
+          "documentation":"<p>The type of the managed domain list, for example <code>THREAT</code>.</p>"
         }
       },
       "documentation":"<p>High-level information about a list of firewall domains for use in a <a>FirewallRule</a>. This is returned by <a>GetFirewallDomainList</a>.</p> <p>To retrieve the domains that are defined for this domain list, call <a>ListFirewallDomains</a>.</p>"
@@ -2213,6 +2614,14 @@
         "ManagedOwnerName":{
           "shape":"ServicePrinciple",
           "documentation":"<p>The owner of the list, used only for lists that are not managed by you. For example, the managed domain list <code>AWSManagedDomainsMalwareDomainList</code> has the managed owner name <code>Route 53 Resolver DNS Firewall</code>.</p>"
+        },
+        "ManagedListType":{
+          "shape":"DomainListType",
+          "documentation":"<p>The type of the managed domain list, for example <code>THREAT</code>.</p>"
+        },
+        "Category":{
+          "shape":"Category",
+          "documentation":"<p>The category of the domain list.</p>"
         }
       },
       "documentation":"<p>Minimal high-level information for a firewall domain list. The action <a>ListFirewallDomainLists</a> returns an array of these objects. </p> <p>To retrieve full information for a firewall domain list, call <a>GetFirewallDomainList</a> and <a>ListFirewallDomains</a>.</p>"
@@ -2324,7 +2733,7 @@
         },
         "Qtype":{
           "shape":"Qtype",
-          "documentation":"<p> The DNS query type you want the rule to evaluate. Allowed values are; </p> <ul> <li> <p> A: Returns an IPv4 address.</p> </li> <li> <p>AAAA: Returns an Ipv6 address.</p> </li> <li> <p>CAA: Restricts CAs that can create SSL/TLS certifications for the domain.</p> </li> <li> <p>CNAME: Returns another domain name.</p> </li> <li> <p>DS: Record that identifies the DNSSEC signing key of a delegated zone.</p> </li> <li> <p>MX: Specifies mail servers.</p> </li> <li> <p>NAPTR: Regular-expression-based rewriting of domain names.</p> </li> <li> <p>NS: Authoritative name servers.</p> </li> <li> <p>PTR: Maps an IP address to a domain name.</p> </li> <li> <p>SOA: Start of authority record for the zone.</p> </li> <li> <p>SPF: Lists the servers authorized to send emails from a domain.</p> </li> <li> <p>SRV: Application specific values that identify servers.</p> </li> <li> <p>TXT: Verifies email senders and application-specific values.</p> </li> <li> <p>A query type you define by using the DNS type ID, for example 28 for AAAA. The values must be defined as TYPENUMBER, where the NUMBER can be 1-65334, for example, TYPE28. For more information, see <a href=\"https://en.wikipedia.org/wiki/List_of_DNS_record_types\">List of DNS record types</a>.</p> </li> </ul>"
+          "documentation":"<p> The DNS query type you want the rule to evaluate. Allowed values are; </p> <ul> <li> <p> A: Returns an IPv4 address.</p> </li> <li> <p>AAAA: Returns an Ipv6 address.</p> </li> <li> <p>CAA: Restricts CAs that can create SSL/TLS certifications for the domain.</p> </li> <li> <p>CNAME: Returns another domain name.</p> </li> <li> <p>DS: Record that identifies the DNSSEC signing key of a delegated zone.</p> </li> <li> <p>MX: Specifies mail servers.</p> </li> <li> <p>NAPTR: Regular-expression-based rewriting of domain names.</p> </li> <li> <p>NS: Authoritative name servers.</p> </li> <li> <p>PTR: Maps an IP address to a domain name.</p> </li> <li> <p>SOA: Start of authority record for the zone.</p> </li> <li> <p>SPF: Lists the servers authorized to send emails from a domain.</p> </li> <li> <p>SRV: Application specific values that identify servers.</p> </li> <li> <p>TXT: Verifies email senders and application-specific values.</p> </li> <li> <p>A query type you define by using the DNS type ID, for example 28 for AAAA. The values must be defined as TYPENUMBER, where the NUMBER can be 1-65534, for example, TYPE28. For more information, see <a href=\"https://en.wikipedia.org/wiki/List_of_DNS_record_types\">List of DNS record types</a>.</p> </li> </ul>"
         },
         "DnsThreatProtection":{
           "shape":"DnsThreatProtection",
@@ -2333,6 +2742,10 @@
         "ConfidenceThreshold":{
           "shape":"ConfidenceThreshold",
           "documentation":"<p> The confidence threshold for DNS Firewall Advanced. You must provide this value when you create a DNS Firewall Advanced rule. The confidence level values mean: </p> <ul> <li> <p> <code>LOW</code>: Provides the highest detection rate for threats, but also increases false positives.</p> </li> <li> <p> <code>MEDIUM</code>: Provides a balance between detecting threats and false positives.</p> </li> <li> <p> <code>HIGH</code>: Detects only the most well corroborated threats with a low rate of false positives. </p> </li> </ul>"
+        },
+        "FirewallRuleType":{
+          "shape":"FirewallRuleType",
+          "documentation":"<p>The rule type configuration for the firewall rule. Exactly one member of this union should be set.</p>"
         }
       },
       "documentation":"<p>A single firewall rule in a rule group.</p>"
@@ -2502,6 +2915,53 @@
         "DELETING",
         "UPDATING"
       ]
+    },
+    "FirewallRuleType":{
+      "type":"structure",
+      "members":{
+        "FirewallAdvancedContentCategory":{
+          "shape":"FirewallAdvancedContentCategoryConfig",
+          "documentation":"<p>The configuration for a content category-based filtering rule.</p>",
+          "box":true
+        },
+        "FirewallAdvancedThreatCategory":{
+          "shape":"FirewallAdvancedThreatCategoryConfig",
+          "documentation":"<p>The configuration for a threat category-based filtering rule.</p>",
+          "box":true
+        },
+        "DnsThreatProtection":{
+          "shape":"DnsThreatProtectionRuleTypeConfig",
+          "documentation":"<p>The configuration for a DNS threat protection rule type, such as DGA or DNS tunneling detection.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>The configuration for a rule type in a DNS Firewall rule. This is a union type — exactly one member should be set.</p>"
+    },
+    "FirewallRuleTypeDefinition":{
+      "type":"structure",
+      "members":{
+        "RuleType":{
+          "shape":"RuleTypeName",
+          "documentation":"<p>The category or class of the rule type, such as <code>FirewallAdvancedContentCategory</code> or <code>FirewallAdvancedThreatCategory</code>.</p>"
+        },
+        "Value":{
+          "shape":"RuleTypeValue",
+          "documentation":"<p>The specific identifier within the rule type category, such as <code>VIOLENCE_AND_HATE_SPEECH</code> or <code>PHISHING</code>.</p>"
+        },
+        "DisplayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The display name of the rule type.</p>"
+        },
+        "Description":{
+          "shape":"RuleTypeDescription",
+          "documentation":"<p>A description of the rule type.</p>"
+        }
+      },
+      "documentation":"<p>The definition of an available rule type that can be used in DNS Firewall rules. This is returned by <a>ListFirewallRuleTypes</a>.</p>"
+    },
+    "FirewallRuleTypeDefinitions":{
+      "type":"list",
+      "member":{"shape":"FirewallRuleTypeDefinition"}
     },
     "FirewallRules":{
       "type":"list",
@@ -3198,6 +3658,39 @@
         "FirewallRuleGroups":{
           "shape":"FirewallRuleGroupMetadataList",
           "documentation":"<p>A list of your firewall rule groups.</p> <p>This might be a partial list of the rule groups that you have defined. For information, see <code>MaxResults</code>. </p>"
+        }
+      }
+    },
+    "ListFirewallRuleTypesRequest":{
+      "type":"structure",
+      "members":{
+        "RuleType":{
+          "shape":"RuleTypeName",
+          "documentation":"<p>The rule type to filter by. If specified, only rule types matching this value are returned.</p>",
+          "box":true
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of objects that you want Resolver to return for this request. If more objects are available, in the response, Resolver provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.</p>",
+          "box":true
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>For the first call to this list request, omit this value. When you request a list of objects, Resolver returns at most the number of objects specified in <code>MaxResults</code>. If more objects are available for retrieval, Resolver provides a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token that was returned for the prior request in your next request.</p>",
+          "box":true
+        }
+      }
+    },
+    "ListFirewallRuleTypesResponse":{
+      "type":"structure",
+      "members":{
+        "FirewallRuleTypes":{
+          "shape":"FirewallRuleTypeDefinitions",
+          "documentation":"<p>A list of the available rule type definitions.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If objects are still available for retrieval, Resolver returns this token in the response. To retrieve the next batch of objects, provide this token in your next request.</p>"
         }
       }
     },
@@ -4350,6 +4843,14 @@
       "min":20
     },
     "RniEnhancedMetricsEnabled":{"type":"boolean"},
+    "RuleTypeDescription":{
+      "type":"string",
+      "max":1024
+    },
+    "RuleTypeName":{
+      "type":"string",
+      "max":128
+    },
     "RuleTypeOption":{
       "type":"string",
       "enum":[
@@ -4358,6 +4859,10 @@
         "RECURSIVE",
         "DELEGATE"
       ]
+    },
+    "RuleTypeValue":{
+      "type":"string",
+      "max":128
     },
     "SecurityGroupIds":{
       "type":"list",
@@ -4614,6 +5119,90 @@
         }
       }
     },
+    "UpdateFirewallRuleEntries":{
+      "type":"list",
+      "member":{"shape":"UpdateFirewallRuleEntry"}
+    },
+    "UpdateFirewallRuleEntry":{
+      "type":"structure",
+      "required":["FirewallRuleGroupId"],
+      "members":{
+        "FirewallRuleGroupId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the firewall rule group for the rule.</p>"
+        },
+        "FirewallDomainListId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the domain list to use in the rule. This setting is mutually exclusive with <code>DnsThreatProtection</code> and <code>FirewallRuleType</code>.</p>",
+          "box":true
+        },
+        "FirewallThreatProtectionId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the DNS Firewall Advanced rule.</p>",
+          "box":true
+        },
+        "Priority":{
+          "shape":"Priority",
+          "documentation":"<p>The setting that determines the processing order of the rule in the rule group. DNS Firewall processes the rules in a rule group by order of priority, starting from the lowest setting.</p>",
+          "box":true
+        },
+        "Action":{
+          "shape":"Action",
+          "documentation":"<p>The action that DNS Firewall should take on a DNS query when it matches one of the domains in the rule's domain list, or a threat in a DNS Firewall Advanced rule:</p> <ul> <li> <p> <code>ALLOW</code> - Permit the request to go through. Not available for DNS Firewall Advanced rules.</p> </li> <li> <p> <code>ALERT</code> - Permit the request and send metrics and logs to CloudWatch.</p> </li> <li> <p> <code>BLOCK</code> - Disallow the request. This option requires additional details in the rule's <code>BlockResponse</code>.</p> </li> </ul>",
+          "box":true
+        },
+        "BlockResponse":{
+          "shape":"BlockResponse",
+          "documentation":"<p>The way that you want DNS Firewall to block the request, used with the rule action setting <code>BLOCK</code>.</p> <ul> <li> <p> <code>NODATA</code> - Respond indicating that the query was successful, but no response is available for it.</p> </li> <li> <p> <code>NXDOMAIN</code> - Respond indicating that the domain name that's in the query doesn't exist.</p> </li> <li> <p> <code>OVERRIDE</code> - Provide a custom override in the response. This option requires custom handling details in the rule's <code>BlockOverride*</code> settings.</p> </li> </ul>",
+          "box":true
+        },
+        "BlockOverrideDomain":{
+          "shape":"BlockOverrideDomain",
+          "documentation":"<p>The custom DNS record to send back in response to the query. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.</p>",
+          "box":true
+        },
+        "BlockOverrideDnsType":{
+          "shape":"BlockOverrideDnsType",
+          "documentation":"<p>The DNS record's type. This determines the format of the record value that you provided in <code>BlockOverrideDomain</code>. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.</p>",
+          "box":true
+        },
+        "BlockOverrideTtl":{
+          "shape":"BlockOverrideTtl",
+          "documentation":"<p>The recommended amount of time, in seconds, for the DNS resolver or web browser to cache the provided override record. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.</p> <p>This setting is required if the <code>BlockResponse</code> setting is <code>OVERRIDE</code>.</p>",
+          "box":true
+        },
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the rule.</p>",
+          "box":true
+        },
+        "FirewallDomainRedirectionAction":{
+          "shape":"FirewallDomainRedirectionAction",
+          "documentation":"<p>How you want the rule to evaluate DNS redirection in the DNS redirection chain, such as CNAME or DNAME.</p> <p> <code>INSPECT_REDIRECTION_DOMAIN</code>: (Default) inspects all domains in the redirection chain. The individual domains in the redirection chain must be added to the domain list.</p> <p> <code>TRUST_REDIRECTION_DOMAIN</code>: Inspects only the first domain in the redirection chain. You don't need to add the subsequent domains in the redirection list to the domain list.</p>",
+          "box":true
+        },
+        "Qtype":{
+          "shape":"Qtype",
+          "documentation":"<p>The DNS query type you want the rule to evaluate. Allowed values are:</p> <ul> <li> <p>A: Returns an IPv4 address.</p> </li> <li> <p>AAAA: Returns an IPv6 address.</p> </li> <li> <p>CAA: Restricts CAs that can create SSL/TLS certifications for the domain.</p> </li> <li> <p>CNAME: Returns another domain name.</p> </li> <li> <p>DS: Record that identifies the DNSSEC signing key of a delegated zone.</p> </li> <li> <p>MX: Specifies mail servers.</p> </li> <li> <p>NAPTR: Regular-expression-based rewriting of domain names.</p> </li> <li> <p>NS: Authoritative name servers.</p> </li> <li> <p>PTR: Maps an IP address to a domain name.</p> </li> <li> <p>SOA: Start of authority record for the zone.</p> </li> <li> <p>SPF: Lists the servers authorized to send emails from a domain.</p> </li> <li> <p>SRV: Application specific values that identify servers.</p> </li> <li> <p>TXT: Verifies email senders and application-specific values.</p> </li> <li> <p>A query type you define by using the DNS type ID, for example 28 for AAAA. The values must be defined as TYPENUMBER, where the NUMBER can be 1-65534, for example, TYPE28. For more information, see <a href=\"https://en.wikipedia.org/wiki/List_of_DNS_record_types\">List of DNS record types</a>.</p> </li> </ul>"
+        },
+        "DnsThreatProtection":{
+          "shape":"DnsThreatProtection",
+          "documentation":"<p>The type of the DNS Firewall Advanced rule. This setting is mutually exclusive with <code>FirewallDomainListId</code> and <code>FirewallRuleType</code>. Valid values are:</p> <ul> <li> <p> <code>DGA</code>: Domain generation algorithms detection. DGAs are used by attackers to generate a large number of domains to launch malware attacks.</p> </li> <li> <p> <code>DNS_TUNNELING</code>: DNS tunneling detection. DNS tunneling is used by attackers to exfiltrate data from the client by using the DNS tunnel without making a network connection to the client.</p> </li> <li> <p> <code>DICT_DGA</code>: Dictionary-based domain generation algorithms detection. Dictionary DGAs use wordlists to generate domains that appear more legitimate, making them harder to detect than traditional DGAs.</p> </li> </ul>",
+          "box":true
+        },
+        "ConfidenceThreshold":{
+          "shape":"ConfidenceThreshold",
+          "documentation":"<p>The confidence threshold for DNS Firewall Advanced. You must provide this value when you create or update a DNS Firewall Advanced rule. The confidence level values mean:</p> <ul> <li> <p> <code>LOW</code>: Provides the highest detection rate for threats, but also increases false positives.</p> </li> <li> <p> <code>MEDIUM</code>: Provides a balance between detecting threats and false positives.</p> </li> <li> <p> <code>HIGH</code>: Detects only the most well corroborated threats with a low rate of false positives.</p> </li> </ul>",
+          "box":true
+        },
+        "FirewallRuleType":{
+          "shape":"FirewallRuleType",
+          "documentation":"<p>The rule type configuration for the firewall rule. This setting is mutually exclusive with the top-level <code>FirewallDomainListId</code> and <code>DnsThreatProtection</code> fields.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>The details for updating a single firewall rule in a batch operation.</p>"
+    },
     "UpdateFirewallRuleGroupAssociationRequest":{
       "type":"structure",
       "required":["FirewallRuleGroupAssociationId"],
@@ -4708,7 +5297,7 @@
         },
         "Qtype":{
           "shape":"Qtype",
-          "documentation":"<p> The DNS query type you want the rule to evaluate. Allowed values are; </p> <ul> <li> <p> A: Returns an IPv4 address.</p> </li> <li> <p>AAAA: Returns an Ipv6 address.</p> </li> <li> <p>CAA: Restricts CAs that can create SSL/TLS certifications for the domain.</p> </li> <li> <p>CNAME: Returns another domain name.</p> </li> <li> <p>DS: Record that identifies the DNSSEC signing key of a delegated zone.</p> </li> <li> <p>MX: Specifies mail servers.</p> </li> <li> <p>NAPTR: Regular-expression-based rewriting of domain names.</p> </li> <li> <p>NS: Authoritative name servers.</p> </li> <li> <p>PTR: Maps an IP address to a domain name.</p> </li> <li> <p>SOA: Start of authority record for the zone.</p> </li> <li> <p>SPF: Lists the servers authorized to send emails from a domain.</p> </li> <li> <p>SRV: Application specific values that identify servers.</p> </li> <li> <p>TXT: Verifies email senders and application-specific values.</p> </li> <li> <p>A query type you define by using the DNS type ID, for example 28 for AAAA. The values must be defined as TYPENUMBER, where the NUMBER can be 1-65334, for example, TYPE28. For more information, see <a href=\"https://en.wikipedia.org/wiki/List_of_DNS_record_types\">List of DNS record types</a>.</p> <note> <p>If you set up a firewall BLOCK rule with action NXDOMAIN on query type equals AAAA, this action will not be applied to synthetic IPv6 addresses generated when DNS64 is enabled. </p> </note> </li> </ul>"
+          "documentation":"<p> The DNS query type you want the rule to evaluate. Allowed values are; </p> <ul> <li> <p> A: Returns an IPv4 address.</p> </li> <li> <p>AAAA: Returns an Ipv6 address.</p> </li> <li> <p>CAA: Restricts CAs that can create SSL/TLS certifications for the domain.</p> </li> <li> <p>CNAME: Returns another domain name.</p> </li> <li> <p>DS: Record that identifies the DNSSEC signing key of a delegated zone.</p> </li> <li> <p>MX: Specifies mail servers.</p> </li> <li> <p>NAPTR: Regular-expression-based rewriting of domain names.</p> </li> <li> <p>NS: Authoritative name servers.</p> </li> <li> <p>PTR: Maps an IP address to a domain name.</p> </li> <li> <p>SOA: Start of authority record for the zone.</p> </li> <li> <p>SPF: Lists the servers authorized to send emails from a domain.</p> </li> <li> <p>SRV: Application specific values that identify servers.</p> </li> <li> <p>TXT: Verifies email senders and application-specific values.</p> </li> <li> <p>A query type you define by using the DNS type ID, for example 28 for AAAA. The values must be defined as TYPENUMBER, where the NUMBER can be 1-65534, for example, TYPE28. For more information, see <a href=\"https://en.wikipedia.org/wiki/List_of_DNS_record_types\">List of DNS record types</a>.</p> <note> <p>If you set up a firewall BLOCK rule with action NXDOMAIN on query type equals AAAA, this action will not be applied to synthetic IPv6 addresses generated when DNS64 is enabled. </p> </note> </li> </ul>"
         },
         "DnsThreatProtection":{
           "shape":"DnsThreatProtection",
@@ -4718,6 +5307,11 @@
         "ConfidenceThreshold":{
           "shape":"ConfidenceThreshold",
           "documentation":"<p> The confidence threshold for DNS Firewall Advanced. You must provide this value when you create a DNS Firewall Advanced rule. The confidence level values mean: </p> <ul> <li> <p> <code>LOW</code>: Provides the highest detection rate for threats, but also increases false positives.</p> </li> <li> <p> <code>MEDIUM</code>: Provides a balance between detecting threats and false positives.</p> </li> <li> <p> <code>HIGH</code>: Detects only the most well corroborated threats with a low rate of false positives. </p> </li> </ul>",
+          "box":true
+        },
+        "FirewallRuleType":{
+          "shape":"FirewallRuleType",
+          "documentation":"<p>The rule type configuration for the firewall rule. This setting is mutually exclusive with the top-level <code>FirewallDomainListId</code> and <code>DnsThreatProtection</code> fields.</p>",
           "box":true
         }
       }

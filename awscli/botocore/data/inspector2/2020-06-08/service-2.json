@@ -4016,7 +4016,7 @@
         },
         "scanMode":{
           "shape":"CoverageStringFilterList",
-          "documentation":"<p>The filter to search for Amazon EC2 instance coverage by scan mode. Valid values are <code>EC2_SSM_AGENT_BASED</code> and <code>EC2_AGENTLESS</code>.</p>"
+          "documentation":"<p>The filter to search for Amazon EC2 instance coverage by scan mode. Valid values are <code>EC2_SSM_AGENT_BASED</code>, <code>EC2_AGENTLESS</code>, and <code>EC2_INSPECTOR_AGENT_BASED</code>.</p>"
         },
         "imagePulledAt":{
           "shape":"CoverageDateFilterList",
@@ -4953,6 +4953,10 @@
         "scanMode":{
           "shape":"Ec2ScanMode",
           "documentation":"<p>The scan method that is applied to the instance.</p>"
+        },
+        "activateVMScanner":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to activate Amazon Inspector VM scanner for Amazon EC2 scanning.</p>"
         }
       },
       "documentation":"<p>Enables agent-based scanning, which scans instances that are not managed by SSM.</p>"
@@ -4963,6 +4967,10 @@
         "scanModeState":{
           "shape":"Ec2ScanModeState",
           "documentation":"<p>An object that contains details about the state of the Amazon EC2 scan mode.</p>"
+        },
+        "vmScannerState":{
+          "shape":"VMScannerState",
+          "documentation":"<p>An object that contains details about the state of the Amazon Inspector VM scanner.</p>"
         }
       },
       "documentation":"<p>Details about the state of the EC2 scan configuration for your environment.</p>"
@@ -8981,7 +8989,8 @@
       "type":"string",
       "enum":[
         "EC2_SSM_AGENT_BASED",
-        "EC2_AGENTLESS"
+        "EC2_AGENTLESS",
+        "EC2_INSPECTOR_AGENT_BASED"
       ]
     },
     "ScanStatus":{
@@ -10308,6 +10317,32 @@
     "UsageValue":{
       "type":"double",
       "min":0
+    },
+    "VMScannerState":{
+      "type":"structure",
+      "members":{
+        "activated":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the VM scanner is activated.</p>"
+        },
+        "activatedAt":{
+          "shape":"DateTimeTimestamp",
+          "documentation":"<p>The date and time the VM scanner was activated.</p>"
+        },
+        "status":{
+          "shape":"VMScannerStatus",
+          "documentation":"<p>The status of the VM scanner.</p>"
+        }
+      },
+      "documentation":"<p>The state of the Amazon Inspector VM scanner.</p>"
+    },
+    "VMScannerStatus":{
+      "type":"string",
+      "enum":[
+        "SUCCESS",
+        "PENDING",
+        "FAILED"
+      ]
     },
     "ValidationException":{
       "type":"structure",

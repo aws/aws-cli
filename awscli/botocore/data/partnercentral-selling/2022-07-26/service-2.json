@@ -3003,6 +3003,29 @@
       "type":"string",
       "pattern":"https://(calculator\\.aws|pricing\\.calculator\\.aws\\.eu)/#/estimate\\?id=[a-f0-9]{32,64}"
     },
+    "ExpectedContractDuration":{
+      "type":"structure",
+      "required":[
+        "Term",
+        "Value"
+      ],
+      "members":{
+        "Term":{
+          "shape":"ExpectedContractDurationTerm",
+          "documentation":"<p>The unit of measurement for the contract duration value. Currently accepts only <code>Months</code>.</p>"
+        },
+        "Value":{
+          "shape":"String",
+          "documentation":"<p>A String representation of the contract duration as an integer, expressed in the unit defined by <code>Term</code>. Valid values range from <code>1</code> to <code>144</code>.</p>"
+        }
+      },
+      "documentation":"<p>The expected duration of a partner's contract with the customer. Used to convert Total Contract Value (TCV) to Monthly Recurring Revenue (MRR) for opportunity dealsizing calculations.</p>"
+    },
+    "ExpectedContractDurationTerm":{
+      "type":"string",
+      "documentation":"<p>The unit of measurement for the contract duration value. Currently accepts only <code>Months</code>.</p>",
+      "enum":["Months"]
+    },
     "ExpectedCustomerSpend":{
       "type":"structure",
       "required":[
@@ -3017,7 +3040,7 @@
         },
         "CurrencyCode":{
           "shape":"CurrencyCode",
-          "documentation":"<p>Currency code for the expected customer spend. Supported currencies: USD, EUR</p>"
+          "documentation":"<p>Indicates the currency in which the revenue estimate is provided. This helps in understanding the financial impact across different markets. Accepted values are <code>USD</code> (US Dollars) and <code>EUR</code> (Euros). If the AWS Partition is <code>aws-eusc</code> (AWS European Sovereign Cloud), the currency code must be <code>EUR</code>.</p>"
         },
         "Frequency":{
           "shape":"PaymentFrequency",
@@ -5239,6 +5262,10 @@
           "shape":"ExpectedCustomerSpendList",
           "documentation":"<p>Represents the estimated amount that the customer is expected to spend on AWS services related to the opportunity. This helps in evaluating the potential financial value of the opportunity for AWS.</p>"
         },
+        "ExpectedContractDuration":{
+          "shape":"ExpectedContractDuration",
+          "documentation":"<p>Optional. The expected duration of the contract associated with this opportunity. Partners use this value alongside expected customer spend to convert Total Contract Value (TCV) into Monthly Recurring Revenue (MRR).</p>"
+        },
         "Title":{
           "shape":"ProjectTitleString",
           "documentation":"<p>Specifies the <code>Opportunity</code>'s title or name.</p>"
@@ -5346,6 +5373,10 @@
         "ExpectedCustomerSpend":{
           "shape":"ExpectedCustomerSpendList",
           "documentation":"<p>Provides a summary of the expected customer spend for the project, offering a high-level view of the potential financial impact.</p>"
+        },
+        "ExpectedContractDuration":{
+          "shape":"ExpectedContractDuration",
+          "documentation":"<p>Optional. The expected contract duration for this opportunity, representing the anticipated length of the contract in the unit specified by <code>Term</code>.</p>"
         }
       },
       "documentation":"<p>An object that contains a <code>Project</code> object's subset of fields.</p>"
@@ -5365,6 +5396,10 @@
         "ExpectedCustomerSpend":{
           "shape":"ExpectedCustomerSpendList",
           "documentation":"<p> Provides information about the anticipated customer spend related to this project. This may include details such as amount, frequency, and currency of expected expenditure. </p>"
+        },
+        "ExpectedContractDuration":{
+          "shape":"ExpectedContractDuration",
+          "documentation":"<p>Optional. The expected contract duration for this opportunity, representing the anticipated length of the contract in the unit specified by <code>Term</code>.</p>"
         },
         "CustomerUseCase":{
           "shape":"String",

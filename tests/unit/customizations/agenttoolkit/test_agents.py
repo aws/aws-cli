@@ -21,6 +21,7 @@ from awscli.customizations.agenttoolkit.agents import (
     McpConfigureAction,
     get_detected_agents,
 )
+from awscli.testutils import skip_if_windows
 from tests.unit.customizations.agenttoolkit.utils import (
     make_config,
     make_skill,
@@ -75,7 +76,7 @@ def test_get_installed_skills_finds_aws_skills(tmp_path):
     assert skills[0].name == 'aws-databases'
     assert skills[0].agent.display_name == 'Test Agent'
     assert skills[1].name == 'aws-serverless'
-    assert skills[1].path.endswith('aws-serverless/SKILL.md')
+    assert skills[1].path.endswith(os.path.join('aws-serverless', 'SKILL.md'))
 
 
 def test_skills_path_override(tmp_path):
@@ -296,6 +297,7 @@ def test_configure_mcp_creates_parent_directories(tmp_path):
     assert (tmp_path / '.test-agent' / 'nested' / 'dir' / 'mcp.json').exists()
 
 
+@skip_if_windows("POSIX file permissions are not enforced on Windows.")
 def test_configure_mcp_new_file_gets_0600_permissions(tmp_path):
     (tmp_path / '.test-agent').mkdir()
     agent = make_config(tmp_path, mcp_config_path='mcp.json').detect()
@@ -304,6 +306,7 @@ def test_configure_mcp_new_file_gets_0600_permissions(tmp_path):
     assert oct(mcp_path.stat().st_mode & 0o777) == oct(0o600)
 
 
+@skip_if_windows("POSIX file permissions are not enforced on Windows.")
 def test_configure_mcp_preserves_existing_permissions(tmp_path):
     (tmp_path / '.test-agent').mkdir()
     mcp_path = tmp_path / '.test-agent' / 'mcp.json'

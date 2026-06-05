@@ -140,6 +140,39 @@ def test_update_skill_missing_marker_skipped(tmp_path):
         _run_update(configs, ['--skill-name', 'aws-s3'], remote_version='v2')
 
 
+def test_update_skill_through_symlinked_dir(tmp_path):
+    # A user symlinks the per-skill dir into a shared location. update-skill
+    # must follow the link and overwrite the target in place (shutil.rmtree
+    # refuses to operate on the symlink itself), leaving the link intact.
+    (tmp_path / '.test-agent' / 'skills').mkdir(parents=True)
+    target = tmp_path / 'shared' / 'aws-s3'
+    target.mkdir(parents=True)
+    (target / 'SKILL.md').write_text('old')
+    (target / 'old.md').write_text('removed in v2')
+    (target / SKILL_METADATA_FILENAME).write_text(
+        json.dumps({'version': 'v1'})
+    )
+    link = tmp_path / '.test-agent' / 'skills' / 'aws-s3'
+    link.symlink_to(target, target_is_directory=True)
+
+    configs = [make_config(tmp_path)]
+    new_zip = make_skill_zip({'SKILL.md': 'new'})[0]
+    rc, output = _run_update(
+        configs,
+        ['--skill-name', 'aws-s3'],
+        remote_version='v2',
+        zip_bytes=new_zip,
+    )
+    assert rc == 0
+    assert 'Updated aws-s3 (v2)' in output
+    assert link.is_symlink()
+    assert (target / 'SKILL.md').read_text() == 'new'
+    assert not (target / 'old.md').exists()
+    assert json.loads((target / SKILL_METADATA_FILENAME).read_text()) == {
+        'version': 'v2'
+    }
+
+
 def test_update_skill_removes_orphaned_files(tmp_path):
     skill_dir = tmp_path / '.test-agent' / 'skills' / 'aws-s3'
     skill_dir.mkdir(parents=True)

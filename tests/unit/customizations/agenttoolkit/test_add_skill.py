@@ -17,6 +17,7 @@ from unittest.mock import Mock, patch
 import pytest
 
 from awscli.customizations.agenttoolkit.add_skill import AddSkillCommand
+from awscli.customizations.agenttoolkit.agents import SKILL_METADATA_FILENAME
 from awscli.customizations.agenttoolkit.utils import AgentToolkitServiceError
 from awscli.customizations.exceptions import ParamValidationError
 from tests.unit.customizations.agenttoolkit.utils import (
@@ -226,6 +227,112 @@ def test_add_skill_universal_row_coexists_with_override_agent(tmp_path):
     # Codex shares the skills path; the universal row owns the print line.
     assert output.count('Installed aws-cdk') == 1
     assert (shared / 'aws-cdk' / 'SKILL.md').exists()
+
+
+def test_add_skill_already_installed_message_not_duplicated(tmp_path):
+    (tmp_path / '.codex').mkdir()
+    universal_base = tmp_path / '.agents'
+    shared = universal_base / 'skills'
+    skill_dir = shared / 'aws-cdk'
+    skill_dir.mkdir(parents=True)
+    (skill_dir / 'SKILL.md').write_text('old')
+    (skill_dir / SKILL_METADATA_FILENAME).write_text('{"version": "v1"}')
+    configs = [
+        make_config(
+            tmp_path,
+            id='codex',
+            display_name='Codex',
+            detection_path=str(tmp_path / '.codex'),
+            skills_path_override=str(shared),
+        ),
+        make_config(
+            tmp_path,
+            id='universal',
+            display_name='Universal (Codex)',
+            detection_path=str(universal_base),
+        ),
+    ]
+    rc, output = _run_add(configs, ['--skill-name', 'aws-cdk'])
+    assert rc == 0
+    assert output.count('already installed') == 1
+
+
+def test_add_skill_into_symlinked_skills_dir(tmp_path):
+    # User symlinks an agent's skills dir into a shared location so every
+    # agent reads one source of truth. We follow the link and write into
+    # its target, preserving the link (shutil.rmtree would otherwise refuse
+    # to operate on the symlink).
+    shared = tmp_path / 'shared-skills'
+    shared.mkdir()
+    agent_dir = tmp_path / '.test-agent'
+    agent_dir.mkdir()
+    skills_link = agent_dir / 'skills'
+    skills_link.symlink_to(shared, target_is_directory=True)
+
+    configs = [make_config(tmp_path)]
+    rc, output = _run_add(configs, ['--skill-name', 'aws-s3'])
+    assert rc == 0
+    assert 'Installed aws-s3 (v1) to Test Agent' in output
+    # The symlink is preserved and the skill landed in its target.
+    assert skills_link.is_symlink()
+    assert (shared / 'aws-s3' / 'SKILL.md').exists()
+
+
+def test_add_skill_already_installed_recommends_update(tmp_path):
+    # add-skill leaves an existing AWS-CLI install alone and points the
+    # user at the version-aware update-skill command rather than silently
+    # overwriting it.
+    skill_dir = tmp_path / '.test-agent' / 'skills' / 'aws-s3'
+    skill_dir.mkdir(parents=True)
+    (skill_dir / 'SKILL.md').write_text('old')
+    (skill_dir / SKILL_METADATA_FILENAME).write_text('{"version": "v1"}')
+
+    configs = [make_config(tmp_path)]
+    rc, output = _run_add(configs, ['--skill-name', 'aws-s3'])
+    assert rc == 0
+    assert 'aws-s3 is already installed (v1)' in output
+    assert 'update-skill --skill-name aws-s3' in output
+    assert 'Installed aws-s3' not in output
+    # Existing content is untouched.
+    assert (skill_dir / 'SKILL.md').read_text() == 'old'
+
+
+def test_add_skill_skips_symlinked_existing_install(tmp_path):
+    # The per-skill dir is a symlink to a previously-installed location.
+    # We resolve it, see our marker, and skip (recommend update) without
+    # touching the link or its target.
+    (tmp_path / '.test-agent' / 'skills').mkdir(parents=True)
+    target = tmp_path / 'real-aws-s3'
+    target.mkdir()
+    (target / 'SKILL.md').write_text('old')
+    (target / SKILL_METADATA_FILENAME).write_text('{"version": "v1"}')
+    link = tmp_path / '.test-agent' / 'skills' / 'aws-s3'
+    link.symlink_to(target, target_is_directory=True)
+
+    configs = [make_config(tmp_path)]
+    rc, output = _run_add(configs, ['--skill-name', 'aws-s3'])
+    assert rc == 0
+    assert 'aws-s3 is already installed (v1)' in output
+    assert 'update-skill --skill-name aws-s3' in output
+    assert link.is_symlink()
+    assert (target / 'SKILL.md').read_text() == 'old'
+
+
+def test_add_skill_skips_unmarked_existing_dir(tmp_path):
+    # User has a hand-written skill (no AWS CLI metadata marker). Install
+    # must skip it rather than destroy the user's content.
+    skill_dir = tmp_path / '.test-agent' / 'skills' / 'aws-s3'
+    skill_dir.mkdir(parents=True)
+    (skill_dir / 'SKILL.md').write_text('hand-written content')
+
+    configs = [make_config(tmp_path)]
+    rc, output = _run_add(configs, ['--skill-name', 'aws-s3'])
+    assert rc == 0
+    assert 'was not installed by the AWS CLI' in output
+    assert 'Installed aws-s3' not in output
+    assert (skill_dir / 'SKILL.md').read_text() == 'hand-written content'
+    # No marker written, so we did not adopt the directory.
+    assert not (skill_dir / SKILL_METADATA_FILENAME).exists()
 
 
 def test_add_skill_zip_slip_rejected(tmp_path):

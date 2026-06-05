@@ -142,6 +142,7 @@ def install_skill(
     agents,
     stream=None,
     action='Installed',
+    overwrite_existing=False,
 ):
     expected = checksum.strip().lower().split()[0]
     actual = hashlib.sha256(zip_bytes).hexdigest()
@@ -169,14 +170,35 @@ def install_skill(
         extracted_paths = set()
         for agent in universal_first(agents):
             skill_dir = os.path.join(agent.skills_path, skill_name)
-            if skill_dir in extracted_paths:
+            real_dir = os.path.realpath(skill_dir)
+            if real_dir in extracted_paths:
                 continue
-            if os.path.isdir(skill_dir):
-                shutil.rmtree(skill_dir)
-            os.makedirs(skill_dir, exist_ok=True)
-            zf.extractall(skill_dir)
-            write_skill_metadata(skill_dir, version)
-            extracted_paths.add(skill_dir)
+            extracted_paths.add(real_dir)
+            if os.path.isdir(real_dir):
+                marker = os.path.join(real_dir, SKILL_METADATA_FILENAME)
+                if not os.path.exists(marker):
+                    if stream:
+                        stream.write(
+                            f'  Skipped {skill_name} at {real_dir}: '
+                            f'directory was not installed by the AWS CLI.\n'
+                        )
+                    continue
+                if not overwrite_existing:
+                    if stream:
+                        installed = read_installed_version(real_dir)
+                        version_note = f' ({installed})' if installed else ''
+                        stream.write(
+                            f'  {skill_name} is already installed'
+                            f'{version_note} at {real_dir}. Run '
+                            f'"aws agent-toolkit update-skill '
+                            f'--skill-name {skill_name}" to update, '
+                            f'or remove it first to reinstall.\n'
+                        )
+                    continue
+                shutil.rmtree(real_dir)
+            os.makedirs(real_dir, exist_ok=True)
+            zf.extractall(real_dir)
+            write_skill_metadata(real_dir, version)
             if stream:
                 stream.write(
                     f'  {action} {skill_name} ({version})'

@@ -100,5 +100,6 @@ class UpdateSkillCommand(BasicCommand):
             outdated,
             self._stream,
             action='Updated',
+            overwrite_existing=True,
         )
         return 0

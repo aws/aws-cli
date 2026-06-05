@@ -89,6 +89,9 @@ def main():
                 "--chunk-id must be an integer between 0 (inclusive) and num-chunks (exclusive)."
             )
 
+    if parsed_args.debug_dir is not None:
+        parsed_args.debug_dir = os.path.abspath(parsed_args.debug_dir)
+
     test_suites = harness.get_test_suites(parsed_args)
     test_cases = []
     for suite in test_suites:

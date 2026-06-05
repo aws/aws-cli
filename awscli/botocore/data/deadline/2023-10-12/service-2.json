@@ -897,6 +897,27 @@
       "endpoint":{"hostPrefix":"management."},
       "idempotent":true
     },
+    "DeleteVolume":{
+      "name":"DeleteVolume",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/2023-10-12/farms/{farmId}/fleets/{fleetId}/volumes/{volumeId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteVolumeRequest"},
+      "output":{"shape":"DeleteVolumeResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Deletes a persistent volume.</p>",
+      "endpoint":{"hostPrefix":"management."},
+      "idempotent":true
+    },
     "DeleteWorker":{
       "name":"DeleteWorker",
       "http":{
@@ -1377,6 +1398,26 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Gets a task.</p>",
+      "endpoint":{"hostPrefix":"management."},
+      "readonly":true
+    },
+    "GetVolume":{
+      "name":"GetVolume",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2023-10-12/farms/{farmId}/fleets/{fleetId}/volumes/{volumeId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetVolumeRequest"},
+      "output":{"shape":"GetVolumeResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Gets a persistent volume.</p>",
       "endpoint":{"hostPrefix":"management."},
       "readonly":true
     },
@@ -1950,6 +1991,26 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Lists tasks for a job.</p>",
+      "endpoint":{"hostPrefix":"management."},
+      "readonly":true
+    },
+    "ListVolumes":{
+      "name":"ListVolumes",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2023-10-12/farms/{farmId}/fleets/{fleetId}/volumes",
+        "responseCode":200
+      },
+      "input":{"shape":"ListVolumesRequest"},
+      "output":{"shape":"ListVolumesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists the persistent volumes in a fleet.</p>",
       "endpoint":{"hostPrefix":"management."},
       "readonly":true
     },
@@ -5030,7 +5091,6 @@
     },
     "CostScaleFactor":{
       "type":"float",
-      "documentation":"<p>A multiplier applied to calculated costs. Valid range is 0 to 100. Values less than 1.0 represent discounts, values greater than 1.0 represent markups, and a value of 1.0 represents no adjustment.</p>",
       "box":true,
       "max":100,
       "min":0
@@ -5457,7 +5517,7 @@
         },
         "identityCenterRegion":{
           "shape":"Region",
-          "documentation":"<p>The AWS Region where IAM Identity Center is enabled. Required when IAM Identity Center is in a different Region than the monitor.</p>"
+          "documentation":"<p>The Region where IAM Identity Center is enabled. Required when IAM Identity Center is in a different Region than the monitor.</p>"
         },
         "subdomain":{
           "shape":"Subdomain",
@@ -6226,6 +6286,38 @@
       "type":"structure",
       "members":{}
     },
+    "DeleteVolumeRequest":{
+      "type":"structure",
+      "required":[
+        "farmId",
+        "fleetId",
+        "volumeId"
+      ],
+      "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID of the farm that contains the fleet.</p>",
+          "location":"uri",
+          "locationName":"farmId"
+        },
+        "fleetId":{
+          "shape":"FleetId",
+          "documentation":"<p>The fleet ID of the fleet that contains the volume.</p>",
+          "location":"uri",
+          "locationName":"fleetId"
+        },
+        "volumeId":{
+          "shape":"VolumeId",
+          "documentation":"<p>The volume ID of the volume to delete.</p>",
+          "location":"uri",
+          "locationName":"volumeId"
+        }
+      }
+    },
+    "DeleteVolumeResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "DeleteWorkerRequest":{
       "type":"structure",
       "required":[
@@ -6457,6 +6549,11 @@
       "box":true,
       "max":1000,
       "min":125
+    },
+    "EbsVolumeType":{
+      "type":"string",
+      "documentation":"<p>The EBS volume type.</p>",
+      "enum":["gp3"]
     },
     "Ec2EbsVolume":{
       "type":"structure",
@@ -7655,7 +7752,7 @@
         },
         "identityCenterRegion":{
           "shape":"Region",
-          "documentation":"<p>The AWS Region where IAM Identity Center is enabled.</p>"
+          "documentation":"<p>The Region where IAM Identity Center is enabled.</p>"
         },
         "identityCenterApplicationArn":{
           "shape":"IdentityCenterApplicationArn",
@@ -8612,6 +8709,106 @@
         }
       }
     },
+    "GetVolumeRequest":{
+      "type":"structure",
+      "required":[
+        "farmId",
+        "fleetId",
+        "volumeId"
+      ],
+      "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID of the farm that contains the fleet.</p>",
+          "location":"uri",
+          "locationName":"farmId"
+        },
+        "fleetId":{
+          "shape":"FleetId",
+          "documentation":"<p>The fleet ID of the fleet that contains the volume.</p>",
+          "location":"uri",
+          "locationName":"fleetId"
+        },
+        "volumeId":{
+          "shape":"VolumeId",
+          "documentation":"<p>The volume ID of the volume to retrieve.</p>",
+          "location":"uri",
+          "locationName":"volumeId"
+        }
+      }
+    },
+    "GetVolumeResponse":{
+      "type":"structure",
+      "required":[
+        "volumeId",
+        "farmId",
+        "fleetId",
+        "state",
+        "sizeGiB",
+        "availabilityZoneId",
+        "volumeType",
+        "createdAt"
+      ],
+      "members":{
+        "volumeId":{
+          "shape":"VolumeId",
+          "documentation":"<p>The volume ID.</p>"
+        },
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID of the farm that contains the fleet.</p>"
+        },
+        "fleetId":{
+          "shape":"FleetId",
+          "documentation":"<p>The fleet ID of the fleet that contains the volume.</p>"
+        },
+        "state":{
+          "shape":"VolumeState",
+          "documentation":"<p>The state of the volume.</p>"
+        },
+        "sizeGiB":{
+          "shape":"PersistentVolumeSizeGiB",
+          "documentation":"<p>The volume size in GiB.</p>"
+        },
+        "availabilityZoneId":{
+          "shape":"String",
+          "documentation":"<p>The Availability Zone ID of the volume.</p>"
+        },
+        "attachedWorkerId":{
+          "shape":"WorkerId",
+          "documentation":"<p>The worker ID of the worker the volume is attached to.</p>"
+        },
+        "volumeType":{
+          "shape":"EbsVolumeType",
+          "documentation":"<p>The EBS volume type.</p>"
+        },
+        "iops":{
+          "shape":"PersistentVolumeIops",
+          "documentation":"<p>The IOPS of the volume.</p>"
+        },
+        "throughputMiB":{
+          "shape":"PersistentVolumeThroughputMiB",
+          "documentation":"<p>The throughput of the volume in MiB.</p>"
+        },
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The date and time the resource was created.</p>"
+        },
+        "lastAssignedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time the volume was last assigned to a worker.</p>"
+        },
+        "lastReleasedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time the volume was last released from a worker.</p>"
+        },
+        "expiresAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time the volume expires and will be deleted.</p>"
+        }
+      },
+      "documentation":"<p>Mixin that adds an optional ARN field to response structures. Apply to SummaryMixins (flows into Get, Summary, and BatchGet) and Create outputs.</p>"
+    },
     "GetWorkerRequest":{
       "type":"structure",
       "required":[
@@ -8936,7 +9133,6 @@
     },
     "JobDescriptionOverride":{
       "type":"string",
-      "documentation":"<p>The input description for the job. Passing in an empty string removes any existing description.</p>",
       "max":2048,
       "min":0,
       "sensitive":true
@@ -10925,6 +11121,55 @@
       },
       "documentation":"<p>Shared pagination field for List operation outputs (nextToken).</p>"
     },
+    "ListVolumesRequest":{
+      "type":"structure",
+      "required":[
+        "farmId",
+        "fleetId"
+      ],
+      "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID of the farm that contains the fleet.</p>",
+          "location":"uri",
+          "locationName":"farmId"
+        },
+        "fleetId":{
+          "shape":"FleetId",
+          "documentation":"<p>The fleet ID of the fleet that contains the volumes.</p>",
+          "location":"uri",
+          "locationName":"fleetId"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results, or <code>null</code> to start from the beginning.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      },
+      "documentation":"<p>Shared pagination fields for List operation inputs (nextToken + maxResults).</p>"
+    },
+    "ListVolumesResponse":{
+      "type":"structure",
+      "required":["volumes"],
+      "members":{
+        "volumes":{
+          "shape":"VolumeSummaries",
+          "documentation":"<p>The volumes on the list.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
+        }
+      },
+      "documentation":"<p>Shared pagination field for List operation outputs (nextToken).</p>"
+    },
     "ListWorkersRequest":{
       "type":"structure",
       "required":[
@@ -11242,7 +11487,7 @@
         },
         "identityCenterRegion":{
           "shape":"Region",
-          "documentation":"<p>The AWS Region where IAM Identity Center is enabled.</p>"
+          "documentation":"<p>The Region where IAM Identity Center is enabled.</p>"
         },
         "identityCenterApplicationArn":{
           "shape":"IdentityCenterApplicationArn",
@@ -11266,6 +11511,11 @@
         }
       },
       "documentation":"<p>Provides information about a monitor in Deadline Cloud.</p>"
+    },
+    "MountPath":{
+      "type":"string",
+      "max":255,
+      "min":1
     },
     "NextItemOffset":{
       "type":"integer",
@@ -11403,6 +11653,57 @@
         "WEEKLY",
         "MONTHLY"
       ]
+    },
+    "PersistentVolumeConfiguration":{
+      "type":"structure",
+      "required":["mountPath"],
+      "members":{
+        "sizeGiB":{
+          "shape":"PersistentVolumeSizeGiB",
+          "documentation":"<p>The persistent volume size in GiB. The default is 250.</p>"
+        },
+        "iops":{
+          "shape":"PersistentVolumeIops",
+          "documentation":"<p>The IOPS per persistent volume. The default is 3000.</p>"
+        },
+        "throughputMiB":{
+          "shape":"PersistentVolumeThroughputMiB",
+          "documentation":"<p>The throughput per persistent volume in MiB. The default is 125.</p>"
+        },
+        "mountPath":{
+          "shape":"MountPath",
+          "documentation":"<p>The file system path where the persistent volume is mounted on the worker instance.</p>"
+        },
+        "lastUsedTtlHours":{
+          "shape":"PersistentVolumeTtlHours",
+          "documentation":"<p>The number of hours a persistent volume can remain unused before it is deleted. The default is 168 (7 days).</p>"
+        }
+      },
+      "documentation":"<p>Specifies the persistent EBS volume configuration for workers in a service managed fleet.</p>"
+    },
+    "PersistentVolumeIops":{
+      "type":"integer",
+      "box":true,
+      "max":80000,
+      "min":100
+    },
+    "PersistentVolumeSizeGiB":{
+      "type":"integer",
+      "box":true,
+      "max":65536,
+      "min":1
+    },
+    "PersistentVolumeThroughputMiB":{
+      "type":"integer",
+      "box":true,
+      "max":2000,
+      "min":125
+    },
+    "PersistentVolumeTtlHours":{
+      "type":"integer",
+      "box":true,
+      "max":8760,
+      "min":1
     },
     "PortNumber":{
       "type":"integer",
@@ -12437,6 +12738,10 @@
         "storageProfileId":{
           "shape":"StorageProfileId",
           "documentation":"<p>The storage profile ID for the service managed EC2 fleet.</p>"
+        },
+        "persistentVolumeConfiguration":{
+          "shape":"PersistentVolumeConfiguration",
+          "documentation":"<p>The persistent volume configuration for the service managed EC2 fleet.</p>"
         },
         "autoScalingConfiguration":{
           "shape":"ServiceManagedEc2AutoScalingConfiguration",
@@ -15045,6 +15350,67 @@
         "FIELD_VALIDATION_FAILED",
         "OTHER"
       ]
+    },
+    "VolumeId":{
+      "type":"string",
+      "pattern":"volume-[0-9a-f]{32}"
+    },
+    "VolumeState":{
+      "type":"string",
+      "documentation":"<p>The state of a persistent volume.</p>",
+      "enum":[
+        "PENDING_CREATION",
+        "PENDING_ATTACHMENT",
+        "IN_USE",
+        "AVAILABLE",
+        "PENDING_DELETION"
+      ]
+    },
+    "VolumeSummaries":{
+      "type":"list",
+      "member":{"shape":"VolumeSummary"}
+    },
+    "VolumeSummary":{
+      "type":"structure",
+      "required":[
+        "volumeId",
+        "farmId",
+        "fleetId",
+        "state",
+        "sizeGiB",
+        "availabilityZoneId"
+      ],
+      "members":{
+        "volumeId":{
+          "shape":"VolumeId",
+          "documentation":"<p>The volume ID.</p>"
+        },
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID of the farm that contains the fleet.</p>"
+        },
+        "fleetId":{
+          "shape":"FleetId",
+          "documentation":"<p>The fleet ID of the fleet that contains the volume.</p>"
+        },
+        "state":{
+          "shape":"VolumeState",
+          "documentation":"<p>The state of the volume.</p>"
+        },
+        "sizeGiB":{
+          "shape":"PersistentVolumeSizeGiB",
+          "documentation":"<p>The volume size in GiB.</p>"
+        },
+        "availabilityZoneId":{
+          "shape":"String",
+          "documentation":"<p>The Availability Zone ID of the volume.</p>"
+        },
+        "attachedWorkerId":{
+          "shape":"WorkerId",
+          "documentation":"<p>The worker ID of the worker the volume is attached to.</p>"
+        }
+      },
+      "documentation":"<p>The summary of a persistent volume.</p>"
     },
     "VpcConfiguration":{
       "type":"structure",

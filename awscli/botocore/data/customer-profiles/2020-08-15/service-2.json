@@ -66,6 +66,23 @@
       ],
       "documentation":"<p>Get a batch of profiles.</p>"
     },
+    "BatchPutProfileObject":{
+      "name":"BatchPutProfileObject",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/domains/{DomainName}/profiles/objects/batch-put-profile-object"
+      },
+      "input":{"shape":"BatchPutProfileObjectRequest"},
+      "output":{"shape":"BatchPutProfileObjectResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Adds multiple profile objects to a domain of a given ObjectType in a single API call.</p> <p>When adding a specific profile object, like a Contact Record, an inferred profile can get created if it is not mapped to an existing profile. The resulting profile will only have a phone number populated in the standard ProfileObject. Any additional Contact Records with the same phone number will be mapped to the same inferred profile.</p> <p>When a ProfileObject is created and if a ProfileObjectType already exists for the ProfileObject, it will provide data to a standard profile depending on the ProfileObjectType definition.</p> <p>BatchPutProfileObject needs an ObjectType, which can be created using PutProfileObjectType.</p>"
+    },
     "CreateCalculatedAttributeDefinition":{
       "name":"CreateCalculatedAttributeDefinition",
       "http":{
@@ -98,7 +115,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a domain, which is a container for all customer data, such as customer profile attributes, object types, profile keys, and encryption keys. You can create multiple domains, and each domain can have multiple third-party integrations.</p> <p>Each Amazon Connect instance can be associated with only one domain. Multiple Amazon Connect instances can be associated with one domain.</p> <p>Use this API or <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_UpdateDomain.html\">UpdateDomain</a> to enable <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html\">identity resolution</a>: set <code>Matching</code> to true.</p> <p>To prevent cross-service impersonation when you call this API, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cross-service-confused-deputy-prevention.html\">Cross-service confused deputy prevention</a> for sample policies that you should apply. </p> <note> <p>It is not possible to associate a Customer Profiles domain with an Amazon Connect Instance directly from the API. If you would like to create a domain and associate a Customer Profiles domain, use the Amazon Connect admin website. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/enable-customer-profiles.html#enable-customer-profiles-step1\">Enable Customer Profiles</a>.</p> <p>Each Amazon Connect instance can be associated with only one domain. Multiple Amazon Connect instances can be associated with one domain.</p> </note>"
+      "documentation":"<p>Creates a domain, which is a container for all customer data, such as customer profile attributes, object types, profile keys, and encryption keys. You can create multiple domains, and each domain can have multiple third-party integrations.</p> <p>Each Connect Customer instance can be associated with only one domain. Multiple Connect Customer instances can be associated with one domain.</p> <p>Use this API or <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_UpdateDomain.html\">UpdateDomain</a> to enable <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html\">identity resolution</a>: set <code>Matching</code> to true.</p> <p>To prevent cross-service impersonation when you call this API, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cross-service-confused-deputy-prevention.html\">Cross-service confused deputy prevention</a> for sample policies that you should apply. </p> <note> <p>It is not possible to associate a Customer Profiles domain with an Amazon Connect Instance directly from the API. If you would like to create a domain and associate a Customer Profiles domain, use the Amazon Connect admin website. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/enable-customer-profiles.html#enable-customer-profiles-step1\">Enable Customer Profiles</a>.</p> <p>Each Amazon Connect instance can be associated with only one domain. Multiple Amazon Connect instances can be associated with one domain.</p> </note>"
     },
     "CreateDomainLayout":{
       "name":"CreateDomainLayout",
@@ -132,7 +149,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates an event stream, which is a subscription to real-time events, such as when profiles are created and updated through Amazon Connect Customer Profiles.</p> <p>Each event stream can be associated with only one Kinesis Data Stream destination in the same region and Amazon Web Services account as the customer profiles domain</p>"
+      "documentation":"<p>Creates an event stream, which is a subscription to real-time events, such as when profiles are created and updated through Connect Customer Customer Profiles.</p> <p>Each event stream can be associated with only one Kinesis Data Stream destination in the same region and Amazon Web Services account as the customer profiles domain</p>"
     },
     "CreateEventTrigger":{
       "name":"CreateEventTrigger",
@@ -1860,6 +1877,11 @@
       "min":1,
       "pattern":"^[a-zA-Z0-9_-]+$"
     },
+    "responseCode":{
+      "type":"integer",
+      "max":599,
+      "min":200
+    },
     "AccessDeniedException":{
       "type":"structure",
       "members":{
@@ -2472,6 +2494,115 @@
         }
       }
     },
+    "BatchPutProfileObjectErrorItem":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Code"
+      ],
+      "members":{
+        "Id":{
+          "shape":"name",
+          "documentation":"<p>The unique identifier of the item in the batch request that failed.</p>"
+        },
+        "Code":{
+          "shape":"responseCode",
+          "documentation":"<p>The HTTP status code for the error.</p>"
+        },
+        "Message":{
+          "shape":"text",
+          "documentation":"<p>A message describing the error.</p>"
+        }
+      },
+      "documentation":"<p>An item that failed to be added to the domain.</p>"
+    },
+    "BatchPutProfileObjectErrorList":{
+      "type":"list",
+      "member":{"shape":"BatchPutProfileObjectErrorItem"}
+    },
+    "BatchPutProfileObjectRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "ObjectTypeName",
+        "Items"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "ObjectTypeName":{
+          "shape":"typeName",
+          "documentation":"<p>The name of the profile object type.</p>"
+        },
+        "Items":{
+          "shape":"BatchPutProfileObjectRequestItemList",
+          "documentation":"<p>A list of items to add to the domain.</p>"
+        }
+      }
+    },
+    "BatchPutProfileObjectRequestItem":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Object"
+      ],
+      "members":{
+        "Id":{
+          "shape":"name",
+          "documentation":"<p>A unique identifier for this item in the batch request. Used to correlate items in the response.</p>"
+        },
+        "Object":{
+          "shape":"stringifiedJson",
+          "documentation":"<p>A string that is serialized from a JSON object.</p>"
+        }
+      },
+      "documentation":"<p>An item to add to the domain as part of a batch request.</p>"
+    },
+    "BatchPutProfileObjectRequestItemList":{
+      "type":"list",
+      "member":{"shape":"BatchPutProfileObjectRequestItem"},
+      "max":10,
+      "min":1
+    },
+    "BatchPutProfileObjectResponse":{
+      "type":"structure",
+      "members":{
+        "Successful":{
+          "shape":"BatchPutProfileObjectResponseList",
+          "documentation":"<p>A list of items that were successfully added to the domain.</p>"
+        },
+        "Failed":{
+          "shape":"BatchPutProfileObjectErrorList",
+          "documentation":"<p>A list of items that failed to be added to the domain.</p>"
+        }
+      }
+    },
+    "BatchPutProfileObjectResponseItem":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "ProfileObjectUniqueKey"
+      ],
+      "members":{
+        "Id":{
+          "shape":"name",
+          "documentation":"<p>The unique identifier of the item in the batch request.</p>"
+        },
+        "ProfileObjectUniqueKey":{
+          "shape":"string1To255",
+          "documentation":"<p>The unique identifier of the profile object generated by the service.</p>"
+        }
+      },
+      "documentation":"<p>An item that was successfully added to the domain.</p>"
+    },
+    "BatchPutProfileObjectResponseList":{
+      "type":"list",
+      "member":{"shape":"BatchPutProfileObjectResponseItem"}
+    },
     "Batches":{
       "type":"list",
       "member":{"shape":"Batch"}
@@ -3036,7 +3167,7 @@
         },
         "RuleBasedMatching":{
           "shape":"RuleBasedMatchingRequest",
-          "documentation":"<p>The process of matching duplicate profiles using the Rule-Based matching. If <code>RuleBasedMatching</code> = true, Amazon Connect Customer Profiles will start to match and merge your profiles according to your configuration in the <code>RuleBasedMatchingRequest</code>. You can use the <code>ListRuleBasedMatches</code> and <code>GetSimilarProfiles</code> API to return and review the results. Also, if you have configured <code>ExportingConfig</code> in the <code>RuleBasedMatchingRequest</code>, you can download the results from S3.</p>"
+          "documentation":"<p>The process of matching duplicate profiles using the Rule-Based matching. If <code>RuleBasedMatching</code> = true, Connect Customer Customer Profiles will start to match and merge your profiles according to your configuration in the <code>RuleBasedMatchingRequest</code>. You can use the <code>ListRuleBasedMatches</code> and <code>GetSimilarProfiles</code> API to return and review the results. Also, if you have configured <code>ExportingConfig</code> in the <code>RuleBasedMatchingRequest</code>, you can download the results from S3.</p>"
         },
         "DataStore":{
           "shape":"DataStoreRequest",
@@ -3079,7 +3210,7 @@
         },
         "RuleBasedMatching":{
           "shape":"RuleBasedMatchingResponse",
-          "documentation":"<p>The process of matching duplicate profiles using the Rule-Based matching. If <code>RuleBasedMatching</code> = true, Amazon Connect Customer Profiles will start to match and merge your profiles according to your configuration in the <code>RuleBasedMatchingRequest</code>. You can use the <code>ListRuleBasedMatches</code> and <code>GetSimilarProfiles</code> API to return and review the results. Also, if you have configured <code>ExportingConfig</code> in the <code>RuleBasedMatchingRequest</code>, you can download the results from S3.</p>"
+          "documentation":"<p>The process of matching duplicate profiles using the Rule-Based matching. If <code>RuleBasedMatching</code> = true, Connect Customer Customer Profiles will start to match and merge your profiles according to your configuration in the <code>RuleBasedMatchingRequest</code>. You can use the <code>ListRuleBasedMatches</code> and <code>GetSimilarProfiles</code> API to return and review the results. Also, if you have configured <code>ExportingConfig</code> in the <code>RuleBasedMatchingRequest</code>, you can download the results from S3.</p>"
         },
         "DataStore":{
           "shape":"DataStoreResponse",
@@ -3538,7 +3669,7 @@
         },
         "Fields":{
           "shape":"RecommenderSchemaFields",
-          "documentation":"<p>A map of dataset type to column definitions that specifies which data columns to include in the schema. Currently only the <code>_webAnalytics</code> key is supported.</p>"
+          "documentation":"<p>A map of dataset type to column definitions that specifies which data columns to include in the schema. The <code>_webAnalytics</code> and <code>_catalogItem</code> keys are supported.</p>"
         },
         "Tags":{
           "shape":"TagMap",
@@ -3736,7 +3867,7 @@
         },
         "DestinationUri":{
           "shape":"string1To255",
-          "documentation":"<p>The destination to which the segment will be exported. This field must be provided if the request is not submitted from the Amazon Connect Admin Website.</p>"
+          "documentation":"<p>The destination to which the segment will be exported. This field must be provided if the request is not submitted from the Connect Customer Admin Website.</p>"
         }
       }
     },
@@ -5508,7 +5639,7 @@
         },
         "RuleBasedMatching":{
           "shape":"RuleBasedMatchingResponse",
-          "documentation":"<p>The process of matching duplicate profiles using the Rule-Based matching. If <code>RuleBasedMatching</code> = true, Amazon Connect Customer Profiles will start to match and merge your profiles according to your configuration in the <code>RuleBasedMatchingRequest</code>. You can use the <code>ListRuleBasedMatches</code> and <code>GetSimilarProfiles</code> API to return and review the results. Also, if you have configured <code>ExportingConfig</code> in the <code>RuleBasedMatchingRequest</code>, you can download the results from S3.</p>"
+          "documentation":"<p>The process of matching duplicate profiles using the Rule-Based matching. If <code>RuleBasedMatching</code> = true, Connect Customer Customer Profiles will start to match and merge your profiles according to your configuration in the <code>RuleBasedMatchingRequest</code>. You can use the <code>ListRuleBasedMatches</code> and <code>GetSimilarProfiles</code> API to return and review the results. Also, if you have configured <code>ExportingConfig</code> in the <code>RuleBasedMatchingRequest</code>, you can download the results from S3.</p>"
         },
         "DataStore":{
           "shape":"DataStoreResponse",
@@ -6670,7 +6801,7 @@
         },
         "DestinationUri":{
           "shape":"string1To255",
-          "documentation":"<p>The destination to which the segment will be exported. This field must be provided if the request is not submitted from the Amazon Connect Admin Website.</p>"
+          "documentation":"<p>The destination to which the segment will be exported. This field must be provided if the request is not submitted from the Connect Customer Admin Website.</p>"
         }
       }
     },
@@ -7106,7 +7237,7 @@
     "InferenceConfigMinProvisionedTPSInteger":{
       "type":"integer",
       "box":true,
-      "max":500,
+      "max":1000,
       "min":1
     },
     "IntegrationConfig":{
@@ -8949,7 +9080,7 @@
           "documentation":"<p>The unit of time.</p>"
         },
         "Value":{
-          "shape":"maxSize24",
+          "shape":"maxSize60",
           "documentation":"<p>The amount of time of the specified unit.</p>"
         },
         "MaxInvocationsPerProfile":{
@@ -8966,6 +9097,7 @@
     "PeriodUnit":{
       "type":"string",
       "enum":[
+        "MINUTES",
         "HOURS",
         "DAYS",
         "WEEKS",
@@ -9911,7 +10043,7 @@
         },
         "TrainingFrequency":{
           "shape":"RecommenderConfigTrainingFrequencyInteger",
-          "documentation":"<p>How often the recommender should retrain its model with new data.</p>"
+          "documentation":"<p>How often the recommender should retrain its model with new data. If set to 0, automatic retraining will not be enabled.</p>"
         },
         "InferenceConfig":{
           "shape":"InferenceConfig",
@@ -9919,7 +10051,11 @@
         },
         "IncludedColumns":{
           "shape":"IncludedColumns",
-          "documentation":"<p>A map of dataset type to a list of column names to train on. The column names must be a subset of the columns defined in the recommender schema. If not specified, all columns in the schema are used for training. The following columns are always included and do not need to be specified: <code>Item.Id</code>, <code>ItemList[].Id</code>, <code>EventTimestamp</code>, <code>EventType</code>, and <code>EventValue</code>.</p>"
+          "documentation":"<p>A map of dataset type to a list of column names to train on. The <code>_webAnalytics</code> and <code>_catalogItem</code> keys are supported. The column names must be a subset of the columns defined in the recommender schema. If not specified, all columns in the schema are used for training. The following columns are always included in training and do not need to be specified: <code>Item.Id</code>, <code>EventTimestamp</code>, and <code>EventType</code> for <code>_webAnalytics</code>; <code>Id</code> for <code>_catalogItem</code>. Mutually exclusive with ExcludedColumns — both cannot be specified in the same request.</p>"
+        },
+        "ExcludedColumns":{
+          "shape":"IncludedColumns",
+          "documentation":"<p>A map of dataset type to a list of column names to exclude from training. The <code>_webAnalytics</code> and <code>_catalogItem</code> keys are supported. The column names must be valid columns defined in the recommender schema. All columns in the schema except the listed columns will be used for training. The following columns are mandatory and cannot be excluded: <code>Item.Id</code>, <code>EventTimestamp</code>, and <code>EventType</code> for <code>_webAnalytics</code>; <code>Id</code> for <code>_catalogItem</code>. Mutually exclusive with IncludedColumns — both cannot be specified in the same request.</p>"
         }
       },
       "documentation":"<p>Configuration settings that define the behavior and parameters of a recommender.</p>"
@@ -9928,7 +10064,7 @@
       "type":"integer",
       "box":true,
       "max":30,
-      "min":1
+      "min":0
     },
     "RecommenderContext":{
       "type":"map",
@@ -10120,7 +10256,7 @@
       "type":"map",
       "key":{"shape":"String"},
       "value":{"shape":"RecommenderSchemaFieldList"},
-      "max":1,
+      "max":2,
       "min":1
     },
     "RecommenderSchemaStatus":{
@@ -11545,7 +11681,7 @@
         },
         "RuleBasedMatching":{
           "shape":"RuleBasedMatchingRequest",
-          "documentation":"<p>The process of matching duplicate profiles using the rule-Based matching. If <code>RuleBasedMatching</code> = true, Amazon Connect Customer Profiles will start to match and merge your profiles according to your configuration in the <code>RuleBasedMatchingRequest</code>. You can use the <code>ListRuleBasedMatches</code> and <code>GetSimilarProfiles</code> API to return and review the results. Also, if you have configured <code>ExportingConfig</code> in the <code>RuleBasedMatchingRequest</code>, you can download the results from S3.</p>"
+          "documentation":"<p>The process of matching duplicate profiles using the rule-Based matching. If <code>RuleBasedMatching</code> = true, Connect Customer Customer Profiles will start to match and merge your profiles according to your configuration in the <code>RuleBasedMatchingRequest</code>. You can use the <code>ListRuleBasedMatches</code> and <code>GetSimilarProfiles</code> API to return and review the results. Also, if you have configured <code>ExportingConfig</code> in the <code>RuleBasedMatchingRequest</code>, you can download the results from S3.</p>"
         },
         "DataStore":{
           "shape":"DataStoreRequest",
@@ -11587,7 +11723,7 @@
         },
         "RuleBasedMatching":{
           "shape":"RuleBasedMatchingResponse",
-          "documentation":"<p>The process of matching duplicate profiles using the rule-Based matching. If <code>RuleBasedMatching</code> = true, Amazon Connect Customer Profiles will start to match and merge your profiles according to your configuration in the <code>RuleBasedMatchingRequest</code>. You can use the <code>ListRuleBasedMatches</code> and <code>GetSimilarProfiles</code> API to return and review the results. Also, if you have configured <code>ExportingConfig</code> in the <code>RuleBasedMatchingRequest</code>, you can download the results from S3.</p>"
+          "documentation":"<p>The process of matching duplicate profiles using the rule-Based matching. If <code>RuleBasedMatching</code> = true, Connect Customer Customer Profiles will start to match and merge your profiles according to your configuration in the <code>RuleBasedMatchingRequest</code>. You can use the <code>ListRuleBasedMatches</code> and <code>GetSimilarProfiles</code> API to return and review the results. Also, if you have configured <code>ExportingConfig</code> in the <code>RuleBasedMatchingRequest</code>, you can download the results from S3.</p>"
         },
         "DataStore":{
           "shape":"DataStoreResponse",
@@ -12085,14 +12221,14 @@
       "max":1000,
       "min":1
     },
-    "maxSize24":{
-      "type":"integer",
-      "max":24,
-      "min":1
-    },
     "maxSize500":{
       "type":"integer",
       "max":500,
+      "min":1
+    },
+    "maxSize60":{
+      "type":"integer",
+      "max":60,
       "min":1
     },
     "message":{"type":"string"},
@@ -12240,5 +12376,5 @@
       "pattern":"[a-f0-9]{32}"
     }
   },
-  "documentation":"<fullname>Amazon Connect Customer Profiles</fullname> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_Operations_Amazon_Connect_Customer_Profiles.html\">Customer Profiles actions</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_Types_Amazon_Connect_Customer_Profiles.html\">Customer Profiles data types</a> </p> </li> </ul> <p>Amazon Connect Customer Profiles is a unified customer profile for your contact center that has pre-built connectors powered by AppFlow that make it easy to combine customer information from third party applications, such as Salesforce (CRM), ServiceNow (ITSM), and your enterprise resource planning (ERP), with contact history from your Amazon Connect contact center. </p> <p>For more information about the Amazon Connect Customer Profiles feature, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/customer-profiles.html\">Use Customer Profiles</a> in the <i>Amazon Connect Administrator's Guide</i>. </p>"
+  "documentation":"<fullname>Connect Customer Customer Profiles</fullname> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_Operations_Amazon_Connect_Customer_Profiles.html\">Customer Profiles actions</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_Types_Amazon_Connect_Customer_Profiles.html\">Customer Profiles data types</a> </p> </li> </ul> <p>Connect Customer Customer Profiles is a unified customer profile for your contact center that has pre-built connectors powered by AppFlow that make it easy to combine customer information from third party applications, such as Salesforce (CRM), ServiceNow (ITSM), and your enterprise resource planning (ERP), with contact history from your Connect Customer contact center. </p> <p>For more information about the Connect Customer Customer Profiles feature, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/customer-profiles.html\">Use Customer Profiles</a> in the <i>Connect Customer Administrator's Guide</i>. </p>"
 }

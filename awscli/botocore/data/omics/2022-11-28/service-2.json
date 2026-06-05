@@ -4670,6 +4670,11 @@
       "type":"string",
       "pattern":"[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+"
     },
+    "EngineSettings":{
+      "type":"structure",
+      "members":{},
+      "document":true
+    },
     "EngineVersion":{
       "type":"string",
       "pattern":"[0-9]{2}.[0-9]{2}.[0-9]"
@@ -6202,6 +6207,10 @@
         "vpcConfig":{
           "shape":"VpcConfigResponse",
           "documentation":"<p>VPC configuration for the workflow run.</p>"
+        },
+        "engineSettings":{
+          "shape":"EngineSettings",
+          "documentation":"<p>The engine-specific settings for the workflow run.</p>"
         }
       }
     },
@@ -6731,6 +6740,14 @@
         "readmePath":{
           "shape":"ReadmePath",
           "documentation":"<p>The path to the workflow README markdown file within the repository. This file provides documentation and usage information for the workflow. If not specified, the <code>README.md</code> file from the root directory of the repository will be used.</p>"
+        },
+        "profiles":{
+          "shape":"WorkflowProfileList",
+          "documentation":"<p>The list of Nextflow profiles that are available for this workflow. Profiles allow you to select predefined configuration settings at runtime.</p>"
+        },
+        "profileParameterTemplates":{
+          "shape":"WorkflowProfileParameterTemplates",
+          "documentation":"<p>A mapping of profile names to their parameter templates. Each profile defines its own set of parameters that you can use when starting a run with that profile.</p>"
         }
       }
     },
@@ -6877,6 +6894,14 @@
         "readmePath":{
           "shape":"ReadmePath",
           "documentation":"<p>The path to the workflow version README markdown file within the repository. This file provides documentation and usage information for the workflow. If not specified, the <code>README.md</code> file from the root directory of the repository will be used.</p>"
+        },
+        "profiles":{
+          "shape":"WorkflowProfileList",
+          "documentation":"<p>The list of Nextflow profiles that are available for this workflow version. Profiles allow you to select predefined configuration settings at runtime.</p>"
+        },
+        "profileParameterTemplates":{
+          "shape":"WorkflowProfileParameterTemplates",
+          "documentation":"<p>A mapping of profile names to their parameter templates. Each profile defines its own set of parameters that you can use when starting a run with that profile.</p>"
         }
       }
     },
@@ -10934,6 +10959,10 @@
         "configurationName":{
           "shape":"ConfigurationName",
           "documentation":"<p>Optional configuration name to use for the workflow run.</p>"
+        },
+        "engineSettings":{
+          "shape":"EngineSettings",
+          "documentation":"<p>Engine-specific settings for the workflow run. Use this field to specify configuration options that are specific to the workflow engine (for example, Nextflow profiles).</p>"
         }
       }
     },
@@ -12471,6 +12500,16 @@
       "value":{"shape":"WorkflowParameter"},
       "max":2000,
       "min":1
+    },
+    "WorkflowProfileList":{
+      "type":"list",
+      "member":{"shape":"WorkflowProfileName"}
+    },
+    "WorkflowProfileName":{"type":"string"},
+    "WorkflowProfileParameterTemplates":{
+      "type":"map",
+      "key":{"shape":"WorkflowProfileName"},
+      "value":{"shape":"WorkflowParameterTemplate"}
     },
     "WorkflowRequestId":{
       "type":"string",

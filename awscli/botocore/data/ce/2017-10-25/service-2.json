@@ -825,7 +825,8 @@
       "type":"string",
       "enum":[
         "MAX_SAVINGS",
-        "CUSTOM_COMMITMENT"
+        "CUSTOM_COMMITMENT",
+        "TARGET_AVERAGE_COVERAGE"
       ]
     },
     "Anomalies":{
@@ -5188,6 +5189,10 @@
         "LookBackTimePeriod":{
           "shape":"DateInterval",
           "documentation":"<p>The time period associated with the analysis.</p>"
+        },
+        "SavingsPlansTargetCoverage":{
+          "shape":"SavingsPlansTargetCoverage",
+          "documentation":"<p>Specifies the target Savings Plans coverage as a percentage from <code>10</code> to <code>100</code>. This field is required when <code>AnalysisType</code> is <code>TARGET_AVERAGE_COVERAGE</code>. It defines the target average hourly coverage that the recommended Savings Plans commitment should achieve over the lookback period.</p>"
         }
       },
       "documentation":"<p>The configuration for the Savings Plans purchase analysis.</p>"
@@ -5479,6 +5484,11 @@
         }
       },
       "documentation":"<p>The amount of savings that you're accumulating, against the public On-Demand rate of the usage accrued in an account.</p>"
+    },
+    "SavingsPlansTargetCoverage":{
+      "type":"integer",
+      "max":100,
+      "min":10
     },
     "SavingsPlansToAdd":{
       "type":"list",

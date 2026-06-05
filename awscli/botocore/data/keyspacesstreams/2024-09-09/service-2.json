@@ -132,6 +132,10 @@
         "nextShardIterator":{
           "shape":"ShardIterator",
           "documentation":"<p> The next position in the shard from which to start sequentially reading data records. If null, the shard has been closed and the requested iterator will not return any more data. </p>"
+        },
+        "iteratorDescription":{
+          "shape":"IteratorDescription",
+          "documentation":"<p> Provides information about the current iterator at the time GetRecords request was processed by Keyspaces. </p>"
         }
       }
     },
@@ -259,6 +263,23 @@
       "documentation":"<p>The Amazon Keyspaces service encountered an unexpected error while processing the request. </p> <p>This internal server error is not related to your request parameters. Retry your request after a brief delay. If the issue persists, contact Amazon Web Services Support with details of your request to help identify and resolve the problem.</p>",
       "exception":true,
       "fault":true
+    },
+    "IteratorDescription":{
+      "type":"structure",
+      "members":{
+        "iteratorPosition":{
+          "shape":"IteratorPosition",
+          "documentation":"<p> Indicates the current iterator's position within the shard. The possible values are: </p> <ul> <li> <p> <code>AT_TIP</code> - No more records are currently available.</p> </li> <li> <p> <code>BEHIND_TIP</code> - Additional records may be available.</p> </li> </ul> <p>Stream progresses in absence of customer records. <code>BEHIND_TIP</code> with an empty <code>changeRecords</code> list indicates the stream is progressing but no customer records are available at this position. Continue polling normally.</p>"
+        }
+      },
+      "documentation":"<p>Provides information about the current iterator.</p>"
+    },
+    "IteratorPosition":{
+      "type":"string",
+      "enum":[
+        "AT_TIP",
+        "BEHIND_TIP"
+      ]
     },
     "KeyspaceName":{
       "type":"string",

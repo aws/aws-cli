@@ -826,6 +826,10 @@
           "shape":"GrafanaVersion",
           "documentation":"<p>Specifies the version of Grafana to support in the new workspace. If not specified, defaults to the latest version (for example, 10.4).</p> <p>To get a list of supported versions, use the <code>ListVersions</code> operation.</p>"
         },
+        "ipAddressType":{
+          "shape":"IPAddressType",
+          "documentation":"<p>Specifies whether the workspace supports IPv4 only, or IPv4 and IPv6. Valid values are <code>IPv4</code> and <code>DualStack</code>. For more information about IP address types, see <a href=\"https://docs.aws.amazon.com/grafana/latest/userguide/AMG-configure-nac.html\">Network access control</a>.</p>"
+        },
         "kmsKeyId":{
           "shape":"KmsKeyId",
           "documentation":"<p>The ID or ARN of the Key Management Service key to use for encrypting workspace data.</p>"
@@ -969,6 +973,11 @@
     "DataSourceTypesList":{
       "type":"list",
       "member":{"shape":"DataSourceType"}
+    },
+    "DegradedWorkspaceReason":{
+      "type":"string",
+      "max":255,
+      "min":1
     },
     "DeleteWorkspaceApiKeyRequest":{
       "type":"structure",
@@ -1244,6 +1253,13 @@
     "GrafanaVersionList":{
       "type":"list",
       "member":{"shape":"GrafanaVersion"}
+    },
+    "IPAddressType":{
+      "type":"string",
+      "enum":[
+        "IPv4",
+        "DualStack"
+      ]
     },
     "IamRoleArn":{
       "type":"string",
@@ -2277,6 +2293,10 @@
         "removeNetworkAccessConfiguration":{
           "shape":"Boolean",
           "documentation":"<p>Whether to remove the network access configuration from the workspace.</p> <p>Setting this to <code>true</code> and providing a <code>networkAccessControl</code> to set will return an error.</p> <p>If you remove this configuration by setting this to <code>true</code>, then all IP addresses and VPC endpoints will be allowed. Standard Grafana authentication and authorization will still be required.</p>"
+        },
+        "ipAddressType":{
+          "shape":"IPAddressType",
+          "documentation":"<p>Specifies whether the workspace supports IPv4 only, or IPv4 and IPv6. Valid values are <code>IPv4</code> and <code>DualStack</code>. For more information about IP address types, see <a href=\"https://docs.aws.amazon.com/grafana/latest/userguide/AMG-configure-nac.html\">Network access control</a>.</p>"
         }
       }
     },
@@ -2517,9 +2537,17 @@
           "shape":"GrafanaToken",
           "documentation":"<p>The token that ties this workspace to a Grafana Labs account. For more information, see <a href=\"https://docs.aws.amazon.com/grafana/latest/userguide/upgrade-to-Grafana-Enterprise.html#AMG-workspace-register-enterprise\">Link your account with Grafana Labs</a>.</p>"
         },
+        "ipAddressType":{
+          "shape":"IPAddressType",
+          "documentation":"<p>The type of IP addresses supported for connection to the workspace. Valid values are <code>IPv4</code> and <code>DualStack</code>.</p>"
+        },
         "kmsKeyId":{
           "shape":"KmsKeyId",
           "documentation":"<p>The ID or ARN of the Key Management Service key used for encrypting workspace data.</p>"
+        },
+        "degradedWorkspaceReason":{
+          "shape":"DegradedWorkspaceReason",
+          "documentation":"<p>If the workspace is in the <code>DEGRADED</code> status, this field describes the reason the workspace is degraded.</p>"
         }
       },
       "documentation":"<p>A structure containing information about an Amazon Managed Grafana workspace in your account.</p>"
@@ -2552,7 +2580,8 @@
         "UPGRADE_FAILED",
         "LICENSE_REMOVAL_FAILED",
         "VERSION_UPDATING",
-        "VERSION_UPDATE_FAILED"
+        "VERSION_UPDATE_FAILED",
+        "DEGRADED"
       ]
     },
     "WorkspaceSummary":{

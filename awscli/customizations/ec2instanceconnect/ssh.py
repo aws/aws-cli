@@ -86,7 +86,9 @@ class SshCommand(BasicCommand):
                 '<li>Private IPv4</li>'
                 '</ul>'
                 '</li>'
-                '<li>eice: SSH using EC2 Instance Connect Endpoint. The CLI always uses the private IPv4 address.</li>'
+                '<li>eice: SSH using EC2 Instance Connect Endpoint. '
+                'The CLI tries to connect using the private IPv4 address, '
+                'falling back to IPv6 if the instance has no private IPv4.</li>'
                 '<li>auto: The CLI automatically determines the connection type (direct or eice) '
                 'to use based on the instance info. Currently the CLI tries to connect using the IP addresses '
                 'in the following order and with the corresponding connection type:'
@@ -171,7 +173,7 @@ class SshCommand(BasicCommand):
             ip_address_to_connect = parsed_args.instance_ip
         elif parsed_args.connection_type == 'eice' or parsed_args.eice_options:
             use_open_tunnel = True
-            ip_address_to_connect = private_ip_address
+            ip_address_to_connect = private_ip_address or ipv6_address
         elif parsed_args.connection_type == 'direct':
             use_open_tunnel = False
             ip_address_to_connect = (

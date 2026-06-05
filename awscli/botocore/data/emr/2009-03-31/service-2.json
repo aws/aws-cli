@@ -366,6 +366,34 @@
       ],
       "documentation":"<p>The presigned URL properties for the cluster's application user interface.</p>"
     },
+    "GetSession":{
+      "name":"GetSession",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetSessionInput"},
+      "output":{"shape":"GetSessionOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"}
+      ],
+      "documentation":"<p>Returns detailed information about a session.</p>"
+    },
+    "GetSessionEndpoint":{
+      "name":"GetSessionEndpoint",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetSessionEndpointInput"},
+      "output":{"shape":"GetSessionEndpointOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"}
+      ],
+      "documentation":"<p>Returns the Spark Connect endpoint URL and a time-limited authentication token for the specified session. Use the endpoint and token to connect a PySpark client to the session. Call this operation again when the token expires to obtain a new one.</p>"
+    },
     "GetStudioSessionMapping":{
       "name":"GetStudioSessionMapping",
       "http":{
@@ -491,6 +519,20 @@
         {"shape":"InvalidRequestException"}
       ],
       "documentation":"<p>Lists all the security configurations visible to this account, providing their creation dates and times, and their names. This call returns a maximum of 50 clusters per call, but returns a marker to track the paging of the cluster list across multiple ListSecurityConfigurations calls.</p>"
+    },
+    "ListSessions":{
+      "name":"ListSessions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListSessionsInput"},
+      "output":{"shape":"ListSessionsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"}
+      ],
+      "documentation":"<p>Lists the sessions on a cluster. You can filter the results by session state. Newer sessions are returned first.</p>"
     },
     "ListSteps":{
       "name":"ListSteps",
@@ -750,6 +792,20 @@
       ],
       "documentation":"<p>Starts a notebook execution.</p>"
     },
+    "StartSession":{
+      "name":"StartSession",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartSessionInput"},
+      "output":{"shape":"StartSessionOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"}
+      ],
+      "documentation":"<p>Creates and starts a new Spark Connect session on the specified cluster. The cluster must be in the <code>RUNNING</code> or <code>WAITING</code> state and have sessions enabled. This operation is supported in Amazon EMR Spark 8.0.0 and later.</p>"
+    },
     "StopNotebookExecution":{
       "name":"StopNotebookExecution",
       "http":{
@@ -774,6 +830,20 @@
         {"shape":"InternalServerError"}
       ],
       "documentation":"<p>TerminateJobFlows shuts a list of clusters (job flows) down. When a job flow is shut down, any step not yet completed is canceled and the Amazon EC2 instances on which the cluster is running are stopped. Any log files not already saved are uploaded to Amazon S3 if a LogUri was specified when the cluster was created.</p> <p>The maximum number of clusters allowed is 10. The call to <code>TerminateJobFlows</code> is asynchronous. Depending on the configuration of the cluster, it may take up to 1-5 minutes for the cluster to completely terminate and release allocated resources, such as Amazon EC2 instances.</p>"
+    },
+    "TerminateSession":{
+      "name":"TerminateSession",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"TerminateSessionInput"},
+      "output":{"shape":"TerminateSessionOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"}
+      ],
+      "documentation":"<p>Terminates an active session. After you call this operation, the session enters the <code>TERMINATING</code> state and then transitions to <code>TERMINATED</code>.</p>"
     },
     "UpdateStudio":{
       "name":"UpdateStudio",
@@ -928,6 +998,10 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>A list of tags to associate with a resource. Tags are user-defined key-value pairs that consist of a required key string with a maximum of 128 characters, and an optional value string with a maximum of 256 characters.</p>"
+        },
+        "ClusterId":{
+          "shape":"ClusterId",
+          "documentation":"<p>The ID of the cluster that scopes the tag operation. Required when the resource being tagged is a session-scoped resource.</p>"
         }
       },
       "documentation":"<p>This input identifies an Amazon EMR resource and a list of tags to attach.</p>"
@@ -1208,6 +1282,25 @@
         "FAILED"
       ]
     },
+    "CertificateAuthority":{
+      "type":"structure",
+      "members":{
+        "CertificateArn":{
+          "shape":"XmlString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the certificate authority in Amazon Web Services Private CA that issued the Spark Connect server certificate.</p>"
+        },
+        "CertificateData":{
+          "shape":"XmlString",
+          "documentation":"<p>The PEM-encoded root CA certificate data. Provide this certificate to your client's trust store when connecting directly to the Spark Connect server over VPC peering.</p>"
+        }
+      },
+      "documentation":"<p>Describes the certificate authority used to establish an mTLS connection to the Spark Connect server when connecting directly over VPC peering.</p>"
+    },
+    "ClientRequestToken":{
+      "type":"string",
+      "max":36,
+      "min":1
+    },
     "CloudWatchAlarmDefinition":{
       "type":"structure",
       "required":[
@@ -1429,11 +1522,18 @@
         "MonitoringConfiguration":{
           "shape":"MonitoringConfiguration",
           "documentation":"<p>Contains Cloudwatch log configuration metadata and settings.</p>"
+        },
+        "SessionEnabled":{
+          "shape":"BooleanObject",
+          "documentation":"<p>Indicates whether Spark Connect sessions are enabled on the cluster.</p>"
         }
       },
       "documentation":"<p>The detailed description of the cluster.</p>"
     },
-    "ClusterId":{"type":"string"},
+    "ClusterId":{
+      "type":"string",
+      "max":256
+    },
     "ClusterState":{
       "type":"string",
       "enum":[
@@ -2490,6 +2590,76 @@
         }
       }
     },
+    "GetSessionEndpointInput":{
+      "type":"structure",
+      "required":[
+        "ClusterId",
+        "SessionId"
+      ],
+      "members":{
+        "ClusterId":{
+          "shape":"ClusterId",
+          "documentation":"<p>The ID of the cluster that the session belongs to.</p>"
+        },
+        "SessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The ID of the session.</p>"
+        }
+      },
+      "documentation":"<p>Input to the <code>GetSessionEndpoint</code> operation.</p>"
+    },
+    "GetSessionEndpointOutput":{
+      "type":"structure",
+      "required":["Endpoint"],
+      "members":{
+        "Endpoint":{
+          "shape":"XmlString",
+          "documentation":"<p>The Spark Connect endpoint URL to use in the PySpark client.</p>"
+        },
+        "AuthToken":{
+          "shape":"SensitiveString",
+          "documentation":"<p>A time-limited authentication token used to connect to the Spark Connect endpoint.</p>"
+        },
+        "AuthTokenExpirationTime":{
+          "shape":"Date",
+          "documentation":"<p>The time at which the authentication token expires. After this time, call <code>GetSessionEndpoint</code> again to obtain a new token.</p>"
+        },
+        "Credentials":{
+          "shape":"Credentials",
+          "documentation":"<p>Username and password used to authenticate with the Spark Connect server when connecting directly over VPC peering.</p>"
+        }
+      },
+      "documentation":"<p>Output of the <code>GetSessionEndpoint</code> operation.</p>"
+    },
+    "GetSessionInput":{
+      "type":"structure",
+      "required":[
+        "ClusterId",
+        "SessionId"
+      ],
+      "members":{
+        "ClusterId":{
+          "shape":"ClusterId",
+          "documentation":"<p>The ID of the cluster that the session belongs to.</p>"
+        },
+        "SessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The ID of the session.</p>"
+        }
+      },
+      "documentation":"<p>Input to the <code>GetSession</code> operation.</p>"
+    },
+    "GetSessionOutput":{
+      "type":"structure",
+      "required":["Session"],
+      "members":{
+        "Session":{
+          "shape":"Session",
+          "documentation":"<p>The output displays information about the session.</p>"
+        }
+      },
+      "documentation":"<p>Output of the <code>GetSession</code> operation.</p>"
+    },
     "GetStudioSessionMappingInput":{
       "type":"structure",
       "required":[
@@ -2747,7 +2917,10 @@
       "type":"list",
       "member":{"shape":"InstanceFleetConfig"}
     },
-    "InstanceFleetId":{"type":"string"},
+    "InstanceFleetId":{
+      "type":"string",
+      "max":256
+    },
     "InstanceFleetList":{
       "type":"list",
       "member":{"shape":"InstanceFleet"}
@@ -3103,7 +3276,10 @@
       "type":"list",
       "member":{"shape":"InstanceGroupDetail"}
     },
-    "InstanceGroupId":{"type":"string"},
+    "InstanceGroupId":{
+      "type":"string",
+      "max":256
+    },
     "InstanceGroupIdsList":{
       "type":"list",
       "member":{"shape":"XmlStringMaxLen256"}
@@ -4053,6 +4229,43 @@
         }
       }
     },
+    "ListSessionsInput":{
+      "type":"structure",
+      "required":["ClusterId"],
+      "members":{
+        "ClusterId":{
+          "shape":"ClusterId",
+          "documentation":"<p>The ID of the cluster to list sessions for.</p>"
+        },
+        "SessionStates":{
+          "shape":"SessionStateList",
+          "documentation":"<p>An optional filter that limits the results to sessions in the specified states.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token returned by a previous <code>ListSessions</code> call. Use it to retrieve the next page of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResultsNumber",
+          "documentation":"<p>The maximum number of sessions to return in each page of results.</p>"
+        }
+      },
+      "documentation":"<p>Input to the <code>ListSessions</code> operation.</p>"
+    },
+    "ListSessionsOutput":{
+      "type":"structure",
+      "members":{
+        "Sessions":{
+          "shape":"SessionList",
+          "documentation":"<p>The sessions that match the request.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token to use in a subsequent <code>ListSessions</code> call to retrieve the next page of results. This field is absent when there are no more results.</p>"
+        }
+      },
+      "documentation":"<p>Output of the <code>ListSessions</code> operation.</p>"
+    },
     "ListStepsInput":{
       "type":"structure",
       "required":["ClusterId"],
@@ -4920,6 +5133,10 @@
         "TagKeys":{
           "shape":"StringList",
           "documentation":"<p>A list of tag keys to remove from the resource.</p>"
+        },
+        "ClusterId":{
+          "shape":"ClusterId",
+          "documentation":"<p>The ID of the cluster that scopes the tag operation. Required when the resource being untagged is a session-scoped resource.</p>"
         }
       },
       "documentation":"<p>This input identifies an Amazon EMR resource and a list of tags to remove.</p>"
@@ -5076,6 +5293,10 @@
         "MonitoringConfiguration":{
           "shape":"MonitoringConfiguration",
           "documentation":"<p>Contains CloudWatch log configuration metadata and settings.</p>"
+        },
+        "SessionEnabled":{
+          "shape":"BooleanObject",
+          "documentation":"<p>Indicates whether Spark Connect sessions are enabled on the cluster. When set to <code>true</code>, you can start Spark Connect sessions using the <code>StartSession</code> operation.</p>"
         }
       },
       "documentation":"<p> Input to the <a>RunJobFlow</a> operation. </p>"
@@ -5099,7 +5320,7 @@
       "members":{
         "LogTypeUploadPolicy":{
           "shape":"LogTypeMap",
-          "documentation":"<p>A map that specifies the upload policy for each log type. The key is the log type, and the value is the upload policy.</p> <p>Valid log types:</p> <ul> <li> <p> <code>system-logs</code>: System-level logs including daemon logs, bootstrap logs, and other infrastructure logs.</p> </li> <li> <p> <code>application-logs</code>: Application-level logs from frameworks like Hadoop, Spark, Hive, etc.</p> </li> <li> <p> <code>persistent-ui-logs</code>: Logs for persistent application UIs like Spark History Server.</p> </li> </ul> <p>Valid upload policies:</p> <ul> <li> <p> <code>emr-managed</code>: Logs are uploaded to both the EMR-managed S3 bucket and the customer-specified S3 bucket (if LogUri is provided).</p> </li> <li> <p> <code>on-customer-s3only</code>: Logs are uploaded only to the customer-specified S3 bucket. Requires LogUri to be specified in the cluster configuration.</p> </li> <li> <p> <code>disabled</code>: Log upload is disabled for this log type.</p> </li> </ul>"
+          "documentation":"<p>A map that specifies the upload policy for each log type. The key is the log type, and the value is the upload policy.</p> <p>Valid log types:</p> <ul> <li> <p> <code>system-logs</code>: EMR Daemon logs.</p> </li> <li> <p> <code>application-logs</code>: Framework logs from Hadoop, Spark, Hive and other applications running on the cluster.</p> </li> <li> <p> <code>persistent-ui-logs</code>: Logs required for persistent application UIs such as Spark History Server and Tez UI.</p> </li> </ul> <p>Valid upload policies:</p> <ul> <li> <p> <code>emr-managed</code>: Standard behavior. Logs are uploaded to S3 bucket as configured in your LogUri, with certain logs retained by the service for operational support and troubleshooting purposes.</p> </li> <li> <p> <code>on-customer-s3only</code>: Logs are uploaded only to the customer-specified S3 bucket. This requires you to specify a LogUri when creating the cluster. Persistent-ui-logs cannot have on-customer-s3only policy. Allowed policies for persistent-ui-logs are emr-managed and disabled.</p> </li> <li> <p> <code>disabled</code>: No S3 upload for this log type.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Configuration for S3 logging behavior in EMR clusters. Defines how different types of logs are uploaded to S3 based on the specified upload policies for each log type.</p>"
@@ -5244,6 +5465,151 @@
       "type":"list",
       "member":{"shape":"XmlStringMaxLen256"}
     },
+    "SensitiveString":{
+      "type":"string",
+      "sensitive":true
+    },
+    "Session":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "ClusterId",
+        "Arn",
+        "State"
+      ],
+      "members":{
+        "Id":{
+          "shape":"SessionId",
+          "documentation":"<p>The ID of the session.</p>"
+        },
+        "ClusterId":{
+          "shape":"ClusterId",
+          "documentation":"<p>The ID of the cluster that the session belongs to.</p>"
+        },
+        "Name":{
+          "shape":"XmlStringMaxLen256",
+          "documentation":"<p>The name of the session, if one was provided at creation time.</p>"
+        },
+        "Arn":{
+          "shape":"ArnType",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the session.</p>"
+        },
+        "State":{
+          "shape":"SessionState",
+          "documentation":"<p>The current state of the session. Valid values are <code>SUBMITTED</code>, <code>STARTING</code>, <code>STARTED</code>, <code>IDLE</code>, <code>BUSY</code>, <code>TERMINATING</code>, <code>TERMINATED</code>, and <code>FAILED</code>.</p>"
+        },
+        "StateChangeReason":{
+          "shape":"XmlString",
+          "documentation":"<p>A human-readable message describing the most recent state change.</p>"
+        },
+        "ReleaseLabel":{
+          "shape":"XmlStringMaxLen256",
+          "documentation":"<p>The Amazon EMR release label of the cluster that the session is running on.</p>"
+        },
+        "ExecutionRoleArn":{
+          "shape":"IAMRoleArn",
+          "documentation":"<p>The execution role ARN for the session. Amazon EMR uses this role to access Amazon Web Services resources on your behalf during session execution.</p>"
+        },
+        "AccountId":{
+          "shape":"XmlStringMaxLen256",
+          "documentation":"<p>The Amazon Web Services account ID that owns the session.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Date",
+          "documentation":"<p>The date and time that the session was created.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Date",
+          "documentation":"<p>The date and time that the session was last updated.</p>"
+        },
+        "StartedAt":{
+          "shape":"Date",
+          "documentation":"<p>The date and time that the session entered the <code>STARTED</code> state.</p>"
+        },
+        "EndedAt":{
+          "shape":"Date",
+          "documentation":"<p>The date and time that the session was terminated or failed.</p>"
+        },
+        "IdleSince":{
+          "shape":"Date",
+          "documentation":"<p>The date and time that the session last entered the <code>IDLE</code> state.</p>"
+        },
+        "EngineConfigurations":{
+          "shape":"ConfigurationList",
+          "documentation":"<p>The configuration overrides for the session. Only runtime configuration overrides are supported.</p>"
+        },
+        "MonitoringConfiguration":{
+          "shape":"SessionMonitoringConfiguration",
+          "documentation":"<p>The monitoring configuration for the session.</p>"
+        },
+        "SessionIdleTimeoutInMinutes":{
+          "shape":"Long",
+          "documentation":"<p>The idle timeout, in minutes. If the session is idle for this duration, Amazon EMR automatically terminates it.</p>"
+        },
+        "CertificateAuthority":{
+          "shape":"CertificateAuthority",
+          "documentation":"<p>The certificate authority used to establish an mTLS connection to the Spark Connect server when connecting directly over VPC peering.</p>"
+        },
+        "ServerUrl":{
+          "shape":"XmlString",
+          "documentation":"<p>The Spark Connect server URL for the session. Use this URL with the <code>Credentials</code> returned by <code>GetSessionEndpoint</code> to connect directly to the session over VPC peering.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags associated with the session.</p>"
+        }
+      },
+      "documentation":"<p>Detailed information about a Spark Connect session.</p>"
+    },
+    "SessionCloudWatchLoggingConfiguration":{
+      "type":"structure",
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether CloudWatch Logs is enabled for the session.</p>"
+        },
+        "LogGroup":{
+          "shape":"XmlString",
+          "documentation":"<p>The name of the log group where session logs are published.</p>"
+        },
+        "LogStreamNamePrefix":{
+          "shape":"XmlString",
+          "documentation":"<p>The prefix applied to the log stream name where session logs are published.</p>"
+        },
+        "EncryptionKeyArn":{
+          "shape":"XmlString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the logs published to CloudWatch Logs.</p>"
+        },
+        "LogTypes":{
+          "shape":"LogTypesMap",
+          "documentation":"<p>A map of log component names (for example, <code>SPARK_DRIVER</code>, <code>SPARK_EXECUTOR</code>) to the list of log types to publish for that component (for example, <code>stdout</code>, <code>stderr</code>).</p>"
+        }
+      },
+      "documentation":"<p>The CloudWatch Logs configuration for a session.</p>"
+    },
+    "SessionId":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "SessionList":{
+      "type":"list",
+      "member":{"shape":"Session"}
+    },
+    "SessionManagedLoggingConfiguration":{
+      "type":"structure",
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether Amazon EMR-managed logging is enabled for the session.</p>"
+        },
+        "EncryptionKeyArn":{
+          "shape":"XmlString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the managed logs.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon EMR-managed logging configuration for a session.</p>"
+    },
     "SessionMappingDetail":{
       "type":"structure",
       "members":{
@@ -5311,6 +5677,63 @@
     "SessionMappingSummaryList":{
       "type":"list",
       "member":{"shape":"SessionMappingSummary"}
+    },
+    "SessionMonitoringConfiguration":{
+      "type":"structure",
+      "members":{
+        "CloudWatchLoggingConfiguration":{
+          "shape":"SessionCloudWatchLoggingConfiguration",
+          "documentation":"<p>The CloudWatch Logs configuration for the session.</p>"
+        },
+        "ManagedLoggingConfiguration":{
+          "shape":"SessionManagedLoggingConfiguration",
+          "documentation":"<p>The Amazon EMR-managed logging configuration for the session.</p>"
+        },
+        "S3LoggingConfiguration":{
+          "shape":"SessionS3LoggingConfiguration",
+          "documentation":"<p>The Amazon S3 logging configuration for the session.</p>"
+        }
+      },
+      "documentation":"<p>The monitoring configuration for a session. Controls where session logs are published.</p>"
+    },
+    "SessionS3LoggingConfiguration":{
+      "type":"structure",
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether Amazon S3 logging is enabled for the session.</p>"
+        },
+        "LogUri":{
+          "shape":"XmlString",
+          "documentation":"<p>The Amazon S3 destination URI where session logs are published.</p>"
+        },
+        "EncryptionKeyArn":{
+          "shape":"XmlString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt logs published to Amazon S3.</p>"
+        },
+        "LogTypes":{
+          "shape":"LogTypesMap",
+          "documentation":"<p>A map of log component names (for example, <code>SPARK_DRIVER</code>, <code>SPARK_EXECUTOR</code>) to the list of log types to publish for that component (for example, <code>stdout</code>, <code>stderr</code>).</p>"
+        }
+      },
+      "documentation":"<p>The Amazon S3 logging configuration for a session.</p>"
+    },
+    "SessionState":{
+      "type":"string",
+      "enum":[
+        "SUBMITTED",
+        "STARTING",
+        "STARTED",
+        "IDLE",
+        "BUSY",
+        "TERMINATING",
+        "TERMINATED",
+        "FAILED"
+      ]
+    },
+    "SessionStateList":{
+      "type":"list",
+      "member":{"shape":"SessionState"}
     },
     "SetKeepJobFlowAliveWhenNoStepsInput":{
       "type":"structure",
@@ -5555,6 +5978,72 @@
           "documentation":"<p>The unique identifier of the notebook execution.</p>"
         }
       }
+    },
+    "StartSessionInput":{
+      "type":"structure",
+      "required":["ClusterId"],
+      "members":{
+        "Name":{
+          "shape":"XmlStringMaxLen256",
+          "documentation":"<p>An optional name for the session.</p>"
+        },
+        "ClusterId":{
+          "shape":"ClusterId",
+          "documentation":"<p>The ID of the cluster on which to start the session.</p>"
+        },
+        "ExecutionRoleArn":{
+          "shape":"IAMRoleArn",
+          "documentation":"<p>The execution role ARN for the session. Amazon EMR uses this role to access Amazon Web Services resources on your behalf during session execution.</p>"
+        },
+        "EngineConfigurations":{
+          "shape":"ConfigurationList",
+          "documentation":"<p>The configuration overrides for the session. Only runtime configuration overrides are supported.</p>"
+        },
+        "MonitoringConfiguration":{
+          "shape":"SessionMonitoringConfiguration",
+          "documentation":"<p>The monitoring configuration that controls where session logs are published, such as Amazon S3, CloudWatch, or managed logging.</p>"
+        },
+        "SessionIdleTimeoutInMinutes":{
+          "shape":"Long",
+          "documentation":"<p>The idle timeout, in minutes. If the session is idle for this duration, Amazon EMR EC2 automatically terminates it.</p>"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you retry a request that completed successfully using the same client request token, the service returns the original response without performing the operation again.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags to assign to the session.</p>"
+        }
+      },
+      "documentation":"<p>Input to the <code>StartSession</code> operation.</p>"
+    },
+    "StartSessionOutput":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"SessionId",
+          "documentation":"<p>The output contains the ID of the session.</p>"
+        },
+        "ClusterId":{
+          "shape":"ClusterId",
+          "documentation":"<p>The ID of the cluster that the session was started on.</p>"
+        },
+        "Arn":{
+          "shape":"ArnType",
+          "documentation":"<p>The output contains the ARN of the session.</p>"
+        },
+        "AccountId":{
+          "shape":"XmlStringMaxLen256",
+          "documentation":"<p>The Amazon Web Services account ID that owns the session.</p>"
+        },
+        "State":{
+          "shape":"SessionState",
+          "documentation":"<p>The state of the session at the time the request returned. When a session is first created, it enters the <code>SUBMITTED</code> state.</p>"
+        }
+      },
+      "documentation":"<p>Output of the <code>StartSession</code> operation.</p>"
     },
     "Statistic":{
       "type":"string",
@@ -6084,6 +6573,47 @@
         }
       },
       "documentation":"<p> Input to the <a>TerminateJobFlows</a> operation. </p>"
+    },
+    "TerminateSessionInput":{
+      "type":"structure",
+      "required":[
+        "ClusterId",
+        "SessionId"
+      ],
+      "members":{
+        "ClusterId":{
+          "shape":"ClusterId",
+          "documentation":"<p>The ID of the cluster that the session belongs to.</p>"
+        },
+        "SessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The ID of the session to terminate.</p>"
+        }
+      },
+      "documentation":"<p>Input to the <code>TerminateSession</code> operation.</p>"
+    },
+    "TerminateSessionOutput":{
+      "type":"structure",
+      "required":[
+        "ClusterId",
+        "SessionId",
+        "State"
+      ],
+      "members":{
+        "ClusterId":{
+          "shape":"ClusterId",
+          "documentation":"<p>The ID of the cluster that the session belonged to.</p>"
+        },
+        "SessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The ID of the terminated session.</p>"
+        },
+        "State":{
+          "shape":"SessionState",
+          "documentation":"<p>The state of the session after the terminate request has been accepted.</p>"
+        }
+      },
+      "documentation":"<p>Output of the <code>TerminateSession</code> operation.</p>"
     },
     "ThroughputVal":{
       "type":"integer",

@@ -2,15 +2,28 @@
     {
         "description": "Test cases for DatetimeOffsets operation",
         "metadata": {
+            "apiVersion": "2018-01-01",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "jsonprotocol",
+            "jsonVersion": "1.1",
             "protocol": "json",
             "protocols": [
                 "json"
             ],
-            "apiVersion": "2018-01-01",
-            "jsonVersion": "1.1",
-            "targetPrefix": "JsonProtocol"
+            "serviceFullName": "JsonProtocol",
+            "serviceId": "Json Protocol",
+            "signatureVersion": "v4",
+            "signingName": "JsonProtocol",
+            "targetPrefix": "JsonProtocol",
+            "uid": "json-protocol-2018-01-01"
         },
         "shapes": {
+            "DateTime": {
+                "type": "timestamp",
+                "timestampFormat": "iso8601"
+            },
             "DatetimeOffsetsOutput": {
                 "type": "structure",
                 "members": {
@@ -18,15 +31,12 @@
                         "shape": "DateTime"
                     }
                 }
-            },
-            "DateTime": {
-                "type": "timestamp",
-                "timestampFormat": "iso8601"
             }
         },
         "cases": [
             {
                 "id": "AwsJson11DateTimeWithNegativeOffset",
+                "description": "Ensures that clients can correctly parse datetime (timestamps) with offsets",
                 "given": {
                     "name": "DatetimeOffsets",
                     "http": {
@@ -37,7 +47,6 @@
                         "shape": "DatetimeOffsetsOutput"
                     }
                 },
-                "description": "Ensures that clients can correctly parse datetime (timestamps) with offsets",
                 "result": {
                     "datetime": 1576540098
                 },
@@ -51,6 +60,7 @@
             },
             {
                 "id": "AwsJson11DateTimeWithPositiveOffset",
+                "description": "Ensures that clients can correctly parse datetime (timestamps) with offsets",
                 "given": {
                     "name": "DatetimeOffsets",
                     "http": {
@@ -61,7 +71,6 @@
                         "shape": "DatetimeOffsetsOutput"
                     }
                 },
-                "description": "Ensures that clients can correctly parse datetime (timestamps) with offsets",
                 "result": {
                     "datetime": 1576540098
                 },
@@ -78,18 +87,28 @@
     {
         "description": "Test cases for EmptyOperation operation",
         "metadata": {
+            "apiVersion": "2018-01-01",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "jsonprotocol",
+            "jsonVersion": "1.1",
             "protocol": "json",
             "protocols": [
                 "json"
             ],
-            "apiVersion": "2018-01-01",
-            "jsonVersion": "1.1",
-            "targetPrefix": "JsonProtocol"
+            "serviceFullName": "JsonProtocol",
+            "serviceId": "Json Protocol",
+            "signatureVersion": "v4",
+            "signingName": "JsonProtocol",
+            "targetPrefix": "JsonProtocol",
+            "uid": "json-protocol-2018-01-01"
         },
         "shapes": {},
         "cases": [
             {
                 "id": "handles_empty_output_shape",
+                "description": "When no output is defined, the service is expected to return\nan empty payload, however, client must ignore a JSON payload\nif one is returned. This ensures that if output is added later,\nthen it will not break the client.",
                 "given": {
                     "name": "EmptyOperation",
                     "http": {
@@ -97,7 +116,6 @@
                         "requestUri": "/"
                     }
                 },
-                "description": "When no output is defined, the service is expected to return\nan empty payload, however, client must ignore a JSON payload\nif one is returned. This ensures that if output is added later,\nthen it will not break the client.",
                 "result": {},
                 "response": {
                     "status_code": 200,
@@ -109,6 +127,7 @@
             },
             {
                 "id": "handles_unexpected_json_output",
+                "description": "This client-only test builds on handles_empty_output_shape,\nby including unexpected fields in the JSON. A client\nneeds to ignore JSON output that is empty or that contains\nJSON object data.",
                 "given": {
                     "name": "EmptyOperation",
                     "http": {
@@ -116,7 +135,6 @@
                         "requestUri": "/"
                     }
                 },
-                "description": "This client-only test builds on handles_empty_output_shape,\nby including unexpected fields in the JSON. A client\nneeds to ignore JSON output that is empty or that contains\nJSON object data.",
                 "result": {},
                 "response": {
                     "status_code": 200,
@@ -128,6 +146,7 @@
             },
             {
                 "id": "json_1_1_service_responds_with_no_payload",
+                "description": "When no output is defined, the service is expected to return\nan empty payload. Despite the lack of a payload, the service\nis expected to always send a Content-Type header. Clients must\nhandle cases where a service returns a JSON object and where\na service returns no JSON at all.",
                 "given": {
                     "name": "EmptyOperation",
                     "http": {
@@ -135,7 +154,6 @@
                         "requestUri": "/"
                     }
                 },
-                "description": "When no output is defined, the service is expected to return\nan empty payload. Despite the lack of a payload, the service\nis expected to always send a Content-Type header. Clients must\nhandle cases where a service returns a JSON object and where\na service returns no JSON at all.",
                 "result": {},
                 "response": {
                     "status_code": 200,
@@ -150,15 +168,28 @@
     {
         "description": "Test cases for FractionalSeconds operation",
         "metadata": {
+            "apiVersion": "2018-01-01",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "jsonprotocol",
+            "jsonVersion": "1.1",
             "protocol": "json",
             "protocols": [
                 "json"
             ],
-            "apiVersion": "2018-01-01",
-            "jsonVersion": "1.1",
-            "targetPrefix": "JsonProtocol"
+            "serviceFullName": "JsonProtocol",
+            "serviceId": "Json Protocol",
+            "signatureVersion": "v4",
+            "signingName": "JsonProtocol",
+            "targetPrefix": "JsonProtocol",
+            "uid": "json-protocol-2018-01-01"
         },
         "shapes": {
+            "DateTime": {
+                "type": "timestamp",
+                "timestampFormat": "iso8601"
+            },
             "FractionalSecondsOutput": {
                 "type": "structure",
                 "members": {
@@ -166,15 +197,12 @@
                         "shape": "DateTime"
                     }
                 }
-            },
-            "DateTime": {
-                "type": "timestamp",
-                "timestampFormat": "iso8601"
             }
         },
         "cases": [
             {
                 "id": "AwsJson11DateTimeWithFractionalSeconds",
+                "description": "Ensures that clients can correctly parse datetime timestamps with fractional seconds",
                 "given": {
                     "name": "FractionalSeconds",
                     "http": {
@@ -185,7 +213,6 @@
                         "shape": "FractionalSecondsOutput"
                     }
                 },
-                "description": "Ensures that clients can correctly parse datetime timestamps with fractional seconds",
                 "result": {
                     "datetime": 9.46845296123E8
                 },
@@ -202,13 +229,22 @@
     {
         "description": "Test cases for GreetingWithErrors operation",
         "metadata": {
+            "apiVersion": "2018-01-01",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "jsonprotocol",
+            "jsonVersion": "1.1",
             "protocol": "json",
             "protocols": [
                 "json"
             ],
-            "apiVersion": "2018-01-01",
-            "jsonVersion": "1.1",
-            "targetPrefix": "JsonProtocol"
+            "serviceFullName": "JsonProtocol",
+            "serviceId": "Json Protocol",
+            "signatureVersion": "v4",
+            "signingName": "JsonProtocol",
+            "targetPrefix": "JsonProtocol",
+            "uid": "json-protocol-2018-01-01"
         },
         "shapes": {
             "InvalidGreeting": {
@@ -228,6 +264,7 @@
         "cases": [
             {
                 "id": "AwsJson11InvalidGreetingError",
+                "description": "Parses simple JSON errors",
                 "given": {
                     "name": "GreetingWithErrors",
                     "http": {
@@ -242,7 +279,6 @@
                         }
                     ]
                 },
-                "description": "Parses simple JSON errors",
                 "errorCode": "InvalidGreeting",
                 "errorMessage": "Hi",
                 "error": {
@@ -261,13 +297,22 @@
     {
         "description": "Test cases for GreetingWithErrors operation",
         "metadata": {
+            "apiVersion": "2018-01-01",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "jsonprotocol",
+            "jsonVersion": "1.1",
             "protocol": "json",
             "protocols": [
                 "json"
             ],
-            "apiVersion": "2018-01-01",
-            "jsonVersion": "1.1",
-            "targetPrefix": "JsonProtocol"
+            "serviceFullName": "JsonProtocol",
+            "serviceId": "Json Protocol",
+            "signatureVersion": "v4",
+            "signingName": "JsonProtocol",
+            "targetPrefix": "JsonProtocol",
+            "uid": "json-protocol-2018-01-01"
         },
         "shapes": {
             "ComplexError": {
@@ -283,9 +328,6 @@
                 "documentation": "<p>This error is thrown when a request is invalid.</p>",
                 "exception": true
             },
-            "String": {
-                "type": "string"
-            },
             "ComplexNestedErrorData": {
                 "type": "structure",
                 "members": {
@@ -293,11 +335,15 @@
                         "shape": "String"
                     }
                 }
+            },
+            "String": {
+                "type": "string"
             }
         },
         "cases": [
             {
                 "id": "AwsJson11ComplexError",
+                "description": "Parses a complex error with no message member",
                 "given": {
                     "name": "GreetingWithErrors",
                     "http": {
@@ -312,7 +358,6 @@
                         }
                     ]
                 },
-                "description": "Parses a complex error with no message member",
                 "errorCode": "ComplexError",
                 "error": {
                     "TopLevel": "Top level",
@@ -359,13 +404,22 @@
     {
         "description": "Test cases for GreetingWithErrors operation",
         "metadata": {
+            "apiVersion": "2018-01-01",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "jsonprotocol",
+            "jsonVersion": "1.1",
             "protocol": "json",
             "protocols": [
                 "json"
             ],
-            "apiVersion": "2018-01-01",
-            "jsonVersion": "1.1",
-            "targetPrefix": "JsonProtocol"
+            "serviceFullName": "JsonProtocol",
+            "serviceId": "Json Protocol",
+            "signatureVersion": "v4",
+            "signingName": "JsonProtocol",
+            "targetPrefix": "JsonProtocol",
+            "uid": "json-protocol-2018-01-01"
         },
         "shapes": {
             "FooError": {
@@ -379,6 +433,7 @@
         "cases": [
             {
                 "id": "AwsJson11FooErrorUsingXAmznErrorType",
+                "description": "Serializes the X-Amzn-ErrorType header. For an example service, see Amazon EKS.",
                 "given": {
                     "name": "GreetingWithErrors",
                     "http": {
@@ -393,7 +448,6 @@
                         }
                     ]
                 },
-                "description": "Serializes the X-Amzn-ErrorType header. For an example service, see Amazon EKS.",
                 "errorCode": "FooError",
                 "error": {},
                 "response": {
@@ -405,6 +459,7 @@
             },
             {
                 "id": "AwsJson11FooErrorUsingXAmznErrorTypeWithUri",
+                "description": "Some X-Amzn-Errortype headers contain URLs. Clients need to split the URL on ':' and take only the first half of the string. For example, 'ValidationException:http://internal.amazon.com/coral/com.amazon.coral.validate/'\nis to be interpreted as 'ValidationException'.\n\nFor an example service see Amazon Polly.",
                 "given": {
                     "name": "GreetingWithErrors",
                     "http": {
@@ -419,7 +474,6 @@
                         }
                     ]
                 },
-                "description": "Some X-Amzn-Errortype headers contain URLs. Clients need to split the URL on ':' and take only the first half of the string. For example, 'ValidationException:http://internal.amazon.com/coral/com.amazon.coral.validate/'\nis to be interpreted as 'ValidationException'.\n\nFor an example service see Amazon Polly.",
                 "errorCode": "FooError",
                 "error": {},
                 "response": {
@@ -431,6 +485,7 @@
             },
             {
                 "id": "AwsJson11FooErrorUsingXAmznErrorTypeWithUriAndNamespace",
+                "description": "X-Amzn-Errortype might contain a URL and a namespace. Client should extract only the shape name. This is a pathalogical case that might not actually happen in any deployed AWS service.",
                 "given": {
                     "name": "GreetingWithErrors",
                     "http": {
@@ -445,7 +500,6 @@
                         }
                     ]
                 },
-                "description": "X-Amzn-Errortype might contain a URL and a namespace. Client should extract only the shape name. This is a pathalogical case that might not actually happen in any deployed AWS service.",
                 "errorCode": "FooError",
                 "error": {},
                 "response": {
@@ -457,6 +511,7 @@
             },
             {
                 "id": "AwsJson11FooErrorUsingCode",
+                "description": "This example uses the 'code' property in the output rather than X-Amzn-Errortype. Some services do this though it's preferable to send the X-Amzn-Errortype. Client implementations must first check for the X-Amzn-Errortype and then check for a top-level 'code' property.\n\nFor example service see Amazon S3 Glacier.",
                 "given": {
                     "name": "GreetingWithErrors",
                     "http": {
@@ -471,7 +526,6 @@
                         }
                     ]
                 },
-                "description": "This example uses the 'code' property in the output rather than X-Amzn-Errortype. Some services do this though it's preferable to send the X-Amzn-Errortype. Client implementations must first check for the X-Amzn-Errortype and then check for a top-level 'code' property.\n\nFor example service see Amazon S3 Glacier.",
                 "errorCode": "FooError",
                 "error": {},
                 "response": {
@@ -484,6 +538,7 @@
             },
             {
                 "id": "AwsJson11FooErrorUsingCodeAndNamespace",
+                "description": "Some services serialize errors using code, and it might contain a namespace. Clients should just take the last part of the string after '#'.",
                 "given": {
                     "name": "GreetingWithErrors",
                     "http": {
@@ -498,7 +553,6 @@
                         }
                     ]
                 },
-                "description": "Some services serialize errors using code, and it might contain a namespace. Clients should just take the last part of the string after '#'.",
                 "errorCode": "FooError",
                 "error": {},
                 "response": {
@@ -511,6 +565,7 @@
             },
             {
                 "id": "AwsJson11FooErrorUsingCodeUriAndNamespace",
+                "description": "Some services serialize errors using code, and it might contain a namespace. It also might contain a URI. Clients should just take the last part of the string after '#' and before \":\". This is a pathalogical case that might not occur in any deployed AWS service.",
                 "given": {
                     "name": "GreetingWithErrors",
                     "http": {
@@ -525,7 +580,6 @@
                         }
                     ]
                 },
-                "description": "Some services serialize errors using code, and it might contain a namespace. It also might contain a URI. Clients should just take the last part of the string after '#' and before \":\". This is a pathalogical case that might not occur in any deployed AWS service.",
                 "errorCode": "FooError",
                 "error": {},
                 "response": {
@@ -538,6 +592,7 @@
             },
             {
                 "id": "AwsJson11FooErrorWithDunderType",
+                "description": "Some services serialize errors using __type.",
                 "given": {
                     "name": "GreetingWithErrors",
                     "http": {
@@ -552,7 +607,6 @@
                         }
                     ]
                 },
-                "description": "Some services serialize errors using __type.",
                 "errorCode": "FooError",
                 "error": {},
                 "response": {
@@ -565,6 +619,7 @@
             },
             {
                 "id": "AwsJson11FooErrorWithDunderTypeAndNamespace",
+                "description": "Some services serialize errors using __type, and it might contain a namespace. Clients should just take the last part of the string after '#'.",
                 "given": {
                     "name": "GreetingWithErrors",
                     "http": {
@@ -579,7 +634,6 @@
                         }
                     ]
                 },
-                "description": "Some services serialize errors using __type, and it might contain a namespace. Clients should just take the last part of the string after '#'.",
                 "errorCode": "FooError",
                 "error": {},
                 "response": {
@@ -592,6 +646,7 @@
             },
             {
                 "id": "AwsJson11FooErrorWithDunderTypeUriAndNamespace",
+                "description": "Some services serialize errors using __type, and it might contain a namespace. It also might contain a URI. Clients should just take the last part of the string after '#' and before \":\". This is a pathalogical case that might not occur in any deployed AWS service.",
                 "given": {
                     "name": "GreetingWithErrors",
                     "http": {
@@ -606,7 +661,6 @@
                         }
                     ]
                 },
-                "description": "Some services serialize errors using __type, and it might contain a namespace. It also might contain a URI. Clients should just take the last part of the string after '#' and before \":\". This is a pathalogical case that might not occur in any deployed AWS service.",
                 "errorCode": "FooError",
                 "error": {},
                 "response": {
@@ -616,21 +670,88 @@
                     },
                     "body": "{\n    \"__type\": \"aws.protocoltests.restjson#FooError:http://internal.amazon.com/coral/com.amazon.coral.validate/\"\n}"
                 }
+            },
+            {
+                "id": "AwsJson11FooErrorWithNestedTypeProperty",
+                "description": "Some services serialize errors using __type, and if the response includes additional shapes that belong to a different namespace there'll be a nested __type property that must not be considered when determining which error to be surfaced.\n\nFor an example service see Amazon DynamoDB.",
+                "given": {
+                    "name": "GreetingWithErrors",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "documentation": "<p>This operation has three possible return values:</p> <ol> <li>A successful response in the form of GreetingWithErrorsOutput</li> <li>An InvalidGreeting error.</li> <li>A ComplexError error.</li> </ol> <p>Implementations must be able to successfully take a response and properly deserialize successful and error responses.</p>",
+                    "idempotent": true,
+                    "errors": [
+                        {
+                            "shape": "FooError"
+                        }
+                    ]
+                },
+                "errorCode": "FooError",
+                "error": {},
+                "response": {
+                    "status_code": 500,
+                    "headers": {
+                        "Content-Type": "application/x-amz-json-1.1"
+                    },
+                    "body": "{\n    \"__type\": \"aws.protocoltests.restjson#FooError\",\n    \"ErrorDetails\": [\n      {\n          \"__type\": \"com.amazon.internal#ErrorDetails\",\n          \"reason\": \"Some reason\"\n      }\n    ]\n}"
+                }
             }
         ]
     },
     {
         "description": "Test cases for JsonEnums operation",
         "metadata": {
+            "apiVersion": "2018-01-01",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "jsonprotocol",
+            "jsonVersion": "1.1",
             "protocol": "json",
             "protocols": [
                 "json"
             ],
-            "apiVersion": "2018-01-01",
-            "jsonVersion": "1.1",
-            "targetPrefix": "JsonProtocol"
+            "serviceFullName": "JsonProtocol",
+            "serviceId": "Json Protocol",
+            "signatureVersion": "v4",
+            "signingName": "JsonProtocol",
+            "targetPrefix": "JsonProtocol",
+            "uid": "json-protocol-2018-01-01"
         },
         "shapes": {
+            "FooEnum": {
+                "type": "string",
+                "enum": [
+                    "Foo",
+                    "Baz",
+                    "Bar",
+                    "1",
+                    "0"
+                ]
+            },
+            "FooEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "FooEnum"
+                }
+            },
+            "FooEnumMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "FooEnum"
+                }
+            },
+            "FooEnumSet": {
+                "type": "list",
+                "member": {
+                    "shape": "FooEnum"
+                }
+            },
             "JsonEnumsInputOutput": {
                 "type": "structure",
                 "members": {
@@ -654,37 +775,6 @@
                     }
                 }
             },
-            "FooEnum": {
-                "type": "string",
-                "enum": [
-                    "Foo",
-                    "Baz",
-                    "Bar",
-                    "1",
-                    "0"
-                ]
-            },
-            "FooEnumList": {
-                "type": "list",
-                "member": {
-                    "shape": "FooEnum"
-                }
-            },
-            "FooEnumSet": {
-                "type": "list",
-                "member": {
-                    "shape": "FooEnum"
-                }
-            },
-            "FooEnumMap": {
-                "type": "map",
-                "key": {
-                    "shape": "String"
-                },
-                "value": {
-                    "shape": "FooEnum"
-                }
-            },
             "String": {
                 "type": "string"
             }
@@ -692,6 +782,7 @@
         "cases": [
             {
                 "id": "AwsJson11Enums",
+                "description": "Serializes simple scalar properties",
                 "given": {
                     "name": "JsonEnums",
                     "http": {
@@ -704,7 +795,6 @@
                     "documentation": "<p>This example serializes enums as top level properties, in lists, sets, and maps.</p>",
                     "idempotent": true
                 },
-                "description": "Serializes simple scalar properties",
                 "result": {
                     "fooEnum1": "Foo",
                     "fooEnum2": "0",
@@ -735,15 +825,49 @@
     {
         "description": "Test cases for JsonIntEnums operation",
         "metadata": {
+            "apiVersion": "2018-01-01",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "jsonprotocol",
+            "jsonVersion": "1.1",
             "protocol": "json",
             "protocols": [
                 "json"
             ],
-            "apiVersion": "2018-01-01",
-            "jsonVersion": "1.1",
-            "targetPrefix": "JsonProtocol"
+            "serviceFullName": "JsonProtocol",
+            "serviceId": "Json Protocol",
+            "signatureVersion": "v4",
+            "signingName": "JsonProtocol",
+            "targetPrefix": "JsonProtocol",
+            "uid": "json-protocol-2018-01-01"
         },
         "shapes": {
+            "IntegerEnum": {
+                "type": "integer",
+                "box": true
+            },
+            "IntegerEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "IntegerEnum"
+                }
+            },
+            "IntegerEnumMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "IntegerEnum"
+                }
+            },
+            "IntegerEnumSet": {
+                "type": "list",
+                "member": {
+                    "shape": "IntegerEnum"
+                }
+            },
             "JsonIntEnumsInputOutput": {
                 "type": "structure",
                 "members": {
@@ -767,31 +891,6 @@
                     }
                 }
             },
-            "IntegerEnum": {
-                "type": "integer",
-                "box": true
-            },
-            "IntegerEnumList": {
-                "type": "list",
-                "member": {
-                    "shape": "IntegerEnum"
-                }
-            },
-            "IntegerEnumSet": {
-                "type": "list",
-                "member": {
-                    "shape": "IntegerEnum"
-                }
-            },
-            "IntegerEnumMap": {
-                "type": "map",
-                "key": {
-                    "shape": "String"
-                },
-                "value": {
-                    "shape": "IntegerEnum"
-                }
-            },
             "String": {
                 "type": "string"
             }
@@ -799,6 +898,7 @@
         "cases": [
             {
                 "id": "AwsJson11IntEnums",
+                "description": "Serializes simple scalar properties",
                 "given": {
                     "name": "JsonIntEnums",
                     "http": {
@@ -811,7 +911,6 @@
                     "documentation": "<p>This example serializes intEnums as top level properties, in lists, sets, and maps.</p>",
                     "idempotent": true
                 },
-                "description": "Serializes simple scalar properties",
                 "result": {
                     "intEnum1": 1,
                     "intEnum2": 2,
@@ -832,8 +931,8 @@
                 "response": {
                     "status_code": 200,
                     "headers": {
-                        "Content-Type": "application/x-amz-json-1.1",
-                        "X-Amz-Target": "JsonProtocol.JsonIntEnums"
+                        "X-Amz-Target": "JsonProtocol.JsonIntEnums",
+                        "Content-Type": "application/x-amz-json-1.1"
                     },
                     "body": "{\n    \"intEnum1\": 1,\n    \"intEnum2\": 2,\n    \"intEnum3\": 3,\n    \"intEnumList\": [\n        1,\n        2\n    ],\n    \"intEnumSet\": [\n        1,\n        2\n    ],\n    \"intEnumMap\": {\n        \"a\": 1,\n        \"b\": 2\n    }\n}"
                 }
@@ -843,23 +942,52 @@
     {
         "description": "Test cases for JsonUnions operation",
         "metadata": {
+            "apiVersion": "2018-01-01",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "jsonprotocol",
+            "jsonVersion": "1.1",
             "protocol": "json",
             "protocols": [
                 "json"
             ],
-            "apiVersion": "2018-01-01",
-            "jsonVersion": "1.1",
-            "targetPrefix": "JsonProtocol"
+            "serviceFullName": "JsonProtocol",
+            "serviceId": "Json Protocol",
+            "signatureVersion": "v4",
+            "signingName": "JsonProtocol",
+            "targetPrefix": "JsonProtocol",
+            "uid": "json-protocol-2018-01-01"
         },
         "shapes": {
-            "UnionInputOutput": {
+            "Blob": {
+                "type": "blob"
+            },
+            "Boolean": {
+                "type": "boolean",
+                "box": true
+            },
+            "FooEnum": {
+                "type": "string",
+                "enum": [
+                    "Foo",
+                    "Baz",
+                    "Bar",
+                    "1",
+                    "0"
+                ]
+            },
+            "GreetingStruct": {
                 "type": "structure",
                 "members": {
-                    "contents": {
-                        "shape": "MyUnion"
+                    "hi": {
+                        "shape": "String"
                     }
-                },
-                "documentation": "<p>A shared structure that contains a single union member.</p>"
+                }
+            },
+            "Integer": {
+                "type": "integer",
+                "box": true
             },
             "MyUnion": {
                 "type": "structure",
@@ -898,30 +1026,6 @@
             "String": {
                 "type": "string"
             },
-            "Boolean": {
-                "type": "boolean",
-                "box": true
-            },
-            "Integer": {
-                "type": "integer",
-                "box": true
-            },
-            "Blob": {
-                "type": "blob"
-            },
-            "Timestamp": {
-                "type": "timestamp"
-            },
-            "FooEnum": {
-                "type": "string",
-                "enum": [
-                    "Foo",
-                    "Baz",
-                    "Bar",
-                    "1",
-                    "0"
-                ]
-            },
             "StringList": {
                 "type": "list",
                 "member": {
@@ -937,18 +1041,23 @@
                     "shape": "String"
                 }
             },
-            "GreetingStruct": {
+            "Timestamp": {
+                "type": "timestamp"
+            },
+            "UnionInputOutput": {
                 "type": "structure",
                 "members": {
-                    "hi": {
-                        "shape": "String"
+                    "contents": {
+                        "shape": "MyUnion"
                     }
-                }
+                },
+                "documentation": "<p>A shared structure that contains a single union member.</p>"
             }
         },
         "cases": [
             {
                 "id": "AwsJson11DeserializeStringUnionValue",
+                "description": "Deserializes a string union value",
                 "given": {
                     "name": "JsonUnions",
                     "http": {
@@ -961,7 +1070,6 @@
                     "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
                     "idempotent": true
                 },
-                "description": "Deserializes a string union value",
                 "result": {
                     "contents": {
                         "stringValue": "foo"
@@ -977,6 +1085,7 @@
             },
             {
                 "id": "AwsJson11DeserializeBooleanUnionValue",
+                "description": "Deserializes a boolean union value",
                 "given": {
                     "name": "JsonUnions",
                     "http": {
@@ -989,7 +1098,6 @@
                     "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
                     "idempotent": true
                 },
-                "description": "Deserializes a boolean union value",
                 "result": {
                     "contents": {
                         "booleanValue": true
@@ -1005,6 +1113,7 @@
             },
             {
                 "id": "AwsJson11DeserializeNumberUnionValue",
+                "description": "Deserializes a number union value",
                 "given": {
                     "name": "JsonUnions",
                     "http": {
@@ -1017,7 +1126,6 @@
                     "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
                     "idempotent": true
                 },
-                "description": "Deserializes a number union value",
                 "result": {
                     "contents": {
                         "numberValue": 1
@@ -1033,6 +1141,7 @@
             },
             {
                 "id": "AwsJson11DeserializeBlobUnionValue",
+                "description": "Deserializes a blob union value",
                 "given": {
                     "name": "JsonUnions",
                     "http": {
@@ -1045,7 +1154,6 @@
                     "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
                     "idempotent": true
                 },
-                "description": "Deserializes a blob union value",
                 "result": {
                     "contents": {
                         "blobValue": "foo"
@@ -1061,6 +1169,7 @@
             },
             {
                 "id": "AwsJson11DeserializeTimestampUnionValue",
+                "description": "Deserializes a timestamp union value",
                 "given": {
                     "name": "JsonUnions",
                     "http": {
@@ -1073,7 +1182,6 @@
                     "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
                     "idempotent": true
                 },
-                "description": "Deserializes a timestamp union value",
                 "result": {
                     "contents": {
                         "timestampValue": 1398796238
@@ -1089,6 +1197,7 @@
             },
             {
                 "id": "AwsJson11DeserializeEnumUnionValue",
+                "description": "Deserializes an enum union value",
                 "given": {
                     "name": "JsonUnions",
                     "http": {
@@ -1101,7 +1210,6 @@
                     "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
                     "idempotent": true
                 },
-                "description": "Deserializes an enum union value",
                 "result": {
                     "contents": {
                         "enumValue": "Foo"
@@ -1117,6 +1225,7 @@
             },
             {
                 "id": "AwsJson11DeserializeListUnionValue",
+                "description": "Deserializes a list union value",
                 "given": {
                     "name": "JsonUnions",
                     "http": {
@@ -1129,7 +1238,6 @@
                     "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
                     "idempotent": true
                 },
-                "description": "Deserializes a list union value",
                 "result": {
                     "contents": {
                         "listValue": [
@@ -1148,6 +1256,7 @@
             },
             {
                 "id": "AwsJson11DeserializeMapUnionValue",
+                "description": "Deserializes a map union value",
                 "given": {
                     "name": "JsonUnions",
                     "http": {
@@ -1160,7 +1269,6 @@
                     "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
                     "idempotent": true
                 },
-                "description": "Deserializes a map union value",
                 "result": {
                     "contents": {
                         "mapValue": {
@@ -1179,6 +1287,7 @@
             },
             {
                 "id": "AwsJson11DeserializeStructureUnionValue",
+                "description": "Deserializes a structure union value",
                 "given": {
                     "name": "JsonUnions",
                     "http": {
@@ -1191,7 +1300,6 @@
                     "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
                     "idempotent": true
                 },
-                "description": "Deserializes a structure union value",
                 "result": {
                     "contents": {
                         "structureValue": {
@@ -1209,6 +1317,7 @@
             },
             {
                 "id": "AwsJson11DeserializeIgnoreType",
+                "description": "Ignores an unrecognized __type property",
                 "given": {
                     "name": "JsonUnions",
                     "http": {
@@ -1221,7 +1330,6 @@
                     "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
                     "idempotent": true
                 },
-                "description": "Ignores an unrecognized __type property",
                 "result": {
                     "contents": {
                         "structureValue": {
@@ -1242,15 +1350,50 @@
     {
         "description": "Test cases for KitchenSinkOperation operation",
         "metadata": {
+            "apiVersion": "2018-01-01",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "jsonprotocol",
+            "jsonVersion": "1.1",
             "protocol": "json",
             "protocols": [
                 "json"
             ],
-            "apiVersion": "2018-01-01",
-            "jsonVersion": "1.1",
-            "targetPrefix": "JsonProtocol"
+            "serviceFullName": "JsonProtocol",
+            "serviceId": "Json Protocol",
+            "signatureVersion": "v4",
+            "signingName": "JsonProtocol",
+            "targetPrefix": "JsonProtocol",
+            "uid": "json-protocol-2018-01-01"
         },
         "shapes": {
+            "Blob": {
+                "type": "blob"
+            },
+            "Boolean": {
+                "type": "boolean",
+                "box": true
+            },
+            "Double": {
+                "type": "double",
+                "box": true
+            },
+            "EmptyStruct": {
+                "type": "structure",
+                "members": {}
+            },
+            "Float": {
+                "type": "float",
+                "box": true
+            },
+            "Integer": {
+                "type": "integer",
+                "box": true
+            },
+            "JsonValue": {
+                "type": "string"
+            },
             "KitchenSink": {
                 "type": "structure",
                 "members": {
@@ -1335,39 +1478,11 @@
                     }
                 }
             },
-            "Blob": {
-                "type": "blob"
-            },
-            "Boolean": {
-                "type": "boolean",
-                "box": true
-            },
-            "Double": {
-                "type": "double",
-                "box": true
-            },
-            "EmptyStruct": {
-                "type": "structure",
-                "members": {}
-            },
-            "Float": {
-                "type": "float",
-                "box": true
-            },
-            "SyntheticTimestamp_http_date": {
-                "type": "timestamp",
-                "timestampFormat": "rfc822"
-            },
-            "Integer": {
-                "type": "integer",
-                "box": true
-            },
-            "SyntheticTimestamp_date_time": {
-                "type": "timestamp",
-                "timestampFormat": "iso8601"
-            },
-            "JsonValue": {
-                "type": "string"
+            "ListOfKitchenSinks": {
+                "type": "list",
+                "member": {
+                    "shape": "KitchenSink"
+                }
             },
             "ListOfListOfStrings": {
                 "type": "list",
@@ -1396,6 +1511,15 @@
             "Long": {
                 "type": "long",
                 "box": true
+            },
+            "MapOfKitchenSinks": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "KitchenSink"
+                }
             },
             "MapOfListsOfStrings": {
                 "type": "map",
@@ -1433,21 +1557,6 @@
                     "shape": "SimpleStruct"
                 }
             },
-            "ListOfKitchenSinks": {
-                "type": "list",
-                "member": {
-                    "shape": "KitchenSink"
-                }
-            },
-            "MapOfKitchenSinks": {
-                "type": "map",
-                "key": {
-                    "shape": "String"
-                },
-                "value": {
-                    "shape": "KitchenSink"
-                }
-            },
             "SimpleStruct": {
                 "type": "structure",
                 "members": {
@@ -1467,17 +1576,26 @@
                     }
                 }
             },
-            "Timestamp": {
-                "type": "timestamp"
+            "SyntheticTimestamp_date_time": {
+                "type": "timestamp",
+                "timestampFormat": "iso8601"
             },
             "SyntheticTimestamp_epoch_seconds": {
                 "type": "timestamp",
                 "timestampFormat": "unixTimestamp"
+            },
+            "SyntheticTimestamp_http_date": {
+                "type": "timestamp",
+                "timestampFormat": "rfc822"
+            },
+            "Timestamp": {
+                "type": "timestamp"
             }
         },
         "cases": [
             {
                 "id": "parses_operations_with_empty_json_bodies",
+                "description": "Parses operations with empty JSON bodies",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1488,7 +1606,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Parses operations with empty JSON bodies",
                 "result": {},
                 "response": {
                     "status_code": 200,
@@ -1500,6 +1617,7 @@
             },
             {
                 "id": "parses_string_shapes",
+                "description": "Parses string shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1510,7 +1628,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Parses string shapes",
                 "result": {
                     "String": "string-value"
                 },
@@ -1524,6 +1641,7 @@
             },
             {
                 "id": "parses_integer_shapes",
+                "description": "Parses integer shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1534,7 +1652,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Parses integer shapes",
                 "result": {
                     "Integer": 1234
                 },
@@ -1548,6 +1665,7 @@
             },
             {
                 "id": "parses_long_shapes",
+                "description": "Parses long shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1558,7 +1676,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Parses long shapes",
                 "result": {
                     "Long": 1234567890123456789
                 },
@@ -1572,6 +1689,7 @@
             },
             {
                 "id": "parses_float_shapes",
+                "description": "Parses float shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1582,7 +1700,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Parses float shapes",
                 "result": {
                     "Float": 1234.5
                 },
@@ -1596,6 +1713,7 @@
             },
             {
                 "id": "parses_double_shapes",
+                "description": "Parses double shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1606,7 +1724,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Parses double shapes",
                 "result": {
                     "Double": 1.2345678912345679E8
                 },
@@ -1620,6 +1737,7 @@
             },
             {
                 "id": "parses_boolean_shapes_true",
+                "description": "Parses boolean shapes (true)",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1630,7 +1748,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Parses boolean shapes (true)",
                 "result": {
                     "Boolean": true
                 },
@@ -1644,6 +1761,7 @@
             },
             {
                 "id": "parses_boolean_false",
+                "description": "Parses boolean (false)",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1654,7 +1772,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Parses boolean (false)",
                 "result": {
                     "Boolean": false
                 },
@@ -1668,6 +1785,7 @@
             },
             {
                 "id": "parses_blob_shapes",
+                "description": "Parses blob shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1678,7 +1796,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Parses blob shapes",
                 "result": {
                     "Blob": "binary-value"
                 },
@@ -1692,6 +1809,7 @@
             },
             {
                 "id": "parses_timestamp_shapes",
+                "description": "Parses timestamp shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1702,7 +1820,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Parses timestamp shapes",
                 "result": {
                     "Timestamp": 946845296
                 },
@@ -1716,6 +1833,7 @@
             },
             {
                 "id": "parses_iso8601_timestamps",
+                "description": "Parses iso8601 timestamps",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1726,7 +1844,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Parses iso8601 timestamps",
                 "result": {
                     "Iso8601Timestamp": 946845296
                 },
@@ -1740,6 +1857,7 @@
             },
             {
                 "id": "parses_httpdate_timestamps",
+                "description": "Parses httpdate timestamps",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1750,7 +1868,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Parses httpdate timestamps",
                 "result": {
                     "HttpdateTimestamp": 946845296
                 },
@@ -1764,6 +1881,7 @@
             },
             {
                 "id": "parses_list_shapes",
+                "description": "Parses list shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1774,7 +1892,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Parses list shapes",
                 "result": {
                     "ListOfStrings": [
                         "abc",
@@ -1792,6 +1909,7 @@
             },
             {
                 "id": "parses_list_of_map_shapes",
+                "description": "Parses list of map shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1802,7 +1920,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Parses list of map shapes",
                 "result": {
                     "ListOfMapsOfStrings": [
                         {
@@ -1823,6 +1940,7 @@
             },
             {
                 "id": "parses_list_of_list_shapes",
+                "description": "Parses list of list shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1833,7 +1951,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Parses list of list shapes",
                 "result": {
                     "ListOfLists": [
                         [
@@ -1858,6 +1975,7 @@
             },
             {
                 "id": "parses_list_of_structure_shapes",
+                "description": "Parses list of structure shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1868,7 +1986,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Parses list of structure shapes",
                 "result": {
                     "ListOfStructs": [
                         {
@@ -1889,6 +2006,7 @@
             },
             {
                 "id": "parses_list_of_recursive_structure_shapes",
+                "description": "Parses list of recursive structure shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1899,7 +2017,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Parses list of recursive structure shapes",
                 "result": {
                     "RecursiveList": [
                         {
@@ -1925,6 +2042,7 @@
             },
             {
                 "id": "parses_map_shapes",
+                "description": "Parses map shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1935,7 +2053,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Parses map shapes",
                 "result": {
                     "MapOfStrings": {
                         "size": "large",
@@ -1952,6 +2069,7 @@
             },
             {
                 "id": "parses_map_of_list_shapes",
+                "description": "Parses map of list shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1962,7 +2080,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Parses map of list shapes",
                 "result": {
                     "MapOfListsOfStrings": {
                         "sizes": [
@@ -1985,6 +2102,7 @@
             },
             {
                 "id": "parses_map_of_map_shapes",
+                "description": "Parses map of map shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -1995,7 +2113,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Parses map of map shapes",
                 "result": {
                     "MapOfMaps": {
                         "sizes": {
@@ -2018,6 +2135,7 @@
             },
             {
                 "id": "parses_map_of_structure_shapes",
+                "description": "Parses map of structure shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -2028,7 +2146,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Parses map of structure shapes",
                 "result": {
                     "MapOfStructs": {
                         "size": {
@@ -2049,6 +2166,7 @@
             },
             {
                 "id": "parses_map_of_recursive_structure_shapes",
+                "description": "Parses map of recursive structure shapes",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -2059,7 +2177,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Parses map of recursive structure shapes",
                 "result": {
                     "RecursiveMap": {
                         "key-1": {
@@ -2085,6 +2202,7 @@
             },
             {
                 "id": "parses_the_request_id_from_the_response",
+                "description": "Parses the request id from the response",
                 "given": {
                     "name": "KitchenSinkOperation",
                     "http": {
@@ -2095,7 +2213,6 @@
                         "shape": "KitchenSink"
                     }
                 },
-                "description": "Parses the request id from the response",
                 "result": {},
                 "response": {
                     "status_code": 200,
@@ -2111,13 +2228,22 @@
     {
         "description": "Test cases for NullOperation operation",
         "metadata": {
+            "apiVersion": "2018-01-01",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "jsonprotocol",
+            "jsonVersion": "1.1",
             "protocol": "json",
             "protocols": [
                 "json"
             ],
-            "apiVersion": "2018-01-01",
-            "jsonVersion": "1.1",
-            "targetPrefix": "JsonProtocol"
+            "serviceFullName": "JsonProtocol",
+            "serviceId": "Json Protocol",
+            "signatureVersion": "v4",
+            "signingName": "JsonProtocol",
+            "targetPrefix": "JsonProtocol",
+            "uid": "json-protocol-2018-01-01"
         },
         "shapes": {
             "NullOperationInputOutput": {
@@ -2135,6 +2261,7 @@
         "cases": [
             {
                 "id": "AwsJson11StructuresDontDeserializeNullValues",
+                "description": "Null structure values are dropped",
                 "given": {
                     "name": "NullOperation",
                     "http": {
@@ -2145,7 +2272,6 @@
                         "shape": "NullOperationInputOutput"
                     }
                 },
-                "description": "Null structure values are dropped",
                 "result": {},
                 "response": {
                     "status_code": 200,
@@ -2160,15 +2286,29 @@
     {
         "description": "Test cases for PutAndGetInlineDocuments operation",
         "metadata": {
+            "apiVersion": "2018-01-01",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "jsonprotocol",
+            "jsonVersion": "1.1",
             "protocol": "json",
             "protocols": [
                 "json"
             ],
-            "apiVersion": "2018-01-01",
-            "jsonVersion": "1.1",
-            "targetPrefix": "JsonProtocol"
+            "serviceFullName": "JsonProtocol",
+            "serviceId": "Json Protocol",
+            "signatureVersion": "v4",
+            "signingName": "JsonProtocol",
+            "targetPrefix": "JsonProtocol",
+            "uid": "json-protocol-2018-01-01"
         },
         "shapes": {
+            "Document": {
+                "type": "structure",
+                "members": {},
+                "document": true
+            },
             "PutAndGetInlineDocumentsInputOutput": {
                 "type": "structure",
                 "members": {
@@ -2176,16 +2316,12 @@
                         "shape": "Document"
                     }
                 }
-            },
-            "Document": {
-                "type": "structure",
-                "members": {},
-                "document": true
             }
         },
         "cases": [
             {
                 "id": "PutAndGetInlineDocumentsInput",
+                "description": "Serializes inline documents in a JSON response.",
                 "given": {
                     "name": "PutAndGetInlineDocuments",
                     "http": {
@@ -2197,7 +2333,6 @@
                     },
                     "documentation": "<p>This example serializes an inline document as part of the payload.</p>"
                 },
-                "description": "Serializes inline documents in a JSON response.",
                 "result": {
                     "inlineDocument": {
                         "foo": "bar"
@@ -2216,15 +2351,32 @@
     {
         "description": "Test cases for SimpleScalarProperties operation",
         "metadata": {
+            "apiVersion": "2018-01-01",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "jsonprotocol",
+            "jsonVersion": "1.1",
             "protocol": "json",
             "protocols": [
                 "json"
             ],
-            "apiVersion": "2018-01-01",
-            "jsonVersion": "1.1",
-            "targetPrefix": "JsonProtocol"
+            "serviceFullName": "JsonProtocol",
+            "serviceId": "Json Protocol",
+            "signatureVersion": "v4",
+            "signingName": "JsonProtocol",
+            "targetPrefix": "JsonProtocol",
+            "uid": "json-protocol-2018-01-01"
         },
         "shapes": {
+            "Double": {
+                "type": "double",
+                "box": true
+            },
+            "Float": {
+                "type": "float",
+                "box": true
+            },
             "SimpleScalarPropertiesInputOutput": {
                 "type": "structure",
                 "members": {
@@ -2235,19 +2387,12 @@
                         "shape": "Double"
                     }
                 }
-            },
-            "Float": {
-                "type": "float",
-                "box": true
-            },
-            "Double": {
-                "type": "double",
-                "box": true
             }
         },
         "cases": [
             {
                 "id": "AwsJson11SupportsNaNFloatInputs",
+                "description": "Supports handling NaN float values.",
                 "given": {
                     "name": "SimpleScalarProperties",
                     "http": {
@@ -2258,7 +2403,6 @@
                         "shape": "SimpleScalarPropertiesInputOutput"
                     }
                 },
-                "description": "Supports handling NaN float values.",
                 "result": {
                     "floatValue": "NaN",
                     "doubleValue": "NaN"
@@ -2273,6 +2417,7 @@
             },
             {
                 "id": "AwsJson11SupportsInfinityFloatInputs",
+                "description": "Supports handling Infinity float values.",
                 "given": {
                     "name": "SimpleScalarProperties",
                     "http": {
@@ -2283,7 +2428,6 @@
                         "shape": "SimpleScalarPropertiesInputOutput"
                     }
                 },
-                "description": "Supports handling Infinity float values.",
                 "result": {
                     "floatValue": "Infinity",
                     "doubleValue": "Infinity"
@@ -2298,6 +2442,7 @@
             },
             {
                 "id": "AwsJson11SupportsNegativeInfinityFloatInputs",
+                "description": "Supports handling -Infinity float values.",
                 "given": {
                     "name": "SimpleScalarProperties",
                     "http": {
@@ -2308,7 +2453,6 @@
                         "shape": "SimpleScalarPropertiesInputOutput"
                     }
                 },
-                "description": "Supports handling -Infinity float values.",
                 "result": {
                     "floatValue": "-Infinity",
                     "doubleValue": "-Infinity"
@@ -2319,6 +2463,114 @@
                         "Content-Type": "application/x-amz-json-1.1"
                     },
                     "body": "{\n    \"floatValue\": \"-Infinity\",\n    \"doubleValue\": \"-Infinity\"\n}"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for SparseNullsOperation operation",
+        "metadata": {
+            "apiVersion": "2018-01-01",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "endpointPrefix": "jsonprotocol",
+            "jsonVersion": "1.1",
+            "protocol": "json",
+            "protocols": [
+                "json"
+            ],
+            "serviceFullName": "JsonProtocol",
+            "serviceId": "Json Protocol",
+            "signatureVersion": "v4",
+            "signingName": "JsonProtocol",
+            "targetPrefix": "JsonProtocol",
+            "uid": "json-protocol-2018-01-01"
+        },
+        "shapes": {
+            "SparseNullsOperationInputOutput": {
+                "type": "structure",
+                "members": {
+                    "sparseStringList": {
+                        "shape": "SparseStringList"
+                    },
+                    "sparseStringMap": {
+                        "shape": "SparseStringMap"
+                    }
+                }
+            },
+            "SparseStringList": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                },
+                "sparse": true
+            },
+            "SparseStringMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "String"
+                },
+                "sparse": true
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "AwsJson11SparseMapsDeserializeNullValues",
+                "description": "Deserializes null values in maps",
+                "given": {
+                    "name": "SparseNullsOperation",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "output": {
+                        "shape": "SparseNullsOperationInputOutput"
+                    }
+                },
+                "result": {
+                    "sparseStringMap": {
+                        "foo": null
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/x-amz-json-1.1"
+                    },
+                    "body": "{\n    \"sparseStringMap\": {\n        \"foo\": null\n    }\n}"
+                }
+            },
+            {
+                "id": "AwsJson11SparseListsDeserializeNull",
+                "description": "Deserializes null values in lists",
+                "given": {
+                    "name": "SparseNullsOperation",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "output": {
+                        "shape": "SparseNullsOperationInputOutput"
+                    }
+                },
+                "result": {
+                    "sparseStringList": [
+                        null
+                    ]
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/x-amz-json-1.1"
+                    },
+                    "body": "{\n    \"sparseStringList\": [\n        null\n    ]\n}"
                 }
             }
         ]

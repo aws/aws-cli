@@ -17,7 +17,7 @@
       "name":"CalculateIsolines",
       "http":{
         "method":"POST",
-        "requestUri":"/isolines",
+        "requestUri":"/v2/isolines",
         "responseCode":200
       },
       "input":{"shape":"CalculateIsolinesRequest"},
@@ -35,7 +35,7 @@
       "name":"CalculateRouteMatrix",
       "http":{
         "method":"POST",
-        "requestUri":"/route-matrix",
+        "requestUri":"/v2/route-matrix",
         "responseCode":200
       },
       "input":{"shape":"CalculateRouteMatrixRequest"},
@@ -53,7 +53,7 @@
       "name":"CalculateRoutes",
       "http":{
         "method":"POST",
-        "requestUri":"/routes",
+        "requestUri":"/v2/routes",
         "responseCode":200
       },
       "input":{"shape":"CalculateRoutesRequest"},
@@ -71,7 +71,7 @@
       "name":"OptimizeWaypoints",
       "http":{
         "method":"POST",
-        "requestUri":"/optimize-waypoints",
+        "requestUri":"/v2/optimize-waypoints",
         "responseCode":200
       },
       "input":{"shape":"OptimizeWaypointsRequest"},
@@ -89,7 +89,7 @@
       "name":"SnapToRoads",
       "http":{
         "method":"POST",
-        "requestUri":"/snap-to-roads",
+        "requestUri":"/v2/snap-to-roads",
         "responseCode":200
       },
       "input":{"shape":"SnapToRoadsRequest"},
@@ -283,7 +283,7 @@
         },
         "Destinations":{
           "shape":"CalculateRouteMatrixRequestDestinationsList",
-          "documentation":"<p>List of destinations for the route.</p> <note> <p>Route calculations are billed for each origin and destination pair. If you use a large matrix of origins and destinations, your costs will increase accordingly. For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/routes-pricing.html\">Routes pricing</a> in the <i>Amazon Location Service Developer Guide</i>.</p> </note>"
+          "documentation":"<p>List of destinations for the route in World Geodetic System (WGS 84) format: [longitude, latitude].</p> <note> <p>Route calculations are billed for each origin and destination pair. If you use a large matrix of origins and destinations, your costs will increase accordingly. For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/routes-pricing.html\">Routes pricing</a> in the <i>Amazon Location Service Developer Guide</i>.</p> </note> <p>The maximum number of destinations depends on the routing boundary configuration:</p> <ul> <li> <p>With <code>RoutingBoundary.Geometry</code> set: maximum 500 destinations</p> </li> <li> <p>With <code>RoutingBoundary.Unbounded</code> set to <code>true</code>: maximum 100 destinations</p> </li> <li> <p>For <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/GrabMaps.html\">GrabMaps</a> customers in <code>ap-southeast-1</code> and <code>ap-southeast-5</code>: maximum 350 destinations</p> </li> </ul> <p>The total matrix size (origins × destinations) must not exceed:</p> <ul> <li> <p>With <code>RoutingBoundary.Geometry</code>: 160,000</p> </li> <li> <p>With <code>RoutingBoundary.Unbounded</code>: 100</p> </li> <li> <p>For <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/GrabMaps.html\">GrabMaps</a> customers in <code>ap-southeast-1</code> and <code>ap-southeast-5</code>: 122,500</p> </li> </ul>"
         },
         "Exclude":{
           "shape":"RouteMatrixExclusionOptions",
@@ -301,11 +301,11 @@
         },
         "Origins":{
           "shape":"CalculateRouteMatrixRequestOriginsList",
-          "documentation":"<p>The position for the origin in World Geodetic System (WGS 84) format: [longitude, latitude].</p> <note> <p>Route calculations are billed for each origin and destination pair. Using a large amount of Origins in a request can lead you to incur unexpected charges. For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/routes-pricing.html\">Routes pricing</a> in the <i>Amazon Location Service Developer Guide</i>.</p> </note>"
+          "documentation":"<p>List of origins for the route in World Geodetic System (WGS 84) format: [longitude, latitude].</p> <note> <p>Route calculations are billed for each origin and destination pair. Using a large amount of Origins in a request can lead you to incur unexpected charges. For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/routes-pricing.html\">Routes pricing</a> in the <i>Amazon Location Service Developer Guide</i>.</p> </note> <p>The maximum number of origins depends on the routing boundary configuration:</p> <ul> <li> <p>With <code>RoutingBoundary.Geometry</code> set: maximum 500 origins</p> </li> <li> <p>With <code>RoutingBoundary.Unbounded</code> set to <code>true</code>: maximum 15 origins</p> </li> <li> <p>For <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/GrabMaps.html\">GrabMaps</a> customers in <code>ap-southeast-1</code> and <code>ap-southeast-5</code>: maximum 350 origins</p> </li> </ul> <p>The total matrix size (origins × destinations) must not exceed:</p> <ul> <li> <p>With <code>RoutingBoundary.Geometry</code>: 160,000</p> </li> <li> <p>With <code>RoutingBoundary.Unbounded</code>: 100</p> </li> <li> <p>For <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/GrabMaps.html\">GrabMaps</a> customers in <code>ap-southeast-1</code> and <code>ap-southeast-5</code>: 122,500</p> </li> </ul>"
         },
         "RoutingBoundary":{
           "shape":"RouteMatrixBoundary",
-          "documentation":"<p> Boundary within which the matrix is to be calculated. All data, origins and destinations outside the boundary are considered invalid. For <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/GrabMaps.html\">GrabMaps</a> customers, <code>ap-southeast-1</code> and <code>ap-southeast-5</code> regions support only <code>Unbounded</code> set to <code>true</code>. </p> <p>Default value: <code>Unbounded set to true</code> </p> <note> <p>When request routing boundary was set as AutoCircle, the response routing boundary will return Circle derived from the AutoCircle settings.</p> </note>"
+          "documentation":"<p> Boundary within which the matrix is to be calculated. All data, origins and destinations outside the boundary are considered invalid. For <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/GrabMaps.html\">GrabMaps</a> customers, <code>ap-southeast-1</code> and <code>ap-southeast-5</code> regions support only <code>Unbounded</code> set to <code>true</code>. </p> <p>Default value: <code>Unbounded set to true</code> </p> <note> <p>When <code>AutoCircle</code> is set in the request, the response routing boundary will return <code>Circle</code> derived from the <code>AutoCircle</code> settings.</p> </note>"
         },
         "Traffic":{
           "shape":"RouteMatrixTrafficOptions",
@@ -356,7 +356,7 @@
         },
         "RoutingBoundary":{
           "shape":"RouteMatrixBoundary",
-          "documentation":"<p>Boundary within which the matrix is to be calculated. All data, origins and destinations outside the boundary are considered invalid.</p> <note> <p>When request routing boundary was set as AutoCircle, the response routing boundary will return Circle derived from the AutoCircle settings.</p> </note>"
+          "documentation":"<p>Boundary within which the matrix is to be calculated. All data, origins and destinations outside the boundary are considered invalid.</p> <note> <p>When <code>AutoCircle</code> is set in the request, the response routing boundary will return <code>Circle</code> derived from the <code>AutoCircle</code> settings.</p> </note>"
         }
       }
     },
@@ -530,10 +530,10 @@
         },
         "Radius":{
           "shape":"SensitiveDouble",
-          "documentation":"<p>Radius of the Circle.</p> <p> <b>Unit</b>: <code>meters</code> </p>"
+          "documentation":"<p>Radius of the Circle.</p> <p> <b>Unit</b>: <code>meters</code> </p> <p>Valid Range: Minimum value of 0. Maximum value of 200000.</p>"
         }
       },
-      "documentation":"<p>Geometry defined as a circle. When request routing boundary was set as <code>AutoCircle</code>, the response routing boundary will return <code>Circle</code> derived from the <code>AutoCircle</code> settings.</p>",
+      "documentation":"<p>Geometry defined as a circle. The circle defines the routing boundary area. Any waypoints outside the circle will result in a route matrix entry error.</p> <p>You can specify a <code>Circle</code> directly in the request, or it will be auto-derived when <code>AutoCircle</code> is used. When <code>AutoCircle</code> is set in the request, the response routing boundary will return <code>Circle</code> derived from the <code>AutoCircle</code> settings.</p>",
       "sensitive":true
     },
     "ClusterIndex":{
@@ -633,6 +633,12 @@
       "min":0,
       "sensitive":true
     },
+    "EnergyKilowattHours":{
+      "type":"double",
+      "box":true,
+      "min":0.0,
+      "sensitive":true
+    },
     "GeometryFormat":{
       "type":"string",
       "enum":[
@@ -644,6 +650,11 @@
       "type":"double",
       "max":360.0,
       "min":0.0,
+      "sensitive":true
+    },
+    "HexColor":{
+      "type":"string",
+      "pattern":".*#[0-9A-Fa-f]{6}.*",
       "sensitive":true
     },
     "IndexList":{
@@ -1489,7 +1500,7 @@
         },
         "Waypoints":{
           "shape":"WaypointOptimizationWaypointList",
-          "documentation":"<p>List of waypoints between the <code>Origin</code> and <code>Destination</code>.</p>"
+          "documentation":"<p>List of waypoints between the <code>Origin</code> and <code>Destination</code>, in World Geodetic System (WGS 84) format: [longitude, latitude].</p> <p>The maximum number of waypoints allowed per request:</p> <ul> <li> <p>Maximum 50 waypoints per request</p> </li> <li> <p>Maximum 20 waypoints when using constraints (<code>AccessHours</code>, <code>AppointmentTime</code>, <code>ServiceDuration</code>, <code>Heading</code>, <code>SideOfStreet</code>, <code>Before</code>)</p> </li> </ul>"
         }
       }
     },
@@ -1583,6 +1594,12 @@
       "member":{"shape":"Double"},
       "max":3,
       "min":2,
+      "sensitive":true
+    },
+    "PowerKilowatts":{
+      "type":"double",
+      "box":true,
+      "min":0.0,
       "sensitive":true
     },
     "RoadSnapHazardousCargoType":{
@@ -1841,6 +1858,46 @@
       },
       "documentation":"<p>The route.</p>"
     },
+    "RouteAccessPointDetails":{
+      "type":"structure",
+      "members":{
+        "Accessibility":{
+          "shape":"RouteAccessibilityAvailabilityDetails",
+          "documentation":"<p>Wheelchair accessibility information for the access point.</p>"
+        }
+      },
+      "documentation":"<p>Details of the access point.</p>"
+    },
+    "RouteAccessibilityAttribute":{
+      "type":"string",
+      "enum":["Wheelchair"],
+      "sensitive":true
+    },
+    "RouteAccessibilityAttributeList":{
+      "type":"list",
+      "member":{"shape":"RouteAccessibilityAttribute"},
+      "max":1,
+      "min":0
+    },
+    "RouteAccessibilityAvailability":{
+      "type":"string",
+      "enum":[
+        "Available",
+        "Limited",
+        "Unavailable",
+        "Unknown"
+      ]
+    },
+    "RouteAccessibilityAvailabilityDetails":{
+      "type":"structure",
+      "members":{
+        "Wheelchair":{
+          "shape":"RouteAccessibilityAvailability",
+          "documentation":"<p>Wheelchair accessibility status.</p>"
+        }
+      },
+      "documentation":"<p>Details about the availability of accessibility features.</p>"
+    },
     "RouteAllowOptions":{
       "type":"structure",
       "members":{
@@ -1854,6 +1911,33 @@
         }
       },
       "documentation":"<p>Features that are allowed while calculating a route.</p>"
+    },
+    "RouteAttribution":{
+      "type":"structure",
+      "required":["WebLink"],
+      "members":{
+        "AttributionType":{
+          "shape":"RouteAttributionType",
+          "documentation":"<p>The type of the attribution link.</p>"
+        },
+        "WebLink":{
+          "shape":"RouteWebLink",
+          "documentation":"<p>The URL to an external resource.</p>"
+        }
+      },
+      "documentation":"<p>Required attribution to display.</p>"
+    },
+    "RouteAttributionList":{
+      "type":"list",
+      "member":{"shape":"RouteAttribution"}
+    },
+    "RouteAttributionType":{
+      "type":"string",
+      "enum":[
+        "Disclaimer",
+        "Tariff"
+      ],
+      "sensitive":true
     },
     "RouteAvoidanceArea":{
       "type":"structure",
@@ -2018,6 +2102,24 @@
       "box":true,
       "min":1,
       "sensitive":true
+    },
+    "RouteChargeStepDetails":{
+      "type":"structure",
+      "members":{
+        "ArrivalCharge":{
+          "shape":"EnergyKilowattHours",
+          "documentation":"<p>Estimated vehicle battery charge before this step (in kWh). </p>"
+        },
+        "ConsumablePower":{
+          "shape":"PowerKilowatts",
+          "documentation":"<p>Maximum charging power available to the vehicle.</p> <p> <b>Unit</b>: <code>KwH</code> </p>"
+        },
+        "DesiredCharge":{
+          "shape":"EnergyKilowattHours",
+          "documentation":"<p>Details that are specific to a Charge step.</p> <p> <b>Unit</b>: <code>KwH</code> </p>"
+        }
+      },
+      "documentation":"<p>Details about the EV charge at the current step.</p>"
     },
     "RouteContinueHighwayStepDetails":{
       "type":"structure",
@@ -2259,11 +2361,11 @@
       "members":{
         "Place":{
           "shape":"RouteFerryPlace",
-          "documentation":"<p>The place details.</p>"
+          "documentation":"<p>Place details corresponding to the arrival.</p>"
         },
         "Time":{
           "shape":"TimestampWithTimezoneOffset",
-          "documentation":"<p>The time.</p>"
+          "documentation":"<p>The arrival time.</p>"
         }
       },
       "documentation":"<p>Details corresponding to the arrival for the leg.</p>"
@@ -2305,11 +2407,11 @@
       "members":{
         "Place":{
           "shape":"RouteFerryPlace",
-          "documentation":"<p>The place details.</p>"
+          "documentation":"<p>Place details corresponding to the departure.</p>"
         },
         "Time":{
           "shape":"TimestampWithTimezoneOffset",
-          "documentation":"<p>The time.</p>"
+          "documentation":"<p>The departure time.</p>"
         }
       },
       "documentation":"<p>Details corresponding to the departure for the leg.</p>"
@@ -2412,14 +2514,14 @@
       "members":{
         "Distance":{
           "shape":"DistanceMeters",
-          "documentation":"<p>Distance of the step.</p>"
+          "documentation":"<p>Distance of the entire leg.</p> <p> <b>Unit</b>: <code>meters</code> </p>"
         },
         "Duration":{
           "shape":"DurationSeconds",
-          "documentation":"<p>Duration of the step.</p> <p> <b>Unit</b>: <code>seconds</code> </p>"
+          "documentation":"<p>Duration of the entire leg.</p> <p> <b>Unit</b>: <code>seconds</code> </p>"
         }
       },
-      "documentation":"<p>Summarized details of the leg.</p>"
+      "documentation":"<p>Summary including duration and distance for the entire leg.</p>"
     },
     "RouteFerryPlace":{
       "type":"structure",
@@ -2471,7 +2573,7 @@
         },
         "Names":{
           "shape":"LocalizedStringList",
-          "documentation":"<p>Provides an array of names of the ferry span in available languages.</p>"
+          "documentation":"<p>Names of the ferry span in available languages.</p>"
         },
         "Region":{
           "shape":"RouteFerrySpanRegionString",
@@ -2591,6 +2693,162 @@
       "max":11,
       "min":0
     },
+    "RouteIntermodalEnabledLegs":{
+      "type":"string",
+      "enum":[
+        "FirstLeg",
+        "LastLeg",
+        "EntireRoute",
+        "None"
+      ],
+      "sensitive":true
+    },
+    "RouteIntermodalEnabledLegsList":{
+      "type":"list",
+      "member":{"shape":"RouteIntermodalEnabledLegs"},
+      "max":2,
+      "min":1
+    },
+    "RouteIntermodalOptions":{
+      "type":"structure",
+      "members":{
+        "AccessibilityAttributes":{
+          "shape":"RouteAccessibilityAttributeList",
+          "documentation":"<p>Accessibility attributes to consider when calculating the route.</p>"
+        },
+        "MaxTransfers":{
+          "shape":"RouteIntermodalOptionsMaxTransfersInteger",
+          "documentation":"<p>Maximum number of transfers allowed when calculating the route.</p>"
+        },
+        "Pedestrian":{
+          "shape":"RouteIntermodalPedestrianOptions",
+          "documentation":"<p>Options for the pedestrian leg of the intermodal route.</p>"
+        },
+        "Rental":{
+          "shape":"RouteIntermodalRentalOptions",
+          "documentation":"<p>Options for the rental leg of the intermodal route.</p>"
+        },
+        "Taxi":{
+          "shape":"RouteIntermodalTaxiOptions",
+          "documentation":"<p>Options for the taxi leg of the intermodal route.</p>"
+        },
+        "Transit":{
+          "shape":"RouteIntermodalTransitOptions",
+          "documentation":"<p>Options for the transit leg of the intermodal route.</p>"
+        },
+        "Vehicle":{
+          "shape":"RouteIntermodalVehicleOptions",
+          "documentation":"<p>Options for the vehicle leg of the intermodal route.</p>"
+        }
+      },
+      "documentation":"<p>Options related to intermodal routing.</p> <note> <p>Not supported in <code>ap-southeast-1</code> and <code>ap-southeast-5</code> regions for <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/GrabMaps.html\">GrabMaps</a> customers.</p> </note>"
+    },
+    "RouteIntermodalOptionsMaxTransfersInteger":{
+      "type":"integer",
+      "box":true,
+      "max":6,
+      "min":0
+    },
+    "RouteIntermodalPedestrianOptions":{
+      "type":"structure",
+      "members":{
+        "MaxDistance":{
+          "shape":"RouteIntermodalPedestrianOptionsMaxDistanceLong",
+          "documentation":"<p>Maximum walking distance allowed.</p> <p> <b>Unit</b>: <code>meters</code> </p>",
+          "box":true
+        },
+        "Speed":{
+          "shape":"RouteIntermodalPedestrianOptionsSpeedDouble",
+          "documentation":"<p>Walking speed.</p> <p> <b>Unit</b>: <code>kilometers per hour</code> </p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>Options for the pedestrian leg of the intermodal route.</p>"
+    },
+    "RouteIntermodalPedestrianOptionsMaxDistanceLong":{
+      "type":"long",
+      "max":6000,
+      "min":0,
+      "sensitive":true
+    },
+    "RouteIntermodalPedestrianOptionsSpeedDouble":{
+      "type":"double",
+      "max":7.2,
+      "min":1.8,
+      "sensitive":true
+    },
+    "RouteIntermodalRentalOptions":{
+      "type":"structure",
+      "members":{
+        "AllowedModes":{
+          "shape":"RouteRentalModeList",
+          "documentation":"<p>Allowed rental transport modes when calculating the route. By default, all transport modes are allowed. Cannot be used together with <code>ExcludedModes</code>.</p>"
+        },
+        "EnabledFor":{
+          "shape":"RouteIntermodalEnabledLegsList",
+          "documentation":"<p>Specifies the portion of the route for which this leg type is enabled. By default, the leg type is enabled for all legs. Valid values:</p> <ul> <li> <p> <code>FirstLeg</code> - Enable this leg type for the first non-pedestrian leg of the route.</p> </li> <li> <p> <code>LastLeg</code> - Enable this leg type for the last non-pedestrian leg of the route.</p> </li> <li> <p> <code>EntireRoute</code> - Enable this leg type for the entire route.</p> </li> <li> <p> <code>None</code> - Disable this leg type entirely.</p> </li> </ul>"
+        },
+        "ExcludedModes":{
+          "shape":"RouteRentalModeList",
+          "documentation":"<p>Excluded rental transport modes when calculating the route. By default, all transport modes are allowed. Cannot be used together with <code>AllowedModes</code>.</p>"
+        }
+      },
+      "documentation":"<p>Options for the rental leg of the intermodal route.</p>"
+    },
+    "RouteIntermodalTaxiOptions":{
+      "type":"structure",
+      "members":{
+        "AllowedModes":{
+          "shape":"RouteTaxiModeList",
+          "documentation":"<p>Allowed taxi transport modes when calculating the route. By default, all transport modes are allowed. Cannot be used together with <code>ExcludedModes</code>.</p>"
+        },
+        "EnabledFor":{
+          "shape":"RouteIntermodalEnabledLegsList",
+          "documentation":"<p>Specifies the portion of the route for which this leg type is enabled. By default, the leg type is enabled for all legs. Valid values:</p> <ul> <li> <p> <code>FirstLeg</code> - Enable this leg type for the first non-pedestrian leg of the route.</p> </li> <li> <p> <code>LastLeg</code> - Enable this leg type for the last non-pedestrian leg of the route.</p> </li> <li> <p> <code>EntireRoute</code> - Enable this leg type for the entire route.</p> </li> <li> <p> <code>None</code> - Disable this leg type entirely.</p> </li> </ul>"
+        },
+        "ExcludedModes":{
+          "shape":"RouteTaxiModeList",
+          "documentation":"<p>Excluded taxi transport modes when calculating the route. By default, all transport modes are allowed. Cannot be used together with <code>AllowedModes</code>.</p>"
+        }
+      },
+      "documentation":"<p>Options for the taxi leg of the intermodal route.</p>"
+    },
+    "RouteIntermodalTransitOptions":{
+      "type":"structure",
+      "members":{
+        "AllowedModes":{
+          "shape":"RouteTransitModeList",
+          "documentation":"<p>Allowed transit transport modes when calculating the route. By default, all transport modes are allowed. Cannot be used together with <code>ExcludedModes</code>.</p>"
+        },
+        "EnabledFor":{
+          "shape":"RouteIntermodalEnabledLegsList",
+          "documentation":"<p>Specifies the portion of the route for which this leg type is enabled. By default, the leg type is enabled for all legs. Valid values:</p> <ul> <li> <p> <code>FirstLeg</code> - Enable this leg type for the first non-pedestrian leg of the route.</p> </li> <li> <p> <code>LastLeg</code> - Enable this leg type for the last non-pedestrian leg of the route.</p> </li> <li> <p> <code>EntireRoute</code> - Enable this leg type for the entire route.</p> </li> <li> <p> <code>None</code> - Disable this leg type entirely.</p> </li> </ul>"
+        },
+        "ExcludedModes":{
+          "shape":"RouteTransitModeList",
+          "documentation":"<p>Excluded transit transport modes when calculating the route. By default, all transport modes are allowed. Cannot be used together with <code>AllowedModes</code>.</p>"
+        }
+      },
+      "documentation":"<p>Options for the transit leg of the intermodal route.</p>"
+    },
+    "RouteIntermodalVehicleOptions":{
+      "type":"structure",
+      "members":{
+        "AllowedModes":{
+          "shape":"RouteVehicleModeList",
+          "documentation":"<p>Allowed vehicle transport modes when calculating the route. By default, all transport modes are allowed. Cannot be used together with <code>ExcludedModes</code>.</p>"
+        },
+        "EnabledFor":{
+          "shape":"RouteIntermodalEnabledLegsList",
+          "documentation":"<p>Specifies the portion of the route for which this leg type is enabled. By default, the leg type is enabled for all legs. Valid values:</p> <ul> <li> <p> <code>FirstLeg</code> - Enable this leg type for the first non-pedestrian leg of the route.</p> </li> <li> <p> <code>LastLeg</code> - Enable this leg type for the last non-pedestrian leg of the route.</p> </li> <li> <p> <code>EntireRoute</code> - Enable this leg type for the entire route.</p> </li> <li> <p> <code>None</code> - Disable this leg type entirely.</p> </li> </ul>"
+        },
+        "ExcludedModes":{
+          "shape":"RouteVehicleModeList",
+          "documentation":"<p>Excluded vehicle transport modes when calculating the route. By default, all transport modes are allowed. Cannot be used together with <code>AllowedModes</code>.</p>"
+        }
+      },
+      "documentation":"<p>Options for the vehicle leg of the intermodal route.</p>"
+    },
     "RouteKeepStepDetails":{
       "type":"structure",
       "required":["Intersection"],
@@ -2649,6 +2907,18 @@
         "VehicleLegDetails":{
           "shape":"RouteVehicleLegDetails",
           "documentation":"<p>Details related to the vehicle leg.</p>"
+        },
+        "RentalLegDetails":{
+          "shape":"RouteRentalLegDetails",
+          "documentation":"<p>Details related to the rental leg.</p> <note> <p>Not supported in <code>ap-southeast-1</code> and <code>ap-southeast-5</code> regions for <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/GrabMaps.html\">GrabMaps</a> customers.</p> </note>"
+        },
+        "TaxiLegDetails":{
+          "shape":"RouteTaxiLegDetails",
+          "documentation":"<p>Details related to the taxi leg.</p> <note> <p>Not supported in <code>ap-southeast-1</code> and <code>ap-southeast-5</code> regions for <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/GrabMaps.html\">GrabMaps</a> customers.</p> </note>"
+        },
+        "TransitLegDetails":{
+          "shape":"RouteTransitLegDetails",
+          "documentation":"<p>Details related to the transit leg.</p>"
         }
       },
       "documentation":"<p>A leg is a section of a route from one waypoint to the next. A leg could be of type Vehicle, Pedestrian or Ferry. Legs of different types could occur together within a single route. For example, a car employing the use of a Ferry will contain Vehicle legs corresponding to journey on land, and Ferry legs corresponding to the journey via Ferry.</p>"
@@ -2664,14 +2934,17 @@
         "TravelStepInstructions",
         "TruckRoadTypes",
         "TypicalDuration",
-        "Zones"
+        "Zones",
+        "Bookings",
+        "IntermediateStops",
+        "NextDepartures"
       ],
       "sensitive":true
     },
     "RouteLegAdditionalFeatureList":{
       "type":"list",
       "member":{"shape":"RouteLegAdditionalFeature"},
-      "max":9,
+      "max":12,
       "min":0
     },
     "RouteLegGeometry":{
@@ -2700,7 +2973,21 @@
         "Pedestrian",
         "Scooter",
         "Truck",
-        "CarShuttleTrain"
+        "CarShuttleTrain",
+        "AerialTramway",
+        "Airplane",
+        "Bus",
+        "BusRapidTransit",
+        "CityTrain",
+        "FunicularRailway",
+        "HighSpeedTrain",
+        "IntercityTrain",
+        "InterregionalTrain",
+        "LightRail",
+        "Monorail",
+        "PrivateBus",
+        "RegionalTrain",
+        "Subway"
       ],
       "sensitive":true
     },
@@ -2709,7 +2996,10 @@
       "enum":[
         "Ferry",
         "Pedestrian",
-        "Vehicle"
+        "Vehicle",
+        "Rental",
+        "Taxi",
+        "Transit"
       ],
       "sensitive":true
     },
@@ -2789,14 +3079,14 @@
       "members":{
         "Margin":{
           "shape":"RouteMatrixAutoCircleMarginLong",
-          "documentation":"<p>The margin provided for the calculation.</p>"
+          "documentation":"<p>The minimal distance, in meters, between any waypoint and the perimeter of the circle auto-defined for the boundary. Some margin is usually recommended so that the routing has enough leeway to travel from one waypoint to another optimally without conflicting with the routing boundary.</p> <p>The total of <code>MaxRadius</code> and <code>Margin</code> must be less than or equal to 200,000 meters.</p>"
         },
         "MaxRadius":{
           "shape":"RouteMatrixAutoCircleMaxRadiusLong",
-          "documentation":"<p>The maximum size of the radius provided for the calculation.</p>"
+          "documentation":"<p>The maximum radius, in meters, that the auto-defined <code>Circle</code> boundary should have, before the <code>Margin</code> distance is added to the circle.</p> <p>The total of <code>MaxRadius</code> and <code>Margin</code> must be less than or equal to 200,000 meters.</p>"
         }
       },
-      "documentation":"<p>Provides the circle that was used while calculating the route.</p>"
+      "documentation":"<p> <code>AutoCircle</code> requests the route matrix service to define a <code>Circle</code> boundary that best attempts to include most waypoints (<code>Origins</code> and <code>Destinations</code>) using the <code>AutoCircle</code> settings. Any waypoints outside of the auto-defined <code>Circle</code> boundary will be considered out of the routing boundary, which results in a route matrix entry error.</p> <p> <code>AutoCircle</code> is only used in the request to configure a <code>Circle</code> for the route calculation. The derived <code>Circle</code> will also be provided in the response.</p>"
     },
     "RouteMatrixAutoCircleMarginLong":{
       "type":"long",
@@ -2942,19 +3232,19 @@
       "members":{
         "AutoCircle":{
           "shape":"RouteMatrixAutoCircle",
-          "documentation":"<p>Provides the circle that was used while calculating the route.</p>"
+          "documentation":"<p> <code>AutoCircle</code> requests the route matrix service to define a <code>Circle</code> boundary that best attempts to include most waypoints (<code>Origins</code> and <code>Destinations</code>) using the <code>AutoCircle</code> settings. Any waypoints outside of the auto-defined <code>Circle</code> boundary will be considered out of the routing boundary, which results in a route matrix entry error.</p> <p> <code>AutoCircle</code> is only used in the request to configure a <code>Circle</code> for the route calculation. The derived <code>Circle</code> will also be provided in the response.</p>"
         },
         "Circle":{
           "shape":"Circle",
-          "documentation":"<p>Geometry defined as a circle. When request routing boundary was set as <code>AutoCircle</code>, the response routing boundary will return <code>Circle</code> derived from the <code>AutoCircle</code> settings.</p>"
+          "documentation":"<p>Geometry defined as a circle. The circle defines the routing boundary area. Any waypoints outside the circle will result in a route matrix entry error.</p> <p>You can specify a <code>Circle</code> directly in the request, or it will be auto-derived when <code>AutoCircle</code> is used. When <code>AutoCircle</code> is set in the request, the response routing boundary will return <code>Circle</code> derived from the <code>AutoCircle</code> settings.</p>"
         },
         "BoundingBox":{
           "shape":"BoundingBox",
-          "documentation":"<p>Geometry defined as a bounding box. The first pair represents the X and Y coordinates (longitude and latitude,) of the southwest corner of the bounding box; the second pair represents the X and Y coordinates (longitude and latitude) of the northeast corner.</p>"
+          "documentation":"<p>Geometry defined as a bounding box. The first pair represents the X and Y coordinates (longitude and latitude,) of the southwest corner of the bounding box; the second pair represents the X and Y coordinates (longitude and latitude) of the northeast corner.</p> <p>Diagonal distance of the bounding box must be less than or equal to 400,000 meters.</p>"
         },
         "Polygon":{
           "shape":"RouteMatrixBoundaryGeometryPolygonList",
-          "documentation":"<p>Geometry defined as a polygon with only one linear ring.</p>"
+          "documentation":"<p>Geometry defined as a polygon with only one linear ring. A linear ring is a closed sequence of four or more coordinates. The first and last coordinates are the same, forming a closed boundary. Each coordinate is a position in [longitude, latitude] format.</p> <p>The structure is an array of linear rings (only 1 allowed). Each linear ring is an array of coordinates (minimum 4), and each coordinate is an array of two doubles [longitude, latitude].</p> <p>Maximum distance between any two vertices must be less than or equal to 400,000 meters.</p>"
         }
       },
       "documentation":"<p>Geometry of the routing boundary.</p>"
@@ -3547,7 +3837,7 @@
         },
         "Place":{
           "shape":"RoutePassThroughPlace",
-          "documentation":"<p>The place details.</p>"
+          "documentation":"<p>Place details corresponding to the pass-through waypoint.</p>"
         }
       },
       "documentation":"<p>If the waypoint should be treated as a stop. If yes, the route is split up into different legs around the stop.</p>"
@@ -3561,17 +3851,49 @@
       "type":"list",
       "member":{"shape":"RoutePassThroughWaypoint"}
     },
+    "RoutePedestrianAfterTravelStep":{
+      "type":"structure",
+      "required":[
+        "Duration",
+        "Type"
+      ],
+      "members":{
+        "Duration":{
+          "shape":"DurationSeconds",
+          "documentation":"<p>Duration of the step.</p> <p> <b>Unit</b>: <code>seconds</code> </p>",
+          "box":true
+        },
+        "Instruction":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Brief description of the step in the requested language.</p> <note> <p>Only available when the TravelStepType is Default.</p> </note>"
+        },
+        "Type":{
+          "shape":"RoutePedestrianAfterTravelStepType",
+          "documentation":"<p>Type of the step.</p>"
+        }
+      },
+      "documentation":"<p>Steps of a leg that must be performed after the travel portion of the leg.</p>"
+    },
+    "RoutePedestrianAfterTravelStepList":{
+      "type":"list",
+      "member":{"shape":"RoutePedestrianAfterTravelStep"}
+    },
+    "RoutePedestrianAfterTravelStepType":{
+      "type":"string",
+      "enum":["Wait"],
+      "sensitive":true
+    },
     "RoutePedestrianArrival":{
       "type":"structure",
       "required":["Place"],
       "members":{
         "Place":{
           "shape":"RoutePedestrianPlace",
-          "documentation":"<p>The place details.</p>"
+          "documentation":"<p>Place details corresponding to the arrival.</p>"
         },
         "Time":{
           "shape":"TimestampWithTimezoneOffset",
-          "documentation":"<p>The time.</p>"
+          "documentation":"<p>The arrival time.</p>"
         }
       },
       "documentation":"<p>Details corresponding to the arrival for a leg.</p> <p>Time format:<code>YYYY-MM-DDThh:mm:ss.sssZ | YYYY-MM-DDThh:mm:ss.sss+hh:mm</code> </p> <p>Examples:</p> <p> <code>2020-04-22T17:57:24Z</code> </p> <p> <code>2020-04-22T17:57:24+02:00</code> </p>"
@@ -3582,11 +3904,11 @@
       "members":{
         "Place":{
           "shape":"RoutePedestrianPlace",
-          "documentation":"<p>The place details.</p>"
+          "documentation":"<p>Place details corresponding to the departure.</p>"
         },
         "Time":{
           "shape":"TimestampWithTimezoneOffset",
-          "documentation":"<p>The time.</p>"
+          "documentation":"<p>The departure time.</p>"
         }
       },
       "documentation":"<p>Details corresponding to the departure for a leg.</p> <p>Time format:<code>YYYY-MM-DDThh:mm:ss.sssZ | YYYY-MM-DDThh:mm:ss.sss+hh:mm</code> </p> <p>Examples:</p> <p> <code>2020-04-22T17:57:24Z</code> </p> <p> <code>2020-04-22T17:57:24+02:00</code> </p>"
@@ -3594,6 +3916,7 @@
     "RoutePedestrianLegDetails":{
       "type":"structure",
       "required":[
+        "AfterTravelSteps",
         "Arrival",
         "Departure",
         "Notices",
@@ -3602,6 +3925,10 @@
         "TravelSteps"
       ],
       "members":{
+        "AfterTravelSteps":{
+          "shape":"RoutePedestrianAfterTravelStepList",
+          "documentation":"<p>Steps of a leg that must be performed after the travel portion of the leg.</p>"
+        },
         "Arrival":{
           "shape":"RoutePedestrianArrival",
           "documentation":"<p>Details corresponding to the arrival for the leg.</p>"
@@ -3689,19 +4016,23 @@
       "members":{
         "Distance":{
           "shape":"DistanceMeters",
-          "documentation":"<p>Distance of the step.</p>"
+          "documentation":"<p>Distance of the entire leg.</p> <p> <b>Unit</b>: <code>meters</code> </p>"
         },
         "Duration":{
           "shape":"DurationSeconds",
-          "documentation":"<p>Duration of the step.</p>"
+          "documentation":"<p>Duration of the entire leg.</p> <p> <b>Unit</b>: <code>seconds</code> </p>"
         }
       },
-      "documentation":"<p>Provides a summary of a pedestrian route step.</p>"
+      "documentation":"<p>Summary including duration and distance for the entire leg.</p>"
     },
     "RoutePedestrianPlace":{
       "type":"structure",
       "required":["Position"],
       "members":{
+        "AccessPointDetails":{
+          "shape":"RouteAccessPointDetails",
+          "documentation":"<p>Details of the access point.</p>"
+        },
         "Name":{
           "shape":"SensitiveString",
           "documentation":"<p>The name of the place.</p>"
@@ -3718,12 +4049,30 @@
           "shape":"RouteSideOfStreet",
           "documentation":"<p>Options to configure matching the provided position to a side of the street.</p>"
         },
+        "StationDetails":{
+          "shape":"RouteStationDetails",
+          "documentation":"<p>Details about the station.</p>"
+        },
+        "Type":{
+          "shape":"RoutePedestrianPlaceType",
+          "documentation":"<p>The type of the place.</p>"
+        },
         "WaypointIndex":{
           "shape":"RoutePedestrianPlaceWaypointIndexInteger",
           "documentation":"<p>Index of the waypoint in the request.</p>"
         }
       },
       "documentation":"<p>Place details corresponding to the arrival or departure.</p>"
+    },
+    "RoutePedestrianPlaceType":{
+      "type":"string",
+      "enum":[
+        "AccessPoint",
+        "DockingStation",
+        "ParkingLot",
+        "Station"
+      ],
+      "sensitive":true
     },
     "RoutePedestrianPlaceWaypointIndexInteger":{
       "type":"integer",
@@ -3934,7 +4283,8 @@
         "RoundaboutExit",
         "RoundaboutPass",
         "Turn"
-      ]
+      ],
+      "sensitive":true
     },
     "RouteRampStepDetails":{
       "type":"structure",
@@ -3959,6 +4309,399 @@
       },
       "documentation":"<p>Details that are specific to a ramp step.</p>"
     },
+    "RouteRentalAfterTravelStep":{
+      "type":"structure",
+      "required":[
+        "Duration",
+        "Type"
+      ],
+      "members":{
+        "Duration":{
+          "shape":"DurationSeconds",
+          "documentation":"<p>Duration of the step.</p> <p> <b>Unit</b>: <code>seconds</code> </p>",
+          "box":true
+        },
+        "Instruction":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Brief description of the step in the requested language.</p>"
+        },
+        "Type":{
+          "shape":"RouteRentalAfterTravelStepType",
+          "documentation":"<p>Type of the step.</p>"
+        }
+      },
+      "documentation":"<p>A step that must be performed after the travel portion of the leg.</p>"
+    },
+    "RouteRentalAfterTravelStepList":{
+      "type":"list",
+      "member":{"shape":"RouteRentalAfterTravelStep"}
+    },
+    "RouteRentalAfterTravelStepType":{
+      "type":"string",
+      "enum":["Park"],
+      "sensitive":true
+    },
+    "RouteRentalAgency":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Name of the agency.</p>"
+        },
+        "Url":{
+          "shape":"SensitiveString",
+          "documentation":"<p>URL to the agency's website.</p>"
+        }
+      },
+      "documentation":"<p>Details about the rental agency.</p>"
+    },
+    "RouteRentalArrival":{
+      "type":"structure",
+      "required":["Place"],
+      "members":{
+        "Place":{
+          "shape":"RouteRentalPlace",
+          "documentation":"<p>Place details corresponding to the arrival.</p>"
+        },
+        "Time":{
+          "shape":"TimestampWithTimezoneOffset",
+          "documentation":"<p>The arrival time.</p>"
+        }
+      },
+      "documentation":"<p>Details corresponding to the arrival for the leg.</p>"
+    },
+    "RouteRentalBeforeTravelStep":{
+      "type":"structure",
+      "required":[
+        "Duration",
+        "Type"
+      ],
+      "members":{
+        "Duration":{
+          "shape":"DurationSeconds",
+          "documentation":"<p>Duration of the step.</p> <p> <b>Unit</b>: <code>seconds</code> </p>",
+          "box":true
+        },
+        "Instruction":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Brief description of the step in the requested language.</p>"
+        },
+        "Type":{
+          "shape":"RouteRentalBeforeTravelStepType",
+          "documentation":"<p>Type of the step.</p>"
+        }
+      },
+      "documentation":"<p>A step that must be performed before the travel portion of the leg.</p>"
+    },
+    "RouteRentalBeforeTravelStepList":{
+      "type":"list",
+      "member":{"shape":"RouteRentalBeforeTravelStep"}
+    },
+    "RouteRentalBeforeTravelStepType":{
+      "type":"string",
+      "enum":["Setup"],
+      "sensitive":true
+    },
+    "RouteRentalDeparture":{
+      "type":"structure",
+      "required":["Place"],
+      "members":{
+        "Place":{
+          "shape":"RouteRentalPlace",
+          "documentation":"<p>Place details corresponding to the departure.</p>"
+        },
+        "Time":{
+          "shape":"TimestampWithTimezoneOffset",
+          "documentation":"<p>The departure time.</p>"
+        }
+      },
+      "documentation":"<p>Details corresponding to the departure for the leg.</p>"
+    },
+    "RouteRentalLegDetails":{
+      "type":"structure",
+      "required":[
+        "AfterTravelSteps",
+        "Agency",
+        "Arrival",
+        "Attributions",
+        "BeforeTravelSteps",
+        "BookingWebLinks",
+        "Departure",
+        "Transport",
+        "TravelSteps"
+      ],
+      "members":{
+        "AfterTravelSteps":{
+          "shape":"RouteRentalAfterTravelStepList",
+          "documentation":"<p>Steps of a leg that must be performed after the travel portion of the leg.</p>"
+        },
+        "Agency":{
+          "shape":"RouteRentalAgency",
+          "documentation":"<p>Details about the rental agency.</p>"
+        },
+        "Arrival":{
+          "shape":"RouteRentalArrival",
+          "documentation":"<p>Details corresponding to the arrival for the leg.</p>"
+        },
+        "Attributions":{
+          "shape":"RouteAttributionList",
+          "documentation":"<p>List of required attributions to display.</p>"
+        },
+        "BeforeTravelSteps":{
+          "shape":"RouteRentalBeforeTravelStepList",
+          "documentation":"<p>Steps of a leg that must be performed before the travel portion of the leg.</p>"
+        },
+        "BookingWebLinks":{
+          "shape":"RouteWebLinkList",
+          "documentation":"<p>Web links to external ticket booking services for the rental.</p>"
+        },
+        "Departure":{
+          "shape":"RouteRentalDeparture",
+          "documentation":"<p>Details corresponding to the departure for the leg.</p>"
+        },
+        "Summary":{
+          "shape":"RouteRentalSummary",
+          "documentation":"<p>Summary of the rental leg.</p>"
+        },
+        "Transport":{
+          "shape":"RouteRentalTransportModeDetails",
+          "documentation":"<p>Transport mode details for the rental leg.</p>"
+        },
+        "TravelSteps":{
+          "shape":"RouteRentalTravelStepList",
+          "documentation":"<p>Steps of a leg that must be performed during the travel portion of the leg.</p>"
+        }
+      },
+      "documentation":"<p>Populated when the Leg type is Rental, and provides additional information that is specific to rental vehicle travel.</p>"
+    },
+    "RouteRentalMode":{
+      "type":"string",
+      "enum":[
+        "All",
+        "Car"
+      ],
+      "sensitive":true
+    },
+    "RouteRentalModeList":{
+      "type":"list",
+      "member":{"shape":"RouteRentalMode"},
+      "max":1,
+      "min":1
+    },
+    "RouteRentalOverviewSummary":{
+      "type":"structure",
+      "required":[
+        "Duration",
+        "Distance"
+      ],
+      "members":{
+        "Duration":{
+          "shape":"DurationSeconds",
+          "documentation":"<p>Duration of the entire leg.</p> <p> <b>Unit</b>: <code>seconds</code> </p>",
+          "box":true
+        },
+        "Distance":{
+          "shape":"DistanceMeters",
+          "documentation":"<p>Distance of the entire leg.</p> <p> <b>Unit</b>: <code>meters</code> </p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>Summary including duration and distance for the entire leg.</p>"
+    },
+    "RouteRentalPlace":{
+      "type":"structure",
+      "required":["Position"],
+      "members":{
+        "AccessPointDetails":{
+          "shape":"RouteAccessPointDetails",
+          "documentation":"<p>Details of the access point.</p>"
+        },
+        "Name":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The name of the place.</p>"
+        },
+        "OriginalPosition":{
+          "shape":"Position23",
+          "documentation":"<p>Position provided in the request.</p>"
+        },
+        "Position":{
+          "shape":"Position23",
+          "documentation":"<p>Position in World Geodetic System (WGS 84) format: [longitude, latitude].</p>"
+        },
+        "StationDetails":{
+          "shape":"RouteStationDetails",
+          "documentation":"<p>Details about the station.</p>"
+        },
+        "Type":{
+          "shape":"RouteRentalPlaceType",
+          "documentation":"<p>The type of the place.</p>"
+        },
+        "WaypointIndex":{
+          "shape":"RouteRentalPlaceWaypointIndexInteger",
+          "documentation":"<p>Index of the waypoint in the request.</p>"
+        }
+      },
+      "documentation":"<p>Place details corresponding to the arrival or departure.</p>"
+    },
+    "RouteRentalPlaceType":{
+      "type":"string",
+      "enum":[
+        "AccessPoint",
+        "DockingStation",
+        "ParkingLot",
+        "Station"
+      ],
+      "sensitive":true
+    },
+    "RouteRentalPlaceWaypointIndexInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0,
+      "sensitive":true
+    },
+    "RouteRentalSummary":{
+      "type":"structure",
+      "members":{
+        "Overview":{
+          "shape":"RouteRentalOverviewSummary",
+          "documentation":"<p>Summary including duration and distance for the entire leg.</p>"
+        },
+        "TravelOnly":{
+          "shape":"RouteRentalTravelOnlySummary",
+          "documentation":"<p>Summary including duration and distance for the travel portion of the leg only.</p>"
+        }
+      },
+      "documentation":"<p>Summary of the rental leg.</p>"
+    },
+    "RouteRentalTransportModeDetails":{
+      "type":"structure",
+      "required":["Mode"],
+      "members":{
+        "AvailableSeats":{
+          "shape":"RouteRentalTransportModeDetailsAvailableSeatsInteger",
+          "documentation":"<p>Number of available seats in the vehicle.</p>"
+        },
+        "Category":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Human readable transport category.</p>"
+        },
+        "Color":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Color of the transport polyline and background for the transport name.</p>"
+        },
+        "Engine":{
+          "shape":"RouteEngineType",
+          "documentation":"<p>Vehicle engine type.</p>"
+        },
+        "LicensePlate":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Vehicle license plate number.</p>"
+        },
+        "Mode":{
+          "shape":"RouteRentalMode",
+          "documentation":"<p>Mode of the rental transport.</p>"
+        },
+        "Model":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Vehicle model.</p>"
+        },
+        "Name":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Vehicle name or mobility provider name.</p>"
+        },
+        "TextColor":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Color of the transport name text.</p>"
+        }
+      },
+      "documentation":"<p>Transport mode details for the rental leg.</p>"
+    },
+    "RouteRentalTransportModeDetailsAvailableSeatsInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0,
+      "sensitive":true
+    },
+    "RouteRentalTravelOnlySummary":{
+      "type":"structure",
+      "required":["Duration"],
+      "members":{
+        "Duration":{
+          "shape":"DurationSeconds",
+          "documentation":"<p>Duration of the travel portion of the rental leg.</p> <p> <b>Unit</b>: <code>seconds</code> </p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>Summary including duration and distance for the travel portion of the leg only.</p>"
+    },
+    "RouteRentalTravelStep":{
+      "type":"structure",
+      "required":[
+        "Duration",
+        "Type"
+      ],
+      "members":{
+        "ContinueStepDetails":{"shape":"RouteContinueStepDetails"},
+        "Distance":{
+          "shape":"DistanceMeters",
+          "documentation":"<p>Distance of the step.</p> <p> <b>Unit</b>: <code>meters</code> </p>",
+          "box":true
+        },
+        "Duration":{
+          "shape":"DurationSeconds",
+          "documentation":"<p>Duration of the step.</p> <p> <b>Unit</b>: <code>seconds</code> </p>",
+          "box":true
+        },
+        "ExitStepDetails":{"shape":"RouteExitStepDetails"},
+        "GeometryOffset":{
+          "shape":"RouteRentalTravelStepGeometryOffsetInteger",
+          "documentation":"<p>Offset in the leg geometry corresponding to the start of this step.</p>"
+        },
+        "Instruction":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Brief description of the step in the requested language.</p>"
+        },
+        "KeepStepDetails":{"shape":"RouteKeepStepDetails"},
+        "RampStepDetails":{"shape":"RouteRampStepDetails"},
+        "RoundaboutEnterStepDetails":{"shape":"RouteRoundaboutEnterStepDetails"},
+        "RoundaboutExitStepDetails":{"shape":"RouteRoundaboutExitStepDetails"},
+        "RoundaboutPassStepDetails":{"shape":"RouteRoundaboutPassStepDetails"},
+        "TurnStepDetails":{"shape":"RouteTurnStepDetails"},
+        "Type":{
+          "shape":"RouteRentalTravelStepType",
+          "documentation":"<p>Type of the step.</p>"
+        },
+        "UTurnStepDetails":{"shape":"RouteUTurnStepDetails"}
+      },
+      "documentation":"<p>A step that must be performed during the travel portion of the leg.</p>"
+    },
+    "RouteRentalTravelStepGeometryOffsetInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "RouteRentalTravelStepList":{
+      "type":"list",
+      "member":{"shape":"RouteRentalTravelStep"}
+    },
+    "RouteRentalTravelStepType":{
+      "type":"string",
+      "enum":[
+        "Arrive",
+        "Continue",
+        "Depart",
+        "Exit",
+        "Keep",
+        "Ramp",
+        "RoundaboutEnter",
+        "RoundaboutExit",
+        "RoundaboutPass",
+        "Turn",
+        "UTurn"
+      ],
+      "sensitive":true
+    },
     "RouteResponseNotice":{
       "type":"structure",
       "required":["Code"],
@@ -3979,7 +4722,10 @@
       "enum":[
         "MainLanguageNotFound",
         "Other",
-        "TravelTimeExceedsDriverWorkHours"
+        "TravelTimeExceedsDriverWorkHours",
+        "TransitDataUnavailable",
+        "TransitRouteUnavailable",
+        "NoTransitStationsFound"
       ]
     },
     "RouteResponseNoticeList":{
@@ -4356,6 +5102,24 @@
       "max":3,
       "min":0
     },
+    "RouteStationDetails":{
+      "type":"structure",
+      "members":{
+        "Accessibility":{
+          "shape":"RouteAccessibilityAvailabilityDetails",
+          "documentation":"<p>Wheelchair accessibility information for the station.</p>"
+        },
+        "PlatformName":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Platform name or number.</p>"
+        },
+        "ShortName":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Short text or a number that identifies the station.</p>"
+        }
+      },
+      "documentation":"<p>Details about the station.</p>"
+    },
     "RouteSteeringDirection":{
       "type":"string",
       "enum":[
@@ -4382,6 +5146,428 @@
         }
       },
       "documentation":"<p>Summarized details for the leg including travel steps only. The Distance for the travel only portion of the journey is the same as the Distance within the Overview summary.</p>"
+    },
+    "RouteTaxiAfterTravelStep":{
+      "type":"structure",
+      "required":[
+        "Duration",
+        "Type"
+      ],
+      "members":{
+        "Duration":{
+          "shape":"DurationSeconds",
+          "documentation":"<p>Duration of the step.</p> <p> <b>Unit</b>: <code>seconds</code> </p>",
+          "box":true
+        },
+        "Instruction":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Brief description of the step in the requested language.</p>"
+        },
+        "Type":{
+          "shape":"RouteTaxiAfterTravelStepType",
+          "documentation":"<p>Type of the step.</p>"
+        }
+      },
+      "documentation":"<p>A step that must be performed after the travel portion of the leg.</p>"
+    },
+    "RouteTaxiAfterTravelStepList":{
+      "type":"list",
+      "member":{"shape":"RouteTaxiAfterTravelStep"}
+    },
+    "RouteTaxiAfterTravelStepType":{
+      "type":"string",
+      "enum":["Park"],
+      "sensitive":true
+    },
+    "RouteTaxiAgency":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Name of the agency.</p>"
+        },
+        "Url":{
+          "shape":"SensitiveString",
+          "documentation":"<p>URL to the agency's website.</p>"
+        }
+      },
+      "documentation":"<p>Details about the taxi agency.</p>"
+    },
+    "RouteTaxiArrival":{
+      "type":"structure",
+      "required":["Place"],
+      "members":{
+        "Place":{
+          "shape":"RouteTaxiPlace",
+          "documentation":"<p>Place details corresponding to the arrival.</p>"
+        },
+        "Time":{
+          "shape":"TimestampWithTimezoneOffset",
+          "documentation":"<p>The arrival time.</p>"
+        }
+      },
+      "documentation":"<p>Details corresponding to the arrival for the leg.</p>"
+    },
+    "RouteTaxiBeforeTravelStep":{
+      "type":"structure",
+      "required":[
+        "Duration",
+        "Type"
+      ],
+      "members":{
+        "Duration":{
+          "shape":"DurationSeconds",
+          "documentation":"<p>Duration of the step.</p> <p> <b>Unit</b>: <code>seconds</code> </p>",
+          "box":true
+        },
+        "Instruction":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Brief description of the step in the requested language.</p>"
+        },
+        "Type":{
+          "shape":"RouteTaxiBeforeTravelStepType",
+          "documentation":"<p>Type of the step.</p>"
+        }
+      },
+      "documentation":"<p>A step that must be performed before the travel portion of the leg.</p>"
+    },
+    "RouteTaxiBeforeTravelStepList":{
+      "type":"list",
+      "member":{"shape":"RouteTaxiBeforeTravelStep"}
+    },
+    "RouteTaxiBeforeTravelStepType":{
+      "type":"string",
+      "enum":["Wait"],
+      "sensitive":true
+    },
+    "RouteTaxiDeparture":{
+      "type":"structure",
+      "required":["Place"],
+      "members":{
+        "Place":{
+          "shape":"RouteTaxiPlace",
+          "documentation":"<p>Place details corresponding to the departure.</p>"
+        },
+        "Time":{
+          "shape":"TimestampWithTimezoneOffset",
+          "documentation":"<p>The departure time.</p>"
+        }
+      },
+      "documentation":"<p>Details corresponding to the departure for the leg.</p>"
+    },
+    "RouteTaxiLegDetails":{
+      "type":"structure",
+      "required":[
+        "AfterTravelSteps",
+        "Agency",
+        "Arrival",
+        "Attributions",
+        "BeforeTravelSteps",
+        "BookingWebLinks",
+        "Departure",
+        "Notices",
+        "Transport",
+        "TravelSteps"
+      ],
+      "members":{
+        "AfterTravelSteps":{
+          "shape":"RouteTaxiAfterTravelStepList",
+          "documentation":"<p>Steps of a leg that must be performed after the travel portion of the leg.</p>"
+        },
+        "Agency":{
+          "shape":"RouteTaxiAgency",
+          "documentation":"<p>Details about the taxi agency.</p>"
+        },
+        "Arrival":{
+          "shape":"RouteTaxiArrival",
+          "documentation":"<p>Details corresponding to the arrival for the leg.</p>"
+        },
+        "Attributions":{
+          "shape":"RouteAttributionList",
+          "documentation":"<p>List of required attributions to display.</p>"
+        },
+        "BeforeTravelSteps":{
+          "shape":"RouteTaxiBeforeTravelStepList",
+          "documentation":"<p>Steps of a leg that must be performed before the travel portion of the leg.</p>"
+        },
+        "BookingWebLinks":{
+          "shape":"RouteWebLinkList",
+          "documentation":"<p>Web links to external ticket booking services for the taxi.</p>"
+        },
+        "Departure":{
+          "shape":"RouteTaxiDeparture",
+          "documentation":"<p>Details corresponding to the departure for the leg.</p>"
+        },
+        "Notices":{
+          "shape":"RouteTaxiNoticeList",
+          "documentation":"<p>List of notices that indicate issues that occurred during route calculation.</p>"
+        },
+        "Summary":{
+          "shape":"RouteTaxiSummary",
+          "documentation":"<p>Summary of the taxi leg.</p>"
+        },
+        "Transport":{
+          "shape":"RouteTaxiTransportModeDetails",
+          "documentation":"<p>Transport mode details for the taxi leg.</p>"
+        },
+        "TravelSteps":{
+          "shape":"RouteTaxiTravelStepList",
+          "documentation":"<p>Steps of a leg that must be performed during the travel portion of the leg.</p>"
+        }
+      },
+      "documentation":"<p>Populated when the Leg type is Taxi, and provides additional information that is specific to taxi travel.</p>"
+    },
+    "RouteTaxiMode":{
+      "type":"string",
+      "enum":[
+        "All",
+        "Car"
+      ],
+      "sensitive":true
+    },
+    "RouteTaxiModeList":{
+      "type":"list",
+      "member":{"shape":"RouteTaxiMode"},
+      "max":1,
+      "min":1
+    },
+    "RouteTaxiNotice":{
+      "type":"structure",
+      "required":["Code"],
+      "members":{
+        "Code":{
+          "shape":"RouteTaxiNoticeCode",
+          "documentation":"<p>Code corresponding to the issue.</p>"
+        },
+        "Impact":{
+          "shape":"RouteNoticeImpact",
+          "documentation":"<p>Impact corresponding to the issue. While Low impact notices can be safely ignored, High impact notices must be evaluated further to determine the impact.</p>"
+        }
+      },
+      "documentation":"<p>A notice that indicates an issue that occurred during route calculation.</p>"
+    },
+    "RouteTaxiNoticeCode":{
+      "type":"string",
+      "enum":[
+        "AccuratePolylineUnavailable",
+        "Other"
+      ]
+    },
+    "RouteTaxiNoticeList":{
+      "type":"list",
+      "member":{"shape":"RouteTaxiNotice"}
+    },
+    "RouteTaxiOverviewSummary":{
+      "type":"structure",
+      "required":[
+        "Duration",
+        "Distance"
+      ],
+      "members":{
+        "Duration":{
+          "shape":"DurationSeconds",
+          "documentation":"<p>Duration of the entire leg.</p> <p> <b>Unit</b>: <code>seconds</code> </p>",
+          "box":true
+        },
+        "Distance":{
+          "shape":"DistanceMeters",
+          "documentation":"<p>Distance of the entire leg.</p> <p> <b>Unit</b>: <code>meters</code> </p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>Summary including duration and distance for the entire leg.</p>"
+    },
+    "RouteTaxiPlace":{
+      "type":"structure",
+      "required":["Position"],
+      "members":{
+        "AccessPointDetails":{
+          "shape":"RouteAccessPointDetails",
+          "documentation":"<p>Details of the access point.</p>"
+        },
+        "Name":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The name of the place.</p>"
+        },
+        "OriginalPosition":{
+          "shape":"Position23",
+          "documentation":"<p>Position provided in the request.</p>"
+        },
+        "Position":{
+          "shape":"Position23",
+          "documentation":"<p>Position in World Geodetic System (WGS 84) format: [longitude, latitude].</p>"
+        },
+        "StationDetails":{
+          "shape":"RouteStationDetails",
+          "documentation":"<p>Details about the station.</p>"
+        },
+        "Type":{
+          "shape":"RouteTaxiPlaceType",
+          "documentation":"<p>The type of the place.</p>"
+        },
+        "WaypointIndex":{
+          "shape":"RouteTaxiPlaceWaypointIndexInteger",
+          "documentation":"<p>Index of the waypoint in the request.</p>"
+        }
+      },
+      "documentation":"<p>Place details corresponding to the arrival or departure.</p>"
+    },
+    "RouteTaxiPlaceType":{
+      "type":"string",
+      "enum":[
+        "AccessPoint",
+        "Station"
+      ],
+      "sensitive":true
+    },
+    "RouteTaxiPlaceWaypointIndexInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0,
+      "sensitive":true
+    },
+    "RouteTaxiSummary":{
+      "type":"structure",
+      "members":{
+        "Overview":{
+          "shape":"RouteTaxiOverviewSummary",
+          "documentation":"<p>Summary including duration and distance for the entire leg.</p>"
+        },
+        "TravelOnly":{
+          "shape":"RouteTaxiTravelOnlySummary",
+          "documentation":"<p>Summary including duration and distance for the travel portion of the leg only.</p>"
+        }
+      },
+      "documentation":"<p>Summary of the taxi leg.</p>"
+    },
+    "RouteTaxiTransportModeDetails":{
+      "type":"structure",
+      "required":["Mode"],
+      "members":{
+        "AvailableSeats":{
+          "shape":"RouteTaxiTransportModeDetailsAvailableSeatsInteger",
+          "documentation":"<p>Number of available seats in the vehicle.</p>"
+        },
+        "Category":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Human readable transport category.</p>"
+        },
+        "Color":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Color of the transport polyline and background for the transport name.</p>"
+        },
+        "Engine":{
+          "shape":"RouteEngineType",
+          "documentation":"<p>Vehicle engine type.</p>"
+        },
+        "LicensePlate":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Vehicle license plate number.</p>"
+        },
+        "Mode":{
+          "shape":"RouteTaxiMode",
+          "documentation":"<p>Mode of the taxi transport.</p>"
+        },
+        "Model":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Vehicle model.</p>"
+        },
+        "Name":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Vehicle name or mobility provider name.</p>"
+        },
+        "TextColor":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Color of the transport name text.</p>"
+        }
+      },
+      "documentation":"<p>Transport mode details for the taxi leg.</p>"
+    },
+    "RouteTaxiTransportModeDetailsAvailableSeatsInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0,
+      "sensitive":true
+    },
+    "RouteTaxiTravelOnlySummary":{
+      "type":"structure",
+      "required":["Duration"],
+      "members":{
+        "Duration":{
+          "shape":"DurationSeconds",
+          "documentation":"<p>Duration of the travel portion of the taxi leg.</p> <p> <b>Unit</b>: <code>seconds</code> </p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>Summary including duration and distance for the travel portion of the leg only.</p>"
+    },
+    "RouteTaxiTravelStep":{
+      "type":"structure",
+      "required":[
+        "Duration",
+        "Type"
+      ],
+      "members":{
+        "ContinueStepDetails":{"shape":"RouteContinueStepDetails"},
+        "Distance":{
+          "shape":"DistanceMeters",
+          "documentation":"<p>Distance of the step.</p> <p> <b>Unit</b>: <code>meters</code> </p>",
+          "box":true
+        },
+        "Duration":{
+          "shape":"DurationSeconds",
+          "documentation":"<p>Duration of the step.</p> <p> <b>Unit</b>: <code>seconds</code> </p>",
+          "box":true
+        },
+        "ExitStepDetails":{"shape":"RouteExitStepDetails"},
+        "GeometryOffset":{
+          "shape":"RouteTaxiTravelStepGeometryOffsetInteger",
+          "documentation":"<p>Offset in the leg geometry corresponding to the start of this step.</p>"
+        },
+        "Instruction":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Brief description of the step in the requested language.</p>"
+        },
+        "KeepStepDetails":{"shape":"RouteKeepStepDetails"},
+        "RampStepDetails":{"shape":"RouteRampStepDetails"},
+        "RoundaboutEnterStepDetails":{"shape":"RouteRoundaboutEnterStepDetails"},
+        "RoundaboutExitStepDetails":{"shape":"RouteRoundaboutExitStepDetails"},
+        "RoundaboutPassStepDetails":{"shape":"RouteRoundaboutPassStepDetails"},
+        "TurnStepDetails":{"shape":"RouteTurnStepDetails"},
+        "Type":{
+          "shape":"RouteTaxiTravelStepType",
+          "documentation":"<p>Type of the step.</p>"
+        },
+        "UTurnStepDetails":{"shape":"RouteUTurnStepDetails"}
+      },
+      "documentation":"<p>A step that must be performed during the travel portion of the leg.</p>"
+    },
+    "RouteTaxiTravelStepGeometryOffsetInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "RouteTaxiTravelStepList":{
+      "type":"list",
+      "member":{"shape":"RouteTaxiTravelStep"}
+    },
+    "RouteTaxiTravelStepType":{
+      "type":"string",
+      "enum":[
+        "Arrive",
+        "Continue",
+        "Depart",
+        "Exit",
+        "Keep",
+        "Ramp",
+        "RoundaboutEnter",
+        "RoundaboutExit",
+        "RoundaboutPass",
+        "Turn",
+        "UTurn"
+      ],
+      "sensitive":true
     },
     "RouteToll":{
       "type":"structure",
@@ -4778,6 +5964,727 @@
       "min":1,
       "sensitive":true
     },
+    "RouteTransitAfterTravelStep":{
+      "type":"structure",
+      "required":[
+        "Duration",
+        "Type"
+      ],
+      "members":{
+        "Duration":{
+          "shape":"DurationSeconds",
+          "documentation":"<p>Duration of the step.</p> <p> <b>Unit</b>: <code>seconds</code> </p>",
+          "box":true
+        },
+        "Instruction":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Brief description of the step in the requested language.</p>"
+        },
+        "Type":{
+          "shape":"RouteTransitAfterTravelStepType",
+          "documentation":"<p>Type of the step.</p>"
+        }
+      },
+      "documentation":"<p>A step that must be performed after the travel portion of the leg.</p>"
+    },
+    "RouteTransitAfterTravelStepList":{
+      "type":"list",
+      "member":{"shape":"RouteTransitAfterTravelStep"}
+    },
+    "RouteTransitAfterTravelStepType":{
+      "type":"string",
+      "enum":["Deboard"],
+      "sensitive":true
+    },
+    "RouteTransitAgency":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Name of the agency.</p>"
+        },
+        "Url":{
+          "shape":"SensitiveString",
+          "documentation":"<p>URL to the agency's website.</p>"
+        }
+      },
+      "documentation":"<p>Details about the transit agency.</p>"
+    },
+    "RouteTransitArrival":{
+      "type":"structure",
+      "required":["Place"],
+      "members":{
+        "Delay":{
+          "shape":"DurationSeconds",
+          "documentation":"<p>The delay from the scheduled arrival time.</p> <p> <b>Unit</b>: <code>seconds</code> </p>",
+          "box":true
+        },
+        "Place":{
+          "shape":"RouteTransitPlace",
+          "documentation":"<p>Place details corresponding to the arrival.</p>"
+        },
+        "Status":{
+          "shape":"RouteTransitTripStatus",
+          "documentation":"<p>The status of the arrival.</p>"
+        },
+        "Time":{
+          "shape":"TimestampWithTimezoneOffset",
+          "documentation":"<p>The arrival time.</p>"
+        }
+      },
+      "documentation":"<p>Details corresponding to the arrival for the leg.</p>"
+    },
+    "RouteTransitBeforeTravelStep":{
+      "type":"structure",
+      "required":[
+        "Duration",
+        "Type"
+      ],
+      "members":{
+        "Duration":{
+          "shape":"DurationSeconds",
+          "documentation":"<p>Duration of the step.</p> <p> <b>Unit</b>: <code>seconds</code> </p>",
+          "box":true
+        },
+        "Instruction":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Brief description of the step in the requested language.</p>"
+        },
+        "Type":{
+          "shape":"RouteTransitBeforeTravelStepType",
+          "documentation":"<p>Type of the step.</p>"
+        }
+      },
+      "documentation":"<p>A step that must be performed before the travel portion of the leg.</p>"
+    },
+    "RouteTransitBeforeTravelStepList":{
+      "type":"list",
+      "member":{"shape":"RouteTransitBeforeTravelStep"}
+    },
+    "RouteTransitBeforeTravelStepType":{
+      "type":"string",
+      "enum":["Board"],
+      "sensitive":true
+    },
+    "RouteTransitDeparture":{
+      "type":"structure",
+      "required":["Place"],
+      "members":{
+        "Delay":{
+          "shape":"DurationSeconds",
+          "documentation":"<p>The delay from the scheduled departure time.</p> <p> <b>Unit</b>: <code>seconds</code> </p>",
+          "box":true
+        },
+        "Place":{
+          "shape":"RouteTransitPlace",
+          "documentation":"<p>Place details corresponding to the departure.</p>"
+        },
+        "Status":{
+          "shape":"RouteTransitTripStatus",
+          "documentation":"<p>The status of the departure.</p>"
+        },
+        "Time":{
+          "shape":"TimestampWithTimezoneOffset",
+          "documentation":"<p>The departure time.</p>"
+        }
+      },
+      "documentation":"<p>Details corresponding to the departure for the leg.</p>"
+    },
+    "RouteTransitIncident":{
+      "type":"structure",
+      "required":[
+        "Effect",
+        "Type"
+      ],
+      "members":{
+        "Description":{
+          "shape":"SensitiveString",
+          "documentation":"<p>A human readable description of the incident.</p>"
+        },
+        "Effect":{
+          "shape":"RouteTransitIncidentEffect",
+          "documentation":"<p>The effect of the incident on the transit service.</p>"
+        },
+        "EndTime":{
+          "shape":"TimestampWithTimezoneOffset",
+          "documentation":"<p>The end time of the incident.</p>"
+        },
+        "StartTime":{
+          "shape":"TimestampWithTimezoneOffset",
+          "documentation":"<p>The start time of the incident.</p>"
+        },
+        "Type":{
+          "shape":"RouteTransitIncidentType",
+          "documentation":"<p>Type of the incident.</p>"
+        },
+        "Url":{
+          "shape":"SensitiveString",
+          "documentation":"<p>URL to the original incident published at the agency website.</p>"
+        }
+      },
+      "documentation":"<p>An incident describes disruptions on the transit route.</p>"
+    },
+    "RouteTransitIncidentEffect":{
+      "type":"string",
+      "enum":[
+        "Delayed",
+        "Detoured",
+        "Other",
+        "ServiceAdded",
+        "ServiceCancelled",
+        "ServiceModified",
+        "ServiceReduced",
+        "StopMoved"
+      ],
+      "sensitive":true
+    },
+    "RouteTransitIncidentList":{
+      "type":"list",
+      "member":{"shape":"RouteTransitIncident"}
+    },
+    "RouteTransitIncidentType":{
+      "type":"string",
+      "enum":[
+        "Accident",
+        "Construction",
+        "Demonstration",
+        "Holiday",
+        "Maintenance",
+        "MedicalEmergency",
+        "Other",
+        "PoliceActivity",
+        "Strike",
+        "TechnicalProblem",
+        "Weather"
+      ],
+      "sensitive":true
+    },
+    "RouteTransitIntermediateStop":{
+      "type":"structure",
+      "required":[
+        "Departure",
+        "Duration"
+      ],
+      "members":{
+        "Attributes":{
+          "shape":"RouteTransitIntermediateStopAttributeList",
+          "documentation":"<p>Attributes of the intermediate stop.</p>"
+        },
+        "Departure":{
+          "shape":"RouteTransitDeparture",
+          "documentation":"<p>Departure details for the intermediate stop.</p>"
+        },
+        "Duration":{
+          "shape":"DurationSeconds",
+          "documentation":"<p>Duration of the stop.</p> <p> <b>Unit</b>: <code>seconds</code> </p>",
+          "box":true
+        },
+        "GeometryOffset":{
+          "shape":"RouteTransitIntermediateStopGeometryOffsetInteger",
+          "documentation":"<p>Offset in the leg geometry corresponding to the start of this stop.</p>"
+        },
+        "Transport":{
+          "shape":"RouteTransitTransportModeDetails",
+          "documentation":"<p>Transport mode details at the intermediate stop.</p>"
+        }
+      },
+      "documentation":"<p>An intermediate stop between departure and destination of the transit route.</p>"
+    },
+    "RouteTransitIntermediateStopAttribute":{
+      "type":"string",
+      "enum":[
+        "NoEntry",
+        "NoExit"
+      ],
+      "sensitive":true
+    },
+    "RouteTransitIntermediateStopAttributeList":{
+      "type":"list",
+      "member":{"shape":"RouteTransitIntermediateStopAttribute"},
+      "max":2,
+      "min":0
+    },
+    "RouteTransitIntermediateStopGeometryOffsetInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "RouteTransitIntermediateStopList":{
+      "type":"list",
+      "member":{"shape":"RouteTransitIntermediateStop"}
+    },
+    "RouteTransitLegDetails":{
+      "type":"structure",
+      "required":[
+        "AfterTravelSteps",
+        "Arrival",
+        "Attributions",
+        "BeforeTravelSteps",
+        "BookingWebLinks",
+        "Departure",
+        "Incidents",
+        "IntermediateStops",
+        "NextDepartures",
+        "Notices",
+        "PassThroughWaypoints",
+        "Spans",
+        "Transport",
+        "TravelSteps"
+      ],
+      "members":{
+        "AfterTravelSteps":{
+          "shape":"RouteTransitAfterTravelStepList",
+          "documentation":"<p>Steps of a leg that must be performed after the travel portion of the leg.</p>"
+        },
+        "Agency":{
+          "shape":"RouteTransitAgency",
+          "documentation":"<p>Details about the transit agency.</p>"
+        },
+        "Arrival":{
+          "shape":"RouteTransitArrival",
+          "documentation":"<p>Details corresponding to the arrival for the leg.</p>"
+        },
+        "Attributions":{
+          "shape":"RouteAttributionList",
+          "documentation":"<p>List of required attributions to display.</p>"
+        },
+        "BeforeTravelSteps":{
+          "shape":"RouteTransitBeforeTravelStepList",
+          "documentation":"<p>Steps of a leg that must be performed before the travel portion of the leg.</p>"
+        },
+        "BookingWebLinks":{
+          "shape":"RouteWebLinkList",
+          "documentation":"<p>Web links to external ticket booking services for the transit.</p>"
+        },
+        "Departure":{
+          "shape":"RouteTransitDeparture",
+          "documentation":"<p>Details corresponding to the departure for the leg.</p>"
+        },
+        "Incidents":{
+          "shape":"RouteTransitIncidentList",
+          "documentation":"<p>Incidents affecting this leg of the transit route.</p>"
+        },
+        "IntermediateStops":{
+          "shape":"RouteTransitIntermediateStopList",
+          "documentation":"<p>Intermediate stops between departure and destination of the transit route.</p>"
+        },
+        "NextDepartures":{
+          "shape":"RouteTransitNextDepartureList",
+          "documentation":"<p>List of next departures that cover the same section of the route.</p>"
+        },
+        "Notices":{
+          "shape":"RouteTransitNoticeList",
+          "documentation":"<p>List of notices that indicate issues that occurred during route calculation.</p>"
+        },
+        "PassThroughWaypoints":{
+          "shape":"RoutePassThroughWaypointList",
+          "documentation":"<p>Waypoints that were passed through during the leg. This includes the waypoints that were configured with the PassThrough option. Not populated when the TravelMode is <code>Transit</code> or <code>Intermodal</code>.</p>"
+        },
+        "Spans":{
+          "shape":"RouteTransitSpanList",
+          "documentation":"<p>Spans that were computed for the requested SpanAdditionalFeatures. Not populated when the TravelMode is <code>Transit</code> or <code>Intermodal</code>.</p>"
+        },
+        "Summary":{
+          "shape":"RouteTransitSummary",
+          "documentation":"<p>Summary of the transit leg.</p>"
+        },
+        "Transport":{
+          "shape":"RouteTransitTransportModeDetails",
+          "documentation":"<p>Transport mode details for the transit leg.</p>"
+        },
+        "TravelSteps":{
+          "shape":"RouteTransitTravelStepList",
+          "documentation":"<p>Steps of a leg that must be performed during the travel portion of the leg.</p>"
+        }
+      },
+      "documentation":"<p>Populated when the Leg type is Transit, and provides additional information that is specific to public transit travel.</p>"
+    },
+    "RouteTransitMode":{
+      "type":"string",
+      "enum":[
+        "AerialTramway",
+        "Airplane",
+        "All",
+        "Bus",
+        "BusRapidTransit",
+        "CityTrain",
+        "Ferry",
+        "FunicularRailway",
+        "HighSpeedTrain",
+        "IntercityTrain",
+        "InterregionalTrain",
+        "LightRail",
+        "Monorail",
+        "PrivateBus",
+        "RegionalTrain",
+        "Subway"
+      ],
+      "sensitive":true
+    },
+    "RouteTransitModeList":{
+      "type":"list",
+      "member":{"shape":"RouteTransitMode"},
+      "max":15,
+      "min":1
+    },
+    "RouteTransitNextDeparture":{
+      "type":"structure",
+      "required":["Time"],
+      "members":{
+        "Delay":{
+          "shape":"DurationSeconds",
+          "documentation":"<p>The delay from the scheduled departure time.</p> <p> <b>Unit</b>: <code>seconds</code> </p>",
+          "box":true
+        },
+        "PlatformName":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Platform name or number for the departure.</p>"
+        },
+        "Status":{
+          "shape":"RouteTransitTripStatus",
+          "documentation":"<p>The status of the departure.</p>"
+        },
+        "Time":{
+          "shape":"TimestampWithTimezoneOffset",
+          "documentation":"<p>The departure time.</p>"
+        },
+        "Transport":{
+          "shape":"RouteTransitTransportModeDetails",
+          "documentation":"<p>Transport mode details for this departure.</p>"
+        }
+      },
+      "documentation":"<p>Details about the next available departure for the transit service.</p>"
+    },
+    "RouteTransitNextDepartureList":{
+      "type":"list",
+      "member":{"shape":"RouteTransitNextDeparture"}
+    },
+    "RouteTransitNotice":{
+      "type":"structure",
+      "required":["Code"],
+      "members":{
+        "Code":{
+          "shape":"RouteTransitNoticeCode",
+          "documentation":"<p>Code corresponding to the issue.</p>"
+        },
+        "Impact":{
+          "shape":"RouteNoticeImpact",
+          "documentation":"<p>Impact corresponding to the issue. While Low impact notices can be safely ignored, High impact notices must be evaluated further to determine the impact.</p>"
+        }
+      },
+      "documentation":"<p>A notice that indicates an issue that occurred during route calculation.</p>"
+    },
+    "RouteTransitNoticeCode":{
+      "type":"string",
+      "enum":[
+        "AccuratePolylineUnavailable",
+        "IntermediateStopsUnavailable",
+        "NoSchedule",
+        "Other",
+        "PotentialViolatedVehicleRestrictionUsage",
+        "ScheduledTimes",
+        "SeasonalClosure",
+        "ViolatedAvoidFerry",
+        "ViolatedAvoidRailFerry",
+        "ViolatedExcludedTransitMode",
+        "ViolatedVehicleRestriction",
+        "ViolatedAvoidAreas"
+      ]
+    },
+    "RouteTransitNoticeList":{
+      "type":"list",
+      "member":{"shape":"RouteTransitNotice"}
+    },
+    "RouteTransitOptions":{
+      "type":"structure",
+      "members":{
+        "AccessibilityAttributes":{
+          "shape":"RouteAccessibilityAttributeList",
+          "documentation":"<p>Accessibility attributes to consider when calculating the route.</p>"
+        },
+        "AllowedModes":{
+          "shape":"RouteTransitModeList",
+          "documentation":"<p>Allowed transit transport modes when calculating the route. By default, all transport modes are allowed. Cannot be used together with <code>ExcludedModes</code>.</p>"
+        },
+        "ExcludedModes":{
+          "shape":"RouteTransitModeList",
+          "documentation":"<p>Excluded transit transport modes when calculating the route. By default, all transport modes are allowed. Cannot be used together with <code>AllowedModes</code>.</p>"
+        },
+        "MaxTransfers":{
+          "shape":"RouteTransitOptionsMaxTransfersInteger",
+          "documentation":"<p>Maximum number of transfers allowed when calculating the route.</p>"
+        },
+        "Pedestrian":{
+          "shape":"RouteTransitPedestrianOptions",
+          "documentation":"<p>Options for the pedestrian leg of the transit route.</p>"
+        }
+      },
+      "documentation":"<p>Options related to transit routing.</p> <note> <p>Not supported in <code>ap-southeast-1</code> and <code>ap-southeast-5</code> regions for <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/GrabMaps.html\">GrabMaps</a> customers.</p> </note>"
+    },
+    "RouteTransitOptionsMaxTransfersInteger":{
+      "type":"integer",
+      "box":true,
+      "max":6,
+      "min":0
+    },
+    "RouteTransitOverviewSummary":{
+      "type":"structure",
+      "required":[
+        "Distance",
+        "Duration"
+      ],
+      "members":{
+        "Distance":{
+          "shape":"DistanceMeters",
+          "documentation":"<p>Distance of the entire leg.</p> <p> <b>Unit</b>: <code>meters</code> </p>",
+          "box":true
+        },
+        "Duration":{
+          "shape":"DurationSeconds",
+          "documentation":"<p>Duration of the entire leg.</p> <p> <b>Unit</b>: <code>seconds</code> </p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>Summary including duration and distance for the entire leg.</p>"
+    },
+    "RouteTransitPedestrianOptions":{
+      "type":"structure",
+      "members":{
+        "MaxDistance":{
+          "shape":"RouteTransitPedestrianOptionsMaxDistanceLong",
+          "documentation":"<p>Maximum walking distance allowed.</p> <p> <b>Unit</b>: <code>meters</code> </p>",
+          "box":true
+        },
+        "Speed":{
+          "shape":"RouteTransitPedestrianOptionsSpeedDouble",
+          "documentation":"<p>Walking speed.</p> <p> <b>Unit</b>: <code>kilometers per hour</code> </p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>Options for the pedestrian leg of the transit route.</p>"
+    },
+    "RouteTransitPedestrianOptionsMaxDistanceLong":{
+      "type":"long",
+      "max":6000,
+      "sensitive":true
+    },
+    "RouteTransitPedestrianOptionsSpeedDouble":{
+      "type":"double",
+      "max":7.2,
+      "min":1.8,
+      "sensitive":true
+    },
+    "RouteTransitPlace":{
+      "type":"structure",
+      "required":["Position"],
+      "members":{
+        "Name":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The name of the place.</p>"
+        },
+        "OriginalPosition":{
+          "shape":"Position23",
+          "documentation":"<p>Position provided in the request.</p>"
+        },
+        "Position":{
+          "shape":"Position23",
+          "documentation":"<p>Position in World Geodetic System (WGS 84) format: [longitude, latitude].</p>"
+        },
+        "StationDetails":{
+          "shape":"RouteStationDetails",
+          "documentation":"<p>Details about the station.</p>"
+        },
+        "Type":{
+          "shape":"RouteTransitPlaceType",
+          "documentation":"<p>The type of the place.</p>"
+        },
+        "WaypointIndex":{
+          "shape":"RouteTransitPlaceWaypointIndexInteger",
+          "documentation":"<p>Index of the waypoint in the request.</p>"
+        }
+      },
+      "documentation":"<p>Place details corresponding to the arrival or departure.</p>"
+    },
+    "RouteTransitPlaceType":{
+      "type":"string",
+      "enum":["Station"],
+      "sensitive":true
+    },
+    "RouteTransitPlaceWaypointIndexInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0,
+      "sensitive":true
+    },
+    "RouteTransitSpan":{
+      "type":"structure",
+      "members":{
+        "Country":{
+          "shape":"CountryCode3",
+          "documentation":"<p>3 letter Country code corresponding to the Span.</p>"
+        },
+        "Distance":{
+          "shape":"DistanceMeters",
+          "documentation":"<p>Distance of the computed span. This feature doesn't split a span, but is always computed on a span split by other properties.</p> <p> <b>Unit</b>: <code>meters</code> </p>",
+          "box":true
+        },
+        "Duration":{
+          "shape":"DurationSeconds",
+          "documentation":"<p>Duration of the computed span. This feature doesn't split a span, but is always computed on a span split by other properties.</p> <p> <b>Unit</b>: <code>seconds</code> </p>",
+          "box":true
+        },
+        "GeometryOffset":{
+          "shape":"RouteTransitSpanGeometryOffsetInteger",
+          "documentation":"<p>Offset in the leg geometry corresponding to the start of this span.</p>"
+        },
+        "Names":{
+          "shape":"LocalizedStringList",
+          "documentation":"<p>Names of the transit span in available languages.</p>"
+        },
+        "Region":{
+          "shape":"RouteTransitSpanRegionString",
+          "documentation":"<p>2-3 letter Region code corresponding to the Span. This is either a province or a state.</p>"
+        }
+      },
+      "documentation":"<p>Span computed for the requested SpanAdditionalFeatures.</p>"
+    },
+    "RouteTransitSpanGeometryOffsetInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "RouteTransitSpanList":{
+      "type":"list",
+      "member":{"shape":"RouteTransitSpan"}
+    },
+    "RouteTransitSpanRegionString":{
+      "type":"string",
+      "max":3,
+      "min":0,
+      "sensitive":true
+    },
+    "RouteTransitSummary":{
+      "type":"structure",
+      "members":{
+        "Overview":{
+          "shape":"RouteTransitOverviewSummary",
+          "documentation":"<p>Summary including duration and distance for the entire leg.</p>"
+        },
+        "TravelOnly":{
+          "shape":"RouteTransitTravelOnlySummary",
+          "documentation":"<p>Summary including duration and distance for the travel portion of the leg only.</p>"
+        }
+      },
+      "documentation":"<p>Summary of the transit leg.</p>"
+    },
+    "RouteTransitTransportModeDetails":{
+      "type":"structure",
+      "required":["Mode"],
+      "members":{
+        "Accessibility":{
+          "shape":"RouteAccessibilityAvailabilityDetails",
+          "documentation":"<p>Wheelchair accessibility information for the transit vehicle.</p>"
+        },
+        "Color":{
+          "shape":"HexColor",
+          "documentation":"<p>Color of the transport polyline and background for the transport name.</p>"
+        },
+        "Headsign":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Transit route headsign.</p>"
+        },
+        "LongRouteName":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Long name of the transit route.</p>"
+        },
+        "Mode":{
+          "shape":"RouteTransitMode",
+          "documentation":"<p>Mode of the transit transport.</p>"
+        },
+        "RouteName":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Transit route name.</p>"
+        },
+        "ShortRouteName":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Short name of the transit route.</p>"
+        },
+        "TextColor":{
+          "shape":"HexColor",
+          "documentation":"<p>Color of the transport name text.</p>"
+        }
+      },
+      "documentation":"<p>Transport mode details for the transit leg.</p>"
+    },
+    "RouteTransitTravelOnlySummary":{
+      "type":"structure",
+      "required":["Duration"],
+      "members":{
+        "Duration":{
+          "shape":"DurationSeconds",
+          "documentation":"<p>Duration of the travel portion of the transit leg.</p> <p> <b>Unit</b>: <code>seconds</code> </p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>Summary including duration and distance for the travel portion of the leg only.</p>"
+    },
+    "RouteTransitTravelStep":{
+      "type":"structure",
+      "required":[
+        "Duration",
+        "Type"
+      ],
+      "members":{
+        "Distance":{
+          "shape":"DistanceMeters",
+          "documentation":"<p>Distance of the step.</p> <p> <b>Unit</b>: <code>meters</code> </p>",
+          "box":true
+        },
+        "Duration":{
+          "shape":"DurationSeconds",
+          "documentation":"<p>Duration of the step.</p> <p> <b>Unit</b>: <code>seconds</code> </p>",
+          "box":true
+        },
+        "GeometryOffset":{
+          "shape":"RouteTransitTravelStepGeometryOffsetInteger",
+          "documentation":"<p>Offset in the leg geometry corresponding to the start of this step.</p>"
+        },
+        "Instruction":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Brief description of the step in the requested language.</p>"
+        },
+        "Type":{
+          "shape":"RouteTransitTravelStepType",
+          "documentation":"<p>Type of the step.</p>"
+        }
+      },
+      "documentation":"<p>A step that must be performed during the travel portion of the leg.</p>"
+    },
+    "RouteTransitTravelStepGeometryOffsetInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "RouteTransitTravelStepList":{
+      "type":"list",
+      "member":{"shape":"RouteTransitTravelStep"}
+    },
+    "RouteTransitTravelStepType":{
+      "type":"string",
+      "enum":["Depart"],
+      "sensitive":true
+    },
+    "RouteTransitTripStatus":{
+      "type":"string",
+      "enum":[
+        "Added",
+        "Cancelled",
+        "Replaced",
+        "Scheduled"
+      ],
+      "sensitive":true
+    },
     "RouteTransponder":{
       "type":"structure",
       "members":{
@@ -4798,7 +6705,9 @@
         "Car",
         "Pedestrian",
         "Scooter",
-        "Truck"
+        "Truck",
+        "Intermodal",
+        "Transit"
       ]
     },
     "RouteTravelModeOptions":{
@@ -4819,6 +6728,14 @@
         "Truck":{
           "shape":"RouteTruckOptions",
           "documentation":"<p>Travel mode options when the provided travel mode is <code>Truck</code>.</p>"
+        },
+        "Intermodal":{
+          "shape":"RouteIntermodalOptions",
+          "documentation":"<p>Travel mode options when the provided travel mode is <code>Intermodal</code>.</p> <note> <p>Not supported in <code>ap-southeast-1</code> and <code>ap-southeast-5</code> regions for <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/GrabMaps.html\">GrabMaps</a> customers.</p> </note>"
+        },
+        "Transit":{
+          "shape":"RouteTransitOptions",
+          "documentation":"<p>Travel mode options when the provided travel mode is <code>Transit</code>.</p> <note> <p>Not supported in <code>ap-southeast-1</code> and <code>ap-southeast-5</code> regions for <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/GrabMaps.html\">GrabMaps</a> customers.</p> </note>"
         }
       },
       "documentation":"<p>Travel mode related options for the provided travel mode.</p>"
@@ -5033,17 +6950,53 @@
       },
       "documentation":"<p>Details related to the U-turn step.</p>"
     },
+    "RouteVehicleAfterTravelStep":{
+      "type":"structure",
+      "required":[
+        "Duration",
+        "Type"
+      ],
+      "members":{
+        "ChargeStepDetails":{
+          "shape":"RouteChargeStepDetails",
+          "documentation":"<p>Details that are specific to a Charge step.</p> <p> <b>Unit</b>: <code>KwH </code> </p>"
+        },
+        "Duration":{
+          "shape":"DurationSeconds",
+          "documentation":"<p>Duration of the step.</p> <p> <b>Unit</b>: <code>seconds</code> </p>",
+          "box":true
+        },
+        "Instruction":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Brief description of the step in the requested language.</p> <note> <p>Only available when the TravelStepType is Default.</p> </note>"
+        },
+        "Type":{
+          "shape":"RouteVehicleAfterTravelStepType",
+          "documentation":"<p>Type of the step.</p>"
+        }
+      },
+      "documentation":"<p>Steps of a leg that must be performed after the travel portion of the leg.</p>"
+    },
+    "RouteVehicleAfterTravelStepList":{
+      "type":"list",
+      "member":{"shape":"RouteVehicleAfterTravelStep"}
+    },
+    "RouteVehicleAfterTravelStepType":{
+      "type":"string",
+      "enum":["Park"],
+      "sensitive":true
+    },
     "RouteVehicleArrival":{
       "type":"structure",
       "required":["Place"],
       "members":{
         "Place":{
           "shape":"RouteVehiclePlace",
-          "documentation":"<p>The place details.</p>"
+          "documentation":"<p>Place details corresponding to the arrival.</p>"
         },
         "Time":{
           "shape":"TimestampWithTimezoneOffset",
-          "documentation":"<p>The time.</p>"
+          "documentation":"<p>The arrival time.</p>"
         }
       },
       "documentation":"<p>Details corresponding to the arrival for a leg.</p>"
@@ -5054,7 +7007,7 @@
       "members":{
         "Place":{
           "shape":"RouteVehiclePlace",
-          "documentation":"<p>The place details.</p>"
+          "documentation":"<p>Place details corresponding to the departure.</p>"
         },
         "Time":{
           "shape":"TimestampWithTimezoneOffset",
@@ -5123,6 +7076,7 @@
     "RouteVehicleLegDetails":{
       "type":"structure",
       "required":[
+        "AfterTravelSteps",
         "Arrival",
         "Departure",
         "Incidents",
@@ -5136,6 +7090,10 @@
         "Zones"
       ],
       "members":{
+        "AfterTravelSteps":{
+          "shape":"RouteVehicleAfterTravelStepList",
+          "documentation":"<p>Steps of a leg that must be performed after the travel portion of the leg.</p>"
+        },
         "Arrival":{
           "shape":"RouteVehicleArrival",
           "documentation":"<p>Details corresponding to the arrival for the leg.</p>"
@@ -5202,6 +7160,20 @@
       "max":1,
       "min":1,
       "sensitive":true
+    },
+    "RouteVehicleMode":{
+      "type":"string",
+      "enum":[
+        "All",
+        "Car"
+      ],
+      "sensitive":true
+    },
+    "RouteVehicleModeList":{
+      "type":"list",
+      "member":{"shape":"RouteVehicleMode"},
+      "max":1,
+      "min":1
     },
     "RouteVehicleNotice":{
       "type":"structure",
@@ -5293,18 +7265,18 @@
         },
         "Distance":{
           "shape":"DistanceMeters",
-          "documentation":"<p>Distance of the step.</p>"
+          "documentation":"<p>Distance of the entire leg.</p> <p> <b>Unit</b>: <code>meters</code> </p>"
         },
         "Duration":{
           "shape":"DurationSeconds",
-          "documentation":"<p>Duration of the step.</p> <p> <b>Unit</b>: <code>seconds</code> </p>"
+          "documentation":"<p>Duration of the entire leg.</p> <p> <b>Unit</b>: <code>seconds</code> </p>"
         },
         "TypicalDuration":{
           "shape":"DurationSeconds",
-          "documentation":"<p>Duration of the computed span under typical traffic congestion. </p> <p> <b>Unit</b>: <code>seconds</code> </p>"
+          "documentation":"<p>Duration of the leg under typical traffic congestion.</p> <p> <b>Unit</b>: <code>seconds</code> </p>"
         }
       },
-      "documentation":"<p>Summarized details of the leg.</p>"
+      "documentation":"<p>Summary including duration and distance for the entire leg.</p>"
     },
     "RouteVehiclePlace":{
       "type":"structure",
@@ -5329,9 +7301,31 @@
         "WaypointIndex":{
           "shape":"RouteVehiclePlaceWaypointIndexInteger",
           "documentation":"<p>Index of the waypoint in the request.</p>"
+        },
+        "AccessPointDetails":{
+          "shape":"RouteAccessPointDetails",
+          "documentation":"<p>Details of the access point.</p>"
+        },
+        "StationDetails":{
+          "shape":"RouteStationDetails",
+          "documentation":"<p>Details about the station.</p>"
+        },
+        "Type":{
+          "shape":"RouteVehiclePlaceType",
+          "documentation":"<p>The type of the place.</p>"
         }
       },
       "documentation":"<p>Place details corresponding to the arrival or departure.</p>"
+    },
+    "RouteVehiclePlaceType":{
+      "type":"string",
+      "enum":[
+        "AccessPoint",
+        "DockingStation",
+        "ParkingLot",
+        "Station"
+      ],
+      "sensitive":true
     },
     "RouteVehiclePlaceWaypointIndexInteger":{
       "type":"integer",
@@ -5487,7 +7481,7 @@
         },
         "TypicalDuration":{
           "shape":"DurationSeconds",
-          "documentation":"<p>Duration of the computed span under typical traffic congestion.</p> <p> <b>Unit</b>: <code>seconds</code> </p>"
+          "documentation":"<p>Duration of the leg under typical traffic congestion.</p> <p> <b>Unit</b>: <code>seconds</code> </p>"
         }
       },
       "documentation":"<p>Summarized details of the route.</p>"
@@ -5745,6 +7739,42 @@
       "type":"long",
       "max":49999,
       "sensitive":true
+    },
+    "RouteWebLink":{
+      "type":"structure",
+      "required":["Description"],
+      "members":{
+        "AnchorText":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The interactive or clickable portion of the text.</p>"
+        },
+        "Description":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Text describing the URL.</p>"
+        },
+        "DeviceType":{
+          "shape":"RouteWebLinkDeviceType",
+          "documentation":"<p>Device type for which the link is intended.</p>"
+        },
+        "Url":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The URL of the link.</p>"
+        }
+      },
+      "documentation":"<p>The URL to an external resource.</p>"
+    },
+    "RouteWebLinkDeviceType":{
+      "type":"string",
+      "enum":[
+        "Android",
+        "Ios",
+        "Web"
+      ],
+      "sensitive":true
+    },
+    "RouteWebLinkList":{
+      "type":"list",
+      "member":{"shape":"RouteWebLink"}
     },
     "RouteWeightConstraint":{
       "type":"structure",
@@ -6738,5 +8768,5 @@
       "documentation":"<p>Specifies the total weight for different axle group configurations. Used in regions where regulations set different weight limits based on axle group types.</p> <p> <b>Unit</b>: <code>kilograms</code> </p>"
     }
   },
-  "documentation":"<p>With the Amazon Location Routes API you can calculate routes and estimate travel time based on up-to-date road network and live traffic information.</p> <p>Calculate optimal travel routes and estimate travel times using up-to-date road network and traffic data. Key features include:</p> <ul> <li> <p>Point-to-point routing with estimated travel time, distance, and turn-by-turn directions</p> </li> <li> <p>Multi-point route optimization to minimize travel time or distance</p> </li> <li> <p>Route matrices for efficient multi-destination planning</p> </li> <li> <p>Isoline calculations to determine reachable areas within specified time or distance thresholds</p> </li> <li> <p>Map-matching to align GPS traces with the road network</p> </li> </ul>"
+  "documentation":"<p>With the Routes API you can calculate routes and estimate travel time based on up-to-date road network and live traffic information. Key features include:</p> <ul> <li> <p>Point-to-point routing with estimated travel time, distance, and turn-by-turn directions. See <a href=\"https://docs.aws.amazon.com/location/latest/APIReference/API_CalculateRoutes.html\">CalculateRoutes</a>.</p> </li> <li> <p>Multi-point route optimization to minimize travel time or distance. See <a href=\"https://docs.aws.amazon.com/location/latest/APIReference/API_OptimizeWaypoints.html\">OptimizeWaypoints</a>.</p> </li> <li> <p>Route matrices for efficient multi-destination planning. See <a href=\"https://docs.aws.amazon.com/location/latest/APIReference/API_CalculateRouteMatrix.html\">CalculateRouteMatrix</a>.</p> </li> <li> <p>Isoline calculations to determine reachable areas within specified time or distance thresholds. See <a href=\"https://docs.aws.amazon.com/location/latest/APIReference/API_CalculateIsolines.html\">CalculateIsolines</a>.</p> </li> <li> <p>Map-matching to align GPS traces with the road network. See <a href=\"https://docs.aws.amazon.com/location/latest/APIReference/API_SnapToRoads.html\">SnapToRoads</a>.</p> </li> </ul>"
 }

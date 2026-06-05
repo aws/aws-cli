@@ -31,8 +31,8 @@
         {"shape":"TransactionNotFoundException"},
         {"shape":"InvalidSecretException"},
         {"shape":"InvalidResourceStateException"},
-        {"shape":"ServiceUnavailableError"},
         {"shape":"ForbiddenException"},
+        {"shape":"ServiceUnavailableError"},
         {"shape":"DatabaseNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"BadRequestException"},
@@ -59,8 +59,8 @@
         {"shape":"TransactionNotFoundException"},
         {"shape":"InvalidSecretException"},
         {"shape":"InvalidResourceStateException"},
-        {"shape":"ServiceUnavailableError"},
         {"shape":"ForbiddenException"},
+        {"shape":"ServiceUnavailableError"},
         {"shape":"DatabaseNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"BadRequestException"},
@@ -86,8 +86,8 @@
         {"shape":"TransactionNotFoundException"},
         {"shape":"InvalidSecretException"},
         {"shape":"InvalidResourceStateException"},
-        {"shape":"ServiceUnavailableError"},
         {"shape":"ForbiddenException"},
+        {"shape":"ServiceUnavailableError"},
         {"shape":"DatabaseNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"BadRequestException"},
@@ -136,8 +136,8 @@
         {"shape":"TransactionNotFoundException"},
         {"shape":"InvalidSecretException"},
         {"shape":"InvalidResourceStateException"},
-        {"shape":"ServiceUnavailableError"},
         {"shape":"ForbiddenException"},
+        {"shape":"ServiceUnavailableError"},
         {"shape":"DatabaseNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"BadRequestException"},
@@ -164,8 +164,8 @@
         {"shape":"TransactionNotFoundException"},
         {"shape":"InvalidSecretException"},
         {"shape":"InvalidResourceStateException"},
-        {"shape":"ServiceUnavailableError"},
         {"shape":"ForbiddenException"},
+        {"shape":"ServiceUnavailableError"},
         {"shape":"DatabaseNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"BadRequestException"},
@@ -191,36 +191,37 @@
     },
     "Arn":{
       "type":"string",
-      "max":100,
+      "max":570,
       "min":11
     },
     "ArrayOfArray":{
       "type":"list",
       "member":{"shape":"ArrayValue"},
-      "documentation":"<p>An array of arrays.</p> <note> <p>Some array entries can be null.</p> </note>"
+      "documentation":"<p>An array of arrays. Can contain null values.</p>",
+      "sparse":true
     },
     "ArrayValue":{
       "type":"structure",
       "members":{
         "booleanValues":{
           "shape":"BooleanArray",
-          "documentation":"<p>An array of Boolean values.</p>"
+          "documentation":"<p>An array of Boolean values. Can contain null values.</p>"
         },
         "longValues":{
           "shape":"LongArray",
-          "documentation":"<p>An array of integers.</p>"
+          "documentation":"<p>An array of integers. Can contain null values.</p>"
         },
         "doubleValues":{
           "shape":"DoubleArray",
-          "documentation":"<p>An array of floating-point numbers.</p>"
+          "documentation":"<p>An array of floating-point numbers. Can contain null values.</p>"
         },
         "stringValues":{
           "shape":"StringArray",
-          "documentation":"<p>An array of strings.</p>"
+          "documentation":"<p>An array of strings. Can contain null values.</p>"
         },
         "arrayValues":{
           "shape":"ArrayOfArray",
-          "documentation":"<p>An array of arrays.</p>"
+          "documentation":"<p>An array of arrays. Can contain null values.</p>"
         }
       },
       "documentation":"<p>Contains an array.</p>",
@@ -335,7 +336,8 @@
     "BooleanArray":{
       "type":"list",
       "member":{"shape":"BoxedBoolean"},
-      "documentation":"<p>An array of Boolean values.</p> <note> <p>Some array entries can be null.</p> </note>"
+      "documentation":"<p>An array of Boolean values. Can contain null values.</p>",
+      "sparse":true
     },
     "BoxedBoolean":{
       "type":"boolean",
@@ -490,8 +492,7 @@
     },
     "DatabaseUnavailableException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The writer instance in the DB cluster isn't available.</p>",
       "error":{"httpStatusCode":504},
       "exception":true,
@@ -512,7 +513,8 @@
     "DoubleArray":{
       "type":"list",
       "member":{"shape":"BoxedDouble"},
-      "documentation":"<p>An array of floating-point numbers.</p> <note> <p>Some array entries can be null.</p> </note>"
+      "documentation":"<p>An array of floating-point numbers. Can contain null values.</p>",
+      "sparse":true
     },
     "ErrorMessage":{"type":"string"},
     "ExecuteSqlRequest":{
@@ -570,7 +572,7 @@
         },
         "secretArn":{
           "shape":"Arn",
-          "documentation":"<p>The ARN of the secret that enables access to the DB cluster. Enter the database user name and password for the credentials in the secret.</p> <p>For information about creating the secret, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/create_database_secret.html\">Create a database secret</a>.</p>"
+          "documentation":"<p>The ARN of the secret that enables access to the DB cluster. Enter the database user name and password for the credentials in the secret.</p> <p>For information about creating the secret, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/create_database_secret.html\">Create a database secret</a>.</p> <note> <p>When you use the CLI on Linux to reference a secret created in the RDS console, the ARN might include special characters like <code>rds!cluster</code>. If you enclose the ARN in double quotes, the <code>!</code> character might trigger a shell expansion error, such as <code>-bash: !cluster: event not found</code>. To avoid this, escape the exclamation mark (\\!) in the ARN or enclose the entire ARN in single quotes (') instead of double quotes.</p> <p>Alternatively, disable shell history expansion by running <code>set +H</code> before you execute the command.</p> </note>"
         },
         "sql":{
           "shape":"SqlStatement",
@@ -712,8 +714,7 @@
     "Integer":{"type":"integer"},
     "InternalServerErrorException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An internal error occurred.</p>",
       "error":{"httpStatusCode":500},
       "exception":true,
@@ -747,7 +748,8 @@
     "LongArray":{
       "type":"list",
       "member":{"shape":"BoxedLong"},
-      "documentation":"<p>An array of integers.</p> <note> <p>Some array entries can be null.</p> </note>"
+      "documentation":"<p>An array of integers. Can contain null values.</p>",
+      "sparse":true
     },
     "LongReturnType":{
       "type":"string",
@@ -891,8 +893,7 @@
     },
     "ServiceUnavailableError":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The service specified by the <code>resourceArn</code> parameter isn't available.</p>",
       "error":{"httpStatusCode":503},
       "exception":true,
@@ -974,7 +975,8 @@
     "StringArray":{
       "type":"list",
       "member":{"shape":"String"},
-      "documentation":"<p>An array of strings.</p> <note> <p>Some array entries can be null.</p> </note>"
+      "documentation":"<p>An array of strings. Can contain null values.</p>",
+      "sparse":true
     },
     "StructValue":{
       "type":"structure",

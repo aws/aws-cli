@@ -345,7 +345,8 @@
         {"shape":"ResourceAlreadyExistsException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"IncompatibleImageException"},
-        {"shape":"DryRunOperationException"}
+        {"shape":"DryRunOperationException"},
+        {"shape":"InvalidParameterCombinationException"}
       ],
       "documentation":"<p>Creates a custom WorkSpaces Applications image by importing an EC2 AMI. This allows you to use your own customized AMI to create WorkSpaces Applications images that support additional instance types beyond the standard stream.* instances.</p>"
     },
@@ -2894,11 +2895,7 @@
     },
     "CreateImportedImageRequest":{
       "type":"structure",
-      "required":[
-        "Name",
-        "SourceAmiId",
-        "IamRoleArn"
-      ],
+      "required":["Name"],
       "members":{
         "Name":{
           "shape":"Name",
@@ -2906,7 +2903,11 @@
         },
         "SourceAmiId":{
           "shape":"PhotonAmiId",
-          "documentation":"<p>The ID of the EC2 AMI to import. The AMI must meet specific requirements including Windows Server 2022 Full Base, UEFI boot mode, TPM 2.0 support, and proper drivers.</p>"
+          "documentation":"<p>The ID of the EC2 AMI to import.</p>"
+        },
+        "WorkspaceImageId":{
+          "shape":"WorkspaceImageId",
+          "documentation":"<p>The ID of the Workspaces Image to import.</p>"
         },
         "IamRoleArn":{
           "shape":"Arn",
@@ -4475,7 +4476,8 @@
       "enum":[
         "EXPORTING",
         "COMPLETED",
-        "FAILED"
+        "FAILED",
+        "TIMED_OUT"
       ]
     },
     "ExportImageTasks":{
@@ -5067,7 +5069,8 @@
       "documentation":"The image type is the type of AppStream image resource.",
       "enum":[
         "CUSTOM",
-        "NATIVE"
+        "NATIVE",
+        "BYOL"
       ]
     },
     "IncompatibleImageException":{
@@ -6901,6 +6904,12 @@
         }
       },
       "documentation":"<p>Describes VPC configuration information for fleets and image builders.</p>"
+    },
+    "WorkspaceImageId":{
+      "type":"string",
+      "max":67,
+      "min":12,
+      "pattern":"^wsi-[0-9a-z]{8,63}$"
     }
   },
   "documentation":"<fullname>Amazon WorkSpaces Applications</fullname> <p>This is the <i>Amazon WorkSpaces Applications API Reference</i>. This documentation provides descriptions and syntax for each of the actions and data types in WorkSpaces Applications. WorkSpaces Applications is a fully managed, secure application streaming service that lets you stream desktop applications to users without rewriting applications. WorkSpaces Applications manages the AWS resources that are required to host and run your applications, scales automatically, and provides access to your users on demand. </p> <note> <p>You can call the WorkSpaces Applications API operations by using an interface VPC endpoint (interface endpoint). For more information, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/access-api-cli-through-interface-vpc-endpoint.html\">Access WorkSpaces Applications API Operations and CLI Commands Through an Interface VPC Endpoint</a> in the <i>Amazon WorkSpaces Applications Administration Guide</i>.</p> </note> <p>To learn more about WorkSpaces Applications, see the following resources:</p> <ul> <li> <p> <a href=\"http://aws.amazon.com/appstream2\">Amazon WorkSpaces Applications product page</a> </p> </li> <li> <p> <a href=\"http://aws.amazon.com/documentation/appstream2\">Amazon WorkSpaces Applications documentation</a> </p> </li> </ul>"

@@ -30,7 +30,7 @@ class OpenTunnelCommand(BasicCommand):
     NAME = "open-tunnel"
 
     DESCRIPTION = (
-        "Opens a websocket tunnel to the specified EC2 Instance or private ip."
+        "Opens a websocket tunnel to the specified EC2 Instance or IP address."
     )
 
     ARG_TABLE = [
@@ -55,7 +55,7 @@ class OpenTunnelCommand(BasicCommand):
         {
             "name": "private-ip-address",
             "help_text": (
-                "Specify the private ip address to open a tunnel for. "
+                "Specify the private IPv4 (or IPv6) address to open a tunnel for. "
                 "If this is specified, you must specify instance-connect-endpoint-id."
             ),
             "required": False,
@@ -114,7 +114,16 @@ class OpenTunnelCommand(BasicCommand):
             )["Reservations"][0]["Instances"][0]
             instance_vpc_id = instance_metadata["VpcId"]
             instance_subnet_id = instance_metadata["SubnetId"]
-            private_ip_address = instance_metadata["PrivateIpAddress"]
+            # Fall back to IPv6 when the instance has no private IPv4
+            # (e.g. an IPv6-only subnet). The EICE accepts either.
+            private_ip_address = instance_metadata.get(
+                "PrivateIpAddress"
+            ) or instance_metadata.get("Ipv6Address")
+            if not private_ip_address:
+                raise ParamValidationError(
+                    "Unable to find any IP address on the instance to "
+                    "connect to."
+                )
 
         instance_connect_endpoint_id = parsed_args.instance_connect_endpoint_id
         instance_connect_endpoint_dns_name = (

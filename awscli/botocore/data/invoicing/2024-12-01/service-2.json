@@ -47,7 +47,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>This creates a new invoice unit with the provided definition.</p>"
+      "documentation":"<p>This creates a new invoice unit with the provided definition.</p>",
+      "idempotent":true
     },
     "CreateProcurementPortalPreference":{
       "name":"CreateProcurementPortalPreference",
@@ -83,7 +84,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>This deletes an invoice unit with the provided invoice unit ARN. </p>"
+      "documentation":"<p>This deletes an invoice unit with the provided invoice unit ARN. </p>",
+      "idempotent":true
     },
     "DeleteProcurementPortalPreference":{
       "name":"DeleteProcurementPortalPreference",
@@ -101,7 +103,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p> <i> <b>This feature API is subject to changing at any time. For more information, see the <a href=\"https://aws.amazon.com/service-terms/\">Amazon Web Services Service Terms</a> (Betas and Previews).</b> </i> </p> <p>Deletes an existing procurement portal preference. This action cannot be undone. Active e-invoice delivery and PO retrieval configurations will be terminated.</p>"
+      "documentation":"<p> <i> <b>This feature API is subject to changing at any time. For more information, see the <a href=\"https://aws.amazon.com/service-terms/\">Amazon Web Services Service Terms</a> (Betas and Previews).</b> </i> </p> <p>Deletes an existing procurement portal preference. This action cannot be undone. Active e-invoice delivery and PO retrieval configurations will be terminated.</p>",
+      "idempotent":true
     },
     "GetInvoicePDF":{
       "name":"GetInvoicePDF",
@@ -245,7 +248,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p> <i> <b>This feature API is subject to changing at any time. For more information, see the <a href=\"https://aws.amazon.com/service-terms/\">Amazon Web Services Service Terms</a> (Betas and Previews).</b> </i> </p> <p>Updates an existing procurement portal preference configuration. This operation can modify settings for e-invoice delivery and purchase order retrieval.</p>"
+      "documentation":"<p> <i> <b>This feature API is subject to changing at any time. For more information, see the <a href=\"https://aws.amazon.com/service-terms/\">Amazon Web Services Service Terms</a> (Betas and Previews).</b> </i> </p> <p>Updates an existing procurement portal preference configuration. This operation can modify settings for e-invoice delivery and purchase order retrieval.</p>",
+      "idempotent":true
     },
     "TagResource":{
       "name":"TagResource",
@@ -297,7 +301,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>You can update the invoice unit configuration at any time, and Amazon Web Services will use the latest configuration at the end of the month.</p>"
+      "documentation":"<p>You can update the invoice unit configuration at any time, and Amazon Web Services will use the latest configuration at the end of the month.</p>",
+      "idempotent":true
     },
     "UpdateProcurementPortalPreferenceStatus":{
       "name":"UpdateProcurementPortalPreferenceStatus",
@@ -316,7 +321,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p> <i> <b>This feature API is subject to changing at any time. For more information, see the <a href=\"https://aws.amazon.com/service-terms/\">Amazon Web Services Service Terms</a> (Betas and Previews).</b> </i> </p> <p>Updates the status of a procurement portal preference, including the activation state of e-invoice delivery and purchase order retrieval features.</p>"
+      "documentation":"<p> <i> <b>This feature API is subject to changing at any time. For more information, see the <a href=\"https://aws.amazon.com/service-terms/\">Amazon Web Services Service Terms</a> (Betas and Previews).</b> </i> </p> <p>Updates the status of a procurement portal preference, including the activation state of e-invoice delivery and purchase order retrieval features.</p>",
+      "idempotent":true
     }
   },
   "shapes":{
@@ -516,6 +522,11 @@
         "ResourceTags":{
           "shape":"ResourceTagList",
           "documentation":"<p> The tag structure that contains a tag key and value. </p>"
+        },
+        "ClientToken":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p> A unique, case-sensitive identifier that you provide to ensure idempotency of the request. </p>",
+          "idempotencyToken":true
         }
       }
     },
@@ -659,6 +670,11 @@
         "InvoiceUnitArn":{
           "shape":"InvoiceUnitArnString",
           "documentation":"<p> The ARN to identify an invoice unit. This information can't be modified or deleted. </p>"
+        },
+        "ClientToken":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p> A unique, case-sensitive identifier that you provide to ensure idempotency of the request. </p>",
+          "idempotencyToken":true
         }
       }
     },
@@ -678,6 +694,11 @@
         "ProcurementPortalPreferenceArn":{
           "shape":"ProcurementPortalPreferenceArnString",
           "documentation":"<p>The Amazon Resource Name (ARN) of the procurement portal preference to delete.</p>"
+        },
+        "ClientToken":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
         }
       }
     },
@@ -1302,7 +1323,7 @@
         },
         "NextToken":{
           "shape":"NextTokenString",
-          "documentation":"<p>The token to retrieve the next set of results. Amazon Web Services provides the token when the response from a previous call has more results than the maximum page size.</p>"
+          "documentation":"<p>The token for the next set of results. (You received this token from a previous call.)</p>"
         },
         "MaxResults":{
           "shape":"InvoiceSummariesMaxResults",
@@ -1327,7 +1348,7 @@
         },
         "NextToken":{
           "shape":"NextTokenString",
-          "documentation":"<p>The token to retrieve the next set of results. Amazon Web Services provides the token when the response from a previous call has more results than the maximum page size.</p>"
+          "documentation":"<p>The token to use to retrieve the next set of results, or null if there are no more results.</p>"
         }
       }
     },
@@ -1747,6 +1768,11 @@
         "Contacts":{
           "shape":"Contacts",
           "documentation":"<p>Updated list of contact information for portal administrators and technical contacts.</p>"
+        },
+        "ClientToken":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
         }
       }
     },
@@ -2133,6 +2159,11 @@
         "Rule":{
           "shape":"InvoiceUnitRule",
           "documentation":"<p>The <code>InvoiceUnitRule</code> object used to update invoice units. </p>"
+        },
+        "ClientToken":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p> A unique, case-sensitive identifier that you provide to ensure idempotency of the request. </p>",
+          "idempotencyToken":true
         }
       }
     },
@@ -2168,6 +2199,11 @@
         "PurchaseOrderRetrievalPreferenceStatusReason":{
           "shape":"BasicString",
           "documentation":"<p>The reason for the purchase order retrieval preference status update, providing context for the change.</p>"
+        },
+        "ClientToken":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
         }
       }
     },

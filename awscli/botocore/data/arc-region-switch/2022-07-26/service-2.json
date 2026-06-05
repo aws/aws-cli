@@ -208,6 +208,7 @@
       "errors":[
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"IllegalArgumentException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>List the Amazon Route 53 health checks.</p>",
@@ -676,6 +677,89 @@
       "type":"list",
       "member":{"shape":"AuroraClusterArn"}
     },
+    "AuroraInstanceArn":{
+      "type":"string",
+      "pattern":"arn:aws[a-zA-Z-]*:rds:[a-z0-9-]+:\\d{12}:db:[A-Za-z][0-9A-Za-z-]{0,62}"
+    },
+    "AuroraProvisionedScalingConfiguration":{
+      "type":"structure",
+      "required":[
+        "globalClusterIdentifier",
+        "regionDatabaseClusterArns",
+        "instanceArns"
+      ],
+      "members":{
+        "timeoutMinutes":{
+          "shape":"AuroraProvisionedScalingConfigurationTimeoutMinutesInteger",
+          "documentation":"<p>The timeout value specified for the configuration.</p>"
+        },
+        "crossAccountRole":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The cross account role for the configuration.</p>"
+        },
+        "externalId":{
+          "shape":"String",
+          "documentation":"<p>The external ID (secret key) for the configuration.</p>"
+        },
+        "globalClusterIdentifier":{
+          "shape":"GlobalClusterIdentifier",
+          "documentation":"<p>The global cluster identifier for a global database.</p>"
+        },
+        "regionDatabaseClusterArns":{
+          "shape":"RegionAuroraClusterMap",
+          "documentation":"<p>Per-Region configuration that maps each Region to the Aurora database cluster ARN for scaling.</p>"
+        },
+        "instanceArns":{
+          "shape":"RegionAuroraInstanceArnMap",
+          "documentation":"<p>Per-Region configuration that maps each Region to the Aurora database instance ARN for scaling.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for Amazon Aurora provisioned cluster scaling used in a Region switch plan.</p>"
+    },
+    "AuroraProvisionedScalingConfigurationTimeoutMinutesInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "AuroraServerlessScalingConfiguration":{
+      "type":"structure",
+      "required":[
+        "globalClusterIdentifier",
+        "regionDatabaseClusterArns"
+      ],
+      "members":{
+        "timeoutMinutes":{
+          "shape":"AuroraServerlessScalingConfigurationTimeoutMinutesInteger",
+          "documentation":"<p>The timeout value specified for the configuration.</p>"
+        },
+        "crossAccountRole":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The cross account role for the configuration.</p>"
+        },
+        "externalId":{
+          "shape":"String",
+          "documentation":"<p>The external ID (secret key) for the configuration.</p>"
+        },
+        "globalClusterIdentifier":{
+          "shape":"GlobalClusterIdentifier",
+          "documentation":"<p>The global cluster identifier for a global database.</p>"
+        },
+        "regionDatabaseClusterArns":{
+          "shape":"RegionAuroraClusterMap",
+          "documentation":"<p>Per-Region configuration that maps each Region to the Aurora database cluster ARN for scaling.</p>"
+        },
+        "targetPercent":{
+          "shape":"Integer",
+          "documentation":"<p>The target capacity percentage for Aurora Serverless scaling.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for Amazon Aurora Serverless scaling used in a Region switch plan.</p>"
+    },
+    "AuroraServerlessScalingConfigurationTimeoutMinutesInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
     "CancelPlanExecutionRequest":{
       "type":"structure",
       "required":[
@@ -922,7 +1006,7 @@
         },
         "targetPercent":{
           "shape":"Integer",
-          "documentation":"<p>The target percentage that you specify for EC2 Auto Scaling groups.</p>"
+          "documentation":"<p>The target percentage that you specify for EC2 Auto Scaling groups. The default is 100.</p>"
         },
         "capacityMonitoringApproach":{
           "shape":"Ec2AsgCapacityMonitoringApproach",
@@ -978,7 +1062,7 @@
         },
         "targetPercent":{
           "shape":"Integer",
-          "documentation":"<p>The target percentage specified for the configuration.</p>"
+          "documentation":"<p>The target percentage specified for the configuration. The default is 100.</p>"
         },
         "capacityMonitoringApproach":{
           "shape":"EcsCapacityMonitoringApproach",
@@ -1082,7 +1166,7 @@
         },
         "targetPercent":{
           "shape":"EksResourceScalingConfigurationTargetPercentInteger",
-          "documentation":"<p>The target percentage for the configuration.</p>"
+          "documentation":"<p>The target percentage for the configuration. The default is 100.</p>"
         },
         "capacityMonitoringApproach":{
           "shape":"EksCapacityMonitoringApproach",
@@ -1126,6 +1210,36 @@
         "pendingEvaluation",
         "unknown"
       ]
+    },
+    "EventSourceMapping":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "crossAccountRole":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The cross account role for the configuration.</p>"
+        },
+        "externalId":{
+          "shape":"String",
+          "documentation":"<p>The external ID (secret key) for the configuration.</p>"
+        },
+        "arn":{
+          "shape":"EventSourceMappingArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Lambda event source mapping.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Web Services Lambda event source mapping configuration, containing the resource ARN and optional cross-account configuration.</p>"
+    },
+    "EventSourceMappingAction":{
+      "type":"string",
+      "enum":[
+        "enable",
+        "disable"
+      ]
+    },
+    "EventSourceMappingArn":{
+      "type":"string",
+      "pattern":"arn:aws[a-zA-Z-]*:lambda:[a-z0-9-]+:\\d{12}:event-source-mapping:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
     },
     "ExecutionAction":{
       "type":"string",
@@ -1206,6 +1320,22 @@
         "rdsCreateCrossRegionReadReplicaConfig":{
           "shape":"RdsCreateCrossRegionReplicaConfiguration",
           "documentation":"<p>An Amazon RDS create cross-Region replica execution block.</p>"
+        },
+        "lambdaEventSourceMappingConfig":{
+          "shape":"LambdaEventSourceMappingConfiguration",
+          "documentation":"<p>A Lambda event source mapping execution block.</p>"
+        },
+        "auroraServerlessScalingConfig":{
+          "shape":"AuroraServerlessScalingConfiguration",
+          "documentation":"<p>An Aurora Serverless scaling execution block.</p>"
+        },
+        "auroraProvisionedScalingConfig":{
+          "shape":"AuroraProvisionedScalingConfiguration",
+          "documentation":"<p>An Aurora provisioned cluster scaling execution block.</p>"
+        },
+        "neptuneGlobalDatabaseConfig":{
+          "shape":"NeptuneGlobalDatabaseConfiguration",
+          "documentation":"<p>A Neptune global database execution block.</p>"
         }
       },
       "documentation":"<p>Execution block configurations for a workflow in a Region switch plan. An execution block represents a specific type of action to perform during a Region switch.</p>",
@@ -1226,7 +1356,11 @@
         "Route53HealthCheck",
         "DocumentDb",
         "RdsPromoteReadReplica",
-        "RdsCreateCrossRegionReplica"
+        "RdsCreateCrossRegionReplica",
+        "LambdaEventSourceMapping",
+        "AuroraServerlessScaling",
+        "AuroraProvisionedScaling",
+        "NeptuneGlobalDatabase"
       ]
     },
     "ExecutionComment":{
@@ -1756,6 +1890,51 @@
       "documentation":"<p>Defines a Kubernetes resource to scale in an Amazon EKS cluster.</p>"
     },
     "LambdaArn":{"type":"string"},
+    "LambdaEventSourceMappingConfiguration":{
+      "type":"structure",
+      "required":[
+        "action",
+        "regionEventSourceMappings"
+      ],
+      "members":{
+        "timeoutMinutes":{
+          "shape":"LambdaEventSourceMappingConfigurationTimeoutMinutesInteger",
+          "documentation":"<p>The timeout value specified for the configuration.</p>"
+        },
+        "action":{
+          "shape":"EventSourceMappingAction",
+          "documentation":"<p>The action to take - whether to <code>enable</code> or <code>disable</code> an event source mapping.</p>"
+        },
+        "regionEventSourceMappings":{
+          "shape":"RegionEventSourceMappingMap",
+          "documentation":"<p>Per-region configuration for which Lambda event source mapping to enable or disable when activating or deactivating a region.</p>"
+        },
+        "ungraceful":{
+          "shape":"LambdaEventSourceMappingUngraceful",
+          "documentation":"<p>The settings for ungraceful execution.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for Amazon Web Services Lambda event source mappings used in a Region switch plan.</p>"
+    },
+    "LambdaEventSourceMappingConfigurationTimeoutMinutesInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "LambdaEventSourceMappingUngraceful":{
+      "type":"structure",
+      "members":{
+        "behavior":{
+          "shape":"LambdaEventSourceMappingUngracefulBehavior",
+          "documentation":"<p>Set to <code>skip</code> to skip executing this event source mapping step during an ungraceful execution.</p>"
+        }
+      },
+      "documentation":"<p>Specifies whether to skip enabling or disabling an event source mapping during an ungraceful execution.</p>"
+    },
+    "LambdaEventSourceMappingUngracefulBehavior":{
+      "type":"string",
+      "enum":["skip"]
+    },
     "LambdaList":{
       "type":"list",
       "member":{"shape":"Lambdas"},
@@ -1953,7 +2132,7 @@
         },
         "maxResults":{
           "shape":"ListRoute53HealthChecksInRegionRequestMaxResultsInteger",
-          "documentation":"<p>The number of objects that you want to return with this call.</p>"
+          "documentation":"<p>The maximum number of results to return in the response.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -1976,7 +2155,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>Specifies that you want to receive the next page of results. Valid only if you received a <code>nextToken</code> response in the previous request. If you did, it indicates that more output is available. Set this parameter to the value provided by the previous call's <code>nextToken</code> response to request the next page of results.</p>"
+          "documentation":"<p>A pagination token. A response may contain no results while still including a <code>nextToken</code>. Continue paginating until <code>nextToken</code> is null to retrieve all results.</p>"
         }
       }
     },
@@ -1998,7 +2177,7 @@
         },
         "maxResults":{
           "shape":"ListRoute53HealthChecksRequestMaxResultsInteger",
-          "documentation":"<p>The number of objects that you want to return with this call.</p>"
+          "documentation":"<p>The maximum number of results to return in the response.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -2010,7 +2189,7 @@
       "type":"integer",
       "box":true,
       "max":100,
-      "min":10
+      "min":1
     },
     "ListRoute53HealthChecksResponse":{
       "type":"structure",
@@ -2021,7 +2200,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>Specifies that you want to receive the next page of results. Valid only if you received a <code>nextToken</code> response in the previous request. If you did, it indicates that more output is available. Set this parameter to the value provided by the previous call's <code>nextToken</code> response to request the next page of results.</p>"
+          "documentation":"<p>A pagination token. A response may contain no results while still including a <code>nextToken</code>. Continue paginating until <code>nextToken</code> is null to retrieve all results.</p>"
         }
       }
     },
@@ -2063,6 +2242,81 @@
         }
       },
       "documentation":"<p>A simplified representation of a workflow in a Region switch plan.</p>"
+    },
+    "NeptuneClusterArn":{
+      "type":"string",
+      "pattern":"arn:aws[a-zA-Z-]*:rds:[a-z0-9-]+:\\d{12}:cluster:[A-Za-z][0-9A-Za-z-]{0,62}"
+    },
+    "NeptuneDefaultBehavior":{
+      "type":"string",
+      "enum":[
+        "switchoverOnly",
+        "failover"
+      ]
+    },
+    "NeptuneGlobalClusterIdentifier":{
+      "type":"string",
+      "max":63,
+      "min":1,
+      "pattern":"[A-Za-z][0-9A-Za-z-]*"
+    },
+    "NeptuneGlobalDatabaseConfiguration":{
+      "type":"structure",
+      "required":[
+        "behavior",
+        "globalClusterIdentifier",
+        "regionDatabaseClusterArns"
+      ],
+      "members":{
+        "timeoutMinutes":{
+          "shape":"NeptuneGlobalDatabaseConfigurationTimeoutMinutesInteger",
+          "documentation":"<p>The timeout value specified for the configuration.</p>"
+        },
+        "crossAccountRole":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The cross account role for the configuration.</p>"
+        },
+        "externalId":{
+          "shape":"String",
+          "documentation":"<p>The external ID (secret key) for the configuration.</p>"
+        },
+        "behavior":{
+          "shape":"NeptuneDefaultBehavior",
+          "documentation":"<p>The behavior for a global database, that is, only allow switchover or also allow failover.</p>"
+        },
+        "ungraceful":{
+          "shape":"NeptuneUngraceful",
+          "documentation":"<p>The settings for ungraceful execution.</p>"
+        },
+        "globalClusterIdentifier":{
+          "shape":"NeptuneGlobalClusterIdentifier",
+          "documentation":"<p>The global cluster identifier for a Neptune global database.</p>"
+        },
+        "regionDatabaseClusterArns":{
+          "shape":"RegionNeptuneClusterArnMap",
+          "documentation":"<p>The database cluster Amazon Resource Names (ARNs) for a Neptune global database.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for Amazon Neptune global databases used in a Region switch plan.</p>"
+    },
+    "NeptuneGlobalDatabaseConfigurationTimeoutMinutesInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "NeptuneUngraceful":{
+      "type":"structure",
+      "members":{
+        "ungraceful":{
+          "shape":"NeptuneUngracefulBehavior",
+          "documentation":"<p>The settings for ungraceful execution.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for handling failures when performing operations on Neptune global databases.</p>"
+    },
+    "NeptuneUngracefulBehavior":{
+      "type":"string",
+      "enum":["failover"]
     },
     "NextToken":{
       "type":"string",
@@ -2264,9 +2518,39 @@
       "key":{"shape":"String"},
       "value":{"shape":"ArcRoutingControlStates"}
     },
+    "RegionAuroraClusterMap":{
+      "type":"map",
+      "key":{"shape":"Region"},
+      "value":{"shape":"AuroraClusterArn"},
+      "documentation":"<p>A map of Region to Aurora database cluster ARN for Aurora Serverless scaling configuration.</p>",
+      "max":2,
+      "min":2
+    },
+    "RegionAuroraInstanceArnMap":{
+      "type":"map",
+      "key":{"shape":"Region"},
+      "value":{"shape":"AuroraInstanceArn"},
+      "max":2,
+      "min":1
+    },
+    "RegionEventSourceMappingMap":{
+      "type":"map",
+      "key":{"shape":"Region"},
+      "value":{"shape":"EventSourceMapping"},
+      "max":2,
+      "min":1
+    },
     "RegionList":{
       "type":"list",
       "member":{"shape":"Region"},
+      "max":2,
+      "min":2
+    },
+    "RegionNeptuneClusterArnMap":{
+      "type":"map",
+      "key":{"shape":"Region"},
+      "value":{"shape":"NeptuneClusterArn"},
+      "documentation":"<p>A map of Region to Neptune database cluster ARN for Neptune global database configuration.</p>",
       "max":2,
       "min":2
     },

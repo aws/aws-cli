@@ -1539,6 +1539,47 @@
       "min":1,
       "pattern":"[a-zA-Z0-9-_:]+"
     },
+    "ConsentPopupConfig":{
+      "type":"structure",
+      "required":["enabled"],
+      "members":{
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the consent popup is enabled. When set to true, the popup is displayed to users on login.</p>"
+        },
+        "header":{
+          "shape":"ConsentPopupConfigHeaderString",
+          "documentation":"<p>Header text displayed at the top of the consent popup. Maximum 100 characters.</p>"
+        },
+        "content":{
+          "shape":"ConsentPopupConfigContentString",
+          "documentation":"<p>Body content of the consent popup in Markdown format. Maximum 5000 characters.</p>"
+        },
+        "closeButtonLabel":{
+          "shape":"ConsentPopupConfigCloseButtonLabelString",
+          "documentation":"<p>Label for the close button on the consent popup. Maximum 20 characters. Defaults to \"Acknowledge\" if not provided.</p>"
+        }
+      },
+      "documentation":"<p>Consent popup configuration displayed to users on login.</p>"
+    },
+    "ConsentPopupConfigCloseButtonLabelString":{
+      "type":"string",
+      "max":20,
+      "min":0,
+      "pattern":"[\\S\\s]*"
+    },
+    "ConsentPopupConfigContentString":{
+      "type":"string",
+      "max":5000,
+      "min":0,
+      "pattern":"[\\S\\s]*"
+    },
+    "ConsentPopupConfigHeaderString":{
+      "type":"string",
+      "max":100,
+      "min":0,
+      "pattern":"[\\S\\s]*"
+    },
     "CreateBotRequest":{
       "type":"structure",
       "required":[
@@ -3040,6 +3081,10 @@
         "enableTrustedDataFormat":{
           "shape":"Boolean",
           "documentation":"<p>Configuration for OpenTDF integration at the network level, enforcing ABAC decision making when operating in TDF enabled rooms.</p>"
+        },
+        "consentPopup":{
+          "shape":"ConsentPopupConfig",
+          "documentation":"<p>Consent popup configuration for the network, displayed to users on login.</p>"
         }
       },
       "documentation":"<p>Contains network-level configuration settings that apply to all users and security groups within a Wickr network.</p>"
@@ -3698,6 +3743,10 @@
           "shape":"Integer",
           "documentation":"<p>The duration for which users SSO session remains inactive before automatically logging them out for security. Available in SSO enabled network.</p>"
         },
+        "maxNonSsoSessionMinutes":{
+          "shape":"SecurityGroupSettingsMaxNonSsoSessionMinutesInteger",
+          "documentation":"<p>Maximum session duration in minutes for non-SSO users. Set to 0 to disable. Valid range is 60 to 525600 (1 hour to 365 days).</p>"
+        },
         "federationMode":{
           "shape":"Integer",
           "documentation":"<p>The local federation mode controlling how users can communicate with other networks. Values: 0 (none), 1 (federated), 2 (restricted).</p>"
@@ -3720,6 +3769,12 @@
         }
       },
       "documentation":"<p>Comprehensive configuration settings that define all user capabilities, restrictions, and features for members of a security group. These settings control everything from calling permissions to federation settings to security policies.</p>"
+    },
+    "SecurityGroupSettingsMaxNonSsoSessionMinutesInteger":{
+      "type":"integer",
+      "box":true,
+      "max":525600,
+      "min":0
     },
     "SecurityGroupSettingsRequest":{
       "type":"structure",
@@ -3804,10 +3859,10 @@
         },
         "intensity":{
           "shape":"Integer",
-          "documentation":"<p>Prevents Wickr data from being recovered by overwriting deleted Wickr data. Valid Values: Must be one of [0, 20, 60, 100]</p>"
+          "documentation":"<p>Controls the rate (MB/minute) at which the shredder function runs on clients. Valid Values: Must be one of [0, 20, 60, 100].</p> <note> <p>A higher intensity setting could lead to higher battery usage on mobile devices.</p> </note>"
         }
       },
-      "documentation":"<p>Configuration for the message shredder feature, which securely deletes messages and files from devices to prevent data recovery.</p>"
+      "documentation":"<p>Configuration for the Wickr shredder feature, which writes random data over free memory and disk space on client devices. You can configure your Wickr shredder intensity using the parameters below. </p> <note> <p>Secure Shredder will not write over files that are permanently stored on the device or saved outside of the Wickr client. Wickr Network Administrators are able to disable file downloads within Security Group Settings.</p> </note>"
     },
     "SortDirection":{
       "type":"string",
@@ -4325,5 +4380,5 @@
       "member":{"shape":"WickrAwsNetworks"}
     }
   },
-  "documentation":"<p>Welcome to the <i>Amazon Web Services Wickr API Reference</i>.</p> <p>The Amazon Web Services Wickr application programming interface (API) is designed for administrators to perform key tasks, such as creating and managing Amazon Web Services Wickr, networks, users, security groups, bots and more. This guide provides detailed information about the Amazon Web Services Wickr API, including operations, types, inputs and outputs, and error codes. You can use an Amazon Web Services SDK, the Amazon Web Services Command Line Interface (Amazon Web Services CLI, or the REST API to make API calls for Amazon Web Services Wickr. </p> <p> <i>Using Amazon Web Services SDK</i> </p> <p>The SDK clients authenticate your requests by using access keys that you provide. For more information, see <a href=\"https://docs.aws.amazon.com/sdkref/latest/guide/access.html\">Authentication and access using Amazon Web Services SDKs and tools</a> in the <i>Amazon Web Services SDKs and Tools Reference Guide</i>. </p> <p> <i>Using Amazon Web Services CLI</i> </p> <p>Use your access keys with the Amazon Web Services CLI to make API calls. For more information about setting up the Amazon Web Services CLI, see <a href=\"https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html\">Getting started with the Amazon Web Services CLI</a> in the <i>Amazon Web Services Command Line Interface User Guide for Version 2</i>. </p> <p> <i>Using REST APIs</i> </p> <p>If you use REST to make API calls, you must authenticate your request by providing a signature. Amazon Web Services Wickr supports Signature Version 4. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv.html\">Amazon Web Services Signature Version 4 for API requests</a> in the <i>Amazon Web Services Identity and Access Management User Guide</i>. </p> <p>Access and permissions to the APIs can be controlled by Amazon Web Services Identity and Access Management. The managed policy <a href=\"https://docs.aws.amazon.com/wickr/latest/adminguide/security-iam-awsmanpol.html#security-iam-awsmanpol-AWSWickrFullAccess\">Amazon Web ServicesWickrFullAccess</a> grants full administrative permission to the Amazon Web Services Wickr service APIs. For more information on restricting access to specific operations, see <a href=\"https://docs.aws.amazon.com/wickr/latest/adminguide/security-iam.html\">Identity and access management for Amazon Web Services Wickr </a> in the <i>Amazon Web Services Wickr Administration Guide</i>. </p> <p> <i>Types of Errors</i>:</p> <p>The Amazon Web Services Wickr APIs provide an HTTP interface. HTTP defines ranges of HTTP Status Codes for different types of error responses.</p> <ol> <li> <p>Client errors are indicated by HTTP Status Code class of 4xx</p> </li> <li> <p>Service errors are indicated by HTTP Status Code class of 5xx</p> </li> </ol> <p>In this reference guide, the documentation for each API has an Errors section that includes a brief discussion about HTTP status codes. We recommend looking there as part of your investigation when you get an error.</p>"
+  "documentation":"<p>Welcome to the <i>Amazon Web Services Wickr API Reference</i>.</p> <p>The Amazon Web Services Wickr application programming interface (API) is designed for administrators to perform key tasks, such as creating and managing Amazon Web Services Wickr, networks, users, security groups, bots and more. This guide provides detailed information about the Amazon Web Services Wickr API, including operations, types, inputs and outputs, and error codes. You can use an Amazon Web Services SDK, the Amazon Web Services Command Line Interface (Amazon Web Services CLI, or the REST API to make API calls for Amazon Web Services Wickr. </p> <p> <i>Using Amazon Web Services SDK</i> </p> <p>The SDK clients authenticate your requests by using access keys that you provide. For more information, see <a href=\"https://docs.aws.amazon.com/sdkref/latest/guide/access.html\">Authentication and access using Amazon Web Services SDKs and tools</a> in the <i>Amazon Web Services SDKs and Tools Reference Guide</i>. </p> <p> <i>Using Amazon Web Services CLI</i> </p> <p>Use your access keys with the Amazon Web Services CLI to make API calls. For more information about setting up the Amazon Web Services CLI, see <a href=\"https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html\">Getting started with the Amazon Web Services CLI</a> in the <i>Amazon Web Services Command Line Interface User Guide for Version 2</i>. </p> <p> <i>Using REST APIs</i> </p> <p>If you use REST to make API calls, you must authenticate your request by providing a signature. Amazon Web Services Wickr supports Signature Version 4. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv.html\">Amazon Web Services Signature Version 4 for API requests</a> in the <i>Amazon Web Services Identity and Access Management User Guide</i>. </p> <p>Access and permissions to the APIs can be controlled by Amazon Web Services Identity and Access Management. The managed policy <a href=\"https://docs.aws.amazon.com/wickr/latest/adminguide/security-iam-awsmanpol.html#security-iam-awsmanpol-AWSWickrFullAccess\">Amazon Web ServicesWickrFullAccess</a> grants full administrative permission to the Amazon Web Services Wickr service APIs. For more information on restricting access to specific operations, see <a href=\"https://docs.aws.amazon.com/wickr/latest/adminguide/security-iam.html\">Identity and access management for Amazon Web Services Wickr </a> in the <i>Amazon Web Services Wickr Administration Guide</i>. </p> <p> <i>Types of Errors</i>:</p> <p>The Amazon Web Services Wickr APIs provide an HTTP interface. HTTP defines ranges of HTTP Status Codes for different types of error responses.</p> <ol> <li> <p>Client errors are indicated by HTTP Status Code class of 4xx</p> </li> <li> <p>Service errors are indicated by HTTP Status Code class of 5xx</p> </li> </ol> <p>In this reference guide, the documentation for each API has an Errors section that includes a brief discussion about HTTP status codes. We recommend looking there as part of your investigation when you get an error.</p> <p> <i>Regional availability</i> </p> <p>The Amazon Web Services Wickr API is available in several Amazon Web Services Regions and it provides an endpoint for each of these Regions. For a list of all the Regions and endpoints where the API is currently available, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/wickr.html\">Amazon Web Services Wickr endpoints and quotas</a> in the <i>Amazon Web Services General Reference Guide</i>.</p> <note> <p>Wickr API endpoints are region-specific and include a region code in the format: <code>https://admin.wickr.[regioncode].amazonaws.com</code>. For example, for the US East (N.Virginia) <code>us-east-1</code>, the API endpoint is <code>https://admin.wickr.us-east-1.amazonaws.com</code>.</p> </note>"
 }

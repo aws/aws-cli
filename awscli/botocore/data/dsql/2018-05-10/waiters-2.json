@@ -23,6 +23,29 @@
         "state" : "success",
         "expected" : "ResourceNotFoundException"
       } ]
+    },
+    "StreamActive" : {
+      "description" : "Wait until a Stream is ACTIVE",
+      "delay" : 2,
+      "maxAttempts" : 60,
+      "operation" : "GetStream",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "success",
+        "expected" : "ACTIVE"
+      } ]
+    },
+    "StreamNotExists" : {
+      "description" : "Wait until a Stream is gone",
+      "delay" : 2,
+      "maxAttempts" : 60,
+      "operation" : "GetStream",
+      "acceptors" : [ {
+        "matcher" : "error",
+        "state" : "success",
+        "expected" : "ResourceNotFoundException"
+      } ]
     }
   }
 }

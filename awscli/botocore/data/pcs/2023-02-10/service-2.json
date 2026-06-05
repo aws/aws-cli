@@ -720,7 +720,7 @@
         },
         "purchaseOption":{
           "shape":"PurchaseOption",
-          "documentation":"<p>Specifies how EC2 instances are purchased on your behalf. PCS supports On-Demand Instances, Spot Instances, and Amazon EC2 Capacity Blocks for ML. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-purchasing-options.html\">Amazon EC2 billing and purchasing options</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>. For more information about PCS support for Capacity Blocks, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/capacity-blocks.html\">Using Amazon EC2 Capacity Blocks for ML with PCS</a> in the <i>PCS User Guide</i>. If you don't provide this option, it defaults to On-Demand.</p>"
+          "documentation":"<p>Specifies how EC2 instances are purchased on your behalf. PCS supports On-Demand Instances, Spot Instances, Interruptible Capacity Reservations, On-Demand Capacity Reservations, and Amazon EC2 Capacity Blocks for ML. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-purchasing-options.html\">Amazon EC2 billing and purchasing options</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>. For more information about PCS support for Capacity Blocks, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/capacity-blocks.html\">Using Amazon EC2 Capacity Blocks for ML with PCS</a> in the <i>PCS User Guide</i>. For more information about PCS support for interruptible capacity reservations, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/capacity-reservations-iodcr.html\">Using I-ODCRs with PCS</a> in the <i>PCS User Guide</i>. Choose On-Demand if you plan to use an On-Demand Capacity Reservation (ODCR). For more information, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/capacity-reservations-odcr.html\">Using ODCRs with PCS</a>. If you don't provide this option, it defaults to On-Demand.</p>"
         },
         "customLaunchTemplate":{"shape":"CustomLaunchTemplate"},
         "iamInstanceProfileArn":{
@@ -772,6 +772,10 @@
     "ComputeNodeGroupSlurmConfiguration":{
       "type":"structure",
       "members":{
+        "scaleDownIdleTimeInSeconds":{
+          "shape":"ComputeNodeGroupSlurmConfigurationScaleDownIdleTimeInSecondsInteger",
+          "documentation":"<p>The time (in seconds) before an idle node is scaled down. If not specified, the cluster-level setting applies. This overrides the cluster-level <code>scaleDownIdleTimeInSeconds</code> setting. A value of <code>-1</code> removes the override and applies the cluster-level setting to this compute node group. Requires Slurm version 25.11 or later.</p>"
+        },
         "slurmCustomSettings":{
           "shape":"SlurmCustomSettings",
           "documentation":"<p>Additional Slurm-specific configuration that directly maps to Slurm settings.</p>"
@@ -782,12 +786,28 @@
     "ComputeNodeGroupSlurmConfigurationRequest":{
       "type":"structure",
       "members":{
+        "scaleDownIdleTimeInSeconds":{
+          "shape":"ComputeNodeGroupSlurmConfigurationRequestScaleDownIdleTimeInSecondsInteger",
+          "documentation":"<p>The time (in seconds) before an idle node is scaled down. If not specified, the cluster-level setting applies. This overrides the cluster-level <code>scaleDownIdleTimeInSeconds</code> setting. A value of <code>-1</code> removes the override and applies the cluster-level setting to this compute node group. Requires Slurm version 25.11 or later.</p>"
+        },
         "slurmCustomSettings":{
           "shape":"SlurmCustomSettings",
           "documentation":"<p>Additional Slurm-specific configuration that directly maps to Slurm settings.</p>"
         }
       },
       "documentation":"<p>Additional options related to the Slurm scheduler.</p>"
+    },
+    "ComputeNodeGroupSlurmConfigurationRequestScaleDownIdleTimeInSecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":10000000,
+      "min":-1
+    },
+    "ComputeNodeGroupSlurmConfigurationScaleDownIdleTimeInSecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":10000000,
+      "min":-1
     },
     "ComputeNodeGroupStatus":{
       "type":"string",
@@ -948,7 +968,7 @@
         },
         "purchaseOption":{
           "shape":"PurchaseOption",
-          "documentation":"<p>Specifies how EC2 instances are purchased on your behalf. PCS supports On-Demand Instances, Spot Instances, and Amazon EC2 Capacity Blocks for ML. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-purchasing-options.html\">Amazon EC2 billing and purchasing options</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>. For more information about PCS support for Capacity Blocks, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/capacity-blocks.html\">Using Amazon EC2 Capacity Blocks for ML with PCS</a> in the <i>PCS User Guide</i>. If you don't provide this option, it defaults to On-Demand.</p>"
+          "documentation":"<p>Specifies how EC2 instances are purchased on your behalf. PCS supports On-Demand Instances, Spot Instances, Interruptible Capacity Reservations, On-Demand Capacity Reservations, and Amazon EC2 Capacity Blocks for ML. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-purchasing-options.html\">Amazon EC2 billing and purchasing options</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>. For more information about PCS support for Capacity Blocks, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/capacity-blocks.html\">Using Amazon EC2 Capacity Blocks for ML with PCS</a> in the <i>PCS User Guide</i>. For more information about PCS support for interruptible capacity reservations, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/capacity-reservations-iodcr.html\">Using I-ODCRs with PCS</a> in the <i>PCS User Guide</i>. Choose On-Demand if you plan to use an On-Demand Capacity Reservation (ODCR). For more information, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/capacity-reservations-odcr.html\">Using ODCRs with PCS</a>. If you don't provide this option, it defaults to On-Demand.</p>"
         },
         "customLaunchTemplate":{"shape":"CustomLaunchTemplate"},
         "iamInstanceProfileArn":{
@@ -1465,7 +1485,8 @@
       "enum":[
         "ONDEMAND",
         "SPOT",
-        "CAPACITY_BLOCK"
+        "CAPACITY_BLOCK",
+        "INTERRUPTIBLE_CAPACITY_RESERVATION"
       ]
     },
     "Queue":{
@@ -2143,7 +2164,7 @@
         "customLaunchTemplate":{"shape":"CustomLaunchTemplate"},
         "purchaseOption":{
           "shape":"PurchaseOption",
-          "documentation":"<p>Specifies how EC2 instances are purchased on your behalf. PCS supports On-Demand Instances, Spot Instances, and Amazon EC2 Capacity Blocks for ML. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-purchasing-options.html\">Amazon EC2 billing and purchasing options</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>. For more information about PCS support for Capacity Blocks, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/capacity-blocks.html\">Using Amazon EC2 Capacity Blocks for ML with PCS</a> in the <i>PCS User Guide</i>. If you don't provide this option, it defaults to On-Demand.</p>"
+          "documentation":"<p>Specifies how EC2 instances are purchased on your behalf. PCS supports On-Demand Instances, Spot Instances, Interruptible Capacity Reservations, On-Demand Capacity Reservations, and Amazon EC2 Capacity Blocks for ML. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-purchasing-options.html\">Amazon EC2 billing and purchasing options</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>. For more information about PCS support for Capacity Blocks, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/capacity-blocks.html\">Using Amazon EC2 Capacity Blocks for ML with PCS</a> in the <i>PCS User Guide</i>. For more information about PCS support for interruptible capacity reservations, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/capacity-reservations-iodcr.html\">Using I-ODCRs with PCS</a> in the <i>PCS User Guide</i>. Choose On-Demand if you plan to use an On-Demand Capacity Reservation (ODCR). For more information, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/capacity-reservations-odcr.html\">Using ODCRs with PCS</a>. If you don't provide this option, it defaults to On-Demand.</p>"
         },
         "spotOptions":{"shape":"SpotOptions"},
         "scalingConfiguration":{
@@ -2174,12 +2195,22 @@
     "UpdateComputeNodeGroupSlurmConfigurationRequest":{
       "type":"structure",
       "members":{
+        "scaleDownIdleTimeInSeconds":{
+          "shape":"UpdateComputeNodeGroupSlurmConfigurationRequestScaleDownIdleTimeInSecondsInteger",
+          "documentation":"<p>The time (in seconds) before an idle node is scaled down. If not specified, the cluster-level setting applies. This overrides the cluster-level <code>scaleDownIdleTimeInSeconds</code> setting. A value of <code>-1</code> removes the override and applies the cluster-level setting to this compute node group. Requires Slurm version 25.11 or later.</p>"
+        },
         "slurmCustomSettings":{
           "shape":"SlurmCustomSettings",
           "documentation":"<p>Additional Slurm-specific configuration that directly maps to Slurm settings.</p>"
         }
       },
       "documentation":"<p>Additional options related to the Slurm scheduler.</p>"
+    },
+    "UpdateComputeNodeGroupSlurmConfigurationRequestScaleDownIdleTimeInSecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":10000000,
+      "min":-1
     },
     "UpdateQueueRequest":{
       "type":"structure",

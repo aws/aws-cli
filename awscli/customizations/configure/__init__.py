@@ -10,8 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
+import sys
 
-from awscli.compat import shlex
+from awscli.compat import is_windows, shlex
+from awscli.customizations.utils import uni_print
 
 NOT_SET = '<not set>'
 PREDEFINED_SECTION_NAMES = 'plugins'
@@ -62,3 +65,36 @@ def get_section_header(section_type, section_name):
     if any(c in _WHITESPACE for c in section_name):
         section_name = shlex.quote(section_name)
     return f'{section_type} {section_name}'
+
+
+PERMISSIONS_WARNING_TEMPLATE = (
+    "\naws: [WARNING]: The file '{path}' is accessible by other users. "
+    "Consider running 'chmod 600 {path}' to restrict access to only your user.\n"
+)
+
+
+def warn_if_permissive(file_path, err_stream=None):
+    if is_windows:
+        return
+
+    if not os.path.isfile(file_path):
+        return
+
+    if err_stream is None:
+        err_stream = sys.stderr
+
+    try:
+        file_mode = os.stat(file_path).st_mode
+        if is_overly_permissive(file_mode, 0o700):
+            uni_print(
+                PERMISSIONS_WARNING_TEMPLATE.format(
+                    path=file_path,
+                ),
+                out_file=err_stream,
+            )
+    except OSError:
+        return
+
+
+def is_overly_permissive(file_mode, allowed_bits=0o700):
+    return bool((file_mode & 0o777) & ~allowed_bits)

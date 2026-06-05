@@ -996,8 +996,7 @@
     },
     "EntryPointArgument":{
       "type":"string",
-      "min":1,
-      "pattern":".*\\S.*",
+      "min":0,
       "sensitive":true
     },
     "EntryPointArguments":{
@@ -1196,7 +1195,7 @@
         },
         "authToken":{
           "shape":"SessionAuthToken",
-          "documentation":"<p>Authentication token for accessing the session endpoint.</p>"
+          "documentation":"<p>The authentication token for connecting to the session endpoint. Call <code>GetSessionEndpoint</code> again to obtain a new token before it expires.</p>"
         },
         "authTokenExpiresAt":{
           "shape":"Date",
@@ -1320,6 +1319,10 @@
         "resolvedImageDigest":{
           "shape":"ImageDigest",
           "documentation":"<p>The SHA256 digest of the image URI. This indicates which specific image the application is configured for. The image digest doesn't exist until an application has started.</p>"
+        },
+        "applicationLevelDigestResolution":{
+          "shape":"Boolean",
+          "documentation":"<p>Boolean value indicating if the digest resolution is application level or workload level. If true, a custom image URI is resolved at application start time and all workloads submitted will use that image digest. If false, the custom image URI is resolved at the workload submission time.</p>"
         }
       },
       "documentation":"<p>The applied image configuration.</p>"
@@ -1330,6 +1333,10 @@
         "imageUri":{
           "shape":"ImageUri",
           "documentation":"<p>The URI of an image in the Amazon ECR registry. This field is required when you create a new application. If you leave this field blank in an update, Amazon EMR will remove the image configuration.</p>"
+        },
+        "applicationLevelDigestResolution":{
+          "shape":"Boolean",
+          "documentation":"<p>Boolean value indicating if the digest resolution is application level or workload level. If true, a custom image URI is resolved at application start time and all workloads submitted will use that image digest. If false, the custom image URI is resolved at the workload submission time.</p>"
         }
       },
       "documentation":"<p>The image configuration.</p>"
@@ -1559,6 +1566,11 @@
         "queuedDurationMilliseconds":{
           "shape":"Long",
           "documentation":"<p>The total time for a job in the QUEUED state in milliseconds.</p>"
+        },
+        "imageConfiguration":{"shape":"ImageConfiguration"},
+        "workerTypeSpecifications":{
+          "shape":"WorkerTypeSpecificationMap",
+          "documentation":"<p>The specification applied to each worker type. Includes the JobRun-level ImageConfiguration when the applicationLevelDigestResolution is false for the application.</p>"
         }
       },
       "documentation":"<p>Information about a job run. A job run is a unit of work, such as a Spark JAR, Hive query, or SparkSQL query, that you submit to an Amazon EMR Serverless application.</p>"

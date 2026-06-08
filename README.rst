@@ -87,13 +87,17 @@ For tcsh::
 
 You should add this to your startup scripts to enable it for future sessions.
 
-For zsh please refer to ``bin/aws_zsh_completer.sh``.  Source that file, e.g.
-from your ``~/.zshrc``, and make sure you run ``compinit`` before::
+For zsh, run ``bashcompinit`` and ``compinit``, then use the built-in
+``complete`` command::
 
-    $ source bin/aws_zsh_completer.sh
+    $ autoload bashcompinit && bashcompinit
+    $ autoload -Uz compinit && compinit
+    $ complete -C '/usr/local/bin/aws_completer' aws
 
-For now the bash compatibility auto completion (``bashcompinit``) is used.
-For further details please refer to the top of ``bin/aws_zsh_completer.sh``.
+Replace ``/usr/local/bin/aws_completer`` with the path returned by
+``which aws_completer`` if different. Add these commands to your
+``~/.zshrc`` to enable completion in future sessions.
+
 
 ---------------
 Getting Started

@@ -2063,6 +2063,22 @@
         "UtilizationMetricsActiveConnectionCountMaximum",
         "UtilizationMetricsPacketsInFromSourceMaximum",
         "UtilizationMetricsPacketsInFromDestinationMaximum",
+        "UtilizationMetricsConsumedReadCapacityUnitsSum",
+        "UtilizationMetricsConsumedWriteCapacityUnitsSum",
+        "UtilizationMetricsNewConnectionsSum",
+        "UtilizationMetricsEngineCPUUtilizationMaximum",
+        "UtilizationMetricsCacheHitsSum",
+        "UtilizationMetricsCacheMissesSum",
+        "UtilizationMetricsKeyspaceHitsSum",
+        "UtilizationMetricsKeyspaceMissesSum",
+        "UtilizationMetricsIsIdleMinimum",
+        "UtilizationMetricsUserConnectedSum",
+        "UtilizationMetricsInvocationsSum",
+        "UtilizationMetricsGetTypeCmdsSum",
+        "UtilizationMetricsSetTypeCmdsSum",
+        "UtilizationMetricsElastiCacheProcessingUnitsSum",
+        "UtilizationMetricsCurrConnectionsSum",
+        "UtilizationMetricsDatabaseConnectionsSum",
         "Finding",
         "FindingDescription",
         "Tags"
@@ -3159,6 +3175,30 @@
         "False"
       ]
     },
+    "IdleDimension":{
+      "type":"structure",
+      "members":{
+        "key":{
+          "shape":"IdleDimensionKey",
+          "documentation":"<p>The name of the dimension key.</p>"
+        },
+        "values":{
+          "shape":"IdleDimensionValues",
+          "documentation":"<p>The value of the dimension.</p>"
+        }
+      },
+      "documentation":"<p>Describes the dimension of an idle resource utilization metric.</p>"
+    },
+    "IdleDimensionKey":{"type":"string"},
+    "IdleDimensionValue":{"type":"string"},
+    "IdleDimensionValues":{
+      "type":"list",
+      "member":{"shape":"IdleDimensionValue"}
+    },
+    "IdleDimensions":{
+      "type":"list",
+      "member":{"shape":"IdleDimension"}
+    },
     "IdleEstimatedMonthlySavings":{
       "type":"structure",
       "members":{
@@ -3202,7 +3242,23 @@
         "VolumeWriteOpsPerSecond",
         "ActiveConnectionCount",
         "PacketsInFromSource",
-        "PacketsInFromDestination"
+        "PacketsInFromDestination",
+        "ConsumedReadCapacityUnits",
+        "ConsumedWriteCapacityUnits",
+        "ConsumedChangeDataCaptureUnits",
+        "NewConnections",
+        "EngineCPUUtilization",
+        "CacheHits",
+        "CacheMisses",
+        "KeyspaceHits",
+        "KeyspaceMisses",
+        "IsIdle",
+        "UserConnected",
+        "Invocations",
+        "GetTypeCmds",
+        "SetTypeCmds",
+        "ElastiCacheProcessingUnits",
+        "CurrConnections"
       ]
     },
     "IdleRecommendation":{
@@ -3318,7 +3374,13 @@
         "EBSVolume",
         "ECSService",
         "RDSDBInstance",
-        "NatGateway"
+        "NatGateway",
+        "DynamoDBTable",
+        "ElastiCacheCluster",
+        "MemoryDBCluster",
+        "DocumentDBCluster",
+        "WorkSpaces",
+        "SageMakerEndpoint"
       ]
     },
     "IdleRecommendations":{
@@ -3385,6 +3447,10 @@
         "value":{
           "shape":"MetricValue",
           "documentation":"<p>The value of the utilization metric.</p>"
+        },
+        "dimensions":{
+          "shape":"IdleDimensions",
+          "documentation":"<p>The dimensions of the utilization metric.</p>"
         }
       },
       "documentation":"<p>Describes the utilization metric of an idle resource.</p>"
@@ -5087,7 +5153,13 @@
         "RdsDBInstance",
         "RdsDBInstanceStorage",
         "AuroraDBClusterStorage",
-        "NatGateway"
+        "NatGateway",
+        "DynamoDBTable",
+        "ElastiCacheCluster",
+        "MemoryDBCluster",
+        "DocumentDBCluster",
+        "WorkSpaces",
+        "SageMakerEndpoint"
       ]
     },
     "RecommendationSources":{

@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+2.34.64
+=======
+
+* api-change:``cost-optimization-hub``: Adds new Idle Recommendation types in the Cost Optimization Hub API
+* api-change:``observabilityadmin``: CloudWatch Observability Admin extends CentralizationRuleForOrganization APIs to support metrics, enabling centralization of metrics across accounts and Regions alongside logs.
+* api-change:``omics``: StartRunBatch API - Add EngineSettings
+* api-change:``taxsettings``: Adds support for additional tax information fields for Philippines, Belgium, Chile, France, Poland, and Italy in the Tax Settings API.
+* api-change:``mediapackagev2``: Adds support for DASH Audio Timeline Patternization. This enables your DASH manifests to templatize the repeating patterns that emerge in audio segment timelines. This compacts the total timeline length, utilizing the repeat notation, such that manifests don't grow indefinitely long.
+* api-change:``deadline``: Added optional identityCenterRegion parameter to AssociateMember APIs to allow managing memberships for users and groups in other regions.
+* api-change:``compute-optimizer``: Adds new Idle Recommendation Resource types in the AWS Compute Optimizer API
+* api-change:``mgn``: AWS Transform discovery tool now supported as network migration input source. You can now use the AWS Transform Discovery tool as a source for network migration alongside modelizeIT, enabling hybrid network migrations for environments running both VMware and non-VMware workloads.
+* api-change:``devops-agent``: Add Asset APIs for managing versioned assets and asset files in AWS DevOps Agent agent spaces.
+
+
 2.34.63
 =======
 

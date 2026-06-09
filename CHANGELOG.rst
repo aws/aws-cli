@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+2.35.0
+======
+
+* feature:``configure``: Adds the ``agent-toolkit`` and ``aws configure agent-toolkit`` commands, which can be used for configuring your agentic tools with AWS skills and MCP server.
+
+
 2.34.64
 =======
 

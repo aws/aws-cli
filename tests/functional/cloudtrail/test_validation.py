@@ -380,6 +380,33 @@ class TestCloudTrailCommand(BaseCloudTrailCommandTest):
         self.assertIn('1/1 backfill digest files valid', stdout)
         self.assertIn('0/2 log files valid, 2/2 log files INVALID', stdout)
 
+    def test_rejects_multi_member_gzip_log_file(self):
+        body = _gz_compress(self._logs[0]['_raw_value']) + _gz_compress(
+            '{"extra":"member"}'
+        )
+        key_provider, digest_provider, validator = create_scenario(
+            ['gap'], [[self._logs[0]]]
+        )
+        self.parsed_responses = [
+            {'LocationConstraint': ''},
+            {'Body': BytesIO(body)},
+            {'Body': BytesIO(body)},
+        ]
+        _setup_mock_traverser(
+            self._mock_traverser, key_provider, digest_provider, validator
+        )
+        stdout, stderr, rc = self.run_cmd(
+            f"cloudtrail validate-logs --trail-arn {TEST_TRAIL_ARN} "
+            f"--start-time {START_TIME_ARG} --region us-east-1",
+            1,
+        )
+        self.assertIn(
+            'Log file\ts3://1/key1\t'
+            'INVALID: unexpected data after end of compressed stream',
+            stderr,
+        )
+        self.assertIn('0/2 log files valid, 2/2 log files INVALID', stdout)
+
     def test_validates_valid_log_files(self):
         key_provider, digest_provider, validator = create_scenario(
             ['gap', 'link', 'link'],

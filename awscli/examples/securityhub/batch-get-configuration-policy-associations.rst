@@ -3,7 +3,7 @@
 The following ``batch-get-configuration-policy-associations`` example retrieves association details for the specified targets. You can provide account IDs, organizational unit IDs, or the root ID for the target. ::
 
     aws securityhub batch-get-configuration-policy-associations \
-        --target '{"OrganizationalUnitId": "ou-6hi7-8j91kl2m"}'
+        --configuration-policy-association-identifiers '{"OrganizationalUnitId": "ou-6hi7-8j91kl2m"}'
 
 Output::
 

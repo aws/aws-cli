@@ -11,12 +11,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import BaseAWSCommandParamsTest
 import os
+
+from awscli.testutils import BaseAWSCommandParamsTest, skip_if_windows
 
 
 class TestCreateVirtualMFADevice(BaseAWSCommandParamsTest):
-
     prefix = 'iam create-virtual-mfa-device'
 
     def setUp(self):
@@ -24,12 +24,13 @@ class TestCreateVirtualMFADevice(BaseAWSCommandParamsTest):
         self.parsed_response = {
             'ResponseMetadata': {
                 'HTTPStatusCode': 200,
-                'RequestId': 'requset-id'
+                'RequestId': 'requset-id',
             },
             "VirtualMFADevice": {
                 "Base32StringSeed": (
                     "VFpYTVc2V1lIUFlFRFczSVhLUlpRUTJRVFdUSFRNRDNTQ0c3"
-                    "TkZDUVdQWDVETlNWM0IyUENaQVpWTEpQTlBOTA=="),
+                    "TkZDUVdQWDVETlNWM0IyUENaQVpWTEpQTlBOTA=="
+                ),
                 "SerialNumber": "arn:aws:iam::419278470775:mfa/fiebaz",
                 "QRCodePNG": (
                     "iVBORw0KGgoAAAANSUhEUgAAAPoAAAD6CAIAAAAHjs1qAAAFi"
@@ -74,12 +75,13 @@ class TestCreateVirtualMFADevice(BaseAWSCommandParamsTest):
                     "R3EVwF8FdBHcR3EVwF8Fd5F/+AgASajf850wfAAAAAElFTkSu"
                     "QmCC"
                 ),
-            }
+            },
         }
 
     def getpath(self, filename):
-        return os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                            filename)
+        return os.path.join(
+            os.path.abspath(os.path.dirname(__file__)), filename
+        )
 
     def remove_file_if_exists(self, filename):
         if os.path.isfile(filename):
@@ -91,7 +93,8 @@ class TestCreateVirtualMFADevice(BaseAWSCommandParamsTest):
         cmdline = self.prefix
         cmdline += ' --virtual-mfa-device-name fiebaz'
         cmdline += (
-            ' --outfile %s --bootstrap-method Base32StringSeed' % outfile)
+            ' --outfile %s --bootstrap-method Base32StringSeed' % outfile
+        )
         result = {"VirtualMFADeviceName": 'fiebaz'}
         self.assert_params_for_cmd(cmdline, result)
         self.assertTrue(os.path.exists(outfile))
@@ -145,7 +148,8 @@ class TestCreateVirtualMFADevice(BaseAWSCommandParamsTest):
             },
             'ResponseMetadata': {
                 'HTTPStatusCode': 409,
-                'RequestId': 'requset-id'}
+                'RequestId': 'requset-id',
+            },
         }
         self.http_response.status_code = 409
         cmdline = self.prefix
@@ -155,4 +159,34 @@ class TestCreateVirtualMFADevice(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(
             cmdline,
             stderr_contains=self.parsed_response['Error']['Message'],
-            expected_rc=255)
+            expected_rc=255,
+        )
+
+    @skip_if_windows("Permissions test not valid on Windows.")
+    def test_output_file_permissions(self):
+        outfile = self.getpath('fiebaz_perms.b32')
+        self.addCleanup(self.remove_file_if_exists, outfile)
+        cmdline = self.prefix
+        cmdline += ' --virtual-mfa-device-name fiebaz'
+        cmdline += (
+            ' --outfile %s --bootstrap-method Base32StringSeed' % outfile
+        )
+        result = {"VirtualMFADeviceName": 'fiebaz'}
+        self.assert_params_for_cmd(cmdline, result)
+        self.assertEqual(os.stat(outfile).st_mode & 0xFFF, 0o600)
+
+    @skip_if_windows("Permissions test not valid on Windows.")
+    def test_output_file_permissions_existing_file(self):
+        outfile = self.getpath('fiebaz_perms_existing.b32')
+        self.addCleanup(self.remove_file_if_exists, outfile)
+        with open(outfile, 'wb') as f:
+            f.write(b'existing')
+        os.chmod(outfile, 0o644)
+        cmdline = self.prefix
+        cmdline += ' --virtual-mfa-device-name fiebaz'
+        cmdline += (
+            ' --outfile %s --bootstrap-method Base32StringSeed' % outfile
+        )
+        result = {"VirtualMFADeviceName": 'fiebaz'}
+        self.assert_params_for_cmd(cmdline, result)
+        self.assertEqual(os.stat(outfile).st_mode & 0xFFF, 0o600)

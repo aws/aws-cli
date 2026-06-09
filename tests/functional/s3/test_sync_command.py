@@ -15,6 +15,7 @@ import os
 from awscli.testutils import cd, mock, skip_if_case_sensitive, skip_if_windows
 from awscli.compat import BytesIO
 from tests.functional.s3 import BaseS3TransferCommandTest
+from tests import requires_crt
 
 
 class TestSyncCommand(BaseS3TransferCommandTest):
@@ -247,6 +248,156 @@ class TestSyncCommand(BaseS3TransferCommandTest):
             ]
         )
 
+    def test_s3s3_sync_with_destination_sse_c(self):
+        cmdline = (
+                '%s s3://sourcebucket/ s3://mybucket '
+                '--sse-c AES256 --sse-c-key destination-key' % self.prefix
+        )
+        self.parsed_responses = [
+            self.list_objects_response(['mykey']),
+            self.list_objects_response([]),
+            self.copy_object_response(),
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.list_objects_request('sourcebucket'),
+                self.list_objects_request('mybucket'),
+                self.copy_object_request(
+                    'sourcebucket',
+                    'mykey',
+                    'mybucket',
+                    'mykey',
+                    SSECustomerAlgorithm='AES256',
+                    SSECustomerKey='destination-key',
+                ),
+            ]
+        )
+
+    def test_s3s3_sync_with_destination_sse_c_multipart(self):
+        mp_threshold = 8 * 1024 * 1024
+        cmdline = (
+                '%s s3://sourcebucket/ s3://mybucket '
+                '--sse-c AES256 --sse-c-key destination-key' % self.prefix
+        )
+        self.parsed_responses = [
+                                    self.list_objects_response(['mykey'],
+                                                               Size=mp_threshold),
+                                    self.list_objects_response([]),
+                                ] + self.mp_copy_responses()
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.list_objects_request('sourcebucket'),
+                self.list_objects_request('mybucket'),
+
+                self.create_mpu_request(
+                    'mybucket',
+                    'mykey',
+                    SSECustomerAlgorithm='AES256',
+                    SSECustomerKey='destination-key',
+                ),
+                self.upload_part_copy_request(
+                    'sourcebucket',
+                    'mykey',
+                    'mybucket',
+                    'mykey',
+                    'upload_id',
+                    PartNumber=mock.ANY,
+                    CopySourceRange=mock.ANY,
+                    CopySourceIfMatch=mock.ANY,
+                    SSECustomerAlgorithm='AES256',
+                    SSECustomerKey='destination-key',
+                ),
+                self.complete_mpu_request(
+                    'mybucket',
+                    'mykey',
+                    'upload_id',
+                    num_parts=1,
+                    SSECustomerAlgorithm='AES256',
+                    SSECustomerKey='destination-key',
+                ),
+            ]
+        )
+
+    def test_s3s3_sync_with_different_sse_c_keys(self):
+        cmdline = (
+                '%s s3://sourcebucket/ s3://mybucket '
+                '--sse-c-copy-source AES256 --sse-c-copy-source-key source-key '
+                '--sse-c AES256 --sse-c-key destination-key' % self.prefix
+        )
+        self.parsed_responses = [
+            self.list_objects_response(['mykey']),
+            self.list_objects_response([]),
+            self.copy_object_response(),
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.list_objects_request('sourcebucket'),
+                self.list_objects_request('mybucket'),
+                self.copy_object_request(
+                    'sourcebucket',
+                    'mykey',
+                    'mybucket',
+                    'mykey',
+                    SSECustomerAlgorithm='AES256',
+                    SSECustomerKey='destination-key',
+                    CopySourceSSECustomerAlgorithm='AES256',
+                    CopySourceSSECustomerKey='source-key',
+                ),
+            ]
+        )
+
+    def test_s3s3_sync_with_different_sse_c_keys_multipart(self):
+        mp_threshold = 8 * 1024 * 1024
+        cmdline = (
+                '%s s3://sourcebucket/ s3://mybucket '
+                '--sse-c-copy-source AES256 --sse-c-copy-source-key source-key '
+                '--sse-c AES256 --sse-c-key destination-key' % self.prefix
+        )
+        self.parsed_responses = [
+                                    self.list_objects_response(['mykey'],
+                                                               Size=mp_threshold),
+                                    self.list_objects_response([]),
+                                ] + self.mp_copy_responses()
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.list_objects_request('sourcebucket'),
+                self.list_objects_request('mybucket'),
+
+                self.create_mpu_request(
+                    'mybucket',
+                    'mykey',
+                    SSECustomerAlgorithm='AES256',
+                    SSECustomerKey='destination-key',
+                ),
+                self.upload_part_copy_request(
+                    'sourcebucket',
+                    'mykey',
+                    'mybucket',
+                    'mykey',
+                    'upload_id',
+                    PartNumber=mock.ANY,
+                    CopySourceRange=mock.ANY,
+                    CopySourceIfMatch=mock.ANY,
+                    SSECustomerAlgorithm='AES256',
+                    SSECustomerKey='destination-key',
+                    CopySourceSSECustomerAlgorithm='AES256',
+                    CopySourceSSECustomerKey='source-key',
+                ),
+                self.complete_mpu_request(
+                    'mybucket',
+                    'mykey',
+                    'upload_id',
+                    num_parts=1,
+                    SSECustomerAlgorithm='AES256',
+                    SSECustomerKey='destination-key',
+                ),
+            ]
+        )
+
     def test_request_payer_with_deletes(self):
         cmdline = '%s s3://sourcebucket/ s3://mybucket' % self.prefix
         cmdline += ' --request-payer'
@@ -345,6 +496,60 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         self.assertEqual(self.operations_called[1][0].name, 'PutObject')
         self.assertEqual(self.operations_called[1][1]['ChecksumAlgorithm'], 'SHA256')
 
+    def test_upload_with_checksum_algorithm_sha512(self):
+        self.files.create_file('foo.txt', 'contents')
+        cmdline = f'{self.prefix} {self.files.rootdir} s3://bucket/ --checksum-algorithm SHA512'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[1][0].name, 'PutObject')
+        self.assertEqual(self.operations_called[1][1]['ChecksumAlgorithm'], 'SHA512')
+
+    def test_upload_with_checksum_algorithm_crc32(self):
+        self.files.create_file('foo.txt', 'contents')
+        cmdline = f'{self.prefix} {self.files.rootdir} s3://bucket/ --checksum-algorithm CRC32'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[1][0].name, 'PutObject')
+        self.assertEqual(self.operations_called[1][1]['ChecksumAlgorithm'], 'CRC32')
+
+    @requires_crt()
+    def test_upload_with_checksum_algorithm_crc32c(self):
+        self.files.create_file('foo.txt', 'contents')
+        cmdline = f'{self.prefix} {self.files.rootdir} s3://bucket/ --checksum-algorithm CRC32C'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[1][0].name, 'PutObject')
+        self.assertEqual(self.operations_called[1][1]['ChecksumAlgorithm'], 'CRC32C')
+
+    @requires_crt()
+    def test_upload_with_checksum_algorithm_crc64nvme(self):
+        self.files.create_file('foo.txt', 'contents')
+        cmdline = f'{self.prefix} {self.files.rootdir} s3://bucket/ --checksum-algorithm CRC64NVME'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[1][0].name, 'PutObject')
+        self.assertEqual(self.operations_called[1][1]['ChecksumAlgorithm'], 'CRC64NVME')
+
+    @requires_crt()
+    def test_upload_with_checksum_algorithm_xxhash3(self):
+        self.files.create_file('foo.txt', 'contents')
+        cmdline = f'{self.prefix} {self.files.rootdir} s3://bucket/ --checksum-algorithm XXHASH3'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[1][0].name, 'PutObject')
+        self.assertEqual(self.operations_called[1][1]['ChecksumAlgorithm'], 'XXHASH3')
+
+    @requires_crt()
+    def test_upload_with_checksum_algorithm_xxhash64(self):
+        self.files.create_file('foo.txt', 'contents')
+        cmdline = f'{self.prefix} {self.files.rootdir} s3://bucket/ --checksum-algorithm XXHASH64'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[1][0].name, 'PutObject')
+        self.assertEqual(self.operations_called[1][1]['ChecksumAlgorithm'], 'XXHASH64')
+
+    @requires_crt()
+    def test_upload_with_checksum_algorithm_xxhash128(self):
+        self.files.create_file('foo.txt', 'contents')
+        cmdline = f'{self.prefix} {self.files.rootdir} s3://bucket/ --checksum-algorithm XXHASH128'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[1][0].name, 'PutObject')
+        self.assertEqual(self.operations_called[1][1]['ChecksumAlgorithm'], 'XXHASH128')
+
     def test_download_with_checksum_mode_sha1(self):
         self.parsed_responses = [
             self.list_objects_response(['bucket']),
@@ -377,6 +582,54 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         self.assertEqual(self.operations_called[1][0].name, 'GetObject')
         self.assertIn(('ChecksumMode', 'ENABLED'), self.operations_called[1][1].items())
 
+    def test_download_with_checksum_mode_sha512(self):
+        self.parsed_responses = [
+            self.list_objects_response(['bucket']),
+            # Mocked GetObject response with a checksum algorithm specified
+            {
+                'ETag': 'foo-1',
+                'ChecksumSHA512': 'checksum',
+                'Body': BytesIO(b'foo')
+            }
+        ]
+        cmdline = f'{self.prefix} s3://bucket/foo {self.files.rootdir} --checksum-mode ENABLED'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
+        self.assertEqual(self.operations_called[1][0].name, 'GetObject')
+        self.assertIn(('ChecksumMode', 'ENABLED'), self.operations_called[1][1].items())
+
+    def test_download_with_checksum_mode_crc32(self):
+        self.parsed_responses = [
+            self.list_objects_response(['bucket']),
+            # Mocked GetObject response with a checksum algorithm specified
+            {
+                'ETag': 'foo-1',
+                'ChecksumCRC32': 'checksum',
+                'Body': BytesIO(b'foo')
+            }
+        ]
+        cmdline = f'{self.prefix} s3://bucket/foo {self.files.rootdir} --checksum-mode ENABLED'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
+        self.assertEqual(self.operations_called[1][0].name, 'GetObject')
+        self.assertIn(('ChecksumMode', 'ENABLED'), self.operations_called[1][1].items())
+
+    def test_download_with_checksum_mode_crc32c(self):
+        self.parsed_responses = [
+            self.list_objects_response(['bucket']),
+            # Mocked GetObject response with a checksum algorithm specified
+            {
+                'ETag': 'foo-1',
+                'ChecksumCRC32C': 'checksum',
+                'Body': BytesIO(b'foo')
+            }
+        ]
+        cmdline = f'{self.prefix} s3://bucket/foo {self.files.rootdir} --checksum-mode ENABLED'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
+        self.assertEqual(self.operations_called[1][0].name, 'GetObject')
+        self.assertIn(('ChecksumMode', 'ENABLED'), self.operations_called[1][1].items())
+
     def test_download_with_checksum_mode_crc64nvme(self):
         self.parsed_responses = [
             self.list_objects_response(['bucket']),
@@ -384,6 +637,54 @@ class TestSyncCommand(BaseS3TransferCommandTest):
             {
                 'ETag': 'foo-1',
                 'ChecksumCRC64NVME': 'checksum',
+                'Body': BytesIO(b'foo')
+            }
+        ]
+        cmdline = f'{self.prefix} s3://bucket/foo {self.files.rootdir} --checksum-mode ENABLED'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
+        self.assertEqual(self.operations_called[1][0].name, 'GetObject')
+        self.assertIn(('ChecksumMode', 'ENABLED'), self.operations_called[1][1].items())
+
+    def test_download_with_checksum_mode_xxhash3(self):
+        self.parsed_responses = [
+            self.list_objects_response(['bucket']),
+            # Mocked GetObject response with a checksum algorithm specified
+            {
+                'ETag': 'foo-1',
+                'ChecksumXXHASH3': 'checksum',
+                'Body': BytesIO(b'foo')
+            }
+        ]
+        cmdline = f'{self.prefix} s3://bucket/foo {self.files.rootdir} --checksum-mode ENABLED'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
+        self.assertEqual(self.operations_called[1][0].name, 'GetObject')
+        self.assertIn(('ChecksumMode', 'ENABLED'), self.operations_called[1][1].items())
+
+    def test_download_with_checksum_mode_xxhash64(self):
+        self.parsed_responses = [
+            self.list_objects_response(['bucket']),
+            # Mocked GetObject response with a checksum algorithm specified
+            {
+                'ETag': 'foo-1',
+                'ChecksumXXHASH64': 'checksum',
+                'Body': BytesIO(b'foo')
+            }
+        ]
+        cmdline = f'{self.prefix} s3://bucket/foo {self.files.rootdir} --checksum-mode ENABLED'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
+        self.assertEqual(self.operations_called[1][0].name, 'GetObject')
+        self.assertIn(('ChecksumMode', 'ENABLED'), self.operations_called[1][1].items())
+
+    def test_download_with_checksum_mode_xxhash128(self):
+        self.parsed_responses = [
+            self.list_objects_response(['bucket']),
+            # Mocked GetObject response with a checksum algorithm specified
+            {
+                'ETag': 'foo-1',
+                'ChecksumXXHASH128': 'checksum',
                 'Body': BytesIO(b'foo')
             }
         ]

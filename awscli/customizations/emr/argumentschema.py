@@ -909,6 +909,24 @@ MONITORING_CONFIGURATION_SCHEMA = {
                     "description": "A map of log types to file names for publishing logs to the standard output or standard error streams for CloudWatch. Valid log types include STEP_LOGS, SPARK_DRIVER, and SPARK_EXECUTOR. Valid file names for each type include STDOUT and STDERR."
                 }
             }
+        },
+        "S3LoggingConfiguration": {
+            "type": "object",
+            "description": "S3 logging configuration settings that specify S3 upload behavior for different log types.",
+            "properties": {
+                "LogTypeUploadPolicy": {
+                    "type": "map",
+                    "key": {
+                        "type": "string",
+                        "description": "Log type category"
+                    },
+                    "value": {
+                        "type": "string",
+                        "description": "Upload policy for the log type"
+                    },
+                    "description": "A map of log types to their upload policies. Valid log types include system-logs, application-logs, and persistent-ui-logs. Valid upload policies include emr-managed, on-customer-s3only, and disabled."
+                }
+            }
         }
     }
 }

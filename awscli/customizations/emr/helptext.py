@@ -437,7 +437,7 @@ REPO_UPGRADE_ON_BOOT = (
     ' specified. On first boot, by default, Amazon Linux AMIs'
     ' connect to package repositories to install security updates'
     ' before other services start. You can set this parameter'
-    ' using <code>--rep-upgrade-on-boot NONE</code> to'
+    ' using <code>--repo-upgrade-on-boot NONE</code> to'
     ' disable these updates. CAUTION: This creates additional'
     ' security risks.</p>'
 )
@@ -533,6 +533,13 @@ STEP_CONCURRENCY_LEVEL = (
     'Default is 1 which is non-concurrent.'
 )
 
+STEP_EXECUTION_ROLE_ARN = (
+    '<p>The IAM role ARN that will be used to execute steps on the cluster. '
+    'This parameter applies only to steps included in the <code>Steps</code> '
+    'parameter of this RunJobFlow request. It does not apply to steps added '
+    'later to the cluster.</p>'
+)
+
 MANAGED_SCALING_POLICY = (
     '<p>Managed scaling policy for an Amazon EMR cluster. The policy '
     'specifies the limits for resources that can be added or terminated '
@@ -571,12 +578,24 @@ UNHEALTHY_NODE_REPLACEMENT = (
 
 EXTENDED_SUPPORT = '<p>Reserved.</p> '
 
+SESSION_ENABLED = (
+    '<p>Indicates whether Spark Connect sessions are enabled on the cluster. '
+    'When set, you can start Spark Connect sessions on this cluster using the '
+    '<code>start-session</code> command. This setting is immutable after '
+    'cluster creation. Requires EMR release emr-spark-8.0.0 or later.</p>'
+)
+
 MONITORING_CONFIGURATION = (
     '<p>Monitoring configuration for an Amazon EMR cluster. '
-    'The configuration specifies CloudWatch logging settings for the cluster. '
+    'The configuration specifies CloudWatch logging settings and S3 logging settings for the cluster. '
     'You can configure the CloudWatchLogConfiguration which includes '
     'the Enabled flag (required), LogGroupName, LogStreamNamePrefix, '
     'EncryptionKeyArn, and LogTypes. The LogTypes parameter is a map '
     'of log type categories (e.g., "STEP_LOGS", "SPARK_DRIVER", '
-    '"SPARK_EXECUTOR") to a list of file names (e.g., "STDOUT", "STDERR").</p>'
+    '"SPARK_EXECUTOR") to a list of file names (e.g., "STDOUT", "STDERR"). '
+    'You can also configure the S3LoggingConfiguration which includes '
+    'the LogTypeUploadPolicy parameter. The LogTypeUploadPolicy is a map '
+    'of log type categories (e.g., "system-logs", "application-logs", '
+    '"persistent-ui-logs") to upload policies (e.g., "emr-managed", '
+    '"on-customer-s3only", "disabled").</p>'
 )

@@ -13,7 +13,7 @@
 import os
 import re
 
-from . import SectionNotFoundError
+from . import SectionNotFoundError, warn_if_permissive
 
 
 class ConfigFileWriter(object):
@@ -24,7 +24,22 @@ class ConfigFileWriter(object):
         r'(?P<value>.*)$'
     )
 
-    def update_config(self, new_values, config_filename):
+    def _validate_no_newlines_or_carriage_returns(
+        self,
+        value,
+        label='value',
+        msg_override=None,
+    ):
+        if isinstance(value, str) and ('\n' in value or '\r' in value):
+            err_msg = msg_override if msg_override is not None else (
+                f"Invalid {label}: newline "
+                f"characters and carriage returns are not allowed: {value!r}"
+            )
+            raise ValueError(err_msg)
+
+    def update_config(
+        self, new_values, config_filename, check_permissions=False
+    ):
         """Update config file with new values.
 
         This method will update a section in a config file with
@@ -50,8 +65,44 @@ class ConfigFileWriter(object):
         :param config_filename: The config filename where values will be
             written.
 
+        :type check_permissions: bool
+        :param check_permissions: If True, warn if the file has
+            permissions more permissive than 0o600.
+
         """
         section_name = new_values.pop('__section__', 'default')
+        self._validate_no_newlines_or_carriage_returns(
+            section_name,
+            'section name'
+        )
+        for k, v in new_values.items():
+            self._validate_no_newlines_or_carriage_returns(k, 'key')
+            if not isinstance(v, dict):
+                # Override error msg to prevent
+                # leaking sensitive config values to stderr.
+                self._validate_no_newlines_or_carriage_returns(
+                    v,
+                    'value',
+                    msg_override=(
+                        f"Invalid value for key {k}: "
+                        f"newline characters and carriage "
+                        f"returns are not allowed."
+                    )
+                )
+            else:
+                for sk, sv in v.items():
+                    # Override error msg to prevent
+                    # leaking sensitive config values to stderr.
+                    self._validate_no_newlines_or_carriage_returns(sk, 'key')
+                    self._validate_no_newlines_or_carriage_returns(
+                        sv,
+                        'value',
+                        msg_override = (
+                            f"Invalid value for key {k}: "
+                            f"newline characters and carriage "
+                            f"returns are not allowed."
+                        )
+                    )
         if not os.path.isfile(config_filename):
             self._create_file(config_filename)
             self._write_new_section(section_name, new_values, config_filename)
@@ -66,6 +117,8 @@ class ConfigFileWriter(object):
                 f.write(''.join(contents))
         except SectionNotFoundError:
             self._write_new_section(section_name, new_values, config_filename)
+        if check_permissions:
+            warn_if_permissive(config_filename)
 
     def _create_file(self, config_filename):
         # Create the file as well as the parent dir if needed.

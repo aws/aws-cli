@@ -11,6 +11,7 @@ Output::
         "OrganizationalUnit": {
             "Name": "Accounting Group",
             "Arn": "arn:aws:organizations::123456789012:ou/o-exampleorgid/ou-examplerootid111-exampleouid111",
-            "Id": "ou-examplerootid111-exampleouid111"
+            "Id": "ou-examplerootid111-exampleouid111",
+            "Path": "o-exampleorgid/r-examplerootid111/ou-examplerootid111-exampleouid111/"
         }
     }

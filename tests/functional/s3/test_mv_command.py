@@ -13,7 +13,7 @@
 # language governing permissions and limitations under the License.
 from awscli.customizations.s3.utils import S3PathResolver
 from awscli.compat import BytesIO
-from awscli.testutils import skip_if_case_sensitive
+from awscli.testutils import skip_if_case_sensitive, temporary_file, create_clidriver
 from tests.functional.s3 import BaseS3TransferCommandTest
 from tests.functional.s3.test_sync_command import TestSyncCaseConflict
 from tests import requires_crt
@@ -164,6 +164,55 @@ class TestMvCommand(BaseS3TransferCommandTest):
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(self.operations_called[1][0].name, 'GetObject')
         self.assertEqual(self.operations_called[1][1]['ChecksumMode'], 'ENABLED')
+
+    def test_upload_with_no_checksum_param_v2_debug(self):
+        full_path = self.files.create_file('foo.txt', 'contents')
+        cmdline = f'{self.prefix} {full_path} s3://bucket/key.txt --v2-debug'
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=0)
+        self.assertIn(
+            'AWS CLI v2 UPGRADE WARNING: In AWS CLI v2, for `aws s3` '
+            'commands that upload a file to an S3 bucket, Cyclic Redundancy '
+            'Check 64 (CRC64NVME) will be used to compute object checksums by '
+            'default and included in the request.',
+            stderr
+        )
+
+    def test_upload_with_no_checksum_when_required_v2_debug(self):
+        with temporary_file('w') as f:
+            f.write(
+                "[default]\n"
+                "request_checksum_calculation = when_required\n"
+            )
+            f.flush()
+            self.environ['AWS_CONFIG_FILE'] = f.name
+            self.driver = create_clidriver()
+        full_path = self.files.create_file('foo.txt', 'contents')
+        cmdline = (
+            f'{self.prefix} {full_path} s3://bucket/key.txt --v2-debug'
+        )
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=0)
+        self.assertNotIn(
+            'AWS CLI v2 UPGRADE WARNING: In AWS CLI v2, for `aws s3` '
+            'commands that upload a file to an S3 bucket, Cyclic Redundancy '
+            'Check 64 (CRC64NVME) will be used to compute object checksums by '
+            'default and included in the request.',
+            stderr
+        )
+
+    def test_upload_with_crc32_checksum_v2_debug(self):
+        full_path = self.files.create_file('foo.txt', 'contents')
+        cmdline = (
+            f'{self.prefix} {full_path} s3://bucket/key.txt '
+            f'--checksum-algorithm CRC32 --v2-debug'
+        )
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=0)
+        self.assertNotIn(
+            'AWS CLI v2 UPGRADE WARNING: In AWS CLI v2, for `aws s3` '
+            'commands that upload a file to an S3 bucket, Cyclic Redundancy '
+            'Check 64 (CRC64NVME) will be used to compute object checksums by '
+            'default and include it in the request.',
+            stderr
+        )
 
 
 class TestMvCommandWithValidateSameS3Paths(BaseS3TransferCommandTest):
@@ -370,7 +419,7 @@ class TestMvCommandWithValidateSameS3Paths(BaseS3TransferCommandTest):
         self.assertEqual(self.operations_called[2][0].name, 'CopyObject')
         self.assertEqual(self.operations_called[3][0].name, 'DeleteObject')
 
-    @requires_crt
+    @requires_crt()
     def test_mv_works_if_mrap_arn_resolves_to_different_bucket(self):
         cmdline = (f"{self.prefix} s3://bucket/key "
                    "s3://arn:aws:s3::123456789012:accesspoint/foobar.mrap/key "
@@ -429,7 +478,7 @@ class TestMvCommandWithValidateSameS3Paths(BaseS3TransferCommandTest):
                    "--validate-same-s3-paths")
         self.assert_runs_mv_without_validation(cmdline)
 
-    @requires_crt
+    @requires_crt()
     def test_skips_validation_if_keys_are_different_mrap_arn(self):
         cmdline = (f"{self.prefix} s3://bucket/key "
                    "s3://arn:aws:s3::123456789012:accesspoint/foobar.mrap/key2 "

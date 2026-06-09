@@ -289,7 +289,9 @@ class ExternalAliasCommand(BaseAliasCommand):
 
     def __call__(self, args, parsed_globals):
         command_components = [self._alias_value[1:]]
-        command_components.extend(compat_shell_quote(a) for a in args)
+        command_components.extend(
+            compat_shell_quote(a, shell=True) for a in args
+        )
         command = ' '.join(command_components)
         LOG.debug(
             'Using external alias %r with value: %r to run: %r',

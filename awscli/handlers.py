@@ -22,6 +22,9 @@ from awscli.argprocess import ParamShorthandParser
 from awscli.clidriver import no_pager_handler
 from awscli.customizations import datapipeline
 from awscli.customizations.addexamples import add_examples
+from awscli.customizations.agenttoolkit import (
+    register_agent_toolkit_commands,
+)
 from awscli.customizations.argrename import register_arg_renames
 from awscli.customizations.assumerole import register_assume_role_provider
 from awscli.customizations.awslambda import register_lambda_create_function
@@ -241,3 +244,4 @@ def awscli_initialize(event_handlers):
     register_quicksight_asset_bundle_customizations(event_handlers)
     register_ec2_instance_connect_commands(event_handlers)
     register_login_cmds(event_handlers)
+    register_agent_toolkit_commands(event_handlers)

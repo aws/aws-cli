@@ -1,4 +1,4 @@
-# Copyright 2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -17,6 +17,9 @@ import sys
 from botocore.exceptions import ProfileNotFound
 
 from awscli.compat import compat_input
+from awscli.customizations.agenttoolkit.configure import (
+    ConfigureAgentToolkitCommand,
+)
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.configure.addmodel import AddModelCommand
 from awscli.customizations.configure.exportcreds import (
@@ -96,6 +99,10 @@ class ConfigureCommand(BasicCommand):
         {
             'name': 'export-credentials',
             'command_class': ConfigureExportCredentialsCommand,
+        },
+        {
+            'name': 'agent-toolkit',
+            'command_class': ConfigureAgentToolkitCommand,
         },
     ]
 

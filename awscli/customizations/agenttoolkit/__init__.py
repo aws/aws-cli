@@ -56,13 +56,6 @@ def _inject_nonprod_header(request, **kwargs):
         request.headers[NONPROD_ACCESS_TOKEN_HEADER] = token
 
 
-def _rename_service(command_table, session, **kwargs):
-    service_cmd = command_table.pop('agenttoolkit', None)
-    if service_cmd is not None:
-        service_cmd._name = 'agent-toolkit'
-        command_table['agent-toolkit'] = service_cmd
-
-
 def _inject_commands(command_table, session, **kwargs):
     # Remove any modeled commands not in our allowlist, then rename the rest
     for name in list(command_table):

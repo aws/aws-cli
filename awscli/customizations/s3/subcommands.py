@@ -460,10 +460,10 @@ CHECKSUM_MODE = {
 
 CHECKSUM_ALGORITHM = {
         'name': 'checksum-algorithm',
-        'choices': ['CRC64NVME', 'CRC32', 'SHA256', 'SHA1', 'CRC32C', 'SHA512', 'XXHASH3', 'XXHASH64', 'XXHASH128'],
+        'choices': ['CRC64NVME', 'CRC32', 'CRC32C', 'SHA1', 'SHA256', 'XXHASH64', 'XXHASH3', 'XXHASH128', 'SHA512'],
         'help_text': (
             'Indicates the algorithm used to create the checksum for the object. '
-            'Valid values are: CRC64NVME | CRC32 | SHA256 | SHA1 | CRC32C | SHA512 | XXHASH3 | XXHASH64 | XXHASH128. '
+            'Valid values are: CRC64NVME | CRC32 | CRC32C | SHA1 | SHA256 | XXHASH64 | XXHASH3 | XXHASH128 | SHA512. '
             'Defaults to \'CRC32\'.'
         )
 }

@@ -60,6 +60,52 @@
       "endpoint":{"hostPrefix":"cp."},
       "idempotent":true
     },
+    "CreateAsset":{
+      "name":"CreateAsset",
+      "http":{
+        "method":"POST",
+        "requestUri":"/asset/agent-space/{agentSpaceId}/assets",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateAssetRequest"},
+      "output":{"shape":"CreateAssetResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ContentSizeExceededException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Creates a new asset in the specified agent space</p>",
+      "endpoint":{"hostPrefix":"dp."}
+    },
+    "CreateAssetFile":{
+      "name":"CreateAssetFile",
+      "http":{
+        "method":"POST",
+        "requestUri":"/asset/agent-space/{agentSpaceId}/assets/{assetId}/files/{path+}",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateAssetFileRequest"},
+      "output":{"shape":"CreateAssetFileResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ContentSizeExceededException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Creates a file in an asset</p>",
+      "endpoint":{"hostPrefix":"dp."}
+    },
     "CreateBacklogTask":{
       "name":"CreateBacklogTask",
       "http":{
@@ -153,6 +199,54 @@
       ],
       "documentation":"<p>Deletes an AgentSpace. This operation is idempotent and returns a 204 No Content response on success.</p>",
       "endpoint":{"hostPrefix":"cp."},
+      "idempotent":true
+    },
+    "DeleteAsset":{
+      "name":"DeleteAsset",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/asset/agent-space/{agentSpaceId}/assets/{assetId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteAssetRequest"},
+      "output":{"shape":"DeleteAssetResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ContentSizeExceededException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Deletes an asset and all its files from the specified agent space</p>",
+      "endpoint":{"hostPrefix":"dp."},
+      "idempotent":true
+    },
+    "DeleteAssetFile":{
+      "name":"DeleteAssetFile",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/asset/agent-space/{agentSpaceId}/assets/{assetId}/files/{path+}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteAssetFileRequest"},
+      "output":{"shape":"DeleteAssetFileResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ContentSizeExceededException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Deletes a file from an asset</p>",
+      "endpoint":{"hostPrefix":"dp."},
       "idempotent":true
     },
     "DeletePrivateConnection":{
@@ -347,6 +441,78 @@
       "endpoint":{"hostPrefix":"cp."},
       "readonly":true
     },
+    "GetAsset":{
+      "name":"GetAsset",
+      "http":{
+        "method":"GET",
+        "requestUri":"/asset/agent-space/{agentSpaceId}/assets/{assetId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAssetRequest"},
+      "output":{"shape":"GetAssetResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ContentSizeExceededException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Gets an asset from the specified agent space</p>",
+      "endpoint":{"hostPrefix":"dp."},
+      "readonly":true
+    },
+    "GetAssetContent":{
+      "name":"GetAssetContent",
+      "http":{
+        "method":"GET",
+        "requestUri":"/asset/agent-space/{agentSpaceId}/assets/{assetId}/content",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAssetContentRequest"},
+      "output":{"shape":"GetAssetContentResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ContentSizeExceededException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Gets an asset's content as a zip bundle</p>",
+      "endpoint":{"hostPrefix":"dp."},
+      "readonly":true
+    },
+    "GetAssetFile":{
+      "name":"GetAssetFile",
+      "http":{
+        "method":"GET",
+        "requestUri":"/asset/agent-space/{agentSpaceId}/assets/{assetId}/files/{path+}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAssetFileRequest"},
+      "output":{"shape":"GetAssetFileResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ContentSizeExceededException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Gets a file from an asset</p>",
+      "endpoint":{"hostPrefix":"dp."},
+      "readonly":true
+    },
     "GetAssociation":{
       "name":"GetAssociation",
       "http":{
@@ -489,6 +655,102 @@
       ],
       "documentation":"<p>Lists all AgentSpaces with optional pagination.</p>",
       "endpoint":{"hostPrefix":"cp."},
+      "readonly":true
+    },
+    "ListAssetFiles":{
+      "name":"ListAssetFiles",
+      "http":{
+        "method":"GET",
+        "requestUri":"/asset/agent-space/{agentSpaceId}/assets/{assetId}/files",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAssetFilesRequest"},
+      "output":{"shape":"ListAssetFilesResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ContentSizeExceededException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Lists files in an asset</p>",
+      "endpoint":{"hostPrefix":"dp."},
+      "readonly":true
+    },
+    "ListAssetTypes":{
+      "name":"ListAssetTypes",
+      "http":{
+        "method":"GET",
+        "requestUri":"/asset/types",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAssetTypesRequest"},
+      "output":{"shape":"ListAssetTypesResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ContentSizeExceededException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists the supported asset types</p>",
+      "endpoint":{"hostPrefix":"dp."},
+      "readonly":true
+    },
+    "ListAssetVersions":{
+      "name":"ListAssetVersions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/asset/agent-space/{agentSpaceId}/assets/{assetId}/versions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAssetVersionsRequest"},
+      "output":{"shape":"ListAssetVersionsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ContentSizeExceededException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Lists versions of an asset in the specified agent space</p>",
+      "endpoint":{"hostPrefix":"dp."},
+      "readonly":true
+    },
+    "ListAssets":{
+      "name":"ListAssets",
+      "http":{
+        "method":"GET",
+        "requestUri":"/asset/agent-space/{agentSpaceId}/assets",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAssetsRequest"},
+      "output":{"shape":"ListAssetsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ContentSizeExceededException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists assets in the specified agent space</p>",
+      "endpoint":{"hostPrefix":"dp."},
       "readonly":true
     },
     "ListAssociations":{
@@ -889,6 +1151,52 @@
       "documentation":"<p>Updates the information of an existing AgentSpace.</p>",
       "endpoint":{"hostPrefix":"cp."}
     },
+    "UpdateAsset":{
+      "name":"UpdateAsset",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/asset/agent-space/{agentSpaceId}/assets/{assetId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateAssetRequest"},
+      "output":{"shape":"UpdateAssetResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ContentSizeExceededException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Updates an asset in the specified agent space</p>",
+      "endpoint":{"hostPrefix":"dp."}
+    },
+    "UpdateAssetFile":{
+      "name":"UpdateAssetFile",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/asset/agent-space/{agentSpaceId}/assets/{assetId}/files/{path+}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateAssetFileRequest"},
+      "output":{"shape":"UpdateAssetFileResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ContentSizeExceededException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Updates a file in an asset</p>",
+      "endpoint":{"hostPrefix":"dp."}
+    },
     "UpdateAssociation":{
       "name":"UpdateAssociation",
       "http":{
@@ -1230,6 +1538,270 @@
       "min":1,
       "sensitive":true
     },
+    "Asset":{
+      "type":"structure",
+      "required":[
+        "assetId",
+        "assetType",
+        "metadata",
+        "version",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "assetId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for this asset</p>"
+        },
+        "assetType":{
+          "shape":"AssetType",
+          "documentation":"<p>The type of this asset</p>"
+        },
+        "metadata":{
+          "shape":"Document",
+          "documentation":"<p>The metadata for this asset</p>"
+        },
+        "version":{
+          "shape":"Integer",
+          "documentation":"<p>The version number of this asset</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Timestamp when this asset was created</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Timestamp when this asset was last updated</p>"
+        }
+      },
+      "documentation":"<p>Represents an asset in an agent space, including its identifier, type, metadata, version, and timestamps.</p>"
+    },
+    "AssetContent":{
+      "type":"structure",
+      "members":{
+        "file":{
+          "shape":"AssetFileContent",
+          "documentation":"<p>A single file with path and content</p>"
+        },
+        "zip":{
+          "shape":"AssetZipContent",
+          "documentation":"<p>A zip file containing multiple files</p>"
+        }
+      },
+      "documentation":"<p>Content for an asset, either a single file or a zip bundle</p>",
+      "union":true
+    },
+    "AssetFile":{
+      "type":"structure",
+      "required":[
+        "path",
+        "content",
+        "version",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "path":{
+          "shape":"AssetFilePath",
+          "documentation":"<p>The path of this file within the asset</p>"
+        },
+        "content":{
+          "shape":"AssetFileBody",
+          "documentation":"<p>The content of this file</p>"
+        },
+        "metadata":{
+          "shape":"Document",
+          "documentation":"<p>The metadata for this file</p>"
+        },
+        "version":{
+          "shape":"Integer",
+          "documentation":"<p>The asset version this file belongs to</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Timestamp when this file was created</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Timestamp when this file was last updated</p>"
+        }
+      },
+      "documentation":"<p>Represents a single file within an asset, including its path, content, version, and timestamps.</p>"
+    },
+    "AssetFileBody":{
+      "type":"structure",
+      "members":{
+        "bytes":{"shape":"AssetFileBytes"},
+        "text":{"shape":"AssetFileText"}
+      },
+      "documentation":"<p>Content of an individual asset file</p>",
+      "union":true
+    },
+    "AssetFileBytes":{
+      "type":"blob",
+      "documentation":"<p>Binary file content</p>",
+      "max":6291456,
+      "min":0
+    },
+    "AssetFileContent":{
+      "type":"structure",
+      "required":[
+        "path",
+        "body"
+      ],
+      "members":{
+        "path":{
+          "shape":"AssetFilePath",
+          "documentation":"<p>The path of the file within the asset</p>"
+        },
+        "body":{
+          "shape":"AssetFileBody",
+          "documentation":"<p>The file content</p>"
+        },
+        "metadata":{
+          "shape":"Document",
+          "documentation":"<p>Optional metadata for this file</p>"
+        }
+      },
+      "documentation":"<p>A single file with path and content</p>"
+    },
+    "AssetFilePath":{
+      "type":"string",
+      "documentation":"<p>The path of a file within an asset</p>",
+      "max":512,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_./-]+"
+    },
+    "AssetFileSummary":{
+      "type":"structure",
+      "required":[
+        "path",
+        "version",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "path":{
+          "shape":"AssetFilePath",
+          "documentation":"<p>The path of this file within the asset</p>"
+        },
+        "metadata":{
+          "shape":"Document",
+          "documentation":"<p>The metadata for this file</p>"
+        },
+        "version":{
+          "shape":"Integer",
+          "documentation":"<p>The asset version this file belongs to</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Timestamp when this file was created</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Timestamp when this file was last updated</p>"
+        }
+      },
+      "documentation":"<p>Summary of a file within an asset, including its path, version, and timestamps.</p>"
+    },
+    "AssetFileSummaryList":{
+      "type":"list",
+      "member":{"shape":"AssetFileSummary"}
+    },
+    "AssetFileText":{
+      "type":"string",
+      "documentation":"<p>Text file content</p>",
+      "max":1572864,
+      "min":0
+    },
+    "AssetIdList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "documentation":"<p>List of asset identifiers to attach to a message</p>",
+      "max":20,
+      "min":0
+    },
+    "AssetList":{
+      "type":"list",
+      "member":{"shape":"Asset"}
+    },
+    "AssetType":{
+      "type":"string",
+      "documentation":"<p>The type of asset (e.g. skill, artifact)</p>",
+      "max":64,
+      "min":1
+    },
+    "AssetTypeList":{
+      "type":"list",
+      "member":{"shape":"AssetTypeSummary"}
+    },
+    "AssetTypeSummary":{
+      "type":"structure",
+      "required":[
+        "assetType",
+        "description"
+      ],
+      "members":{
+        "assetType":{
+          "shape":"AssetType",
+          "documentation":"<p>The asset type identifier</p>"
+        },
+        "description":{
+          "shape":"AssetTypeSummaryDescriptionString",
+          "documentation":"<p>A description of the asset type</p>"
+        }
+      },
+      "documentation":"<p>Summary of an asset type, including its identifier and description.</p>"
+    },
+    "AssetTypeSummaryDescriptionString":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "AssetVersionMetadata":{
+      "type":"structure",
+      "required":[
+        "version",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "version":{
+          "shape":"Integer",
+          "documentation":"<p>The version number of this asset</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Timestamp when this asset version was created</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Timestamp when this asset version was last updated</p>"
+        }
+      },
+      "documentation":"<p>Metadata for a single version of an asset, including the version number and timestamps.</p>"
+    },
+    "AssetVersionMetadataList":{
+      "type":"list",
+      "member":{"shape":"AssetVersionMetadata"}
+    },
+    "AssetZipBytes":{
+      "type":"blob",
+      "documentation":"<p>Zip file content as bytes</p>",
+      "max":6291456,
+      "min":0
+    },
+    "AssetZipContent":{
+      "type":"structure",
+      "required":["zipFile"],
+      "members":{
+        "zipFile":{
+          "shape":"AssetZipBytes",
+          "documentation":"<p>The zip file bytes</p>"
+        }
+      },
+      "documentation":"<p>A zip file containing asset files</p>"
+    },
     "AssistantMessage":{
       "type":"list",
       "member":{"shape":"AssistantMessageBlock"}
@@ -1436,6 +2008,11 @@
       },
       "documentation":"<p>A single chat execution summary</p>"
     },
+    "ChatExecutionId":{
+      "type":"string",
+      "documentation":"<p>Chat execution identifier — must be a valid UUID</p>",
+      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
     "ChatExecutionList":{
       "type":"list",
       "member":{"shape":"ChatExecution"}
@@ -1534,6 +2111,115 @@
         }
       },
       "documentation":"<p>Output containing the newly created AgentSpace.</p>"
+    },
+    "CreateAssetFileRequest":{
+      "type":"structure",
+      "required":[
+        "agentSpaceId",
+        "assetId",
+        "path",
+        "content"
+      ],
+      "members":{
+        "agentSpaceId":{
+          "shape":"AgentSpaceId",
+          "documentation":"<p>The unique identifier for the agent space containing the asset</p>",
+          "location":"uri",
+          "locationName":"agentSpaceId"
+        },
+        "assetId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the asset to create the file in</p>",
+          "location":"uri",
+          "locationName":"assetId"
+        },
+        "path":{
+          "shape":"AssetFilePath",
+          "documentation":"<p>The path of the file within the asset</p>",
+          "location":"uri",
+          "locationName":"path"
+        },
+        "content":{
+          "shape":"AssetFileBody",
+          "documentation":"<p>The content of the file to create</p>"
+        },
+        "metadata":{
+          "shape":"Document",
+          "documentation":"<p>Optional metadata describing this file</p>"
+        },
+        "clientToken":{
+          "shape":"CreateAssetFileRequestClientTokenString",
+          "documentation":"<p>A unique, case-sensitive identifier used for idempotent asset file creation</p>",
+          "idempotencyToken":true
+        }
+      },
+      "documentation":"<p>Request structure for creating an asset file</p>"
+    },
+    "CreateAssetFileRequestClientTokenString":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "CreateAssetFileResponse":{
+      "type":"structure",
+      "required":["file"],
+      "members":{
+        "file":{
+          "shape":"AssetFile",
+          "documentation":"<p>The asset file object</p>"
+        }
+      },
+      "documentation":"<p>Response structure for creating an asset file</p>"
+    },
+    "CreateAssetRequest":{
+      "type":"structure",
+      "required":[
+        "agentSpaceId",
+        "assetType",
+        "content"
+      ],
+      "members":{
+        "agentSpaceId":{
+          "shape":"AgentSpaceId",
+          "documentation":"<p>The unique identifier for the agent space where the asset will be created</p>",
+          "location":"uri",
+          "locationName":"agentSpaceId"
+        },
+        "assetType":{
+          "shape":"AssetType",
+          "documentation":"<p>The type of asset to create</p>"
+        },
+        "metadata":{
+          "shape":"Document",
+          "documentation":"<p>The metadata describing this asset</p>"
+        },
+        "content":{
+          "shape":"AssetContent",
+          "documentation":"<p>The content for the asset. Provide a single file or a zip bundle.</p>"
+        },
+        "clientToken":{
+          "shape":"CreateAssetRequestClientTokenString",
+          "documentation":"<p>A unique, case-sensitive identifier used for idempotent asset creation</p>",
+          "idempotencyToken":true
+        }
+      },
+      "documentation":"<p>Request structure for creating a new asset</p>"
+    },
+    "CreateAssetRequestClientTokenString":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "CreateAssetResponse":{
+      "type":"structure",
+      "required":["asset"],
+      "members":{
+        "asset":{
+          "shape":"Asset",
+          "documentation":"<p>The asset object</p>"
+        }
+      },
+      "documentation":"<p>Response structure for creating a new asset</p>"
     },
     "CreateBacklogTaskRequest":{
       "type":"structure",
@@ -1696,6 +2382,14 @@
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The expiry time of the certificate associated with the Private Connection. Only present when a certificate is associated.</p>"
         },
+        "dnsResolution":{
+          "shape":"ResourceConfigDnsResolution",
+          "documentation":"<p>DNS resolution mode for the Private Connection's resource gateway.</p>"
+        },
+        "failureMessage":{
+          "shape":"FailureMessage",
+          "documentation":"<p>Message describing the reason for a failed Private Connection creation, if applicable.</p>"
+        },
         "tags":{
           "shape":"Tags",
           "documentation":"<p>Tags associated with the created Private Connection.</p>"
@@ -1746,11 +2440,11 @@
       ],
       "members":{
         "name":{
-          "shape":"DatadogServiceDetailsNameString",
+          "shape":"MCPServerName",
           "documentation":"<p>MCP server name.</p>"
         },
         "endpoint":{
-          "shape":"DatadogServiceDetailsEndpointString",
+          "shape":"MCPServerEndpoint",
           "documentation":"<p>MCP server endpoint URL.</p>"
         },
         "description":{
@@ -1771,14 +2465,6 @@
       "min":0,
       "pattern":"[\\p{L}\\p{N}\\p{P}\\p{S}\\p{Z}]+",
       "sensitive":true
-    },
-    "DatadogServiceDetailsEndpointString":{
-      "type":"string",
-      "pattern":"https://[a-zA-Z0-9.-]+(?::[0-9]+)?(?:/.*)?"
-    },
-    "DatadogServiceDetailsNameString":{
-      "type":"string",
-      "pattern":"[a-zA-Z0-9_-]+"
     },
     "DateTime":{
       "type":"timestamp",
@@ -1801,6 +2487,67 @@
       "type":"structure",
       "members":{},
       "documentation":"<p>Empty output for successful AgentSpace deletion.</p>"
+    },
+    "DeleteAssetFileRequest":{
+      "type":"structure",
+      "required":[
+        "agentSpaceId",
+        "assetId",
+        "path"
+      ],
+      "members":{
+        "agentSpaceId":{
+          "shape":"AgentSpaceId",
+          "documentation":"<p>The unique identifier for the agent space containing the asset</p>",
+          "location":"uri",
+          "locationName":"agentSpaceId"
+        },
+        "assetId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the asset containing the file</p>",
+          "location":"uri",
+          "locationName":"assetId"
+        },
+        "path":{
+          "shape":"AssetFilePath",
+          "documentation":"<p>The path of the file within the asset to delete</p>",
+          "location":"uri",
+          "locationName":"path"
+        }
+      },
+      "documentation":"<p>Request structure for deleting an asset file</p>"
+    },
+    "DeleteAssetFileResponse":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Response structure for deleting an asset file</p>"
+    },
+    "DeleteAssetRequest":{
+      "type":"structure",
+      "required":[
+        "agentSpaceId",
+        "assetId"
+      ],
+      "members":{
+        "agentSpaceId":{
+          "shape":"AgentSpaceId",
+          "documentation":"<p>The unique identifier for the agent space containing the asset</p>",
+          "location":"uri",
+          "locationName":"agentSpaceId"
+        },
+        "assetId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the asset to delete</p>",
+          "location":"uri",
+          "locationName":"assetId"
+        }
+      },
+      "documentation":"<p>Request structure for deleting an asset</p>"
+    },
+    "DeleteAssetResponse":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Response structure for deleting an asset</p>"
     },
     "DeletePrivateConnectionInput":{
       "type":"structure",
@@ -1903,6 +2650,14 @@
         "certificateExpiryTime":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The expiry time of the certificate associated with the Private Connection. Only present when a certificate is associated.</p>"
+        },
+        "dnsResolution":{
+          "shape":"ResourceConfigDnsResolution",
+          "documentation":"<p>DNS resolution mode for the Private Connection's resource gateway.</p>"
+        },
+        "failureMessage":{
+          "shape":"FailureMessage",
+          "documentation":"<p>Message describing the reason for a failed Private Connection, if applicable.</p>"
         },
         "tags":{
           "shape":"Tags",
@@ -2123,6 +2878,10 @@
           "shape":"AgentSpaceId",
           "documentation":"<p>The unique identifier of the AgentSpace</p>"
         },
+        "operatorAppUrl":{
+          "shape":"OperatorAppUrl",
+          "documentation":"<p>The URL for operators to access the Operator App</p>"
+        },
         "iam":{"shape":"IamAuthConfiguration"},
         "idc":{"shape":"IdcAuthConfiguration"},
         "idp":{"shape":"IdpAuthConfiguration"}
@@ -2226,6 +2985,12 @@
         "TIMED_OUT"
       ]
     },
+    "FailureMessage":{
+      "type":"string",
+      "documentation":"<p>Failure message describing why a Private Connection has a FAILED status.</p>",
+      "max":1000,
+      "min":1
+    },
     "GenericWebhook":{
       "type":"structure",
       "members":{
@@ -2314,6 +3079,152 @@
       },
       "documentation":"<p>Output containing the requested AgentSpace details.</p>"
     },
+    "GetAssetContentRequest":{
+      "type":"structure",
+      "required":[
+        "agentSpaceId",
+        "assetId"
+      ],
+      "members":{
+        "agentSpaceId":{
+          "shape":"AgentSpaceId",
+          "documentation":"<p>The unique identifier for the agent space containing the asset</p>",
+          "location":"uri",
+          "locationName":"agentSpaceId"
+        },
+        "assetId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the asset</p>",
+          "location":"uri",
+          "locationName":"assetId"
+        },
+        "assetVersion":{
+          "shape":"GetAssetContentRequestAssetVersionInteger",
+          "documentation":"<p>The specific asset version to export. If omitted, the latest version is returned.</p>",
+          "location":"querystring",
+          "locationName":"assetVersion"
+        }
+      },
+      "documentation":"<p>Request structure for getting an asset's content as a zip bundle</p>"
+    },
+    "GetAssetContentRequestAssetVersionInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "GetAssetContentResponse":{
+      "type":"structure",
+      "required":[
+        "content",
+        "version"
+      ],
+      "members":{
+        "content":{
+          "shape":"AssetZipContent",
+          "documentation":"<p>The asset content as a zip file</p>"
+        },
+        "version":{
+          "shape":"Integer",
+          "documentation":"<p>The asset version this content belongs to</p>"
+        }
+      },
+      "documentation":"<p>Response structure for getting an asset's content as a zip bundle</p>"
+    },
+    "GetAssetFileRequest":{
+      "type":"structure",
+      "required":[
+        "agentSpaceId",
+        "assetId",
+        "path"
+      ],
+      "members":{
+        "agentSpaceId":{
+          "shape":"AgentSpaceId",
+          "documentation":"<p>The unique identifier for the agent space containing the asset</p>",
+          "location":"uri",
+          "locationName":"agentSpaceId"
+        },
+        "assetId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the asset containing the file</p>",
+          "location":"uri",
+          "locationName":"assetId"
+        },
+        "path":{
+          "shape":"AssetFilePath",
+          "documentation":"<p>The path of the file within the asset to retrieve</p>",
+          "location":"uri",
+          "locationName":"path"
+        },
+        "assetVersion":{
+          "shape":"GetAssetFileRequestAssetVersionInteger",
+          "documentation":"<p>The specific asset version to retrieve the file from. If omitted, the latest version is returned.</p>",
+          "location":"querystring",
+          "locationName":"assetVersion"
+        }
+      },
+      "documentation":"<p>Request structure for getting an asset file</p>"
+    },
+    "GetAssetFileRequestAssetVersionInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "GetAssetFileResponse":{
+      "type":"structure",
+      "required":["file"],
+      "members":{
+        "file":{
+          "shape":"AssetFile",
+          "documentation":"<p>The asset file object</p>"
+        }
+      },
+      "documentation":"<p>Response structure for getting an asset file</p>"
+    },
+    "GetAssetRequest":{
+      "type":"structure",
+      "required":[
+        "agentSpaceId",
+        "assetId"
+      ],
+      "members":{
+        "agentSpaceId":{
+          "shape":"AgentSpaceId",
+          "documentation":"<p>The unique identifier for the agent space containing the asset</p>",
+          "location":"uri",
+          "locationName":"agentSpaceId"
+        },
+        "assetId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the asset to retrieve</p>",
+          "location":"uri",
+          "locationName":"assetId"
+        },
+        "assetVersion":{
+          "shape":"GetAssetRequestAssetVersionInteger",
+          "documentation":"<p>The specific version of the asset to retrieve. If omitted, the latest version is returned.</p>",
+          "location":"querystring",
+          "locationName":"assetVersion"
+        }
+      },
+      "documentation":"<p>Request structure for getting an asset</p>"
+    },
+    "GetAssetRequestAssetVersionInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "GetAssetResponse":{
+      "type":"structure",
+      "required":["asset"],
+      "members":{
+        "asset":{
+          "shape":"Asset",
+          "documentation":"<p>The asset object</p>"
+        }
+      },
+      "documentation":"<p>Response structure for getting an asset</p>"
+    },
     "GetAssociationInput":{
       "type":"structure",
       "required":[
@@ -2393,6 +3304,10 @@
     "GetOperatorAppOutput":{
       "type":"structure",
       "members":{
+        "operatorAppUrl":{
+          "shape":"OperatorAppUrl",
+          "documentation":"<p>The URL for operators to access the Operator App</p>"
+        },
         "iam":{"shape":"IamAuthConfiguration"},
         "idc":{"shape":"IdcAuthConfiguration"},
         "idp":{"shape":"IdpAuthConfiguration"}
@@ -2711,11 +3626,11 @@
       ],
       "members":{
         "name":{
-          "shape":"GrafanaServiceDetailsNameString",
+          "shape":"MCPServerName",
           "documentation":"<p>MCP server name.</p>"
         },
         "endpoint":{
-          "shape":"GrafanaServiceDetailsEndpointString",
+          "shape":"MCPServerEndpoint",
           "documentation":"<p>MCP server endpoint URL.</p>"
         },
         "description":{
@@ -2736,14 +3651,6 @@
       "min":0,
       "pattern":"[\\p{L}\\p{N}\\p{P}\\p{S}\\p{Z}]+",
       "sensitive":true
-    },
-    "GrafanaServiceDetailsEndpointString":{
-      "type":"string",
-      "pattern":"https://[a-zA-Z0-9.-]+(?::[0-9]+)?(?:/.*)?"
-    },
-    "GrafanaServiceDetailsNameString":{
-      "type":"string",
-      "pattern":"[a-zA-Z0-9_-]+"
     },
     "Guid":{
       "type":"string",
@@ -3018,6 +3925,230 @@
         }
       },
       "documentation":"<p>Output containing a list of AgentSpaces and pagination token.</p>"
+    },
+    "ListAssetFilesRequest":{
+      "type":"structure",
+      "required":[
+        "agentSpaceId",
+        "assetId"
+      ],
+      "members":{
+        "agentSpaceId":{
+          "shape":"AgentSpaceId",
+          "documentation":"<p>The unique identifier for the agent space containing the asset</p>",
+          "location":"uri",
+          "locationName":"agentSpaceId"
+        },
+        "assetId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the asset whose files to list</p>",
+          "location":"uri",
+          "locationName":"assetId"
+        },
+        "assetVersion":{
+          "shape":"ListAssetFilesRequestAssetVersionInteger",
+          "documentation":"<p>The specific asset version to list files from. If omitted, files from the latest version are returned.</p>",
+          "location":"querystring",
+          "locationName":"assetVersion"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Pagination token from a previous response to retrieve the next page of results</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"ListAssetFilesRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return in a single response</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      },
+      "documentation":"<p>Request structure for listing asset files</p>"
+    },
+    "ListAssetFilesRequestAssetVersionInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "ListAssetFilesRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListAssetFilesResponse":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"AssetFileSummaryList",
+          "documentation":"<p>The list of asset file summaries</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Pagination token to retrieve the next page of results. Absent when there are no more results.</p>"
+        }
+      },
+      "documentation":"<p>Response structure for listing asset files</p>"
+    },
+    "ListAssetTypesRequest":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Pagination token from a previous response to retrieve the next page of results</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"ListAssetTypesRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return in a single response</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      },
+      "documentation":"<p>Request structure for listing asset types</p>"
+    },
+    "ListAssetTypesRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListAssetTypesResponse":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"AssetTypeList",
+          "documentation":"<p>The list of supported asset types</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Pagination token to retrieve the next page of results. Absent when there are no more results.</p>"
+        }
+      },
+      "documentation":"<p>Response structure for listing asset types</p>"
+    },
+    "ListAssetVersionsRequest":{
+      "type":"structure",
+      "required":[
+        "agentSpaceId",
+        "assetId"
+      ],
+      "members":{
+        "agentSpaceId":{
+          "shape":"AgentSpaceId",
+          "documentation":"<p>The unique identifier for the agent space containing the asset</p>",
+          "location":"uri",
+          "locationName":"agentSpaceId"
+        },
+        "assetId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the asset whose versions to list</p>",
+          "location":"uri",
+          "locationName":"assetId"
+        },
+        "maxResults":{
+          "shape":"ListAssetVersionsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return in a single response</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Pagination token from a previous response to retrieve the next page of results</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      },
+      "documentation":"<p>Request structure for listing asset versions</p>"
+    },
+    "ListAssetVersionsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListAssetVersionsResponse":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"AssetVersionMetadataList",
+          "documentation":"<p>The list of version metadata for the asset</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Pagination token to retrieve the next page of results. Absent when there are no more results.</p>"
+        }
+      },
+      "documentation":"<p>Response structure for listing asset versions</p>"
+    },
+    "ListAssetsRequest":{
+      "type":"structure",
+      "required":["agentSpaceId"],
+      "members":{
+        "agentSpaceId":{
+          "shape":"AgentSpaceId",
+          "documentation":"<p>The unique identifier for the agent space to list assets from</p>",
+          "location":"uri",
+          "locationName":"agentSpaceId"
+        },
+        "assetType":{
+          "shape":"AssetType",
+          "documentation":"<p>Filter results to only assets of this type</p>",
+          "location":"querystring",
+          "locationName":"assetType"
+        },
+        "updatedAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Filter results to only assets updated after this timestamp</p>",
+          "location":"querystring",
+          "locationName":"updatedAfter"
+        },
+        "updatedBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Filter results to only assets updated before this timestamp</p>",
+          "location":"querystring",
+          "locationName":"updatedBefore"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Pagination token from a previous response to retrieve the next page of results</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"ListAssetsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return in a single response</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      },
+      "documentation":"<p>Request structure for listing assets</p>"
+    },
+    "ListAssetsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListAssetsResponse":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"AssetList",
+          "documentation":"<p>The list of assets for the agent space</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Pagination token to retrieve the next page of results. Absent when there are no more results.</p>"
+        }
+      },
+      "documentation":"<p>Response structure for listing assets</p>"
     },
     "ListAssociationsInput":{
       "type":"structure",
@@ -3726,11 +4857,11 @@
       ],
       "members":{
         "name":{
-          "shape":"MCPServerDetailsNameString",
+          "shape":"MCPServerName",
           "documentation":"<p>MCP server name.</p>"
         },
         "endpoint":{
-          "shape":"MCPServerDetailsEndpointString",
+          "shape":"MCPServerEndpoint",
           "documentation":"<p>MCP server endpoint URL.</p>"
         },
         "description":{
@@ -3752,13 +4883,12 @@
       "pattern":"[\\p{L}\\p{N}\\p{P}\\p{S}\\p{Z}]+",
       "sensitive":true
     },
-    "MCPServerDetailsEndpointString":{
+    "MCPServerEndpoint":{
       "type":"string",
+      "documentation":"<p>HTTPS endpoint URL for an MCP server.</p>",
+      "max":2048,
+      "min":1,
       "pattern":"https://[a-zA-Z0-9.-]+(?::[0-9]+)?(?:/.*)?"
-    },
-    "MCPServerDetailsNameString":{
-      "type":"string",
-      "pattern":"[a-zA-Z0-9_-]+"
     },
     "MCPServerGrafanaConfiguration":{
       "type":"structure",
@@ -3786,6 +4916,13 @@
     "MCPServerGrafanaConfigurationOrganizationIdString":{
       "type":"string",
       "pattern":"[0-9]+"
+    },
+    "MCPServerName":{
+      "type":"string",
+      "documentation":"<p>Name identifier for an MCP server.</p>",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
     },
     "MCPServerNewRelicConfiguration":{
       "type":"structure",
@@ -3930,8 +5067,7 @@
       "type":"structure",
       "required":[
         "region",
-        "service",
-        "roleArn"
+        "service"
       ],
       "members":{
         "region":{
@@ -3943,8 +5079,15 @@
           "documentation":"<p>AWS service name for SigV4 signing.</p>"
         },
         "roleArn":{
+          "shape":"MCPServerSigV4AuthorizationConfigRoleArnString",
+          "documentation":"<p>Deprecated — use mcpRoleArn instead. IAM role ARN to assume for SigV4 signing.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use mcpRoleArn instead.",
+          "deprecatedSince":"2026-05-27"
+        },
+        "mcpRoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>IAM role ARN to assume for SigV4 signing.</p>"
+          "documentation":"<p>IAM role ARN to assume for SigV4 signing. Optional — when omitted, credentials are resolved at runtime via a monitor account association.</p>"
         },
         "customHeaders":{
           "shape":"CustomHeaders",
@@ -3952,6 +5095,11 @@
         }
       },
       "documentation":"<p>Authorization configuration for SigV4-authenticated MCP server.</p>"
+    },
+    "MCPServerSigV4AuthorizationConfigRoleArnString":{
+      "type":"string",
+      "max":255,
+      "min":0
     },
     "MCPServerSigV4AuthorizationConfigServiceString":{
       "type":"string",
@@ -3978,11 +5126,11 @@
       ],
       "members":{
         "name":{
-          "shape":"MCPServerSigV4ServiceDetailsNameString",
+          "shape":"MCPServerName",
           "documentation":"<p>MCP server name.</p>"
         },
         "endpoint":{
-          "shape":"MCPServerSigV4ServiceDetailsEndpointString",
+          "shape":"MCPServerEndpoint",
           "documentation":"<p>MCP server endpoint URL.</p>"
         },
         "description":{
@@ -4003,14 +5151,6 @@
       "min":0,
       "pattern":"[\\p{L}\\p{N}\\p{P}\\p{S}\\p{Z}]+",
       "sensitive":true
-    },
-    "MCPServerSigV4ServiceDetailsEndpointString":{
-      "type":"string",
-      "pattern":"https://[a-zA-Z0-9.-]+(?::[0-9]+)?(?:/.*)?"
-    },
-    "MCPServerSigV4ServiceDetailsNameString":{
-      "type":"string",
-      "pattern":"[a-zA-Z0-9_-]+"
     },
     "MCPServerSplunkConfiguration":{
       "type":"structure",
@@ -4180,6 +5320,20 @@
         }
       },
       "documentation":"<p>Details for completing OAuth authorization step.</p>"
+    },
+    "OAuthScope":{
+      "type":"string",
+      "documentation":"<p>OAuth scope parameter</p>",
+      "max":128,
+      "min":1,
+      "pattern":"[!#-\\[\\]-~]+"
+    },
+    "OperatorAppUrl":{
+      "type":"string",
+      "documentation":"<p>The URL for operators to access the Operator App.</p>",
+      "max":2048,
+      "min":1,
+      "pattern":"https://[a-zA-Z0-9.-]+(/.*)?"
     },
     "OrderType":{
       "type":"string",
@@ -4417,6 +5571,14 @@
         "certificateExpiryTime":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The expiry time of the certificate associated with the Private Connection. Only present when a certificate is associated.</p>"
+        },
+        "dnsResolution":{
+          "shape":"ResourceConfigDnsResolution",
+          "documentation":"<p>DNS resolution mode for the Private Connection's resource gateway.</p>"
+        },
+        "failureMessage":{
+          "shape":"FailureMessage",
+          "documentation":"<p>Message describing the reason for a failed Private Connection, if applicable.</p>"
         }
       },
       "documentation":"<p>Summary of a Private Connection.</p>"
@@ -4664,6 +5826,14 @@
           "shape":"PrivateConnectionName",
           "documentation":"<p>The name of the private connection to use for VPC connectivity.</p>"
         },
+        "targetUrlPrivateConnectionName":{
+          "shape":"PrivateConnectionName",
+          "documentation":"<p>The name of the private connection to use for API calls (target URL) only. Cannot be specified when privateConnectionName is provided.</p>"
+        },
+        "exchangeUrlPrivateConnectionName":{
+          "shape":"PrivateConnectionName",
+          "documentation":"<p>The name of the private connection to use for OAuth token exchange requests only. Cannot be specified when privateConnectionName is provided.</p>"
+        },
         "name":{
           "shape":"ServiceName",
           "documentation":"<p>The display name for the service registration.</p>"
@@ -4788,7 +5958,7 @@
       ],
       "members":{
         "endpoint":{
-          "shape":"RegisteredGrafanaServerDetailsEndpointString",
+          "shape":"MCPServerEndpoint",
           "documentation":"<p>Grafana instance URL (e.g., https://your-instance.grafana.net)</p>"
         },
         "authorizationMethod":{
@@ -4797,10 +5967,6 @@
         }
       },
       "documentation":"<p>Details specific to a registered Grafana server, used by the built-in MCP server.</p>"
-    },
-    "RegisteredGrafanaServerDetailsEndpointString":{
-      "type":"string",
-      "pattern":"https://[a-zA-Z0-9.-]+(?::[0-9]+)?(?:/.*)?"
     },
     "RegisteredMCPServerDetails":{
       "type":"structure",
@@ -4844,11 +6010,11 @@
       ],
       "members":{
         "name":{
-          "shape":"RegisteredMCPServerSigV4DetailsNameString",
+          "shape":"MCPServerName",
           "documentation":"<p>MCP server name.</p>"
         },
         "endpoint":{
-          "shape":"RegisteredMCPServerSigV4DetailsEndpointString",
+          "shape":"MCPServerEndpoint",
           "documentation":"<p>MCP server endpoint URL.</p>"
         },
         "description":{
@@ -4864,9 +6030,13 @@
           "documentation":"<p>AWS service name for SigV4 signing.</p>"
         },
         "roleArn":{
-          "shape":"RoleArn",
-          "documentation":"<p>IAM role ARN to assume for SigV4 signing.</p>"
+          "shape":"RegisteredMCPServerSigV4DetailsRoleArnString",
+          "documentation":"<p>IAM role ARN to assume for SigV4 signing.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use mcpRoleArn instead.",
+          "deprecatedSince":"2026-05-27"
         },
+        "mcpRoleArn":{"shape":"RoleArn"},
         "customHeaders":{
           "shape":"CustomHeaders",
           "documentation":"<p>Custom headers for the SigV4 MCP server.</p>"
@@ -4882,13 +6052,10 @@
       "pattern":"[\\p{L}\\p{N}\\p{P}\\p{S}\\p{Z}]+",
       "sensitive":true
     },
-    "RegisteredMCPServerSigV4DetailsEndpointString":{
+    "RegisteredMCPServerSigV4DetailsRoleArnString":{
       "type":"string",
-      "pattern":"https://[a-zA-Z0-9.-]+(?::[0-9]+)?(?:/.*)?"
-    },
-    "RegisteredMCPServerSigV4DetailsNameString":{
-      "type":"string",
-      "pattern":"[a-zA-Z0-9_-]+"
+      "max":255,
+      "min":0
     },
     "RegisteredMCPServerSigV4DetailsServiceString":{
       "type":"string",
@@ -4999,6 +6166,14 @@
       },
       "documentation":"<p>Details specific to a registered Slack workspace.</p>"
     },
+    "ResourceConfigDnsResolution":{
+      "type":"string",
+      "documentation":"<p>DNS resolution mode for a Resource Gateway.</p>",
+      "enum":[
+        "PUBLIC",
+        "IN_VPC"
+      ]
+    },
     "ResourceConfigurationArn":{
       "type":"string",
       "documentation":"<p>The ID or ARN of the Resource Configuration.</p>",
@@ -5053,8 +6228,10 @@
     },
     "Scopes":{
       "type":"list",
-      "member":{"shape":"String"},
-      "documentation":"<p>List of OAuth scopes.</p>"
+      "member":{"shape":"OAuthScope"},
+      "documentation":"<p>List of OAuth scopes.</p>",
+      "max":100,
+      "min":0
     },
     "SecurityGroupId":{
       "type":"string",
@@ -5258,7 +6435,7 @@
           "locationName":"agentSpaceId"
         },
         "executionId":{
-          "shape":"ResourceId",
+          "shape":"ChatExecutionId",
           "documentation":"<p>The execution identifier for the chat session</p>"
         },
         "content":{
@@ -5275,6 +6452,10 @@
           "deprecated":true,
           "deprecatedMessage":"userId is managed by the service and should not be provided by the caller",
           "deprecatedSince":"2026-04-15"
+        },
+        "assetIds":{
+          "shape":"AssetIdList",
+          "documentation":"<p>Optional list of asset identifiers to attach to the message</p>"
         }
       },
       "documentation":"<p>Request structure for sending a chat message</p>"
@@ -5604,6 +6785,10 @@
         "certificate":{
           "shape":"CertificateString",
           "documentation":"<p>Certificate for the Private Connection.</p>"
+        },
+        "dnsResolution":{
+          "shape":"ResourceConfigDnsResolution",
+          "documentation":"<p>DNS resolution mode for the resource gateway. Defaults to PUBLIC when not set.</p>"
         }
       },
       "documentation":"<p>Configuration for a service-managed Private Connection.</p>"
@@ -6054,7 +7239,8 @@
         "COMPLETED",
         "FAILED",
         "TIMED_OUT",
-        "CANCELED"
+        "CANCELED",
+        "SKIPPED"
       ]
     },
     "TaskType":{
@@ -6144,6 +7330,115 @@
         "agentSpace":{"shape":"AgentSpace"}
       },
       "documentation":"<p>Output containing the updated AgentSpace.</p>"
+    },
+    "UpdateAssetFileRequest":{
+      "type":"structure",
+      "required":[
+        "agentSpaceId",
+        "assetId",
+        "path"
+      ],
+      "members":{
+        "agentSpaceId":{
+          "shape":"AgentSpaceId",
+          "documentation":"<p>The unique identifier for the agent space containing the asset</p>",
+          "location":"uri",
+          "locationName":"agentSpaceId"
+        },
+        "assetId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the asset containing the file</p>",
+          "location":"uri",
+          "locationName":"assetId"
+        },
+        "path":{
+          "shape":"AssetFilePath",
+          "documentation":"<p>The path of the file within the asset to update</p>",
+          "location":"uri",
+          "locationName":"path"
+        },
+        "content":{
+          "shape":"AssetFileBody",
+          "documentation":"<p>Updated file content. If omitted, the existing content is unchanged.</p>"
+        },
+        "metadata":{
+          "shape":"Document",
+          "documentation":"<p>Metadata fields to update. Only the fields present in this document are updated. Omitted fields retain their current values.</p>"
+        },
+        "clientToken":{
+          "shape":"UpdateAssetFileRequestClientTokenString",
+          "documentation":"<p>A unique, case-sensitive identifier used for idempotent asset file update</p>",
+          "idempotencyToken":true
+        }
+      },
+      "documentation":"<p>Request structure for updating an asset file</p>"
+    },
+    "UpdateAssetFileRequestClientTokenString":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "UpdateAssetFileResponse":{
+      "type":"structure",
+      "required":["file"],
+      "members":{
+        "file":{
+          "shape":"AssetFile",
+          "documentation":"<p>The asset file object</p>"
+        }
+      },
+      "documentation":"<p>Response structure for updating an asset file</p>"
+    },
+    "UpdateAssetRequest":{
+      "type":"structure",
+      "required":[
+        "agentSpaceId",
+        "assetId"
+      ],
+      "members":{
+        "agentSpaceId":{
+          "shape":"AgentSpaceId",
+          "documentation":"<p>The unique identifier for the agent space containing the asset</p>",
+          "location":"uri",
+          "locationName":"agentSpaceId"
+        },
+        "assetId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the asset to update</p>",
+          "location":"uri",
+          "locationName":"assetId"
+        },
+        "metadata":{
+          "shape":"Document",
+          "documentation":"<p>Metadata fields to update. Only the fields present in this document are updated. Omitted fields retain their current values.</p>"
+        },
+        "content":{
+          "shape":"AssetContent",
+          "documentation":"<p>Optional content to set or replace. A single file adds or replaces one file; a zip replaces all files.</p>"
+        },
+        "clientToken":{
+          "shape":"UpdateAssetRequestClientTokenString",
+          "documentation":"<p>A unique, case-sensitive identifier used for idempotent asset update</p>",
+          "idempotencyToken":true
+        }
+      },
+      "documentation":"<p>Request structure for updating an asset</p>"
+    },
+    "UpdateAssetRequestClientTokenString":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "UpdateAssetResponse":{
+      "type":"structure",
+      "required":["asset"],
+      "members":{
+        "asset":{
+          "shape":"Asset",
+          "documentation":"<p>The asset object</p>"
+        }
+      },
+      "documentation":"<p>Response structure for updating an asset</p>"
     },
     "UpdateAssociationInput":{
       "type":"structure",
@@ -6359,6 +7654,14 @@
         "certificateExpiryTime":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The expiry time of the certificate associated with the Private Connection. Only present when a certificate is associated.</p>"
+        },
+        "dnsResolution":{
+          "shape":"ResourceConfigDnsResolution",
+          "documentation":"<p>DNS resolution mode for the Private Connection's resource gateway.</p>"
+        },
+        "failureMessage":{
+          "shape":"FailureMessage",
+          "documentation":"<p>Message describing the reason for a failed Private Connection update, if applicable.</p>"
         }
       },
       "documentation":"<p>Output containing the updated Private Connection summary.</p>"
@@ -6418,7 +7721,7 @@
       "members":{
         "limit":{
           "shape":"Integer",
-          "documentation":"<p>Configured limit for this metric.</p>"
+          "documentation":"<p>Configured limit for this metric. A value of -1 indicates no limit is enforced.</p>"
         },
         "usage":{
           "shape":"Double",
@@ -6602,5 +7905,5 @@
       "documentation":"<p>A list of Association Webhook resources.</p>"
     }
   },
-  "documentation":"<p>AWS DevOps Agent is your always-available operations teammate. It resolves and proactively prevents incidents, optimizes application reliability and performance, and handles on-demand SRE tasks across AWS, multicloud, and on-premises environments. AWS DevOps Agent investigates incidents as an experienced DevOps engineer would. It learns your applications and their relationships. It works with your observability tools, runbooks, code repositories, and CI/CD pipelines. The agent correlates telemetry, code, and deployment data across all of them. </p>"
+  "documentation":"<p>AWS DevOps Agent is your always-available operations teammate. It resolves and proactively prevents incidents, optimizes application reliability and performance, and handles on-demand SRE tasks across AWS, multicloud, and on-premises environments. AWS DevOps Agent investigates incidents as an experienced DevOps engineer would. It learns your applications and their relationships. It works with your observability tools, runbooks, code repositories, and CI/CD pipelines. The agent correlates telemetry, code, and deployment data across all of them.</p>"
 }

@@ -889,6 +889,10 @@
         "DestinationLogsConfiguration":{
           "shape":"DestinationLogsConfiguration",
           "documentation":"<p>Log specific configuration for centralization destination log groups.</p>"
+        },
+        "DestinationMetricsConfiguration":{
+          "shape":"DestinationMetricsConfiguration",
+          "documentation":"<p>Metric specific configuration for centralization destination metrics.</p>"
         }
       },
       "documentation":"<p>Configuration specifying the primary destination for centralized telemetry data.</p>"
@@ -908,6 +912,10 @@
         "SourceLogsConfiguration":{
           "shape":"SourceLogsConfiguration",
           "documentation":"<p>Log specific configuration for centralization source log groups.</p>"
+        },
+        "SourceMetricsConfiguration":{
+          "shape":"SourceMetricsConfiguration",
+          "documentation":"<p>Metric specific configuration for centralization source metrics.</p>"
         }
       },
       "documentation":"<p>Configuration specifying the source of telemetry data to be centralized.</p>"
@@ -1283,6 +1291,16 @@
         }
       },
       "documentation":"<p>Configuration for centralization destination log groups, including encryption and backup settings.</p>"
+    },
+    "DestinationMetricsConfiguration":{
+      "type":"structure",
+      "members":{
+        "BackupConfiguration":{
+          "shape":"MetricsBackupConfiguration",
+          "documentation":"<p>Configuration defining the backup region for the metrics backup destination.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for centralization destination metrics, including backup settings.</p>"
     },
     "DestinationType":{
       "type":"string",
@@ -2159,6 +2177,22 @@
       "type":"long",
       "box":true
     },
+    "MetricsBackupConfiguration":{
+      "type":"structure",
+      "required":["Region"],
+      "members":{
+        "Region":{
+          "shape":"Region",
+          "documentation":"<p>Metrics specific backup destination region within the primary destination account to which metrics data should be centralized.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for backing up centralized metrics data to a secondary region.</p>"
+    },
+    "MetricsFilterString":{
+      "type":"string",
+      "max":2000,
+      "min":1
+    },
     "MskEnhancedMonitoringLevel":{
       "type":"string",
       "documentation":"<p> Enumeration of supported enhanced monitoring levels for Amazon MSK clusters: DEFAULT, PER_BROKER, PER_TOPIC_PER_BROKER, and PER_TOPIC_PER_PARTITION. </p>",
@@ -2476,6 +2510,16 @@
         }
       },
       "documentation":"<p>Configuration for selecting and handling source log groups for centralization.</p>"
+    },
+    "SourceMetricsConfiguration":{
+      "type":"structure",
+      "members":{
+        "MetricsSelectionCriteria":{
+          "shape":"MetricsFilterString",
+          "documentation":"<p>The filter expression that selects which source metrics to centralize. Currently, only <code>*</code> (all metrics) is supported. Other values return a validation error.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for selecting source metrics for centralization.</p>"
     },
     "Sources":{
       "type":"list",

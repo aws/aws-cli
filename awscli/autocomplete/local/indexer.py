@@ -25,7 +25,14 @@ class ModelIndexer:
         'ddb': 'High level DynamoDB commands',
     }
 
-    _NON_SERVICE_COMMANDS = ['configure', 'history', 'cli-dev', 'login', 'logout']
+    _NON_SERVICE_COMMANDS = [
+        'configure',
+        'history',
+        'cli-dev',
+        'login',
+        'logout',
+        'agent-toolkit',
+    ]
 
     _CREATE_CMD_TABLE = """\
         CREATE TABLE IF NOT EXISTS command_table (

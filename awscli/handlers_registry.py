@@ -95,6 +95,12 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.ec2.addcount', 'register_count_events'),
         ('awscli.customizations.ec2.runinstances', 'register_runinstances'),
     ],
+    'before-sign.agenttoolkit.*': [
+        (
+            'awscli.customizations.agenttoolkit',
+            'register_agent_toolkit_commands',
+        )
+    ],
     'building-argument-table': [
         ('awscli.customizations.cliinput', 'register_cli_input_args'),
         ('awscli.customizations.paginate', 'register_pagination'),
@@ -517,6 +523,12 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.waiters', 'register_add_waiters'),
         ('awscli.alias', 'register_alias_commands'),
     ],
+    'building-command-table.agent-toolkit': [
+        (
+            'awscli.customizations.agenttoolkit',
+            'register_agent_toolkit_commands',
+        )
+    ],
     'building-command-table.bedrock-agent-runtime': [
         ('awscli.customizations.removals', 'register_removals')
     ],
@@ -886,4 +898,9 @@ MAIN_COMMAND_TABLE_OPS: list[
         'awscli.customizations.login.logout',
         'LogoutCommand',
     ),
+    (
+        CommandTableOp.RENAME,
+        'agenttoolkit',
+        'agent-toolkit',
+    )
 ]

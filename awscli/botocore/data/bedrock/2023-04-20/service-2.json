@@ -784,6 +784,24 @@
       "documentation":"<p>Exports the policy definition for an Automated Reasoning policy version. Returns the complete policy definition including rules, variables, and custom variable types in a structured format.</p>",
       "readonly":true
     },
+    "GetAccountDataRetention":{
+      "name":"GetAccountDataRetention",
+      "http":{
+        "method":"GET",
+        "requestUri":"/data-retention",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAccountDataRetentionRequest"},
+      "output":{"shape":"GetAccountDataRetentionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns the account-wide data retention mode for Amazon Bedrock.</p>",
+      "readonly":true
+    },
     "GetAdvancedPromptOptimizationJob":{
       "name":"GetAdvancedPromptOptimizationJob",
       "http":{
@@ -1680,6 +1698,24 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>List the tags associated with the specified resource.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Tagging resources</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
+    },
+    "PutAccountDataRetention":{
+      "name":"PutAccountDataRetention",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/data-retention",
+        "responseCode":200
+      },
+      "input":{"shape":"PutAccountDataRetentionRequest"},
+      "output":{"shape":"PutAccountDataRetentionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Sets the account-wide data retention mode for Amazon Bedrock.</p>",
+      "idempotent":true
     },
     "PutEnforcedGuardrailConfiguration":{
       "name":"PutEnforcedGuardrailConfiguration",
@@ -6244,6 +6280,16 @@
       },
       "documentation":"<p>For a Distillation job, the status details for the data processing sub-task of the job.</p>"
     },
+    "DataRetentionMode":{
+      "type":"string",
+      "documentation":"<p>The data retention mode for the account. Valid values are:</p> <ul> <li> <p> <code>default</code> – The standard data handling for the model applies.</p> </li> <li> <p> <code>none</code> – Zero data retention.</p> </li> <li> <p> <code>provider_data_share</code> – Data may be shared with the model provider.</p> </li> <li> <p> <code>inherit</code> – No data retention mode is set at this scope.</p> </li> </ul>",
+      "enum":[
+        "default",
+        "none",
+        "provider_data_share",
+        "inherit"
+      ]
+    },
     "DeleteAutomatedReasoningPolicyBuildWorkflowRequest":{
       "type":"structure",
       "required":[
@@ -7416,6 +7462,24 @@
         }
       },
       "documentation":"<p>The configuration details for response generation based on retrieved text chunks.</p>"
+    },
+    "GetAccountDataRetentionRequest":{
+      "type":"structure",
+      "members":{}
+    },
+    "GetAccountDataRetentionResponse":{
+      "type":"structure",
+      "required":["mode"],
+      "members":{
+        "mode":{
+          "shape":"DataRetentionMode",
+          "documentation":"<p>The data retention mode configured for the account.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the data retention mode was last updated.</p>"
+        }
+      }
     },
     "GetAdvancedPromptOptimizationJobRequest":{
       "type":"structure",
@@ -12997,6 +13061,30 @@
         }
       },
       "documentation":"<p>A summary of information about a Provisioned Throughput.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_ListProvisionedModelThroughputs.html#API_ListProvisionedModelThroughputs_ResponseSyntax\">ListProvisionedThroughputs response</a> </p> </li> </ul>"
+    },
+    "PutAccountDataRetentionRequest":{
+      "type":"structure",
+      "required":["mode"],
+      "members":{
+        "mode":{
+          "shape":"DataRetentionMode",
+          "documentation":"<p>The data retention mode to set for the account.</p>"
+        }
+      }
+    },
+    "PutAccountDataRetentionResponse":{
+      "type":"structure",
+      "required":["mode"],
+      "members":{
+        "mode":{
+          "shape":"DataRetentionMode",
+          "documentation":"<p>The data retention mode set for the account.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the data retention mode was last updated.</p>"
+        }
+      }
     },
     "PutEnforcedGuardrailConfigurationRequest":{
       "type":"structure",

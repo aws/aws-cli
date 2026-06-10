@@ -1054,6 +1054,10 @@
           "shape":"DashCompactness",
           "documentation":"<p>The layout of the DASH manifest that MediaPackage produces. <code>STANDARD</code> indicates a default manifest, which is compacted. <code>NONE</code> indicates a full manifest.</p> <p>For information about compactness, see <a href=\"https://docs.aws.amazon.com/mediapackage/latest/userguide/compacted.html\">DASH manifest compactness</a> in the <i>Elemental MediaPackage v2 User Guide</i>.</p>"
         },
+        "AudioTimelinePattern":{
+          "shape":"DashAudioTimelinePattern",
+          "documentation":"<p>How MediaPackage represents the audio timeline in the DASH manifest. This setting applies DASH Segment Duration Patternization, as defined in the MPEG-DASH specification, to audio adaptation sets. When set to <code>PATTERNED</code>, MediaPackage uses a pattern-based segment template for audio, which reduces manifest size by expressing repeating segment durations as a pattern instead of listing each segment individually. When set to <code>NONE</code>, the manifest contains an explicit timeline that lists each audio segment.</p> <p>Valid values: <code>NONE</code> | <code>PATTERNED</code> </p> <p>For information about audio timeline patterns, see <a href=\"https://docs.aws.amazon.com/mediapackage/latest/userguide/dash-audio-timeline-pattern.html\">DASH audio timeline pattern</a> in the <i>Elemental MediaPackage v2 User Guide</i>.</p>"
+        },
         "SubtitleConfiguration":{
           "shape":"DashSubtitleConfiguration",
           "documentation":"<p>The configuration for DASH subtitles.</p>"
@@ -1551,6 +1555,13 @@
       "member":{"shape":"CustomAdType"},
       "max":25,
       "min":0
+    },
+    "DashAudioTimelinePattern":{
+      "type":"string",
+      "enum":[
+        "NONE",
+        "PATTERNED"
+      ]
     },
     "DashAvailabilityStartTimeConfiguration":{
       "type":"structure",
@@ -2407,6 +2418,10 @@
         "Compactness":{
           "shape":"DashCompactness",
           "documentation":"<p>The layout of the DASH manifest that MediaPackage produces. <code>STANDARD</code> indicates a default manifest, which is compacted. <code>NONE</code> indicates a full manifest.</p>"
+        },
+        "AudioTimelinePattern":{
+          "shape":"DashAudioTimelinePattern",
+          "documentation":"<p>How MediaPackage represents the audio timeline in the DASH manifest, using DASH Segment Duration Patternization for audio adaptation sets. <code>PATTERNED</code> indicates that MediaPackage uses a pattern-based segment template for audio, reducing manifest size. <code>NONE</code> indicates that the manifest contains an explicit timeline for each audio segment.</p>"
         },
         "SubtitleConfiguration":{
           "shape":"DashSubtitleConfiguration",
@@ -3799,7 +3814,9 @@
         "PROVIDER_PROMO",
         "DISTRIBUTOR_PROMO",
         "PROVIDER_AD_BLOCK",
-        "DISTRIBUTOR_AD_BLOCK"
+        "DISTRIBUTOR_AD_BLOCK",
+        "CONTENT_IDENTIFICATION",
+        "CALL_AD_SERVER"
       ]
     },
     "ScteFilterList":{

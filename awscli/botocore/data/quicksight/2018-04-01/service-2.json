@@ -30,6 +30,26 @@
       ],
       "documentation":"<p>Creates new reviewed answers for a Q Topic.</p>"
     },
+    "BatchDeleteKnowledgeBase":{
+      "name":"BatchDeleteKnowledgeBase",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/accounts/{AwsAccountId}/knowledge-bases/batch-delete",
+        "responseCode":202
+      },
+      "input":{"shape":"BatchDeleteKnowledgeBaseRequest"},
+      "output":{"shape":"BatchDeleteKnowledgeBaseResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes one or more knowledge bases.</p>"
+    },
     "BatchDeleteTopicReviewedAnswer":{
       "name":"BatchDeleteTopicReviewedAnswer",
       "http":{
@@ -1048,6 +1068,28 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Deletes all access scopes and authorized targets that are associated with a service from the Quick Sight IAM Identity Center application.</p> <p>This operation is only supported for Quick Sight accounts that use IAM Identity Center.</p>"
+    },
+    "DeleteKnowledgeBase":{
+      "name":"DeleteKnowledgeBase",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v1/accounts/{AwsAccountId}/knowledge-bases/{KnowledgeBaseId}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteKnowledgeBaseRequest"},
+      "output":{"shape":"DeleteKnowledgeBaseResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes a knowledge base.</p>"
     },
     "DeleteNamespace":{
       "name":"DeleteNamespace",
@@ -2076,6 +2118,50 @@
       ],
       "documentation":"<p>Describes all customer managed key registrations in a Quick Sight account.</p>"
     },
+    "DescribeKnowledgeBase":{
+      "name":"DescribeKnowledgeBase",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/accounts/{AwsAccountId}/knowledge-bases/{KnowledgeBaseId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeKnowledgeBaseRequest"},
+      "output":{"shape":"DescribeKnowledgeBaseResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Describes a knowledge base.</p>",
+      "readonly":true
+    },
+    "DescribeKnowledgeBasePermissions":{
+      "name":"DescribeKnowledgeBasePermissions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/accounts/{AwsAccountId}/knowledge-bases/{KnowledgeBaseId}/permissions",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeKnowledgeBasePermissionsRequest"},
+      "output":{"shape":"DescribeKnowledgeBasePermissionsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Describes the resource permissions for a knowledge base.</p>",
+      "readonly":true
+    },
     "DescribeNamespace":{
       "name":"DescribeNamespace",
       "http":{
@@ -3024,6 +3110,26 @@
       ],
       "documentation":"<p>Lists the history of SPICE ingestions for a dataset. Limited to 5 TPS per user and 25 TPS per account.</p>"
     },
+    "ListKnowledgeBases":{
+      "name":"ListKnowledgeBases",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/accounts/{AwsAccountId}/knowledge-bases/",
+        "responseCode":200
+      },
+      "input":{"shape":"ListKnowledgeBasesRequest"},
+      "output":{"shape":"ListKnowledgeBasesResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists all knowledge bases in an Amazon QuickSight account.</p>",
+      "readonly":true
+    },
     "ListNamespaces":{
       "name":"ListNamespaces",
       "http":{
@@ -3380,6 +3486,25 @@
       ],
       "documentation":"<p>Returns a list of all of the Amazon Quick Sight users belonging to this account. </p>"
     },
+    "ListUsersIndexCapacity":{
+      "name":"ListUsersIndexCapacity",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{awsAccountId}/quick-index/user-capacity",
+        "responseCode":200
+      },
+      "input":{"shape":"ListUsersIndexCapacityRequest"},
+      "output":{"shape":"ListUsersIndexCapacityResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists per-user index capacity consumption for an account.</p>"
+    },
     "ListVPCConnections":{
       "name":"ListVPCConnections",
       "http":{
@@ -3642,6 +3767,27 @@
         {"shape":"ResourceUnavailableException"}
       ],
       "documentation":"<p>Use the <code>SearchGroups</code> operation to search groups in a specified Quick Sight namespace using the supplied filters.</p>"
+    },
+    "SearchKnowledgeBases":{
+      "name":"SearchKnowledgeBases",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/accounts/{AwsAccountId}/search/knowledge-bases",
+        "responseCode":200
+      },
+      "input":{"shape":"SearchKnowledgeBasesRequest"},
+      "output":{"shape":"SearchKnowledgeBasesResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Searches for a subset of knowledge bases based on specified filters.</p>",
+      "readonly":true
     },
     "SearchSpaces":{
       "name":"SearchSpaces",
@@ -4441,6 +4587,29 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Updates a customer managed key in a Quick Sight account.</p>"
+    },
+    "UpdateKnowledgeBasePermissions":{
+      "name":"UpdateKnowledgeBasePermissions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/accounts/{AwsAccountId}/knowledge-bases/{KnowledgeBaseId}/permissions",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateKnowledgeBasePermissionsRequest"},
+      "output":{"shape":"UpdateKnowledgeBasePermissionsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Updates the resource permissions for a knowledge base.</p>",
+      "idempotent":true
     },
     "UpdateOAuthClientApplication":{
       "name":"UpdateOAuthClientApplication",
@@ -7751,6 +7920,24 @@
       },
       "documentation":"<p>Aggregation for attributes.</p>"
     },
+    "AudioExtractionConfiguration":{
+      "type":"structure",
+      "required":["audioExtractionStatus"],
+      "members":{
+        "audioExtractionStatus":{
+          "shape":"AudioExtractionStatus",
+          "documentation":"<p>The status of audio extraction. Valid values are ENABLED and DISABLED.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for audio extraction from knowledge base documents.</p>"
+    },
+    "AudioExtractionStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "AuroraParameters":{
       "type":"structure",
       "required":[
@@ -8522,6 +8709,107 @@
           "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
         }
       }
+    },
+    "BatchDeleteKnowledgeBaseFailure":{
+      "type":"structure",
+      "required":[
+        "KnowledgeBaseId",
+        "ErrorCode",
+        "ErrorMessage"
+      ],
+      "members":{
+        "KnowledgeBaseId":{
+          "shape":"KnowledgeBaseId",
+          "documentation":"<p>The unique identifier of the knowledge base that failed to be deleted.</p>"
+        },
+        "ErrorCode":{
+          "shape":"String",
+          "documentation":"<p>The error code for the deletion failure.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"String",
+          "documentation":"<p>The error message for the deletion failure.</p>"
+        }
+      },
+      "documentation":"<p>Information about a knowledge base that failed to be deleted in a batch operation.</p>"
+    },
+    "BatchDeleteKnowledgeBaseFailureList":{
+      "type":"list",
+      "member":{"shape":"BatchDeleteKnowledgeBaseFailure"}
+    },
+    "BatchDeleteKnowledgeBaseRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "KnowledgeBaseIds"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"KbAwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the knowledge base.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "KnowledgeBaseIds":{
+          "shape":"BatchDeleteKnowledgeBaseRequestKnowledgeBaseIdsList",
+          "documentation":"<p>A list of knowledge base identifiers to delete.</p>"
+        }
+      }
+    },
+    "BatchDeleteKnowledgeBaseRequestKnowledgeBaseIdsList":{
+      "type":"list",
+      "member":{"shape":"KnowledgeBaseId"},
+      "max":10,
+      "min":1
+    },
+    "BatchDeleteKnowledgeBaseResponse":{
+      "type":"structure",
+      "required":[
+        "Deleted",
+        "Errors"
+      ],
+      "members":{
+        "Deleted":{
+          "shape":"BatchDeleteKnowledgeBaseSuccessList",
+          "documentation":"<p>A list of knowledge bases that were successfully deleted.</p>"
+        },
+        "Errors":{
+          "shape":"BatchDeleteKnowledgeBaseFailureList",
+          "documentation":"<p>A list of knowledge bases that failed to be deleted.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "box":true,
+          "location":"statusCode"
+        }
+      }
+    },
+    "BatchDeleteKnowledgeBaseSuccess":{
+      "type":"structure",
+      "required":[
+        "KnowledgeBaseId",
+        "KnowledgeBaseArn"
+      ],
+      "members":{
+        "KnowledgeBaseId":{
+          "shape":"KnowledgeBaseId",
+          "documentation":"<p>The unique identifier of the successfully deleted knowledge base.</p>"
+        },
+        "KnowledgeBaseArn":{
+          "shape":"KnowledgeBaseArn",
+          "documentation":"<p>The ARN of the successfully deleted knowledge base.</p>"
+        }
+      },
+      "documentation":"<p>Information about a knowledge base that was successfully deleted in a batch operation.</p>"
+    },
+    "BatchDeleteKnowledgeBaseSuccessList":{
+      "type":"list",
+      "member":{"shape":"BatchDeleteKnowledgeBaseSuccess"}
     },
     "BatchDeleteTopicReviewedAnswerRequest":{
       "type":"structure",
@@ -10227,6 +10515,30 @@
     "CapabilityState":{
       "type":"string",
       "enum":["DENY"]
+    },
+    "CapacityBytesRangeFilter":{
+      "type":"structure",
+      "members":{
+        "minBytes":{
+          "shape":"CapacityBytesRangeFilterMinBytesLong",
+          "documentation":"<p>The minimum capacity in bytes (inclusive). At least one of minBytes or maxBytes is required.</p>"
+        },
+        "maxBytes":{
+          "shape":"CapacityBytesRangeFilterMaxBytesLong",
+          "documentation":"<p>The maximum capacity in bytes (inclusive). At least one of minBytes or maxBytes is required.</p>"
+        }
+      },
+      "documentation":"<p>A filter that matches users by total capacity range in bytes.</p>"
+    },
+    "CapacityBytesRangeFilterMaxBytesLong":{
+      "type":"long",
+      "box":true,
+      "min":1
+    },
+    "CapacityBytesRangeFilterMinBytesLong":{
+      "type":"long",
+      "box":true,
+      "min":1
     },
     "CascadingControlConfiguration":{
       "type":"structure",
@@ -15930,6 +16242,16 @@
       "max":1,
       "min":1
     },
+    "DataSetStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "UPDATING",
+        "ACTIVE",
+        "FAILED",
+        "DELETING"
+      ]
+    },
     "DataSetStringComparisonFilterCondition":{
       "type":"structure",
       "required":["Operator"],
@@ -16155,6 +16477,12 @@
         }
       },
       "documentation":"<p>The structure of a data source.</p>"
+    },
+    "DataSourceArn":{
+      "type":"string",
+      "max":1284,
+      "min":0,
+      "pattern":"arn:[a-z0-9-\\.]{1,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}"
     },
     "DataSourceCredentials":{
       "type":"structure",
@@ -18261,6 +18589,54 @@
         "Status":{
           "shape":"StatusCode",
           "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
+    "DeleteKnowledgeBaseRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "KnowledgeBaseId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"KbAwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the knowledge base.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "KnowledgeBaseId":{
+          "shape":"KnowledgeBaseId",
+          "documentation":"<p>The unique identifier for the knowledge base.</p>",
+          "location":"uri",
+          "locationName":"KnowledgeBaseId"
+        }
+      }
+    },
+    "DeleteKnowledgeBaseResponse":{
+      "type":"structure",
+      "required":[
+        "KnowledgeBaseArn",
+        "KnowledgeBaseId"
+      ],
+      "members":{
+        "KnowledgeBaseArn":{
+          "shape":"KnowledgeBaseArn",
+          "documentation":"<p>The ARN of the deleted knowledge base.</p>"
+        },
+        "KnowledgeBaseId":{
+          "shape":"KnowledgeBaseId",
+          "documentation":"<p>The ID of the deleted knowledge base.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "box":true,
           "location":"statusCode"
         }
       }
@@ -20992,6 +21368,99 @@
         }
       }
     },
+    "DescribeKnowledgeBasePermissionsRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "KnowledgeBaseId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"KbAwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the knowledge base.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "KnowledgeBaseId":{
+          "shape":"KnowledgeBaseId",
+          "documentation":"<p>The unique identifier for the knowledge base.</p>",
+          "location":"uri",
+          "locationName":"KnowledgeBaseId"
+        }
+      }
+    },
+    "DescribeKnowledgeBasePermissionsResponse":{
+      "type":"structure",
+      "required":[
+        "KnowledgeBaseArn",
+        "KnowledgeBaseId"
+      ],
+      "members":{
+        "KnowledgeBaseArn":{
+          "shape":"KnowledgeBaseArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the knowledge base.</p>"
+        },
+        "KnowledgeBaseId":{
+          "shape":"KnowledgeBaseId",
+          "documentation":"<p>The unique identifier for the knowledge base.</p>"
+        },
+        "Permissions":{
+          "shape":"ResourcePermissionList",
+          "documentation":"<p>The resource permissions for the knowledge base.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "box":true,
+          "location":"statusCode"
+        }
+      }
+    },
+    "DescribeKnowledgeBaseRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "KnowledgeBaseId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"KbAwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the knowledge base.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "KnowledgeBaseId":{
+          "shape":"KnowledgeBaseId",
+          "documentation":"<p>The unique identifier for the knowledge base.</p>",
+          "location":"uri",
+          "locationName":"KnowledgeBaseId"
+        }
+      }
+    },
+    "DescribeKnowledgeBaseResponse":{
+      "type":"structure",
+      "required":["KnowledgeBase"],
+      "members":{
+        "KnowledgeBase":{
+          "shape":"KnowledgeBase",
+          "documentation":"<p>The knowledge base.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "box":true,
+          "location":"statusCode"
+        }
+      }
+    },
     "DescribeNamespaceRequest":{
       "type":"structure",
       "required":[
@@ -23546,6 +24015,11 @@
         }
       },
       "documentation":"<p>A control to display a text box that is used to enter a single entry.</p>"
+    },
+    "FilterValue":{
+      "type":"string",
+      "max":256,
+      "min":0
     },
     "FilterVisualScope":{
       "type":"string",
@@ -26922,6 +27396,24 @@
         "MENU"
       ]
     },
+    "ImageExtractionConfiguration":{
+      "type":"structure",
+      "required":["imageExtractionStatus"],
+      "members":{
+        "imageExtractionStatus":{
+          "shape":"ImageExtractionStatus",
+          "documentation":"<p>The status of image extraction. Valid values are ENABLED and DISABLED.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for image extraction from knowledge base documents.</p>"
+    },
+    "ImageExtractionStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "ImageInteractionOptions":{
       "type":"structure",
       "members":{
@@ -27501,6 +27993,10 @@
       "member":{"shape":"IntegerParameter"},
       "max":100
     },
+    "IntegerValue":{
+      "type":"integer",
+      "box":true
+    },
     "IntegerValueWhenUnsetConfiguration":{
       "type":"structure",
       "members":{
@@ -28061,6 +28557,46 @@
         "VERTICAL"
       ]
     },
+    "KbAwsAccountId":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"[0-9]*"
+    },
+    "KbIngestionId":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"[0-9a-zA-Z-_=.+]+"
+    },
+    "KbIngestionStatus":{
+      "type":"string",
+      "enum":[
+        "QUEUED",
+        "RUNNING",
+        "FAILED",
+        "COMPLETED",
+        "INCOMPLETE",
+        "CANCELLED",
+        "CANCELLING",
+        "TIMEOUT"
+      ]
+    },
+    "KbTemplate":{
+      "type":"structure",
+      "members":{},
+      "document":true
+    },
+    "KbTemplateConfiguration":{
+      "type":"structure",
+      "members":{
+        "template":{
+          "shape":"KbTemplate",
+          "documentation":"<p>The template document that defines the knowledge base behavior.</p>"
+        }
+      },
+      "documentation":"<p>The template configuration for a knowledge base.</p>"
+    },
     "KeyPairCredentials":{
       "type":"structure",
       "required":[
@@ -28086,6 +28622,307 @@
     "KeyRegistration":{
       "type":"list",
       "member":{"shape":"RegisteredCustomerManagedKey"}
+    },
+    "KnowledgeBase":{
+      "type":"structure",
+      "required":[
+        "KnowledgeBaseArn",
+        "KnowledgeBaseId",
+        "Name",
+        "Status",
+        "DataSourceArn",
+        "KnowledgeBaseConfiguration"
+      ],
+      "members":{
+        "KnowledgeBaseArn":{
+          "shape":"KnowledgeBaseArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the knowledge base.</p>"
+        },
+        "KnowledgeBaseId":{
+          "shape":"KnowledgeBaseId",
+          "documentation":"<p>The unique identifier for the knowledge base.</p>"
+        },
+        "Name":{
+          "shape":"KnowledgeBaseName",
+          "documentation":"<p>The name of the knowledge base.</p>"
+        },
+        "Status":{
+          "shape":"DataSetStatus",
+          "documentation":"<p>The status of the knowledge base.</p>"
+        },
+        "DataSourceArn":{
+          "shape":"DataSourceArn",
+          "documentation":"<p>The ARN of the data source associated with the knowledge base.</p>"
+        },
+        "KnowledgeBaseConfiguration":{
+          "shape":"KnowledgeBaseConfiguration",
+          "documentation":"<p>The configuration settings for the knowledge base.</p>"
+        },
+        "MediaExtractionConfiguration":{
+          "shape":"MediaExtractionConfiguration",
+          "documentation":"<p>The media extraction configuration for the knowledge base.</p>"
+        },
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The type of the knowledge base.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the knowledge base was created.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the knowledge base was last updated.</p>"
+        },
+        "Description":{
+          "shape":"KnowledgeBaseDescription",
+          "documentation":"<p>The description of the knowledge base.</p>"
+        },
+        "IsEmailNotificationOptedForIngestionFailures":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether email notifications are enabled for ingestion failures.</p>",
+          "box":true
+        },
+        "FirstCompletedIngestionSummary":{
+          "shape":"KnowledgeBaseIngestionSummary",
+          "documentation":"<p>A summary of the first completed ingestion for the knowledge base.</p>"
+        },
+        "FirstIncompleteIngestionSummary":{
+          "shape":"KnowledgeBaseIngestionSummary",
+          "documentation":"<p>A summary of the first incomplete ingestion for the knowledge base.</p>"
+        },
+        "LatestIngestionSummary":{
+          "shape":"KnowledgeBaseIngestionSummary",
+          "documentation":"<p>A summary of the most recent ingestion for the knowledge base.</p>"
+        },
+        "KnowledgeBaseSizeBytes":{
+          "shape":"Long",
+          "documentation":"<p>The size of the knowledge base in bytes.</p>",
+          "box":true
+        },
+        "DocumentCount":{
+          "shape":"Long",
+          "documentation":"<p>The number of documents in the knowledge base.</p>",
+          "box":true
+        },
+        "PrimaryOwnerArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the primary owner of the knowledge base.</p>"
+        },
+        "PrimaryOwnerUsername":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The username of the primary owner of the knowledge base.</p>"
+        }
+      },
+      "documentation":"<p>A knowledge base resource that provides data from connected sources for AI-powered experiences in Amazon QuickSight.</p>"
+    },
+    "KnowledgeBaseArn":{
+      "type":"string",
+      "max":1284,
+      "min":0,
+      "pattern":"arn:[a-z0-9-\\.]{1,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}"
+    },
+    "KnowledgeBaseConfiguration":{
+      "type":"structure",
+      "members":{
+        "templateConfiguration":{
+          "shape":"KbTemplateConfiguration",
+          "documentation":"<p>The template configuration for the knowledge base.</p>"
+        },
+        "eventEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether event notifications are enabled for the knowledge base.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>The configuration settings for a knowledge base.</p>",
+      "sensitive":true
+    },
+    "KnowledgeBaseDescription":{
+      "type":"string",
+      "max":1000,
+      "min":0,
+      "pattern":"\\P{C}*"
+    },
+    "KnowledgeBaseId":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"[0-9a-zA-Z-_=.+]+"
+    },
+    "KnowledgeBaseIngestionSummary":{
+      "type":"structure",
+      "required":[
+        "IngestionId",
+        "IngestionStatus"
+      ],
+      "members":{
+        "IngestionId":{
+          "shape":"KbIngestionId",
+          "documentation":"<p>The unique identifier for the ingestion job.</p>"
+        },
+        "IngestionStatus":{
+          "shape":"KbIngestionStatus",
+          "documentation":"<p>The status of the ingestion job.</p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start time of the ingestion job.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end time of the ingestion job.</p>"
+        }
+      },
+      "documentation":"<p>A summary of an ingestion job for a knowledge base.</p>"
+    },
+    "KnowledgeBaseName":{
+      "type":"string",
+      "max":128,
+      "min":0,
+      "pattern":"[\\p{L}\\p{N}][\\p{L}\\p{N} _\\-\\.]*"
+    },
+    "KnowledgeBaseSearchFilter":{
+      "type":"structure",
+      "required":[
+        "name",
+        "operator",
+        "value"
+      ],
+      "members":{
+        "name":{
+          "shape":"KnowledgeBaseSearchFilterName",
+          "documentation":"<p>The name of the field to filter on.</p>"
+        },
+        "operator":{
+          "shape":"KnowledgeBaseSearchOperator",
+          "documentation":"<p>The comparison operator to use for the filter.</p>"
+        },
+        "value":{
+          "shape":"String",
+          "documentation":"<p>The value to filter on.</p>"
+        }
+      },
+      "documentation":"<p>A filter to apply when searching knowledge bases.</p>"
+    },
+    "KnowledgeBaseSearchFilterName":{
+      "type":"string",
+      "enum":[
+        "KNOWLEDGE_BASE_ID",
+        "KNOWLEDGE_BASE_NAME",
+        "DIRECT_QUICKSIGHT_OWNER",
+        "DIRECT_QUICKSIGHT_VIEWER_OR_OWNER",
+        "DIRECT_QUICKSIGHT_SOLE_OWNER",
+        "KNOWLEDGE_BASE_SIZE_BYTES",
+        "PRIMARY_OWNER"
+      ]
+    },
+    "KnowledgeBaseSearchFilters":{
+      "type":"list",
+      "member":{"shape":"KnowledgeBaseSearchFilter"},
+      "max":5,
+      "min":1
+    },
+    "KnowledgeBaseSearchOperator":{
+      "type":"string",
+      "enum":[
+        "STRING_EQUALS",
+        "STRING_LIKE",
+        "GREATER_THAN_OR_EQUALS",
+        "LESS_THAN_OR_EQUALS"
+      ]
+    },
+    "KnowledgeBaseSortBy":{
+      "type":"structure",
+      "required":[
+        "sortByField",
+        "sortOrder"
+      ],
+      "members":{
+        "sortByField":{
+          "shape":"KnowledgeBaseSortByField",
+          "documentation":"<p>The field to sort by.</p>"
+        },
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sort order (ascending or descending).</p>"
+        }
+      },
+      "documentation":"<p>The sort configuration for searching knowledge bases.</p>"
+    },
+    "KnowledgeBaseSortByField":{
+      "type":"string",
+      "enum":[
+        "KNOWLEDGE_BASE_SIZE_BYTES",
+        "CREATED_AT"
+      ]
+    },
+    "KnowledgeBaseSummaries":{
+      "type":"list",
+      "member":{"shape":"KnowledgeBaseSummary"}
+    },
+    "KnowledgeBaseSummary":{
+      "type":"structure",
+      "required":[
+        "KnowledgeBaseArn",
+        "KnowledgeBaseId",
+        "Name",
+        "Status",
+        "DataSourceArn"
+      ],
+      "members":{
+        "KnowledgeBaseArn":{
+          "shape":"KnowledgeBaseArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the knowledge base.</p>"
+        },
+        "KnowledgeBaseId":{
+          "shape":"KnowledgeBaseId",
+          "documentation":"<p>The unique identifier for the knowledge base.</p>"
+        },
+        "Name":{
+          "shape":"KnowledgeBaseName",
+          "documentation":"<p>The name of the knowledge base.</p>"
+        },
+        "Status":{
+          "shape":"DataSetStatus",
+          "documentation":"<p>The status of the knowledge base.</p>"
+        },
+        "DataSourceArn":{
+          "shape":"DataSourceArn",
+          "documentation":"<p>The ARN of the data source associated with the knowledge base.</p>"
+        },
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The type of the knowledge base.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the knowledge base was created.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the knowledge base was last updated.</p>"
+        },
+        "KnowledgeBaseSizeBytes":{
+          "shape":"Long",
+          "documentation":"<p>The size of the knowledge base in bytes.</p>",
+          "box":true
+        },
+        "DocumentCount":{
+          "shape":"Long",
+          "documentation":"<p>The number of documents in the knowledge base.</p>",
+          "box":true
+        },
+        "PrimaryOwnerArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the primary owner of the knowledge base.</p>"
+        },
+        "PrimaryOwnerUsername":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The username of the primary owner of the knowledge base.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a knowledge base, including its identifier, name, status, and metadata.</p>"
     },
     "LabelOptions":{
       "type":"structure",
@@ -29759,6 +30596,55 @@
         }
       }
     },
+    "ListKnowledgeBasesRequest":{
+      "type":"structure",
+      "required":["AwsAccountId"],
+      "members":{
+        "AwsAccountId":{
+          "shape":"KbAwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the knowledge base.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"max-results"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        }
+      }
+    },
+    "ListKnowledgeBasesResponse":{
+      "type":"structure",
+      "required":["KnowledgeBaseSummaries"],
+      "members":{
+        "KnowledgeBaseSummaries":{
+          "shape":"KnowledgeBaseSummaries",
+          "documentation":"<p>A list of knowledge base summaries.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "box":true,
+          "location":"statusCode"
+        }
+      }
+    },
     "ListNamespacesRequest":{
       "type":"structure",
       "required":["AwsAccountId"],
@@ -30668,6 +31554,65 @@
         }
       }
     },
+    "ListUsersIndexCapacityRequest":{
+      "type":"structure",
+      "required":["awsAccountId"],
+      "members":{
+        "awsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the index capacity data.</p>",
+          "location":"uri",
+          "locationName":"awsAccountId"
+        },
+        "namespace":{
+          "shape":"Namespace",
+          "documentation":"<p>The namespace to scope the user search to. Required when the userNameOrEmail filter is present.</p>"
+        },
+        "filters":{
+          "shape":"UserIndexCapacityFilters",
+          "documentation":"<p>Filters to apply. Only one filter is supported per request. The userNameOrEmail and totalCapacityBytes filters are mutually exclusive.</p>"
+        },
+        "sortBy":{
+          "shape":"UserIndexCapacitySortBy",
+          "documentation":"<p>The field to sort results by.</p>"
+        },
+        "sortOrder":{
+          "shape":"UserIndexCapacitySortOrder",
+          "documentation":"<p>The sort order for results. Defaults to DESC if not specified.</p>"
+        },
+        "maxResults":{
+          "shape":"ListUsersIndexCapacityRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return per page.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, received from a previous call.</p>"
+        }
+      }
+    },
+    "ListUsersIndexCapacityRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListUsersIndexCapacityResponse":{
+      "type":"structure",
+      "members":{
+        "users":{
+          "shape":"UserIndexCapacityList",
+          "documentation":"<p>The list of users with their index capacity metrics.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        },
+        "requestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
     "ListUsersRequest":{
       "type":"structure",
       "required":[
@@ -30942,6 +31887,10 @@
       "max":2048,
       "min":1
     },
+    "LongValue":{
+      "type":"long",
+      "box":true
+    },
     "Longitude":{
       "type":"double",
       "max":1800,
@@ -31151,6 +32100,24 @@
       "type":"list",
       "member":{"shape":"MeasureField"},
       "max":200
+    },
+    "MediaExtractionConfiguration":{
+      "type":"structure",
+      "members":{
+        "imageExtractionConfiguration":{
+          "shape":"ImageExtractionConfiguration",
+          "documentation":"<p>The configuration for image extraction.</p>"
+        },
+        "audioExtractionConfiguration":{
+          "shape":"AudioExtractionConfiguration",
+          "documentation":"<p>The configuration for audio extraction.</p>"
+        },
+        "videoExtractionConfiguration":{
+          "shape":"VideoExtractionConfiguration",
+          "documentation":"<p>The configuration for video extraction.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for media extraction from knowledge base documents.</p>"
     },
     "MemberIdArnPair":{
       "type":"structure",
@@ -37026,6 +37993,59 @@
         }
       }
     },
+    "SearchKnowledgeBasesRequest":{
+      "type":"structure",
+      "required":["AwsAccountId"],
+      "members":{
+        "AwsAccountId":{
+          "shape":"KbAwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the knowledge base.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return.</p>",
+          "box":true
+        },
+        "Filters":{
+          "shape":"KnowledgeBaseSearchFilters",
+          "documentation":"<p>The filters to apply when searching knowledge bases.</p>"
+        },
+        "SortBy":{
+          "shape":"KnowledgeBaseSortBy",
+          "documentation":"<p>The sort configuration for the search results.</p>"
+        }
+      }
+    },
+    "SearchKnowledgeBasesResponse":{
+      "type":"structure",
+      "required":["KnowledgeBaseSummaries"],
+      "members":{
+        "KnowledgeBaseSummaries":{
+          "shape":"KnowledgeBaseSummaries",
+          "documentation":"<p>A list of knowledge base summaries.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "box":true,
+          "location":"statusCode"
+        }
+      }
+    },
     "SearchSpacesRequest":{
       "type":"structure",
       "required":[
@@ -38748,6 +39768,13 @@
       "documentation":"<p>The parameters for Snowflake.</p>"
     },
     "SortDirection":{
+      "type":"string",
+      "enum":[
+        "ASC",
+        "DESC"
+      ]
+    },
+    "SortOrder":{
       "type":"string",
       "enum":[
         "ASC",
@@ -45465,6 +46492,66 @@
         }
       }
     },
+    "UpdateKnowledgeBasePermissionsRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "KnowledgeBaseId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"KbAwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the knowledge base.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "KnowledgeBaseId":{
+          "shape":"KnowledgeBaseId",
+          "documentation":"<p>The unique identifier for the knowledge base.</p>",
+          "location":"uri",
+          "locationName":"KnowledgeBaseId"
+        },
+        "GrantPermissions":{
+          "shape":"ResourcePermissionList",
+          "documentation":"<p>The resource permissions that you want to grant on the knowledge base.</p>"
+        },
+        "RevokePermissions":{
+          "shape":"ResourcePermissionList",
+          "documentation":"<p>The resource permissions that you want to revoke from the knowledge base.</p>"
+        }
+      }
+    },
+    "UpdateKnowledgeBasePermissionsResponse":{
+      "type":"structure",
+      "required":[
+        "KnowledgeBaseArn",
+        "KnowledgeBaseId"
+      ],
+      "members":{
+        "KnowledgeBaseArn":{
+          "shape":"KnowledgeBaseArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the knowledge base.</p>"
+        },
+        "KnowledgeBaseId":{
+          "shape":"KnowledgeBaseId",
+          "documentation":"<p>The unique identifier for the knowledge base.</p>"
+        },
+        "Permissions":{
+          "shape":"ResourcePermissionList",
+          "documentation":"<p>The resource permissions for the knowledge base.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "box":true,
+          "location":"statusCode"
+        }
+      }
+    },
     "UpdateLinkPermissionList":{
       "type":"list",
       "member":{"shape":"ResourcePermission"},
@@ -46856,6 +47943,84 @@
       "documentation":"<p>A structure that contains information to identify a user.</p>",
       "union":true
     },
+    "UserIndexCapacity":{
+      "type":"structure",
+      "members":{
+        "userArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the user.</p>"
+        },
+        "userName":{
+          "shape":"String",
+          "documentation":"<p>The username of the user.</p>"
+        },
+        "email":{
+          "shape":"String",
+          "documentation":"<p>The email address of the user.</p>"
+        },
+        "role":{
+          "shape":"String",
+          "documentation":"<p>The role of the user.</p>"
+        },
+        "totalCapacityBytes":{
+          "shape":"LongValue",
+          "documentation":"<p>The total index capacity consumed by the user in bytes.</p>"
+        },
+        "totalKBCapacityBytes":{
+          "shape":"LongValue",
+          "documentation":"<p>The total index capacity consumed by the user's knowledge bases in bytes.</p>"
+        },
+        "totalSpaceCapacityBytes":{
+          "shape":"LongValue",
+          "documentation":"<p>The total index capacity consumed by the user's spaces in bytes.</p>"
+        },
+        "kbCount":{
+          "shape":"IntegerValue",
+          "documentation":"<p>The number of knowledge bases owned by the user.</p>"
+        },
+        "spaceCount":{
+          "shape":"IntegerValue",
+          "documentation":"<p>The number of spaces owned by the user.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a user's index capacity consumption.</p>"
+    },
+    "UserIndexCapacityFilter":{
+      "type":"structure",
+      "members":{
+        "userNameOrEmail":{
+          "shape":"UserNameOrEmailFilter",
+          "documentation":"<p>Filter users by username or email prefix.</p>"
+        },
+        "totalCapacityBytes":{
+          "shape":"CapacityBytesRangeFilter",
+          "documentation":"<p>Filter users by total capacity range in bytes.</p>"
+        }
+      },
+      "documentation":"<p>A filter for user index capacity queries. Only one filter type can be specified per request.</p>",
+      "union":true
+    },
+    "UserIndexCapacityFilters":{
+      "type":"list",
+      "member":{"shape":"UserIndexCapacityFilter"}
+    },
+    "UserIndexCapacityList":{
+      "type":"list",
+      "member":{"shape":"UserIndexCapacity"}
+    },
+    "UserIndexCapacitySortBy":{
+      "type":"string",
+      "documentation":"<p>The field to sort user index capacity results by.</p>",
+      "enum":["TOTAL_CAPACITY_BYTES"]
+    },
+    "UserIndexCapacitySortOrder":{
+      "type":"string",
+      "documentation":"<p>The sort order for user index capacity results.</p>",
+      "enum":[
+        "ASC",
+        "DESC"
+      ]
+    },
     "UserList":{
       "type":"list",
       "member":{"shape":"User"}
@@ -46864,6 +48029,17 @@
       "type":"string",
       "min":1,
       "pattern":"[\\u0020-\\u00FF]+"
+    },
+    "UserNameOrEmailFilter":{
+      "type":"structure",
+      "required":["prefix"],
+      "members":{
+        "prefix":{
+          "shape":"FilterValue",
+          "documentation":"<p>The prefix to match against username or email (starts-with match).</p>"
+        }
+      },
+      "documentation":"<p>A filter that matches users by username or email prefix.</p>"
     },
     "UserRole":{
       "type":"string",
@@ -47074,6 +48250,35 @@
         "MIDDLE",
         "BOTTOM",
         "AUTO"
+      ]
+    },
+    "VideoExtractionConfiguration":{
+      "type":"structure",
+      "required":["videoExtractionStatus"],
+      "members":{
+        "videoExtractionStatus":{
+          "shape":"VideoExtractionStatus",
+          "documentation":"<p>The status of video extraction. Valid values are ENABLED and DISABLED.</p>"
+        },
+        "videoExtractionType":{
+          "shape":"VideoExtractionType",
+          "documentation":"<p>The type of video extraction to perform.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for video extraction from knowledge base documents.</p>"
+    },
+    "VideoExtractionStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "VideoExtractionType":{
+      "type":"string",
+      "enum":[
+        "AUDIO_TRANSCRIPTION_ONLY",
+        "VISUAL_CONTENT_AND_AUDIO_TRANSCRIPTION"
       ]
     },
     "Visibility":{

@@ -383,6 +383,16 @@
       "output":{"shape":"AttachClassicLinkVpcResult"},
       "documentation":"<note> <p>This action is deprecated.</p> </note> <p>Links an EC2-Classic instance to a ClassicLink-enabled VPC through one or more of the VPC security groups. You cannot link an EC2-Classic instance to more than one VPC at a time. You can only link an instance that's in the <code>running</code> state. An instance is automatically unlinked from a VPC when it's stopped - you can link it to the VPC again when you restart it.</p> <p>After you've linked an instance, you cannot change the VPC security groups that are associated with it. To change the security groups, you must first unlink the instance, and then link it again.</p> <p>Linking your instance to a VPC is sometimes referred to as <i>attaching</i> your instance.</p>"
     },
+    "AttachImageWatermark":{
+      "name":"AttachImageWatermark",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AttachImageWatermarkRequest"},
+      "output":{"shape":"AttachImageWatermarkResult"},
+      "documentation":"<p>Attaches a watermark to a non-public AMI. The watermark is a structured identifier that automatically propagates to all derivative images created through <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateImage.html\">CreateImage</a>, <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CopyImage.html\">CopyImage</a>, and <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateRestoreImageTask.html\">CreateRestoreImageTask</a>.</p> <p>Only the AMI owner can attach watermarks. Watermarks cannot be added to public AMIs.</p>"
+    },
     "AttachInternetGateway":{
       "name":"AttachInternetGateway",
       "http":{
@@ -4548,6 +4558,16 @@
       "input":{"shape":"DetachClassicLinkVpcRequest"},
       "output":{"shape":"DetachClassicLinkVpcResult"},
       "documentation":"<note> <p>This action is deprecated.</p> </note> <p>Unlinks (detaches) a linked EC2-Classic instance from a VPC. After the instance has been unlinked, the VPC security groups are no longer associated with it. An instance is automatically unlinked from a VPC when it's stopped.</p>"
+    },
+    "DetachImageWatermark":{
+      "name":"DetachImageWatermark",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DetachImageWatermarkRequest"},
+      "output":{"shape":"DetachImageWatermarkResult"},
+      "documentation":"<p>Removes a watermark from the specified AMI. This is an idempotent operation. It succeeds even if the watermark does not exist on the image.</p> <p>Removing a watermark from an image does not affect derivative images that already carry the watermark.</p> <p>Only the AMI owner can detach watermarks.</p>"
     },
     "DetachInternetGateway":{
       "name":"DetachInternetGateway",
@@ -10475,6 +10495,37 @@
           "shape":"Boolean",
           "documentation":"<p>Returns <code>true</code> if the request succeeds; otherwise, it returns an error.</p>",
           "locationName":"return"
+        }
+      }
+    },
+    "AttachImageWatermarkRequest":{
+      "type":"structure",
+      "required":[
+        "ImageId",
+        "WatermarkName"
+      ],
+      "members":{
+        "ImageId":{
+          "shape":"ImageId",
+          "documentation":"<p>The ID of the AMI.</p>"
+        },
+        "WatermarkName":{
+          "shape":"ImageWatermarkNameRequest",
+          "documentation":"<p>The name for the watermark. Combined with the caller's account ID to form the <code>WatermarkKey</code> (<code>accountId:watermarkName</code>).</p> <p>Constraints: 3-128 alphanumeric characters, parentheses (()), square brackets ([]), spaces ( ), periods (.), slashes (/), dashes (-), single quotes ('), at-signs (@), or underscores(_)</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "AttachImageWatermarkResult":{
+      "type":"structure",
+      "members":{
+        "WatermarkKey":{
+          "shape":"String",
+          "documentation":"<p>The watermark identifier, in <code>accountId:watermarkName</code> format (for example, <code>123456789012:approvedAmi</code>).</p>",
+          "locationName":"watermarkKey"
         }
       }
     },
@@ -32633,6 +32684,37 @@
         }
       }
     },
+    "DetachImageWatermarkRequest":{
+      "type":"structure",
+      "required":[
+        "ImageId",
+        "WatermarkKey"
+      ],
+      "members":{
+        "ImageId":{
+          "shape":"ImageId",
+          "documentation":"<p>The ID of the AMI.</p>"
+        },
+        "WatermarkKey":{
+          "shape":"String",
+          "documentation":"<p>The watermark key to remove, in <code>accountId:watermarkName</code> format (for example, <code>123456789012:approvedAmi</code>).</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DetachImageWatermarkResult":{
+      "type":"structure",
+      "members":{
+        "Return":{
+          "shape":"Boolean",
+          "documentation":"<p>Returns <code>true</code> if the request succeeds; otherwise, it returns an error.</p>",
+          "locationName":"return"
+        }
+      }
+    },
     "DetachInternetGatewayRequest":{
       "type":"structure",
       "required":[
@@ -42058,6 +42140,11 @@
           "documentation":"<p>Indicates whether the image is eligible for Amazon Web Services Free Tier.</p> <ul> <li> <p>If <code>true</code>, the AMI is eligible for Free Tier and can be used to launch instances under the Free Tier limits.</p> </li> <li> <p>If <code>false</code>, the AMI is not eligible for Free Tier.</p> </li> </ul>",
           "locationName":"freeTierEligible"
         },
+        "ImageWatermarks":{
+          "shape":"ImageWatermarkList",
+          "documentation":"<p>The watermarks attached to the AMI.</p>",
+          "locationName":"imageWatermarkSet"
+        },
         "ImageId":{
           "shape":"String",
           "documentation":"<p>The ID of the AMI.</p>",
@@ -42446,6 +42533,11 @@
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the AMI has public launch permissions. A value of <code>true</code> means this AMI has public launch permissions, while <code>false</code> means it has only implicit (AMI owner) or explicit (shared with your account) launch permissions.</p>",
           "locationName":"isPublic"
+        },
+        "ImageWatermarks":{
+          "shape":"ImageWatermarkList",
+          "documentation":"<p>The watermarks attached to the AMI.</p>",
+          "locationName":"imageWatermarkSet"
         }
       },
       "documentation":"<p>Information about the AMI.</p>"
@@ -42811,6 +42903,49 @@
     "ImageUsageResourceTypeRequestList":{
       "type":"list",
       "member":{"shape":"ImageUsageResourceTypeRequest"}
+    },
+    "ImageWatermark":{
+      "type":"structure",
+      "members":{
+        "WatermarkKey":{
+          "shape":"String",
+          "documentation":"<p>The watermark identifier, in <code>accountId:watermarkName</code> format (for example, <code>123456789012:approvedAmi</code>). The <code>accountId</code> portion is the Amazon Web Services account ID of the watermark creator. The <code>watermarkName</code> portion is customer-provided.</p>",
+          "locationName":"watermarkKey"
+        },
+        "SourceImageRegion":{
+          "shape":"String",
+          "documentation":"<p>The Region where the watermark was originally attached.</p>",
+          "locationName":"sourceImageRegion"
+        },
+        "SourceImageId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the AMI to which the watermark was originally attached.</p>",
+          "locationName":"sourceImageId"
+        },
+        "SourceImageCreationTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The creation date of the source AMI, in the following format: <i>YYYY</i>-<i>MM</i>-<i>DD</i>T<i>HH</i>:<i>MM</i>:<i>SS</i>.<i>ssssss</i>+<i>HH</i>:<i>MM</i>.</p>",
+          "locationName":"sourceImageCreationTime"
+        },
+        "WatermarkCreationTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time the watermark was attached to the AMI, in the following format: <i>YYYY</i>-<i>MM</i>-<i>DD</i>T<i>HH</i>:<i>MM</i>:<i>SS</i>.<i>ssssss</i>+<i>HH</i>:<i>MM</i>.</p>",
+          "locationName":"watermarkCreationTime"
+        }
+      },
+      "documentation":"<p>Describes a watermark attached to an AMI.</p>"
+    },
+    "ImageWatermarkList":{
+      "type":"list",
+      "member":{
+        "shape":"ImageWatermark",
+        "locationName":"item"
+      }
+    },
+    "ImageWatermarkNameRequest":{
+      "type":"string",
+      "max":128,
+      "min":3
     },
     "ImdsSupportValues":{
       "type":"string",

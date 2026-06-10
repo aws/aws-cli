@@ -3734,13 +3734,31 @@
         "retentionPeriodInDays":{
           "shape":"UpdateWorkspaceConfigurationRequestRetentionPeriodInDaysInteger",
           "documentation":"<p>Specifies how many days that metrics will be retained in the workspace.</p>"
+        },
+        "outOfOrderTimeWindowInSeconds":{
+          "shape":"UpdateWorkspaceConfigurationRequestOutOfOrderTimeWindowInSecondsInteger",
+          "documentation":"<p>Specifies the time window in seconds for accepting out of order samples. Out of order samples older than this window are rejected.</p>"
+        },
+        "ruleQueryOffsetInSeconds":{
+          "shape":"UpdateWorkspaceConfigurationRequestRuleQueryOffsetInSecondsInteger",
+          "documentation":"<p>Specifies the duration in seconds to offset rule evaluation queries into the past. This allows ingested samples to be available before rule evaluation.</p>"
         }
       }
+    },
+    "UpdateWorkspaceConfigurationRequestOutOfOrderTimeWindowInSecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
     },
     "UpdateWorkspaceConfigurationRequestRetentionPeriodInDaysInteger":{
       "type":"integer",
       "box":true,
       "min":1
+    },
+    "UpdateWorkspaceConfigurationRequestRuleQueryOffsetInSecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
     },
     "UpdateWorkspaceConfigurationResponse":{
       "type":"structure",
@@ -3861,14 +3879,32 @@
         "retentionPeriodInDays":{
           "shape":"WorkspaceConfigurationDescriptionRetentionPeriodInDaysInteger",
           "documentation":"<p>This field displays how many days that metrics are retained in the workspace.</p>"
+        },
+        "outOfOrderTimeWindowInSeconds":{
+          "shape":"WorkspaceConfigurationDescriptionOutOfOrderTimeWindowInSecondsInteger",
+          "documentation":"<p>This field displays the out of order time window in seconds for accepting out of order samples.</p>"
+        },
+        "ruleQueryOffsetInSeconds":{
+          "shape":"WorkspaceConfigurationDescriptionRuleQueryOffsetInSecondsInteger",
+          "documentation":"<p>This field displays the duration in seconds that rule evaluation queries are offset into the past.</p>"
         }
       },
       "documentation":"<p>This structure contains the description of the workspace configuration.</p>"
+    },
+    "WorkspaceConfigurationDescriptionOutOfOrderTimeWindowInSecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
     },
     "WorkspaceConfigurationDescriptionRetentionPeriodInDaysInteger":{
       "type":"integer",
       "box":true,
       "min":1
+    },
+    "WorkspaceConfigurationDescriptionRuleQueryOffsetInSecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
     },
     "WorkspaceConfigurationStatus":{
       "type":"structure",

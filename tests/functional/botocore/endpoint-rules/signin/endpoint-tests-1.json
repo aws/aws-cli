@@ -1,79 +1,67 @@
 {
     "testCases": [
         {
-            "documentation": "For custom endpoint with region not set and fips disabled",
+            "documentation": "Control Plane operation in us-east-1 (aws partition)",
             "expect": {
                 "endpoint": {
-                    "url": "https://example.com"
+                    "url": "https://signin.us-east-1.api.aws",
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "signin",
+                                "signingRegion": "us-east-1"
+                            }
+                        ]
+                    }
                 }
             },
             "params": {
-                "Endpoint": "https://example.com",
-                "UseFIPS": false
-            }
-        },
-        {
-            "documentation": "For custom endpoint with fips enabled",
-            "expect": {
-                "error": "Invalid Configuration: FIPS and custom endpoint are not supported"
-            },
-            "params": {
-                "Endpoint": "https://example.com",
-                "UseFIPS": true
-            }
-        },
-        {
-            "documentation": "For custom endpoint with fips disabled and dualstack enabled",
-            "expect": {
-                "error": "Invalid Configuration: Dualstack and custom endpoint are not supported"
-            },
-            "params": {
-                "Endpoint": "https://example.com",
+                "IsControlPlane": true,
+                "Region": "us-east-1",
                 "UseFIPS": false,
-                "UseDualStack": true
-            }
-        },
-        {
-            "documentation": "For region us-east-1 with FIPS enabled and DualStack enabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://signin-fips.us-east-1.api.aws"
-                }
-            },
-            "params": {
-                "Region": "us-east-1",
-                "UseFIPS": true,
-                "UseDualStack": true
-            }
-        },
-        {
-            "documentation": "For region us-east-1 with FIPS enabled and DualStack disabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://signin-fips.us-east-1.amazonaws.com"
-                }
-            },
-            "params": {
-                "Region": "us-east-1",
-                "UseFIPS": true,
                 "UseDualStack": false
             }
         },
         {
-            "documentation": "For region us-east-1 with FIPS disabled and DualStack enabled",
+            "documentation": "Control Plane operation in cn-north-1 (aws-cn partition)",
             "expect": {
                 "endpoint": {
-                    "url": "https://signin.us-east-1.api.aws"
+                    "url": "https://signin.cn-north-1.api.amazonwebservices.com.cn",
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "signin",
+                                "signingRegion": "cn-north-1"
+                            }
+                        ]
+                    }
                 }
             },
             "params": {
-                "Region": "us-east-1",
+                "IsControlPlane": true,
+                "Region": "cn-north-1",
                 "UseFIPS": false,
-                "UseDualStack": true
+                "UseDualStack": false
             }
         },
         {
-            "documentation": "For region us-east-1 with FIPS disabled and DualStack disabled",
+            "documentation": "Data Plane operation in us-east-1",
+            "expect": {
+                "endpoint": {
+                    "url": "https://us-east-1.signin.aws.amazon.com"
+                }
+            },
+            "params": {
+                "IsControlPlane": false,
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "Data Plane operation in us-east-1 (IsControlPlane not set)",
             "expect": {
                 "endpoint": {
                     "url": "https://us-east-1.signin.aws.amazon.com"
@@ -86,205 +74,38 @@
             }
         },
         {
-            "documentation": "For region cn-northwest-1 with FIPS enabled and DualStack enabled",
+            "documentation": "Data Plane operation in cn-north-1",
             "expect": {
                 "endpoint": {
-                    "url": "https://signin-fips.cn-northwest-1.api.amazonwebservices.com.cn"
+                    "url": "https://cn-north-1.signin.amazonaws.cn"
                 }
             },
             "params": {
-                "Region": "cn-northwest-1",
-                "UseFIPS": true,
-                "UseDualStack": true
-            }
-        },
-        {
-            "documentation": "For region cn-northwest-1 with FIPS enabled and DualStack disabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://signin-fips.cn-northwest-1.amazonaws.com.cn"
-                }
-            },
-            "params": {
-                "Region": "cn-northwest-1",
-                "UseFIPS": true,
-                "UseDualStack": false
-            }
-        },
-        {
-            "documentation": "For region cn-northwest-1 with FIPS disabled and DualStack enabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://signin.cn-northwest-1.api.amazonwebservices.com.cn"
-                }
-            },
-            "params": {
-                "Region": "cn-northwest-1",
-                "UseFIPS": false,
-                "UseDualStack": true
-            }
-        },
-        {
-            "documentation": "For region cn-northwest-1 with FIPS disabled and DualStack disabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://cn-northwest-1.signin.amazonaws.cn"
-                }
-            },
-            "params": {
-                "Region": "cn-northwest-1",
+                "IsControlPlane": false,
+                "Region": "cn-north-1",
                 "UseFIPS": false,
                 "UseDualStack": false
             }
         },
         {
-            "documentation": "For region eusc-de-east-1 with FIPS enabled and DualStack disabled",
+            "documentation": "Data Plane operation in us-gov-west-1",
             "expect": {
                 "endpoint": {
-                    "url": "https://signin-fips.eusc-de-east-1.amazonaws.eu"
+                    "url": "https://us-gov-west-1.signin.amazonaws-us-gov.com"
                 }
             },
             "params": {
-                "Region": "eusc-de-east-1",
-                "UseFIPS": true,
-                "UseDualStack": false
-            }
-        },
-        {
-            "documentation": "For region eusc-de-east-1 with FIPS disabled and DualStack disabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://signin.eusc-de-east-1.amazonaws.eu"
-                }
-            },
-            "params": {
-                "Region": "eusc-de-east-1",
-                "UseFIPS": false,
-                "UseDualStack": false
-            }
-        },
-        {
-            "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack disabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://signin-fips.us-iso-east-1.c2s.ic.gov"
-                }
-            },
-            "params": {
-                "Region": "us-iso-east-1",
-                "UseFIPS": true,
-                "UseDualStack": false
-            }
-        },
-        {
-            "documentation": "For region us-iso-east-1 with FIPS disabled and DualStack disabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://signin.us-iso-east-1.c2s.ic.gov"
-                }
-            },
-            "params": {
-                "Region": "us-iso-east-1",
-                "UseFIPS": false,
-                "UseDualStack": false
-            }
-        },
-        {
-            "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack disabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://signin-fips.us-isob-east-1.sc2s.sgov.gov"
-                }
-            },
-            "params": {
-                "Region": "us-isob-east-1",
-                "UseFIPS": true,
-                "UseDualStack": false
-            }
-        },
-        {
-            "documentation": "For region us-isob-east-1 with FIPS disabled and DualStack disabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://signin.us-isob-east-1.sc2s.sgov.gov"
-                }
-            },
-            "params": {
-                "Region": "us-isob-east-1",
-                "UseFIPS": false,
-                "UseDualStack": false
-            }
-        },
-        {
-            "documentation": "For region eu-isoe-west-1 with FIPS enabled and DualStack disabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://signin-fips.eu-isoe-west-1.cloud.adc-e.uk"
-                }
-            },
-            "params": {
-                "Region": "eu-isoe-west-1",
-                "UseFIPS": true,
-                "UseDualStack": false
-            }
-        },
-        {
-            "documentation": "For region eu-isoe-west-1 with FIPS disabled and DualStack disabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://signin.eu-isoe-west-1.cloud.adc-e.uk"
-                }
-            },
-            "params": {
-                "Region": "eu-isoe-west-1",
-                "UseFIPS": false,
-                "UseDualStack": false
-            }
-        },
-        {
-            "documentation": "For region us-isof-south-1 with FIPS enabled and DualStack disabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://signin-fips.us-isof-south-1.csp.hci.ic.gov"
-                }
-            },
-            "params": {
-                "Region": "us-isof-south-1",
-                "UseFIPS": true,
-                "UseDualStack": false
-            }
-        },
-        {
-            "documentation": "For region us-isof-south-1 with FIPS disabled and DualStack disabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://signin.us-isof-south-1.csp.hci.ic.gov"
-                }
-            },
-            "params": {
-                "Region": "us-isof-south-1",
-                "UseFIPS": false,
-                "UseDualStack": false
-            }
-        },
-        {
-            "documentation": "For region us-gov-west-1 with FIPS enabled and DualStack enabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://signin-fips.us-gov-west-1.api.aws"
-                }
-            },
-            "params": {
+                "IsControlPlane": false,
                 "Region": "us-gov-west-1",
-                "UseFIPS": true,
-                "UseDualStack": true
+                "UseFIPS": false,
+                "UseDualStack": false
             }
         },
         {
-            "documentation": "For region us-gov-west-1 with FIPS enabled and DualStack disabled",
+            "documentation": "FIPS endpoint in us-gov-west-1 (global endpoint)",
             "expect": {
                 "endpoint": {
-                    "url": "https://signin-fips.us-gov-west-1.amazonaws.com"
+                    "url": "https://signin-fips.amazonaws-us-gov.com"
                 }
             },
             "params": {
@@ -294,7 +115,59 @@
             }
         },
         {
-            "documentation": "For region us-gov-west-1 with FIPS disabled and DualStack enabled",
+            "documentation": "FIPS endpoint in us-gov-east-1 (regional endpoint)",
+            "expect": {
+                "endpoint": {
+                    "url": "https://us-gov-east-1.signin-fips.amazonaws-us-gov.com"
+                }
+            },
+            "params": {
+                "Region": "us-gov-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "FIPS endpoint in us-east-1",
+            "expect": {
+                "endpoint": {
+                    "url": "https://signin-fips.us-east-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "DualStack falls through to default SDK endpoint in us-east-1 (aws partition)",
+            "expect": {
+                "endpoint": {
+                    "url": "https://signin.us-east-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": true
+            }
+        },
+        {
+            "documentation": "DualStack falls through to default SDK endpoint in cn-north-1 (aws-cn partition)",
+            "expect": {
+                "endpoint": {
+                    "url": "https://signin.cn-north-1.api.amazonwebservices.com.cn"
+                }
+            },
+            "params": {
+                "Region": "cn-north-1",
+                "UseFIPS": false,
+                "UseDualStack": true
+            }
+        },
+        {
+            "documentation": "DualStack falls through to default SDK endpoint in us-gov-west-1 (aws-us-gov partition)",
             "expect": {
                 "endpoint": {
                     "url": "https://signin.us-gov-west-1.api.aws"
@@ -307,22 +180,43 @@
             }
         },
         {
-            "documentation": "For region us-gov-west-1 with FIPS disabled and DualStack disabled",
+            "documentation": "Custom SDK endpoint override",
             "expect": {
                 "endpoint": {
-                    "url": "https://us-gov-west-1.signin.amazonaws-us-gov.com"
+                    "url": "https://custom.signin.example.com"
                 }
             },
             "params": {
-                "Region": "us-gov-west-1",
+                "Region": "us-east-1",
+                "Endpoint": "https://custom.signin.example.com",
                 "UseFIPS": false,
                 "UseDualStack": false
             }
         },
         {
-            "documentation": "Missing region",
+            "documentation": "ISO partition (us-iso-east-1)",
             "expect": {
-                "error": "Invalid Configuration: Missing Region"
+                "endpoint": {
+                    "url": "https://us-iso-east-1.signin.c2shome.ic.gov"
+                }
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "ISO-B partition (us-isob-east-1)",
+            "expect": {
+                "endpoint": {
+                    "url": "https://us-isob-east-1.signin.sc2shome.sgov.gov"
+                }
+            },
+            "params": {
+                "Region": "us-isob-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false
             }
         }
     ],

@@ -3747,6 +3747,13 @@
       "max":100.0,
       "min":0.0
     },
+    "DaemonIpcMode":{
+      "type":"string",
+      "enum":[
+        "none",
+        "shared"
+      ]
+    },
     "DaemonLinuxParameters":{
       "type":"structure",
       "members":{
@@ -3790,6 +3797,13 @@
       },
       "documentation":"<p>The specified daemon wasn't found. You can view your available daemons with <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ListDaemons.html\">ListDaemons</a>. Amazon ECS daemons are cluster specific and Region specific.</p>",
       "exception":true
+    },
+    "DaemonPidMode":{
+      "type":"string",
+      "enum":[
+        "none",
+        "shared"
+      ]
     },
     "DaemonPropagateTags":{
       "type":"string",
@@ -3975,6 +3989,14 @@
         "registeredBy":{
           "shape":"String",
           "documentation":"<p>The principal that registered the daemon task definition.</p>"
+        },
+        "pidMode":{
+          "shape":"DaemonPidMode",
+          "documentation":"<p>The process namespace mode for the daemon. A value of <code>shared</code> means the daemon shares the PID namespace with co-located tasks, giving it visibility into application processes. A value of <code>none</code> means the daemon has its own isolated PID namespace.</p>"
+        },
+        "ipcMode":{
+          "shape":"DaemonIpcMode",
+          "documentation":"<p>The IPC namespace mode for the daemon. A value of <code>shared</code> means the daemon shares the IPC namespace with co-located tasks, allowing communication through POSIX shared memory, semaphores, and message queues. A value of <code>none</code> means the daemon has its own isolated IPC namespace.</p>"
         }
       },
       "documentation":"<p>The details of a daemon task definition. A daemon task definition is a template that describes the containers that form a daemon. Daemons deploy cross-cutting software agents independently across your Amazon ECS infrastructure.</p>"
@@ -8243,6 +8265,14 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p>The metadata that you apply to the daemon task definition to help you categorize and organize them. Each tag consists of a key and an optional value. You define both of them.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case-sensitive.</p> </li> <li> <p>Do not use <code>aws:</code>, <code>AWS:</code>, or any upper or lowercase combination of such as a prefix for either keys or values as it is reserved for Amazon Web Services use. You cannot edit or delete tag keys or values with this prefix. Tags with this prefix do not count against your tags per resource limit.</p> </li> </ul>"
+        },
+        "pidMode":{
+          "shape":"DaemonPidMode",
+          "documentation":"<p>The process namespace mode for the daemon. When set to <code>shared</code>, the daemon shares the PID namespace with co-located tasks on the same container instance, giving the daemon visibility into application processes. When set to <code>none</code>, the daemon gets its own isolated PID namespace. The default is <code>none</code>.</p>"
+        },
+        "ipcMode":{
+          "shape":"DaemonIpcMode",
+          "documentation":"<p>The IPC namespace mode for the daemon. When set to <code>shared</code>, the daemon shares the IPC namespace with co-located tasks on the same container instance, allowing communication through POSIX shared memory, semaphores, and message queues. When set to <code>none</code>, the daemon gets its own isolated IPC namespace. The default is <code>none</code>.</p>"
         }
       }
     },

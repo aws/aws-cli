@@ -1226,6 +1226,19 @@
       "documentation":"<p>An event containing audio data for the Medical Scribe stream</p>",
       "event":true
     },
+    "MedicalScribeBinaryAudioEvent":{
+      "type":"structure",
+      "required":["audioChunk"],
+      "members":{
+        "audioChunk":{
+          "shape":"AudioChunk",
+          "documentation":"<p>The raw binary audio data chunk</p>",
+          "eventpayload":true
+        }
+      },
+      "documentation":"<p>An event containing raw binary audio data for the Medical Scribe stream. The audio is sent as a raw binary payload rather than as a base64-encoded value.</p>",
+      "event":true
+    },
     "MedicalScribeChannelDefinition":{
       "type":"structure",
       "required":[
@@ -1282,6 +1295,10 @@
         "audioEvent":{
           "shape":"MedicalScribeAudioEvent",
           "documentation":"<p/>"
+        },
+        "binaryAudioEvent":{
+          "shape":"MedicalScribeBinaryAudioEvent",
+          "documentation":"<p>An event containing raw binary audio data for the Medical Scribe stream. The audio is sent as a raw binary payload rather than as a base64-encoded value.</p>"
         },
         "sessionControlEvent":{
           "shape":"MedicalScribeSessionControlEvent",
@@ -2124,5 +2141,5 @@
     },
     "WebAppUrl":{"type":"string"}
   },
-  "documentation":"<p>Health Agent for healthcare providers and patient engagement</p>"
+  "documentation":"<p>Amazon Connect Health is an AI-powered healthcare service built on Amazon Connect. It provides pre-built agents that automate patient engagement workflows and support clinical documentation at the point of care.</p> <p>You can use the Amazon Connect Health API to programmatically manage domains, configure patient engagement agents, run patient insights jobs, and stream ambient documentation sessions. This API reference describes the available API operations and data types for Amazon Connect Health.</p> <p>We recommend that you use the AWS SDKs to make programmatic API calls to Amazon Connect Health.</p>"
 }

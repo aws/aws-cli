@@ -902,5 +902,5 @@ MAIN_COMMAND_TABLE_OPS: list[
         CommandTableOp.RENAME,
         'agenttoolkit',
         'agent-toolkit',
-    )
+    ),
 ]

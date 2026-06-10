@@ -56,6 +56,7 @@ class LazyInitEmitter(HierarchicalEmitter):
             self.load_registry(self._registry)
 
     def load_registry(self, registry):
+        self._registry = registry
         unique = set()
         for event_pattern, entries in registry.items():
             for entry in entries:

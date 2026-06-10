@@ -25,10 +25,7 @@ import logging
 
 from botocore.hooks import HierarchicalEmitter, PrefixTrie
 
-from awscli.handlers_registry import (
-    PLUGIN_REGISTRY,
-    CommandTableOp,
-)
+from awscli.handlers_registry import CommandTableOp
 from awscli.lazy import LazyCommand
 
 logger = logging.getLogger(__name__)
@@ -52,10 +49,11 @@ class LazyInitEmitter(HierarchicalEmitter):
         self._pending_count = 0
         # event_name -> list of entries from init trie
         self._init_cache: dict[str, list] = {}
+        self._registry = plugin_registry or {}
         self._main_ops = main_command_table_ops
         self._main_ops_applied = False
-        if plugin_registry:
-            self.load_registry(plugin_registry)
+        if self._registry:
+            self.load_registry(self._registry)
 
     def load_registry(self, registry):
         unique = set()
@@ -106,7 +104,7 @@ class LazyInitEmitter(HierarchicalEmitter):
         # Mark all building-command-table.main entries as initialized so
         # _ensure_initialized never imports them. The ops list fully
         # accounts for all plugins registered against this event.
-        for entry in PLUGIN_REGISTRY.get('building-command-table.main', []):
+        for entry in self._registry.get('building-command-table.main', []):
             entry = tuple(entry)
             if entry not in self._initialized:
                 self._initialized.add(entry)

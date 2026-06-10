@@ -13,7 +13,6 @@ hiddenimports = [
     'xml.etree',
     'pipes',
     'colorama',
-    'awscli.handlers',
     # NOTE: This can be removed once this hidden import issue related to
     # setuptools and PyInstaller is resolved:
     # https://github.com/pypa/setuptools/issues/1963

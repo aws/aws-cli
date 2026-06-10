@@ -115,10 +115,10 @@ PLUGIN_REGISTRY = {
             'register_streaming_output_arg',
         )
     ],
-    'building-argument-table.agent-toolkit.*.name': [
+    'building-argument-table.agent-toolkit.*': [
         ('awscli.customizations.argrename', 'register_arg_renames')
     ],
-    'building-argument-table.search-skills.query': [
+    'building-argument-table.agent-toolkit.search-skills': [
         ('awscli.customizations.argrename', 'register_arg_renames')
     ],
     'building-argument-table.apigateway.create-rest-api': [

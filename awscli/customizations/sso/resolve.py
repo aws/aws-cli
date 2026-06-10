@@ -94,7 +94,7 @@ def _follow_redirect(url):
             resp.close()
             return url
         except urllib.error.HTTPError as e:
-            if e.code == 405:
+            if e.code in (405, 501):
                 try:
                     req = urllib.request.Request(url, method='GET')
                     resp = opener.open(req, timeout=10)

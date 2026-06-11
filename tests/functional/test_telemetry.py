@@ -107,6 +107,20 @@ class TestCLISessionDatabaseConnection:
         )
         assert cursor.fetchall() == [('session',), ('host_id',)]
 
+    def test_creates_database_when_cache_dir_does_not_exist(self, tmp_path):
+        # When the cache directory doesn't exist, the connection should still
+        # be established successfully.
+        nonexistent_dir = tmp_path / 'nonexistent' / 'nested' / 'cache'
+        assert not nonexistent_dir.exists()
+        conn = CLISessionDatabaseConnection(cache_dir=nonexistent_dir)
+        assert nonexistent_dir.exists()
+        assert (nonexistent_dir / 'session.db').exists()
+        # Verify the database is functional.
+        writer = CLISessionDatabaseWriter(conn)
+        reader = CLISessionDatabaseReader(conn)
+        writer.write(CLISessionData('key', 'sid', 1000000000))
+        assert reader.read('key').session_id == 'sid'
+
     def test_timeout_does_not_raise_exception(self, session_conn):
         test_query = """
             SELECT name

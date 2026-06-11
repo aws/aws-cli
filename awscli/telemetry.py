@@ -76,13 +76,14 @@ class CLISessionDatabaseConnection:
     """
     _ENABLE_WAL = 'PRAGMA journal_mode=WAL'
 
-    def __init__(self, connection=None):
+    def __init__(self, connection=None, cache_dir=None):
+        self._cache_dir = cache_dir or _CACHE_DIR
+        self._ensure_cache_dir()
         self._connection = connection or sqlite3.connect(
-            _CACHE_DIR / _DATABASE_FILENAME,
+            self._cache_dir / _DATABASE_FILENAME,
             check_same_thread=False,
             isolation_level=None,
         )
-        self._ensure_cache_dir()
         self._ensure_database_setup()
 
     def execute(self, query, *parameters):
@@ -95,7 +96,7 @@ class CLISessionDatabaseConnection:
             return sqlite3.Cursor(self._connection)
 
     def _ensure_cache_dir(self):
-        _CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        self._cache_dir.mkdir(parents=True, exist_ok=True)
 
     def _ensure_database_setup(self):
         self._create_session_table()

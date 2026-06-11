@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+2.35.3
+======
+
+* api-change:``eks``: Introduce new CreateCluster parameters for Amazon EKS local clusters on AWS Outposts. Added etcdInstanceType for configuring the EC2 instance type for dedicated etcd instances, and spreadLevel for configuring the placement group spread level for Kubernetes control plane and etcd instances.
+* api-change:``bedrock-agentcore-control``: Supports deterministic metadata for AgentCore Memory
+* api-change:``omics``: Adds support for workflowName in the ListRuns API response.
+* api-change:``support``: Adding new BDD representation of endpoint ruleset
+* enhancement:emr: EMR SSH/SCP helper commands (``aws emr ssh``, ``socks``, ``put``, ``get``) now default to ``StrictHostKeyChecking=accept-new`` for improved host key verification security. A new ``--ssh-options`` parameter allows passing arbitrary SSH options to override defaults. On systems with OpenSSH < 7.6, the CLI automatically falls back to the previous behavior with a warning.
+* api-change:``neptune``: Amazon Neptune now supports IPv6 dual-stack networking. You can create and manage Neptune DB clusters accessible over both IPv4 and IPv6 by specifying NetworkType as DUAL in CreateDBCluster, ModifyDBCluster, RestoreDBClusterFromSnapshot, and RestoreDBClusterToPointInTime API operations
+* api-change:``healthlake``: Adds the UpdateFHIRDatastore API and adds analytics, NLP, and profile configuration support to CreateFHIRDatastore and DescribeFHIRDatastore.
+* bugfix:``agent-toolkit``: Fixes ``add-skill`` getting stuck when a previous install is missing ``SKILL.md``.
+* api-change:``bedrock-agentcore``: Adds support to perform cross account data plane actions on an AgentCore Memory resource
+
+
 2.35.2
 ======
 

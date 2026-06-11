@@ -31,7 +31,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Adds examples to the dataset's DRAFT.</p> <p><strong>Validation:</strong> All examples are validated against the dataset's schemaType before any writes occur. If any example fails validation, the entire batch is rejected with ValidationException — no examples are written (all-or-nothing semantics).</p> <p><strong>Asynchronous:</strong> Operates in-place on DRAFT. No version bump occurs. Use CreateDatasetVersion to publish DRAFT as a new numbered version.</p> <p><strong>State guard:</strong> Returns ConflictException (DATASET_NOT_READY) if the dataset status is not in {DRAFT, ACTIVE}.</p> <p><strong>Request size limit:</strong> Max 5 MB total request body. Max 1000 examples per call.</p>"
+      "documentation":"<p> Adds examples to the dataset's DRAFT. All examples are validated against the dataset's schema type before any writes occur. If any example fails validation, the entire batch is rejected (all-or-nothing semantics). </p>"
     },
     "CreateAgentRuntime":{
       "name":"CreateAgentRuntime",
@@ -195,7 +195,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a new Dataset resource asynchronously.</p> <p>Returns immediately with status CREATING. Poll GetDataset until status transitions to ACTIVE or CREATE_FAILED (with failureReason).</p>"
+      "documentation":"<p> Creates a new dataset resource asynchronously. Returns immediately with status CREATING. Poll <code>GetDataset</code> until status transitions to ACTIVE or CREATE_FAILED. </p>"
     },
     "CreateDatasetVersion":{
       "name":"CreateDatasetVersion",
@@ -215,7 +215,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Publishes the current DRAFT as a new numbered version.</p> <p>Snapshots the DRAFT examples as the next version (1, 2, 3, ...). The DRAFT is preserved and remains editable after publishing. Returns immediately with status UPDATING. Poll GetDataset until status transitions to ACTIVE (draftStatus=UNMODIFIED) or UPDATE_FAILED.</p> <p><strong>State guard:</strong> Returns ConflictException (DATASET_NOT_READY) if status is in {CREATING, UPDATING, DELETING}, or DATASET_IN_FAILED_STATE if status is in {CREATE_FAILED, DELETE_FAILED}.</p> <p><strong>Quota:</strong> MAX_VERSIONS_PER_DATASET applies to published versions only (not DRAFT).</p>"
+      "documentation":"<p> Publishes the current DRAFT as a new numbered version. The DRAFT is preserved and remains editable after publishing. Returns immediately with status UPDATING. Poll <code>GetDataset</code> until status transitions to ACTIVE or UPDATE_FAILED. </p>"
     },
     "CreateEvaluator":{
       "name":"CreateEvaluator",
@@ -706,7 +706,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Deletes a dataset version or an entire dataset (all versions + name claim). Asynchronous 202.</p> <p><strong>State transitions:</strong></p> <ul> <li>If <code>datasetVersion</code> is absent (full delete): status transitions to DELETING immediately.</li> <li>If <code>datasetVersion</code> is provided (version-specific delete): status transitions to UPDATING.</li> </ul> <p><strong>State guard (full delete):</strong> Returns ConflictException (DATASET_NOT_READY) if the dataset status is in {CREATING, UPDATING}. Deletion is allowed from ACTIVE, CREATE_FAILED, UPDATE_FAILED, and DELETE_FAILED states.</p> <p><strong>State guard (version-specific delete):</strong> Returns ConflictException (DATASET_NOT_READY) if the dataset status is not in {ACTIVE, CREATE_FAILED, UPDATE_FAILED}.</p> <p>Fails with ConflictException (REFERENCED_BY_EVAL_JOB) if referenced by an active evaluation job (full delete only).</p> <p>If the delete workflow fails after retries, status is set to DELETE_FAILED (full delete) or UPDATE_FAILED (version-specific delete). Calling DeleteDataset on a DELETE_FAILED dataset re-triggers the delete workflow (idempotent retry path).</p> <p><strong>Version parameter:</strong></p> <ul> <li>If <code>datasetVersion</code> is absent: deletes ALL versions and the Dataset record itself.</li> <li>If <code>datasetVersion</code> is provided: deletes only that specific DatasetVersion. Returns ResourceNotFoundException if the specified version does not exist.</li> </ul>",
+      "documentation":"<p> Deletes a dataset version or an entire dataset asynchronously. If <code>datasetVersion</code> is absent, deletes all versions and the dataset record itself. If provided, deletes only that specific version. </p>",
       "idempotent":true
     },
     "DeleteDatasetExamples":{
@@ -726,7 +726,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Deletes specific examples by ID from DRAFT.</p> <p><strong>Validation:</strong> All example IDs are validated before any deletes occur. If any ID does not exist in DRAFT, the entire batch is rejected with ResourceNotFoundException — no examples are deleted (all-or-nothing semantics).</p> <p><strong>Asynchronous:</strong> Operates in-place on DRAFT. No version bump occurs. Use CreateDatasetVersion to publish DRAFT as a new numbered version.</p> <p><strong>State guard:</strong> Returns ConflictException (DATASET_NOT_READY) if the dataset status is not in {DRAFT, ACTIVE}.</p>"
+      "documentation":"<p> Deletes specific examples by ID from DRAFT. All example IDs are validated before any deletes occur. If any ID does not exist in DRAFT, the entire batch is rejected (all-or-nothing semantics). </p>"
     },
     "DeleteEvaluator":{
       "name":"DeleteEvaluator",
@@ -1237,7 +1237,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves dataset metadata only.</p> <p>Use <code>?datasetVersion=DRAFT</code> or <code>?datasetVersion=N</code> to retrieve a specific version's metadata. If absent, defaults to DRAFT (the mutable working copy). Returns ResourceNotFoundException if the specified version is not found.</p> <p><strong>Initial state after CreateDataset:</strong> When CreateDataset completes successfully (status transitions to ACTIVE), only a DRAFT working copy exists. No published versions exist until CreateDatasetVersion is called. At this point draftStatus is MODIFIED because the DRAFT has content that has never been published.</p> <p><strong>Default version behavior:</strong> When <code>datasetVersion</code> is omitted, the operation returns the DRAFT working copy. To retrieve a specific published version, pass the version number as a string (e.g. <code>?datasetVersion=1</code>).</p> <p><strong>State guard:</strong> Allowed for all statuses including DELETING. Returns the dataset record with its current status so callers can observe the deletion in progress.</p> <p>For paginated example IDs use ListDatasetExamples.</p>",
+      "documentation":"<p> Retrieves dataset metadata. Use the <code>datasetVersion</code> query parameter to retrieve a specific version's metadata. If absent, defaults to DRAFT. For paginated example content, use <code>ListDatasetExamples</code>. </p>",
       "readonly":true
     },
     "GetEvaluator":{
@@ -1848,7 +1848,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Returns paginated examples from the dataset.</p> <p><strong>Version-pinned pagination:</strong> The server embeds the resolved version in the <code>nextToken</code>. Once pagination begins, all subsequent pages are pinned to that version regardless of concurrent mutations or whether <code>datasetVersion</code> is passed on subsequent requests. The <code>datasetVersion</code> query parameter is only used for the first request (when <code>nextToken</code> is absent); if omitted, defaults to DRAFT.</p> <p><strong>State guard:</strong> Allowed for all statuses including DELETING.</p>",
+      "documentation":"<p> Returns paginated examples from the dataset. The server embeds the resolved version in the pagination token. Once pagination begins, all subsequent pages are pinned to that version regardless of concurrent mutations. </p>",
       "readonly":true
     },
     "ListDatasetVersions":{
@@ -1867,7 +1867,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists all published versions of a dataset, sorted by version number descending (newest first). Does not include the DRAFT working copy.</p> <p><strong>State guard:</strong> Allowed for all statuses including DELETING.</p>",
+      "documentation":"<p> Lists all published versions of a dataset, sorted by version number descending (newest first). Does not include the DRAFT working copy. </p>",
       "readonly":true
     },
     "ListDatasets":{
@@ -1885,7 +1885,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists all datasets in the caller's account, paginated. No presigned URLs in list results.</p>",
+      "documentation":"<p> Lists all datasets in the caller's account, paginated. </p>",
       "readonly":true
     },
     "ListEvaluators":{
@@ -2539,7 +2539,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Updates a dataset's metadata. Synchronous operation. Only provided fields are updated; omitted fields remain unchanged.</p> <p>To modify dataset content, use AddDatasetExamples, UpdateDatasetExamples, or DeleteDatasetExamples.</p> <p>Cannot update: name, schemaType, kmsKeyArn (immutable after creation).</p>",
+      "documentation":"<p> Updates a dataset's metadata. Synchronous operation. Only provided fields are updated; omitted fields remain unchanged. To modify dataset content, use <code>AddDatasetExamples</code>, <code>UpdateDatasetExamples</code>, or <code>DeleteDatasetExamples</code>. </p>",
       "idempotent":true
     },
     "UpdateDatasetExamples":{
@@ -2560,7 +2560,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Updates multiple existing examples in-place on DRAFT.</p> <p><strong>Validation:</strong> All examples are validated against the dataset's schemaType before any writes occur. If any example fails validation, the entire batch is rejected with ValidationException — no examples are updated (all-or-nothing semantics).</p> <p><strong>Asynchronous:</strong> Operates in-place on DRAFT. No version bump occurs. Use CreateDatasetVersion to publish DRAFT as a new numbered version.</p> <p>Fails with ResourceNotFoundException if any exampleId does not exist in DRAFT. To add new examples, use AddDatasetExamples instead.</p> <p><strong>State guard:</strong> Returns ConflictException (DATASET_NOT_READY) if the dataset status is not in {DRAFT, ACTIVE}.</p> <p><strong>Request size limit:</strong> Max 5 MB total request body. Max 1000 examples per call.</p>"
+      "documentation":"<p> Updates multiple existing examples in-place on DRAFT. All examples are validated against the dataset's schema type before any writes occur. If any example fails validation, the entire batch is rejected (all-or-nothing semantics). </p>"
     },
     "UpdateEvaluator":{
       "name":"UpdateEvaluator",
@@ -2986,7 +2986,7 @@
         },
         "source":{
           "shape":"DataSourceType",
-          "documentation":"<p>Source of examples to add. Provide either inline examples or an S3 URI pointing to a JSONL file.</p>"
+          "documentation":"<p> Source of examples to add. Provide either inline examples or an S3 URI pointing to a JSONL file. </p>"
         }
       }
     },
@@ -3023,7 +3023,7 @@
         },
         "exampleIds":{
           "shape":"ExampleIdList",
-          "documentation":"<p>IDs of all added examples (auto-generated UUIDs).</p>"
+          "documentation":"<p> IDs of all added examples (auto-generated UUIDs). </p>"
         }
       }
     },
@@ -4993,12 +4993,12 @@
       "members":{
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>Optional idempotency token.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
           "idempotencyToken":true
         },
         "datasetName":{
           "shape":"DatasetName",
-          "documentation":"<p>Human-readable name for the dataset. Unique within the account (case-insensitive). Immutable after creation.</p>"
+          "documentation":"<p> Human-readable name for the dataset. Must be unique within the account. Immutable after creation. </p>"
         },
         "description":{
           "shape":"CreateDatasetRequestDescriptionString",
@@ -5006,15 +5006,15 @@
         },
         "source":{
           "shape":"DataSourceType",
-          "documentation":"<p>Source of initial examples. Provide either inline examples or an S3 URI pointing to a JSONL file.</p>"
+          "documentation":"<p> Source of initial examples. Provide either inline examples or an S3 URI pointing to a JSONL file. </p>"
         },
         "schemaType":{
           "shape":"DatasetSchemaType",
-          "documentation":"<p>Versioned schema type governing the structure of examples. Immutable after creation.</p>"
+          "documentation":"<p> Versioned schema type governing the structure of examples. Immutable after creation. </p>"
         },
         "kmsKeyArn":{
           "shape":"KmsKeyArn",
-          "documentation":"<p>Optional AWS KMS key ARN for SSE-KMS on service S3 writes.</p>"
+          "documentation":"<p> Optional KMS key ARN for server-side encryption on service Amazon S3 writes. </p>"
         },
         "tags":{
           "shape":"TagsMap",
@@ -5046,7 +5046,7 @@
         },
         "status":{
           "shape":"DatasetStatus",
-          "documentation":"<p>Always CREATING immediately after this call. Poll GetDataset until status == ACTIVE (draftStatus=MODIFIED) or CREATE_FAILED.</p>"
+          "documentation":"<p> Always CREATING immediately after this call. Poll <code>GetDataset</code> until status transitions to ACTIVE or CREATE_FAILED. </p>"
         },
         "createdAt":{
           "shape":"Timestamp",
@@ -5091,11 +5091,11 @@
         },
         "status":{
           "shape":"DatasetStatus",
-          "documentation":"<p>Always UPDATING immediately after this call. Poll GetDataset until status == ACTIVE (draftStatus=UNMODIFIED) or UPDATE_FAILED.</p>"
+          "documentation":"<p> Always UPDATING immediately after this call. Poll <code>GetDataset</code> until status transitions to ACTIVE or UPDATE_FAILED. </p>"
         },
         "datasetVersion":{
           "shape":"DatasetVersion",
-          "documentation":"<p>The version being created.</p>"
+          "documentation":"<p> The version number being created. </p>"
         },
         "createdAt":{
           "shape":"Timestamp",
@@ -6609,7 +6609,7 @@
     },
     "CustomEvaluatorArn":{
       "type":"string",
-      "pattern":"arn:aws:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:evaluator\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
+      "pattern":"arn:aws[a-zA-Z-]*:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:evaluator\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
     },
     "CustomEvaluatorName":{
       "type":"string",
@@ -6836,14 +6836,14 @@
       "members":{
         "inlineExamples":{
           "shape":"InlineExamplesSource",
-          "documentation":"<p>Inline examples provided directly in the request body.</p>"
+          "documentation":"<p> Inline examples provided directly in the request body. </p>"
         },
         "s3Source":{
           "shape":"S3Source",
-          "documentation":"<p>S3 URI pointing to a JSONL file in the customer's bucket. The service reads this file using the caller's FAS credentials.</p>"
+          "documentation":"<p> Amazon S3 URI pointing to a JSONL file in the customer's bucket. </p>"
         }
       },
-      "documentation":"<p>Source of examples to add to the dataset.</p>",
+      "documentation":"<p> Source of examples to add to the dataset. </p>",
       "union":true
     },
     "DatasetArn":{
@@ -6853,7 +6853,7 @@
     "DatasetExampleList":{
       "type":"list",
       "member":{"shape":"SensitiveJson"},
-      "documentation":"<p>Each element is a free-form JSON document whose structure is defined by the dataset's <code>schemaType</code>. Validated against the declared schema at write time. If an <code>exampleId</code> string field is present it is used as the example identifier and removed from the persisted content; otherwise a UUID is generated automatically. <code>exampleId</code> must be a JSON string — numeric or other non-string types are rejected with a ValidationException.</p>"
+      "documentation":"<p> A list of dataset examples. Each element is a free-form JSON document whose structure is defined by the dataset's schema type. </p>"
     },
     "DatasetId":{
       "type":"string",
@@ -6865,7 +6865,7 @@
     },
     "DatasetSchemaType":{
       "type":"string",
-      "documentation":"<p>Format of a customer-provided source file.</p> <p><strong>JSONL</strong> (JSON Lines, one object per line) is the service's native ingestion and storage format — it can be streamed line-by-line without loading the entire file into memory, which is important as the row-count cap is extended.</p> <p><strong>JSON array (<code>[{...},{...}]</code>) is intentionally not supported</strong> at launch: it cannot be streamed (requires loading the full file into memory to parse), and all major eval frameworks (LangSmith, Ragas, DeepEval, Arize Phoenix) export as JSONL or CSV — not JSON arrays. Customers with JSON array files can Versioned schema type for dataset examples.</p> <p>Each value identifies both the source format and the version of that format's schema. Schema definitions (required/optional fields) are stored as constants in SchemaRegistry. The schemaType on a Dataset is immutable after creation.</p> <p>When a framework changes its format, a new version is added (e.g., RAGAS_V2) without breaking existing datasets using the old version. Content is always stored as-is.</p>",
+      "documentation":"<p> Versioned schema type for dataset examples. Each value identifies both the source format and the version of that format's schema. </p>",
       "enum":[
         "AGENTCORE_EVALUATION_PREDEFINED_V1",
         "AGENTCORE_EVALUATION_SIMULATED_V1"
@@ -6873,7 +6873,7 @@
     },
     "DatasetStatus":{
       "type":"string",
-      "documentation":"<p>Dataset lifecycle / operation status.</p> <p>Two-column status model: <code>DatasetStatus</code> tracks lifecycle state independently from <code>DraftStatus</code> which tracks publish synchronization.</p> <p>IN-FLIGHT states (busy — all writes blocked): CREATING — CreateDataset async ingestion in progress. UPDATING — Example mutation (Add/Update/Delete) or CreateDatasetVersion in progress. DELETING — Full or version-specific delete in progress.</p> <p>TERMINAL states (stable — operations allowed per guards below): ACTIVE — Dataset is stable. failureReason cleared. CREATE_FAILED — Initial ingestion failed. DRAFT record exists but has no examples. failureReason populated. UPDATE_FAILED — Last example mutation or CreateDatasetVersion failed. DRAFT may be partially modified. failureReason populated. DELETE_FAILED — Delete failed after retries. Dataset/S3 may be in inconsistent state. Sev-2 ticket filed (full-delete only). failureReason populated.</p> <p>State transitions: CreateDataset → CREATING → ACTIVE (draftStatus=MODIFIED) | CREATE_FAILED Add/Update/DeleteDatasetExamples → UPDATING → ACTIVE (draftStatus=MODIFIED) | UPDATE_FAILED CreateDatasetVersion → UPDATING → ACTIVE (draftStatus=UNMODIFIED) | UPDATE_FAILED DeleteDataset (version-specific) → DELETING → ACTIVE (draftStatus unchanged) | DELETE_FAILED DeleteDataset (full) → DELETING → (record deleted) | DELETE_FAILED [auto Sev-2]</p> <p>Operation guards (ConflictException codes): GetDataset / ListDatasetExamples: — Allowed for all statuses (no guard) UpdateDataset, AddDatasetExamples, DeleteDatasetExamples: — DATASET_NOT_READY if status in {CREATING, UPDATING, DELETING} — DATASET_IN_FAILED_STATE if status == DELETE_FAILED UpdateDatasetExamples: — DATASET_NOT_READY if status in {CREATING, UPDATING, DELETING} — DATASET_IN_FAILED_STATE if status in {CREATE_FAILED, DELETE_FAILED} CreateDatasetVersion: — DATASET_NOT_READY if status in {CREATING, UPDATING, DELETING} — DATASET_IN_FAILED_STATE if status in {CREATE_FAILED, DELETE_FAILED} DeleteDataset: — DATASET_NOT_READY if status in {CREATING, UPDATING, DELETING}</p>",
+      "documentation":"<p> Dataset lifecycle and operation status. </p>",
       "enum":[
         "CREATING",
         "UPDATING",
@@ -6919,7 +6919,7 @@
         },
         "draftStatus":{
           "shape":"DraftStatus",
-          "documentation":"<p>Publish synchronization state. Only authoritative when status == ACTIVE.</p>"
+          "documentation":"<p> Publish synchronization state. Only authoritative when status is ACTIVE. </p>"
         },
         "schemaType":{
           "shape":"DatasetSchemaType",
@@ -6946,7 +6946,7 @@
     },
     "DatasetVersion":{
       "type":"string",
-      "documentation":"<p>Dataset version identifier. Accepts &quot;DRAFT&quot; or a non-negative integer string.</p> <p>&quot;DRAFT&quot; refers to the single mutable working copy of the dataset.</p> <ul> <li>Always present after CreateDataset ingestion completes.</li> <li>Content changes in-place when examples are added, updated, or deleted.</li> <li>NOT tracked as a DDB DatasetVersionItem — state lives in S3 (draft/manifest.json, draft/dataset.jsonl) and the DatasetItem.exampleCount field.</li> <li>Default for read operations when ?datasetVersion is absent.</li> </ul> <p>An integer string (e.g. &quot;1&quot;, &quot;2&quot;, &quot;3&quot;) refers to a published, immutable snapshot created by CreateDatasetVersion. Once created, a published version's content never changes. Stored as a DDB DatasetVersionItem (SK=VERSION#{zero-padded-N}).</p>",
+      "documentation":"<p> Dataset version identifier. Accepts \"DRAFT\" or a non-negative integer string representing a published version number. </p>",
       "pattern":"(DRAFT|[0-9]+)"
     },
     "DatasetVersionSummary":{
@@ -6957,7 +6957,10 @@
         "createdAt"
       ],
       "members":{
-        "datasetVersion":{"shape":"DatasetVersion"},
+        "datasetVersion":{
+          "shape":"DatasetVersion",
+          "documentation":"<p> The version number of this published snapshot. </p>"
+        },
         "exampleCount":{
           "shape":"Long",
           "documentation":"<p> The number of examples in this version. </p>"
@@ -7369,7 +7372,7 @@
         },
         "datasetVersion":{
           "shape":"DatasetVersion",
-          "documentation":"<p>Optional version to delete. Use &quot;DRAFT&quot; or omit to delete the draft. Returns ResourceNotFoundException if the specified version does not exist.</p>",
+          "documentation":"<p> Optional version to delete. If absent, deletes the entire dataset. If provided, deletes only that specific version. </p>",
           "location":"querystring",
           "locationName":"datasetVersion"
         }
@@ -7399,7 +7402,7 @@
         },
         "datasetVersion":{
           "shape":"DatasetVersion",
-          "documentation":"<p>The version deleted.</p>"
+          "documentation":"<p> The version that was deleted. </p>"
         },
         "updatedAt":{
           "shape":"Timestamp",
@@ -8051,7 +8054,7 @@
     },
     "DraftStatus":{
       "type":"string",
-      "documentation":"<p>Publish synchronization state of the DRAFT working copy.</p> <p>Tracks whether the current DRAFT content has been published as a version. Only authoritative when DatasetStatus == ACTIVE. Not meaningful during in-flight or failed states.</p> <p>Transitions: CreateDataset succeeds → MODIFIED (DRAFT has content with no published version yet) Add/Update/DeleteExamples succeed → MODIFIED (DRAFT differs from last published version) CreateDatasetVersion succeeds → UNMODIFIED (DRAFT matches the version just published)</p>",
+      "documentation":"<p> Publish synchronization state of the DRAFT working copy. </p>",
       "enum":[
         "MODIFIED",
         "UNMODIFIED"
@@ -8369,7 +8372,7 @@
     },
     "EvaluatorArn":{
       "type":"string",
-      "pattern":"arn:aws:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:evaluator\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}$|^arn:aws:bedrock-agentcore:::evaluator/Builtin.[a-zA-Z0-9_-]+"
+      "pattern":"arn:aws[a-zA-Z-]*:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:evaluator\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}$|^arn:aws[a-zA-Z-]*:bedrock-agentcore:::evaluator/Builtin.[a-zA-Z0-9_-]+"
     },
     "EvaluatorConfig":{
       "type":"structure",
@@ -8557,6 +8560,14 @@
       },
       "documentation":"<p>Contains extraction configuration information for a memory strategy.</p>",
       "union":true
+    },
+    "ExtractionType":{
+      "type":"string",
+      "documentation":"<p>The extraction type for a metadata field, determining how the value is obtained during memory processing.</p>",
+      "enum":[
+        "LLM_INFERRED",
+        "STRICTLY_CONSISTENT"
+      ]
     },
     "FilesystemConfiguration":{
       "type":"structure",
@@ -9670,7 +9681,7 @@
         },
         "datasetVersion":{
           "shape":"DatasetVersion",
-          "documentation":"<p>Version to retrieve: &quot;DRAFT&quot; or a version number. Defaults to DRAFT if absent.</p>",
+          "documentation":"<p> Version to retrieve: \"DRAFT\" or a version number. Defaults to DRAFT if absent. </p>",
           "location":"querystring",
           "locationName":"datasetVersion"
         }
@@ -9700,7 +9711,7 @@
         },
         "datasetVersion":{
           "shape":"DatasetVersion",
-          "documentation":"<p>The resolved version: &quot;DRAFT&quot; (default) or the requested version number.</p>"
+          "documentation":"<p> The resolved version: \"DRAFT\" (default) or the requested version number. </p>"
         },
         "datasetName":{
           "shape":"DatasetName",
@@ -9716,31 +9727,31 @@
         },
         "draftStatus":{
           "shape":"DraftStatus",
-          "documentation":"<p>Publish synchronization state. Only authoritative when status == ACTIVE. MODIFIED — DRAFT has unpublished changes (or no published versions yet). UNMODIFIED — DRAFT matches the latest published version exactly.</p>"
+          "documentation":"<p> Publish synchronization state. Only authoritative when status is ACTIVE. MODIFIED indicates DRAFT has unpublished changes. UNMODIFIED indicates DRAFT matches the latest published version. </p>"
         },
         "failureReason":{
           "shape":"String",
-          "documentation":"<p>Populated when status is CREATE_FAILED, UPDATE_FAILED, or DELETE_FAILED.</p>"
+          "documentation":"<p> Populated when status is CREATE_FAILED, UPDATE_FAILED, or DELETE_FAILED. Describes the reason for the failure. </p>"
         },
         "schemaType":{
           "shape":"DatasetSchemaType",
-          "documentation":"<p>The schema type declared at create time. Immutable after creation.</p>"
+          "documentation":"<p> The schema type declared at create time. Immutable after creation. </p>"
         },
         "kmsKeyArn":{
           "shape":"KmsKeyArn",
-          "documentation":"<p>AWS KMS key ARN used for SSE-KMS on service S3 writes, if configured.</p>"
+          "documentation":"<p> KMS key ARN used for server-side encryption on service Amazon S3 writes, if configured. </p>"
         },
         "exampleCount":{
           "shape":"Long",
-          "documentation":"<p>Example count for DRAFT.</p>"
+          "documentation":"<p> The number of examples in the DRAFT. </p>"
         },
         "downloadUrl":{
           "shape":"DownloadUrl",
-          "documentation":"<p>Presigned S3 URL to download the consolidated dataset.jsonl file for the resolved version (DRAFT or published). TTL: 5 minutes. Omitted if the file does not yet exist (e.g. during CREATING) or on presign failure.</p>"
+          "documentation":"<p> Presigned Amazon S3 URL to download the consolidated dataset file for the resolved version. Expires after 5 minutes. Omitted if the file does not yet exist. </p>"
         },
         "downloadUrlExpiresAt":{
           "shape":"Timestamp",
-          "documentation":"<p>Expiry timestamp for downloadUrl.</p>"
+          "documentation":"<p> Expiry timestamp for the download URL. </p>"
         },
         "createdAt":{
           "shape":"Timestamp",
@@ -12325,15 +12336,15 @@
       "members":{
         "examples":{
           "shape":"InlineExamplesSourceExamplesList",
-          "documentation":"<p>Examples to add. Each example is assigned an auto-generated UUID.</p>"
+          "documentation":"<p> Examples to add. Each example is assigned an auto-generated UUID. </p>"
         }
       },
-      "documentation":"<p>Inline examples provided directly in the request body.</p>"
+      "documentation":"<p> Inline examples provided directly in the request body. </p>"
     },
     "InlineExamplesSourceExamplesList":{
       "type":"list",
       "member":{"shape":"SensitiveJson"},
-      "documentation":"<p>Each element is a free-form JSON document whose structure is defined by the dataset's <code>schemaType</code>. Validated against the declared schema at write time. If an <code>exampleId</code> string field is present it is used as the example identifier and removed from the persisted content; otherwise a UUID is generated automatically. <code>exampleId</code> must be a JSON string — numeric or other non-string types are rejected with a ValidationException.</p>",
+      "documentation":"<p> A list of dataset examples. Each element is a free-form JSON document whose structure is defined by the dataset's schema type. </p>",
       "max":1000,
       "min":1
     },
@@ -12913,13 +12924,13 @@
         },
         "datasetVersion":{
           "shape":"DatasetVersion",
-          "documentation":"<p>Version to paginate: &quot;DRAFT&quot; or a version number. Defaults to DRAFT if absent. Only used on the first request (when nextToken is absent). For subsequent pages, the version is extracted from the nextToken and this parameter is ignored.</p>",
+          "documentation":"<p> Version to paginate: \"DRAFT\" or a version number. Defaults to DRAFT if absent. Only used on the first request; for subsequent pages, the version is extracted from the pagination token. </p>",
           "location":"querystring",
           "locationName":"datasetVersion"
         },
         "maxResults":{
           "shape":"ListDatasetExamplesRequestMaxResultsInteger",
-          "documentation":"<p>Maximum number of examples to return per page. Default: 1000. Min: 1, max: 1000. Response size is validated against 5 MB limit after reading. For bulk access to all examples, use the <code>downloadUrl</code> field from GetDataset.</p>",
+          "documentation":"<p> Maximum number of examples to return per page. </p>",
           "location":"querystring",
           "locationName":"maxResults"
         },
@@ -12961,11 +12972,11 @@
         },
         "datasetVersion":{
           "shape":"DatasetVersion",
-          "documentation":"<p>The version returned.</p>"
+          "documentation":"<p> The version returned. </p>"
         },
         "examples":{
           "shape":"DatasetExampleList",
-          "documentation":"<p>Paginated example content. Each element is a JSON object containing at least an <code>exampleId</code> field plus the schema-specific content fields.</p>"
+          "documentation":"<p> Paginated example content. Each element is a JSON object containing at least an <code>exampleId</code> field plus the schema-specific content fields. </p>"
         },
         "nextToken":{
           "shape":"String",
@@ -14300,7 +14311,8 @@
         "CREATING",
         "ACTIVE",
         "FAILED",
-        "DELETING"
+        "DELETING",
+        "UPDATING"
       ]
     },
     "MemoryStrategy":{
@@ -14525,9 +14537,13 @@
           "shape":"MetadataValueType",
           "documentation":"<p>The MetadataValueType.</p>"
         },
+        "extractionType":{
+          "shape":"ExtractionType",
+          "documentation":"<p>Specifies whether the metadata value is extracted by the LLM or passed through deterministically from the event.</p>"
+        },
         "extractionConfig":{
           "shape":"ExtractionConfig",
-          "documentation":"<p>Configuration for extracting this metadata value from conversational content.</p>"
+          "documentation":"<p>Configuration for extracting this metadata value from conversational content. Applicable only if extractionType is LLM inferred.</p>"
         }
       },
       "documentation":"<p>A metadata field definition within a strategy's schema.</p>"
@@ -15154,7 +15170,7 @@
     },
     "OnlineEvaluationConfigArn":{
       "type":"string",
-      "pattern":"arn:aws:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:online-evaluation-config\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
+      "pattern":"arn:aws[a-zA-Z-]*:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:online-evaluation-config\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
     },
     "OnlineEvaluationConfigId":{
       "type":"string",
@@ -16730,14 +16746,14 @@
       "members":{
         "s3Uri":{
           "shape":"S3Uri",
-          "documentation":"<p>S3 URI of the JSONL file (e.g. s3://my-bucket/path/to/examples.jsonl).</p>"
+          "documentation":"<p> Amazon S3 URI of the JSONL file (for example, <code>s3://my-bucket/path/to/examples.jsonl</code>). </p>"
         }
       },
-      "documentation":"<p>S3 location of a JSONL file containing dataset examples.</p>"
+      "documentation":"<p> Amazon S3 location of a JSONL file containing dataset examples. </p>"
     },
     "S3Uri":{
       "type":"string",
-      "documentation":"<p>S3 URI string (s3://bucket/key).</p>",
+      "documentation":"<p> Amazon S3 URI string in the format <code>s3://bucket/key</code>. </p>",
       "pattern":"s3://[a-z0-9][a-z0-9.\\-]{1,61}[a-z0-9]/.{1,1024}"
     },
     "SalesforceOauth2ProviderConfigInput":{
@@ -18781,14 +18797,14 @@
         },
         "examples":{
           "shape":"UpdateDatasetExamplesRequestExamplesList",
-          "documentation":"<p>Examples to update. Each element is a JSON object containing a required <code>exampleId</code> string field identifying the existing example, plus the replacement fields. The <code>exampleId</code> is extracted and removed before persistence; the remaining document is validated against the dataset's schemaType. Max 1000 examples per call. Total request body must not exceed 5 MB.</p>"
+          "documentation":"<p> Examples to update. Each element is a JSON object containing a required <code>exampleId</code> field identifying the existing example, plus the replacement fields. Maximum 1000 examples per call. </p>"
         }
       }
     },
     "UpdateDatasetExamplesRequestExamplesList":{
       "type":"list",
       "member":{"shape":"SensitiveJson"},
-      "documentation":"<p>Each element is a free-form JSON document whose structure is defined by the dataset's <code>schemaType</code>. Validated against the declared schema at write time. If an <code>exampleId</code> string field is present it is used as the example identifier and removed from the persisted content; otherwise a UUID is generated automatically. <code>exampleId</code> must be a JSON string — numeric or other non-string types are rejected with a ValidationException.</p>",
+      "documentation":"<p> A list of dataset examples. Each element is a free-form JSON document whose structure is defined by the dataset's schema type. </p>",
       "max":1000,
       "min":1
     },

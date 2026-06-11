@@ -222,6 +222,24 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Remove a user-specifed key and value tag from a data store.</p>"
+    },
+    "UpdateFHIRDatastore":{
+      "name":"UpdateFHIRDatastore",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateFHIRDatastoreRequest"},
+      "output":{"shape":"UpdateFHIRDatastoreResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<para>Update the properties of a FHIR-enabled data store.</para>"
     }
   },
   "shapes":{
@@ -238,6 +256,27 @@
       "max":1011,
       "min":1,
       "pattern":"^arn:aws((-us-gov)|(-iso)|(-iso-b)|(-cn))?:healthlake:[a-z0-9-]+:\\d{12}:datastore\\/fhir\\/.{32}"
+    },
+    "AnalyticsConfiguration":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"AnalyticsStatus",
+          "documentation":"<para>The status of the analytics configuration.</para>"
+        }
+      },
+      "documentation":"<para>The analytics configuration for a data store.</para>"
+    },
+    "AnalyticsStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "ENABLING",
+        "DISABLED",
+        "DISABLING",
+        "PAUSING",
+        "PAUSED"
+      ]
     },
     "AuthorizationStrategy":{
       "type":"string",
@@ -429,6 +468,18 @@
         "ErrorCause":{
           "shape":"ErrorCause",
           "documentation":"<p>The error cause for the current data store operation.</p>"
+        },
+        "NlpConfiguration":{
+          "shape":"NlpConfiguration",
+          "documentation":"<para>The natural language processing (NLP) configuration for the data store.</para>"
+        },
+        "AnalyticsConfiguration":{
+          "shape":"AnalyticsConfiguration",
+          "documentation":"<para>The analytics configuration for the data store.</para>"
+        },
+        "ProfileConfiguration":{
+          "shape":"ProfileConfiguration",
+          "documentation":"<para>The profile configuration for the data store.</para>"
         }
       },
       "documentation":"<p>The data store properties.</p>"
@@ -444,8 +495,14 @@
         "ACTIVE",
         "DELETING",
         "DELETED",
-        "CREATE_FAILED"
+        "CREATE_FAILED",
+        "UPDATING",
+        "UPDATE_FAILED"
       ]
+    },
+    "DefaultProfiles":{
+      "type":"list",
+      "member":{"shape":"String"}
     },
     "DeleteFHIRDatastoreRequest":{
       "type":"structure",
@@ -1008,6 +1065,25 @@
       "max":8192,
       "pattern":"\\p{ASCII}{0,8192}"
     },
+    "NlpConfiguration":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"NlpStatus",
+          "documentation":"<para>The status of the NLP configuration.</para>"
+        }
+      },
+      "documentation":"<para>The natural language processing (NLP) configuration for a data store.</para>"
+    },
+    "NlpStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED",
+        "ENABLING",
+        "DISABLING"
+      ]
+    },
     "OutputDataConfig":{
       "type":"structure",
       "members":{
@@ -1033,6 +1109,16 @@
     "PreloadDataType":{
       "type":"string",
       "enum":["SYNTHEA"]
+    },
+    "ProfileConfiguration":{
+      "type":"structure",
+      "members":{
+        "DefaultProfiles":{
+          "shape":"DefaultProfiles",
+          "documentation":"<para>The list of default profiles for the data store.</para>"
+        }
+      },
+      "documentation":"<para>The profile configuration for a data store.</para>"
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -1283,6 +1369,46 @@
     "UntagResourceResponse":{
       "type":"structure",
       "members":{}
+    },
+    "UpdateFHIRDatastoreRequest":{
+      "type":"structure",
+      "required":["DatastoreId"],
+      "members":{
+        "DatastoreId":{
+          "shape":"DatastoreId",
+          "documentation":"<para>The data store identifier.</para>"
+        },
+        "DatastoreName":{
+          "shape":"DatastoreName",
+          "documentation":"<para>The data store name.</para>"
+        },
+        "AnalyticsConfiguration":{
+          "shape":"AnalyticsConfiguration",
+          "documentation":"<para>The analytics configuration for the data store.</para>"
+        },
+        "NlpConfiguration":{
+          "shape":"NlpConfiguration",
+          "documentation":"<para>The NLP configuration for the data store.</para>"
+        },
+        "ProfileConfiguration":{
+          "shape":"ProfileConfiguration",
+          "documentation":"<para>The profile configuration for the data store.</para>"
+        },
+        "IdentityProviderConfiguration":{
+          "shape":"IdentityProviderConfiguration",
+          "documentation":"<para>The identity provider configuration for the data store.</para>"
+        }
+      }
+    },
+    "UpdateFHIRDatastoreResponse":{
+      "type":"structure",
+      "required":["DatastoreProperties"],
+      "members":{
+        "DatastoreProperties":{
+          "shape":"DatastoreProperties",
+          "documentation":"<para>The data store properties.</para>"
+        }
+      }
     },
     "ValidationException":{
       "type":"structure",

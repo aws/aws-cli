@@ -148,26 +148,30 @@ def resolve_start_url(start_url, session, configured_region=None):
         raise ConfigurationError(f"Invalid sso_start_url: '{start_url}'")
 
     if is_aws_owned_domain(hostname):
-        resolved_url = start_url
-    else:
-        LOG.debug(
-            "Start URL '%s' is not AWS-owned, following redirects", start_url
-        )
-        resolved_url = _follow_redirect(start_url)
-
-        resolved_hostname = urllib.parse.urlparse(resolved_url).hostname
-        if not resolved_hostname or not is_aws_owned_domain(resolved_hostname):
+        if not configured_region:
             raise ConfigurationError(
-                f"Could not resolve start URL '{start_url}' to an "
-                f"AWS-owned endpoint. Final URL: '{resolved_url}'"
+                "Missing required configuration: sso_region. "
+                "Please run 'aws configure sso' to set it."
             )
+        return start_url, configured_region
 
-        if urllib.parse.urlparse(resolved_url).scheme != 'https':
-            raise ConfigurationError(
-                f"Resolved URL must use https. Got: '{resolved_url}'"
-            )
+    LOG.debug(
+        "Start URL '%s' is not AWS-owned, following redirects", start_url
+    )
+    resolved_url = _follow_redirect(start_url)
 
     resolved_hostname = urllib.parse.urlparse(resolved_url).hostname
+    if not resolved_hostname or not is_aws_owned_domain(resolved_hostname):
+        raise ConfigurationError(
+            f"Could not resolve start URL '{start_url}' to an "
+            f"AWS-owned endpoint. Final URL: '{resolved_url}'"
+        )
+
+    if urllib.parse.urlparse(resolved_url).scheme != 'https':
+        raise ConfigurationError(
+            f"Resolved URL must use https. Got: '{resolved_url}'"
+        )
+
     region = _extract_region_from_hostname(resolved_hostname)
 
     if region:

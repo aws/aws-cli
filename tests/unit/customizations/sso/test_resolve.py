@@ -101,11 +101,12 @@ class TestResolveStartUrl:
         session.get_available_regions.return_value = regions
         return session
 
-    def test_aws_owned_url_returns_immediately(self):
+    def test_aws_owned_url_returns_configured_region(self):
         session = self._mock_session()
         resolved_url, region = resolve_start_url(
             'https://ssoins-abc.portal.us-west-2.app.aws',
             session=session,
+            configured_region='us-west-2',
         )
         assert resolved_url == 'https://ssoins-abc.portal.us-west-2.app.aws'
         assert region == 'us-west-2'
@@ -116,13 +117,35 @@ class TestResolveStartUrl:
             resolve_start_url(
                 'https://ssoins-abc.portal.us-west-2.app.aws',
                 session=session,
+                configured_region='us-west-2',
             )
             mock_opener.assert_not_called()
+
+    def test_aws_owned_url_without_configured_region_raises_error(self):
+        session = self._mock_session()
+        with pytest.raises(
+            ConfigurationError,
+            match='Missing required configuration: sso_region',
+        ):
+            resolve_start_url(
+                'https://ssoins-abc.portal.us-west-2.app.aws',
+                session=session,
+            )
+
+    def test_aws_owned_url_uses_configured_region_not_hostname(self):
+        session = self._mock_session()
+        resolved_url, region = resolve_start_url(
+            'https://ssoins-abc.portal.us-west-2.app.aws',
+            session=session,
+            configured_region='us-east-1',
+        )
+        assert region == 'us-east-1'
 
     def test_awsapps_url_requires_configured_region(self):
         session = self._mock_session()
         with pytest.raises(
-            ConfigurationError, match='Cannot determine region'
+            ConfigurationError,
+            match='Missing required configuration: sso_region',
         ):
             resolve_start_url(
                 'https://d-abc123.awsapps.com/start',
@@ -149,24 +172,40 @@ class TestResolveStartUrl:
         with pytest.raises(ConfigurationError, match='Invalid sso_start_url'):
             resolve_start_url('https://', session=session)
 
-    def test_invalid_region_raises_error(self):
+    def test_vanity_url_invalid_region_raises_error(self):
         session = self._mock_session(regions=['us-east-1', 'us-west-2'])
-        with pytest.raises(ConfigurationError, match='not a known AWS region'):
-            resolve_start_url(
-                'https://ssoins-abc.portal.fake-region-1.app.aws',
-                session=session,
+        with mock.patch(
+            'awscli.customizations.sso.resolve._follow_redirect'
+        ) as mock_follow:
+            mock_follow.return_value = (
+                'https://ssoins-abc.portal.fake-region-1.app.aws'
             )
+            with pytest.raises(
+                ConfigurationError, match='not a known AWS region'
+            ):
+                resolve_start_url(
+                    'https://aws.mycompany.com',
+                    session=session,
+                )
 
-    def test_invalid_parsed_region_does_not_fall_back_to_configured(self):
+    def test_vanity_url_invalid_region_does_not_fall_back_to_configured(self):
         session = self._mock_session(regions=['us-east-1', 'us-west-2'])
-        with pytest.raises(ConfigurationError, match='not a known AWS region'):
-            resolve_start_url(
-                'https://ssoins-abc.portal.fake-region-1.app.aws',
-                session=session,
-                configured_region='us-east-1',
+        with mock.patch(
+            'awscli.customizations.sso.resolve._follow_redirect'
+        ) as mock_follow:
+            mock_follow.return_value = (
+                'https://ssoins-abc.portal.fake-region-1.app.aws'
             )
+            with pytest.raises(
+                ConfigurationError, match='not a known AWS region'
+            ):
+                resolve_start_url(
+                    'https://aws.mycompany.com',
+                    session=session,
+                    configured_region='us-east-1',
+                )
 
-    def test_govcloud_region_accepted(self):
+    def test_vanity_url_govcloud_region_accepted(self):
         session = mock.Mock()
         session.get_available_regions.side_effect = (
             lambda service, partition_name='aws': {
@@ -175,13 +214,19 @@ class TestResolveStartUrl:
                 'aws-cn': ['cn-north-1'],
             }.get(partition_name, [])
         )
-        resolved_url, region = resolve_start_url(
-            'https://ssoins-abc.portal.us-gov-west-1.app.aws',
-            session=session,
-        )
-        assert region == 'us-gov-west-1'
+        with mock.patch(
+            'awscli.customizations.sso.resolve._follow_redirect'
+        ) as mock_follow:
+            mock_follow.return_value = (
+                'https://ssoins-abc.portal.us-gov-west-1.app.aws'
+            )
+            resolved_url, region = resolve_start_url(
+                'https://aws.mycompany.com',
+                session=session,
+            )
+            assert region == 'us-gov-west-1'
 
-    def test_china_region_accepted(self):
+    def test_vanity_url_china_region_accepted(self):
         session = mock.Mock()
         session.get_available_regions.side_effect = (
             lambda service, partition_name='aws': {
@@ -190,11 +235,17 @@ class TestResolveStartUrl:
                 'aws-cn': ['cn-north-1'],
             }.get(partition_name, [])
         )
-        resolved_url, region = resolve_start_url(
-            'https://ssoins-abc.portal.cn-north-1.app.aws',
-            session=session,
-        )
-        assert region == 'cn-north-1'
+        with mock.patch(
+            'awscli.customizations.sso.resolve._follow_redirect'
+        ) as mock_follow:
+            mock_follow.return_value = (
+                'https://ssoins-abc.portal.cn-north-1.app.aws'
+            )
+            resolved_url, region = resolve_start_url(
+                'https://aws.mycompany.com',
+                session=session,
+            )
+            assert region == 'cn-north-1'
 
     def test_vanity_url_follows_redirect(self):
         session = self._mock_session()

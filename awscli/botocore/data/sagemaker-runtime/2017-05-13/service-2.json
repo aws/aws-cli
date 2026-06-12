@@ -68,6 +68,11 @@
     }
   },
   "shapes":{
+    "AsyncBodyBlob":{
+      "type":"blob",
+      "max":128000,
+      "sensitive":true
+    },
     "BodyBlob":{
       "type":"blob",
       "max":6291456,
@@ -158,10 +163,7 @@
     },
     "InvokeEndpointAsyncInput":{
       "type":"structure",
-      "required":[
-        "EndpointName",
-        "InputLocation"
-      ],
+      "required":["EndpointName"],
       "members":{
         "EndpointName":{
           "shape":"EndpointName",
@@ -222,8 +224,13 @@
           "documentation":"<p>Maximum amount of time in seconds a request can be processed before it is marked as expired. The default is 15 minutes, or 900 seconds.</p>",
           "location":"header",
           "locationName":"X-Amzn-SageMaker-InvocationTimeoutSeconds"
+        },
+        "Body":{
+          "shape":"AsyncBodyBlob",
+          "documentation":"<p>Provides inline input data for the inference request, in the format specified in the <code>ContentType</code> request header. Use this parameter to send the request payload directly in the API call instead of uploading it to Amazon S3 and referencing it with <code>InputLocation</code>. The inline payload can be up to 128,000 bytes.</p> <p> <code>Body</code> and <code>InputLocation</code> are mutually exclusive. Provide exactly one of them.</p> <p>For information about the format of the request body, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/cdf-inference.html\">Common Data Formats-Inference</a>.</p>"
         }
-      }
+      },
+      "payload":"Body"
     },
     "InvokeEndpointAsyncOutput":{
       "type":"structure",

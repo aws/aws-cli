@@ -4002,6 +4002,31 @@
       },
       "documentation":"<p> The configuration for writing evaluation results to CloudWatch logs with embedded metric format (EMF) for monitoring. </p>"
     },
+    "ClusteringConfig":{
+      "type":"structure",
+      "required":["frequencies"],
+      "members":{
+        "frequencies":{
+          "shape":"ClusteringFrequencyList",
+          "documentation":"<p>The list of frequencies at which clustering batch evaluations are triggered.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for periodic batch evaluation clustering, specifying how often clustering jobs run.</p>"
+    },
+    "ClusteringFrequency":{
+      "type":"string",
+      "enum":[
+        "DAILY",
+        "WEEKLY",
+        "MONTHLY"
+      ]
+    },
+    "ClusteringFrequencyList":{
+      "type":"list",
+      "member":{"shape":"ClusteringFrequency"},
+      "max":3,
+      "min":0
+    },
     "Code":{
       "type":"structure",
       "members":{
@@ -4287,7 +4312,7 @@
     },
     "ConfigurationBundleArn":{
       "type":"string",
-      "pattern":"arn:aws:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:configuration-bundle/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
+      "pattern":"arn:aws[a-zA-Z-]*:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:configuration-bundle/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
     },
     "ConfigurationBundleDescription":{
       "type":"string",
@@ -4944,6 +4969,10 @@
         "createdBy":{
           "shape":"VersionCreatedBySource",
           "documentation":"<p>The source that created this version, including the source name and optional ARN.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>Optional KMS key ARN for encrypting component configurations.</p>"
         },
         "tags":{
           "shape":"TagsMap",
@@ -5762,7 +5791,6 @@
         "onlineEvaluationConfigName",
         "rule",
         "dataSourceConfig",
-        "evaluators",
         "evaluationExecutionRoleArn",
         "enableOnCreate"
       ],
@@ -5791,6 +5819,14 @@
         "evaluators":{
           "shape":"EvaluatorList",
           "documentation":"<p> The list of evaluators to apply during online evaluation. Can include both built-in evaluators and custom evaluators created with <code>CreateEvaluator</code>. </p>"
+        },
+        "insights":{
+          "shape":"InsightList",
+          "documentation":"<p>The list of insight types to run against agent sessions.</p>"
+        },
+        "clusteringConfig":{
+          "shape":"ClusteringConfig",
+          "documentation":"<p>Configuration for periodic batch evaluation clustering of insight results.</p>"
         },
         "evaluationExecutionRoleArn":{
           "shape":"RoleArn",
@@ -8415,7 +8451,7 @@
       "type":"list",
       "member":{"shape":"EvaluatorReference"},
       "max":10,
-      "min":1
+      "min":0
     },
     "EvaluatorModelConfig":{
       "type":"structure",
@@ -9595,6 +9631,10 @@
         "updatedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp when the configuration bundle was last updated.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>KMS key ARN used to encrypt component configurations, if CMK was provided.</p>"
         }
       }
     },
@@ -9666,6 +9706,10 @@
         "versionCreatedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp when this specific version was created.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>KMS key ARN used to encrypt component configurations, if CMK was provided.</p>"
         }
       }
     },
@@ -10257,7 +10301,6 @@
         "onlineEvaluationConfigName",
         "rule",
         "dataSourceConfig",
-        "evaluators",
         "status",
         "executionStatus",
         "createdAt",
@@ -10291,6 +10334,14 @@
         "evaluators":{
           "shape":"EvaluatorList",
           "documentation":"<p> The list of evaluators applied during online evaluation. </p>"
+        },
+        "insights":{
+          "shape":"InsightList",
+          "documentation":"<p>The list of insight types configured for this evaluation.</p>"
+        },
+        "clusteringConfig":{
+          "shape":"ClusteringConfig",
+          "documentation":"<p>The clustering configuration for periodic batch evaluation.</p>"
         },
         "outputConfig":{
           "shape":"OutputConfig",
@@ -12352,6 +12403,25 @@
       "type":"string",
       "sensitive":true
     },
+    "Insight":{
+      "type":"structure",
+      "required":["insightId"],
+      "members":{
+        "insightId":{"shape":"InsightId"}
+      },
+      "documentation":"<p>A reference to an insight analysis to run against sessions.</p>"
+    },
+    "InsightId":{
+      "type":"string",
+      "documentation":"<p>Canonical insight identifiers using the Builtin.Insight.* naming convention. Used by BatchEvaluate, InternalEvaluate, and ServiceEngineEvaluate flows.</p>",
+      "pattern":"(Builtin\\.[a-zA-Z0-9._-]+|[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10})"
+    },
+    "InsightList":{
+      "type":"list",
+      "member":{"shape":"Insight"},
+      "max":10,
+      "min":0
+    },
     "Integer":{
       "type":"integer",
       "box":true
@@ -13932,8 +14002,6 @@
     },
     "LogGroupName":{
       "type":"string",
-      "max":512,
-      "min":1,
       "pattern":"[.\\-_/#A-Za-z0-9]+"
     },
     "Long":{
@@ -15235,6 +15303,14 @@
         "failureReason":{
           "shape":"String",
           "documentation":"<p> The reason for failure if the online evaluation configuration execution failed. </p>"
+        },
+        "insights":{
+          "shape":"InsightList",
+          "documentation":"<p>The list of insight types configured for this evaluation.</p>"
+        },
+        "clusteringConfig":{
+          "shape":"ClusteringConfig",
+          "documentation":"<p>The clustering configuration for periodic batch evaluation.</p>"
         }
       },
       "documentation":"<p> The summary information about an online evaluation configuration, including basic metadata and execution status. </p>"
@@ -18742,6 +18818,10 @@
         "createdBy":{
           "shape":"VersionCreatedBySource",
           "documentation":"<p>The source that created this version, including the source name and optional ARN.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>Optional KMS key ARN for encrypting component configurations. If provided, components will be encrypted with this key. If the bundle already has a KMS key, this rotates to the new key.</p>"
         }
       }
     },
@@ -19559,6 +19639,14 @@
         "evaluators":{
           "shape":"EvaluatorList",
           "documentation":"<p> The updated list of evaluators to apply during online evaluation. </p>"
+        },
+        "insights":{
+          "shape":"InsightList",
+          "documentation":"<p>The updated list of insight types to run against agent sessions.</p>"
+        },
+        "clusteringConfig":{
+          "shape":"ClusteringConfig",
+          "documentation":"<p>The updated clustering configuration for periodic batch evaluation.</p>"
         },
         "evaluationExecutionRoleArn":{
           "shape":"RoleArn",

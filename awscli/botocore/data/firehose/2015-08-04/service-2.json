@@ -206,6 +206,12 @@
       "min":1,
       "pattern":"arn:.*:kms:[a-zA-Z0-9\\-]+:\\d{12}:(key|alias)/[a-zA-Z_0-9+=,.@\\-_/]+"
     },
+    "AWSKMSKeyARNForSSE":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"arn:.*:kms:[a-zA-Z0-9\\-]+:\\d{12}:key/[a-zA-Z_0-9+=,.@\\-_/]+"
+    },
     "AmazonOpenSearchServerlessBufferingHints":{
       "type":"structure",
       "members":{
@@ -1236,7 +1242,7 @@
       "type":"structure",
       "members":{
         "KeyARN":{
-          "shape":"AWSKMSKeyARN",
+          "shape":"AWSKMSKeyARNForSSE",
           "documentation":"<p>If <code>KeyType</code> is <code>CUSTOMER_MANAGED_CMK</code>, this field contains the ARN of the customer managed CMK. If <code>KeyType</code> is <code>Amazon Web Services_OWNED_CMK</code>, <code>DeliveryStreamEncryptionConfiguration</code> doesn't contain a value for <code>KeyARN</code>.</p>"
         },
         "KeyType":{
@@ -1259,7 +1265,7 @@
       "required":["KeyType"],
       "members":{
         "KeyARN":{
-          "shape":"AWSKMSKeyARN",
+          "shape":"AWSKMSKeyARNForSSE",
           "documentation":"<p>If you set <code>KeyType</code> to <code>CUSTOMER_MANAGED_CMK</code>, you must specify the Amazon Resource Name (ARN) of the CMK. If you set <code>KeyType</code> to <code>Amazon Web Services_OWNED_CMK</code>, Firehose uses a service-account CMK.</p>"
         },
         "KeyType":{

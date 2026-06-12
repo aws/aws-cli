@@ -3,7 +3,7 @@
 The following ``terminate-recovery-instances`` example terminates the specified recovery instances. ::
 
     aws drs terminate-recovery-instances \
-        --recovery-instance-i-ds s-1234567890abcdef0
+        --recovery-instance-ids s-1234567890abcdef0
 
 Output::
 

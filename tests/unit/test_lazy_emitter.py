@@ -133,10 +133,7 @@ class TestMainCommandTableOps:
         command_table = {'existing': MagicMock(name='existing')}
         session = MagicMock()
 
-        with (
-            patch('awscli.lazy_emitter.PLUGIN_REGISTRY', registry),
-            patch('importlib.import_module', return_value=mock_module) as imp,
-        ):
+        with patch('importlib.import_module', return_value=mock_module) as imp:
             emitter.emit(
                 'building-command-table.main',
                 command_table=command_table,
@@ -165,12 +162,11 @@ class TestMainCommandTableOps:
         command_table = {'old-name': cmd}
         session = MagicMock()
 
-        with patch('awscli.lazy_emitter.PLUGIN_REGISTRY', registry):
-            emitter.emit(
-                'building-command-table.main',
-                command_table=command_table,
-                session=session,
-            )
+        emitter.emit(
+            'building-command-table.main',
+            command_table=command_table,
+            session=session,
+        )
 
         assert 'old-name' not in command_table
         assert 'new-name' in command_table
@@ -192,12 +188,11 @@ class TestMainCommandTableOps:
         command_table = {}
         session = MagicMock()
 
-        with patch('awscli.lazy_emitter.PLUGIN_REGISTRY', registry):
-            emitter.emit(
-                'building-command-table.main',
-                command_table=command_table,
-                session=session,
-            )
+        emitter.emit(
+            'building-command-table.main',
+            command_table=command_table,
+            session=session,
+        )
 
         assert 'my-cmd' in command_table
         assert isinstance(command_table['my-cmd'], LazyCommand)
@@ -236,10 +231,7 @@ class TestMainCommandTableOps:
                 return mock_global
             raise AssertionError(f'Unexpected import of {mod_path!r}')
 
-        with (
-            patch('awscli.lazy_emitter.PLUGIN_REGISTRY', registry),
-            patch('importlib.import_module', side_effect=import_side_effect),
-        ):
+        with patch('importlib.import_module', side_effect=import_side_effect):
             emitter.emit(
                 'building-command-table.main',
                 command_table=command_table,

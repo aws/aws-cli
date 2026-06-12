@@ -21,6 +21,26 @@
     "auth":["aws.auth#sigv4"]
   },
   "operations":{
+    "AssociateDatasetKmsKey":{
+      "name":"AssociateDatasetKmsKey",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AssociateDatasetKmsKeyInput"},
+      "output":{
+        "shape":"AssociateDatasetKmsKeyOutput",
+        "resultWrapper":"AssociateDatasetKmsKeyResult"
+      },
+      "errors":[
+        {"shape":"KmsAccessDeniedException"},
+        {"shape":"KmsKeyNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"KmsKeyDisabledException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Associates an Amazon Web Services Key Management Service (Amazon Web Services KMS) customer managed key with the specified dataset. After this operation completes, all data published to the dataset is encrypted at rest using the specified KMS key. Callers must have <code>kms:Decrypt</code> permission on the key to read the encrypted data.</p> <p>Only the <code>default</code> dataset is supported. The <code>default</code> dataset is implicit for every account in every Region — you do not need to create it before calling this operation.</p> <p>You can call <code>AssociateDatasetKmsKey</code> on a dataset that is already associated with a KMS key to replace the existing key with a different one. To replace a key, the caller must have <code>kms:Decrypt</code> permission on both the current key and the new key.</p> <p>The KMS key that you specify must meet all of the following requirements:</p> <ul> <li> <p>It must be a symmetric encryption KMS key (key spec <code>SYMMETRIC_DEFAULT</code>, key usage <code>ENCRYPT_DECRYPT</code>). Asymmetric keys, HMAC keys, and key material types other than <code>SYMMETRIC_DEFAULT</code> are not supported.</p> </li> <li> <p>It must be enabled and not pending deletion.</p> </li> <li> <p>Its key policy must grant the CloudWatch service principal (<code>cloudwatch.amazonaws.com</code>) these permissions: <code>kms:DescribeKey</code>, <code>kms:GenerateDataKey</code>, <code>kms:Encrypt</code>, <code>kms:Decrypt</code>, and <code>kms:ReEncrypt*</code>. Amazon CloudWatch requires these permissions to manage the data on your behalf.</p> </li> <li> <p>The calling principal must have <code>kms:Decrypt</code> permission on the key.</p> </li> <li> <p>It must be specified as a fully qualified key ARN. Key IDs, aliases, and alias ARNs are not accepted.</p> </li> <li> <p>It must be in the same Amazon Web Services Region as the dataset.</p> </li> </ul> <p>Before completing the association, Amazon CloudWatch validates the key by performing a series of dry-run KMS operations. Service-principal checks run first to verify that the key policy grants the required access to Amazon CloudWatch. These checks include <code>kms:DescribeKey</code>, <code>kms:GenerateDataKey</code>, <code>kms:Encrypt</code>, <code>kms:Decrypt</code>, and <code>kms:ReEncrypt*</code>. After those succeed, a <code>kms:Decrypt</code> dry-run is run with the caller's credentials to verify that the calling principal can use the key. When you are replacing an existing key, the caller's <code>kms:Decrypt</code> dry-run is run on the current key first, and only then on the new key.</p> <p>If any of these checks fails, the operation fails and the existing key association (if any) remains unchanged. Common failure causes include the key being disabled, the key policy not granting the required permissions to Amazon CloudWatch, or the caller lacking <code>kms:Decrypt</code> permission on the key.</p> <p>For more information about using customer managed keys with Amazon CloudWatch, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cmk-encryption.html\">Encryption at rest with customer managed keys</a> in the <i>Amazon CloudWatch User Guide</i>.</p>"
+    },
     "DeleteAlarmMuteRule":{
       "name":"DeleteAlarmMuteRule",
       "http":{
@@ -238,6 +258,24 @@
       ],
       "documentation":"<p>Disables the specified Contributor Insights rules. When rules are disabled, they do not analyze log groups and do not incur costs.</p>"
     },
+    "DisassociateDatasetKmsKey":{
+      "name":"DisassociateDatasetKmsKey",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisassociateDatasetKmsKeyInput"},
+      "output":{
+        "shape":"DisassociateDatasetKmsKeyOutput",
+        "resultWrapper":"DisassociateDatasetKmsKeyResult"
+      },
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Removes the customer managed Amazon Web Services Key Management Service (Amazon Web Services KMS) key association from the specified dataset. After this operation completes, data that you publish to the dataset is encrypted at rest using an Amazon Web Services owned key managed by Amazon CloudWatch.</p> <p>Only the <code>default</code> dataset is supported. To call this operation, the dataset must currently have a customer managed KMS key associated with it. If the dataset has no associated KMS key, the operation fails with <code>ResourceNotFoundException</code>.</p> <p>Amazon CloudWatch performs a dry-run <code>kms:Decrypt</code> call on the key as part of this operation. This verifies that the caller is authorized to use the currently associated key. The caller must have <code>kms:Decrypt</code> permission on the currently associated key, and the key must be enabled and accessible. If the key has been disabled or scheduled for deletion, you must first re-enable or restore it before you can disassociate it from the dataset.</p> <important> <p>Disassociating a KMS key from a dataset does not immediately remove the <code>kms:Decrypt</code> requirement on data plane operations. For up to three hours after disassociation, callers must continue to have <code>kms:Decrypt</code> permission on the previously associated key. Some data may still be encrypted with that key during this window. After this enforcement window elapses, the <code>kms:Decrypt</code> requirement is lifted.</p> </important> <p>For more information about using customer managed keys with Amazon CloudWatch, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cmk-encryption.html\">Encryption at rest with customer managed keys</a> in the <i>Amazon CloudWatch User Guide</i>.</p>",
+      "idempotent":true
+    },
     "EnableAlarmActions":{
       "name":"EnableAlarmActions",
       "http":{
@@ -298,6 +336,23 @@
         {"shape":"InternalServiceFault"}
       ],
       "documentation":"<p>Displays the details of the dashboard that you specify.</p> <p>To copy an existing dashboard, use <code>GetDashboard</code>, and then use the data returned within <code>DashboardBody</code> as the template for the new dashboard when you call <code>PutDashboard</code> to create the copy.</p>"
+    },
+    "GetDataset":{
+      "name":"GetDataset",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetDatasetInput"},
+      "output":{
+        "shape":"GetDatasetOutput",
+        "resultWrapper":"GetDatasetResult"
+      },
+      "errors":[
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns information about the specified dataset. This includes its identifier, Amazon Resource Name (ARN), and any customer managed Amazon Web Services Key Management Service (Amazon Web Services KMS) key that is currently associated with it.</p> <p>Only the <code>default</code> dataset is supported. The <code>default</code> dataset is implicit for every account in every Region — you can call <code>GetDataset</code> for it without first creating it. If no customer managed KMS key has been associated with the dataset, the response omits the <code>KmsKeyArn</code> field, indicating that data is encrypted at rest using an Amazon Web Services owned key managed by Amazon CloudWatch.</p> <p>To associate a customer managed KMS key with a dataset, use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_AssociateDatasetKmsKey.html\">AssociateDatasetKmsKey</a>. To remove the association, use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_DisassociateDatasetKmsKey.html\">DisassociateDatasetKmsKey</a>.</p>",
+      "readonly":true
     },
     "GetInsightRuleReport":{
       "name":"GetInsightRuleReport",
@@ -1083,6 +1138,27 @@
       "max":1600,
       "min":1
     },
+    "AssociateDatasetKmsKeyInput":{
+      "type":"structure",
+      "required":[
+        "DatasetIdentifier",
+        "KmsKeyArn"
+      ],
+      "members":{
+        "DatasetIdentifier":{
+          "shape":"DatasetIdentifier",
+          "documentation":"<p>Specifies the identifier of the dataset that you want to associate the KMS key with. For the <code>default</code> dataset, you can specify either <code>default</code> or the full dataset Amazon Resource Name (ARN) in the format <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:dataset/default</code>.</p>"
+        },
+        "KmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the customer managed KMS key to associate with the dataset. The key must be a symmetric encryption KMS key (<code>SYMMETRIC_DEFAULT</code>) in the same Amazon Web Services Region as the dataset.</p> <p>The ARN must be in the format <code>arn:aws:kms:<i>Region</i>:<i>account-id</i>:key/<i>key-id</i> </code>. Key IDs, aliases, and alias ARNs are not accepted.</p> <p>For more information about KMS key ARNs, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-id-key-ARN\">Key ARN</a> in the <i>Amazon Web Services Key Management Service Developer Guide</i>.</p>"
+        }
+      }
+    },
+    "AssociateDatasetKmsKeyOutput":{
+      "type":"structure",
+      "members":{}
+    },
     "AttributeName":{
       "type":"string",
       "max":255,
@@ -1399,6 +1475,24 @@
     "DatapointsToAlarm":{
       "type":"integer",
       "min":1
+    },
+    "DatasetArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:[a-zA-Z0-9-]+:cloudwatch:[a-zA-Z0-9-]*:\\d{12}:dataset/default"
+    },
+    "DatasetId":{
+      "type":"string",
+      "max":7,
+      "min":7,
+      "pattern":"default"
+    },
+    "DatasetIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"(default|arn:[a-zA-Z0-9-]+:cloudwatch:[a-zA-Z0-9-]*:\\d{12}:dataset/default)"
     },
     "DeleteAlarmMuteRuleInput":{
       "type":"structure",
@@ -1848,6 +1942,20 @@
         }
       }
     },
+    "DisassociateDatasetKmsKeyInput":{
+      "type":"structure",
+      "required":["DatasetIdentifier"],
+      "members":{
+        "DatasetIdentifier":{
+          "shape":"DatasetIdentifier",
+          "documentation":"<p>Specifies the identifier of the dataset from which to remove the KMS key association. For the <code>default</code> dataset, you can specify either <code>default</code> or the full dataset Amazon Resource Name (ARN) in the format <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:dataset/default</code>.</p>"
+        }
+      }
+    },
+    "DisassociateDatasetKmsKeyOutput":{
+      "type":"structure",
+      "members":{}
+    },
     "Duration":{
       "type":"string",
       "max":50,
@@ -2082,6 +2190,37 @@
         "DashboardName":{
           "shape":"DashboardName",
           "documentation":"<p>The name of the dashboard.</p>"
+        }
+      }
+    },
+    "GetDatasetInput":{
+      "type":"structure",
+      "required":["DatasetIdentifier"],
+      "members":{
+        "DatasetIdentifier":{
+          "shape":"DatasetIdentifier",
+          "documentation":"<p>Specifies the identifier of the dataset to retrieve. For the <code>default</code> dataset, you can specify either <code>default</code> or the full dataset Amazon Resource Name (ARN) in the format <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:dataset/default</code>.</p>"
+        }
+      }
+    },
+    "GetDatasetOutput":{
+      "type":"structure",
+      "required":[
+        "DatasetId",
+        "Arn"
+      ],
+      "members":{
+        "DatasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>Returns the identifier of the dataset.</p>"
+        },
+        "Arn":{
+          "shape":"DatasetArn",
+          "documentation":"<p>Returns the Amazon Resource Name (ARN) of the dataset, in the format <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:dataset/<i>dataset-id</i> </code>.</p>"
+        },
+        "KmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>Returns the Amazon Resource Name (ARN) of the customer managed Amazon Web Services KMS key that is currently associated with the dataset, if any. If the dataset is not associated with a customer managed KMS key, this field is not included in the response and the dataset is encrypted at rest using an Amazon Web Services owned key.</p>"
         }
       }
     },
@@ -2666,6 +2805,39 @@
       },
       "exception":true,
       "synthetic":true
+    },
+    "KmsAccessDeniedException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The operation was denied because either the calling principal lacks the required Amazon Web Services Key Management Service (Amazon Web Services KMS) permission on the key, or the key policy does not grant Amazon CloudWatch the permissions it needs to use the key. Verify that the caller has <code>kms:Decrypt</code> permission on the key, and that the key policy grants the CloudWatch service principal the <code>kms:DescribeKey</code>, <code>kms:GenerateDataKey</code>, <code>kms:Encrypt</code>, <code>kms:Decrypt</code>, and <code>kms:ReEncrypt*</code> permissions described in <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_AssociateDatasetKmsKey.html\">AssociateDatasetKmsKey</a>.</p>",
+      "exception":true
+    },
+    "KmsKeyArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:[a-zA-Z0-9-]+:kms:[a-zA-Z0-9-]+:\\d{12}:key/[a-f0-9-]+"
+    },
+    "KmsKeyDisabledException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The specified Amazon Web Services Key Management Service (Amazon Web Services KMS) key is disabled or pending deletion. Re-enable the key (or restore it, if it is pending deletion) and retry the operation.</p>",
+      "exception":true
+    },
+    "KmsKeyNotFoundException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The specified Amazon Web Services Key Management Service (Amazon Web Services KMS) key could not be found. Verify that the key Amazon Resource Name (ARN) is correct, that the key exists, and that it is in the same Amazon Web Services Region as the resource.</p>",
+      "exception":true
     },
     "LabelOptions":{
       "type":"structure",
@@ -4323,6 +4495,7 @@
       "min":1
     },
     "StrictEntityValidation":{"type":"boolean"},
+    "String":{"type":"string"},
     "SuppressorPeriod":{"type":"integer"},
     "Tag":{
       "type":"structure",

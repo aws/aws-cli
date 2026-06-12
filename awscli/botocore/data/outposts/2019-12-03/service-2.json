@@ -85,6 +85,22 @@
       ],
       "documentation":"<p>Creates an Outpost.</p> <p>You can specify either an Availability one or an AZ ID.</p>"
     },
+    "CreateQuote":{
+      "name":"CreateQuote",
+      "http":{
+        "method":"POST",
+        "requestUri":"/quotes"
+      },
+      "input":{"shape":"CreateQuoteInput"},
+      "output":{"shape":"CreateQuoteOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"NotFoundException"}
+      ],
+      "documentation":"<p>Creates a quote for an Outpost. A quote provides pricing and configuration options based on the requested capacity. You can optionally associate the quote with an existing Outpost or create a standalone quote by specifying only the country code and requested capacities.</p>"
+    },
     "CreateRenewal":{
       "name":"CreateRenewal",
       "http":{
@@ -134,6 +150,22 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Deletes the specified Outpost.</p>"
+    },
+    "DeleteQuote":{
+      "name":"DeleteQuote",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/quotes/{QuoteIdentifier}"
+      },
+      "input":{"shape":"DeleteQuoteInput"},
+      "output":{"shape":"DeleteQuoteOutput"},
+      "errors":[
+        {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Deletes the specified quote.</p>"
     },
     "DeleteSite":{
       "name":"DeleteSite",
@@ -278,6 +310,22 @@
       ],
       "documentation":"<p>Gets the instance types that an Outpost can support in <code>InstanceTypeCapacity</code>. This will generally include instance types that are not currently configured and therefore cannot be launched with the current Outpost capacity configuration.</p>"
     },
+    "GetQuote":{
+      "name":"GetQuote",
+      "http":{
+        "method":"GET",
+        "requestUri":"/quotes/{QuoteIdentifier}"
+      },
+      "input":{"shape":"GetQuoteInput"},
+      "output":{"shape":"GetQuoteOutput"},
+      "errors":[
+        {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Gets information about the specified quote.</p>"
+    },
     "GetRenewalPricing":{
       "name":"GetRenewalPricing",
       "http":{
@@ -406,6 +454,22 @@
       ],
       "documentation":"<p>Lists the items in the catalog.</p> <p>Use filters to return specific results. If you specify multiple filters, the results include only the resources that match all of the specified filters. For a filter where you can specify multiple values, the results include items that match any of the values that you specify for the filter.</p>"
     },
+    "ListOrderableInstanceTypes":{
+      "name":"ListOrderableInstanceTypes",
+      "http":{
+        "method":"GET",
+        "requestUri":"/instanceTypes"
+      },
+      "input":{"shape":"ListOrderableInstanceTypesInput"},
+      "output":{"shape":"ListOrderableInstanceTypesOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"NotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the instance types that can be ordered for an Outpost. You can filter the results by Outpost generation.</p>"
+    },
     "ListOrders":{
       "name":"ListOrders",
       "http":{
@@ -436,6 +500,20 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Lists the Outposts for your Amazon Web Services account.</p> <p>Use filters to return specific results. If you specify multiple filters, the results include only the resources that match all of the specified filters. For a filter where you can specify multiple values, the results include items that match any of the values that you specify for the filter.</p>"
+    },
+    "ListQuotes":{
+      "name":"ListQuotes",
+      "http":{
+        "method":"GET",
+        "requestUri":"/quotes"
+      },
+      "input":{"shape":"ListQuotesInput"},
+      "output":{"shape":"ListQuotesOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the quotes for your Amazon Web Services account.</p>"
     },
     "ListSites":{
       "name":"ListSites",
@@ -563,6 +641,22 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p> Updates an Outpost. </p>"
+    },
+    "UpdateQuote":{
+      "name":"UpdateQuote",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/quotes/{QuoteIdentifier}"
+      },
+      "input":{"shape":"UpdateQuoteInput"},
+      "output":{"shape":"UpdateQuoteOutput"},
+      "errors":[
+        {"shape":"NotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates the specified quote. You can modify the requested capacities, constraints, payment options, payment terms, or Outpost association.</p>"
     },
     "UpdateSite":{
       "name":"UpdateSite",
@@ -989,6 +1083,24 @@
       "type":"structure",
       "members":{}
     },
+    "CapacitySummary":{
+      "type":"structure",
+      "members":{
+        "ExistingCapacities":{
+          "shape":"QuoteCapacityList",
+          "documentation":"<p>The existing capacities on the Outpost before the quote is fulfilled.</p>"
+        },
+        "FinalCapacities":{
+          "shape":"QuoteCapacityList",
+          "documentation":"<p>The final capacities on the Outpost after the quote is fulfilled.</p>"
+        },
+        "CapacityChange":{
+          "shape":"QuoteCapacityList",
+          "documentation":"<p>The change in capacity between the existing and final state.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the capacity changes for a quote option.</p>"
+    },
     "CapacityTaskFailure":{
       "type":"structure",
       "required":["Reason"],
@@ -1244,6 +1356,12 @@
       "min":1,
       "pattern":"^[a-zA-Z0-9+/=]{1,1024}$"
     },
+    "ConstraintValue":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"^[\\S \\n]+$"
+    },
     "ContactName":{
       "type":"string",
       "max":255,
@@ -1331,6 +1449,52 @@
         "Outpost":{"shape":"Outpost"}
       }
     },
+    "CreateQuoteInput":{
+      "type":"structure",
+      "required":[
+        "CountryCode",
+        "RequestedCapacities"
+      ],
+      "members":{
+        "OutpostIdentifier":{
+          "shape":"OutpostIdentifier",
+          "documentation":"<p>The ID or ARN of the Outpost to associate with the quote. If not specified, the quote is created without an Outpost association.</p>"
+        },
+        "CountryCode":{
+          "shape":"CountryCode",
+          "documentation":"<p>The country code for the Outpost site location.</p>"
+        },
+        "RequestedCapacities":{
+          "shape":"QuoteCapacityList",
+          "documentation":"<p>The capacity requirements for the quote. Each entry specifies a capacity type (such as Amazon EC2), the unit, and the quantity. For Amazon EC2, the quantity is the number of additional instances to add to the Outpost. For Amazon EBS and Amazon S3, the quantity is the total desired end-state capacity of the Outpost.</p>"
+        },
+        "RequestedConstraints":{
+          "shape":"QuoteConstraintList",
+          "documentation":"<p>The physical constraints for the quote, such as maximum number of racks, maximum power draw per rack, or maximum weight per rack.</p>"
+        },
+        "RequestedPaymentOptions":{
+          "shape":"PaymentOptionList",
+          "documentation":"<p>The payment options to include in the quote pricing. If not specified, all available payment options are returned.</p>"
+        },
+        "RequestedPaymentTerms":{
+          "shape":"PaymentTermList",
+          "documentation":"<p>The payment terms to include in the quote pricing. If not specified, all available payment terms are returned.</p>"
+        },
+        "Description":{
+          "shape":"QuoteDescription",
+          "documentation":"<p>A description for the quote.</p>"
+        }
+      }
+    },
+    "CreateQuoteOutput":{
+      "type":"structure",
+      "members":{
+        "Quote":{
+          "shape":"Quote",
+          "documentation":"<p>Information about the quote.</p>"
+        }
+      }
+    },
     "CreateRenewalInput":{
       "type":"structure",
       "required":[
@@ -1380,6 +1544,10 @@
         "MonthlyRecurringPrice":{
           "shape":"NullableFloat",
           "documentation":"<p>The monthly recurring price of the renewal.</p>"
+        },
+        "Currency":{
+          "shape":"CurrencyCode",
+          "documentation":"<p>The currency of the renewal price.</p>"
         }
       }
     },
@@ -1417,6 +1585,10 @@
         "Site":{"shape":"Site"}
       }
     },
+    "CurrencyCode":{
+      "type":"string",
+      "enum":["USD"]
+    },
     "DecommissionRequestStatus":{
       "type":"string",
       "enum":[
@@ -1441,6 +1613,22 @@
       "type":"structure",
       "members":{}
     },
+    "DeleteQuoteInput":{
+      "type":"structure",
+      "required":["QuoteIdentifier"],
+      "members":{
+        "QuoteIdentifier":{
+          "shape":"QuoteIdentifier",
+          "documentation":"<p>The ID or ARN of the quote.</p>",
+          "location":"uri",
+          "locationName":"QuoteIdentifier"
+        }
+      }
+    },
+    "DeleteQuoteOutput":{
+      "type":"structure",
+      "members":{}
+    },
     "DeleteSiteInput":{
       "type":"structure",
       "required":["SiteId"],
@@ -1456,6 +1644,36 @@
     "DeleteSiteOutput":{
       "type":"structure",
       "members":{}
+    },
+    "DetailedInstanceTypeItem":{
+      "type":"structure",
+      "members":{
+        "InstanceType":{
+          "shape":"InstanceType",
+          "documentation":"<p>The instance type.</p>"
+        },
+        "VCPUs":{
+          "shape":"VCPUCount",
+          "documentation":"<p>The number of default VCPUs in the instance type.</p>"
+        },
+        "MemoryInMib":{
+          "shape":"MemoryInMib",
+          "documentation":"<p>The memory size of the instance type, in MiB.</p>"
+        },
+        "NetworkPerformance":{
+          "shape":"NetworkPerformance",
+          "documentation":"<p>The network performance of the instance type.</p>"
+        },
+        "FormFactorConfigs":{
+          "shape":"FormFactorConfigList",
+          "documentation":"<p>The supported form factor and Outpost generation configurations for the instance type.</p>"
+        }
+      },
+      "documentation":"<p>Information about an instance type that can be ordered for an Outpost, including hardware specifications and supported form factors.</p>"
+    },
+    "DetailedInstanceTypeListDefinition":{
+      "type":"list",
+      "member":{"shape":"DetailedInstanceTypeItem"}
     },
     "DeviceSerialNumber":{
       "type":"string",
@@ -1506,7 +1724,7 @@
       "type":"string",
       "max":10,
       "min":1,
-      "pattern":"^[a-z0-9]+$"
+      "pattern":"^[a-z0-9]+[a-z0-9-]*[a-z0-9]+$"
     },
     "FiberOpticCableType":{
       "type":"string",
@@ -1514,6 +1732,31 @@
         "SINGLE_MODE",
         "MULTI_MODE"
       ]
+    },
+    "FormFactor":{
+      "type":"string",
+      "enum":[
+        "RACK",
+        "SERVER"
+      ]
+    },
+    "FormFactorConfig":{
+      "type":"structure",
+      "members":{
+        "FormFactor":{
+          "shape":"FormFactor",
+          "documentation":"<p>The form factor. Valid values are <code>RACK</code> for rack-based Outposts and <code>SERVER</code> for server-based Outposts.</p>"
+        },
+        "OutpostGeneration":{
+          "shape":"OutpostGeneration",
+          "documentation":"<p>The Outpost generation. Valid values are <code>GENERATION_1</code> for first-generation rack deployments and <code>GENERATION_2</code> for second-generation rack deployments. This value is not set for server form factors.</p>"
+        }
+      },
+      "documentation":"<p>A supported form factor and Outpost generation configuration for an instance type.</p>"
+    },
+    "FormFactorConfigList":{
+      "type":"list",
+      "member":{"shape":"FormFactorConfig"}
     },
     "GetCapacityTaskInput":{
       "type":"structure",
@@ -1792,6 +2035,27 @@
       "members":{
         "InstanceTypes":{"shape":"InstanceTypeListDefinition"},
         "NextToken":{"shape":"Token"}
+      }
+    },
+    "GetQuoteInput":{
+      "type":"structure",
+      "required":["QuoteIdentifier"],
+      "members":{
+        "QuoteIdentifier":{
+          "shape":"QuoteIdentifier",
+          "documentation":"<p>The ID or ARN of the quote.</p>",
+          "location":"uri",
+          "locationName":"QuoteIdentifier"
+        }
+      }
+    },
+    "GetQuoteOutput":{
+      "type":"structure",
+      "members":{
+        "Quote":{
+          "shape":"Quote",
+          "documentation":"<p>Information about the quote.</p>"
+        }
       }
     },
     "GetRenewalPricingInput":{
@@ -2326,6 +2590,42 @@
         "NextToken":{"shape":"Token"}
       }
     },
+    "ListOrderableInstanceTypesInput":{
+      "type":"structure",
+      "members":{
+        "OutpostGenerationFilter":{
+          "shape":"OutpostGeneration",
+          "documentation":"<p>Filters the results by Outpost generation. Specify <code>GENERATION_1</code> for first-generation rack deployments or <code>GENERATION_2</code> for second-generation rack deployments.</p>",
+          "location":"querystring",
+          "locationName":"OutpostGenerationFilter"
+        },
+        "MaxResults":{
+          "shape":"MaxResults1000",
+          "documentation":"<p>The maximum page size.</p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>The pagination token.</p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        }
+      }
+    },
+    "ListOrderableInstanceTypesOutput":{
+      "type":"structure",
+      "members":{
+        "InstanceTypes":{
+          "shape":"DetailedInstanceTypeListDefinition",
+          "documentation":"<p>Information about the instance types that can be ordered for the Outpost.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>The pagination token.</p>"
+        }
+      }
+    },
     "ListOrdersInput":{
       "type":"structure",
       "members":{
@@ -2395,6 +2695,36 @@
       "members":{
         "Outposts":{"shape":"outpostListDefinition"},
         "NextToken":{"shape":"Token"}
+      }
+    },
+    "ListQuotesInput":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>The pagination token.</p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResults1000",
+          "documentation":"<p>The maximum page size.</p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        }
+      }
+    },
+    "ListQuotesOutput":{
+      "type":"structure",
+      "members":{
+        "Quotes":{
+          "shape":"QuoteSummaryListDefinition",
+          "documentation":"<p>Information about the quotes.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>The pagination token.</p>"
+        }
       }
     },
     "ListSitesInput":{
@@ -2486,6 +2816,7 @@
         "MAX_2000_LBS"
       ]
     },
+    "MemoryInMib":{"type":"integer"},
     "Municipality":{
       "type":"string",
       "max":180,
@@ -2497,6 +2828,7 @@
       "max":1,
       "min":0
     },
+    "NetworkPerformance":{"type":"string"},
     "NotFoundException":{
       "type":"structure",
       "members":{
@@ -2581,6 +2913,12 @@
       "type":"list",
       "member":{"shape":"String"}
     },
+    "OrderIdentifier":{
+      "type":"string",
+      "max":20,
+      "min":1,
+      "pattern":"^oo-[a-f0-9]{17}$"
+    },
     "OrderStatus":{
       "type":"string",
       "enum":[
@@ -2642,6 +2980,59 @@
         "REPLACEMENT"
       ]
     },
+    "OrderingRequirement":{
+      "type":"structure",
+      "members":{
+        "StatusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p>A message about the ordering requirement.</p>"
+        },
+        "OrderingRequirementType":{
+          "shape":"OrderingRequirementType",
+          "documentation":"<p>The type of ordering requirement. Indicates which check failed or passed.</p> <ul> <li> <p> <code>OUTPOST_ACTIVE_CHECK_ERROR</code> - The Outpost must be in an active state.</p> </li> <li> <p> <code>MAXIMUM_ALLOWED_ORDERS_CHECK_ERROR</code> - The maximum number of allowed orders has been reached.</p> </li> <li> <p> <code>VALID_ZIP_CODE_CHECK_ERROR</code> - The site address must have a valid zip code.</p> </li> <li> <p> <code>RACK_PHYSICAL_PROPERTIES_CHECK_ERROR</code> - The rack physical properties do not meet requirements.</p> </li> <li> <p> <code>OPERATING_ADDRESS_EXISTENCE_CHECK_ERROR</code> - The site must have an operating address.</p> </li> <li> <p> <code>SHIPPING_ADDRESS_EXISTENCE_CHECK_ERROR</code> - The site must have a shipping address.</p> </li> <li> <p> <code>COUNTRY_CODE_MISMATCH_CHECK_ERROR</code> - The country code on the quote does not match the Outpost site country.</p> </li> <li> <p> <code>OUTPOST_GENERATION_MISMATCH_ERROR</code> - The Outpost generation does not match the requested configuration.</p> </li> <li> <p> <code>OUTPOST_ID_MISSING_ON_QUOTE_ERROR</code> - The quote must be associated with an Outpost before submitting an order.</p> </li> <li> <p> <code>ENTERPRISE_SUPPORT_ERROR</code> - Enterprise Support is required.</p> </li> <li> <p> <code>SHIPPING_ADDRESS_MISSING_CONTACT_NAME_ERROR</code> - The shipping address must have a contact name.</p> </li> <li> <p> <code>SHIPPING_ADDRESS_MISSING_CONTACT_NUMBER_ERROR</code> - The shipping address must have a contact phone number.</p> </li> <li> <p> <code>SHIPPING_ADDRESS_MISSING_CONTACT_INFO_ERROR</code> - The shipping address must have contact information.</p> </li> <li> <p> <code>OUTPOST_STATE_CHANGED_ERROR</code> - The Outpost state has changed since the quote was created.</p> </li> <li> <p> <code>OUTPOST_NOT_FOUND_ERROR</code> - The Outpost associated with the quote was not found.</p> </li> <li> <p> <code>OUTPOST_RENEWAL_REQUIRED_ERROR</code> - The Outpost requires a renewal before a new order can be submitted.</p> </li> <li> <p> <code>UNSUPPORTED</code> - The requirement type is not recognized.</p> </li> </ul>"
+        },
+        "Status":{
+          "shape":"OrderingRequirementStatus",
+          "documentation":"<p>The status of the ordering requirement. Valid values are <code>PASS</code>, <code>FAIL</code>, and <code>EXEMPT</code>.</p>"
+        }
+      },
+      "documentation":"<p>A requirement that must be met before an order can be submitted for a quote.</p>"
+    },
+    "OrderingRequirementList":{
+      "type":"list",
+      "member":{"shape":"OrderingRequirement"},
+      "max":50
+    },
+    "OrderingRequirementStatus":{
+      "type":"string",
+      "enum":[
+        "PASS",
+        "FAIL",
+        "EXEMPT"
+      ]
+    },
+    "OrderingRequirementType":{
+      "type":"string",
+      "enum":[
+        "OUTPOST_ACTIVE_CHECK_ERROR",
+        "MAXIMUM_ALLOWED_ORDERS_CHECK_ERROR",
+        "VALID_ZIP_CODE_CHECK_ERROR",
+        "RACK_PHYSICAL_PROPERTIES_CHECK_ERROR",
+        "OPERATING_ADDRESS_EXISTENCE_CHECK_ERROR",
+        "SHIPPING_ADDRESS_EXISTENCE_CHECK_ERROR",
+        "COUNTRY_CODE_MISMATCH_CHECK_ERROR",
+        "OUTPOST_GENERATION_MISMATCH_ERROR",
+        "UNSUPPORTED",
+        "OUTPOST_ID_MISSING_ON_QUOTE_ERROR",
+        "ENTERPRISE_SUPPORT_ERROR",
+        "SHIPPING_ADDRESS_MISSING_CONTACT_NAME_ERROR",
+        "SHIPPING_ADDRESS_MISSING_CONTACT_NUMBER_ERROR",
+        "SHIPPING_ADDRESS_MISSING_CONTACT_INFO_ERROR",
+        "OUTPOST_STATE_CHANGED_ERROR",
+        "OUTPOST_NOT_FOUND_ERROR",
+        "OUTPOST_RENEWAL_REQUIRED_ERROR"
+      ]
+    },
     "Outpost":{
       "type":"structure",
       "members":{
@@ -2683,6 +3074,13 @@
       "min":0,
       "pattern":"^[\\S ]*$"
     },
+    "OutpostGeneration":{
+      "type":"string",
+      "enum":[
+        "GENERATION_2",
+        "GENERATION_1"
+      ]
+    },
     "OutpostId":{
       "type":"string",
       "max":180,
@@ -2700,6 +3098,12 @@
       "max":180,
       "min":1,
       "pattern":"^(arn:aws([a-z-]+)?:outposts:[a-z\\d-]+:\\d{12}:outpost/)?op-[a-f0-9]{17}$"
+    },
+    "OutpostIdentifierOrEmpty":{
+      "type":"string",
+      "max":180,
+      "min":0,
+      "pattern":"^((arn:aws([a-z-]+)?:outposts:[a-z\\d-]+:\\d{12}:outpost/)?op-[a-f0-9]{17})?$"
     },
     "OutpostInstanceType":{
       "type":"string",
@@ -2733,6 +3137,11 @@
         "PARTIAL_UPFRONT"
       ]
     },
+    "PaymentOptionList":{
+      "type":"list",
+      "member":{"shape":"PaymentOption"},
+      "max":3
+    },
     "PaymentTerm":{
       "type":"string",
       "enum":[
@@ -2740,6 +3149,11 @@
         "ONE_YEAR",
         "FIVE_YEARS"
       ]
+    },
+    "PaymentTermList":{
+      "type":"list",
+      "member":{"shape":"PaymentTerm"},
+      "max":3
     },
     "PostalCode":{
       "type":"string",
@@ -2796,7 +3210,8 @@
     },
     "PricingOptionList":{
       "type":"list",
-      "member":{"shape":"PricingOption"}
+      "member":{"shape":"PricingOption"},
+      "max":9
     },
     "PricingResult":{
       "type":"string",
@@ -2806,9 +3221,315 @@
       ]
     },
     "Quantity":{"type":"string"},
+    "Quote":{
+      "type":"structure",
+      "members":{
+        "QuoteId":{
+          "shape":"QuoteId",
+          "documentation":"<p>The ID of the quote.</p>"
+        },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the account that owns the quote.</p>"
+        },
+        "QuoteStatus":{
+          "shape":"QuoteStatus",
+          "documentation":"<p>The status of the quote.</p> <ul> <li> <p> <code>CREATED</code> - The quote has been created and is available for review.</p> </li> <li> <p> <code>ORDER_SUBMITTED</code> - An order has been submitted for the quote.</p> </li> <li> <p> <code>EXPIRED</code> - The quote has expired and can no longer be used to submit an order.</p> </li> </ul>"
+        },
+        "StatusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p>A message about the status of the quote.</p>"
+        },
+        "OutpostArn":{
+          "shape":"OutpostArn",
+          "documentation":"<p>The ARN of the Outpost associated with the quote.</p>"
+        },
+        "CountryCode":{
+          "shape":"CountryCode",
+          "documentation":"<p>The country code for the Outpost site location.</p>"
+        },
+        "RequestedCapacities":{
+          "shape":"QuoteCapacityList",
+          "documentation":"<p>The capacity requirements specified in the quote request.</p>"
+        },
+        "RequestedConstraints":{
+          "shape":"QuoteConstraintList",
+          "documentation":"<p>The physical constraints specified in the quote request.</p>"
+        },
+        "RequestedPaymentOptions":{
+          "shape":"PaymentOptionList",
+          "documentation":"<p>The payment options specified in the quote request.</p>"
+        },
+        "RequestedPaymentTerms":{
+          "shape":"PaymentTermList",
+          "documentation":"<p>The payment terms specified in the quote request.</p>"
+        },
+        "QuoteOptions":{
+          "shape":"QuoteOptionList",
+          "documentation":"<p>The configuration and pricing options for the quote. Each option includes capacity details, physical specifications, and pricing information.</p>"
+        },
+        "OrderingRequirements":{
+          "shape":"OrderingRequirementList",
+          "documentation":"<p>The requirements that must be met before an order can be submitted for the quote.</p>"
+        },
+        "SubmittedOrderId":{
+          "shape":"OrderIdentifier",
+          "documentation":"<p>The ID of the order submitted for the quote.</p>"
+        },
+        "CreatedDate":{
+          "shape":"ISO8601Timestamp",
+          "documentation":"<p>The date the quote was created.</p>"
+        },
+        "ExpirationDate":{
+          "shape":"ISO8601Timestamp",
+          "documentation":"<p>The date the quote expires.</p>"
+        },
+        "Description":{
+          "shape":"QuoteDescription",
+          "documentation":"<p>The description of the quote.</p>"
+        }
+      },
+      "documentation":"<p>Information about a quote for an Outpost. A quote provides pricing and configuration options based on the requested capacity.</p>"
+    },
+    "QuoteCapacity":{
+      "type":"structure",
+      "members":{
+        "QuoteCapacityType":{
+          "shape":"QuoteCapacityType",
+          "documentation":"<p>The type of capacity. Valid values are <code>EC2</code>, <code>EBS</code>, and <code>S3</code>.</p>"
+        },
+        "Unit":{
+          "shape":"String",
+          "documentation":"<p>The unit of measurement for the capacity. For Amazon EC2, this is the instance type (for example, <code>c5.24xlarge</code>). For Amazon EBS and Amazon S3, this is the storage unit (for example, <code>TiB</code> for tebibytes).</p>"
+        },
+        "Quantity":{
+          "shape":"NullableFloat",
+          "documentation":"<p>The quantity of the specified capacity unit. For Amazon EC2, this is the number of additional instances to add to the Outpost. For Amazon EBS and Amazon S3, this is the total desired end-state capacity of the Outpost.</p>"
+        }
+      },
+      "documentation":"<p>A capacity requirement for a quote. Specifies the type of capacity, the unit, and the quantity.</p>"
+    },
+    "QuoteCapacityList":{
+      "type":"list",
+      "member":{"shape":"QuoteCapacity"},
+      "max":2000
+    },
+    "QuoteCapacityType":{
+      "type":"string",
+      "enum":[
+        "EC2",
+        "EBS",
+        "S3"
+      ]
+    },
+    "QuoteConstraint":{
+      "type":"structure",
+      "members":{
+        "QuoteConstraintType":{
+          "shape":"QuoteConstraintType",
+          "documentation":"<p>The type of constraint. Valid values are <code>RACK_MAXIMUM</code>, <code>RACK_MAX_POWER_KVA</code>, and <code>RACK_MAX_WEIGHT_LBS</code>.</p>"
+        },
+        "Value":{
+          "shape":"ConstraintValue",
+          "documentation":"<p>The value of the constraint.</p>"
+        }
+      },
+      "documentation":"<p>A physical constraint for a quote.</p>"
+    },
+    "QuoteConstraintList":{
+      "type":"list",
+      "member":{"shape":"QuoteConstraint"},
+      "max":10
+    },
+    "QuoteConstraintType":{
+      "type":"string",
+      "enum":[
+        "RACK_MAXIMUM",
+        "RACK_MAX_POWER_KVA",
+        "RACK_MAX_WEIGHT_LBS"
+      ]
+    },
+    "QuoteDescription":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "pattern":"^[\\S \\n]*$",
+      "sensitive":true
+    },
+    "QuoteId":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^oq-[a-f0-9]{17}$"
+    },
+    "QuoteIdentifier":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^(arn:aws([a-z-]+)?:outposts:[a-z\\d-]+:\\d{12}:quote/)?oq-[a-f0-9]{17}$"
+    },
+    "QuoteOption":{
+      "type":"structure",
+      "members":{
+        "QuoteOptionIdentifier":{
+          "shape":"QuoteOptionIdentifier",
+          "documentation":"<p>The ID of the quote option.</p>"
+        },
+        "Capacities":{
+          "shape":"QuoteCapacityList",
+          "documentation":"<p>The capacities included in this quote option.</p>"
+        },
+        "CapacitySummary":{
+          "shape":"CapacitySummary",
+          "documentation":"<p>A summary of the existing, final, and changed capacity for this quote option.</p>"
+        },
+        "Specifications":{
+          "shape":"QuoteSpecificationList",
+          "documentation":"<p>The physical specifications for the racks or servers in this quote option.</p>"
+        },
+        "PricingOptions":{
+          "shape":"PricingOptionList",
+          "documentation":"<p>The pricing options for this quote option.</p>"
+        }
+      },
+      "documentation":"<p>A configuration and pricing option for a quote. Each option includes the capacity breakdown, physical specifications for the racks or servers, and pricing details.</p>"
+    },
+    "QuoteOptionIdentifier":{
+      "type":"string",
+      "max":21,
+      "min":1,
+      "pattern":"^oqo-[a-f0-9]{17}$"
+    },
+    "QuoteOptionList":{
+      "type":"list",
+      "member":{"shape":"QuoteOption"},
+      "max":10
+    },
     "QuotePricingType":{
       "type":"string",
       "enum":["SUBSCRIPTION"]
+    },
+    "QuoteRackUseType":{
+      "type":"string",
+      "enum":[
+        "NETWORKING",
+        "COMPUTE"
+      ]
+    },
+    "QuoteSpecification":{
+      "type":"structure",
+      "members":{
+        "QuoteSpecificationType":{
+          "shape":"QuoteSpecificationType",
+          "documentation":"<p>The type of specification. Valid values are <code>NEW_RACK</code>, <code>UPDATED_RACK</code>, <code>EXISTING_RACK</code>, and <code>SERVER</code>.</p>"
+        },
+        "ExistingRackSpecificationDetails":{
+          "shape":"RackSpecificationDetails",
+          "documentation":"<p>The existing rack specification details, if the specification type is <code>UPDATED_RACK</code> or <code>EXISTING_RACK</code>.</p>"
+        },
+        "FinalRackSpecificationDetails":{
+          "shape":"RackSpecificationDetails",
+          "documentation":"<p>The final rack specification details after the quote is fulfilled.</p>"
+        },
+        "ServerSpecificationDetails":{
+          "shape":"ServerSpecificationDetails",
+          "documentation":"<p>The server specification details, if the specification type is <code>SERVER</code>.</p>"
+        }
+      },
+      "documentation":"<p>A physical specification for a quote option. Describes the rack or server configuration that would be deployed.</p>"
+    },
+    "QuoteSpecificationList":{
+      "type":"list",
+      "member":{"shape":"QuoteSpecification"},
+      "max":100
+    },
+    "QuoteSpecificationType":{
+      "type":"string",
+      "enum":[
+        "UPDATED_RACK",
+        "NEW_RACK",
+        "EXISTING_RACK",
+        "SERVER"
+      ]
+    },
+    "QuoteStatus":{
+      "type":"string",
+      "enum":[
+        "CREATED",
+        "ORDER_SUBMITTED",
+        "EXPIRED"
+      ]
+    },
+    "QuoteSummary":{
+      "type":"structure",
+      "members":{
+        "QuoteId":{
+          "shape":"QuoteId",
+          "documentation":"<p>The ID of the quote.</p>"
+        },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the account that owns the quote.</p>"
+        },
+        "QuoteStatus":{
+          "shape":"QuoteStatus",
+          "documentation":"<p>The status of the quote.</p>"
+        },
+        "StatusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p>A message about the status of the quote.</p>"
+        },
+        "OutpostArn":{
+          "shape":"OutpostArn",
+          "documentation":"<p>The ARN of the Outpost associated with the quote.</p>"
+        },
+        "CountryCode":{
+          "shape":"CountryCode",
+          "documentation":"<p>The country code for the Outpost site location.</p>"
+        },
+        "RequestedCapacities":{
+          "shape":"QuoteCapacityList",
+          "documentation":"<p>The capacity requirements specified in the quote request.</p>"
+        },
+        "RequestedConstraints":{
+          "shape":"QuoteConstraintList",
+          "documentation":"<p>The physical constraints specified in the quote request.</p>"
+        },
+        "RequestedPaymentOptions":{
+          "shape":"PaymentOptionList",
+          "documentation":"<p>The payment options specified in the quote request.</p>"
+        },
+        "RequestedPaymentTerms":{
+          "shape":"PaymentTermList",
+          "documentation":"<p>The payment terms specified in the quote request.</p>"
+        },
+        "QuoteOptions":{
+          "shape":"QuoteOptionList",
+          "documentation":"<p>The configuration and pricing options for the quote.</p>"
+        },
+        "SubmittedOrderId":{
+          "shape":"OrderIdentifier",
+          "documentation":"<p>The ID of the order submitted for the quote.</p>"
+        },
+        "CreatedDate":{
+          "shape":"ISO8601Timestamp",
+          "documentation":"<p>The date the quote was created.</p>"
+        },
+        "ExpirationDate":{
+          "shape":"ISO8601Timestamp",
+          "documentation":"<p>The date the quote expires.</p>"
+        },
+        "Description":{
+          "shape":"QuoteDescription",
+          "documentation":"<p>The description of the quote.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a quote.</p>"
+    },
+    "QuoteSummaryListDefinition":{
+      "type":"list",
+      "member":{"shape":"QuoteSummary"},
+      "max":1000
     },
     "RackElevation":{
       "type":"float",
@@ -2864,6 +3585,56 @@
       },
       "documentation":"<p> Information about the physical and logistical details for racks at sites. For more information about hardware requirements for racks, see <a href=\"https://docs.aws.amazon.com/outposts/latest/userguide/outposts-requirements.html#checklist\">Network readiness checklist</a> in the Amazon Web Services Outposts User Guide. </p>"
     },
+    "RackSpecificationDetails":{
+      "type":"structure",
+      "members":{
+        "RackId":{
+          "shape":"RackId",
+          "documentation":"<p>The ID of the rack.</p>"
+        },
+        "RackUse":{
+          "shape":"QuoteRackUseType",
+          "documentation":"<p>The use of the rack. Valid values are <code>COMPUTE</code> and <code>NETWORKING</code>.</p>"
+        },
+        "RackPowerDrawKva":{
+          "shape":"NullableFloat",
+          "documentation":"<p>The maximum power draw of the rack in kVA.</p>"
+        },
+        "RackWeightLbs":{
+          "shape":"NullableFloat",
+          "documentation":"<p>The weight of the rack in pounds.</p>"
+        },
+        "RackHeightInches":{
+          "shape":"NullableFloat",
+          "documentation":"<p>The height of the rack in inches.</p>"
+        },
+        "RackWidthInches":{
+          "shape":"NullableFloat",
+          "documentation":"<p>The width of the rack in inches.</p>"
+        },
+        "RackDepthInches":{
+          "shape":"NullableFloat",
+          "documentation":"<p>The depth of the rack in inches.</p>"
+        },
+        "RackUnitHeight":{
+          "shape":"RackUnitHeight",
+          "documentation":"<p>The rack unit height.</p> <ul> <li> <p> <code>HEIGHT_42U</code> - 42 rack units.</p> </li> <li> <p> <code>HEIGHT_2U</code> - 2 rack units.</p> </li> <li> <p> <code>HEIGHT_1U</code> - 1 rack unit.</p> </li> </ul>"
+        },
+        "EC2Capacities":{
+          "shape":"EC2CapacityListDefinition",
+          "documentation":"<p>The Amazon EC2 capacities for the rack.</p>"
+        }
+      },
+      "documentation":"<p>The physical specification details for a rack in a quote option.</p>"
+    },
+    "RackUnitHeight":{
+      "type":"string",
+      "enum":[
+        "HEIGHT_42U",
+        "HEIGHT_2U",
+        "HEIGHT_1U"
+      ]
+    },
     "RequestedInstancePools":{
       "type":"list",
       "member":{"shape":"InstanceTypeCapacity"}
@@ -2880,6 +3651,40 @@
       "max":21,
       "min":9,
       "pattern":"^([0-9]{1,3}\\.){3}[0-9]{1,3}:[0-9]{1,5}$"
+    },
+    "ServerSpecificationDetails":{
+      "type":"structure",
+      "members":{
+        "ServerPowerDrawKva":{
+          "shape":"NullableFloat",
+          "documentation":"<p>The maximum power draw of the server in kVA.</p>"
+        },
+        "ServerWeightLbs":{
+          "shape":"NullableFloat",
+          "documentation":"<p>The weight of the server in pounds.</p>"
+        },
+        "ServerHeightInches":{
+          "shape":"NullableFloat",
+          "documentation":"<p>The height of the server in inches.</p>"
+        },
+        "ServerWidthInches":{
+          "shape":"NullableFloat",
+          "documentation":"<p>The width of the server in inches.</p>"
+        },
+        "ServerDepthInches":{
+          "shape":"NullableFloat",
+          "documentation":"<p>The depth of the server in inches.</p>"
+        },
+        "RackUnitHeight":{
+          "shape":"RackUnitHeight",
+          "documentation":"<p>The rack unit height of the server.</p> <ul> <li> <p> <code>HEIGHT_2U</code> - 2 rack units.</p> </li> <li> <p> <code>HEIGHT_1U</code> - 1 rack unit.</p> </li> </ul>"
+        },
+        "EC2Capacities":{
+          "shape":"EC2CapacityListDefinition",
+          "documentation":"<p>The Amazon EC2 capacities for the server.</p>"
+        }
+      },
+      "documentation":"<p>The physical specification details for a server in a quote option.</p>"
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
@@ -3169,6 +3974,12 @@
       "max":5,
       "min":1
     },
+    "StatusMessage":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"^[\\S \\n]+$"
+    },
     "String":{
       "type":"string",
       "max":1000,
@@ -3201,6 +4012,10 @@
         "EndDate":{
           "shape":"ISO8601Timestamp",
           "documentation":"<p>The date your subscription ends.</p>"
+        },
+        "Currency":{
+          "shape":"CurrencyCode",
+          "documentation":"<p>The currency of the subscription price. Currently only <code>USD</code> is supported.</p>"
         },
         "MonthlyRecurringPrice":{
           "shape":"NullableDouble",
@@ -3235,6 +4050,10 @@
         "MonthlyRecurringPrice":{
           "shape":"NullableFloat",
           "documentation":"<p>The monthly recurring price.</p>"
+        },
+        "Currency":{
+          "shape":"CurrencyCode",
+          "documentation":"<p>The currency of the price. Currently only <code>USD</code> is supported.</p>"
         }
       },
       "documentation":"<p>The pricing details for a subscription.</p>"
@@ -3399,6 +4218,55 @@
       "type":"structure",
       "members":{
         "Outpost":{"shape":"Outpost"}
+      }
+    },
+    "UpdateQuoteInput":{
+      "type":"structure",
+      "required":["QuoteIdentifier"],
+      "members":{
+        "QuoteIdentifier":{
+          "shape":"QuoteIdentifier",
+          "documentation":"<p>The ID or ARN of the quote.</p>",
+          "location":"uri",
+          "locationName":"QuoteIdentifier"
+        },
+        "OutpostIdentifier":{
+          "shape":"OutpostIdentifierOrEmpty",
+          "documentation":"<p>The ID or ARN of the Outpost to associate with the quote. Specify an empty string to remove the Outpost association.</p>"
+        },
+        "CountryCode":{
+          "shape":"CountryCode",
+          "documentation":"<p>The country code for the Outpost site location.</p>"
+        },
+        "RequestedCapacities":{
+          "shape":"QuoteCapacityList",
+          "documentation":"<p>The updated capacity requirements for the quote.</p>"
+        },
+        "RequestedConstraints":{
+          "shape":"QuoteConstraintList",
+          "documentation":"<p>The updated physical constraints for the quote.</p>"
+        },
+        "RequestedPaymentOptions":{
+          "shape":"PaymentOptionList",
+          "documentation":"<p>The updated payment options to include in the quote pricing.</p>"
+        },
+        "RequestedPaymentTerms":{
+          "shape":"PaymentTermList",
+          "documentation":"<p>The updated payment terms to include in the quote pricing.</p>"
+        },
+        "Description":{
+          "shape":"QuoteDescription",
+          "documentation":"<p>A description for the quote.</p>"
+        }
+      }
+    },
+    "UpdateQuoteOutput":{
+      "type":"structure",
+      "members":{
+        "Quote":{
+          "shape":"Quote",
+          "documentation":"<p>Information about the updated quote.</p>"
+        }
       }
     },
     "UpdateSiteAddressInput":{

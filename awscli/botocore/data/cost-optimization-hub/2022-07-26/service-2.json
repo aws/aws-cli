@@ -331,6 +331,13 @@
       },
       "documentation":"<p>The DB instance configuration used for recommendations.</p>"
     },
+    "DocumentDbCluster":{
+      "type":"structure",
+      "members":{
+        "costCalculation":{"shape":"ResourceCostCalculation"}
+      },
+      "documentation":"<p>The Amazon DocumentDB cluster recommendation details.</p>"
+    },
     "Double":{
       "type":"double",
       "box":true
@@ -387,6 +394,13 @@
         }
       },
       "documentation":"<p>The DynamoDB reserved capacity configuration used for recommendations.</p>"
+    },
+    "DynamoDbTable":{
+      "type":"structure",
+      "members":{
+        "costCalculation":{"shape":"ResourceCostCalculation"}
+      },
+      "documentation":"<p>The DynamoDB table recommendation details.</p>"
     },
     "EbsVolume":{
       "type":"structure",
@@ -664,6 +678,13 @@
         "documentation":"<p>An individual group's cost efficiency metrics over time.</p>"
       },
       "documentation":"<p>A list of cost efficiency metrics grouped by the specified dimension.</p>"
+    },
+    "ElastiCacheCluster":{
+      "type":"structure",
+      "members":{
+        "costCalculation":{"shape":"ResourceCostCalculation"}
+      },
+      "documentation":"<p>The ElastiCache cluster recommendation details.</p>"
     },
     "ElastiCacheReservedInstances":{
       "type":"structure",
@@ -1048,7 +1069,7 @@
     "ListEfficiencyMetricsRequestMaxResultsInteger":{
       "type":"integer",
       "box":true,
-      "max":100,
+      "max":1000,
       "min":0
     },
     "ListEfficiencyMetricsResponse":{
@@ -1220,6 +1241,13 @@
         "All",
         "None"
       ]
+    },
+    "MemoryDbCluster":{
+      "type":"structure",
+      "members":{
+        "costCalculation":{"shape":"ResourceCostCalculation"}
+      },
+      "documentation":"<p>The MemoryDB cluster recommendation details.</p>"
     },
     "MemoryDbReservedInstances":{
       "type":"structure",
@@ -1947,6 +1975,30 @@
         "natGateway":{
           "shape":"NatGateway",
           "documentation":"<p>The NAT Gateway recommendation details.</p>"
+        },
+        "dynamoDbTable":{
+          "shape":"DynamoDbTable",
+          "documentation":"<p>The DynamoDB table recommendation details.</p>"
+        },
+        "elastiCacheCluster":{
+          "shape":"ElastiCacheCluster",
+          "documentation":"<p>The ElastiCache cluster recommendation details.</p>"
+        },
+        "memoryDbCluster":{
+          "shape":"MemoryDbCluster",
+          "documentation":"<p>The MemoryDB cluster recommendation details.</p>"
+        },
+        "documentDbCluster":{
+          "shape":"DocumentDbCluster",
+          "documentation":"<p>The Amazon DocumentDB cluster recommendation details.</p>"
+        },
+        "workSpaces":{
+          "shape":"WorkSpaces",
+          "documentation":"<p>The WorkSpaces recommendation details.</p>"
+        },
+        "sageMakerEndpoint":{
+          "shape":"SageMakerEndpoint",
+          "documentation":"<p>The SageMaker endpoint recommendation details.</p>"
         }
       },
       "documentation":"<p>Contains detailed information about the specified resource.</p>",
@@ -2017,7 +2069,13 @@
         "AuroraDbClusterStorage",
         "DynamoDbReservedCapacity",
         "MemoryDbReservedInstances",
-        "NatGateway"
+        "NatGateway",
+        "DynamoDBTable",
+        "ElastiCacheCluster",
+        "MemoryDBCluster",
+        "DocumentDBCluster",
+        "WorkSpaces",
+        "SageMakerEndpoint"
       ]
     },
     "ResourceTypeList":{
@@ -2025,6 +2083,13 @@
       "member":{"shape":"ResourceType"},
       "max":100,
       "min":1
+    },
+    "SageMakerEndpoint":{
+      "type":"structure",
+      "members":{
+        "costCalculation":{"shape":"ResourceCostCalculation"}
+      },
+      "documentation":"<p>The SageMaker endpoint recommendation details.</p>"
     },
     "SageMakerSavingsPlans":{
       "type":"structure",
@@ -2329,6 +2394,13 @@
         "FieldValidationFailed",
         "Other"
       ]
+    },
+    "WorkSpaces":{
+      "type":"structure",
+      "members":{
+        "costCalculation":{"shape":"ResourceCostCalculation"}
+      },
+      "documentation":"<p>The WorkSpaces recommendation details.</p>"
     }
   },
   "documentation":"<p>You can use the Cost Optimization Hub API to programmatically identify, filter, aggregate, and quantify savings for your cost optimization recommendations across multiple Amazon Web Services Regions and Amazon Web Services accounts in your organization.</p> <p>The Cost Optimization Hub API provides the following endpoint:</p> <ul> <li> <p> https://cost-optimization-hub.us-east-1.amazonaws.com </p> </li> </ul>"

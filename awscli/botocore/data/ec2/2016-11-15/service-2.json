@@ -15523,10 +15523,7 @@
     },
     "CreateCapacityReservationFleetRequest":{
       "type":"structure",
-      "required":[
-        "InstanceTypeSpecifications",
-        "TotalTargetCapacity"
-      ],
+      "required":["TotalTargetCapacity"],
       "members":{
         "AllocationStrategy":{
           "shape":"String",
@@ -16431,6 +16428,11 @@
         "DestinationOptions":{
           "shape":"DestinationOptionsRequest",
           "documentation":"<p>The destination options.</p>"
+        },
+        "TagFieldSpecifications":{
+          "shape":"TagFieldSpecificationListRequest",
+          "documentation":"<p>The tag configuration associated with the Flow Logs Amazon EC2 Tags feature fields in your custom log format.</p>",
+          "locationName":"TagFieldSpecification"
         }
       }
     },
@@ -37988,6 +37990,11 @@
           "shape":"DestinationOptionsResponse",
           "documentation":"<p>The destination options.</p>",
           "locationName":"destinationOptions"
+        },
+        "TagFieldSpecifications":{
+          "shape":"TagFieldSpecificationListResponse",
+          "documentation":"<p>The tag configuration associated with the Flow Logs Amazon EC2 Tags feature fields in your custom log format.</p>",
+          "locationName":"tagFieldSpecificationSet"
         }
       },
       "documentation":"<p>Describes a flow log.</p>"
@@ -70431,6 +70438,69 @@
         "locationName":"item"
       }
     },
+    "TagFieldSpecificationListRequest":{
+      "type":"list",
+      "member":{
+        "shape":"TagFieldSpecificationRequest",
+        "locationName":"item"
+      },
+      "max":3,
+      "min":1
+    },
+    "TagFieldSpecificationListResponse":{
+      "type":"list",
+      "member":{
+        "shape":"TagFieldSpecificationResponse",
+        "locationName":"item"
+      },
+      "max":3,
+      "min":1
+    },
+    "TagFieldSpecificationRequest":{
+      "type":"structure",
+      "members":{
+        "ResourceType":{
+          "shape":"TaggableResourceType",
+          "documentation":"<p>The resource type for the tag keys associated with the Flow Logs Amazon EC2 Tags feature fields in your custom log format.</p>"
+        },
+        "TagKeys":{
+          "shape":"TagKeyList",
+          "documentation":"<p>The tag keys on your tagged resources to be displayed by the Flow Logs Amazon EC2 Tags feature fields in your custom log format.</p>",
+          "locationName":"TagKey"
+        }
+      },
+      "documentation":"<p>A single resource's tag configuration associated with the Flow Logs Amazon EC2 Tags feature fields in your custom log format.</p>"
+    },
+    "TagFieldSpecificationResponse":{
+      "type":"structure",
+      "members":{
+        "ResourceType":{
+          "shape":"TaggableResourceType",
+          "documentation":"<p>The resource type for the tag keys associated with the Flow Logs Amazon EC2 Tags feature fields in your custom log format.</p>",
+          "locationName":"resourceType"
+        },
+        "TagKeys":{
+          "shape":"TagKeyList",
+          "documentation":"<p>The tag keys on your tagged resources to be displayed by the Flow Logs Amazon EC2 Tags feature fields in your custom log format.</p>",
+          "locationName":"tagKeySet"
+        }
+      },
+      "documentation":"<p>A single resource's tag configuration associated with the Flow Logs Amazon EC2 Tags feature fields in your custom log format.</p>"
+    },
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "TagKeyList":{
+      "type":"list",
+      "member":{
+        "shape":"TagKey",
+        "locationName":"item"
+      },
+      "max":2,
+      "min":1
+    },
     "TagList":{
       "type":"list",
       "member":{
@@ -70462,6 +70532,14 @@
       }
     },
     "TaggableResourceId":{"type":"string"},
+    "TaggableResourceType":{
+      "type":"string",
+      "enum":[
+        "network-interface",
+        "instance",
+        "auto-scaling-group"
+      ]
+    },
     "TargetCapacitySpecification":{
       "type":"structure",
       "members":{
@@ -75515,10 +75593,6 @@
           "shape":"DateTime",
           "documentation":"<p>The modification completion or failure time.</p>",
           "locationName":"endTime"
-        },
-        "Operator":{
-          "shape":"OperatorResponse",
-          "locationName":"operator"
         }
       },
       "documentation":"<p>Describes the modification status of an EBS volume.</p>"

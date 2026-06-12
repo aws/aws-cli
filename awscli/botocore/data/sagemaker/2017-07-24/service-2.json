@@ -5110,6 +5110,10 @@
         "S3OutputLocation":{
           "shape":"S3Uri",
           "documentation":"<p>The Amazon S3 URI where benchmark results are stored.</p>"
+        },
+        "MlflowConfig":{
+          "shape":"AIMlflowConfig",
+          "documentation":"<p>The MLflow tracking configuration for the job. If you don't specify this parameter, MLflow tracking is disabled.</p>"
         }
       },
       "documentation":"<p>The output configuration for an AI benchmark job.</p>"
@@ -5125,6 +5129,10 @@
         "CloudWatchLogs":{
           "shape":"AICloudWatchLogsList",
           "documentation":"<p>The CloudWatch log information for the benchmark job.</p>"
+        },
+        "MlflowConfig":{
+          "shape":"AIMlflowConfig",
+          "documentation":"<p>The MLflow tracking configuration for the job.</p>"
         }
       },
       "documentation":"<p>The output result of an AI benchmark job, including the Amazon S3 location and CloudWatch log information.</p>"
@@ -5214,6 +5222,43 @@
     "AIMlReservationArnList":{
       "type":"list",
       "member":{"shape":"AIMlReservationArn"}
+    },
+    "AIMlflowConfig":{
+      "type":"structure",
+      "required":["MlflowResourceArn"],
+      "members":{
+        "MlflowResourceArn":{
+          "shape":"AIMlflowResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the SageMaker managed MLflow resource.</p>"
+        },
+        "MlflowExperimentName":{
+          "shape":"AIMlflowExperimentName",
+          "documentation":"<p>The MLflow experiment name used for tracking.</p>"
+        },
+        "MlflowRunName":{
+          "shape":"AIMlflowRunName",
+          "documentation":"<p>The MLflow run name used for tracking.</p>"
+        }
+      },
+      "documentation":"<p>The MLflow tracking configuration for logging metrics and parameters to a SageMaker managed MLflow tracking server.</p>"
+    },
+    "AIMlflowExperimentName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[a-zA-Z0-9\\-_./]+"
+    },
+    "AIMlflowResourceArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:mlflow-(app|tracking-server)/.*"
+    },
+    "AIMlflowRunName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[a-zA-Z0-9\\-_./]+"
     },
     "AIModelSource":{
       "type":"structure",
@@ -5568,6 +5613,10 @@
         "ModelPackageGroupIdentifier":{
           "shape":"AIResourceIdentifier",
           "documentation":"<p>The name or Amazon Resource Name (ARN) of the model package group where the optimized model is registered as a new model package version.</p>"
+        },
+        "MlflowConfig":{
+          "shape":"AIMlflowConfig",
+          "documentation":"<p>The MLflow tracking configuration for the job. If you don't specify this parameter, MLflow tracking is disabled.</p>"
         }
       },
       "documentation":"<p>The output configuration for an AI recommendation job.</p>"
@@ -5583,6 +5632,10 @@
         "ModelPackageGroupIdentifier":{
           "shape":"AIResourceIdentifier",
           "documentation":"<p>The name or Amazon Resource Name (ARN) of the model package group where deployment-ready model packages are registered.</p>"
+        },
+        "MlflowConfig":{
+          "shape":"AIMlflowConfig",
+          "documentation":"<p>The MLflow tracking configuration for the job.</p>"
         }
       },
       "documentation":"<p>The output configuration for an AI recommendation job, including the S3 location for results and the model package group for deployment.</p>"

@@ -4247,6 +4247,10 @@
         "configurationName":{
           "shape":"ConfigurationName",
           "documentation":"<p>Optional configuration name to use for the workflow run.</p>"
+        },
+        "engineSettings":{
+          "shape":"EngineSettings",
+          "documentation":"<p>Engine-specific settings for the workflow run. Use this field to specify configuration options that are specific to the workflow engine (for example, Nextflow profiles).</p>"
         }
       },
       "documentation":"<p>Shared configuration applied to all runs in a batch. Fields specified in a per-run <code>InlineSetting</code> entry override the corresponding fields in this object for that run. The <code>parameters</code> and <code>runTags</code> fields are merged rather than replaced — run-specific values take precedence when keys overlap.</p>"
@@ -7207,6 +7211,10 @@
         "runTags":{
           "shape":"TagMap",
           "documentation":"<p>Per-run AWS tags. Merged with <code>defaultRunSetting.runTags</code>; values in this object take precedence when keys overlap.</p>"
+        },
+        "engineSettings":{
+          "shape":"EngineSettings",
+          "documentation":"<p>Per-run engine-specific settings. Use this field to specify configuration options that are specific to the workflow engine (for example, Nextflow profiles). Overrides <code>defaultRunSetting.engineSettings</code> for this run.</p>"
         }
       },
       "documentation":"<p>A per-run configuration that overrides or merges with fields from <code>DefaultRunSetting</code> for a specific run.</p>"

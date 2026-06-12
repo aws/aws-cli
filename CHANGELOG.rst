@@ -2,6 +2,47 @@
 CHANGELOG
 =========
 
+2.35.1
+======
+
+* api-change:``bedrock-agentcore``: Add RetryableConflictException (HTTP 409) to InvokeAgentRuntimeCommand and GetAgentCard to prevent orphaned VMs during concurrent session access. The SDK automatically retries this exception with backoff. Enforcement is not yet active and will be enabled in a future service update.
+* api-change:``outposts``: Added AWS Outposts APIs for self-service Outposts quoting and ordering. New operations include CreateQuote, GetQuote, UpdateQuote, DeleteQuote, ListQuotes, and ListOrderableInstanceTypes.
+* api-change:``odb``: Releases Autonomous Database Serverless APIs, autonomousDatabaseOciIntegrationIamRoles, linkedOciTenancyId, linkedOciCompartmentId, and subscriptionErrors fields in GetOciOnboardingStatus API response.
+* api-change:``cloudwatch``: This release adds the APIs (AssociateDatasetKmsKey, DisassociateDatasetKmsKey, GetDataset) to manage encryption at rest for OpenTelemetry metrics in CloudWatch using AWS KMS customer managed keys.
+* api-change:``ec2``: Added TagFieldSpecifications to CreateFlowLogs and DescribeFlowLogs APIs. Customers can now specify tag keys in their Flow Logs subscriptions to capture associated EC2 resource tag values in their logs, enabling tag-based visibility.
+* api-change:``bedrock``: Adds support for the Amazon Bedrock account-level data retention APIs PutAccountDataRetention and GetAccountDataRetention.
+
+
+2.35.0
+======
+
+* feature:``configure``: Adds the ``agent-toolkit`` and ``aws configure agent-toolkit`` commands, which can be used for configuring your agentic tools with AWS skills and MCP server.
+
+
+2.34.64
+=======
+
+* api-change:``cost-optimization-hub``: Adds new Idle Recommendation types in the Cost Optimization Hub API
+* api-change:``observabilityadmin``: CloudWatch Observability Admin extends CentralizationRuleForOrganization APIs to support metrics, enabling centralization of metrics across accounts and Regions alongside logs.
+* api-change:``omics``: StartRunBatch API - Add EngineSettings
+* api-change:``taxsettings``: Adds support for additional tax information fields for Philippines, Belgium, Chile, France, Poland, and Italy in the Tax Settings API.
+* api-change:``mediapackagev2``: Adds support for DASH Audio Timeline Patternization. This enables your DASH manifests to templatize the repeating patterns that emerge in audio segment timelines. This compacts the total timeline length, utilizing the repeat notation, such that manifests don't grow indefinitely long.
+* api-change:``deadline``: Added optional identityCenterRegion parameter to AssociateMember APIs to allow managing memberships for users and groups in other regions.
+* api-change:``compute-optimizer``: Adds new Idle Recommendation Resource types in the AWS Compute Optimizer API
+* api-change:``mgn``: AWS Transform discovery tool now supported as network migration input source. You can now use the AWS Transform Discovery tool as a source for network migration alongside modelizeIT, enabling hybrid network migrations for environments running both VMware and non-VMware workloads.
+* api-change:``devops-agent``: Add Asset APIs for managing versioned assets and asset files in AWS DevOps Agent agent spaces.
+
+
+2.34.63
+=======
+
+* api-change:``emr-serverless``: Adds support for updating max capacity and custom fields while application is started
+* api-change:``quicksight``: Adds support for Knowledge Base APIs and Index Capacity API
+* api-change:``sagemaker``: This release adds support for MLflow experiment tracking in SageMaker inference optimization. CreateAIRecommendationJob and CreateAIBenchmarkJob now accept an optional OutputConfig.MlflowConfig (MLflow App ARN, experiment, run name) to stream benchmark metrics and artifacts to your own MLflow App.
+* api-change:``mediaconvert``: Adds support for configurable number of Clear Lead segments at the beginning of encrypted output. Adds support for multiple trickplay variants.
+* api-change:``payment-cryptography``: Adds CloudFormation support for resource-based policies on AWS Payment Cryptography keys.
+
+
 2.34.62
 =======
 

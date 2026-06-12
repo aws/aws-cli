@@ -95,6 +95,12 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.ec2.addcount', 'register_count_events'),
         ('awscli.customizations.ec2.runinstances', 'register_runinstances'),
     ],
+    'before-sign.agenttoolkit.*': [
+        (
+            'awscli.customizations.agenttoolkit',
+            'register_agent_toolkit_commands',
+        )
+    ],
     'building-argument-table': [
         ('awscli.customizations.cliinput', 'register_cli_input_args'),
         ('awscli.customizations.paginate', 'register_pagination'),
@@ -108,6 +114,12 @@ PLUGIN_REGISTRY = {
             'awscli.customizations.streamingoutputarg',
             'register_streaming_output_arg',
         )
+    ],
+    'building-argument-table.agent-toolkit.*': [
+        ('awscli.customizations.argrename', 'register_arg_renames')
+    ],
+    'building-argument-table.agent-toolkit.search-skills': [
+        ('awscli.customizations.argrename', 'register_arg_renames')
     ],
     'building-argument-table.apigateway.create-rest-api': [
         ('awscli.customizations.argrename', 'register_arg_renames')
@@ -517,6 +529,12 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.waiters', 'register_add_waiters'),
         ('awscli.alias', 'register_alias_commands'),
     ],
+    'building-command-table.agent-toolkit': [
+        (
+            'awscli.customizations.agenttoolkit',
+            'register_agent_toolkit_commands',
+        )
+    ],
     'building-command-table.bedrock-agent-runtime': [
         ('awscli.customizations.removals', 'register_removals')
     ],
@@ -885,5 +903,10 @@ MAIN_COMMAND_TABLE_OPS: list[
         'logout',
         'awscli.customizations.login.logout',
         'LogoutCommand',
+    ),
+    (
+        CommandTableOp.RENAME,
+        'agenttoolkit',
+        'agent-toolkit',
     ),
 ]

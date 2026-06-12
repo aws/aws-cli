@@ -22,6 +22,7 @@ from awscli.customizations.login.utils import (
     LoginType,
     SameDeviceLoginTokenFetcher,
 )
+from awscli.customizations.prompts import yes_no_choice
 from awscli.customizations.sso.utils import (
     AuthCodeFetcher,
     OpenBrowserHandler,
@@ -165,19 +166,11 @@ class LoginCommand(BasicCommand):
         if existing_session_id == new_session_id:
             return True
 
-        while True:
-            response = compat_input(
-                f'\nProfile {profile_name} is already configured to use session '
-                f'{existing_session_id}. Do you want to overwrite it to use '
-                f'{new_session_id} instead? (y/n): '
-            )
-
-            if response.lower() in ('y', 'yes'):
-                return True
-            elif response.lower() in ('n', 'no'):
-                return False
-            else:
-                uni_print('Invalid response. Please enter "y" or "n"')
+        return yes_no_choice(
+            f'\nProfile {profile_name} is already configured to use session '
+            f'{existing_session_id}. Do you want to overwrite it to use '
+            f'{new_session_id} instead? (y/n): '
+        )
 
     def ensure_profile_does_not_have_existing_credentials(self, profile_name):
         """

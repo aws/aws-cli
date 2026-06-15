@@ -187,6 +187,7 @@ def unify_paging_params(
                 PAGE_SIZE_HELP,
                 parse_type=type_name,
                 serialized_name='PageSize',
+                shape_metadata=limit_key_shape.metadata,
             ),
             shadowed_args,
         )
@@ -367,8 +368,18 @@ class PageArgument(BaseCLIArgument):
         'long': int,
     }
 
-    def __init__(self, name, documentation, parse_type, serialized_name):
-        self.argument_model = model.Shape('PageArgument', {'type': 'string'})
+    SHAPE_CONSTRAINT_KEYS = ('min', 'max')
+
+    def __init__(
+        self, name, documentation, parse_type, serialized_name,
+        shape_metadata=None,
+    ):
+        shape_model = {'type': parse_type}
+        if shape_metadata:
+            for key in self.SHAPE_CONSTRAINT_KEYS:
+                if key in shape_metadata:
+                    shape_model[key] = shape_metadata[key]
+        self.argument_model = model.Shape('PageArgument', shape_model)
         self._name = name
         self._serialized_name = serialized_name
         self._documentation = documentation

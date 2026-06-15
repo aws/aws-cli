@@ -119,6 +119,24 @@
       "documentation":"<p>Retrieve information about an asynchronous invocation.</p>",
       "readonly":true
     },
+    "InvokeGuardrailChecks":{
+      "name":"InvokeGuardrailChecks",
+      "http":{
+        "method":"POST",
+        "requestUri":"/guardrail-checks/invoke",
+        "responseCode":200
+      },
+      "input":{"shape":"InvokeGuardrailChecksRequest"},
+      "output":{"shape":"InvokeGuardrailChecksResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Evaluates messages against inline guardrail checks. You specify the check configurations directly in the request, and Amazon Bedrock returns per-check results with severity or confidence scores.</p>"
+    },
     "InvokeModel":{
       "name":"InvokeModel",
       "http":{
@@ -2016,6 +2034,457 @@
       },
       "documentation":"<p>Indicates that the claims are definitively true and logically implied by the premises, with no possible alternative interpretations.</p>"
     },
+    "GuardrailChecksConfig":{
+      "type":"structure",
+      "members":{
+        "contentFilter":{
+          "shape":"GuardrailChecksContentFilterConfig",
+          "documentation":"<p>The content filter check configuration.</p>"
+        },
+        "promptAttack":{
+          "shape":"GuardrailChecksPromptAttackConfig",
+          "documentation":"<p>The prompt attack check configuration.</p>"
+        },
+        "sensitiveInformation":{
+          "shape":"GuardrailChecksSensitiveInformationConfig",
+          "documentation":"<p>The sensitive information check configuration.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for inline guardrail checks. Specify one or more check types to run against the messages.</p>"
+    },
+    "GuardrailChecksContentBlock":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"GuardrailChecksTextContent",
+          "documentation":"<p>The text content to evaluate.</p>"
+        }
+      },
+      "documentation":"<p>A content block within a message to evaluate.</p>",
+      "union":true
+    },
+    "GuardrailChecksContentBlockList":{
+      "type":"list",
+      "member":{"shape":"GuardrailChecksContentBlock"},
+      "documentation":"<p>A list of content blocks within a message.</p>",
+      "min":1
+    },
+    "GuardrailChecksContentFilterCategory":{
+      "type":"string",
+      "documentation":"<p>The category for content filter evaluation.</p>",
+      "enum":[
+        "VIOLENCE",
+        "HATE",
+        "SEXUAL",
+        "MISCONDUCT",
+        "INSULTS"
+      ]
+    },
+    "GuardrailChecksContentFilterCategoryConfig":{
+      "type":"structure",
+      "required":["category"],
+      "members":{
+        "category":{
+          "shape":"GuardrailChecksContentFilterCategory",
+          "documentation":"<p>The content filter category to evaluate.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a single content filter category to evaluate.</p>"
+    },
+    "GuardrailChecksContentFilterCategoryConfigList":{
+      "type":"list",
+      "member":{"shape":"GuardrailChecksContentFilterCategoryConfig"},
+      "documentation":"<p>A list of content filter category configurations.</p>",
+      "max":5,
+      "min":1
+    },
+    "GuardrailChecksContentFilterConfig":{
+      "type":"structure",
+      "required":["categories"],
+      "members":{
+        "categories":{
+          "shape":"GuardrailChecksContentFilterCategoryConfigList",
+          "documentation":"<p>The content filter categories to evaluate.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for the content filter check, specifying which categories to evaluate.</p>"
+    },
+    "GuardrailChecksContentFilterResult":{
+      "type":"structure",
+      "required":["results"],
+      "members":{
+        "results":{
+          "shape":"GuardrailChecksContentFilterResultList",
+          "documentation":"<p>The per-category content filter results.</p>"
+        }
+      },
+      "documentation":"<p>The content filter check results.</p>"
+    },
+    "GuardrailChecksContentFilterResultEntry":{
+      "type":"structure",
+      "required":[
+        "category",
+        "severityScore"
+      ],
+      "members":{
+        "category":{
+          "shape":"GuardrailChecksContentFilterCategory",
+          "documentation":"<p>The content filter category that was evaluated.</p>"
+        },
+        "severityScore":{
+          "shape":"GuardrailChecksContentFilterResultEntrySeverityScoreDouble",
+          "documentation":"<p>The severity score for the category, ranging from 0.0 to 1.0. Higher values indicate greater severity.</p>"
+        }
+      },
+      "documentation":"<p>The evaluation result for a single content filter category.</p>"
+    },
+    "GuardrailChecksContentFilterResultEntrySeverityScoreDouble":{
+      "type":"double",
+      "box":true,
+      "max":1.0,
+      "min":0.0
+    },
+    "GuardrailChecksContentFilterResultList":{
+      "type":"list",
+      "member":{"shape":"GuardrailChecksContentFilterResultEntry"},
+      "documentation":"<p>A list of content filter evaluation results.</p>"
+    },
+    "GuardrailChecksContentFilterUsage":{
+      "type":"structure",
+      "required":["textUnits"],
+      "members":{
+        "textUnits":{
+          "shape":"Integer",
+          "documentation":"<p>The number of text units consumed by the content filter check.</p>"
+        }
+      },
+      "documentation":"<p>The text unit usage for the content filter check.</p>"
+    },
+    "GuardrailChecksMessage":{
+      "type":"structure",
+      "required":[
+        "role",
+        "content"
+      ],
+      "members":{
+        "role":{
+          "shape":"GuardrailChecksRole",
+          "documentation":"<p>The role of the message sender.</p>"
+        },
+        "content":{
+          "shape":"GuardrailChecksContentBlockList",
+          "documentation":"<p>The content blocks for the message.</p>"
+        }
+      },
+      "documentation":"<p>A message to evaluate against guardrail checks, containing a role and content blocks.</p>"
+    },
+    "GuardrailChecksMessageList":{
+      "type":"list",
+      "member":{"shape":"GuardrailChecksMessage"},
+      "documentation":"<p>A list of messages to evaluate.</p>",
+      "min":1
+    },
+    "GuardrailChecksPromptAttackCategory":{
+      "type":"string",
+      "documentation":"<p>The category for prompt attack evaluation.</p>",
+      "enum":[
+        "JAILBREAK",
+        "PROMPT_INJECTION",
+        "PROMPT_LEAKAGE"
+      ]
+    },
+    "GuardrailChecksPromptAttackCategoryConfig":{
+      "type":"structure",
+      "required":["category"],
+      "members":{
+        "category":{
+          "shape":"GuardrailChecksPromptAttackCategory",
+          "documentation":"<p>The prompt attack category to evaluate.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a single prompt attack category to evaluate.</p>"
+    },
+    "GuardrailChecksPromptAttackCategoryConfigList":{
+      "type":"list",
+      "member":{"shape":"GuardrailChecksPromptAttackCategoryConfig"},
+      "documentation":"<p>A list of prompt attack category configurations.</p>",
+      "max":3,
+      "min":1
+    },
+    "GuardrailChecksPromptAttackConfig":{
+      "type":"structure",
+      "required":["categories"],
+      "members":{
+        "categories":{
+          "shape":"GuardrailChecksPromptAttackCategoryConfigList",
+          "documentation":"<p>The prompt attack categories to evaluate.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for the prompt attack check, specifying which categories to evaluate.</p>"
+    },
+    "GuardrailChecksPromptAttackResult":{
+      "type":"structure",
+      "required":["results"],
+      "members":{
+        "results":{
+          "shape":"GuardrailChecksPromptAttackResultList",
+          "documentation":"<p>The per-category prompt attack results.</p>"
+        }
+      },
+      "documentation":"<p>The prompt attack check results.</p>"
+    },
+    "GuardrailChecksPromptAttackResultEntry":{
+      "type":"structure",
+      "required":[
+        "category",
+        "severityScore"
+      ],
+      "members":{
+        "category":{
+          "shape":"GuardrailChecksPromptAttackCategory",
+          "documentation":"<p>The prompt attack category that was evaluated.</p>"
+        },
+        "severityScore":{
+          "shape":"GuardrailChecksPromptAttackResultEntrySeverityScoreDouble",
+          "documentation":"<p>The severity score for the category, ranging from 0.0 to 1.0. Higher values indicate greater severity.</p>"
+        }
+      },
+      "documentation":"<p>The evaluation result for a single prompt attack category.</p>"
+    },
+    "GuardrailChecksPromptAttackResultEntrySeverityScoreDouble":{
+      "type":"double",
+      "box":true,
+      "max":1.0,
+      "min":0.0
+    },
+    "GuardrailChecksPromptAttackResultList":{
+      "type":"list",
+      "member":{"shape":"GuardrailChecksPromptAttackResultEntry"},
+      "documentation":"<p>A list of prompt attack evaluation results.</p>"
+    },
+    "GuardrailChecksPromptAttackUsage":{
+      "type":"structure",
+      "required":["textUnits"],
+      "members":{
+        "textUnits":{
+          "shape":"Integer",
+          "documentation":"<p>The number of text units consumed by the prompt attack check.</p>"
+        }
+      },
+      "documentation":"<p>The text unit usage for the prompt attack check.</p>"
+    },
+    "GuardrailChecksResults":{
+      "type":"structure",
+      "members":{
+        "contentFilter":{
+          "shape":"GuardrailChecksContentFilterResult",
+          "documentation":"<p>The content filter check results.</p>"
+        },
+        "promptAttack":{
+          "shape":"GuardrailChecksPromptAttackResult",
+          "documentation":"<p>The prompt attack check results.</p>"
+        },
+        "sensitiveInformation":{
+          "shape":"GuardrailChecksSensitiveInformationResult",
+          "documentation":"<p>The sensitive information check results.</p>"
+        }
+      },
+      "documentation":"<p>The results from the guardrail checks evaluation, organized by check type.</p>"
+    },
+    "GuardrailChecksRole":{
+      "type":"string",
+      "documentation":"<p>The role of the message sender in the conversation.</p>",
+      "enum":[
+        "user",
+        "assistant",
+        "system"
+      ]
+    },
+    "GuardrailChecksSensitiveInformationConfig":{
+      "type":"structure",
+      "required":["entities"],
+      "members":{
+        "entities":{
+          "shape":"GuardrailChecksSensitiveInformationEntityConfigList",
+          "documentation":"<p>The sensitive information entity types to detect.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for the sensitive information check, specifying which entity types to detect.</p>"
+    },
+    "GuardrailChecksSensitiveInformationEntityConfig":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "type":{
+          "shape":"GuardrailChecksSensitiveInformationEntityType",
+          "documentation":"<p>The PII entity type to detect.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a single sensitive information entity type to detect.</p>"
+    },
+    "GuardrailChecksSensitiveInformationEntityConfigList":{
+      "type":"list",
+      "member":{"shape":"GuardrailChecksSensitiveInformationEntityConfig"},
+      "documentation":"<p>A list of sensitive information entity configurations.</p>",
+      "max":31,
+      "min":1
+    },
+    "GuardrailChecksSensitiveInformationEntityType":{
+      "type":"string",
+      "documentation":"<p>The type of personally identifiable information (PII) entity to detect.</p>",
+      "enum":[
+        "ADDRESS",
+        "AGE",
+        "AWS_ACCESS_KEY",
+        "AWS_SECRET_KEY",
+        "CA_HEALTH_NUMBER",
+        "CA_SOCIAL_INSURANCE_NUMBER",
+        "CREDIT_DEBIT_CARD_CVV",
+        "CREDIT_DEBIT_CARD_EXPIRY",
+        "CREDIT_DEBIT_CARD_NUMBER",
+        "DRIVER_ID",
+        "EMAIL",
+        "INTERNATIONAL_BANK_ACCOUNT_NUMBER",
+        "IP_ADDRESS",
+        "LICENSE_PLATE",
+        "MAC_ADDRESS",
+        "NAME",
+        "PASSWORD",
+        "PHONE",
+        "PIN",
+        "SWIFT_CODE",
+        "UK_NATIONAL_HEALTH_SERVICE_NUMBER",
+        "UK_NATIONAL_INSURANCE_NUMBER",
+        "UK_UNIQUE_TAXPAYER_REFERENCE_NUMBER",
+        "URL",
+        "USERNAME",
+        "US_BANK_ACCOUNT_NUMBER",
+        "US_BANK_ROUTING_NUMBER",
+        "US_INDIVIDUAL_TAX_IDENTIFICATION_NUMBER",
+        "US_PASSPORT_NUMBER",
+        "US_SOCIAL_SECURITY_NUMBER",
+        "VEHICLE_IDENTIFICATION_NUMBER"
+      ]
+    },
+    "GuardrailChecksSensitiveInformationResult":{
+      "type":"structure",
+      "required":["results"],
+      "members":{
+        "results":{
+          "shape":"GuardrailChecksSensitiveInformationResultList",
+          "documentation":"<p>The detected sensitive information entities.</p>"
+        },
+        "truncated":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the results were truncated because the number of detected entities exceeded the maximum limit.</p>"
+        }
+      },
+      "documentation":"<p>The sensitive information check results.</p>"
+    },
+    "GuardrailChecksSensitiveInformationResultEntry":{
+      "type":"structure",
+      "required":[
+        "type",
+        "confidenceScore",
+        "beginOffset",
+        "endOffset",
+        "messageIndex",
+        "contentIndex"
+      ],
+      "members":{
+        "type":{
+          "shape":"GuardrailChecksSensitiveInformationEntityType",
+          "documentation":"<p>The PII entity type that was detected.</p>"
+        },
+        "confidenceScore":{
+          "shape":"GuardrailChecksSensitiveInformationResultEntryConfidenceScoreDouble",
+          "documentation":"<p>The confidence score for the detection, ranging from 0.0 to 1.0. Higher values indicate greater confidence.</p>"
+        },
+        "beginOffset":{
+          "shape":"GuardrailChecksSensitiveInformationResultEntryBeginOffsetInteger",
+          "documentation":"<p>The start character offset of the detected entity within the content block.</p>"
+        },
+        "endOffset":{
+          "shape":"GuardrailChecksSensitiveInformationResultEntryEndOffsetInteger",
+          "documentation":"<p>The end character offset of the detected entity within the content block.</p>"
+        },
+        "messageIndex":{
+          "shape":"GuardrailChecksSensitiveInformationResultEntryMessageIndexInteger",
+          "documentation":"<p>The zero-based index of the message in the input messages array where the entity was detected.</p>"
+        },
+        "contentIndex":{
+          "shape":"GuardrailChecksSensitiveInformationResultEntryContentIndexInteger",
+          "documentation":"<p>The zero-based index of the content block within the message where the entity was detected.</p>"
+        }
+      },
+      "documentation":"<p>The detection result for a single sensitive information entity found in the evaluated messages.</p>"
+    },
+    "GuardrailChecksSensitiveInformationResultEntryBeginOffsetInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "GuardrailChecksSensitiveInformationResultEntryConfidenceScoreDouble":{
+      "type":"double",
+      "box":true,
+      "max":1.0,
+      "min":0.0
+    },
+    "GuardrailChecksSensitiveInformationResultEntryContentIndexInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "GuardrailChecksSensitiveInformationResultEntryEndOffsetInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "GuardrailChecksSensitiveInformationResultEntryMessageIndexInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "GuardrailChecksSensitiveInformationResultList":{
+      "type":"list",
+      "member":{"shape":"GuardrailChecksSensitiveInformationResultEntry"},
+      "documentation":"<p>A list of sensitive information detection results.</p>"
+    },
+    "GuardrailChecksSensitiveInformationUsage":{
+      "type":"structure",
+      "required":["textUnits"],
+      "members":{
+        "textUnits":{
+          "shape":"Integer",
+          "documentation":"<p>The number of text units consumed by the sensitive information check.</p>"
+        }
+      },
+      "documentation":"<p>The text unit usage for the sensitive information check.</p>"
+    },
+    "GuardrailChecksTextContent":{
+      "type":"string",
+      "documentation":"<p>The text content of a message content block. Minimum length of 1 character.</p>",
+      "min":1,
+      "sensitive":true
+    },
+    "GuardrailChecksUsageResults":{
+      "type":"structure",
+      "members":{
+        "contentFilter":{
+          "shape":"GuardrailChecksContentFilterUsage",
+          "documentation":"<p>The text unit usage for the content filter check.</p>"
+        },
+        "promptAttack":{
+          "shape":"GuardrailChecksPromptAttackUsage",
+          "documentation":"<p>The text unit usage for the prompt attack check.</p>"
+        },
+        "sensitiveInformation":{
+          "shape":"GuardrailChecksSensitiveInformationUsage",
+          "documentation":"<p>The text unit usage for the sensitive information check.</p>"
+        }
+      },
+      "documentation":"<p>The text unit usage for the guardrail checks evaluation, organized by check type.</p>"
+    },
     "GuardrailConfiguration":{
       "type":"structure",
       "members":{
@@ -3036,6 +3505,40 @@
       "max":2048,
       "min":1,
       "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:async-invoke/[a-z0-9]{12}"
+    },
+    "InvokeGuardrailChecksRequest":{
+      "type":"structure",
+      "required":[
+        "messages",
+        "checks"
+      ],
+      "members":{
+        "messages":{
+          "shape":"GuardrailChecksMessageList",
+          "documentation":"<p>The messages to evaluate against the specified guardrail checks. Each message includes a role and one or more content blocks.</p>"
+        },
+        "checks":{
+          "shape":"GuardrailChecksConfig",
+          "documentation":"<p>The inline check configurations that specify which guardrail checks to run against the messages.</p>"
+        }
+      }
+    },
+    "InvokeGuardrailChecksResponse":{
+      "type":"structure",
+      "required":[
+        "results",
+        "usage"
+      ],
+      "members":{
+        "results":{
+          "shape":"GuardrailChecksResults",
+          "documentation":"<p>The per-check results containing findings from the guardrail evaluation.</p>"
+        },
+        "usage":{
+          "shape":"GuardrailChecksUsageResults",
+          "documentation":"<p>The per-check text unit consumption for the guardrail evaluation.</p>"
+        }
+      }
     },
     "InvokeModelIdentifier":{
       "type":"string",

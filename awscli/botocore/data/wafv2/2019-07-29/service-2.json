@@ -515,6 +515,54 @@
       ],
       "documentation":"<p>Retrieves the specified <a>RegexPatternSet</a>.</p>"
     },
+    "GetRevenueStatistics":{
+      "name":"GetRevenueStatistics",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetRevenueStatisticsRequest"},
+      "output":{"shape":"GetRevenueStatisticsResponse"},
+      "errors":[
+        {"shape":"WAFInternalErrorException"},
+        {"shape":"WAFInvalidParameterException"},
+        {"shape":"WAFNonexistentItemException"},
+        {"shape":"WAFInvalidOperationException"}
+      ],
+      "documentation":"<p>Retrieves ranked monetization statistics. Use the <code>StatisticType</code> parameter to specify the ranking: <code>TOP_SOURCES_BY_REVENUE</code> for top sources by revenue, or <code>TOP_PATHS_BY_REVENUE</code> for top content paths by revenue. This operation is only available for <code>CLOUDFRONT</code> scope. The maximum supported time window is 90 days. When no <code>CurrencyMode</code> filter is provided, results default to <code>REAL</code>. To retrieve test data, include a <code>CurrencyMode</code> filter with the value <code>TEST</code>.</p>"
+    },
+    "GetRevenueStatisticsSummary":{
+      "name":"GetRevenueStatisticsSummary",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetRevenueStatisticsSummaryRequest"},
+      "output":{"shape":"GetRevenueStatisticsSummaryResponse"},
+      "errors":[
+        {"shape":"WAFInternalErrorException"},
+        {"shape":"WAFInvalidParameterException"},
+        {"shape":"WAFNonexistentItemException"},
+        {"shape":"WAFInvalidOperationException"}
+      ],
+      "documentation":"<p>Retrieves a summary of monetization revenue for the specified time window. Returns total revenue, revenue by verification tier, total settlements, and total HTTP 402 responses served. This operation is only available for <code>CLOUDFRONT</code> scope. The maximum supported time window is 90 days. When no <code>CurrencyMode</code> filter is provided, results default to <code>REAL</code>. To retrieve test data, include a <code>CurrencyMode</code> filter with the value <code>TEST</code>.</p>"
+    },
+    "GetRevenueStatisticsTimeSeries":{
+      "name":"GetRevenueStatisticsTimeSeries",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetRevenueStatisticsTimeSeriesRequest"},
+      "output":{"shape":"GetRevenueStatisticsTimeSeriesResponse"},
+      "errors":[
+        {"shape":"WAFInternalErrorException"},
+        {"shape":"WAFInvalidParameterException"},
+        {"shape":"WAFNonexistentItemException"},
+        {"shape":"WAFInvalidOperationException"}
+      ],
+      "documentation":"<p>Retrieves time series data for monetization revenue. Returns data points aggregated at the specified interval for the given time window. This operation is only available for <code>CLOUDFRONT</code> scope. The maximum supported time window is 90 days. When no <code>CurrencyMode</code> filter is provided, results default to <code>REAL</code>. To retrieve test data, include a <code>CurrencyMode</code> filter with the value <code>TEST</code>.</p>"
+    },
     "GetRuleGroup":{
       "name":"GetRuleGroup",
       "http":{
@@ -748,6 +796,22 @@
         {"shape":"WAFInvalidOperationException"}
       ],
       "documentation":"<p>Retrieves an array of <a>RuleGroupSummary</a> objects for the rule groups that you manage. </p>"
+    },
+    "ListSettlementRecords":{
+      "name":"ListSettlementRecords",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListSettlementRecordsRequest"},
+      "output":{"shape":"ListSettlementRecordsResponse"},
+      "errors":[
+        {"shape":"WAFInternalErrorException"},
+        {"shape":"WAFInvalidParameterException"},
+        {"shape":"WAFNonexistentItemException"},
+        {"shape":"WAFInvalidOperationException"}
+      ],
+      "documentation":"<p>Retrieves individual settlement transaction records for monetization. Each record represents a single payment transaction between a client and your protected resource. This operation is only available for <code>CLOUDFRONT</code> scope. The maximum supported time window is 90 days. When no <code>CurrencyMode</code> filter is provided, results default to <code>REAL</code>. To retrieve test data, include a <code>CurrencyMode</code> filter with the value <code>TEST</code>.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -1127,6 +1191,7 @@
         "COUNT",
         "CAPTCHA",
         "CHALLENGE",
+        "MONETIZE",
         "EXCLUDED_AS_COUNT"
       ]
     },
@@ -1294,6 +1359,15 @@
         }
       },
       "documentation":"<p>Specifies that WAF should block the request and optionally defines additional custom handling for the response to the web request.</p> <p>This is used in the context of other settings, for example to specify values for <a>RuleAction</a> and web ACL <a>DefaultAction</a>. </p>"
+    },
+    "BlockchainChain":{
+      "type":"string",
+      "enum":[
+        "BASE",
+        "SOLANA",
+        "BASE_SEPOLIA",
+        "SOLANA_DEVNET"
+      ]
     },
     "Body":{
       "type":"structure",
@@ -2006,6 +2080,10 @@
         "CustomResponseBodies":{
           "shape":"CustomResponseBodies",
           "documentation":"<p>A map of custom response keys and content bodies. When you create a rule with a block action, you can send a custom response to the web request. You define these for the rule group, and then use them in the rules that you define in the rule group. </p> <p>For information about customizing web requests and responses, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html\">Customizing web requests and responses in WAF</a> in the <i>WAF Developer Guide</i>. </p> <p>For information about the limits on count and size for custom request and response settings, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/limits.html\">WAF quotas</a> in the <i>WAF Developer Guide</i>. </p>"
+        },
+        "MonetizationConfig":{
+          "shape":"MonetizationConfig",
+          "documentation":"<p>The monetization configuration for the rule group. Provide this when any rule in the rule group uses the <code>Monetize</code> action.</p>"
         }
       }
     },
@@ -2086,6 +2164,10 @@
         "ApplicationConfig":{
           "shape":"ApplicationConfig",
           "documentation":"<p>Configures the ability for the WAF console to store and retrieve application attributes during the web ACL creation process. Application attributes help WAF give recommendations for protection packs.</p>"
+        },
+        "MonetizationConfig":{
+          "shape":"MonetizationConfig",
+          "documentation":"<p>The monetization configuration for the web ACL. Provide this when any rule in the web ACL uses the <code>Monetize</code> action.</p>"
         }
       }
     },
@@ -2103,6 +2185,32 @@
       "max":256,
       "min":1,
       "pattern":".*\\S.*"
+    },
+    "CryptoConfig":{
+      "type":"structure",
+      "required":["PaymentNetworks"],
+      "members":{
+        "PaymentNetworks":{
+          "shape":"PaymentNetworks",
+          "documentation":"<p>The blockchain payment networks configured to receive payments. You can specify 1 to 2 networks. All networks must be in the same environment-either all production networks (Base, Solana) or all test networks (Base Sepolia, Solana Devnet).</p>"
+        }
+      },
+      "documentation":"<p>The cryptocurrency payment configuration for AI bot monetization. Contains the list of blockchain payment networks where you receive payments.</p>"
+    },
+    "CryptoCurrency":{
+      "type":"string",
+      "enum":["USDC"]
+    },
+    "Currency":{
+      "type":"string",
+      "enum":["USDC"]
+    },
+    "CurrencyMode":{
+      "type":"string",
+      "enum":[
+        "REAL",
+        "TEST"
+      ]
     },
     "CustomHTTPHeader":{
       "type":"structure",
@@ -2192,6 +2300,44 @@
         }
       },
       "documentation":"<p>The response body to use in a custom response to a web request. This is referenced by key from <a>CustomResponse</a> <code>CustomResponseBodyKey</code>.</p>"
+    },
+    "DataPointEntry":{
+      "type":"structure",
+      "members":{
+        "Date":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for this data point.</p>"
+        },
+        "MonetizeServedCount":{
+          "shape":"RequestCount",
+          "documentation":"<p>The number of HTTP 402 Payment Required responses served during this interval.</p>"
+        },
+        "SettledCount":{
+          "shape":"RequestCount",
+          "documentation":"<p>The number of successfully settled payments during this interval.</p>"
+        },
+        "TotalAmount":{
+          "shape":"MonetizationAmountValue",
+          "documentation":"<p>The total revenue amount during this interval in the specified currency.</p>"
+        },
+        "Category":{
+          "shape":"FilterString",
+          "documentation":"<p>The bot category for this data point, when grouped by category.</p>"
+        },
+        "Intent":{
+          "shape":"FilterString",
+          "documentation":"<p>The intent classification for this data point, when grouped by intent.</p>"
+        },
+        "GroupByValue":{
+          "shape":"FilterString",
+          "documentation":"<p>The group-by dimension value for this data point.</p>"
+        }
+      },
+      "documentation":"<p>A single data point in a revenue time series, representing aggregated monetization metrics for a specific time interval.</p>"
+    },
+    "DataPointsList":{
+      "type":"list",
+      "member":{"shape":"DataPointEntry"}
     },
     "DataProtection":{
       "type":"structure",
@@ -3228,6 +3374,170 @@
         }
       }
     },
+    "GetRevenueStatisticsRequest":{
+      "type":"structure",
+      "required":[
+        "StatisticType",
+        "TimeWindow",
+        "Scope",
+        "Currency"
+      ],
+      "members":{
+        "StatisticType":{
+          "shape":"RankingStatisticType",
+          "documentation":"<p> <code>TOP_SOURCES_BY_REVENUE</code> ranks revenue from AI bot traffic, grouped by the dimension you specify in the <code>GroupBy</code> parameter (<code>NAME</code>, <code>CATEGORY</code>, <code>INTENT</code>, <code>ORGANIZATION</code>, or <code>WEBACL</code>); <code>GroupBy</code> is required for this statistic type. <code>TOP_PATHS_BY_REVENUE</code> ranks revenue by path.</p>"
+        },
+        "TimeWindow":{
+          "shape":"TimeWindow",
+          "documentation":"<p>The time range for the query. Specify start and end timestamps.</p>"
+        },
+        "Scope":{
+          "shape":"Scope",
+          "documentation":"<p>Specifies whether this is for a Amazon CloudFront distribution (<code>CLOUDFRONT</code>) or for a regional application (<code>REGIONAL</code>).</p>"
+        },
+        "Currency":{
+          "shape":"Currency",
+          "documentation":"<p>The currency for the revenue amounts in the response.</p>"
+        },
+        "GroupBy":{
+          "shape":"GroupByType",
+          "documentation":"<p>The dimension to group results by: <code>NAME</code>, <code>CATEGORY</code>, <code>INTENT</code>, <code>ORGANIZATION</code>, or <code>WEBACL</code>. Required when <code>StatisticType</code> is <code>TOP_SOURCES_BY_REVENUE</code>. Not required for <code>TOP_PATHS_BY_REVENUE</code>, where results are grouped by content path. If <code>StatisticType</code> is <code>TOP_SOURCES_BY_REVENUE</code> and <code>GroupBy</code> is omitted, the request is rejected with a <code>WAFInvalidParameterException</code>.</p>"
+        },
+        "Filters":{
+          "shape":"MonetizationFilterList",
+          "documentation":"<p>Optional filters to narrow the results.</p>"
+        },
+        "NextMarker":{
+          "shape":"NextMarker",
+          "documentation":"<p>When you get a paginated response, this marker indicates that additional results are available. Use it in a subsequent request to retrieve the next page of results.</p>"
+        },
+        "Limit":{
+          "shape":"PathStatisticsLimit",
+          "documentation":"<p>The maximum number of results to return.</p>"
+        },
+        "SortBy":{
+          "shape":"RankingSortBy",
+          "documentation":"<p>The field to sort results by: <code>REVENUE</code>, <code>PERCENTAGE</code>, or <code>NAME</code>.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sort order: <code>ASC</code> for ascending or <code>DESC</code> for descending.</p>"
+        }
+      }
+    },
+    "GetRevenueStatisticsResponse":{
+      "type":"structure",
+      "members":{
+        "SourceStatistics":{
+          "shape":"SourceStatisticsList",
+          "documentation":"<p>Statistics for top revenue sources (AI bots). Populated when <code>StatisticType</code> is <code>TOP_SOURCES_BY_REVENUE</code>.</p>"
+        },
+        "RevenuePathStatistics":{
+          "shape":"RevenuePathStatisticsList",
+          "documentation":"<p>Statistics for top revenue paths. Populated when <code>StatisticType</code> is <code>TOP_PATHS_BY_REVENUE</code>.</p>"
+        },
+        "NextMarker":{
+          "shape":"NextMarker",
+          "documentation":"<p>When you get a paginated response, this marker indicates that additional results are available.</p>"
+        }
+      }
+    },
+    "GetRevenueStatisticsSummaryRequest":{
+      "type":"structure",
+      "required":[
+        "TimeWindow",
+        "Scope",
+        "Currency"
+      ],
+      "members":{
+        "TimeWindow":{
+          "shape":"TimeWindow",
+          "documentation":"<p>The time range for the revenue summary query. Specify start and end timestamps.</p>"
+        },
+        "Scope":{
+          "shape":"Scope",
+          "documentation":"<p>Specifies whether this is for a Amazon CloudFront distribution (<code>CLOUDFRONT</code>) or for a regional application (<code>REGIONAL</code>). AI bot monetization is only available for <code>CLOUDFRONT</code> scope.</p>"
+        },
+        "Currency":{
+          "shape":"Currency",
+          "documentation":"<p>The currency for the revenue amounts in the response. Currently only <code>USDC</code> is supported.</p>"
+        },
+        "Filters":{
+          "shape":"MonetizationFilterList",
+          "documentation":"<p>Optional filters to narrow the results. You can filter by source name, category, organization, intent, verified status, content path, web ACL ARN, or currency mode.</p>"
+        }
+      }
+    },
+    "GetRevenueStatisticsSummaryResponse":{
+      "type":"structure",
+      "members":{
+        "RevenueBreakdown":{
+          "shape":"RevenueBreakdown",
+          "documentation":"<p>The revenue breakdown summary for the specified time window and filters.</p>"
+        }
+      }
+    },
+    "GetRevenueStatisticsTimeSeriesRequest":{
+      "type":"structure",
+      "required":[
+        "StatisticType",
+        "TimeWindow",
+        "Scope",
+        "Interval",
+        "Currency"
+      ],
+      "members":{
+        "StatisticType":{
+          "shape":"TimeSeriesStatisticType",
+          "documentation":"<p>The type of time series data to retrieve: <code>DATE_HISTOGRAM</code> for revenue over time, or <code>PAYMENT_TRAFFIC</code> for payment traffic patterns.</p>"
+        },
+        "TimeWindow":{
+          "shape":"TimeWindow",
+          "documentation":"<p>The time range for the query. Specify start and end timestamps.</p>"
+        },
+        "Scope":{
+          "shape":"Scope",
+          "documentation":"<p>Specifies whether this is for a Amazon CloudFront distribution (<code>CLOUDFRONT</code>) or for a regional application (<code>REGIONAL</code>).</p>"
+        },
+        "Interval":{
+          "shape":"IntervalType",
+          "documentation":"<p>The time interval for aggregating data points: <code>MINUTELY</code>, <code>FIVE_MINUTELY</code>, <code>HOURLY</code>, or <code>DAILY</code>.</p>"
+        },
+        "Currency":{
+          "shape":"Currency",
+          "documentation":"<p>The currency for the amounts in the response.</p>"
+        },
+        "GroupBy":{
+          "shape":"GroupByType",
+          "documentation":"<p>The dimension to group results by.</p>"
+        },
+        "Filters":{
+          "shape":"MonetizationFilterList",
+          "documentation":"<p>Optional filters to narrow the results.</p>"
+        },
+        "Limit":{
+          "shape":"MaxDataPoints",
+          "documentation":"<p>The maximum number of data points to return. Minimum: 1. Maximum: 10000.</p>"
+        },
+        "NextMarker":{
+          "shape":"NextMarker",
+          "documentation":"<p>When you get a paginated response, this marker indicates that additional results are available.</p>"
+        }
+      }
+    },
+    "GetRevenueStatisticsTimeSeriesResponse":{
+      "type":"structure",
+      "members":{
+        "DataPoints":{
+          "shape":"DataPointsList",
+          "documentation":"<p>The list of time series data points.</p>"
+        },
+        "NextMarker":{
+          "shape":"NextMarker",
+          "documentation":"<p>When you get a paginated response, this marker indicates that additional results are available.</p>"
+        }
+      }
+    },
     "GetRuleGroupRequest":{
       "type":"structure",
       "members":{
@@ -3444,6 +3754,16 @@
           "documentation":"<p>The URL to use in SDK integrations with Amazon Web Services managed rule groups. For example, you can use the integration SDKs with the account takeover prevention managed rule group <code>AWSManagedRulesATPRuleSet</code> and the account creation fraud prevention managed rule group <code>AWSManagedRulesACFPRuleSet</code>. This is only populated if you are using a rule group in your web ACL that integrates with your applications in this way. For more information, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-application-integration.html\">WAF client application integration</a> in the <i>WAF Developer Guide</i>.</p>"
         }
       }
+    },
+    "GroupByType":{
+      "type":"string",
+      "enum":[
+        "NAME",
+        "CATEGORY",
+        "INTENT",
+        "ORGANIZATION",
+        "WEBACL"
+      ]
     },
     "HTTPHeader":{
       "type":"structure",
@@ -3694,6 +4014,15 @@
       "enum":[
         "COMMON",
         "TARGETED"
+      ]
+    },
+    "IntervalType":{
+      "type":"string",
+      "enum":[
+        "MINUTELY",
+        "FIVE_MINUTELY",
+        "HOURLY",
+        "DAILY"
       ]
     },
     "JA3Fingerprint":{
@@ -4191,6 +4520,61 @@
         }
       }
     },
+    "ListSettlementRecordsRequest":{
+      "type":"structure",
+      "required":[
+        "TimeWindow",
+        "Scope",
+        "Currency"
+      ],
+      "members":{
+        "TimeWindow":{
+          "shape":"TimeWindow",
+          "documentation":"<p>The time range for the query. Specify start and end timestamps.</p>"
+        },
+        "Scope":{
+          "shape":"Scope",
+          "documentation":"<p>Specifies whether this is for a Amazon CloudFront distribution (<code>CLOUDFRONT</code>) or for a regional application (<code>REGIONAL</code>).</p>"
+        },
+        "Currency":{
+          "shape":"Currency",
+          "documentation":"<p>The currency for the amounts in the response.</p>"
+        },
+        "Filters":{
+          "shape":"MonetizationFilterList",
+          "documentation":"<p>Optional filters to narrow the results. You can filter by payer address, status, source name, network, or other settlement fields.</p>"
+        },
+        "SortBy":{
+          "shape":"SettlementSortBy",
+          "documentation":"<p>The field to sort settlement records by: <code>TIMESTAMP</code>, <code>AMOUNT</code>, <code>NAME</code>, or <code>STATUS</code>.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sort order: <code>ASC</code> for ascending or <code>DESC</code> for descending.</p>"
+        },
+        "Limit":{
+          "shape":"SettlementRecordLimit",
+          "documentation":"<p>The maximum number of settlement records to return. Minimum: 1. Maximum: 100.</p>"
+        },
+        "NextMarker":{
+          "shape":"NextMarker",
+          "documentation":"<p>When you get a paginated response, this marker indicates that additional results are available.</p>"
+        }
+      }
+    },
+    "ListSettlementRecordsResponse":{
+      "type":"structure",
+      "members":{
+        "Settlements":{
+          "shape":"SettlementRecordList",
+          "documentation":"<p>The list of settlement records.</p>"
+        },
+        "NextMarker":{
+          "shape":"NextMarker",
+          "documentation":"<p>When you get a paginated response, this marker indicates that additional results are available.</p>"
+        }
+      }
+    },
     "ListTagsForResourceRequest":{
       "type":"structure",
       "required":["ResourceARN"],
@@ -4639,6 +5023,11 @@
         "VALUE"
       ]
     },
+    "MaxDataPoints":{
+      "type":"integer",
+      "max":10000,
+      "min":1
+    },
     "Method":{
       "type":"structure",
       "members":{},
@@ -4671,6 +5060,71 @@
         }
       },
       "documentation":"<p>Information for a release of the mobile SDK, including release notes and tags.</p> <p>The mobile SDK is not generally available. Customers who have access to the mobile SDK can use it to establish and manage WAF tokens for use in HTTP(S) requests from a mobile device to WAF. For more information, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-application-integration.html\">WAF client application integration</a> in the <i>WAF Developer Guide</i>.</p>"
+    },
+    "MonetizationAmountValue":{"type":"string"},
+    "MonetizationConfig":{
+      "type":"structure",
+      "members":{
+        "CryptoConfig":{
+          "shape":"CryptoConfig",
+          "documentation":"<p>The cryptocurrency payment configuration, including the blockchain networks and wallet addresses where you receive payments.</p>"
+        },
+        "CurrencyMode":{
+          "shape":"CurrencyMode",
+          "documentation":"<p>Specifies whether the configuration uses real or test currency. Set to <code>REAL</code> to settle payments in USDC on production blockchain networks (Base, Solana). Set to <code>TEST</code> to settle on testnet networks (Base Sepolia, Solana Devnet) with tokens that have no monetary value. If not specified, defaults to <code>REAL</code>.</p>"
+        }
+      },
+      "documentation":"<p>The monetization configuration for a web ACL or rule group. Specifies the cryptocurrency payment networks and currency mode for AI bot monetization. You must provide this configuration when any rule in the web ACL or rule group uses the <code>Monetize</code> action.</p>"
+    },
+    "MonetizationFilter":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Values"
+      ],
+      "members":{
+        "Name":{
+          "shape":"MonetizationFilterName",
+          "documentation":"<p>The filter name. Format: Key is a string, Value is a list of strings.</p> <p>Enum-restricted (invalid values rejected):</p> <ul> <li> <p> <code>CurrencyMode</code>: <code>REAL</code>, <code>TEST</code> </p> </li> <li> <p> <code>ChainName</code>: <code>BASE</code>, <code>SOLANA</code>, <code>BASE_SEPOLIA</code>, <code>SOLANA_DEVNET</code> </p> </li> <li> <p> <code>SettlementStatus</code>: <code>SETTLED</code>, <code>PENDING</code>, <code>FAILED</code>, <code>SERVICE_ERROR</code>, <code>SKIPPED_ORIGIN_ERROR</code>, <code>DUPLICATE</code> </p> </li> <li> <p> <code>HttpSourceName</code>: <code>CF</code>, <code>ALB</code>, <code>APIGW</code>, <code>APPRUNNER</code>, <code>COGNITO</code>, <code>VERIFIED_ACCESS</code> </p> </li> </ul> <p>ARN-validated:</p> <ul> <li> <p> <code>WebACLArn</code>: valid WAFv2 web ACL ARN</p> </li> </ul> <p>Free-text (any string up to 256 chars):</p> <ul> <li> <p> <code>SourceName</code>: The name of the bot. Populated from Bot Control verified bot labels.</p> </li> <li> <p> <code>SourceCategory</code>: The category classification of the bot. From Bot Control categorization.</p> </li> <li> <p> <code>Intent</code>: The declared intent of the bot request.</p> </li> <li> <p> <code>Organization</code>: The organization operating the bot.</p> </li> <li> <p> <code>UriPathPrefix</code>: The URI path of the request that was monetized.</p> </li> <li> <p> <code>RequestId</code>: The WAF request ID associated with the transaction. Matches the requestId in WAF logs. Pattern: <code>^[a-zA-Z0-9:._\\-=+/]+$</code> </p> </li> <li> <p> <code>TransactionId</code>: The blockchain transaction identifier. Pattern: <code>^[a-zA-Z0-9:._\\-=+/]+$</code> </p> </li> <li> <p> <code>TerminatingRuleName</code>: The name of the WAF rule that triggered the Monetize action.</p> </li> <li> <p> <code>PayerAddress</code>: The blockchain wallet address of the paying client. Pattern: <code>^[a-zA-Z0-9:._\\-=+/]+$</code> </p> </li> <li> <p> <code>HttpSourceId</code>: The identifier of the Amazon Web Services resource associated with the web ACL (for example, CloudFront distribution ID).</p> </li> </ul>"
+        },
+        "Values":{
+          "shape":"MonetizationFilterValueList",
+          "documentation":"<p>The values to filter on. Specify as a list of strings. Results match any of the specified values (OR logic). Duplicate values are silently deduplicated. Maximum: 20 values per filter.</p>"
+        }
+      },
+      "documentation":"<p>A filter for narrowing monetization statistics and settlement record results. Specify a filter name and one or more values to match.</p> <p>Filter behavior:</p> <ul> <li> <p>Multiple values within one filter: OR (match any)</p> </li> <li> <p>Multiple filters: AND (all must match)</p> </li> <li> <p>No duplicate filter names allowed (rejected with error)</p> </li> <li> <p>Duplicate values within a filter are silently deduplicated</p> </li> <li> <p>If no <code>CurrencyMode</code> filter is specified, defaults to <code>REAL</code> </p> </li> </ul>"
+    },
+    "MonetizationFilterList":{
+      "type":"list",
+      "member":{"shape":"MonetizationFilter"},
+      "max":20,
+      "min":1
+    },
+    "MonetizationFilterName":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "MonetizationFilterValue":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "MonetizationFilterValueList":{
+      "type":"list",
+      "member":{"shape":"MonetizationFilterValue"},
+      "max":20,
+      "min":1
+    },
+    "MonetizeAction":{
+      "type":"structure",
+      "members":{
+        "PriceMultiplier":{
+          "shape":"PriceMultiplier",
+          "documentation":"<p>An integer multiplier applied to the base price defined in the web ACL's <code>MonetizationConfig</code>. The effective price for the request is the base price multiplied by this value. Specify as a string. Valid values: 1 to 100.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the monetize action settings for a rule. When WAF applies this action, it returns an HTTP 402 Payment Required response containing pricing information that the requesting client uses to complete payment and gain access to the resource. This is a terminating action-if the client does not complete the 402 payment flow, the request is blocked. This action is available only for web ACLs associated with Amazon CloudFront distributions. You must configure a <code>MonetizationConfig</code> on the web ACL or rule group before adding rules that use this action. You cannot use the Monetize action for rate-based rules.</p>"
     },
     "NextMarker":{
       "type":"string",
@@ -4823,7 +5277,11 @@
         "CUSTOM_KEYS",
         "ACP_RULE_SET_RESPONSE_INSPECTION",
         "DATA_PROTECTION_CONFIG",
-        "LOW_REPUTATION_MODE"
+        "LOW_REPUTATION_MODE",
+        "MONETIZATION_CONFIG",
+        "WALLET_ADDRESS",
+        "PRICE_AMOUNT",
+        "PAYMENT_NETWORK"
       ]
     },
     "ParameterExceptionParameter":{
@@ -4893,6 +5351,35 @@
         "FORM_ENCODED"
       ]
     },
+    "PaymentNetwork":{
+      "type":"structure",
+      "required":[
+        "Chain",
+        "WalletAddress",
+        "Prices"
+      ],
+      "members":{
+        "Chain":{
+          "shape":"BlockchainChain",
+          "documentation":"<p>The blockchain network for receiving payments. Production networks: <code>BASE</code> (Base mainnet), <code>SOLANA</code> (Solana mainnet). Test networks: <code>BASE_SEPOLIA</code> (Base Sepolia testnet), <code>SOLANA_DEVNET</code> (Solana Devnet).</p>"
+        },
+        "WalletAddress":{
+          "shape":"WalletAddress",
+          "documentation":"<p>Your wallet address on the specified blockchain where payments are sent. For EVM chains (Base, Base Sepolia), provide a valid Ethereum address (42 characters including 0x prefix). For Solana chains, provide a valid Base58-encoded public key (32-44 characters).</p> <p>For EVM addresses, WAF performs EIP-55 checksum validation for typo detection when the address uses a mix of lower and upper case letters. You can bypass this validation by providing the address in all lowercase or all uppercase.</p>"
+        },
+        "Prices":{
+          "shape":"Prices",
+          "documentation":"<p>The price configuration for this payment network. Currently supports a single price entry in USDC.</p>"
+        }
+      },
+      "documentation":"<p>A blockchain payment network configuration for receiving AI bot monetization payments. Specifies the blockchain chain, your wallet address on that chain, and the price per request.</p>"
+    },
+    "PaymentNetworks":{
+      "type":"list",
+      "member":{"shape":"PaymentNetwork"},
+      "max":2,
+      "min":1
+    },
     "PercentageValue":{
       "type":"double",
       "max":100.0,
@@ -4936,6 +5423,42 @@
         "CONTAINS",
         "CONTAINS_WORD"
       ]
+    },
+    "Price":{
+      "type":"structure",
+      "required":[
+        "Amount",
+        "Currency"
+      ],
+      "members":{
+        "Amount":{
+          "shape":"PriceAmount",
+          "documentation":"<p>The price per request as a decimal string in the specified currency. Minimum: 0.001. Maximum: 999999999.999. Supports up to 3 decimal places.</p>"
+        },
+        "Currency":{
+          "shape":"CryptoCurrency",
+          "documentation":"<p>The cryptocurrency for payment. Currently only <code>USDC</code> is supported.</p>"
+        }
+      },
+      "documentation":"<p>The price per request for a payment network, specifying the amount and cryptocurrency.</p>"
+    },
+    "PriceAmount":{
+      "type":"string",
+      "max":13,
+      "min":1,
+      "pattern":"^([1-9][0-9]*(\\.[0-9]{1,3})?|0\\.([1-9][0-9]{0,2}|0[1-9][0-9]?|00[1-9]))$"
+    },
+    "PriceMultiplier":{
+      "type":"string",
+      "max":3,
+      "min":1,
+      "pattern":"^([1-9][0-9]?|100)$"
+    },
+    "Prices":{
+      "type":"list",
+      "member":{"shape":"Price"},
+      "max":1,
+      "min":1
     },
     "PricingPlanFeatureName":{
       "type":"string",
@@ -5058,6 +5581,21 @@
       "type":"structure",
       "members":{},
       "documentation":"<p>Inspect the query string of the web request. This is the part of a URL that appears after a <code>?</code> character, if any.</p> <p>This is used in the <a>FieldToMatch</a> specification for some web request component types. </p> <p>JSON specification: <code>\"QueryString\": {}</code> </p>"
+    },
+    "RankingSortBy":{
+      "type":"string",
+      "enum":[
+        "REVENUE",
+        "PERCENTAGE",
+        "NAME"
+      ]
+    },
+    "RankingStatisticType":{
+      "type":"string",
+      "enum":[
+        "TOP_SOURCES_BY_REVENUE",
+        "TOP_PATHS_BY_REVENUE"
+      ]
     },
     "RateBasedStatement":{
       "type":"structure",
@@ -5741,6 +6279,68 @@
       "max":599,
       "min":200
     },
+    "RevenueBreakdown":{
+      "type":"structure",
+      "members":{
+        "TotalAmount":{
+          "shape":"MonetizationAmountValue",
+          "documentation":"<p>The total revenue amount in the specified currency.</p>"
+        },
+        "VerifiedAmount":{
+          "shape":"MonetizationAmountValue",
+          "documentation":"<p>The revenue amount from verified AI bots.</p>"
+        },
+        "UnverifiedAmount":{
+          "shape":"MonetizationAmountValue",
+          "documentation":"<p>The revenue amount from unverified AI bots.</p>"
+        },
+        "Currency":{
+          "shape":"Currency",
+          "documentation":"<p>The currency of the revenue amounts.</p>"
+        },
+        "TotalSettled":{
+          "shape":"RequestCount",
+          "documentation":"<p>The total number of successfully settled payment transactions.</p>"
+        },
+        "TotalMonetizeServed":{
+          "shape":"RequestCount",
+          "documentation":"<p>The total number of HTTP 402 Payment Required responses served to AI agents.</p>"
+        }
+      },
+      "documentation":"<p>A summary of AI bot monetization revenue, including total revenue, revenue by verification tier, and request counts.</p>"
+    },
+    "RevenuePathStatistics":{
+      "type":"structure",
+      "required":[
+        "Path",
+        "Percentage",
+        "Amount",
+        "RequestCount"
+      ],
+      "members":{
+        "Path":{
+          "shape":"PathString",
+          "documentation":"<p>The URI path.</p>"
+        },
+        "Percentage":{
+          "shape":"PercentageValue",
+          "documentation":"<p>The percentage of total revenue from this path.</p>"
+        },
+        "Amount":{
+          "shape":"MonetizationAmountValue",
+          "documentation":"<p>The total revenue amount from this path in the specified currency.</p>"
+        },
+        "RequestCount":{
+          "shape":"RequestCount",
+          "documentation":"<p>The number of monetized requests to this path.</p>"
+        }
+      },
+      "documentation":"<p>Revenue statistics for a single content path, including the path, revenue amount, and request count.</p>"
+    },
+    "RevenuePathStatisticsList":{
+      "type":"list",
+      "member":{"shape":"RevenuePathStatistics"}
+    },
     "Rule":{
       "type":"structure",
       "required":[
@@ -5811,6 +6411,10 @@
         "Challenge":{
           "shape":"ChallengeAction",
           "documentation":"<p>Instructs WAF to run a <code>Challenge</code> check against the web request.</p>"
+        },
+        "Monetize":{
+          "shape":"MonetizeAction",
+          "documentation":"<p>Instructs WAF to return an HTTP 402 Payment Required response with a price manifest. The requesting client can complete payment and resubmit the request to gain access. This is a terminating action-requests that do not complete payment are blocked. This action is available only for web ACLs associated with Amazon CloudFront distributions and requires a <code>MonetizationConfig</code> on the web ACL.</p>"
         }
       },
       "documentation":"<p>The action that WAF should take on a web request when it matches a rule's statement. Settings at the web ACL level can override the rule action setting. </p>"
@@ -5891,6 +6495,10 @@
         "ConsumedLabels":{
           "shape":"LabelSummaries",
           "documentation":"<p>The labels that one or more rules in this rule group match against in label match statements. These labels are defined in a <code>LabelMatchStatement</code> specification, in the <a>Statement</a> definition of a rule. </p>"
+        },
+        "MonetizationConfig":{
+          "shape":"MonetizationConfig",
+          "documentation":"<p>The monetization configuration for the rule group. Required when any rule in the rule group uses the <code>Monetize</code> action. When a rule group with a <code>MonetizationConfig</code> is used in a web ACL, the rule group's configuration applies to rules within that group unless overridden at the web ACL level.</p>"
         }
       },
       "documentation":"<p> A rule group defines a collection of rules to inspect and control web requests that you can use in a <a>WebACL</a>. When you create a rule group, you define an immutable capacity limit. If you update a rule group, you must stay within the capacity. This allows others to reuse the rule group with confidence in its capacity requirements. </p>"
@@ -6055,6 +6663,125 @@
         "HIGH"
       ]
     },
+    "SettlementFilterString":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9:._\\-=+/]+$"
+    },
+    "SettlementIdString":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "SettlementRecord":{
+      "type":"structure",
+      "required":[
+        "Timestamp",
+        "Status",
+        "Amount"
+      ],
+      "members":{
+        "Timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the settlement was recorded.</p>"
+        },
+        "PayerAddress":{
+          "shape":"SettlementFilterString",
+          "documentation":"<p>The blockchain wallet address of the paying AI agent.</p>"
+        },
+        "WalletAddress":{
+          "shape":"SettlementFilterString",
+          "documentation":"<p>Your receiving wallet address.</p>"
+        },
+        "Status":{
+          "shape":"SettlementStatus",
+          "documentation":"<p>The status of the settlement. Possible values:</p> <ul> <li> <p> <code>SETTLED</code> - The payment was successfully settled on the blockchain and the transfer from the payer's wallet to the publisher's wallet is confirmed. The <code>TransactionId</code> field contains the on-chain transaction hash. Content is served to the client.</p> </li> <li> <p> <code>PENDING</code> - The blockchain transaction has been submitted but not yet confirmed on-chain. This is a transient state that automatically resolves to either <code>SETTLED</code> or <code>FAILED</code>. No action is required. While pending, content is not served and the API returns a 402 response. Clients can retry the request.</p> </li> <li> <p> <code>FAILED</code> - The payment settlement was attempted but failed. Possible causes include insufficient funds, an expired payment authorization, or a reverted blockchain transaction. The <code>failureReason</code> field contains a machine-readable error code. Content is not served.</p> </li> <li> <p> <code>SERVICE_ERROR</code> - Settlement could not be completed due to an internal service issue or an issue with the payment network. Content is not served. The client's payment authorization remains valid and the request can be retried.</p> </li> <li> <p> <code>SKIPPED_ORIGIN_ERROR</code> - The origin returned a non-2xx response, so settlement was intentionally skipped. The client is not charged.</p> </li> <li> <p> <code>DUPLICATE</code> - A prior request with the same payment payload has already been settled. This status typically appears when a previous attempt timed out but the payment was ultimately processed. The client is not charged again.</p> </li> </ul>"
+        },
+        "Amount":{
+          "shape":"MonetizationAmountValue",
+          "documentation":"<p>The payment amount in the specified currency.</p>"
+        },
+        "Currency":{
+          "shape":"Currency",
+          "documentation":"<p>The currency of the payment amount.</p>"
+        },
+        "Network":{
+          "shape":"SettlementFilterString",
+          "documentation":"<p>The blockchain network on which the settlement occurred.</p>"
+        },
+        "TransactionId":{
+          "shape":"SettlementIdString",
+          "documentation":"<p>The blockchain transaction identifier. You can use this to verify the transaction on a blockchain explorer.</p>"
+        },
+        "RequestId":{
+          "shape":"SettlementFilterString",
+          "documentation":"<p>The WAF request ID associated with this settlement.</p>"
+        },
+        "SourceName":{
+          "shape":"FilterString",
+          "documentation":"<p>The name of the AI bot that made the payment.</p>"
+        },
+        "Organization":{
+          "shape":"FilterString",
+          "documentation":"<p>The organization associated with the AI bot.</p>"
+        },
+        "SourceCategory":{
+          "shape":"FilterString",
+          "documentation":"<p>The category of the AI bot source.</p>"
+        },
+        "Intent":{
+          "shape":"FilterString",
+          "documentation":"<p>The declared intent of the AI bot request.</p>"
+        },
+        "Verified":{
+          "shape":"VerifiedStatus",
+          "documentation":"<p>Whether the AI bot's identity was verified.</p>"
+        },
+        "ContentPath":{
+          "shape":"FilterString",
+          "documentation":"<p>The content path that was accessed.</p>"
+        },
+        "WebAclArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the web ACL that processed the request.</p>"
+        },
+        "RequestTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of the original web request.</p>"
+        }
+      },
+      "documentation":"<p>A single settlement transaction record for AI bot monetization. Contains details about the payment including timestamp, amount, status, and the parties involved.</p>"
+    },
+    "SettlementRecordLimit":{
+      "type":"integer",
+      "max":100,
+      "min":1
+    },
+    "SettlementRecordList":{
+      "type":"list",
+      "member":{"shape":"SettlementRecord"}
+    },
+    "SettlementSortBy":{
+      "type":"string",
+      "enum":[
+        "TIMESTAMP",
+        "AMOUNT",
+        "NAME",
+        "STATUS"
+      ]
+    },
+    "SettlementStatus":{
+      "type":"string",
+      "enum":[
+        "SETTLED",
+        "PENDING",
+        "FAILED",
+        "SERVICE_ERROR",
+        "SKIPPED_ORIGIN_ERROR",
+        "DUPLICATE"
+      ]
+    },
     "SingleCookieName":{
       "type":"string",
       "max":60,
@@ -6126,6 +6853,65 @@
       ]
     },
     "SolveTimestamp":{"type":"long"},
+    "SortOrder":{
+      "type":"string",
+      "enum":[
+        "ASC",
+        "DESC"
+      ]
+    },
+    "SourceStatistics":{
+      "type":"structure",
+      "required":[
+        "SourceName",
+        "Percentage",
+        "Amount",
+        "RequestCount"
+      ],
+      "members":{
+        "SourceName":{
+          "shape":"FilterString",
+          "documentation":"<p>The name of the AI bot.</p>"
+        },
+        "Percentage":{
+          "shape":"PercentageValue",
+          "documentation":"<p>The percentage of total revenue from this source.</p>"
+        },
+        "Amount":{
+          "shape":"MonetizationAmountValue",
+          "documentation":"<p>The total revenue amount from this source in the specified currency.</p>"
+        },
+        "RequestCount":{
+          "shape":"RequestCount",
+          "documentation":"<p>The number of monetized requests from this source.</p>"
+        },
+        "SourceCategory":{
+          "shape":"FilterString",
+          "documentation":"<p>The category of this AI bot source.</p>"
+        },
+        "Intent":{
+          "shape":"FilterString",
+          "documentation":"<p>The declared intent of the AI bot (for example, summarize, index, or train).</p>"
+        },
+        "Organization":{
+          "shape":"FilterString",
+          "documentation":"<p>The organization associated with the AI bot.</p>"
+        },
+        "Verified":{
+          "shape":"VerifiedStatus",
+          "documentation":"<p>Whether the AI bot's identity was verified.</p>"
+        },
+        "GroupByValue":{
+          "shape":"FilterString",
+          "documentation":"<p>The value for the group-by dimension, when grouping is applied.</p>"
+        }
+      },
+      "documentation":"<p>Revenue statistics for a single AI bot source, including the bot name, revenue amount, request count, and verification status.</p>"
+    },
+    "SourceStatisticsList":{
+      "type":"list",
+      "member":{"shape":"SourceStatistics"}
+    },
     "SourceType":{"type":"string"},
     "SqliMatchStatement":{
       "type":"structure",
@@ -6362,6 +7148,13 @@
       "type":"list",
       "member":{"shape":"TextTransformation"},
       "min":1
+    },
+    "TimeSeriesStatisticType":{
+      "type":"string",
+      "enum":[
+        "DATE_HISTOGRAM",
+        "PAYMENT_TRAFFIC"
+      ]
     },
     "TimeWindow":{
       "type":"structure",
@@ -6608,6 +7401,10 @@
         "CustomResponseBodies":{
           "shape":"CustomResponseBodies",
           "documentation":"<p>A map of custom response keys and content bodies. When you create a rule with a block action, you can send a custom response to the web request. You define these for the rule group, and then use them in the rules that you define in the rule group. </p> <p>For information about customizing web requests and responses, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html\">Customizing web requests and responses in WAF</a> in the <i>WAF Developer Guide</i>. </p> <p>For information about the limits on count and size for custom request and response settings, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/limits.html\">WAF quotas</a> in the <i>WAF Developer Guide</i>. </p>"
+        },
+        "MonetizationConfig":{
+          "shape":"MonetizationConfig",
+          "documentation":"<p>The monetization configuration for the rule group. Provide this when any rule in the rule group uses the <code>Monetize</code> action.</p>"
         }
       }
     },
@@ -6694,6 +7491,10 @@
         "ApplicationConfig":{
           "shape":"ApplicationConfig",
           "documentation":"<p>Configures the ability for the WAF console to store and retrieve application attributes. Application attributes help WAF give recommendations for protection packs.</p> <p>When using <code>UpdateWebACL</code>, <code>ApplicationConfig</code> follows these rules:</p> <ul> <li> <p>If you omit <code>ApplicationConfig</code> from the request, all existing entries in the web ACL are retained.</p> </li> <li> <p>If you include <code>ApplicationConfig</code>, entries must match the existing values exactly. Any attempt to modify existing entries will result in an error.</p> </li> </ul>"
+        },
+        "MonetizationConfig":{
+          "shape":"MonetizationConfig",
+          "documentation":"<p>The monetization configuration for the web ACL. Provide this when any rule in the web ACL uses the <code>Monetize</code> action.</p>"
         }
       }
     },
@@ -6751,6 +7552,7 @@
       "min":1,
       "pattern":".*\\S.*"
     },
+    "VerifiedStatus":{"type":"boolean"},
     "VersionKeyString":{
       "type":"string",
       "max":64,
@@ -6981,6 +7783,12 @@
       "documentation":"<p>The rule that you've named doesn't aggregate solely on the IP address or solely on the forwarded IP address. This call is only available for rate-based rules with an <code>AggregateKeyType</code> setting of <code>IP</code> or <code>FORWARDED_IP</code>.</p>",
       "exception":true
     },
+    "WalletAddress":{
+      "type":"string",
+      "max":44,
+      "min":26,
+      "pattern":".*\\S.*"
+    },
     "WebACL":{
       "type":"structure",
       "required":[
@@ -7074,6 +7882,10 @@
         "ApplicationConfig":{
           "shape":"ApplicationConfig",
           "documentation":"<p>Returns a list of <code>ApplicationAttribute</code>s.</p>"
+        },
+        "MonetizationConfig":{
+          "shape":"MonetizationConfig",
+          "documentation":"<p>The monetization configuration for the web ACL. Required when any rule in the web ACL uses the <code>Monetize</code> action. Specifies the cryptocurrency payment networks and currency mode for AI bot monetization.</p>"
         }
       },
       "documentation":"<p> A web ACL defines a collection of rules to use to inspect and control web requests. Each rule has a statement that defines what to look for in web requests and an action that WAF applies to requests that match the statement. In the web ACL, you assign a default action to take (allow, block) for any request that does not match any of the rules. The rules in a web ACL can be a combination of the types <a>Rule</a>, <a>RuleGroup</a>, and managed rule group. You can associate a web ACL with one or more Amazon Web Services resources to protect. The resource types include Amazon CloudFront distribution, Amazon API Gateway REST API, Application Load Balancer, AppSync GraphQL API, Amazon Cognito user pool, App Runner service, Amplify application, and Amazon Web Services Verified Access instance. </p>"

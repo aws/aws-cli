@@ -1097,7 +1097,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Returns the results from the specified query.</p> <p>Only the fields requested in the query are returned, along with a <code>@ptr</code> field, which is the identifier for the log record. You can use the value of <code>@ptr</code> in a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetLogRecord.html\">GetLogRecord</a> operation to get the full log record.</p> <p> <code>GetQueryResults</code> does not start running a query. To run a query, use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_StartQuery.html\">StartQuery</a>. For more information about how long results of previous queries are available, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/cloudwatch_limits_cwl.html\">CloudWatch Logs quotas</a>.</p> <p>If the value of the <code>Status</code> field in the output is <code>Running</code>, this operation returns only partial results. If you see a value of <code>Scheduled</code> or <code>Running</code> for the status, you can retry the operation later to see the final results. </p> <p>This operation is used both for retrieving results from interactive queries and from automated scheduled query executions. Scheduled queries use <code>GetQueryResults</code> internally to retrieve query results for processing and delivery to configured destinations.</p> <p>You can retrieve up to 100,000 log event results from a query, if available, by using pagination. Use the <code>nextToken</code> returned in the response to request additional pages of results, with each page returning up to 10,000 log events.</p> <p>If you are using CloudWatch cross-account observability, you can use this operation in a monitoring account to start queries in linked source accounts. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html\">CloudWatch cross-account observability</a>.</p>"
+      "documentation":"<p>Returns the results from the specified query.</p> <p>Only the fields requested in the query are returned, along with a <code>@ptr</code> field, which is the identifier for the log record. You can use the value of <code>@ptr</code> in a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetLogRecord.html\">GetLogRecord</a> operation to get the full log record.</p> <p> <code>GetQueryResults</code> does not start running a query. To run a query, use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_StartQuery.html\">StartQuery</a>. For more information about how long results of previous queries are available, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/cloudwatch_limits_cwl.html\">CloudWatch Logs quotas</a>.</p> <p>If the value of the <code>Status</code> field in the output is <code>Running</code>, this operation returns only partial results. If you see a value of <code>Scheduled</code> or <code>Running</code> for the status, you can retry the operation later to see the final results. </p> <p>This operation is used both for retrieving results from interactive queries and from automated scheduled query executions. Scheduled queries use <code>GetQueryResults</code> internally to retrieve query results for processing and delivery to configured destinations.</p> <p>You can retrieve up to 100,000 log event results from a query, if available, by using pagination. Use the <code>nextToken</code> returned in the response to request additional pages of results, with each page returning up to 10,000 log events. This is only supported for Logs Insights QL and is currently not supported for PPL and SQL query languages.</p> <p>If you are using CloudWatch cross-account observability, you can use this operation in a monitoring account to start queries in linked source accounts. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html\">CloudWatch cross-account observability</a>.</p>"
     },
     "GetScheduledQuery":{
       "name":"GetScheduledQuery",
@@ -1816,6 +1816,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
@@ -2681,7 +2682,7 @@
       "members":{
         "name":{
           "shape":"ScheduledQueryName",
-          "documentation":"<p>The name of the scheduled query. The name must be unique within your account and region. Valid characters are alphanumeric characters, hyphens, underscores, and periods. Length must be between 1 and 255 characters.</p>"
+          "documentation":"<p>The name of the scheduled query. The name must be unique within your account and region. Length must be between 1 and 300 characters.</p>"
         },
         "description":{
           "shape":"ScheduledQueryDescription",
@@ -2710,6 +2711,10 @@
         "startTimeOffset":{
           "shape":"StartTimeOffset",
           "documentation":"<p>The time offset in seconds that defines the lookback period for the query. This determines how far back in time the query searches from the execution time.</p>"
+        },
+        "endTimeOffset":{
+          "shape":"EndTimeOffset",
+          "documentation":"<p>The time offset in seconds that defines the end of the lookback period for the query. Together with <code>startTimeOffset</code>, this determines the time window relative to the execution time over which the query runs.</p>"
         },
         "destinationConfiguration":{
           "shape":"DestinationConfiguration",
@@ -4167,6 +4172,7 @@
       "type":"string",
       "max":256
     },
+    "EndTimeOffset":{"type":"long"},
     "Entity":{
       "type":"structure",
       "members":{
@@ -5046,7 +5052,7 @@
         },
         "nextToken":{
           "shape":"GetQueryResultsNextToken",
-          "documentation":"<p>If there are more log events remaining in the results, the response includes a <code>nextToken</code>. You can use this token in a subsequent <code>GetQueryResults</code> request to get the next set of results. You can retrieve up to 100,000 log event results from a query by paginating with this token.</p>"
+          "documentation":"<p>If there are more log events remaining in the results, the response includes a <code>nextToken</code>. You can use this token in a subsequent <code>GetQueryResults</code> request to get the next set of results. You can retrieve up to 100,000 log event results from a query by paginating with this token. This is only supported for Logs Insights QL and is currently not supported for PPL and SQL query languages.</p>"
         }
       }
     },
@@ -5153,6 +5159,10 @@
           "shape":"StartTimeOffset",
           "documentation":"<p>The time offset in seconds that defines the lookback period for the query.</p>"
         },
+        "endTimeOffset":{
+          "shape":"EndTimeOffset",
+          "documentation":"<p>The time offset in seconds that defines the end of the lookback period for the query.</p>"
+        },
         "destinationConfiguration":{
           "shape":"DestinationConfiguration",
           "documentation":"<p>Configuration for where query results are delivered.</p>"
@@ -5160,6 +5170,10 @@
         "state":{
           "shape":"ScheduledQueryState",
           "documentation":"<p>The current state of the scheduled query.</p>"
+        },
+        "scheduleType":{
+          "shape":"ScheduleType",
+          "documentation":"<p>The schedule type of the scheduled query. Valid values are <code>CUSTOMER_MANAGED</code> and <code>AWS_MANAGED</code>.</p>"
         },
         "lastTriggeredTime":{
           "shape":"Timestamp",
@@ -5837,6 +5851,10 @@
         "state":{
           "shape":"ScheduledQueryState",
           "documentation":"<p>Filter scheduled queries by state. Valid values are <code>ENABLED</code> and <code>DISABLED</code>. If not specified, all scheduled queries are returned.</p>"
+        },
+        "scheduleType":{
+          "shape":"ScheduleType",
+          "documentation":"<p>Filter scheduled queries by schedule type. Valid values are <code>CUSTOMER_MANAGED</code> and <code>AWS_MANAGED</code>. If not specified, scheduled queries of all schedule types are returned.</p>"
         }
       }
     },
@@ -8356,6 +8374,13 @@
       "type":"string",
       "min":1
     },
+    "ScheduleType":{
+      "type":"string",
+      "enum":[
+        "CUSTOMER_MANAGED",
+        "AWS_MANAGED"
+      ]
+    },
     "ScheduledQueryDescription":{
       "type":"string",
       "max":1024
@@ -8396,7 +8421,8 @@
     },
     "ScheduledQueryIdentifier":{
       "type":"string",
-      "pattern":"[\\w#+=/:,.@-]*"
+      "max":300,
+      "min":1
     },
     "ScheduledQueryLogGroupIdentifiers":{
       "type":"list",
@@ -8406,9 +8432,8 @@
     },
     "ScheduledQueryName":{
       "type":"string",
-      "max":255,
-      "min":1,
-      "pattern":"^[a-zA-Z0-9_\\-/.#]+$"
+      "max":300,
+      "min":1
     },
     "ScheduledQueryState":{
       "type":"string",
@@ -8431,6 +8456,10 @@
         "state":{
           "shape":"ScheduledQueryState",
           "documentation":"<p>The current state of the scheduled query.</p>"
+        },
+        "scheduleType":{
+          "shape":"ScheduleType",
+          "documentation":"<p>The schedule type of the scheduled query. Valid values are <code>CUSTOMER_MANAGED</code> and <code>AWS_MANAGED</code>.</p>"
         },
         "lastTriggeredTime":{
           "shape":"Timestamp",
@@ -8714,7 +8743,7 @@
         },
         "limit":{
           "shape":"EventsLimitStartQuery",
-          "documentation":"<p>The maximum number of log events to return in the query. If the query string uses the <code>fields</code> command, only the specified fields and their values are returned. The default is 10,000.</p> <p>The maximum value is 100,000.</p>"
+          "documentation":"<p>The maximum number of log events to return from the query. The maximum limit is 100,000. The maximum events returned in a single GetQueryResults API call is 10,000 log events per request. You can retrieve up to 100,000 log event results from a query by paginating with the <code>nextToken</code>. 100,000 limit is only supported for Logs Insights QL and is currently not supported for PPL and SQL query languages.</p>"
         }
       }
     },
@@ -9428,6 +9457,10 @@
           "shape":"StartTimeOffset",
           "documentation":"<p>The updated time offset in seconds that defines the lookback period for the query.</p>"
         },
+        "endTimeOffset":{
+          "shape":"EndTimeOffset",
+          "documentation":"<p>The updated time offset in seconds that defines the end of the lookback period for the query.</p>"
+        },
         "destinationConfiguration":{
           "shape":"DestinationConfiguration",
           "documentation":"<p>The updated configuration for where to deliver query results.</p>"
@@ -9489,6 +9522,10 @@
           "shape":"StartTimeOffset",
           "documentation":"<p>The time offset of the updated scheduled query.</p>"
         },
+        "endTimeOffset":{
+          "shape":"EndTimeOffset",
+          "documentation":"<p>The end time offset in seconds of the updated scheduled query.</p>"
+        },
         "destinationConfiguration":{
           "shape":"DestinationConfiguration",
           "documentation":"<p>The destination configuration of the updated scheduled query.</p>"
@@ -9496,6 +9533,10 @@
         "state":{
           "shape":"ScheduledQueryState",
           "documentation":"<p>The state of the updated scheduled query.</p>"
+        },
+        "scheduleType":{
+          "shape":"ScheduleType",
+          "documentation":"<p>The schedule type of the updated scheduled query.</p>"
         },
         "lastTriggeredTime":{
           "shape":"Timestamp",

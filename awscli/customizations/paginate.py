@@ -371,7 +371,11 @@ class PageArgument(BaseCLIArgument):
     SHAPE_CONSTRAINT_KEYS = ('min', 'max')
 
     def __init__(
-        self, name, documentation, parse_type, serialized_name,
+        self,
+        name,
+        documentation,
+        parse_type,
+        serialized_name,
         shape_metadata=None,
     ):
         shape_model = {'type': parse_type}

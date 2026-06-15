@@ -270,6 +270,13 @@ def _is_complex_shape(model):
     return True
 
 
+def register_param_shorthand_parser(event_emitter):
+    event_emitter.register(
+        'process-cli-arg',
+        ParamShorthandParser(),
+    )
+
+
 class ParamShorthand:
     def _uses_old_list_case(self, command_name, operation_name, argument_name):
         """

@@ -40,9 +40,20 @@ _REGION_PATTERNS = (
     ),
 )
 
-_ALL_PARTITIONS = ('aws', 'aws-cn', 'aws-us-gov')
-
 _MAX_REDIRECTS = 1
+
+_DEFAULT_PORTS = {'https': 443, 'http': 80}
+
+_DEFAULT_TIMEOUT = 10
+
+
+def _normalize_url(url):
+    parsed = urllib.parse.urlparse(url)
+    netloc = parsed.hostname or ''
+    if parsed.port and parsed.port != _DEFAULT_PORTS.get(parsed.scheme):
+        netloc = f'{netloc}:{parsed.port}'
+    path = parsed.path.rstrip('/')
+    return urllib.parse.urlunparse((parsed.scheme, netloc, path, '', '', ''))
 
 
 def is_aws_owned_domain(hostname):
@@ -66,20 +77,7 @@ def _extract_region_from_hostname(hostname):
     return None
 
 
-def _validate_region(region, session):
-    available = set()
-    for partition in _ALL_PARTITIONS:
-        available.update(
-            session.get_available_regions('sso-oidc', partition_name=partition)
-        )
-    if region not in available:
-        raise ConfigurationError(
-            f"Region '{region}' parsed from the resolved start URL is not "
-            f"a known AWS region. Verify the start URL is correct."
-        )
-
-
-def _follow_redirect(url):
+def _follow_redirect(url, timeout=_DEFAULT_TIMEOUT):
     class _NoRedirectHandler(urllib.request.HTTPRedirectHandler):
         def redirect_request(self, req, fp, code, msg, headers, newurl):
             return None
@@ -87,17 +85,17 @@ def _follow_redirect(url):
     opener = urllib.request.build_opener(_NoRedirectHandler)
     redirect_codes = (301, 302, 303, 307, 308)
 
-    for _attempt in range(_MAX_REDIRECTS):
+    for _ in range(_MAX_REDIRECTS):
         try:
             req = urllib.request.Request(url, method='HEAD')
-            resp = opener.open(req, timeout=10)
+            resp = opener.open(req, timeout=timeout)
             resp.close()
             return url
         except urllib.error.HTTPError as e:
             if e.code in (405, 501):
                 try:
                     req = urllib.request.Request(url, method='GET')
-                    resp = opener.open(req, timeout=10)
+                    resp = opener.open(req, timeout=timeout)
                     resp.close()
                     return url
                 except urllib.error.HTTPError as e2:
@@ -135,7 +133,9 @@ def _follow_redirect(url):
     return url
 
 
-def resolve_start_url(start_url, session, configured_region=None):
+def resolve_start_url(
+    start_url, session, configured_region=None, timeout=None
+):
     parsed = urllib.parse.urlparse(start_url)
 
     if parsed.scheme != 'https':
@@ -158,7 +158,10 @@ def resolve_start_url(start_url, session, configured_region=None):
     LOG.debug(
         "Start URL '%s' is not AWS-owned, following redirects", start_url
     )
-    resolved_url = _follow_redirect(start_url)
+    effective_timeout = timeout if timeout is not None else _DEFAULT_TIMEOUT
+    resolved_url = _normalize_url(
+        _follow_redirect(start_url, timeout=effective_timeout)
+    )
 
     resolved_hostname = urllib.parse.urlparse(resolved_url).hostname
     if not resolved_hostname or not is_aws_owned_domain(resolved_hostname):
@@ -174,14 +177,13 @@ def resolve_start_url(start_url, session, configured_region=None):
 
     region = _extract_region_from_hostname(resolved_hostname)
 
-    if region:
-        _validate_region(region, session)
-    elif configured_region:
-        region = configured_region
-    else:
-        raise ConfigurationError(
-            f"Cannot determine region from start URL '{start_url}'. "
-            f"Please provide sso_region in your configuration."
-        )
+    if not region:
+        if configured_region:
+            region = configured_region
+        else:
+            raise ConfigurationError(
+                f"Cannot determine region from start URL '{start_url}'. "
+                f"Please provide sso_region in your configuration."
+            )
 
     return resolved_url, region

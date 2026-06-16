@@ -44,6 +44,7 @@ from awscli.customizations.s3.subscribers import (
     DeleteSourceFileSubscriber,
     DeleteSourceObjectSubscriber,
     DirectoryCreatorSubscriber,
+    ExcludeAnnotationDirectiveSubscriber,
     ProvideETagSubscriber,
     ProvideFullObjectChecksumSubscriber,
     ProvideLastModifiedTimeSubscriber,
@@ -814,6 +815,7 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
             QueuedResultSubscriber,
             SetMetadataDirectivePropsSubscriber,
             SetTagsSubscriber,
+            ExcludeAnnotationDirectiveSubscriber,
             ProgressResultSubscriber,
             DoneResultSubscriber,
         ]
@@ -855,6 +857,7 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
             QueuedResultSubscriber,
             SetMetadataDirectivePropsSubscriber,
             SetTagsSubscriber,
+            ExcludeAnnotationDirectiveSubscriber,
             ProgressResultSubscriber,
             DoneResultSubscriber,
         ]
@@ -1005,6 +1008,7 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
             QueuedResultSubscriber,
             SetMetadataDirectivePropsSubscriber,
             SetTagsSubscriber,
+            ExcludeAnnotationDirectiveSubscriber,
             DeleteSourceObjectSubscriber,
             ProgressResultSubscriber,
             DoneResultSubscriber,

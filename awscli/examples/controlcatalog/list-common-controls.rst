@@ -1,6 +1,6 @@
-**Example 1: To list all common controls from the AWS Control Catalog**
+**Example 1: To display all common controls from the AWS Control Catalog**
 
-The following ``list-common-controls`` example lists all common controls from the AWS Control Catalog. ::
+The following ``list-common-controls`` example displays all common controls from the AWS Control Catalog. ::
 
     aws controlcatalog list-common-controls
 
@@ -44,9 +44,9 @@ Output::
 
 For more information, see `About common controls <https://docs.aws.amazon.com/controltower/latest/controlreference/common-controls-list.html>`__ in the *AWS Control Tower User Guide*.
 
-**Example 2: To list common controls that have a specific objective**
+**Example 2: To display common controls that have a specific objective**
 
-The following ``list-common-controls`` example lists common controls that have a specific objective. ::
+The following ``list-common-controls`` example displays common controls that have a specific objective. ::
 
     aws controlcatalog list-common-controls \
         --common-control-filter '{"Objectives": [{"Arn": "arn:aws:controlcatalog:::objective/ad11p1961s8erra9m185wa1nn"}]}'

@@ -1,6 +1,6 @@
-**Example 1: To list objectives from the Control Catalog**
+**Example 1: To display a list objectives from the Control Catalog**
 
-The following ``list-objectives`` example lists control objectives in the Control catalog.  ::
+The following ``list-objectives`` example displays a list of control objectives in the Control catalog.  ::
 
     aws controlcatalog list-objectives
 
@@ -36,9 +36,9 @@ Output::
 
 For more information, see `Control catalog: control objectives <https://docs.aws.amazon.com/controltower/latest/controlreference/control-catalog-objectives.html>`__ in the *AWS Control Catalog User Guide*.
 
-**Example 2: To list specific objectives from the Control Catalog**
+**Example 2: To display a list of specific objectives filtered by domain**
 
-The following ``list-objectives`` example lists specific control objectives in the Control catalog. ::
+The following ``list-objectives`` example displays a list of specific control objectives filtered by domain. ::
 
     aws controlcatalog list-objectives \
         --objective-filter '{"Domains": [{"Arn": "arn:aws:controlcatalog:::domain/33mjpzadrlwo1by3c1012ai5i"}]}'

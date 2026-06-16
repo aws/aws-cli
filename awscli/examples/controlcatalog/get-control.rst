@@ -1,9 +1,10 @@
-**To get information about individual control**
+**To show information about an individual control**
 
-The following ``get-control`` example gets information about individual control. ::
+The following ``get-control`` example shows information about an individual control. ::
 
     aws controlcatalog get-control \
-        --control-arn arn:aws:controlcatalog:::control/cwlixshc8c8mw9qiwdw2z0zav
+        --control-arn arn:aws:controlcatalog:::control/cwlixshc8c8mw9qiwdw2z0zav \
+        --region us-east-1
 
 Output::
 

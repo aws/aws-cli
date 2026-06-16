@@ -573,7 +573,6 @@ class TestCPCommand(BaseCPCommandTest):
 
         expected_args = {
             'Key': 'key.txt', 'Bucket': 'bucket',
-            'ContentType': 'text/plain',
             'CopySource': {
                 'Bucket': 'bucket-one',
                 'Key': 'key.txt'
@@ -607,7 +606,6 @@ class TestCPCommand(BaseCPCommandTest):
         expected_copy_args = {
             'Key': 'key.txt',
             'Bucket': 'bucket',
-            'ContentType': 'text/plain',
             'CopySource': {'Bucket': 'bucket-one', 'Key': 'key.txt'},
             'SSECustomerAlgorithm': 'AES256',
             'SSECustomerKey': 'destination-key',
@@ -640,7 +638,6 @@ class TestCPCommand(BaseCPCommandTest):
         expected_copy_args = {
             'Key': 'key.txt',
             'Bucket': 'bucket',
-            'ContentType': 'text/plain',
             'CopySource': {'Bucket': 'bucket-one', 'Key': 'key.txt'},
             'SSECustomerAlgorithm': 'AES256',
             'SSECustomerKey': 'bar',
@@ -672,7 +669,6 @@ class TestCPCommand(BaseCPCommandTest):
                 self.create_mpu_request(
                     'bucket',
                     'key.txt',
-                    ContentType='text/plain',
                     SSECustomerAlgorithm='AES256',
                     SSECustomerKey='destination-key',
                 ),
@@ -724,7 +720,6 @@ class TestCPCommand(BaseCPCommandTest):
                 self.create_mpu_request(
                     'bucket',
                     'key.txt',
-                    ContentType='text/plain',
                     SSECustomerAlgorithm='AES256',
                     SSECustomerKey='destination-key',
                 ),
@@ -818,7 +813,6 @@ class TestCPCommand(BaseCPCommandTest):
             {
                 'Key': 'key2.txt',
                 'Bucket': 'bucket',
-                'ContentType': 'text/plain',
                 'CopySource': {
                     'Bucket': 'bucket',
                     'Key': 'key1.txt'
@@ -853,7 +847,6 @@ class TestCPCommand(BaseCPCommandTest):
         self.assertDictEqual(
             self.operations_called[1][1],
             {'Key': 'key2.txt', 'Bucket': 'bucket',
-             'ContentType': 'text/plain',
              'SSEKMSKeyId': 'foo', 'ServerSideEncryption': 'aws:kms'}
         )
 

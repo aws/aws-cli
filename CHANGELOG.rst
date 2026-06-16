@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.45.31
+=======
+
+* api-change:``directconnect``: Added VIF rate limiting support for AWS Direct Connect, allowing customers to set bandwidth allocations on virtual interfaces to manage traffic on dedicated connections.
+* api-change:``outposts``: Adds support for creating an order from quotes.
+* api-change:``partnercentral-selling``: Added Prospecting APIs to convert engagements into AI-enriched leads with scoring insights. Extended Engagement APIs with ProspectingResult and Lead contexts. Added CoSell Scoring to GetAwsOpportunitySummary- quality score, trend, agent-driven recommendations, and engagement classification.
+* api-change:``route53resolver``: Adds supports for PartnerManagedRules
+* api-change:``s3``: Added support for annotations. You can now attach up to 1000 annotations (up to 1 MB each) directly to objects and create, retrieve, list, and delete them using new annotation APIs. Also added support for configuring an annotation table in S3 Metadata.
+* api-change:``s3vectors``: Amazon S3 Vectors now supports paginated QueryVectors requests, returning up to 10,000 results per query.
+* api-change:``sagemaker``: Add EnableDetailedObservability to Endpoint MetricsConfig. Publishes GPU, host, and framework-native inference metrics to CloudWatch with per-inference-component, availability-zone, and instance dimensions. Adds Inference Component provisioning lifecycle and multi-AZ placement metrics.
+
+
 1.45.30
 =======
 

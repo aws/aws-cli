@@ -48,7 +48,6 @@ from awscli.customizations.s3.utils import WarningResult
 from awscli.customizations.s3.utils import ProvideSizeSubscriber
 from awscli.customizations.s3.utils import ProvideETagSubscriber
 from awscli.customizations.s3.utils import ProvideUploadContentTypeSubscriber
-from awscli.customizations.s3.utils import ProvideCopyContentTypeSubscriber
 from awscli.customizations.s3.utils import ProvideLastModifiedTimeSubscriber
 from awscli.customizations.s3.utils import DirectoryCreatorSubscriber
 from awscli.customizations.s3.utils import DeleteSourceFileSubscriber
@@ -652,7 +651,6 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
         ref_subscribers = [
             ProvideSizeSubscriber,
             ProvideETagSubscriber,
-            ProvideCopyContentTypeSubscriber,
             CopyResultSubscriber
         ]
         actual_subscribers = copy_call_kwargs['subscribers']
@@ -822,7 +820,6 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
         ref_subscribers = [
             ProvideSizeSubscriber,
             ProvideETagSubscriber,
-            ProvideCopyContentTypeSubscriber,
             DeleteSourceObjectSubscriber,
             CopyResultSubscriber,
         ]

@@ -1,8 +1,9 @@
-**Example 1: To list all available controls in the Control Catalog library**
+**Example 1: To retrieve a list of available controls in the Control Catalog library**
 
-The following ``list-controls`` example lists all available controls in the Control Catalog library.  ::
+The following ``list-controls`` example retrieves a list of available controls in the Control Catalog library.  ::
 
-    aws controlcatalog list-controls
+    aws controlcatalog list-controls \
+        --region us-east-1
 
 Output::
 
@@ -52,60 +53,40 @@ Output::
 
 For more information, see `The AWS Control Tower Control Catalog <https://docs.aws.amazon.com/controltower/latest/controlreference/controls-reference.html>`__ in the *AWS Control Tower User Guide*.
 
-**Example 2: To list specific controls in the Control Catalog library**
+**Example 2: To retrieve a list available controls filtered by identifier and implementation type**
 
-The following ``list-controls`` example lists specific controls in the Control Catalog library. ::
+The following ``list-controls`` example retrieves a list of available controls filtered by identifier and implementation type. ::
 
     aws controlcatalog list-controls \
-        —filter '{"Implementations": {"Types": ["AWS::CloudFormation::Type::HOOK"]}}'
+        --filter "{\"Implementations\":{\"Identifiers\":[\"CODEPIPELINE_DEPLOYMENT_COUNT_CHECK\"], \"Types\":[\"AWS::Config::ConfigRule\"]}}" \
+        --region us-east-1
 
 Output::
 
     {
         "Controls": [
             {
-                "Arn": "arn:aws:controlcatalog:::control/4b0nsxnd47747up54ytdqesxi",
+                "Arn": "arn:aws:controlcatalog:::control/8k65jh499ji8qa5tb3it7tdi5",
                 "Aliases": [
-                    "CT.CODEBUILD.PR.3"
+                    "CONFIG.CODEPIPELINE.DT.1"
                 ],
-                "Name": "Require any AWS CodeBuild project environment to have logging configured",
-                "Description": "This control checks whether AWS CodeBuild projects environment has at least one logging option enabled.",
-                "Behavior": "PROACTIVE",
+                "Name": "Checks if the first deployment stage of AWS CodePipeline performs more than one deployment",
+                "Description": "Checks if the first deployment stage of AWS CodePipeline performs more than one deployment. Optionally checks if each of the subsequent remaining stages deploy to more than the specified number of deployments (deploymentLimit).",
+                "Behavior": "DETECTIVE",
                 "Severity": "MEDIUM",
-                "ParameterRequirementSummary": "NONE",
+                "ParameterRequirementSummary": "OPTIONAL",
                 "Implementation": {
-                    "Type": "AWS::CloudFormation::Type::HOOK"
+                    "Type": "AWS::Config::ConfigRule",
+                    "Identifier": "CODEPIPELINE_DEPLOYMENT_COUNT_CHECK"
                 },
-                "CreateTime": "2022-11-27T18:00:00-06:00",
+                "CreateTime": "2018-10-31T19:00:00-05:00",
                 "GovernedResources": [
-                    "AWS::CodeBuild::Project"
+                    "AWS::CodePipeline::Pipeline"
                 ],
                 "GovernedProviders": [
                     "AWS"
                 ]
-            },
-            {
-                "Arn": "arn:aws:controlcatalog:::control/6unff4za5vtu72g08jic7cetr",
-                "Aliases": [
-                    "CT.RDS.PR.5"
-                ],
-                "Name": "Require an Amazon RDS database instance to have minor version upgrades configured",
-                "Description": "This control checks whether automatic minor version upgrades are enabled for an Amazon RDS database instance.",
-                "Behavior": "PROACTIVE",
-                "Severity": "HIGH",
-                "ParameterRequirementSummary": "NONE",
-                "Implementation": {
-                    "Type": "AWS::CloudFormation::Type::HOOK"
-                },
-                "CreateTime": "2022-11-27T18:00:00-06:00",
-                "GovernedResources": [
-                    "AWS::RDS::DBInstance"
-                ],
-                "GovernedProviders": [
-                    "AWS"
-                ]
-            },
-            ...
+            }
         ]
     }
 

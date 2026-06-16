@@ -1,8 +1,9 @@
-**Example 1: To provide information of all control mapping types**
+**Example 1: To retrieve information of all control mapping types**
 
-The following ``list-control-mappings`` example provides information about all control mapping types.  ::
+The following ``list-control-mappings`` example retrieves information about all control mapping types.  ::
 
-    aws controlcatalog list-control-mappings
+    aws controlcatalog list-control-mappings \
+        --region us-east-1
 
 Output::
 
@@ -43,9 +44,9 @@ Output::
     
 For more information, see `ControlMapping <https://docs.aws.amazon.com/controlcatalog/latest/APIReference/API_ControlMapping.html>`__ in the *AWS Control Catalog User Guide*.
 
-**Example 2: To provide information of a specific control mapping type**
+**Example 2: To retrieve information of a specific control mapping type**
 
-The following ``list-control-mappings`` example provides information about a control mapping type. ::
+The following ``list-control-mappings`` example retrieves information about a control mapping type. ::
 
     aws controlcatalog list-control-mappings \
         --filter MappingTypes=FRAMEWORK

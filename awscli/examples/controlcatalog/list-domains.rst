@@ -1,6 +1,6 @@
-**To list domains from the Control Catalog**
+**To show a list of domains from the Control Catalog**
 
-The following ``list-domains` example lists domains from the Control Catalog. ::
+The following ``list-domains` example shows a list of domains from the Control Catalog. ::
 
     aws controlcatalog list-domains
 

@@ -46,6 +46,7 @@ class TestPaginateBase(unittest.TestCase):
         self.bar_param = mock.Mock()
         self.bar_param.type_name = 'string'
         self.bar_param.name = 'Bar'
+        self.bar_param.metadata = {}
         self.params = [self.foo_param, self.bar_param]
         self.operation_model.input_shape.members = {
             "Foo": self.foo_param,
@@ -435,6 +436,59 @@ class TestEnsurePagingParamsNotSet(TestPaginateBase):
         self.assertIsNone(
             paginate.ensure_paging_params_not_set(self.parsed_args, {})
         )
+
+
+class TestPageSizeConstraints(TestPaginateBase):
+    def test_page_size_copies_min_max_from_limit_key_shape(self):
+        self.bar_param.type_name = 'integer'
+        self.bar_param.metadata = {'min': 1, 'max': 100}
+        argument_table = {
+            'foo': mock.Mock(),
+            'bar': mock.Mock(),
+        }
+        paginate.unify_paging_params(
+            argument_table,
+            self.operation_model,
+            'building-argument-table.foo.bar',
+            self.session,
+        )
+        page_size_arg = argument_table['page-size']
+        self.assertEqual(page_size_arg.argument_model.metadata.get('min'), 1)
+        self.assertEqual(page_size_arg.argument_model.metadata.get('max'), 100)
+
+    def test_page_size_no_constraints_when_limit_key_has_none(self):
+        self.bar_param.type_name = 'integer'
+        self.bar_param.metadata = {}
+        argument_table = {
+            'foo': mock.Mock(),
+            'bar': mock.Mock(),
+        }
+        paginate.unify_paging_params(
+            argument_table,
+            self.operation_model,
+            'building-argument-table.foo.bar',
+            self.session,
+        )
+        page_size_arg = argument_table['page-size']
+        self.assertNotIn('min', page_size_arg.argument_model.metadata)
+        self.assertNotIn('max', page_size_arg.argument_model.metadata)
+
+    def test_page_size_copies_partial_constraints(self):
+        self.bar_param.type_name = 'integer'
+        self.bar_param.metadata = {'min': 1}
+        argument_table = {
+            'foo': mock.Mock(),
+            'bar': mock.Mock(),
+        }
+        paginate.unify_paging_params(
+            argument_table,
+            self.operation_model,
+            'building-argument-table.foo.bar',
+            self.session,
+        )
+        page_size_arg = argument_table['page-size']
+        self.assertEqual(page_size_arg.argument_model.metadata.get('min'), 1)
+        self.assertNotIn('max', page_size_arg.argument_model.metadata)
 
 
 class TestNonPositiveMaxItems:

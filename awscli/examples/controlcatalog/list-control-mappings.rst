@@ -1,0 +1,81 @@
+**Example 1: To provide information of all control mapping types**
+
+The following ``list-control-mappings`` example provides information about all control mapping types.  ::
+
+    aws controlcatalog list-control-mappings
+
+Output::
+
+    {
+        "ControlMappings": [
+            {
+                "ControlArn": "arn:aws:controlcatalog:::control/ckrg5g06x08c6pem7ee4is3k5",
+                "MappingType": "FRAMEWORK",
+                "Mapping": {
+                    "Framework": {
+                        "Name": "SSAE-18-SOC-2-Oct-2023",
+                        "Item": "CC6.1"
+                    }
+                }
+            },
+            {
+                "ControlArn": "arn:aws:controlcatalog:::control/5lwgwp498974xwygy5ge7pxfz",
+                "MappingType": "FRAMEWORK",
+                "Mapping": {
+                    "Framework": {
+                        "Name": "CIS-v8.0",
+                        "Item": "14.6"
+                    }
+                }
+            },
+            {
+                "ControlArn": "arn:aws:controlcatalog:::control/6s095tcdtgab75dd0229m5x6n",
+                "MappingType": "COMMON_CONTROL",
+                "Mapping": {
+                    "CommonControl": {
+                        "CommonControlArn": "arn:aws:controlcatalog:::common-control/c0kq7ddgbp8ivhicnlr0plch4"
+                    }
+                }
+            },
+            ...
+        ]
+    }
+    
+For more information, see `ControlMapping <https://docs.aws.amazon.com/controlcatalog/latest/APIReference/API_ControlMapping.html>`__ in the *AWS Control Catalog User Guide*.
+
+**Example 2: To provide information of a specific control mapping type**
+
+The following ``list-control-mappings`` example provides information about a control mapping type. ::
+
+    aws controlcatalog list-control-mappings \
+        --filter MappingTypes=FRAMEWORK
+
+Output::
+
+    {
+        "ControlMappings": [
+            {
+                "ControlArn": "arn:aws:controlcatalog:::control/ckrg5g06x08c6pem7ee4is3k5",
+                "MappingType": "FRAMEWORK",
+                "Mapping": {
+                    "Framework": {
+                        "Name": "SSAE-18-SOC-2-Oct-2023",
+                        "Item": "CC6.1"
+                    }
+                }
+            },
+            {
+                "ControlArn": "arn:aws:controlcatalog:::control/5lwgwp498974xwygy5ge7pxfz",
+                "MappingType": "FRAMEWORK",
+                "Mapping": {
+                    "Framework": {
+                        "Name": "CIS-v8.0",
+                        "Item": "14.6"
+                    }
+                }
+            },
+            ...
+        ]
+    }
+
+For more information, see `ControlMapping <https://docs.aws.amazon.com/controlcatalog/latest/APIReference/API_ControlMapping.html>`__ in the *AWS Control Catalog User Guide*.

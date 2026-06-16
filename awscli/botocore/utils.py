@@ -3396,7 +3396,7 @@ class SSOTokenFetcher(BaseSSOTokenFetcher):
         response = self._client.start_device_authorization(
             clientId=registration['clientId'],
             clientSecret=registration['clientSecret'],
-            startUrl=start_url,
+            startUrl=self._resolved_start_url,
         )
         expires_in = datetime.timedelta(seconds=response['expiresIn'])
         authorization = {
@@ -3514,7 +3514,11 @@ class SSOTokenFetcher(BaseSSOTokenFetcher):
         force_refresh=False,
         registration_scopes=None,
         session_name=None,
+        resolved_start_url=None,
     ):
+        # resolved_start_url is the AWS-owned URL to pass to service APIs.
+        # start_url (possibly a vanity URL) is used as the cache key.
+        self._resolved_start_url = resolved_start_url or start_url
         return self._token(
             start_url,
             force_refresh,
@@ -3607,7 +3611,7 @@ class SSOTokenFetcherAuth(BaseSSOTokenFetcher):
             session_name,
             scopes,
             self._auth_code_fetcher.redirect_uri_without_port(),
-            start_url,
+            self._resolved_start_url,
         )
         self._cache[cache_key] = registration
         return registration
@@ -3738,7 +3742,9 @@ class SSOTokenFetcherAuth(BaseSSOTokenFetcher):
         force_refresh=False,
         registration_scopes=None,
         session_name=None,
+        resolved_start_url=None,
     ):
+        self._resolved_start_url = resolved_start_url or start_url
         cache_key = self._token_cache_key(start_url, session_name)
         # Only obey the token cache if we are not forcing a refresh.
         if not force_refresh and cache_key in self._cache:

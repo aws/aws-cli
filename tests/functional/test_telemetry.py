@@ -17,6 +17,7 @@ import pytest
 from botocore.exceptions import MD5UnavailableError
 from botocore.session import Session
 
+from awscli.clidriver import create_clidriver
 from awscli.telemetry import (
     CLISessionData,
     CLISessionDatabaseConnection,
@@ -324,7 +325,7 @@ class TestCLISessionOrchestrator:
 
 def test_register_session_id_event_injects_sid_on_before_call():
     session = MagicMock(Session)
-    session.user_agent_extra = ''
+    session.user_agent_extra = 'md/installer#source'
     event_emitter = MagicMock()
     session.get_component.return_value = event_emitter
     orchestrator = MagicMock(CLISessionOrchestrator)
@@ -338,7 +339,7 @@ def test_register_session_id_event_injects_sid_on_before_call():
     )
     handler = event_emitter.register.call_args[0][1]
     handler(params={})
-    assert session.user_agent_extra == 'sid/my-session-id'
+    assert session.user_agent_extra == 'md/installer#source sid/my-session-id'
     event_emitter.unregister.assert_called_once_with('before-call', handler)
 
 
@@ -353,3 +354,11 @@ def test_register_session_id_event_catches_bare_exceptions():
     handler = event_emitter.register.call_args[0][1]
     handler(params={})
     assert session.user_agent_extra == ''
+
+
+def test_user_agent_extra_contains_installer_component():
+    # register_session_id_event depends on md/installer being present
+    # in user_agent_extra to insert sid at the correct position. This
+    # test ensures that invariant holds after driver creation.
+    driver = create_clidriver()
+    assert 'md/installer#' in driver.session.user_agent_extra

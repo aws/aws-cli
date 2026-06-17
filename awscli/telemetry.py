@@ -304,9 +304,18 @@ def register_session_id_event(session, orchestrator_factory=None):
     def _inject_session_id(params, **kwargs):
         try:
             orchestrator = orchestrator_factory()
-            add_component_to_user_agent_extra(
-                session,
-                UserAgentComponent("sid", orchestrator.session_id),
+            sid_component = UserAgentComponent(
+                "sid", orchestrator.session_id
+            ).to_string()
+            extra = session.user_agent_extra
+            # Insert sid after md/installer to preserve original
+            # user-agent component ordering.
+            idx = extra.find('md/installer')
+            end = extra.find(' ', idx)
+            if end == -1:
+                end = len(extra)
+            session.user_agent_extra = (
+                extra[:end] + f' {sid_component}' + extra[end:]
             )
         except Exception:
             # Ideally, the AWS CLI should never throw if the session id

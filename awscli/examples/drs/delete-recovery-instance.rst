@@ -3,7 +3,7 @@
 The following ``delete-recovery-instance`` example deletes the specified recovery instance. ::
 
     aws drs delete-recovery-instance \
-        --recovery-instance-id s-1234567890abcdef0
+        --recovery-instance-id i-1234567890abcdef0
 
 This command produces no output.
 

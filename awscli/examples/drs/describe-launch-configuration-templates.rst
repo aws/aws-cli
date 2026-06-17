@@ -12,7 +12,7 @@ Output::
                 "arn": "arn:aws:drs:us-west-2:123456789012:launch-configuration-template/lct-1234567890abcdef0",
                 "copyPrivateIp": false,
                 "copyTags": false,
-                "exportBucketArn": "arn:aws:s3:::my-export-bucket",
+                "exportBucketArn": "arn:aws:s3:::amzn-s3-demo-bucket",
                 "launchConfigurationTemplateID": "lct-1234567890abcdef0",
                 "launchDisposition": "STARTED",
                 "launchIntoSourceInstance": false,

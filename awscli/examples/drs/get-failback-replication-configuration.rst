@@ -3,7 +3,7 @@
 The following ``get-failback-replication-configuration`` example gets the failback replication configuration for the specified recovery instance. ::
 
     aws drs get-failback-replication-configuration \
-        --recovery-instance-id s-1234567890abcdef0
+        --recovery-instance-id i-1234567890abcdef0
 
 Output::
 

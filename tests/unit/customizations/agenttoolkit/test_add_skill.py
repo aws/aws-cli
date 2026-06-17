@@ -335,6 +335,19 @@ def test_add_skill_skips_unmarked_existing_dir(tmp_path):
     assert not (skill_dir / SKILL_METADATA_FILENAME).exists()
 
 
+def test_add_skill_heals_corrupted_install(tmp_path):
+    skill_dir = tmp_path / '.test-agent' / 'skills' / 'aws-s3'
+    skill_dir.mkdir(parents=True)
+    (skill_dir / SKILL_METADATA_FILENAME).write_text('{"version": "v1"}')
+    configs = [make_config(tmp_path)]
+    rc, output = _run_add(configs, ['--skill-name', 'aws-s3'])
+    assert rc == 0
+    assert 'previous install appears incomplete' in output
+    assert 'Installed aws-s3 (v1)' in output
+    assert (skill_dir / 'SKILL.md').exists()
+    assert (skill_dir / SKILL_METADATA_FILENAME).exists()
+
+
 def test_add_skill_zip_slip_rejected(tmp_path):
     (tmp_path / '.test-agent' / 'skills').mkdir(parents=True)
     configs = [make_config(tmp_path)]

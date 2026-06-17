@@ -39,7 +39,6 @@ MODELED_COMMAND_RENAMES = {
 
 
 def register_agent_toolkit_commands(event_handlers):
-    event_handlers.register('building-command-table.main', _rename_service)
     event_handlers.register(
         'building-command-table.agent-toolkit', _inject_commands
     )
@@ -55,13 +54,6 @@ def _inject_nonprod_header(request, **kwargs):
     token = os.environ.get(NONPROD_ACCESS_TOKEN_ENV_VAR)
     if token:
         request.headers[NONPROD_ACCESS_TOKEN_HEADER] = token
-
-
-def _rename_service(command_table, session, **kwargs):
-    service_cmd = command_table.pop('agenttoolkit', None)
-    if service_cmd is not None:
-        service_cmd._name = 'agent-toolkit'
-        command_table['agent-toolkit'] = service_cmd
 
 
 def _inject_commands(command_table, session, **kwargs):

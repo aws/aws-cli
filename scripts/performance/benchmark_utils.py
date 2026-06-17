@@ -4,6 +4,7 @@ import os
 import shutil
 import sys
 import time
+from typing import Optional
 
 import psutil
 
@@ -277,18 +278,21 @@ class BenchmarkHarness:
         """
         Runs a CLI command and logs CLI-specific metrics to a file.
         """
-        first_client_invocation_time = None
-        create_client_start_time = None
-        create_client_end_time = None
-        plugin_import_start_time = None
-        plugin_import_end_time = None
+        first_client_invocation_time: Optional[float] = None
+        create_client_start_time: Optional[float] = None
+        create_client_end_time: Optional[float] = None
+        plugin_import_start_time: Optional[float] = None
+        plugin_import_depth = 0
+        plugin_import_time = 0
         start_time = time.time()
 
         before_imports = start_time
         # We import from awscli lazily to ensure import time is measured in
         # total runtime.
-        from awscli.botocore.hooks import HierarchicalEmitter
         from awscli.clidriver import AWSCLIEntryPoint, create_clidriver
+        from awscli.handlers_registry import MAIN_COMMAND_TABLE_OPS
+        from awscli.lazy_emitter import LazyInitEmitter
+
         after_imports = time.time()
 
         def _log_invocation_time(params, request_signer, model, **kwargs):
@@ -307,16 +311,25 @@ class BenchmarkHarness:
                 create_client_end_time = time.time()
 
         def _log_import_plugins_start(**kwargs):
-            nonlocal plugin_import_start_time
+            nonlocal plugin_import_depth, plugin_import_start_time
+            plugin_import_depth += 1
             if plugin_import_start_time is None:
                 plugin_import_start_time = time.time()
 
         def _log_import_plugins_end(**kwargs):
-            nonlocal plugin_import_end_time
-            if plugin_import_end_time is None:
-                plugin_import_end_time = time.time()
+            nonlocal plugin_import_depth, plugin_import_start_time
+            nonlocal plugin_import_time
+            plugin_import_depth -= 1
+            if (
+                plugin_import_depth == 0
+                and plugin_import_start_time is not None
+            ):
+                plugin_import_time += time.time() - plugin_import_start_time
+                plugin_import_start_time = None
 
-        event_hooks = HierarchicalEmitter()
+        event_hooks = LazyInitEmitter(
+            main_command_table_ops=MAIN_COMMAND_TABLE_OPS
+        )
         event_hooks.register_last(
             'before-call',
             _log_invocation_time,
@@ -333,12 +346,12 @@ class BenchmarkHarness:
             'benchmarks.log-after-create-client',
         )
         event_hooks.register_last(
-            'before-load-plugins',
+            'before-load-plugins.*',
             _log_import_plugins_start,
             'benchmarks.log-before-load-plugins',
         )
         event_hooks.register_last(
-            'after-load-plugins',
+            'after-load-plugins.*',
             _log_import_plugins_end,
             'benchmarks.log-after-load-plugins',
         )
@@ -348,26 +361,23 @@ class BenchmarkHarness:
         end_time = time.time()
 
         # write the collected metrics to a file
-        with open(out_file, 'w') as metrics_f:
-            metrics_f.write(
-                json.dumps(
-                    {
-                        'return_code': rc,
-                        'start_time': start_time,
-                        'end_time': end_time,
-                        'first_client_invocation_time': first_client_invocation_time,
-                        'load_plugins_time': (
-                            plugin_import_end_time - plugin_import_start_time
-                        ),
-                        'static_imports_time': (
-                            after_imports - before_imports
-                        ),
-                        'create-client-time': (
-                            create_client_end_time - create_client_start_time
-                        )
-                    }
-                )
+        metrics = {
+            'return_code': rc,
+            'start_time': start_time,
+            'end_time': end_time,
+            'first_client_invocation_time': first_client_invocation_time,
+            'load_plugins_time': plugin_import_time,
+            'static_imports_time': after_imports - before_imports,
+        }
+        if (
+            create_client_start_time is not None
+            and create_client_end_time is not None
+        ):
+            metrics['create-client-time'] = (
+                create_client_end_time - create_client_start_time
             )
+        with open(out_file, 'w') as metrics_f:
+            metrics_f.write(json.dumps(metrics))
 
     def _run_isolated_benchmark(
         self,

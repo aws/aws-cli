@@ -177,6 +177,29 @@
       "endpoint":{"hostPrefix":"cp."},
       "idempotent":true
     },
+    "CreateTrigger":{
+      "name":"CreateTrigger",
+      "http":{
+        "method":"POST",
+        "requestUri":"/trigger/agent-space/{agentSpaceId}/triggers",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateTriggerRequest"},
+      "output":{"shape":"CreateTriggerResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ContentSizeExceededException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Creates a new Trigger in the specified agent space</p>",
+      "endpoint":{"hostPrefix":"dp."}
+    },
     "DeleteAgentSpace":{
       "name":"DeleteAgentSpace",
       "http":{
@@ -272,6 +295,29 @@
       "documentation":"<p>Deletes a Private Connection. The deletion is asynchronous and returns DELETE_IN_PROGRESS status.</p>",
       "endpoint":{"hostPrefix":"cp."},
       "idempotent":true
+    },
+    "DeleteTrigger":{
+      "name":"DeleteTrigger",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/trigger/agent-space/{agentSpaceId}/triggers/{triggerId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteTriggerRequest"},
+      "output":{"shape":"DeleteTriggerResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ContentSizeExceededException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Deletes a Trigger from the specified agent space</p>",
+      "endpoint":{"hostPrefix":"dp."}
     },
     "DeregisterService":{
       "name":"DeregisterService",
@@ -631,6 +677,30 @@
       ],
       "documentation":"<p>Retrieves given service by it's unique identifier</p>",
       "endpoint":{"hostPrefix":"cp."},
+      "readonly":true
+    },
+    "GetTrigger":{
+      "name":"GetTrigger",
+      "http":{
+        "method":"GET",
+        "requestUri":"/trigger/agent-space/{agentSpaceId}/triggers/{triggerId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTriggerRequest"},
+      "output":{"shape":"GetTriggerResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ContentSizeExceededException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Gets a Trigger from the specified agent space</p>",
+      "endpoint":{"hostPrefix":"dp."},
       "readonly":true
     },
     "ListAgentSpaces":{
@@ -1010,6 +1080,30 @@
       "endpoint":{"hostPrefix":"cp."},
       "readonly":true
     },
+    "ListTriggers":{
+      "name":"ListTriggers",
+      "http":{
+        "method":"GET",
+        "requestUri":"/trigger/agent-space/{agentSpaceId}/triggers",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTriggersRequest"},
+      "output":{"shape":"ListTriggersResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ContentSizeExceededException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Lists Triggers in the specified agent space</p>",
+      "endpoint":{"hostPrefix":"dp."},
+      "readonly":true
+    },
     "ListWebhooks":{
       "name":"ListWebhooks",
       "http":{
@@ -1333,6 +1427,30 @@
         {"shape":"InvalidParameterException"}
       ],
       "documentation":"<p>Updates an existing recommendation with new content, status, or metadata</p>",
+      "endpoint":{"hostPrefix":"dp."},
+      "idempotent":true
+    },
+    "UpdateTrigger":{
+      "name":"UpdateTrigger",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/trigger/agent-space/{agentSpaceId}/triggers/{triggerId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateTriggerRequest"},
+      "output":{"shape":"UpdateTriggerResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ContentSizeExceededException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Updates the status of an existing Trigger</p>",
       "endpoint":{"hostPrefix":"dp."},
       "idempotent":true
     },
@@ -2397,6 +2515,58 @@
       },
       "documentation":"<p>Output containing the newly created Private Connection summary.</p>"
     },
+    "CreateTriggerRequest":{
+      "type":"structure",
+      "required":[
+        "agentSpaceId",
+        "type",
+        "condition",
+        "action"
+      ],
+      "members":{
+        "agentSpaceId":{
+          "shape":"AgentSpaceId",
+          "location":"uri",
+          "locationName":"agentSpaceId"
+        },
+        "type":{
+          "shape":"TriggerType",
+          "documentation":"<p>How the new Trigger fires</p>"
+        },
+        "condition":{
+          "shape":"TriggerCondition",
+          "documentation":"<p>The condition that fires the new Trigger</p>"
+        },
+        "action":{
+          "shape":"TriggerAction",
+          "documentation":"<p>The action the new Trigger performs when it fires</p>"
+        },
+        "status":{
+          "shape":"TriggerStatus",
+          "documentation":"<p>The initial status of the Trigger</p>"
+        },
+        "clientToken":{
+          "shape":"CreateTriggerRequestClientTokenString",
+          "documentation":"<p>A unique, case-sensitive identifier used for idempotent Trigger creation</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateTriggerRequestClientTokenString":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "CreateTriggerResponse":{
+      "type":"structure",
+      "required":["trigger"],
+      "members":{
+        "trigger":{
+          "shape":"Trigger",
+          "documentation":"<p>The Trigger object</p>"
+        }
+      }
+    },
     "CustomHeaderName":{
       "type":"string",
       "documentation":"<p>HTTP header name. Allows alphanumeric characters, hyphens, and underscores.</p>",
@@ -2579,6 +2749,29 @@
         }
       },
       "documentation":"<p>Output containing the status of the Private Connection deletion.</p>"
+    },
+    "DeleteTriggerRequest":{
+      "type":"structure",
+      "required":[
+        "agentSpaceId",
+        "triggerId"
+      ],
+      "members":{
+        "agentSpaceId":{
+          "shape":"AgentSpaceId",
+          "location":"uri",
+          "locationName":"agentSpaceId"
+        },
+        "triggerId":{
+          "shape":"ResourceId",
+          "location":"uri",
+          "locationName":"triggerId"
+        }
+      }
+    },
+    "DeleteTriggerResponse":{
+      "type":"structure",
+      "members":{}
     },
     "DeregisterServiceInput":{
       "type":"structure",
@@ -3377,6 +3570,35 @@
         }
       },
       "documentation":"<p>Output containing the requested service details.</p>"
+    },
+    "GetTriggerRequest":{
+      "type":"structure",
+      "required":[
+        "agentSpaceId",
+        "triggerId"
+      ],
+      "members":{
+        "agentSpaceId":{
+          "shape":"AgentSpaceId",
+          "location":"uri",
+          "locationName":"agentSpaceId"
+        },
+        "triggerId":{
+          "shape":"ResourceId",
+          "location":"uri",
+          "locationName":"triggerId"
+        }
+      }
+    },
+    "GetTriggerResponse":{
+      "type":"structure",
+      "required":["trigger"],
+      "members":{
+        "trigger":{
+          "shape":"Trigger",
+          "documentation":"<p>The Trigger object</p>"
+        }
+      }
     },
     "GitHubConfiguration":{
       "type":"structure",
@@ -4660,6 +4882,52 @@
           "shape":"Tags",
           "documentation":"<p>Tags associated with the resource.</p>"
         }
+      }
+    },
+    "ListTriggersRequest":{
+      "type":"structure",
+      "required":["agentSpaceId"],
+      "members":{
+        "agentSpaceId":{
+          "shape":"AgentSpaceId",
+          "location":"uri",
+          "locationName":"agentSpaceId"
+        },
+        "status":{
+          "shape":"TriggerStatus",
+          "documentation":"<p>Filter results to Triggers in this status</p>",
+          "location":"querystring",
+          "locationName":"status"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Pagination token from a previous response to retrieve the next page of results</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"ListTriggersRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return in a single response</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListTriggersRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListTriggersResponse":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"TriggerList",
+          "documentation":"<p>The list of Triggers</p>"
+        },
+        "nextToken":{"shape":"NextToken"}
       }
     },
     "ListWebhooksInput":{
@@ -6218,6 +6486,22 @@
       "min":1,
       "pattern":"arn:aws:iam::\\d{12}:role/[a-zA-Z0-9+=,.@_/-]+"
     },
+    "ScheduleCondition":{
+      "type":"structure",
+      "required":["expression"],
+      "members":{
+        "expression":{
+          "shape":"ScheduleExpression",
+          "documentation":"<p>The schedule expression</p>"
+        }
+      },
+      "documentation":"<p>Schedule-based condition that fires the Trigger</p>"
+    },
+    "ScheduleExpression":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
     "SchedulerState":{
       "type":"string",
       "documentation":"<p>State of Goal Schedule. Mirrors EventBridge Scheduler State</p>",
@@ -7269,6 +7553,78 @@
       "retryable":{"throttling":false}
     },
     "Timestamp":{"type":"timestamp"},
+    "Trigger":{
+      "type":"structure",
+      "required":[
+        "triggerId",
+        "agentSpaceId",
+        "type",
+        "condition",
+        "action",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "triggerId":{"shape":"ResourceId"},
+        "agentSpaceId":{"shape":"AgentSpaceId"},
+        "type":{
+          "shape":"TriggerType",
+          "documentation":"<p>How this Trigger fires</p>"
+        },
+        "condition":{
+          "shape":"TriggerCondition",
+          "documentation":"<p>The condition that fires this Trigger</p>"
+        },
+        "action":{
+          "shape":"TriggerAction",
+          "documentation":"<p>The action this Trigger performs when it fires</p>"
+        },
+        "status":{
+          "shape":"TriggerStatus",
+          "documentation":"<p>The status of this Trigger</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Timestamp when this Trigger was created</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Timestamp when this Trigger was last updated</p>"
+        }
+      },
+      "documentation":"<p>A Trigger fires on a schedule and invokes an agent</p>"
+    },
+    "TriggerAction":{
+      "type":"structure",
+      "members":{},
+      "document":true
+    },
+    "TriggerCondition":{
+      "type":"structure",
+      "members":{
+        "schedule":{
+          "shape":"ScheduleCondition",
+          "documentation":"<p>Time-based firing condition</p>"
+        }
+      },
+      "documentation":"<p>Defines the firing condition for a Trigger</p>",
+      "union":true
+    },
+    "TriggerList":{
+      "type":"list",
+      "member":{"shape":"Trigger"}
+    },
+    "TriggerStatus":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "TriggerType":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
     "UntagResourceRequest":{
       "type":"structure",
       "required":[
@@ -7711,6 +8067,49 @@
         }
       },
       "documentation":"<p>Response structure containing the updated recommendation</p>"
+    },
+    "UpdateTriggerRequest":{
+      "type":"structure",
+      "required":[
+        "agentSpaceId",
+        "triggerId"
+      ],
+      "members":{
+        "agentSpaceId":{
+          "shape":"AgentSpaceId",
+          "location":"uri",
+          "locationName":"agentSpaceId"
+        },
+        "triggerId":{
+          "shape":"ResourceId",
+          "location":"uri",
+          "locationName":"triggerId"
+        },
+        "status":{
+          "shape":"TriggerStatus",
+          "documentation":"<p>The new status for the Trigger</p>"
+        },
+        "clientToken":{
+          "shape":"UpdateTriggerRequestClientTokenString",
+          "documentation":"<p>A unique, case-sensitive identifier used for idempotent Trigger update</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "UpdateTriggerRequestClientTokenString":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "UpdateTriggerResponse":{
+      "type":"structure",
+      "required":["trigger"],
+      "members":{
+        "trigger":{
+          "shape":"Trigger",
+          "documentation":"<p>The Trigger object</p>"
+        }
+      }
     },
     "UsageMetric":{
       "type":"structure",

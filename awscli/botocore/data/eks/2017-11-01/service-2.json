@@ -2457,6 +2457,10 @@
         "groupName":{
           "shape":"String",
           "documentation":"<p>The name of the placement group for the Kubernetes control plane instances. This setting can't be changed after cluster creation. </p>"
+        },
+        "spreadLevel":{
+          "shape":"SpreadLevel",
+          "documentation":"<p>Optional parameter to specify the placement group spread level for control plane instances. If not provided, Amazon EKS will deploy control plane instances without a placement group.</p>"
         }
       },
       "documentation":"<p>The placement configuration for all the control plane instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p>"
@@ -2467,6 +2471,10 @@
         "groupName":{
           "shape":"String",
           "documentation":"<p>The name of the placement group for the Kubernetes control plane instances.</p>"
+        },
+        "spreadLevel":{
+          "shape":"SpreadLevel",
+          "documentation":"<p>The spread level used with the placement group for control plane instances on your local Amazon EKS cluster on Amazon Web Services Outposts.</p>"
         }
       },
       "documentation":"<p>The placement configuration for all the control plane instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p>"
@@ -4056,6 +4064,26 @@
     "ErrorDetails":{
       "type":"list",
       "member":{"shape":"ErrorDetail"}
+    },
+    "EtcdPlacementRequest":{
+      "type":"structure",
+      "members":{
+        "spreadLevel":{
+          "shape":"SpreadLevel",
+          "documentation":"<p>Optional parameter to specify the placement group spread level for etcd instances. If not provided, Amazon EKS will deploy etcd instances without a placement group.</p>"
+        }
+      },
+      "documentation":"<p>The placement configuration for the etcd instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p>"
+    },
+    "EtcdPlacementResponse":{
+      "type":"structure",
+      "members":{
+        "spreadLevel":{
+          "shape":"SpreadLevel",
+          "documentation":"<p>The spread level used with the placement group for etcd instances on your local Amazon EKS cluster on Amazon Web Services Outposts.</p>"
+        }
+      },
+      "documentation":"<p>The placement configuration for the etcd instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p>"
     },
     "FargateProfile":{
       "type":"structure",
@@ -5686,11 +5714,19 @@
         },
         "controlPlaneInstanceType":{
           "shape":"String",
-          "documentation":"<p>The Amazon EC2 instance type that you want to use for your local Amazon EKS cluster on Outposts. Choose an instance type based on the number of nodes that your cluster will have. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p> <p>The instance type that you specify is used for all Kubernetes control plane instances. The instance type can't be changed after cluster creation. The control plane is not automatically scaled by Amazon EKS.</p> <p> </p>"
+          "documentation":"<p>The Amazon EC2 instance type for the Kubernetes control plane instances of your local Amazon EKS cluster on Amazon Web Services Outposts. This instance type applies to all control plane instances and cannot be changed after cluster creation.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p> <p> </p>"
         },
         "controlPlanePlacement":{
           "shape":"ControlPlanePlacementRequest",
           "documentation":"<p>An object representing the placement configuration for all the control plane instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p>"
+        },
+        "etcdInstanceType":{
+          "shape":"String",
+          "documentation":"<p>The Amazon EC2 instance type for etcd instances of your local Amazon EKS cluster on Amazon Web Services Outposts. This instance type applies to all etcd instances and cannot be changed after cluster creation.</p>"
+        },
+        "etcdPlacement":{
+          "shape":"EtcdPlacementRequest",
+          "documentation":"<p>An object representing the placement configuration for the etcd instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p>"
         }
       },
       "documentation":"<p>The configuration of your local Amazon EKS cluster on an Amazon Web Services Outpost. Before creating a cluster on an Outpost, review <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-local-cluster-create.html\">Creating a local cluster on an Outpost</a> in the <i>Amazon EKS User Guide</i>. This API isn't available for Amazon EKS clusters on the Amazon Web Services cloud.</p>"
@@ -5708,11 +5744,19 @@
         },
         "controlPlaneInstanceType":{
           "shape":"String",
-          "documentation":"<p>The Amazon EC2 instance type used for the control plane. The instance type is the same for all control plane instances.</p>"
+          "documentation":"<p>The Amazon EC2 instance type for the Kubernetes control plane instances of your local Amazon EKS cluster on Amazon Web Services Outposts. The instance type is the same for all control plane instances.</p>"
         },
         "controlPlanePlacement":{
           "shape":"ControlPlanePlacementResponse",
           "documentation":"<p>An object representing the placement configuration for all the control plane instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p>"
+        },
+        "etcdInstanceType":{
+          "shape":"String",
+          "documentation":"<p>The Amazon EC2 instance type for etcd instances of your local Amazon EKS cluster on Amazon Web Services Outposts. The instance type is the same for all etcd instances.</p>"
+        },
+        "etcdPlacement":{
+          "shape":"EtcdPlacementResponse",
+          "documentation":"<p>An object representing the placement configuration for the etcd instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p>"
         }
       },
       "documentation":"<p>An object representing the configuration of your local Amazon EKS cluster on an Amazon Web Services Outpost. This API isn't available for Amazon EKS clusters on the Amazon Web Services cloud.</p>"
@@ -6097,6 +6141,13 @@
       "error":{"httpStatusCode":503},
       "exception":true,
       "fault":true
+    },
+    "SpreadLevel":{
+      "type":"string",
+      "enum":[
+        "host",
+        "rack"
+      ]
     },
     "SsoIdentity":{
       "type":"structure",
@@ -6825,6 +6876,10 @@
         "RemoteNetworkConfig",
         "DeletionProtection",
         "NodeRepairConfig",
+        "RoleArn",
+        "RoleMappingsToAddOrUpdate",
+        "RoleMappingsToRemove",
+        "NetworkAccess",
         "VendedLogs",
         "UpdatedTier",
         "PreviousTier",
@@ -6945,6 +7000,7 @@
         "AutoModeUpdate",
         "RemoteNetworkConfigUpdate",
         "DeletionProtectionUpdate",
+        "CapabilityUpdate",
         "ControlPlaneScalingConfigUpdate",
         "VendedLogsUpdate"
       ]

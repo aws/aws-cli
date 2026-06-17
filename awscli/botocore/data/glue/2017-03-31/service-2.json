@@ -16743,6 +16743,10 @@
         "IncludeStatusDetails":{
           "shape":"BooleanNullable",
           "documentation":"<p>Specifies whether to include status details related to a request to create or update an Glue Data Catalog view.</p>"
+        },
+        "AttributesToGet":{
+          "shape":"TableAttributesList",
+          "documentation":"<p>Specifies the table fields returned by the <code>GetTable</code> call. This parameter doesn't accept an empty list.</p> <p>The following are the valid combinations of values:</p> <ul> <li> <p> <code>DEFAULT</code> - Returns the Hive-style table definition only.</p> </li> <li> <p> <code>LATEST_ICEBERG_METADATA</code> - Returns only the latest Apache Iceberg table metadata.</p> </li> <li> <p> <code>DEFAULT</code>, <code>LATEST_ICEBERG_METADATA</code> - Returns both the Hive-style table definition and the latest Apache Iceberg table metadata.</p> </li> </ul>"
         }
       }
     },
@@ -18006,6 +18010,10 @@
       "type":"list",
       "member":{"shape":"IcebergPartitionField"}
     },
+    "IcebergPartitionSpecList":{
+      "type":"list",
+      "member":{"shape":"IcebergPartitionSpec"}
+    },
     "IcebergRetentionConfiguration":{
       "type":"structure",
       "members":{
@@ -18081,6 +18089,10 @@
       },
       "documentation":"<p>Defines the schema structure for an Iceberg table, including field definitions, data types, and schema metadata.</p>"
     },
+    "IcebergSchemaList":{
+      "type":"list",
+      "member":{"shape":"IcebergSchema"}
+    },
     "IcebergSortDirection":{
       "type":"string",
       "enum":[
@@ -18138,6 +18150,10 @@
       "type":"list",
       "member":{"shape":"IcebergSortField"}
     },
+    "IcebergSortOrderList":{
+      "type":"list",
+      "member":{"shape":"IcebergSortOrder"}
+    },
     "IcebergStructField":{
       "type":"structure",
       "required":[
@@ -18185,6 +18201,60 @@
     "IcebergStructTypeEnum":{
       "type":"string",
       "enum":["struct"]
+    },
+    "IcebergTableMetadata":{
+      "type":"structure",
+      "members":{
+        "FormatVersion":{
+          "shape":"VersionString",
+          "documentation":"<p>The Apache Iceberg table format version, such as <code>1</code> or <code>2</code>. Determines the set of features and on-disk layout supported by the table.</p>"
+        },
+        "TableUuid":{
+          "shape":"TableIdString",
+          "documentation":"<p>The unique identifier (UUID) for the Iceberg table, assigned when the table is created and used to track the table across metadata updates.</p>"
+        },
+        "Location":{
+          "shape":"LocationString",
+          "documentation":"<p>The base S3 location where the Iceberg table's data and metadata files are stored.</p>"
+        },
+        "Properties":{
+          "shape":"StringToStringMap",
+          "documentation":"<p>A map of key-value pairs that define table-level properties and configuration settings for the Iceberg table.</p>"
+        },
+        "Schemas":{
+          "shape":"IcebergSchemaList",
+          "documentation":"<p>The list of schemas that have been associated with the Iceberg table over its history, supporting schema evolution.</p>"
+        },
+        "CurrentSchemaId":{
+          "shape":"Integer",
+          "documentation":"<p>The identifier of the schema that is currently active for the Iceberg table. Matches an entry in <code>Schemas</code>.</p>"
+        },
+        "LastColumnId":{
+          "shape":"Integer",
+          "documentation":"<p>The highest column identifier that has been assigned in the Iceberg table's schema, used to ensure unique IDs as new columns are added.</p>"
+        },
+        "PartitionSpecs":{
+          "shape":"IcebergPartitionSpecList",
+          "documentation":"<p>The list of partition specifications that have been associated with the Iceberg table over its history, supporting partition evolution.</p>"
+        },
+        "DefaultSpecId":{
+          "shape":"Integer",
+          "documentation":"<p>The identifier of the partition specification that is currently used by default when writing new data to the Iceberg table.</p>"
+        },
+        "LastPartitionId":{
+          "shape":"Integer",
+          "documentation":"<p>The highest partition field identifier that has been assigned across the table's partition specifications.</p>"
+        },
+        "SortOrders":{
+          "shape":"IcebergSortOrderList",
+          "documentation":"<p>The list of sort order specifications that have been associated with the Iceberg table over its history.</p>"
+        },
+        "DefaultSortOrderId":{
+          "shape":"Integer",
+          "documentation":"<p>The identifier of the sort order that is currently used by default when writing new data to the Iceberg table.</p>"
+        }
+      },
+      "documentation":"<p>The Apache Iceberg table metadata, including format version, table identifier, schemas, partition specifications, sort orders, and table properties. This structure captures the current state of an Iceberg table's metadata as managed by the Glue Data Catalog.</p>"
     },
     "IcebergTableUpdate":{
       "type":"structure",
@@ -27214,6 +27284,10 @@
           "shape":"NullableBoolean",
           "documentation":"<p>Indicates a table is a <code>MaterializedView</code>.</p>"
         },
+        "IcebergTableMetadata":{
+          "shape":"IcebergTableMetadata",
+          "documentation":"<p>The latest Apache Iceberg table metadata for the table, including format version, schemas, partition specifications, and sort orders. This field is populated for Iceberg tables and reflects the current state of the table's Iceberg metadata.</p>"
+        },
         "Status":{
           "shape":"TableStatus",
           "documentation":"<p>Indicates the the state of an asynchronous change to a table.</p>"
@@ -27225,7 +27299,9 @@
       "type":"string",
       "enum":[
         "NAME",
-        "TABLE_TYPE"
+        "TABLE_TYPE",
+        "DEFAULT",
+        "LATEST_ICEBERG_METADATA"
       ]
     },
     "TableAttributesList":{
@@ -27249,6 +27325,11 @@
     "TableErrors":{
       "type":"list",
       "member":{"shape":"TableError"}
+    },
+    "TableIdString":{
+      "type":"string",
+      "max":100,
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
     },
     "TableIdentifier":{
       "type":"structure",

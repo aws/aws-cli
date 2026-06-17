@@ -2,6 +2,61 @@
 CHANGELOG
 =========
 
+2.35.6
+======
+
+* api-change:``s3vectors``: Amazon S3 Vectors now supports paginated QueryVectors requests, returning up to 10,000 results per query.
+* api-change:``directconnect``: Added VIF rate limiting support for AWS Direct Connect, allowing customers to set bandwidth allocations on virtual interfaces to manage traffic on dedicated connections.
+* enhancement:``s3`` copies: Adds ``all`` option to ``--copy-props`` for ``cp``, ``mv``, and ``sync`` commands. When set, S3 to S3 copy operations will copy object annotations, metadata, and tags.
+* api-change:``sagemaker``: Add EnableDetailedObservability to Endpoint MetricsConfig. Publishes GPU, host, and framework-native inference metrics to CloudWatch with per-inference-component, availability-zone, and instance dimensions. Adds Inference Component provisioning lifecycle and multi-AZ placement metrics.
+* api-change:``route53resolver``: Adds supports for PartnerManagedRules
+* api-change:``s3``: Added support for annotations. You can now attach up to 1000 annotations (up to 1 MB each) directly to objects and create, retrieve, list, and delete them using new annotation APIs. Also added support for configuring an annotation table in S3 Metadata.
+* api-change:``outposts``: Adds support for creating an order from quotes.
+* api-change:``partnercentral-selling``: Added Prospecting APIs to convert engagements into AI-enriched leads with scoring insights. Extended Engagement APIs with ProspectingResult and Lead contexts. Added CoSell Scoring to GetAwsOpportunitySummary- quality score, trend, agent-driven recommendations, and engagement classification.
+* enhancement:Documentation: Update documentation generation so that minimum and maximum value constraints for `--page-size` are surfaced in documentation.
+
+
+2.35.5
+======
+
+* api-change:``logs``: Added endTimeOffset parameter to Scheduled Queries APIs (Create, Update, Get) enabling bounded time window configuration. Introduced scheduleType filter (CUSTOMER MANAGED, AWS MANAGED) for ListScheduledQueries and exposed it in Get and Update responses.
+* api-change:``mgn``: AWS Transform for VMware now supports Amazon FSx for NetApp ONTAP as a target storage. Customers can migrate source server disks directly to FSx for NetApp ONTAP iSCSI LUNs. Target storage is configurable per source server, and compute, network, and storage migrate together in coordinated waves.
+* api-change:``wafv2``: AWS WAF now supports AI traffic monetization for CloudFront. Configure payment networks and pricing on your web ACL, use the new Monetize rule action to charge AI agents via x402, and monitor revenue with new GetRevenueStatisticsSummary, GetRevenueStatistics, and ListSettlementRecords APIs.
+* enhancement:Performance: Defer loading of built-in plugins until they are actually needed to reduce initialization overhead.
+* api-change:``datazone``: Adds support for deleting lineage events in Amazon DataZone.
+* api-change:``bedrock-runtime``: InvokeGuardrailChecks API evaluates prompts and responses against safety checks (content filters, prompt attacks, sensitive info) without creating guardrail resources. It's a detect-only API, returning numeric scores so you can build adaptive logic as per your application.
+* api-change:``rds``: Adding support for RDS SQL Server BYOM and DB2 Community Edition
+* api-change:``workspaces``: Added a validation for null check for ImageIds in DescribeWorkspaceImages API request parameters.
+
+
+2.35.4
+======
+
+* api-change:``sagemaker-runtime``: Added support for inline request payloads to the InvokeEndpointAsync operation to allow users to provide the inference payload directly in the request Body (up to 128,000 bytes) as an alternative to uploading the payload to Amazon S3 and passing InputLocation.
+* api-change:``bedrock-agentcore``: Added tagging and CMK support across optimization, an explanation field in recommendation output, and an insights feature to identify failure patterns, extract user intents, and summarize execution behavior
+* api-change:``iam``: Updating documentation for select service-specific credential APIs
+* api-change:``bedrock-agentcore-control``: Added tagging and CMK support for optimizations and an insights feature to identify failure patterns, extract user intents, and summarize execution behavior
+* api-change:``devops-agent``: Adds support for Trigger CRUD APIs (CreateTrigger, GetTrigger, UpdateTrigger, DeleteTrigger, ListTriggers) for managing schedule-based automation triggers in DevOps Agent agent spaces.
+* api-change:``firehose``: Update KeyARN in DeliveryStreamEncryptionConfigurationInput to accept KMS key ARNs only (not alias ARNs), matching service behavior.
+* api-change:``eks``: Patches missing enum values for EKS updates
+* api-change:``acm``: Certificate transparency logging opt-out is no longer available. Per compliance requirements, all public ACM certificates are automatically recorded in certificate transparency logs. The CertificateTransparencyLoggingPreference option is deprecated.
+* api-change:``glue``: Adds support for retrieving Apache Iceberg table metadata via GetTable. Use the new AttributesToGet parameter with LATEST ICEBERG METADATA to receive schema, partition specs, sort orders, and table properties in the response.
+
+
+2.35.3
+======
+
+* api-change:``eks``: Introduce new CreateCluster parameters for Amazon EKS local clusters on AWS Outposts. Added etcdInstanceType for configuring the EC2 instance type for dedicated etcd instances, and spreadLevel for configuring the placement group spread level for Kubernetes control plane and etcd instances.
+* api-change:``bedrock-agentcore-control``: Supports deterministic metadata for AgentCore Memory
+* api-change:``omics``: Adds support for workflowName in the ListRuns API response.
+* api-change:``support``: Adding new BDD representation of endpoint ruleset
+* enhancement:emr: EMR SSH/SCP helper commands (``aws emr ssh``, ``socks``, ``put``, ``get``) now default to ``StrictHostKeyChecking=accept-new`` for improved host key verification security. A new ``--ssh-options`` parameter allows passing arbitrary SSH options to override defaults. On systems with OpenSSH < 7.6, the CLI automatically falls back to the previous behavior with a warning.
+* api-change:``neptune``: Amazon Neptune now supports IPv6 dual-stack networking. You can create and manage Neptune DB clusters accessible over both IPv4 and IPv6 by specifying NetworkType as DUAL in CreateDBCluster, ModifyDBCluster, RestoreDBClusterFromSnapshot, and RestoreDBClusterToPointInTime API operations
+* api-change:``healthlake``: Adds the UpdateFHIRDatastore API and adds analytics, NLP, and profile configuration support to CreateFHIRDatastore and DescribeFHIRDatastore.
+* bugfix:``agent-toolkit``: Fixes ``add-skill`` getting stuck when a previous install is missing ``SKILL.md``.
+* api-change:``bedrock-agentcore``: Adds support to perform cross account data plane actions on an AgentCore Memory resource
+
+
 2.35.2
 ======
 

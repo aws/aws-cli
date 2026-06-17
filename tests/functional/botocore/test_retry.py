@@ -11,8 +11,10 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import contextlib
+import datetime
 import json
 
+import botocore.endpoint
 from botocore.config import Config
 from botocore.exceptions import ClientError
 
@@ -22,8 +24,10 @@ from tests.functional.botocore.test_useragent import (
     parse_registered_feature_ids,
 )
 
+RETRY_MODES = ('standard', 'adaptive')
 
-class TestRetry(BaseSessionTest):
+
+class BaseRetryTest(BaseSessionTest):
     def setUp(self):
         super().setUp()
         self.region = 'us-west-2'
@@ -193,3 +197,146 @@ class TestRetry(BaseSessionTest):
         feature_lists = self._get_feature_id_lists_from_retries(client)
         # Confirm all requests register `'RETRY_MODE_ADAPTIVE': 'F'`
         assert all('F' in feature_list for feature_list in feature_lists)
+
+
+class TestRetryHeader(BaseRetryTest):
+    def _retry_headers_test_cases(self):
+        responses = [
+            [
+                (500, {'Date': 'Sat, 01 Jun 2019 00:00:00 GMT'}),
+                (500, {'Date': 'Sat, 01 Jun 2019 00:00:01 GMT'}),
+                (200, {'Date': 'Sat, 01 Jun 2019 00:00:02 GMT'}),
+            ],
+            [
+                (500, {'Date': 'Sat, 01 Jun 2019 00:10:03 GMT'}),
+                (500, {'Date': 'Sat, 01 Jun 2019 00:10:09 GMT'}),
+                (200, {'Date': 'Sat, 01 Jun 2019 00:10:15 GMT'}),
+            ],
+        ]
+
+        # The first, third and seventh datetime values of each
+        # utcnow_side_effects list are side_effect values for when
+        # utcnow is called in SigV4 signing.
+        utcnow_side_effects = [
+            [
+                datetime.datetime(2019, 6, 1, 0, 0, 0, 0),
+                datetime.datetime(2019, 6, 1, 0, 0, 0, 0),
+                datetime.datetime(2019, 6, 1, 0, 0, 1, 0),
+                datetime.datetime(2019, 6, 1, 0, 0, 0, 0),
+                datetime.datetime(2019, 6, 1, 0, 0, 1, 0),
+                datetime.datetime(2019, 6, 1, 0, 0, 2, 0),
+                datetime.datetime(2019, 6, 1, 0, 0, 0, 0),
+            ],
+            [
+                datetime.datetime(2020, 6, 1, 0, 0, 0, 0),
+                datetime.datetime(2019, 6, 1, 0, 0, 5, 0),
+                datetime.datetime(2019, 6, 1, 0, 0, 6, 0),
+                datetime.datetime(2019, 6, 1, 0, 0, 0, 0),
+                datetime.datetime(2019, 6, 1, 0, 0, 11, 0),
+                datetime.datetime(2019, 6, 1, 0, 0, 12, 0),
+                datetime.datetime(2019, 6, 1, 0, 0, 0, 0),
+            ],
+        ]
+        expected_headers = [
+            [
+                b'attempt=1',
+                b'ttl=20190601T000011Z; attempt=2; max=3',
+                b'ttl=20190601T000012Z; attempt=3; max=3',
+            ],
+            [
+                b'attempt=1',
+                b'ttl=20190601T001014Z; attempt=2; max=3',
+                b'ttl=20190601T001020Z; attempt=3; max=3',
+            ],
+        ]
+        test_cases = list(
+            zip(responses, utcnow_side_effects, expected_headers)
+        )
+        return test_cases
+
+    def _test_amz_sdk_request_header_with_test_case(
+        self, responses, utcnow_side_effects, expected_headers, client_config
+    ):
+        datetime_patcher = mock.patch.object(
+            botocore.endpoint.datetime,
+            'datetime',
+            mock.Mock(wraps=datetime.datetime),
+        )
+        mocked_datetime = datetime_patcher.start()
+        mocked_datetime.utcnow.side_effect = utcnow_side_effects
+
+        client = self.session.create_client(
+            'dynamodb', self.region, config=client_config
+        )
+        with ClientHTTPStubber(client) as http_stubber:
+            for response in responses:
+                http_stubber.add_response(
+                    headers=response[1], status=response[0], body=b'{}'
+                )
+            client.list_tables()
+            amz_sdk_request_headers = [
+                request.headers['amz-sdk-request']
+                for request in http_stubber.requests
+            ]
+            self.assertListEqual(amz_sdk_request_headers, expected_headers)
+        datetime_patcher.stop()
+
+    def test_amz_sdk_request_header(self):
+        test_cases = self._retry_headers_test_cases()
+        for retry_mode in RETRY_MODES:
+            retries_config = {'mode': retry_mode, 'max_attempts': 3}
+            client_config = Config(read_timeout=10, retries=retries_config)
+            for test_case in test_cases:
+                self._test_amz_sdk_request_header_with_test_case(
+                    *test_case, client_config=client_config
+                )
+
+    def test_amz_sdk_invocation_id_header_persists(self):
+        for retry_mode in RETRY_MODES:
+            client_config = Config(retries={'mode': retry_mode})
+            client = self.session.create_client(
+                'dynamodb', self.region, config=client_config
+            )
+            num_retries = 2
+            with ClientHTTPStubber(client) as http_stubber:
+                for _ in range(num_retries):
+                    http_stubber.add_response(status=500)
+                http_stubber.add_response(status=200)
+                client.list_tables()
+                amz_sdk_invocation_id_headers = [
+                    request.headers['amz-sdk-invocation-id']
+                    for request in http_stubber.requests
+                ]
+                self.assertEqual(
+                    amz_sdk_invocation_id_headers[0],
+                    amz_sdk_invocation_id_headers[1],
+                )
+                self.assertEqual(
+                    amz_sdk_invocation_id_headers[1],
+                    amz_sdk_invocation_id_headers[2],
+                )
+
+    def test_amz_sdk_invocation_id_header_unique_per_invocation(self):
+        client = self.session.create_client('dynamodb', self.region)
+        num_of_invocations = 2
+        with ClientHTTPStubber(client) as http_stubber:
+            for _ in range(num_of_invocations):
+                http_stubber.add_response(status=500)
+                http_stubber.add_response(status=200)
+                client.list_tables()
+            amz_sdk_invocation_id_headers = [
+                request.headers['amz-sdk-invocation-id']
+                for request in http_stubber.requests
+            ]
+            self.assertEqual(
+                amz_sdk_invocation_id_headers[0],
+                amz_sdk_invocation_id_headers[1],
+            )
+            self.assertEqual(
+                amz_sdk_invocation_id_headers[2],
+                amz_sdk_invocation_id_headers[3],
+            )
+            self.assertNotEqual(
+                amz_sdk_invocation_id_headers[0],
+                amz_sdk_invocation_id_headers[2],
+            )

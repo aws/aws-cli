@@ -3,7 +3,7 @@
 The following ``disconnect-recovery-instance`` example disconnects the specified recovery instance from the AWS Elastic Disaster Recovery service. ::
 
     aws drs disconnect-recovery-instance \
-        --recovery-instance-id s-1234567890abcdef0
+        --recovery-instance-id i-1234567890abcdef0
 
 This command produces no output.
 

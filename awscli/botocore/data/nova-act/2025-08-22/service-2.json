@@ -1,0 +1,1824 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2025-08-22",
+    "auth":["aws.auth#sigv4"],
+    "endpointPrefix":"nova-act",
+    "protocol":"rest-json",
+    "protocols":["rest-json"],
+    "serviceFullName":"Nova Act Service",
+    "serviceId":"Nova Act",
+    "signatureVersion":"v4",
+    "signingName":"nova-act",
+    "uid":"nova-act-2025-08-22"
+  },
+  "operations":{
+    "CreateAct":{
+      "name":"CreateAct",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/workflow-definitions/{workflowDefinitionName}/workflow-runs/{workflowRunId}/sessions/{sessionId}/acts",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateActRequest"},
+      "output":{"shape":"CreateActResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Creates a new AI task (act) within a session that can interact with tools and perform specific actions.</p>",
+      "idempotent":true
+    },
+    "CreateSession":{
+      "name":"CreateSession",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/workflow-definitions/{workflowDefinitionName}/workflow-runs/{workflowRunId}/sessions",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateSessionRequest"},
+      "output":{"shape":"CreateSessionResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Creates a new session context within a workflow run to manage conversation state and acts.</p>",
+      "idempotent":true
+    },
+    "CreateWorkflowDefinition":{
+      "name":"CreateWorkflowDefinition",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/workflow-definitions",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateWorkflowDefinitionRequest"},
+      "output":{"shape":"CreateWorkflowDefinitionResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Creates a new workflow definition template that can be used to execute multiple workflow runs.</p>",
+      "idempotent":true
+    },
+    "CreateWorkflowRun":{
+      "name":"CreateWorkflowRun",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/workflow-definitions/{workflowDefinitionName}/workflow-runs",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateWorkflowRunRequest"},
+      "output":{"shape":"CreateWorkflowRunResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Creates a new execution instance of a workflow definition with specified parameters.</p>",
+      "idempotent":true
+    },
+    "DeleteWorkflowDefinition":{
+      "name":"DeleteWorkflowDefinition",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/workflow-definitions/{workflowDefinitionName}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteWorkflowDefinitionRequest"},
+      "output":{"shape":"DeleteWorkflowDefinitionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Deletes a workflow definition and all associated resources. This operation cannot be undone.</p>",
+      "idempotent":true
+    },
+    "DeleteWorkflowRun":{
+      "name":"DeleteWorkflowRun",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/workflow-definitions/{workflowDefinitionName}/workflow-runs/{workflowRunId}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteWorkflowRunRequest"},
+      "output":{"shape":"DeleteWorkflowRunResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Terminates and cleans up a workflow run, stopping all associated acts and sessions.</p>",
+      "idempotent":true
+    },
+    "GetWorkflowDefinition":{
+      "name":"GetWorkflowDefinition",
+      "http":{
+        "method":"GET",
+        "requestUri":"/workflow-definitions/{workflowDefinitionName}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetWorkflowDefinitionRequest"},
+      "output":{"shape":"GetWorkflowDefinitionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieves the details and configuration of a specific workflow definition.</p>",
+      "readonly":true
+    },
+    "GetWorkflowRun":{
+      "name":"GetWorkflowRun",
+      "http":{
+        "method":"GET",
+        "requestUri":"/workflow-definitions/{workflowDefinitionName}/workflow-runs/{workflowRunId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetWorkflowRunRequest"},
+      "output":{"shape":"GetWorkflowRunResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieves the current state, configuration, and execution details of a workflow run.</p>",
+      "readonly":true
+    },
+    "InvokeActStep":{
+      "name":"InvokeActStep",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/workflow-definitions/{workflowDefinitionName}/workflow-runs/{workflowRunId}/sessions/{sessionId}/acts/{actId}/invoke-step/",
+        "responseCode":200
+      },
+      "input":{"shape":"InvokeActStepRequest"},
+      "output":{"shape":"InvokeActStepResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Executes the next step of an act, processing tool call results and returning new tool calls if needed.</p>"
+    },
+    "ListActs":{
+      "name":"ListActs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/workflow-definitions/{workflowDefinitionName}/acts",
+        "responseCode":200
+      },
+      "input":{"shape":"ListActsRequest"},
+      "output":{"shape":"ListActsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists all acts within a specific session with their current status and execution details.</p>",
+      "readonly":true
+    },
+    "ListModels":{
+      "name":"ListModels",
+      "http":{
+        "method":"POST",
+        "requestUri":"/models",
+        "responseCode":200
+      },
+      "input":{"shape":"ListModelsRequest"},
+      "output":{"shape":"ListModelsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists all available AI models that can be used for workflow execution, including their status and compatibility information.</p>",
+      "readonly":true
+    },
+    "ListSessions":{
+      "name":"ListSessions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/workflow-definitions/{workflowDefinitionName}/workflow-runs/{workflowRunId}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListSessionsRequest"},
+      "output":{"shape":"ListSessionsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists all sessions within a specific workflow run.</p>",
+      "readonly":true
+    },
+    "ListWorkflowDefinitions":{
+      "name":"ListWorkflowDefinitions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/workflow-definitions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListWorkflowDefinitionsRequest"},
+      "output":{"shape":"ListWorkflowDefinitionsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists all workflow definitions in your account with optional filtering and pagination.</p>",
+      "readonly":true
+    },
+    "ListWorkflowRuns":{
+      "name":"ListWorkflowRuns",
+      "http":{
+        "method":"POST",
+        "requestUri":"/workflow-definitions/{workflowDefinitionName}/workflow-runs",
+        "responseCode":200
+      },
+      "input":{"shape":"ListWorkflowRunsRequest"},
+      "output":{"shape":"ListWorkflowRunsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists all workflow runs for a specific workflow definition with optional filtering and pagination.</p>",
+      "readonly":true
+    },
+    "UpdateAct":{
+      "name":"UpdateAct",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/workflow-definitions/{workflowDefinitionName}/workflow-runs/{workflowRunId}/sessions/{sessionId}/acts/{actId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateActRequest"},
+      "output":{"shape":"UpdateActResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Updates an existing act's configuration, status, or error information.</p>",
+      "idempotent":true
+    },
+    "UpdateWorkflowRun":{
+      "name":"UpdateWorkflowRun",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/workflow-definitions/{workflowDefinitionName}/workflow-runs/{workflowRunId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateWorkflowRunRequest"},
+      "output":{"shape":"UpdateWorkflowRunResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Updates the configuration or state of an active workflow run.</p>",
+      "idempotent":true
+    }
+  },
+  "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{
+          "shape":"NonBlankString",
+          "documentation":"<p>You don't have sufficient permissions to perform this action. Verify your IAM permissions and try again.</p>"
+        }
+      },
+      "documentation":"<p>You don't have sufficient permissions to perform this action.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ActError":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{
+          "shape":"ActErrorMessageString",
+          "documentation":"<p>A human-readable description of the error that occurred.</p>"
+        },
+        "type":{
+          "shape":"ActErrorTypeString",
+          "documentation":"<p>The type or category of error that occurred.</p>"
+        }
+      },
+      "documentation":"<p>Error information when an act fails to execute successfully.</p>"
+    },
+    "ActErrorMessageString":{
+      "type":"string",
+      "max":10000,
+      "min":1,
+      "sensitive":true
+    },
+    "ActErrorTypeString":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "ActStatus":{
+      "type":"string",
+      "enum":[
+        "RUNNING",
+        "PENDING_CLIENT_ACTION",
+        "PENDING_HUMAN_ACTION",
+        "SUCCEEDED",
+        "FAILED",
+        "TIMED_OUT"
+      ]
+    },
+    "ActSummaries":{
+      "type":"list",
+      "member":{"shape":"ActSummary"}
+    },
+    "ActSummary":{
+      "type":"structure",
+      "required":[
+        "workflowRunId",
+        "sessionId",
+        "actId",
+        "status",
+        "startedAt"
+      ],
+      "members":{
+        "workflowRunId":{
+          "shape":"UuidString",
+          "documentation":"<p>The unique identifier of the workflow run containing this act.</p>"
+        },
+        "sessionId":{
+          "shape":"UuidString",
+          "documentation":"<p>The unique identifier of the session containing this act.</p>"
+        },
+        "actId":{
+          "shape":"UuidString",
+          "documentation":"<p>The unique identifier of the act.</p>"
+        },
+        "status":{
+          "shape":"ActStatus",
+          "documentation":"<p>The current execution status of the act.</p>"
+        },
+        "startedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the act started execution.</p>"
+        },
+        "endedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the act completed execution, if applicable.</p>"
+        },
+        "traceLocation":{
+          "shape":"TraceLocation",
+          "documentation":"<p>The location where trace information for this act is stored.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about an act, including its status and execution timing.</p>"
+    },
+    "Call":{
+      "type":"structure",
+      "required":[
+        "callId",
+        "input",
+        "name"
+      ],
+      "members":{
+        "callId":{
+          "shape":"CallId",
+          "documentation":"<p>A unique identifier for this tool call, used to match results back to requests.</p>"
+        },
+        "input":{
+          "shape":"SensitiveDocument",
+          "documentation":"<p>The input parameters for the tool call, formatted according to the tool's schema.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the tool to invoke, following the pattern 'tool.{toolName}' or 'browser.{browserAction}'.</p>"
+        }
+      },
+      "documentation":"<p>A request for the client to execute a specific tool with given parameters.</p>"
+    },
+    "CallId":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "CallResult":{
+      "type":"structure",
+      "required":["content"],
+      "members":{
+        "callId":{
+          "shape":"CallId",
+          "documentation":"<p>The identifier of the tool call that this result corresponds to.</p>"
+        },
+        "content":{
+          "shape":"CallResultContents",
+          "documentation":"<p>The content returned by the tool execution, which can include text or other media types.</p>"
+        }
+      },
+      "documentation":"<p>The result returned from executing a tool call.</p>"
+    },
+    "CallResultContent":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"String",
+          "documentation":"<p>Text content returned from the tool execution.</p>"
+        }
+      },
+      "documentation":"<p>Content returned from a tool call execution.</p>",
+      "sensitive":true,
+      "union":true
+    },
+    "CallResultContents":{
+      "type":"list",
+      "member":{"shape":"CallResultContent"},
+      "max":100,
+      "min":1
+    },
+    "CallResults":{
+      "type":"list",
+      "member":{"shape":"CallResult"},
+      "max":100,
+      "min":1
+    },
+    "Calls":{
+      "type":"list",
+      "member":{"shape":"Call"}
+    },
+    "ClientInfo":{
+      "type":"structure",
+      "required":["compatibilityVersion"],
+      "members":{
+        "compatibilityVersion":{
+          "shape":"Integer",
+          "documentation":"<p>The compatibility version of the client, used to ensure API compatibility.</p>"
+        },
+        "sdkVersion":{
+          "shape":"NonBlankString",
+          "documentation":"<p>The version of the SDK being used by the client.</p>"
+        }
+      },
+      "documentation":"<p>Information about the client making API requests, used for compatibility checking.</p>"
+    },
+    "ClientToken":{
+      "type":"string",
+      "max":256,
+      "min":33,
+      "pattern":"[a-zA-Z0-9](-*[a-zA-Z0-9]){0,256}"
+    },
+    "CloudWatchLogGroupName":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_/.-]+"
+    },
+    "CompatibilityInformation":{
+      "type":"structure",
+      "required":[
+        "clientCompatibilityVersion",
+        "supportedModelIds"
+      ],
+      "members":{
+        "clientCompatibilityVersion":{
+          "shape":"Integer",
+          "documentation":"<p>The client compatibility version that was requested.</p>"
+        },
+        "supportedModelIds":{
+          "shape":"ModelIdList",
+          "documentation":"<p>A list of model IDs that are supported for the client compatibility version.</p>"
+        },
+        "message":{
+          "shape":"NonBlankString",
+          "documentation":"<p>Additional information about compatibility requirements or recommendations.</p>"
+        }
+      },
+      "documentation":"<p>Information about client compatibility and supported model versions.</p>"
+    },
+    "ConflictException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "resourceId",
+        "resourceType"
+      ],
+      "members":{
+        "message":{
+          "shape":"NonBlankString",
+          "documentation":"<p>The requested operation conflicts with the current state of the resource.</p>"
+        },
+        "resourceId":{
+          "shape":"NonBlankString",
+          "documentation":"<p>The identifier of the resource that caused the conflict.</p>"
+        },
+        "resourceType":{
+          "shape":"NonBlankString",
+          "documentation":"<p>The type of resource that caused the conflict.</p>"
+        }
+      },
+      "documentation":"<p>The request could not be completed due to a conflict with the current state of the resource.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "CreateActRequest":{
+      "type":"structure",
+      "required":[
+        "workflowDefinitionName",
+        "workflowRunId",
+        "sessionId",
+        "task"
+      ],
+      "members":{
+        "workflowDefinitionName":{
+          "shape":"WorkflowDefinitionName",
+          "documentation":"<p>The name of the workflow definition containing the session.</p>",
+          "location":"uri",
+          "locationName":"workflowDefinitionName"
+        },
+        "workflowRunId":{
+          "shape":"UuidString",
+          "documentation":"<p>The unique identifier of the workflow run containing the session.</p>",
+          "location":"uri",
+          "locationName":"workflowRunId"
+        },
+        "sessionId":{
+          "shape":"UuidString",
+          "documentation":"<p>The unique identifier of the session to create the act in.</p>",
+          "location":"uri",
+          "locationName":"sessionId"
+        },
+        "task":{
+          "shape":"Task",
+          "documentation":"<p>The task description that defines what the act should accomplish.</p>"
+        },
+        "toolSpecs":{
+          "shape":"ToolSpecs",
+          "documentation":"<p>A list of tool specifications that the act can invoke to complete its task.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateActResponse":{
+      "type":"structure",
+      "required":[
+        "actId",
+        "status"
+      ],
+      "members":{
+        "actId":{
+          "shape":"UuidString",
+          "documentation":"<p>The unique identifier for the created act.</p>"
+        },
+        "status":{
+          "shape":"ActStatus",
+          "documentation":"<p>The initial status of the act after creation.</p>"
+        }
+      }
+    },
+    "CreateSessionRequest":{
+      "type":"structure",
+      "required":[
+        "workflowDefinitionName",
+        "workflowRunId"
+      ],
+      "members":{
+        "workflowDefinitionName":{
+          "shape":"WorkflowDefinitionName",
+          "documentation":"<p>The name of the workflow definition containing the workflow run.</p>",
+          "location":"uri",
+          "locationName":"workflowDefinitionName"
+        },
+        "workflowRunId":{
+          "shape":"UuidString",
+          "documentation":"<p>The unique identifier of the workflow run to create the session in.</p>",
+          "location":"uri",
+          "locationName":"workflowRunId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateSessionResponse":{
+      "type":"structure",
+      "required":["sessionId"],
+      "members":{
+        "sessionId":{
+          "shape":"UuidString",
+          "documentation":"<p>The unique identifier for the created session.</p>"
+        }
+      }
+    },
+    "CreateWorkflowDefinitionRequest":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"WorkflowDefinitionName",
+          "documentation":"<p>The name of the workflow definition. Must be unique within your account and region.</p>"
+        },
+        "description":{
+          "shape":"WorkflowDescription",
+          "documentation":"<p>An optional description of the workflow definition's purpose and functionality.</p>"
+        },
+        "exportConfig":{
+          "shape":"WorkflowExportConfig",
+          "documentation":"<p>Configuration for exporting workflow execution data to Amazon Simple Storage Service.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateWorkflowDefinitionResponse":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"WorkflowDefinitionStatus",
+          "documentation":"<p>The current status of the workflow definition after creation.</p>"
+        }
+      }
+    },
+    "CreateWorkflowRunRequest":{
+      "type":"structure",
+      "required":[
+        "workflowDefinitionName",
+        "modelId",
+        "clientInfo"
+      ],
+      "members":{
+        "workflowDefinitionName":{
+          "shape":"WorkflowDefinitionName",
+          "documentation":"<p>The name of the workflow definition to execute.</p>",
+          "location":"uri",
+          "locationName":"workflowDefinitionName"
+        },
+        "modelId":{
+          "shape":"ModelId",
+          "documentation":"<p>The ID of the AI model to use for workflow execution.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "logGroupName":{
+          "shape":"CloudWatchLogGroupName",
+          "documentation":"<p>The CloudWatch log group name for storing workflow execution logs.</p>"
+        },
+        "clientInfo":{
+          "shape":"ClientInfo",
+          "documentation":"<p>Information about the client making the request, including compatibility version and SDK version.</p>"
+        }
+      }
+    },
+    "CreateWorkflowRunResponse":{
+      "type":"structure",
+      "required":[
+        "workflowRunId",
+        "status"
+      ],
+      "members":{
+        "workflowRunId":{
+          "shape":"UuidString",
+          "documentation":"<p>The unique identifier for the created workflow run.</p>"
+        },
+        "status":{
+          "shape":"WorkflowRunStatus",
+          "documentation":"<p>The initial status of the workflow run after creation.</p>"
+        }
+      }
+    },
+    "DateTimestamp":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
+    "DeleteWorkflowDefinitionRequest":{
+      "type":"structure",
+      "required":["workflowDefinitionName"],
+      "members":{
+        "workflowDefinitionName":{
+          "shape":"WorkflowDefinitionName",
+          "documentation":"<p>The name of the workflow definition to delete.</p>",
+          "location":"uri",
+          "locationName":"workflowDefinitionName"
+        }
+      }
+    },
+    "DeleteWorkflowDefinitionResponse":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"WorkflowDefinitionStatus",
+          "documentation":"<p>The status of the workflow definition after deletion request.</p>"
+        }
+      }
+    },
+    "DeleteWorkflowRunRequest":{
+      "type":"structure",
+      "required":[
+        "workflowDefinitionName",
+        "workflowRunId"
+      ],
+      "members":{
+        "workflowDefinitionName":{
+          "shape":"WorkflowDefinitionName",
+          "documentation":"<p>The name of the workflow definition containing the workflow run.</p>",
+          "location":"uri",
+          "locationName":"workflowDefinitionName"
+        },
+        "workflowRunId":{
+          "shape":"UuidString",
+          "documentation":"<p>The unique identifier of the workflow run to delete.</p>",
+          "location":"uri",
+          "locationName":"workflowRunId"
+        }
+      }
+    },
+    "DeleteWorkflowRunResponse":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"WorkflowRunStatus",
+          "documentation":"<p>The status of the workflow run after deletion request.</p>"
+        }
+      }
+    },
+    "GetWorkflowDefinitionRequest":{
+      "type":"structure",
+      "required":["workflowDefinitionName"],
+      "members":{
+        "workflowDefinitionName":{
+          "shape":"WorkflowDefinitionName",
+          "documentation":"<p>The name of the workflow definition to retrieve.</p>",
+          "location":"uri",
+          "locationName":"workflowDefinitionName"
+        }
+      }
+    },
+    "GetWorkflowDefinitionResponse":{
+      "type":"structure",
+      "required":[
+        "name",
+        "arn",
+        "createdAt",
+        "status"
+      ],
+      "members":{
+        "name":{
+          "shape":"WorkflowDefinitionName",
+          "documentation":"<p>The name of the workflow definition.</p>"
+        },
+        "arn":{
+          "shape":"WorkflowDefinitionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the workflow definition.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the workflow definition was created.</p>"
+        },
+        "description":{
+          "shape":"WorkflowDescription",
+          "documentation":"<p>The description of the workflow definition.</p>"
+        },
+        "exportConfig":{
+          "shape":"WorkflowExportConfig",
+          "documentation":"<p>The export configuration for the workflow definition.</p>"
+        },
+        "status":{
+          "shape":"WorkflowDefinitionStatus",
+          "documentation":"<p>The current status of the workflow definition.</p>"
+        }
+      }
+    },
+    "GetWorkflowRunRequest":{
+      "type":"structure",
+      "required":[
+        "workflowDefinitionName",
+        "workflowRunId"
+      ],
+      "members":{
+        "workflowDefinitionName":{
+          "shape":"WorkflowDefinitionName",
+          "documentation":"<p>The name of the workflow definition containing the workflow run.</p>",
+          "location":"uri",
+          "locationName":"workflowDefinitionName"
+        },
+        "workflowRunId":{
+          "shape":"UuidString",
+          "documentation":"<p>The unique identifier of the workflow run to retrieve.</p>",
+          "location":"uri",
+          "locationName":"workflowRunId"
+        }
+      }
+    },
+    "GetWorkflowRunResponse":{
+      "type":"structure",
+      "required":[
+        "workflowRunArn",
+        "workflowRunId",
+        "status",
+        "startedAt",
+        "modelId"
+      ],
+      "members":{
+        "workflowRunArn":{
+          "shape":"WorkflowRunArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the workflow run.</p>"
+        },
+        "workflowRunId":{
+          "shape":"UuidString",
+          "documentation":"<p>The unique identifier of the workflow run.</p>"
+        },
+        "status":{
+          "shape":"WorkflowRunStatus",
+          "documentation":"<p>The current execution status of the workflow run.</p>"
+        },
+        "startedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the workflow run started execution.</p>"
+        },
+        "endedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the workflow run completed execution, if applicable.</p>"
+        },
+        "modelId":{
+          "shape":"ModelId",
+          "documentation":"<p>The ID of the AI model being used for this workflow run.</p>"
+        },
+        "logGroupName":{
+          "shape":"CloudWatchLogGroupName",
+          "documentation":"<p>The CloudWatch log group name for this workflow run's logs.</p>"
+        }
+      }
+    },
+    "Integer":{
+      "type":"integer",
+      "box":true
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{
+          "shape":"NonBlankString",
+          "documentation":"<p>The service encountered an internal error. Try again later.</p>"
+        },
+        "retryAfterSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>The number of seconds to wait before retrying the request.</p>",
+          "location":"header",
+          "locationName":"Retry-After"
+        },
+        "reason":{
+          "shape":"InternalServerExceptionReason",
+          "documentation":"<p>The reason for the internal server error.</p>"
+        }
+      },
+      "documentation":"<p>An internal server error occurred. Please try again later.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true,
+      "retryable":{"throttling":false}
+    },
+    "InternalServerExceptionReason":{
+      "type":"string",
+      "enum":[
+        "InvalidModelGeneration",
+        "RequestTokenLimitExceeded"
+      ]
+    },
+    "InvokeActStepRequest":{
+      "type":"structure",
+      "required":[
+        "workflowDefinitionName",
+        "workflowRunId",
+        "sessionId",
+        "actId",
+        "callResults"
+      ],
+      "members":{
+        "workflowDefinitionName":{
+          "shape":"WorkflowDefinitionName",
+          "documentation":"<p>The name of the workflow definition containing the act.</p>",
+          "location":"uri",
+          "locationName":"workflowDefinitionName"
+        },
+        "workflowRunId":{
+          "shape":"UuidString",
+          "documentation":"<p>The unique identifier of the workflow run containing the act.</p>",
+          "location":"uri",
+          "locationName":"workflowRunId"
+        },
+        "sessionId":{
+          "shape":"UuidString",
+          "documentation":"<p>The unique identifier of the session containing the act.</p>",
+          "location":"uri",
+          "locationName":"sessionId"
+        },
+        "actId":{
+          "shape":"UuidString",
+          "documentation":"<p>The unique identifier of the act to invoke the next step for.</p>",
+          "location":"uri",
+          "locationName":"actId"
+        },
+        "callResults":{
+          "shape":"CallResults",
+          "documentation":"<p>The results from previous tool calls that the act requested.</p>"
+        },
+        "previousStepId":{
+          "shape":"UuidString",
+          "documentation":"<p>The identifier of the previous step, used for tracking execution flow.</p>"
+        }
+      }
+    },
+    "InvokeActStepResponse":{
+      "type":"structure",
+      "required":[
+        "calls",
+        "stepId"
+      ],
+      "members":{
+        "calls":{
+          "shape":"Calls",
+          "documentation":"<p>A list of tool calls that the act wants to execute in this step.</p>"
+        },
+        "stepId":{
+          "shape":"UuidString",
+          "documentation":"<p>The unique identifier for this execution step.</p>"
+        }
+      }
+    },
+    "ListActsRequest":{
+      "type":"structure",
+      "required":["workflowDefinitionName"],
+      "members":{
+        "workflowDefinitionName":{
+          "shape":"WorkflowDefinitionName",
+          "documentation":"<p>The name of the workflow definition containing the session.</p>",
+          "location":"uri",
+          "locationName":"workflowDefinitionName"
+        },
+        "workflowRunId":{
+          "shape":"UuidString",
+          "documentation":"<p>The unique identifier of the workflow run containing the session.</p>",
+          "location":"querystring",
+          "locationName":"workflowRunId"
+        },
+        "sessionId":{
+          "shape":"UuidString",
+          "documentation":"<p>The unique identifier of the session to list acts for.</p>",
+          "location":"querystring",
+          "locationName":"sessionId"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of acts to return in a single response.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for retrieving the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sort order for the returned acts (ascending or descending).</p>"
+        }
+      }
+    },
+    "ListActsResponse":{
+      "type":"structure",
+      "required":["actSummaries"],
+      "members":{
+        "actSummaries":{
+          "shape":"ActSummaries",
+          "documentation":"<p>A list of summary information for acts in the session.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for retrieving the next page of results, if available.</p>"
+        }
+      }
+    },
+    "ListModelsRequest":{
+      "type":"structure",
+      "required":["clientCompatibilityVersion"],
+      "members":{
+        "clientCompatibilityVersion":{
+          "shape":"Integer",
+          "documentation":"<p>The client compatibility version to filter models by compatibility.</p>",
+          "location":"querystring",
+          "locationName":"clientCompatibilityVersion"
+        }
+      }
+    },
+    "ListModelsResponse":{
+      "type":"structure",
+      "required":[
+        "modelSummaries",
+        "modelAliases",
+        "compatibilityInformation"
+      ],
+      "members":{
+        "modelSummaries":{
+          "shape":"ModelSummaries",
+          "documentation":"<p>A list of available AI models with their status and compatibility information.</p>"
+        },
+        "modelAliases":{
+          "shape":"ModelAliases",
+          "documentation":"<p>A list of model aliases that provide stable references to model versions.</p>"
+        },
+        "compatibilityInformation":{
+          "shape":"CompatibilityInformation",
+          "documentation":"<p>Information about client compatibility and supported models.</p>"
+        }
+      }
+    },
+    "ListSessionsRequest":{
+      "type":"structure",
+      "required":[
+        "workflowDefinitionName",
+        "workflowRunId"
+      ],
+      "members":{
+        "workflowDefinitionName":{
+          "shape":"WorkflowDefinitionName",
+          "documentation":"<p>The name of the workflow definition containing the workflow run.</p>",
+          "location":"uri",
+          "locationName":"workflowDefinitionName"
+        },
+        "workflowRunId":{
+          "shape":"UuidString",
+          "documentation":"<p>The unique identifier of the workflow run to list sessions for.</p>",
+          "location":"uri",
+          "locationName":"workflowRunId"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of sessions to return in a single response.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for retrieving the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sort order for the returned sessions (ascending or descending).</p>"
+        }
+      }
+    },
+    "ListSessionsResponse":{
+      "type":"structure",
+      "required":["sessionSummaries"],
+      "members":{
+        "sessionSummaries":{
+          "shape":"SessionSummaries",
+          "documentation":"<p>A list of summary information for sessions in the workflow run.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for retrieving the next page of results, if available.</p>"
+        }
+      }
+    },
+    "ListWorkflowDefinitionsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of workflow definitions to return in a single response.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for retrieving the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sort order for the returned workflow definitions (ascending or descending).</p>"
+        }
+      }
+    },
+    "ListWorkflowDefinitionsResponse":{
+      "type":"structure",
+      "required":["workflowDefinitionSummaries"],
+      "members":{
+        "workflowDefinitionSummaries":{
+          "shape":"WorkflowDefinitionSummaries",
+          "documentation":"<p>A list of summary information for workflow definitions.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for retrieving the next page of results, if available.</p>"
+        }
+      }
+    },
+    "ListWorkflowRunsRequest":{
+      "type":"structure",
+      "required":["workflowDefinitionName"],
+      "members":{
+        "workflowDefinitionName":{
+          "shape":"WorkflowDefinitionName",
+          "documentation":"<p>The name of the workflow definition to list workflow runs for.</p>",
+          "location":"uri",
+          "locationName":"workflowDefinitionName"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of workflow runs to return in a single response.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for retrieving the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sort order for the returned workflow runs (ascending or descending).</p>"
+        }
+      }
+    },
+    "ListWorkflowRunsResponse":{
+      "type":"structure",
+      "required":["workflowRunSummaries"],
+      "members":{
+        "workflowRunSummaries":{
+          "shape":"WorkflowRunSummaries",
+          "documentation":"<p>A list of summary information for workflow runs.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for retrieving the next page of results, if available.</p>"
+        }
+      }
+    },
+    "MaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ModelAlias":{
+      "type":"structure",
+      "required":[
+        "aliasName",
+        "latestModelId"
+      ],
+      "members":{
+        "aliasName":{
+          "shape":"ModelId",
+          "documentation":"<p>The name of the model alias.</p>"
+        },
+        "latestModelId":{
+          "shape":"ModelId",
+          "documentation":"<p>The model ID that this alias currently points to.</p>"
+        },
+        "resolvedModelId":{
+          "shape":"ModelId",
+          "documentation":"<p>The resolved model ID after alias resolution.</p>"
+        }
+      },
+      "documentation":"<p>An alias that provides a stable reference to a model version.</p>"
+    },
+    "ModelAliases":{
+      "type":"list",
+      "member":{"shape":"ModelAlias"}
+    },
+    "ModelId":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "ModelIdList":{
+      "type":"list",
+      "member":{"shape":"ModelId"}
+    },
+    "ModelLifecycle":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"ModelStatus",
+          "documentation":"<p>The current lifecycle status of the model.</p>"
+        }
+      },
+      "documentation":"<p>Lifecycle information for an AI model.</p>"
+    },
+    "ModelStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "LEGACY",
+        "DEPRECATED",
+        "PREVIEW"
+      ]
+    },
+    "ModelSummaries":{
+      "type":"list",
+      "member":{"shape":"ModelSummary"}
+    },
+    "ModelSummary":{
+      "type":"structure",
+      "required":[
+        "modelId",
+        "modelLifecycle",
+        "minimumCompatibilityVersion"
+      ],
+      "members":{
+        "modelId":{
+          "shape":"ModelId",
+          "documentation":"<p>The unique identifier of the model.</p>"
+        },
+        "modelLifecycle":{
+          "shape":"ModelLifecycle",
+          "documentation":"<p>The lifecycle information for the model.</p>"
+        },
+        "minimumCompatibilityVersion":{
+          "shape":"Integer",
+          "documentation":"<p>The minimum client compatibility version required to use this model.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about an available AI model.</p>"
+    },
+    "NextToken":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"\\S*"
+    },
+    "NonBlankString":{
+      "type":"string",
+      "pattern":"[\\s\\S]+"
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "resourceId",
+        "resourceType"
+      ],
+      "members":{
+        "message":{
+          "shape":"NonBlankString",
+          "documentation":"<p>The specified resource was not found.</p>"
+        },
+        "resourceId":{
+          "shape":"NonBlankString",
+          "documentation":"<p>The identifier of the resource that wasn't found.</p>"
+        },
+        "resourceType":{
+          "shape":"NonBlankString",
+          "documentation":"<p>The type of resource that wasn't found.</p>"
+        }
+      },
+      "documentation":"<p>The requested resource was not found.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "S3BucketName":{
+      "type":"string",
+      "max":63,
+      "min":3,
+      "pattern":"[a-z0-9][a-z0-9.-]*[a-z0-9]"
+    },
+    "S3KeyPrefix":{
+      "type":"string",
+      "documentation":"<p>A prefix for S3 object keys that will be prepended to 'step_{N}.json'. Must follow S3 object key naming guidelines and cannot end with a forward slash as it will be directly concatenated with the filename.</p>",
+      "max":100,
+      "min":1,
+      "pattern":"[a-zA-Z0-9!\\-_.*'()]+(?:/[a-zA-Z0-9!\\-_.*'()]+)*"
+    },
+    "SensitiveDocument":{
+      "type":"structure",
+      "members":{},
+      "document":true,
+      "sensitive":true
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "resourceId",
+        "resourceType",
+        "serviceCode",
+        "quotaCode"
+      ],
+      "members":{
+        "message":{
+          "shape":"NonBlankString",
+          "documentation":"<p>The request would exceed one or more service quotas for your account.</p>"
+        },
+        "resourceId":{
+          "shape":"NonBlankString",
+          "documentation":"<p>The identifier of the resource that exceeded the quota.</p>"
+        },
+        "resourceType":{
+          "shape":"NonBlankString",
+          "documentation":"<p>The type of resource that exceeded the quota.</p>"
+        },
+        "serviceCode":{
+          "shape":"NonBlankString",
+          "documentation":"<p>The service code for the quota that was exceeded.</p>"
+        },
+        "quotaCode":{
+          "shape":"NonBlankString",
+          "documentation":"<p>The code for the specific quota that was exceeded.</p>"
+        }
+      },
+      "documentation":"<p>The request would exceed a service quota limit.</p>",
+      "error":{
+        "httpStatusCode":402,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "SessionSummaries":{
+      "type":"list",
+      "member":{"shape":"SessionSummary"}
+    },
+    "SessionSummary":{
+      "type":"structure",
+      "required":["sessionId"],
+      "members":{
+        "sessionId":{
+          "shape":"UuidString",
+          "documentation":"<p>The unique identifier of the session.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a session within a workflow run.</p>"
+    },
+    "SortOrder":{
+      "type":"string",
+      "enum":[
+        "Ascending",
+        "Descending"
+      ]
+    },
+    "String":{"type":"string"},
+    "Task":{
+      "type":"string",
+      "max":10000,
+      "min":1,
+      "sensitive":true
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{
+          "shape":"NonBlankString",
+          "documentation":"<p>The request was denied due to request throttling.</p>"
+        },
+        "serviceCode":{
+          "shape":"NonBlankString",
+          "documentation":"<p>The service code where throttling occurred.</p>"
+        },
+        "quotaCode":{
+          "shape":"NonBlankString",
+          "documentation":"<p>The quota code related to the throttling.</p>"
+        },
+        "retryAfterSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>The number of seconds to wait before retrying the throttled request.</p>",
+          "location":"header",
+          "locationName":"Retry-After"
+        }
+      },
+      "documentation":"<p>The request was throttled due to too many requests. Please try again later.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true,
+      "retryable":{"throttling":true}
+    },
+    "ToolDescription":{
+      "type":"string",
+      "max":10000,
+      "min":1,
+      "sensitive":true
+    },
+    "ToolInputSchema":{
+      "type":"structure",
+      "members":{
+        "json":{
+          "shape":"ToolInputSchemaDocument",
+          "documentation":"<p>The JSON schema that defines the expected input format for the tool.</p>"
+        }
+      },
+      "documentation":"<p>The schema definition for tool input parameters.</p>",
+      "sensitive":true,
+      "union":true
+    },
+    "ToolInputSchemaDocument":{
+      "type":"structure",
+      "members":{},
+      "document":true
+    },
+    "ToolName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "ToolSpec":{
+      "type":"structure",
+      "required":[
+        "name",
+        "description",
+        "inputSchema"
+      ],
+      "members":{
+        "name":{
+          "shape":"ToolName",
+          "documentation":"<p>The unique name of the tool that acts will use to invoke it.</p>"
+        },
+        "description":{
+          "shape":"ToolDescription",
+          "documentation":"<p>A description of what the tool does and how it should be used.</p>"
+        },
+        "inputSchema":{
+          "shape":"ToolInputSchema",
+          "documentation":"<p>The JSON schema that defines the expected input format for the tool.</p>"
+        }
+      },
+      "documentation":"<p>Specification for a tool that acts can invoke, including its name, description, and input schema.</p>"
+    },
+    "ToolSpecs":{
+      "type":"list",
+      "member":{"shape":"ToolSpec"},
+      "max":100,
+      "min":0
+    },
+    "TraceLocation":{
+      "type":"structure",
+      "required":[
+        "locationType",
+        "location"
+      ],
+      "members":{
+        "locationType":{
+          "shape":"TraceLocationType",
+          "documentation":"<p>The type of storage location for the trace data.</p>"
+        },
+        "location":{
+          "shape":"NonBlankString",
+          "documentation":"<p>The specific location where the trace data is stored.</p>"
+        }
+      },
+      "documentation":"<p>Information about where trace data is stored for debugging and monitoring.</p>"
+    },
+    "TraceLocationType":{
+      "type":"string",
+      "enum":["S3"]
+    },
+    "UpdateActRequest":{
+      "type":"structure",
+      "required":[
+        "workflowDefinitionName",
+        "workflowRunId",
+        "sessionId",
+        "actId",
+        "status"
+      ],
+      "members":{
+        "workflowDefinitionName":{
+          "shape":"WorkflowDefinitionName",
+          "documentation":"<p>The name of the workflow definition containing the act.</p>",
+          "location":"uri",
+          "locationName":"workflowDefinitionName"
+        },
+        "workflowRunId":{
+          "shape":"UuidString",
+          "documentation":"<p>The unique identifier of the workflow run containing the act.</p>",
+          "location":"uri",
+          "locationName":"workflowRunId"
+        },
+        "sessionId":{
+          "shape":"UuidString",
+          "documentation":"<p>The unique identifier of the session containing the act.</p>",
+          "location":"uri",
+          "locationName":"sessionId"
+        },
+        "actId":{
+          "shape":"UuidString",
+          "documentation":"<p>The unique identifier of the act to update.</p>",
+          "location":"uri",
+          "locationName":"actId"
+        },
+        "status":{
+          "shape":"ActStatus",
+          "documentation":"<p>The new status to set for the act.</p>"
+        },
+        "error":{
+          "shape":"ActError",
+          "documentation":"<p>Error information to associate with the act, if applicable.</p>"
+        }
+      }
+    },
+    "UpdateActResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "UpdateWorkflowRunRequest":{
+      "type":"structure",
+      "required":[
+        "workflowDefinitionName",
+        "workflowRunId",
+        "status"
+      ],
+      "members":{
+        "workflowDefinitionName":{
+          "shape":"WorkflowDefinitionName",
+          "documentation":"<p>The name of the workflow definition containing the workflow run.</p>",
+          "location":"uri",
+          "locationName":"workflowDefinitionName"
+        },
+        "workflowRunId":{
+          "shape":"UuidString",
+          "documentation":"<p>The unique identifier of the workflow run to update.</p>",
+          "location":"uri",
+          "locationName":"workflowRunId"
+        },
+        "status":{
+          "shape":"WorkflowRunStatus",
+          "documentation":"<p>The new status to set for the workflow run.</p>"
+        }
+      }
+    },
+    "UpdateWorkflowRunResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "UuidString":{
+      "type":"string",
+      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
+    "ValidationException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "reason"
+      ],
+      "members":{
+        "message":{
+          "shape":"NonBlankString",
+          "documentation":"<p>The input fails to satisfy the constraints specified by the service.</p>"
+        },
+        "reason":{
+          "shape":"ValidationExceptionReason",
+          "documentation":"<p>The reason for the validation failure.</p>"
+        },
+        "fieldList":{
+          "shape":"ValidationExceptionFieldList",
+          "documentation":"<p>The list of fields that failed validation.</p>"
+        }
+      },
+      "documentation":"<p>The input parameters for the request are invalid.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ValidationExceptionField":{
+      "type":"structure",
+      "required":[
+        "name",
+        "message"
+      ],
+      "members":{
+        "name":{
+          "shape":"NonBlankString",
+          "documentation":"<p>The name of the field that failed validation.</p>"
+        },
+        "message":{
+          "shape":"NonBlankString",
+          "documentation":"<p>A description of the validation error for this field.</p>"
+        }
+      },
+      "documentation":"<p>Information about a field that failed validation.</p>"
+    },
+    "ValidationExceptionFieldList":{
+      "type":"list",
+      "member":{"shape":"ValidationExceptionField"}
+    },
+    "ValidationExceptionReason":{
+      "type":"string",
+      "enum":[
+        "FieldValidationFailed",
+        "InvalidStatus",
+        "GuardrailIntervened"
+      ]
+    },
+    "WorkflowDefinitionArn":{
+      "type":"string",
+      "pattern":"arn:(aws|aws-cn|aws-us-gov):nova-act:[a-z0-9-]+:[0-9]{12}:workflow-definition/[a-zA-Z0-9_-]{1,40}"
+    },
+    "WorkflowDefinitionName":{
+      "type":"string",
+      "max":40,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]{1,40}"
+    },
+    "WorkflowDefinitionStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "DELETING"
+      ]
+    },
+    "WorkflowDefinitionSummaries":{
+      "type":"list",
+      "member":{"shape":"WorkflowDefinitionSummary"}
+    },
+    "WorkflowDefinitionSummary":{
+      "type":"structure",
+      "required":[
+        "workflowDefinitionArn",
+        "workflowDefinitionName",
+        "createdAt",
+        "status"
+      ],
+      "members":{
+        "workflowDefinitionArn":{
+          "shape":"WorkflowDefinitionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the workflow definition.</p>"
+        },
+        "workflowDefinitionName":{
+          "shape":"WorkflowDefinitionName",
+          "documentation":"<p>The name of the workflow definition.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the workflow definition was created.</p>"
+        },
+        "status":{
+          "shape":"WorkflowDefinitionStatus",
+          "documentation":"<p>The current status of the workflow definition.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a workflow definition, used in list operations.</p>"
+    },
+    "WorkflowDescription":{
+      "type":"string",
+      "max":4000,
+      "min":1,
+      "sensitive":true
+    },
+    "WorkflowExportConfig":{
+      "type":"structure",
+      "required":["s3BucketName"],
+      "members":{
+        "s3BucketName":{
+          "shape":"S3BucketName",
+          "documentation":"<p>The name of your Amazon S3 bucket, that Nova Act uses to export your workflow data. Note that the IAM role used to access Nova Act must also have write permissions to this bucket.</p>"
+        },
+        "s3KeyPrefix":{
+          "shape":"S3KeyPrefix",
+          "documentation":"<p>An optional prefix for Amazon S3 object keys to organize exported data.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for exporting workflow execution data and logs to Amazon Simple Storage Service (Amazon S3).</p>"
+    },
+    "WorkflowRunArn":{
+      "type":"string",
+      "pattern":"arn:(aws|aws-cn|aws-us-gov):nova-act:[a-z0-9-]+:[0-9]{12}:workflow-definition/[a-zA-Z0-9_-]{1,40}/workflow-run/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
+    "WorkflowRunStatus":{
+      "type":"string",
+      "enum":[
+        "RUNNING",
+        "SUCCEEDED",
+        "FAILED",
+        "TIMED_OUT",
+        "DELETING"
+      ]
+    },
+    "WorkflowRunSummaries":{
+      "type":"list",
+      "member":{"shape":"WorkflowRunSummary"}
+    },
+    "WorkflowRunSummary":{
+      "type":"structure",
+      "required":[
+        "workflowRunArn",
+        "workflowRunId",
+        "status",
+        "startedAt"
+      ],
+      "members":{
+        "workflowRunArn":{
+          "shape":"WorkflowRunArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the workflow run.</p>"
+        },
+        "workflowRunId":{
+          "shape":"UuidString",
+          "documentation":"<p>The unique identifier of the workflow run.</p>"
+        },
+        "status":{
+          "shape":"WorkflowRunStatus",
+          "documentation":"<p>The current execution status of the workflow run.</p>"
+        },
+        "startedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the workflow run started execution.</p>"
+        },
+        "endedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the workflow run completed execution, if applicable.</p>"
+        },
+        "traceLocation":{
+          "shape":"TraceLocation",
+          "documentation":"<p>The location where trace information for this workflow run is stored.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a workflow run, including execution status and timing.</p>"
+    }
+  },
+  "documentation":"<p>The Nova Act service provides a REST API for managing AI-powered workflow automation. It enables users to create workflow definitions, execute workflow runs, manage sessions, and orchestrate acts (individual AI tasks) with tool integrations.</p>"
+}

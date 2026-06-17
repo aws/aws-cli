@@ -2,8 +2,7 @@
 
 The following ``describe-source-networks`` example describes all source networks in your account. ::
 
-    aws drs describe-source-networks \
-        --filters '{}'
+    aws drs describe-source-networks
 
 Output::
 

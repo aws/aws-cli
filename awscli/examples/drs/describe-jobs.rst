@@ -2,8 +2,7 @@
 
 The following ``describe-jobs`` example describes all recovery jobs in your account. ::
 
-    aws drs describe-jobs \
-        --filters '{}'
+    aws drs describe-jobs
 
 Output::
 

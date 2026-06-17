@@ -76,7 +76,7 @@ from awscli.logger import (
     set_stream_logger,
 )
 from awscli.plugin import load_plugins
-from awscli.telemetry import add_session_id_component_to_user_agent_extra
+from awscli.telemetry import register_session_id_event
 from awscli.utils import (
     IMDSRegionProvider,
     OutputStreamFactory,
@@ -211,7 +211,6 @@ def _set_user_agent_for_session(session):
     session.user_agent_version = __version__
     _add_distribution_source_to_user_agent(session)
     _add_linux_distribution_to_user_agent(session)
-    add_session_id_component_to_user_agent_extra(session)
 
 
 def no_pager_handler(session, parsed_args, **kwargs):
@@ -283,6 +282,7 @@ class CLIDriver:
             _set_user_agent_for_session(self.session)
         else:
             self.session = session
+        register_session_id_event(self.session)
         self._error_handler = error_handler
         if self._error_handler is None:
             self._error_handler = construct_cli_error_handlers_chain(

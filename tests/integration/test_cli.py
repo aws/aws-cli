@@ -310,6 +310,15 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         )
         self.assertTrue(re.fullmatch(user_agent_regex, version_output))
 
+    def test_version_does_not_create_cache_directory(self):
+        # Regression test: --version should not create any files/directories.
+        with tempfile.TemporaryDirectory() as tmpdir:
+            env = os.environ.copy()
+            env['HOME'] = tmpdir
+            aws('--version', env_vars=env)
+            aws_dir = os.path.join(tmpdir, '.aws')
+            self.assertFalse(os.path.exists(aws_dir))
+
     def test_version_with_exec_env(self):
         base_env_vars = os.environ.copy()
         base_env_vars['AWS_EXECUTION_ENV'] = 'an_execution_env'

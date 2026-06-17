@@ -296,17 +296,23 @@ def _get_cli_session_orchestrator():
     )
 
 
-def add_session_id_component_to_user_agent_extra(session, orchestrator=None):
-    try:
-        cli_session_orchestrator = (
-            orchestrator or _get_cli_session_orchestrator()
-        )
-        add_component_to_user_agent_extra(
-            session,
-            UserAgentComponent("sid", cli_session_orchestrator.session_id),
-        )
-    except Exception:
-        # Ideally, the AWS CLI should never throw if the session id
-        # can't be generated since it's not critical for users. Issues
-        # with session data should instead be caught server-side.
-        pass
+def register_session_id_event(session, orchestrator_factory=None):
+    if orchestrator_factory is None:
+        orchestrator_factory = _get_cli_session_orchestrator
+    event_emitter = session.get_component('event_emitter')
+
+    def _inject_session_id(params, **kwargs):
+        try:
+            orchestrator = orchestrator_factory()
+            add_component_to_user_agent_extra(
+                session,
+                UserAgentComponent("sid", orchestrator.session_id),
+            )
+        except Exception:
+            # Ideally, the AWS CLI should never throw if the session id
+            # can't be generated since it's not critical for users. Issues
+            # with session data should instead be caught server-side.
+            pass
+        event_emitter.unregister('before-call', _inject_session_id)
+
+    event_emitter.register('before-call', _inject_session_id)

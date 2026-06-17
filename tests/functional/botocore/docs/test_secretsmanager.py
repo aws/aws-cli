@@ -11,7 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from botocore.docs.service import ServiceDocumenter
-from tests.functional.docs import BaseDocsFunctionalTest
+from tests.functional.botocore.docs import BaseDocsFunctionalTest
 
 
 class TestSecretsManagerDocs(BaseDocsFunctionalTest):

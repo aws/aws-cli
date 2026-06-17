@@ -18,7 +18,7 @@ import botocore.endpoint
 from botocore.config import Config
 from botocore.exceptions import ClientError
 from tests import BaseSessionTest, ClientHTTPStubber, mock
-from tests.functional.test_useragent import (
+from tests.functional.botocore.test_useragent import (
     get_captured_ua_strings,
     parse_registered_feature_ids,
 )

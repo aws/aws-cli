@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 from botocore.docs.waiter import WaiterDocumenter
 from botocore.waiter import WaiterModel
-from tests.unit.docs import BaseDocsTest
+from tests.unit.botocore.docs import BaseDocsTest
 
 
 class TestWaiterDocumenter(BaseDocsTest):

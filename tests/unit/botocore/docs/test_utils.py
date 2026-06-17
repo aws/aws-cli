@@ -20,7 +20,7 @@ from botocore.docs.utils import (
     py_type_name,
 )
 from tests import unittest
-from tests.unit.docs import BaseDocsTest
+from tests.unit.botocore.docs import BaseDocsTest
 
 
 class TestPythonTypeName(unittest.TestCase):

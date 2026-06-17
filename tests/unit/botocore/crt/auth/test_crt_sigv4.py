@@ -2,7 +2,7 @@ import pytest
 
 import botocore
 from tests import FreezeTime, requires_crt
-from tests.unit.auth.test_sigv4 import (
+from tests.unit.botocore.auth.test_sigv4 import (
     DATE,
     REGION,
     SERVICE,

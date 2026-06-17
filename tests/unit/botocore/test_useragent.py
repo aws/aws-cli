@@ -28,7 +28,7 @@ from botocore.useragent import (
 )
 from tests import mock
 
-from .. import requires_crt
+from tests import requires_crt
 
 
 # Returns a list of unmodified User-Agent components.

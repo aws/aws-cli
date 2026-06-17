@@ -759,6 +759,7 @@
       "input":{"shape":"InvokeHarnessRequest"},
       "output":{"shape":"InvokeHarnessResponse"},
       "errors":[
+        {"shape":"ServiceQuotaExceededException"},
         {"shape":"AccessDeniedException"},
         {"shape":"RuntimeClientError"},
         {"shape":"ValidationException"},
@@ -3790,7 +3791,7 @@
           "documentation":"<p>The unique identifier of the evaluator. Can reference built-in evaluators (e.g., <code>Builtin.Helpfulness</code>) or custom evaluators.</p>"
         }
       },
-      "documentation":"<p>An evaluator to run against sessions</p>"
+      "documentation":"<p>An evaluator to run against sessions during batch evaluation.</p>"
     },
     "EvaluatorArn":{
       "type":"string",
@@ -4033,7 +4034,7 @@
           "documentation":"<p>The list of execution summary clusters identified across analyzed sessions.</p>"
         }
       },
-      "documentation":"<p>Customer-facing execution summary clustering result written to S3.</p>"
+      "documentation":"<p>The execution summary clustering result containing grouped execution patterns identified across evaluated sessions.</p>"
     },
     "ExternalProxy":{
       "type":"structure",
@@ -4166,7 +4167,7 @@
           "documentation":"<p>The list of failure category clusters identified across analyzed sessions.</p>"
         }
       },
-      "documentation":"<p>Unified customer-facing clustering result written to S3.</p>"
+      "documentation":"<p>The failure analysis clustering result containing categorized failure clusters with root causes and remediation recommendations.</p>"
     },
     "FailureCategoryCluster":{
       "type":"structure",
@@ -4538,9 +4539,18 @@
           "shape":"EvaluationJobResults",
           "documentation":"<p>The aggregated evaluation results, including session completion counts and evaluator score summaries.</p>"
         },
-        "failureAnalysisResult":{"shape":"FailureAnalysisResultContent"},
-        "userIntentResult":{"shape":"UserIntentClusteringResultContent"},
-        "executionSummaryResult":{"shape":"ExecutionSummaryClusteringResultContent"},
+        "failureAnalysisResult":{
+          "shape":"FailureAnalysisResultContent",
+          "documentation":"<p>The failure analysis results from insights, containing categorized failure clusters with root causes and recommendations.</p>"
+        },
+        "userIntentResult":{
+          "shape":"UserIntentClusteringResultContent",
+          "documentation":"<p>The user intent clustering results from insights, containing grouped user intents across evaluated sessions.</p>"
+        },
+        "executionSummaryResult":{
+          "shape":"ExecutionSummaryClusteringResultContent",
+          "documentation":"<p>The execution summary clustering results from insights, containing grouped execution patterns across evaluated sessions.</p>"
+        },
         "errorDetails":{
           "shape":"ErrorDetailsList",
           "documentation":"<p>The error details if the batch evaluation encountered failures.</p>"
@@ -5301,6 +5311,16 @@
       "type":"string",
       "pattern":"arn:([^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:harness/[a-zA-Z][a-zA-Z0-9_]{0,39}-[a-zA-Z0-9]{10}"
     },
+    "HarnessAwsSkillPath":{
+      "type":"string",
+      "max":4096,
+      "min":1,
+      "pattern":"([^*?\\[\\]]|\\*)+"
+    },
+    "HarnessAwsSkillPaths":{
+      "type":"list",
+      "member":{"shape":"HarnessAwsSkillPath"}
+    },
     "HarnessBedrockApiFormat":{
       "type":"string",
       "enum":[
@@ -5471,6 +5491,10 @@
         "user",
         "assistant"
       ]
+    },
+    "HarnessEndpointName":{
+      "type":"string",
+      "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,47}"
     },
     "HarnessGatewayOutboundAuth":{
       "type":"structure",
@@ -5810,10 +5834,24 @@
         "git":{
           "shape":"HarnessSkillGitSource",
           "documentation":"<p>A git repository containing the skill.</p>"
+        },
+        "awsSkills":{
+          "shape":"HarnessSkillAwsSkillsSource",
+          "documentation":"<p>AWS Skills baked into the Harness's underlying Runtime.</p>"
         }
       },
       "documentation":"<p>A skill available to the agent.</p>",
       "union":true
+    },
+    "HarnessSkillAwsSkillsSource":{
+      "type":"structure",
+      "members":{
+        "paths":{
+          "shape":"HarnessAwsSkillPaths",
+          "documentation":"<p>Optionally filter allowed skills with glob syntax, e.g., ['core-skills/*'].</p>"
+        }
+      },
+      "documentation":"<p>Passed to show that AWS Skills should be included.</p>"
     },
     "HarnessSkillGitAuth":{
       "type":"structure",
@@ -5852,7 +5890,7 @@
     "HarnessSkillGitUrl":{
       "type":"string",
       "min":8,
-      "pattern":"https://.*"
+      "pattern":"https://[^#@]+"
     },
     "HarnessSkillPath":{
       "type":"string",
@@ -6308,9 +6346,12 @@
       "type":"structure",
       "required":["insightId"],
       "members":{
-        "insightId":{"shape":"InsightId"}
+        "insightId":{
+          "shape":"InsightId",
+          "documentation":"<p>The unique identifier of the insight to run.</p>"
+        }
       },
-      "documentation":"<p>A reference to an insight analysis to run against sessions.</p>"
+      "documentation":"<p>A reference to an insight analysis to run against sessions during batch evaluation. Insights provide deeper analysis beyond individual evaluator scores, including failure detection, user intent clustering, and execution summarization.</p>"
     },
     "InsightId":{
       "type":"string",
@@ -6359,7 +6400,8 @@
         "llm-output-category-nonsensical",
         "configuration-mismatch-category-tool-definition",
         "coding-use-case-specific-failure-types-category-edge-case-oversights",
-        "coding-use-case-specific-failure-types-category-dependency-issues"
+        "coding-use-case-specific-failure-types-category-dependency-issues",
+        "other"
       ]
     },
     "InsightsFailureSignal":{
@@ -6370,7 +6412,10 @@
         "confidence"
       ],
       "members":{
-        "category":{"shape":"InsightsFailureCategory"},
+        "category":{
+          "shape":"InsightsFailureCategory",
+          "documentation":"<p>The failure category classification for this signal.</p>"
+        },
         "evidence":{
           "shape":"String",
           "documentation":"<p>The evidence supporting the failure detection.</p>"
@@ -6924,6 +6969,12 @@
           "documentation":"<p>The ARN of the harness to invoke.</p>",
           "location":"querystring",
           "locationName":"harnessArn"
+        },
+        "qualifier":{
+          "shape":"HarnessEndpointName",
+          "documentation":"<p>The endpoint name to invoke. If omitted, the DEFAULT endpoint is used.</p>",
+          "location":"querystring",
+          "locationName":"qualifier"
         },
         "runtimeSessionId":{
           "shape":"InvokeHarnessRequestRuntimeSessionIdString",
@@ -8613,7 +8664,7 @@
           "shape":"OnlineEvaluationConfigArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the online evaluation configuration to use as the session source.</p>"
         },
-        "sessionFilterConfig":{
+        "timeRange":{
           "shape":"SessionFilterConfig",
           "documentation":"<p>Optional session filter configuration to narrow down which sessions from the online evaluation configuration to include.</p>"
         }
@@ -11793,7 +11844,7 @@
           "documentation":"<p>The list of user intent clusters identified across analyzed sessions.</p>"
         }
       },
-      "documentation":"<p>Customer-facing user intent clustering result written to S3.</p>"
+      "documentation":"<p>The user intent clustering result containing grouped user intents identified across evaluated sessions.</p>"
     },
     "UserIntentList":{
       "type":"list",

@@ -14,6 +14,24 @@
     "auth":["aws.auth#sigv4"]
   },
   "operations":{
+    "AssociateGlossaryTerms":{
+      "name":"AssociateGlossaryTerms",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AssociateGlossaryTermsRequest"},
+      "output":{"shape":"AssociateGlossaryTermsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Associates one or more glossary terms with an asset in Glue Data Catalog.</p>"
+    },
     "BatchCreatePartition":{
       "name":"BatchCreatePartition",
       "http":{
@@ -171,6 +189,23 @@
         {"shape":"InvalidInputException"}
       ],
       "documentation":"<p>Returns a list of resource metadata for a given list of development endpoint names. After calling the <code>ListDevEndpoints</code> operation, you can call this operation to access the data to which you have been granted permissions. This operation supports all IAM permissions, including permission conditions that uses tags.</p>"
+    },
+    "BatchGetIterableForms":{
+      "name":"BatchGetIterableForms",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchGetIterableFormsRequest"},
+      "output":{"shape":"BatchGetIterableFormsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves multiple items from an iterable form on an asset in Glue Data Catalog in a single request.</p>"
     },
     "BatchGetJobs":{
       "name":"BatchGetJobs",
@@ -569,6 +604,43 @@
       ],
       "documentation":"<p>Creates a new development endpoint.</p>"
     },
+    "CreateGlossary":{
+      "name":"CreateGlossary",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateGlossaryRequest"},
+      "output":{"shape":"CreateGlossaryResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AlreadyExistsException"}
+      ],
+      "documentation":"<p>Creates a business glossary in Glue Data Catalog. A glossary is a container for glossary terms that define business concepts.</p>"
+    },
+    "CreateGlossaryTerm":{
+      "name":"CreateGlossaryTerm",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateGlossaryTermRequest"},
+      "output":{"shape":"CreateGlossaryTermResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AlreadyExistsException"}
+      ],
+      "documentation":"<p>Creates a glossary term within a business glossary in Glue Data Catalog.</p>"
+    },
     "CreateGlueIdentityCenterConfiguration":{
       "name":"CreateGlueIdentityCenterConfiguration",
       "http":{
@@ -933,6 +1005,58 @@
       ],
       "documentation":"<p>Creates a new workflow.</p>"
     },
+    "DeleteAsset":{
+      "name":"DeleteAsset",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteAssetRequest"},
+      "output":{"shape":"DeleteAssetResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes an asset from Glue Data Catalog.</p>"
+    },
+    "DeleteAssetType":{
+      "name":"DeleteAssetType",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteAssetTypeRequest"},
+      "output":{"shape":"DeleteAssetTypeResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes an asset type from Glue Data Catalog.</p>"
+    },
+    "DeleteAttachment":{
+      "name":"DeleteAttachment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteAttachmentRequest"},
+      "output":{"shape":"DeleteAttachmentResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes a form attachment from an asset in Glue Data Catalog.</p>"
+    },
     "DeleteBlueprint":{
       "name":"DeleteBlueprint",
       "http":{
@@ -1146,6 +1270,59 @@
         {"shape":"InvalidInputException"}
       ],
       "documentation":"<p>Deletes a specified development endpoint.</p>"
+    },
+    "DeleteFormType":{
+      "name":"DeleteFormType",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteFormTypeRequest"},
+      "output":{"shape":"DeleteFormTypeResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes a form type from Glue Data Catalog. A form type cannot be deleted if it is still referenced by an asset type.</p>"
+    },
+    "DeleteGlossary":{
+      "name":"DeleteGlossary",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteGlossaryRequest"},
+      "output":{"shape":"DeleteGlossaryResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ConflictException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes a business glossary from Glue Data Catalog. A glossary cannot be deleted if it still contains glossary terms.</p>"
+    },
+    "DeleteGlossaryTerm":{
+      "name":"DeleteGlossaryTerm",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteGlossaryTermRequest"},
+      "output":{"shape":"DeleteGlossaryTermResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes a glossary term from Glue Data Catalog.</p>"
     },
     "DeleteGlueIdentityCenterConfiguration":{
       "name":"DeleteGlueIdentityCenterConfiguration",
@@ -1581,6 +1758,58 @@
         {"shape":"InvalidInputException"}
       ],
       "documentation":"<p>The API is used to retrieve a list of integrations.</p>"
+    },
+    "DisassociateGlossaryTerms":{
+      "name":"DisassociateGlossaryTerms",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisassociateGlossaryTermsRequest"},
+      "output":{"shape":"DisassociateGlossaryTermsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Removes the association of one or more glossary terms from an asset in Glue Data Catalog.</p>"
+    },
+    "GetAsset":{
+      "name":"GetAsset",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetAssetInput"},
+      "output":{"shape":"GetAssetOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p>Retrieves the metadata for an asset in Glue Data Catalog, including its forms, additional attachments, and associated glossary terms.</p>"
+    },
+    "GetAssetType":{
+      "name":"GetAssetType",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetAssetTypeRequest"},
+      "output":{"shape":"GetAssetTypeResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves an asset type in Glue Data Catalog by its identifier.</p>"
     },
     "GetBlueprint":{
       "name":"GetBlueprint",
@@ -2109,6 +2338,55 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>This API is used to query preview data from a given connection type or from a native Amazon S3 based Glue Data Catalog.</p> <p>Returns records as an array of JSON blobs. Each record is formatted using Jackson JsonNode based on the field type defined by the <code>DescribeEntity</code> API.</p> <p>Spark connectors generate schemas according to the same data type mapping as in the <code>DescribeEntity</code> API. Spark connectors convert data to the appropriate data types matching the schema when returning rows.</p>"
+    },
+    "GetFormType":{
+      "name":"GetFormType",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetFormTypeRequest"},
+      "output":{"shape":"GetFormTypeResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves a form type in Glue Data Catalog by its identifier.</p>"
+    },
+    "GetGlossary":{
+      "name":"GetGlossary",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetGlossaryRequest"},
+      "output":{"shape":"GetGlossaryResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves a business glossary in Glue Data Catalog by its identifier.</p>"
+    },
+    "GetGlossaryTerm":{
+      "name":"GetGlossaryTerm",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetGlossaryTermRequest"},
+      "output":{"shape":"GetGlossaryTermResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves a glossary term in Glue Data Catalog by its identifier.</p>"
     },
     "GetGlueIdentityCenterConfiguration":{
       "name":"GetGlueIdentityCenterConfiguration",
@@ -2941,6 +3219,22 @@
       ],
       "documentation":"<p>Imports an existing Amazon Athena Data Catalog to Glue.</p>"
     },
+    "ListAssetTypes":{
+      "name":"ListAssetTypes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListAssetTypesRequest"},
+      "output":{"shape":"ListAssetTypesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists the asset types defined in Glue Data Catalog.</p>"
+    },
     "ListBlueprints":{
       "name":"ListBlueprints",
       "http":{
@@ -3151,6 +3445,54 @@
       ],
       "documentation":"<p>Returns the available entities supported by the connection type. </p>"
     },
+    "ListFormTypes":{
+      "name":"ListFormTypes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListFormTypesRequest"},
+      "output":{"shape":"ListFormTypesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists the form types defined in Glue Data Catalog.</p>"
+    },
+    "ListGlossaries":{
+      "name":"ListGlossaries",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListGlossariesRequest"},
+      "output":{"shape":"ListGlossariesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists business glossaries in Glue Data Catalog.</p>"
+    },
+    "ListGlossaryTerms":{
+      "name":"ListGlossaryTerms",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListGlossaryTermsRequest"},
+      "output":{"shape":"ListGlossaryTermsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists glossary terms within a business glossary in Glue Data Catalog.</p>"
+    },
     "ListIntegrationResourceProperties":{
       "name":"ListIntegrationResourceProperties",
       "http":{
@@ -3169,6 +3511,23 @@
         {"shape":"InvalidInputException"}
       ],
       "documentation":"<p>List integration resource properties for a single customer. It supports the filters, maxRecords and markers.</p>"
+    },
+    "ListIterableForms":{
+      "name":"ListIterableForms",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListIterableFormsRequest"},
+      "output":{"shape":"ListIterableFormsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p>Lists the items in an iterable form on an asset in Glue Data Catalog. For example, lists the columns of a table asset.</p>"
     },
     "ListJobs":{
       "name":"ListJobs",
@@ -3386,6 +3745,59 @@
       ],
       "documentation":"<p>Modifies a Zero-ETL integration in the caller's account.</p>"
     },
+    "PutAsset":{
+      "name":"PutAsset",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutAssetRequest"},
+      "output":{"shape":"PutAssetResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates or updates an asset in Glue Data Catalog. If the asset already exists, this operation updates it; otherwise, a new asset is created.</p>"
+    },
+    "PutAssetType":{
+      "name":"PutAssetType",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutAssetTypeRequest"},
+      "output":{"shape":"PutAssetTypeResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates or updates an asset type in Glue Data Catalog. An asset type defines the structure of assets by specifying which forms they include. If an asset type with the given name already exists, it is updated.</p>"
+    },
+    "PutAttachment":{
+      "name":"PutAttachment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutAttachmentRequest"},
+      "output":{"shape":"PutAttachmentResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Attaches a form to an asset or an iterable form item in Glue Data Catalog. If an attachment with the same name already exists, it is overwritten.</p>"
+    },
     "PutDataCatalogEncryptionSettings":{
       "name":"PutDataCatalogEncryptionSettings",
       "http":{
@@ -3415,6 +3827,23 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Annotate all datapoints for a Profile.</p>"
+    },
+    "PutFormType":{
+      "name":"PutFormType",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutFormTypeRequest"},
+      "output":{"shape":"PutFormTypeResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates or updates a form type in Glue Data Catalog. A form type defines the schema for structured metadata that can be attached to assets.</p>"
     },
     "PutResourcePolicy":{
       "name":"PutResourcePolicy",
@@ -3590,6 +4019,22 @@
         {"shape":"IllegalSessionStateException"}
       ],
       "documentation":"<p>Executes the statement.</p>"
+    },
+    "Search":{
+      "name":"Search",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"SearchInput"},
+      "output":{"shape":"SearchOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Searches for assets in Glue Data Catalog using full-text search, filters, sorting, and aggregations. Returns matching assets with relevance-ranked results.</p>"
     },
     "SearchTables":{
       "name":"SearchTables",
@@ -4262,6 +4707,44 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Updates a specified development endpoint.</p>"
+    },
+    "UpdateGlossary":{
+      "name":"UpdateGlossary",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateGlossaryRequest"},
+      "output":{"shape":"UpdateGlossaryResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AlreadyExistsException"}
+      ],
+      "documentation":"<p>Updates a business glossary in Glue Data Catalog.</p>"
+    },
+    "UpdateGlossaryTerm":{
+      "name":"UpdateGlossaryTerm",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateGlossaryTermRequest"},
+      "output":{"shape":"UpdateGlossaryTermResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AlreadyExistsException"}
+      ],
+      "documentation":"<p>Updates a glossary term in Glue Data Catalog.</p>"
     },
     "UpdateGlueIdentityCenterConfiguration":{
       "name":"UpdateGlueIdentityCenterConfiguration",
@@ -4987,6 +5470,122 @@
       "max":2048,
       "min":20
     },
+    "AssetDescription":{"type":"string"},
+    "AssetFormEntry":{
+      "type":"structure",
+      "members":{
+        "FormTypeId":{
+          "shape":"FormTypeId",
+          "documentation":"<p>The identifier of the form type that defines this form's schema.</p>"
+        },
+        "Content":{
+          "shape":"FormContent",
+          "documentation":"<p>The JSON content of the form, conforming to the schema of the specified form type.</p>"
+        }
+      },
+      "documentation":"<p>A form on an asset, consisting of the form type identifier and its JSON content.</p>"
+    },
+    "AssetFormKey":{"type":"string"},
+    "AssetFormMap":{
+      "type":"map",
+      "key":{"shape":"AssetFormKey"},
+      "value":{"shape":"AssetFormEntry"}
+    },
+    "AssetId":{
+      "type":"string",
+      "max":1087,
+      "min":1,
+      "pattern":"[a-zA-Z0-9\\-\\:\\/\\.\\_\\*]+"
+    },
+    "AssetName":{"type":"string"},
+    "AssetTypeFormKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^(?![0-9_])\\w+$|^_\\w*[a-zA-Z0-9]\\w*$"
+    },
+    "AssetTypeFormReference":{
+      "type":"structure",
+      "required":["FormTypeIdentifier"],
+      "members":{
+        "FormTypeIdentifier":{
+          "shape":"FormTypeId",
+          "documentation":"<p>The identifier of the referenced form type.</p>"
+        }
+      },
+      "documentation":"<p>A reference to a form type that is included in an asset type.</p>"
+    },
+    "AssetTypeFormsMap":{
+      "type":"map",
+      "key":{"shape":"AssetTypeFormKey"},
+      "value":{"shape":"AssetTypeFormReference"},
+      "max":100,
+      "min":1
+    },
+    "AssetTypeId":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "AssetTypeItem":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"AssetTypeId",
+          "documentation":"<p>The identifier of the asset type.</p>"
+        },
+        "Name":{
+          "shape":"AssetTypeName",
+          "documentation":"<p>The name of the asset type.</p>"
+        }
+      },
+      "documentation":"<p>A summary of an asset type.</p>"
+    },
+    "AssetTypeItemList":{
+      "type":"list",
+      "member":{"shape":"AssetTypeItem"}
+    },
+    "AssetTypeName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^(?![0-9_])\\w+$|^_\\w*[a-zA-Z0-9]\\w*$"
+    },
+    "AssociateGlossaryTermsRequest":{
+      "type":"structure",
+      "required":[
+        "Identifier",
+        "GlossaryTermIdentifiers"
+      ],
+      "members":{
+        "Identifier":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the asset to associate glossary terms with.</p>"
+        },
+        "GlossaryTermIdentifiers":{
+          "shape":"GlossaryTermIdList",
+          "documentation":"<p>The list of glossary term identifiers to associate with the asset.</p>"
+        },
+        "ClientToken":{
+          "shape":"HashString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "AssociateGlossaryTermsResponse":{
+      "type":"structure",
+      "members":{
+        "Identifier":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the asset.</p>"
+        },
+        "GlossaryTerms":{
+          "shape":"GlossaryTermIdList",
+          "documentation":"<p>The glossary terms now associated with the asset.</p>"
+        }
+      }
+    },
     "AthenaConnectorSource":{
       "type":"structure",
       "required":[
@@ -5027,6 +5626,12 @@
         }
       },
       "documentation":"<p>Specifies a connector to an Amazon Athena data source.</p>"
+    },
+    "AttachmentName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[a-zA-Z][a-zA-Z0-9_]*$"
     },
     "AttemptCount":{"type":"integer"},
     "AuditColumnNamesList":{
@@ -5592,6 +6197,41 @@
         "DevEndpointsNotFound":{
           "shape":"DevEndpointNames",
           "documentation":"<p>A list of <code>DevEndpoints</code> not found.</p>"
+        }
+      }
+    },
+    "BatchGetIterableFormsRequest":{
+      "type":"structure",
+      "required":[
+        "AssetIdentifier",
+        "IterableFormName",
+        "ItemIdentifiers"
+      ],
+      "members":{
+        "AssetIdentifier":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the asset.</p>"
+        },
+        "IterableFormName":{
+          "shape":"IterableFormName",
+          "documentation":"<p>The name of the iterable form to retrieve items from.</p>"
+        },
+        "ItemIdentifiers":{
+          "shape":"ItemIdentifierList",
+          "documentation":"<p>The list of item identifiers to retrieve. Each identifier can be an item ID or item name.</p>"
+        }
+      }
+    },
+    "BatchGetIterableFormsResponse":{
+      "type":"structure",
+      "members":{
+        "Items":{
+          "shape":"IterableFormItemList",
+          "documentation":"<p>The list of retrieved iterable form items.</p>"
+        },
+        "Errors":{
+          "shape":"ItemErrorList",
+          "documentation":"<p>The list of errors for items that could not be retrieved.</p>"
         }
       }
     },
@@ -9628,6 +10268,97 @@
         }
       }
     },
+    "CreateGlossaryRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"GlossaryName",
+          "documentation":"<p>The name of the glossary.</p>"
+        },
+        "Description":{
+          "shape":"MetadataDescription",
+          "documentation":"<p>The description of the glossary.</p>"
+        },
+        "ClientToken":{
+          "shape":"HashString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateGlossaryResponse":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"GlossaryId",
+          "documentation":"<p>The unique identifier of the glossary.</p>"
+        },
+        "Name":{
+          "shape":"GlossaryName",
+          "documentation":"<p>The name of the glossary.</p>"
+        },
+        "Description":{
+          "shape":"MetadataDescription",
+          "documentation":"<p>The description of the glossary.</p>"
+        }
+      }
+    },
+    "CreateGlossaryTermRequest":{
+      "type":"structure",
+      "required":[
+        "GlossaryIdentifier",
+        "Name"
+      ],
+      "members":{
+        "GlossaryIdentifier":{
+          "shape":"GlossaryId",
+          "documentation":"<p>The unique identifier of the glossary in which to create the term.</p>"
+        },
+        "Name":{
+          "shape":"GlossaryTermName",
+          "documentation":"<p>The name of the glossary term.</p>"
+        },
+        "ShortDescription":{
+          "shape":"GlossaryShortDescription",
+          "documentation":"<p>A short description of the glossary term.</p>"
+        },
+        "LongDescription":{
+          "shape":"GlossaryLongDescription",
+          "documentation":"<p>A long description of the glossary term.</p>"
+        },
+        "ClientToken":{
+          "shape":"HashString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateGlossaryTermResponse":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"GlossaryTermId",
+          "documentation":"<p>The unique identifier of the glossary term.</p>"
+        },
+        "GlossaryId":{
+          "shape":"GlossaryId",
+          "documentation":"<p>The unique identifier of the glossary containing this term.</p>"
+        },
+        "Name":{
+          "shape":"GlossaryTermName",
+          "documentation":"<p>The name of the glossary term.</p>"
+        },
+        "ShortDescription":{
+          "shape":"GlossaryShortDescription",
+          "documentation":"<p>The short description of the glossary term.</p>"
+        },
+        "LongDescription":{
+          "shape":"GlossaryLongDescription",
+          "documentation":"<p>The long description of the glossary term.</p>"
+        }
+      }
+    },
     "CreateGlueIdentityCenterConfigurationRequest":{
       "type":"structure",
       "required":["InstanceArn"],
@@ -10699,6 +11430,7 @@
       },
       "documentation":"<p>Specifies an XML classifier for <code>CreateClassifier</code> to create.</p>"
     },
+    "CreatedAt":{"type":"timestamp"},
     "CreatedTimestamp":{"type":"string"},
     "CredentialKey":{
       "type":"string",
@@ -11989,6 +12721,60 @@
       "min":1,
       "pattern":".*[^<>&'\"].*"
     },
+    "DeleteAssetRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the asset to delete.</p>"
+        }
+      }
+    },
+    "DeleteAssetResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteAssetTypeRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"AssetTypeId",
+          "documentation":"<p>The identifier of the asset type to delete.</p>"
+        }
+      }
+    },
+    "DeleteAssetTypeResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteAttachmentRequest":{
+      "type":"structure",
+      "required":[
+        "Identifier",
+        "AttachmentName"
+      ],
+      "members":{
+        "Identifier":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the asset from which to delete the attachment.</p>"
+        },
+        "AttachmentName":{
+          "shape":"AttachmentName",
+          "documentation":"<p>The name of the attachment to delete.</p>"
+        }
+      }
+    },
+    "DeleteAttachmentResponse":{
+      "type":"structure",
+      "members":{
+        "Identifier":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the asset.</p>"
+        }
+      }
+    },
     "DeleteBehavior":{
       "type":"string",
       "enum":[
@@ -12244,6 +13030,48 @@
       }
     },
     "DeleteDevEndpointResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteFormTypeRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"FormTypeId",
+          "documentation":"<p>The identifier of the form type to delete.</p>"
+        }
+      }
+    },
+    "DeleteFormTypeResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteGlossaryRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"GlossaryId",
+          "documentation":"<p>The unique identifier of the glossary to delete.</p>"
+        }
+      }
+    },
+    "DeleteGlossaryResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteGlossaryTermRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"GlossaryTermId",
+          "documentation":"<p>The unique identifier of the glossary term to delete.</p>"
+        }
+      }
+    },
+    "DeleteGlossaryTermResponse":{
       "type":"structure",
       "members":{}
     },
@@ -13239,6 +14067,41 @@
         }
       },
       "documentation":"<p>A policy that specifies update behavior for the crawler.</p>"
+    },
+    "DisassociateGlossaryTermsRequest":{
+      "type":"structure",
+      "required":[
+        "Identifier",
+        "GlossaryTermIdentifiers"
+      ],
+      "members":{
+        "Identifier":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the asset to disassociate glossary terms from.</p>"
+        },
+        "GlossaryTermIdentifiers":{
+          "shape":"GlossaryTermIdList",
+          "documentation":"<p>The list of glossary term identifiers to disassociate from the asset.</p>"
+        },
+        "ClientToken":{
+          "shape":"HashString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "DisassociateGlossaryTermsResponse":{
+      "type":"structure",
+      "members":{
+        "Identifier":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the asset.</p>"
+        },
+        "GlossaryTerms":{
+          "shape":"GlossaryTermIdList",
+          "documentation":"<p>The remaining glossary terms associated with the asset.</p>"
+        }
+      }
     },
     "DisplayName":{
       "type":"string",
@@ -14380,6 +15243,41 @@
       },
       "documentation":"<p>Specifies configuration properties for a Find Matches task run.</p>"
     },
+    "FormContent":{"type":"string"},
+    "FormTypeId":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "FormTypeItem":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"FormTypeId",
+          "documentation":"<p>The identifier of the form type.</p>"
+        },
+        "Name":{
+          "shape":"FormTypeName",
+          "documentation":"<p>The name of the form type.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a form type.</p>"
+    },
+    "FormTypeItemList":{
+      "type":"list",
+      "member":{"shape":"FormTypeItem"}
+    },
+    "FormTypeName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^[A-Z]\\w*$"
+    },
+    "FormTypeSchema":{
+      "type":"string",
+      "max":100000,
+      "min":1
+    },
     "FormatString":{
       "type":"string",
       "max":128,
@@ -14414,6 +15312,92 @@
       "value":{"shape":"GenericString"}
     },
     "GenericString":{"type":"string"},
+    "GetAssetInput":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the asset to retrieve.</p>"
+        }
+      }
+    },
+    "GetAssetOutput":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "AssetTypeId"
+      ],
+      "members":{
+        "Id":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the asset.</p>"
+        },
+        "Name":{
+          "shape":"AssetName",
+          "documentation":"<p>The name of the asset.</p>"
+        },
+        "Description":{
+          "shape":"AssetDescription",
+          "documentation":"<p>The description of the asset.</p>"
+        },
+        "CreatedAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp at which the asset was created.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"UpdatedAt",
+          "documentation":"<p>The timestamp at which the asset was last updated.</p>"
+        },
+        "AssetTypeId":{
+          "shape":"AssetTypeId",
+          "documentation":"<p>The identifier of the asset type for this asset.</p>"
+        },
+        "GlossaryTerms":{
+          "shape":"GlossaryTermIdList",
+          "documentation":"<p>The identifiers of the glossary terms associated with the asset.</p>"
+        },
+        "Forms":{
+          "shape":"AssetFormMap",
+          "documentation":"<p>The forms on the asset, keyed by form name.</p>"
+        },
+        "Attachments":{
+          "shape":"AssetFormMap",
+          "documentation":"<p>Additional attachments on the asset for more context, keyed by attachment name.</p>"
+        },
+        "IterableForms":{
+          "shape":"IterableFormMap",
+          "documentation":"<p>The iterable forms available on the asset, keyed by form name (for example, <code>columns</code>). Use the form name with <code>ListIterableForms</code> or <code>BatchGetIterableForms</code> to retrieve the form's items.</p>"
+        }
+      }
+    },
+    "GetAssetTypeRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"AssetTypeId",
+          "documentation":"<p>The identifier of the asset type to retrieve.</p>"
+        }
+      }
+    },
+    "GetAssetTypeResponse":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"AssetTypeId",
+          "documentation":"<p>The identifier of the asset type.</p>"
+        },
+        "Name":{
+          "shape":"AssetTypeName",
+          "documentation":"<p>The name of the asset type.</p>"
+        },
+        "Forms":{
+          "shape":"AssetTypeFormsMap",
+          "documentation":"<p>The forms that make up the asset type, keyed by form name.</p>"
+        }
+      }
+    },
     "GetBlueprintRequest":{
       "type":"structure",
       "required":["Name"],
@@ -15557,6 +16541,95 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>A continuation token, present if the current segment is not the last.</p>"
+        }
+      }
+    },
+    "GetFormTypeRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"FormTypeId",
+          "documentation":"<p>The identifier of the form type to retrieve.</p>"
+        }
+      }
+    },
+    "GetFormTypeResponse":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"FormTypeId",
+          "documentation":"<p>The identifier of the form type.</p>"
+        },
+        "Name":{
+          "shape":"FormTypeName",
+          "documentation":"<p>The name of the form type.</p>"
+        },
+        "Schema":{
+          "shape":"FormTypeSchema",
+          "documentation":"<p>The Smithy IDL schema of the form type.</p>"
+        }
+      }
+    },
+    "GetGlossaryRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"GlossaryId",
+          "documentation":"<p>The unique identifier of the glossary to retrieve.</p>"
+        }
+      }
+    },
+    "GetGlossaryResponse":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"GlossaryId",
+          "documentation":"<p>The unique identifier of the glossary.</p>"
+        },
+        "Name":{
+          "shape":"GlossaryName",
+          "documentation":"<p>The name of the glossary.</p>"
+        },
+        "Description":{
+          "shape":"MetadataDescription",
+          "documentation":"<p>The description of the glossary.</p>"
+        }
+      }
+    },
+    "GetGlossaryTermRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"GlossaryTermId",
+          "documentation":"<p>The unique identifier of the glossary term to retrieve.</p>"
+        }
+      }
+    },
+    "GetGlossaryTermResponse":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"GlossaryTermId",
+          "documentation":"<p>The unique identifier of the glossary term.</p>"
+        },
+        "GlossaryId":{
+          "shape":"GlossaryId",
+          "documentation":"<p>The unique identifier of the glossary containing this term.</p>"
+        },
+        "Name":{
+          "shape":"GlossaryTermName",
+          "documentation":"<p>The name of the glossary term.</p>"
+        },
+        "ShortDescription":{
+          "shape":"GlossaryShortDescription",
+          "documentation":"<p>The short description of the glossary term.</p>"
+        },
+        "LongDescription":{
+          "shape":"GlossaryLongDescription",
+          "documentation":"<p>The long description of the glossary term.</p>"
         }
       }
     },
@@ -17423,6 +18496,78 @@
         }
       }
     },
+    "GlossaryId":{"type":"string"},
+    "GlossaryItem":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"GlossaryId",
+          "documentation":"<p>The unique identifier of the glossary.</p>"
+        },
+        "Name":{
+          "shape":"GlossaryName",
+          "documentation":"<p>The name of the glossary.</p>"
+        },
+        "Description":{
+          "shape":"MetadataDescription",
+          "documentation":"<p>The description of the glossary.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a business glossary.</p>"
+    },
+    "GlossaryItemList":{
+      "type":"list",
+      "member":{"shape":"GlossaryItem"}
+    },
+    "GlossaryLongDescription":{
+      "type":"string",
+      "max":4096,
+      "min":1
+    },
+    "GlossaryName":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "GlossaryShortDescription":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "GlossaryTermId":{"type":"string"},
+    "GlossaryTermIdList":{
+      "type":"list",
+      "member":{"shape":"GlossaryTermId"},
+      "max":10,
+      "min":1
+    },
+    "GlossaryTermItem":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"GlossaryTermId",
+          "documentation":"<p>The unique identifier of the glossary term.</p>"
+        },
+        "Name":{
+          "shape":"GlossaryTermName",
+          "documentation":"<p>The name of the glossary term.</p>"
+        },
+        "ShortDescription":{
+          "shape":"GlossaryShortDescription",
+          "documentation":"<p>The short description of the glossary term.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a glossary term.</p>"
+    },
+    "GlossaryTermItemList":{
+      "type":"list",
+      "member":{"shape":"GlossaryTermItem"}
+    },
+    "GlossaryTermName":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
     "GlueEncryptionException":{
       "type":"structure",
       "members":{
@@ -18857,6 +20002,122 @@
       "type":"timestamp",
       "timestampFormat":"iso8601"
     },
+    "ItemDescription":{"type":"string"},
+    "ItemError":{
+      "type":"structure",
+      "members":{
+        "ItemIdentifier":{
+          "shape":"ItemIdentifier",
+          "documentation":"<p>The identifier of the item that caused the error.</p>"
+        },
+        "Code":{
+          "shape":"ItemErrorCode",
+          "documentation":"<p>The error code.</p>"
+        },
+        "Message":{
+          "shape":"ItemErrorMessage",
+          "documentation":"<p>The error message.</p>"
+        }
+      },
+      "documentation":"<p>An error that occurred when retrieving an iterable form item.</p>"
+    },
+    "ItemErrorCode":{"type":"string"},
+    "ItemErrorList":{
+      "type":"list",
+      "member":{"shape":"ItemError"}
+    },
+    "ItemErrorMessage":{"type":"string"},
+    "ItemId":{"type":"string"},
+    "ItemIdentifier":{
+      "type":"string",
+      "max":1087,
+      "min":1
+    },
+    "ItemIdentifierList":{
+      "type":"list",
+      "member":{"shape":"ItemIdentifier"},
+      "max":100,
+      "min":1
+    },
+    "ItemName":{"type":"string"},
+    "IterableFormEntry":{
+      "type":"structure",
+      "members":{
+        "FormTypeId":{
+          "shape":"FormTypeId",
+          "documentation":"<p>The form type identifier of the iterable form (for example, <code>columns</code>), used to retrieve its items via <code>ListIterableForms</code> or <code>BatchGetIterableForms</code>.</p>"
+        }
+      },
+      "documentation":"<p>An iterable form available on an asset, identified by its form type.</p>"
+    },
+    "IterableFormItem":{
+      "type":"structure",
+      "members":{
+        "ItemId":{
+          "shape":"ItemId",
+          "documentation":"<p>The unique identifier of the item.</p>"
+        },
+        "ItemName":{
+          "shape":"ItemName",
+          "documentation":"<p>The name of the item.</p>"
+        },
+        "GlossaryTerms":{
+          "shape":"GlossaryTermIdList",
+          "documentation":"<p>The identifiers of the glossary terms associated with the item.</p>"
+        },
+        "Forms":{
+          "shape":"AssetFormMap",
+          "documentation":"<p>The forms on the item, keyed by form name.</p>"
+        },
+        "Attachments":{
+          "shape":"AssetFormMap",
+          "documentation":"<p>Additional attachments on the item for more context, keyed by attachment name.</p>"
+        }
+      },
+      "documentation":"<p>A full iterable form item with its forms.</p>"
+    },
+    "IterableFormItemList":{
+      "type":"list",
+      "member":{"shape":"IterableFormItem"}
+    },
+    "IterableFormKey":{"type":"string"},
+    "IterableFormListItem":{
+      "type":"structure",
+      "members":{
+        "ItemId":{
+          "shape":"ItemId",
+          "documentation":"<p>The unique identifier of the item.</p>"
+        },
+        "ItemName":{
+          "shape":"ItemName",
+          "documentation":"<p>The name of the item.</p>"
+        },
+        "Description":{
+          "shape":"ItemDescription",
+          "documentation":"<p>The description of the item.</p>"
+        },
+        "GlossaryTerms":{
+          "shape":"GlossaryTermIdList",
+          "documentation":"<p>The identifiers of the glossary terms associated with the item.</p>"
+        }
+      },
+      "documentation":"<p>A summary of an item in an iterable form.</p>"
+    },
+    "IterableFormListItemList":{
+      "type":"list",
+      "member":{"shape":"IterableFormListItem"}
+    },
+    "IterableFormMap":{
+      "type":"map",
+      "key":{"shape":"IterableFormKey"},
+      "value":{"shape":"IterableFormEntry"}
+    },
+    "IterableFormName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[a-zA-Z][a-zA-Z0-9_]*(::[a-zA-Z][a-zA-Z0-9_]*)?$"
+    },
     "JDBCConnectionType":{
       "type":"string",
       "enum":[
@@ -20035,6 +21296,32 @@
       },
       "documentation":"<p>Specifies data lineage configuration settings for the crawler.</p>"
     },
+    "ListAssetTypesRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of results to return in the response.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, if this is a continuation call.</p>"
+        }
+      }
+    },
+    "ListAssetTypesResponse":{
+      "type":"structure",
+      "members":{
+        "Items":{
+          "shape":"AssetTypeItemList",
+          "documentation":"<p>The list of asset type items.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, present if the current segment is not the last.</p>"
+        }
+      }
+    },
     "ListBlueprintsRequest":{
       "type":"structure",
       "members":{
@@ -20481,6 +21768,90 @@
         }
       }
     },
+    "ListFormTypesRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of results to return in the response.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, if this is a continuation call.</p>"
+        }
+      }
+    },
+    "ListFormTypesResponse":{
+      "type":"structure",
+      "required":["Items"],
+      "members":{
+        "Items":{
+          "shape":"FormTypeItemList",
+          "documentation":"<p>The list of form type items.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, present if the current segment is not the last.</p>"
+        }
+      }
+    },
+    "ListGlossariesRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of results to return in the response.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, if this is a continuation call.</p>"
+        }
+      }
+    },
+    "ListGlossariesResponse":{
+      "type":"structure",
+      "members":{
+        "Items":{
+          "shape":"GlossaryItemList",
+          "documentation":"<p>The list of glossary items.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, present if the current segment is not the last.</p>"
+        }
+      }
+    },
+    "ListGlossaryTermsRequest":{
+      "type":"structure",
+      "required":["GlossaryIdentifier"],
+      "members":{
+        "GlossaryIdentifier":{
+          "shape":"GlossaryId",
+          "documentation":"<p>The unique identifier of the glossary whose terms to list.</p>"
+        },
+        "MaxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of results to return in the response.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, if this is a continuation call.</p>"
+        }
+      }
+    },
+    "ListGlossaryTermsResponse":{
+      "type":"structure",
+      "members":{
+        "Items":{
+          "shape":"GlossaryTermItemList",
+          "documentation":"<p>The list of glossary term items.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, present if the current segment is not the last.</p>"
+        }
+      }
+    },
     "ListIntegrationResourcePropertiesRequest":{
       "type":"structure",
       "members":{
@@ -20508,6 +21879,44 @@
         "Marker":{
           "shape":"String1024",
           "documentation":"<p>This is the pagination token for the next page.</p>"
+        }
+      }
+    },
+    "ListIterableFormsRequest":{
+      "type":"structure",
+      "required":[
+        "AssetIdentifier",
+        "IterableFormName"
+      ],
+      "members":{
+        "AssetIdentifier":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the asset.</p>"
+        },
+        "IterableFormName":{
+          "shape":"IterableFormName",
+          "documentation":"<p>The name of the iterable form to list items from.</p>"
+        },
+        "MaxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of results to return in the response.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, if this is a continuation call.</p>"
+        }
+      }
+    },
+    "ListIterableFormsResponse":{
+      "type":"structure",
+      "members":{
+        "Items":{
+          "shape":"IterableFormListItemList",
+          "documentation":"<p>The list of iterable form items.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, present if the current segment is not the last.</p>"
         }
       }
     },
@@ -21386,6 +22795,22 @@
       "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
     },
     "MessageString":{"type":"string"},
+    "MetadataDescription":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "MetadataFormContent":{
+      "type":"string",
+      "max":300000,
+      "min":0
+    },
+    "MetadataFormTypeIdentifier":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^(?![\\.:])([\\w.]+(::))?[A-Z]\\w*$"
+    },
     "MetadataInfo":{
       "type":"structure",
       "members":{
@@ -22931,6 +24356,175 @@
       "member":{"shape":"GenericString"},
       "max":5
     },
+    "PutAssetRequest":{
+      "type":"structure",
+      "required":[
+        "AssetTypeId",
+        "Identifier",
+        "Name",
+        "Forms"
+      ],
+      "members":{
+        "AssetTypeId":{
+          "shape":"AssetTypeId",
+          "documentation":"<p>The identifier of the asset type for the asset.</p>"
+        },
+        "Identifier":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the asset. If an asset with this identifier already exists, it is updated.</p>"
+        },
+        "Name":{
+          "shape":"AssetName",
+          "documentation":"<p>The name of the asset.</p>"
+        },
+        "Description":{
+          "shape":"AssetDescription",
+          "documentation":"<p>The description of the asset.</p>"
+        },
+        "Forms":{
+          "shape":"AssetFormMap",
+          "documentation":"<p>The forms to set on the asset, keyed by form name. Each entry specifies the form type and its JSON content.</p>"
+        },
+        "ClientToken":{
+          "shape":"HashString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "PutAssetResponse":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Name"
+      ],
+      "members":{
+        "Id":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the asset.</p>"
+        },
+        "Name":{
+          "shape":"AssetName",
+          "documentation":"<p>The name of the asset.</p>"
+        },
+        "Description":{
+          "shape":"AssetDescription",
+          "documentation":"<p>The description of the asset.</p>"
+        },
+        "CreatedAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp at which the asset was created.</p>"
+        },
+        "Forms":{
+          "shape":"AssetFormMap",
+          "documentation":"<p>The forms attached to the asset, keyed by form name.</p>"
+        }
+      }
+    },
+    "PutAssetTypeRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Forms"
+      ],
+      "members":{
+        "Name":{
+          "shape":"AssetTypeName",
+          "documentation":"<p>The name of the asset type.</p>"
+        },
+        "Forms":{
+          "shape":"AssetTypeFormsMap",
+          "documentation":"<p>The forms that make up the asset type, keyed by form name. Each entry references the form type that defines the form's schema.</p>"
+        },
+        "ClientToken":{
+          "shape":"HashString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "PutAssetTypeResponse":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"AssetTypeId",
+          "documentation":"<p>The identifier of the asset type.</p>"
+        },
+        "Name":{
+          "shape":"AssetTypeName",
+          "documentation":"<p>The name of the asset type.</p>"
+        },
+        "Forms":{
+          "shape":"AssetTypeFormsMap",
+          "documentation":"<p>The forms that make up the asset type, keyed by form name.</p>"
+        }
+      }
+    },
+    "PutAttachmentRequest":{
+      "type":"structure",
+      "required":[
+        "AssetIdentifier",
+        "AttachmentName",
+        "Content",
+        "FormTypeId"
+      ],
+      "members":{
+        "AssetIdentifier":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the asset to attach the form to.</p>"
+        },
+        "IterableFormName":{
+          "shape":"IterableFormName",
+          "documentation":"<p>The name of the iterable form. When specified along with <code>itemIdentifier</code>, the attachment targets an item within the iterable form rather than the asset itself.</p>"
+        },
+        "ItemIdentifier":{
+          "shape":"ItemIdentifier",
+          "documentation":"<p>The identifier of the item within the iterable form. Required when <code>iterableFormName</code> is specified.</p>"
+        },
+        "AttachmentName":{
+          "shape":"AttachmentName",
+          "documentation":"<p>The name of the attachment.</p>"
+        },
+        "Content":{
+          "shape":"MetadataFormContent",
+          "documentation":"<p>The JSON content of the form, conforming to the schema of the specified form type.</p>"
+        },
+        "FormTypeId":{
+          "shape":"MetadataFormTypeIdentifier",
+          "documentation":"<p>The identifier of the form type for this attachment.</p>"
+        },
+        "ClientToken":{
+          "shape":"HashString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "PutAttachmentResponse":{
+      "type":"structure",
+      "members":{
+        "AssetId":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the asset.</p>"
+        },
+        "IterableFormName":{
+          "shape":"IterableFormName",
+          "documentation":"<p>The name of the iterable form, if the attachment targets an item.</p>"
+        },
+        "ItemIdentifier":{
+          "shape":"ItemIdentifier",
+          "documentation":"<p>The identifier of the item within the iterable form, if applicable.</p>"
+        },
+        "AttachmentName":{
+          "shape":"AttachmentName",
+          "documentation":"<p>The name of the attachment.</p>"
+        },
+        "FormTypeId":{
+          "shape":"MetadataFormTypeIdentifier",
+          "documentation":"<p>The identifier of the form type for this attachment.</p>"
+        }
+      }
+    },
     "PutDataCatalogEncryptionSettingsRequest":{
       "type":"structure",
       "required":["DataCatalogEncryptionSettings"],
@@ -22970,6 +24564,45 @@
       "type":"structure",
       "members":{},
       "documentation":"<p>Left blank.</p>"
+    },
+    "PutFormTypeRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Schema"
+      ],
+      "members":{
+        "Name":{
+          "shape":"FormTypeName",
+          "documentation":"<p>The name of the form type. Must start with an uppercase letter.</p>"
+        },
+        "Schema":{
+          "shape":"FormTypeSchema",
+          "documentation":"<p>The Smithy IDL schema definition for the form type.</p>"
+        },
+        "ClientToken":{
+          "shape":"HashString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "PutFormTypeResponse":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"FormTypeId",
+          "documentation":"<p>The identifier of the form type.</p>"
+        },
+        "Name":{
+          "shape":"FormTypeName",
+          "documentation":"<p>The name of the form type.</p>"
+        },
+        "Schema":{
+          "shape":"FormTypeSchema",
+          "documentation":"<p>The Smithy IDL schema of the form type.</p>"
+        }
+      }
     },
     "PutResourcePolicyRequest":{
       "type":"structure",
@@ -25288,9 +26921,234 @@
       "type":"string",
       "max":400000
     },
+    "SearchAttribute":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "SearchAttributeFilter":{
+      "type":"structure",
+      "required":[
+        "Attribute",
+        "Operator"
+      ],
+      "members":{
+        "Attribute":{
+          "shape":"SearchAttribute",
+          "documentation":"<p>The attribute name to filter on.</p>"
+        },
+        "Operator":{
+          "shape":"SearchFilterOperator",
+          "documentation":"<p>The comparison operator. Valid values are <code>equals</code>, <code>greaterThan</code>, <code>greaterThanOrEquals</code>, <code>lessThan</code>, <code>lessThanOrEquals</code>, and <code>notExists</code>.</p>"
+        },
+        "Value":{
+          "shape":"SearchFilterValue",
+          "documentation":"<p>The value to compare against.</p>"
+        }
+      },
+      "documentation":"<p>A filter that compares an attribute value using an operator.</p>"
+    },
+    "SearchFilterClause":{
+      "type":"structure",
+      "members":{
+        "AndAllFilters":{
+          "shape":"SearchFilterClauseList",
+          "documentation":"<p>A list of filter clauses that must all match (logical AND).</p>"
+        },
+        "OrAnyFilters":{
+          "shape":"SearchFilterClauseList",
+          "documentation":"<p>A list of filter clauses where at least one must match (logical OR).</p>"
+        },
+        "AttributeFilter":{
+          "shape":"SearchAttributeFilter",
+          "documentation":"<p>A filter on a single attribute value.</p>"
+        },
+        "MapFilter":{
+          "shape":"SearchMapFilter",
+          "documentation":"<p>A filter on a map attribute's key-value pair.</p>"
+        }
+      },
+      "documentation":"<p>A filter clause that supports nested boolean logic. Exactly one of <code>andAllFilters</code>, <code>orAnyFilters</code>, <code>attributeFilter</code>, or <code>mapFilter</code> must be specified.</p>",
+      "union":true
+    },
+    "SearchFilterClauseList":{
+      "type":"list",
+      "member":{"shape":"SearchFilterClause"},
+      "max":10,
+      "min":1
+    },
+    "SearchFilterLongValue":{"type":"long"},
+    "SearchFilterOperator":{
+      "type":"string",
+      "enum":[
+        "equals",
+        "greaterThan",
+        "greaterThanOrEquals",
+        "lessThan",
+        "lessThanOrEquals",
+        "notExists"
+      ]
+    },
+    "SearchFilterStringValue":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "SearchFilterValue":{
+      "type":"structure",
+      "members":{
+        "StringValue":{
+          "shape":"SearchFilterStringValue",
+          "documentation":"<p>A string filter value.</p>"
+        },
+        "LongValue":{
+          "shape":"SearchFilterLongValue",
+          "documentation":"<p>A long integer filter value.</p>"
+        }
+      },
+      "documentation":"<p>A filter value. Exactly one of <code>stringValue</code> or <code>longValue</code> must be specified.</p>",
+      "union":true
+    },
+    "SearchInput":{
+      "type":"structure",
+      "members":{
+        "SearchText":{
+          "shape":"SearchText",
+          "documentation":"<p>The text to search for. At least one of <code>searchText</code> or <code>filterClause</code> must be provided.</p>"
+        },
+        "MaxResults":{
+          "shape":"SearchMaxResults",
+          "documentation":"<p>The maximum number of results to return in the response.</p>"
+        },
+        "NextToken":{
+          "shape":"SearchNextToken",
+          "documentation":"<p>A continuation token, if this is a continuation call.</p>"
+        },
+        "Sort":{
+          "shape":"SearchSort",
+          "documentation":"<p>The sort criteria for the search results.</p>"
+        },
+        "FilterClause":{
+          "shape":"SearchFilterClause",
+          "documentation":"<p>The filter clause to apply to the search. Supports nested AND/OR logic with attribute-level and map-level filters.</p>"
+        }
+      }
+    },
+    "SearchMapFilter":{
+      "type":"structure",
+      "required":[
+        "Attribute",
+        "Key",
+        "Value"
+      ],
+      "members":{
+        "Attribute":{
+          "shape":"SearchAttribute",
+          "documentation":"<p>The map attribute name to filter on.</p>"
+        },
+        "Key":{
+          "shape":"SearchMapKey",
+          "documentation":"<p>The key within the map attribute to filter on.</p>"
+        },
+        "Value":{
+          "shape":"SearchMapFilterValue",
+          "documentation":"<p>The value to compare against.</p>"
+        }
+      },
+      "documentation":"<p>A filter on a map attribute's key-value pair.</p>"
+    },
+    "SearchMapFilterValue":{
+      "type":"structure",
+      "members":{
+        "StringValue":{
+          "shape":"SearchFilterStringValue",
+          "documentation":"<p>A string filter value.</p>"
+        }
+      },
+      "documentation":"<p>A map filter value. Currently supports string comparison only.</p>",
+      "union":true
+    },
+    "SearchMapKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "SearchMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "SearchNextToken":{"type":"string"},
+    "SearchOutput":{
+      "type":"structure",
+      "members":{
+        "Items":{
+          "shape":"SearchResultItemList",
+          "documentation":"<p>The list of assets matching the search criteria.</p>"
+        },
+        "NextToken":{
+          "shape":"SearchNextToken",
+          "documentation":"<p>A continuation token, present if the current segment is not the last.</p>"
+        }
+      }
+    },
     "SearchPropertyPredicates":{
       "type":"list",
       "member":{"shape":"PropertyPredicate"}
+    },
+    "SearchResultItem":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the matched asset.</p>"
+        },
+        "AssetName":{
+          "shape":"SearchResultName",
+          "documentation":"<p>The name of the matched asset.</p>"
+        },
+        "AssetDescription":{
+          "shape":"AssetDescription",
+          "documentation":"<p>The description of the matched asset.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"UpdatedAt",
+          "documentation":"<p>The timestamp at which the matched asset was last updated.</p>"
+        },
+        "AssetTypeId":{
+          "shape":"AssetTypeId",
+          "documentation":"<p>The identifier of the asset type for the matched asset.</p>"
+        }
+      },
+      "documentation":"<p>A single search result item representing a matched asset.</p>"
+    },
+    "SearchResultItemList":{
+      "type":"list",
+      "member":{"shape":"SearchResultItem"}
+    },
+    "SearchResultName":{"type":"string"},
+    "SearchSort":{
+      "type":"structure",
+      "required":["Attribute"],
+      "members":{
+        "Attribute":{
+          "shape":"SearchAttribute",
+          "documentation":"<p>The attribute to sort by.</p>"
+        },
+        "Order":{
+          "shape":"SearchSortOrder",
+          "documentation":"<p>The sort order. Valid values are <code>ASCENDING</code> and <code>DESCENDING</code>.</p>"
+        }
+      },
+      "documentation":"<p>The sort criteria for search results.</p>"
+    },
+    "SearchSortOrder":{
+      "type":"string",
+      "enum":[
+        "ASCENDING",
+        "DESCENDING"
+      ]
     },
     "SearchTablesRequest":{
       "type":"structure",
@@ -25341,6 +27199,11 @@
           "documentation":"<p>A list of the requested <code>Table</code> objects. The <code>SearchTables</code> response returns only the tables that you have access to.</p>"
         }
       }
+    },
+    "SearchText":{
+      "type":"string",
+      "max":1000,
+      "min":1
     },
     "SecretArn":{
       "type":"string",
@@ -28909,6 +30772,98 @@
       "type":"structure",
       "members":{}
     },
+    "UpdateGlossaryRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"GlossaryId",
+          "documentation":"<p>The unique identifier of the glossary to update.</p>"
+        },
+        "Name":{
+          "shape":"GlossaryName",
+          "documentation":"<p>The updated name of the glossary.</p>"
+        },
+        "Description":{
+          "shape":"MetadataDescription",
+          "documentation":"<p>The updated description of the glossary.</p>"
+        },
+        "ClientToken":{
+          "shape":"HashString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "UpdateGlossaryResponse":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"GlossaryId",
+          "documentation":"<p>The unique identifier of the glossary.</p>"
+        },
+        "Name":{
+          "shape":"GlossaryName",
+          "documentation":"<p>The name of the glossary.</p>"
+        },
+        "Description":{
+          "shape":"MetadataDescription",
+          "documentation":"<p>The description of the glossary.</p>"
+        }
+      }
+    },
+    "UpdateGlossaryTermRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"GlossaryTermId",
+          "documentation":"<p>The unique identifier of the glossary term to update.</p>"
+        },
+        "Name":{
+          "shape":"GlossaryTermName",
+          "documentation":"<p>The updated name of the glossary term.</p>"
+        },
+        "ShortDescription":{
+          "shape":"GlossaryShortDescription",
+          "documentation":"<p>The updated short description of the glossary term.</p>"
+        },
+        "LongDescription":{
+          "shape":"GlossaryLongDescription",
+          "documentation":"<p>The updated long description of the glossary term.</p>"
+        },
+        "ClientToken":{
+          "shape":"HashString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "UpdateGlossaryTermResponse":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"GlossaryTermId",
+          "documentation":"<p>The unique identifier of the glossary term.</p>"
+        },
+        "GlossaryId":{
+          "shape":"GlossaryId",
+          "documentation":"<p>The unique identifier of the glossary containing this term.</p>"
+        },
+        "Name":{
+          "shape":"GlossaryTermName",
+          "documentation":"<p>The name of the glossary term.</p>"
+        },
+        "ShortDescription":{
+          "shape":"GlossaryShortDescription",
+          "documentation":"<p>The short description of the glossary term.</p>"
+        },
+        "LongDescription":{
+          "shape":"GlossaryLongDescription",
+          "documentation":"<p>The long description of the glossary term.</p>"
+        }
+      }
+    },
     "UpdateGlueIdentityCenterConfigurationRequest":{
       "type":"structure",
       "members":{
@@ -29577,6 +31532,7 @@
       },
       "documentation":"<p>Specifies an XML classifier to be updated.</p>"
     },
+    "UpdatedAt":{"type":"timestamp"},
     "UpdatedTimestamp":{"type":"string"},
     "UpsertRedshiftTargetOptions":{
       "type":"structure",

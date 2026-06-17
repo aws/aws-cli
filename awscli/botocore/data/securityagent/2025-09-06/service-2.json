@@ -31,6 +31,26 @@
       ],
       "documentation":"<p>Uploads an artifact to an agent space. Artifacts provide additional context for security testing, such as architecture diagrams, API specifications, or configuration files.</p>"
     },
+    "BatchCreateSecurityRequirements":{
+      "name":"BatchCreateSecurityRequirements",
+      "http":{
+        "method":"POST",
+        "requestUri":"/BatchCreateSecurityRequirements",
+        "responseCode":201
+      },
+      "input":{"shape":"BatchCreateSecurityRequirementsInput"},
+      "output":{"shape":"BatchCreateSecurityRequirementsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Batch creates security requirements in a customer managed pack.</p>"
+    },
     "BatchDeleteCodeReviews":{
       "name":"BatchDeleteCodeReviews",
       "http":{
@@ -52,6 +72,36 @@
       "input":{"shape":"BatchDeletePentestsInput"},
       "output":{"shape":"BatchDeletePentestsOutput"},
       "documentation":"<p>Deletes one or more pentests from an agent space.</p>"
+    },
+    "BatchDeleteSecurityRequirements":{
+      "name":"BatchDeleteSecurityRequirements",
+      "http":{
+        "method":"POST",
+        "requestUri":"/BatchDeleteSecurityRequirements",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchDeleteSecurityRequirementsInput"},
+      "output":{"shape":"BatchDeleteSecurityRequirementsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Batch deletes security requirements from a customer managed pack.</p>"
+    },
+    "BatchDeleteThreatModels":{
+      "name":"BatchDeleteThreatModels",
+      "http":{
+        "method":"POST",
+        "requestUri":"/BatchDeleteThreatModels",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchDeleteThreatModelsInput"},
+      "output":{"shape":"BatchDeleteThreatModelsOutput"},
+      "documentation":"<p>Deletes one or more threat models from an agent space.</p>"
     },
     "BatchGetAgentSpaces":{
       "name":"BatchGetAgentSpaces",
@@ -160,6 +210,25 @@
       "output":{"shape":"BatchGetPentestsOutput"},
       "documentation":"<p>Retrieves information about one or more pentests in an agent space.</p>"
     },
+    "BatchGetSecurityRequirements":{
+      "name":"BatchGetSecurityRequirements",
+      "http":{
+        "method":"POST",
+        "requestUri":"/BatchGetSecurityRequirements",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchGetSecurityRequirementsInput"},
+      "output":{"shape":"BatchGetSecurityRequirementsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Batch retrieves security requirements from a pack.</p>",
+      "readonly":true
+    },
     "BatchGetTargetDomains":{
       "name":"BatchGetTargetDomains",
       "http":{
@@ -171,6 +240,70 @@
       "output":{"shape":"BatchGetTargetDomainsOutput"},
       "documentation":"<p>Retrieves information about one or more target domains.</p>",
       "readonly":true
+    },
+    "BatchGetThreatModelJobTasks":{
+      "name":"BatchGetThreatModelJobTasks",
+      "http":{
+        "method":"POST",
+        "requestUri":"/BatchGetThreatModelJobTasks",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchGetThreatModelJobTasksInput"},
+      "output":{"shape":"BatchGetThreatModelJobTasksOutput"},
+      "documentation":"<p>Retrieves information about one or more tasks within a threat model job.</p>",
+      "readonly":true
+    },
+    "BatchGetThreatModelJobs":{
+      "name":"BatchGetThreatModelJobs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/BatchGetThreatModelJobs",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchGetThreatModelJobsInput"},
+      "output":{"shape":"BatchGetThreatModelJobsOutput"},
+      "documentation":"<p>Retrieves information about one or more threat model jobs in an agent space.</p>"
+    },
+    "BatchGetThreatModels":{
+      "name":"BatchGetThreatModels",
+      "http":{
+        "method":"POST",
+        "requestUri":"/BatchGetThreatModels",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchGetThreatModelsInput"},
+      "output":{"shape":"BatchGetThreatModelsOutput"},
+      "documentation":"<p>Retrieves information about one or more threat models in an agent space.</p>"
+    },
+    "BatchGetThreats":{
+      "name":"BatchGetThreats",
+      "http":{
+        "method":"POST",
+        "requestUri":"/BatchGetThreats",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchGetThreatsInput"},
+      "output":{"shape":"BatchGetThreatsOutput"},
+      "documentation":"<p>Retrieves information about one or more threats.</p>"
+    },
+    "BatchUpdateSecurityRequirements":{
+      "name":"BatchUpdateSecurityRequirements",
+      "http":{
+        "method":"POST",
+        "requestUri":"/BatchUpdateSecurityRequirements",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchUpdateSecurityRequirementsInput"},
+      "output":{"shape":"BatchUpdateSecurityRequirementsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Batch updates security requirements within a customer managed pack.</p>"
     },
     "CreateAgentSpace":{
       "name":"CreateAgentSpace",
@@ -246,6 +379,44 @@
       "output":{"shape":"CreatePentestOutput"},
       "documentation":"<p>Creates a new pentest configuration in an agent space. A pentest defines the security test parameters, including target assets, risk type exclusions, and logging configuration.</p>"
     },
+    "CreatePrivateConnection":{
+      "name":"CreatePrivateConnection",
+      "http":{
+        "method":"POST",
+        "requestUri":"/CreatePrivateConnection",
+        "responseCode":201
+      },
+      "input":{"shape":"CreatePrivateConnectionInput"},
+      "output":{"shape":"CreatePrivateConnectionOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates a private connection for reaching a self-hosted provider instance over private networking using Amazon VPC Lattice.</p>"
+    },
+    "CreateSecurityRequirementPack":{
+      "name":"CreateSecurityRequirementPack",
+      "http":{
+        "method":"POST",
+        "requestUri":"/CreateSecurityRequirementPack",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateSecurityRequirementPackInput"},
+      "output":{"shape":"CreateSecurityRequirementPackOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a customer managed security requirement pack.</p>"
+    },
     "CreateTargetDomain":{
       "name":"CreateTargetDomain",
       "http":{
@@ -256,6 +427,28 @@
       "input":{"shape":"CreateTargetDomainInput"},
       "output":{"shape":"CreateTargetDomainOutput"},
       "documentation":"<p>Creates a new target domain for penetration testing. A target domain is a web domain that must be registered and verified before it can be tested.</p>"
+    },
+    "CreateThreat":{
+      "name":"CreateThreat",
+      "http":{
+        "method":"POST",
+        "requestUri":"/CreateThreat",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateThreatInput"},
+      "output":{"shape":"CreateThreatOutput"},
+      "documentation":"<p>Creates a new threat under a threat model job.</p>"
+    },
+    "CreateThreatModel":{
+      "name":"CreateThreatModel",
+      "http":{
+        "method":"POST",
+        "requestUri":"/CreateThreatModel",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateThreatModelInput"},
+      "output":{"shape":"CreateThreatModelOutput"},
+      "documentation":"<p>Creates a new threat model configuration in an agent space. A threat model defines the parameters for automated threat analysis.</p>"
     },
     "DeleteAgentSpace":{
       "name":"DeleteAgentSpace",
@@ -329,6 +522,46 @@
       "output":{"shape":"DeleteMembershipResponse"},
       "documentation":"<p>Deletes a membership, revoking a user's access to an agent space.</p>"
     },
+    "DeletePrivateConnection":{
+      "name":"DeletePrivateConnection",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DeletePrivateConnection",
+        "responseCode":200
+      },
+      "input":{"shape":"DeletePrivateConnectionInput"},
+      "output":{"shape":"DeletePrivateConnectionOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes a private connection.</p>",
+      "idempotent":true
+    },
+    "DeleteSecurityRequirementPack":{
+      "name":"DeleteSecurityRequirementPack",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DeleteSecurityRequirementPack",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteSecurityRequirementPackInput"},
+      "output":{"shape":"DeleteSecurityRequirementPackOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes a customer managed security requirement pack and all its associated security requirements.</p>",
+      "idempotent":true
+    },
     "DeleteTargetDomain":{
       "name":"DeleteTargetDomain",
       "http":{
@@ -340,6 +573,25 @@
       "output":{"shape":"DeleteTargetDomainOutput"},
       "documentation":"<p>Deletes a target domain registration. After deletion, the domain can no longer be used for penetration testing.</p>",
       "idempotent":true
+    },
+    "DescribePrivateConnection":{
+      "name":"DescribePrivateConnection",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DescribePrivateConnection",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribePrivateConnectionInput"},
+      "output":{"shape":"DescribePrivateConnectionOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves the details of a private connection.</p>",
+      "readonly":true
     },
     "GetApplication":{
       "name":"GetApplication",
@@ -389,6 +641,45 @@
       ],
       "documentation":"<p>Retrieves information about an integration.</p>",
       "readonly":true
+    },
+    "GetSecurityRequirementPack":{
+      "name":"GetSecurityRequirementPack",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetSecurityRequirementPack",
+        "responseCode":200
+      },
+      "input":{"shape":"GetSecurityRequirementPackInput"},
+      "output":{"shape":"GetSecurityRequirementPackOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves information about a security requirement pack.</p>",
+      "readonly":true
+    },
+    "ImportSecurityRequirements":{
+      "name":"ImportSecurityRequirements",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ImportSecurityRequirements",
+        "responseCode":201
+      },
+      "input":{"shape":"ImportSecurityRequirementsInput"},
+      "output":{"shape":"ImportSecurityRequirementsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Imports security requirements from uploaded documents into a customer managed security requirement pack. The import process asynchronously extracts and generates structured security requirements from the provided source files.</p>"
     },
     "InitiateProviderRegistration":{
       "name":"InitiateProviderRegistration",
@@ -588,6 +879,61 @@
       "output":{"shape":"ListPentestsOutput"},
       "documentation":"<p>Returns a paginated list of pentest summaries for the specified agent space.</p>"
     },
+    "ListPrivateConnections":{
+      "name":"ListPrivateConnections",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListPrivateConnections",
+        "responseCode":200
+      },
+      "input":{"shape":"ListPrivateConnectionsInput"},
+      "output":{"shape":"ListPrivateConnectionsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists the private connections in your account.</p>",
+      "readonly":true
+    },
+    "ListSecurityRequirementPacks":{
+      "name":"ListSecurityRequirementPacks",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListSecurityRequirementPacks",
+        "responseCode":200
+      },
+      "input":{"shape":"ListSecurityRequirementPacksInput"},
+      "output":{"shape":"ListSecurityRequirementPacksOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists all security requirement packs in the caller's account.</p>",
+      "readonly":true
+    },
+    "ListSecurityRequirements":{
+      "name":"ListSecurityRequirements",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListSecurityRequirements",
+        "responseCode":200
+      },
+      "input":{"shape":"ListSecurityRequirementsInput"},
+      "output":{"shape":"ListSecurityRequirementsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists security requirements within a pack.</p>",
+      "readonly":true
+    },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
       "http":{
@@ -610,6 +956,54 @@
       "input":{"shape":"ListTargetDomainsInput"},
       "output":{"shape":"ListTargetDomainsOutput"},
       "documentation":"<p>Returns a paginated list of target domain summaries in your account.</p>",
+      "readonly":true
+    },
+    "ListThreatModelJobTasks":{
+      "name":"ListThreatModelJobTasks",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListThreatModelJobTasks",
+        "responseCode":200
+      },
+      "input":{"shape":"ListThreatModelJobTasksInput"},
+      "output":{"shape":"ListThreatModelJobTasksOutput"},
+      "documentation":"<p>Returns a paginated list of task summaries for the specified threat model job.</p>",
+      "readonly":true
+    },
+    "ListThreatModelJobs":{
+      "name":"ListThreatModelJobs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListThreatModelJobs",
+        "responseCode":200
+      },
+      "input":{"shape":"ListThreatModelJobsInput"},
+      "output":{"shape":"ListThreatModelJobsOutput"},
+      "documentation":"<p>Returns a paginated list of threat model job summaries for the specified threat model.</p>",
+      "readonly":true
+    },
+    "ListThreatModels":{
+      "name":"ListThreatModels",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListThreatModels",
+        "responseCode":200
+      },
+      "input":{"shape":"ListThreatModelsInput"},
+      "output":{"shape":"ListThreatModelsOutput"},
+      "documentation":"<p>Returns a paginated list of threat model summaries for the specified agent space.</p>",
+      "readonly":true
+    },
+    "ListThreats":{
+      "name":"ListThreats",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListThreats",
+        "responseCode":200
+      },
+      "input":{"shape":"ListThreatsInput"},
+      "output":{"shape":"ListThreatsOutput"},
+      "documentation":"<p>Returns a paginated list of threats for a threat model job.</p>",
       "readonly":true
     },
     "StartCodeRemediation":{
@@ -645,6 +1039,17 @@
       "output":{"shape":"StartPentestJobOutput"},
       "documentation":"<p>Starts a new pentest job for a pentest configuration. The job executes the security tests defined in the pentest.</p>"
     },
+    "StartThreatModelJob":{
+      "name":"StartThreatModelJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/StartThreatModelJob",
+        "responseCode":200
+      },
+      "input":{"shape":"StartThreatModelJobInput"},
+      "output":{"shape":"StartThreatModelJobOutput"},
+      "documentation":"<p>Starts a new threat model job for a threat model configuration.</p>"
+    },
     "StopCodeReviewJob":{
       "name":"StopCodeReviewJob",
       "http":{
@@ -666,6 +1071,17 @@
       "input":{"shape":"StopPentestJobInput"},
       "output":{"shape":"StopPentestJobOutput"},
       "documentation":"<p>Stops a running pentest job. The job transitions to a stopping state and then to stopped after cleanup completes.</p>"
+    },
+    "StopThreatModelJob":{
+      "name":"StopThreatModelJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/StopThreatModelJob",
+        "responseCode":200
+      },
+      "input":{"shape":"StopThreatModelJobInput"},
+      "output":{"shape":"StopThreatModelJobOutput"},
+      "documentation":"<p>Stops a running threat model job.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -765,6 +1181,44 @@
       "output":{"shape":"UpdatePentestOutput"},
       "documentation":"<p>Updates an existing pentest configuration.</p>"
     },
+    "UpdatePrivateConnectionCertificate":{
+      "name":"UpdatePrivateConnectionCertificate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/UpdatePrivateConnectionCertificate",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdatePrivateConnectionCertificateInput"},
+      "output":{"shape":"UpdatePrivateConnectionCertificateOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates the certificate associated with a private connection. Certificates can be added or replaced but not removed.</p>"
+    },
+    "UpdateSecurityRequirementPack":{
+      "name":"UpdateSecurityRequirementPack",
+      "http":{
+        "method":"POST",
+        "requestUri":"/UpdateSecurityRequirementPack",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateSecurityRequirementPackInput"},
+      "output":{"shape":"UpdateSecurityRequirementPackOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates a security requirement pack. For customer managed packs, both metadata and status can be updated. For AWS managed packs, only status can be updated.</p>"
+    },
     "UpdateTargetDomain":{
       "name":"UpdateTargetDomain",
       "http":{
@@ -775,6 +1229,28 @@
       "input":{"shape":"UpdateTargetDomainInput"},
       "output":{"shape":"UpdateTargetDomainOutput"},
       "documentation":"<p>Updates the verification method for a target domain.</p>"
+    },
+    "UpdateThreat":{
+      "name":"UpdateThreat",
+      "http":{
+        "method":"POST",
+        "requestUri":"/UpdateThreat",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateThreatInput"},
+      "output":{"shape":"UpdateThreatOutput"},
+      "documentation":"<p>Updates a threat.</p>"
+    },
+    "UpdateThreatModel":{
+      "name":"UpdateThreatModel",
+      "http":{
+        "method":"POST",
+        "requestUri":"/UpdateThreatModel",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateThreatModelInput"},
+      "output":{"shape":"UpdateThreatModelOutput"},
+      "documentation":"<p>Updates an existing threat model configuration.</p>"
     },
     "VerifyTargetDomain":{
       "name":"VerifyTargetDomain",
@@ -834,6 +1310,11 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "AccessToken":{
+      "type":"string",
+      "documentation":"<p>A GitLab access token used to authenticate with the provider.</p>",
+      "sensitive":true
     },
     "AccessType":{
       "type":"string",
@@ -1194,6 +1675,92 @@
         "AWS_INTERNAL"
       ]
     },
+    "BatchCreateSecurityRequirementResult":{
+      "type":"structure",
+      "required":[
+        "packId",
+        "name",
+        "description",
+        "domain",
+        "evaluation",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "packId":{
+          "shape":"SecurityRequirementPackId",
+          "documentation":"<p>The unique identifier of the pack containing the security requirement.</p>"
+        },
+        "name":{
+          "shape":"SecurityRequirementName",
+          "documentation":"<p>The name of the security requirement.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the security requirement.</p>"
+        },
+        "domain":{
+          "shape":"String",
+          "documentation":"<p>The security domain the requirement belongs to.</p>"
+        },
+        "evaluation":{
+          "shape":"String",
+          "documentation":"<p>The evaluation criteria used to assess compliance with this requirement.</p>"
+        },
+        "remediation":{
+          "shape":"String",
+          "documentation":"<p>The recommended remediation steps when the requirement is not met.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the security requirement was created, in UTC format.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the security requirement was last updated, in UTC format.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a successfully created security requirement.</p>"
+    },
+    "BatchCreateSecurityRequirementResultList":{
+      "type":"list",
+      "member":{"shape":"BatchCreateSecurityRequirementResult"},
+      "documentation":"<p>List of successfully created security requirements.</p>"
+    },
+    "BatchCreateSecurityRequirementsInput":{
+      "type":"structure",
+      "required":[
+        "packId",
+        "securityRequirements"
+      ],
+      "members":{
+        "packId":{
+          "shape":"SecurityRequirementPackId",
+          "documentation":"<p>The unique identifier of the security requirement pack to add requirements to.</p>"
+        },
+        "securityRequirements":{
+          "shape":"CreateSecurityRequirementEntryList",
+          "documentation":"<p>The list of security requirements to create.</p>"
+        }
+      }
+    },
+    "BatchCreateSecurityRequirementsOutput":{
+      "type":"structure",
+      "required":[
+        "securityRequirements",
+        "errors"
+      ],
+      "members":{
+        "securityRequirements":{
+          "shape":"BatchCreateSecurityRequirementResultList",
+          "documentation":"<p>The list of security requirements that were successfully created.</p>"
+        },
+        "errors":{
+          "shape":"BatchSecurityRequirementErrors",
+          "documentation":"<p>The list of errors for security requirements that failed to be created.</p>"
+        }
+      }
+    },
     "BatchDeleteCodeReviewsInput":{
       "type":"structure",
       "required":[
@@ -1257,6 +1824,72 @@
         }
       },
       "documentation":"<p>Output for the BatchDeletePentests operation.</p>"
+    },
+    "BatchDeleteSecurityRequirementsInput":{
+      "type":"structure",
+      "required":[
+        "packId",
+        "securityRequirementNames"
+      ],
+      "members":{
+        "packId":{
+          "shape":"SecurityRequirementPackId",
+          "documentation":"<p>The unique identifier of the security requirement pack to remove requirements from.</p>"
+        },
+        "securityRequirementNames":{
+          "shape":"SecurityRequirementNameList",
+          "documentation":"<p>The list of security requirement names to delete.</p>"
+        }
+      }
+    },
+    "BatchDeleteSecurityRequirementsOutput":{
+      "type":"structure",
+      "required":[
+        "deletedSecurityRequirementNames",
+        "errors"
+      ],
+      "members":{
+        "deletedSecurityRequirementNames":{
+          "shape":"SecurityRequirementNameList",
+          "documentation":"<p>The list of security requirement names that were successfully deleted.</p>"
+        },
+        "errors":{
+          "shape":"BatchSecurityRequirementErrors",
+          "documentation":"<p>The list of errors for security requirements that failed to be deleted.</p>"
+        }
+      }
+    },
+    "BatchDeleteThreatModelsInput":{
+      "type":"structure",
+      "required":[
+        "threatModelIds",
+        "agentSpaceId"
+      ],
+      "members":{
+        "threatModelIds":{
+          "shape":"ThreatModelIdList",
+          "documentation":"<p>The list of threat model identifiers to delete.</p>"
+        },
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space that contains the threat models to delete.</p>"
+        }
+      },
+      "documentation":"<p>Input for deleting multiple threat models.</p>"
+    },
+    "BatchDeleteThreatModelsOutput":{
+      "type":"structure",
+      "members":{
+        "deleted":{
+          "shape":"ThreatModelIdList",
+          "documentation":"<p>The list of threat model identifiers that were successfully deleted.</p>"
+        },
+        "failed":{
+          "shape":"DeleteThreatModelFailureList",
+          "documentation":"<p>The list of threat models that failed to delete, including the reason for each failure.</p>"
+        }
+      },
+      "documentation":"<p>Output for the BatchDeleteThreatModels operation.</p>"
     },
     "BatchGetAgentSpacesInput":{
       "type":"structure",
@@ -1534,6 +2167,92 @@
       },
       "documentation":"<p>Output for the BatchGetPentests operation.</p>"
     },
+    "BatchGetSecurityRequirementResult":{
+      "type":"structure",
+      "required":[
+        "packId",
+        "name",
+        "description",
+        "domain",
+        "evaluation",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "packId":{
+          "shape":"SecurityRequirementPackId",
+          "documentation":"<p>The unique identifier of the pack containing the security requirement.</p>"
+        },
+        "name":{
+          "shape":"SecurityRequirementName",
+          "documentation":"<p>The name of the security requirement.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the security requirement.</p>"
+        },
+        "domain":{
+          "shape":"String",
+          "documentation":"<p>The security domain the requirement belongs to.</p>"
+        },
+        "evaluation":{
+          "shape":"String",
+          "documentation":"<p>The evaluation criteria used to assess compliance with this requirement.</p>"
+        },
+        "remediation":{
+          "shape":"String",
+          "documentation":"<p>The recommended remediation steps when the requirement is not met.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the security requirement was created, in UTC format.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the security requirement was last updated, in UTC format.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a successfully retrieved security requirement.</p>"
+    },
+    "BatchGetSecurityRequirementResultList":{
+      "type":"list",
+      "member":{"shape":"BatchGetSecurityRequirementResult"},
+      "documentation":"<p>List of successfully retrieved security requirements.</p>"
+    },
+    "BatchGetSecurityRequirementsInput":{
+      "type":"structure",
+      "required":[
+        "packId",
+        "securityRequirementNames"
+      ],
+      "members":{
+        "packId":{
+          "shape":"SecurityRequirementPackId",
+          "documentation":"<p>The unique identifier of the security requirement pack to retrieve requirements from.</p>"
+        },
+        "securityRequirementNames":{
+          "shape":"SecurityRequirementNameList",
+          "documentation":"<p>The list of security requirement names to retrieve.</p>"
+        }
+      }
+    },
+    "BatchGetSecurityRequirementsOutput":{
+      "type":"structure",
+      "required":[
+        "securityRequirements",
+        "errors"
+      ],
+      "members":{
+        "securityRequirements":{
+          "shape":"BatchGetSecurityRequirementResultList",
+          "documentation":"<p>The list of security requirements that were successfully retrieved.</p>"
+        },
+        "errors":{
+          "shape":"BatchSecurityRequirementErrors",
+          "documentation":"<p>The list of errors for security requirements that failed to be retrieved.</p>"
+        }
+      }
+    },
     "BatchGetTargetDomainsInput":{
       "type":"structure",
       "required":["targetDomainIds"],
@@ -1559,6 +2278,279 @@
       },
       "documentation":"<p>Output for the BatchGetTargetDomains operation.</p>"
     },
+    "BatchGetThreatModelJobTasksInput":{
+      "type":"structure",
+      "required":[
+        "agentSpaceId",
+        "threatModelJobTaskIds"
+      ],
+      "members":{
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space that contains the tasks.</p>"
+        },
+        "threatModelJobTaskIds":{
+          "shape":"TaskIdList",
+          "documentation":"<p>The list of task identifiers to retrieve.</p>"
+        }
+      },
+      "documentation":"<p>Input for retrieving multiple tasks associated with a threat model job.</p>"
+    },
+    "BatchGetThreatModelJobTasksOutput":{
+      "type":"structure",
+      "members":{
+        "threatModelJobTasks":{
+          "shape":"ThreatModelJobTaskList",
+          "documentation":"<p>The list of threat model job tasks that were found.</p>"
+        },
+        "notFound":{
+          "shape":"TaskIdList",
+          "documentation":"<p>The list of task identifiers that were not found.</p>"
+        }
+      },
+      "documentation":"<p>Output for the BatchGetThreatModelJobTasks operation.</p>"
+    },
+    "BatchGetThreatModelJobsInput":{
+      "type":"structure",
+      "required":[
+        "threatModelJobIds",
+        "agentSpaceId"
+      ],
+      "members":{
+        "threatModelJobIds":{
+          "shape":"ThreatModelJobIdList",
+          "documentation":"<p>The list of threat model job identifiers to retrieve.</p>"
+        },
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space that contains the threat model jobs.</p>"
+        }
+      },
+      "documentation":"<p>Input for BatchGetThreatModelJobs operation.</p>"
+    },
+    "BatchGetThreatModelJobsOutput":{
+      "type":"structure",
+      "members":{
+        "threatModelJobs":{
+          "shape":"ThreatModelJobList",
+          "documentation":"<p>The list of threat model jobs that were found.</p>"
+        },
+        "notFound":{
+          "shape":"ThreatModelJobIdList",
+          "documentation":"<p>The list of threat model job identifiers that were not found.</p>"
+        }
+      },
+      "documentation":"<p>Output for the BatchGetThreatModelJobs operation.</p>"
+    },
+    "BatchGetThreatModelsInput":{
+      "type":"structure",
+      "required":[
+        "threatModelIds",
+        "agentSpaceId"
+      ],
+      "members":{
+        "threatModelIds":{
+          "shape":"ThreatModelIdList",
+          "documentation":"<p>The list of threat model identifiers to retrieve.</p>"
+        },
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space that contains the threat models.</p>"
+        }
+      },
+      "documentation":"<p>Input for retrieving multiple threat models by their IDs.</p>"
+    },
+    "BatchGetThreatModelsOutput":{
+      "type":"structure",
+      "members":{
+        "threatModels":{
+          "shape":"ThreatModelList",
+          "documentation":"<p>The list of threat models that were found.</p>"
+        },
+        "notFound":{
+          "shape":"ThreatModelIdList",
+          "documentation":"<p>The list of threat model identifiers that were not found.</p>"
+        }
+      },
+      "documentation":"<p>Output for the BatchGetThreatModels operation.</p>"
+    },
+    "BatchGetThreatsInput":{
+      "type":"structure",
+      "required":[
+        "threatIds",
+        "agentSpaceId"
+      ],
+      "members":{
+        "threatIds":{
+          "shape":"ThreatIdList",
+          "documentation":"<p>The list of threat identifiers to retrieve.</p>"
+        },
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space.</p>"
+        }
+      },
+      "documentation":"<p>Input for retrieving multiple threats.</p>"
+    },
+    "BatchGetThreatsOutput":{
+      "type":"structure",
+      "members":{
+        "threats":{
+          "shape":"ThreatList",
+          "documentation":"<p>The list of threats that were found.</p>"
+        },
+        "notFound":{
+          "shape":"ThreatIdList",
+          "documentation":"<p>The list of threat identifiers that were not found.</p>"
+        }
+      },
+      "documentation":"<p>Output for the BatchGetThreats operation.</p>"
+    },
+    "BatchSecurityRequirementError":{
+      "type":"structure",
+      "required":[
+        "securityRequirementName",
+        "code",
+        "message"
+      ],
+      "members":{
+        "securityRequirementName":{
+          "shape":"SecurityRequirementName",
+          "documentation":"<p>The name of the security requirement that caused the error.</p>"
+        },
+        "code":{
+          "shape":"String",
+          "documentation":"<p>The error code.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The error message.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about an error that occurred for a specific security requirement during a batch operation.</p>"
+    },
+    "BatchSecurityRequirementErrors":{
+      "type":"list",
+      "member":{"shape":"BatchSecurityRequirementError"},
+      "documentation":"<p>List of errors from a batch security requirement operation.</p>"
+    },
+    "BatchUpdateSecurityRequirementsInput":{
+      "type":"structure",
+      "required":[
+        "packId",
+        "securityRequirements"
+      ],
+      "members":{
+        "packId":{
+          "shape":"SecurityRequirementPackId",
+          "documentation":"<p>The unique identifier of the security requirement pack containing the requirements to update.</p>"
+        },
+        "securityRequirements":{
+          "shape":"UpdateSecurityRequirementEntryList",
+          "documentation":"<p>The list of security requirement updates to apply.</p>"
+        }
+      }
+    },
+    "BatchUpdateSecurityRequirementsOutput":{
+      "type":"structure",
+      "required":[
+        "updatedSecurityRequirementNames",
+        "errors"
+      ],
+      "members":{
+        "updatedSecurityRequirementNames":{
+          "shape":"SecurityRequirementNameList",
+          "documentation":"<p>The list of security requirement names that were successfully updated.</p>"
+        },
+        "errors":{
+          "shape":"BatchSecurityRequirementErrors",
+          "documentation":"<p>The list of errors for security requirements that failed to be updated.</p>"
+        }
+      }
+    },
+    "BitbucketInstallationId":{
+      "type":"string",
+      "documentation":"<p>An Atlassian installation identifier for a Bitbucket integration.</p>"
+    },
+    "BitbucketIntegrationInput":{
+      "type":"structure",
+      "required":[
+        "installationId",
+        "workspace",
+        "code",
+        "state"
+      ],
+      "members":{
+        "installationId":{
+          "shape":"BitbucketInstallationId",
+          "documentation":"<p>The Atlassian installation identifier, available from the Atlassian administration console.</p>"
+        },
+        "workspace":{
+          "shape":"BitbucketWorkspace",
+          "documentation":"<p>The Bitbucket workspace slug that identifies the workspace to integrate, for example acme-corp.</p>"
+        },
+        "code":{
+          "shape":"AuthCode",
+          "documentation":"<p>The OAuth 2.0 authorization code returned from the consent redirect.</p>"
+        },
+        "state":{
+          "shape":"CsrfState",
+          "documentation":"<p>The CSRF state token echoed back from the OAuth redirect.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for creating a Bitbucket integration.</p>"
+    },
+    "BitbucketRepositoryMetadata":{
+      "type":"structure",
+      "required":[
+        "name",
+        "providerResourceId",
+        "workspace"
+      ],
+      "members":{
+        "name":{"shape":"ProviderResourceName"},
+        "providerResourceId":{"shape":"ProviderResourceId"},
+        "workspace":{
+          "shape":"BitbucketWorkspace",
+          "documentation":"<p>The workspace slug that owns the repository.</p>"
+        },
+        "accessType":{"shape":"AccessType"}
+      },
+      "documentation":"<p>Metadata for an integrated Bitbucket repository.</p>"
+    },
+    "BitbucketRepositoryResource":{
+      "type":"structure",
+      "required":[
+        "name",
+        "workspace"
+      ],
+      "members":{
+        "name":{"shape":"ProviderResourceName"},
+        "workspace":{
+          "shape":"BitbucketWorkspace",
+          "documentation":"<p>The workspace slug that owns the repository.</p>"
+        }
+      },
+      "documentation":"<p>A Bitbucket repository integrated as a resource.</p>"
+    },
+    "BitbucketResourceCapabilities":{
+      "type":"structure",
+      "members":{
+        "leaveComments":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to post code review comments on pull requests.</p>"
+        },
+        "remediateCode":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to create pull requests with automated fixes.</p>"
+        }
+      },
+      "documentation":"<p>Capabilities for an integrated Bitbucket repository.</p>"
+    },
+    "BitbucketWorkspace":{
+      "type":"string",
+      "documentation":"<p>A Bitbucket workspace slug that identifies a workspace.</p>"
+    },
     "Blob":{"type":"blob"},
     "Boolean":{
       "type":"boolean",
@@ -1581,6 +2573,19 @@
     "CategoryList":{
       "type":"list",
       "member":{"shape":"Category"}
+    },
+    "CertificateChain":{
+      "type":"string",
+      "documentation":"<p>A PEM-encoded certificate chain for a private connection.</p>",
+      "sensitive":true
+    },
+    "CleanUpStrategy":{
+      "type":"string",
+      "documentation":"<p>Strategy for handling resources created during a pentest.</p>",
+      "enum":[
+        "BEST_EFFORT_DELETE",
+        "RETAIN_ALL"
+      ]
     },
     "CloudWatchLog":{
       "type":"structure",
@@ -1718,6 +2723,10 @@
         "codeRemediationStrategy":{
           "shape":"CodeRemediationStrategy",
           "documentation":"<p>The code remediation strategy for the code review.</p>"
+        },
+        "validationMode":{
+          "shape":"ValidationMode",
+          "documentation":"<p>The validation mode for the code review. Valid values are SIMULATED and DISABLED.</p>"
         },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
@@ -2048,6 +3057,118 @@
       },
       "exception":true
     },
+    "ConfluenceDocumentMetadata":{
+      "type":"structure",
+      "required":[
+        "name",
+        "providerResourceId",
+        "spaceKey",
+        "pageId"
+      ],
+      "members":{
+        "name":{"shape":"ProviderResourceName"},
+        "providerResourceId":{"shape":"ProviderResourceId"},
+        "spaceKey":{
+          "shape":"String",
+          "documentation":"<p>The Confluence space key containing the document.</p>"
+        },
+        "pageId":{
+          "shape":"String",
+          "documentation":"<p>The Confluence page identifier.</p>"
+        },
+        "title":{
+          "shape":"String",
+          "documentation":"<p>The display title of the Confluence page.</p>"
+        },
+        "spaceTitle":{
+          "shape":"String",
+          "documentation":"<p>The display title of the Confluence space.</p>"
+        }
+      },
+      "documentation":"<p>Metadata for an integrated Confluence document.</p>"
+    },
+    "ConfluenceDocumentResource":{
+      "type":"structure",
+      "required":[
+        "name",
+        "spaceKey",
+        "pageId"
+      ],
+      "members":{
+        "name":{"shape":"ProviderResourceName"},
+        "spaceKey":{
+          "shape":"String",
+          "documentation":"<p>The Confluence space key containing the document.</p>"
+        },
+        "pageId":{
+          "shape":"String",
+          "documentation":"<p>The Confluence page identifier.</p>"
+        },
+        "title":{
+          "shape":"String",
+          "documentation":"<p>The display title of the Confluence page.</p>"
+        },
+        "spaceTitle":{
+          "shape":"String",
+          "documentation":"<p>The display title of the Confluence space.</p>"
+        }
+      },
+      "documentation":"<p>A Confluence document (page) integrated as a resource.</p>"
+    },
+    "ConfluenceInstallationId":{
+      "type":"string",
+      "documentation":"<p>An Atlassian installation identifier for a Confluence integration.</p>"
+    },
+    "ConfluenceIntegrationInput":{
+      "type":"structure",
+      "required":[
+        "installationId",
+        "code",
+        "state",
+        "siteUrl"
+      ],
+      "members":{
+        "installationId":{
+          "shape":"ConfluenceInstallationId",
+          "documentation":"<p>The Atlassian installation identifier, available from the Atlassian administration console.</p>"
+        },
+        "code":{
+          "shape":"AuthCode",
+          "documentation":"<p>The OAuth 2.0 authorization code returned from the consent redirect.</p>"
+        },
+        "state":{
+          "shape":"CsrfState",
+          "documentation":"<p>The CSRF state token echoed back from the OAuth redirect.</p>"
+        },
+        "siteUrl":{
+          "shape":"ConfluenceSiteUrl",
+          "documentation":"<p>The Confluence Cloud site URL, for example https://mysite.atlassian.net.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for creating a Confluence integration.</p>"
+    },
+    "ConfluenceResourceCapabilities":{
+      "type":"structure",
+      "members":{
+        "fetchDocument":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to fetch documents from this space.</p>"
+        },
+        "createDocument":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to create documents in this space.</p>"
+        },
+        "updateDocument":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to update documents in this space.</p>"
+        }
+      },
+      "documentation":"<p>Capabilities for an integrated Confluence space.</p>"
+    },
+    "ConfluenceSiteUrl":{
+      "type":"string",
+      "documentation":"<p>The URL of a Confluence Cloud site.</p>"
+    },
     "ContextType":{
       "type":"string",
       "documentation":"<p>Category of execution context.</p>",
@@ -2201,6 +3322,10 @@
         "codeRemediationStrategy":{
           "shape":"CodeRemediationStrategy",
           "documentation":"<p>The code remediation strategy for the code review. Valid values are AUTOMATIC and DISABLED.</p>"
+        },
+        "validationMode":{
+          "shape":"ValidationMode",
+          "documentation":"<p>The validation mode for the code review. Valid values are SIMULATED and DISABLED.</p>"
         }
       },
       "documentation":"<p>Input for creating a new code review.</p>"
@@ -2244,6 +3369,10 @@
         "codeRemediationStrategy":{
           "shape":"CodeRemediationStrategy",
           "documentation":"<p>The code remediation strategy for the code review.</p>"
+        },
+        "validationMode":{
+          "shape":"ValidationMode",
+          "documentation":"<p>The validation mode for the code review.</p>"
         }
       },
       "documentation":"<p>Output for the CreateCodeReview operation.</p>"
@@ -2275,6 +3404,10 @@
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags to associate with the integration.</p>"
+        },
+        "privateConnectionName":{
+          "shape":"PrivateConnectionName",
+          "documentation":"<p>The name of an active private connection used to reach a self-hosted provider instance over private networking. Specify this when the instance is not publicly reachable.</p>"
         }
       }
     },
@@ -2367,6 +3500,10 @@
         "codeRemediationStrategy":{
           "shape":"CodeRemediationStrategy",
           "documentation":"<p>The code remediation strategy for the pentest. Valid values are AUTOMATIC and DISABLED.</p>"
+        },
+        "disableManagedSkills":{
+          "shape":"SkillTypeList",
+          "documentation":"<p>A list of managed skills to disable for this pentest. Valid values include FINDING_PERSONALIZATION and LOGIN_OPTIMIZATION.</p>"
         }
       },
       "documentation":"<p>Input for creating a new pentest.</p>"
@@ -2412,6 +3549,165 @@
         }
       },
       "documentation":"<p>Output for the CreatePentest operation.</p>"
+    },
+    "CreatePrivateConnectionInput":{
+      "type":"structure",
+      "required":[
+        "privateConnectionName",
+        "mode"
+      ],
+      "members":{
+        "privateConnectionName":{
+          "shape":"PrivateConnectionName",
+          "documentation":"<p>A unique name for the private connection within your account.</p>"
+        },
+        "mode":{
+          "shape":"PrivateConnectionMode",
+          "documentation":"<p>The configuration for the private connection. Specify either a service-managed or a self-managed mode.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags to attach to the private connection.</p>"
+        }
+      }
+    },
+    "CreatePrivateConnectionOutput":{
+      "type":"structure",
+      "required":[
+        "name",
+        "type",
+        "status"
+      ],
+      "members":{
+        "name":{
+          "shape":"PrivateConnectionName",
+          "documentation":"<p>The name of the private connection.</p>"
+        },
+        "type":{
+          "shape":"PrivateConnectionType",
+          "documentation":"<p>The type of the private connection, indicating whether it is service-managed or self-managed.</p>"
+        },
+        "status":{
+          "shape":"PrivateConnectionStatus",
+          "documentation":"<p>The current status of the private connection.</p>"
+        },
+        "resourceGatewayId":{
+          "shape":"ResourceGatewayId",
+          "documentation":"<p>The identifier or ARN of the VPC Lattice resource gateway.</p>"
+        },
+        "hostAddress":{
+          "shape":"HostAddress",
+          "documentation":"<p>The IP address or DNS name of the target resource.</p>"
+        },
+        "vpcId":{
+          "shape":"PrivateConnectionVpcId",
+          "documentation":"<p>The identifier of the VPC the resource gateway is created in.</p>"
+        },
+        "resourceConfigurationId":{
+          "shape":"ResourceConfigurationId",
+          "documentation":"<p>The identifier or ARN of the VPC Lattice resource configuration.</p>"
+        },
+        "certificateExpiryTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the connection's certificate expires, in UTC format.</p>"
+        },
+        "dnsResolution":{
+          "shape":"ResourceConfigDnsResolution",
+          "documentation":"<p>The DNS resolution mode for the resource gateway.</p>"
+        },
+        "failureMessage":{
+          "shape":"String",
+          "documentation":"<p>A message describing why the private connection entered a failed state, if applicable.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags attached to the private connection.</p>"
+        }
+      }
+    },
+    "CreateSecurityRequirementEntry":{
+      "type":"structure",
+      "required":[
+        "name",
+        "description",
+        "domain",
+        "evaluation"
+      ],
+      "members":{
+        "name":{
+          "shape":"SecurityRequirementName",
+          "documentation":"<p>The name of the security requirement.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the security requirement.</p>"
+        },
+        "domain":{
+          "shape":"String",
+          "documentation":"<p>The security domain the requirement belongs to.</p>"
+        },
+        "evaluation":{
+          "shape":"String",
+          "documentation":"<p>The evaluation criteria used to assess compliance with this requirement.</p>"
+        },
+        "remediation":{
+          "shape":"String",
+          "documentation":"<p>The recommended remediation steps when the requirement is not met.</p>"
+        }
+      },
+      "documentation":"<p>Contains the details for a security requirement to create within a pack.</p>"
+    },
+    "CreateSecurityRequirementEntryList":{
+      "type":"list",
+      "member":{"shape":"CreateSecurityRequirementEntry"},
+      "documentation":"<p>List of security requirements to create.</p>"
+    },
+    "CreateSecurityRequirementPackInput":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"SecurityRequirementPackName",
+          "documentation":"<p>The name of the security requirement pack.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the security requirement pack.</p>"
+        },
+        "status":{
+          "shape":"SecurityRequirementPackStatus",
+          "documentation":"<p>The status of the pack. Defaults to ENABLED if not provided.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The identifier of the AWS KMS key used to encrypt pack contents.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags to associate with the security requirement pack.</p>"
+        }
+      }
+    },
+    "CreateSecurityRequirementPackOutput":{
+      "type":"structure",
+      "required":[
+        "packId",
+        "status"
+      ],
+      "members":{
+        "packId":{
+          "shape":"SecurityRequirementPackId",
+          "documentation":"<p>The unique identifier of the created security requirement pack.</p>"
+        },
+        "status":{
+          "shape":"SecurityRequirementPackStatus",
+          "documentation":"<p>The status of the created security requirement pack.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The identifier of the AWS KMS key used to encrypt pack contents.</p>"
+        }
+      }
     },
     "CreateTargetDomainInput":{
       "type":"structure",
@@ -2473,6 +3769,264 @@
         }
       },
       "documentation":"<p>Output for the CreateTargetDomain operation.</p>"
+    },
+    "CreateThreatInput":{
+      "type":"structure",
+      "required":[
+        "agentSpaceId",
+        "threatJobId"
+      ],
+      "members":{
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space.</p>"
+        },
+        "threatJobId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the threat model job the threat belongs to.</p>"
+        },
+        "title":{
+          "shape":"String",
+          "documentation":"<p>A short title summarizing the threat.</p>"
+        },
+        "statement":{
+          "shape":"String",
+          "documentation":"<p>The natural-language threat statement.</p>"
+        },
+        "severity":{
+          "shape":"ThreatSeverity",
+          "documentation":"<p>The severity level of the threat.</p>"
+        },
+        "comments":{
+          "shape":"String",
+          "documentation":"<p>Optional customer comment on the threat.</p>"
+        },
+        "stride":{
+          "shape":"StrideCategoryList",
+          "documentation":"<p>The STRIDE categories applicable to this threat.</p>"
+        },
+        "threatSource":{
+          "shape":"String",
+          "documentation":"<p>The actor or origin of the threat.</p>"
+        },
+        "prerequisites":{
+          "shape":"String",
+          "documentation":"<p>The conditions required for the threat to be exploitable.</p>"
+        },
+        "threatAction":{
+          "shape":"String",
+          "documentation":"<p>What the threat source can do.</p>"
+        },
+        "threatImpact":{
+          "shape":"String",
+          "documentation":"<p>The direct consequence of the threat action.</p>"
+        },
+        "impactedGoal":{
+          "shape":"StringList",
+          "documentation":"<p>The security goals affected by the threat.</p>"
+        },
+        "impactedAssets":{
+          "shape":"StringList",
+          "documentation":"<p>The specific assets affected by the threat.</p>"
+        },
+        "anchor":{
+          "shape":"ThreatAnchorShape",
+          "documentation":"<p>The DFD element this threat is anchored to.</p>"
+        },
+        "evidence":{
+          "shape":"ThreatEvidenceList",
+          "documentation":"<p>The source code files supporting the threat.</p>"
+        },
+        "recommendation":{
+          "shape":"String",
+          "documentation":"<p>The recommended mitigation guidance for this threat.</p>"
+        }
+      },
+      "documentation":"<p>Input for creating a new threat.</p>"
+    },
+    "CreateThreatModelInput":{
+      "type":"structure",
+      "required":[
+        "title",
+        "agentSpaceId",
+        "serviceRole"
+      ],
+      "members":{
+        "title":{
+          "shape":"String",
+          "documentation":"<p>The title of the threat model.</p>"
+        },
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space to create the threat model in.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the application or system being threat modeled.</p>"
+        },
+        "assets":{
+          "shape":"Assets",
+          "documentation":"<p>The assets to include in the threat model.</p>"
+        },
+        "scopeDocs":{
+          "shape":"DocumentList",
+          "documentation":"<p>The scoped documents for the agent to focus on during threat modeling.</p>"
+        },
+        "serviceRole":{
+          "shape":"ServiceRole",
+          "documentation":"<p>The IAM service role to use for the threat model.</p>"
+        },
+        "logConfig":{
+          "shape":"CloudWatchLog",
+          "documentation":"<p>The CloudWatch Logs configuration for the threat model.</p>"
+        },
+        "reportDestination":{
+          "shape":"ReportDestination",
+          "documentation":"<p>The destination for publishing scan reports to an integrated document provider.</p>"
+        }
+      },
+      "documentation":"<p>Input for creating a new threat model.</p>"
+    },
+    "CreateThreatModelOutput":{
+      "type":"structure",
+      "required":["threatModelId"],
+      "members":{
+        "threatModelId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the created threat model.</p>"
+        },
+        "title":{
+          "shape":"String",
+          "documentation":"<p>The title of the threat model.</p>"
+        },
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space that contains the threat model.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the application or system being threat modeled.</p>"
+        },
+        "assets":{
+          "shape":"Assets",
+          "documentation":"<p>The assets included in the threat model.</p>"
+        },
+        "scopeDocs":{
+          "shape":"DocumentList",
+          "documentation":"<p>The scoped documents for the agent to focus on during threat modeling.</p>"
+        },
+        "serviceRole":{
+          "shape":"ServiceRole",
+          "documentation":"<p>The IAM service role used for the threat model.</p>"
+        },
+        "logConfig":{
+          "shape":"CloudWatchLog",
+          "documentation":"<p>The CloudWatch Logs configuration for the threat model.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the threat model was created, in UTC format.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the threat model was last updated, in UTC format.</p>"
+        }
+      },
+      "documentation":"<p>Output for the CreateThreatModel operation.</p>"
+    },
+    "CreateThreatOutput":{
+      "type":"structure",
+      "required":[
+        "threatId",
+        "threatJobId"
+      ],
+      "members":{
+        "threatId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the created threat.</p>"
+        },
+        "threatJobId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the threat model job the threat belongs to.</p>"
+        },
+        "title":{
+          "shape":"String",
+          "documentation":"<p>A short title summarizing the threat.</p>"
+        },
+        "statement":{
+          "shape":"String",
+          "documentation":"<p>The natural-language threat statement.</p>"
+        },
+        "severity":{
+          "shape":"ThreatSeverity",
+          "documentation":"<p>The severity level of the threat.</p>"
+        },
+        "status":{
+          "shape":"ThreatStatus",
+          "documentation":"<p>The current status of the threat.</p>"
+        },
+        "comments":{
+          "shape":"String",
+          "documentation":"<p>Optional customer comment on the threat.</p>"
+        },
+        "stride":{
+          "shape":"StrideCategoryList",
+          "documentation":"<p>The STRIDE categories applicable to this threat.</p>"
+        },
+        "threatSource":{
+          "shape":"String",
+          "documentation":"<p>The actor or origin of the threat.</p>"
+        },
+        "prerequisites":{
+          "shape":"String",
+          "documentation":"<p>The conditions required for the threat to be exploitable.</p>"
+        },
+        "threatAction":{
+          "shape":"String",
+          "documentation":"<p>What the threat source can do.</p>"
+        },
+        "threatImpact":{
+          "shape":"String",
+          "documentation":"<p>The direct consequence of the threat action.</p>"
+        },
+        "impactedGoal":{
+          "shape":"StringList",
+          "documentation":"<p>The security goals affected by the threat.</p>"
+        },
+        "impactedAssets":{
+          "shape":"StringList",
+          "documentation":"<p>The specific assets affected by the threat.</p>"
+        },
+        "anchor":{
+          "shape":"ThreatAnchorShape",
+          "documentation":"<p>The DFD element this threat is anchored to.</p>"
+        },
+        "evidence":{
+          "shape":"ThreatEvidenceList",
+          "documentation":"<p>The source code files supporting the threat.</p>"
+        },
+        "recommendation":{
+          "shape":"String",
+          "documentation":"<p>The recommended mitigation guidance for this threat.</p>"
+        },
+        "createdBy":{
+          "shape":"ThreatActor",
+          "documentation":"<p>Who created this threat.</p>"
+        },
+        "updatedBy":{
+          "shape":"ThreatActor",
+          "documentation":"<p>Who last updated this threat.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the threat was created, in UTC format.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the threat was last updated, in UTC format.</p>"
+        }
+      },
+      "documentation":"<p>Output for the CreateThreat operation.</p>"
     },
     "CsrfState":{
       "type":"string",
@@ -2641,6 +4195,84 @@
       "type":"list",
       "member":{"shape":"DeletePentestFailure"}
     },
+    "DeletePrivateConnectionInput":{
+      "type":"structure",
+      "required":["privateConnectionName"],
+      "members":{
+        "privateConnectionName":{
+          "shape":"PrivateConnectionName",
+          "documentation":"<p>The name of the private connection to delete.</p>"
+        }
+      }
+    },
+    "DeletePrivateConnectionOutput":{
+      "type":"structure",
+      "required":[
+        "name",
+        "type",
+        "status"
+      ],
+      "members":{
+        "name":{
+          "shape":"PrivateConnectionName",
+          "documentation":"<p>The name of the private connection.</p>"
+        },
+        "type":{
+          "shape":"PrivateConnectionType",
+          "documentation":"<p>The type of the private connection, indicating whether it is service-managed or self-managed.</p>"
+        },
+        "status":{
+          "shape":"PrivateConnectionStatus",
+          "documentation":"<p>The current status of the private connection.</p>"
+        },
+        "resourceGatewayId":{
+          "shape":"ResourceGatewayId",
+          "documentation":"<p>The identifier or ARN of the VPC Lattice resource gateway.</p>"
+        },
+        "hostAddress":{
+          "shape":"HostAddress",
+          "documentation":"<p>The IP address or DNS name of the target resource.</p>"
+        },
+        "vpcId":{
+          "shape":"PrivateConnectionVpcId",
+          "documentation":"<p>The identifier of the VPC the resource gateway is created in.</p>"
+        },
+        "resourceConfigurationId":{
+          "shape":"ResourceConfigurationId",
+          "documentation":"<p>The identifier or ARN of the VPC Lattice resource configuration.</p>"
+        },
+        "certificateExpiryTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the connection's certificate expires, in UTC format.</p>"
+        },
+        "dnsResolution":{
+          "shape":"ResourceConfigDnsResolution",
+          "documentation":"<p>The DNS resolution mode for the resource gateway.</p>"
+        },
+        "failureMessage":{
+          "shape":"String",
+          "documentation":"<p>A message describing why the private connection entered a failed state, if applicable.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags attached to the private connection.</p>"
+        }
+      }
+    },
+    "DeleteSecurityRequirementPackInput":{
+      "type":"structure",
+      "required":["packId"],
+      "members":{
+        "packId":{
+          "shape":"SecurityRequirementPackId",
+          "documentation":"<p>The unique identifier of the security requirement pack to delete.</p>"
+        }
+      }
+    },
+    "DeleteSecurityRequirementPackOutput":{
+      "type":"structure",
+      "members":{}
+    },
     "DeleteTargetDomainInput":{
       "type":"structure",
       "required":["targetDomainId"],
@@ -2661,6 +4293,100 @@
         }
       },
       "documentation":"<p>Output for the DeleteTargetDomain operation.</p>"
+    },
+    "DeleteThreatModelFailure":{
+      "type":"structure",
+      "members":{
+        "threatModelId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the threat model that failed to delete.</p>"
+        },
+        "reason":{
+          "shape":"String",
+          "documentation":"<p>The reason the threat model failed to delete.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a threat model that failed to delete.</p>"
+    },
+    "DeleteThreatModelFailureList":{
+      "type":"list",
+      "member":{"shape":"DeleteThreatModelFailure"},
+      "documentation":"<p>List of threat model deletion failures.</p>"
+    },
+    "DescribePrivateConnectionInput":{
+      "type":"structure",
+      "required":["privateConnectionName"],
+      "members":{
+        "privateConnectionName":{
+          "shape":"PrivateConnectionName",
+          "documentation":"<p>The name of the private connection to describe.</p>"
+        }
+      }
+    },
+    "DescribePrivateConnectionOutput":{
+      "type":"structure",
+      "required":[
+        "name",
+        "type",
+        "status"
+      ],
+      "members":{
+        "name":{
+          "shape":"PrivateConnectionName",
+          "documentation":"<p>The name of the private connection.</p>"
+        },
+        "type":{
+          "shape":"PrivateConnectionType",
+          "documentation":"<p>The type of the private connection, indicating whether it is service-managed or self-managed.</p>"
+        },
+        "status":{
+          "shape":"PrivateConnectionStatus",
+          "documentation":"<p>The current status of the private connection.</p>"
+        },
+        "resourceGatewayId":{
+          "shape":"ResourceGatewayId",
+          "documentation":"<p>The identifier or ARN of the VPC Lattice resource gateway.</p>"
+        },
+        "hostAddress":{
+          "shape":"HostAddress",
+          "documentation":"<p>The IP address or DNS name of the target resource.</p>"
+        },
+        "vpcId":{
+          "shape":"PrivateConnectionVpcId",
+          "documentation":"<p>The identifier of the VPC the resource gateway is created in.</p>"
+        },
+        "resourceConfigurationId":{
+          "shape":"ResourceConfigurationId",
+          "documentation":"<p>The identifier or ARN of the VPC Lattice resource configuration.</p>"
+        },
+        "certificateExpiryTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the connection's certificate expires, in UTC format.</p>"
+        },
+        "dnsResolution":{
+          "shape":"ResourceConfigDnsResolution",
+          "documentation":"<p>The DNS resolution mode for the resource gateway.</p>"
+        },
+        "failureMessage":{
+          "shape":"String",
+          "documentation":"<p>A message describing why the private connection entered a failed state, if applicable.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags attached to the private connection.</p>"
+        }
+      }
+    },
+    "DiffSource":{
+      "type":"structure",
+      "members":{
+        "s3Uri":{
+          "shape":"String",
+          "documentation":"<p>S3 URI pointing to a unified diff file. The file must be in standard unified diff format and stored in an S3 bucket connected to your Agent Space.</p>"
+        }
+      },
+      "documentation":"<p>Source of the diff for a differential code scan.</p>",
+      "union":true
     },
     "DiscoveredEndpoint":{
       "type":"structure",
@@ -2734,6 +4460,10 @@
         "artifactId":{
           "shape":"String",
           "documentation":"<p>The unique identifier of the artifact associated with the document.</p>"
+        },
+        "integratedDocument":{
+          "shape":"IntegratedDocument",
+          "documentation":"<p>A reference to a document in an integrated third-party provider.</p>"
         }
       },
       "documentation":"<p>Represents a document that provides context for security testing.</p>"
@@ -2877,6 +4607,10 @@
           "shape":"ConfidenceLevel",
           "documentation":"<p>The confidence level of the finding. Valid values include FALSE_POSITIVE, UNCONFIRMED, LOW, MEDIUM, and HIGH.</p>"
         },
+        "validationStatus":{
+          "shape":"ValidationStatus",
+          "documentation":"<p>The simulated validation status of the finding. Valid values are NOT_VALIDATED, VALIDATING, CONFIRMED, NOT_REPRODUCED, and VALIDATION_FAILED.</p>"
+        },
         "attackScript":{
           "shape":"String",
           "documentation":"<p>The attack script used to reproduce the finding.</p>"
@@ -2889,6 +4623,10 @@
           "shape":"String",
           "documentation":"<p>The identifier of the entity that last updated the finding.</p>"
         },
+        "customerNote":{
+          "shape":"String",
+          "documentation":"<p>A customer-provided note on the finding.</p>"
+        },
         "codeLocations":{
           "shape":"CodeLocationList",
           "documentation":"<p>The file locations involved in the vulnerability, as reported by the code scanner.</p>"
@@ -2896,6 +4634,10 @@
         "verificationScript":{
           "shape":"VerificationScript",
           "documentation":"<p>The verification script metadata for reproducing the finding, including download URL, instructions, and required environment variables.</p>"
+        },
+        "alignmentRationale":{
+          "shape":"String",
+          "documentation":"<p>The rationale provided by the alignment agent explaining how the finding was adjusted based on customer preferences.</p>"
         },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
@@ -2977,6 +4719,10 @@
         "confidence":{
           "shape":"ConfidenceLevel",
           "documentation":"<p>The confidence level of the finding.</p>"
+        },
+        "validationStatus":{
+          "shape":"ValidationStatus",
+          "documentation":"<p>The simulated validation status of the finding.</p>"
         },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
@@ -3128,6 +4874,77 @@
         "kmsKeyId":{
           "shape":"KmsKeyId",
           "documentation":"<p>The identifier of the AWS KMS key used to encrypt data associated with the integration.</p>"
+        },
+        "targetUrl":{
+          "shape":"TargetUrl",
+          "documentation":"<p>The HTTPS URL of the customer self-hosted instance, such as a GitHub Enterprise Server or self-managed GitLab instance. This value is absent for SaaS integrations.</p>"
+        },
+        "privateConnectionName":{
+          "shape":"PrivateConnectionName",
+          "documentation":"<p>The name of the private connection used to reach the integration's self-hosted instance over private networking, if one is configured.</p>"
+        }
+      }
+    },
+    "GetSecurityRequirementPackInput":{
+      "type":"structure",
+      "required":["packId"],
+      "members":{
+        "packId":{
+          "shape":"SecurityRequirementPackId",
+          "documentation":"<p>The unique identifier of the security requirement pack to retrieve.</p>"
+        }
+      }
+    },
+    "GetSecurityRequirementPackOutput":{
+      "type":"structure",
+      "required":[
+        "packId",
+        "name",
+        "managementType",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "packId":{
+          "shape":"SecurityRequirementPackId",
+          "documentation":"<p>The unique identifier of the security requirement pack.</p>"
+        },
+        "name":{
+          "shape":"SecurityRequirementPackName",
+          "documentation":"<p>The name of the security requirement pack.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the security requirement pack.</p>"
+        },
+        "vendorName":{
+          "shape":"String",
+          "documentation":"<p>The vendor name for AWS managed packs, such as ISO or NIST.</p>"
+        },
+        "managementType":{
+          "shape":"ManagementType",
+          "documentation":"<p>The management type of the pack. Valid values are AWS_MANAGED and CUSTOMER_MANAGED.</p>"
+        },
+        "status":{
+          "shape":"SecurityRequirementPackStatus",
+          "documentation":"<p>The status of the security requirement pack.</p>"
+        },
+        "importStatus":{
+          "shape":"SecurityRequirementPackImportStatus",
+          "documentation":"<p>The status of the security requirements import workflow for this pack.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the security requirement pack was created, in UTC format.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the security requirement pack was last updated, in UTC format.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The identifier of the AWS KMS key used to encrypt pack contents.</p>"
         }
       }
     },
@@ -3149,6 +4966,14 @@
         "organizationName":{
           "shape":"String",
           "documentation":"<p>The name of the GitHub organization to integrate with.</p>"
+        },
+        "targetUrl":{
+          "shape":"TargetUrl",
+          "documentation":"<p>The HTTPS URL of a self-hosted GitHub Enterprise Server instance. Omit this value for GitHub.com.</p>"
+        },
+        "installationId":{
+          "shape":"String",
+          "documentation":"<p>The installation identifier provided by GitHub Enterprise Server on the install callback. Required for GitHub Enterprise Server integrations and ignored for GitHub.com.</p>"
         }
       },
       "documentation":"<p>The input required to create a GitHub integration, including the OAuth authorization code and CSRF state.</p>"
@@ -3216,6 +5041,95 @@
       },
       "documentation":"<p>The capabilities enabled for a GitHub resource integration.</p>"
     },
+    "GitLabIntegrationInput":{
+      "type":"structure",
+      "required":[
+        "accessToken",
+        "tokenType"
+      ],
+      "members":{
+        "accessToken":{
+          "shape":"AccessToken",
+          "documentation":"<p>The GitLab access token used to authenticate. This can be a personal access token or a group access token.</p>"
+        },
+        "targetUrl":{
+          "shape":"TargetUrl",
+          "documentation":"<p>The HTTPS URL of a self-managed GitLab instance. Omit this value for GitLab SaaS (gitlab.com).</p>"
+        },
+        "tokenType":{
+          "shape":"GitLabTokenType",
+          "documentation":"<p>The type of GitLab access token provided in accessToken.</p>"
+        },
+        "groupId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the GitLab group. Required when tokenType is group and ignored for personal tokens.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for creating a GitLab integration.</p>"
+    },
+    "GitLabNamespace":{
+      "type":"string",
+      "documentation":"<p>A GitLab namespace (group or user path).</p>"
+    },
+    "GitLabRepositoryMetadata":{
+      "type":"structure",
+      "required":[
+        "name",
+        "providerResourceId",
+        "namespace"
+      ],
+      "members":{
+        "name":{"shape":"ProviderResourceName"},
+        "providerResourceId":{"shape":"ProviderResourceId"},
+        "namespace":{
+          "shape":"GitLabNamespace",
+          "documentation":"<p>The namespace (group or user path) that owns the project.</p>"
+        },
+        "accessType":{"shape":"AccessType"}
+      },
+      "documentation":"<p>Metadata for an integrated GitLab repository.</p>"
+    },
+    "GitLabRepositoryResource":{
+      "type":"structure",
+      "required":[
+        "name",
+        "namespace"
+      ],
+      "members":{
+        "name":{"shape":"ProviderResourceName"},
+        "namespace":{
+          "shape":"GitLabNamespace",
+          "documentation":"<p>The namespace (group or user path) that owns the project.</p>"
+        }
+      },
+      "documentation":"<p>A GitLab repository integrated as a resource.</p>"
+    },
+    "GitLabResourceCapabilities":{
+      "type":"structure",
+      "members":{
+        "leaveComments":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to post code review comments on merge request discussions.</p>"
+        },
+        "remediateCode":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to create merge requests with automated fixes.</p>"
+        }
+      },
+      "documentation":"<p>Capabilities for an integrated GitLab repository.</p>"
+    },
+    "GitLabTokenType":{
+      "type":"string",
+      "documentation":"<p>The type of GitLab access token.</p>",
+      "enum":[
+        "PERSONAL",
+        "GROUP"
+      ]
+    },
+    "HostAddress":{
+      "type":"string",
+      "documentation":"<p>The IP address or DNS name of a target resource.</p>"
+    },
     "HttpVerification":{
       "type":"structure",
       "members":{
@@ -3256,6 +5170,51 @@
       "type":"string",
       "documentation":"<p>ARN of the IAM Identity Center instance used for user authentication.</p>"
     },
+    "ImportSecurityRequirementsInput":{
+      "type":"structure",
+      "required":[
+        "packId",
+        "input"
+      ],
+      "members":{
+        "packId":{
+          "shape":"SecurityRequirementPackId",
+          "documentation":"<p>The unique identifier of the security requirement pack to import requirements into.</p>"
+        },
+        "input":{
+          "shape":"ImportSource",
+          "documentation":"<p>The import source containing the documents to extract security requirements from.</p>"
+        }
+      }
+    },
+    "ImportSecurityRequirementsOutput":{
+      "type":"structure",
+      "required":[
+        "packId",
+        "importStatus"
+      ],
+      "members":{
+        "packId":{
+          "shape":"SecurityRequirementPackId",
+          "documentation":"<p>The unique identifier of the security requirement pack.</p>"
+        },
+        "importStatus":{
+          "shape":"SecurityRequirementPackImportStatus",
+          "documentation":"<p>The status of the import workflow.</p>"
+        }
+      }
+    },
+    "ImportSource":{
+      "type":"structure",
+      "members":{
+        "documents":{
+          "shape":"SecurityRequirementArtifactList",
+          "documentation":"<p>The list of documents to extract security requirements from.</p>"
+        }
+      },
+      "documentation":"<p>The source from which to import security requirements. Currently supports document uploads.</p>",
+      "union":true
+    },
     "InitiateProviderRegistrationInput":{
       "type":"structure",
       "required":["provider"],
@@ -3287,6 +5246,24 @@
       "type":"integer",
       "box":true
     },
+    "IntegratedDocument":{
+      "type":"structure",
+      "required":[
+        "integrationId",
+        "resourceId"
+      ],
+      "members":{
+        "integrationId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the integration that provides access to the document.</p>"
+        },
+        "resourceId":{
+          "shape":"String",
+          "documentation":"<p>The provider-specific resource identifier for the document.</p>"
+        }
+      },
+      "documentation":"<p>A reference to a document in a third-party provider, such as a Confluence page linked via an integration.</p>"
+    },
     "IntegratedRepository":{
       "type":"structure",
       "required":[
@@ -3315,7 +5292,10 @@
         "githubRepository":{
           "shape":"GitHubRepositoryResource",
           "documentation":"<p>The GitHub repository resource information.</p>"
-        }
+        },
+        "gitlabRepository":{"shape":"GitLabRepositoryResource"},
+        "bitbucketRepository":{"shape":"BitbucketRepositoryResource"},
+        "confluenceDocument":{"shape":"ConfluenceDocumentResource"}
       },
       "documentation":"<p>Represents an integrated resource from a third-party provider. This is a union type that contains provider-specific resource information.</p>",
       "union":true
@@ -3346,7 +5326,10 @@
         "githubRepository":{
           "shape":"GitHubRepositoryMetadata",
           "documentation":"<p>The GitHub repository metadata.</p>"
-        }
+        },
+        "gitlabRepository":{"shape":"GitLabRepositoryMetadata"},
+        "bitbucketRepository":{"shape":"BitbucketRepositoryMetadata"},
+        "confluenceDocument":{"shape":"ConfluenceDocumentMetadata"}
       },
       "documentation":"<p>Contains metadata about an integrated resource. This is a union type that contains provider-specific metadata.</p>",
       "union":true
@@ -3426,6 +5409,14 @@
         "displayName":{
           "shape":"String",
           "documentation":"<p>The display name of the integration.</p>"
+        },
+        "targetUrl":{
+          "shape":"TargetUrl",
+          "documentation":"<p>The HTTPS URL of the customer self-hosted instance, such as a GitHub Enterprise Server or self-managed GitLab instance. This value is absent for SaaS integrations.</p>"
+        },
+        "privateConnectionName":{
+          "shape":"PrivateConnectionName",
+          "documentation":"<p>The name of the private connection used to reach the integration's self-hosted instance over private networking, if one is configured.</p>"
         }
       },
       "documentation":"<p>Contains summary information about an integration.</p>"
@@ -3448,6 +5439,15 @@
       "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
+    },
+    "IpAddressType":{
+      "type":"string",
+      "documentation":"<p>The IP address type of a resource gateway.</p>",
+      "enum":[
+        "IPV4",
+        "IPV6",
+        "DUAL_STACK"
+      ]
     },
     "JobStatus":{
       "type":"string",
@@ -3916,7 +5916,7 @@
         },
         "stepName":{
           "shape":"StepName",
-          "documentation":"<p>Filter tasks by step name. Valid values include PREFLIGHT, STATIC_ANALYSIS, PENTEST, and FINALIZING.</p>"
+          "documentation":"<p>Filter tasks by step name. Valid values include PREFLIGHT, STATIC_ANALYSIS, PENTEST, VALIDATION, and FINALIZING.</p>"
         },
         "categoryName":{
           "shape":"String",
@@ -4016,6 +6016,110 @@
       },
       "documentation":"<p>Output for the ListPentests operation.</p>"
     },
+    "ListPrivateConnectionsInput":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of private connections to return in a single response.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListPrivateConnectionsOutput":{
+      "type":"structure",
+      "required":["privateConnections"],
+      "members":{
+        "privateConnections":{
+          "shape":"PrivateConnectionList",
+          "documentation":"<p>The list of private connections.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results, if more results are available.</p>"
+        }
+      }
+    },
+    "ListSecurityRequirementPackFilter":{
+      "type":"structure",
+      "members":{
+        "managementType":{
+          "shape":"ManagementType",
+          "documentation":"<p>Filter packs by management type. Valid values are AWS_MANAGED and CUSTOMER_MANAGED.</p>"
+        },
+        "status":{
+          "shape":"SecurityRequirementPackStatus",
+          "documentation":"<p>Filter packs by status. Valid values are ENABLED and DISABLED.</p>"
+        }
+      },
+      "documentation":"<p>Filter criteria for listing security requirement packs.</p>"
+    },
+    "ListSecurityRequirementPacksInput":{
+      "type":"structure",
+      "members":{
+        "filter":{
+          "shape":"ListSecurityRequirementPackFilter",
+          "documentation":"<p>The filter criteria for listing security requirement packs.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token from a previous request to retrieve the next page of results.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single request.</p>"
+        }
+      }
+    },
+    "ListSecurityRequirementPacksOutput":{
+      "type":"structure",
+      "required":["securityRequirementPackSummaries"],
+      "members":{
+        "securityRequirementPackSummaries":{
+          "shape":"SecurityRequirementPackSummaryList",
+          "documentation":"<p>The list of security requirement pack summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token to use in a subsequent request to retrieve the next page of results.</p>"
+        }
+      }
+    },
+    "ListSecurityRequirementsInput":{
+      "type":"structure",
+      "required":["packId"],
+      "members":{
+        "packId":{
+          "shape":"SecurityRequirementPackId",
+          "documentation":"<p>The unique identifier of the security requirement pack to list requirements for.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token from a previous request to retrieve the next page of results.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single request.</p>"
+        }
+      }
+    },
+    "ListSecurityRequirementsOutput":{
+      "type":"structure",
+      "required":["securityRequirementSummaries"],
+      "members":{
+        "securityRequirementSummaries":{
+          "shape":"SecurityRequirementSummaryList",
+          "documentation":"<p>The list of security requirement summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token to use in a subsequent request to retrieve the next page of results.</p>"
+        }
+      }
+    },
     "ListTagsForResourceInput":{
       "type":"structure",
       "required":["resourceArn"],
@@ -4067,6 +6171,159 @@
       },
       "documentation":"<p>Output for the ListTargetDomains operation.</p>"
     },
+    "ListThreatModelJobTasksInput":{
+      "type":"structure",
+      "required":[
+        "agentSpaceId",
+        "threatModelJobId"
+      ],
+      "members":{
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>"
+        },
+        "threatModelJobId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the threat model job to list tasks for.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to use for paginating results that are returned in the response.</p>"
+        }
+      },
+      "documentation":"<p>Input for listing tasks associated with a threat model job.</p>"
+    },
+    "ListThreatModelJobTasksOutput":{
+      "type":"structure",
+      "members":{
+        "threatModelJobTaskSummaries":{
+          "shape":"ThreatModelJobTaskSummaryList",
+          "documentation":"<p>The list of threat model job task summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to use for paginating results that are returned in the response.</p>"
+        }
+      },
+      "documentation":"<p>Output for the ListThreatModelJobTasks operation.</p>"
+    },
+    "ListThreatModelJobsInput":{
+      "type":"structure",
+      "required":[
+        "threatModelId",
+        "agentSpaceId"
+      ],
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>"
+        },
+        "threatModelId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the threat model to list jobs for.</p>"
+        },
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to use for paginating results that are returned in the response.</p>"
+        }
+      },
+      "documentation":"<p>Input for ListThreatModelJobs operation.</p>"
+    },
+    "ListThreatModelJobsOutput":{
+      "type":"structure",
+      "members":{
+        "threatModelJobSummaries":{
+          "shape":"ThreatModelJobSummaryList",
+          "documentation":"<p>The list of threat model job summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to use for paginating results that are returned in the response.</p>"
+        }
+      },
+      "documentation":"<p>Output for the ListThreatModelJobs operation.</p>"
+    },
+    "ListThreatModelsInput":{
+      "type":"structure",
+      "required":["agentSpaceId"],
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to use for paginating results that are returned in the response.</p>"
+        },
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space to list threat models for.</p>"
+        }
+      },
+      "documentation":"<p>Input for listing threat models.</p>"
+    },
+    "ListThreatModelsOutput":{
+      "type":"structure",
+      "members":{
+        "threatModelSummaries":{
+          "shape":"ThreatModelSummaryList",
+          "documentation":"<p>The list of threat model summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to use for paginating results that are returned in the response.</p>"
+        }
+      },
+      "documentation":"<p>Output for the ListThreatModels operation.</p>"
+    },
+    "ListThreatsInput":{
+      "type":"structure",
+      "required":[
+        "threatJobId",
+        "agentSpaceId"
+      ],
+      "members":{
+        "threatJobId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the threat model job to list threats for.</p>"
+        },
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to use for paginating results that are returned in the response.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>"
+        }
+      },
+      "documentation":"<p>Input for listing threats.</p>"
+    },
+    "ListThreatsOutput":{
+      "type":"structure",
+      "members":{
+        "threats":{
+          "shape":"ThreatSummaryList",
+          "documentation":"<p>The list of threat summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to use for paginating results that are returned in the response.</p>"
+        }
+      },
+      "documentation":"<p>Output for the ListThreats operation.</p>"
+    },
     "Location":{
       "type":"string",
       "documentation":"<p>Location URL for OAuth redirect.</p>"
@@ -4097,6 +6354,18 @@
       "type":"string",
       "documentation":"<p>Type of log storage.</p>",
       "enum":["CLOUDWATCH"]
+    },
+    "ManagementType":{
+      "type":"string",
+      "enum":[
+        "AWS_MANAGED",
+        "CUSTOMER_MANAGED"
+      ]
+    },
+    "MaxIpv4AddressesPerEni":{
+      "type":"integer",
+      "documentation":"<p>The number of IPv4 addresses in each elastic network interface for the resource gateway.</p>",
+      "box":true
     },
     "MaxResults":{
       "type":"integer",
@@ -4306,6 +6575,14 @@
           "shape":"CodeRemediationStrategy",
           "documentation":"<p>The code remediation strategy for the pentest.</p>"
         },
+        "cleanUpStrategy":{
+          "shape":"CleanUpStrategy",
+          "documentation":"<p>Strategy for cleaning up resources after pentest job completion.</p>"
+        },
+        "disableManagedSkills":{
+          "shape":"SkillTypeList",
+          "documentation":"<p>A list of managed skills to disable for this pentest. Valid values include FINDING_PERSONALIZATION and LOGIN_OPTIMIZATION.</p>"
+        },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The date and time the pentest was created, in UTC format.</p>"
@@ -4408,6 +6685,14 @@
           "shape":"CodeRemediationStrategy",
           "documentation":"<p>The code remediation strategy for the pentest job.</p>"
         },
+        "cleanUpStrategy":{
+          "shape":"CleanUpStrategy",
+          "documentation":"<p>Strategy for cleaning up resources after pentest job completion.</p>"
+        },
+        "disableManagedSkills":{
+          "shape":"SkillTypeList",
+          "documentation":"<p>A list of managed skills disabled for this pentest job. Valid values include FINDING_PERSONALIZATION and LOGIN_OPTIMIZATION.</p>"
+        },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The date and time the pentest job was created, in UTC format.</p>"
@@ -4504,10 +6789,144 @@
       "type":"list",
       "member":{"shape":"PentestSummary"}
     },
+    "PortRange":{
+      "type":"string",
+      "documentation":"<p>A single TCP port or an inclusive range of TCP ports, for example 443 or 8000-8100.</p>"
+    },
+    "PortRanges":{
+      "type":"list",
+      "member":{"shape":"PortRange"},
+      "documentation":"<p>The TCP port ranges that a consumer can use to access the resource.</p>"
+    },
+    "PrivateConnectionList":{
+      "type":"list",
+      "member":{"shape":"PrivateConnectionSummary"},
+      "documentation":"<p>A list of private connection summaries.</p>"
+    },
+    "PrivateConnectionMode":{
+      "type":"structure",
+      "members":{
+        "serviceManaged":{
+          "shape":"ServiceManagedInput",
+          "documentation":"<p>The configuration for a service-managed private connection, where the service manages the resource gateway lifecycle.</p>"
+        },
+        "selfManaged":{
+          "shape":"SelfManagedInput",
+          "documentation":"<p>The configuration for a self-managed private connection, where you manage your own resource configuration.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a private connection. Specify either a service-managed or a self-managed mode.</p>",
+      "union":true
+    },
+    "PrivateConnectionName":{
+      "type":"string",
+      "documentation":"<p>The unique name of a private connection within your account.</p>"
+    },
+    "PrivateConnectionSecurityGroupId":{
+      "type":"string",
+      "documentation":"<p>The identifier of a security group.</p>"
+    },
+    "PrivateConnectionSecurityGroupIds":{
+      "type":"list",
+      "member":{"shape":"PrivateConnectionSecurityGroupId"},
+      "documentation":"<p>The security groups attached to the resource gateway.</p>"
+    },
+    "PrivateConnectionStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a private connection.</p>",
+      "enum":[
+        "ACTIVE",
+        "CREATE_IN_PROGRESS",
+        "CREATE_FAILED",
+        "DELETE_IN_PROGRESS",
+        "DELETE_FAILED"
+      ]
+    },
+    "PrivateConnectionSubnetId":{
+      "type":"string",
+      "documentation":"<p>The identifier of a subnet.</p>"
+    },
+    "PrivateConnectionSubnetIds":{
+      "type":"list",
+      "member":{"shape":"PrivateConnectionSubnetId"},
+      "documentation":"<p>The subnets that the resource gateway spans.</p>"
+    },
+    "PrivateConnectionSummary":{
+      "type":"structure",
+      "required":[
+        "name",
+        "type",
+        "status"
+      ],
+      "members":{
+        "name":{
+          "shape":"PrivateConnectionName",
+          "documentation":"<p>The name of the private connection.</p>"
+        },
+        "type":{
+          "shape":"PrivateConnectionType",
+          "documentation":"<p>The type of the private connection, indicating whether it is service-managed or self-managed.</p>"
+        },
+        "status":{
+          "shape":"PrivateConnectionStatus",
+          "documentation":"<p>The current status of the private connection.</p>"
+        },
+        "resourceGatewayId":{
+          "shape":"ResourceGatewayId",
+          "documentation":"<p>The identifier or ARN of the VPC Lattice resource gateway.</p>"
+        },
+        "hostAddress":{
+          "shape":"HostAddress",
+          "documentation":"<p>The IP address or DNS name of the target resource.</p>"
+        },
+        "vpcId":{
+          "shape":"PrivateConnectionVpcId",
+          "documentation":"<p>The identifier of the VPC the resource gateway is created in.</p>"
+        },
+        "resourceConfigurationId":{
+          "shape":"ResourceConfigurationId",
+          "documentation":"<p>The identifier or ARN of the VPC Lattice resource configuration.</p>"
+        },
+        "certificateExpiryTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the connection's certificate expires, in UTC format.</p>"
+        },
+        "dnsResolution":{
+          "shape":"ResourceConfigDnsResolution",
+          "documentation":"<p>The DNS resolution mode for the resource gateway.</p>"
+        },
+        "failureMessage":{
+          "shape":"String",
+          "documentation":"<p>A message describing why the private connection entered a failed state, if applicable.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags attached to the private connection.</p>"
+        }
+      },
+      "documentation":"<p>Summarizes a private connection.</p>"
+    },
+    "PrivateConnectionType":{
+      "type":"string",
+      "documentation":"<p>The type of a private connection, indicating whether it is service-managed or self-managed.</p>",
+      "enum":[
+        "SERVICE_MANAGED",
+        "SELF_MANAGED"
+      ]
+    },
+    "PrivateConnectionVpcId":{
+      "type":"string",
+      "documentation":"<p>The identifier of a VPC.</p>"
+    },
     "Provider":{
       "type":"string",
       "documentation":"<p>Third-party provider type.</p>",
-      "enum":["GITHUB"]
+      "enum":[
+        "GITHUB",
+        "GITLAB",
+        "BITBUCKET",
+        "CONFLUENCE"
+      ]
     },
     "ProviderInput":{
       "type":"structure",
@@ -4515,6 +6934,18 @@
         "github":{
           "shape":"GitHubIntegrationInput",
           "documentation":"<p>The GitHub-specific input for creating an integration.</p>"
+        },
+        "gitlab":{
+          "shape":"GitLabIntegrationInput",
+          "documentation":"<p>The configuration for a GitLab integration.</p>"
+        },
+        "bitbucket":{
+          "shape":"BitbucketIntegrationInput",
+          "documentation":"<p>The configuration for a Bitbucket integration.</p>"
+        },
+        "confluence":{
+          "shape":"ConfluenceIntegrationInput",
+          "documentation":"<p>The configuration for a Confluence integration.</p>"
         }
       },
       "documentation":"<p>The provider-specific input for creating an integration. This is a union type that contains provider-specific configuration.</p>",
@@ -4526,7 +6957,10 @@
         "github":{
           "shape":"GitHubResourceCapabilities",
           "documentation":"<p>The GitHub-specific resource capabilities.</p>"
-        }
+        },
+        "gitlab":{"shape":"GitLabResourceCapabilities"},
+        "bitbucket":{"shape":"BitbucketResourceCapabilities"},
+        "confluence":{"shape":"ConfluenceResourceCapabilities"}
       },
       "documentation":"<p>The capabilities for an integrated resource from a third-party provider. This is a union type that contains provider-specific capabilities.</p>",
       "union":true
@@ -4547,9 +6981,51 @@
         "DOCUMENTATION"
       ]
     },
+    "ReportDestination":{
+      "type":"structure",
+      "required":[
+        "integrationId",
+        "containerId"
+      ],
+      "members":{
+        "integrationId":{
+          "shape":"String",
+          "documentation":"<p>The integration identifier for the document provider.</p>"
+        },
+        "containerId":{
+          "shape":"String",
+          "documentation":"<p>The container identifier where the report will be published.</p>"
+        },
+        "parentId":{
+          "shape":"String",
+          "documentation":"<p>The parent document identifier under which the report will be created.</p>"
+        },
+        "documentId":{
+          "shape":"String",
+          "documentation":"<p>The existing document identifier to update instead of creating a new document.</p>"
+        }
+      },
+      "documentation":"<p>Destination for publishing scan reports to an integrated document provider.</p>"
+    },
     "ResourceArn":{
       "type":"string",
       "documentation":"<p>ARN of a taggable resource.</p>"
+    },
+    "ResourceConfigDnsResolution":{
+      "type":"string",
+      "documentation":"<p>The DNS resolution mode for a resource gateway.</p>",
+      "enum":[
+        "PUBLIC",
+        "IN_VPC"
+      ]
+    },
+    "ResourceConfigurationId":{
+      "type":"string",
+      "documentation":"<p>The identifier or ARN of a VPC Lattice resource configuration.</p>"
+    },
+    "ResourceGatewayId":{
+      "type":"string",
+      "documentation":"<p>The identifier or ARN of a VPC Lattice resource gateway.</p>"
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -4570,7 +7046,10 @@
     "ResourceType":{
       "type":"string",
       "documentation":"<p>Type of resource.</p>",
-      "enum":["CODE_REPOSITORY"]
+      "enum":[
+        "CODE_REPOSITORY",
+        "DOCUMENT"
+      ]
     },
     "RiskLevel":{
       "type":"string",
@@ -4651,13 +7130,257 @@
       "member":{"shape":"SecurityGroupArn"},
       "documentation":"<p>A list of one or more security group ARNs or IDs in the customer VPC.</p>"
     },
+    "SecurityRequirementArtifact":{
+      "type":"structure",
+      "required":[
+        "name",
+        "format",
+        "content"
+      ],
+      "members":{
+        "name":{
+          "shape":"SecurityRequirementArtifactName",
+          "documentation":"<p>The file name of the document.</p>"
+        },
+        "format":{
+          "shape":"SecurityRequirementArtifactFormat",
+          "documentation":"<p>The format of the document. Valid values are MD, PDF, TXT, DOCX, and DOC.</p>"
+        },
+        "content":{
+          "shape":"SecurityRequirementDocumentContent",
+          "documentation":"<p>The binary content of the document.</p>"
+        }
+      },
+      "documentation":"<p>A document used as source material for importing security requirements.</p>"
+    },
+    "SecurityRequirementArtifactFormat":{
+      "type":"string",
+      "enum":[
+        "MD",
+        "PDF",
+        "TXT",
+        "DOCX",
+        "DOC"
+      ]
+    },
+    "SecurityRequirementArtifactList":{
+      "type":"list",
+      "member":{"shape":"SecurityRequirementArtifact"},
+      "documentation":"<p>List of documents used as source material for importing security requirements.</p>"
+    },
+    "SecurityRequirementArtifactName":{"type":"string"},
+    "SecurityRequirementDocumentContent":{
+      "type":"blob",
+      "sensitive":true
+    },
+    "SecurityRequirementName":{"type":"string"},
+    "SecurityRequirementNameList":{
+      "type":"list",
+      "member":{"shape":"SecurityRequirementName"},
+      "documentation":"<p>List of security requirement names.</p>"
+    },
+    "SecurityRequirementPackId":{"type":"string"},
+    "SecurityRequirementPackImportStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "IN_PROGRESS",
+        "FAILED",
+        "COMPLETED"
+      ]
+    },
+    "SecurityRequirementPackName":{"type":"string"},
+    "SecurityRequirementPackStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "SecurityRequirementPackSummary":{
+      "type":"structure",
+      "required":[
+        "packId",
+        "name",
+        "managementType",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "packId":{
+          "shape":"SecurityRequirementPackId",
+          "documentation":"<p>The unique identifier of the security requirement pack.</p>"
+        },
+        "name":{
+          "shape":"SecurityRequirementPackName",
+          "documentation":"<p>The name of the security requirement pack.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the security requirement pack.</p>"
+        },
+        "vendorName":{
+          "shape":"String",
+          "documentation":"<p>The vendor name for AWS managed packs.</p>"
+        },
+        "managementType":{
+          "shape":"ManagementType",
+          "documentation":"<p>The management type of the pack.</p>"
+        },
+        "status":{
+          "shape":"SecurityRequirementPackStatus",
+          "documentation":"<p>The status of the security requirement pack.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the security requirement pack was created, in UTC format.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the security requirement pack was last updated, in UTC format.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a security requirement pack.</p>"
+    },
+    "SecurityRequirementPackSummaryList":{
+      "type":"list",
+      "member":{"shape":"SecurityRequirementPackSummary"},
+      "documentation":"<p>List of security requirement pack summaries.</p>"
+    },
+    "SecurityRequirementSummary":{
+      "type":"structure",
+      "required":[
+        "packId",
+        "name",
+        "description",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "packId":{
+          "shape":"SecurityRequirementPackId",
+          "documentation":"<p>The unique identifier of the pack containing the security requirement.</p>"
+        },
+        "name":{
+          "shape":"SecurityRequirementName",
+          "documentation":"<p>The name of the security requirement.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the security requirement.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the security requirement was created, in UTC format.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the security requirement was last updated, in UTC format.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a security requirement.</p>"
+    },
+    "SecurityRequirementSummaryList":{
+      "type":"list",
+      "member":{"shape":"SecurityRequirementSummary"},
+      "documentation":"<p>List of security requirement summaries.</p>"
+    },
+    "SelfManagedInput":{
+      "type":"structure",
+      "required":["resourceConfigurationId"],
+      "members":{
+        "resourceConfigurationId":{
+          "shape":"ResourceConfigurationId",
+          "documentation":"<p>The identifier or ARN of the resource configuration.</p>"
+        },
+        "certificate":{
+          "shape":"CertificateChain",
+          "documentation":"<p>The certificate for the private connection.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a self-managed private connection.</p>"
+    },
     "SensitiveEmail":{
       "type":"string",
       "documentation":"<p>Sensitive email address.</p>"
     },
+    "ServiceManagedInput":{
+      "type":"structure",
+      "required":[
+        "hostAddress",
+        "vpcId",
+        "subnetIds"
+      ],
+      "members":{
+        "hostAddress":{
+          "shape":"HostAddress",
+          "documentation":"<p>The IP address or DNS name of the target resource.</p>"
+        },
+        "vpcId":{
+          "shape":"PrivateConnectionVpcId",
+          "documentation":"<p>The VPC to create the service-managed resource gateway in.</p>"
+        },
+        "subnetIds":{
+          "shape":"PrivateConnectionSubnetIds",
+          "documentation":"<p>The subnets that the service-managed resource gateway spans.</p>"
+        },
+        "securityGroupIds":{
+          "shape":"PrivateConnectionSecurityGroupIds",
+          "documentation":"<p>The security groups to attach to the service-managed resource gateway.</p>"
+        },
+        "ipAddressType":{
+          "shape":"IpAddressType",
+          "documentation":"<p>The IP address type of the service-managed resource gateway.</p>"
+        },
+        "ipv4AddressesPerEni":{
+          "shape":"MaxIpv4AddressesPerEni",
+          "documentation":"<p>The number of IPv4 addresses in each elastic network interface for the service-managed resource gateway.</p>"
+        },
+        "portRanges":{
+          "shape":"PortRanges",
+          "documentation":"<p>The TCP port ranges that a consumer can use to access the resource.</p>"
+        },
+        "certificate":{
+          "shape":"CertificateChain",
+          "documentation":"<p>The certificate for the private connection.</p>"
+        },
+        "dnsResolution":{
+          "shape":"ResourceConfigDnsResolution",
+          "documentation":"<p>The DNS resolution mode for the resource gateway. Defaults to PUBLIC when not set.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a service-managed private connection.</p>"
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request exceeds a service quota. Review your current usage and request a quota increase if needed.</p>",
+      "error":{
+        "httpStatusCode":402,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "ServiceRole":{
       "type":"string",
       "documentation":"<p>ARN of an IAM role that the service can assume to access customer resources.</p>"
+    },
+    "SkillType":{
+      "type":"string",
+      "documentation":"<p>Type of managed skill that can be enabled or disabled for a pentest.</p>",
+      "enum":[
+        "FINDING_PERSONALIZATION",
+        "LOGIN_OPTIMIZATION"
+      ]
+    },
+    "SkillTypeList":{
+      "type":"list",
+      "member":{"shape":"SkillType"},
+      "documentation":"<p>A list of skill types.</p>"
     },
     "SourceCodeRepository":{
       "type":"structure",
@@ -4718,6 +7441,10 @@
         "codeReviewId":{
           "shape":"String",
           "documentation":"<p>The unique identifier of the code review to start a job for.</p>"
+        },
+        "diffSource":{
+          "shape":"DiffSource",
+          "documentation":"<p>Source of the diff for a differential scan. When present, the job analyzes only the changed lines instead of performing a full scan.</p>"
         }
       },
       "documentation":"<p>Input for starting the execution of a code review.</p>"
@@ -4812,12 +7539,65 @@
       },
       "documentation":"<p>Output for the StartPentestJob operation.</p>"
     },
+    "StartThreatModelJobInput":{
+      "type":"structure",
+      "required":[
+        "agentSpaceId",
+        "threatModelId"
+      ],
+      "members":{
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space.</p>"
+        },
+        "threatModelId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the threat model to start a job for.</p>"
+        }
+      },
+      "documentation":"<p>Input for starting a threat model job.</p>"
+    },
+    "StartThreatModelJobOutput":{
+      "type":"structure",
+      "required":["threatModelJobId"],
+      "members":{
+        "title":{
+          "shape":"String",
+          "documentation":"<p>The title of the threat model job.</p>"
+        },
+        "status":{
+          "shape":"JobStatus",
+          "documentation":"<p>The current status of the threat model job.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the threat model job was created, in UTC format.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the threat model job was last updated, in UTC format.</p>"
+        },
+        "threatModelId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the threat model.</p>"
+        },
+        "threatModelJobId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the started threat model job.</p>"
+        },
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space.</p>"
+        }
+      },
+      "documentation":"<p>Output for the StartThreatModelJob operation.</p>"
+    },
     "Step":{
       "type":"structure",
       "members":{
         "name":{
           "shape":"StepName",
-          "documentation":"<p>The name of the step. Valid values include PREFLIGHT, STATIC_ANALYSIS, PENTEST, and FINALIZING.</p>"
+          "documentation":"<p>The name of the step. Valid values include PREFLIGHT, STATIC_ANALYSIS, PENTEST, VALIDATION, and FINALIZING.</p>"
         },
         "status":{
           "shape":"StepStatus",
@@ -4846,7 +7626,8 @@
         "PREFLIGHT",
         "STATIC_ANALYSIS",
         "PENTEST",
-        "FINALIZING"
+        "FINALIZING",
+        "VALIDATION"
       ]
     },
     "StepStatus":{
@@ -4906,7 +7687,51 @@
       "members":{},
       "documentation":"<p>Output for the StopPentestJob operation.</p>"
     },
+    "StopThreatModelJobInput":{
+      "type":"structure",
+      "required":[
+        "agentSpaceId",
+        "threatModelJobId"
+      ],
+      "members":{
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space.</p>"
+        },
+        "threatModelJobId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the threat model job to stop.</p>"
+        }
+      },
+      "documentation":"<p>Input for stopping a threat model job.</p>"
+    },
+    "StopThreatModelJobOutput":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Output for the StopThreatModelJob operation.</p>"
+    },
+    "StrideCategory":{
+      "type":"string",
+      "documentation":"<p>STRIDE threat classification category.</p>",
+      "enum":[
+        "SPOOFING",
+        "TAMPERING",
+        "REPUDIATION",
+        "INFORMATION_DISCLOSURE",
+        "DENIAL_OF_SERVICE",
+        "ELEVATION_OF_PRIVILEGE"
+      ]
+    },
+    "StrideCategoryList":{
+      "type":"list",
+      "member":{"shape":"StrideCategory"},
+      "documentation":"<p>List of STRIDE categories.</p>"
+    },
     "String":{"type":"string"},
+    "StringList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "SubnetArn":{
       "type":"string",
       "documentation":"<p>ARN or ID of a subnet.</p>"
@@ -5052,6 +7877,10 @@
       "type":"list",
       "member":{"shape":"TargetDomainSummary"}
     },
+    "TargetUrl":{
+      "type":"string",
+      "documentation":"<p>The HTTPS URL of a customer self-hosted instance.</p>"
+    },
     "Task":{
       "type":"structure",
       "required":["taskId"],
@@ -5176,6 +8005,539 @@
     "TaskSummaryList":{
       "type":"list",
       "member":{"shape":"TaskSummary"}
+    },
+    "Threat":{
+      "type":"structure",
+      "members":{
+        "threatId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the threat.</p>"
+        },
+        "threatJobId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the threat model job that produced the threat.</p>"
+        },
+        "title":{
+          "shape":"String",
+          "documentation":"<p>A short title summarizing the threat.</p>"
+        },
+        "statement":{
+          "shape":"String",
+          "documentation":"<p>The natural-language threat statement.</p>"
+        },
+        "severity":{
+          "shape":"ThreatSeverity",
+          "documentation":"<p>The severity level of the threat.</p>"
+        },
+        "status":{
+          "shape":"ThreatStatus",
+          "documentation":"<p>The current status of the threat.</p>"
+        },
+        "comments":{
+          "shape":"String",
+          "documentation":"<p>Optional customer comment on the threat.</p>"
+        },
+        "threatSource":{
+          "shape":"String",
+          "documentation":"<p>The actor or origin of the threat.</p>"
+        },
+        "prerequisites":{
+          "shape":"String",
+          "documentation":"<p>The conditions required for the threat to be exploitable.</p>"
+        },
+        "threatAction":{
+          "shape":"String",
+          "documentation":"<p>What the threat source can do.</p>"
+        },
+        "threatImpact":{
+          "shape":"String",
+          "documentation":"<p>The direct consequence of the threat action.</p>"
+        },
+        "impactedGoal":{
+          "shape":"StringList",
+          "documentation":"<p>The security goals affected by the threat.</p>"
+        },
+        "impactedAssets":{
+          "shape":"StringList",
+          "documentation":"<p>The specific assets affected by the threat.</p>"
+        },
+        "anchor":{
+          "shape":"ThreatAnchorShape",
+          "documentation":"<p>The DFD element this threat is anchored to.</p>"
+        },
+        "evidence":{
+          "shape":"ThreatEvidenceList",
+          "documentation":"<p>The source code files supporting the threat.</p>"
+        },
+        "stride":{
+          "shape":"StrideCategoryList",
+          "documentation":"<p>The STRIDE categories applicable to this threat.</p>"
+        },
+        "recommendation":{
+          "shape":"String",
+          "documentation":"<p>The recommended mitigation guidance for this threat.</p>"
+        },
+        "createdBy":{
+          "shape":"ThreatActor",
+          "documentation":"<p>Who created this threat.</p>"
+        },
+        "updatedBy":{
+          "shape":"ThreatActor",
+          "documentation":"<p>Who last updated this threat.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the threat was created, in UTC format.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the threat was last updated, in UTC format.</p>"
+        }
+      },
+      "documentation":"<p>Represents a threat identified during threat modeling.</p>"
+    },
+    "ThreatActor":{
+      "type":"string",
+      "documentation":"<p>Indicates whether a threat was created or updated by a customer or an agent.</p>",
+      "enum":[
+        "CUSTOMER",
+        "AGENT"
+      ]
+    },
+    "ThreatAnchorShape":{
+      "type":"structure",
+      "members":{
+        "kind":{
+          "shape":"String",
+          "documentation":"<p>The kind of DFD element.</p>"
+        },
+        "id":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the DFD element.</p>"
+        },
+        "packageId":{
+          "shape":"String",
+          "documentation":"<p>The package identifier containing the DFD element.</p>"
+        }
+      },
+      "documentation":"<p>DFD element that a threat is anchored to.</p>"
+    },
+    "ThreatEvidenceList":{
+      "type":"list",
+      "member":{"shape":"ThreatEvidenceShape"},
+      "documentation":"<p>List of threat evidence.</p>"
+    },
+    "ThreatEvidenceShape":{
+      "type":"structure",
+      "members":{
+        "packageId":{
+          "shape":"String",
+          "documentation":"<p>The package identifier containing the evidence file.</p>"
+        },
+        "path":{
+          "shape":"String",
+          "documentation":"<p>The file path of the evidence.</p>"
+        }
+      },
+      "documentation":"<p>Source code file supporting a threat.</p>"
+    },
+    "ThreatIdList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "documentation":"<p>List of threat IDs.</p>"
+    },
+    "ThreatList":{
+      "type":"list",
+      "member":{"shape":"Threat"},
+      "documentation":"<p>List of threats.</p>"
+    },
+    "ThreatModel":{
+      "type":"structure",
+      "required":[
+        "threatModelId",
+        "agentSpaceId",
+        "title",
+        "assets"
+      ],
+      "members":{
+        "threatModelId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the threat model.</p>"
+        },
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space that contains the threat model.</p>"
+        },
+        "title":{
+          "shape":"String",
+          "documentation":"<p>The title of the threat model.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the application or system being threat modeled.</p>"
+        },
+        "assets":{
+          "shape":"Assets",
+          "documentation":"<p>The assets included in the threat model.</p>"
+        },
+        "scopeDocs":{
+          "shape":"DocumentList",
+          "documentation":"<p>The scoped documents for the agent to focus on during threat modeling.</p>"
+        },
+        "serviceRole":{
+          "shape":"ServiceRole",
+          "documentation":"<p>The IAM service role used for the threat model.</p>"
+        },
+        "logConfig":{
+          "shape":"CloudWatchLog",
+          "documentation":"<p>The CloudWatch Logs configuration for the threat model.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the threat model was created, in UTC format.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the threat model was last updated, in UTC format.</p>"
+        }
+      },
+      "documentation":"<p>Represents a threat model configuration that defines the parameters for automated threat analysis, including target assets and logging configuration.</p>"
+    },
+    "ThreatModelIdList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "documentation":"<p>List of threat model IDs.</p>"
+    },
+    "ThreatModelJob":{
+      "type":"structure",
+      "members":{
+        "threatModelJobId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the threat model job.</p>"
+        },
+        "threatModelId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the threat model associated with the job.</p>"
+        },
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space.</p>"
+        },
+        "title":{
+          "shape":"String",
+          "documentation":"<p>The title of the threat model job.</p>"
+        },
+        "status":{
+          "shape":"JobStatus",
+          "documentation":"<p>The current status of the threat model job.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the threat model job was created, in UTC format.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the threat model job was last updated, in UTC format.</p>"
+        },
+        "executionStartTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the threat model job execution started, in UTC format.</p>"
+        },
+        "executionEndTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the threat model job execution ended, in UTC format.</p>"
+        },
+        "sourceCode":{
+          "shape":"SourceCodeRepositoryList",
+          "documentation":"<p>The list of source code repositories used for threat modeling.</p>"
+        },
+        "integratedRepositories":{
+          "shape":"IntegratedRepositoryList",
+          "documentation":"<p>The list of integrated repositories used for threat modeling.</p>"
+        },
+        "documents":{
+          "shape":"DocumentList",
+          "documentation":"<p>The list of documents used for threat modeling.</p>"
+        },
+        "scopeDocs":{
+          "shape":"DocumentList",
+          "documentation":"<p>The scoped documents for the agent to focus on during threat modeling.</p>"
+        },
+        "errorInformation":{
+          "shape":"ErrorInformation",
+          "documentation":"<p>Error information if the threat model job encountered an error.</p>"
+        },
+        "systemOverview":{
+          "shape":"String",
+          "documentation":"<p>The system overview generated during threat modeling.</p>"
+        }
+      },
+      "documentation":"<p>Represents a threat model job, which is an execution instance of a threat model.</p>"
+    },
+    "ThreatModelJobIdList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "documentation":"<p>List of threat model job IDs.</p>"
+    },
+    "ThreatModelJobList":{
+      "type":"list",
+      "member":{"shape":"ThreatModelJob"},
+      "documentation":"<p>List of threat model jobs.</p>"
+    },
+    "ThreatModelJobSummary":{
+      "type":"structure",
+      "required":[
+        "threatModelJobId",
+        "threatModelId"
+      ],
+      "members":{
+        "threatModelJobId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the threat model job.</p>"
+        },
+        "threatModelId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the threat model associated with the job.</p>"
+        },
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space.</p>"
+        },
+        "title":{
+          "shape":"String",
+          "documentation":"<p>The title of the threat model job.</p>"
+        },
+        "status":{
+          "shape":"JobStatus",
+          "documentation":"<p>The current status of the threat model job.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the threat model job was created, in UTC format.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the threat model job was last updated, in UTC format.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a threat model job.</p>"
+    },
+    "ThreatModelJobSummaryList":{
+      "type":"list",
+      "member":{"shape":"ThreatModelJobSummary"},
+      "documentation":"<p>List of threat model job summaries.</p>"
+    },
+    "ThreatModelJobTask":{
+      "type":"structure",
+      "required":["taskId"],
+      "members":{
+        "taskId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the task.</p>"
+        },
+        "threatModelId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the threat model associated with the task.</p>"
+        },
+        "threatModelJobId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the threat model job that contains the task.</p>"
+        },
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space.</p>"
+        },
+        "title":{
+          "shape":"String",
+          "documentation":"<p>The title of the task.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the task.</p>"
+        },
+        "executionStatus":{
+          "shape":"TaskExecutionStatus",
+          "documentation":"<p>The current execution status of the task.</p>"
+        },
+        "logsLocation":{
+          "shape":"LogLocation",
+          "documentation":"<p>The location of the task execution logs.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the task was created, in UTC format.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the task was last updated, in UTC format.</p>"
+        }
+      },
+      "documentation":"<p>Represents an individual task within a threat model job.</p>"
+    },
+    "ThreatModelJobTaskList":{
+      "type":"list",
+      "member":{"shape":"ThreatModelJobTask"},
+      "documentation":"<p>List of threat model job tasks.</p>"
+    },
+    "ThreatModelJobTaskSummary":{
+      "type":"structure",
+      "required":["taskId"],
+      "members":{
+        "taskId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the task.</p>"
+        },
+        "threatModelId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the threat model associated with the task.</p>"
+        },
+        "threatModelJobId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the threat model job that contains the task.</p>"
+        },
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space.</p>"
+        },
+        "title":{
+          "shape":"String",
+          "documentation":"<p>The title of the task.</p>"
+        },
+        "executionStatus":{
+          "shape":"TaskExecutionStatus",
+          "documentation":"<p>The current execution status of the task.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the task was created, in UTC format.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the task was last updated, in UTC format.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a threat model job task.</p>"
+    },
+    "ThreatModelJobTaskSummaryList":{
+      "type":"list",
+      "member":{"shape":"ThreatModelJobTaskSummary"},
+      "documentation":"<p>List of threat model job task summaries.</p>"
+    },
+    "ThreatModelList":{
+      "type":"list",
+      "member":{"shape":"ThreatModel"},
+      "documentation":"<p>List of threat models.</p>"
+    },
+    "ThreatModelSummary":{
+      "type":"structure",
+      "required":[
+        "threatModelId",
+        "agentSpaceId",
+        "title"
+      ],
+      "members":{
+        "threatModelId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the threat model.</p>"
+        },
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space that contains the threat model.</p>"
+        },
+        "title":{
+          "shape":"String",
+          "documentation":"<p>The title of the threat model.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the threat model was created, in UTC format.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the threat model was last updated, in UTC format.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a threat model.</p>"
+    },
+    "ThreatModelSummaryList":{
+      "type":"list",
+      "member":{"shape":"ThreatModelSummary"},
+      "documentation":"<p>List of threat model summaries.</p>"
+    },
+    "ThreatSeverity":{
+      "type":"string",
+      "documentation":"<p>Severity level for a threat.</p>",
+      "enum":[
+        "CRITICAL",
+        "HIGH",
+        "MEDIUM",
+        "LOW",
+        "INFO"
+      ]
+    },
+    "ThreatStatus":{
+      "type":"string",
+      "documentation":"<p>Status of a threat.</p>",
+      "enum":[
+        "OPEN",
+        "RESOLVED",
+        "DISMISSED"
+      ]
+    },
+    "ThreatSummary":{
+      "type":"structure",
+      "members":{
+        "threatId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the threat.</p>"
+        },
+        "threatJobId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the threat model job that produced the threat.</p>"
+        },
+        "title":{
+          "shape":"String",
+          "documentation":"<p>A short title summarizing the threat.</p>"
+        },
+        "statement":{
+          "shape":"String",
+          "documentation":"<p>The natural-language threat statement.</p>"
+        },
+        "severity":{
+          "shape":"ThreatSeverity",
+          "documentation":"<p>The severity level of the threat.</p>"
+        },
+        "status":{
+          "shape":"ThreatStatus",
+          "documentation":"<p>The current status of the threat.</p>"
+        },
+        "stride":{
+          "shape":"StrideCategoryList",
+          "documentation":"<p>The STRIDE categories applicable to this threat.</p>"
+        },
+        "createdBy":{
+          "shape":"ThreatActor",
+          "documentation":"<p>Who created this threat.</p>"
+        },
+        "updatedBy":{
+          "shape":"ThreatActor",
+          "documentation":"<p>Who last updated this threat.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the threat was created, in UTC format.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the threat was last updated, in UTC format.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a threat.</p>"
+    },
+    "ThreatSummaryList":{
+      "type":"list",
+      "member":{"shape":"ThreatSummary"},
+      "documentation":"<p>List of threat summaries.</p>"
     },
     "ThrottlingException":{
       "type":"structure",
@@ -5363,6 +8725,10 @@
         "codeRemediationStrategy":{
           "shape":"CodeRemediationStrategy",
           "documentation":"<p>The updated code remediation strategy for the code review.</p>"
+        },
+        "validationMode":{
+          "shape":"ValidationMode",
+          "documentation":"<p>The updated validation mode for the code review. Valid values are SIMULATED and DISABLED.</p>"
         }
       },
       "documentation":"<p>Input for updating an existing code review.</p>"
@@ -5406,6 +8772,10 @@
         "codeRemediationStrategy":{
           "shape":"CodeRemediationStrategy",
           "documentation":"<p>The code remediation strategy for the code review.</p>"
+        },
+        "validationMode":{
+          "shape":"ValidationMode",
+          "documentation":"<p>The validation mode for the code review.</p>"
         }
       },
       "documentation":"<p>Output for the UpdateCodeReview operation.</p>"
@@ -5425,13 +8795,41 @@
           "shape":"String",
           "documentation":"<p>The unique identifier of the agent space that contains the finding.</p>"
         },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The updated name for the finding.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>The updated description for the finding.</p>"
+        },
+        "riskType":{
+          "shape":"String",
+          "documentation":"<p>The updated risk type for the finding.</p>"
+        },
         "riskLevel":{
           "shape":"RiskLevel",
           "documentation":"<p>The updated risk level for the finding.</p>"
         },
+        "riskScore":{
+          "shape":"String",
+          "documentation":"<p>The updated numerical risk score for the finding.</p>"
+        },
+        "attackScript":{
+          "shape":"String",
+          "documentation":"<p>The updated attack script for the finding.</p>"
+        },
+        "reasoning":{
+          "shape":"String",
+          "documentation":"<p>The updated reasoning for the finding.</p>"
+        },
         "status":{
           "shape":"FindingStatus",
           "documentation":"<p>The updated status for the finding.</p>"
+        },
+        "customerNote":{
+          "shape":"String",
+          "documentation":"<p>A customer-provided note on the finding.</p>"
         }
       },
       "documentation":"<p>Input for updating an existing security finding.</p>"
@@ -5513,6 +8911,10 @@
         "codeRemediationStrategy":{
           "shape":"CodeRemediationStrategy",
           "documentation":"<p>The updated code remediation strategy for the pentest.</p>"
+        },
+        "disableManagedSkills":{
+          "shape":"SkillTypeList",
+          "documentation":"<p>The updated list of managed skills to disable for this pentest. Valid values include FINDING_PERSONALIZATION and LOGIN_OPTIMIZATION.</p>"
         }
       },
       "documentation":"<p>Input for updating an existing pentest.</p>"
@@ -5558,6 +8960,153 @@
         }
       },
       "documentation":"<p>Output for the UpdatePentest operation.</p>"
+    },
+    "UpdatePrivateConnectionCertificateInput":{
+      "type":"structure",
+      "required":[
+        "privateConnectionName",
+        "certificate"
+      ],
+      "members":{
+        "privateConnectionName":{
+          "shape":"PrivateConnectionName",
+          "documentation":"<p>The name of the private connection to update.</p>"
+        },
+        "certificate":{
+          "shape":"CertificateChain",
+          "documentation":"<p>The PEM-encoded certificate chain for the private connection.</p>"
+        }
+      }
+    },
+    "UpdatePrivateConnectionCertificateOutput":{
+      "type":"structure",
+      "required":[
+        "name",
+        "type",
+        "status"
+      ],
+      "members":{
+        "name":{
+          "shape":"PrivateConnectionName",
+          "documentation":"<p>The name of the private connection.</p>"
+        },
+        "type":{
+          "shape":"PrivateConnectionType",
+          "documentation":"<p>The type of the private connection, indicating whether it is service-managed or self-managed.</p>"
+        },
+        "status":{
+          "shape":"PrivateConnectionStatus",
+          "documentation":"<p>The current status of the private connection.</p>"
+        },
+        "resourceGatewayId":{
+          "shape":"ResourceGatewayId",
+          "documentation":"<p>The identifier or ARN of the VPC Lattice resource gateway.</p>"
+        },
+        "hostAddress":{
+          "shape":"HostAddress",
+          "documentation":"<p>The IP address or DNS name of the target resource.</p>"
+        },
+        "vpcId":{
+          "shape":"PrivateConnectionVpcId",
+          "documentation":"<p>The identifier of the VPC the resource gateway is created in.</p>"
+        },
+        "resourceConfigurationId":{
+          "shape":"ResourceConfigurationId",
+          "documentation":"<p>The identifier or ARN of the VPC Lattice resource configuration.</p>"
+        },
+        "certificateExpiryTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the connection's certificate expires, in UTC format.</p>"
+        },
+        "dnsResolution":{
+          "shape":"ResourceConfigDnsResolution",
+          "documentation":"<p>The DNS resolution mode for the resource gateway.</p>"
+        },
+        "failureMessage":{
+          "shape":"String",
+          "documentation":"<p>A message describing why the private connection entered a failed state, if applicable.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags attached to the private connection.</p>"
+        }
+      }
+    },
+    "UpdateSecurityRequirementEntry":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"SecurityRequirementName",
+          "documentation":"<p>The name of the security requirement to update. This is an immutable identifier and cannot be changed once the requirement is created.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>The updated description of the security requirement.</p>"
+        },
+        "domain":{
+          "shape":"String",
+          "documentation":"<p>The updated security domain the requirement belongs to.</p>"
+        },
+        "evaluation":{
+          "shape":"String",
+          "documentation":"<p>The updated evaluation criteria used to assess compliance with this requirement.</p>"
+        },
+        "remediation":{
+          "shape":"String",
+          "documentation":"<p>The updated remediation steps when the requirement is not met.</p>"
+        }
+      },
+      "documentation":"<p>Contains the details for updating an existing security requirement within a pack. The name is an immutable identifier used to locate the requirement and cannot be modified.</p>"
+    },
+    "UpdateSecurityRequirementEntryList":{
+      "type":"list",
+      "member":{"shape":"UpdateSecurityRequirementEntry"},
+      "documentation":"<p>List of security requirement updates to apply.</p>"
+    },
+    "UpdateSecurityRequirementPackInput":{
+      "type":"structure",
+      "required":["packId"],
+      "members":{
+        "packId":{
+          "shape":"SecurityRequirementPackId",
+          "documentation":"<p>The unique identifier of the security requirement pack to update.</p>"
+        },
+        "name":{
+          "shape":"SecurityRequirementPackName",
+          "documentation":"<p>The updated name of the security requirement pack.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>The updated description of the security requirement pack.</p>"
+        },
+        "status":{
+          "shape":"SecurityRequirementPackStatus",
+          "documentation":"<p>The updated status of the security requirement pack.</p>"
+        }
+      }
+    },
+    "UpdateSecurityRequirementPackOutput":{
+      "type":"structure",
+      "required":["packId"],
+      "members":{
+        "packId":{
+          "shape":"SecurityRequirementPackId",
+          "documentation":"<p>The unique identifier of the security requirement pack.</p>"
+        },
+        "name":{
+          "shape":"SecurityRequirementPackName",
+          "documentation":"<p>The name of the security requirement pack.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>The description of the security requirement pack.</p>"
+        },
+        "status":{
+          "shape":"SecurityRequirementPackStatus",
+          "documentation":"<p>The status of the security requirement pack.</p>"
+        }
+      }
     },
     "UpdateTargetDomainInput":{
       "type":"structure",
@@ -5615,6 +9164,263 @@
         }
       },
       "documentation":"<p>Output for the UpdateTargetDomain operation.</p>"
+    },
+    "UpdateThreatInput":{
+      "type":"structure",
+      "required":[
+        "threatId",
+        "agentSpaceId"
+      ],
+      "members":{
+        "threatId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the threat to update.</p>"
+        },
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space.</p>"
+        },
+        "title":{
+          "shape":"String",
+          "documentation":"<p>A short title summarizing the threat.</p>"
+        },
+        "status":{
+          "shape":"ThreatStatus",
+          "documentation":"<p>The updated status of the threat.</p>"
+        },
+        "comments":{
+          "shape":"String",
+          "documentation":"<p>Optional customer comment.</p>"
+        },
+        "statement":{
+          "shape":"String",
+          "documentation":"<p>The updated natural-language threat statement.</p>"
+        },
+        "severity":{
+          "shape":"ThreatSeverity",
+          "documentation":"<p>The updated severity level of the threat.</p>"
+        },
+        "threatSource":{
+          "shape":"String",
+          "documentation":"<p>The updated actor or origin of the threat.</p>"
+        },
+        "prerequisites":{
+          "shape":"String",
+          "documentation":"<p>The updated conditions required for the threat to be exploitable.</p>"
+        },
+        "threatAction":{
+          "shape":"String",
+          "documentation":"<p>The updated description of what the threat source can do.</p>"
+        },
+        "threatImpact":{
+          "shape":"String",
+          "documentation":"<p>The updated direct consequence of the threat action.</p>"
+        },
+        "impactedGoal":{
+          "shape":"StringList",
+          "documentation":"<p>The updated security goals affected by the threat.</p>"
+        },
+        "impactedAssets":{
+          "shape":"StringList",
+          "documentation":"<p>The updated list of specific assets affected by the threat.</p>"
+        },
+        "anchor":{
+          "shape":"ThreatAnchorShape",
+          "documentation":"<p>The updated DFD element this threat is anchored to.</p>"
+        },
+        "evidence":{
+          "shape":"ThreatEvidenceList",
+          "documentation":"<p>The updated source code files supporting the threat.</p>"
+        },
+        "recommendation":{
+          "shape":"String",
+          "documentation":"<p>The updated recommended mitigation guidance for this threat.</p>"
+        }
+      },
+      "documentation":"<p>Input for updating an existing threat.</p>"
+    },
+    "UpdateThreatModelInput":{
+      "type":"structure",
+      "required":[
+        "threatModelId",
+        "agentSpaceId"
+      ],
+      "members":{
+        "threatModelId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the threat model to update.</p>"
+        },
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space that contains the threat model.</p>"
+        },
+        "title":{
+          "shape":"String",
+          "documentation":"<p>The updated title of the threat model.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>The updated description of the application or system being threat modeled.</p>"
+        },
+        "assets":{
+          "shape":"Assets",
+          "documentation":"<p>The updated assets for the threat model.</p>"
+        },
+        "scopeDocs":{
+          "shape":"DocumentList",
+          "documentation":"<p>The updated scoped documents for the agent to focus on during threat modeling.</p>"
+        },
+        "serviceRole":{
+          "shape":"ServiceRole",
+          "documentation":"<p>The updated IAM service role for the threat model.</p>"
+        },
+        "logConfig":{
+          "shape":"CloudWatchLog",
+          "documentation":"<p>The updated CloudWatch Logs configuration for the threat model.</p>"
+        }
+      },
+      "documentation":"<p>Input for updating an existing threat model.</p>"
+    },
+    "UpdateThreatModelOutput":{
+      "type":"structure",
+      "required":["threatModelId"],
+      "members":{
+        "threatModelId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the threat model.</p>"
+        },
+        "title":{
+          "shape":"String",
+          "documentation":"<p>The title of the threat model.</p>"
+        },
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space that contains the threat model.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the application or system being threat modeled.</p>"
+        },
+        "assets":{
+          "shape":"Assets",
+          "documentation":"<p>The assets included in the threat model.</p>"
+        },
+        "scopeDocs":{
+          "shape":"DocumentList",
+          "documentation":"<p>The scoped documents for the agent to focus on during threat modeling.</p>"
+        },
+        "serviceRole":{
+          "shape":"ServiceRole",
+          "documentation":"<p>The IAM service role used for the threat model.</p>"
+        },
+        "logConfig":{
+          "shape":"CloudWatchLog",
+          "documentation":"<p>The CloudWatch Logs configuration for the threat model.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the threat model was created, in UTC format.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the threat model was last updated, in UTC format.</p>"
+        }
+      },
+      "documentation":"<p>Output for the UpdateThreatModel operation.</p>"
+    },
+    "UpdateThreatOutput":{
+      "type":"structure",
+      "required":[
+        "threatId",
+        "threatJobId"
+      ],
+      "members":{
+        "threatId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the threat.</p>"
+        },
+        "threatJobId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the threat model job the threat belongs to.</p>"
+        },
+        "title":{
+          "shape":"String",
+          "documentation":"<p>A short title summarizing the threat.</p>"
+        },
+        "statement":{
+          "shape":"String",
+          "documentation":"<p>The natural-language threat statement.</p>"
+        },
+        "severity":{
+          "shape":"ThreatSeverity",
+          "documentation":"<p>The severity level of the threat.</p>"
+        },
+        "status":{
+          "shape":"ThreatStatus",
+          "documentation":"<p>The current status of the threat.</p>"
+        },
+        "comments":{
+          "shape":"String",
+          "documentation":"<p>Optional customer comment on the threat.</p>"
+        },
+        "stride":{
+          "shape":"StrideCategoryList",
+          "documentation":"<p>The STRIDE categories applicable to this threat.</p>"
+        },
+        "threatSource":{
+          "shape":"String",
+          "documentation":"<p>The actor or origin of the threat.</p>"
+        },
+        "prerequisites":{
+          "shape":"String",
+          "documentation":"<p>The conditions required for the threat to be exploitable.</p>"
+        },
+        "threatAction":{
+          "shape":"String",
+          "documentation":"<p>What the threat source can do.</p>"
+        },
+        "threatImpact":{
+          "shape":"String",
+          "documentation":"<p>The direct consequence of the threat action.</p>"
+        },
+        "impactedGoal":{
+          "shape":"StringList",
+          "documentation":"<p>The security goals affected by the threat.</p>"
+        },
+        "impactedAssets":{
+          "shape":"StringList",
+          "documentation":"<p>The specific assets affected by the threat.</p>"
+        },
+        "anchor":{
+          "shape":"ThreatAnchorShape",
+          "documentation":"<p>The DFD element this threat is anchored to.</p>"
+        },
+        "evidence":{
+          "shape":"ThreatEvidenceList",
+          "documentation":"<p>The source code files supporting the threat.</p>"
+        },
+        "recommendation":{
+          "shape":"String",
+          "documentation":"<p>The recommended mitigation guidance for this threat.</p>"
+        },
+        "createdBy":{
+          "shape":"ThreatActor",
+          "documentation":"<p>Who created this threat.</p>"
+        },
+        "updatedBy":{
+          "shape":"ThreatActor",
+          "documentation":"<p>Who last updated this threat.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the threat was created, in UTC format.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the threat was last updated, in UTC format.</p>"
+        }
+      },
+      "documentation":"<p>Output for the UpdateThreat operation.</p>"
     },
     "UriList":{
       "type":"list",
@@ -5690,6 +9496,25 @@
     "ValidationExceptionFieldList":{
       "type":"list",
       "member":{"shape":"ValidationExceptionField"}
+    },
+    "ValidationMode":{
+      "type":"string",
+      "documentation":"<p>Mode of validation to perform on findings</p>",
+      "enum":[
+        "DISABLED",
+        "SIMULATED"
+      ]
+    },
+    "ValidationStatus":{
+      "type":"string",
+      "documentation":"<p>Per-finding sandbox validation status</p>",
+      "enum":[
+        "CONFIRMED",
+        "NOT_REPRODUCED",
+        "VALIDATION_FAILED",
+        "VALIDATING",
+        "NOT_VALIDATED"
+      ]
     },
     "VerificationDetails":{
       "type":"structure",

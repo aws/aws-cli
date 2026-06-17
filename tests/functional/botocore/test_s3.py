@@ -42,8 +42,6 @@ from tests import (
 )
 
 DATE = datetime.datetime(2021, 8, 27, 0, 0, 0, tzinfo=datetime.timezone.utc)
-
-
 class NonSeekableStream(io.RawIOBase):
     def __init__(self, data):
         self._data = data
@@ -58,8 +56,6 @@ class NonSeekableStream(io.RawIOBase):
 
     def readable(self):
         return True
-
-
 class TestS3BucketValidation(unittest.TestCase):
     def test_invalid_bucket_name_raises_error(self):
         session = botocore.session.get_session()
@@ -68,16 +64,12 @@ class TestS3BucketValidation(unittest.TestCase):
             s3.put_object(
                 Bucket="adfgasdfadfs/bucket/name", Key="foo", Body=b"asdf"
             )
-
-
 class BaseS3OperationTest(BaseSessionTest):
     def setUp(self):
         super().setUp()
         self.region = "us-west-2"
         self.client = self.session.create_client("s3", self.region)
         self.http_stubber = ClientHTTPStubber(self.client)
-
-
 class BaseS3ClientConfigurationTest(BaseSessionTest):
     _V4_AUTH_REGEX = re.compile(
         r"AWS4-HMAC-SHA256 "
@@ -140,8 +132,6 @@ class BaseS3ClientConfigurationTest(BaseSessionTest):
         fileobj.write(contents)
         fileobj.flush()
         self.environ["AWS_CONFIG_FILE"] = fileobj.name
-
-
 class TestS3ClientConfigResolution(BaseS3ClientConfigurationTest):
     def test_no_s3_config(self):
         client = self.create_s3_client()
@@ -432,8 +422,6 @@ class TestS3ClientConfigResolution(BaseS3ClientConfigurationTest):
         self.environ["AWS_S3_US_EAST_1_REGIONAL_ENDPOINT"] = "regional"
         client = self.create_s3_client(region_name="aws-global")
         self.assertEqual(client.meta.region_name, "aws-global")
-
-
 class TestS3Copy(BaseS3OperationTest):
     def create_s3_client(self, **kwargs):
         client_kwargs = {"region_name": self.region}
@@ -471,8 +459,6 @@ class TestS3Copy(BaseS3OperationTest):
         self.assertEqual(len(self.http_stubber.requests), 2)
         self.assertEqual(response["ResponseMetadata"]["HTTPStatusCode"], 200)
         self.assertTrue("CopyObjectResult" in response)
-
-
 class TestS3200ErrorResponse(BaseS3OperationTest):
     def create_s3_client(self, **kwargs):
         client_kwargs = {"region_name": self.region}
@@ -552,8 +538,6 @@ class TestS3200ErrorResponse(BaseS3OperationTest):
         # Validate that the status code remains 200 on operations without a body.
         self.assertEqual(len(self.http_stubber.requests), 1)
         self.assertEqual(response["ResponseMetadata"]["HTTPStatusCode"], 200)
-
-
 class TestAccesspointArn(BaseS3ClientConfigurationTest):
     def setUp(self):
         super().setUp()
@@ -1315,8 +1299,6 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
         self.assertIn(
             b"AWS4-ECDSA-P256-SHA256", headers.get("Authorization", "")
         )
-
-
 class TestOnlyAsciiCharsAllowed(BaseS3OperationTest):
     def test_validates_non_ascii_chars_trigger_validation_error(self):
         self.http_stubber.add_response()
@@ -1327,8 +1309,6 @@ class TestOnlyAsciiCharsAllowed(BaseS3OperationTest):
                     Key="bar",
                     Metadata={"goodkey": "good", "non-ascii": "\u2713"},
                 )
-
-
 class TestS3GetBucketLifecycle(BaseS3OperationTest):
     def test_multiple_transitions_returns_one(self):
         response_body = (
@@ -1377,8 +1357,6 @@ class TestS3GetBucketLifecycle(BaseS3OperationTest):
             response["Rules"][1]["NoncurrentVersionTransition"],
             {"NoncurrentDays": 40, "StorageClass": "STANDARD_IA"},
         )
-
-
 class TestS3PutObject(BaseS3OperationTest):
     def test_500_error_with_non_xml_body(self):
         # Note: This exact tesdict may not be applicable from
@@ -1416,8 +1394,6 @@ class TestS3PutObject(BaseS3OperationTest):
                 response["ResponseMetadata"]["HTTPStatusCode"], 200
             )
             self.assertEqual(len(http_stubber.requests), 2)
-
-
 class TestS3ExpiresHeaderResponse(BaseS3OperationTest):
     def test_valid_expires_value_in_response(self):
         expires_value = "Thu, 01 Jan 1970 00:00:00 GMT"
@@ -1451,8 +1427,6 @@ class TestS3ExpiresHeaderResponse(BaseS3OperationTest):
                     any(warning_msg in entry for entry in log.output),
                     f'Expected warning message not found in logs. Logs: {log.output}',
                 )
-
-
 class TestWriteGetObjectResponse(BaseS3ClientConfigurationTest):
     def create_stubbed_s3_client(self, **kwargs):
         client = self.create_s3_client(**kwargs)
@@ -1516,8 +1490,6 @@ class TestWriteGetObjectResponse(BaseS3ClientConfigurationTest):
                 RequestRoute="my-route/",
                 RequestToken="SecretToken",
             )
-
-
 class TestS3SigV4(BaseS3OperationTest):
     def setUp(self):
         super().setUp()
@@ -1733,8 +1705,6 @@ class TestS3SigV4(BaseS3OperationTest):
         sent_headers = self.get_sent_headers()
         sha_header = sent_headers.get("x-amz-content-sha256")
         self.assertNotEqual(sha_header, b"UNSIGNED-PAYLOAD")
-
-
 class TestCanSendIntegerHeaders(BaseSessionTest):
     def test_int_values_with_sigv4(self):
         s3 = self.session.create_client(
@@ -1759,8 +1729,6 @@ class TestCanSendIntegerHeaders(BaseSessionTest):
             # string '3'.  This also means we've made it pass the signer which
             # expects string values in order to sign properly.
             self.assertEqual(headers["Content-Length"], b"3")
-
-
 class TestRegionRedirect(BaseS3OperationTest):
     def setUp(self):
         super().setUp()
@@ -1942,8 +1910,6 @@ class TestRegionRedirect(BaseS3OperationTest):
                 )
             else:
                 self.fail("PermanentRedirect error should have been raised")
-
-
 class TestFipsRegionRedirect(BaseS3OperationTest):
     def setUp(self):
         super().setUp()
@@ -2124,8 +2090,6 @@ class TestFipsRegionRedirect(BaseS3OperationTest):
                 )
             else:
                 self.fail("PermanentRedirect error should have been raised")
-
-
 class TestGeneratePresigned(BaseS3OperationTest):
     def assert_is_v2_presigned_url(self, url):
         qs_components = parse_qs(urlsplit(url).query)
@@ -2285,8 +2249,6 @@ class TestGeneratePresigned(BaseS3OperationTest):
             "get_object", {"Bucket": "mybucket", "Key": "mykey"}
         )
         self.assert_is_v2_presigned_url(url)
-
-
 CHECKSUM_TEST_CASES = [
     ("put_bucket_tagging", {"Bucket": "foo", "Tagging": {"TagSet": []}}),
     (
@@ -2360,8 +2322,6 @@ accesspoint_arn_gov = (
 accesspoint_cross_region_arn_gov = (
     "arn:aws-us-gov:s3:us-gov-east-1:123456789012:accesspoint:myendpoint"
 )
-
-
 @pytest.mark.parametrize("operation, operation_kwargs", CHECKSUM_TEST_CASES)
 def test_checksums_included_in_expected_operations(
     operation, operation_kwargs
@@ -2373,8 +2333,6 @@ def test_checksums_included_in_expected_operations(
         call = getattr(client, operation)
         call(**operation_kwargs)
         assert "x-amz-checksum-crc32" in stub.requests[-1].headers
-
-
 @pytest.mark.parametrize(
     "content_encoding, expected_header",
     [("foo", b"foo,aws-chunked"), (None, b"aws-chunked")],
@@ -2394,8 +2352,6 @@ def test_checksum_content_encoding(content_encoding, expected_header):
         s3.put_object(**op_kwargs)
         request_headers = http_stubber.requests[-1].headers
         assert request_headers["Content-Encoding"] == expected_header
-
-
 @mock.patch('botocore.endpoint.URLLib3Session.send')
 @mock.patch('botocore.client.apply_request_checksum')
 def test_retries_reuse_request_checksum(
@@ -2420,8 +2376,6 @@ def test_retries_reuse_request_checksum(
     assert mock_urllib3_session_send.call_count == 2
     # But request checksum was only calculated once.
     assert mock_apply_request_checksum.call_count == 1
-
-
 def _s3_addressing_test_cases():
     # The default behavior for sigv2. DNS compatible buckets
     yield dict(
@@ -3403,8 +3357,6 @@ def _s3_addressing_test_cases():
             "us-east-1.amazonaws.com/key"
         ),
     )
-
-
 def _s3_addressing_invalid_test_cases():
     # client region does not match access point ARN region and use_arn_region
     # is False. If sent to service, this results in an "invalid access point"
@@ -3447,22 +3399,16 @@ def _s3_addressing_invalid_test_cases():
         expected_exception_type=UnsupportedS3AccesspointConfigurationError,
         expected_exception_regex=None,
     )
-
-
 @pytest.mark.parametrize("test_case", _s3_addressing_test_cases())
 def test_correct_url_used_for_s3(test_case):
     # Test that given various sets of config options and bucket names,
     # we construct the expect endpoint url.
     _verify_expected_endpoint_url(**test_case)
-
-
 @pytest.mark.parametrize("test_case", _s3_addressing_invalid_test_cases())
 def test_correct_exception_raise_for_s3(test_case):
     # Test that invalid sets of config options and bucket names, result in
     # appropriate exceptions.
     _verify_expected_exception(**test_case)
-
-
 def _verify_expected_endpoint_url(
     region=None,
     bucket="bucket",
@@ -3486,8 +3432,6 @@ def _verify_expected_endpoint_url(
         http_stubber.add_response()
         s3.put_object(Bucket=bucket, Key=key, Body=b"bar")
         assert http_stubber.requests[0].url == expected_url
-
-
 def _verify_expected_exception(
     expected_exception_type,
     expected_exception_regex=None,
@@ -3514,8 +3458,6 @@ def _verify_expected_exception(
             expected_exception_type, match=expected_exception_regex
         ):
             s3.put_object(Bucket=bucket, Key=key, Body=b"bar")
-
-
 def _create_s3_client(
     region="us-west-2",
     is_secure=True,
@@ -3547,8 +3489,6 @@ def _create_s3_client(
             endpoint_url=endpoint_url,
         )
         return s3
-
-
 def _addressing_for_presigned_url_test_cases():
     # us-east-1, or the "global" endpoint. A signature version of
     # None means the user doesn't have signature version configured.
@@ -3796,8 +3736,6 @@ def _addressing_for_presigned_url_test_cases():
         s3_config={"addressing_style": "virtual"},
         expected_url="https://bucket.s3.amazonaws.com/key",
     )
-
-
 @pytest.mark.parametrize(
     "test_case", _addressing_for_presigned_url_test_cases()
 )
@@ -3805,8 +3743,6 @@ def test_addressing_for_presigned_urls(test_case):
     # Here we're just focusing on the addressing mode used for presigned URLs.
     # We special case presigned URLs due to backward compatibility.
     _verify_presigned_url_addressing(**test_case)
-
-
 def _verify_presigned_url_addressing(
     region=None,
     bucket="bucket",
@@ -3832,8 +3768,6 @@ def _verify_presigned_url_addressing(
     parts = urlsplit(url)
     actual = "{}://{}{}".format(*parts[:3])
     assert actual == expected_url
-
-
 class TestS3XMLPayloadEscape(BaseS3OperationTest):
     def assert_correct_crc32_checksum(self, request):
         checksum = get_checksum_cls()()
@@ -3872,8 +3806,6 @@ class TestS3XMLPayloadEscape(BaseS3OperationTest):
         self.assertNotIn(b"my\r\n\rprefix", request.body)
         self.assertIn(b"my&#xD;&#xA;&#xD;prefix", request.body)
         self.assert_correct_crc32_checksum(request)
-
-
 class TestExpectContinueBehavior(BaseSessionTest):
     def test_sets_100_continute_with_body(self):
         op_kwargs = {
@@ -3891,17 +3823,15 @@ class TestExpectContinueBehavior(BaseSessionTest):
 
     def test_does_not_set_100_continute_with_empty_body(self):
         environ = {'BOTO_EXPERIMENTAL__NO_EMPTY_CONTINUE': "True"}
-        self.environ_patch = mock.patch('os.environ', environ)
-        self.environ_patch.start()
-        op_kwargs = {"Bucket": "mybucket", "Key": "mykey", "Body": ""}
-        s3 = _create_s3_client()
-        with ClientHTTPStubber(s3) as http_stubber:
-            http_stubber.add_response()
-            s3.put_object(**op_kwargs)
-            expect_header = http_stubber.requests[-1].headers.get("Expect")
-            self.assertIsNone(expect_header)
+        with mock.patch('os.environ', environ):
 
-
+            op_kwargs = {"Bucket": "mybucket", "Key": "mykey", "Body": ""}
+            s3 = _create_s3_client()
+            with ClientHTTPStubber(s3) as http_stubber:
+                http_stubber.add_response()
+                s3.put_object(**op_kwargs)
+                expect_header = http_stubber.requests[-1].headers.get("Expect")
+                self.assertIsNone(expect_header)
 class TestParameterInjection(BaseS3OperationTest):
     BUCKET = "foo"
     KEY = "bar"
@@ -3922,8 +3852,6 @@ class TestParameterInjection(BaseS3OperationTest):
             request.context['input_params']['Bucket'], self.BUCKET
         )
         self.assertEqual(request.context['input_params']['Key'], self.KEY)
-
-
 @pytest.mark.parametrize(
     "bucket, key, expected_path, expected_hostname",
     [

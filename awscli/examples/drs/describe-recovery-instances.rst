@@ -2,8 +2,7 @@
 
 The following ``describe-recovery-instances`` example describes all recovery instances in your account. ::
 
-    aws drs describe-recovery-instances \
-        --filters '{}'
+    aws drs describe-recovery-instances
 
 Output::
 

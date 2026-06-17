@@ -323,7 +323,7 @@ class TestCLISessionOrchestrator:
         assert session_data_2.timestamp != session_data_1.timestamp
 
 
-def test_register_session_id_event_injects_sid_on_before_call():
+def test_register_session_id_event_injects_sid_on_before_create_client():
     session = MagicMock(Session)
     session.user_agent_extra = 'md/installer#source'
     event_emitter = MagicMock()
@@ -338,9 +338,11 @@ def test_register_session_id_event_injects_sid_on_before_call():
         session, orchestrator_factory=fake_orchestrator_factory
     )
     handler = event_emitter.register.call_args[0][1]
-    handler(params={})
+    handler()
     assert session.user_agent_extra == 'md/installer#source sid/my-session-id'
-    event_emitter.unregister.assert_called_once_with('before-call', handler)
+    event_emitter.unregister.assert_called_once_with(
+        'before-create-client', handler
+    )
 
 
 def test_register_session_id_event_catches_bare_exceptions():
@@ -352,7 +354,7 @@ def test_register_session_id_event_catches_bare_exceptions():
         session, orchestrator_factory=MagicMock(side_effect=Exception)
     )
     handler = event_emitter.register.call_args[0][1]
-    handler(params={})
+    handler()
     assert session.user_agent_extra == ''
 
 

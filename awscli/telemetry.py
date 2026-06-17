@@ -301,15 +301,15 @@ def register_session_id_event(session, orchestrator_factory=None):
         orchestrator_factory = _get_cli_session_orchestrator
     event_emitter = session.get_component('event_emitter')
 
-    def _inject_session_id(params, **kwargs):
+    def _inject_session_id(**kwargs):
         try:
             orchestrator = orchestrator_factory()
             sid_component = UserAgentComponent(
                 "sid", orchestrator.session_id
             ).to_string()
-            extra = session.user_agent_extra
             # Insert sid after md/installer to preserve original
             # user-agent component ordering.
+            extra = session.user_agent_extra
             idx = extra.find('md/installer')
             end = extra.find(' ', idx)
             if end == -1:
@@ -322,6 +322,6 @@ def register_session_id_event(session, orchestrator_factory=None):
             # can't be generated since it's not critical for users. Issues
             # with session data should instead be caught server-side.
             pass
-        event_emitter.unregister('before-call', _inject_session_id)
+        event_emitter.unregister('before-create-client', _inject_session_id)
 
-    event_emitter.register('before-call', _inject_session_id)
+    event_emitter.register('before-create-client', _inject_session_id)

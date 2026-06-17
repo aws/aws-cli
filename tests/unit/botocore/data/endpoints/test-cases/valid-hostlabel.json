@@ -1,0 +1,56 @@
+{
+  "version": "1.0",
+  "testCases": [
+    {
+      "documentation": "standard region is a valid hostlabel",
+      "params": {
+        "Region": "us-east-1"
+      },
+      "expect": {
+        "endpoint": {
+          "url": "https://us-east-1.amazonaws.com"
+        }
+      }
+    },
+    {
+      "documentation": "starting with a number is a valid hostlabel",
+      "params": {
+        "Region": "3aws4"
+      },
+      "expect": {
+        "endpoint": {
+          "url": "https://3aws4.amazonaws.com"
+        }
+      }
+    },
+    {
+      "documentation": "when there are dots, only match if subdomains are allowed",
+      "params": {
+        "Region": "part1.part2"
+      },
+      "expect": {
+        "endpoint": {
+          "url": "https://part1.part2-subdomains.amazonaws.com"
+        }
+      }
+    },
+    {
+      "documentation": "a space is never a valid hostlabel",
+      "params": {
+        "Region": "part1 part2"
+      },
+      "expect": {
+        "error": "Invalid hostlabel"
+      }
+    },
+    {
+      "documentation": "an empty string is not a valid hostlabel",
+      "params": {
+        "Region": ""
+      },
+      "expect": {
+        "error": "Invalid hostlabel"
+      }
+    }
+  ]
+}

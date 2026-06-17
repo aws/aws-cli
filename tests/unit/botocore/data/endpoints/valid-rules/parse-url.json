@@ -1,0 +1,102 @@
+{
+  "version": "1.3",
+  "parameters": {
+    "Region": {
+      "type": "string",
+      "builtIn": "AWS::Region"
+    },
+    "Endpoint": {
+      "type": "string"
+    }
+  },
+  "rules": [
+    {
+      "documentation": "endpoint is set and is a valid URL",
+      "conditions": [
+        {
+          "fn": "isSet",
+          "argv": [
+            {
+              "ref": "Endpoint"
+            }
+          ]
+        },
+        {
+          "fn": "parseURL",
+          "argv": [
+            "{Endpoint}"
+          ],
+          "assign": "url"
+        }
+      ],
+      "rules": [
+        {
+          "conditions": [
+            {
+              "fn": "booleanEquals",
+              "argv": [
+                {
+                  "fn": "getAttr",
+                  "argv": [
+                    {
+                      "ref": "url"
+                    },
+                    "isIp"
+                  ]
+                },
+                true
+              ]
+            }
+          ],
+          "endpoint": {
+            "url": "{url#scheme}://{url#authority}{url#normalizedPath}is-ip-addr"
+          },
+          "type": "endpoint"
+        },
+        {
+          "conditions": [
+            {
+              "fn": "stringEquals",
+              "argv": [
+                "{url#path}",
+                "/port"
+              ]
+            }
+          ],
+          "endpoint": {
+            "url": "{url#scheme}://{url#authority}/uri-with-port"
+          },
+          "type": "endpoint"
+        },
+        {
+          "conditions": [
+            {
+              "fn": "stringEquals",
+              "argv": [
+                "{url#normalizedPath}",
+                "/"
+              ]
+            }
+          ],
+          "endpoint": {
+            "url": "https://{url#scheme}-{url#authority}-nopath.example.com"
+          },
+          "type": "endpoint"
+        },
+        {
+          "conditions": [],
+          "endpoint": {
+            "url": "https://{url#scheme}-{url#authority}.example.com/path-is{url#path}"
+          },
+          "type": "endpoint"
+        }
+      ],
+      "type": "tree"
+    },
+    {
+      "error": "endpoint was invalid",
+      "conditions": [],
+      "type": "error"
+    }
+  ]
+}

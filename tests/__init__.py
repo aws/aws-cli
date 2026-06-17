@@ -364,3 +364,24 @@ from tests.utils.botocore import (
     skip_if_windows,
     temporary_file,
 )
+
+# s3transfer testing utilities
+from tests.utils.s3transfer import (
+    BaseGeneralInterfaceTest,
+    BaseSubmissionTaskTest,
+    BaseTaskTest,
+    ETagProvider,
+    FileCreator,
+    FileSizeProvider,
+    NonSeekableReader,
+    NonSeekableWriter,
+    RecordingExecutor,
+    RecordingOSUtils,
+    RecordingSubscriber,
+    StreamWithError,
+    StubbedClientTest,
+    TransferCoordinatorWithInterrupt,
+    assert_files_equal,
+    random_bucket_name,
+    skip_if_using_serial_implementation,
+)

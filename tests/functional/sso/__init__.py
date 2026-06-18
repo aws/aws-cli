@@ -50,11 +50,6 @@ class BaseSSOTest(BaseAWSCommandParamsTest):
             ),
         )
         self._resolve_patch.start()
-        self._is_aws_owned_patch = mock.patch(
-            'awscli.customizations.sso.login.is_aws_owned_domain',
-            return_value=True,
-        )
-        self._is_aws_owned_patch.start()
         self.open_browser_mock = mock.Mock(spec=OpenBrowserHandler)
         self.open_browser_patch = mock.patch(
             'awscli.customizations.sso.utils.OpenBrowserHandler',
@@ -93,7 +88,6 @@ class BaseSSOTest(BaseAWSCommandParamsTest):
         self.auth_code_fetcher_patch.stop()
         self.uuid_patch.stop()
         self._resolve_patch.stop()
-        self._is_aws_owned_patch.stop()
         self.token_cache_dir_patch.stop()
 
     def add_oidc_device_responses(

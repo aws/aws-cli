@@ -1,0 +1,95 @@
+{
+  "parameters": {
+    "TestCaseId": {
+      "type": "string",
+      "required": true,
+      "documentation": "Test case id used to select the test case to use"
+    },
+    "Input": {
+      "type": "string",
+      "required": true,
+      "documentation": "the input used to test substring"
+    }
+  },
+  "rules": [
+    {
+      "documentation": "Substring from beginning of input",
+      "conditions": [
+        {
+          "fn": "stringEquals",
+          "argv": [
+            "{TestCaseId}",
+            "1"
+          ]
+        },
+        {
+          "fn": "substring",
+          "argv": [
+            "{Input}",
+            0,
+            4,
+            false
+          ],
+          "assign": "output"
+        }
+      ],
+      "error": "The value is: `{output}`",
+      "type": "error"
+    },
+    {
+      "documentation": "Substring from end of input",
+      "conditions": [
+        {
+          "fn": "stringEquals",
+          "argv": [
+            "{TestCaseId}",
+            "2"
+          ]
+        },
+        {
+          "fn": "substring",
+          "argv": [
+            "{Input}",
+            0,
+            4,
+            true
+          ],
+          "assign": "output"
+        }
+      ],
+      "error": "The value is: `{output}`",
+      "type": "error"
+    },
+    {
+      "documentation": "Substring the middle of the string",
+      "conditions": [
+        {
+          "fn": "stringEquals",
+          "argv": [
+            "{TestCaseId}",
+            "3"
+          ]
+        },
+        {
+          "fn": "substring",
+          "argv": [
+            "{Input}",
+            1,
+            3,
+            false
+          ],
+          "assign": "output"
+        }
+      ],
+      "error": "The value is: `{output}`",
+      "type": "error"
+    },
+    {
+      "documentation": "fallback when no tests match",
+      "conditions": [],
+      "error": "No tests matched",
+      "type": "error"
+    }
+  ],
+  "version": "1.3"
+}

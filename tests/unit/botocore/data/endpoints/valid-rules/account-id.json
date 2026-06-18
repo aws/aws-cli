@@ -1,0 +1,130 @@
+{
+  "version": "1.0",
+  "parameters": {
+    "AccountId": {
+      "type": "String",
+      "builtIn": "AWS::Auth::AccountId",
+      "documentation": "The AWS account ID used in the endpoint for a request, eg. `123456789012`."
+    },
+    "AccountIdEndpointMode": {
+      "type": "String",
+      "builtIn": "AWS::Auth::AccountIdEndpointMode",
+      "documentation": "The behavior for account ID based endpoint routing, eg. `preferred`."
+    }
+  },
+  "rules": [
+    {
+      "documentation": "Template account ID into the URI when account ID is set and AccountIdEndpointMode is set to preferred.",
+      "conditions": [
+        {
+          "fn": "isSet",
+          "argv": [
+            {
+              "ref": "AccountId"
+            }
+          ]
+        },
+        {
+          "fn": "isSet",
+          "argv": [
+            {
+              "ref": "AccountIdEndpointMode"
+            }
+          ]
+        },
+        {
+          "fn": "stringEquals",
+          "argv": [
+            {
+              "ref": "AccountIdEndpointMode"
+            },
+            "preferred"
+          ]
+        }
+      ],
+      "endpoint": {
+        "url": "https://{AccountId}.amazonaws.com"
+      },
+      "type": "endpoint"
+    },
+    {
+      "documentation": "Do not template account ID into the URI when AccountIdEndpointMode is set to disabled.",
+      "conditions": [
+        {
+          "fn": "isSet",
+          "argv": [
+            {
+              "ref": "AccountId"
+            }
+          ]
+        },
+        {
+          "fn": "isSet",
+          "argv": [
+            {
+              "ref": "AccountIdEndpointMode"
+            }
+          ]
+        },
+        {
+          "fn": "stringEquals",
+          "argv": [
+            {
+              "ref": "AccountIdEndpointMode"
+            },
+            "disabled"
+          ]
+        }
+      ],
+      "endpoint": {
+        "url": "https://amazonaws.com"
+      },
+      "type": "endpoint"
+    },
+    {
+      "documentation": "Raise an error when account ID is unset but AccountIdEndpointMode is set to required.",
+      "conditions": [
+        {
+          "fn": "not",
+          "argv": [
+            {
+              "fn": "isSet",
+              "argv": [
+                {
+                  "ref": "AccountId"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "fn": "isSet",
+          "argv": [
+            {
+              "ref": "AccountIdEndpointMode"
+            }
+          ]
+        },
+        {
+          "fn": "stringEquals",
+          "argv": [
+            {
+              "ref": "AccountIdEndpointMode"
+            },
+            "required"
+          ]
+        }
+      ],
+      "error": "AccountIdEndpointMode is required but no AccountID was provided or able to be loaded",
+      "type": "error"
+    },
+    {
+      "documentation": "Fallback when AccountID and AccountIdEndpointMode are unset",
+      "conditions": [],
+      "endpoint": {
+        "url": "https://amazonaws.com"
+      },
+      "type": "endpoint"
+    }
+  ]
+}

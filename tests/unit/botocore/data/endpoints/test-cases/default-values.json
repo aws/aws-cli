@@ -1,0 +1,45 @@
+{
+  "version": "1.0",
+  "testCases": [
+    {
+      "documentation": "default endpoint",
+      "params": {},
+      "expect": {
+        "endpoint": {
+          "url": "https://fips.us-west-5.amazonaws.com"
+        }
+      }
+    },
+    {
+      "documentation": "test case where FIPS is disabled",
+      "params": {
+        "UseFips": false
+      },
+      "expect": {
+        "error": "UseFips = false"
+      }
+    },
+    {
+      "documentation": "test case where FIPS is enabled explicitly",
+      "params": {
+        "UseFips": true
+      },
+      "expect": {
+        "endpoint": {
+          "url": "https://fips.us-west-5.amazonaws.com"
+        }
+      }
+    },
+    {
+      "documentation": "defaults can be overridden",
+      "params": {
+        "Region": "us-east-1"
+      },
+      "expect": {
+        "endpoint": {
+          "url": "https://fips.us-east-1.amazonaws.com"
+        }
+      }
+    }
+  ]
+}

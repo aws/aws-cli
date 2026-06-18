@@ -106,7 +106,6 @@ class TestDependencyClosure:
 
     def test_expected_runtime_dependencies(self, awscli_package):
         expected_dependencies = {
-            "botocore",
             "colorama",
             "docutils",
             "jmespath",
@@ -114,7 +113,6 @@ class TestDependencyClosure:
             "python-dateutil",
             "PyYAML",
             "rsa",
-            "s3transfer",
             "six",
             "urllib3",
         }

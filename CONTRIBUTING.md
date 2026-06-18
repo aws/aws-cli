@@ -94,13 +94,12 @@ The latest changes to the CLI are in the `develop` branch on github. This is the
 
 Additionally, the [`botocore`](https://github.com/boto/botocore) package is developed in lockstep with the CLI.
 
-If you just want to install a snapshot of the latest development version of the CLI, you can use the `requirements.txt` file included in this repo. This file points to the development version of the above packages:
+Since `botocore` and `s3transfer` are vendored directly into the `awscli`
+package, you do not need to install them separately. Simply install the CLI
+in editable mode:
 
     $ cd <path_to_awscli>
-    $ python -m pip install -r requirements.txt
     $ python -m pip install -e .
-
-However, to keep up to date, you will continually have to run the `python -m pip install -r requirements.txt` file to pull in the latest changes from the develop branch of botocore.
 
 You can optionally clone each of those repositories and run \"python -m pip install -e .\":
 

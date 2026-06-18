@@ -1,0 +1,4627 @@
+[
+    {
+        "description": "Test cases for BodyWithXmlName operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "BodyWithXmlNameInputOutput": {
+                "type": "structure",
+                "members": {
+                    "nested": {
+                        "shape": "PayloadWithXmlName"
+                    }
+                },
+                "locationName": "Ahoy"
+            },
+            "PayloadWithXmlName": {
+                "type": "structure",
+                "members": {
+                    "name": {
+                        "shape": "String"
+                    }
+                },
+                "locationName": "Hello"
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "BodyWithXmlName",
+                "given": {
+                    "name": "BodyWithXmlName",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/BodyWithXmlName",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "BodyWithXmlNameInputOutput"
+                    },
+                    "documentation": "<p>The following example serializes a body that uses an XML name, changing the wrapper name.</p>",
+                    "idempotent": true
+                },
+                "description": "Serializes a payload using a wrapper name based on the xmlName",
+                "result": {
+                    "nested": {
+                        "name": "Phreddy"
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<Ahoy><nested><name>Phreddy</name></nested></Ahoy>"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for DatetimeOffsets operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "DatetimeOffsetsOutput": {
+                "type": "structure",
+                "members": {
+                    "datetime": {
+                        "shape": "DateTime"
+                    }
+                }
+            },
+            "DateTime": {
+                "type": "timestamp",
+                "timestampFormat": "iso8601"
+            }
+        },
+        "cases": [
+            {
+                "id": "RestXmlDateTimeWithNegativeOffset",
+                "given": {
+                    "name": "DatetimeOffsets",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/DatetimeOffsets",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "DatetimeOffsetsOutput"
+                    }
+                },
+                "description": "Ensures that clients can correctly parse datetime (timestamps) with offsets",
+                "result": {
+                    "datetime": 1576540098
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<DatetimeOffsetsOutput>\n    <datetime>2019-12-16T22:48:18-01:00</datetime>\n</DatetimeOffsetsOutput>\n"
+                }
+            },
+            {
+                "id": "RestXmlDateTimeWithPositiveOffset",
+                "given": {
+                    "name": "DatetimeOffsets",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/DatetimeOffsets",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "DatetimeOffsetsOutput"
+                    }
+                },
+                "description": "Ensures that clients can correctly parse datetime (timestamps) with offsets",
+                "result": {
+                    "datetime": 1576540098
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<DatetimeOffsetsOutput>\n    <datetime>2019-12-17T00:48:18+01:00</datetime>\n</DatetimeOffsetsOutput>\n"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for EmptyInputAndEmptyOutput operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "EmptyInputAndEmptyOutputOutput": {
+                "type": "structure",
+                "members": {}
+            }
+        },
+        "cases": [
+            {
+                "id": "EmptyInputAndEmptyOutput",
+                "given": {
+                    "name": "EmptyInputAndEmptyOutput",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/EmptyInputAndEmptyOutput",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "EmptyInputAndEmptyOutputOutput"
+                    },
+                    "documentation": "<p>The example tests how requests and responses are serialized when there's no request or response payload because the operation has an empty input and empty output structure that reuses the same shape. While this should be rare, code generators must support this.</p>"
+                },
+                "description": "Empty output serializes no payload",
+                "result": {},
+                "response": {
+                    "status_code": 200,
+                    "body": ""
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for FlattenedXmlMap operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "FlattenedXmlMapResponse": {
+                "type": "structure",
+                "members": {
+                    "myMap": {
+                        "shape": "FooEnumMap",
+                        "flattened": true
+                    }
+                }
+            },
+            "FooEnumMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "FooEnum"
+                }
+            },
+            "FooEnum": {
+                "type": "string",
+                "enum": [
+                    "Foo",
+                    "Baz",
+                    "Bar",
+                    "1",
+                    "0"
+                ]
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "FlattenedXmlMap",
+                "given": {
+                    "name": "FlattenedXmlMap",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/FlattenedXmlMap",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "FlattenedXmlMapResponse"
+                    },
+                    "documentation": "<p>Flattened maps</p>"
+                },
+                "description": "Serializes flattened XML maps in responses",
+                "result": {
+                    "myMap": {
+                        "foo": "Foo",
+                        "baz": "Baz"
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<FlattenedXmlMapResponse>\n    <myMap>\n        <key>foo</key>\n        <value>Foo</value>\n    </myMap>\n    <myMap>\n        <key>baz</key>\n        <value>Baz</value>\n    </myMap>\n</FlattenedXmlMapResponse>"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for FlattenedXmlMapWithXmlName operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "FlattenedXmlMapWithXmlNameResponse": {
+                "type": "structure",
+                "members": {
+                    "myMap": {
+                        "shape": "FlattenedXmlMapWithXmlNameInputOutputMap",
+                        "flattened": true,
+                        "locationName": "KVP"
+                    }
+                }
+            },
+            "FlattenedXmlMapWithXmlNameInputOutputMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String",
+                    "locationName": "K"
+                },
+                "value": {
+                    "shape": "String",
+                    "locationName": "V"
+                }
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "FlattenedXmlMapWithXmlName",
+                "given": {
+                    "name": "FlattenedXmlMapWithXmlName",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/FlattenedXmlMapWithXmlName",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "FlattenedXmlMapWithXmlNameResponse"
+                    },
+                    "documentation": "<p>Flattened maps with @xmlName</p>"
+                },
+                "description": "Serializes flattened XML maps in responses that have xmlName on members",
+                "result": {
+                    "myMap": {
+                        "a": "A",
+                        "b": "B"
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<FlattenedXmlMapWithXmlNameResponse>\n    <KVP>\n        <K>a</K>\n        <V>A</V>\n    </KVP>\n    <KVP>\n        <K>b</K>\n        <V>B</V>\n    </KVP>\n</FlattenedXmlMapWithXmlNameResponse>"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for FlattenedXmlMapWithXmlNamespace operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "FlattenedXmlMapWithXmlNamespaceOutput": {
+                "type": "structure",
+                "members": {
+                    "myMap": {
+                        "shape": "FlattenedXmlMapWithXmlNamespaceOutputMap",
+                        "flattened": true,
+                        "locationName": "KVP",
+                        "xmlNamespace": "https://the-member.example.com"
+                    }
+                }
+            },
+            "FlattenedXmlMapWithXmlNamespaceOutputMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String",
+                    "locationName": "K",
+                    "xmlNamespace": "https://the-key.example.com"
+                },
+                "value": {
+                    "shape": "String",
+                    "locationName": "V",
+                    "xmlNamespace": "https://the-value.example.com"
+                }
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "RestXmlFlattenedXmlMapWithXmlNamespace",
+                "given": {
+                    "name": "FlattenedXmlMapWithXmlNamespace",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/FlattenedXmlMapWithXmlNamespace",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "FlattenedXmlMapWithXmlNamespaceOutput"
+                    },
+                    "documentation": "<p>Flattened maps with @xmlNamespace and @xmlName</p>"
+                },
+                "description": "Serializes flattened XML maps in responses that have xmlNamespace and xmlName on members",
+                "result": {
+                    "myMap": {
+                        "a": "A",
+                        "b": "B"
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<FlattenedXmlMapWithXmlNamespaceOutput>\n    <KVP xmlns=\"https://the-member.example.com\">\n        <K xmlns=\"https://the-key.example.com\">a</K>\n        <V xmlns=\"https://the-value.example.com\">A</V>\n    </KVP>\n    <KVP xmlns=\"https://the-member.example.com\">\n        <K xmlns=\"https://the-key.example.com\">b</K>\n        <V xmlns=\"https://the-value.example.com\">B</V>\n    </KVP>\n</FlattenedXmlMapWithXmlNamespaceOutput>"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for FractionalSeconds operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "FractionalSecondsOutput": {
+                "type": "structure",
+                "members": {
+                    "datetime": {
+                        "shape": "DateTime"
+                    }
+                }
+            },
+            "DateTime": {
+                "type": "timestamp",
+                "timestampFormat": "iso8601"
+            }
+        },
+        "cases": [
+            {
+                "id": "RestXmlDateTimeWithFractionalSeconds",
+                "given": {
+                    "name": "FractionalSeconds",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/FractionalSeconds",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "FractionalSecondsOutput"
+                    }
+                },
+                "description": "Ensures that clients can correctly parse datetime timestamps with fractional seconds",
+                "result": {
+                    "datetime": 9.46845296123E8
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<FractionalSecondsOutput>\n    <datetime>2000-01-02T20:34:56.123Z</datetime>\n</FractionalSecondsOutput>\n"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for GreetingWithErrors operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "GreetingWithErrorsOutput": {
+                "type": "structure",
+                "members": {
+                    "greeting": {
+                        "shape": "String",
+                        "location": "header",
+                        "locationName": "X-Greeting"
+                    }
+                }
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "GreetingWithErrors",
+                "given": {
+                    "name": "GreetingWithErrors",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/GreetingWithErrors",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "GreetingWithErrorsOutput"
+                    },
+                    "documentation": "<p>This operation has three possible return values:</p> <ol> <li>A successful response in the form of GreetingWithErrorsOutput</li> <li>An InvalidGreeting error.</li> <li>A BadRequest error.</li> </ol> <p>Implementations must be able to successfully take a response and properly (de)serialize successful and error responses based on the the presence of the</p>",
+                    "idempotent": true
+                },
+                "description": "Ensures that operations with errors successfully know how to deserialize the successful response",
+                "result": {
+                    "greeting": "Hello"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "X-Greeting": "Hello"
+                    },
+                    "body": ""
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for GreetingWithErrors operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "InvalidGreeting": {
+                "type": "structure",
+                "members": {
+                    "Message": {
+                        "shape": "String"
+                    }
+                },
+                "documentation": "<p>This error is thrown when an invalid greeting value is provided.</p>",
+                "error": {
+                    "httpStatusCode": 400,
+                    "senderFault": true
+                },
+                "exception": true
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "InvalidGreetingError",
+                "given": {
+                    "name": "GreetingWithErrors",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/GreetingWithErrors",
+                        "responseCode": 200
+                    },
+                    "documentation": "<p>This operation has three possible return values:</p> <ol> <li>A successful response in the form of GreetingWithErrorsOutput</li> <li>An InvalidGreeting error.</li> <li>A BadRequest error.</li> </ol> <p>Implementations must be able to successfully take a response and properly (de)serialize successful and error responses based on the the presence of the</p>",
+                    "idempotent": true,
+                    "errors": [
+                        {
+                            "shape": "InvalidGreeting"
+                        }
+                    ]
+                },
+                "description": "Parses simple XML errors",
+                "errorCode": "InvalidGreeting",
+                "errorMessage": "Hi",
+                "error": {
+                    "Message": "Hi"
+                },
+                "response": {
+                    "status_code": 400,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<ErrorResponse>\n   <Error>\n      <Type>Sender</Type>\n      <Code>InvalidGreeting</Code>\n      <Message>Hi</Message>\n      <AnotherSetting>setting</AnotherSetting>\n   </Error>\n   <RequestId>foo-id</RequestId>\n</ErrorResponse>\n"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for GreetingWithErrors operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "ComplexError": {
+                "type": "structure",
+                "members": {
+                    "Header": {
+                        "shape": "String",
+                        "location": "header",
+                        "locationName": "X-Header"
+                    },
+                    "TopLevel": {
+                        "shape": "String"
+                    },
+                    "Nested": {
+                        "shape": "ComplexNestedErrorData"
+                    }
+                },
+                "documentation": "<p>This error is thrown when a request is invalid.</p>",
+                "error": {
+                    "httpStatusCode": 403,
+                    "senderFault": true
+                },
+                "exception": true
+            },
+            "String": {
+                "type": "string"
+            },
+            "ComplexNestedErrorData": {
+                "type": "structure",
+                "members": {
+                    "Foo": {
+                        "shape": "String"
+                    }
+                }
+            }
+        },
+        "cases": [
+            {
+                "id": "ComplexError",
+                "given": {
+                    "name": "GreetingWithErrors",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/GreetingWithErrors",
+                        "responseCode": 200
+                    },
+                    "documentation": "<p>This operation has three possible return values:</p> <ol> <li>A successful response in the form of GreetingWithErrorsOutput</li> <li>An InvalidGreeting error.</li> <li>A BadRequest error.</li> </ol> <p>Implementations must be able to successfully take a response and properly (de)serialize successful and error responses based on the the presence of the</p>",
+                    "idempotent": true,
+                    "errors": [
+                        {
+                            "shape": "ComplexError"
+                        }
+                    ]
+                },
+                "errorCode": "ComplexError",
+                "error": {
+                    "Header": "Header",
+                    "TopLevel": "Top level",
+                    "Nested": {
+                        "Foo": "bar"
+                    }
+                },
+                "response": {
+                    "status_code": 403,
+                    "headers": {
+                        "Content-Type": "application/xml",
+                        "X-Header": "Header"
+                    },
+                    "body": "<ErrorResponse>\n   <Error>\n      <Type>Sender</Type>\n      <Code>ComplexError</Code>\n      <Message>Hi</Message>\n      <TopLevel>Top level</TopLevel>\n      <Nested>\n          <Foo>bar</Foo>\n      </Nested>\n   </Error>\n   <RequestId>foo-id</RequestId>\n</ErrorResponse>\n"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for HttpEnumPayload operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "EnumPayloadInput": {
+                "type": "structure",
+                "members": {
+                    "payload": {
+                        "shape": "StringEnum"
+                    }
+                },
+                "payload": "payload"
+            },
+            "StringEnum": {
+                "type": "string",
+                "enum": [
+                    "enumvalue"
+                ]
+            }
+        },
+        "cases": [
+            {
+                "id": "RestXmlEnumPayloadResponse",
+                "given": {
+                    "name": "HttpEnumPayload",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/EnumPayload",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "EnumPayloadInput"
+                    }
+                },
+                "result": {
+                    "payload": "enumvalue"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "text/plain"
+                    },
+                    "body": "enumvalue"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for HttpPayloadTraits operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "HttpPayloadTraitsInputOutput": {
+                "type": "structure",
+                "members": {
+                    "foo": {
+                        "shape": "String",
+                        "location": "header",
+                        "locationName": "X-Foo"
+                    },
+                    "blob": {
+                        "shape": "Blob"
+                    }
+                },
+                "payload": "blob"
+            },
+            "String": {
+                "type": "string"
+            },
+            "Blob": {
+                "type": "blob"
+            }
+        },
+        "cases": [
+            {
+                "id": "HttpPayloadTraitsWithBlob",
+                "given": {
+                    "name": "HttpPayloadTraits",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/HttpPayloadTraits",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "HttpPayloadTraitsInputOutput"
+                    },
+                    "documentation": "<p>This example serializes a blob shape in the payload.</p> <p>In this example, no XML document is synthesized because the payload is not a structure or a union type.</p>"
+                },
+                "description": "Serializes a blob in the HTTP payload",
+                "result": {
+                    "foo": "Foo",
+                    "blob": "blobby blob blob"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "X-Foo": "Foo"
+                    },
+                    "body": "blobby blob blob"
+                }
+            },
+            {
+                "id": "HttpPayloadTraitsWithNoBlobBody",
+                "given": {
+                    "name": "HttpPayloadTraits",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/HttpPayloadTraits",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "HttpPayloadTraitsInputOutput"
+                    },
+                    "documentation": "<p>This example serializes a blob shape in the payload.</p> <p>In this example, no XML document is synthesized because the payload is not a structure or a union type.</p>"
+                },
+                "description": "Serializes an empty blob in the HTTP payload",
+                "result": {
+                    "foo": "Foo"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "X-Foo": "Foo"
+                    },
+                    "body": ""
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for HttpPayloadWithMemberXmlName operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "HttpPayloadWithMemberXmlNameInputOutput": {
+                "type": "structure",
+                "members": {
+                    "nested": {
+                        "shape": "PayloadWithXmlName",
+                        "locationName": "Hola"
+                    }
+                },
+                "payload": "nested"
+            },
+            "PayloadWithXmlName": {
+                "type": "structure",
+                "members": {
+                    "name": {
+                        "shape": "String"
+                    }
+                },
+                "locationName": "Hello"
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "HttpPayloadWithMemberXmlName",
+                "given": {
+                    "name": "HttpPayloadWithMemberXmlName",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/HttpPayloadWithMemberXmlName",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "HttpPayloadWithMemberXmlNameInputOutput"
+                    },
+                    "documentation": "<p>The following example serializes a payload that uses an XML name on the member, changing the wrapper name.</p>",
+                    "idempotent": true
+                },
+                "description": "Serializes a structure in the payload using a wrapper name based on member xmlName",
+                "result": {
+                    "nested": {
+                        "name": "Phreddy"
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<Hola><name>Phreddy</name></Hola>"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for HttpPayloadWithStructure operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "HttpPayloadWithStructureInputOutput": {
+                "type": "structure",
+                "members": {
+                    "nested": {
+                        "shape": "NestedPayload",
+                        "locationName": "NestedPayload"
+                    }
+                },
+                "payload": "nested"
+            },
+            "NestedPayload": {
+                "type": "structure",
+                "members": {
+                    "greeting": {
+                        "shape": "String"
+                    },
+                    "name": {
+                        "shape": "String"
+                    }
+                }
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "HttpPayloadWithStructure",
+                "given": {
+                    "name": "HttpPayloadWithStructure",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/HttpPayloadWithStructure",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "HttpPayloadWithStructureInputOutput"
+                    },
+                    "documentation": "<p>This example serializes a structure in the payload.</p> <p>Note that serializing a structure changes the wrapper element name to match the targeted structure.</p>",
+                    "idempotent": true
+                },
+                "description": "Serializes a structure in the payload",
+                "result": {
+                    "nested": {
+                        "greeting": "hello",
+                        "name": "Phreddy"
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<NestedPayload>\n    <greeting>hello</greeting>\n    <name>Phreddy</name>\n</NestedPayload>\n"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for HttpPayloadWithUnion operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "HttpPayloadWithUnionInputOutput": {
+                "type": "structure",
+                "members": {
+                    "nested": {
+                        "shape": "UnionPayload",
+                        "locationName": "nested"
+                    }
+                },
+                "payload": "nested"
+            },
+            "UnionPayload": {
+                "type": "structure",
+                "members": {
+                    "greeting": {
+                        "shape": "String"
+                    }
+                },
+                "union": true
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "RestXmlHttpPayloadWithUnion",
+                "given": {
+                    "name": "HttpPayloadWithUnion",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/HttpPayloadWithUnion",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "HttpPayloadWithUnionInputOutput"
+                    },
+                    "documentation": "<p>This example serializes a union in the payload.</p>",
+                    "idempotent": true
+                },
+                "description": "Serializes a union in the payload.",
+                "result": {
+                    "nested": {
+                        "greeting": "hello"
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<UnionPayload>\n    <greeting>hello</greeting>\n</UnionPayload>"
+                }
+            },
+            {
+                "id": "RestXmlHttpPayloadWithUnsetUnion",
+                "given": {
+                    "name": "HttpPayloadWithUnion",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/HttpPayloadWithUnion",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "HttpPayloadWithUnionInputOutput"
+                    },
+                    "documentation": "<p>This example serializes a union in the payload.</p>",
+                    "idempotent": true
+                },
+                "description": "No payload is sent if the union has no value.",
+                "result": {},
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Length": "0"
+                    },
+                    "body": ""
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for HttpPayloadWithXmlName operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "HttpPayloadWithXmlNameInputOutput": {
+                "type": "structure",
+                "members": {
+                    "nested": {
+                        "shape": "PayloadWithXmlName",
+                        "locationName": "nested"
+                    }
+                },
+                "payload": "nested"
+            },
+            "PayloadWithXmlName": {
+                "type": "structure",
+                "members": {
+                    "name": {
+                        "shape": "String"
+                    }
+                },
+                "locationName": "Hello"
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "HttpPayloadWithXmlName",
+                "given": {
+                    "name": "HttpPayloadWithXmlName",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/HttpPayloadWithXmlName",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "HttpPayloadWithXmlNameInputOutput"
+                    },
+                    "documentation": "<p>The following example serializes a payload that uses an XML name, changing the wrapper name.</p>",
+                    "idempotent": true
+                },
+                "description": "Serializes a structure in the payload using a wrapper name based on xmlName",
+                "result": {
+                    "nested": {
+                        "name": "Phreddy"
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<Hello><name>Phreddy</name></Hello>"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for HttpPayloadWithXmlNamespace operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "HttpPayloadWithXmlNamespaceInputOutput": {
+                "type": "structure",
+                "members": {
+                    "nested": {
+                        "shape": "PayloadWithXmlNamespace",
+                        "locationName": "nested"
+                    }
+                },
+                "payload": "nested"
+            },
+            "PayloadWithXmlNamespace": {
+                "type": "structure",
+                "members": {
+                    "name": {
+                        "shape": "String"
+                    }
+                },
+                "xmlNamespace": "http://foo.com"
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "HttpPayloadWithXmlNamespace",
+                "given": {
+                    "name": "HttpPayloadWithXmlNamespace",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/HttpPayloadWithXmlNamespace",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "HttpPayloadWithXmlNamespaceInputOutput"
+                    },
+                    "documentation": "<p>The following example serializes a payload that uses an XML namespace.</p>",
+                    "idempotent": true
+                },
+                "description": "Serializes a structure in the payload using a wrapper with an XML namespace",
+                "result": {
+                    "nested": {
+                        "name": "Phreddy"
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<PayloadWithXmlNamespace xmlns=\"http://foo.com\">\n    <name>Phreddy</name>\n</PayloadWithXmlNamespace>"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for HttpPayloadWithXmlNamespaceAndPrefix operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "HttpPayloadWithXmlNamespaceAndPrefixInputOutput": {
+                "type": "structure",
+                "members": {
+                    "nested": {
+                        "shape": "PayloadWithXmlNamespaceAndPrefix",
+                        "locationName": "nested"
+                    }
+                },
+                "payload": "nested"
+            },
+            "PayloadWithXmlNamespaceAndPrefix": {
+                "type": "structure",
+                "members": {
+                    "name": {
+                        "shape": "String"
+                    }
+                },
+                "xmlNamespace": {
+                    "prefix": "baz",
+                    "uri": "http://foo.com"
+                }
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "HttpPayloadWithXmlNamespaceAndPrefix",
+                "given": {
+                    "name": "HttpPayloadWithXmlNamespaceAndPrefix",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/HttpPayloadWithXmlNamespaceAndPrefix",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "HttpPayloadWithXmlNamespaceAndPrefixInputOutput"
+                    },
+                    "documentation": "<p>The following example serializes a payload that uses an XML namespace.</p>",
+                    "idempotent": true
+                },
+                "description": "Serializes a structure in the payload using a wrapper with an XML namespace",
+                "result": {
+                    "nested": {
+                        "name": "Phreddy"
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<PayloadWithXmlNamespaceAndPrefix xmlns:baz=\"http://foo.com\">\n    <name>Phreddy</name>\n</PayloadWithXmlNamespaceAndPrefix>"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for HttpPrefixHeaders operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "HttpPrefixHeadersInputOutput": {
+                "type": "structure",
+                "members": {
+                    "foo": {
+                        "shape": "String",
+                        "location": "header",
+                        "locationName": "x-foo"
+                    },
+                    "fooMap": {
+                        "shape": "FooPrefixHeaders",
+                        "location": "headers",
+                        "locationName": "x-foo-"
+                    }
+                }
+            },
+            "String": {
+                "type": "string"
+            },
+            "FooPrefixHeaders": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "String"
+                }
+            }
+        },
+        "cases": [
+            {
+                "id": "HttpPrefixHeadersArePresent",
+                "given": {
+                    "name": "HttpPrefixHeaders",
+                    "http": {
+                        "method": "GET",
+                        "requestUri": "/HttpPrefixHeaders",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "HttpPrefixHeadersInputOutput"
+                    },
+                    "documentation": "<p>This examples adds headers to the input of a request and response by prefix.</p>"
+                },
+                "description": "Adds headers by prefix",
+                "result": {
+                    "foo": "Foo",
+                    "fooMap": {
+                        "abc": "Abc value",
+                        "def": "Def value"
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "x-foo": "Foo",
+                        "x-foo-abc": "Abc value",
+                        "x-foo-def": "Def value"
+                    },
+                    "body": ""
+                }
+            },
+            {
+                "id": "HttpPrefixHeadersAreNotPresent",
+                "given": {
+                    "name": "HttpPrefixHeaders",
+                    "http": {
+                        "method": "GET",
+                        "requestUri": "/HttpPrefixHeaders",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "HttpPrefixHeadersInputOutput"
+                    },
+                    "documentation": "<p>This examples adds headers to the input of a request and response by prefix.</p>"
+                },
+                "description": "No prefix headers are serialized because the value is empty",
+                "result": {
+                    "foo": "Foo",
+                    "fooMap": {}
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "x-foo": "Foo"
+                    },
+                    "body": ""
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for HttpResponseCode operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "HttpResponseCodeOutput": {
+                "type": "structure",
+                "members": {
+                    "Status": {
+                        "shape": "Integer",
+                        "location": "statusCode"
+                    }
+                }
+            },
+            "Integer": {
+                "type": "integer",
+                "box": true
+            }
+        },
+        "cases": [
+            {
+                "id": "RestXmlHttpResponseCode",
+                "given": {
+                    "name": "HttpResponseCode",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/HttpResponseCode",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "HttpResponseCodeOutput"
+                    },
+                    "idempotent": true
+                },
+                "description": "Binds the http response code to an output structure.",
+                "result": {
+                    "Status": 201
+                },
+                "response": {
+                    "status_code": 201,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": ""
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for HttpStringPayload operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "StringPayloadInput": {
+                "type": "structure",
+                "members": {
+                    "payload": {
+                        "shape": "String"
+                    }
+                },
+                "payload": "payload"
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "RestXmlStringPayloadResponse",
+                "given": {
+                    "name": "HttpStringPayload",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/StringPayload",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "StringPayloadInput"
+                    }
+                },
+                "result": {
+                    "payload": "rawstring"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "text/plain"
+                    },
+                    "body": "rawstring"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for IgnoreQueryParamsInResponse operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "IgnoreQueryParamsInResponseOutput": {
+                "type": "structure",
+                "members": {
+                    "baz": {
+                        "shape": "String",
+                        "location": "uri",
+                        "locationName": "baz"
+                    }
+                }
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "IgnoreQueryParamsInResponse",
+                "given": {
+                    "name": "IgnoreQueryParamsInResponse",
+                    "http": {
+                        "method": "GET",
+                        "requestUri": "/IgnoreQueryParamsInResponse",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "IgnoreQueryParamsInResponseOutput"
+                    },
+                    "documentation": "<p>This example ensures that query string bound request parameters are serialized in the body of responses if the structure is used in both the request and response.</p>"
+                },
+                "description": "Query parameters must be ignored when serializing the output of an operation",
+                "result": {
+                    "baz": "bam"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<IgnoreQueryParamsInResponseOutput><baz>bam</baz></IgnoreQueryParamsInResponseOutput>"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for InputAndOutputWithHeaders operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "InputAndOutputWithHeadersIO": {
+                "type": "structure",
+                "members": {
+                    "headerString": {
+                        "shape": "String",
+                        "location": "header",
+                        "locationName": "X-String"
+                    },
+                    "headerByte": {
+                        "shape": "Integer",
+                        "location": "header",
+                        "locationName": "X-Byte"
+                    },
+                    "headerShort": {
+                        "shape": "Integer",
+                        "location": "header",
+                        "locationName": "X-Short"
+                    },
+                    "headerInteger": {
+                        "shape": "Integer",
+                        "location": "header",
+                        "locationName": "X-Integer"
+                    },
+                    "headerLong": {
+                        "shape": "Long",
+                        "location": "header",
+                        "locationName": "X-Long"
+                    },
+                    "headerFloat": {
+                        "shape": "Float",
+                        "location": "header",
+                        "locationName": "X-Float"
+                    },
+                    "headerDouble": {
+                        "shape": "Double",
+                        "location": "header",
+                        "locationName": "X-Double"
+                    },
+                    "headerTrueBool": {
+                        "shape": "Boolean",
+                        "location": "header",
+                        "locationName": "X-Boolean1"
+                    },
+                    "headerFalseBool": {
+                        "shape": "Boolean",
+                        "location": "header",
+                        "locationName": "X-Boolean2"
+                    },
+                    "headerStringList": {
+                        "shape": "StringList",
+                        "location": "header",
+                        "locationName": "X-StringList"
+                    },
+                    "headerStringSet": {
+                        "shape": "StringSet",
+                        "location": "header",
+                        "locationName": "X-StringSet"
+                    },
+                    "headerIntegerList": {
+                        "shape": "IntegerList",
+                        "location": "header",
+                        "locationName": "X-IntegerList"
+                    },
+                    "headerBooleanList": {
+                        "shape": "BooleanList",
+                        "location": "header",
+                        "locationName": "X-BooleanList"
+                    },
+                    "headerTimestampList": {
+                        "shape": "TimestampList",
+                        "location": "header",
+                        "locationName": "X-TimestampList"
+                    },
+                    "headerEnum": {
+                        "shape": "FooEnum",
+                        "location": "header",
+                        "locationName": "X-Enum"
+                    },
+                    "headerEnumList": {
+                        "shape": "FooEnumList",
+                        "location": "header",
+                        "locationName": "X-EnumList"
+                    }
+                }
+            },
+            "String": {
+                "type": "string"
+            },
+            "Integer": {
+                "type": "integer",
+                "box": true
+            },
+            "Long": {
+                "type": "long",
+                "box": true
+            },
+            "Float": {
+                "type": "float",
+                "box": true
+            },
+            "Double": {
+                "type": "double",
+                "box": true
+            },
+            "Boolean": {
+                "type": "boolean",
+                "box": true
+            },
+            "StringList": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                }
+            },
+            "StringSet": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                }
+            },
+            "IntegerList": {
+                "type": "list",
+                "member": {
+                    "shape": "Integer"
+                }
+            },
+            "BooleanList": {
+                "type": "list",
+                "member": {
+                    "shape": "Boolean"
+                }
+            },
+            "TimestampList": {
+                "type": "list",
+                "member": {
+                    "shape": "Timestamp"
+                }
+            },
+            "FooEnum": {
+                "type": "string",
+                "enum": [
+                    "Foo",
+                    "Baz",
+                    "Bar",
+                    "1",
+                    "0"
+                ]
+            },
+            "FooEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "FooEnum"
+                }
+            },
+            "Timestamp": {
+                "type": "timestamp"
+            }
+        },
+        "cases": [
+            {
+                "id": "InputAndOutputWithStringHeaders",
+                "given": {
+                    "name": "InputAndOutputWithHeaders",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/InputAndOutputWithHeaders",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "InputAndOutputWithHeadersIO"
+                    },
+                    "documentation": "<p>The example tests how requests and responses are serialized when there is no input or output payload but there are HTTP header bindings.</p>"
+                },
+                "description": "Tests responses with string header bindings",
+                "result": {
+                    "headerString": "Hello",
+                    "headerStringList": [
+                        "a",
+                        "b",
+                        "c"
+                    ],
+                    "headerStringSet": [
+                        "a",
+                        "b",
+                        "c"
+                    ]
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "X-String": "Hello",
+                        "X-StringList": "a, b, c",
+                        "X-StringSet": "a, b, c"
+                    },
+                    "body": ""
+                }
+            },
+            {
+                "id": "InputAndOutputWithNumericHeaders",
+                "given": {
+                    "name": "InputAndOutputWithHeaders",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/InputAndOutputWithHeaders",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "InputAndOutputWithHeadersIO"
+                    },
+                    "documentation": "<p>The example tests how requests and responses are serialized when there is no input or output payload but there are HTTP header bindings.</p>"
+                },
+                "description": "Tests responses with numeric header bindings",
+                "result": {
+                    "headerByte": 1,
+                    "headerShort": 123,
+                    "headerInteger": 123,
+                    "headerLong": 123,
+                    "headerFloat": 1.1,
+                    "headerDouble": 1.1,
+                    "headerIntegerList": [
+                        1,
+                        2,
+                        3
+                    ]
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "X-Byte": "1",
+                        "X-Double": "1.1",
+                        "X-Float": "1.1",
+                        "X-Integer": "123",
+                        "X-IntegerList": "1, 2, 3",
+                        "X-Long": "123",
+                        "X-Short": "123"
+                    },
+                    "body": ""
+                }
+            },
+            {
+                "id": "InputAndOutputWithBooleanHeaders",
+                "given": {
+                    "name": "InputAndOutputWithHeaders",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/InputAndOutputWithHeaders",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "InputAndOutputWithHeadersIO"
+                    },
+                    "documentation": "<p>The example tests how requests and responses are serialized when there is no input or output payload but there are HTTP header bindings.</p>"
+                },
+                "description": "Tests responses with boolean header bindings",
+                "result": {
+                    "headerTrueBool": true,
+                    "headerFalseBool": false,
+                    "headerBooleanList": [
+                        true,
+                        false,
+                        true
+                    ]
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "X-Boolean1": "true",
+                        "X-Boolean2": "false",
+                        "X-BooleanList": "true, false, true"
+                    },
+                    "body": ""
+                }
+            },
+            {
+                "id": "InputAndOutputWithTimestampHeaders",
+                "given": {
+                    "name": "InputAndOutputWithHeaders",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/InputAndOutputWithHeaders",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "InputAndOutputWithHeadersIO"
+                    },
+                    "documentation": "<p>The example tests how requests and responses are serialized when there is no input or output payload but there are HTTP header bindings.</p>"
+                },
+                "description": "Tests responses with timestamp header bindings",
+                "result": {
+                    "headerTimestampList": [
+                        1576540098,
+                        1576540098
+                    ]
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "X-TimestampList": "Mon, 16 Dec 2019 23:48:18 GMT, Mon, 16 Dec 2019 23:48:18 GMT"
+                    },
+                    "body": ""
+                }
+            },
+            {
+                "id": "InputAndOutputWithEnumHeaders",
+                "given": {
+                    "name": "InputAndOutputWithHeaders",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/InputAndOutputWithHeaders",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "InputAndOutputWithHeadersIO"
+                    },
+                    "documentation": "<p>The example tests how requests and responses are serialized when there is no input or output payload but there are HTTP header bindings.</p>"
+                },
+                "description": "Tests responses with enum header bindings",
+                "result": {
+                    "headerEnum": "Foo",
+                    "headerEnumList": [
+                        "Foo",
+                        "Bar",
+                        "Baz"
+                    ]
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "X-Enum": "Foo",
+                        "X-EnumList": "Foo, Bar, Baz"
+                    },
+                    "body": ""
+                }
+            },
+            {
+                "id": "RestXmlSupportsNaNFloatHeaderOutputs",
+                "given": {
+                    "name": "InputAndOutputWithHeaders",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/InputAndOutputWithHeaders",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "InputAndOutputWithHeadersIO"
+                    },
+                    "documentation": "<p>The example tests how requests and responses are serialized when there is no input or output payload but there are HTTP header bindings.</p>"
+                },
+                "description": "Supports handling NaN float header values.",
+                "result": {
+                    "headerFloat": "NaN",
+                    "headerDouble": "NaN"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "X-Double": "NaN",
+                        "X-Float": "NaN"
+                    },
+                    "body": ""
+                }
+            },
+            {
+                "id": "RestXmlSupportsInfinityFloatHeaderOutputs",
+                "given": {
+                    "name": "InputAndOutputWithHeaders",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/InputAndOutputWithHeaders",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "InputAndOutputWithHeadersIO"
+                    },
+                    "documentation": "<p>The example tests how requests and responses are serialized when there is no input or output payload but there are HTTP header bindings.</p>"
+                },
+                "description": "Supports handling Infinity float header values.",
+                "result": {
+                    "headerFloat": "Infinity",
+                    "headerDouble": "Infinity"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "X-Double": "Infinity",
+                        "X-Float": "Infinity"
+                    },
+                    "body": ""
+                }
+            },
+            {
+                "id": "RestXmlSupportsNegativeInfinityFloatHeaderOutputs",
+                "given": {
+                    "name": "InputAndOutputWithHeaders",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/InputAndOutputWithHeaders",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "InputAndOutputWithHeadersIO"
+                    },
+                    "documentation": "<p>The example tests how requests and responses are serialized when there is no input or output payload but there are HTTP header bindings.</p>"
+                },
+                "description": "Supports handling -Infinity float header values.",
+                "result": {
+                    "headerFloat": "-Infinity",
+                    "headerDouble": "-Infinity"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "X-Double": "-Infinity",
+                        "X-Float": "-Infinity"
+                    },
+                    "body": ""
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for NestedXmlMaps operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "NestedXmlMapsResponse": {
+                "type": "structure",
+                "members": {
+                    "nestedMap": {
+                        "shape": "NestedMap"
+                    },
+                    "flatNestedMap": {
+                        "shape": "NestedMap",
+                        "flattened": true
+                    }
+                }
+            },
+            "NestedMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "FooEnumMap"
+                }
+            },
+            "FooEnumMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "FooEnum"
+                }
+            },
+            "FooEnum": {
+                "type": "string",
+                "enum": [
+                    "Foo",
+                    "Baz",
+                    "Bar",
+                    "1",
+                    "0"
+                ]
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "NestedXmlMapResponse",
+                "given": {
+                    "name": "NestedXmlMaps",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/NestedXmlMaps",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "NestedXmlMapsResponse"
+                    }
+                },
+                "description": "Tests responses with nested maps.",
+                "result": {
+                    "nestedMap": {
+                        "foo": {
+                            "bar": "Bar"
+                        }
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<NestedXmlMapsResponse>\n    <nestedMap>\n        <entry>\n            <key>foo</key>\n            <value>\n                <entry>\n                    <key>bar</key>\n                    <value>Bar</value>\n                </entry>\n            </value>\n        </entry>\n    </nestedMap>\n</NestedXmlMapsResponse>"
+                }
+            },
+            {
+                "id": "FlatNestedXmlMapResponse",
+                "given": {
+                    "name": "NestedXmlMaps",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/NestedXmlMaps",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "NestedXmlMapsResponse"
+                    }
+                },
+                "description": "Tests responses with nested flat maps. Since maps can only be\nflattened when they're structure members, only the outer map is flat.",
+                "result": {
+                    "flatNestedMap": {
+                        "foo": {
+                            "bar": "Bar"
+                        }
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<NestedXmlMapsResponse>\n    <flatNestedMap>\n        <key>foo</key>\n        <value>\n            <entry>\n                <key>bar</key>\n                <value>Bar</value>\n            </entry>\n        </value>\n    </flatNestedMap>\n</NestedXmlMapsResponse>"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for NestedXmlMapWithXmlName operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "NestedXmlMapWithXmlNameInputOutput": {
+                "type": "structure",
+                "members": {
+                    "nestedXmlMapWithXmlNameMap": {
+                        "shape": "NestedXmlMapWithXmlNameMap"
+                    }
+                }
+            },
+            "NestedXmlMapWithXmlNameMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String",
+                    "locationName": "OuterKey"
+                },
+                "value": {
+                    "shape": "NestedXmlMapWithXmlNameInnerMap"
+                }
+            },
+            "NestedXmlMapWithXmlNameInnerMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String",
+                    "locationName": "InnerKey"
+                },
+                "value": {
+                    "shape": "String",
+                    "locationName": "InnerValue"
+                }
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "NestedXmlMapWithXmlNameDeserializes",
+                "given": {
+                    "name": "NestedXmlMapWithXmlName",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/NestedXmlMapWithXmlName",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "NestedXmlMapWithXmlNameInputOutput"
+                    },
+                    "documentation": "<p>Nested Xml Maps with key/values with @xmlName</p>"
+                },
+                "description": "Serializes nested XML maps in responses that have xmlName on members",
+                "result": {
+                    "nestedXmlMapWithXmlNameMap": {
+                        "foo": {
+                            "bar": "Baz",
+                            "fizz": "Buzz"
+                        },
+                        "qux": {
+                            "foobar": "Bar",
+                            "fizzbuzz": "Buzz"
+                        }
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "    <NestedXmlMapWithXmlNameInputOutput>\n        <nestedXmlMapWithXmlNameMap>\n            <entry>\n                <OuterKey>foo</OuterKey>\n                <value>\n                    <entry>\n                        <InnerKey>bar</InnerKey>\n                        <InnerValue>Baz</InnerValue>\n                    </entry>\n                    <entry>\n                        <InnerKey>fizz</InnerKey>\n                        <InnerValue>Buzz</InnerValue>\n                    </entry>\n                </value>\n            </entry>\n            <entry>\n                <OuterKey>qux</OuterKey>\n                <value>\n                    <entry>\n                        <InnerKey>foobar</InnerKey>\n                        <InnerValue>Bar</InnerValue>\n                    </entry>\n                    <entry>\n                        <InnerKey>fizzbuzz</InnerKey>\n                        <InnerValue>Buzz</InnerValue>\n                    </entry>\n                </value>\n            </entry>\n        </nestedXmlMapWithXmlNameMap>\n    </NestedXmlMapWithXmlNameInputOutput>\n"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for NoInputAndNoOutput operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {},
+        "cases": [
+            {
+                "id": "NoInputAndNoOutput",
+                "given": {
+                    "name": "NoInputAndNoOutput",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/NoInputAndNoOutput",
+                        "responseCode": 200
+                    },
+                    "documentation": "<p>The example tests how requests and responses are serialized when there's no request or response payload because the operation has no input or output. While this should be rare, code generators must support this.</p>"
+                },
+                "description": "No output serializes no payload",
+                "result": {},
+                "response": {
+                    "status_code": 200,
+                    "body": ""
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for NoInputAndOutput operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "NoInputAndOutputOutput": {
+                "type": "structure",
+                "members": {}
+            }
+        },
+        "cases": [
+            {
+                "id": "NoInputAndOutput",
+                "given": {
+                    "name": "NoInputAndOutput",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/NoInputAndOutputOutput",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "NoInputAndOutputOutput"
+                    },
+                    "documentation": "<p>The example tests how requests and responses are serialized when there's no request or response payload because the operation has no input and the output is empty. While this should be rare, code generators must support this.</p>"
+                },
+                "description": "Empty output serializes no payload",
+                "result": {},
+                "response": {
+                    "status_code": 200,
+                    "body": ""
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for RecursiveShapes operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "RecursiveShapesResponse": {
+                "type": "structure",
+                "members": {
+                    "nested": {
+                        "shape": "RecursiveShapesInputOutputNested1"
+                    }
+                }
+            },
+            "RecursiveShapesInputOutputNested1": {
+                "type": "structure",
+                "members": {
+                    "foo": {
+                        "shape": "String"
+                    },
+                    "nested": {
+                        "shape": "RecursiveShapesInputOutputNested2"
+                    }
+                }
+            },
+            "String": {
+                "type": "string"
+            },
+            "RecursiveShapesInputOutputNested2": {
+                "type": "structure",
+                "members": {
+                    "bar": {
+                        "shape": "String"
+                    },
+                    "recursiveMember": {
+                        "shape": "RecursiveShapesInputOutputNested1"
+                    }
+                }
+            }
+        },
+        "cases": [
+            {
+                "id": "RecursiveShapes",
+                "given": {
+                    "name": "RecursiveShapes",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/RecursiveShapes",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "RecursiveShapesResponse"
+                    },
+                    "documentation": "<p>Recursive shapes</p>",
+                    "idempotent": true
+                },
+                "description": "Serializes recursive structures",
+                "result": {
+                    "nested": {
+                        "foo": "Foo1",
+                        "nested": {
+                            "bar": "Bar1",
+                            "recursiveMember": {
+                                "foo": "Foo2",
+                                "nested": {
+                                    "bar": "Bar2"
+                                }
+                            }
+                        }
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<RecursiveShapesResponse>\n    <nested>\n        <foo>Foo1</foo>\n        <nested>\n            <bar>Bar1</bar>\n            <recursiveMember>\n                <foo>Foo2</foo>\n                <nested>\n                    <bar>Bar2</bar>\n                </nested>\n            </recursiveMember>\n        </nested>\n    </nested>\n</RecursiveShapesResponse>\n"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for SimpleScalarProperties operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "SimpleScalarPropertiesResponse": {
+                "type": "structure",
+                "members": {
+                    "foo": {
+                        "shape": "String",
+                        "location": "header",
+                        "locationName": "X-Foo"
+                    },
+                    "stringValue": {
+                        "shape": "String"
+                    },
+                    "trueBooleanValue": {
+                        "shape": "Boolean"
+                    },
+                    "falseBooleanValue": {
+                        "shape": "Boolean"
+                    },
+                    "byteValue": {
+                        "shape": "Integer"
+                    },
+                    "shortValue": {
+                        "shape": "Integer"
+                    },
+                    "integerValue": {
+                        "shape": "Integer"
+                    },
+                    "longValue": {
+                        "shape": "Long"
+                    },
+                    "floatValue": {
+                        "shape": "Float"
+                    },
+                    "doubleValue": {
+                        "shape": "Double",
+                        "locationName": "DoubleDribble"
+                    }
+                }
+            },
+            "String": {
+                "type": "string"
+            },
+            "Boolean": {
+                "type": "boolean",
+                "box": true
+            },
+            "Integer": {
+                "type": "integer",
+                "box": true
+            },
+            "Long": {
+                "type": "long",
+                "box": true
+            },
+            "Float": {
+                "type": "float",
+                "box": true
+            },
+            "Double": {
+                "type": "double",
+                "box": true
+            }
+        },
+        "cases": [
+            {
+                "id": "SimpleScalarProperties",
+                "given": {
+                    "name": "SimpleScalarProperties",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/SimpleScalarProperties",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "SimpleScalarPropertiesResponse"
+                    },
+                    "idempotent": true
+                },
+                "description": "Serializes simple scalar properties",
+                "result": {
+                    "foo": "Foo",
+                    "stringValue": "string",
+                    "trueBooleanValue": true,
+                    "falseBooleanValue": false,
+                    "byteValue": 1,
+                    "shortValue": 2,
+                    "integerValue": 3,
+                    "longValue": 4,
+                    "floatValue": 5.5,
+                    "doubleValue": 6.5
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml",
+                        "X-Foo": "Foo"
+                    },
+                    "body": "<SimpleScalarPropertiesResponse>\n    <stringValue>string</stringValue>\n    <trueBooleanValue>true</trueBooleanValue>\n    <falseBooleanValue>false</falseBooleanValue>\n    <byteValue>1</byteValue>\n    <shortValue>2</shortValue>\n    <integerValue>3</integerValue>\n    <longValue>4</longValue>\n    <floatValue>5.5</floatValue>\n    <DoubleDribble>6.5</DoubleDribble>\n</SimpleScalarPropertiesResponse>\n"
+                }
+            },
+            {
+                "id": "SimpleScalarPropertiesComplexEscapes",
+                "given": {
+                    "name": "SimpleScalarProperties",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/SimpleScalarProperties",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "SimpleScalarPropertiesResponse"
+                    },
+                    "idempotent": true
+                },
+                "description": "Serializes string with escaping.\n\nThis validates the three escape types: literal, decimal and hexadecimal. It also validates that unescaping properly\nhandles the case where unescaping an & produces a newly formed escape sequence (this should not be re-unescaped).\n\nServers may produce different output, this test is designed different unescapes clients must handle\n",
+                "result": {
+                    "foo": "Foo",
+                    "stringValue": "escaped data: &lt;\r\n"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml",
+                        "X-Foo": "Foo"
+                    },
+                    "body": "<SimpleScalarPropertiesResponse>\n    <stringValue>escaped data: &amp;lt;&#xD;&#10;</stringValue>\n</SimpleScalarPropertiesResponse>\n"
+                }
+            },
+            {
+                "id": "SimpleScalarPropertiesWithEscapedCharacter",
+                "given": {
+                    "name": "SimpleScalarProperties",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/SimpleScalarProperties",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "SimpleScalarPropertiesResponse"
+                    },
+                    "idempotent": true
+                },
+                "description": "Serializes string with escaping",
+                "result": {
+                    "foo": "Foo",
+                    "stringValue": "<string>"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml",
+                        "X-Foo": "Foo"
+                    },
+                    "body": "<SimpleScalarPropertiesResponse>\n    <stringValue>&lt;string&gt;</stringValue>\n</SimpleScalarPropertiesResponse>\n"
+                }
+            },
+            {
+                "id": "SimpleScalarPropertiesWithXMLPreamble",
+                "given": {
+                    "name": "SimpleScalarProperties",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/SimpleScalarProperties",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "SimpleScalarPropertiesResponse"
+                    },
+                    "idempotent": true
+                },
+                "description": "Serializes simple scalar properties with xml preamble, comments and CDATA",
+                "result": {
+                    "foo": "Foo",
+                    "stringValue": "string"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml",
+                        "X-Foo": "Foo"
+                    },
+                    "body": "<?xml version = \"1.0\" encoding = \"UTF-8\"?>\n<SimpleScalarPropertiesResponse>\n    <![CDATA[characters representing CDATA]]>\n    <stringValue>string</stringValue>\n    <!--xml comment-->\n</SimpleScalarPropertiesResponse>\n"
+                }
+            },
+            {
+                "id": "SimpleScalarPropertiesWithWhiteSpace",
+                "given": {
+                    "name": "SimpleScalarProperties",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/SimpleScalarProperties",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "SimpleScalarPropertiesResponse"
+                    },
+                    "idempotent": true
+                },
+                "description": "Serializes string containing white space",
+                "result": {
+                    "foo": "Foo",
+                    "stringValue": " string with white    space "
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml",
+                        "X-Foo": "Foo"
+                    },
+                    "body": "<?xml version = \"1.0\" encoding = \"UTF-8\"?>\n<SimpleScalarPropertiesResponse>\n    <stringValue> string with white    space </stringValue>\n</SimpleScalarPropertiesResponse>\n"
+                }
+            },
+            {
+                "id": "SimpleScalarPropertiesPureWhiteSpace",
+                "given": {
+                    "name": "SimpleScalarProperties",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/SimpleScalarProperties",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "SimpleScalarPropertiesResponse"
+                    },
+                    "idempotent": true
+                },
+                "description": "Serializes string containing white space",
+                "result": {
+                    "foo": "Foo",
+                    "stringValue": "  "
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml",
+                        "X-Foo": "Foo"
+                    },
+                    "body": "<?xml version = \"1.0\" encoding = \"UTF-8\"?>\n<SimpleScalarPropertiesResponse>\n    <stringValue>  </stringValue>\n</SimpleScalarPropertiesResponse>\n"
+                }
+            },
+            {
+                "id": "RestXmlSupportsNaNFloatOutputs",
+                "given": {
+                    "name": "SimpleScalarProperties",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/SimpleScalarProperties",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "SimpleScalarPropertiesResponse"
+                    },
+                    "idempotent": true
+                },
+                "description": "Supports handling NaN float values.",
+                "result": {
+                    "floatValue": "NaN",
+                    "doubleValue": "NaN"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<SimpleScalarPropertiesResponse>\n    <floatValue>NaN</floatValue>\n    <DoubleDribble>NaN</DoubleDribble>\n</SimpleScalarPropertiesResponse>\n"
+                }
+            },
+            {
+                "id": "RestXmlSupportsInfinityFloatOutputs",
+                "given": {
+                    "name": "SimpleScalarProperties",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/SimpleScalarProperties",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "SimpleScalarPropertiesResponse"
+                    },
+                    "idempotent": true
+                },
+                "description": "Supports handling Infinity float values.",
+                "result": {
+                    "floatValue": "Infinity",
+                    "doubleValue": "Infinity"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<SimpleScalarPropertiesResponse>\n    <floatValue>Infinity</floatValue>\n    <DoubleDribble>Infinity</DoubleDribble>\n</SimpleScalarPropertiesResponse>\n"
+                }
+            },
+            {
+                "id": "RestXmlSupportsNegativeInfinityFloatOutputs",
+                "given": {
+                    "name": "SimpleScalarProperties",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/SimpleScalarProperties",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "SimpleScalarPropertiesResponse"
+                    },
+                    "idempotent": true
+                },
+                "description": "Supports handling -Infinity float values.",
+                "result": {
+                    "floatValue": "-Infinity",
+                    "doubleValue": "-Infinity"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<SimpleScalarPropertiesResponse>\n    <floatValue>-Infinity</floatValue>\n    <DoubleDribble>-Infinity</DoubleDribble>\n</SimpleScalarPropertiesResponse>\n"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for TimestampFormatHeaders operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "TimestampFormatHeadersIO": {
+                "type": "structure",
+                "members": {
+                    "memberEpochSeconds": {
+                        "shape": "SyntheticTimestamp_epoch_seconds",
+                        "location": "header",
+                        "locationName": "X-memberEpochSeconds"
+                    },
+                    "memberHttpDate": {
+                        "shape": "SyntheticTimestamp_http_date",
+                        "location": "header",
+                        "locationName": "X-memberHttpDate"
+                    },
+                    "memberDateTime": {
+                        "shape": "SyntheticTimestamp_date_time",
+                        "location": "header",
+                        "locationName": "X-memberDateTime"
+                    },
+                    "defaultFormat": {
+                        "shape": "Timestamp",
+                        "location": "header",
+                        "locationName": "X-defaultFormat"
+                    },
+                    "targetEpochSeconds": {
+                        "shape": "EpochSeconds",
+                        "location": "header",
+                        "locationName": "X-targetEpochSeconds"
+                    },
+                    "targetHttpDate": {
+                        "shape": "HttpDate",
+                        "location": "header",
+                        "locationName": "X-targetHttpDate"
+                    },
+                    "targetDateTime": {
+                        "shape": "DateTime",
+                        "location": "header",
+                        "locationName": "X-targetDateTime"
+                    }
+                }
+            },
+            "SyntheticTimestamp_epoch_seconds": {
+                "type": "timestamp",
+                "timestampFormat": "unixTimestamp"
+            },
+            "SyntheticTimestamp_http_date": {
+                "type": "timestamp",
+                "timestampFormat": "rfc822"
+            },
+            "SyntheticTimestamp_date_time": {
+                "type": "timestamp",
+                "timestampFormat": "iso8601"
+            },
+            "Timestamp": {
+                "type": "timestamp"
+            },
+            "EpochSeconds": {
+                "type": "timestamp",
+                "timestampFormat": "unixTimestamp"
+            },
+            "HttpDate": {
+                "type": "timestamp",
+                "timestampFormat": "rfc822"
+            },
+            "DateTime": {
+                "type": "timestamp",
+                "timestampFormat": "iso8601"
+            }
+        },
+        "cases": [
+            {
+                "id": "TimestampFormatHeaders",
+                "given": {
+                    "name": "TimestampFormatHeaders",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/TimestampFormatHeaders",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "TimestampFormatHeadersIO"
+                    },
+                    "documentation": "<p>The example tests how timestamp request and response headers are serialized.</p>"
+                },
+                "description": "Tests how timestamp response headers are serialized",
+                "result": {
+                    "memberEpochSeconds": 1576540098,
+                    "memberHttpDate": 1576540098,
+                    "memberDateTime": 1576540098,
+                    "defaultFormat": 1576540098,
+                    "targetEpochSeconds": 1576540098,
+                    "targetHttpDate": 1576540098,
+                    "targetDateTime": 1576540098
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "X-defaultFormat": "Mon, 16 Dec 2019 23:48:18 GMT",
+                        "X-memberDateTime": "2019-12-16T23:48:18Z",
+                        "X-memberEpochSeconds": "1576540098",
+                        "X-memberHttpDate": "Mon, 16 Dec 2019 23:48:18 GMT",
+                        "X-targetDateTime": "2019-12-16T23:48:18Z",
+                        "X-targetEpochSeconds": "1576540098",
+                        "X-targetHttpDate": "Mon, 16 Dec 2019 23:48:18 GMT"
+                    },
+                    "body": ""
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for XmlAttributes operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "XmlAttributesResponse": {
+                "type": "structure",
+                "members": {
+                    "foo": {
+                        "shape": "String"
+                    },
+                    "attr": {
+                        "shape": "String",
+                        "locationName": "test",
+                        "xmlAttribute": true
+                    }
+                }
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "XmlAttributes",
+                "given": {
+                    "name": "XmlAttributes",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/XmlAttributes",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "XmlAttributesResponse"
+                    },
+                    "documentation": "<p>This example serializes an XML attributes on synthesized document.</p>",
+                    "idempotent": true
+                },
+                "description": "Serializes simple scalar properties",
+                "result": {
+                    "foo": "hi",
+                    "attr": "test"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<XmlAttributesResponse test=\"test\">\n    <foo>hi</foo>\n</XmlAttributesResponse>\n"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for XmlAttributesOnPayload operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "XmlAttributesOnPayloadResponse": {
+                "type": "structure",
+                "members": {
+                    "payload": {
+                        "shape": "XmlAttributesPayloadResponse"
+                    }
+                },
+                "payload": "payload"
+            },
+            "XmlAttributesPayloadResponse": {
+                "type": "structure",
+                "members": {
+                    "foo": {
+                        "shape": "String"
+                    },
+                    "attr": {
+                        "shape": "String",
+                        "locationName": "test",
+                        "xmlAttribute": true
+                    }
+                }
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "XmlAttributesOnPayload",
+                "given": {
+                    "name": "XmlAttributesOnPayload",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/XmlAttributesOnPayload",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "XmlAttributesOnPayloadResponse"
+                    },
+                    "documentation": "<p>This example serializes an XML attributes on a document targeted by httpPayload.</p>",
+                    "idempotent": true
+                },
+                "description": "Serializes simple scalar properties",
+                "result": {
+                    "payload": {
+                        "foo": "hi",
+                        "attr": "test"
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<XmlAttributesPayloadResponse test=\"test\">\n    <foo>hi</foo>\n</XmlAttributesPayloadResponse>\n"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for XmlBlobs operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "XmlBlobsResponse": {
+                "type": "structure",
+                "members": {
+                    "data": {
+                        "shape": "Blob"
+                    }
+                }
+            },
+            "Blob": {
+                "type": "blob"
+            }
+        },
+        "cases": [
+            {
+                "id": "XmlBlobs",
+                "given": {
+                    "name": "XmlBlobs",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/XmlBlobs",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "XmlBlobsResponse"
+                    },
+                    "documentation": "<p>Blobs are base64 encoded</p>"
+                },
+                "description": "Blobs are base64 encoded",
+                "result": {
+                    "data": "value"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<XmlBlobsResponse>\n    <data>dmFsdWU=</data>\n</XmlBlobsResponse>\n"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for XmlEmptyBlobs operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "XmlEmptyBlobsResponse": {
+                "type": "structure",
+                "members": {
+                    "data": {
+                        "shape": "Blob"
+                    }
+                }
+            },
+            "Blob": {
+                "type": "blob"
+            }
+        },
+        "cases": [
+            {
+                "id": "XmlEmptyBlobs",
+                "given": {
+                    "name": "XmlEmptyBlobs",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/XmlEmptyBlobs",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "XmlEmptyBlobsResponse"
+                    },
+                    "documentation": "<p>Blobs are base64 encoded</p>"
+                },
+                "description": "Empty blobs are deserialized as empty string",
+                "result": {
+                    "data": ""
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<XmlEmptyBlobsResponse>\n    <data></data>\n</XmlEmptyBlobsResponse>\n"
+                }
+            },
+            {
+                "id": "XmlEmptySelfClosedBlobs",
+                "given": {
+                    "name": "XmlEmptyBlobs",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/XmlEmptyBlobs",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "XmlEmptyBlobsResponse"
+                    },
+                    "documentation": "<p>Blobs are base64 encoded</p>"
+                },
+                "description": "Empty self closed blobs are deserialized as empty string",
+                "result": {
+                    "data": ""
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<XmlEmptyBlobsResponse>\n    <data/>\n</XmlEmptyBlobsResponse>\n"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for XmlEmptyLists operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "XmlEmptyListsResponse": {
+                "type": "structure",
+                "members": {
+                    "stringList": {
+                        "shape": "StringList"
+                    },
+                    "stringSet": {
+                        "shape": "StringSet"
+                    },
+                    "integerList": {
+                        "shape": "IntegerList"
+                    },
+                    "booleanList": {
+                        "shape": "BooleanList"
+                    },
+                    "timestampList": {
+                        "shape": "TimestampList"
+                    },
+                    "enumList": {
+                        "shape": "FooEnumList"
+                    },
+                    "intEnumList": {
+                        "shape": "IntegerEnumList"
+                    },
+                    "nestedStringList": {
+                        "shape": "NestedStringList"
+                    },
+                    "renamedListMembers": {
+                        "shape": "RenamedListMembers",
+                        "locationName": "renamed"
+                    },
+                    "flattenedList": {
+                        "shape": "RenamedListMembers",
+                        "flattened": true
+                    },
+                    "flattenedList2": {
+                        "shape": "RenamedListMembers",
+                        "flattened": true,
+                        "locationName": "customName"
+                    },
+                    "flattenedListWithMemberNamespace": {
+                        "shape": "ListWithMemberNamespace",
+                        "flattened": true
+                    },
+                    "flattenedListWithNamespace": {
+                        "shape": "ListWithNamespace",
+                        "flattened": true
+                    },
+                    "structureList": {
+                        "shape": "StructureList",
+                        "locationName": "myStructureList"
+                    },
+                    "flattenedStructureList": {
+                        "shape": "StructureList",
+                        "flattened": true
+                    }
+                }
+            },
+            "StringList": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                }
+            },
+            "StringSet": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                }
+            },
+            "IntegerList": {
+                "type": "list",
+                "member": {
+                    "shape": "Integer"
+                }
+            },
+            "BooleanList": {
+                "type": "list",
+                "member": {
+                    "shape": "Boolean"
+                }
+            },
+            "TimestampList": {
+                "type": "list",
+                "member": {
+                    "shape": "Timestamp"
+                }
+            },
+            "FooEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "FooEnum"
+                }
+            },
+            "IntegerEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "IntegerEnum"
+                }
+            },
+            "NestedStringList": {
+                "type": "list",
+                "member": {
+                    "shape": "StringList"
+                },
+                "documentation": "<p>A list of lists of strings.</p>"
+            },
+            "RenamedListMembers": {
+                "type": "list",
+                "member": {
+                    "shape": "String",
+                    "locationName": "item"
+                }
+            },
+            "ListWithMemberNamespace": {
+                "type": "list",
+                "member": {
+                    "shape": "String",
+                    "xmlNamespace": "https://xml-member.example.com"
+                },
+                "xmlNamespace": "https://xml-list.example.com"
+            },
+            "ListWithNamespace": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                },
+                "xmlNamespace": "https://xml-list.example.com"
+            },
+            "StructureList": {
+                "type": "list",
+                "member": {
+                    "shape": "StructureListMember",
+                    "locationName": "item"
+                }
+            },
+            "StructureListMember": {
+                "type": "structure",
+                "members": {
+                    "a": {
+                        "shape": "String",
+                        "locationName": "value"
+                    },
+                    "b": {
+                        "shape": "String",
+                        "locationName": "other"
+                    }
+                }
+            },
+            "String": {
+                "type": "string"
+            },
+            "IntegerEnum": {
+                "type": "integer",
+                "box": true
+            },
+            "FooEnum": {
+                "type": "string",
+                "enum": [
+                    "Foo",
+                    "Baz",
+                    "Bar",
+                    "1",
+                    "0"
+                ]
+            },
+            "Timestamp": {
+                "type": "timestamp"
+            },
+            "Boolean": {
+                "type": "boolean",
+                "box": true
+            },
+            "Integer": {
+                "type": "integer",
+                "box": true
+            }
+        },
+        "cases": [
+            {
+                "id": "XmlEmptyLists",
+                "given": {
+                    "name": "XmlEmptyLists",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/XmlEmptyLists",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "XmlEmptyListsResponse"
+                    },
+                    "idempotent": true
+                },
+                "description": "Deserializes Empty XML lists",
+                "result": {
+                    "stringList": [],
+                    "stringSet": []
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<XmlEmptyListsResponse>\n        <stringList/>\n        <stringSet></stringSet>\n</XmlEmptyListsResponse>\n"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for XmlEmptyMaps operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "XmlEmptyMapsResponse": {
+                "type": "structure",
+                "members": {
+                    "myMap": {
+                        "shape": "XmlMapsInputOutputMap"
+                    }
+                }
+            },
+            "XmlMapsInputOutputMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "GreetingStruct"
+                }
+            },
+            "GreetingStruct": {
+                "type": "structure",
+                "members": {
+                    "hi": {
+                        "shape": "String"
+                    }
+                }
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "XmlEmptyMaps",
+                "given": {
+                    "name": "XmlEmptyMaps",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/XmlEmptyMaps",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "XmlEmptyMapsResponse"
+                    }
+                },
+                "description": "Deserializes Empty XML maps",
+                "result": {
+                    "myMap": {}
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<XmlEmptyMapsResponse>\n    <myMap></myMap>\n</XmlEmptyMapsResponse>\n"
+                }
+            },
+            {
+                "id": "XmlEmptySelfClosedMaps",
+                "given": {
+                    "name": "XmlEmptyMaps",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/XmlEmptyMaps",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "XmlEmptyMapsResponse"
+                    }
+                },
+                "description": "Deserializes Empty Self-closed XML maps",
+                "result": {
+                    "myMap": {}
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<XmlEmptyMapsResponse>\n    <myMap/>\n</XmlEmptyMapsResponse>\n"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for XmlEmptyStrings operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "XmlEmptyStringsResponse": {
+                "type": "structure",
+                "members": {
+                    "emptyString": {
+                        "shape": "String"
+                    }
+                }
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "XmlEmptyStrings",
+                "given": {
+                    "name": "XmlEmptyStrings",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/XmlEmptyStrings",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "XmlEmptyStringsResponse"
+                    },
+                    "idempotent": true
+                },
+                "description": "Deserializes xml empty strings",
+                "result": {
+                    "emptyString": ""
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<XmlEmptyStringsResponse>\n    <emptyString></emptyString>\n</XmlEmptyStringsResponse>\n"
+                }
+            },
+            {
+                "id": "XmlEmptySelfClosedStrings",
+                "given": {
+                    "name": "XmlEmptyStrings",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/XmlEmptyStrings",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "XmlEmptyStringsResponse"
+                    },
+                    "idempotent": true
+                },
+                "description": "Empty self closed string are deserialized as empty string",
+                "result": {
+                    "emptyString": ""
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<XmlEmptyStringsResponse>\n    <emptyString/>\n</XmlEmptyStringsResponse>\n"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for XmlEnums operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "XmlEnumsResponse": {
+                "type": "structure",
+                "members": {
+                    "fooEnum1": {
+                        "shape": "FooEnum"
+                    },
+                    "fooEnum2": {
+                        "shape": "FooEnum"
+                    },
+                    "fooEnum3": {
+                        "shape": "FooEnum"
+                    },
+                    "fooEnumList": {
+                        "shape": "FooEnumList"
+                    },
+                    "fooEnumSet": {
+                        "shape": "FooEnumSet"
+                    },
+                    "fooEnumMap": {
+                        "shape": "FooEnumMap"
+                    }
+                }
+            },
+            "FooEnum": {
+                "type": "string",
+                "enum": [
+                    "Foo",
+                    "Baz",
+                    "Bar",
+                    "1",
+                    "0"
+                ]
+            },
+            "FooEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "FooEnum"
+                }
+            },
+            "FooEnumSet": {
+                "type": "list",
+                "member": {
+                    "shape": "FooEnum"
+                }
+            },
+            "FooEnumMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "FooEnum"
+                }
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "XmlEnums",
+                "given": {
+                    "name": "XmlEnums",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/XmlEnums",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "XmlEnumsResponse"
+                    },
+                    "documentation": "<p>This example serializes enums as top level properties, in lists, sets, and maps.</p>",
+                    "idempotent": true
+                },
+                "description": "Serializes simple scalar properties",
+                "result": {
+                    "fooEnum1": "Foo",
+                    "fooEnum2": "0",
+                    "fooEnum3": "1",
+                    "fooEnumList": [
+                        "Foo",
+                        "0"
+                    ],
+                    "fooEnumSet": [
+                        "Foo",
+                        "0"
+                    ],
+                    "fooEnumMap": {
+                        "hi": "Foo",
+                        "zero": "0"
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<XmlEnumsResponse>\n    <fooEnum1>Foo</fooEnum1>\n    <fooEnum2>0</fooEnum2>\n    <fooEnum3>1</fooEnum3>\n    <fooEnumList>\n        <member>Foo</member>\n        <member>0</member>\n    </fooEnumList>\n    <fooEnumSet>\n        <member>Foo</member>\n        <member>0</member>\n    </fooEnumSet>\n    <fooEnumMap>\n        <entry>\n            <key>hi</key>\n            <value>Foo</value>\n        </entry>\n        <entry>\n            <key>zero</key>\n            <value>0</value>\n        </entry>\n    </fooEnumMap>\n</XmlEnumsResponse>\n"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for XmlIntEnums operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "XmlIntEnumsResponse": {
+                "type": "structure",
+                "members": {
+                    "intEnum1": {
+                        "shape": "IntegerEnum"
+                    },
+                    "intEnum2": {
+                        "shape": "IntegerEnum"
+                    },
+                    "intEnum3": {
+                        "shape": "IntegerEnum"
+                    },
+                    "intEnumList": {
+                        "shape": "IntegerEnumList"
+                    },
+                    "intEnumSet": {
+                        "shape": "IntegerEnumSet"
+                    },
+                    "intEnumMap": {
+                        "shape": "IntegerEnumMap"
+                    }
+                }
+            },
+            "IntegerEnum": {
+                "type": "integer",
+                "box": true
+            },
+            "IntegerEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "IntegerEnum"
+                }
+            },
+            "IntegerEnumSet": {
+                "type": "list",
+                "member": {
+                    "shape": "IntegerEnum"
+                }
+            },
+            "IntegerEnumMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "IntegerEnum"
+                }
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "XmlIntEnums",
+                "given": {
+                    "name": "XmlIntEnums",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/XmlIntEnums",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "XmlIntEnumsResponse"
+                    },
+                    "documentation": "<p>This example serializes enums as top level properties, in lists, sets, and maps.</p>",
+                    "idempotent": true
+                },
+                "description": "Serializes simple scalar properties",
+                "result": {
+                    "intEnum1": 1,
+                    "intEnum2": 2,
+                    "intEnum3": 3,
+                    "intEnumList": [
+                        1,
+                        2
+                    ],
+                    "intEnumSet": [
+                        1,
+                        2
+                    ],
+                    "intEnumMap": {
+                        "a": 1,
+                        "b": 2
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<XmlIntEnumsResponse>\n    <intEnum1>1</intEnum1>\n    <intEnum2>2</intEnum2>\n    <intEnum3>3</intEnum3>\n    <intEnumList>\n        <member>1</member>\n        <member>2</member>\n    </intEnumList>\n    <intEnumSet>\n        <member>1</member>\n        <member>2</member>\n    </intEnumSet>\n    <intEnumMap>\n        <entry>\n            <key>a</key>\n            <value>1</value>\n        </entry>\n        <entry>\n            <key>b</key>\n            <value>2</value>\n        </entry>\n    </intEnumMap>\n</XmlIntEnumsResponse>\n"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for XmlLists operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "XmlListsResponse": {
+                "type": "structure",
+                "members": {
+                    "stringList": {
+                        "shape": "StringList"
+                    },
+                    "stringSet": {
+                        "shape": "StringSet"
+                    },
+                    "integerList": {
+                        "shape": "IntegerList"
+                    },
+                    "booleanList": {
+                        "shape": "BooleanList"
+                    },
+                    "timestampList": {
+                        "shape": "TimestampList"
+                    },
+                    "enumList": {
+                        "shape": "FooEnumList"
+                    },
+                    "intEnumList": {
+                        "shape": "IntegerEnumList"
+                    },
+                    "nestedStringList": {
+                        "shape": "NestedStringList"
+                    },
+                    "renamedListMembers": {
+                        "shape": "RenamedListMembers",
+                        "locationName": "renamed"
+                    },
+                    "flattenedList": {
+                        "shape": "RenamedListMembers",
+                        "flattened": true
+                    },
+                    "flattenedList2": {
+                        "shape": "RenamedListMembers",
+                        "flattened": true,
+                        "locationName": "customName"
+                    },
+                    "flattenedListWithMemberNamespace": {
+                        "shape": "ListWithMemberNamespace",
+                        "flattened": true
+                    },
+                    "flattenedListWithNamespace": {
+                        "shape": "ListWithNamespace",
+                        "flattened": true
+                    },
+                    "structureList": {
+                        "shape": "StructureList",
+                        "locationName": "myStructureList"
+                    },
+                    "flattenedStructureList": {
+                        "shape": "StructureList",
+                        "flattened": true
+                    }
+                }
+            },
+            "StringList": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                }
+            },
+            "StringSet": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                }
+            },
+            "IntegerList": {
+                "type": "list",
+                "member": {
+                    "shape": "Integer"
+                }
+            },
+            "BooleanList": {
+                "type": "list",
+                "member": {
+                    "shape": "Boolean"
+                }
+            },
+            "TimestampList": {
+                "type": "list",
+                "member": {
+                    "shape": "Timestamp"
+                }
+            },
+            "FooEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "FooEnum"
+                }
+            },
+            "IntegerEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "IntegerEnum"
+                }
+            },
+            "NestedStringList": {
+                "type": "list",
+                "member": {
+                    "shape": "StringList"
+                },
+                "documentation": "<p>A list of lists of strings.</p>"
+            },
+            "RenamedListMembers": {
+                "type": "list",
+                "member": {
+                    "shape": "String",
+                    "locationName": "item"
+                }
+            },
+            "ListWithMemberNamespace": {
+                "type": "list",
+                "member": {
+                    "shape": "String",
+                    "xmlNamespace": "https://xml-member.example.com"
+                },
+                "xmlNamespace": "https://xml-list.example.com"
+            },
+            "ListWithNamespace": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                },
+                "xmlNamespace": "https://xml-list.example.com"
+            },
+            "StructureList": {
+                "type": "list",
+                "member": {
+                    "shape": "StructureListMember",
+                    "locationName": "item"
+                }
+            },
+            "StructureListMember": {
+                "type": "structure",
+                "members": {
+                    "a": {
+                        "shape": "String",
+                        "locationName": "value"
+                    },
+                    "b": {
+                        "shape": "String",
+                        "locationName": "other"
+                    }
+                }
+            },
+            "String": {
+                "type": "string"
+            },
+            "IntegerEnum": {
+                "type": "integer",
+                "box": true
+            },
+            "FooEnum": {
+                "type": "string",
+                "enum": [
+                    "Foo",
+                    "Baz",
+                    "Bar",
+                    "1",
+                    "0"
+                ]
+            },
+            "Timestamp": {
+                "type": "timestamp"
+            },
+            "Boolean": {
+                "type": "boolean",
+                "box": true
+            },
+            "Integer": {
+                "type": "integer",
+                "box": true
+            }
+        },
+        "cases": [
+            {
+                "id": "XmlLists",
+                "given": {
+                    "name": "XmlLists",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/XmlLists",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "XmlListsResponse"
+                    },
+                    "documentation": "<p>This test case serializes XML lists for the following cases for both input and output:</p> <ol> <li>Normal XML lists.</li> <li>Normal XML sets.</li> <li>XML lists of lists.</li> <li>XML lists with @xmlName on its members</li> <li>Flattened XML lists.</li> <li>Flattened XML lists with @xmlName.</li> <li>Flattened XML lists with @xmlNamespace.</li> <li>Lists of structures.</li> <li>Flattened XML list of structures</li> </ol>",
+                    "idempotent": true
+                },
+                "description": "Tests for XML list serialization",
+                "result": {
+                    "stringList": [
+                        "foo",
+                        "bar"
+                    ],
+                    "stringSet": [
+                        "foo",
+                        "bar"
+                    ],
+                    "integerList": [
+                        1,
+                        2
+                    ],
+                    "booleanList": [
+                        true,
+                        false
+                    ],
+                    "timestampList": [
+                        1398796238,
+                        1398796238
+                    ],
+                    "enumList": [
+                        "Foo",
+                        "0"
+                    ],
+                    "intEnumList": [
+                        1,
+                        2
+                    ],
+                    "nestedStringList": [
+                        [
+                            "foo",
+                            "bar"
+                        ],
+                        [
+                            "baz",
+                            "qux"
+                        ]
+                    ],
+                    "renamedListMembers": [
+                        "foo",
+                        "bar"
+                    ],
+                    "flattenedList": [
+                        "hi",
+                        "bye"
+                    ],
+                    "flattenedList2": [
+                        "yep",
+                        "nope"
+                    ],
+                    "flattenedListWithMemberNamespace": [
+                        "a",
+                        "b"
+                    ],
+                    "flattenedListWithNamespace": [
+                        "a",
+                        "b"
+                    ],
+                    "structureList": [
+                        {
+                            "a": "1",
+                            "b": "2"
+                        },
+                        {
+                            "a": "3",
+                            "b": "4"
+                        }
+                    ],
+                    "flattenedStructureList": [
+                        {
+                            "a": "5",
+                            "b": "6"
+                        },
+                        {
+                            "a": "7",
+                            "b": "8"
+                        }
+                    ]
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<XmlListsResponse>\n    <stringList>\n        <member>foo</member>\n        <member>bar</member>\n    </stringList>\n    <stringSet>\n        <member>foo</member>\n        <member>bar</member>\n    </stringSet>\n    <integerList>\n        <member>1</member>\n        <member>2</member>\n    </integerList>\n    <booleanList>\n        <member>true</member>\n        <member>false</member>\n    </booleanList>\n    <timestampList>\n        <member>2014-04-29T18:30:38Z</member>\n        <member>2014-04-29T18:30:38Z</member>\n    </timestampList>\n    <enumList>\n        <member>Foo</member>\n        <member>0</member>\n    </enumList>\n    <intEnumList>\n        <member>1</member>\n        <member>2</member>\n    </intEnumList>\n    <nestedStringList>\n        <member>\n            <member>foo</member>\n            <member>bar</member>\n        </member>\n        <member>\n            <member>baz</member>\n            <member>qux</member>\n        </member>\n    </nestedStringList>\n    <renamed>\n        <item>foo</item>\n        <item>bar</item>\n    </renamed>\n    <flattenedList>hi</flattenedList>\n    <flattenedList>bye</flattenedList>\n    <customName>yep</customName>\n    <customName>nope</customName>\n    <flattenedListWithMemberNamespace xmlns=\"https://xml-member.example.com\">a</flattenedListWithMemberNamespace>\n    <flattenedListWithMemberNamespace xmlns=\"https://xml-member.example.com\">b</flattenedListWithMemberNamespace>\n    <flattenedListWithNamespace>a</flattenedListWithNamespace>\n    <flattenedListWithNamespace>b</flattenedListWithNamespace>\n    <myStructureList>\n        <item>\n            <value>1</value>\n            <other>2</other>\n        </item>\n        <item>\n            <value>3</value>\n            <other>4</other>\n        </item>\n    </myStructureList>\n    <flattenedStructureList>\n        <value>5</value>\n        <other>6</other>\n    </flattenedStructureList>\n    <flattenedStructureList>\n        <value>7</value>\n        <other>8</other>\n    </flattenedStructureList>\n</XmlListsResponse>\n"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for XmlMaps operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "XmlMapsResponse": {
+                "type": "structure",
+                "members": {
+                    "myMap": {
+                        "shape": "XmlMapsInputOutputMap"
+                    }
+                }
+            },
+            "XmlMapsInputOutputMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "GreetingStruct"
+                }
+            },
+            "GreetingStruct": {
+                "type": "structure",
+                "members": {
+                    "hi": {
+                        "shape": "String"
+                    }
+                }
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "XmlMaps",
+                "given": {
+                    "name": "XmlMaps",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/XmlMaps",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "XmlMapsResponse"
+                    },
+                    "documentation": "<p>The example tests basic map serialization.</p>"
+                },
+                "description": "Tests for XML map serialization",
+                "result": {
+                    "myMap": {
+                        "foo": {
+                            "hi": "there"
+                        },
+                        "baz": {
+                            "hi": "bye"
+                        }
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<XmlMapsResponse>\n    <myMap>\n        <entry>\n            <key>foo</key>\n            <value>\n                <hi>there</hi>\n            </value>\n        </entry>\n        <entry>\n            <key>baz</key>\n            <value>\n                <hi>bye</hi>\n            </value>\n        </entry>\n    </myMap>\n</XmlMapsResponse>\n"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for XmlMapsXmlName operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "XmlMapsXmlNameResponse": {
+                "type": "structure",
+                "members": {
+                    "myMap": {
+                        "shape": "XmlMapsXmlNameInputOutputMap"
+                    }
+                }
+            },
+            "XmlMapsXmlNameInputOutputMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String",
+                    "locationName": "Attribute"
+                },
+                "value": {
+                    "shape": "GreetingStruct",
+                    "locationName": "Setting"
+                }
+            },
+            "GreetingStruct": {
+                "type": "structure",
+                "members": {
+                    "hi": {
+                        "shape": "String"
+                    }
+                }
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "XmlMapsXmlName",
+                "given": {
+                    "name": "XmlMapsXmlName",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/XmlMapsXmlName",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "XmlMapsXmlNameResponse"
+                    }
+                },
+                "description": "Serializes XML lists",
+                "result": {
+                    "myMap": {
+                        "foo": {
+                            "hi": "there"
+                        },
+                        "baz": {
+                            "hi": "bye"
+                        }
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<XmlMapsXmlNameResponse>\n    <myMap>\n        <entry>\n            <Attribute>foo</Attribute>\n            <Setting>\n                <hi>there</hi>\n            </Setting>\n        </entry>\n        <entry>\n            <Attribute>baz</Attribute>\n            <Setting>\n                <hi>bye</hi>\n            </Setting>\n        </entry>\n    </myMap>\n</XmlMapsXmlNameResponse>\n"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for XmlMapWithXmlNamespace operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "XmlMapWithXmlNamespaceResponse": {
+                "type": "structure",
+                "members": {
+                    "myMap": {
+                        "shape": "XmlMapWithXmlNamespaceInputOutputMap",
+                        "locationName": "KVP",
+                        "xmlNamespace": "https://the-member.example.com"
+                    }
+                }
+            },
+            "XmlMapWithXmlNamespaceInputOutputMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String",
+                    "locationName": "K",
+                    "xmlNamespace": "https://the-key.example.com"
+                },
+                "value": {
+                    "shape": "String",
+                    "locationName": "V",
+                    "xmlNamespace": "https://the-value.example.com"
+                }
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "RestXmlXmlMapWithXmlNamespace",
+                "given": {
+                    "name": "XmlMapWithXmlNamespace",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/XmlMapWithXmlNamespace",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "XmlMapWithXmlNamespaceResponse"
+                    },
+                    "documentation": "<p>Maps with @xmlNamespace and @xmlName</p>"
+                },
+                "description": "Serializes XML maps in responses that have xmlNamespace and xmlName on members",
+                "result": {
+                    "myMap": {
+                        "a": "A",
+                        "b": "B"
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<XmlMapWithXmlNamespaceResponse>\n    <KVP xmlns=\"https://the-member.example.com\">\n        <entry>\n            <K xmlns=\"https://the-key.example.com\">a</K>\n            <V xmlns=\"https://the-value.example.com\">A</V>\n        </entry>\n        <entry>\n            <K xmlns=\"https://the-key.example.com\">b</K>\n            <V xmlns=\"https://the-value.example.com\">B</V>\n        </entry>\n    </KVP>\n</XmlMapWithXmlNamespaceResponse>"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for XmlNamespaces operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "XmlNamespacesResponse": {
+                "type": "structure",
+                "members": {
+                    "nested": {
+                        "shape": "XmlNamespaceNested"
+                    }
+                },
+                "xmlNamespace": "http://foo.com"
+            },
+            "XmlNamespaceNested": {
+                "type": "structure",
+                "members": {
+                    "foo": {
+                        "shape": "String",
+                        "xmlNamespace": {
+                            "prefix": "baz",
+                            "uri": "http://baz.com"
+                        }
+                    },
+                    "values": {
+                        "shape": "XmlNamespacedList",
+                        "xmlNamespace": "http://qux.com"
+                    }
+                },
+                "xmlNamespace": "http://foo.com"
+            },
+            "String": {
+                "type": "string"
+            },
+            "XmlNamespacedList": {
+                "type": "list",
+                "member": {
+                    "shape": "String",
+                    "xmlNamespace": "http://bux.com"
+                }
+            }
+        },
+        "cases": [
+            {
+                "id": "XmlNamespaces",
+                "given": {
+                    "name": "XmlNamespaces",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/XmlNamespaces",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "XmlNamespacesResponse"
+                    }
+                },
+                "description": "Serializes XML namespaces",
+                "result": {
+                    "nested": {
+                        "foo": "Foo",
+                        "values": [
+                            "Bar",
+                            "Baz"
+                        ]
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<XmlNamespacesResponse xmlns=\"http://foo.com\">\n    <nested xmlns=\"http://foo.com\">\n        <foo xmlns:baz=\"http://baz.com\">Foo</foo>\n        <values xmlns=\"http://qux.com\">\n            <member xmlns=\"http://bux.com\">Bar</member>\n            <member xmlns=\"http://bux.com\">Baz</member>\n        </values>\n    </nested>\n</XmlNamespacesResponse>\n"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for XmlTimestamps operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "XmlTimestampsResponse": {
+                "type": "structure",
+                "members": {
+                    "normal": {
+                        "shape": "Timestamp"
+                    },
+                    "dateTime": {
+                        "shape": "SyntheticTimestamp_date_time"
+                    },
+                    "dateTimeOnTarget": {
+                        "shape": "DateTime"
+                    },
+                    "epochSeconds": {
+                        "shape": "SyntheticTimestamp_epoch_seconds"
+                    },
+                    "epochSecondsOnTarget": {
+                        "shape": "EpochSeconds"
+                    },
+                    "httpDate": {
+                        "shape": "SyntheticTimestamp_http_date"
+                    },
+                    "httpDateOnTarget": {
+                        "shape": "HttpDate"
+                    }
+                }
+            },
+            "Timestamp": {
+                "type": "timestamp"
+            },
+            "SyntheticTimestamp_date_time": {
+                "type": "timestamp",
+                "timestampFormat": "iso8601"
+            },
+            "DateTime": {
+                "type": "timestamp",
+                "timestampFormat": "iso8601"
+            },
+            "SyntheticTimestamp_epoch_seconds": {
+                "type": "timestamp",
+                "timestampFormat": "unixTimestamp"
+            },
+            "EpochSeconds": {
+                "type": "timestamp",
+                "timestampFormat": "unixTimestamp"
+            },
+            "SyntheticTimestamp_http_date": {
+                "type": "timestamp",
+                "timestampFormat": "rfc822"
+            },
+            "HttpDate": {
+                "type": "timestamp",
+                "timestampFormat": "rfc822"
+            }
+        },
+        "cases": [
+            {
+                "id": "XmlTimestamps",
+                "given": {
+                    "name": "XmlTimestamps",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/XmlTimestamps",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "XmlTimestampsResponse"
+                    },
+                    "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
+                },
+                "description": "Tests how normal timestamps are serialized",
+                "result": {
+                    "normal": 1398796238
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<XmlTimestampsResponse>\n    <normal>2014-04-29T18:30:38Z</normal>\n</XmlTimestampsResponse>\n"
+                }
+            },
+            {
+                "id": "XmlTimestampsWithDateTimeFormat",
+                "given": {
+                    "name": "XmlTimestamps",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/XmlTimestamps",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "XmlTimestampsResponse"
+                    },
+                    "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
+                },
+                "description": "Ensures that the timestampFormat of date-time works like normal timestamps",
+                "result": {
+                    "dateTime": 1398796238
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<XmlTimestampsResponse>\n    <dateTime>2014-04-29T18:30:38Z</dateTime>\n</XmlTimestampsResponse>\n"
+                }
+            },
+            {
+                "id": "XmlTimestampsWithDateTimeOnTargetFormat",
+                "given": {
+                    "name": "XmlTimestamps",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/XmlTimestamps",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "XmlTimestampsResponse"
+                    },
+                    "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
+                },
+                "description": "Ensures that the timestampFormat of date-time on the target shape works like normal timestamps",
+                "result": {
+                    "dateTimeOnTarget": 1398796238
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<XmlTimestampsResponse>\n    <dateTimeOnTarget>2014-04-29T18:30:38Z</dateTimeOnTarget>\n</XmlTimestampsResponse>\n"
+                }
+            },
+            {
+                "id": "XmlTimestampsWithEpochSecondsFormat",
+                "given": {
+                    "name": "XmlTimestamps",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/XmlTimestamps",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "XmlTimestampsResponse"
+                    },
+                    "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
+                },
+                "description": "Ensures that the timestampFormat of epoch-seconds works",
+                "result": {
+                    "epochSeconds": 1398796238
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<XmlTimestampsResponse>\n    <epochSeconds>1398796238</epochSeconds>\n</XmlTimestampsResponse>\n"
+                }
+            },
+            {
+                "id": "XmlTimestampsWithEpochSecondsOnTargetFormat",
+                "given": {
+                    "name": "XmlTimestamps",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/XmlTimestamps",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "XmlTimestampsResponse"
+                    },
+                    "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
+                },
+                "description": "Ensures that the timestampFormat of epoch-seconds on the target shape works",
+                "result": {
+                    "epochSecondsOnTarget": 1398796238
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<XmlTimestampsResponse>\n    <epochSecondsOnTarget>1398796238</epochSecondsOnTarget>\n</XmlTimestampsResponse>\n"
+                }
+            },
+            {
+                "id": "XmlTimestampsWithHttpDateFormat",
+                "given": {
+                    "name": "XmlTimestamps",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/XmlTimestamps",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "XmlTimestampsResponse"
+                    },
+                    "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
+                },
+                "description": "Ensures that the timestampFormat of http-date works",
+                "result": {
+                    "httpDate": 1398796238
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<XmlTimestampsResponse>\n    <httpDate>Tue, 29 Apr 2014 18:30:38 GMT</httpDate>\n</XmlTimestampsResponse>\n"
+                }
+            },
+            {
+                "id": "XmlTimestampsWithHttpDateOnTargetFormat",
+                "given": {
+                    "name": "XmlTimestamps",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/XmlTimestamps",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "XmlTimestampsResponse"
+                    },
+                    "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
+                },
+                "description": "Ensures that the timestampFormat of http-date on the target shape works",
+                "result": {
+                    "httpDateOnTarget": 1398796238
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<XmlTimestampsResponse>\n    <httpDateOnTarget>Tue, 29 Apr 2014 18:30:38 GMT</httpDateOnTarget>\n</XmlTimestampsResponse>\n"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for XmlUnions operation",
+        "metadata": {
+            "protocol": "rest-xml",
+            "protocols": [
+                "rest-xml"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "XmlUnionsResponse": {
+                "type": "structure",
+                "members": {
+                    "unionValue": {
+                        "shape": "XmlUnionShape"
+                    }
+                }
+            },
+            "XmlUnionShape": {
+                "type": "structure",
+                "members": {
+                    "stringValue": {
+                        "shape": "String"
+                    },
+                    "booleanValue": {
+                        "shape": "Boolean"
+                    },
+                    "byteValue": {
+                        "shape": "Integer"
+                    },
+                    "shortValue": {
+                        "shape": "Integer"
+                    },
+                    "integerValue": {
+                        "shape": "Integer"
+                    },
+                    "longValue": {
+                        "shape": "Long"
+                    },
+                    "floatValue": {
+                        "shape": "Float"
+                    },
+                    "doubleValue": {
+                        "shape": "Double"
+                    },
+                    "unionValue": {
+                        "shape": "XmlUnionShape"
+                    },
+                    "structValue": {
+                        "shape": "XmlNestedUnionStruct"
+                    }
+                },
+                "union": true
+            },
+            "String": {
+                "type": "string"
+            },
+            "Boolean": {
+                "type": "boolean",
+                "box": true
+            },
+            "Integer": {
+                "type": "integer",
+                "box": true
+            },
+            "Long": {
+                "type": "long",
+                "box": true
+            },
+            "Float": {
+                "type": "float",
+                "box": true
+            },
+            "Double": {
+                "type": "double",
+                "box": true
+            },
+            "XmlNestedUnionStruct": {
+                "type": "structure",
+                "members": {
+                    "stringValue": {
+                        "shape": "String"
+                    },
+                    "booleanValue": {
+                        "shape": "Boolean"
+                    },
+                    "byteValue": {
+                        "shape": "Integer"
+                    },
+                    "shortValue": {
+                        "shape": "Integer"
+                    },
+                    "integerValue": {
+                        "shape": "Integer"
+                    },
+                    "longValue": {
+                        "shape": "Long"
+                    },
+                    "floatValue": {
+                        "shape": "Float"
+                    },
+                    "doubleValue": {
+                        "shape": "Double"
+                    }
+                }
+            }
+        },
+        "cases": [
+            {
+                "id": "XmlUnionsWithStructMember",
+                "given": {
+                    "name": "XmlUnions",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/XmlUnions",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "XmlUnionsResponse"
+                    },
+                    "idempotent": true
+                },
+                "description": "Serializes union struct member",
+                "result": {
+                    "unionValue": {
+                        "structValue": {
+                            "stringValue": "string",
+                            "booleanValue": true,
+                            "byteValue": 1,
+                            "shortValue": 2,
+                            "integerValue": 3,
+                            "longValue": 4,
+                            "floatValue": 5.5,
+                            "doubleValue": 6.5
+                        }
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<XmlUnionsResponse>\n    <unionValue>\n       <structValue>\n          <stringValue>string</stringValue>\n          <booleanValue>true</booleanValue>\n          <byteValue>1</byteValue>\n          <shortValue>2</shortValue>\n          <integerValue>3</integerValue>\n          <longValue>4</longValue>\n          <floatValue>5.5</floatValue>\n          <doubleValue>6.5</doubleValue>\n       </structValue>\n    </unionValue>\n</XmlUnionsResponse>\n"
+                }
+            },
+            {
+                "id": "XmlUnionsWithStringMember",
+                "given": {
+                    "name": "XmlUnions",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/XmlUnions",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "XmlUnionsResponse"
+                    },
+                    "idempotent": true
+                },
+                "description": "Serializes union string member",
+                "result": {
+                    "unionValue": {
+                        "stringValue": "some string"
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<XmlUnionsResponse>\n   <unionValue>\n      <stringValue>some string</stringValue>\n   </unionValue>\n</XmlUnionsResponse>\n"
+                }
+            },
+            {
+                "id": "XmlUnionsWithBooleanMember",
+                "given": {
+                    "name": "XmlUnions",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/XmlUnions",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "XmlUnionsResponse"
+                    },
+                    "idempotent": true
+                },
+                "description": "Serializes union boolean member",
+                "result": {
+                    "unionValue": {
+                        "booleanValue": true
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<XmlUnionsResponse>\n   <unionValue>\n      <booleanValue>true</booleanValue>\n   </unionValue>\n</XmlUnionsResponse>\n"
+                }
+            },
+            {
+                "id": "XmlUnionsWithUnionMember",
+                "given": {
+                    "name": "XmlUnions",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/XmlUnions",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "XmlUnionsResponse"
+                    },
+                    "idempotent": true
+                },
+                "description": "Serializes union member",
+                "result": {
+                    "unionValue": {
+                        "unionValue": {
+                            "booleanValue": true
+                        }
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/xml"
+                    },
+                    "body": "<XmlUnionsResponse>\n   <unionValue>\n      <unionValue>\n         <booleanValue>true</booleanValue>\n      </unionValue>\n   </unionValue>\n</XmlUnionsResponse>\n"
+                }
+            }
+        ]
+    }
+]

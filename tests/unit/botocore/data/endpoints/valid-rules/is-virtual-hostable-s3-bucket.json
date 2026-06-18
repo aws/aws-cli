@@ -1,0 +1,48 @@
+{
+  "version": "1.3",
+  "parameters": {
+    "BucketName": {
+      "type": "string",
+      "required": true,
+      "documentation": "the input used to test isVirtualHostableS3Bucket"
+    }
+  },
+  "rules": [
+    {
+      "conditions": [
+        {
+          "fn": "aws.isVirtualHostableS3Bucket",
+          "argv": [
+            "{BucketName}",
+            false
+          ]
+        }
+      ],
+      "endpoint": {
+        "url": "https://{BucketName}.s3.amazonaws.com"
+      },
+      "type": "endpoint"
+    },
+    {
+      "conditions": [
+        {
+          "fn": "aws.isVirtualHostableS3Bucket",
+          "argv": [
+            "{BucketName}",
+            true
+          ]
+        }
+      ],
+      "endpoint": {
+        "url": "http://{BucketName}.s3.amazonaws.com"
+      },
+      "type": "endpoint"
+    },
+    {
+      "conditions": [
+      ],
+      "error": "not isVirtualHostableS3Bucket",
+      "type": "error"
+    }
+  ]
+}

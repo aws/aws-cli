@@ -3,7 +3,7 @@
 The following ``stop-failback`` example stops the failback process for the specified recovery instance. ::
 
     aws drs stop-failback \
-        --recovery-instance-id s-1234567890abcdef0
+        --recovery-instance-id i-1234567890abcdef0
 
 This command produces no output.
 

@@ -47,10 +47,13 @@ class TestConfigureSSOVanityUrlResolution:
                 ),
             ),
         ):
-            start_url, region = cmd._prompt_for_sso_start_url_and_sso_region()
+            start_url, region, resolved_url = (
+                cmd._prompt_for_sso_start_url_and_sso_region()
+            )
 
         assert start_url == 'https://aws.mycompany.com'
         assert region == 'us-east-1'
+        assert resolved_url == 'https://ssoins-abc.portal.us-east-1.app.aws'
         cmd._sso_session_prompter.prompt_for_sso_region.assert_not_called()
 
     def test_vanity_url_resolution_failure_falls_back_to_prompt(self):
@@ -71,10 +74,13 @@ class TestConfigureSSOVanityUrlResolution:
                 side_effect=ConfigurationError("Failed to resolve"),
             ),
         ):
-            start_url, region = cmd._prompt_for_sso_start_url_and_sso_region()
+            start_url, region, resolved_url = (
+                cmd._prompt_for_sso_start_url_and_sso_region()
+            )
 
         assert start_url == 'https://aws.mycompany.com'
         assert region == 'eu-west-1'
+        assert resolved_url is None
         cmd._sso_session_prompter.prompt_for_sso_region.assert_called_once()
 
     def test_direct_url_prompts_for_region(self):
@@ -94,10 +100,13 @@ class TestConfigureSSOVanityUrlResolution:
                 'awscli.customizations.configure.sso_commands.resolve_start_url',
             ) as mock_resolve,
         ):
-            start_url, region = cmd._prompt_for_sso_start_url_and_sso_region()
+            start_url, region, resolved_url = (
+                cmd._prompt_for_sso_start_url_and_sso_region()
+            )
 
         assert start_url == 'https://ssoins-abc.portal.us-west-2.app.aws'
         assert region == 'us-west-2'
+        assert resolved_url is None
         cmd._sso_session_prompter.prompt_for_sso_region.assert_called_once()
         mock_resolve.assert_not_called()
 

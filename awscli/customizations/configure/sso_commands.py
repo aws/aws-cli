@@ -319,9 +319,6 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
         if parsed_args.no_browser:
             on_pending_authorization = PrintOnlyHandler()
         sso_registration_args = self._prompt_for_sso_registration_args()
-        resolved = getattr(self, '_resolved_start_url', None)
-        if resolved:
-            sso_registration_args['resolved_start_url'] = resolved
         sso_token = self._sso_login(
             self._session,
             parsed_globals=parsed_globals,
@@ -372,8 +369,13 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
     def _prompt_for_registration_args_with_legacy_format(self):
         self._store_sso_session_prompter_answers_to_profile_config()
         self._set_sso_session_defaults_from_profile_config()
-        start_url, sso_region = self._prompt_for_sso_start_url_and_sso_region()
-        return {'start_url': start_url, 'sso_region': sso_region}
+        start_url, sso_region, resolved_url = (
+            self._prompt_for_sso_start_url_and_sso_region()
+        )
+        args = {'start_url': start_url, 'sso_region': sso_region}
+        if resolved_url:
+            args['resolved_start_url'] = resolved_url
+        return args
 
     def _get_sso_registration_args_from_sso_config(self, sso_session):
         sso_config = self._get_sso_session_config(sso_session)
@@ -386,17 +388,22 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
 
     def _prompt_for_registration_args_for_new_sso_session(self, sso_session):
         self._set_sso_session_defaults_from_profile_config()
-        start_url, sso_region = self._prompt_for_sso_start_url_and_sso_region()
+        start_url, sso_region, resolved_url = (
+            self._prompt_for_sso_start_url_and_sso_region()
+        )
         scopes = (
             self._sso_session_prompter.prompt_for_sso_registration_scopes()
         )
-        return {
+        args = {
             'session_name': sso_session,
             'start_url': start_url,
             'sso_region': sso_region,
             'registration_scopes': scopes,
             'force_refresh': True,
         }
+        if resolved_url:
+            args['resolved_start_url'] = resolved_url
+        return args
 
     def _store_sso_session_prompter_answers_to_profile_config(self):
         self._sso_session_prompter.sso_session_config = (
@@ -424,11 +431,10 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
                 resolved_url, region = resolve_start_url(
                     start_url, session=self._session
                 )
-                self._resolved_start_url = resolved_url
                 self._sso_session_prompter.sso_session_config['sso_region'] = (
                     region
                 )
-                return start_url, region
+                return start_url, region, resolved_url
             except Exception as e:
                 logger.debug(
                     "Failed to resolve vanity URL '%s': %s. "
@@ -436,9 +442,8 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
                     start_url,
                     e,
                 )
-        self._resolved_start_url = None
         sso_region = self._sso_session_prompter.prompt_for_sso_region()
-        return start_url, sso_region
+        return start_url, sso_region, None
 
     def _warn_configuring_using_legacy_format(self):
         uni_print(

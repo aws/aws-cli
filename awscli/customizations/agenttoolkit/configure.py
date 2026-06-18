@@ -43,11 +43,11 @@ class ConfigureAgentToolkitCommand(BasicCommand):
     SYNOPSIS = 'aws configure agent-toolkit'
     ARG_TABLE = [
         {
-            'name': 'force',
+            'name': 'yes',
             'help_text': (
-                'Skip all interactive prompts and run end-to-end with '
-                'defaults: select all detected agents, install default '
-                'skills, and configure the AWS MCP server.'
+                'Skip all interactive prompts and accept defaults: '
+                'select all detected agents, install default skills, '
+                'and configure the AWS MCP server.'
             ),
             'default': False,
             'action': 'store_true',
@@ -63,7 +63,7 @@ class ConfigureAgentToolkitCommand(BasicCommand):
         self._client = client
 
     def _run_main(self, parsed_args, parsed_globals):
-        force = getattr(parsed_args, 'force', False)
+        yes = getattr(parsed_args, 'yes', False)
         uni_print('\nDetecting installed AI coding agents...\n', self._stream)
         wizard_configs = [
             c for c in self._agent_configs if c.id != UNIVERSAL_ROW_ID
@@ -102,7 +102,7 @@ class ConfigureAgentToolkitCommand(BasicCommand):
 
         selected_agents = (
             detected
-            if force
+            if yes
             else multiselect_choice(
                 '\nSelect agents to configure',
                 detected,
@@ -122,8 +122,8 @@ class ConfigureAgentToolkitCommand(BasicCommand):
             install_targets.append(universal_agent)
 
         client = self._client or create_client(self._session, parsed_globals)
-        self._install_default_skills(install_targets, client, force=force)
-        self._configure_mcp(selected_agents, force=force)
+        self._install_default_skills(install_targets, client, yes=yes)
+        self._configure_mcp(selected_agents, yes=yes)
 
         uni_print(
             '\nYou can discover additional skills with '
@@ -132,7 +132,7 @@ class ConfigureAgentToolkitCommand(BasicCommand):
         )
         return 0
 
-    def _install_default_skills(self, selected_agents, client, force=False):
+    def _install_default_skills(self, selected_agents, client, yes=False):
         uni_print('\nFetching default AWS skills...\n', self._stream)
         paginator = client.get_paginator('list_skills')
         default_skills = []
@@ -145,7 +145,7 @@ class ConfigureAgentToolkitCommand(BasicCommand):
         names = ', '.join(s['name'] for s in default_skills)
         uni_print(f'  Found: {names}\n', self._stream)
 
-        if not force and not yes_no_choice(
+        if not yes and not yes_no_choice(
             f'\nInstall {len(default_skills)} default AWS skills? [Y/n]: '
         ):
             return
@@ -194,8 +194,8 @@ class ConfigureAgentToolkitCommand(BasicCommand):
                 '\nNo skills were installed successfully.\n', self._stream
             )
 
-    def _configure_mcp(self, agents, force=False):
-        if not force and not yes_no_choice(
+    def _configure_mcp(self, agents, yes=False):
+        if not yes and not yes_no_choice(
             '\nConfigure AWS MCP server connection? [Y/n]: '
         ):
             return

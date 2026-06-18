@@ -56,7 +56,7 @@ def _make_client(skills=None):
     return client
 
 
-def _run(agent_configs, yes_no_return=True, client=None, force=False):
+def _run(agent_configs, yes_no_return=True, client=None, yes=False):
     stream = StringIO()
     session = make_session()
     if client is None:
@@ -65,7 +65,7 @@ def _run(agent_configs, yes_no_return=True, client=None, force=False):
         session, stream=stream, agent_configs=agent_configs, client=client
     )
     parsed_args = MagicMock()
-    parsed_args.force = force
+    parsed_args.yes = yes
     with (
         patch(
             'awscli.customizations.agenttoolkit.configure.multiselect_choice',
@@ -219,7 +219,7 @@ def test_wizard_credits_universal_row_for_shared_path_install(tmp_path):
     assert (universal_dir / 'aws-cdk' / 'SKILL.md').exists()
 
 
-def test_force_skips_all_prompts(tmp_path):
+def test_yes_skips_all_prompts(tmp_path):
     configs = _make_agent_configs(tmp_path, count=1)
     zip_bytes, checksum = make_skill_zip()
     client = _make_client(skills=[{'name': 'aws-serverless'}])
@@ -243,7 +243,7 @@ def test_force_skips_all_prompts(tmp_path):
             client=client,
         )
         parsed_args = MagicMock()
-        parsed_args.force = True
+        parsed_args.yes = True
         cmd._run_main(parsed_args, None)
     multiselect_mock.assert_not_called()
     yes_no_mock.assert_not_called()

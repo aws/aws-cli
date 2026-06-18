@@ -3,7 +3,7 @@
 The following ``start-failback-launch`` example starts a failback launch for the specified recovery instances. ::
 
     aws drs start-failback-launch \
-        --recovery-instance-ids s-1234567890abcdef0
+        --recovery-instance-ids i-1234567890abcdef0
 
 Output::
 

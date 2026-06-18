@@ -85,6 +85,7 @@ def do_sso_login(
     registration_scopes=None,
     session_name=None,
     use_device_code=False,
+    resolved_start_url=None,
 ):
     if token_cache is None:
         token_cache = JSONFileCache(SSO_TOKEN_DIR, dumps_func=_sso_json_dumps)
@@ -118,6 +119,7 @@ def do_sso_login(
         session_name=session_name,
         force_refresh=force_refresh,
         registration_scopes=registration_scopes,
+        resolved_start_url=resolved_start_url,
     )
 
 

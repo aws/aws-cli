@@ -10,6 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
+
+from awscli.customizations.configure.writer import ConfigFileWriter
+from awscli.customizations.sso.resolve import resolve_start_url
 from awscli.customizations.sso.utils import (
     LOGIN_ARGS,
     BaseSSOCommand,
@@ -44,20 +48,52 @@ class LoginCommand(BaseSSOCommand):
 
     def _run_main(self, parsed_args, parsed_globals):
         sso_config = self._get_sso_config(sso_session=parsed_args.sso_session)
+        start_url = sso_config['sso_start_url']
+        configured_region = sso_config.get('sso_region')
+
+        resolved_url, region = resolve_start_url(
+            start_url,
+            session=self._session,
+            configured_region=configured_region,
+            timeout=parsed_globals.connect_timeout,
+        )
+
         on_pending_authorization = None
         if parsed_args.no_browser:
             on_pending_authorization = PrintOnlyHandler()
         do_sso_login(
             session=self._session,
             parsed_globals=parsed_globals,
-            sso_region=sso_config['sso_region'],
-            start_url=sso_config['sso_start_url'],
+            sso_region=region,
+            start_url=start_url,
+            resolved_start_url=resolved_url,
             on_pending_authorization=on_pending_authorization,
             force_refresh=True,
             session_name=sso_config.get('session_name'),
             registration_scopes=sso_config.get('registration_scopes'),
             use_device_code=parsed_args.use_device_code,
         )
+
+        # Only rewrite sso_region after successful login.
+        if configured_region != region:
+            self._write_sso_region(sso_config, region)
+
         success_msg = 'Successfully logged into Start URL: %s\n'
-        uni_print(success_msg % sso_config['sso_start_url'])
+        uni_print(success_msg % start_url)
         return 0
+
+    def _write_sso_region(self, sso_config, new_region):
+        session_name = sso_config.get('session_name')
+        config_path = os.path.expanduser(
+            self._session.get_config_variable('config_file')
+        )
+        writer = ConfigFileWriter()
+        if session_name:
+            section = f'sso-session {session_name}'
+        else:
+            profile = self._session.get_config_variable('profile') or 'default'
+            section = f'profile {profile}'
+        writer.update_config(
+            {'__section__': section, 'sso_region': new_region},
+            config_path,
+        )

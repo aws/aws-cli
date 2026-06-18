@@ -3,7 +3,7 @@
 The following ``reverse-replication`` example starts reverse replication from the specified recovery instance back to the source. ::
 
     aws drs reverse-replication \
-        --recovery-instance-id s-1234567890abcdef0
+        --recovery-instance-id i-1234567890abcdef0
 
 Output::
 

@@ -11,13 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
-from urllib.parse import urlparse
 
 from awscli.customizations.configure.writer import ConfigFileWriter
-from awscli.customizations.sso.resolve import (
-    is_aws_owned_domain,
-    resolve_start_url,
-)
+from awscli.customizations.sso.resolve import resolve_start_url
 from awscli.customizations.sso.utils import (
     LOGIN_ARGS,
     BaseSSOCommand,
@@ -79,10 +75,8 @@ class LoginCommand(BaseSSOCommand):
         )
 
         # Only rewrite sso_region after successful login.
-        hostname = urlparse(start_url).hostname
-        if hostname and not is_aws_owned_domain(hostname):
-            if configured_region != region:
-                self._write_sso_region(sso_config, region)
+        if configured_region != region:
+            self._write_sso_region(sso_config, region)
 
         success_msg = 'Successfully logged into Start URL: %s\n'
         uni_print(success_msg % start_url)

@@ -3396,7 +3396,7 @@ class SSOTokenFetcher(BaseSSOTokenFetcher):
         response = self._client.start_device_authorization(
             clientId=registration['clientId'],
             clientSecret=registration['clientSecret'],
-            startUrl=self._resolved_start_url,
+            startUrl=start_url,
         )
         expires_in = datetime.timedelta(seconds=response['expiresIn'])
         authorization = {
@@ -3411,13 +3411,22 @@ class SSOTokenFetcher(BaseSSOTokenFetcher):
             authorization['interval'] = response['interval']
         return authorization
 
-    def _poll_for_token(self, start_url, session_name, registration_scopes):
+    def _poll_for_token(
+        self,
+        start_url,
+        session_name,
+        registration_scopes,
+        resolved_start_url=None,
+    ):
+        resolved_start_url = resolved_start_url or start_url
         registration = self._registration(
             start_url,
             session_name,
             registration_scopes,
         )
-        authorization = self._authorize_client(start_url, registration)
+        authorization = self._authorize_client(
+            resolved_start_url, registration
+        )
 
         interval = authorization.get('interval', self._DEFAULT_INTERVAL)
 
@@ -3491,7 +3500,9 @@ class SSOTokenFetcher(BaseSSOTokenFetcher):
         force_refresh,
         registration_scopes,
         session_name,
+        resolved_start_url=None,
     ):
+        resolved_start_url = resolved_start_url or start_url
         cache_key = self._token_cache_key(start_url, session_name)
         # Only obey the token cache if we are not forcing a refresh.
         if not force_refresh and cache_key in self._cache:
@@ -3504,6 +3515,7 @@ class SSOTokenFetcher(BaseSSOTokenFetcher):
             start_url,
             session_name,
             registration_scopes,
+            resolved_start_url=resolved_start_url,
         )
         self._cache[cache_key] = token
         return token
@@ -3516,14 +3528,12 @@ class SSOTokenFetcher(BaseSSOTokenFetcher):
         session_name=None,
         resolved_start_url=None,
     ):
-        # resolved_start_url is the AWS-owned URL to pass to service APIs.
-        # start_url (possibly a vanity URL) is used as the cache key.
-        self._resolved_start_url = resolved_start_url or start_url
         return self._token(
             start_url,
             force_refresh,
             registration_scopes,
             session_name,
+            resolved_start_url=resolved_start_url,
         )
 
 
@@ -3594,7 +3604,9 @@ class SSOTokenFetcherAuth(BaseSSOTokenFetcher):
         session_name,
         scopes,
         force_refresh=False,
+        resolved_start_url=None,
     ):
+        resolved_start_url = resolved_start_url or start_url
         cache_key = self._registration_cache_key(
             start_url,
             session_name,
@@ -3611,7 +3623,7 @@ class SSOTokenFetcherAuth(BaseSSOTokenFetcher):
             session_name,
             scopes,
             self._auth_code_fetcher.redirect_uri_without_port(),
-            self._resolved_start_url,
+            resolved_start_url,
         )
         self._cache[cache_key] = registration
         return registration
@@ -3668,11 +3680,19 @@ class SSOTokenFetcherAuth(BaseSSOTokenFetcher):
             f'&code_challenge={self.code_challenge[:-1]}'  # trim final '='
         )
 
-    def _get_new_token(self, start_url, session_name, registration_scopes):
+    def _get_new_token(
+        self,
+        start_url,
+        session_name,
+        registration_scopes,
+        resolved_start_url=None,
+    ):
+        resolved_start_url = resolved_start_url or start_url
         registration = self._registration(
             start_url,
             session_name,
             registration_scopes,
+            resolved_start_url=resolved_start_url,
         )
 
         expected_state = uuid.uuid4()
@@ -3744,7 +3764,7 @@ class SSOTokenFetcherAuth(BaseSSOTokenFetcher):
         session_name=None,
         resolved_start_url=None,
     ):
-        self._resolved_start_url = resolved_start_url or start_url
+        resolved_start_url = resolved_start_url or start_url
         cache_key = self._token_cache_key(start_url, session_name)
         # Only obey the token cache if we are not forcing a refresh.
         if not force_refresh and cache_key in self._cache:
@@ -3753,7 +3773,10 @@ class SSOTokenFetcherAuth(BaseSSOTokenFetcher):
                 return token
 
         token = self._get_new_token(
-            start_url, session_name, registration_scopes
+            start_url,
+            session_name,
+            registration_scopes,
+            resolved_start_url=resolved_start_url,
         )
         self._cache[cache_key] = token
         return token

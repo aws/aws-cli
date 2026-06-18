@@ -3183,6 +3183,10 @@
         "vpcLatticeConfigurations":{
           "shape":"VpcLatticeConfigurations",
           "documentation":"<p>The VPC Lattice configuration for the service being created.</p>"
+        },
+        "monitoring":{
+          "shape":"MonitoringConfiguration",
+          "documentation":"<p>The optional monitoring configuration for the service, which defines the resolution for the service-level <code>CPUUtilization</code> and <code>MemoryUtilization</code> Amazon CloudWatch metrics. When not specified, Amazon ECS uses the default resolution of <code>60</code> seconds.</p>"
         }
       },
       "documentation":"<zonbook></zonbook><xhtml></xhtml>"
@@ -7677,6 +7681,47 @@
       },
       "documentation":"<p>The minimum and maximum amount of memory in mebibytes (MiB) for instance type selection. This ensures that selected instance types have adequate memory for your workloads.</p>"
     },
+    "MetricConfiguration":{
+      "type":"structure",
+      "required":[
+        "metricNames",
+        "resolutionSeconds"
+      ],
+      "members":{
+        "metricNames":{
+          "shape":"MetricNamesList",
+          "documentation":"<p>The list of metric names to configure. The supported metric names are <code>CPUUtilization</code> and <code>MemoryUtilization</code>.</p>"
+        },
+        "resolutionSeconds":{
+          "shape":"MetricResolutionSeconds",
+          "documentation":"<p>The resolution, in seconds, at which to collect the metrics. The valid values are <code>20</code> and <code>60</code>.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a specific set of metrics to collect for a service.</p>"
+    },
+    "MetricConfigurationList":{
+      "type":"list",
+      "member":{"shape":"MetricConfiguration"},
+      "max":5,
+      "min":0
+    },
+    "MetricName":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "MetricNamesList":{
+      "type":"list",
+      "member":{"shape":"MetricName"},
+      "max":5,
+      "min":1
+    },
+    "MetricResolutionSeconds":{
+      "type":"integer",
+      "box":true,
+      "max":60,
+      "min":20
+    },
     "MissingVersionException":{
       "type":"structure",
       "members":{
@@ -7687,6 +7732,16 @@
       },
       "documentation":"<p>Amazon ECS can't determine the current version of the Amazon ECS container agent on the container instance and doesn't have enough information to proceed with an update. This could be because the agent running on the container instance is a previous or custom version that doesn't use our version information.</p>",
       "exception":true
+    },
+    "MonitoringConfiguration":{
+      "type":"structure",
+      "members":{
+        "metricConfigurations":{
+          "shape":"MetricConfigurationList",
+          "documentation":"<p>The list of metric configurations for the service monitoring.</p>"
+        }
+      },
+      "documentation":"<p>The optional monitoring configuration for a service, which defines the resolution for the service-level <code>CPUUtilization</code> and <code>MemoryUtilization</code> Amazon CloudWatch metrics. When not specified, Amazon ECS uses the default resolution of <code>60</code> seconds.</p>"
     },
     "MountPoint":{
       "type":"structure",
@@ -9519,6 +9574,10 @@
         "ecsManagedResources":{
           "shape":"ECSManagedResources",
           "documentation":"<p>The resources created and managed by Amazon ECS when you create an Express service for Amazon ECS.</p>"
+        },
+        "monitoring":{
+          "shape":"MonitoringConfiguration",
+          "documentation":"<p>The optional monitoring configuration for the service, which defines the resolution for the service-level <code>CPUUtilization</code> and <code>MemoryUtilization</code> Amazon CloudWatch metrics. When not specified, Amazon ECS uses the default resolution of <code>60</code> seconds.</p>"
         }
       },
       "documentation":"<p>Information about the service revision.</p> <p>A service revision contains a record of the workload configuration Amazon ECS is attempting to deploy. Whenever you create or deploy a service, Amazon ECS automatically creates and captures the configuration that you're trying to deploy in the service revision. For information about service revisions, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-revision.html\">Amazon ECS service revisions</a> in the <i> <i>Amazon Elastic Container Service Developer Guide</i> </i>.</p>"
@@ -11243,6 +11302,10 @@
         "vpcLatticeConfigurations":{
           "shape":"VpcLatticeConfigurations",
           "documentation":"<p>An object representing the VPC Lattice configuration for the service being updated.</p> <p>This parameter triggers a new service deployment.</p>"
+        },
+        "monitoring":{
+          "shape":"MonitoringConfiguration",
+          "documentation":"<p>The optional monitoring configuration for the service, which defines the resolution for the service-level <code>CPUUtilization</code> and <code>MemoryUtilization</code> Amazon CloudWatch metrics. When not specified, Amazon ECS uses the default resolution of <code>60</code> seconds.</p>"
         }
       },
       "documentation":"<zonbook></zonbook><xhtml></xhtml>"

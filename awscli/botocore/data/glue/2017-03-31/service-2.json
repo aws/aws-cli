@@ -4020,14 +4020,14 @@
       ],
       "documentation":"<p>Executes the statement.</p>"
     },
-    "Search":{
-      "name":"Search",
+    "SearchAssets":{
+      "name":"SearchAssets",
       "http":{
         "method":"POST",
         "requestUri":"/"
       },
-      "input":{"shape":"SearchInput"},
-      "output":{"shape":"SearchOutput"},
+      "input":{"shape":"SearchAssetsInput"},
+      "output":{"shape":"SearchAssetsOutput"},
       "errors":[
         {"shape":"AccessDeniedException"},
         {"shape":"InvalidInputException"},
@@ -5554,11 +5554,11 @@
     "AssociateGlossaryTermsRequest":{
       "type":"structure",
       "required":[
-        "Identifier",
+        "AssetIdentifier",
         "GlossaryTermIdentifiers"
       ],
       "members":{
-        "Identifier":{
+        "AssetIdentifier":{
           "shape":"AssetId",
           "documentation":"<p>The unique identifier of the asset to associate glossary terms with.</p>"
         },
@@ -5576,7 +5576,7 @@
     "AssociateGlossaryTermsResponse":{
       "type":"structure",
       "members":{
-        "Identifier":{
+        "AssetIdentifier":{
           "shape":"AssetId",
           "documentation":"<p>The unique identifier of the asset.</p>"
         },
@@ -12752,13 +12752,21 @@
     "DeleteAttachmentRequest":{
       "type":"structure",
       "required":[
-        "Identifier",
+        "AssetIdentifier",
         "AttachmentName"
       ],
       "members":{
-        "Identifier":{
+        "AssetIdentifier":{
           "shape":"AssetId",
           "documentation":"<p>The unique identifier of the asset from which to delete the attachment.</p>"
+        },
+        "IterableFormName":{
+          "shape":"IterableFormName",
+          "documentation":"<p>The name of the iterable form. When specified along with <code>itemIdentifier</code>, the attachment is deleted from an item within the iterable form rather than from the asset itself.</p>"
+        },
+        "ItemIdentifier":{
+          "shape":"ItemIdentifier",
+          "documentation":"<p>The identifier of the item within the iterable form. Required when <code>iterableFormName</code> is specified.</p>"
         },
         "AttachmentName":{
           "shape":"AttachmentName",
@@ -12769,7 +12777,7 @@
     "DeleteAttachmentResponse":{
       "type":"structure",
       "members":{
-        "Identifier":{
+        "AssetIdentifier":{
           "shape":"AssetId",
           "documentation":"<p>The unique identifier of the asset.</p>"
         }
@@ -14071,11 +14079,11 @@
     "DisassociateGlossaryTermsRequest":{
       "type":"structure",
       "required":[
-        "Identifier",
+        "AssetIdentifier",
         "GlossaryTermIdentifiers"
       ],
       "members":{
-        "Identifier":{
+        "AssetIdentifier":{
           "shape":"AssetId",
           "documentation":"<p>The unique identifier of the asset to disassociate glossary terms from.</p>"
         },
@@ -14093,7 +14101,7 @@
     "DisassociateGlossaryTermsResponse":{
       "type":"structure",
       "members":{
-        "Identifier":{
+        "AssetIdentifier":{
           "shape":"AssetId",
           "documentation":"<p>The unique identifier of the asset.</p>"
         },
@@ -24503,7 +24511,7 @@
     "PutAttachmentResponse":{
       "type":"structure",
       "members":{
-        "AssetId":{
+        "AssetIdentifier":{
           "shape":"AssetId",
           "documentation":"<p>The unique identifier of the asset.</p>"
         },
@@ -26921,6 +26929,44 @@
       "type":"string",
       "max":400000
     },
+    "SearchAssetsInput":{
+      "type":"structure",
+      "members":{
+        "SearchText":{
+          "shape":"SearchText",
+          "documentation":"<p>The text to search for. At least one of <code>searchText</code> or <code>filterClause</code> must be provided.</p>"
+        },
+        "MaxResults":{
+          "shape":"SearchMaxResults",
+          "documentation":"<p>The maximum number of results to return in the response.</p>"
+        },
+        "NextToken":{
+          "shape":"SearchNextToken",
+          "documentation":"<p>A continuation token, if this is a continuation call.</p>"
+        },
+        "Sort":{
+          "shape":"SearchSort",
+          "documentation":"<p>The sort criteria for the search results.</p>"
+        },
+        "FilterClause":{
+          "shape":"SearchFilterClause",
+          "documentation":"<p>The filter clause to apply to the search. Supports nested AND/OR logic with attribute-level and map-level filters.</p>"
+        }
+      }
+    },
+    "SearchAssetsOutput":{
+      "type":"structure",
+      "members":{
+        "Items":{
+          "shape":"SearchResultItemList",
+          "documentation":"<p>The list of assets matching the search criteria.</p>"
+        },
+        "NextToken":{
+          "shape":"SearchNextToken",
+          "documentation":"<p>A continuation token, present if the current segment is not the last.</p>"
+        }
+      }
+    },
     "SearchAttribute":{
       "type":"string",
       "max":128,
@@ -27009,31 +27055,6 @@
       "documentation":"<p>A filter value. Exactly one of <code>stringValue</code> or <code>longValue</code> must be specified.</p>",
       "union":true
     },
-    "SearchInput":{
-      "type":"structure",
-      "members":{
-        "SearchText":{
-          "shape":"SearchText",
-          "documentation":"<p>The text to search for. At least one of <code>searchText</code> or <code>filterClause</code> must be provided.</p>"
-        },
-        "MaxResults":{
-          "shape":"SearchMaxResults",
-          "documentation":"<p>The maximum number of results to return in the response.</p>"
-        },
-        "NextToken":{
-          "shape":"SearchNextToken",
-          "documentation":"<p>A continuation token, if this is a continuation call.</p>"
-        },
-        "Sort":{
-          "shape":"SearchSort",
-          "documentation":"<p>The sort criteria for the search results.</p>"
-        },
-        "FilterClause":{
-          "shape":"SearchFilterClause",
-          "documentation":"<p>The filter clause to apply to the search. Supports nested AND/OR logic with attribute-level and map-level filters.</p>"
-        }
-      }
-    },
     "SearchMapFilter":{
       "type":"structure",
       "required":[
@@ -27080,19 +27101,6 @@
       "min":1
     },
     "SearchNextToken":{"type":"string"},
-    "SearchOutput":{
-      "type":"structure",
-      "members":{
-        "Items":{
-          "shape":"SearchResultItemList",
-          "documentation":"<p>The list of assets matching the search criteria.</p>"
-        },
-        "NextToken":{
-          "shape":"SearchNextToken",
-          "documentation":"<p>A continuation token, present if the current segment is not the last.</p>"
-        }
-      }
-    },
     "SearchPropertyPredicates":{
       "type":"list",
       "member":{"shape":"PropertyPredicate"}

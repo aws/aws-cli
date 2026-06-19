@@ -115,6 +115,25 @@
       ],
       "documentation":"<p>Operation in the Amazon OpenSearch Service API for associating multiple packages with a domain simultaneously.</p>"
     },
+    "AttachDataSource":{
+      "name":"AttachDataSource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2021-01-01/opensearch/application/{id}/attachDataSource",
+        "responseCode":200
+      },
+      "input":{"shape":"AttachDataSourceRequest"},
+      "output":{"shape":"AttachDataSourceResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"DisabledOperationException"}
+      ],
+      "documentation":"<p>Attaches a data source to an OpenSearch application. The data source can be an Amazon OpenSearch Service domain or an Amazon OpenSearch Serverless collection. If both the application and data source are in the <code>ACTIVE</code> state, the attachment completes immediately and returns a status of <code>ATTACHED</code>. If either resource is not yet active, the operation stores the request and returns a status of <code>PENDING</code>. A background process then completes the attachment when both resources become active. Pending attachments that are not completed within 24 hours are marked as <code>FAILED</code>. This operation is idempotent. If a data source is already attached or pending for the same application, the existing attachment is returned.</p>"
+    },
     "AuthorizeVpcEndpointAccess":{
       "name":"AuthorizeVpcEndpointAccess",
       "http":{
@@ -447,6 +466,24 @@
       ],
       "documentation":"<p>Deregisters a capability from an OpenSearch UI application. This operation removes the capability and its associated configuration.</p>"
     },
+    "DescribeDataSourceAttachment":{
+      "name":"DescribeDataSourceAttachment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2021-01-01/opensearch/application/{id}/describeDataSourceAttachment",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeDataSourceAttachmentRequest"},
+      "output":{"shape":"DescribeDataSourceAttachmentResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"DisabledOperationException"}
+      ],
+      "documentation":"<p>Returns the current status and details of a specific data source attachment for an OpenSearch application. Throws a <code>ResourceNotFoundException</code> if no attachment record exists for the specified application and data source combination.</p>"
+    },
     "DescribeDomain":{
       "name":"DescribeDomain",
       "http":{
@@ -707,6 +744,25 @@
       ],
       "documentation":"<p>Describes one or more Amazon OpenSearch Service-managed VPC endpoints.</p>"
     },
+    "DetachDataSource":{
+      "name":"DetachDataSource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2021-01-01/opensearch/application/{id}/detachDataSource",
+        "responseCode":200
+      },
+      "input":{"shape":"DetachDataSourceRequest"},
+      "output":{"shape":"DetachDataSourceResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"DisabledOperationException"}
+      ],
+      "documentation":"<p>Removes a data source from an OpenSearch application. The application must be in the <code>ACTIVE</code> state. This operation removes the data source saved object from the application and deletes the attachment record. Throws a <code>ConflictException</code> if the specified data source has a <code>PENDING</code> attachment, and a <code>ResourceNotFoundException</code> if the data source is not currently attached to the application.</p>"
+    },
     "DissociatePackage":{
       "name":"DissociatePackage",
       "http":{
@@ -954,6 +1010,24 @@
         {"shape":"DisabledOperationException"}
       ],
       "documentation":"<p>Lists all OpenSearch applications under your account.</p>"
+    },
+    "ListDataSourceAttachments":{
+      "name":"ListDataSourceAttachments",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2021-01-01/opensearch/application/{id}/listDataSourceAttachments",
+        "responseCode":200
+      },
+      "input":{"shape":"ListDataSourceAttachmentsRequest"},
+      "output":{"shape":"ListDataSourceAttachmentsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"DisabledOperationException"}
+      ],
+      "documentation":"<p>Returns a paginated list of all data source attachments for an OpenSearch application, including attachments in all states (<code>PENDING</code>, <code>ATTACHED</code>, and <code>FAILED</code>).</p>"
     },
     "ListDataSources":{
       "name":"ListDataSources",
@@ -2059,6 +2133,53 @@
         "DomainPackageDetailsList":{
           "shape":"DomainPackageDetailsList",
           "documentation":"<p>List of information about packages that are associated with a domain. </p>"
+        }
+      }
+    },
+    "AttachDataSourceRequest":{
+      "type":"structure",
+      "required":[
+        "id",
+        "dataSourceArn"
+      ],
+      "members":{
+        "id":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier or name of the OpenSearch application to attach the data source to. This is the same identifier used with <code>UpdateApplication</code>, <code>GetApplication</code>, and <code>DeleteApplication</code>.</p>",
+          "location":"uri",
+          "locationName":"id"
+        },
+        "dataSourceArn":{"shape":"ARN"},
+        "workspaceId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of an existing workspace to update with the new data source. Mutually exclusive with <code>workspaceConfiguration</code>.</p>"
+        },
+        "workspaceConfiguration":{
+          "shape":"WorkspaceConfigurationInput",
+          "documentation":"<p>Configuration for creating a new workspace during the attachment. If specified, a workspace is created and linked to the data source after the attachment completes. Mutually exclusive with <code>workspaceId</code>.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency of the request. If you retry a request with the same client token and the same parameters, the retry succeeds without performing any further actions.</p>"
+        }
+      }
+    },
+    "AttachDataSourceResponse":{
+      "type":"structure",
+      "members":{
+        "attachmentId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier assigned to the data source attachment.</p>"
+        },
+        "id":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the OpenSearch application.</p>"
+        },
+        "arn":{"shape":"ARN"},
+        "dataSourceArn":{"shape":"ARN"},
+        "status":{
+          "shape":"DataSourceAttachmentStatus",
+          "documentation":"<p>The status of the data source attachment. Valid values are <code>PENDING</code> (waiting for resources to become active), <code>ATTACHED</code> (successfully attached), and <code>FAILED</code> (attachment timed out or encountered a non-retryable error).</p>"
         }
       }
     },
@@ -3303,6 +3424,33 @@
       },
       "documentation":"<p>Data sources that are associated with an OpenSearch application. </p>"
     },
+    "DataSourceAttachmentStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "ATTACHED",
+        "FAILED"
+      ]
+    },
+    "DataSourceAttachmentSummary":{
+      "type":"structure",
+      "members":{
+        "attachmentId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier assigned to the data source attachment.</p>"
+        },
+        "dataSourceArn":{"shape":"ARN"},
+        "status":{
+          "shape":"DataSourceAttachmentStatus",
+          "documentation":"<p>The current status of the data source attachment. Valid values are <code>PENDING</code>, <code>ATTACHED</code>, and <code>FAILED</code>.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a data source attachment, including its identifier, data source ARN, and current status.</p>"
+    },
+    "DataSourceAttachmentSummaryList":{
+      "type":"list",
+      "member":{"shape":"DataSourceAttachmentSummary"}
+    },
     "DataSourceDescription":{
       "type":"string",
       "max":1000,
@@ -3657,6 +3805,41 @@
         }
       },
       "documentation":"<p>The result of a <code>DeregisterCapability</code> request.</p>"
+    },
+    "DescribeDataSourceAttachmentRequest":{
+      "type":"structure",
+      "required":[
+        "id",
+        "dataSourceArn"
+      ],
+      "members":{
+        "id":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier or name of the OpenSearch application.</p>",
+          "location":"uri",
+          "locationName":"id"
+        },
+        "dataSourceArn":{"shape":"ARN"}
+      }
+    },
+    "DescribeDataSourceAttachmentResponse":{
+      "type":"structure",
+      "members":{
+        "attachmentId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier assigned to the data source attachment.</p>"
+        },
+        "id":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the OpenSearch application.</p>"
+        },
+        "arn":{"shape":"ARN"},
+        "dataSourceArn":{"shape":"ARN"},
+        "status":{
+          "shape":"DataSourceAttachmentStatus",
+          "documentation":"<p>The status of the data source attachment. Valid values are <code>PENDING</code>, <code>ATTACHED</code>, and <code>FAILED</code>.</p>"
+        }
+      }
     },
     "DescribeDomainAutoTunesRequest":{
       "type":"structure",
@@ -4241,6 +4424,33 @@
       }
     },
     "Description":{"type":"string"},
+    "DetachDataSourceRequest":{
+      "type":"structure",
+      "required":[
+        "id",
+        "dataSourceArn"
+      ],
+      "members":{
+        "id":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier or name of the OpenSearch application to detach the data source from.</p>",
+          "location":"uri",
+          "locationName":"id"
+        },
+        "dataSourceArn":{"shape":"ARN"}
+      }
+    },
+    "DetachDataSourceResponse":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the OpenSearch application.</p>"
+        },
+        "arn":{"shape":"ARN"},
+        "dataSourceArn":{"shape":"ARN"}
+      }
+    },
     "DirectQueryDataSource":{
       "type":"structure",
       "members":{
@@ -6292,6 +6502,39 @@
           "documentation":"<p>Summarizes OpenSearch applications, including ID, ARN, name, endpoint, status, creation time, and last update time.</p>"
         },
         "nextToken":{"shape":"NextToken"}
+      }
+    },
+    "ListDataSourceAttachmentsRequest":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier or name of the OpenSearch application to list attachments for.</p>",
+          "location":"uri",
+          "locationName":"id"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token from a previous call to retrieve the next set of results.</p>"
+        },
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of results to return per page. The default is 50.</p>"
+        }
+      }
+    },
+    "ListDataSourceAttachmentsResponse":{
+      "type":"structure",
+      "members":{
+        "attachments":{
+          "shape":"DataSourceAttachmentSummaryList",
+          "documentation":"<p>A list of data source attachment summaries for the specified application.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token to use in a subsequent call to retrieve the next set of results.</p>"
+        }
       }
     },
     "ListDataSourcesRequest":{
@@ -9569,6 +9812,24 @@
         }
       },
       "documentation":"<p>The desired start time for an <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/APIReference/API_OffPeakWindow.html\">off-peak maintenance window</a>.</p>"
+    },
+    "WorkspaceConfigurationInput":{
+      "type":"structure",
+      "required":[
+        "name",
+        "workspaceType"
+      ],
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the workspace to create. Must be between 1 and 40 characters and can contain alphanumeric characters, parentheses, brackets, hyphens, underscores, and spaces.</p>"
+        },
+        "workspaceType":{
+          "shape":"String",
+          "documentation":"<p>The type of workspace to create, which determines the use-case features enabled for the workspace. Valid values are <code>OBSERVABILITY</code>, <code>SECURITY_ANALYTICS</code>, and <code>SEARCH</code>.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for creating a new workspace when attaching a data source to an OpenSearch application. The workspace is created after the data source is successfully attached.</p>"
     },
     "ZoneAwarenessConfig":{
       "type":"structure",

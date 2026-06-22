@@ -46,8 +46,7 @@ Output::
                 "GovernedProviders": [
                     "AWS"
                 ]
-            },
-            ...
+            }
         ]
     }
 

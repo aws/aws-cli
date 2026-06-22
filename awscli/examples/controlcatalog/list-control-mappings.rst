@@ -37,8 +37,7 @@ Output::
                         "CommonControlArn": "arn:aws:controlcatalog:::common-control/c0kq7ddgbp8ivhicnlr0plch4"
                     }
                 }
-            },
-            ...
+            }
         ]
     }
     
@@ -74,8 +73,7 @@ Output::
                         "Item": "14.6"
                     }
                 }
-            },
-            ...
+            }
         ]
     }
 

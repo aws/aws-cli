@@ -1,6 +1,6 @@
 **Example 1: To retrieve a list of available controls in the Control Catalog library**
 
-The following ``list-controls`` example retrieves a list of available controls in the Control Catalog library.  ::
+The following ``list-controls`` example retrieves a list of available controls in the Control Catalog library. ::
 
     aws controlcatalog list-controls \
         --region us-east-1

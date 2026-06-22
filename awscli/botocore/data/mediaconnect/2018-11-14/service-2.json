@@ -2480,7 +2480,7 @@
       "members":{
         "State":{
           "shape":"State",
-          "documentation":"<p> Indicates whether the <code>BlackFrames</code> metric is enabled or disabled..</p>",
+          "documentation":"<p> Indicates whether the <code>BlackFrames</code> metric is enabled or disabled.</p>",
           "locationName":"state"
         },
         "ThresholdSeconds":{
@@ -2490,6 +2490,26 @@
         }
       },
       "documentation":"<p> Configures settings for the <code>BlackFrames</code> metric.</p>"
+    },
+    "BlackFramesConfiguration":{
+      "type":"structure",
+      "required":[
+        "State",
+        "ThresholdSeconds"
+      ],
+      "members":{
+        "State":{
+          "shape":"ContentQualityAnalysisState",
+          "documentation":"<p>Indicates whether black frames detection is enabled or disabled.</p>",
+          "locationName":"state"
+        },
+        "ThresholdSeconds":{
+          "shape":"RouterCqaThresholdSeconds",
+          "documentation":"<p>The number of consecutive seconds of black frames that MediaConnect must detect before it reports an issue.</p>",
+          "locationName":"thresholdSeconds"
+        }
+      },
+      "documentation":"<p>Detects black frames in the router input's source content and reports them through a CloudWatch metric, an EventBridge event, and a router input message.</p>"
     },
     "Blob":{"type":"blob"},
     "Boolean":{
@@ -2758,6 +2778,12 @@
         "UPDATING"
       ]
     },
+    "ClientToken":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"[!-~]+"
+    },
     "Colorimetry":{
       "type":"string",
       "enum":[
@@ -2793,6 +2819,27 @@
         "CONNECTED",
         "DISCONNECTED"
       ]
+    },
+    "ContentQualityAnalysisFeatureConfiguration":{
+      "type":"structure",
+      "members":{
+        "BlackFrames":{
+          "shape":"BlackFramesConfiguration",
+          "documentation":"<p>Settings for black frames detection.</p>",
+          "locationName":"blackFrames"
+        },
+        "FrozenFrames":{
+          "shape":"FrozenFramesConfiguration",
+          "documentation":"<p>Settings for frozen frames detection.</p>",
+          "locationName":"frozenFrames"
+        },
+        "SilentAudio":{
+          "shape":"SilentAudioConfiguration",
+          "documentation":"<p>Settings for silent audio detection.</p>",
+          "locationName":"silentAudio"
+        }
+      },
+      "documentation":"<p>Configures the content quality analysis features for the router input.</p>"
     },
     "ContentQualityAnalysisState":{
       "type":"string",
@@ -3090,10 +3137,15 @@
           "locationName":"tags"
         },
         "ClientToken":{
-          "shape":"String",
+          "shape":"ClientToken",
           "documentation":"<p>A unique identifier for the request to ensure idempotency.</p>",
           "idempotencyToken":true,
           "locationName":"clientToken"
+        },
+        "ContentQualityAnalysisConfiguration":{
+          "shape":"RouterContentQualityAnalysisConfiguration",
+          "documentation":"<p>The content quality analysis configuration for the router input.</p>",
+          "locationName":"contentQualityAnalysisConfiguration"
         }
       }
     },
@@ -3141,7 +3193,7 @@
           "locationName":"tags"
         },
         "ClientToken":{
-          "shape":"String",
+          "shape":"ClientToken",
           "documentation":"<p>A unique identifier for the request to ensure idempotency.</p>",
           "idempotencyToken":true,
           "locationName":"clientToken"
@@ -3221,7 +3273,7 @@
           "locationName":"tags"
         },
         "ClientToken":{
-          "shape":"String",
+          "shape":"ClientToken",
           "documentation":"<p>A unique identifier for the request to ensure idempotency.</p>",
           "idempotencyToken":true,
           "locationName":"clientToken"
@@ -4429,6 +4481,26 @@
         }
       },
       "documentation":"<p> Configures settings for the <code>FrozenFrames</code> metric.</p>"
+    },
+    "FrozenFramesConfiguration":{
+      "type":"structure",
+      "required":[
+        "State",
+        "ThresholdSeconds"
+      ],
+      "members":{
+        "State":{
+          "shape":"ContentQualityAnalysisState",
+          "documentation":"<p>Indicates whether frozen frames detection is enabled or disabled.</p>",
+          "locationName":"state"
+        },
+        "ThresholdSeconds":{
+          "shape":"RouterCqaThresholdSeconds",
+          "documentation":"<p>The number of consecutive seconds of a frozen frame that MediaConnect must detect before it reports an issue.</p>",
+          "locationName":"thresholdSeconds"
+        }
+      },
+      "documentation":"<p>Detects frozen video frames in the router input's source content and reports them through a CloudWatch metric, an EventBridge event, and a router input message.</p>"
     },
     "Gateway":{
       "type":"structure",
@@ -7478,6 +7550,28 @@
       "type":"string",
       "pattern":"arn:(aws[a-zA-Z-]*):iam::[0-9]{12}:role/[a-zA-Z0-9_+=,.@-]+"
     },
+    "RouterContentQualityAnalysisConfiguration":{
+      "type":"structure",
+      "members":{
+        "ContentLevel":{
+          "shape":"ContentQualityAnalysisFeatureConfiguration",
+          "documentation":"<p>The content quality analysis configuration.</p>",
+          "locationName":"contentLevel"
+        }
+      },
+      "documentation":"<p>The content quality analysis configuration for the router input.</p> <important> <p>The content quality analysis feature only monitors the first video stream and the first audio stream it encounters within the router input source.</p> </important>",
+      "union":true
+    },
+    "RouterContentQualityAnalysisType":{
+      "type":"string",
+      "enum":["CONTENT_LEVEL"]
+    },
+    "RouterCqaThresholdSeconds":{
+      "type":"integer",
+      "box":true,
+      "max":60,
+      "min":10
+    },
     "RouterInput":{
       "type":"structure",
       "required":[
@@ -7500,7 +7594,9 @@
         "Tags",
         "StreamDetails",
         "MaintenanceType",
-        "MaintenanceConfiguration"
+        "MaintenanceConfiguration",
+        "ContentQualityAnalysisType",
+        "ContentQualityAnalysisConfiguration"
       ],
       "members":{
         "Name":{
@@ -7619,6 +7715,16 @@
           "shape":"MaintenanceSchedule",
           "documentation":"<p>The current maintenance schedule details for this router input.</p>",
           "locationName":"maintenanceSchedule"
+        },
+        "ContentQualityAnalysisType":{
+          "shape":"RouterContentQualityAnalysisType",
+          "documentation":"<p>The type of content quality analysis applied to the router input.</p>",
+          "locationName":"contentQualityAnalysisType"
+        },
+        "ContentQualityAnalysisConfiguration":{
+          "shape":"RouterContentQualityAnalysisConfiguration",
+          "documentation":"<p>The content quality analysis configuration for the router input.</p>",
+          "locationName":"contentQualityAnalysisConfiguration"
         }
       },
       "documentation":"<p>A router input in AWS Elemental MediaConnect. A router input is a source of media content that can be routed to one or more router outputs.</p>"
@@ -8722,6 +8828,26 @@
       },
       "documentation":"<p>Configures settings for the <code>SilentAudio</code> metric. </p>"
     },
+    "SilentAudioConfiguration":{
+      "type":"structure",
+      "required":[
+        "State",
+        "ThresholdSeconds"
+      ],
+      "members":{
+        "State":{
+          "shape":"ContentQualityAnalysisState",
+          "documentation":"<p>Indicates whether silent audio detection is enabled or disabled.</p>",
+          "locationName":"state"
+        },
+        "ThresholdSeconds":{
+          "shape":"RouterCqaThresholdSeconds",
+          "documentation":"<p>The number of consecutive seconds of silence that MediaConnect must detect before it reports an issue.</p>",
+          "locationName":"thresholdSeconds"
+        }
+      },
+      "documentation":"<p>Detects silent audio in the router input's source content and reports it through a CloudWatch metric, an EventBridge event, and a router input message.</p>"
+    },
     "Source":{
       "type":"structure",
       "required":[
@@ -8771,12 +8897,12 @@
         },
         "SenderControlPort":{
           "shape":"Integer",
-          "documentation":"<p> The IP address that the flow communicates with to initiate connection with the sender.</p>",
+          "documentation":"<p> The port that the flow uses to send outbound requests to initiate connection with the sender.</p>",
           "locationName":"senderControlPort"
         },
         "SenderIpAddress":{
           "shape":"String",
-          "documentation":"<p> The port that the flow uses to send outbound requests to initiate connection with the sender.</p>",
+          "documentation":"<p> The IP address that the flow communicates with to initiate connection with the sender.</p>",
           "locationName":"senderIpAddress"
         },
         "SourceArn":{
@@ -10738,6 +10864,11 @@
           "shape":"MaintenanceConfiguration",
           "documentation":"<p>The updated maintenance configuration settings for the router input, including any changes to preferred maintenance windows and schedules.</p>",
           "locationName":"maintenanceConfiguration"
+        },
+        "ContentQualityAnalysisConfiguration":{
+          "shape":"RouterContentQualityAnalysisConfiguration",
+          "documentation":"<p>The content quality analysis configuration for the router input.</p>",
+          "locationName":"contentQualityAnalysisConfiguration"
         }
       }
     },

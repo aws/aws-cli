@@ -4251,6 +4251,10 @@
         "engineSettings":{
           "shape":"EngineSettings",
           "documentation":"<p>Engine-specific settings for the workflow run. Use this field to specify configuration options that are specific to the workflow engine (for example, Nextflow profiles).</p>"
+        },
+        "scratchStorageMode":{
+          "shape":"ScratchStorageMode",
+          "documentation":"<p>Optional configuration for enabling scratch ephemeral storage mounted at /tmp. If not specified, this will default to SHARED. This configuration is applicable only for CPU tasks. For tasks using GPUs, scratch storage is always LOCAL.</p>"
         }
       },
       "documentation":"<p>Shared configuration applied to all runs in a batch. Fields specified in a per-run <code>InlineSetting</code> entry override the corresponding fields in this object for that run. The <code>parameters</code> and <code>runTags</code> fields are merged rather than replaced — run-specific values take precedence when keys overlap.</p>"
@@ -6203,6 +6207,10 @@
         "networkingMode":{
           "shape":"NetworkingMode",
           "documentation":"<p>Configuration for run networking behavior. If absent, this will default to RESTRICTED.</p>"
+        },
+        "scratchStorageMode":{
+          "shape":"ScratchStorageMode",
+          "documentation":"<p>Optional configuration for enabling scratch ephemeral storage mounted at /tmp. If absent, this will default to SHARED. This configuration is applicable only for CPU tasks. For tasks using GPUs, scratch storage is always LOCAL.</p>"
         },
         "configuration":{
           "shape":"ConfigurationDetails",
@@ -10096,6 +10104,15 @@
         "BOOLEAN"
       ]
     },
+    "ScratchStorageMode":{
+      "type":"string",
+      "enum":[
+        "LOCAL",
+        "SHARED"
+      ],
+      "max":64,
+      "min":1
+    },
     "SecurityGroupId":{
       "type":"string",
       "max":128,
@@ -10967,6 +10984,10 @@
         "networkingMode":{
           "shape":"NetworkingMode",
           "documentation":"<p>Optional configuration for run networking behavior. If not specified, this will default to RESTRICTED.</p>"
+        },
+        "scratchStorageMode":{
+          "shape":"ScratchStorageMode",
+          "documentation":"<p>Optional configuration for enabling scratch ephemeral storage mounted at /tmp. If not specified, this will default to SHARED. This configuration is applicable only for CPU tasks. For tasks using GPUs, scratch storage is always LOCAL.</p>"
         },
         "configurationName":{
           "shape":"ConfigurationName",

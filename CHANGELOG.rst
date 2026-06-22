@@ -2,6 +2,24 @@
 CHANGELOG
 =========
 
+2.35.10
+=======
+
+* api-change:``mediaconnect``: AWS MediaConnect now supports Content Quality Analysis for Router Inputs, enabling detection of black frames, frozen frames, and silent audio with configurable thresholds.
+* api-change:``lambda-core``: Initial release of the AWS Lambda Core SDK with APIs to create, manage, and tag network connectors that enable Lambda compute resources to access private resources in your Amazon VPC.
+* api-change:``logs``: CloudWatch Logs Updates - New APIs introduced to support syslog ingestion to a log group. For more information, see CloudWatch Logs API documentation.
+* api-change:``lambda-microvms``: Lambda MicroVMs GA launch. Lambda MicroVMs enable isolated and highly responsive execution of user-supplied or LLM-generated code.
+* api-change:``guardduty``: Added AI-powered investigations that automatically analyze security findings, correlate related activity, and produce structured summaries with risk assessment, confidence scoring, MITRE technique classification, and actionable next steps.
+* api-change:``kafka``: Amazon MSK Replicator now supports mTLS authentication when connecting to external Apache Kafka clusters, enabling customers to replicate data from clusters that require mutual TLS for client authentication. This capability is supported when replicating to Amazon MSK Express brokers.
+* api-change:``ec2``: This release adds support for AMI Watermark and Allowed AMIs integration
+* api-change:``directconnect``: Added VIF rate limiting support for AWS Direct Connect, allowing customers to set bandwidth allocations on virtual interfaces to manage traffic on dedicated connections.
+* api-change:``omics``: Adds support for scratch ephemeral storage mounted at tmp
+* api-change:``lambda``: Add support for tagging Network Connector resources in AWS Lambda.
+* api-change:``quicksight``: Updated the Amazon Quick Spaces API to remove unsupported SPACE and ARTIFACT values from the SpaceQuickSightResourceType enum.
+* api-change:``application-signals``: Application Signals now supports dynamic instrumentation and Service Events telemetry. Add instrumentation at runtime without restarts, and use fine-grained profiling data to quickly pinpoint latency and error root causes.
+* api-change:``bedrock-agentcore``: Adds an optional extractionMode field to CreateEvent. SKIP retains the event in short-term memory but excludes it from long-term memory extraction.
+
+
 2.35.9
 ======
 

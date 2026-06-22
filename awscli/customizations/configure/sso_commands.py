@@ -26,6 +26,7 @@ is actually needed, improving execution time across most commands.
 
 import logging
 import os
+from urllib.parse import urlparse
 
 import colorama
 from botocore import UNSIGNED
@@ -38,6 +39,10 @@ from awscli.customizations.configure import (
     profile_to_section,
 )
 from awscli.customizations.configure.writer import ConfigFileWriter
+from awscli.customizations.sso.resolve import (
+    is_aws_owned_domain,
+    resolve_start_url,
+)
 from awscli.customizations.sso.utils import (
     LOGIN_ARGS,
     BaseSSOCommand,
@@ -364,8 +369,13 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
     def _prompt_for_registration_args_with_legacy_format(self):
         self._store_sso_session_prompter_answers_to_profile_config()
         self._set_sso_session_defaults_from_profile_config()
-        start_url, sso_region = self._prompt_for_sso_start_url_and_sso_region()
-        return {'start_url': start_url, 'sso_region': sso_region}
+        start_url, sso_region, resolved_url = (
+            self._prompt_for_sso_start_url_and_sso_region()
+        )
+        args = {'start_url': start_url, 'sso_region': sso_region}
+        if resolved_url:
+            args['resolved_start_url'] = resolved_url
+        return args
 
     def _get_sso_registration_args_from_sso_config(self, sso_session):
         sso_config = self._get_sso_session_config(sso_session)
@@ -378,17 +388,22 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
 
     def _prompt_for_registration_args_for_new_sso_session(self, sso_session):
         self._set_sso_session_defaults_from_profile_config()
-        start_url, sso_region = self._prompt_for_sso_start_url_and_sso_region()
+        start_url, sso_region, resolved_url = (
+            self._prompt_for_sso_start_url_and_sso_region()
+        )
         scopes = (
             self._sso_session_prompter.prompt_for_sso_registration_scopes()
         )
-        return {
+        args = {
             'session_name': sso_session,
             'start_url': start_url,
             'sso_region': sso_region,
             'registration_scopes': scopes,
             'force_refresh': True,
         }
+        if resolved_url:
+            args['resolved_start_url'] = resolved_url
+        return args
 
     def _store_sso_session_prompter_answers_to_profile_config(self):
         self._sso_session_prompter.sso_session_config = (
@@ -410,8 +425,25 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
 
     def _prompt_for_sso_start_url_and_sso_region(self):
         start_url = self._sso_session_prompter.prompt_for_sso_start_url()
+        hostname = urlparse(start_url).hostname
+        if hostname and not is_aws_owned_domain(hostname):
+            try:
+                resolved_url, region = resolve_start_url(
+                    start_url, session=self._session
+                )
+                self._sso_session_prompter.sso_session_config['sso_region'] = (
+                    region
+                )
+                return start_url, region, resolved_url
+            except Exception as e:
+                logger.debug(
+                    "Failed to resolve vanity URL '%s': %s. "
+                    "Falling back to region prompt.",
+                    start_url,
+                    e,
+                )
         sso_region = self._sso_session_prompter.prompt_for_sso_region()
-        return start_url, sso_region
+        return start_url, sso_region, None
 
     def _warn_configuring_using_legacy_format(self):
         uni_print(
@@ -479,8 +511,26 @@ class ConfigureSSOSessionCommand(BaseSSOConfigurationCommand):
     def _run_main(self, parsed_args, parsed_globals):
         super()._run_main(parsed_args, parsed_globals)
         self._sso_session_prompter.prompt_for_sso_session()
-        self._sso_session_prompter.prompt_for_sso_start_url()
-        self._sso_session_prompter.prompt_for_sso_region()
+        start_url = self._sso_session_prompter.prompt_for_sso_start_url()
+        hostname = urlparse(start_url).hostname
+        if hostname and not is_aws_owned_domain(hostname):
+            try:
+                resolved_url, region = resolve_start_url(
+                    start_url, session=self._session
+                )
+                self._sso_session_prompter.sso_session_config['sso_region'] = (
+                    region
+                )
+            except Exception as e:
+                logger.debug(
+                    "Failed to resolve vanity URL '%s': %s. "
+                    "Falling back to region prompt.",
+                    start_url,
+                    e,
+                )
+                self._sso_session_prompter.prompt_for_sso_region()
+        else:
+            self._sso_session_prompter.prompt_for_sso_region()
         self._sso_session_prompter.prompt_for_sso_registration_scopes()
         self._write_sso_configuration()
         self._print_configuration_success()

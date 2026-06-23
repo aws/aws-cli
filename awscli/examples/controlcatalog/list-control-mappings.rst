@@ -2,8 +2,7 @@
 
 The following ``list-control-mappings`` example retrieves information about all control mapping types. ::
 
-    aws controlcatalog list-control-mappings \
-        --region us-east-1
+    aws controlcatalog list-control-mappings
 
 Output::
 
@@ -41,7 +40,7 @@ Output::
         ]
     }
     
-For more information, see `ControlMapping <https://docs.aws.amazon.com/controlcatalog/latest/APIReference/API_ControlMapping.html>`__ in the *AWS Control Catalog User Guide*.
+For more information, see `Ontology overview <https://docs.aws.amazon.com/controlcatalog/latest/userguide/ontology-overview.html>`__ in the *AWS Control Catalog User Guide*.
 
 **Example 2: To retrieve information of a specific control mapping type**
 
@@ -77,4 +76,4 @@ Output::
         ]
     }
 
-For more information, see `ControlMapping <https://docs.aws.amazon.com/controlcatalog/latest/APIReference/API_ControlMapping.html>`__ in the *AWS Control Catalog User Guide*.
+For more information, see `Ontology overview <https://docs.aws.amazon.com/controlcatalog/latest/userguide/ontology-overview.html>`__ in the *AWS Control Catalog User Guide*.

@@ -1,6 +1,6 @@
-**Example 1: To display a list objectives from the Control Catalog**
+**Example 1: To display a list of objectives from the Control Catalog**
 
-The following ``list-objectives`` example displays a list of control objectives in the Control catalog. ::
+The following ``list-objectives`` example displays a list of control objectives in the Control Catalog. ::
 
     aws controlcatalog list-objectives
 

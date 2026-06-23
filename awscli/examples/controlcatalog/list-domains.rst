@@ -25,4 +25,4 @@ Output::
         ]
     }
 
-For more information, see `DomainSummary <https://docs.aws.amazon.com/controlcatalog/latest/APIReference/API_DomainSummary.html>`__ in the *AWS Control Catalog User Guide*.
+For more information, see `Ontology overview <https://docs.aws.amazon.com/controlcatalog/latest/userguide/ontology-overview.html>`__ in the *AWS Control Catalog User Guide*.

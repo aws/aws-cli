@@ -2,8 +2,7 @@
 
 The following ``list-controls`` example retrieves a list of available controls in the Control Catalog library. ::
 
-    aws controlcatalog list-controls \
-        --region us-east-1
+    aws controlcatalog list-controls
 
 Output::
 
@@ -52,13 +51,12 @@ Output::
 
 For more information, see `The AWS Control Tower Control Catalog <https://docs.aws.amazon.com/controltower/latest/controlreference/controls-reference.html>`__ in the *AWS Control Tower User Guide*.
 
-**Example 2: To retrieve a list available controls filtered by identifier and implementation type**
+**Example 2: To retrieve a list of available controls filtered by identifier and implementation type**
 
 The following ``list-controls`` example retrieves a list of available controls filtered by identifier and implementation type. ::
 
     aws controlcatalog list-controls \
-        --filter "{\"Implementations\":{\"Identifiers\":[\"CODEPIPELINE_DEPLOYMENT_COUNT_CHECK\"], \"Types\":[\"AWS::Config::ConfigRule\"]}}" \
-        --region us-east-1
+        --filter "{\"Implementations\":{\"Identifiers\":[\"CODEPIPELINE_DEPLOYMENT_COUNT_CHECK\"], \"Types\":[\"AWS::Config::ConfigRule\"]}}"
 
 Output::
 

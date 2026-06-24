@@ -3,13 +3,12 @@
 The following ``get-control`` example shows information about an individual control. ::
 
     aws controlcatalog get-control \
-        --control-arn arn:aws:controlcatalog:::control/cwlixshc8c8mw9qiwdw2z0zav \
-        --region us-east-1
+        --control-arn arn:aws:controlcatalog:::control/cwlixshc8c8mw9qiwdEXAMPLE
 
 Output::
 
     {
-        "Arn": "arn:aws:controlcatalog:::control/cwlixshc8c8mw9qiwdw2z0zav",
+        "Arn": "arn:aws:controlcatalog:::control/cwlixshc8c8mw9qiwdEXAMPLE",
         "Aliases": [
             "AWS-GR_REGION_DENY"
         ],

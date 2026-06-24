@@ -56,6 +56,7 @@ class LoginCommand(BaseSSOCommand):
             session=self._session,
             configured_region=configured_region,
             timeout=parsed_globals.connect_timeout,
+            verify=parsed_globals.verify_ssl,
         )
 
         on_pending_authorization = None

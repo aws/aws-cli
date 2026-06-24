@@ -429,7 +429,9 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
         if hostname and not is_aws_owned_domain(hostname):
             try:
                 resolved_url, region = resolve_start_url(
-                    start_url, session=self._session
+                    start_url,
+                    session=self._session,
+                    verify=self._session.get_config_variable('ca_bundle'),
                 )
                 self._sso_session_prompter.sso_session_config['sso_region'] = (
                     region
@@ -516,7 +518,9 @@ class ConfigureSSOSessionCommand(BaseSSOConfigurationCommand):
         if hostname and not is_aws_owned_domain(hostname):
             try:
                 resolved_url, region = resolve_start_url(
-                    start_url, session=self._session
+                    start_url,
+                    session=self._session,
+                    verify=self._session.get_config_variable('ca_bundle'),
                 )
                 self._sso_session_prompter.sso_session_config['sso_region'] = (
                     region

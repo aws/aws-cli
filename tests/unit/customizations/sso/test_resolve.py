@@ -196,7 +196,9 @@ class TestResolveStartUrl:
             assert resolved_url == normalized_url
             assert region == 'us-east-1'
             mock_follow.assert_called_once_with(
-                'https://aws.mycompany.com', timeout=10
+                'https://aws.mycompany.com',
+                timeout=10,
+                verify=None,
             )
 
     def test_vanity_url_uses_parsed_region_not_configured(self):
@@ -272,7 +274,9 @@ class TestResolveStartUrl:
                 timeout=5,
             )
             mock_follow.assert_called_once_with(
-                'https://aws.mycompany.com', timeout=5
+                'https://aws.mycompany.com',
+                timeout=5,
+                verify=None,
             )
 
 

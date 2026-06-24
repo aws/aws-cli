@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 import argparse
-import json
 import os
 import sys
+from concurrent.futures import ProcessPoolExecutor, as_completed
 
 import awscli.clidriver
 from awscli.help import PagingHelpRenderer
@@ -75,6 +75,18 @@ def do_topic(driver, topic_path, topic_help_command):
     topic_help_command(None, None)
 
 
+def _generate_service_rst(ref_path, service_name):
+    """Worker function for parallel service generation.
+
+    Each worker creates its own CLIDriver to avoid shared state.
+    """
+    driver = awscli.clidriver.create_clidriver()
+    help_command = driver.create_help_command()
+    service_command = help_command.command_table[service_name]
+    do_service(driver, ref_path, service_name, service_command)
+    return service_name
+
+
 def do_provider(driver):
     help_command = driver.create_help_command()
     help_command.doc.target = 'html'
@@ -95,13 +107,39 @@ def do_provider(driver):
         topic_help_command = help_command.subcommand_table[topic]
         do_topic(driver, TOPIC_PATH, topic_help_command)
 
-    services = sorted(help_command.command_table)
-    print('\nWriting service references')
+    services = sorted(
+        name for name in help_command.command_table if name != 'help'
+    )
+
+    print('\nWriting service references (%d services)' % len(services))
+    # Ensure all service directories exist before workers start
     for service_name in services:
-        if service_name == 'help':
-            continue
-        service_command = help_command.command_table[service_name]
-        do_service(driver, REF_PATH, service_name, service_command)
+        service_path = os.path.join(REF_PATH, service_name)
+        if not os.path.isdir(service_path):
+            os.mkdir(service_path)
+
+    workers = os.cpu_count() or 1
+    print('Using %d parallel workers' % workers)
+    with ProcessPoolExecutor(max_workers=workers) as executor:
+        futures = {
+            executor.submit(
+                _generate_service_rst, REF_PATH, service_name
+            ): service_name
+            for service_name in services
+        }
+        completed = 0
+        for future in as_completed(futures):
+            completed += 1
+            service_name = futures[future]
+            try:
+                future.result()
+                print('...%s (%d/%d)' % (service_name, completed, len(services)))
+            except Exception as e:
+                print(
+                    'ERROR generating %s: %s' % (service_name, e),
+                    file=sys.stderr,
+                )
+                raise
 
 
 def build_service_list(tut_path, ref_path, driver):

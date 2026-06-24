@@ -99,16 +99,30 @@ def _follow_redirect(url, timeout=_DEFAULT_TIMEOUT, verify=None):
 
     for _ in range(_MAX_REDIRECTS):
         try:
+            LOG.debug("Issuing HEAD request to '%s'", url)
             req = urllib.request.Request(url, method='HEAD')
             resp = opener.open(req, timeout=timeout)
             resp.close()
+            LOG.debug(
+                "HEAD request to '%s' returned %s (no redirect)",
+                url,
+                resp.status,
+            )
             return url
         except urllib.error.HTTPError as e:
             if e.code in (405, 501):
+                LOG.debug(
+                    "HEAD request returned %s, falling back to GET", e.code
+                )
                 try:
                     req = urllib.request.Request(url, method='GET')
                     resp = opener.open(req, timeout=timeout)
                     resp.close()
+                    LOG.debug(
+                        "GET request to '%s' returned %s (no redirect)",
+                        url,
+                        resp.status,
+                    )
                     return url
                 except urllib.error.HTTPError as e2:
                     if e2.code in redirect_codes:
@@ -117,6 +131,11 @@ def _follow_redirect(url, timeout=_DEFAULT_TIMEOUT, verify=None):
                             raise ConfigurationError(
                                 "Redirect response missing Location header."
                             )
+                        LOG.debug(
+                            "GET request returned %s, redirecting to '%s'",
+                            e2.code,
+                            location,
+                        )
                         url = urllib.parse.urljoin(url, location)
                     else:
                         raise ConfigurationError(
@@ -132,6 +151,11 @@ def _follow_redirect(url, timeout=_DEFAULT_TIMEOUT, verify=None):
                     raise ConfigurationError(
                         "Redirect response missing Location header."
                     )
+                LOG.debug(
+                    "HEAD request returned %s, redirecting to '%s'",
+                    e.code,
+                    location,
+                )
                 url = urllib.parse.urljoin(url, location)
             else:
                 raise ConfigurationError(

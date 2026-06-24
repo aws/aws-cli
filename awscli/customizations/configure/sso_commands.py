@@ -318,8 +318,11 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
         on_pending_authorization = None
         if parsed_args.no_browser:
             on_pending_authorization = PrintOnlyHandler()
+        verify = parsed_globals.verify_ssl
+        if verify is None:
+            verify = self._session.get_config_variable('ca_bundle')
         sso_registration_args = self._prompt_for_sso_registration_args(
-            verify=parsed_globals.verify_ssl,
+            verify=verify,
         )
         sso_token = self._sso_login(
             self._session,
@@ -524,12 +527,15 @@ class ConfigureSSOSessionCommand(BaseSSOConfigurationCommand):
         self._sso_session_prompter.prompt_for_sso_session()
         start_url = self._sso_session_prompter.prompt_for_sso_start_url()
         hostname = urlparse(start_url).hostname
+        verify = parsed_globals.verify_ssl
+        if verify is None:
+            verify = self._session.get_config_variable('ca_bundle')
         if hostname and not is_aws_owned_domain(hostname):
             try:
                 resolved_url, region = resolve_start_url(
                     start_url,
                     session=self._session,
-                    verify=parsed_globals.verify_ssl,
+                    verify=verify,
                 )
                 self._sso_session_prompter.sso_session_config['sso_region'] = (
                     region

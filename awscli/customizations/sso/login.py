@@ -51,12 +51,15 @@ class LoginCommand(BaseSSOCommand):
         start_url = sso_config['sso_start_url']
         configured_region = sso_config.get('sso_region')
 
+        verify = parsed_globals.verify_ssl
+        if verify is None:
+            verify = self._session.get_config_variable('ca_bundle')
         resolved_url, region = resolve_start_url(
             start_url,
             session=self._session,
             configured_region=configured_region,
             timeout=parsed_globals.connect_timeout,
-            verify=parsed_globals.verify_ssl,
+            verify=verify,
         )
 
         on_pending_authorization = None

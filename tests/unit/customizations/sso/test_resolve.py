@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import ssl
 import urllib.error
 
 import pytest
@@ -379,3 +380,37 @@ class TestFollowRedirect:
             result = _follow_redirect('https://aws.mycompany.com')
             assert result == intermediate
             assert mock_opener.open.call_count == 1
+
+    def test_verify_false_disables_ssl(self):
+        with mock.patch('ssl.create_default_context') as mock_ctx_factory:
+            mock_ctx = mock.Mock()
+            mock_ctx_factory.return_value = mock_ctx
+            with mock.patch('urllib.request.build_opener'):
+                with mock.patch('urllib.request.HTTPSHandler'):
+                    try:
+                        _follow_redirect(
+                            'https://aws.mycompany.com', verify=False
+                        )
+                    except Exception:
+                        pass
+            assert mock_ctx.check_hostname is False
+            assert mock_ctx.verify_mode == ssl.CERT_NONE
+
+    def test_verify_ca_bundle_path_loaded(self, tmp_path):
+        ca_file = tmp_path / 'ca.pem'
+        ca_file.write_text('fake cert')
+        with mock.patch('ssl.create_default_context') as mock_ctx_factory:
+            mock_ctx = mock.Mock()
+            mock_ctx_factory.return_value = mock_ctx
+            with mock.patch('urllib.request.build_opener'):
+                with mock.patch('urllib.request.HTTPSHandler'):
+                    try:
+                        _follow_redirect(
+                            'https://aws.mycompany.com',
+                            verify=str(ca_file),
+                        )
+                    except Exception:
+                        pass
+            mock_ctx.load_verify_locations.assert_called_once_with(
+                cafile=str(ca_file)
+            )

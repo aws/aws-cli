@@ -318,7 +318,9 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
         on_pending_authorization = None
         if parsed_args.no_browser:
             on_pending_authorization = PrintOnlyHandler()
-        sso_registration_args = self._prompt_for_sso_registration_args()
+        sso_registration_args = self._prompt_for_sso_registration_args(
+            verify=parsed_globals.verify_ssl,
+        )
         sso_token = self._sso_login(
             self._session,
             parsed_globals=parsed_globals,
@@ -348,13 +350,15 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
         self._print_conclusion(configured_for_aws_credentials, profile_name)
         return 0
 
-    def _prompt_for_sso_registration_args(self):
+    def _prompt_for_sso_registration_args(self, verify=None):
         sso_session = self._sso_session_prompter.prompt_for_sso_session(
             required=False
         )
         if sso_session is None:
             self._warn_configuring_using_legacy_format()
-            return self._prompt_for_registration_args_with_legacy_format()
+            return self._prompt_for_registration_args_with_legacy_format(
+                verify=verify
+            )
         else:
             self._set_sso_session_in_profile_config(sso_session)
             if sso_session in self._sso_sessions:
@@ -363,14 +367,15 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
                 )
             else:
                 return self._prompt_for_registration_args_for_new_sso_session(
-                    sso_session=sso_session
+                    sso_session=sso_session,
+                    verify=verify,
                 )
 
-    def _prompt_for_registration_args_with_legacy_format(self):
+    def _prompt_for_registration_args_with_legacy_format(self, verify=None):
         self._store_sso_session_prompter_answers_to_profile_config()
         self._set_sso_session_defaults_from_profile_config()
         start_url, sso_region, resolved_url = (
-            self._prompt_for_sso_start_url_and_sso_region()
+            self._prompt_for_sso_start_url_and_sso_region(verify=verify)
         )
         args = {'start_url': start_url, 'sso_region': sso_region}
         if resolved_url:
@@ -386,10 +391,14 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
             'registration_scopes': sso_config.get('registration_scopes'),
         }
 
-    def _prompt_for_registration_args_for_new_sso_session(self, sso_session):
+    def _prompt_for_registration_args_for_new_sso_session(
+        self,
+        sso_session,
+        verify=None,
+    ):
         self._set_sso_session_defaults_from_profile_config()
         start_url, sso_region, resolved_url = (
-            self._prompt_for_sso_start_url_and_sso_region()
+            self._prompt_for_sso_start_url_and_sso_region(verify=verify)
         )
         scopes = (
             self._sso_session_prompter.prompt_for_sso_registration_scopes()
@@ -423,7 +432,7 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
                 self._profile_config['sso_region']
             )
 
-    def _prompt_for_sso_start_url_and_sso_region(self):
+    def _prompt_for_sso_start_url_and_sso_region(self, verify=None):
         start_url = self._sso_session_prompter.prompt_for_sso_start_url()
         hostname = urlparse(start_url).hostname
         if hostname and not is_aws_owned_domain(hostname):
@@ -431,7 +440,7 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
                 resolved_url, region = resolve_start_url(
                     start_url,
                     session=self._session,
-                    verify=self._session.get_config_variable('ca_bundle'),
+                    verify=verify,
                 )
                 self._sso_session_prompter.sso_session_config['sso_region'] = (
                     region
@@ -520,7 +529,7 @@ class ConfigureSSOSessionCommand(BaseSSOConfigurationCommand):
                 resolved_url, region = resolve_start_url(
                     start_url,
                     session=self._session,
-                    verify=self._session.get_config_variable('ca_bundle'),
+                    verify=parsed_globals.verify_ssl,
                 )
                 self._sso_session_prompter.sso_session_config['sso_region'] = (
                     region

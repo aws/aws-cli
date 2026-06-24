@@ -9,7 +9,7 @@ Output::
     {
         "ControlMappings": [
             {
-                "ControlArn": "arn:aws:controlcatalog:::control/ckrg5g06x08c6pem7ee4is3k5",
+                "ControlArn": "arn:aws:controlcatalog:::control/ckrg5g06x08c6pem7eEXAMPLE",
                 "MappingType": "FRAMEWORK",
                 "Mapping": {
                     "Framework": {
@@ -19,7 +19,7 @@ Output::
                 }
             },
             {
-                "ControlArn": "arn:aws:controlcatalog:::control/5lwgwp498974xwygy5ge7pxfz",
+                "ControlArn": "arn:aws:controlcatalog:::control/5lwgwp498974xwygyEXAMPLE",
                 "MappingType": "FRAMEWORK",
                 "Mapping": {
                     "Framework": {
@@ -29,11 +29,11 @@ Output::
                 }
             },
             {
-                "ControlArn": "arn:aws:controlcatalog:::control/6s095tcdtgab75dd0229m5x6n",
+                "ControlArn": "arn:aws:controlcatalog:::control/6s095tcdtgab75dd02EXAMPLE",
                 "MappingType": "COMMON_CONTROL",
                 "Mapping": {
                     "CommonControl": {
-                        "CommonControlArn": "arn:aws:controlcatalog:::common-control/c0kq7ddgbp8ivhicnlr0plch4"
+                        "CommonControlArn": "arn:aws:controlcatalog:::common-control/c0kq7ddgbp8ivhicnlEXAMPLE"
                     }
                 }
             }
@@ -54,7 +54,7 @@ Output::
     {
         "ControlMappings": [
             {
-                "ControlArn": "arn:aws:controlcatalog:::control/ckrg5g06x08c6pem7ee4is3k5",
+                "ControlArn": "arn:aws:controlcatalog:::control/ckrg5g06x08c6pem7eEXAMPLE",
                 "MappingType": "FRAMEWORK",
                 "Mapping": {
                     "Framework": {
@@ -64,7 +64,7 @@ Output::
                 }
             },
             {
-                "ControlArn": "arn:aws:controlcatalog:::control/5lwgwp498974xwygy5ge7pxfz",
+                "ControlArn": "arn:aws:controlcatalog:::control/5lwgwp498974xwygy5EXAMPLE",
                 "MappingType": "FRAMEWORK",
                 "Mapping": {
                     "Framework": {

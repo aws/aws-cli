@@ -9,7 +9,7 @@ Output::
     {
         "Controls": [
             {
-                "Arn": "arn:aws:controlcatalog:::control/m7a5gbdf08wg2o0en010mkng",
+                "Arn": "arn:aws:controlcatalog:::control/m7a5gbdf08wg2o0enEXAMPLE",
                 "Aliases": [
                     "BACKUP_RECOVERY_POINT_MINIMUM_RETENTION_CHECK"
                 ],
@@ -29,7 +29,7 @@ Output::
                 ]
             },
             {
-                "Arn": "arn:aws:controlcatalog:::control/4b0nsxnd47747up54ytdqesxi",
+                "Arn": "arn:aws:controlcatalog:::control/4b0nsxnd47747up54yEXAMPLE",
                 "Aliases": [
                     "CT.CODEBUILD.PR.3"
                 ],
@@ -63,7 +63,7 @@ Output::
     {
         "Controls": [
             {
-                "Arn": "arn:aws:controlcatalog:::control/8k65jh499ji8qa5tb3it7tdi5",
+                "Arn": "arn:aws:controlcatalog:::control/8k65jh499ji8qa5tb3EXAMPLE",
                 "Aliases": [
                     "CONFIG.CODEPIPELINE.DT.1"
                 ],

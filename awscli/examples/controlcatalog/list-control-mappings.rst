@@ -1,6 +1,6 @@
-**Example 1: To retrieve information of all control mapping types**
+**Example 1: To retrieve a list of all control mapping types**
 
-The following ``list-control-mappings`` example retrieves information about all control mapping types. ::
+The following ``list-control-mappings`` example retrieves a list of all control mapping types. ::
 
     aws controlcatalog list-control-mappings
 

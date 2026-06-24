@@ -14,7 +14,11 @@ import datetime
 import json
 import logging
 import os
+import platform
+import shutil
 import socket
+import subprocess
+import sys
 import time
 import webbrowser
 from functools import partial
@@ -130,8 +134,31 @@ def parse_sso_registration_scopes(raw_scopes):
 
 
 def open_browser_with_original_ld_path(url):
+    if _is_wsl():
+        try:
+            return _open_browser_with_wslinterop(url)
+        except (OSError, subprocess.SubprocessError):
+            LOG.debug('Failed to open browser with WSL interop', exc_info=True)
+
     with original_ld_library_path():
         webbrowser.open_new_tab(url)
+
+
+def _is_wsl():
+    if sys.platform != 'linux':
+        return False
+    if os.environ.get('WSL_DISTRO_NAME') or os.environ.get('WSL_INTEROP'):
+        return True
+    return 'microsoft' in platform.release().lower()
+
+
+def _open_browser_with_wslinterop(url):
+    wslview = shutil.which('wslview')
+    if wslview:
+        subprocess.run([wslview, url], check=True)
+        return True
+    subprocess.run(['cmd.exe', '/C', 'start', '', url], check=True)
+    return True
 
 
 class BaseAuthorizationhandler:

@@ -83,11 +83,11 @@ class Windows(System):
 
         subprocess.check_call(
             [
-                r'.\{0}'.format(self.INSTALLER),
+                'msiexec.exe',
+                '/i', r'.\{0}'.format(self.INSTALLER),
                 '/quiet',
                 '/l', r'.\codedeploy-agent-install-log.txt'
-            ],
-            shell=True
+            ]
         )
         subprocess.check_call([
             'powershell.exe',

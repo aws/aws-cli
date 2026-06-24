@@ -105,11 +105,11 @@ class TestWindows(unittest.TestCase):
         self.check_call.assert_has_calls([
             mock.call(
                 [
-                    r'.\{0}'.format(self.installer),
+                    'msiexec.exe',
+                    '/i', r'.\{0}'.format(self.installer),
                     '/quiet',
                     '/l', r'.\codedeploy-agent-install-log.txt'
-                ],
-                shell=True
+                ]
             ),
             mock.call([
                 'powershell.exe',
@@ -119,6 +119,25 @@ class TestWindows(unittest.TestCase):
         ])
         self.open.assert_called_with(self.installer, 'wb')
         self.open().write.assert_called_with(self.body)
+
+    def test_install_uses_msiexec_for_custom_installer(self):
+        process = mock.MagicMock()
+        process.communicate.side_effect = [('', ''), ('Running', '')]
+        process.returncode = 0
+        self.popen.return_value = process
+        self.params.installer = 'agent&installer.msi'
+        self.windows.install(self.params)
+        self.check_call.assert_has_calls([
+            mock.call(
+                [
+                    'msiexec.exe',
+                    '/i', r'.\{0}'.format(self.params.installer),
+                    '/quiet',
+                    '/l', r'.\codedeploy-agent-install-log.txt'
+                ]
+            )
+        ])
+        self.open.assert_called_with(self.params.installer, 'wb')
 
     def test_uninstall(self):
         process = mock.MagicMock()

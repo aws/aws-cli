@@ -42,9 +42,9 @@ Output::
     
 For more information, see `Ontology overview <https://docs.aws.amazon.com/controlcatalog/latest/userguide/ontology-overview.html>`__ in the *AWS Control Catalog User Guide*.
 
-**Example 2: To retrieve information of a specific control mapping type**
+**Example 2: To retrieve a list of control mappings of a specific control mapping type**
 
-The following ``list-control-mappings`` example retrieves information about a control mapping type. ::
+The following ``list-control-mappings`` example retrieves a list of control mappings of a specific control mapping type. ::
 
     aws controlcatalog list-control-mappings \
         --filter MappingTypes=FRAMEWORK

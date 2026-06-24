@@ -5,4 +5,4 @@ The following ``cancel-annotation-import-job`` example cancels an annotation imp
     aws omics cancel-annotation-import-job \
         --job-id 04f57618-xmpl-4fd0-9349-e5a85aefb997
 
-For more information, see `Omics Analytics <https://docs.aws.amazon.com/omics/latest/dev/omics-analytics.html>`__ in the *Amazon Omics Developer Guide*.
+For more information, see `HealthOmics Analytics <https://docs.aws.amazon.com/omics/latest/dev/omics-analytics.html>`__ in the *AWS HealthOmics User Guide*.

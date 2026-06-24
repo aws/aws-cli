@@ -78,6 +78,7 @@ class LoginCommand(BaseSSOCommand):
         # Only rewrite sso_region after successful login.
         if configured_region != region:
             self._write_sso_region(sso_config, region)
+            uni_print(f'SSO region updated to {region}\n')
 
         success_msg = 'Successfully logged into Start URL: %s\n'
         uni_print(success_msg % start_url)

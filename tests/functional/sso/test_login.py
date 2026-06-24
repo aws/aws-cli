@@ -521,6 +521,20 @@ class TestLoginWithVanityUrl(BaseSSOTest):
             config_content = f.read()
         self.assertIn('sso_region = us-east-1', config_content)
 
+    def test_region_update_message_printed(self):
+        self.add_oidc_auth_code_responses(self.access_token)
+        stdout, _, _ = self.run_cmd('sso login')
+        self.assertIn('SSO region updated to us-east-1', stdout)
+
+    def test_no_region_update_message_when_region_matches(self):
+        self.sso_region = 'us-east-1'
+        self.set_config_file_content(
+            self.get_sso_session_config('vanity-session')
+        )
+        self.add_oidc_auth_code_responses(self.access_token)
+        stdout, _, _ = self.run_cmd('sso login')
+        self.assertNotIn('SSO region updated', stdout)
+
     def test_config_not_rewritten_on_login_failure(self):
         self.parsed_responses = [
             {

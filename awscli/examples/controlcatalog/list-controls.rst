@@ -56,7 +56,7 @@ For more information, see `The AWS Control Tower Control Catalog <https://docs.a
 The following ``list-controls`` example retrieves a list of available controls filtered by identifier and implementation type. ::
 
     aws controlcatalog list-controls \
-        --filter "{\"Implementations\":{\"Identifiers\":[\"CODEPIPELINE_DEPLOYMENT_COUNT_CHECK\"], \"Types\":[\"AWS::Config::ConfigRule\"]}}"
+        --filter '{"Implementations":{"Identifiers":["CODEPIPELINE_DEPLOYMENT_COUNT_CHECK"], "Types":["AWS::Config::ConfigRule"]}}'
 
 Output::
 

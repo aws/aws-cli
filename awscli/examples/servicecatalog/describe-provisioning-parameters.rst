@@ -61,3 +61,5 @@ Output::
         ],
         "ProvisioningArtifactOutputKeys": []
     }
+
+For more information, see `Launching a product <https://docs.aws.amazon.com/servicecatalog/latest/userguide/enduser-launch.html>`__ in the *AWS Service Catalog User Guide*.

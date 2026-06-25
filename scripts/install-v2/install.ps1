@@ -22,8 +22,6 @@ $ErrorActionPreference = 'Stop'
 $DownloadBaseUrl    = 'https://awscli.amazonaws.com'
 $LatestVersionUrl   = "$DownloadBaseUrl/v2/version.txt"
 
-# Fixed install layouts. The MSI's per-user transform places the user-local
-# install under %LOCALAPPDATA%\Programs\Amazon\AWSCLIV2.
 $SystemInstallDir   = Join-Path $env:ProgramFiles 'Amazon\AWSCLIV2'
 $UserInstallDir     = Join-Path $env:LOCALAPPDATA 'Programs\Amazon\AWSCLIV2'
 
@@ -78,7 +76,11 @@ function Write-Warn {
     }
 }
 
-# Red error on stderr, then exit with the given code; never silenced.
+# Red error on stderr, record the exit code, then throw to unwind. We never
+# call `exit` here: under `irm | iex` the script runs in the caller's session,
+# so `exit` would close the user's PowerShell. The top-level handler turns the
+# recorded code into a process exit status only when run as a file.
+$Script:ExitCode = 0
 function Throw-Error {
     param([int] $Code, [string] $Message)
     if (Use-Color $true) {
@@ -86,7 +88,8 @@ function Throw-Error {
     } else {
         [Console]::Error.WriteLine("aws-cli installer: error: $Message")
     }
-    exit $Code
+    $Script:ExitCode = $Code
+    throw $Message
 }
 
 # ============================================================================
@@ -118,11 +121,13 @@ function Test-Semver {
     return ($Value -match '^\d+\.\d+\.\d+$')
 }
 
+# Returns $false when the run should stop early without error.
 function Validate-Args {
-    if ($Help) { Show-Help; exit 0 }
+    if ($Help) { Show-Help; return $false }
     if ($Version -and -not (Test-Semver $Version)) {
         Throw-Error 2 "-Version must be fully-qualified semver (e.g. 2.27.41), got: $Version"
     }
+    return $true
 }
 
 # ============================================================================
@@ -192,12 +197,17 @@ function Remove-TempDir {
     }
 }
 
-# Versioned filename when TargetVersion is known, else the "latest" filename.
 function Get-InstallerFilename {
-    if ($Script:TargetVersion) {
-        return "AWSCLIV2-$($Script:TargetVersion).msi"
+    if ($System) {
+        if ($Script:TargetVersion) {
+            return "AWSCLIV2-$($Script:TargetVersion).msi"
+        }
+        return 'AWSCLIV2.msi'
     }
-    return 'AWSCLIV2.msi'
+    if ($Script:TargetVersion) {
+        return "AWSCLIV2-User-$($Script:TargetVersion).msi"
+    }
+    return 'AWSCLIV2-User.msi'
 }
 
 function Get-InstallerUrl {
@@ -288,7 +298,6 @@ function Fetch-LatestVersion {
     return $null
 }
 
-# Resolves TargetVersion, short-circuits no-ops.
 function Resolve-TargetAndAnnounce {
     if ($Version) {
         $Script:TargetVersion = $Version
@@ -300,20 +309,21 @@ function Resolve-TargetAndAnnounce {
         if ($Script:TargetVersion) {
             Write-Info "Installing AWS CLI $($Script:TargetVersion)"
         }
-        return
+        return $true
     }
 
     if ($Script:TargetVersion -eq $Script:PreInstallVersion) {
-        Write-Info "AWS CLI $($Script:TargetVersion) is already installed at $Script:InstallDir; nothing to do."
-        exit 0
+        Write-Info "AWS CLI $($Script:TargetVersion) is already installed at $($Script:InstallDir); nothing to do."
+        return $false
     }
 
     if ([version]$Script:TargetVersion -lt [version]$Script:PreInstallVersion) {
         Write-Info "AWS CLI $($Script:PreInstallVersion) is already installed at $($Script:InstallDir). To install $($Script:TargetVersion), uninstall the existing AWS CLI at $($Script:InstallDir) and try again."
-        exit 0
+        return $false
     }
 
     Write-Info "Installing AWS CLI $($Script:PreInstallVersion) -> $($Script:TargetVersion)"
+    return $true
 }
 
 # ============================================================================
@@ -325,15 +335,6 @@ function Run-Installer {
     $msiDir = Split-Path $Script:InstallerPath -Parent
 
     $msiArgs = @('/i', $msiFilename, '/qn', '/norestart')
-
-    if (-not $System) {
-        $msiArgs += @(
-            'TRANSFORMS=:PerUser',
-            'MSINEWINSTANCE=1',
-            'MSIINSTALLPERUSER=1',
-            'ALLUSERS=2'
-        )
-    }
 
     Write-Info 'Running MSI installer...'
     $proc = Start-Process -FilePath 'msiexec' -ArgumentList $msiArgs `
@@ -386,22 +387,44 @@ function Invoke-PostInstallChecks {
 # Entry point
 # ============================================================================
 
-try {
-    # Pre-flight: validate args and environment before touching disk/network.
-    Validate-Args
-    Assert-Platform
-    Assert-SystemPrivilege
-    Resolve-InstallPath
+function Invoke-Main {
+    try {
+        # Pre-flight: validate args and environment before touching disk/network.
+        if (-not (Validate-Args)) { return }
+        Assert-Platform
+        Assert-SystemPrivilege
+        Resolve-InstallPath
 
-    # Install: stage, resolve target (may short-circuit), download, run.
-    New-TempDir
-    Capture-PreInstallVersion
-    Resolve-TargetAndAnnounce
-    Download-Installer
-    Verify-Installer
-    Run-Installer
-    Invoke-PostInstallChecks
-} finally {
-    # Always remove the temp dir, even on error or early exit.
-    Remove-TempDir
+        # Install: stage, resolve target (may short-circuit), download, run.
+        New-TempDir
+        Capture-PreInstallVersion
+        if (-not (Resolve-TargetAndAnnounce)) { return }
+        Download-Installer
+        Verify-Installer
+        Run-Installer
+        Invoke-PostInstallChecks
+    } finally {
+        # Always remove the temp dir, even on error or early return.
+        Remove-TempDir
+    }
+}
+
+# Run the body inside a scriptblock and catch errors here rather than calling
+# `exit` from deep in the script. Under `irm | iex` the script shares the
+# caller's session, so `exit` would close the user's PowerShell window. Errors
+# are already written to stderr by Throw-Error; we just record the failure.
+& {
+    try {
+        Invoke-Main
+    } catch {
+        if ($Script:ExitCode -eq 0) { $Script:ExitCode = 1 }
+    }
+}
+
+# Only set a real process exit status when invoked as a file (powershell
+# -File, or .\install.ps1), where $PSCommandPath is populated. Under
+# `irm | iex` $PSCommandPath is empty and calling `exit` would terminate the
+# user's shell, so we leave it alone there.
+if ($PSCommandPath) {
+    exit $Script:ExitCode
 }

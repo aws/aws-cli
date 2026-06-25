@@ -318,7 +318,7 @@ function Resolve-TargetAndAnnounce {
     }
 
     if ([version]$Script:TargetVersion -lt [version]$Script:PreInstallVersion) {
-        Write-Info "AWS CLI $($Script:PreInstallVersion) is already installed at $($Script:InstallDir). To install $($Script:TargetVersion), uninstall the existing AWS CLI at $($Script:InstallDir) and try again."
+        Write-Info "AWS CLI $($Script:PreInstallVersion) is already installed at $($Script:InstallDir). To install $($Script:TargetVersion), uninstall the existing AWS CLI at $($Script:InstallDir) and try again. See https://docs.aws.amazon.com/cli/latest/userguide/uninstall.html"
         return $false
     }
 

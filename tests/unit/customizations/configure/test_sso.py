@@ -41,6 +41,7 @@ from awscli.customizations.configure.sso_commands import (
     display_account,
     get_account_sorting_key,
 )
+from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.sso.utils import (
     PrintOnlyHandler,
     do_sso_login,
@@ -881,6 +882,7 @@ class TestConfigureSSOCommand:
         expected_scopes=None,
         expected_auth_handler_cls=None,
         expected_force_refresh=None,
+        expected_redirect_port=None,
     ):
         expected_kwargs = {
             "sso_region": expected_sso_region,
@@ -889,6 +891,7 @@ class TestConfigureSSOCommand:
             "on_pending_authorization": None,
             "token_cache": None,
             "use_device_code": expected_use_device_code,
+            "redirect_port": expected_redirect_port,
         }
         if expected_session_name is not None:
             expected_kwargs["session_name"] = expected_session_name
@@ -1281,6 +1284,10 @@ class TestConfigureSSOCommand:
         sso_cmd = sso_cmd_factory(session=session)
         assert sso_cmd(args, parsed_globals) == 0
 
+    @pytest.mark.parametrize(
+        'args, redirect_port',
+        [([], None), (["--redirect-port", "34535"], 34535)],
+    )
     def test_configure_sso_with_new_sso_session(
         self,
         sso_cmd,
@@ -1291,6 +1298,7 @@ class TestConfigureSSOCommand:
         mock_do_sso_login,
         botocore_session,
         args,
+        redirect_port,
         parsed_globals,
         configure_sso_using_new_session_inputs,
         capsys,
@@ -1316,6 +1324,7 @@ class TestConfigureSSOCommand:
                 inputs.scopes_prompt.answer
             ),
             expected_force_refresh=True,
+            expected_redirect_port=redirect_port,
         )
         assert_aws_config(
             aws_config,
@@ -1338,6 +1347,20 @@ class TestConfigureSSOCommand:
             f"aws sts get-caller-identity --profile {inputs.profile_prompt.answer}"
             in stdout
         )
+
+    @pytest.mark.parametrize('redirect_port', ['-1', '0', '65536'])
+    def test_invalid_redirect_port(
+        self,
+        sso_cmd,
+        parsed_globals,
+        mock_do_sso_login,
+        aws_config,
+        redirect_port,
+    ):
+        with pytest.raises(ParamValidationError, match='--redirect-port'):
+            sso_cmd(['--redirect-port', redirect_port], parsed_globals)
+        mock_do_sso_login.assert_not_called()
+        assert not aws_config.exists()
 
     def test_configure_sso_with_existing_sso_session(
         self,

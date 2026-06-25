@@ -1536,6 +1536,10 @@
         "ScreenImageFormat":{
           "shape":"ScreenImageFormat",
           "documentation":"<p>The image format for agent screen captures.</p>"
+        },
+        "UserControlMode":{
+          "shape":"UserControlMode",
+          "documentation":"<p>The user control mode for agent sessions. This setting determines how users can interact with agent sessions.</p>"
         }
       },
       "documentation":"<p>The configuration for agent access on a stack. Agent access enables AI agents to interact with desktop applications during streaming sessions.</p>"
@@ -1562,6 +1566,10 @@
         "ScreenImageFormat":{
           "shape":"ScreenImageFormat",
           "documentation":"<p>The image format for agent screen captures.</p>"
+        },
+        "UserControlMode":{
+          "shape":"UserControlMode",
+          "documentation":"<p>The user control mode for agent sessions. This setting determines how users can interact with agent sessions.</p>"
         }
       },
       "documentation":"<p>The configuration for updating agent access on a stack. This type supports partial updates, so you only need to specify the fields you want to change.</p>"
@@ -1575,7 +1583,7 @@
       "members":{
         "AgentAction":{
           "shape":"AgentAction",
-          "documentation":"<p>The agent action to configure. Valid values are COMPUTER_VISION and COMPUTER_INPUT. If you enable COMPUTER_INPUT, you must also enable COMPUTER_VISION.</p>"
+          "documentation":"<p>The agent action to configure. Valid values are COMPUTER_VISION, COMPUTER_INPUT, and FORWARD_MCP_TOOLS. If you enable COMPUTER_INPUT, you must also enable COMPUTER_VISION.</p>"
         },
         "Permission":{
           "shape":"Permission",
@@ -1592,10 +1600,11 @@
     },
     "AgentAction":{
       "type":"string",
-      "documentation":"<p>The type of agent action.</p> <ul> <li> <p>COMPUTER_VISION - Allows agents to take screenshots of the desktop.</p> </li> <li> <p>COMPUTER_INPUT - Allows agents to click, type, and scroll on the desktop. Requires COMPUTER_VISION to also be enabled.</p> </li> </ul>",
+      "documentation":"<p>The type of agent action.</p> <ul> <li> <p>COMPUTER_VISION - Allows agents to take screenshots of the desktop.</p> </li> <li> <p>COMPUTER_INPUT - Allows agents to click, type, and scroll on the desktop. Requires COMPUTER_VISION to also be enabled.</p> </li> <li> <p>FORWARD_MCP_TOOLS - Allows agents to interact with applications and the desktop operating system through direct MCP calls rather than using computer use tools. Forwards MCP tools configured on the WorkSpaces application session to the agent.</p> </li> </ul>",
       "enum":[
         "COMPUTER_VISION",
-        "COMPUTER_INPUT"
+        "COMPUTER_INPUT",
+        "FORWARD_MCP_TOOLS"
       ]
     },
     "AgentSoftwareVersion":{
@@ -6765,6 +6774,15 @@
       "max":2048,
       "pattern":"^[A-Za-z0-9_\\-\\s]+$",
       "sensitive":true
+    },
+    "UserControlMode":{
+      "type":"string",
+      "documentation":"<p>The user control mode for agent sessions.</p> <ul> <li> <p>VIEW_ONLY - Users can view and observe agent actions as they happen.</p> </li> <li> <p>VIEW_STOP - Users can view agent actions and stop the agent if needed.</p> </li> <li> <p>DISABLED - Users cannot view or stop the agent session.</p> </li> </ul>",
+      "enum":[
+        "VIEW_ONLY",
+        "VIEW_STOP",
+        "DISABLED"
+      ]
     },
     "UserId":{
       "type":"string",

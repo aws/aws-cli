@@ -217,7 +217,7 @@
         {"shape":"ConflictException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates a knowledge base. A knowledge base contains your data sources so that Large Language Models (LLMs) can use your data. To create a knowledge base, you must first set up your data sources and configure a supported vector store. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowlege-base-prereq.html\">Set up a knowledge base</a>.</p> <note> <p>If you prefer to let Amazon Bedrock create and manage a vector store for you in Amazon OpenSearch Service, use the console. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-create\">Create a knowledge base</a>.</p> </note> <ul> <li> <p>Provide the <code>name</code> and an optional <code>description</code>.</p> </li> <li> <p>Provide the Amazon Resource Name (ARN) with permissions to create a knowledge base in the <code>roleArn</code> field.</p> </li> <li> <p>Provide the embedding model to use in the <code>embeddingModelArn</code> field in the <code>knowledgeBaseConfiguration</code> object.</p> </li> <li> <p>Provide the configuration for your vector store in the <code>storageConfiguration</code> object.</p> <ul> <li> <p>For an Amazon OpenSearch Service database, use the <code>opensearchServerlessConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-oss.html\">Create a vector store in Amazon OpenSearch Service</a>.</p> </li> <li> <p>For an Amazon Aurora database, use the <code>RdsConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-rds.html\">Create a vector store in Amazon Aurora</a>.</p> </li> <li> <p>For a Pinecone database, use the <code>pineconeConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-pinecone.html\">Create a vector store in Pinecone</a>.</p> </li> <li> <p>For a Redis Enterprise Cloud database, use the <code>redisEnterpriseCloudConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-redis.html\">Create a vector store in Redis Enterprise Cloud</a>.</p> </li> </ul> </li> </ul>",
+      "documentation":"<p>Creates a knowledge base. A knowledge base contains your data sources so that Large Language Models (LLMs) can use your data. To create a knowledge base, you must first set up your data sources and configure a supported vector store. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowlege-base-prereq.html\">Set up a knowledge base</a>.</p> <note> <p>To create a managed knowledge base, provide a <code>managedKnowledgeBaseConfiguration</code> during creation. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/kb-build-managed.html\">Build a managed knowledge base</a>.</p> </note> <ul> <li> <p>Provide the <code>name</code> and an optional <code>description</code>.</p> </li> <li> <p>Provide the Amazon Resource Name (ARN) with permissions to create a knowledge base in the <code>roleArn</code> field.</p> </li> <li> <p>For managed knowledge bases, set <code>embeddingModelType</code> to <code>MANAGED</code> to use the service-managed embedding model, or <code>CUSTOM</code> with an <code>embeddingModelArn</code> to use your own. To use your own KMS key for encryption, provide the ARN in <code>serverSideEncryptionConfiguration</code>. No vector store configuration is required for managed knowledge bases.</p> </li> <li> <p>For self-managed knowledge bases, provide the embedding model to use in the <code>embeddingModelArn</code> field in the <code>knowledgeBaseConfiguration</code> object.</p> </li> <li> <p>For self-managed knowledge bases, provide the configuration for your vector store in the <code>storageConfiguration</code> object.</p> <ul> <li> <p>For an Amazon OpenSearch Service database, use the <code>opensearchServerlessConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-oss.html\">Create a vector store in Amazon OpenSearch Service</a>.</p> </li> <li> <p>For an Amazon Aurora database, use the <code>RdsConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-rds.html\">Create a vector store in Amazon Aurora</a>.</p> </li> <li> <p>For a Pinecone database, use the <code>pineconeConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-pinecone.html\">Create a vector store in Pinecone</a>.</p> </li> <li> <p>For a Redis Enterprise Cloud database, use the <code>redisEnterpriseCloudConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-redis.html\">Create a vector store in Redis Enterprise Cloud</a>.</p> </li> </ul> </li> </ul>",
       "idempotent":true
     },
     "CreatePrompt":{
@@ -478,6 +478,26 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Deletes a prompt or a version of it, depending on whether you include the <code>promptVersion</code> field or not. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-manage.html#prompt-management-delete.html\">Delete prompts from the Prompt management tool</a> and <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-deploy.html#prompt-management-versions-delete.html\">Delete a version of a prompt from the Prompt management tool</a> in the Amazon Bedrock User Guide.</p>",
+      "idempotent":true
+    },
+    "DeleteResourcePolicy":{
+      "name":"DeleteResourcePolicy",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/resourcepolicy/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteResourcePolicyRequest"},
+      "output":{"shape":"DeleteResourcePolicyResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Removes the resource policy associated with a knowledge base. After deletion, other AWS accounts can no longer access the knowledge base using cross-account permissions.</p>",
       "idempotent":true
     },
     "DisassociateAgentCollaborator":{
@@ -785,6 +805,25 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Retrieves information about the working draft (<code>DRAFT</code> version) of a prompt or a version of it, depending on whether you include the <code>promptVersion</code> field or not. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-manage.html#prompt-management-view.html\">View information about prompts using Prompt management</a> and <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-deploy.html#prompt-management-versions-view.html\">View information about a version of your prompt</a> in the Amazon Bedrock User Guide.</p>",
+      "readonly":true
+    },
+    "GetResourcePolicy":{
+      "name":"GetResourcePolicy",
+      "http":{
+        "method":"GET",
+        "requestUri":"/resourcepolicy/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetResourcePolicyRequest"},
+      "output":{"shape":"GetResourcePolicyResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves the resource policy associated with a knowledge base.</p>",
       "readonly":true
     },
     "IngestKnowledgeBaseDocuments":{
@@ -1130,6 +1169,26 @@
       ],
       "documentation":"<p>Prepares the <code>DRAFT</code> version of a flow so that it can be invoked. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/flows-test.html\">Test a flow in Amazon Bedrock</a> in the Amazon Bedrock User Guide.</p>"
     },
+    "PutResourcePolicy":{
+      "name":"PutResourcePolicy",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/resourcepolicy/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"PutResourcePolicyRequest"},
+      "output":{"shape":"PutResourcePolicyResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Associates a resource policy with a knowledge base. A resource policy allows other AWS accounts to access the knowledge base. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/kb-managed-cross-account.html\">Cross-account access for knowledge bases</a>.</p>",
+      "idempotent":true
+    },
     "StartIngestionJob":{
       "name":"StartIngestionJob",
       "http":{
@@ -1450,6 +1509,19 @@
       },
       "documentation":"<p>Contains details about the OpenAPI schema for the action group. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-api-schema.html\">Action group OpenAPI schemas</a>. You can either include the schema directly in the <code>payload</code> field or you can upload it to an S3 bucket and specify the S3 bucket location in the <code>s3</code> field.</p>",
       "union":true
+    },
+    "AccessControlAccess":{
+      "type":"string",
+      "documentation":"<p>The access level for an access control entry.</p>",
+      "enum":[
+        "ALLOW",
+        "DENY"
+      ]
+    },
+    "AccessControlPrincipalType":{
+      "type":"string",
+      "documentation":"<p>The type of principal in an access control entry.</p>",
+      "enum":["USER"]
     },
     "AccessDeniedException":{
       "type":"structure",
@@ -2493,6 +2565,17 @@
       "max":1,
       "min":1
     },
+    "AudioExtractionConfiguration":{
+      "type":"structure",
+      "required":["audioExtractionStatus"],
+      "members":{
+        "audioExtractionStatus":{
+          "shape":"EnabledOrDisabledState",
+          "documentation":"<p>Whether audio extraction is enabled or disabled.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for audio extraction.</p>"
+    },
     "AudioSegmentationConfiguration":{
       "type":"structure",
       "required":["fixedLengthDuration"],
@@ -2812,7 +2895,7 @@
           "documentation":"<p>The configuration of the Confluence content. For example, configuring specific types of Confluence content.</p>"
         }
       },
-      "documentation":"<p>The configuration information to connect to Confluence as your data source.</p>"
+      "documentation":"<p>The configuration information to connect to Confluence as your data source for self-managed knowledge bases.</p>"
     },
     "ConfluenceHostType":{
       "type":"string",
@@ -3143,7 +3226,7 @@
         },
         "dataDeletionPolicy":{
           "shape":"DataDeletionPolicy",
-          "documentation":"<p>The data deletion policy for the data source.</p> <p>You can set the data deletion policy to:</p> <ul> <li> <p>DELETE: Deletes all data from your data source that’s converted into vector embeddings upon deletion of a knowledge base or data source resource. Note that the <b>vector store itself is not deleted</b>, only the data. This flag is ignored if an Amazon Web Services account is deleted.</p> </li> <li> <p>RETAIN: Retains all data from your data source that’s converted into vector embeddings upon deletion of a knowledge base or data source resource. Note that the <b>vector store itself is not deleted</b> if you delete a knowledge base or data source resource.</p> </li> </ul>"
+          "documentation":"<p>The data deletion policy for the data source.</p> <p>You can set the data deletion policy to:</p> <ul> <li> <p>DELETE: Deletes all data from your data source that’s converted into vector embeddings upon deletion of a knowledge base or data source resource. Note that the <b>vector store itself is not deleted</b>, only the data. This flag is ignored if an Amazon Web Services account is deleted.</p> </li> <li> <p>RETAIN: Retains all data from your data source that’s converted into vector embeddings upon deletion of a knowledge base or data source resource. Note that the <b>vector store itself is not deleted</b> if you delete a knowledge base or data source resource.</p> </li> </ul> <note> <p>For managed knowledge bases, the only supported option is <code>DELETE</code>, which is also the default.</p> </note>"
         },
         "serverSideEncryptionConfiguration":{
           "shape":"ServerSideEncryptionConfiguration",
@@ -3865,25 +3948,29 @@
           "shape":"DataSourceType",
           "documentation":"<p>The type of data source.</p>"
         },
+        "managedKnowledgeBaseConnectorConfiguration":{
+          "shape":"ManagedKnowledgeBaseConnectorConfiguration",
+          "documentation":"<p>Contains the configuration for a data source that connects a managed knowledge base to a supported data source connector. Specify this object when the data source type is <code>MANAGED_KNOWLEDGE_BASE_CONNECTOR</code>.</p>"
+        },
         "s3Configuration":{
           "shape":"S3DataSourceConfiguration",
-          "documentation":"<p>The configuration information to connect to Amazon S3 as your data source.</p>"
+          "documentation":"<p>The configuration information to connect to Amazon S3 as your data source for self-managed knowledge bases. To configure this data source for managed knowledge bases, use <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_ManagedKnowledgeBaseConnectorConfiguration.html\">managedKnowledgeBaseConnectorConfiguration</a>.</p>"
         },
         "webConfiguration":{
           "shape":"WebDataSourceConfiguration",
-          "documentation":"<p>The configuration of web URLs to crawl for your data source. You should be authorized to crawl the URLs.</p> <note> <p>Crawling web URLs as your data source is in preview release and is subject to change.</p> </note>"
+          "documentation":"<p>The configuration of web URLs to crawl for your data source. You should be authorized to crawl the URLs.</p> <note> <p>To configure this data source for managed knowledge bases, use <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_ManagedKnowledgeBaseConnectorConfiguration.html\">managedKnowledgeBaseConnectorConfiguration</a>. Web crawler data source connector for self-managed knowledge bases is in preview release and is subject to change.</p> </note>"
         },
         "confluenceConfiguration":{
           "shape":"ConfluenceDataSourceConfiguration",
-          "documentation":"<p>The configuration information to connect to Confluence as your data source.</p> <note> <p>Confluence data source connector is in preview release and is subject to change.</p> </note>"
+          "documentation":"<p>The configuration information to connect to Confluence as your data source for self-managed knowledge bases.</p> <note> <p>To configure this data source for managed knowledge bases, use <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_ManagedKnowledgeBaseConnectorConfiguration.html\">managedKnowledgeBaseConnectorConfiguration</a>. Confluence data source connector for self-managed knowledge bases is in preview release and is subject to change.</p> </note>"
         },
         "salesforceConfiguration":{
           "shape":"SalesforceDataSourceConfiguration",
-          "documentation":"<p>The configuration information to connect to Salesforce as your data source.</p> <note> <p>Salesforce data source connector is in preview release and is subject to change.</p> </note>"
+          "documentation":"<p>The configuration information to connect to Salesforce as your data source.</p> <note> <p>Salesforce data source connector for self-managed knowledge bases is in preview release and is subject to change.</p> </note>"
         },
         "sharePointConfiguration":{
           "shape":"SharePointDataSourceConfiguration",
-          "documentation":"<p>The configuration information to connect to SharePoint as your data source.</p> <note> <p>SharePoint data source connector is in preview release and is subject to change.</p> </note>"
+          "documentation":"<p>The configuration information to connect to SharePoint as your data source for self-managed knowledge bases.</p> <note> <p>To configure this data source for managed knowledge bases, use <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_ManagedKnowledgeBaseConnectorConfiguration.html\">managedKnowledgeBaseConnectorConfiguration</a>. SharePoint data source connector for self-managed knowledge bases is in preview release and is subject to change.</p> </note>"
         }
       },
       "documentation":"<p>The connection configuration for the data source.</p>"
@@ -3893,7 +3980,10 @@
       "enum":[
         "AVAILABLE",
         "DELETING",
-        "DELETE_UNSUCCESSFUL"
+        "DELETE_UNSUCCESSFUL",
+        "CREATING",
+        "UPDATING",
+        "FAILED"
       ]
     },
     "DataSourceSummaries":{
@@ -3946,7 +4036,8 @@
         "SALESFORCE",
         "SHAREPOINT",
         "CUSTOM",
-        "REDSHIFT_METADATA"
+        "REDSHIFT_METADATA",
+        "MANAGED_KNOWLEDGE_BASE_CONNECTOR"
       ]
     },
     "DateTimestamp":{
@@ -4372,6 +4463,59 @@
         }
       }
     },
+    "DeleteResourcePolicyRequest":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the knowledge base to remove the resource policy from.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "expectedRevisionId":{
+          "shape":"RevisionId",
+          "documentation":"<p>The expected revision identifier of the resource policy. Use this to prevent conflicts when multiple users update the same policy concurrently.</p>",
+          "location":"querystring",
+          "locationName":"expectedRevisionId"
+        }
+      }
+    },
+    "DeleteResourcePolicyResponse":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the knowledge base that the resource policy was removed from.</p>"
+        },
+        "revisionId":{
+          "shape":"RevisionId",
+          "documentation":"<p>The revision identifier after the resource policy was deleted.</p>"
+        }
+      }
+    },
+    "DeletionProtectionConfiguration":{
+      "type":"structure",
+      "required":["deletionProtectionStatus"],
+      "members":{
+        "deletionProtectionStatus":{
+          "shape":"EnabledOrDisabledState",
+          "documentation":"<p>Enable or disable deletion protection for the connector.</p>"
+        },
+        "deletionProtectionThreshold":{
+          "shape":"DeletionProtectionConfigurationDeletionProtectionThresholdInteger",
+          "documentation":"<p>The threshold is the maximum percentage of documents that a sync job can delete from your index. If a sync would delete more than this percentage, the sync skips its delete phase, leaving your indexed documents in place. Not supported for the Custom connector.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for deletion protection.</p>"
+    },
+    "DeletionProtectionConfigurationDeletionProtectionThresholdInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":0
+    },
     "Description":{
       "type":"string",
       "max":200,
@@ -4457,6 +4601,41 @@
       "members":{},
       "document":true
     },
+    "DocumentAccessControlEntry":{
+      "type":"structure",
+      "required":[
+        "name",
+        "type",
+        "access"
+      ],
+      "members":{
+        "name":{
+          "shape":"DocumentAccessControlEntryNameString",
+          "documentation":"<p>The user identifier.</p>"
+        },
+        "type":{
+          "shape":"AccessControlPrincipalType",
+          "documentation":"<p>The type of principal.</p>"
+        },
+        "access":{
+          "shape":"AccessControlAccess",
+          "documentation":"<p>Whether to allow or deny access.</p>"
+        }
+      },
+      "documentation":"<p>An access control entry specifying a principal and their access level.</p>",
+      "sensitive":true
+    },
+    "DocumentAccessControlEntryNameString":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "DocumentAccessControlList":{
+      "type":"list",
+      "member":{"shape":"DocumentAccessControlEntry"},
+      "documentation":"<p>List of access control entries for a document.</p>",
+      "min":1
+    },
     "DocumentContent":{
       "type":"structure",
       "required":["dataSourceType"],
@@ -4516,6 +4695,10 @@
         "s3Location":{
           "shape":"CustomS3Location",
           "documentation":"<p>The Amazon S3 location of the file containing metadata to associate with the content to ingest.</p>"
+        },
+        "accessControlList":{
+          "shape":"DocumentAccessControlList",
+          "documentation":"<p>Access control list for the document. Used when metadata type is IN_LINE_ATTRIBUTE.</p>"
         }
       },
       "documentation":"<p>Contains information about the metadata associate with the content to ingest into a knowledge base. Choose a <code>type</code> and include the field that corresponds to it.</p>"
@@ -4603,11 +4786,26 @@
       },
       "documentation":"<p>The configuration details for the embeddings model.</p>"
     },
+    "EmbeddingModelType":{
+      "type":"string",
+      "documentation":"<p>Choose <code>CUSTOM</code> to provide your own Bedrock embedding model ARN. Choose <code>MANAGED</code> to use a service-managed embedding model. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/kb-managed-create.html#kb-managed-embedding-models\">Embedding model options</a>.</p>",
+      "enum":[
+        "CUSTOM",
+        "MANAGED"
+      ]
+    },
     "EnabledMemoryTypes":{
       "type":"list",
       "member":{"shape":"MemoryType"},
       "max":1,
       "min":1
+    },
+    "EnabledOrDisabledState":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
     },
     "EnrichmentStrategyConfiguration":{
       "type":"structure",
@@ -4709,6 +4907,7 @@
     "FixedSizeChunkingConfigurationMaxTokensInteger":{
       "type":"integer",
       "box":true,
+      "max":8192,
       "min":1
     },
     "FixedSizeChunkingConfigurationOverlapPercentageInteger":{
@@ -5924,6 +6123,12 @@
           "documentation":"<p>The unique identifier of the flow.</p>",
           "location":"uri",
           "locationName":"flowIdentifier"
+        },
+        "includedData":{
+          "shape":"IncludedData",
+          "documentation":"<p>Controls the scope of data returned. Set to <code>METADATA_ONLY</code> to return only resource metadata. Set to <code>ALL_DATA</code> or omit this field to return the full response.</p>",
+          "location":"querystring",
+          "locationName":"includedData"
         }
       }
     },
@@ -6008,6 +6213,12 @@
           "documentation":"<p>The version of the flow for which to get information.</p>",
           "location":"uri",
           "locationName":"flowVersion"
+        },
+        "includedData":{
+          "shape":"IncludedData",
+          "documentation":"<p>Controls the scope of data returned. Set to <code>METADATA_ONLY</code> to return only resource metadata. Set to <code>ALL_DATA</code> or omit this field to return the full response.</p>",
+          "location":"querystring",
+          "locationName":"includedData"
         }
       }
     },
@@ -6175,6 +6386,12 @@
           "documentation":"<p>The version of the prompt about which you want to retrieve information. Omit this field to return information about the working draft of the prompt.</p>",
           "location":"querystring",
           "locationName":"promptVersion"
+        },
+        "includedData":{
+          "shape":"IncludedData",
+          "documentation":"<p>Controls the scope of data returned. Set to <code>METADATA_ONLY</code> to return only resource metadata. Set to <code>ALL_DATA</code> or omit this field to return the full response.</p>",
+          "location":"querystring",
+          "locationName":"includedData"
         }
       }
     },
@@ -6228,6 +6445,41 @@
         "updatedAt":{
           "shape":"DateTimestamp",
           "documentation":"<p>The time at which the prompt was last updated.</p>"
+        }
+      }
+    },
+    "GetResourcePolicyRequest":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the knowledge base to retrieve the resource policy for.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "GetResourcePolicyResponse":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "policy",
+        "revisionId"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the knowledge base that the resource policy is associated with.</p>"
+        },
+        "policy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The JSON-formatted resource policy associated with the knowledge base.</p>",
+          "jsonvalue":true
+        },
+        "revisionId":{
+          "shape":"RevisionId",
+          "documentation":"<p>The revision identifier of the resource policy.</p>"
         }
       }
     },
@@ -6317,11 +6569,29 @@
       "type":"string",
       "pattern":"[0-9a-zA-Z]{10}"
     },
+    "ImageExtractionConfiguration":{
+      "type":"structure",
+      "required":["imageExtractionStatus"],
+      "members":{
+        "imageExtractionStatus":{
+          "shape":"EnabledOrDisabledState",
+          "documentation":"<p>Whether image extraction is enabled or disabled.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for image extraction.</p>"
+    },
     "IncludeExclude":{
       "type":"string",
       "enum":[
         "INCLUDE",
         "EXCLUDE"
+      ]
+    },
+    "IncludedData":{
+      "type":"string",
+      "enum":[
+        "ALL_DATA",
+        "METADATA_ONLY"
       ]
     },
     "IncompatibleConnectionDataTypeFlowValidationDetails":{
@@ -6574,6 +6844,10 @@
         "numberOfDocumentsFailed":{
           "shape":"PrimitiveLong",
           "documentation":"<p>The number of source documents that failed to be ingested.</p>"
+        },
+        "numberOfDocumentsSkipped":{
+          "shape":"PrimitiveLong",
+          "documentation":"<p>The number of source documents that were skipped during ingestion.</p>"
         }
       },
       "documentation":"<p>Contains the statistics for the data ingestion job.</p>"
@@ -6848,12 +7122,13 @@
       "members":{
         "type":{
           "shape":"KnowledgeBaseType",
-          "documentation":"<p>The type of data that the data source is converted into for the knowledge base.</p>"
+          "documentation":"<p>The type of data that the data source is converted into for the knowledge base. Choose <code>MANAGED</code> to create a managed knowledge base.</p>"
         },
         "vectorKnowledgeBaseConfiguration":{
           "shape":"VectorKnowledgeBaseConfiguration",
           "documentation":"<p>Contains details about the model that's used to convert the data source into vector embeddings.</p>"
         },
+        "managedKnowledgeBaseConfiguration":{"shape":"ManagedKnowledgeBaseConfiguration"},
         "kendraKnowledgeBaseConfiguration":{
           "shape":"KendraKnowledgeBaseConfiguration",
           "documentation":"<p>Settings for an Amazon Kendra knowledge base.</p>"
@@ -7030,11 +7305,13 @@
         "DELETING",
         "UPDATING",
         "FAILED",
-        "DELETE_UNSUCCESSFUL"
+        "DELETE_UNSUCCESSFUL",
+        "UPDATE_UNSUCCESSFUL"
       ]
     },
     "KnowledgeBaseStorageType":{
       "type":"string",
+      "documentation":"<p>The storage type of a knowledge base.</p>",
       "enum":[
         "OPENSEARCH_SERVERLESS",
         "PINECONE",
@@ -7090,10 +7367,12 @@
     },
     "KnowledgeBaseType":{
       "type":"string",
+      "documentation":"<p>The type of a knowledge base.</p>",
       "enum":[
         "VECTOR",
         "KENDRA",
-        "SQL"
+        "SQL",
+        "MANAGED"
       ]
     },
     "LambdaArn":{
@@ -7781,6 +8060,37 @@
       },
       "documentation":"<p>Details about a malformed input expression in a node.</p>"
     },
+    "ManagedKnowledgeBaseConfiguration":{
+      "type":"structure",
+      "members":{
+        "embeddingModelType":{"shape":"EmbeddingModelType"},
+        "embeddingModelArn":{
+          "shape":"BedrockEmbeddingModelArn",
+          "documentation":"<p>The ARN for the embeddings model.</p>"
+        },
+        "embeddingModelConfiguration":{"shape":"EmbeddingModelConfiguration"},
+        "serverSideEncryptionConfiguration":{"shape":"ServerSideEncryptionConfiguration"}
+      },
+      "documentation":"<p>Configurations for a managed knowledge base.</p>"
+    },
+    "ManagedKnowledgeBaseConnectorConfiguration":{
+      "type":"structure",
+      "members":{
+        "deletionProtectionConfiguration":{
+          "shape":"DeletionProtectionConfiguration",
+          "documentation":"<p>A safeguard against accidental bulk deletion of indexed content.</p>"
+        },
+        "mediaExtractionConfiguration":{
+          "shape":"MediaExtractionConfiguration",
+          "documentation":"<p>Configuration for extracting media (images, audio, video) from data source files.</p>"
+        },
+        "connectorParameters":{
+          "shape":"Document",
+          "documentation":"<p>Connector-specific parameters. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/kb-managed-connect-ds.html\">Connect a data source</a>.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for managed knowledge base connector data sources.</p>"
+    },
     "MaxRecentSessions":{
       "type":"integer",
       "box":true,
@@ -7796,6 +8106,24 @@
       "type":"integer",
       "box":true,
       "min":0
+    },
+    "MediaExtractionConfiguration":{
+      "type":"structure",
+      "members":{
+        "imageExtractionConfiguration":{
+          "shape":"ImageExtractionConfiguration",
+          "documentation":"<p>Configuration for image extraction.</p>"
+        },
+        "audioExtractionConfiguration":{
+          "shape":"AudioExtractionConfiguration",
+          "documentation":"<p>Configuration for audio extraction.</p>"
+        },
+        "videoExtractionConfiguration":{
+          "shape":"VideoExtractionConfiguration",
+          "documentation":"<p>Configuration for video extraction.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for media extraction settings.</p>"
     },
     "MemoryConfiguration":{
       "type":"structure",
@@ -8476,7 +8804,7 @@
       "members":{
         "parsingStrategy":{
           "shape":"ParsingStrategy",
-          "documentation":"<p>The parsing strategy for the data source.</p>"
+          "documentation":"<p>The parsing strategy for the data source. Only <code>SMART_PARSING</code> can be selected for managed knowledge bases. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/kb-managed-customize-ingestion.html\">Customize ingestion for managed knowledge bases</a>.</p>"
         },
         "bedrockFoundationModelConfiguration":{
           "shape":"BedrockFoundationModelConfiguration",
@@ -8513,7 +8841,8 @@
       "type":"string",
       "enum":[
         "BEDROCK_FOUNDATION_MODEL",
-        "BEDROCK_DATA_AUTOMATION"
+        "BEDROCK_DATA_AUTOMATION",
+        "SMART_PARSING"
       ]
     },
     "PatternObjectFilter":{
@@ -9125,6 +9454,47 @@
       "min":1,
       "pattern":"((([0-9a-zA-Z][_-]?){1,63})|(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:provisioned-model/[a-z0-9]{12}))"
     },
+    "PutResourcePolicyRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "policy"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the knowledge base to attach the resource policy to.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "policy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The JSON-formatted resource policy to associate with the knowledge base.</p>",
+          "jsonvalue":true
+        },
+        "expectedRevisionId":{
+          "shape":"RevisionId",
+          "documentation":"<p>The expected revision identifier of the resource policy. Use this to prevent conflicts when multiple users update the same policy concurrently. Specify the <code>revisionId</code> from the most recent <code>GetResourcePolicy</code> or <code>PutResourcePolicy</code> response.</p>"
+        }
+      }
+    },
+    "PutResourcePolicyResponse":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "revisionId"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the knowledge base that the resource policy was attached to.</p>"
+        },
+        "revisionId":{
+          "shape":"RevisionId",
+          "documentation":"<p>The revision identifier of the resource policy. Use this value in the <code>expectedRevisionId</code> field of a subsequent <code>PutResourcePolicy</code> or <code>DeleteResourcePolicy</code> request.</p>"
+        }
+      }
+    },
     "QueryEngineType":{
       "type":"string",
       "enum":["REDSHIFT"]
@@ -9613,6 +9983,12 @@
       "documentation":"<p>Configures the metadata fields to include or exclude during the reranking process when using selective mode.</p>",
       "union":true
     },
+    "ResourceArn":{
+      "type":"string",
+      "max":1011,
+      "min":20,
+      "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:knowledge-base/[0-9a-zA-Z]+"
+    },
     "ResourceNotFoundException":{
       "type":"structure",
       "members":{
@@ -9624,6 +10000,12 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ResourcePolicy":{
+      "type":"string",
+      "max":20480,
+      "min":1,
+      "pattern":"[\\u0009\\u000A\\u000D\\u0020-\\u00FF]+"
     },
     "RetrievalFlowNodeConfiguration":{
       "type":"structure",
@@ -9657,6 +10039,11 @@
       },
       "documentation":"<p>Contains configurations for the service to use for retrieving data to return as the output from the node.</p>",
       "union":true
+    },
+    "RevisionId":{
+      "type":"string",
+      "max":255,
+      "min":1
     },
     "S3BucketArn":{
       "type":"string",
@@ -9704,7 +10091,7 @@
           "documentation":"<p>The account ID for the owner of the S3 bucket.</p>"
         }
       },
-      "documentation":"<p>The configuration information to connect to Amazon S3 as your data source.</p>"
+      "documentation":"<p>The configuration information to connect to Amazon S3 as your data source for self-managed knowledge bases. To configure this data source for managed knowledge bases, use <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_ManagedKnowledgeBaseConnectorConfiguration.html\">managedKnowledgeBaseConnectorConfiguration</a>.</p>"
     },
     "S3Identifier":{
       "type":"structure",
@@ -9883,6 +10270,7 @@
     "SemanticChunkingConfigurationMaxTokensInteger":{
       "type":"integer",
       "box":true,
+      "max":8192,
       "min":1
     },
     "ServerSideEncryptionConfiguration":{
@@ -9893,7 +10281,7 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the resource.</p>"
         }
       },
-      "documentation":"<p>Contains the configuration for server-side encryption.</p>"
+      "documentation":"<p>Contains the configuration for server-side encryption for your managed knowledge base.</p>"
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
@@ -9953,7 +10341,7 @@
           "documentation":"<p>The configuration of the SharePoint content. For example, configuring specific types of SharePoint content.</p>"
         }
       },
-      "documentation":"<p>The configuration information to connect to SharePoint as your data source.</p>"
+      "documentation":"<p>The configuration information to connect to SharePoint as your data source for self-managed knowledge bases.</p>"
     },
     "SharePointDomain":{
       "type":"string",
@@ -10228,10 +10616,10 @@
       "members":{
         "storageLocations":{
           "shape":"SupplementalDataStorageLocations",
-          "documentation":"<p>A list of objects specifying storage locations for images extracted from multimodal documents in your data source.</p>"
+          "documentation":"<p>A list of objects specifying storage locations for multimedia content (images, audio, and video) extracted from multimodal documents in your data source.</p>"
         }
       },
-      "documentation":"<p>Specifies configurations for the storage location of the images extracted from multimodal documents in your data source. These images can be retrieved and returned to the end user.</p>"
+      "documentation":"<p>Specifies configurations for the storage location of multimedia content (images, audio, and video) extracted from multimodal documents in your data source. This content can be retrieved and returned to the end user with timestamp references for audio and video segments.</p>"
     },
     "SupplementalDataStorageLocation":{
       "type":"structure",
@@ -10243,10 +10631,10 @@
         },
         "s3Location":{
           "shape":"S3Location",
-          "documentation":"<p>Contains information about the Amazon S3 location for the extracted images.</p>"
+          "documentation":"<p>Contains information about the Amazon S3 location for the extracted multimedia content.</p>"
         }
       },
-      "documentation":"<p>Contains information about a storage location for images extracted from multimodal documents in your data source.</p>"
+      "documentation":"<p>Contains information about a storage location for multimedia content (images, audio, and video) extracted from multimodal documents in your data source.</p>"
     },
     "SupplementalDataStorageLocationType":{
       "type":"string",
@@ -11606,6 +11994,17 @@
       },
       "max":1,
       "min":1
+    },
+    "VideoExtractionConfiguration":{
+      "type":"structure",
+      "required":["videoExtractionStatus"],
+      "members":{
+        "videoExtractionStatus":{
+          "shape":"EnabledOrDisabledState",
+          "documentation":"<p>Whether video extraction is enabled or disabled.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for video extraction.</p>"
     },
     "VideoSegmentationConfiguration":{
       "type":"structure",

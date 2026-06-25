@@ -2970,6 +2970,22 @@
       ],
       "documentation":"<p>Get the hours of operations with the effective override applied.</p>"
     },
+    "GetEvaluationFormValidation":{
+      "name":"GetEvaluationFormValidation",
+      "http":{
+        "method":"GET",
+        "requestUri":"/evaluation-forms/{InstanceId}/{EvaluationFormId}/validation-results"
+      },
+      "input":{"shape":"GetEvaluationFormValidationRequest"},
+      "output":{"shape":"GetEvaluationFormValidationResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Retrieves the status and results of a validation process started by <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_StartEvaluationFormValidation.html\">StartEvaluationFormValidation</a>. Returns the current execution status (<code>IN_PROGRESS</code>, <code>COMPLETED</code>, or <code>FAILED</code>), the validated form version, and when completed, a list of findings that identify structural issues and quality improvements for the evaluation form, and may include suggested fixes. If the validation failed, a reason is provided indicating the cause of the failure.</p>"
+    },
     "GetFederationToken":{
       "name":"GetFederationToken",
       "http":{
@@ -5065,6 +5081,24 @@
         {"shape":"IdempotencyException"}
       ],
       "documentation":"<p>Creates an inbound email contact and initiates a flow to start the email contact for the customer. Response of this API provides the ContactId of the email contact created.</p>"
+    },
+    "StartEvaluationFormValidation":{
+      "name":"StartEvaluationFormValidation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/evaluation-forms/{InstanceId}/{EvaluationFormId}/validate"
+      },
+      "input":{"shape":"StartEvaluationFormValidationRequest"},
+      "output":{"shape":"StartEvaluationFormValidationResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ResourceConflictException"}
+      ],
+      "documentation":"<p>Starts an asynchronous validation process for an evaluation form version in the specified Connect Customer instance. The validation first performs structural checks on the form content (such as verifying required fields, valid scoring configuration, and correct conditional logic), then asynchronously analyzes questions configured for generative AI evaluation against a set of best practices. Use <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_GetEvaluationFormValidation.html\">GetEvaluationFormValidation</a> to retrieve the status and results once the validation completes.</p>"
     },
     "StartOutboundChatContact":{
       "name":"StartOutboundChatContact",
@@ -10036,6 +10070,86 @@
         }
       },
       "documentation":"<p>Information about the contact evaluations where the key is the FormId, which is a unique identifier for the form.</p>"
+    },
+    "ContactEvaluationAttributeAndCondition":{
+      "type":"structure",
+      "members":{
+        "TagConditions":{
+          "shape":"TagAndConditionList",
+          "documentation":"<p>A list of tag conditions to apply.</p>"
+        },
+        "AttributeConditions":{
+          "shape":"ContactEvaluationAttributeConditionList",
+          "documentation":"<p>A list of attribute conditions to apply.</p>"
+        }
+      },
+      "documentation":"<p>A list of conditions which would be applied together with an <code>AND</code> condition.</p>"
+    },
+    "ContactEvaluationAttributeComparisonType":{
+      "type":"string",
+      "enum":["EXACT"]
+    },
+    "ContactEvaluationAttributeCondition":{
+      "type":"structure",
+      "members":{
+        "AttributeKey":{
+          "shape":"ContactEvaluationAttributeKey",
+          "documentation":"<p>The key of the attribute.</p>"
+        },
+        "AttributeValue":{
+          "shape":"ContactEvaluationAttributeValue",
+          "documentation":"<p>The value of the attribute.</p>"
+        },
+        "ComparisonType":{
+          "shape":"ContactEvaluationAttributeComparisonType",
+          "documentation":"<p>The comparison type for the condition.</p>"
+        }
+      },
+      "documentation":"<p>An attribute condition for contact evaluation filtering.</p>"
+    },
+    "ContactEvaluationAttributeConditionList":{
+      "type":"list",
+      "member":{"shape":"ContactEvaluationAttributeCondition"}
+    },
+    "ContactEvaluationAttributeFilter":{
+      "type":"structure",
+      "members":{
+        "OrConditions":{
+          "shape":"ContactEvaluationAttributeOrConditionList",
+          "documentation":"<p>A list of conditions which would be applied together with an <code>OR</code> condition.</p>"
+        },
+        "AndCondition":{
+          "shape":"ContactEvaluationAttributeAndCondition",
+          "documentation":"<p>A list of conditions which would be applied together with an <code>AND</code> condition.</p>"
+        },
+        "TagCondition":{
+          "shape":"TagCondition",
+          "documentation":"<p>A tag condition to apply.</p>"
+        },
+        "ContactEvaluationAttributeCondition":{
+          "shape":"ContactEvaluationAttributeCondition",
+          "documentation":"<p>An attribute condition to apply.</p>"
+        }
+      },
+      "documentation":"<p>An object that can be used to specify tag conditions and attribute conditions inside the <code>SearchFilter</code> for contact evaluations. This accepts an <code>OR</code> or <code>AND</code> (List of List) input where:</p> <ul> <li> <p>The top level list specifies conditions that need to be applied with <code>OR</code> operator.</p> </li> <li> <p>The inner list specifies conditions that need to be applied with <code>AND</code> operator.</p> </li> </ul>"
+    },
+    "ContactEvaluationAttributeKey":{
+      "type":"string",
+      "enum":["ContactAgentId"]
+    },
+    "ContactEvaluationAttributeOrConditionList":{
+      "type":"list",
+      "member":{"shape":"ContactEvaluationAttributeAndCondition"}
+    },
+    "ContactEvaluationAttributeValue":{
+      "type":"structure",
+      "members":{
+        "StringValue":{
+          "shape":"String",
+          "documentation":"<p>A string value for the attribute.</p>"
+        }
+      },
+      "documentation":"<p>The value of a contact evaluation attribute condition.</p>"
     },
     "ContactEvaluations":{
       "type":"map",
@@ -17454,6 +17568,14 @@
         "LanguageConfiguration":{
           "shape":"EvaluationFormLanguageConfiguration",
           "documentation":"<p>Configuration for language settings of this evaluation form.</p>"
+        },
+        "LatestValidationStatus":{
+          "shape":"EvaluationFormValidationStatus",
+          "documentation":"<p>The status of the most recent validation run for this evaluation form. Valid values: <code>IN_PROGRESS</code>, <code>COMPLETED</code>, <code>FAILED</code>.</p>"
+        },
+        "LastValidationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the most recent validation was started for this evaluation form.</p>"
         }
       },
       "documentation":"<p>Information about the evaluation form.</p>"
@@ -17771,6 +17893,19 @@
         "Text":{
           "shape":"EvaluationFormMultiSelectQuestionOptionText",
           "documentation":"<p>Display text for this option.</p>"
+        },
+        "Score":{
+          "shape":"EvaluationFormQuestionAnswerScore",
+          "documentation":"<p>The score assigned to the answer option.</p>"
+        },
+        "AutomaticFail":{
+          "shape":"Boolean",
+          "documentation":"<p>The flag to mark the option as automatic fail. If an automatic fail answer is provided, the overall evaluation gets a score of 0.</p>"
+        },
+        "AutomaticFailConfiguration":{"shape":"AutomaticFailConfiguration"},
+        "PointsConfiguration":{
+          "shape":"QuestionOptionPointsConfiguration",
+          "documentation":"<p>The points configuration for point-based scoring.</p>"
         }
       },
       "documentation":"<p>An option for a multi-select question in an evaluation form.</p>"
@@ -17844,6 +17979,10 @@
         "AutomaticFailConfiguration":{
           "shape":"AutomaticFailConfiguration",
           "documentation":"<p>A configuration for automatic fail.</p>"
+        },
+        "PointsConfiguration":{
+          "shape":"QuestionOptionPointsConfiguration",
+          "documentation":"<p>The points configuration for point-based scoring.</p>"
         }
       },
       "documentation":"<p>Information about the option range used for scoring in numeric questions.</p>"
@@ -17917,6 +18056,10 @@
         "Weight":{
           "shape":"EvaluationFormItemWeight",
           "documentation":"<p>The scoring weight of the section.</p>"
+        },
+        "ScoringConfiguration":{
+          "shape":"EvaluationFormQuestionScoringConfiguration",
+          "documentation":"<p>The scoring configuration of the question.</p>"
         }
       },
       "documentation":"<p>Information about a question from an evaluation form.</p>"
@@ -17941,6 +18084,24 @@
       ]
     },
     "EvaluationFormQuestionInstructions":{"type":"string"},
+    "EvaluationFormQuestionScoringConfiguration":{
+      "type":"structure",
+      "members":{
+        "PointsConfiguration":{
+          "shape":"QuestionPointsConfiguration",
+          "documentation":"<p>The points configuration for point-based scoring.</p>"
+        },
+        "IsExcludedFromScoring":{
+          "shape":"Boolean",
+          "documentation":"<p>The flag to exclude the question from scoring.</p>"
+        },
+        "ScoreThresholds":{
+          "shape":"EvaluationFormScoreThresholdList",
+          "documentation":"<p>The score thresholds for performance categories.</p>"
+        }
+      },
+      "documentation":"<p>Scoring configuration for a question in an evaluation form.</p>"
+    },
     "EvaluationFormQuestionTitle":{"type":"string"},
     "EvaluationFormQuestionType":{
       "type":"string",
@@ -17975,11 +18136,35 @@
       "documentation":"<p>Information about properties for a question in an evaluation form. The question type properties must be either for a numeric question or a single select question.</p>",
       "union":true
     },
+    "EvaluationFormScoreThreshold":{
+      "type":"structure",
+      "required":["PerformanceCategory"],
+      "members":{
+        "PerformanceCategory":{
+          "shape":"PerformanceCategoryName",
+          "documentation":"<p>The performance category name.</p>"
+        },
+        "MinScorePercentage":{
+          "shape":"EvaluationScorePercentage",
+          "documentation":"<p>The minimum score percentage for the performance category.</p>"
+        },
+        "MaxScorePercentage":{
+          "shape":"EvaluationScorePercentage",
+          "documentation":"<p>The maximum score percentage for the performance category.</p>"
+        }
+      },
+      "documentation":"<p>Information about a score threshold for a performance category.</p>"
+    },
+    "EvaluationFormScoreThresholdList":{
+      "type":"list",
+      "member":{"shape":"EvaluationFormScoreThreshold"}
+    },
     "EvaluationFormScoringMode":{
       "type":"string",
       "enum":[
         "QUESTION_ONLY",
-        "SECTION_ONLY"
+        "SECTION_ONLY",
+        "POINTS_BASED"
       ]
     },
     "EvaluationFormScoringStatus":{
@@ -18003,6 +18188,10 @@
         "Status":{
           "shape":"EvaluationFormScoringStatus",
           "documentation":"<p>The scoring status of the evaluation form.</p>"
+        },
+        "ScoreThresholds":{
+          "shape":"EvaluationFormScoreThresholdList",
+          "documentation":"<p>The score thresholds for performance categories.</p>"
         }
       },
       "documentation":"<p>Information about scoring strategy for an evaluation form.</p>"
@@ -18160,6 +18349,14 @@
         "Weight":{
           "shape":"EvaluationFormItemWeight",
           "documentation":"<p>The scoring weight of the section.</p>"
+        },
+        "IsExcludedFromScoring":{
+          "shape":"Boolean",
+          "documentation":"<p>The flag to exclude the section from scoring.</p>"
+        },
+        "ScoreThresholds":{
+          "shape":"EvaluationFormScoreThresholdList",
+          "documentation":"<p>The score thresholds for performance categories.</p>"
         }
       },
       "documentation":"<p>Information about a section from an evaluation form. A section can contain sections and/or questions. Evaluation forms can only contain sections and subsections (two level nesting).</p>"
@@ -18231,6 +18428,10 @@
         "AutomaticFailConfiguration":{
           "shape":"AutomaticFailConfiguration",
           "documentation":"<p>Whether automatic fail is configured on a single select question. </p>"
+        },
+        "PointsConfiguration":{
+          "shape":"QuestionOptionPointsConfiguration",
+          "documentation":"<p>The points configuration for point-based scoring.</p>"
         }
       },
       "documentation":"<p>Information about the automation configuration in single select questions.</p>"
@@ -18356,6 +18557,79 @@
       "documentation":"<p>Information about properties for a text question in an evaluation form.</p>"
     },
     "EvaluationFormTitle":{"type":"string"},
+    "EvaluationFormValidationFailureReason":{"type":"string"},
+    "EvaluationFormValidationFinding":{
+      "type":"structure",
+      "required":[
+        "IssueCode",
+        "Description",
+        "Severity"
+      ],
+      "members":{
+        "IssueCode":{
+          "shape":"EvaluationFormValidationIssueCode",
+          "documentation":"<p>A code that identifies the type of validation issue found.</p>"
+        },
+        "Items":{
+          "shape":"EvaluationFormValidationFindingItemList",
+          "documentation":"<p>A list of evaluation form items affected by this finding.</p>"
+        },
+        "Description":{
+          "shape":"EvaluationFormValidationFindingDescription",
+          "documentation":"<p>A description of the validation issue.</p>"
+        },
+        "Suggestion":{
+          "shape":"EvaluationFormValidationFindingSuggestion",
+          "documentation":"<p>A suggested fix for the validation issue.</p>"
+        },
+        "Severity":{
+          "shape":"EvaluationFormValidationFindingSeverity",
+          "documentation":"<p>The severity of the finding. Valid values: <code>WARNING</code>, <code>ERROR</code>.</p>"
+        }
+      },
+      "documentation":"<p>Information about a finding from the evaluation form validation process. Each finding identifies a structural issue or quality improvement opportunity for the evaluation form.</p>"
+    },
+    "EvaluationFormValidationFindingDescription":{"type":"string"},
+    "EvaluationFormValidationFindingItem":{
+      "type":"structure",
+      "members":{
+        "RefId":{
+          "shape":"ReferenceId",
+          "documentation":"<p>The identifier of the evaluation form item (question or section) affected by the finding.</p>"
+        },
+        "Property":{
+          "shape":"EvaluationFormValidationFindingItemProperty",
+          "documentation":"<p>The specific property of the evaluation form item that the finding relates to.</p>"
+        }
+      },
+      "documentation":"<p>Information about an evaluation form item affected by a validation finding.</p>"
+    },
+    "EvaluationFormValidationFindingItemList":{
+      "type":"list",
+      "member":{"shape":"EvaluationFormValidationFindingItem"}
+    },
+    "EvaluationFormValidationFindingItemProperty":{"type":"string"},
+    "EvaluationFormValidationFindingList":{
+      "type":"list",
+      "member":{"shape":"EvaluationFormValidationFinding"}
+    },
+    "EvaluationFormValidationFindingSeverity":{
+      "type":"string",
+      "enum":[
+        "WARNING",
+        "ERROR"
+      ]
+    },
+    "EvaluationFormValidationFindingSuggestion":{"type":"string"},
+    "EvaluationFormValidationIssueCode":{"type":"string"},
+    "EvaluationFormValidationStatus":{
+      "type":"string",
+      "enum":[
+        "IN_PROGRESS",
+        "COMPLETED",
+        "FAILED"
+      ]
+    },
     "EvaluationFormVersionIsLocked":{"type":"boolean"},
     "EvaluationFormVersionStatus":{
       "type":"string",
@@ -18673,15 +18947,23 @@
         "AppliedWeight":{
           "shape":"Double",
           "documentation":"<p>Weight applied to this evaluation score.</p>"
+        },
+        "EarnedPoints":{
+          "shape":"Integer",
+          "documentation":"<p>The points earned for the item.</p>"
+        },
+        "MaxBasePoint":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum base points possible for the item.</p>"
+        },
+        "PerformanceCategory":{
+          "shape":"PerformanceCategoryName",
+          "documentation":"<p>The performance category for the score.</p>"
         }
       },
       "documentation":"<p>Information about scores of a contact evaluation item (section or question).</p>"
     },
-    "EvaluationScorePercentage":{
-      "type":"double",
-      "max":100,
-      "min":0
-    },
+    "EvaluationScorePercentage":{"type":"double"},
     "EvaluationScoresMap":{
       "type":"map",
       "key":{"shape":"ResourceId"},
@@ -18723,7 +19005,14 @@
     "EvaluationSearchFilter":{
       "type":"structure",
       "members":{
-        "AttributeFilter":{"shape":"ControlPlaneAttributeFilter"}
+        "AttributeFilter":{
+          "shape":"ControlPlaneAttributeFilter",
+          "documentation":"<p>An object that can be used to specify tag conditions.</p>"
+        },
+        "ContactEvaluationAttributeFilter":{
+          "shape":"ContactEvaluationAttributeFilter",
+          "documentation":"<p>An object that can be used to specify tag conditions and attribute conditions for contact evaluations.</p>"
+        }
       },
       "documentation":"<p>Filters to be applied to search results.</p>"
     },
@@ -18797,6 +19086,20 @@
         "ContactParticipantId":{
           "shape":"ResourceId",
           "documentation":"<p>Identifier for a contact participant in the evaluation.</p>"
+        },
+        "EarnedPoints":{
+          "shape":"Integer",
+          "documentation":"<p>The points earned for the evaluation.</p>",
+          "box":true
+        },
+        "MaxBasePoint":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum base points possible for the evaluation.</p>",
+          "box":true
+        },
+        "PerformanceCategory":{
+          "shape":"PerformanceCategoryName",
+          "documentation":"<p>The performance category for the evaluation score.</p>"
         }
       },
       "documentation":"<p>Metadata information about an evaluation search.</p>"
@@ -19410,7 +19713,7 @@
         },
         "RoutingStepExpressions":{
           "shape":"RoutingExpressions",
-          "documentation":"<p>A list of expressions as a filter, in which an expression is an object of a step in a routing criteria.</p>"
+          "documentation":"<p>A list of expressions as a filter, in which an expression is an object of a step in a routing criteria. Accepts filter values up to 3,000 characters in length. Filter values are case-sensitive. JSON object key order and whitespace may be arbitrary; array order and tree structure must be preserved.</p>"
         },
         "AgentStatuses":{
           "shape":"AgentStatuses",
@@ -19852,6 +20155,69 @@
         }
       }
     },
+    "GetEvaluationFormValidationRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "EvaluationFormId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "EvaluationFormId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for the evaluation form.</p>",
+          "location":"uri",
+          "locationName":"EvaluationFormId"
+        },
+        "EvaluationFormVersion":{
+          "shape":"VersionNumber",
+          "documentation":"<p>The version of the evaluation form to retrieve validation results for.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"version"
+        }
+      }
+    },
+    "GetEvaluationFormValidationResponse":{
+      "type":"structure",
+      "required":[
+        "Status",
+        "EvaluationFormId",
+        "EvaluationFormVersion",
+        "StartedTime"
+      ],
+      "members":{
+        "Status":{
+          "shape":"EvaluationFormValidationStatus",
+          "documentation":"<p>The current status of the validation process. Valid values: <code>IN_PROGRESS</code>, <code>COMPLETED</code>, <code>FAILED</code>.</p>"
+        },
+        "FailureReason":{
+          "shape":"EvaluationFormValidationFailureReason",
+          "documentation":"<p>The reason the validation failed. This field is populated only when the status is <code>FAILED</code>.</p>"
+        },
+        "EvaluationFormId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for the evaluation form.</p>"
+        },
+        "EvaluationFormVersion":{
+          "shape":"VersionNumber",
+          "documentation":"<p>A version of the evaluation form.</p>"
+        },
+        "StartedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the validation process was started.</p>"
+        },
+        "Findings":{
+          "shape":"EvaluationFormValidationFindingList",
+          "documentation":"<p>A list of findings from the validation process. Each finding identifies a structural issue or quality improvement for the evaluation form, and may include a suggested fix. This field is populated when the status is <code>COMPLETED</code>.</p>"
+        }
+      }
+    },
     "GetFederationTokenRequest":{
       "type":"structure",
       "required":["InstanceId"],
@@ -20018,7 +20384,7 @@
         },
         "Filters":{
           "shape":"FiltersV2List",
-          "documentation":"<p>Filtering is an operation that selects records that match a set of specified criteria. By narrowing the dataset before aggregation, filters ensure that only relevant records are included in the computation.</p> <p> <b>Filter keys</b> </p> <p>The following are valid filter keys for a <code>GetMetricDataV2</code> request:</p> <p> <code>AGENT</code> | <code>AI_AGENT</code> | <code>AI_AGENT_ID</code> | <code>AI_AGENT_NAME</code> | <code>AI_AGENT_TYPE</code> | <code>AI_PROMPT</code> | <code>AI_PROMPT_ID</code> | <code>AI_PROMPT_NAME</code> | <code>AI_PROMPT_TYPE</code> | <code>AI_TOOL_ID</code> | <code>AI_TOOL_NAME</code> | <code>AI_TOOL_TYPE</code> | <code>AI_USE_CASE</code> | <code>AGENT_HIERARCHY_LEVEL_ONE</code> | <code>AGENT_HIERARCHY_LEVEL_TWO</code> | <code>AGENT_HIERARCHY_LEVEL_THREE</code> | <code>AGENT_HIERARCHY_LEVEL_FOUR</code> | <code>AGENT_HIERARCHY_LEVEL_FIVE</code> | <code>ANSWERING_MACHINE_DETECTION_STATUS</code> | <code>BOT_ALIAS</code> | <code>BOT_ID</code> | <code>BOT_INTENT_NAME</code> | <code>BOT_LOCALE</code> | <code>BOT_VERSION</code> | <code>CAMPAIGN</code> | <code>CAMPAIGN_DELIVERY_EVENT_TYPE</code> | <code>CAMPAIGN_EXCLUDED_EVENT_TYPE</code> | <code>CASE_STATUS</code> | <code>CASE_TEMPLATE_ARN</code> | <code>CHANNEL</code> | <code>contact/segmentAttributes/connect:Subtype</code> | <code>contact/segmentAttributes/connect:ValidationTestType</code> | <code>DISCONNECT_REASON</code> | <code>EVALUATION_FORM</code> | <code>EVALUATION_QUESTION</code> | <code>EVALUATION_SECTION</code> | <code>EVALUATION_SOURCE</code> | <code>EVALUATOR_ID</code> | <code>FEATURE</code> | <code>FLOW_ACTION_ID</code> | <code>FLOW_TYPE</code> | <code>FLOWS_MODULE_RESOURCE_ID</code> | <code>FLOWS_NEXT_RESOURCE_ID</code> | <code>FLOWS_NEXT_RESOURCE_QUEUE_ID</code> | <code>FLOWS_OUTCOME_TYPE</code> | <code>FLOWS_RESOURCE_ID</code> | <code>FORM_VERSION</code> | <code>INITIATING_FLOW</code> | <code>INITIATION_METHOD</code> | <code>INVOKING_RESOURCE_PUBLISHED_TIMESTAMP</code> | <code>INVOKING_RESOURCE_TYPE</code> | <code>KNOWLEDGE_BASE_NAME</code> | <code>PARENT_FLOWS_RESOURCE_ID</code> | <code>Q_CONNECT_ENABLED</code> | <code>QUEUE</code> | <code>RESOURCE_PUBLISHED_TIMESTAMP</code> | <code>ROUTING_PROFILE</code> | <code>ROUTING_STEP_EXPRESSION</code> | <code>SESSION_ID</code> | <code>TEST_CASE</code> | <code>TEST_CASE_EXECUTION_FAILURE_REASON</code> | <code>TEST_CASE_EXECUTION_RESULT</code> | <code>TEST_CASE_EXECUTION_STATE</code> </p> <note> <p>The following filter keys correspond to Connect Customer resources and are used for authorizing requests. A <code>GetMetricDataV2</code> request requires at least one of these filters:</p> <p> <code>QUEUE</code>, <code>ROUTING_PROFILE</code>, <code>AGENT</code>, <code>AGENT_HIERARCHY_LEVEL_ONE</code>, <code>AGENT_HIERARCHY_LEVEL_TWO</code>, <code>AGENT_HIERARCHY_LEVEL_THREE</code>, <code>AGENT_HIERARCHY_LEVEL_FOUR</code>, <code>AGENT_HIERARCHY_LEVEL_FIVE</code>, <code>CAMPAIGN</code>, <code>EVALUATION_FORM</code>, <code>EVALUATOR_ID</code> </p> <p>You can use up to 5 filter keys in a single request, and up to 100 filter values across all filter keys.</p> </note> <p> <b>Filter values</b> </p> <ul> <li> <p>VOICE, CHAT, TASK, and EMAIL are valid filter values for the <code>CHANNEL</code> filter key. They do not count towards the limit of 100 filter values. For example, a <code>GetMetricDataV2</code> request can filter by 50 queues, 35 agents, and 15 routing profiles for a total of 100 filter values, along with 4 channel filters.</p> </li> <li> <p> <code>contact_lens_conversational_analytics</code> is a valid filter value for the <code>FEATURE</code> filter key. It is available only for contacts analyzed by Contact Lens conversational analytics.</p> </li> <li> <p> <code>connect:Chat</code>, <code>connect:SMS</code>, <code>connect:Telephony</code>, and <code>connect:WebRTC</code> are valid filter value examples (not exhaustive) for the <code>contact/segmentAttributes/connect:Subtype</code> filter key.</p> </li> <li> <p> <code>ROUTING_STEP_EXPRESSION</code> accepts a filter value up to 3,000 characters in length. This filter is case-sensitive and order-sensitive. JSON string fields must be sorted in ascending order, and JSON array order must be preserved.</p> </li> <li> <p>TRUE and FALSE are the only valid filter values for the <code>Q_CONNECT_ENABLED</code> filter key.</p> <ul> <li> <p>TRUE includes all contacts that had Connect AI Agents enabled as part of the flow.</p> </li> <li> <p>FALSE includes all contacts that did not have Connect AI Agents enabled as part of the flow.</p> </li> </ul> </li> <li> <p> <code>EXPERIENCE_VALIDATION</code> and <code>FLOW_VALIDATION</code> are the only valid filter values for the <code>contact/segmentAttributes/connect:ValidationTestType</code> filter key. This filter is available only for contact record-driven metrics.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-outbound-campaigns_Campaign.html\">Campaign</a> ARNs are valid filter values for the <code>CAMPAIGN</code> filter key.</p> </li> <li> <p>To filter by phone number, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/create-historical-metrics-report.html\">Create a historical metrics report</a> in the <i>Connect Customer Administrator Guide</i>.</p> </li> </ul>"
+          "documentation":"<p>Filtering is an operation that selects records that match a set of specified criteria. By narrowing the dataset before aggregation, filters ensure that only relevant records are included in the computation.</p> <p> <b>Filter keys</b> </p> <p>The following are valid filter keys for a <code>GetMetricDataV2</code> request:</p> <p> <code>AGENT</code> | <code>AI_AGENT</code> | <code>AI_AGENT_ID</code> | <code>AI_AGENT_NAME</code> | <code>AI_AGENT_TYPE</code> | <code>AI_PROMPT</code> | <code>AI_PROMPT_ID</code> | <code>AI_PROMPT_NAME</code> | <code>AI_PROMPT_TYPE</code> | <code>AI_TOOL_ID</code> | <code>AI_TOOL_NAME</code> | <code>AI_TOOL_TYPE</code> | <code>AI_USE_CASE</code> | <code>AGENT_HIERARCHY_LEVEL_ONE</code> | <code>AGENT_HIERARCHY_LEVEL_TWO</code> | <code>AGENT_HIERARCHY_LEVEL_THREE</code> | <code>AGENT_HIERARCHY_LEVEL_FOUR</code> | <code>AGENT_HIERARCHY_LEVEL_FIVE</code> | <code>ANSWERING_MACHINE_DETECTION_STATUS</code> | <code>BOT_ALIAS</code> | <code>BOT_ID</code> | <code>BOT_INTENT_NAME</code> | <code>BOT_LOCALE</code> | <code>BOT_VERSION</code> | <code>CAMPAIGN</code> | <code>CAMPAIGN_DELIVERY_EVENT_TYPE</code> | <code>CAMPAIGN_EXCLUDED_EVENT_TYPE</code> | <code>CASE_STATUS</code> | <code>CASE_TEMPLATE_ARN</code> | <code>CHANNEL</code> | <code>contact/segmentAttributes/connect:Subtype</code> | <code>contact/segmentAttributes/connect:ValidationTestType</code> | <code>DISCONNECT_REASON</code> | <code>EVALUATION_FORM</code> | <code>EVALUATION_QUESTION</code> | <code>EVALUATION_SECTION</code> | <code>EVALUATION_SOURCE</code> | <code>EVALUATOR_ID</code> | <code>FEATURE</code> | <code>FLOW_ACTION_ID</code> | <code>FLOW_TYPE</code> | <code>FLOWS_MODULE_RESOURCE_ID</code> | <code>FLOWS_NEXT_RESOURCE_ID</code> | <code>FLOWS_NEXT_RESOURCE_QUEUE_ID</code> | <code>FLOWS_OUTCOME_TYPE</code> | <code>FLOWS_RESOURCE_ID</code> | <code>FORM_VERSION</code> | <code>INITIATING_FLOW</code> | <code>INITIATION_METHOD</code> | <code>INVOKING_RESOURCE_PUBLISHED_TIMESTAMP</code> | <code>INVOKING_RESOURCE_TYPE</code> | <code>KNOWLEDGE_BASE_NAME</code> | <code>PARENT_FLOWS_RESOURCE_ID</code> | <code>Q_CONNECT_ENABLED</code> | <code>QUEUE</code> | <code>RESOURCE_PUBLISHED_TIMESTAMP</code> | <code>ROUTING_PROFILE</code> | <code>ROUTING_STEP_EXPRESSION</code> | <code>SESSION_ID</code> | <code>TEST_CASE</code> | <code>TEST_CASE_EXECUTION_FAILURE_REASON</code> | <code>TEST_CASE_EXECUTION_RESULT</code> | <code>TEST_CASE_EXECUTION_STATE</code> </p> <note> <p>The following filter keys correspond to Connect Customer resources and are used for authorizing requests. A <code>GetMetricDataV2</code> request requires at least one of these filters:</p> <p> <code>QUEUE</code>, <code>ROUTING_PROFILE</code>, <code>AGENT</code>, <code>AGENT_HIERARCHY_LEVEL_ONE</code>, <code>AGENT_HIERARCHY_LEVEL_TWO</code>, <code>AGENT_HIERARCHY_LEVEL_THREE</code>, <code>AGENT_HIERARCHY_LEVEL_FOUR</code>, <code>AGENT_HIERARCHY_LEVEL_FIVE</code>, <code>CAMPAIGN</code>, <code>EVALUATION_FORM</code>, <code>EVALUATOR_ID</code> </p> <p>You can use up to 5 filter keys in a single request, and up to 100 filter values across all filter keys.</p> </note> <p> <b>Filter values</b> </p> <ul> <li> <p>VOICE, CHAT, TASK, and EMAIL are valid filter values for the <code>CHANNEL</code> filter key. They do not count towards the limit of 100 filter values. For example, a <code>GetMetricDataV2</code> request can filter by 50 queues, 35 agents, and 15 routing profiles for a total of 100 filter values, along with 4 channel filters.</p> </li> <li> <p> <code>contact_lens_conversational_analytics</code> is a valid filter value for the <code>FEATURE</code> filter key. It is available only for contacts analyzed by Contact Lens conversational analytics.</p> </li> <li> <p> <code>connect:Chat</code>, <code>connect:SMS</code>, <code>connect:Telephony</code>, and <code>connect:WebRTC</code> are valid filter value examples (not exhaustive) for the <code>contact/segmentAttributes/connect:Subtype</code> filter key.</p> </li> <li> <p> <code>ROUTING_STEP_EXPRESSION</code> accepts a filter value up to 3,000 characters in length. Filter values are case-sensitive. JSON object key order and whitespace may be arbitrary; array order and tree structure must be preserved.</p> </li> <li> <p>TRUE and FALSE are the only valid filter values for the <code>Q_CONNECT_ENABLED</code> filter key.</p> <ul> <li> <p>TRUE includes all contacts that had Connect AI Agents enabled as part of the flow.</p> </li> <li> <p>FALSE includes all contacts that did not have Connect AI Agents enabled as part of the flow.</p> </li> </ul> </li> <li> <p> <code>EXPERIENCE_VALIDATION</code> and <code>FLOW_VALIDATION</code> are the only valid filter values for the <code>contact/segmentAttributes/connect:ValidationTestType</code> filter key. This filter is available only for contact record-driven metrics.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-outbound-campaigns_Campaign.html\">Campaign</a> ARNs are valid filter values for the <code>CAMPAIGN</code> filter key.</p> </li> <li> <p>To filter by phone number, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/create-historical-metrics-report.html\">Create a historical metrics report</a> in the <i>Connect Customer Administrator Guide</i>.</p> </li> </ul>"
         },
         "Groupings":{
           "shape":"GroupingsV2",
@@ -26491,6 +26857,13 @@
       "max":100,
       "min":0
     },
+    "PerformanceCategoryName":{
+      "type":"string",
+      "enum":[
+        "NEEDS_IMPROVEMENT",
+        "EXCEEDS_EXPECTATIONS"
+      ]
+    },
     "Permission":{
       "type":"string",
       "max":128,
@@ -26930,6 +27303,11 @@
     "PlatformVersion":{
       "type":"string",
       "max":128,
+      "min":0
+    },
+    "PointValue":{
+      "type":"integer",
+      "max":100,
       "min":0
     },
     "PositiveAndNegativeDouble":{"type":"double"},
@@ -27483,6 +27861,39 @@
         }
       },
       "documentation":"<p>Information about the quality of the participant's media connection.</p>"
+    },
+    "QuestionOptionPointsConfiguration":{
+      "type":"structure",
+      "required":["PointValue"],
+      "members":{
+        "PointValue":{
+          "shape":"PointValue",
+          "documentation":"<p>The point value assigned to the answer option.</p>"
+        },
+        "IsBonus":{
+          "shape":"Boolean",
+          "documentation":"<p>The flag to mark the option as a bonus option.</p>"
+        }
+      },
+      "documentation":"<p>Information about the points configuration for an answer option.</p>"
+    },
+    "QuestionPointsConfiguration":{
+      "type":"structure",
+      "members":{
+        "MaxPointValue":{
+          "shape":"PointValue",
+          "documentation":"<p>The maximum point value.</p>"
+        },
+        "MinPointValue":{
+          "shape":"PointValue",
+          "documentation":"<p>The minimum point value.</p>"
+        },
+        "IsBonus":{
+          "shape":"Boolean",
+          "documentation":"<p>The flag to mark the question as a bonus question.</p>"
+        }
+      },
+      "documentation":"<p>Information about the points configuration for a question.</p>"
     },
     "QuestionRuleCategoryAutomationCondition":{
       "type":"string",
@@ -32044,6 +32455,54 @@
         "ContactId":{
           "shape":"ContactId",
           "documentation":"<p>The identifier of this contact within the Connect Customer instance.</p>"
+        }
+      }
+    },
+    "StartEvaluationFormValidationRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "EvaluationFormId",
+        "EvaluationFormVersion"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "EvaluationFormId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for the evaluation form.</p>",
+          "location":"uri",
+          "locationName":"EvaluationFormId"
+        },
+        "EvaluationFormVersion":{
+          "shape":"VersionNumber",
+          "documentation":"<p>The version of the evaluation form to validate.</p>"
+        }
+      }
+    },
+    "StartEvaluationFormValidationResponse":{
+      "type":"structure",
+      "required":[
+        "EvaluationFormId",
+        "EvaluationFormArn",
+        "EvaluationFormVersion"
+      ],
+      "members":{
+        "EvaluationFormId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for the evaluation form.</p>"
+        },
+        "EvaluationFormArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the evaluation form resource.</p>"
+        },
+        "EvaluationFormVersion":{
+          "shape":"VersionNumber",
+          "documentation":"<p>A version of the evaluation form.</p>"
         }
       }
     },

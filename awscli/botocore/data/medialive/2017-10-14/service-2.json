@@ -6179,7 +6179,9 @@
       "documentation": "Audio Normalization Algorithm",
       "enum": [
         "ITU_1770_1",
-        "ITU_1770_2"
+        "ITU_1770_2",
+        "ITU_1770_3",
+        "ITU_1770_4"
       ]
     },
     "AudioNormalizationAlgorithmControl": {
@@ -6195,7 +6197,7 @@
         "Algorithm": {
           "shape": "AudioNormalizationAlgorithm",
           "locationName": "algorithm",
-          "documentation": "Audio normalization algorithm to use. itu17701 conforms to the CALM Act specification, itu17702 conforms to the EBU R-128 specification."
+          "documentation": "Choose one of the following audio normalization algorithms:\n\nITU-R BS.1770-1: Ungated loudness. A measurement of ungated average loudness for an entire piece of content,\nsuitable for measurement of short-form content under ATSC recommendation A/85. Supports up to 5.1 audio channels.\n\nITU-R BS.1770-2: Gated loudness. A measurement of gated average loudness compliant with the requirements of\nEBU-R128. Supports up to 5.1 audio channels.\n\nITU-R BS.1770-3: Modified peak. The same loudness measurement algorithm as 1770-2, with an updated true peak\nmeasurement.\n\nITU-R BS.1770-4: Higher channel count. Allows for more audio channels than the other algorithms, including\nconfigurations such as 7.1."
         },
         "AlgorithmControl": {
           "shape": "AudioNormalizationAlgorithmControl",
@@ -6206,6 +6208,16 @@
           "shape": "__doubleMinNegative59Max0",
           "locationName": "targetLkfs",
           "documentation": "Target LKFS(loudness) to adjust volume to. If no value is entered, a default value will be used according to the chosen algorithm.  The CALM Act recommends a target of -24 LKFS. The EBU R-128 specification recommends a target of -23 LKFS."
+        },
+        "PeakCalculation": {
+          "shape": "AudioNormalizationPeakCalculation",
+          "locationName": "peakCalculation",
+          "documentation": "If set to TRUE_PEAK, calculate the TruePeak for each output's audio track loudness."
+        },
+        "PeakLimiterThreshold": {
+          "shape": "__doubleMinNegative8Max0",
+          "locationName": "peakLimiterThreshold",
+          "documentation": "Peak limiter threshold in decibels relative to true peak (dBTP) if TRUE_PEAK is enabled.\nIf TRUE_PEAK is not enabled a full scale (dbFS) value is used.\nThe peak inter-audio sample loudness in your output will be limited to the value that you specify,\nwithout affecting the overall target LKFS. Leave blank to use the default value 0."
         }
       },
       "documentation": "Audio Normalization Settings"
@@ -6261,6 +6273,11 @@
           "shape": "__integerMin0Max8191",
           "locationName": "pid",
           "documentation": "Selects a specific PID from within a source."
+        },
+        "Pids": {
+          "shape": "__listOfAudioPid",
+          "locationName": "pids",
+          "documentation": "Selects one or more unique PIDs from within a source.\nWhen using 'pids', you can specify per-PID audio pre-mixer settings."
         }
       },
       "documentation": "Audio Pid Selection",
@@ -6335,9 +6352,14 @@
           "shape": "__integerMin1",
           "locationName": "track",
           "documentation": "1-based integer value that maps to a specific audio track"
+        },
+        "PremixSettings": {
+          "shape": "AudioPreMixerSettings",
+          "locationName": "premixSettings",
+          "documentation": "Optional audio pre-mixer settings for this track.\nWhen specified, allows per-track audio processing including channel remixing,\ngain adjustment, and loudness normalization before interleaving."
         }
       },
-      "documentation": "Audio Track",
+      "documentation": "Represents a single audio track for selection with optional pre-mixer settings",
       "required": [
         "Track"
       ]
@@ -30719,6 +30741,83 @@
         "shape": "AudioFeedInput"
       },
       "documentation": "Placeholder documentation for __listOfAudioFeedInput"
+    },
+    "AudioNormalizationPeakCalculation": {
+      "type": "string",
+      "documentation": "Audio Normalization Peak Calculation",
+      "enum": [
+        "NONE",
+        "TRUE_PEAK"
+      ]
+    },
+    "AudioPid": {
+      "type": "structure",
+      "members": {
+        "DolbyEDecode": {
+          "shape": "AudioDolbyEDecode",
+          "locationName": "dolbyEDecode",
+          "documentation": "Configure decoding options for Dolby E streams - these should be Dolby E frames carried in PCM streams tagged with SMPTE-337.\nWhen using the 'pids' array, if this field is not specified and Dolby E content is present,\nthe decoder will extract the specified program. To maintain legacy behavior (allPrograms),\nexplicitly set programSelection to \"allChannels\"."
+        },
+        "Pid": {
+          "shape": "__integerMin0Max8191",
+          "locationName": "pid",
+          "documentation": "PID value from within a source."
+        },
+        "PremixSettings": {
+          "shape": "AudioPreMixerSettings",
+          "locationName": "premixSettings",
+          "documentation": "Optional audio pre-mixer settings for this PID.\nWhen specified, allows per-PID audio processing including channel remixing,\ngain adjustment, and loudness normalization before interleaving."
+        }
+      },
+      "documentation": "Represents a single PID value for audio selection with optional pre-mixer settings",
+      "required": [
+        "Pid"
+      ]
+    },
+    "AudioPreMixerSettings": {
+      "type": "structure",
+      "members": {
+        "AudioNormalizationSettings": {
+          "shape": "AudioNormalizationSettings",
+          "locationName": "audioNormalizationSettings",
+          "documentation": "Audio normalization settings for loudness control.\nWhen specified, audio loudness will be normalized according to the chosen algorithm."
+        },
+        "Channels": {
+          "shape": "__integerMin1Max16",
+          "locationName": "channels",
+          "documentation": "Number of audio channels.\nIf specified, the audio will be remixed to match this channel count.\nIgnored if remixSettings is specified."
+        },
+        "GainDb": {
+          "shape": "__doubleMinNegative60Max60",
+          "locationName": "gainDb",
+          "documentation": "Gain adjustment in dB to apply.\nRange: -60 to +60 dB"
+        },
+        "RemixSettings": {
+          "shape": "RemixSettings",
+          "locationName": "remixSettings",
+          "documentation": "Settings that control how input audio channels are remixed.\nWhen specified, allows fine-grained control over channel mapping and gain levels.\nTakes precedence over the 'channels' setting."
+        }
+      },
+      "documentation": "Audio pre-mixer settings for normalizing audio before interleaving.\nThese settings can be applied to individual PIDs or tracks before they are combined."
+    },
+    "__doubleMinNegative100Max0": {
+      "type": "double",
+      "documentation": "Placeholder documentation for __doubleMinNegative100Max0"
+    },
+    "__doubleMinNegative60Max60": {
+      "type": "double",
+      "documentation": "Placeholder documentation for __doubleMinNegative60Max60"
+    },
+    "__doubleMinNegative8Max0": {
+      "type": "double",
+      "documentation": "Placeholder documentation for __doubleMinNegative8Max0"
+    },
+    "__listOfAudioPid": {
+      "type": "list",
+      "member": {
+        "shape": "AudioPid"
+      },
+      "documentation": "Placeholder documentation for __listOfAudioPid"
     }
   },
   "documentation": "API for AWS Elemental MediaLive"

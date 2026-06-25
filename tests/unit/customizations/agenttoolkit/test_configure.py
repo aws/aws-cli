@@ -56,7 +56,7 @@ def _make_client(skills=None):
     return client
 
 
-def _run(agent_configs, yes_no_return=True, client=None):
+def _run(agent_configs, yes_no_return=True, client=None, yes=False):
     stream = StringIO()
     session = make_session()
     if client is None:
@@ -64,6 +64,8 @@ def _run(agent_configs, yes_no_return=True, client=None):
     cmd = ConfigureAgentToolkitCommand(
         session, stream=stream, agent_configs=agent_configs, client=client
     )
+    parsed_args = MagicMock()
+    parsed_args.yes = yes
     with (
         patch(
             'awscli.customizations.agenttoolkit.configure.multiselect_choice',
@@ -74,7 +76,7 @@ def _run(agent_configs, yes_no_return=True, client=None):
             return_value=yes_no_return,
         ),
     ):
-        rc = cmd._run_main(None, None)
+        rc = cmd._run_main(parsed_args, None)
     return rc, stream
 
 
@@ -215,6 +217,42 @@ def test_wizard_credits_universal_row_for_shared_path_install(tmp_path):
     output = stream.getvalue()
     assert 'Universal (Codex)' in output
     assert (universal_dir / 'aws-cdk' / 'SKILL.md').exists()
+
+
+def test_yes_skips_all_prompts(tmp_path):
+    configs = _make_agent_configs(tmp_path, count=1)
+    zip_bytes, checksum = make_skill_zip()
+    client = _make_client(skills=[{'name': 'aws-serverless'}])
+    with (
+        patch(
+            'awscli.customizations.agenttoolkit.configure.get_skill_download',
+            return_value=(zip_bytes, checksum, 'v1'),
+        ),
+        patch(
+            'awscli.customizations.agenttoolkit.configure.multiselect_choice',
+        ) as multiselect_mock,
+        patch(
+            'awscli.customizations.agenttoolkit.configure.yes_no_choice',
+        ) as yes_no_mock,
+    ):
+        stream = StringIO()
+        cmd = ConfigureAgentToolkitCommand(
+            make_session(),
+            stream=stream,
+            agent_configs=configs,
+            client=client,
+        )
+        parsed_args = MagicMock()
+        parsed_args.yes = True
+        cmd._run_main(parsed_args, None)
+    multiselect_mock.assert_not_called()
+    yes_no_mock.assert_not_called()
+    skill_path = (
+        tmp_path / '.agent-0' / 'skills' / 'aws-serverless' / 'SKILL.md'
+    )
+    assert skill_path.exists()
+    mcp_path = tmp_path / '.agent-0' / 'mcp.json'
+    assert mcp_path.exists()
 
 
 def test_skill_checksum_failure_reported(tmp_path):

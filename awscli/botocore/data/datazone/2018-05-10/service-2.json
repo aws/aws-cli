@@ -1195,6 +1195,26 @@
       "documentation":"<p>Deletes a business glossary term in Amazon DataZone.</p> <p>Prerequisites:</p> <ul> <li> <p>Glossary term must exist and be active. </p> </li> <li> <p>The term must not be linked to other assets or child terms.</p> </li> <li> <p>Caller must have delete permissions in the domain/glossary.</p> </li> <li> <p>Ensure all associations (such as to assets or parent terms) are removed before deletion.</p> </li> </ul>",
       "idempotent":true
     },
+    "DeleteLineageEvent":{
+      "name":"DeleteLineageEvent",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v2/domains/{domainIdentifier}/lineage/events/{identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteLineageEventInput"},
+      "output":{"shape":"DeleteLineageEventOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Deletes the specified lineage event.</p>",
+      "idempotent":true
+    },
     "DeleteListing":{
       "name":"DeleteListing",
       "http":{
@@ -10609,6 +10629,44 @@
     "DeleteGlossaryTermOutput":{
       "type":"structure",
       "members":{}
+    },
+    "DeleteLineageEventInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"LineageEventIdentifier",
+          "documentation":"<p>The ID of the lineage event.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        }
+      }
+    },
+    "DeleteLineageEventOutput":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"LineageEventIdentifier",
+          "documentation":"<p>The ID of the lineage event.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain.</p>"
+        },
+        "processingStatus":{
+          "shape":"LineageEventProcessingStatus",
+          "documentation":"<p>The progressing status of the lineage event.</p>"
+        }
+      }
     },
     "DeleteListingInput":{
       "type":"structure",

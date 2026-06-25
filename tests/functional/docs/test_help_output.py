@@ -353,6 +353,26 @@ class TestPagingParamDocs(BaseAWSHelpOutputTest):
         self.assert_contains('When using ``--output text`` and the')
         self.assert_contains('following query expressions: ')
 
+    def test_page_size_documents_constraints(self):
+        session = self.driver.session
+        paginator_config = session.get_paginator_model('s3').get_paginator(
+            'ListBuckets'
+        )
+        limit_key = paginator_config['limit_key']
+        operation_model = session.get_service_model('s3').operation_model(
+            'ListBuckets'
+        )
+        shape_metadata = operation_model.input_shape.members[
+            limit_key
+        ].metadata
+
+        self.driver.main(['s3api', 'list-buckets', 'help'])
+        self.assert_contains('``--page-size``')
+        for constraint in ('min', 'max'):
+            value = shape_metadata.get(constraint)
+            if value is not None:
+                self.assert_contains(f'{constraint}: ``{value}``')
+
 
 class TestMergeBooleanGroupArgs(BaseAWSHelpOutputTest):
     def test_merge_bool_args(self):

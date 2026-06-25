@@ -111,6 +111,8 @@ KNOWN_EXTRA_OUTPUT_KEYS = [
     's3.ListObjectsV2.KeyCount',
     's3.ListObjectsV2.Name',
     's3.ListObjectsV2.EncodingType',
+    's3.ListObjectAnnotations.ContinuationToken',
+    's3.ListObjectAnnotations.MaxAnnotationResults',
     's3.ListParts.PartNumberMarker',
     's3.ListParts.AbortDate',
     's3.ListParts.MaxParts',

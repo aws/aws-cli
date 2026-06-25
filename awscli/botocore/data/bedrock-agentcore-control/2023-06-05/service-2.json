@@ -31,7 +31,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Adds examples to the dataset's DRAFT.</p> <p><strong>Validation:</strong> All examples are validated against the dataset's schemaType before any writes occur. If any example fails validation, the entire batch is rejected with ValidationException — no examples are written (all-or-nothing semantics).</p> <p><strong>Asynchronous:</strong> Operates in-place on DRAFT. No version bump occurs. Use CreateDatasetVersion to publish DRAFT as a new numbered version.</p> <p><strong>State guard:</strong> Returns ConflictException (DATASET_NOT_READY) if the dataset status is not in {DRAFT, ACTIVE}.</p> <p><strong>Request size limit:</strong> Max 5 MB total request body. Max 1000 examples per call.</p>"
+      "documentation":"<p> Adds examples to the dataset's DRAFT. All examples are validated against the dataset's schema type before any writes occur. If any example fails validation, the entire batch is rejected (all-or-nothing semantics). </p>"
     },
     "CreateAgentRuntime":{
       "name":"CreateAgentRuntime",
@@ -195,7 +195,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a new Dataset resource asynchronously.</p> <p>Returns immediately with status CREATING. Poll GetDataset until status transitions to ACTIVE or CREATE_FAILED (with failureReason).</p>"
+      "documentation":"<p> Creates a new dataset resource asynchronously. Returns immediately with status CREATING. Poll <code>GetDataset</code> until status transitions to ACTIVE or CREATE_FAILED. </p>"
     },
     "CreateDatasetVersion":{
       "name":"CreateDatasetVersion",
@@ -215,7 +215,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Publishes the current DRAFT as a new numbered version.</p> <p>Snapshots the DRAFT examples as the next version (1, 2, 3, ...). The DRAFT is preserved and remains editable after publishing. Returns immediately with status UPDATING. Poll GetDataset until status transitions to ACTIVE (draftStatus=UNMODIFIED) or UPDATE_FAILED.</p> <p><strong>State guard:</strong> Returns ConflictException (DATASET_NOT_READY) if status is in {CREATING, UPDATING, DELETING}, or DATASET_IN_FAILED_STATE if status is in {CREATE_FAILED, DELETE_FAILED}.</p> <p><strong>Quota:</strong> MAX_VERSIONS_PER_DATASET applies to published versions only (not DRAFT).</p>"
+      "documentation":"<p> Publishes the current DRAFT as a new numbered version. The DRAFT is preserved and remains editable after publishing. Returns immediately with status UPDATING. Poll <code>GetDataset</code> until status transitions to ACTIVE or UPDATE_FAILED. </p>"
     },
     "CreateEvaluator":{
       "name":"CreateEvaluator",
@@ -315,7 +315,28 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Operation to create a Harness.</p>",
+      "documentation":"<p>Operation to create a harness.</p>",
+      "idempotent":true
+    },
+    "CreateHarnessEndpoint":{
+      "name":"CreateHarnessEndpoint",
+      "http":{
+        "method":"POST",
+        "requestUri":"/harnesses/{harnessId}/endpoints",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateHarnessEndpointRequest"},
+      "output":{"shape":"CreateHarnessEndpointResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Operation to create a harness endpoint.</p>",
       "idempotent":true
     },
     "CreateMemory":{
@@ -706,7 +727,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Deletes a dataset version or an entire dataset (all versions + name claim). Asynchronous 202.</p> <p><strong>State transitions:</strong></p> <ul> <li>If <code>datasetVersion</code> is absent (full delete): status transitions to DELETING immediately.</li> <li>If <code>datasetVersion</code> is provided (version-specific delete): status transitions to UPDATING.</li> </ul> <p><strong>State guard (full delete):</strong> Returns ConflictException (DATASET_NOT_READY) if the dataset status is in {CREATING, UPDATING}. Deletion is allowed from ACTIVE, CREATE_FAILED, UPDATE_FAILED, and DELETE_FAILED states.</p> <p><strong>State guard (version-specific delete):</strong> Returns ConflictException (DATASET_NOT_READY) if the dataset status is not in {ACTIVE, CREATE_FAILED, UPDATE_FAILED}.</p> <p>Fails with ConflictException (REFERENCED_BY_EVAL_JOB) if referenced by an active evaluation job (full delete only).</p> <p>If the delete workflow fails after retries, status is set to DELETE_FAILED (full delete) or UPDATE_FAILED (version-specific delete). Calling DeleteDataset on a DELETE_FAILED dataset re-triggers the delete workflow (idempotent retry path).</p> <p><strong>Version parameter:</strong></p> <ul> <li>If <code>datasetVersion</code> is absent: deletes ALL versions and the Dataset record itself.</li> <li>If <code>datasetVersion</code> is provided: deletes only that specific DatasetVersion. Returns ResourceNotFoundException if the specified version does not exist.</li> </ul>",
+      "documentation":"<p> Deletes a dataset version or an entire dataset asynchronously. If <code>datasetVersion</code> is absent, deletes all versions and the dataset record itself. If provided, deletes only that specific version. </p>",
       "idempotent":true
     },
     "DeleteDatasetExamples":{
@@ -726,7 +747,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Deletes specific examples by ID from DRAFT.</p> <p><strong>Validation:</strong> All example IDs are validated before any deletes occur. If any ID does not exist in DRAFT, the entire batch is rejected with ResourceNotFoundException — no examples are deleted (all-or-nothing semantics).</p> <p><strong>Asynchronous:</strong> Operates in-place on DRAFT. No version bump occurs. Use CreateDatasetVersion to publish DRAFT as a new numbered version.</p> <p><strong>State guard:</strong> Returns ConflictException (DATASET_NOT_READY) if the dataset status is not in {DRAFT, ACTIVE}.</p>"
+      "documentation":"<p> Deletes specific examples by ID from DRAFT. All example IDs are validated before any deletes occur. If any ID does not exist in DRAFT, the entire batch is rejected (all-or-nothing semantics). </p>"
     },
     "DeleteEvaluator":{
       "name":"DeleteEvaluator",
@@ -826,6 +847,26 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Operation to delete a Harness.</p>",
+      "idempotent":true
+    },
+    "DeleteHarnessEndpoint":{
+      "name":"DeleteHarnessEndpoint",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/harnesses/{harnessId}/endpoints/{endpointName}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteHarnessEndpointRequest"},
+      "output":{"shape":"DeleteHarnessEndpointResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Operation to delete a harness endpoint.</p>",
       "idempotent":true
     },
     "DeleteMemory":{
@@ -1237,7 +1278,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves dataset metadata only.</p> <p>Use <code>?datasetVersion=DRAFT</code> or <code>?datasetVersion=N</code> to retrieve a specific version's metadata. If absent, defaults to DRAFT (the mutable working copy). Returns ResourceNotFoundException if the specified version is not found.</p> <p><strong>Initial state after CreateDataset:</strong> When CreateDataset completes successfully (status transitions to ACTIVE), only a DRAFT working copy exists. No published versions exist until CreateDatasetVersion is called. At this point draftStatus is MODIFIED because the DRAFT has content that has never been published.</p> <p><strong>Default version behavior:</strong> When <code>datasetVersion</code> is omitted, the operation returns the DRAFT working copy. To retrieve a specific published version, pass the version number as a string (e.g. <code>?datasetVersion=1</code>).</p> <p><strong>State guard:</strong> Allowed for all statuses including DELETING. Returns the dataset record with its current status so callers can observe the deletion in progress.</p> <p>For paginated example IDs use ListDatasetExamples.</p>",
+      "documentation":"<p> Retrieves dataset metadata. Use the <code>datasetVersion</code> query parameter to retrieve a specific version's metadata. If absent, defaults to DRAFT. For paginated example content, use <code>ListDatasetExamples</code>. </p>",
       "readonly":true
     },
     "GetEvaluator":{
@@ -1332,7 +1373,26 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Operation to get a single Harness.</p>",
+      "documentation":"<p>Operation to get a single harness.</p>",
+      "readonly":true
+    },
+    "GetHarnessEndpoint":{
+      "name":"GetHarnessEndpoint",
+      "http":{
+        "method":"GET",
+        "requestUri":"/harnesses/{harnessId}/endpoints/{endpointName}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetHarnessEndpointRequest"},
+      "output":{"shape":"GetHarnessEndpointResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Operation to get a single harness endpoint.</p>",
       "readonly":true
     },
     "GetMemory":{
@@ -1848,7 +1908,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Returns paginated examples from the dataset.</p> <p><strong>Version-pinned pagination:</strong> The server embeds the resolved version in the <code>nextToken</code>. Once pagination begins, all subsequent pages are pinned to that version regardless of concurrent mutations or whether <code>datasetVersion</code> is passed on subsequent requests. The <code>datasetVersion</code> query parameter is only used for the first request (when <code>nextToken</code> is absent); if omitted, defaults to DRAFT.</p> <p><strong>State guard:</strong> Allowed for all statuses including DELETING.</p>",
+      "documentation":"<p> Returns paginated examples from the dataset. The server embeds the resolved version in the pagination token. Once pagination begins, all subsequent pages are pinned to that version regardless of concurrent mutations. </p>",
       "readonly":true
     },
     "ListDatasetVersions":{
@@ -1867,7 +1927,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists all published versions of a dataset, sorted by version number descending (newest first). Does not include the DRAFT working copy.</p> <p><strong>State guard:</strong> Allowed for all statuses including DELETING.</p>",
+      "documentation":"<p> Lists all published versions of a dataset, sorted by version number descending (newest first). Does not include the DRAFT working copy. </p>",
       "readonly":true
     },
     "ListDatasets":{
@@ -1885,7 +1945,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists all datasets in the caller's account, paginated. No presigned URLs in list results.</p>",
+      "documentation":"<p> Lists all datasets in the caller's account, paginated. </p>",
       "readonly":true
     },
     "ListEvaluators":{
@@ -1938,6 +1998,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Lists all targets for a specific gateway.</p>",
@@ -1961,6 +2022,44 @@
       "documentation":"<p>Lists all gateways in the account.</p>",
       "readonly":true
     },
+    "ListHarnessEndpoints":{
+      "name":"ListHarnessEndpoints",
+      "http":{
+        "method":"GET",
+        "requestUri":"/harnesses/{harnessId}/endpoints",
+        "responseCode":200
+      },
+      "input":{"shape":"ListHarnessEndpointsRequest"},
+      "output":{"shape":"ListHarnessEndpointsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Operation to list the endpoints of a harness.</p>",
+      "readonly":true
+    },
+    "ListHarnessVersions":{
+      "name":"ListHarnessVersions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/harnesses/{harnessId}/versions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListHarnessVersionsRequest"},
+      "output":{"shape":"ListHarnessVersionsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Operation to list the versions of a Harness.</p>",
+      "readonly":true
+    },
     "ListHarnesses":{
       "name":"ListHarnesses",
       "http":{
@@ -1976,7 +2075,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Operation to list Harnesses.</p>",
+      "documentation":"<p>Operation to list harnesses.</p>",
       "readonly":true
     },
     "ListMemories":{
@@ -2539,7 +2638,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Updates a dataset's metadata. Synchronous operation. Only provided fields are updated; omitted fields remain unchanged.</p> <p>To modify dataset content, use AddDatasetExamples, UpdateDatasetExamples, or DeleteDatasetExamples.</p> <p>Cannot update: name, schemaType, kmsKeyArn (immutable after creation).</p>",
+      "documentation":"<p> Updates a dataset's metadata. Synchronous operation. Only provided fields are updated; omitted fields remain unchanged. To modify dataset content, use <code>AddDatasetExamples</code>, <code>UpdateDatasetExamples</code>, or <code>DeleteDatasetExamples</code>. </p>",
       "idempotent":true
     },
     "UpdateDatasetExamples":{
@@ -2560,7 +2659,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Updates multiple existing examples in-place on DRAFT.</p> <p><strong>Validation:</strong> All examples are validated against the dataset's schemaType before any writes occur. If any example fails validation, the entire batch is rejected with ValidationException — no examples are updated (all-or-nothing semantics).</p> <p><strong>Asynchronous:</strong> Operates in-place on DRAFT. No version bump occurs. Use CreateDatasetVersion to publish DRAFT as a new numbered version.</p> <p>Fails with ResourceNotFoundException if any exampleId does not exist in DRAFT. To add new examples, use AddDatasetExamples instead.</p> <p><strong>State guard:</strong> Returns ConflictException (DATASET_NOT_READY) if the dataset status is not in {DRAFT, ACTIVE}.</p> <p><strong>Request size limit:</strong> Max 5 MB total request body. Max 1000 examples per call.</p>"
+      "documentation":"<p> Updates multiple existing examples in-place on DRAFT. All examples are validated against the dataset's schema type before any writes occur. If any example fails validation, the entire batch is rejected (all-or-nothing semantics). </p>"
     },
     "UpdateEvaluator":{
       "name":"UpdateEvaluator",
@@ -2662,7 +2761,28 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Operation to update a Harness.</p>",
+      "documentation":"<p>Operation to update a harness.</p>",
+      "idempotent":true
+    },
+    "UpdateHarnessEndpoint":{
+      "name":"UpdateHarnessEndpoint",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/harnesses/{harnessId}/endpoints/{endpointName}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateHarnessEndpointRequest"},
+      "output":{"shape":"UpdateHarnessEndpointResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Operation to update a harness endpoint.</p>",
       "idempotent":true
     },
     "UpdateMemory":{
@@ -2986,7 +3106,7 @@
         },
         "source":{
           "shape":"DataSourceType",
-          "documentation":"<p>Source of examples to add. Provide either inline examples or an S3 URI pointing to a JSONL file.</p>"
+          "documentation":"<p> Source of examples to add. Provide either inline examples or an S3 URI pointing to a JSONL file. </p>"
         }
       }
     },
@@ -3023,7 +3143,7 @@
         },
         "exampleIds":{
           "shape":"ExampleIdList",
-          "documentation":"<p>IDs of all added examples (auto-generated UUIDs).</p>"
+          "documentation":"<p> IDs of all added examples (auto-generated UUIDs). </p>"
         }
       }
     },
@@ -3310,6 +3430,20 @@
       "max":10,
       "min":1
     },
+    "AllowedWorkloadConfiguration":{
+      "type":"structure",
+      "members":{
+        "hostingEnvironments":{
+          "shape":"HostingEnvironmentListType",
+          "documentation":"<p>The list of hosting environments whose workloads are allowed to invoke the target. At launch, the only supported hosting environment is AgentCore Gateway.</p>"
+        },
+        "workloadIdentities":{
+          "shape":"WorkloadIdentityNameListType",
+          "documentation":"<p>The list of workload identities that are allowed to invoke the target.</p>"
+        }
+      },
+      "documentation":"<p>The configuration that restricts which workloads in the request's identity chain are allowed to invoke the target, identified by their hosting environments and workload identities. At launch, this is supported only for AgentCore Runtime targets, and the allowed workloads are AgentCore Gateways.</p>"
+    },
     "ApiGatewayTargetConfiguration":{
       "type":"structure",
       "required":[
@@ -3525,11 +3659,11 @@
         },
         "clientSecretConfig":{
           "shape":"SecretReference",
-          "documentation":"<p>A reference to the AWS Secrets Manager secret that stores the client secret. This includes the secret ID and the JSON key used to extract the client secret value from the secret. Required when <code>clientSecretSource</code> is set to <code>EXTERNAL</code>.</p>"
+          "documentation":"<p>A reference to the Amazon Web Services Secrets Manager secret that stores the client secret. This includes the secret ID and the JSON key used to extract the client secret value from the secret. Required when <code>clientSecretSource</code> is set to <code>EXTERNAL</code>.</p>"
         },
         "clientSecretSource":{
           "shape":"SecretSourceType",
-          "documentation":"<p>The source type of the client secret for the Atlassian OAuth2 provider. Use <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if you manage the secret yourself in AWS Secrets Manager.</p>"
+          "documentation":"<p>The source type of the client secret for the Atlassian OAuth2 provider. Use <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if you manage the secret yourself in Amazon Web Services Secrets Manager.</p>"
         }
       },
       "documentation":"<p>Configuration settings for connecting to Atlassian services using OAuth2 authentication. This includes the client credentials required to authenticate with Atlassian's OAuth2 authorization server.</p>"
@@ -4002,6 +4136,31 @@
       },
       "documentation":"<p> The configuration for writing evaluation results to CloudWatch logs with embedded metric format (EMF) for monitoring. </p>"
     },
+    "ClusteringConfig":{
+      "type":"structure",
+      "required":["frequencies"],
+      "members":{
+        "frequencies":{
+          "shape":"ClusteringFrequencyList",
+          "documentation":"<p>The list of frequencies at which clustering batch evaluations are triggered.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for periodic batch evaluation clustering, specifying how often clustering jobs run.</p>"
+    },
+    "ClusteringFrequency":{
+      "type":"string",
+      "enum":[
+        "DAILY",
+        "WEEKLY",
+        "MONTHLY"
+      ]
+    },
+    "ClusteringFrequencyList":{
+      "type":"list",
+      "member":{"shape":"ClusteringFrequency"},
+      "max":3,
+      "min":0
+    },
     "Code":{
       "type":"structure",
       "members":{
@@ -4159,11 +4318,11 @@
         },
         "apiKeySecretSource":{
           "shape":"SecretSourceType",
-          "documentation":"<p>The source type of the API key secret for the Coinbase Developer Platform. Use <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if you manage the secret yourself in AWS Secrets Manager.</p>"
+          "documentation":"<p>The source type of the API key secret for the Coinbase Developer Platform. Use <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if you manage the secret yourself in Amazon Web Services Secrets Manager.</p>"
         },
         "apiKeySecretConfig":{
           "shape":"SecretReference",
-          "documentation":"<p>A reference to the AWS Secrets Manager secret that stores the API key secret. This includes the secret ID and the JSON key used to extract the API key secret value from the secret. Required when <code>apiKeySecretSource</code> is set to <code>EXTERNAL</code>.</p>"
+          "documentation":"<p>A reference to the Amazon Web Services Secrets Manager secret that stores the API key secret. This includes the secret ID and the JSON key used to extract the API key secret value from the secret. Required when <code>apiKeySecretSource</code> is set to <code>EXTERNAL</code>.</p>"
         },
         "walletSecret":{
           "shape":"DefaultCoinbaseCdpWalletSecretType",
@@ -4171,11 +4330,11 @@
         },
         "walletSecretSource":{
           "shape":"SecretSourceType",
-          "documentation":"<p>The source type of the wallet secret for the Coinbase Developer Platform. Use <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if you manage the secret yourself in AWS Secrets Manager.</p>"
+          "documentation":"<p>The source type of the wallet secret for the Coinbase Developer Platform. Use <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if you manage the secret yourself in Amazon Web Services Secrets Manager.</p>"
         },
         "walletSecretConfig":{
           "shape":"SecretReference",
-          "documentation":"<p>A reference to the AWS Secrets Manager secret that stores the wallet secret. This includes the secret ID and the JSON key used to extract the wallet secret value from the secret. Required when <code>walletSecretSource</code> is set to <code>EXTERNAL</code>.</p>"
+          "documentation":"<p>A reference to the Amazon Web Services Secrets Manager secret that stores the wallet secret. This includes the secret ID and the JSON key used to extract the wallet secret value from the secret. Required when <code>walletSecretSource</code> is set to <code>EXTERNAL</code>.</p>"
         }
       },
       "documentation":"<p>Coinbase CDP configuration — credentials provided by Coinbase Developer Platform.</p>"
@@ -4195,20 +4354,20 @@
         "apiKeySecretArn":{"shape":"Secret"},
         "apiKeySecretJsonKey":{
           "shape":"SecretJsonKeyType",
-          "documentation":"<p>The JSON key used to extract the API key secret value from the AWS Secrets Manager secret.</p>"
+          "documentation":"<p>The JSON key used to extract the API key secret value from the Amazon Web Services Secrets Manager secret.</p>"
         },
         "apiKeySecretSource":{
           "shape":"SecretSourceType",
-          "documentation":"<p>The source type of the API key secret. Either <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if managed by the user in AWS Secrets Manager.</p>"
+          "documentation":"<p>The source type of the API key secret. Either <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if managed by the user in Amazon Web Services Secrets Manager.</p>"
         },
         "walletSecretArn":{"shape":"Secret"},
         "walletSecretJsonKey":{
           "shape":"SecretJsonKeyType",
-          "documentation":"<p>The JSON key used to extract the wallet secret value from the AWS Secrets Manager secret.</p>"
+          "documentation":"<p>The JSON key used to extract the wallet secret value from the Amazon Web Services Secrets Manager secret.</p>"
         },
         "walletSecretSource":{
           "shape":"SecretSourceType",
-          "documentation":"<p>The source type of the wallet secret. Either <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if managed by the user in AWS Secrets Manager.</p>"
+          "documentation":"<p>The source type of the wallet secret. Either <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if managed by the user in Amazon Web Services Secrets Manager.</p>"
         }
       },
       "documentation":"<p>Coinbase CDP configuration output with secret ARNs.</p>"
@@ -4268,7 +4427,7 @@
       "type":"list",
       "member":{"shape":"Condition"},
       "max":2,
-      "min":1
+      "min":0
     },
     "ConfigurationBundleAction":{
       "type":"structure",
@@ -4287,7 +4446,7 @@
     },
     "ConfigurationBundleArn":{
       "type":"string",
-      "pattern":"arn:aws:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:configuration-bundle/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
+      "pattern":"arn:aws[a-zA-Z-]*:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:configuration-bundle/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
     },
     "ConfigurationBundleDescription":{
       "type":"string",
@@ -4428,6 +4587,102 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ConnectorConfiguration":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"ConnectorConfigurationNameString",
+          "documentation":"<p>The tool or operation name (for example, <code>retrieve</code> or <code>webSearch</code>).</p>"
+        },
+        "description":{
+          "shape":"ConnectorConfigurationDescriptionString",
+          "documentation":"<p>An agent-facing description override for this tool.</p>"
+        },
+        "parameterValues":{
+          "shape":"Document",
+          "documentation":"<p>Parameters to set as fixed or default values when provisioning this tool.</p>"
+        },
+        "parameterOverrides":{
+          "shape":"ConnectorParameterOverrides",
+          "documentation":"<p>Parameters to expose to the agent at runtime, with optional description overrides.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for a single tool within a connector.</p>"
+    },
+    "ConnectorConfigurationDescriptionString":{
+      "type":"string",
+      "max":2000,
+      "min":0
+    },
+    "ConnectorConfigurationNameString":{
+      "type":"string",
+      "max":64,
+      "min":0,
+      "pattern":"[a-zA-Z][a-zA-Z0-9_-]*"
+    },
+    "ConnectorConfigurations":{
+      "type":"list",
+      "member":{"shape":"ConnectorConfiguration"}
+    },
+    "ConnectorId":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "ConnectorParameterOverride":{
+      "type":"structure",
+      "required":["path"],
+      "members":{
+        "path":{
+          "shape":"String",
+          "documentation":"<p>A JSON Pointer path identifying the parameter (for example, <code>/numberOfResults</code> or <code>/filter</code>).</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>An agent-facing description override for this parameter.</p>"
+        },
+        "visible":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether this parameter is visible to the agent. If not specified, uses the service default.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a parameter override for a connector tool, allowing you to control parameter visibility and descriptions.</p>"
+    },
+    "ConnectorParameterOverrides":{
+      "type":"list",
+      "member":{"shape":"ConnectorParameterOverride"}
+    },
+    "ConnectorSource":{
+      "type":"structure",
+      "required":["connectorId"],
+      "members":{
+        "connectorId":{
+          "shape":"ConnectorId",
+          "documentation":"<p>The identifier for the connector integration (for example, <code>bedrock-knowledge-bases</code>).</p>"
+        }
+      },
+      "documentation":"<p>The source identifying the connector integration.</p>"
+    },
+    "ConnectorTargetConfiguration":{
+      "type":"structure",
+      "required":["source"],
+      "members":{
+        "source":{
+          "shape":"ConnectorSource",
+          "documentation":"<p>The source configuration identifying which connector to use.</p>"
+        },
+        "enabled":{
+          "shape":"EnabledConnectors",
+          "documentation":"<p>A list of tool names to enable from this connector. If absent, all tools provided by the connector are enabled.</p>"
+        },
+        "configurations":{
+          "shape":"ConnectorConfigurations",
+          "documentation":"<p>A list of per-tool configurations for the connector.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for a connector integration target. Connectors provide pre-built integrations with Amazon Web Services services and third-party tools.</p>"
     },
     "ConsolidationConfiguration":{
       "type":"structure",
@@ -4675,11 +4930,11 @@
         },
         "apiKeySecretConfig":{
           "shape":"SecretReference",
-          "documentation":"<p>A reference to the AWS Secrets Manager secret that stores the API key. This includes the secret ID and the JSON key used to extract the API key value from the secret. Required when <code>apiKeySecretSource</code> is set to <code>EXTERNAL</code>.</p>"
+          "documentation":"<p>A reference to the Amazon Web Services Secrets Manager secret that stores the API key. This includes the secret ID and the JSON key used to extract the API key value from the secret. Required when <code>apiKeySecretSource</code> is set to <code>EXTERNAL</code>.</p>"
         },
         "apiKeySecretSource":{
           "shape":"SecretSourceType",
-          "documentation":"<p>The source type of the API key secret. Use <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if you manage the secret yourself in AWS Secrets Manager.</p>"
+          "documentation":"<p>The source type of the API key secret. Use <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if you manage the secret yourself in Amazon Web Services Secrets Manager.</p>"
         },
         "tags":{
           "shape":"TagsMap",
@@ -4701,11 +4956,11 @@
         },
         "apiKeySecretJsonKey":{
           "shape":"SecretJsonKeyType",
-          "documentation":"<p>The JSON key used to extract the API key value from the AWS Secrets Manager secret.</p>"
+          "documentation":"<p>The JSON key used to extract the API key value from the Amazon Web Services Secrets Manager secret.</p>"
         },
         "apiKeySecretSource":{
           "shape":"SecretSourceType",
-          "documentation":"<p>The source type of the API key secret. Either <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if managed by the user in AWS Secrets Manager.</p>"
+          "documentation":"<p>The source type of the API key secret. Either <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if managed by the user in Amazon Web Services Secrets Manager.</p>"
         },
         "name":{
           "shape":"CredentialProviderName",
@@ -4945,6 +5200,10 @@
           "shape":"VersionCreatedBySource",
           "documentation":"<p>The source that created this version, including the source name and optional ARN.</p>"
         },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>Optional KMS key ARN for encrypting component configurations.</p>"
+        },
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>A map of tag keys and values to assign to the configuration bundle. Tags enable you to categorize your resources in different ways, for example, by purpose, owner, or environment.</p>"
@@ -4993,12 +5252,12 @@
       "members":{
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>Optional idempotency token.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
           "idempotencyToken":true
         },
         "datasetName":{
           "shape":"DatasetName",
-          "documentation":"<p>Human-readable name for the dataset. Unique within the account (case-insensitive). Immutable after creation.</p>"
+          "documentation":"<p> Human-readable name for the dataset. Must be unique within the account. Immutable after creation. </p>"
         },
         "description":{
           "shape":"CreateDatasetRequestDescriptionString",
@@ -5006,15 +5265,15 @@
         },
         "source":{
           "shape":"DataSourceType",
-          "documentation":"<p>Source of initial examples. Provide either inline examples or an S3 URI pointing to a JSONL file.</p>"
+          "documentation":"<p> Source of initial examples. Provide either inline examples or an S3 URI pointing to a JSONL file. </p>"
         },
         "schemaType":{
           "shape":"DatasetSchemaType",
-          "documentation":"<p>Versioned schema type governing the structure of examples. Immutable after creation.</p>"
+          "documentation":"<p> Versioned schema type governing the structure of examples. Immutable after creation. </p>"
         },
         "kmsKeyArn":{
           "shape":"KmsKeyArn",
-          "documentation":"<p>Optional AWS KMS key ARN for SSE-KMS on service S3 writes.</p>"
+          "documentation":"<p> Optional KMS key ARN for server-side encryption on service Amazon S3 writes. </p>"
         },
         "tags":{
           "shape":"TagsMap",
@@ -5046,7 +5305,7 @@
         },
         "status":{
           "shape":"DatasetStatus",
-          "documentation":"<p>Always CREATING immediately after this call. Poll GetDataset until status == ACTIVE (draftStatus=MODIFIED) or CREATE_FAILED.</p>"
+          "documentation":"<p> Always CREATING immediately after this call. Poll <code>GetDataset</code> until status transitions to ACTIVE or CREATE_FAILED. </p>"
         },
         "createdAt":{
           "shape":"Timestamp",
@@ -5091,11 +5350,11 @@
         },
         "status":{
           "shape":"DatasetStatus",
-          "documentation":"<p>Always UPDATING immediately after this call. Poll GetDataset until status == ACTIVE (draftStatus=UNMODIFIED) or UPDATE_FAILED.</p>"
+          "documentation":"<p> Always UPDATING immediately after this call. Poll <code>GetDataset</code> until status transitions to ACTIVE or UPDATE_FAILED. </p>"
         },
         "datasetVersion":{
           "shape":"DatasetVersion",
-          "documentation":"<p>The version being created.</p>"
+          "documentation":"<p> The version number being created. </p>"
         },
         "createdAt":{
           "shape":"Timestamp",
@@ -5304,6 +5563,10 @@
           "shape":"KmsKeyArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt data associated with the gateway.</p>"
         },
+        "customTransformConfiguration":{
+          "shape":"CustomTransformConfiguration",
+          "documentation":"<p>The custom transformation configuration for the gateway. This configuration defines how the gateway transforms requests and responses.</p>"
+        },
         "interceptorConfigurations":{
           "shape":"GatewayInterceptorConfigurations",
           "documentation":"<p>The list of interceptor configurations for the created gateway.</p>"
@@ -5319,6 +5582,14 @@
         "exceptionLevel":{
           "shape":"ExceptionLevel",
           "documentation":"<p>The level of detail in error messages returned when invoking the gateway.</p> <ul> <li> <p>If the value is <code>DEBUG</code>, granular exception messages are returned to help a user debug the gateway.</p> </li> <li> <p>If the value is omitted, a generic error message is returned to the end user.</p> </li> </ul>"
+        },
+        "webAclArn":{
+          "shape":"WebAclArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services WAF web ACL associated with the gateway.</p>"
+        },
+        "wafConfiguration":{
+          "shape":"WafConfiguration",
+          "documentation":"<p>The Amazon Web Services WAF configuration for the gateway.</p>"
         }
       }
     },
@@ -5412,7 +5683,6 @@
       "type":"structure",
       "required":[
         "gatewayIdentifier",
-        "name",
         "targetConfiguration"
       ],
       "members":{
@@ -5529,6 +5799,52 @@
         "protocolType":{
           "shape":"TargetProtocolType",
           "documentation":"<p>The protocol type of the created gateway target.</p>"
+        }
+      }
+    },
+    "CreateHarnessEndpointRequest":{
+      "type":"structure",
+      "required":[
+        "harnessId",
+        "endpointName"
+      ],
+      "members":{
+        "harnessId":{
+          "shape":"HarnessId",
+          "documentation":"<p>The ID of the harness to create an endpoint for.</p>",
+          "location":"uri",
+          "locationName":"harnessId"
+        },
+        "endpointName":{
+          "shape":"HarnessEndpointName",
+          "documentation":"<p>The name of the endpoint. Must start with a letter and contain only alphanumeric characters and underscores.</p>"
+        },
+        "targetVersion":{
+          "shape":"HarnessVersion",
+          "documentation":"<p>The harness version that the endpoint points to and serves invocations from.</p>"
+        },
+        "description":{
+          "shape":"HarnessEndpointDescription",
+          "documentation":"<p>A description of the endpoint.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Tags to apply to the endpoint resource.</p>"
+        }
+      }
+    },
+    "CreateHarnessEndpointResponse":{
+      "type":"structure",
+      "required":["endpoint"],
+      "members":{
+        "endpoint":{
+          "shape":"HarnessEndpoint",
+          "documentation":"<p>The endpoint that was created.</p>"
         }
       }
     },
@@ -5727,15 +6043,15 @@
       "members":{
         "clientSecretArn":{
           "shape":"Secret",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the client secret in AWS Secrets Manager.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the client secret in Amazon Web Services Secrets Manager.</p>"
         },
         "clientSecretJsonKey":{
           "shape":"SecretJsonKeyType",
-          "documentation":"<p>The JSON key used to extract the client secret value from the AWS Secrets Manager secret.</p>"
+          "documentation":"<p>The JSON key used to extract the client secret value from the Amazon Web Services Secrets Manager secret.</p>"
         },
         "clientSecretSource":{
           "shape":"SecretSourceType",
-          "documentation":"<p>The source type of the client secret. Either <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if managed by the user in AWS Secrets Manager.</p>"
+          "documentation":"<p>The source type of the client secret. Either <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if managed by the user in Amazon Web Services Secrets Manager.</p>"
         },
         "name":{
           "shape":"CredentialProviderName",
@@ -5762,7 +6078,6 @@
         "onlineEvaluationConfigName",
         "rule",
         "dataSourceConfig",
-        "evaluators",
         "evaluationExecutionRoleArn",
         "enableOnCreate"
       ],
@@ -5791,6 +6106,14 @@
         "evaluators":{
           "shape":"EvaluatorList",
           "documentation":"<p> The list of evaluators to apply during online evaluation. Can include both built-in evaluators and custom evaluators created with <code>CreateEvaluator</code>. </p>"
+        },
+        "insights":{
+          "shape":"InsightList",
+          "documentation":"<p>The list of insight types to run against agent sessions.</p>"
+        },
+        "clusteringConfig":{
+          "shape":"ClusteringConfig",
+          "documentation":"<p>Configuration for periodic batch evaluation clustering of insight results.</p>"
         },
         "evaluationExecutionRoleArn":{
           "shape":"RoleArn",
@@ -6164,6 +6487,10 @@
           "shape":"PolicyValidationMode",
           "documentation":"<p>The validation mode for the policy creation. Determines how Cedar analyzer validation results are handled during policy creation. FAIL_ON_ANY_FINDINGS (default) runs the Cedar analyzer to validate the policy against the Cedar schema and tool context, failing creation if the analyzer detects any validation issues to ensure strict conformance. IGNORE_ALL_FINDINGS runs the Cedar analyzer but allows policy creation even if validation issues are detected, useful for testing or when the policy schema is evolving. Use FAIL_ON_ANY_FINDINGS for production policies to ensure correctness, and IGNORE_ALL_FINDINGS only when you understand and accept the analyzer findings.</p>"
         },
+        "enforcementMode":{
+          "shape":"EnforcementMode",
+          "documentation":"<p>The enforcement mode for the policy. Run this policy in <code>LOG_ONLY</code> mode to collect data on how it affects your application. Once you are satisfied with the data gathered, switch the policy to <code>ACTIVE</code>. Defaults to <code>ACTIVE</code>.</p>"
+        },
         "policyEngineId":{
           "shape":"ResourceId",
           "documentation":"<p>The identifier of the policy engine which contains this policy. Policy engines group related policies and provide the execution context for policy evaluation.</p>",
@@ -6218,6 +6545,10 @@
         "status":{
           "shape":"PolicyStatus",
           "documentation":"<p>The current status of the policy. A status of <code>ACTIVE</code> indicates the policy is ready for use.</p>"
+        },
+        "enforcementMode":{
+          "shape":"EnforcementMode",
+          "documentation":"<p>The enforcement mode of the created policy.</p>"
         },
         "definition":{
           "shape":"PolicyDefinition",
@@ -6609,7 +6940,7 @@
     },
     "CustomEvaluatorArn":{
       "type":"string",
-      "pattern":"arn:aws:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:evaluator\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
+      "pattern":"arn:aws[a-zA-Z-]*:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:evaluator\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
     },
     "CustomEvaluatorName":{
       "type":"string",
@@ -6681,6 +7012,10 @@
         "privateEndpointOverrides":{
           "shape":"PrivateEndpointOverrides",
           "documentation":"<p>The private endpoint overrides for the custom JWT authorizer configuration.</p>"
+        },
+        "allowedWorkloadConfiguration":{
+          "shape":"AllowedWorkloadConfiguration",
+          "documentation":"<p>The configuration that restricts which workloads in the request's identity chain are allowed to invoke the target, identified by their hosting environments and workload identities. At launch, this is supported only for AgentCore Runtime targets, and the allowed workloads are AgentCore Gateways.</p>"
         }
       },
       "documentation":"<p>Configuration for inbound JWT-based authorization, specifying how incoming requests should be authenticated.</p>"
@@ -6737,11 +7072,11 @@
         },
         "clientSecretConfig":{
           "shape":"SecretReference",
-          "documentation":"<p>A reference to the AWS Secrets Manager secret that stores the client secret. This includes the secret ID and the JSON key used to extract the client secret value from the secret. Required when <code>clientSecretSource</code> is set to <code>EXTERNAL</code>.</p>"
+          "documentation":"<p>A reference to the Amazon Web Services Secrets Manager secret that stores the client secret. This includes the secret ID and the JSON key used to extract the client secret value from the secret. Required when <code>clientSecretSource</code> is set to <code>EXTERNAL</code>.</p>"
         },
         "clientSecretSource":{
           "shape":"SecretSourceType",
-          "documentation":"<p>The source type of the client secret. Use <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if you manage the secret yourself in AWS Secrets Manager.</p>"
+          "documentation":"<p>The source type of the client secret. Use <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if you manage the secret yourself in Amazon Web Services Secrets Manager.</p>"
         },
         "onBehalfOfTokenExchangeConfig":{
           "shape":"OnBehalfOfTokenExchangeConfigType",
@@ -6820,6 +7155,16 @@
       "documentation":"<p>Input for a custom reflection configuration.</p>",
       "union":true
     },
+    "CustomTransformConfiguration":{
+      "type":"structure",
+      "members":{
+        "lambda":{
+          "shape":"LambdaTransformConfiguration",
+          "documentation":"<p>The Lambda configuration for custom transformations. This configuration defines how the gateway uses a Lambda function to transform data.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for custom transformations applied to requests and responses through the gateway. This structure defines how the gateway transforms data.</p>"
+    },
     "DataSourceConfig":{
       "type":"structure",
       "members":{
@@ -6836,14 +7181,14 @@
       "members":{
         "inlineExamples":{
           "shape":"InlineExamplesSource",
-          "documentation":"<p>Inline examples provided directly in the request body.</p>"
+          "documentation":"<p> Inline examples provided directly in the request body. </p>"
         },
         "s3Source":{
           "shape":"S3Source",
-          "documentation":"<p>S3 URI pointing to a JSONL file in the customer's bucket. The service reads this file using the caller's FAS credentials.</p>"
+          "documentation":"<p> Amazon S3 URI pointing to a JSONL file in the customer's bucket. </p>"
         }
       },
-      "documentation":"<p>Source of examples to add to the dataset.</p>",
+      "documentation":"<p> Source of examples to add to the dataset. </p>",
       "union":true
     },
     "DatasetArn":{
@@ -6853,7 +7198,7 @@
     "DatasetExampleList":{
       "type":"list",
       "member":{"shape":"SensitiveJson"},
-      "documentation":"<p>Each element is a free-form JSON document whose structure is defined by the dataset's <code>schemaType</code>. Validated against the declared schema at write time. If an <code>exampleId</code> string field is present it is used as the example identifier and removed from the persisted content; otherwise a UUID is generated automatically. <code>exampleId</code> must be a JSON string — numeric or other non-string types are rejected with a ValidationException.</p>"
+      "documentation":"<p> A list of dataset examples. Each element is a free-form JSON document whose structure is defined by the dataset's schema type. </p>"
     },
     "DatasetId":{
       "type":"string",
@@ -6865,7 +7210,7 @@
     },
     "DatasetSchemaType":{
       "type":"string",
-      "documentation":"<p>Format of a customer-provided source file.</p> <p><strong>JSONL</strong> (JSON Lines, one object per line) is the service's native ingestion and storage format — it can be streamed line-by-line without loading the entire file into memory, which is important as the row-count cap is extended.</p> <p><strong>JSON array (<code>[{...},{...}]</code>) is intentionally not supported</strong> at launch: it cannot be streamed (requires loading the full file into memory to parse), and all major eval frameworks (LangSmith, Ragas, DeepEval, Arize Phoenix) export as JSONL or CSV — not JSON arrays. Customers with JSON array files can Versioned schema type for dataset examples.</p> <p>Each value identifies both the source format and the version of that format's schema. Schema definitions (required/optional fields) are stored as constants in SchemaRegistry. The schemaType on a Dataset is immutable after creation.</p> <p>When a framework changes its format, a new version is added (e.g., RAGAS_V2) without breaking existing datasets using the old version. Content is always stored as-is.</p>",
+      "documentation":"<p> Versioned schema type for dataset examples. Each value identifies both the source format and the version of that format's schema. </p>",
       "enum":[
         "AGENTCORE_EVALUATION_PREDEFINED_V1",
         "AGENTCORE_EVALUATION_SIMULATED_V1"
@@ -6873,7 +7218,7 @@
     },
     "DatasetStatus":{
       "type":"string",
-      "documentation":"<p>Dataset lifecycle / operation status.</p> <p>Two-column status model: <code>DatasetStatus</code> tracks lifecycle state independently from <code>DraftStatus</code> which tracks publish synchronization.</p> <p>IN-FLIGHT states (busy — all writes blocked): CREATING — CreateDataset async ingestion in progress. UPDATING — Example mutation (Add/Update/Delete) or CreateDatasetVersion in progress. DELETING — Full or version-specific delete in progress.</p> <p>TERMINAL states (stable — operations allowed per guards below): ACTIVE — Dataset is stable. failureReason cleared. CREATE_FAILED — Initial ingestion failed. DRAFT record exists but has no examples. failureReason populated. UPDATE_FAILED — Last example mutation or CreateDatasetVersion failed. DRAFT may be partially modified. failureReason populated. DELETE_FAILED — Delete failed after retries. Dataset/S3 may be in inconsistent state. Sev-2 ticket filed (full-delete only). failureReason populated.</p> <p>State transitions: CreateDataset → CREATING → ACTIVE (draftStatus=MODIFIED) | CREATE_FAILED Add/Update/DeleteDatasetExamples → UPDATING → ACTIVE (draftStatus=MODIFIED) | UPDATE_FAILED CreateDatasetVersion → UPDATING → ACTIVE (draftStatus=UNMODIFIED) | UPDATE_FAILED DeleteDataset (version-specific) → DELETING → ACTIVE (draftStatus unchanged) | DELETE_FAILED DeleteDataset (full) → DELETING → (record deleted) | DELETE_FAILED [auto Sev-2]</p> <p>Operation guards (ConflictException codes): GetDataset / ListDatasetExamples: — Allowed for all statuses (no guard) UpdateDataset, AddDatasetExamples, DeleteDatasetExamples: — DATASET_NOT_READY if status in {CREATING, UPDATING, DELETING} — DATASET_IN_FAILED_STATE if status == DELETE_FAILED UpdateDatasetExamples: — DATASET_NOT_READY if status in {CREATING, UPDATING, DELETING} — DATASET_IN_FAILED_STATE if status in {CREATE_FAILED, DELETE_FAILED} CreateDatasetVersion: — DATASET_NOT_READY if status in {CREATING, UPDATING, DELETING} — DATASET_IN_FAILED_STATE if status in {CREATE_FAILED, DELETE_FAILED} DeleteDataset: — DATASET_NOT_READY if status in {CREATING, UPDATING, DELETING}</p>",
+      "documentation":"<p> Dataset lifecycle and operation status. </p>",
       "enum":[
         "CREATING",
         "UPDATING",
@@ -6919,7 +7264,7 @@
         },
         "draftStatus":{
           "shape":"DraftStatus",
-          "documentation":"<p>Publish synchronization state. Only authoritative when status == ACTIVE.</p>"
+          "documentation":"<p> Publish synchronization state. Only authoritative when status is ACTIVE. </p>"
         },
         "schemaType":{
           "shape":"DatasetSchemaType",
@@ -6946,7 +7291,7 @@
     },
     "DatasetVersion":{
       "type":"string",
-      "documentation":"<p>Dataset version identifier. Accepts &quot;DRAFT&quot; or a non-negative integer string.</p> <p>&quot;DRAFT&quot; refers to the single mutable working copy of the dataset.</p> <ul> <li>Always present after CreateDataset ingestion completes.</li> <li>Content changes in-place when examples are added, updated, or deleted.</li> <li>NOT tracked as a DDB DatasetVersionItem — state lives in S3 (draft/manifest.json, draft/dataset.jsonl) and the DatasetItem.exampleCount field.</li> <li>Default for read operations when ?datasetVersion is absent.</li> </ul> <p>An integer string (e.g. &quot;1&quot;, &quot;2&quot;, &quot;3&quot;) refers to a published, immutable snapshot created by CreateDatasetVersion. Once created, a published version's content never changes. Stored as a DDB DatasetVersionItem (SK=VERSION#{zero-padded-N}).</p>",
+      "documentation":"<p> Dataset version identifier. Accepts \"DRAFT\" or a non-negative integer string representing a published version number. </p>",
       "pattern":"(DRAFT|[0-9]+)"
     },
     "DatasetVersionSummary":{
@@ -6957,7 +7302,10 @@
         "createdAt"
       ],
       "members":{
-        "datasetVersion":{"shape":"DatasetVersion"},
+        "datasetVersion":{
+          "shape":"DatasetVersion",
+          "documentation":"<p> The version number of this published snapshot. </p>"
+        },
         "exampleCount":{
           "shape":"Long",
           "documentation":"<p> The number of examples in this version. </p>"
@@ -7032,7 +7380,7 @@
       "type":"string",
       "max":2048,
       "min":0,
-      "pattern":"[a-zA-Z0-9+/=\\-_\\s]*",
+      "pattern":"(wallet-auth:)?[a-zA-Z0-9+/=\\-_\\s]*",
       "sensitive":true
     },
     "Definition":{
@@ -7369,7 +7717,7 @@
         },
         "datasetVersion":{
           "shape":"DatasetVersion",
-          "documentation":"<p>Optional version to delete. Use &quot;DRAFT&quot; or omit to delete the draft. Returns ResourceNotFoundException if the specified version does not exist.</p>",
+          "documentation":"<p> Optional version to delete. If absent, deletes the entire dataset. If provided, deletes only that specific version. </p>",
           "location":"querystring",
           "locationName":"datasetVersion"
         }
@@ -7399,7 +7747,7 @@
         },
         "datasetVersion":{
           "shape":"DatasetVersion",
-          "documentation":"<p>The version deleted.</p>"
+          "documentation":"<p> The version that was deleted. </p>"
         },
         "updatedAt":{
           "shape":"Timestamp",
@@ -7559,6 +7907,44 @@
         }
       }
     },
+    "DeleteHarnessEndpointRequest":{
+      "type":"structure",
+      "required":[
+        "harnessId",
+        "endpointName"
+      ],
+      "members":{
+        "harnessId":{
+          "shape":"HarnessId",
+          "documentation":"<p>The ID of the harness that the endpoint belongs to.</p>",
+          "location":"uri",
+          "locationName":"harnessId"
+        },
+        "endpointName":{
+          "shape":"HarnessEndpointName",
+          "documentation":"<p>The name of the endpoint to delete.</p>",
+          "location":"uri",
+          "locationName":"endpointName"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency of the request.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
+        }
+      }
+    },
+    "DeleteHarnessEndpointResponse":{
+      "type":"structure",
+      "required":["endpoint"],
+      "members":{
+        "endpoint":{
+          "shape":"HarnessEndpoint",
+          "documentation":"<p>The endpoint that was deleted.</p>"
+        }
+      }
+    },
     "DeleteHarnessRequest":{
       "type":"structure",
       "required":["harnessId"],
@@ -7575,6 +7961,12 @@
           "idempotencyToken":true,
           "location":"querystring",
           "locationName":"clientToken"
+        },
+        "deleteManagedMemory":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to delete the managed memory on harness deletion. Default: true. If false, the memory is disassociated and becomes a regular customer-owned resource.</p>",
+          "location":"querystring",
+          "locationName":"deleteManagedMemory"
         }
       }
     },
@@ -7902,6 +8294,10 @@
           "shape":"PolicyStatus",
           "documentation":"<p>The status of the policy deletion operation. This provides information about any issues that occurred during the deletion process.</p>"
         },
+        "enforcementMode":{
+          "shape":"EnforcementMode",
+          "documentation":"<p>The enforcement mode of the deleted policy.</p>"
+        },
         "definition":{"shape":"PolicyDefinition"},
         "description":{
           "shape":"Description",
@@ -8051,7 +8447,7 @@
     },
     "DraftStatus":{
       "type":"string",
-      "documentation":"<p>Publish synchronization state of the DRAFT working copy.</p> <p>Tracks whether the current DRAFT content has been published as a version. Only authoritative when DatasetStatus == ACTIVE. Not meaningful during in-flight or failed states.</p> <p>Transitions: CreateDataset succeeds → MODIFIED (DRAFT has content with no published version yet) Add/Update/DeleteExamples succeed → MODIFIED (DRAFT differs from last published version) CreateDatasetVersion succeeds → UNMODIFIED (DRAFT matches the version just published)</p>",
+      "documentation":"<p> Publish synchronization state of the DRAFT working copy. </p>",
       "enum":[
         "MODIFIED",
         "UNMODIFIED"
@@ -8081,6 +8477,12 @@
       },
       "documentation":"<p>Configuration for an Amazon EFS access point filesystem mounted into the AgentCore Runtime. EFS access points provide shared file storage accessible from your AgentCore Runtime sessions.</p>"
     },
+    "EnabledConnectors":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":50,
+      "min":1
+    },
     "EncryptionFailure":{
       "type":"structure",
       "required":["message"],
@@ -8105,6 +8507,14 @@
       "type":"string",
       "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,47}",
       "sensitive":true
+    },
+    "EnforcementMode":{
+      "type":"string",
+      "documentation":"<p>The enforcement mode for a policy. Run this policy in <code>LOG_ONLY</code> mode to collect data on how it affects your application. Once you are satisfied with the data gathered, switch the policy to <code>ACTIVE</code>.</p>",
+      "enum":[
+        "ACTIVE",
+        "LOG_ONLY"
+      ]
     },
     "EnvironmentVariableKey":{
       "type":"string",
@@ -8369,7 +8779,7 @@
     },
     "EvaluatorArn":{
       "type":"string",
-      "pattern":"arn:aws:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:evaluator\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}$|^arn:aws:bedrock-agentcore:::evaluator/Builtin.[a-zA-Z0-9_-]+"
+      "pattern":"arn:aws[a-zA-Z-]*:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:evaluator\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}$|^arn:aws[a-zA-Z-]*:bedrock-agentcore:::evaluator/Builtin.[a-zA-Z0-9_-]+"
     },
     "EvaluatorConfig":{
       "type":"structure",
@@ -8412,7 +8822,7 @@
       "type":"list",
       "member":{"shape":"EvaluatorReference"},
       "max":10,
-      "min":1
+      "min":0
     },
     "EvaluatorModelConfig":{
       "type":"structure",
@@ -8557,6 +8967,14 @@
       },
       "documentation":"<p>Contains extraction configuration information for a memory strategy.</p>",
       "union":true
+    },
+    "ExtractionType":{
+      "type":"string",
+      "documentation":"<p>The extraction type for a metadata field, determining how the value is obtained during memory processing.</p>",
+      "enum":[
+        "LLM_INFERRED",
+        "STRICTLY_CONSISTENT"
+      ]
     },
     "FilesystemConfiguration":{
       "type":"structure",
@@ -8775,8 +9193,7 @@
     },
     "GatewayName":{
       "type":"string",
-      "pattern":"([0-9a-zA-Z][-]?){1,100}",
-      "sensitive":true
+      "pattern":"([0-9a-zA-Z][-]?){1,48}"
     },
     "GatewayNextToken":{
       "type":"string",
@@ -9283,15 +9700,15 @@
       "members":{
         "apiKeySecretArn":{
           "shape":"Secret",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the API key secret in AWS Secrets Manager.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the API key secret in Amazon Web Services Secrets Manager.</p>"
         },
         "apiKeySecretJsonKey":{
           "shape":"SecretJsonKeyType",
-          "documentation":"<p>The JSON key used to extract the API key value from the AWS Secrets Manager secret.</p>"
+          "documentation":"<p>The JSON key used to extract the API key value from the Amazon Web Services Secrets Manager secret.</p>"
         },
         "apiKeySecretSource":{
           "shape":"SecretSourceType",
-          "documentation":"<p>The source type of the API key secret. Either <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if managed by the user in AWS Secrets Manager.</p>"
+          "documentation":"<p>The source type of the API key secret. Either <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if managed by the user in Amazon Web Services Secrets Manager.</p>"
         },
         "name":{
           "shape":"CredentialProviderName",
@@ -9584,6 +10001,10 @@
         "updatedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp when the configuration bundle was last updated.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>KMS key ARN used to encrypt component configurations, if CMK was provided.</p>"
         }
       }
     },
@@ -9655,6 +10076,10 @@
         "versionCreatedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp when this specific version was created.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>KMS key ARN used to encrypt component configurations, if CMK was provided.</p>"
         }
       }
     },
@@ -9670,7 +10095,7 @@
         },
         "datasetVersion":{
           "shape":"DatasetVersion",
-          "documentation":"<p>Version to retrieve: &quot;DRAFT&quot; or a version number. Defaults to DRAFT if absent.</p>",
+          "documentation":"<p> Version to retrieve: \"DRAFT\" or a version number. Defaults to DRAFT if absent. </p>",
           "location":"querystring",
           "locationName":"datasetVersion"
         }
@@ -9700,7 +10125,7 @@
         },
         "datasetVersion":{
           "shape":"DatasetVersion",
-          "documentation":"<p>The resolved version: &quot;DRAFT&quot; (default) or the requested version number.</p>"
+          "documentation":"<p> The resolved version: \"DRAFT\" (default) or the requested version number. </p>"
         },
         "datasetName":{
           "shape":"DatasetName",
@@ -9716,31 +10141,31 @@
         },
         "draftStatus":{
           "shape":"DraftStatus",
-          "documentation":"<p>Publish synchronization state. Only authoritative when status == ACTIVE. MODIFIED — DRAFT has unpublished changes (or no published versions yet). UNMODIFIED — DRAFT matches the latest published version exactly.</p>"
+          "documentation":"<p> Publish synchronization state. Only authoritative when status is ACTIVE. MODIFIED indicates DRAFT has unpublished changes. UNMODIFIED indicates DRAFT matches the latest published version. </p>"
         },
         "failureReason":{
           "shape":"String",
-          "documentation":"<p>Populated when status is CREATE_FAILED, UPDATE_FAILED, or DELETE_FAILED.</p>"
+          "documentation":"<p> Populated when status is CREATE_FAILED, UPDATE_FAILED, or DELETE_FAILED. Describes the reason for the failure. </p>"
         },
         "schemaType":{
           "shape":"DatasetSchemaType",
-          "documentation":"<p>The schema type declared at create time. Immutable after creation.</p>"
+          "documentation":"<p> The schema type declared at create time. Immutable after creation. </p>"
         },
         "kmsKeyArn":{
           "shape":"KmsKeyArn",
-          "documentation":"<p>AWS KMS key ARN used for SSE-KMS on service S3 writes, if configured.</p>"
+          "documentation":"<p> KMS key ARN used for server-side encryption on service Amazon S3 writes, if configured. </p>"
         },
         "exampleCount":{
           "shape":"Long",
-          "documentation":"<p>Example count for DRAFT.</p>"
+          "documentation":"<p> The number of examples in the DRAFT. </p>"
         },
         "downloadUrl":{
           "shape":"DownloadUrl",
-          "documentation":"<p>Presigned S3 URL to download the consolidated dataset.jsonl file for the resolved version (DRAFT or published). TTL: 5 minutes. Omitted if the file does not yet exist (e.g. during CREATING) or on presign failure.</p>"
+          "documentation":"<p> Presigned Amazon S3 URL to download the consolidated dataset file for the resolved version. Expires after 5 minutes. Omitted if the file does not yet exist. </p>"
         },
         "downloadUrlExpiresAt":{
           "shape":"Timestamp",
-          "documentation":"<p>Expiry timestamp for downloadUrl.</p>"
+          "documentation":"<p> Expiry timestamp for the download URL. </p>"
         },
         "createdAt":{
           "shape":"Timestamp",
@@ -9914,6 +10339,10 @@
           "shape":"KmsKeyArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the gateway.</p>"
         },
+        "customTransformConfiguration":{
+          "shape":"CustomTransformConfiguration",
+          "documentation":"<p>The custom transformation configuration for the gateway. This configuration defines how the gateway transforms requests and responses.</p>"
+        },
         "interceptorConfigurations":{
           "shape":"GatewayInterceptorConfigurations",
           "documentation":"<p>The interceptors configured on the gateway.</p>"
@@ -9929,6 +10358,14 @@
         "exceptionLevel":{
           "shape":"ExceptionLevel",
           "documentation":"<p>The level of detail in error messages returned when invoking the gateway.</p> <ul> <li> <p>If the value is <code>DEBUG</code>, granular exception messages are returned to help a user debug the gateway.</p> </li> <li> <p>If the value is omitted, a generic error message is returned to the end user.</p> </li> </ul>"
+        },
+        "webAclArn":{
+          "shape":"WebAclArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services WAF web ACL associated with the gateway.</p>"
+        },
+        "wafConfiguration":{
+          "shape":"WafConfiguration",
+          "documentation":"<p>The Amazon Web Services WAF configuration for the gateway.</p>"
         }
       }
     },
@@ -10104,6 +10541,37 @@
         }
       }
     },
+    "GetHarnessEndpointRequest":{
+      "type":"structure",
+      "required":[
+        "harnessId",
+        "endpointName"
+      ],
+      "members":{
+        "harnessId":{
+          "shape":"HarnessId",
+          "documentation":"<p>The ID of the harness that the endpoint belongs to.</p>",
+          "location":"uri",
+          "locationName":"harnessId"
+        },
+        "endpointName":{
+          "shape":"HarnessEndpointName",
+          "documentation":"<p>The name of the endpoint to retrieve.</p>",
+          "location":"uri",
+          "locationName":"endpointName"
+        }
+      }
+    },
+    "GetHarnessEndpointResponse":{
+      "type":"structure",
+      "required":["endpoint"],
+      "members":{
+        "endpoint":{
+          "shape":"HarnessEndpoint",
+          "documentation":"<p>The endpoint resource.</p>"
+        }
+      }
+    },
     "GetHarnessRequest":{
       "type":"structure",
       "required":["harnessId"],
@@ -10113,6 +10581,12 @@
           "documentation":"<p>The ID of the harness to retrieve.</p>",
           "location":"uri",
           "locationName":"harnessId"
+        },
+        "harnessVersion":{
+          "shape":"HarnessVersion",
+          "documentation":"<p>Specific version of the harness to retrieve. If omitted, returns the current Harness configuration, including its status.</p>",
+          "location":"querystring",
+          "locationName":"harnessVersion"
         }
       }
     },
@@ -10178,15 +10652,15 @@
       "members":{
         "clientSecretArn":{
           "shape":"Secret",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the client secret in AWS Secrets Manager.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the client secret in Amazon Web Services Secrets Manager.</p>"
         },
         "clientSecretJsonKey":{
           "shape":"SecretJsonKeyType",
-          "documentation":"<p>The JSON key used to extract the client secret value from the AWS Secrets Manager secret.</p>"
+          "documentation":"<p>The JSON key used to extract the client secret value from the Amazon Web Services Secrets Manager secret.</p>"
         },
         "clientSecretSource":{
           "shape":"SecretSourceType",
-          "documentation":"<p>The source type of the client secret. Either <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if managed by the user in AWS Secrets Manager.</p>"
+          "documentation":"<p>The source type of the client secret. Either <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if managed by the user in Amazon Web Services Secrets Manager.</p>"
         },
         "name":{
           "shape":"CredentialProviderName",
@@ -10246,7 +10720,6 @@
         "onlineEvaluationConfigName",
         "rule",
         "dataSourceConfig",
-        "evaluators",
         "status",
         "executionStatus",
         "createdAt",
@@ -10280,6 +10753,14 @@
         "evaluators":{
           "shape":"EvaluatorList",
           "documentation":"<p> The list of evaluators applied during online evaluation. </p>"
+        },
+        "insights":{
+          "shape":"InsightList",
+          "documentation":"<p>The list of insight types configured for this evaluation.</p>"
+        },
+        "clusteringConfig":{
+          "shape":"ClusteringConfig",
+          "documentation":"<p>The clustering configuration for periodic batch evaluation.</p>"
         },
         "outputConfig":{
           "shape":"OutputConfig",
@@ -10825,6 +11306,10 @@
           "shape":"PolicyStatus",
           "documentation":"<p>The current status of the policy.</p>"
         },
+        "enforcementMode":{
+          "shape":"EnforcementMode",
+          "documentation":"<p>The current enforcement mode of the policy.</p>"
+        },
         "definition":{
           "shape":"PolicyDefinition",
           "documentation":"<p>The Cedar policy statement that defines the access control rules. This contains the actual policy logic used for agent behavior control and access decisions.</p>"
@@ -10899,6 +11384,10 @@
         "status":{
           "shape":"PolicyStatus",
           "documentation":"<p>The current status of the policy.</p>"
+        },
+        "enforcementMode":{
+          "shape":"EnforcementMode",
+          "documentation":"<p>The current enforcement mode of the policy.</p>"
         }
       }
     },
@@ -11171,11 +11660,11 @@
         },
         "clientSecretConfig":{
           "shape":"SecretReference",
-          "documentation":"<p>A reference to the AWS Secrets Manager secret that stores the client secret. This includes the secret ID and the JSON key used to extract the client secret value from the secret. Required when <code>clientSecretSource</code> is set to <code>EXTERNAL</code>.</p>"
+          "documentation":"<p>A reference to the Amazon Web Services Secrets Manager secret that stores the client secret. This includes the secret ID and the JSON key used to extract the client secret value from the secret. Required when <code>clientSecretSource</code> is set to <code>EXTERNAL</code>.</p>"
         },
         "clientSecretSource":{
           "shape":"SecretSourceType",
-          "documentation":"<p>The source type of the client secret. Use <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if you manage the secret yourself in AWS Secrets Manager.</p>"
+          "documentation":"<p>The source type of the client secret. Use <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if you manage the secret yourself in Amazon Web Services Secrets Manager.</p>"
         }
       },
       "documentation":"<p>Input configuration for a GitHub OAuth2 provider.</p>"
@@ -11209,11 +11698,11 @@
         },
         "clientSecretConfig":{
           "shape":"SecretReference",
-          "documentation":"<p>A reference to the AWS Secrets Manager secret that stores the client secret. This includes the secret ID and the JSON key used to extract the client secret value from the secret. Required when <code>clientSecretSource</code> is set to <code>EXTERNAL</code>.</p>"
+          "documentation":"<p>A reference to the Amazon Web Services Secrets Manager secret that stores the client secret. This includes the secret ID and the JSON key used to extract the client secret value from the secret. Required when <code>clientSecretSource</code> is set to <code>EXTERNAL</code>.</p>"
         },
         "clientSecretSource":{
           "shape":"SecretSourceType",
-          "documentation":"<p>The source type of the client secret. Use <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if you manage the secret yourself in AWS Secrets Manager.</p>"
+          "documentation":"<p>The source type of the client secret. Use <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if you manage the secret yourself in Amazon Web Services Secrets Manager.</p>"
         }
       },
       "documentation":"<p>Input configuration for a Google OAuth2 provider.</p>"
@@ -11254,31 +11743,35 @@
       "members":{
         "harnessId":{
           "shape":"HarnessId",
-          "documentation":"<p>The ID of the Harness.</p>"
+          "documentation":"<p>The ID of the harness.</p>"
         },
         "harnessName":{
           "shape":"HarnessName",
-          "documentation":"<p>The name of the Harness.</p>"
+          "documentation":"<p>The name of the harness.</p>"
         },
         "arn":{
           "shape":"HarnessArn",
-          "documentation":"<p>The ARN of the Harness.</p>"
+          "documentation":"<p>The ARN of the harness.</p>"
         },
         "status":{
           "shape":"HarnessStatus",
-          "documentation":"<p>The status of the Harness.</p>"
+          "documentation":"<p>The status of the harness.</p>"
+        },
+        "harnessVersion":{
+          "shape":"HarnessVersion",
+          "documentation":"<p>The version of the harness. Incremented on every successful UpdateHarness.</p>"
         },
         "executionRoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>IAM role the Harness assumes when running.</p>"
+          "documentation":"<p>IAM role the harness assumes when running.</p>"
         },
         "createdAt":{
           "shape":"DateTimestamp",
-          "documentation":"<p>The createdAt time of the Harness.</p>"
+          "documentation":"<p>The createdAt time of the harness.</p>"
         },
         "updatedAt":{
           "shape":"DateTimestamp",
-          "documentation":"<p>The updatedAt time of the Harness.</p>"
+          "documentation":"<p>The updatedAt time of the harness.</p>"
         },
         "model":{
           "shape":"HarnessModelConfiguration",
@@ -11286,19 +11779,19 @@
         },
         "systemPrompt":{
           "shape":"HarnessSystemPrompt",
-          "documentation":"<p>The system prompt of the Harness.</p>"
+          "documentation":"<p>The system prompt of the harness.</p>"
         },
         "tools":{
           "shape":"HarnessTools",
-          "documentation":"<p>The tools of the Harness.</p>"
+          "documentation":"<p>The tools of the harness.</p>"
         },
         "skills":{
           "shape":"HarnessSkills",
-          "documentation":"<p>The skills of the Harness.</p>"
+          "documentation":"<p>The skills of the harness.</p>"
         },
         "allowedTools":{
           "shape":"HarnessAllowedTools",
-          "documentation":"<p>The allowed tools of the Harness. All tools are allowed by default.</p>"
+          "documentation":"<p>The allowed tools of the harness. All tools are allowed by default.</p>"
         },
         "truncation":{
           "shape":"HarnessTruncationConfiguration",
@@ -11314,7 +11807,7 @@
         },
         "environmentVariables":{
           "shape":"EnvironmentVariablesMap",
-          "documentation":"<p>Environment variables exposed in the environment in which the Harness operates.</p>"
+          "documentation":"<p>Environment variables exposed in the environment in which the harness operates.</p>"
         },
         "authorizerConfiguration":{"shape":"AuthorizerConfiguration"},
         "memory":{
@@ -11338,7 +11831,7 @@
           "documentation":"<p>Reason why create or update operations fail.</p>"
         }
       },
-      "documentation":"<p>Representation of a Harness.</p>"
+      "documentation":"<p>Representation of a harness.</p>"
     },
     "HarnessAgentCoreBrowserConfig":{
       "type":"structure",
@@ -11478,6 +11971,16 @@
       "type":"string",
       "pattern":"arn:([^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:harness/[a-zA-Z][a-zA-Z0-9_]{0,39}-[a-zA-Z0-9]{10}"
     },
+    "HarnessAwsSkillPath":{
+      "type":"string",
+      "max":4096,
+      "min":1,
+      "pattern":"([^*?\\[\\]]|\\*)+"
+    },
+    "HarnessAwsSkillPaths":{
+      "type":"list",
+      "member":{"shape":"HarnessAwsSkillPath"}
+    },
     "HarnessBedrockApiFormat":{
       "type":"string",
       "enum":[
@@ -11526,6 +12029,99 @@
       "type":"string",
       "documentation":"<p>Code Interpreter ARN for Harness tool configuration. Accepts both managed (aws.codeinterpreter.v1) and custom code interpreter ARNs.</p>",
       "pattern":"arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:(aws|[0-9]{12}):code-interpreter(-custom)?/(aws\\.codeinterpreter\\.v1|[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10})"
+    },
+    "HarnessDisabledMemoryConfiguration":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Explicitly opt out of memory.</p>"
+    },
+    "HarnessEndpoint":{
+      "type":"structure",
+      "required":[
+        "harnessId",
+        "harnessName",
+        "endpointName",
+        "arn",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "harnessId":{
+          "shape":"HarnessId",
+          "documentation":"<p>The ID of the harness that the endpoint belongs to.</p>"
+        },
+        "harnessName":{
+          "shape":"HarnessName",
+          "documentation":"<p>The name of the harness that the endpoint belongs to.</p>"
+        },
+        "endpointName":{
+          "shape":"HarnessEndpointName",
+          "documentation":"<p>The name of the endpoint.</p>"
+        },
+        "arn":{
+          "shape":"HarnessEndpointArn",
+          "documentation":"<p>The ARN of the endpoint.</p>"
+        },
+        "status":{
+          "shape":"HarnessEndpointStatus",
+          "documentation":"<p>The status of the endpoint.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the endpoint was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the endpoint was last updated.</p>"
+        },
+        "liveVersion":{
+          "shape":"HarnessVersion",
+          "documentation":"<p>The harness version that the endpoint is currently serving.</p>"
+        },
+        "targetVersion":{
+          "shape":"HarnessVersion",
+          "documentation":"<p>The harness version that the endpoint points to. While an update is in progress, this can differ from the live version until the endpoint finishes transitioning.</p>"
+        },
+        "description":{
+          "shape":"HarnessEndpointDescription",
+          "documentation":"<p>The description of the endpoint.</p>"
+        },
+        "failureReason":{
+          "shape":"String",
+          "documentation":"<p>The reason the endpoint's last create or update operation failed.</p>"
+        }
+      },
+      "documentation":"<p>Representation of a harness endpoint. An endpoint is a named, stable reference to a specific version of a harness that callers invoke, allowing the underlying version to be updated without changing how the agent is invoked.</p>"
+    },
+    "HarnessEndpointArn":{
+      "type":"string",
+      "pattern":"arn:([^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:harness/[a-zA-Z][a-zA-Z0-9_]{0,39}-[a-zA-Z0-9]{10}/endpoint/[a-zA-Z][a-zA-Z0-9_]{0,47}"
+    },
+    "HarnessEndpointDescription":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "HarnessEndpointName":{
+      "type":"string",
+      "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,47}"
+    },
+    "HarnessEndpointStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "CREATE_FAILED",
+        "UPDATING",
+        "UPDATE_FAILED",
+        "READY",
+        "DELETING",
+        "DELETE_FAILED"
+      ]
+    },
+    "HarnessEndpoints":{
+      "type":"list",
+      "member":{"shape":"HarnessEndpoint"}
     },
     "HarnessEnvironmentArtifact":{
       "type":"structure",
@@ -11679,12 +12275,63 @@
       },
       "documentation":"<p>Configuration for a LiteLLM model provider, enabling connection to third-party model providers.</p>"
     },
+    "HarnessManagedMemoryConfiguration":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"MemoryArn",
+          "documentation":"<p>The ARN of the managed AgentCore Memory resource. Read-only on Get, ignored on Create/Update input.</p>"
+        },
+        "strategies":{
+          "shape":"HarnessManagedMemoryStrategyList",
+          "documentation":"<p>Strategy types to enable. Defaults to [SEMANTIC, SUMMARIZATION].</p>"
+        },
+        "eventExpiryDuration":{
+          "shape":"HarnessManagedMemoryConfigurationEventExpiryDurationInteger",
+          "documentation":"<p>Event retention in days. Defaults to 30.</p>"
+        },
+        "encryptionKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>Customer-managed KMS key. Defaults to AWS-owned key. Not updatable after creation.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for managed memory creation.</p>"
+    },
+    "HarnessManagedMemoryConfigurationEventExpiryDurationInteger":{
+      "type":"integer",
+      "box":true,
+      "max":365,
+      "min":3
+    },
+    "HarnessManagedMemoryStrategyList":{
+      "type":"list",
+      "member":{"shape":"HarnessManagedMemoryStrategyType"},
+      "max":4,
+      "min":1
+    },
+    "HarnessManagedMemoryStrategyType":{
+      "type":"string",
+      "enum":[
+        "SEMANTIC",
+        "SUMMARIZATION",
+        "USER_PREFERENCE",
+        "EPISODIC"
+      ]
+    },
     "HarnessMemoryConfiguration":{
       "type":"structure",
       "members":{
         "agentCoreMemoryConfiguration":{
           "shape":"HarnessAgentCoreMemoryConfiguration",
           "documentation":"<p>The AgentCore Memory configuration.</p>"
+        },
+        "managedMemoryConfiguration":{
+          "shape":"HarnessManagedMemoryConfiguration",
+          "documentation":"<p>Harness creates and manages a memory resource in the customer's account.</p>"
+        },
+        "disabled":{
+          "shape":"HarnessDisabledMemoryConfiguration",
+          "documentation":"<p>Explicitly opt out of memory.</p>"
         }
       },
       "documentation":"<p>The memory configuration for a harness.</p>",
@@ -11797,10 +12444,24 @@
         "git":{
           "shape":"HarnessSkillGitSource",
           "documentation":"<p>A git repository containing the skill.</p>"
+        },
+        "awsSkills":{
+          "shape":"HarnessSkillAwsSkillsSource",
+          "documentation":"<p>AWS Skills baked into the harness's underlying Runtime.</p>"
         }
       },
       "documentation":"<p>A skill available to the agent.</p>",
       "union":true
+    },
+    "HarnessSkillAwsSkillsSource":{
+      "type":"structure",
+      "members":{
+        "paths":{
+          "shape":"HarnessAwsSkillPaths",
+          "documentation":"<p>Optionally filter allowed skills with glob syntax, e.g., ['core-skills/*'].</p>"
+        }
+      },
+      "documentation":"<p>Passed to show that AWS Skills should be included.</p>"
     },
     "HarnessSkillGitAuth":{
       "type":"structure",
@@ -11839,7 +12500,7 @@
     "HarnessSkillGitUrl":{
       "type":"string",
       "min":8,
-      "pattern":"https://.*"
+      "pattern":"https://[^#@]+"
     },
     "HarnessSkillPath":{
       "type":"string",
@@ -11943,6 +12604,10 @@
         "updatedAt":{
           "shape":"DateTimestamp",
           "documentation":"<p>The timestamp when the harness was last updated.</p>"
+        },
+        "harnessVersion":{
+          "shape":"HarnessVersion",
+          "documentation":"<p>The latest version of the harness.</p>"
         }
       },
       "documentation":"<p>Summary information about a harness.</p>"
@@ -12066,11 +12731,93 @@
       "documentation":"<p>Strategy-specific truncation configuration.</p>",
       "union":true
     },
+    "HarnessVersion":{
+      "type":"string",
+      "max":5,
+      "min":1,
+      "pattern":"([1-9][0-9]{0,4})"
+    },
+    "HarnessVersionSummaries":{
+      "type":"list",
+      "member":{"shape":"HarnessVersionSummary"}
+    },
+    "HarnessVersionSummary":{
+      "type":"structure",
+      "required":[
+        "harnessId",
+        "harnessName",
+        "arn",
+        "harnessVersion",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "harnessId":{
+          "shape":"HarnessId",
+          "documentation":"<p>The ID of the harness.</p>"
+        },
+        "harnessName":{
+          "shape":"HarnessName",
+          "documentation":"<p>The name of the harness.</p>"
+        },
+        "arn":{
+          "shape":"HarnessArn",
+          "documentation":"<p>The ARN of the harness.</p>"
+        },
+        "harnessVersion":{
+          "shape":"HarnessVersion",
+          "documentation":"<p>The version of the harness that this summary describes.</p>"
+        },
+        "status":{
+          "shape":"HarnessStatus",
+          "documentation":"<p>The status of this harness version.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when this harness version was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when this harness version was last updated.</p>"
+        },
+        "failureReason":{
+          "shape":"String",
+          "documentation":"<p>Reason why the create or update operation for this harness version failed.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a single version of a harness.</p>"
+    },
     "HeaderName":{
       "type":"string",
       "max":256,
       "min":1,
       "pattern":"[A-Za-z][A-Za-z0-9_-]{0,255}"
+    },
+    "HostingEnvironment":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"BedrockAgentcoreResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the hosting environment.</p>"
+        }
+      },
+      "documentation":"<p>A hosting environment whose workloads are allowed to invoke the target. At launch, the only supported hosting environment is AgentCore Gateway.</p>"
+    },
+    "HostingEnvironmentListType":{
+      "type":"list",
+      "member":{"shape":"HostingEnvironment"},
+      "max":10,
+      "min":1
+    },
+    "HttpApiSchemaConfiguration":{
+      "type":"structure",
+      "required":["source"],
+      "members":{
+        "source":{"shape":"ApiSchemaConfiguration"}
+      },
+      "documentation":"<p>The API schema configuration for an HTTP target. This schema defines the API structure that the target exposes.</p>"
     },
     "HttpHeaderKey":{
       "type":"string",
@@ -12107,6 +12854,10 @@
         "agentcoreRuntime":{
           "shape":"RuntimeTargetConfiguration",
           "documentation":"<p>The AgentCore Runtime target configuration for HTTP-based communication with an agent runtime.</p>"
+        },
+        "passthrough":{
+          "shape":"PassthroughTargetConfiguration",
+          "documentation":"<p>The passthrough configuration for the HTTP target. A passthrough target forwards requests directly to an external HTTP endpoint.</p>"
         }
       },
       "documentation":"<p>The HTTP target configuration for a gateway target. Contains the configuration for HTTP-based target endpoints.</p>",
@@ -12212,11 +12963,11 @@
         },
         "clientSecretConfig":{
           "shape":"SecretReference",
-          "documentation":"<p>A reference to the AWS Secrets Manager secret that stores the client secret. This includes the secret ID and the JSON key used to extract the client secret value from the secret. Required when <code>clientSecretSource</code> is set to <code>EXTERNAL</code>.</p>"
+          "documentation":"<p>A reference to the Amazon Web Services Secrets Manager secret that stores the client secret. This includes the secret ID and the JSON key used to extract the client secret value from the secret. Required when <code>clientSecretSource</code> is set to <code>EXTERNAL</code>.</p>"
         },
         "clientSecretSource":{
           "shape":"SecretSourceType",
-          "documentation":"<p>The source type of the client secret. Use <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if you manage the secret yourself in AWS Secrets Manager.</p>"
+          "documentation":"<p>The source type of the client secret. Use <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if you manage the secret yourself in Amazon Web Services Secrets Manager.</p>"
         },
         "issuer":{
           "shape":"IssuerUrlType",
@@ -12314,6 +13065,98 @@
       "max":1,
       "min":0
     },
+    "InferenceConnectorId":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "InferenceConnectorSource":{
+      "type":"structure",
+      "required":["connectorId"],
+      "members":{
+        "connectorId":{
+          "shape":"InferenceConnectorId",
+          "documentation":"<p>The identifier for the inference connector (for example, <code>bedrock-mantle</code>, <code>openai</code>, or <code>anthropic</code>).</p>"
+        }
+      },
+      "documentation":"<p>The source identifying the inference connector.</p>"
+    },
+    "InferenceConnectorTargetConfiguration":{
+      "type":"structure",
+      "required":["source"],
+      "members":{
+        "source":{
+          "shape":"InferenceConnectorSource",
+          "documentation":"<p>The source configuration identifying which inference connector to use.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a connector-based inference target. This configuration uses a built-in connector that provides predefined rules for a large language model (LLM) provider.</p>"
+    },
+    "InferenceOperationConfiguration":{
+      "type":"structure",
+      "required":["path"],
+      "members":{
+        "path":{
+          "shape":"InferenceOperationPath",
+          "documentation":"<p>The request path for this operation (for example, <code>/v1/messages</code> or <code>/v1/responses</code>).</p>"
+        },
+        "providerPath":{
+          "shape":"InferenceOperationPath",
+          "documentation":"<p>The provider path to forward requests to, if it differs from the request path. For example, <code>/anthropic/v1/messages</code> when the provider expects a different path than the client-facing <code>/v1/messages</code>.</p>"
+        },
+        "models":{
+          "shape":"ModelEntries",
+          "documentation":"<p>The list of models supported for this operation.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a specific inference operation, including its request path and the models that the operation supports.</p>"
+    },
+    "InferenceOperationConfigurations":{
+      "type":"list",
+      "member":{"shape":"InferenceOperationConfiguration"},
+      "max":10,
+      "min":1
+    },
+    "InferenceOperationPath":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"/[a-zA-Z0-9\\-\\._/]+"
+    },
+    "InferenceProviderTargetConfiguration":{
+      "type":"structure",
+      "required":["endpoint"],
+      "members":{
+        "endpoint":{
+          "shape":"PassthroughEndpoint",
+          "documentation":"<p>The HTTPS endpoint of the inference provider that the gateway forwards requests to.</p>"
+        },
+        "modelMapping":{
+          "shape":"ModelMapping",
+          "documentation":"<p>The configuration that translates client-facing model IDs to the model IDs expected by the provider.</p>"
+        },
+        "operations":{
+          "shape":"InferenceOperationConfigurations",
+          "documentation":"<p>A list of per-operation configurations that map request paths to the models supported for each operation.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a provider-based inference target. This configuration explicitly defines the endpoint, model mapping, and operations used to route requests to a large language model (LLM) provider.</p>"
+    },
+    "InferenceTargetConfiguration":{
+      "type":"structure",
+      "members":{
+        "connector":{
+          "shape":"InferenceConnectorTargetConfiguration",
+          "documentation":"<p>The connector-based inference configuration. Use this option to route requests to an LLM provider through a built-in connector that includes predefined provider rules.</p>"
+        },
+        "provider":{
+          "shape":"InferenceProviderTargetConfiguration",
+          "documentation":"<p>The provider-based inference configuration. Use this option to explicitly configure the endpoint, model mapping, and operations for an LLM provider.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for an inference target. An inference target routes requests to a large language model (LLM) provider, either through a built-in connector or an explicitly configured provider.</p>",
+      "union":true
+    },
     "InlineContent":{
       "type":"string",
       "max":102400,
@@ -12325,21 +13168,43 @@
       "members":{
         "examples":{
           "shape":"InlineExamplesSourceExamplesList",
-          "documentation":"<p>Examples to add. Each example is assigned an auto-generated UUID.</p>"
+          "documentation":"<p> Examples to add. Each example is assigned an auto-generated UUID. </p>"
         }
       },
-      "documentation":"<p>Inline examples provided directly in the request body.</p>"
+      "documentation":"<p> Inline examples provided directly in the request body. </p>"
     },
     "InlineExamplesSourceExamplesList":{
       "type":"list",
       "member":{"shape":"SensitiveJson"},
-      "documentation":"<p>Each element is a free-form JSON document whose structure is defined by the dataset's <code>schemaType</code>. Validated against the declared schema at write time. If an <code>exampleId</code> string field is present it is used as the example identifier and removed from the persisted content; otherwise a UUID is generated automatically. <code>exampleId</code> must be a JSON string — numeric or other non-string types are rejected with a ValidationException.</p>",
+      "documentation":"<p> A list of dataset examples. Each element is a free-form JSON document whose structure is defined by the dataset's schema type. </p>",
       "max":1000,
       "min":1
     },
     "InlinePayload":{
       "type":"string",
       "sensitive":true
+    },
+    "Insight":{
+      "type":"structure",
+      "required":["insightId"],
+      "members":{
+        "insightId":{
+          "shape":"InsightId",
+          "documentation":"<p>The unique identifier of the insight to run.</p>"
+        }
+      },
+      "documentation":"<p>A reference to an insight analysis to run against sessions during evaluation. Insights provide deeper analysis beyond individual evaluator scores, including failure detection, user intent clustering, and execution summarization.</p>"
+    },
+    "InsightId":{
+      "type":"string",
+      "documentation":"<p>Canonical insight identifiers using the Builtin.Insight.* naming convention. Used by BatchEvaluate, InternalEvaluate, and ServiceEngineEvaluate flows.</p>",
+      "pattern":"(Builtin\\.[a-zA-Z0-9._-]+|[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10})"
+    },
+    "InsightList":{
+      "type":"list",
+      "member":{"shape":"Insight"},
+      "max":10,
+      "min":0
     },
     "Integer":{
       "type":"integer",
@@ -12363,9 +13228,45 @@
         "passRequestHeaders":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether to pass request headers as input into the interceptor. When set to true, request headers will be passed.</p>"
+        },
+        "payloadFilter":{
+          "shape":"InterceptorPayloadFilter",
+          "documentation":"<p>The filter that determines which parts of the request or response payload are passed as input to the interceptor.</p>"
         }
       },
       "documentation":"<p>The input configuration of the interceptor.</p>"
+    },
+    "InterceptorPayloadExclusion":{
+      "type":"string",
+      "enum":["RESPONSE_BODY"]
+    },
+    "InterceptorPayloadExclusionSelector":{
+      "type":"structure",
+      "members":{
+        "field":{
+          "shape":"InterceptorPayloadExclusion",
+          "documentation":"<p>The field to exclude from the interceptor input.</p>"
+        }
+      },
+      "documentation":"<p>A selector that identifies a payload field to exclude from the interceptor input.</p>",
+      "union":true
+    },
+    "InterceptorPayloadExclusionSelectorList":{
+      "type":"list",
+      "member":{"shape":"InterceptorPayloadExclusionSelector"},
+      "max":1,
+      "min":1
+    },
+    "InterceptorPayloadFilter":{
+      "type":"structure",
+      "required":["exclude"],
+      "members":{
+        "exclude":{
+          "shape":"InterceptorPayloadExclusionSelectorList",
+          "documentation":"<p>The list of selectors that identify payload fields to exclude from the interceptor input.</p>"
+        }
+      },
+      "documentation":"<p>The filter that controls which fields of the request or response payload are included in the input to the interceptor.</p>"
     },
     "InternalServerException":{
       "type":"structure",
@@ -12499,7 +13400,7 @@
       "type":"string",
       "max":170,
       "min":1,
-      "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:([a-z]{2}(-gov)?-[a-z]+-\\d{1}):(\\d{12}):function:([a-zA-Z0-9-_.]+)(:(\\$LATEST|[a-zA-Z0-9-]+))?"
+      "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:([a-z]{2}(-gov)?-[a-z]+-\\d{1}):(\\d{12}):function:([a-zA-Z0-9-_.]+)(:(\\$LATEST|[a-zA-Z0-9-_]+))?"
     },
     "LambdaInterceptorConfiguration":{
       "type":"structure",
@@ -12511,6 +13412,16 @@
         }
       },
       "documentation":"<p>The lambda configuration for the interceptor</p>"
+    },
+    "LambdaTransformConfiguration":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"LambdaFunctionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Lambda function. This function is invoked by the gateway to transform data.</p>"
+        }
+      },
+      "documentation":"<p>The Lambda configuration for custom transformations. This structure defines the Lambda function that the gateway invokes to transform data.</p>"
     },
     "LifecycleConfiguration":{
       "type":"structure",
@@ -12552,11 +13463,11 @@
         },
         "clientSecretConfig":{
           "shape":"SecretReference",
-          "documentation":"<p>A reference to the AWS Secrets Manager secret that stores the client secret. This includes the secret ID and the JSON key used to extract the client secret value from the secret. Required when <code>clientSecretSource</code> is set to <code>EXTERNAL</code>.</p>"
+          "documentation":"<p>A reference to the Amazon Web Services Secrets Manager secret that stores the client secret. This includes the secret ID and the JSON key used to extract the client secret value from the secret. Required when <code>clientSecretSource</code> is set to <code>EXTERNAL</code>.</p>"
         },
         "clientSecretSource":{
           "shape":"SecretSourceType",
-          "documentation":"<p>The source type of the client secret. Use <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if you manage the secret yourself in AWS Secrets Manager.</p>"
+          "documentation":"<p>The source type of the client secret. Use <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if you manage the secret yourself in Amazon Web Services Secrets Manager.</p>"
         }
       },
       "documentation":"<p>Configuration settings for connecting to LinkedIn services using OAuth2 authentication. This includes the client credentials required to authenticate with LinkedIn's OAuth2 authorization server.</p>"
@@ -12913,13 +13824,13 @@
         },
         "datasetVersion":{
           "shape":"DatasetVersion",
-          "documentation":"<p>Version to paginate: &quot;DRAFT&quot; or a version number. Defaults to DRAFT if absent. Only used on the first request (when nextToken is absent). For subsequent pages, the version is extracted from the nextToken and this parameter is ignored.</p>",
+          "documentation":"<p> Version to paginate: \"DRAFT\" or a version number. Defaults to DRAFT if absent. Only used on the first request; for subsequent pages, the version is extracted from the pagination token. </p>",
           "location":"querystring",
           "locationName":"datasetVersion"
         },
         "maxResults":{
           "shape":"ListDatasetExamplesRequestMaxResultsInteger",
-          "documentation":"<p>Maximum number of examples to return per page. Default: 1000. Min: 1, max: 1000. Response size is validated against 5 MB limit after reading. For bulk access to all examples, use the <code>downloadUrl</code> field from GetDataset.</p>",
+          "documentation":"<p> Maximum number of examples to return per page. </p>",
           "location":"querystring",
           "locationName":"maxResults"
         },
@@ -12961,11 +13872,11 @@
         },
         "datasetVersion":{
           "shape":"DatasetVersion",
-          "documentation":"<p>The version returned.</p>"
+          "documentation":"<p> The version returned. </p>"
         },
         "examples":{
           "shape":"DatasetExampleList",
-          "documentation":"<p>Paginated example content. Each element is a JSON object containing at least an <code>exampleId</code> field plus the schema-specific content fields.</p>"
+          "documentation":"<p> Paginated example content. Each element is a JSON object containing at least an <code>exampleId</code> field plus the schema-specific content fields. </p>"
         },
         "nextToken":{
           "shape":"String",
@@ -13200,6 +14111,82 @@
         "nextToken":{
           "shape":"GatewayNextToken",
           "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, use this token when making another request in the <code>nextToken</code> field to return the next batch of results.</p>"
+        }
+      }
+    },
+    "ListHarnessEndpointsRequest":{
+      "type":"structure",
+      "required":["harnessId"],
+      "members":{
+        "harnessId":{
+          "shape":"HarnessId",
+          "documentation":"<p>The ID of the harness whose endpoints are listed.</p>",
+          "location":"uri",
+          "locationName":"harnessId"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListHarnessEndpointsResponse":{
+      "type":"structure",
+      "required":["endpoints"],
+      "members":{
+        "endpoints":{
+          "shape":"HarnessEndpoints",
+          "documentation":"<p>The list of harness endpoints.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results.</p>"
+        }
+      }
+    },
+    "ListHarnessVersionsRequest":{
+      "type":"structure",
+      "required":["harnessId"],
+      "members":{
+        "harnessId":{
+          "shape":"HarnessId",
+          "documentation":"<p>The ID of the harness whose versions are listed.</p>",
+          "location":"uri",
+          "locationName":"harnessId"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListHarnessVersionsResponse":{
+      "type":"structure",
+      "required":["harnessVersions"],
+      "members":{
+        "harnessVersions":{
+          "shape":"HarnessVersionSummaries",
+          "documentation":"<p>The list of harness version summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results.</p>"
         }
       }
     },
@@ -13921,8 +14908,6 @@
     },
     "LogGroupName":{
       "type":"string",
-      "max":512,
-      "min":1,
       "pattern":"[.\\-_/#A-Za-z0-9]+"
     },
     "Long":{
@@ -14098,7 +15083,8 @@
     "McpInstructions":{
       "type":"string",
       "max":2048,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "McpLambdaTargetConfiguration":{
       "type":"structure",
@@ -14177,6 +15163,10 @@
         "apiGateway":{
           "shape":"ApiGatewayTargetConfiguration",
           "documentation":"<p>The configuration for an Amazon API Gateway target.</p>"
+        },
+        "connector":{
+          "shape":"ConnectorTargetConfiguration",
+          "documentation":"<p>The connector integration configuration for the Model Context Protocol target. This configuration defines how the gateway uses a pre-built connector to communicate with the target.</p>"
         }
       },
       "documentation":"<p>The Model Context Protocol (MCP) configuration for a target. This structure defines how the gateway uses MCP to communicate with the target.</p>",
@@ -14265,6 +15255,10 @@
         "streamDeliveryResources":{
           "shape":"StreamDeliveryResources",
           "documentation":"<p>Configuration for streaming memory record data to external resources.</p>"
+        },
+        "managedByResourceArn":{
+          "shape":"Arn",
+          "documentation":"<p>ARN of the resource managing this memory (e.g. a harness). When set, strategy modifications and deletion are only allowed through the managing resource.</p>"
         }
       },
       "documentation":"<p>Contains information about a memory resource.</p>"
@@ -14300,7 +15294,8 @@
         "CREATING",
         "ACTIVE",
         "FAILED",
-        "DELETING"
+        "DELETING",
+        "UPDATING"
       ]
     },
     "MemoryStrategy":{
@@ -14448,6 +15443,10 @@
         "updatedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp when the memory was last updated.</p>"
+        },
+        "managedByResourceArn":{
+          "shape":"Arn",
+          "documentation":"<p>ARN of the resource managing this memory (e.g. a harness). Null if not managed.</p>"
         }
       },
       "documentation":"<p>Contains summary information about a memory resource.</p>"
@@ -14525,9 +15524,13 @@
           "shape":"MetadataValueType",
           "documentation":"<p>The MetadataValueType.</p>"
         },
+        "extractionType":{
+          "shape":"ExtractionType",
+          "documentation":"<p>Specifies whether the metadata value is extracted by the LLM or passed through deterministically from the event.</p>"
+        },
         "extractionConfig":{
           "shape":"ExtractionConfig",
-          "documentation":"<p>Configuration for extracting this metadata value from conversational content.</p>"
+          "documentation":"<p>Configuration for extracting this metadata value from conversational content. Applicable only if extractionType is LLM inferred.</p>"
         }
       },
       "documentation":"<p>A metadata field definition within a strategy's schema.</p>"
@@ -14560,11 +15563,11 @@
         },
         "clientSecretConfig":{
           "shape":"SecretReference",
-          "documentation":"<p>A reference to the AWS Secrets Manager secret that stores the client secret. This includes the secret ID and the JSON key used to extract the client secret value from the secret. Required when <code>clientSecretSource</code> is set to <code>EXTERNAL</code>.</p>"
+          "documentation":"<p>A reference to the Amazon Web Services Secrets Manager secret that stores the client secret. This includes the secret ID and the JSON key used to extract the client secret value from the secret. Required when <code>clientSecretSource</code> is set to <code>EXTERNAL</code>.</p>"
         },
         "clientSecretSource":{
           "shape":"SecretSourceType",
-          "documentation":"<p>The source type of the client secret. Use <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if you manage the secret yourself in AWS Secrets Manager.</p>"
+          "documentation":"<p>The source type of the client secret. Use <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if you manage the secret yourself in Amazon Web Services Secrets Manager.</p>"
         },
         "tenantId":{
           "shape":"TenantIdType",
@@ -14588,7 +15591,40 @@
       },
       "documentation":"<p>Output configuration for a Microsoft OAuth2 provider.</p>"
     },
+    "ModelEntries":{
+      "type":"list",
+      "member":{"shape":"ModelEntry"},
+      "max":100,
+      "min":1
+    },
+    "ModelEntry":{
+      "type":"structure",
+      "required":["model"],
+      "members":{
+        "model":{
+          "shape":"ModelPattern",
+          "documentation":"<p>The model ID or glob pattern that identifies the model (for example, <code>anthropic.claude-opus-*</code> or <code>openai.gpt-oss-*</code>).</p>"
+        }
+      },
+      "documentation":"<p>A model entry that specifies a model supported for an inference operation.</p>"
+    },
     "ModelId":{"type":"string"},
+    "ModelMapping":{
+      "type":"structure",
+      "members":{
+        "providerPrefix":{
+          "shape":"ProviderPrefix",
+          "documentation":"<p>The provider prefix configuration used for model ID translation.</p>"
+        }
+      },
+      "documentation":"<p>The configuration that translates model IDs between client-facing names and provider model IDs.</p>"
+    },
+    "ModelPattern":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[a-zA-Z0-9\\-\\._\\*\\?@]+(/[a-zA-Z0-9\\-\\._\\*\\?@]+)*"
+    },
     "ModifyConsolidationConfiguration":{
       "type":"structure",
       "members":{
@@ -15154,7 +16190,7 @@
     },
     "OnlineEvaluationConfigArn":{
       "type":"string",
-      "pattern":"arn:aws:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:online-evaluation-config\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
+      "pattern":"arn:aws[a-zA-Z-]*:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:online-evaluation-config\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
     },
     "OnlineEvaluationConfigId":{
       "type":"string",
@@ -15219,6 +16255,14 @@
         "failureReason":{
           "shape":"String",
           "documentation":"<p> The reason for failure if the online evaluation configuration execution failed. </p>"
+        },
+        "insights":{
+          "shape":"InsightList",
+          "documentation":"<p>The list of insight types configured for this evaluation.</p>"
+        },
+        "clusteringConfig":{
+          "shape":"ClusteringConfig",
+          "documentation":"<p>The clustering configuration for periodic batch evaluation.</p>"
         }
       },
       "documentation":"<p> The summary information about an online evaluation configuration, including basic metadata and execution status. </p>"
@@ -15254,6 +16298,47 @@
         "SELF_MANAGED",
         "EPISODIC_OVERRIDE"
       ]
+    },
+    "PassthroughEndpoint":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"https://[a-zA-Z0-9\\-\\.]+(:[0-9]{1,5})?(/.*)?"
+    },
+    "PassthroughProtocolType":{
+      "type":"string",
+      "enum":[
+        "MCP",
+        "A2A",
+        "INFERENCE",
+        "CUSTOM"
+      ]
+    },
+    "PassthroughTargetConfiguration":{
+      "type":"structure",
+      "required":[
+        "endpoint",
+        "protocolType"
+      ],
+      "members":{
+        "endpoint":{
+          "shape":"PassthroughEndpoint",
+          "documentation":"<p>The HTTPS endpoint that the gateway forwards requests to for this passthrough target.</p>"
+        },
+        "protocolType":{
+          "shape":"PassthroughProtocolType",
+          "documentation":"<p>The application protocol the passthrough target implements. Required for passthrough targets.</p>"
+        },
+        "schema":{
+          "shape":"HttpApiSchemaConfiguration",
+          "documentation":"<p>The API schema configuration that defines the structure of the passthrough target's API.</p>"
+        },
+        "stickinessConfiguration":{
+          "shape":"StickinessConfiguration",
+          "documentation":"<p>The session stickiness configuration for the passthrough target. This configuration routes requests within the same session to the same target.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for an HTTP passthrough target. A passthrough target forwards requests directly to an external HTTP endpoint.</p>"
     },
     "PaymentConnectorId":{
       "type":"string",
@@ -15565,6 +16650,10 @@
           "shape":"PolicyStatus",
           "documentation":"<p>The current status of the policy.</p>"
         },
+        "enforcementMode":{
+          "shape":"EnforcementMode",
+          "documentation":"<p>The current enforcement mode of the policy.</p>"
+        },
         "definition":{
           "shape":"PolicyDefinition",
           "documentation":"<p>The Cedar policy statement that defines the access control rules. This contains the actual policy logic used for agent behavior control and access decisions.</p>"
@@ -15596,6 +16685,10 @@
         "policyGeneration":{
           "shape":"PolicyGenerationDetails",
           "documentation":"<p>The generated policy asset information within the policy definition structure. This contains information identifying a generated policy asset from the AI-powered policy generation process within the AgentCore Policy system. Each asset contains a Cedar policy statement generated from natural language input, along with associated metadata and analysis findings to help users evaluate and select the most appropriate policy option.</p>"
+        },
+        "policy":{
+          "shape":"PolicyStatement",
+          "documentation":"<p>An AgentCore policy statement that defines the access control rules. The statement can be a Cedar policy or a guardrails definition.</p>"
         }
       },
       "documentation":"<p>Represents the definition structure for policies within the AgentCore Policy system. This structure encapsulates different policy formats and languages that can be used to define access control rules.</p>",
@@ -15924,6 +17017,17 @@
       "min":1,
       "pattern":"[A-Za-z][A-Za-z0-9_]*"
     },
+    "PolicyStatement":{
+      "type":"structure",
+      "required":["statement"],
+      "members":{
+        "statement":{
+          "shape":"Statement",
+          "documentation":"<p>The body of the AgentCore policy statement. Contains the policy logic, which can be a Cedar policy or a guardrails definition.</p>"
+        }
+      },
+      "documentation":"<p>An AgentCore policy statement, which supports plain Cedar policies as well as guardrails definitions.</p>"
+    },
     "PolicyStatus":{
       "type":"string",
       "enum":[
@@ -15979,6 +17083,10 @@
         "status":{
           "shape":"PolicyStatus",
           "documentation":"<p>The current status of the policy.</p>"
+        },
+        "enforcementMode":{
+          "shape":"EnforcementMode",
+          "documentation":"<p>The current enforcement mode of the policy.</p>"
         }
       },
       "documentation":"<p>Represents a metadata-only summary of a policy resource. This structure contains resource identifiers, status, and timestamps without customer-encrypted fields such as definition, description, or status reasons. Policy summaries are returned by operations that do not require access to the customer's KMS key.</p>"
@@ -16068,6 +17176,25 @@
         }
       },
       "documentation":"<p>The protocol configuration for an agent runtime. This structure defines how the agent runtime communicates with clients.</p>"
+    },
+    "ProviderPrefix":{
+      "type":"structure",
+      "members":{
+        "strip":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether clients can omit the provider prefix from model IDs. If <code>true</code>, the gateway accepts model IDs without the prefix and restores the full prefixed form before forwarding to the provider. The default is <code>false</code>.</p>"
+        },
+        "separator":{
+          "shape":"ProviderPrefixSeparatorString",
+          "documentation":"<p>The single character that separates the provider prefix from the model name (for example, <code>.</code>). The default is <code>.</code>.</p>"
+        }
+      },
+      "documentation":"<p>The configuration that controls how a provider prefix is applied to model IDs during translation.</p>"
+    },
+    "ProviderPrefixSeparatorString":{
+      "type":"string",
+      "max":1,
+      "min":1
     },
     "PutResourcePolicyRequest":{
       "type":"structure",
@@ -16642,6 +17769,10 @@
         "qualifier":{
           "shape":"RuntimeQualifier",
           "documentation":"<p>The qualifier for the agent runtime, used to target a specific endpoint version. If not specified, the default endpoint is used.</p>"
+        },
+        "schema":{
+          "shape":"HttpApiSchemaConfiguration",
+          "documentation":"<p>The API schema configuration that defines the structure of the runtime target's API.</p>"
         }
       },
       "documentation":"<p>Configuration for an AgentCore Runtime target. Specifies the agent runtime to route requests to via HTTP.</p>"
@@ -16730,14 +17861,14 @@
       "members":{
         "s3Uri":{
           "shape":"S3Uri",
-          "documentation":"<p>S3 URI of the JSONL file (e.g. s3://my-bucket/path/to/examples.jsonl).</p>"
+          "documentation":"<p> Amazon S3 URI of the JSONL file (for example, <code>s3://my-bucket/path/to/examples.jsonl</code>). </p>"
         }
       },
-      "documentation":"<p>S3 location of a JSONL file containing dataset examples.</p>"
+      "documentation":"<p> Amazon S3 location of a JSONL file containing dataset examples. </p>"
     },
     "S3Uri":{
       "type":"string",
-      "documentation":"<p>S3 URI string (s3://bucket/key).</p>",
+      "documentation":"<p> Amazon S3 URI string in the format <code>s3://bucket/key</code>. </p>",
       "pattern":"s3://[a-z0-9][a-z0-9.\\-]{1,61}[a-z0-9]/.{1,1024}"
     },
     "SalesforceOauth2ProviderConfigInput":{
@@ -16754,11 +17885,11 @@
         },
         "clientSecretConfig":{
           "shape":"SecretReference",
-          "documentation":"<p>A reference to the AWS Secrets Manager secret that stores the client secret. This includes the secret ID and the JSON key used to extract the client secret value from the secret. Required when <code>clientSecretSource</code> is set to <code>EXTERNAL</code>.</p>"
+          "documentation":"<p>A reference to the Amazon Web Services Secrets Manager secret that stores the client secret. This includes the secret ID and the JSON key used to extract the client secret value from the secret. Required when <code>clientSecretSource</code> is set to <code>EXTERNAL</code>.</p>"
         },
         "clientSecretSource":{
           "shape":"SecretSourceType",
-          "documentation":"<p>The source type of the client secret. Use <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if you manage the secret yourself in AWS Secrets Manager.</p>"
+          "documentation":"<p>The source type of the client secret. Use <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if you manage the secret yourself in Amazon Web Services Secrets Manager.</p>"
         }
       },
       "documentation":"<p>Input configuration for a Salesforce OAuth2 provider.</p>"
@@ -16870,10 +18001,10 @@
       "members":{
         "secretArn":{
           "shape":"SecretArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the secret in AWS Secrets Manager.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the secret in Amazon Web Services Secrets Manager.</p>"
         }
       },
-      "documentation":"<p>Contains information about a secret in AWS Secrets Manager.</p>"
+      "documentation":"<p>Contains information about a secret in Amazon Web Services Secrets Manager.</p>"
     },
     "SecretArn":{
       "type":"string",
@@ -16898,14 +18029,14 @@
       "members":{
         "secretId":{
           "shape":"SecretIdType",
-          "documentation":"<p>The ID of the AWS Secrets Manager secret that stores the secret value.</p>"
+          "documentation":"<p>The ID of the Amazon Web Services Secrets Manager secret that stores the secret value.</p>"
         },
         "jsonKey":{
           "shape":"SecretJsonKeyType",
-          "documentation":"<p>The JSON key used to extract the secret value from the AWS Secrets Manager secret.</p>"
+          "documentation":"<p>The JSON key used to extract the secret value from the Amazon Web Services Secrets Manager secret.</p>"
         }
       },
-      "documentation":"<p>Contains a reference to a secret stored in AWS Secrets Manager.</p>"
+      "documentation":"<p>Contains a reference to a secret stored in Amazon Web Services Secrets Manager.</p>"
     },
     "SecretSourceType":{
       "type":"string",
@@ -17298,11 +18429,11 @@
         },
         "clientSecretConfig":{
           "shape":"SecretReference",
-          "documentation":"<p>A reference to the AWS Secrets Manager secret that stores the client secret. This includes the secret ID and the JSON key used to extract the client secret value from the secret. Required when <code>clientSecretSource</code> is set to <code>EXTERNAL</code>.</p>"
+          "documentation":"<p>A reference to the Amazon Web Services Secrets Manager secret that stores the client secret. This includes the secret ID and the JSON key used to extract the client secret value from the secret. Required when <code>clientSecretSource</code> is set to <code>EXTERNAL</code>.</p>"
         },
         "clientSecretSource":{
           "shape":"SecretSourceType",
-          "documentation":"<p>The source type of the client secret. Use <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if you manage the secret yourself in AWS Secrets Manager.</p>"
+          "documentation":"<p>The source type of the client secret. Use <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if you manage the secret yourself in Amazon Web Services Secrets Manager.</p>"
         }
       },
       "documentation":"<p>Input configuration for a Slack OAuth2 provider.</p>"
@@ -17473,6 +18604,32 @@
       "max":100,
       "min":0
     },
+    "StickinessConfiguration":{
+      "type":"structure",
+      "required":["identifier"],
+      "members":{
+        "identifier":{
+          "shape":"StickinessConfigurationIdentifierString",
+          "documentation":"<p>The expression that identifies where to extract the session identifier from the request (for example, <code>$context.header.x-session-id</code>).</p>"
+        },
+        "timeout":{
+          "shape":"StickinessTimeout",
+          "documentation":"<p>The session stickiness timeout, in seconds. After this duration of inactivity, the session affinity expires. Valid values range from 1 to 86400.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for session-sticky routing to a target. Session stickiness routes requests that share a session identifier to the same target.</p>"
+    },
+    "StickinessConfigurationIdentifierString":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "StickinessTimeout":{
+      "type":"integer",
+      "box":true,
+      "max":86400,
+      "min":1
+    },
     "StrategyConfiguration":{
       "type":"structure",
       "members":{
@@ -17598,11 +18755,11 @@
         },
         "appSecretSource":{
           "shape":"SecretSourceType",
-          "documentation":"<p>The source type of the app secret. Use <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if you manage the secret yourself in AWS Secrets Manager.</p>"
+          "documentation":"<p>The source type of the app secret. Use <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if you manage the secret yourself in Amazon Web Services Secrets Manager.</p>"
         },
         "appSecretConfig":{
           "shape":"SecretReference",
-          "documentation":"<p>A reference to the AWS Secrets Manager secret that stores the app secret. This includes the secret ID and the JSON key used to extract the app secret value from the secret. Required when <code>appSecretSource</code> is set to <code>EXTERNAL</code>.</p>"
+          "documentation":"<p>A reference to the Amazon Web Services Secrets Manager secret that stores the app secret. This includes the secret ID and the JSON key used to extract the app secret value from the secret. Required when <code>appSecretSource</code> is set to <code>EXTERNAL</code>.</p>"
         },
         "authorizationPrivateKey":{
           "shape":"DefaultStripePrivyAuthorizationPrivateKeyType",
@@ -17610,11 +18767,11 @@
         },
         "authorizationPrivateKeySource":{
           "shape":"SecretSourceType",
-          "documentation":"<p>The source type of the authorization private key. Use <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if you manage the secret yourself in AWS Secrets Manager.</p>"
+          "documentation":"<p>The source type of the authorization private key. Use <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if you manage the secret yourself in Amazon Web Services Secrets Manager.</p>"
         },
         "authorizationPrivateKeyConfig":{
           "shape":"SecretReference",
-          "documentation":"<p>A reference to the AWS Secrets Manager secret that stores the authorization private key. This includes the secret ID and the JSON key used to extract the authorization private key value from the secret. Required when <code>authorizationPrivateKeySource</code> is set to <code>EXTERNAL</code>.</p>"
+          "documentation":"<p>A reference to the Amazon Web Services Secrets Manager secret that stores the authorization private key. This includes the secret ID and the JSON key used to extract the authorization private key value from the secret. Required when <code>authorizationPrivateKeySource</code> is set to <code>EXTERNAL</code>.</p>"
         },
         "authorizationId":{
           "shape":"StripePrivyAuthorizationIdType",
@@ -17639,20 +18796,20 @@
         "appSecretArn":{"shape":"Secret"},
         "appSecretJsonKey":{
           "shape":"SecretJsonKeyType",
-          "documentation":"<p>The JSON key used to extract the app secret value from the AWS Secrets Manager secret.</p>"
+          "documentation":"<p>The JSON key used to extract the app secret value from the Amazon Web Services Secrets Manager secret.</p>"
         },
         "appSecretSource":{
           "shape":"SecretSourceType",
-          "documentation":"<p>The source type of the app secret. Either <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if managed by the user in AWS Secrets Manager.</p>"
+          "documentation":"<p>The source type of the app secret. Either <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if managed by the user in Amazon Web Services Secrets Manager.</p>"
         },
         "authorizationPrivateKeyArn":{"shape":"Secret"},
         "authorizationPrivateKeyJsonKey":{
           "shape":"SecretJsonKeyType",
-          "documentation":"<p>The JSON key used to extract the authorization private key value from the AWS Secrets Manager secret.</p>"
+          "documentation":"<p>The JSON key used to extract the authorization private key value from the Amazon Web Services Secrets Manager secret.</p>"
         },
         "authorizationPrivateKeySource":{
           "shape":"SecretSourceType",
-          "documentation":"<p>The source type of the authorization private key. Either <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if managed by the user in AWS Secrets Manager.</p>"
+          "documentation":"<p>The source type of the authorization private key. Either <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if managed by the user in Amazon Web Services Secrets Manager.</p>"
         },
         "authorizationId":{
           "shape":"StripePrivyAuthorizationIdType",
@@ -17921,6 +19078,10 @@
         "http":{
           "shape":"HttpTargetConfiguration",
           "documentation":"<p>The HTTP target configuration. Use this to route gateway requests to an HTTP-based endpoint such as an AgentCore Runtime.</p>"
+        },
+        "inference":{
+          "shape":"InferenceTargetConfiguration",
+          "documentation":"<p>The inference configuration for the target. This configuration routes requests to a large language model (LLM) provider.</p>"
         }
       },
       "documentation":"<p>The configuration for a gateway target. This structure defines how the gateway connects to and interacts with the target endpoint.</p>",
@@ -18029,6 +19190,19 @@
         "resourcePriority":{
           "shape":"TargetResourcePriority",
           "documentation":"<p>Priority for resolving resource URI conflicts across targets. Lower values take precedence. Defaults to 1000 when not set.</p>"
+        },
+        "lastSynchronizedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the target was last synchronized.</p>"
+        },
+        "authorizationData":{"shape":"AuthorizationData"},
+        "targetType":{
+          "shape":"TargetType",
+          "documentation":"<p>The type of the target.</p>"
+        },
+        "listingMode":{
+          "shape":"ListingMode",
+          "documentation":"<p>The listing mode for the target. MCP resources for <code>DEFAULT</code> targets are cached at the control plane for faster access. MCP resources for <code>DYNAMIC</code> targets are retrieved dynamically when listing tools.</p>"
         }
       },
       "documentation":"<p>Contains summary information about a gateway target. A target represents an endpoint that the gateway can connect to.</p>"
@@ -18086,6 +19260,20 @@
       "box":true,
       "max":99,
       "min":1
+    },
+    "TargetType":{
+      "type":"string",
+      "enum":[
+        "OPEN_API_SCHEMA",
+        "SMITHY_MODEL",
+        "MCP_SERVER",
+        "LAMBDA",
+        "API_GATEWAY",
+        "CONNECTOR",
+        "AGENTCORE_RUNTIME",
+        "PASSTHROUGH",
+        "PROVIDER"
+      ]
     },
     "Temperature":{
       "type":"float",
@@ -18233,7 +19421,8 @@
           "documentation":"<p>The output schema for the tool. This schema defines the structure of the output that the tool produces.</p>"
         }
       },
-      "documentation":"<p>A tool definition for a gateway target. This structure defines a tool that the target exposes through the Model Context Protocol.</p>"
+      "documentation":"<p>A tool definition for a gateway target. This structure defines a tool that the target exposes through the Model Context Protocol.</p>",
+      "sensitive":true
     },
     "ToolDefinitions":{
       "type":"list",
@@ -18636,11 +19825,11 @@
         },
         "apiKeySecretConfig":{
           "shape":"SecretReference",
-          "documentation":"<p>A reference to the AWS Secrets Manager secret that stores the API key. This includes the secret ID and the JSON key used to extract the API key value from the secret. Required when <code>apiKeySecretSource</code> is set to <code>EXTERNAL</code>.</p>"
+          "documentation":"<p>A reference to the Amazon Web Services Secrets Manager secret that stores the API key. This includes the secret ID and the JSON key used to extract the API key value from the secret. Required when <code>apiKeySecretSource</code> is set to <code>EXTERNAL</code>.</p>"
         },
         "apiKeySecretSource":{
           "shape":"SecretSourceType",
-          "documentation":"<p>The source type of the API key secret. Use <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if you manage the secret yourself in AWS Secrets Manager.</p>"
+          "documentation":"<p>The source type of the API key secret. Use <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if you manage the secret yourself in Amazon Web Services Secrets Manager.</p>"
         }
       }
     },
@@ -18656,15 +19845,15 @@
       "members":{
         "apiKeySecretArn":{
           "shape":"Secret",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the API key secret in AWS Secrets Manager.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the API key secret in Amazon Web Services Secrets Manager.</p>"
         },
         "apiKeySecretJsonKey":{
           "shape":"SecretJsonKeyType",
-          "documentation":"<p>The JSON key used to extract the API key value from the AWS Secrets Manager secret.</p>"
+          "documentation":"<p>The JSON key used to extract the API key value from the Amazon Web Services Secrets Manager secret.</p>"
         },
         "apiKeySecretSource":{
           "shape":"SecretSourceType",
-          "documentation":"<p>The source type of the API key secret. Either <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if managed by the user in AWS Secrets Manager.</p>"
+          "documentation":"<p>The source type of the API key secret. Either <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if managed by the user in Amazon Web Services Secrets Manager.</p>"
         },
         "name":{
           "shape":"CredentialProviderName",
@@ -18726,6 +19915,10 @@
         "createdBy":{
           "shape":"VersionCreatedBySource",
           "documentation":"<p>The source that created this version, including the source name and optional ARN.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>Optional KMS key ARN for encrypting component configurations. If provided, components will be encrypted with this key. If the bundle already has a KMS key, this rotates to the new key.</p>"
         }
       }
     },
@@ -18781,14 +19974,14 @@
         },
         "examples":{
           "shape":"UpdateDatasetExamplesRequestExamplesList",
-          "documentation":"<p>Examples to update. Each element is a JSON object containing a required <code>exampleId</code> string field identifying the existing example, plus the replacement fields. The <code>exampleId</code> is extracted and removed before persistence; the remaining document is validated against the dataset's schemaType. Max 1000 examples per call. Total request body must not exceed 5 MB.</p>"
+          "documentation":"<p> Examples to update. Each element is a JSON object containing a required <code>exampleId</code> field identifying the existing example, plus the replacement fields. Maximum 1000 examples per call. </p>"
         }
       }
     },
     "UpdateDatasetExamplesRequestExamplesList":{
       "type":"list",
       "member":{"shape":"SensitiveJson"},
-      "documentation":"<p>Each element is a free-form JSON document whose structure is defined by the dataset's <code>schemaType</code>. Validated against the declared schema at write time. If an <code>exampleId</code> string field is present it is used as the example identifier and removed from the persisted content; otherwise a UUID is generated automatically. <code>exampleId</code> must be a JSON string — numeric or other non-string types are rejected with a ValidationException.</p>",
+      "documentation":"<p> A list of dataset examples. Each element is a free-form JSON document whose structure is defined by the dataset's schema type. </p>",
       "max":1000,
       "min":1
     },
@@ -18976,6 +20169,10 @@
           "shape":"KmsKeyArn",
           "documentation":"<p>The updated ARN of the KMS key used to encrypt the gateway.</p>"
         },
+        "customTransformConfiguration":{
+          "shape":"CustomTransformConfiguration",
+          "documentation":"<p>The updated custom transformation configuration for the gateway. This configuration defines how the gateway transforms requests and responses.</p>"
+        },
         "interceptorConfigurations":{
           "shape":"GatewayInterceptorConfigurations",
           "documentation":"<p>The updated interceptor configurations for the gateway.</p>"
@@ -18987,6 +20184,10 @@
         "exceptionLevel":{
           "shape":"ExceptionLevel",
           "documentation":"<p>The level of detail in error messages returned when invoking the gateway.</p> <ul> <li> <p>If the value is <code>DEBUG</code>, granular exception messages are returned to help a user debug the gateway.</p> </li> <li> <p>If the value is omitted, a generic error message is returned to the end user.</p> </li> </ul>"
+        },
+        "wafConfiguration":{
+          "shape":"WafConfiguration",
+          "documentation":"<p>The updated Amazon Web Services WAF configuration for the gateway.</p>"
         }
       }
     },
@@ -19059,6 +20260,10 @@
           "shape":"KmsKeyArn",
           "documentation":"<p>The updated ARN of the KMS key used to encrypt the gateway.</p>"
         },
+        "customTransformConfiguration":{
+          "shape":"CustomTransformConfiguration",
+          "documentation":"<p>The custom transformation configuration for the gateway. This configuration defines how the gateway transforms requests and responses.</p>"
+        },
         "interceptorConfigurations":{
           "shape":"GatewayInterceptorConfigurations",
           "documentation":"<p>The updated interceptor configurations for the gateway.</p>"
@@ -19074,6 +20279,14 @@
         "exceptionLevel":{
           "shape":"ExceptionLevel",
           "documentation":"<p>The level of detail in error messages returned when invoking the gateway.</p> <ul> <li> <p>If the value is <code>DEBUG</code>, granular exception messages are returned to help a user debug the gateway.</p> </li> <li> <p>If the value is omitted, a generic error message is returned to the end user.</p> </li> </ul>"
+        },
+        "webAclArn":{
+          "shape":"WebAclArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services WAF web ACL associated with the gateway.</p>"
+        },
+        "wafConfiguration":{
+          "shape":"WafConfiguration",
+          "documentation":"<p>The Amazon Web Services WAF configuration for the gateway.</p>"
         }
       }
     },
@@ -19173,7 +20386,6 @@
       "required":[
         "gatewayIdentifier",
         "targetId",
-        "name",
         "targetConfiguration"
       ],
       "members":{
@@ -19285,6 +20497,50 @@
         "protocolType":{
           "shape":"TargetProtocolType",
           "documentation":"<p>The protocol type of the updated gateway target.</p>"
+        }
+      }
+    },
+    "UpdateHarnessEndpointRequest":{
+      "type":"structure",
+      "required":[
+        "harnessId",
+        "endpointName"
+      ],
+      "members":{
+        "harnessId":{
+          "shape":"HarnessId",
+          "documentation":"<p>The ID of the harness that the endpoint belongs to.</p>",
+          "location":"uri",
+          "locationName":"harnessId"
+        },
+        "endpointName":{
+          "shape":"HarnessEndpointName",
+          "documentation":"<p>The name of the endpoint to update.</p>",
+          "location":"uri",
+          "locationName":"endpointName"
+        },
+        "targetVersion":{
+          "shape":"HarnessVersion",
+          "documentation":"<p>The harness version that the endpoint points to. If not specified, the existing value is retained.</p>"
+        },
+        "description":{
+          "shape":"HarnessEndpointDescription",
+          "documentation":"<p>A description of the endpoint. If not specified, the existing value is retained.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "UpdateHarnessEndpointResponse":{
+      "type":"structure",
+      "required":["endpoint"],
+      "members":{
+        "endpoint":{
+          "shape":"HarnessEndpoint",
+          "documentation":"<p>The updated endpoint.</p>"
         }
       }
     },
@@ -19469,15 +20725,15 @@
       "members":{
         "clientSecretArn":{
           "shape":"Secret",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the client secret in AWS Secrets Manager.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the client secret in Amazon Web Services Secrets Manager.</p>"
         },
         "clientSecretJsonKey":{
           "shape":"SecretJsonKeyType",
-          "documentation":"<p>The JSON key used to extract the client secret value from the AWS Secrets Manager secret.</p>"
+          "documentation":"<p>The JSON key used to extract the client secret value from the Amazon Web Services Secrets Manager secret.</p>"
         },
         "clientSecretSource":{
           "shape":"SecretSourceType",
-          "documentation":"<p>The source type of the client secret. Either <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if managed by the user in AWS Secrets Manager.</p>"
+          "documentation":"<p>The source type of the client secret. Either <code>MANAGED</code> if the secret is managed by the service, or <code>EXTERNAL</code> if managed by the user in Amazon Web Services Secrets Manager.</p>"
         },
         "name":{
           "shape":"CredentialProviderName",
@@ -19543,6 +20799,14 @@
         "evaluators":{
           "shape":"EvaluatorList",
           "documentation":"<p> The updated list of evaluators to apply during online evaluation. </p>"
+        },
+        "insights":{
+          "shape":"InsightList",
+          "documentation":"<p>The updated list of insight types to run against agent sessions.</p>"
+        },
+        "clusteringConfig":{
+          "shape":"ClusteringConfig",
+          "documentation":"<p>The updated clustering configuration for periodic batch evaluation.</p>"
         },
         "evaluationExecutionRoleArn":{
           "shape":"RoleArn",
@@ -19901,6 +21165,10 @@
         "validationMode":{
           "shape":"PolicyValidationMode",
           "documentation":"<p>The validation mode for the policy update. Determines how Cedar analyzer validation results are handled during policy updates. FAIL_ON_ANY_FINDINGS runs the Cedar analyzer and fails the update if validation issues are detected, ensuring the policy conforms to the Cedar schema and tool context. IGNORE_ALL_FINDINGS runs the Cedar analyzer but allows updates despite validation warnings. Use FAIL_ON_ANY_FINDINGS to ensure policy correctness during updates, especially when modifying policy logic or conditions.</p>"
+        },
+        "enforcementMode":{
+          "shape":"EnforcementMode",
+          "documentation":"<p>The enforcement mode for the policy. Run this policy in <code>LOG_ONLY</code> mode to collect data on how it affects your application. Once you are satisfied with the data gathered, switch the policy to <code>ACTIVE</code>. If you omit this field, the policy's existing enforcement mode is unchanged.</p>"
         }
       }
     },
@@ -19945,6 +21213,10 @@
         "status":{
           "shape":"PolicyStatus",
           "documentation":"<p>The current status of the updated policy.</p>"
+        },
+        "enforcementMode":{
+          "shape":"EnforcementMode",
+          "documentation":"<p>The current enforcement mode of the updated policy.</p>"
         },
         "definition":{
           "shape":"PolicyDefinition",
@@ -20760,6 +22032,29 @@
       "type":"string",
       "pattern":"vpc-(([0-9a-z]{8})|([0-9a-z]{17}))"
     },
+    "WafConfiguration":{
+      "type":"structure",
+      "members":{
+        "failureMode":{
+          "shape":"WafFailureMode",
+          "documentation":"<p>The failure mode that determines how the gateway handles requests when Amazon Web Services WAF is unreachable or times out. Valid values include:</p> <ul> <li> <p> <code>FAIL_CLOSE</code> - The gateway blocks requests when Amazon Web Services WAF cannot be evaluated.</p> </li> <li> <p> <code>FAIL_OPEN</code> - The gateway allows requests when Amazon Web Services WAF cannot be evaluated.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The Amazon Web Services WAF configuration for the gateway. This configuration controls how the gateway behaves when the associated web ACL cannot be evaluated.</p>"
+    },
+    "WafFailureMode":{
+      "type":"string",
+      "enum":[
+        "FAIL_CLOSE",
+        "FAIL_OPEN"
+      ]
+    },
+    "WebAclArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:[a-z0-9\\-]+:wafv2:[a-z0-9\\-]+:[0-9]{12}:regional/webacl/.+"
+    },
     "WeightedOverride":{
       "type":"structure",
       "required":["trafficSplit"],
@@ -20806,6 +22101,12 @@
     "WorkloadIdentityList":{
       "type":"list",
       "member":{"shape":"WorkloadIdentityType"}
+    },
+    "WorkloadIdentityNameListType":{
+      "type":"list",
+      "member":{"shape":"WorkloadIdentityNameType"},
+      "max":10,
+      "min":1
     },
     "WorkloadIdentityNameType":{
       "type":"string",

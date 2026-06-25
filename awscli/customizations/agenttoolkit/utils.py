@@ -20,6 +20,7 @@ import zipfile
 
 from awscli.customizations.agenttoolkit.agents import (
     AGENT_CONFIGS,
+    SKILL_FILENAME,
     SKILL_METADATA_FILENAME,
     get_detected_agents,
     universal_first,
@@ -183,7 +184,12 @@ def install_skill(
                             f'directory was not installed by the AWS CLI.\n'
                         )
                     continue
-                if not overwrite_existing:
+                # Marker is present, but if SKILL.md is missing the
+                # previous install is corrupted (e.g. user deleted files
+                # by hand).
+                skill_file = os.path.join(real_dir, SKILL_FILENAME)
+                is_corrupted = not os.path.exists(skill_file)
+                if not overwrite_existing and not is_corrupted:
                     if stream:
                         installed = read_installed_version(real_dir)
                         version_note = f' ({installed})' if installed else ''
@@ -195,6 +201,11 @@ def install_skill(
                             f'or remove it first to reinstall.\n'
                         )
                     continue
+                if is_corrupted and not overwrite_existing and stream:
+                    stream.write(
+                        f'  Reinstalling {skill_name} at {real_dir}: '
+                        f'previous install appears incomplete.\n'
+                    )
                 shutil.rmtree(real_dir)
             os.makedirs(real_dir, exist_ok=True)
             zf.extractall(real_dir)

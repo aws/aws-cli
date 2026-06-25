@@ -639,6 +639,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
                         'Bucket': 'dest-bucket',
                         'Key': 'mykey',
                         'ChecksumAlgorithm': 'SHA1',
+                        'AnnotationDirective': 'EXCLUDE',
                     },
                 ),
             ]

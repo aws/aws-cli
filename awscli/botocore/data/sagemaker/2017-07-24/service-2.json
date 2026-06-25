@@ -6690,7 +6690,13 @@
         "ml.r6id.16xlarge",
         "ml.r6id.24xlarge",
         "ml.r6id.32xlarge",
-        "ml.p5.4xlarge"
+        "ml.p5.4xlarge",
+        "ml.g7e.2xlarge",
+        "ml.g7e.4xlarge",
+        "ml.g7e.8xlarge",
+        "ml.g7e.12xlarge",
+        "ml.g7e.24xlarge",
+        "ml.g7e.48xlarge"
       ]
     },
     "AppLifecycleManagement":{
@@ -9954,6 +9960,47 @@
       "min":0,
       "pattern":"arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:cluster/[a-z0-9]{12}"
     },
+    "ClusterAutoPatchConfig":{
+      "type":"structure",
+      "required":["PatchingStrategy"],
+      "members":{
+        "PatchingStrategy":{
+          "shape":"ClusterPatchingStrategy",
+          "documentation":"<p>The strategy for applying patches to instances in the group.</p>"
+        },
+        "PatchSchedule":{
+          "shape":"ClusterPatchSchedule",
+          "documentation":"<p>The schedule for automatic patching, including the next patch date.</p>"
+        },
+        "DeploymentConfig":{
+          "shape":"DeploymentConfiguration",
+          "documentation":"<p>The deployment configuration for rolling patch updates, including rollback settings and batch sizes. Only applicable when using a rolling patching strategy.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for automatic patching of the instance group. When configured, the system automatically applies security patch AMI updates to the instance group.</p>"
+    },
+    "ClusterAutoPatchConfigDetails":{
+      "type":"structure",
+      "members":{
+        "PatchingStrategy":{
+          "shape":"ClusterPatchingStrategy",
+          "documentation":"<p>The strategy used for applying patches to instances in the group.</p>"
+        },
+        "CurrentPatchSchedule":{
+          "shape":"ClusterPatchScheduleDetails",
+          "documentation":"<p>The currently active patch schedule that the system will execute.</p>"
+        },
+        "DesiredPatchSchedule":{
+          "shape":"ClusterPatchScheduleDetails",
+          "documentation":"<p>The requested patch schedule. Differs from CurrentPatchSchedule when a reschedule request is pending.</p>"
+        },
+        "DeploymentConfig":{
+          "shape":"DeploymentConfiguration",
+          "documentation":"<p>The deployment configuration for rolling patch updates.</p>"
+        }
+      },
+      "documentation":"<p>The auto-patching configuration details for the instance group, including the patching strategy and schedule.</p>"
+    },
     "ClusterAutoScalerType":{
       "type":"string",
       "enum":["Karpenter"]
@@ -10272,10 +10319,12 @@
     },
     "ClusterImageVersionStatus":{
       "type":"string",
-      "documentation":"<p>The status of the Amazon Machine Image (AMI) version for the HyperPod cluster instance group, node, or cluster. The AMI version is determined at the instance group level, and all nodes within an instance group run the same AMI. The cluster-level status is aggregated across all instance groups.</p> <ul> <li> <p> <code>UpToDate</code>: The resource is running the latest available AMI version.</p> </li> <li> <p> <code>UpdateAvailable</code>: A newer AMI version is available for the resource.</p> </li> </ul>",
+      "documentation":"<p>The status of the Amazon Machine Image (AMI) version for the HyperPod cluster instance group, node, or cluster. The AMI version is determined at the instance group level, and all nodes within an instance group run the same AMI. The cluster-level status is aggregated across all instance groups.</p> <ul> <li> <p> <code>UpToDate</code>: The resource is running the latest available AMI version.</p> </li> <li> <p> <code>UpdateAvailable</code>: A newer AMI version is available for the resource.</p> </li> <li> <p> <code>SecurityUpdateRequired</code>: The current AMI has known security vulnerabilities, and a patched version is available.</p> </li> <li> <p> <code>EndOfLife</code>: The AMI variant has reached end of support and an upgrade is required.</p> </li> </ul>",
       "enum":[
         "UpToDate",
-        "UpdateAvailable"
+        "UpdateAvailable",
+        "SecurityUpdateRequired",
+        "EndOfLife"
       ]
     },
     "ClusterInstanceCount":{
@@ -10355,6 +10404,10 @@
           "shape":"ScheduledUpdateConfig",
           "documentation":"<p>The configuration object of the schedule that SageMaker follows when updating the AMI.</p>"
         },
+        "AutoPatchConfig":{
+          "shape":"ClusterAutoPatchConfigDetails",
+          "documentation":"<p>The auto-patching configuration for the instance group, including the current patching strategy and next scheduled patch date.</p>"
+        },
         "CurrentImageId":{
           "shape":"ImageId",
           "documentation":"<p>The ID of the Amazon Machine Image (AMI) currently in use by the instance group.</p>"
@@ -10362,6 +10415,14 @@
         "DesiredImageId":{
           "shape":"ImageId",
           "documentation":"<p>The ID of the Amazon Machine Image (AMI) desired for the instance group.</p>"
+        },
+        "CurrentImageReleaseVersion":{
+          "shape":"ImageReleaseVersion",
+          "documentation":"<p>The version of the HyperPod-managed AMI currently running on the instance group.</p>"
+        },
+        "DesiredImageReleaseVersion":{
+          "shape":"ImageReleaseVersion",
+          "documentation":"<p>The desired version of the HyperPod-managed AMI for the instance group. This may differ from the current version when an update is pending.</p>"
         },
         "ImageVersionStatus":{
           "shape":"ClusterImageVersionStatus",
@@ -10472,6 +10533,14 @@
         "ImageId":{
           "shape":"ImageId",
           "documentation":"<p>When configuring your HyperPod cluster, you can specify an image ID using one of the following options:</p> <ul> <li> <p> <code>HyperPodPublicAmiId</code>: Use a HyperPod public AMI</p> </li> <li> <p> <code>CustomAmiId</code>: Use your custom AMI</p> </li> <li> <p> <code>default</code>: Use the default latest system image</p> </li> </ul> <p>If you choose to use a custom AMI (<code>CustomAmiId</code>), ensure it meets the following requirements:</p> <ul> <li> <p>Encryption: The custom AMI must be unencrypted.</p> </li> <li> <p>Ownership: The custom AMI must be owned by the same Amazon Web Services account that is creating the HyperPod cluster.</p> </li> <li> <p>Volume support: Only the primary AMI snapshot volume is supported; additional AMI volumes are not supported.</p> </li> </ul> <p>When updating the instance group's AMI through the <code>UpdateClusterSoftware</code> operation, if an instance group uses a custom AMI, you must provide an <code>ImageId</code> or use the default as input. Note that if you don't specify an instance group in your <code>UpdateClusterSoftware</code> request, then all of the instance groups are patched with the specified image.</p>"
+        },
+        "AutoPatchConfig":{
+          "shape":"ClusterAutoPatchConfig",
+          "documentation":"<p>The configuration for automatic OS security patching. If present, the system automatically applies PATCH AMI updates to this instance group.</p>"
+        },
+        "ImageReleaseVersion":{
+          "shape":"ImageReleaseVersion",
+          "documentation":"<p>The version of the HyperPod-managed AMI to use for the instance group. Uses semantic versioning in the format <code>MAJOR.MINOR.PATCH</code> (for example, <code>1.2.3</code>). If omitted, the latest available version is used.</p>"
         },
         "KubernetesConfig":{
           "shape":"ClusterKubernetesConfig",
@@ -11042,6 +11111,14 @@
           "shape":"ImageId",
           "documentation":"<p>The ID of the Amazon Machine Image (AMI) desired for the node.</p>"
         },
+        "CurrentImageReleaseVersion":{
+          "shape":"ImageReleaseVersion",
+          "documentation":"<p>The version of the HyperPod-managed AMI currently running on the node.</p>"
+        },
+        "DesiredImageReleaseVersion":{
+          "shape":"ImageReleaseVersion",
+          "documentation":"<p>The desired version of the HyperPod-managed AMI for the node. This may differ from the current version when an update is pending.</p>"
+        },
         "ImageVersionStatus":{
           "shape":"ClusterImageVersionStatus",
           "documentation":"<p>The status of the image version for the cluster node.</p>"
@@ -11150,6 +11227,10 @@
           "shape":"ClusterPrivateDnsHostname",
           "documentation":"<p>The private DNS hostname of the SageMaker HyperPod cluster node.</p>"
         },
+        "CurrentImageReleaseVersion":{
+          "shape":"ImageReleaseVersion",
+          "documentation":"<p>The version of the HyperPod-managed AMI currently running on the node.</p>"
+        },
         "ImageVersionStatus":{
           "shape":"ClusterImageVersionStatus",
           "documentation":"<p>The status of the image version for the cluster node.</p>"
@@ -11213,6 +11294,34 @@
       "member":{"shape":"ClusterPartitionName"},
       "max":1,
       "min":0
+    },
+    "ClusterPatchSchedule":{
+      "type":"structure",
+      "members":{
+        "NextPatchDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time of the next scheduled automatic patch. The system sets this automatically when a patch is detected. Use this field to reschedule the patch to a different date.</p>"
+        }
+      },
+      "documentation":"<p>The schedule configuration for automatic patching.</p>"
+    },
+    "ClusterPatchScheduleDetails":{
+      "type":"structure",
+      "members":{
+        "NextPatchDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time of the next scheduled automatic patch.</p>"
+        }
+      },
+      "documentation":"<p>The schedule details for automatic patching, including the next scheduled patch date.</p>"
+    },
+    "ClusterPatchingStrategy":{
+      "type":"string",
+      "documentation":"<p>The strategy for applying automatic patches to instances.</p> <ul> <li> <p> <code>WhenIdle</code>: Cordons all instances and patches each instance as it becomes idle (no running jobs). Each instance is uncordoned immediately after patching and becomes available for new jobs. If instances do not become idle, they remain on the previous AMI version. You can then use UpdateClusterSoftware with the desired ImageReleaseVersion to manually update the remaining instances.</p> </li> <li> <p> <code>WhenAllIdle</code>: Cordons all instances and waits for all to become idle before patching. All instances are uncordoned after patching completes. If not all instances become idle, no patching occurs and all instances remain on the previous AMI version.</p> </li> </ul>",
+      "enum":[
+        "WhenIdle",
+        "WhenAllIdle"
+      ]
     },
     "ClusterPrivateDnsHostname":{
       "type":"string",
@@ -11571,6 +11680,10 @@
         "TrainingPlanArns":{
           "shape":"TrainingPlanArns",
           "documentation":"<p>A list of Amazon Resource Names (ARNs) of the training plans associated with this cluster.</p> <p>For more information about how to reserve GPU capacity for your SageMaker HyperPod clusters using Amazon SageMaker Training Plan, see <code> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingPlan.html\">CreateTrainingPlan</a> </code>.</p>"
+        },
+        "ImageVersionStatus":{
+          "shape":"ClusterImageVersionStatus",
+          "documentation":"<p>The aggregate status of the image version across the cluster's instance groups.</p>"
         }
       },
       "documentation":"<p>Lists a summary of the properties of a SageMaker HyperPod cluster.</p>"
@@ -12192,6 +12305,10 @@
         "MultiModelConfig":{
           "shape":"MultiModelConfig",
           "documentation":"<p>Specifies additional configuration for multi-model endpoints.</p>"
+        },
+        "ContainerMetricsConfig":{
+          "shape":"ContainerMetricsConfig",
+          "documentation":"<p>The configuration for container metrics scraping. Specifies the metrics endpoint path and publishing frequency. If not specified when <code>EnableDetailedObservability</code> is <code>True</code>, the default path <code>/metrics</code> on port <code>8080</code> is used. For first-party and Deep Learning Containers (DLC), the endpoint path is determined automatically and this configuration is optional.</p>"
         }
       },
       "documentation":"<p>Describes the container, as part of model definition.</p>"
@@ -12225,6 +12342,16 @@
       "max":255,
       "min":0,
       "pattern":"[\\S]+"
+    },
+    "ContainerMetricsConfig":{
+      "type":"structure",
+      "members":{
+        "MetricsEndpoints":{
+          "shape":"MetricsEndpointList",
+          "documentation":"<p>A list of metrics endpoints to scrape from the container. Each endpoint specifies the path where the container exposes Prometheus-formatted metrics and the frequency at which to publish them. You can specify a maximum of 1 endpoint.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for container-level metrics scraping. Use this configuration to specify a custom metrics endpoint path and publishing frequency for container metrics. When <code>EnableDetailedObservability</code> is set to <code>True</code> in <code>MetricsConfig</code>, metrics are scraped from the container's Prometheus endpoint. If this configuration is not provided, the default path <code>/metrics</code> on port <code>8080</code> is used with a default publishing frequency of <code>60</code> seconds. For first-party and Deep Learning Containers (DLC), the endpoint path is determined automatically and this configuration is optional.</p>"
     },
     "ContainerMode":{
       "type":"string",
@@ -13490,7 +13617,7 @@
         },
         "KmsKeyId":{
           "shape":"KmsKeyId",
-          "documentation":"<p>The Amazon Resource Name (ARN) of a Amazon Web Services Key Management Service key that SageMaker uses to encrypt data on the storage volume attached to the ML compute instance that hosts the endpoint.</p> <p>The KmsKeyId can be any of the following formats: </p> <ul> <li> <p>Key ID: <code>1234abcd-12ab-34cd-56ef-1234567890ab</code> </p> </li> <li> <p>Key ARN: <code>arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code> </p> </li> <li> <p>Alias name: <code>alias/ExampleAlias</code> </p> </li> <li> <p>Alias name ARN: <code>arn:aws:kms:us-west-2:111122223333:alias/ExampleAlias</code> </p> </li> </ul> <p>The KMS key policy must grant permission to the IAM role that you specify in your <code>CreateEndpoint</code>, <code>UpdateEndpoint</code> requests. For more information, refer to the Amazon Web Services Key Management Service section<a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html\"> Using Key Policies in Amazon Web Services KMS </a> </p> <note> <p>Certain Nitro-based instances include local storage, dependent on the instance type. Local storage volumes are encrypted using a hardware module on the instance. You can't request a <code>KmsKeyId</code> when using an instance type with local storage. If any of the models that you specify in the <code>ProductionVariants</code> parameter use nitro-based instances with local storage, do not specify a value for the <code>KmsKeyId</code> parameter. If you specify a value for <code>KmsKeyId</code> when using any nitro-based instances with local storage, the call to <code>CreateEndpointConfig</code> fails.</p> <p>For a list of instance types that support local instance storage, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/InstanceStorage.html#instance-store-volumes\">Instance Store Volumes</a>.</p> <p>For more information about local instance storage encryption, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ssd-instance-store.html\">SSD Instance Store Volumes</a>.</p> </note>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of a Amazon Web Services Key Management Service key that SageMaker uses to encrypt data on the storage volume attached to the ML compute instance that hosts the endpoint.</p> <p>The KmsKeyId can be any of the following formats: </p> <ul> <li> <p>Key ID: <code>1234abcd-12ab-34cd-56ef-1234567890ab</code> </p> </li> <li> <p>Key ARN: <code>arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code> </p> </li> <li> <p>Alias name: <code>alias/ExampleAlias</code> </p> </li> <li> <p>Alias name ARN: <code>arn:aws:kms:us-west-2:111122223333:alias/ExampleAlias</code> </p> </li> </ul> <p>The KMS key policy must grant permission to the IAM role that you specify in your <code>CreateEndpoint</code>, <code>UpdateEndpoint</code> requests. For more information, refer to the Amazon Web Services Key Management Service section<a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html\"> Using Key Policies in Amazon Web Services KMS </a> </p> <note> <p>Certain Nitro-based instances include local storage, dependent on the instance type. Local storage volumes are encrypted using a hardware module on the instance. If any of the models that you specify in the <code>ProductionVariants</code> parameter use nitro-based instances with local storage, the <code>KmsKeyId</code> parameter does not encrypt instance local storage.</p> <p>For a list of instance types that support local instance storage, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/InstanceStorage.html#instance-store-volumes\">Instance Store Volumes</a>.</p> <p>For more information about local instance storage encryption, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ssd-instance-store.html\">SSD Instance Store Volumes</a>.</p> </note>"
         },
         "AsyncInferenceConfig":{
           "shape":"AsyncInferenceConfig",
@@ -23662,7 +23789,6 @@
     },
     "DomainId":{
       "type":"string",
-      "documentation":"<p>Types duplicated from IronmanApiServiceModel for federation. These types are defined in other service directories and are not available via IronmanApiServiceCommonModel.</p>",
       "max":63,
       "min":0,
       "pattern":"d-(-*[a-z0-9]){1,61}"
@@ -24418,6 +24544,10 @@
     },
     "EnableCaching":{"type":"boolean"},
     "EnableCapture":{"type":"boolean"},
+    "EnableDetailedObservability":{
+      "type":"boolean",
+      "box":true
+    },
     "EnableEnhancedMetrics":{
       "type":"boolean",
       "box":true
@@ -27733,6 +27863,12 @@
       "min":0,
       "pattern":"[a-zA-Z0-9\\-.]+"
     },
+    "ImageReleaseVersion":{
+      "type":"string",
+      "max":64,
+      "min":0,
+      "pattern":"[0-9]+\\.[0-9]+\\.[0-9]+"
+    },
     "ImageSortBy":{
       "type":"string",
       "enum":[
@@ -28039,6 +28175,10 @@
         "Environment":{
           "shape":"EnvironmentMap",
           "documentation":"<p>The environment variables to set in the Docker container. Each key and value in the Environment string-to-string map can have length of up to 1024. We support up to 16 entries in the map.</p>"
+        },
+        "ContainerMetricsConfig":{
+          "shape":"ContainerMetricsConfig",
+          "documentation":"<p>The configuration for container metrics scraping. Specifies the metrics endpoint path and publishing frequency for the inference component's container. If not specified when <code>EnableDetailedObservability</code> is <code>True</code>, the default path <code>/metrics</code> on port <code>8080</code> is used. For first-party and Deep Learning Containers (DLC), the endpoint path is determined automatically and this configuration is optional.</p>"
         }
       },
       "documentation":"<p>Defines a container that provides the runtime environment for a model that you deploy with an inference component.</p>"
@@ -28054,6 +28194,10 @@
         "Environment":{
           "shape":"EnvironmentMap",
           "documentation":"<p>The environment variables to set in the Docker container.</p>"
+        },
+        "ContainerMetricsConfig":{
+          "shape":"ContainerMetricsConfig",
+          "documentation":"<p>The container metrics scraping configuration for this inference component, including the metrics endpoint path and publishing frequency.</p>"
         }
       },
       "documentation":"<p>Details about the resources that are deployed with this inference component.</p>"
@@ -29282,7 +29426,15 @@
         "ml.g6.24xlarge",
         "ml.g6.48xlarge",
         "ml.p5.4xlarge",
-        "ml.p5en.48xlarge"
+        "ml.p5en.48xlarge",
+        "ml.g6e.xlarge",
+        "ml.g6e.2xlarge",
+        "ml.g6e.4xlarge",
+        "ml.g6e.8xlarge",
+        "ml.g6e.12xlarge",
+        "ml.g6e.16xlarge",
+        "ml.g6e.24xlarge",
+        "ml.g6e.48xlarge"
       ]
     },
     "Integer":{"type":"integer"},
@@ -29427,7 +29579,7 @@
           "documentation":"<p>The tags associated with the job.</p>"
         }
       },
-      "documentation":"<p>Search shape for Job. Mirrors DescribeJobResponse fields. If you update DescribeJobResponse, update this structure as well.</p>"
+      "documentation":"<p>The properties of a job returned by the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_Search.html\">Search</a> API.</p>"
     },
     "JobArn":{
       "type":"string",
@@ -35376,12 +35528,45 @@
           "shape":"EnableEnhancedMetrics",
           "documentation":"<p>Specifies whether to enable enhanced metrics for the endpoint. Enhanced metrics provide utilization and invocation data at instance and container granularity. Container granularity is supported for Inference Components. The default is <code>False</code>.</p>"
         },
+        "EnableDetailedObservability":{
+          "shape":"EnableDetailedObservability",
+          "documentation":"<p>Indicates whether detailed observability is enabled for the endpoint. When set to <code>True</code>, the following metrics are published at the configured frequency:</p> <ul> <li> <p>Container-level inference metrics scraped from the container's Prometheus endpoint (such as request latency, error counts, and throughput). Available metrics vary by framework.</p> </li> <li> <p>Per-GPU metrics (utilization, memory, and temperature) attributed to individual inference components.</p> </li> <li> <p>Per-instance host metrics (CPU, memory, and disk utilization).</p> </li> <li> <p>Inference component placement metrics (copy count per Availability Zone).</p> </li> </ul> <p>For first-party and Deep Learning Containers (DLC), the Prometheus endpoint path is determined automatically. For Bring-Your-Own-Container (BYOC) cases, you can optionally set <code>ContainerMetricsConfig</code> to specify a custom endpoint path. If not specified, the default path <code>/metrics</code> on port <code>8080</code> is used.</p> <p>When set to <code>False</code>, these additional metrics are not published. Standard invocation and utilization metrics controlled by <code>EnableEnhancedMetrics</code> are unaffected.</p> <p>The default value for new endpoint configurations is <code>True</code>. For existing endpoint configurations created before this feature, the value is <code>False</code> unless explicitly set.</p>"
+        },
         "MetricPublishFrequencyInSeconds":{
           "shape":"MetricPublishFrequencyInSeconds",
-          "documentation":"<p>The interval, in seconds, at which metrics are published to Amazon CloudWatch. Defaults to <code>60</code>. Valid values: <code>10</code>, <code>30</code>, <code>60</code>, <code>120</code>, <code>180</code>, <code>240</code>, <code>300</code>. When <code>EnableEnhancedMetrics</code> is set to <code>False</code>, this interval applies to utilization metrics only; invocation metrics continue to be published at the default 60-second interval. When <code>EnableEnhancedMetrics</code> is set to <code>True</code>, this interval applies to both utilization and invocation metrics.</p>"
+          "documentation":"<p>The interval, in seconds, at which metrics are published to Amazon CloudWatch. Defaults to <code>60</code>. Valid values: <code>10</code>, <code>30</code>, <code>60</code>, <code>120</code>, <code>180</code>, <code>240</code>, <code>300</code>.</p> <p>When <code>EnableEnhancedMetrics</code> is set to <code>False</code>, this interval applies to utilization metrics only. Invocation metrics continue to be published at the default 60-second interval. When <code>EnableEnhancedMetrics</code> is set to <code>True</code>, this interval applies to both utilization and invocation metrics.</p> <p>When <code>EnableDetailedObservability</code> is set to <code>True</code>, this interval applies to per-GPU metrics, per-instance host metrics, container metrics, and fleet-level inference component lifecycle and placement metrics.</p>"
         }
       },
       "documentation":"<p>The configuration for Utilization metrics.</p>"
+    },
+    "MetricsEndpoint":{
+      "type":"structure",
+      "required":["MetricsEndpointPath"],
+      "members":{
+        "MetricsEndpointPath":{
+          "shape":"MetricsEndpointPath",
+          "documentation":"<p>The path to the metrics endpoint exposed by the container. For example, <code>/metrics</code> or <code>/server/metrics</code>. The path must start with <code>/</code> and can contain alphanumeric characters, forward slashes, underscores, hyphens, and periods. Maximum length is 256 characters. If not specified, defaults to <code>/metrics</code>.</p>"
+        },
+        "MetricPublishFrequencyInSeconds":{
+          "shape":"MetricPublishFrequencyInSeconds",
+          "documentation":"<p>The interval, in seconds, at which container metrics scraped from the endpoint are published to Amazon CloudWatch. Valid values: <code>10</code>, <code>30</code>, <code>60</code>, <code>120</code>, <code>180</code>, <code>240</code>, <code>300</code>. Defaults to <code>60</code>.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a metrics endpoint for a container, including the path where the container exposes Prometheus-formatted metrics and the frequency at which to publish them to Amazon CloudWatch.</p>"
+    },
+    "MetricsEndpointList":{
+      "type":"list",
+      "member":{"shape":"MetricsEndpoint"},
+      "documentation":"<p>A list of metrics endpoints for a container.</p>",
+      "max":1,
+      "min":0
+    },
+    "MetricsEndpointPath":{
+      "type":"string",
+      "documentation":"<p>Per-container Prometheus metrics scraping configuration</p>",
+      "max":256,
+      "min":0,
+      "pattern":"/(?!.*\\.\\.)[a-zA-Z0-9/_.\\-]+"
     },
     "MetricsSource":{
       "type":"structure",
@@ -43927,7 +44112,10 @@
           "documentation":"<p>An Amazon SageMaker Model Card that documents details about a machine learning model.</p>"
         },
         "Model":{"shape":"ModelDashboardModel"},
-        "Job":{"shape":"Job"}
+        "Job":{
+          "shape":"Job",
+          "documentation":"<p>The properties of a job.</p>"
+        }
       },
       "documentation":"<p>A single resource returned as part of the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_Search.html\">Search</a> API response.</p>"
     },
@@ -48891,6 +49079,10 @@
         "InstanceGroupName":{
           "shape":"ClusterInstanceGroupName",
           "documentation":"<p>The name of the instance group to update.</p>"
+        },
+        "ImageReleaseVersion":{
+          "shape":"ImageReleaseVersion",
+          "documentation":"<p>The version of the HyperPod-managed AMI to update to for the instance group. Uses semantic versioning in the format <code>MAJOR.MINOR.PATCH</code>.</p>"
         }
       },
       "documentation":"<p>The configuration that describes specifications of the instance groups to update.</p>"

@@ -5511,12 +5511,14 @@
           "shape": "KafkaClusterSaslScramAuthentication",
           "locationName": "saslScram",
           "documentation": "<p>Details for SASL/SCRAM client authentication.</p>"
+        },
+        "MTLS": {
+          "shape": "KafkaClusterMTLSAuthentication",
+          "locationName": "mTLS",
+          "documentation": "<p>Details for mTLS client authentication.</p>"
         }
       },
-      "documentation": "<p>Details of the client authentication used by the Apache Kafka cluster.</p>",
-      "required": [
-        "SaslScram"
-      ]
+      "documentation": "<p>Details of the client authentication used by the Apache Kafka cluster.</p>"
     },
     "KafkaClusterSaslScramAuthentication": {
       "type": "structure",
@@ -5535,6 +5537,20 @@
       "documentation": "<p>Details for SASL/SCRAM client authentication.</p>",
       "required": [
         "Mechanism",
+        "SecretArn"
+      ]
+    },
+    "KafkaClusterMTLSAuthentication": {
+      "type": "structure",
+      "members": {
+        "SecretArn": {
+          "shape": "__string",
+          "locationName": "secretArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the Secrets Manager secret.</p>"
+        }
+      },
+      "documentation": "<p>Details for mTLS client authentication.</p>",
+      "required": [
         "SecretArn"
       ]
     },

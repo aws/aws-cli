@@ -2422,6 +2422,10 @@
         "storeSnapshotOnLocalZone":{
           "shape":"Boolean",
           "documentation":"<p>Request to store snapshot on local zone during Replication Settings template creation.</p>"
+        },
+        "storageConfiguration":{
+          "shape":"StorageConfiguration",
+          "documentation":"<p>Request to configure storage during Replication Settings template creation.</p>"
         }
       }
     },
@@ -2479,7 +2483,9 @@
         "FAILED_TO_CONNECT_AGENT_TO_REPLICATION_SERVER",
         "FAILED_TO_START_DATA_TRANSFER",
         "UNSUPPORTED_VM_CONFIGURATION",
-        "LAST_SNAPSHOT_JOB_FAILED"
+        "LAST_SNAPSHOT_JOB_FAILED",
+        "FAILED_TO_SETUP_FSX_PROXY",
+        "FAILED_TO_CREATE_FSX_SNAPSHOT"
       ]
     },
     "DataReplicationInfo":{
@@ -2597,7 +2603,8 @@
         "ATTACH_STAGING_DISKS",
         "PAIR_REPLICATION_SERVER_WITH_AGENT",
         "CONNECT_AGENT_TO_REPLICATION_SERVER",
-        "START_DATA_TRANSFER"
+        "START_DATA_TRANSFER",
+        "SETUP_FSX_PROXY"
       ]
     },
     "DataReplicationInitiationStepStatus":{
@@ -3380,6 +3387,30 @@
       "type":"float",
       "box":true
     },
+    "FqdnForActionFramework":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_](([a-zA-Z0-9_\\-]{0,61}[a-zA-Z0-9_])?\\.)+[a-zA-Z]{2,63}$|^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$|^(?:[A-Fa-f0-9]{1,4}:){7}[A-Fa-f0-9]{1,4}"
+    },
+    "FsxOntapConfiguration":{
+      "type":"structure",
+      "required":[
+        "storageVirtualMachineId",
+        "credentialsSecretArn"
+      ],
+      "members":{
+        "storageVirtualMachineId":{
+          "shape":"StorageVirtualMachineId",
+          "documentation":"<p>FSx ONTAP configuration storage virtual machine ID.</p>"
+        },
+        "credentialsSecretArn":{
+          "shape":"SecretArn",
+          "documentation":"<p>FSx ONTAP configuration credentials secret ARN.</p>"
+        }
+      },
+      "documentation":"<p>FSx for ONTAP storage configuration.</p>"
+    },
     "GetLaunchConfigurationRequest":{
       "type":"structure",
       "required":["sourceServerID"],
@@ -3991,6 +4022,54 @@
       "max":65536,
       "min":0
     },
+    "LastKnownCheck":{
+      "type":"structure",
+      "members":{
+        "type":{
+          "shape":"LastKnownCheckType",
+          "documentation":"<p>Last known check type.</p>"
+        },
+        "name":{
+          "shape":"BoundedString",
+          "documentation":"<p>Last known check name.</p>"
+        },
+        "status":{
+          "shape":"LastKnownCheckStatus",
+          "documentation":"<p>Last known check status.</p>"
+        },
+        "error":{
+          "shape":"BoundedString",
+          "documentation":"<p>Last known check error.</p>"
+        },
+        "checkedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Last known check timestamp.</p>"
+        }
+      },
+      "documentation":"<p>Last known check performed on a launched instance.</p>"
+    },
+    "LastKnownCheckStatus":{
+      "type":"string",
+      "enum":[
+        "PASSED",
+        "FAILED",
+        "PENDING"
+      ]
+    },
+    "LastKnownCheckType":{
+      "type":"string",
+      "enum":[
+        "EC2",
+        "FSx"
+      ]
+    },
+    "LastKnownChecksList":{
+      "type":"list",
+      "member":{"shape":"LastKnownCheck"},
+      "documentation":"<p>List of last known checks.</p>",
+      "max":10,
+      "min":0
+    },
     "LaunchConfiguration":{
       "type":"structure",
       "members":{
@@ -4187,6 +4266,14 @@
         "firstBoot":{
           "shape":"FirstBoot",
           "documentation":"<p>Launched instance first boot.</p>"
+        },
+        "lastKnownChecks":{
+          "shape":"LastKnownChecksList",
+          "documentation":"<p>Launched instance last known checks.</p>"
+        },
+        "lastKnownFsxChecksStatus":{
+          "shape":"LastKnownCheckStatus",
+          "documentation":"<p>Launched instance last known FSx checks status.</p>"
         }
       },
       "documentation":"<p>Launched instance.</p>"
@@ -6794,6 +6881,10 @@
         "storeSnapshotOnLocalZone":{
           "shape":"Boolean",
           "documentation":"<p>Replication Configuration store snapshot on local zone.</p>"
+        },
+        "storageConfiguration":{
+          "shape":"StorageConfiguration",
+          "documentation":"<p>Replication Configuration storage configuration.</p>"
         }
       }
     },
@@ -6855,7 +6946,8 @@
         "ST1",
         "STANDARD",
         "GP3",
-        "IO2"
+        "IO2",
+        "FSX_ONTAP"
       ]
     },
     "ReplicationConfigurationReplicatedDisks":{
@@ -6939,6 +7031,10 @@
         "storeSnapshotOnLocalZone":{
           "shape":"Boolean",
           "documentation":"<p>Replication Configuration template store snapshot on local zone.</p>"
+        },
+        "storageConfiguration":{
+          "shape":"StorageConfiguration",
+          "documentation":"<p>Replication Configuration template storage configuration.</p>"
         }
       }
     },
@@ -7111,7 +7207,7 @@
     },
     "SecretArn":{
       "type":"string",
-      "max":100,
+      "max":256,
       "min":20,
       "pattern":"arn:[\\w-]+:secretsmanager:([a-z]{2}-(gov-)?[a-z]+-\\d{1})?:(\\d{12})?:secret:(.+)"
     },
@@ -8001,6 +8097,34 @@
         }
       }
     },
+    "StorageConfiguration":{
+      "type":"structure",
+      "required":["storageType"],
+      "members":{
+        "storageType":{
+          "shape":"StorageType",
+          "documentation":"<p>Storage configuration storage type.</p>"
+        },
+        "fsxOntapConfiguration":{
+          "shape":"FsxOntapConfiguration",
+          "documentation":"<p>Storage configuration FSx ONTAP configuration.</p>"
+        }
+      },
+      "documentation":"<p>Storage configuration for replication.</p>"
+    },
+    "StorageType":{
+      "type":"string",
+      "enum":[
+        "EBS",
+        "FSX_ONTAP"
+      ]
+    },
+    "StorageVirtualMachineId":{
+      "type":"string",
+      "max":21,
+      "min":21,
+      "pattern":"(svm-[0-9a-f]{17,})"
+    },
     "StrictlyPositiveInteger":{
       "type":"integer",
       "box":true,
@@ -8674,6 +8798,10 @@
         "storeSnapshotOnLocalZone":{
           "shape":"Boolean",
           "documentation":"<p>Update replication configuration store snapshot on local zone.</p>"
+        },
+        "storageConfiguration":{
+          "shape":"StorageConfiguration",
+          "documentation":"<p>Update replication configuration storage configuration.</p>"
         }
       }
     },
@@ -8748,6 +8876,10 @@
         "storeSnapshotOnLocalZone":{
           "shape":"Boolean",
           "documentation":"<p>Update replication configuration template store snapshot on local zone request.</p>"
+        },
+        "storageConfiguration":{
+          "shape":"StorageConfiguration",
+          "documentation":"<p>Update replication configuration template storage configuration request.</p>"
         }
       }
     },
@@ -8787,6 +8919,18 @@
         "connectorAction":{
           "shape":"SourceServerConnectorAction",
           "documentation":"<p>Update Source Server request connector action.</p>"
+        },
+        "userProvidedID":{
+          "shape":"UserProvidedId",
+          "documentation":"<p>Update Source Server request user provided ID.</p>"
+        },
+        "fqdnForActionFramework":{
+          "shape":"FqdnForActionFramework",
+          "documentation":"<p>Update Source Server request FQDN for action framework.</p>"
+        },
+        "platform":{
+          "shape":"OperatingSystemString",
+          "documentation":"<p>Update Source Server request platform operating system.</p>"
         }
       }
     },

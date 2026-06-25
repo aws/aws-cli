@@ -64,11 +64,13 @@ from awscli.errorhandler import (
     construct_entry_point_handlers_chain,
 )
 from awscli.formatter import get_formatter
+from awscli.handlers_registry import MAIN_COMMAND_TABLE_OPS
 from awscli.help import (
     OperationHelpCommand,
     ProviderHelpCommand,
     ServiceHelpCommand,
 )
+from awscli.lazy_emitter import LazyInitEmitter
 from awscli.logger import (
     disable_crt_logging,
     enable_crt_logging,
@@ -117,6 +119,10 @@ def create_clidriver(args=None, event_hooks=None):
         parser = FirstPassGlobalArgParser()
         args, _ = parser.parse_known_args(args)
         debug = args.debug
+    if event_hooks is None:
+        event_hooks = LazyInitEmitter(
+            main_command_table_ops=MAIN_COMMAND_TABLE_OPS
+        )
     session = botocore.session.Session(event_hooks=event_hooks)
     _set_user_agent_for_session(session)
     load_plugins(
@@ -212,6 +218,13 @@ def _set_user_agent_for_session(session):
     _add_distribution_source_to_user_agent(session)
     _add_linux_distribution_to_user_agent(session)
     add_session_id_component_to_user_agent_extra(session)
+
+
+def register_no_pager_handler(event_emitter):
+    event_emitter.register(
+        'session-initialized',
+        no_pager_handler,
+    )
 
 
 def no_pager_handler(session, parsed_args, **kwargs):

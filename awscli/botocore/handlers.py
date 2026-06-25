@@ -1014,6 +1014,21 @@ def remove_polly_start_speech_synthesis_stream(class_attributes, **kwargs):
         del class_attributes['start_speech_synthesis_stream']
 
 
+def add_retry_headers(request, **kwargs):
+    retries_context = request.context.get('retries')
+    if not retries_context:
+        return
+    headers = request.headers
+    headers['amz-sdk-invocation-id'] = retries_context['invocation-id']
+    sdk_retry_keys = ('ttl', 'attempt', 'max')
+    sdk_request_headers = [
+        f'{key}={retries_context[key]}'
+        for key in sdk_retry_keys
+        if key in retries_context
+    ]
+    headers['amz-sdk-request'] = '; '.join(sdk_request_headers)
+
+
 def remove_bucket_from_url_paths_from_model(params, model, context, **kwargs):
     """Strips leading `{Bucket}/` from any operations that have it.
 
@@ -1418,6 +1433,7 @@ BUILTIN_HANDLERS = [
     ('before-call.glacier.UploadArchive', add_glacier_checksums),
     ('before-call.glacier.UploadMultipartPart', add_glacier_checksums),
     ('before-call.ec2.CopySnapshot', inject_presigned_url_ec2),
+    ('request-created', add_retry_headers),
     ('request-created.machine-learning.Predict', switch_host_machinelearning),
     ('needs-retry.s3.*', _update_status_code, REGISTER_FIRST),
     ('choose-signer.cognito-identity.GetId', disable_signing),

@@ -759,6 +759,7 @@
       "input":{"shape":"InvokeHarnessRequest"},
       "output":{"shape":"InvokeHarnessResponse"},
       "errors":[
+        {"shape":"ServiceQuotaExceededException"},
         {"shape":"AccessDeniedException"},
         {"shape":"RuntimeClientError"},
         {"shape":"ValidationException"},
@@ -1487,6 +1488,44 @@
       "type":"list",
       "member":{"shape":"ActorSummary"}
     },
+    "AffectedSession":{
+      "type":"structure",
+      "required":[
+        "sessionId",
+        "explanation",
+        "fixType",
+        "recommendation",
+        "failureSpans"
+      ],
+      "members":{
+        "sessionId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the affected session.</p>"
+        },
+        "explanation":{
+          "shape":"String",
+          "documentation":"<p>An explanation of how the failure manifested in this session.</p>"
+        },
+        "fixType":{
+          "shape":"String",
+          "documentation":"<p>The type of fix recommended for this failure.</p>"
+        },
+        "recommendation":{
+          "shape":"String",
+          "documentation":"<p>The specific fix recommendation for this session.</p>"
+        },
+        "failureSpans":{
+          "shape":"FailureSpanDetailList",
+          "documentation":"<p>The list of spans where failures were detected in this session.</p>"
+        }
+      },
+      "documentation":"<p>A session affected by a detected failure pattern, including root cause details.</p>"
+    },
+    "AffectedSessionList":{
+      "type":"list",
+      "member":{"shape":"AffectedSession"},
+      "min":0
+    },
     "AgentCard":{
       "type":"structure",
       "members":{},
@@ -1531,6 +1570,10 @@
         "cloudwatchLogs":{
           "shape":"CloudWatchLogsTraceConfig",
           "documentation":"<p>Agent traces read from CloudWatch Logs.</p>"
+        },
+        "batchEvaluation":{
+          "shape":"BatchEvaluationTraceConfig",
+          "documentation":"<p>Use a completed batch evaluation as the source of agent traces.</p>"
         }
       },
       "documentation":"<p>The configuration specifying where to read agent traces from for recommendation analysis.</p>",
@@ -1786,6 +1829,10 @@
           "shape":"EvaluatorList",
           "documentation":"<p>The list of evaluators applied during the batch evaluation.</p>"
         },
+        "insights":{
+          "shape":"InsightList",
+          "documentation":"<p>The list of insight analyses applied during the batch evaluation.</p>"
+        },
         "evaluationResults":{
           "shape":"EvaluationJobResults",
           "documentation":"<p>The aggregated evaluation results.</p>"
@@ -1793,6 +1840,10 @@
         "errorDetails":{
           "shape":"ErrorDetailsList",
           "documentation":"<p>The error details if the batch evaluation encountered failures.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The ARN of the KMS key used to encrypt evaluation data.</p>"
         },
         "updatedAt":{
           "shape":"SyntheticTimestamp_date_time",
@@ -1804,6 +1855,17 @@
     "BatchEvaluationSummaryList":{
       "type":"list",
       "member":{"shape":"BatchEvaluationSummary"}
+    },
+    "BatchEvaluationTraceConfig":{
+      "type":"structure",
+      "required":["batchEvaluationArn"],
+      "members":{
+        "batchEvaluationArn":{
+          "shape":"BatchEvaluationArn",
+          "documentation":"<p>The ARN of the completed batch evaluation to use as the trace source.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for using a batch evaluation as the source of agent traces for recommendations.</p>"
     },
     "BatchUpdateMemoryRecordsInput":{
       "type":"structure",
@@ -2517,7 +2579,7 @@
     },
     "ConfigurationBundleArn":{
       "type":"string",
-      "pattern":"arn:aws:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:configuration-bundle/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
+      "pattern":"arn:aws[a-zA-Z-]*:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:configuration-bundle/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
     },
     "ConfigurationBundleRef":{
       "type":"structure",
@@ -2784,6 +2846,10 @@
           "shape":"ClientToken",
           "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, the service ignores the request, but does not return an error.</p>",
           "idempotencyToken":true
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of tag keys and values to associate with the A/B test.</p>"
         }
       }
     },
@@ -2866,6 +2932,10 @@
         "metadata":{
           "shape":"MetadataMap",
           "documentation":"<p>The key-value metadata to attach to the event.</p>"
+        },
+        "extractionMode":{
+          "shape":"ExtractionMode",
+          "documentation":"<p>Controls long-term memory extraction for this event. When set to <code>SKIP</code>, the event is stored in short-term memory but is excluded from long-term memory extraction. If not specified, the event is processed for extraction as usual.</p>"
         }
       }
     },
@@ -3079,6 +3149,10 @@
         "cloudWatchLogs":{
           "shape":"CloudWatchLogsSource",
           "documentation":"<p>Configuration for pulling agent session traces from CloudWatch Logs.</p>"
+        },
+        "onlineEvaluationConfigSource":{
+          "shape":"OnlineEvaluationConfigSource",
+          "documentation":"<p>Reference an existing OnlineEvaluationConfig as session source</p>"
         }
       },
       "documentation":"<p>Configuration for the data source used in evaluation.</p>",
@@ -3721,11 +3795,11 @@
           "documentation":"<p>The unique identifier of the evaluator. Can reference built-in evaluators (e.g., <code>Builtin.Helpfulness</code>) or custom evaluators.</p>"
         }
       },
-      "documentation":"<p>An evaluator to run against sessions.</p>"
+      "documentation":"<p>An evaluator to run against sessions during batch evaluation.</p>"
     },
     "EvaluatorArn":{
       "type":"string",
-      "pattern":"arn:aws:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:evaluator\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}$|^arn:aws:bedrock-agentcore:::evaluator/Builtin.[a-zA-Z0-9_-]+"
+      "pattern":"arn:aws[a-zA-Z-]*:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:evaluator\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}$|^arn:aws[a-zA-Z-]*:bedrock-agentcore:::evaluator/Builtin.[a-zA-Z0-9_-]+"
     },
     "EvaluatorId":{
       "type":"string",
@@ -3889,6 +3963,83 @@
       "max":5,
       "min":1
     },
+    "ExecutionSummaryAffectedSession":{
+      "type":"structure",
+      "required":[
+        "sessionId",
+        "approachTaken",
+        "finalOutcome"
+      ],
+      "members":{
+        "sessionId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the session.</p>"
+        },
+        "approachTaken":{
+          "shape":"String",
+          "documentation":"<p>The approach taken by the agent during this session.</p>"
+        },
+        "finalOutcome":{
+          "shape":"String",
+          "documentation":"<p>The final outcome of the session.</p>"
+        }
+      },
+      "documentation":"<p>A session associated with an execution summary cluster.</p>"
+    },
+    "ExecutionSummaryAffectedSessionList":{
+      "type":"list",
+      "member":{"shape":"ExecutionSummaryAffectedSession"},
+      "min":0
+    },
+    "ExecutionSummaryCluster":{
+      "type":"structure",
+      "required":[
+        "clusterId",
+        "name",
+        "description",
+        "affectedSessionCount",
+        "affectedSessions"
+      ],
+      "members":{
+        "clusterId":{
+          "shape":"Integer",
+          "documentation":"<p>The unique identifier of the execution summary cluster.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the execution pattern cluster.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the execution pattern.</p>"
+        },
+        "affectedSessionCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of sessions with this execution pattern.</p>"
+        },
+        "affectedSessions":{
+          "shape":"ExecutionSummaryAffectedSessionList",
+          "documentation":"<p>The list of sessions with this execution pattern.</p>"
+        }
+      },
+      "documentation":"<p>A cluster of similar execution patterns identified across sessions.</p>"
+    },
+    "ExecutionSummaryClusterList":{
+      "type":"list",
+      "member":{"shape":"ExecutionSummaryCluster"},
+      "min":0
+    },
+    "ExecutionSummaryClusteringResultContent":{
+      "type":"structure",
+      "required":["executionSummaries"],
+      "members":{
+        "executionSummaries":{
+          "shape":"ExecutionSummaryClusterList",
+          "documentation":"<p>The list of execution summary clusters identified across analyzed sessions.</p>"
+        }
+      },
+      "documentation":"<p>The execution summary clustering result containing grouped execution patterns identified across evaluated sessions.</p>"
+    },
     "ExternalProxy":{
       "type":"structure",
       "required":[
@@ -4010,6 +4161,125 @@
     "ExtractionJobStatus":{
       "type":"string",
       "enum":["FAILED"]
+    },
+    "ExtractionMode":{
+      "type":"string",
+      "enum":["SKIP"]
+    },
+    "FailureAnalysisResultContent":{
+      "type":"structure",
+      "required":["failures"],
+      "members":{
+        "failures":{
+          "shape":"FailureCategoryClusterList",
+          "documentation":"<p>The list of failure category clusters identified across analyzed sessions.</p>"
+        }
+      },
+      "documentation":"<p>The failure analysis clustering result containing categorized failure clusters with root causes and remediation recommendations.</p>"
+    },
+    "FailureCategoryCluster":{
+      "type":"structure",
+      "required":[
+        "clusterId",
+        "name",
+        "description",
+        "affectedSessionCount",
+        "subCategories"
+      ],
+      "members":{
+        "clusterId":{
+          "shape":"Integer",
+          "documentation":"<p>The unique identifier of the failure category cluster.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the failure category.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the failure category pattern.</p>"
+        },
+        "affectedSessionCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of sessions affected by this failure category.</p>"
+        },
+        "subCategories":{
+          "shape":"FailureSubCategoryClusterList",
+          "documentation":"<p>The list of failure subcategories within this category.</p>"
+        }
+      },
+      "documentation":"<p>A top-level failure category identified by clustering similar failure patterns across sessions.</p>"
+    },
+    "FailureCategoryClusterList":{
+      "type":"list",
+      "member":{"shape":"FailureCategoryCluster"},
+      "min":0
+    },
+    "FailureSpanDetail":{
+      "type":"structure",
+      "required":[
+        "spanId",
+        "traceId",
+        "signals"
+      ],
+      "members":{
+        "spanId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the span where the failure occurred.</p>"
+        },
+        "traceId":{
+          "shape":"String",
+          "documentation":"<p>The trace identifier associated with the failure span.</p>"
+        },
+        "signals":{
+          "shape":"InsightsFailureSignalList",
+          "documentation":"<p>The failure signals detected in this span.</p>"
+        }
+      },
+      "documentation":"<p>Details about a specific span where a failure was detected.</p>"
+    },
+    "FailureSpanDetailList":{
+      "type":"list",
+      "member":{"shape":"FailureSpanDetail"},
+      "min":0
+    },
+    "FailureSubCategoryCluster":{
+      "type":"structure",
+      "required":[
+        "clusterId",
+        "name",
+        "description",
+        "affectedSessionCount",
+        "rootCauses"
+      ],
+      "members":{
+        "clusterId":{
+          "shape":"Integer",
+          "documentation":"<p>The unique identifier of the failure subcategory cluster.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the failure subcategory.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the failure subcategory pattern.</p>"
+        },
+        "affectedSessionCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of sessions affected by this failure subcategory.</p>"
+        },
+        "rootCauses":{
+          "shape":"RootCauseClusterList",
+          "documentation":"<p>The list of root cause clusters identified within this subcategory.</p>"
+        }
+      },
+      "documentation":"<p>A subcategory of failures within a top-level failure category.</p>"
+    },
+    "FailureSubCategoryClusterList":{
+      "type":"list",
+      "member":{"shape":"FailureSubCategoryCluster"},
+      "min":0
     },
     "FilterInput":{
       "type":"structure",
@@ -4261,6 +4531,10 @@
           "shape":"EvaluatorList",
           "documentation":"<p>The list of evaluators applied during the batch evaluation.</p>"
         },
+        "insights":{
+          "shape":"InsightList",
+          "documentation":"<p>The list of insight analyses applied during the batch evaluation.</p>"
+        },
         "dataSourceConfig":{
           "shape":"DataSourceConfig",
           "documentation":"<p>The data source configuration specifying where agent traces are pulled from.</p>"
@@ -4273,6 +4547,18 @@
           "shape":"EvaluationJobResults",
           "documentation":"<p>The aggregated evaluation results, including session completion counts and evaluator score summaries.</p>"
         },
+        "failureAnalysisResult":{
+          "shape":"FailureAnalysisResultContent",
+          "documentation":"<p>The failure analysis results from insights, containing categorized failure clusters with root causes and recommendations.</p>"
+        },
+        "userIntentResult":{
+          "shape":"UserIntentClusteringResultContent",
+          "documentation":"<p>The user intent clustering results from insights, containing grouped user intents across evaluated sessions.</p>"
+        },
+        "executionSummaryResult":{
+          "shape":"ExecutionSummaryClusteringResultContent",
+          "documentation":"<p>The execution summary clustering results from insights, containing grouped execution patterns across evaluated sessions.</p>"
+        },
         "errorDetails":{
           "shape":"ErrorDetailsList",
           "documentation":"<p>The error details if the batch evaluation encountered failures.</p>"
@@ -4284,6 +4570,10 @@
         "updatedAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The timestamp when the batch evaluation was last updated.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The ARN of the KMS key used to encrypt evaluation data.</p>"
         }
       }
     },
@@ -4723,6 +5013,10 @@
         "recommendationResult":{
           "shape":"RecommendationResult",
           "documentation":"<p>The result of the recommendation, containing the optimized system prompt or tool descriptions. Only present when the recommendation status is <code>COMPLETED</code>.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The ARN of the KMS key used to encrypt recommendation data.</p>"
         }
       }
     },
@@ -5025,6 +5319,16 @@
       "type":"string",
       "pattern":"arn:([^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:harness/[a-zA-Z][a-zA-Z0-9_]{0,39}-[a-zA-Z0-9]{10}"
     },
+    "HarnessAwsSkillPath":{
+      "type":"string",
+      "max":4096,
+      "min":1,
+      "pattern":"([^*?\\[\\]]|\\*)+"
+    },
+    "HarnessAwsSkillPaths":{
+      "type":"list",
+      "member":{"shape":"HarnessAwsSkillPath"}
+    },
     "HarnessBedrockApiFormat":{
       "type":"string",
       "enum":[
@@ -5195,6 +5499,10 @@
         "user",
         "assistant"
       ]
+    },
+    "HarnessEndpointName":{
+      "type":"string",
+      "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,47}"
     },
     "HarnessGatewayOutboundAuth":{
       "type":"structure",
@@ -5534,10 +5842,24 @@
         "git":{
           "shape":"HarnessSkillGitSource",
           "documentation":"<p>A git repository containing the skill.</p>"
+        },
+        "awsSkills":{
+          "shape":"HarnessSkillAwsSkillsSource",
+          "documentation":"<p>AWS Skills baked into the Harness's underlying Runtime.</p>"
         }
       },
       "documentation":"<p>A skill available to the agent.</p>",
       "union":true
+    },
+    "HarnessSkillAwsSkillsSource":{
+      "type":"structure",
+      "members":{
+        "paths":{
+          "shape":"HarnessAwsSkillPaths",
+          "documentation":"<p>Optionally filter allowed skills with glob syntax, e.g., ['core-skills/*'].</p>"
+        }
+      },
+      "documentation":"<p>Passed to show that AWS Skills should be included.</p>"
     },
     "HarnessSkillGitAuth":{
       "type":"structure",
@@ -5576,7 +5898,7 @@
     "HarnessSkillGitUrl":{
       "type":"string",
       "min":8,
-      "pattern":"https://.*"
+      "pattern":"https://[^#@]+"
     },
     "HarnessSkillPath":{
       "type":"string",
@@ -6027,6 +6349,95 @@
     "InputContentBlockList":{
       "type":"list",
       "member":{"shape":"InputContentBlock"}
+    },
+    "Insight":{
+      "type":"structure",
+      "required":["insightId"],
+      "members":{
+        "insightId":{
+          "shape":"InsightId",
+          "documentation":"<p>The unique identifier of the insight to run.</p>"
+        }
+      },
+      "documentation":"<p>A reference to an insight analysis to run against sessions during batch evaluation. Insights provide deeper analysis beyond individual evaluator scores, including failure detection, user intent clustering, and execution summarization.</p>"
+    },
+    "InsightId":{
+      "type":"string",
+      "documentation":"<p>Canonical insight identifiers using the Builtin.Insight.* naming convention. Used by BatchEvaluate, InternalEvaluate, and ServiceEngineEvaluate flows.</p>",
+      "pattern":"(Builtin\\.[a-zA-Z0-9._-]+|[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10})"
+    },
+    "InsightList":{
+      "type":"list",
+      "member":{"shape":"Insight"},
+      "max":10,
+      "min":0
+    },
+    "InsightsFailureCategory":{
+      "type":"string",
+      "documentation":"<p>Failure category taxonomy for agent session insights. Values must stay in sync with the category registry in AgentCoreLens (amzn_agentcore_lens.config.failure_detection.FAILURE_CATEGORIES).</p>",
+      "enum":[
+        "execution-error-category-authentication",
+        "execution-error-category-resource-not-found",
+        "execution-error-category-service-errors",
+        "execution-error-category-rate-limiting",
+        "execution-error-category-formatting",
+        "execution-error-category-timeout",
+        "execution-error-category-resource-exhaustion",
+        "execution-error-category-environment",
+        "execution-error-category-tool-schema",
+        "task-instruction-category-non-compliance",
+        "task-instruction-category-problem-id",
+        "incorrect-actions-category-tool-selection",
+        "incorrect-actions-category-poor-information-retrieval",
+        "incorrect-actions-category-clarification",
+        "incorrect-actions-category-inappropriate-info-request",
+        "context-handling-error-category-context-handling-failures",
+        "hallucination-category-hall-capabilities",
+        "hallucination-category-hall-misunderstand",
+        "hallucination-category-hall-usage",
+        "hallucination-category-hall-history",
+        "hallucination-category-hall-params",
+        "hallucination-category-fabricate-tool-outputs",
+        "repetitive-behavior-category-repetition-tool",
+        "repetitive-behavior-category-repetition-info",
+        "repetitive-behavior-category-step-repetition",
+        "orchestration-related-errors-category-reasoning-mismatch",
+        "orchestration-related-errors-category-goal-deviation",
+        "orchestration-related-errors-category-premature-termination",
+        "orchestration-related-errors-category-unaware-termination",
+        "llm-output-category-nonsensical",
+        "configuration-mismatch-category-tool-definition",
+        "coding-use-case-specific-failure-types-category-edge-case-oversights",
+        "coding-use-case-specific-failure-types-category-dependency-issues",
+        "other"
+      ]
+    },
+    "InsightsFailureSignal":{
+      "type":"structure",
+      "required":[
+        "category",
+        "evidence",
+        "confidence"
+      ],
+      "members":{
+        "category":{
+          "shape":"InsightsFailureCategory",
+          "documentation":"<p>The failure category classification for this signal.</p>"
+        },
+        "evidence":{
+          "shape":"String",
+          "documentation":"<p>The evidence supporting the failure detection.</p>"
+        },
+        "confidence":{
+          "shape":"Double",
+          "documentation":"<p>The confidence score of the failure detection.</p>"
+        }
+      },
+      "documentation":"<p>A signal indicating a detected failure within a span.</p>"
+    },
+    "InsightsFailureSignalList":{
+      "type":"list",
+      "member":{"shape":"InsightsFailureSignal"}
     },
     "InstrumentBalanceToken":{
       "type":"string",
@@ -6567,6 +6978,12 @@
           "location":"querystring",
           "locationName":"harnessArn"
         },
+        "qualifier":{
+          "shape":"HarnessEndpointName",
+          "documentation":"<p>The endpoint name to invoke. If omitted, the DEFAULT endpoint is used.</p>",
+          "location":"querystring",
+          "locationName":"qualifier"
+        },
         "runtimeSessionId":{
           "shape":"InvokeHarnessRequestRuntimeSessionIdString",
           "documentation":"<p>The session ID for the invocation. Use the same session ID across requests to continue a conversation.</p>",
@@ -6781,6 +7198,12 @@
         }
       },
       "documentation":"<p>The result of a key type action.</p>"
+    },
+    "KmsKeyArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws(|-cn|-us-gov):kms:[a-zA-Z0-9-]*:[0-9]{12}:key/[a-zA-Z0-9-]{36}"
     },
     "LanguageRuntime":{
       "type":"string",
@@ -7502,7 +7925,7 @@
     "MemoryId":{
       "type":"string",
       "min":12,
-      "pattern":"[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
+      "pattern":"(arn:(aws|aws-cn|aws-us-gov):bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:memory/)?[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
     },
     "MemoryMetadataFilterExpression":{
       "type":"structure",
@@ -8239,7 +8662,22 @@
     },
     "OnlineEvaluationConfigArn":{
       "type":"string",
-      "pattern":"arn:aws:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:online-evaluation-config\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
+      "pattern":"arn:aws[a-zA-Z-]*:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:online-evaluation-config\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
+    },
+    "OnlineEvaluationConfigSource":{
+      "type":"structure",
+      "required":["onlineEvaluationConfigArn"],
+      "members":{
+        "onlineEvaluationConfigArn":{
+          "shape":"OnlineEvaluationConfigArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the online evaluation configuration to use as the session source.</p>"
+        },
+        "timeRange":{
+          "shape":"SessionFilterConfig",
+          "documentation":"<p>Optional session filter configuration to narrow down which sessions from the online evaluation configuration to include.</p>"
+        }
+      },
+      "documentation":"<p>A reference to an existing online evaluation configuration to use as the data source for batch evaluation.</p>"
     },
     "OperatorType":{
       "type":"string",
@@ -8900,6 +9338,11 @@
       },
       "documentation":"<p>A reference to an evaluator used for recommendation assessment.</p>"
     },
+    "RecommendationExplanation":{
+      "type":"string",
+      "max":4096,
+      "min":0
+    },
     "RecommendationId":{
       "type":"string",
       "pattern":"[0-9a-zA-Z_-]{1,48}-[0-9A-Z]{10}"
@@ -9329,6 +9772,49 @@
       "min":1,
       "pattern":"arn:aws(-[^:]+)?:iam::([0-9]{12})?:role/.+"
     },
+    "RootCauseCluster":{
+      "type":"structure",
+      "required":[
+        "clusterId",
+        "name",
+        "rootCause",
+        "recommendation",
+        "affectedSessionCount",
+        "affectedSessions"
+      ],
+      "members":{
+        "clusterId":{
+          "shape":"Integer",
+          "documentation":"<p>The unique identifier of the root cause cluster.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the root cause cluster.</p>"
+        },
+        "rootCause":{
+          "shape":"String",
+          "documentation":"<p>The root cause explanation for this cluster of failures.</p>"
+        },
+        "recommendation":{
+          "shape":"String",
+          "documentation":"<p>The recommended fix for this root cause.</p>"
+        },
+        "affectedSessionCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of sessions affected by this root cause.</p>"
+        },
+        "affectedSessions":{
+          "shape":"AffectedSessionList",
+          "documentation":"<p>The list of sessions affected by this root cause.</p>"
+        }
+      },
+      "documentation":"<p>A cluster of similar root causes identified within a failure subcategory.</p>"
+    },
+    "RootCauseClusterList":{
+      "type":"list",
+      "member":{"shape":"RootCauseCluster"},
+      "min":0
+    },
     "RuntimeClientError":{
       "type":"structure",
       "members":{
@@ -9645,6 +10131,8 @@
     },
     "ServiceName":{
       "type":"string",
+      "max":256,
+      "min":1,
       "pattern":"[a-zA-Z0-9._-]+"
     },
     "ServiceNameList":{
@@ -9855,6 +10343,10 @@
           "shape":"StartBatchEvaluationRequestEvaluatorsList",
           "documentation":"<p>The list of evaluators to apply during the batch evaluation. Can include both built-in evaluators and custom evaluators. Maximum of 10 evaluators.</p>"
         },
+        "insights":{
+          "shape":"StartBatchEvaluationRequestInsightsList",
+          "documentation":"<p>The list of insight analyses to run against sessions during the batch evaluation. Maximum of 10 insights.</p>"
+        },
         "dataSourceConfig":{
           "shape":"DataSourceConfig",
           "documentation":"<p>The data source configuration that specifies where to pull agent session traces from for evaluation.</p>"
@@ -9868,6 +10360,14 @@
           "shape":"EvaluationMetadata",
           "documentation":"<p>Optional metadata for the evaluation, including session-specific ground truth data and test scenario identifiers.</p>"
         },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of tag keys and values to associate with the batch evaluation.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The ARN of the KMS key used to encrypt evaluation data. If provided, customer data is encrypted at rest with the specified key.</p>"
+        },
         "description":{
           "shape":"BatchEvaluationDescription",
           "documentation":"<p>The description of the batch evaluation.</p>"
@@ -9877,6 +10377,12 @@
     "StartBatchEvaluationRequestEvaluatorsList":{
       "type":"list",
       "member":{"shape":"Evaluator"},
+      "max":10,
+      "min":0
+    },
+    "StartBatchEvaluationRequestInsightsList":{
+      "type":"list",
+      "member":{"shape":"Insight"},
       "max":10,
       "min":0
     },
@@ -9906,6 +10412,10 @@
           "shape":"EvaluatorList",
           "documentation":"<p>The list of evaluators applied during the batch evaluation.</p>"
         },
+        "insights":{
+          "shape":"InsightList",
+          "documentation":"<p>The list of insight analyses applied during the batch evaluation.</p>"
+        },
         "status":{
           "shape":"BatchEvaluationStatus",
           "documentation":"<p>The status of the batch evaluation.</p>"
@@ -9917,6 +10427,14 @@
         "outputConfig":{
           "shape":"OutputConfig",
           "documentation":"<p>The output configuration specifying where evaluation results are written.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>The tags associated with the batch evaluation.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The ARN of the KMS key used to encrypt evaluation data.</p>"
         },
         "description":{
           "shape":"BatchEvaluationDescription",
@@ -10152,10 +10670,18 @@
           "shape":"RecommendationConfig",
           "documentation":"<p>The configuration for the recommendation, including the input to optimize, agent traces to analyze, and evaluation settings.</p>"
         },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The ARN of the KMS key used to encrypt recommendation data. If provided, customer data is encrypted at rest with the specified key.</p>"
+        },
         "clientToken":{
           "shape":"ClientToken",
           "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, the service ignores the request, but does not return an error.</p>",
           "idempotencyToken":true
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of tag keys and values to associate with the recommendation.</p>"
         }
       }
     },
@@ -10621,8 +11147,7 @@
       "type":"structure",
       "required":[
         "systemPrompt",
-        "agentTraces",
-        "evaluationConfig"
+        "agentTraces"
       ],
       "members":{
         "systemPrompt":{
@@ -10651,6 +11176,10 @@
           "shape":"RecommendationResultConfigurationBundle",
           "documentation":"<p>The configuration bundle containing the recommended system prompt, if the input was sourced from a configuration bundle.</p>"
         },
+        "explanation":{
+          "shape":"RecommendationExplanation",
+          "documentation":"<p>An explanation of why the recommendation was generated and what patterns were identified in the agent traces.</p>"
+        },
         "errorCode":{
           "shape":"RecommendationErrorCode",
           "documentation":"<p>The error code if the recommendation failed.</p>"
@@ -10667,6 +11196,25 @@
       "max":20000,
       "min":1,
       "sensitive":true
+    },
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9\\s._:/=+@-]*"
+    },
+    "TagValue":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"[a-zA-Z0-9\\s._:/=+@-]*"
+    },
+    "TagsMap":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"},
+      "max":50,
+      "min":0
     },
     "TargetName":{
       "type":"string",
@@ -10896,6 +11444,10 @@
         "recommendedToolDescription":{
           "shape":"ToolDescriptionText",
           "documentation":"<p>The optimized tool description text generated by the recommendation.</p>"
+        },
+        "explanation":{
+          "shape":"RecommendationExplanation",
+          "documentation":"<p>An explanation of why the recommendation was generated for this tool and what patterns were identified in the agent traces.</p>"
         }
       },
       "documentation":"<p>The output for a single tool description recommendation.</p>"
@@ -11229,6 +11781,82 @@
       },
       "documentation":"<p>The OAuth2.0 token or user ID that was used to generate the workload access token used for initiating the user authorization flow to retrieve OAuth2.0 tokens.</p>",
       "union":true
+    },
+    "UserIntentAffectedSession":{
+      "type":"structure",
+      "required":[
+        "sessionId",
+        "userMessages"
+      ],
+      "members":{
+        "sessionId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the session.</p>"
+        },
+        "userMessages":{
+          "shape":"UserIntentList",
+          "documentation":"<p>The user messages from this session that contributed to the intent cluster.</p>"
+        }
+      },
+      "documentation":"<p>A session associated with a user intent cluster.</p>"
+    },
+    "UserIntentAffectedSessionList":{
+      "type":"list",
+      "member":{"shape":"UserIntentAffectedSession"},
+      "min":0
+    },
+    "UserIntentCluster":{
+      "type":"structure",
+      "required":[
+        "clusterId",
+        "name",
+        "description",
+        "affectedSessionCount",
+        "affectedSessions"
+      ],
+      "members":{
+        "clusterId":{
+          "shape":"Integer",
+          "documentation":"<p>The unique identifier of the user intent cluster.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the user intent cluster.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the user intent pattern.</p>"
+        },
+        "affectedSessionCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of sessions with this user intent.</p>"
+        },
+        "affectedSessions":{
+          "shape":"UserIntentAffectedSessionList",
+          "documentation":"<p>The list of sessions with this user intent.</p>"
+        }
+      },
+      "documentation":"<p>A cluster of similar user intents identified across sessions.</p>"
+    },
+    "UserIntentClusterList":{
+      "type":"list",
+      "member":{"shape":"UserIntentCluster"},
+      "min":0
+    },
+    "UserIntentClusteringResultContent":{
+      "type":"structure",
+      "required":["userIntents"],
+      "members":{
+        "userIntents":{
+          "shape":"UserIntentClusterList",
+          "documentation":"<p>The list of user intent clusters identified across analyzed sessions.</p>"
+        }
+      },
+      "documentation":"<p>The user intent clustering result containing grouped user intents identified across evaluated sessions.</p>"
+    },
+    "UserIntentList":{
+      "type":"list",
+      "member":{"shape":"String"}
     },
     "UserTokenType":{
       "type":"string",

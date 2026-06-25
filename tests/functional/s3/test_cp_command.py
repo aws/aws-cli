@@ -23,6 +23,7 @@ from awscli.testutils import (
     mock,
     skip_if_windows,
 )
+from botocore.response import StreamingBody
 from tests.functional.s3 import (
     BaseCRTTransferClientTest,
     BaseS3CLIRunnerTest,
@@ -1000,6 +1001,7 @@ class TestCPCommand(BaseCPCommandTest):
             'CopySource': {'Bucket': 'bucket-one', 'Key': 'key.txt'},
             'CopySourceSSECustomerAlgorithm': 'AES256',
             'CopySourceSSECustomerKey': key_contents,
+            'AnnotationDirective': 'EXCLUDE',
         }
         self.assertDictEqual(self.operations_called[1][1], expected_args)
 
@@ -1031,6 +1033,7 @@ class TestCPCommand(BaseCPCommandTest):
             'CopySource': {'Bucket': 'bucket-one', 'Key': 'key.txt'},
             'SSECustomerAlgorithm': 'AES256',
             'SSECustomerKey': 'destination-key',
+            'AnnotationDirective': 'EXCLUDE',
         }
         self.assertDictEqual(self.operations_called[1][1], expected_copy_args)
 
@@ -1066,6 +1069,7 @@ class TestCPCommand(BaseCPCommandTest):
             'SSECustomerKey': 'bar',
             'CopySourceSSECustomerAlgorithm': 'AES256',
             'CopySourceSSECustomerKey': 'foo',
+            'AnnotationDirective': 'EXCLUDE',
         }
         self.assertDictEqual(self.operations_called[1][1], expected_copy_args)
 
@@ -1266,6 +1270,7 @@ class TestCPCommand(BaseCPCommandTest):
                 'Bucket': 'bucket',
                 'CopySource': {'Bucket': 'bucket', 'Key': 'key1.txt'},
                 'SSEKMSKeyId': 'foo',
+                'AnnotationDirective': 'EXCLUDE',
                 'ServerSideEncryption': 'aws:kms',
             },
         )
@@ -2286,6 +2291,39 @@ class BaseCopyPropsCpCommandTest(BaseCPCommandTest):
             BaseCopyPropsCpCommandTest, self
         ).put_object_tagging_request(bucket=bucket, key=key, tags=tags)
 
+    def list_object_annotations_request(self, bucket=None, key=None, **kwargs):
+        if bucket is None:
+            bucket = self.source_bucket
+        if key is None:
+            key = self.source_key
+        return super(
+            BaseCopyPropsCpCommandTest, self
+        ).list_object_annotations_request(bucket, key, **kwargs)
+
+    def get_object_annotation_request(
+        self, annotation_name, bucket=None, key=None, **kwargs
+    ):
+        if bucket is None:
+            bucket = self.source_bucket
+        if key is None:
+            key = self.source_key
+        return super(
+            BaseCopyPropsCpCommandTest, self
+        ).get_object_annotation_request(bucket, key, annotation_name, **kwargs)
+
+    def put_object_annotation_request(
+        self, annotation_name, payload, bucket=None, key=None, **override
+    ):
+        if bucket is None:
+            bucket = self.target_bucket
+        if key is None:
+            key = self.target_key
+        return super(
+            BaseCopyPropsCpCommandTest, self
+        ).put_object_annotation_request(
+            bucket, key, annotation_name, payload, **override
+        )
+
 
 class TestCopyPropsNoneCpCommand(BaseCopyPropsCpCommandTest):
     def test_copy_object(self):
@@ -2319,8 +2357,21 @@ class TestCopyPropsNoneCpCommand(BaseCopyPropsCpCommandTest):
             self.copy_object_response(),
         ]
         self.run_cmd(cmdline, expected_rc=0)
+        # --metadata-directive bypasses the copy-props subscribers entirely,
+        # so no tagging or annotation directives are set.
         self.assert_in_operations_called(
-            self.copy_object_request(MetadataDirective='COPY')
+            (
+                'CopyObject',
+                {
+                    'Bucket': self.target_bucket,
+                    'Key': self.target_key,
+                    'CopySource': {
+                        'Bucket': self.source_bucket,
+                        'Key': self.source_key,
+                    },
+                    'MetadataDirective': 'COPY',
+                },
+            )
         )
 
 
@@ -2519,8 +2570,21 @@ class TestCopyPropsMetadataDirectiveCpCommand(BaseCopyPropsCpCommandTest):
             self.copy_object_response(),
         ]
         self.run_cmd(cmdline, expected_rc=0)
+        # --metadata-directive bypasses the copy-props subscribers entirely,
+        # so no tagging or annotation directives are set.
         self.assert_in_operations_called(
-            self.copy_object_request(MetadataDirective='REPLACE')
+            (
+                'CopyObject',
+                {
+                    'Bucket': self.target_bucket,
+                    'Key': self.target_key,
+                    'CopySource': {
+                        'Bucket': self.source_bucket,
+                        'Key': self.source_key,
+                    },
+                    'MetadataDirective': 'REPLACE',
+                },
+            )
         )
 
 
@@ -2807,8 +2871,222 @@ class TestCopyPropsDefaultCpCommand(BaseCopyPropsCpCommandTest):
             self.copy_object_response(),
         ]
         self.run_cmd(cmdline, expected_rc=0)
+        # --metadata-directive bypasses the copy-props subscribers entirely,
+        # so no tagging or annotation directives are set.
         self.assert_in_operations_called(
-            self.copy_object_request(MetadataDirective='REPLACE')
+            (
+                'CopyObject',
+                {
+                    'Bucket': self.target_bucket,
+                    'Key': self.target_key,
+                    'CopySource': {
+                        'Bucket': self.source_bucket,
+                        'Key': self.source_key,
+                    },
+                    'MetadataDirective': 'REPLACE',
+                },
+            )
+        )
+
+
+class TestCopyPropsAllCpCommand(BaseCopyPropsCpCommandTest):
+    def setUp(self):
+        super(TestCopyPropsAllCpCommand, self).setUp()
+        self.dest_etag = '"dest-etag"'
+        self.dest_version_id = 'dest-version-id'
+        self.annotation_payload_bytes = b'annotation-payload'
+
+    def mp_copy_responses_with_dest_identity(self):
+        return [
+            self.create_mpu_response('upload_id'),
+            self.upload_part_copy_response(),
+            {'ETag': self.dest_etag, 'VersionId': self.dest_version_id},
+        ]
+
+    def test_copy_object_excludes_nothing_for_single_part(self):
+        # A single-part copy carries annotations server-side via the
+        # AnnotationDirective, which defaults to COPY. ``all`` must not set
+        # EXCLUDE (unlike every other copy-props mode).
+        cmdline = self.get_s3_cp_copy_command(copy_props='all')
+        self.parsed_responses = [
+            self.head_object_response(),
+            self.copy_object_response(),
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        # ``all`` relies on the server-side AnnotationDirective default (COPY)
+        # for single-part copies, so no AnnotationDirective is set.
+        self.assert_in_operations_called(
+            (
+                'CopyObject',
+                {
+                    'Bucket': self.target_bucket,
+                    'Key': self.target_key,
+                    'CopySource': {
+                        'Bucket': self.source_bucket,
+                        'Key': self.source_key,
+                    },
+                },
+            )
+        )
+
+    def test_mp_copy_object_copies_annotations(self):
+        cmdline = self.get_s3_cp_copy_command(copy_props='all')
+        self.parsed_responses = (
+            [
+                self.head_object_response(
+                    ContentLength=self.multipart_threshold
+                ),
+                self.get_object_tagging_response(tags=self.tags),
+                self.list_object_annotations_response(['ann1', 'ann2']),
+                self.get_object_annotation_response(
+                    StreamingBody(
+                        BytesIO(self.annotation_payload_bytes),
+                        len(self.annotation_payload_bytes)
+                    )
+                ),
+                self.get_object_annotation_response(
+                    StreamingBody(
+                        BytesIO(self.annotation_payload_bytes),
+                        len(self.annotation_payload_bytes)
+                    )
+                ),
+            ]
+            + self.mp_copy_responses_with_dest_identity()
+            + [
+                self.put_object_annotation_response(),
+                self.put_object_annotation_response(),
+            ]
+        )
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_in_operations_called(
+            self.list_object_annotations_request()
+        )
+        self.assert_in_operations_called(
+            self.get_object_annotation_request('ann1')
+        )
+        self.assert_in_operations_called(
+            self.put_object_annotation_request(
+                'ann1',
+                self.annotation_payload_bytes,
+                ObjectIfMatch=self.dest_etag,
+                VersionId=self.dest_version_id,
+            )
+        )
+        self.assert_in_operations_called(
+            self.put_object_annotation_request(
+                'ann2',
+                self.annotation_payload_bytes,
+                ObjectIfMatch=self.dest_etag,
+                VersionId=self.dest_version_id,
+            )
+        )
+
+    def test_mp_copy_object_no_annotations(self):
+        cmdline = self.get_s3_cp_copy_command(copy_props='all')
+        self.parsed_responses = [
+            self.head_object_response(ContentLength=self.multipart_threshold),
+            self.get_object_tagging_response(tags={}),
+            self.list_object_annotations_response([]),
+        ] + self.mp_copy_responses()
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_in_operations_called(
+            self.list_object_annotations_request()
+        )
+        called = [op[0].name for op in self.operations_called]
+        self.assertNotIn('GetObjectAnnotation', called)
+        self.assertNotIn('PutObjectAnnotation', called)
+
+    def test_mp_copy_object_partial_annotation_failure(self):
+        cmdline = self.get_s3_cp_copy_command(copy_props='all')
+        self.parsed_responses = (
+            [
+                self.head_object_response(
+                    ContentLength=self.multipart_threshold
+                ),
+                self.get_object_tagging_response(tags={}),
+                self.list_object_annotations_response(['ann1', 'ann2']),
+                self.get_object_annotation_response(
+                    StreamingBody(
+                        BytesIO(self.annotation_payload_bytes),
+                        len(self.annotation_payload_bytes)
+                    )
+                ),
+                self.get_object_annotation_response(
+                    StreamingBody(
+                        BytesIO(self.annotation_payload_bytes),
+                        len(self.annotation_payload_bytes)
+                    )
+                ),
+            ]
+            + self.mp_copy_responses_with_dest_identity()
+            + [
+                self.put_object_annotation_response(),
+                self.access_denied_error_response(),
+            ]
+        )
+        self.set_http_status_codes(
+            [
+                200,  # HeadObject
+                200,  # GetObjectTagging
+                200,  # ListObjectAnnotations
+                200,  # GetObjectAnnotation ann1
+                200,  # GetObjectAnnotation ann2
+                200,  # CreateMultipartUpload
+                200,  # UploadPartCopy
+                200,  # CompleteMultipartUpload
+                200,  # PutObjectAnnotation ann1
+                403,  # PutObjectAnnotation ann2
+            ]
+        )
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=1)
+        # The destination object is not deleted on partial annotation failure.
+        called = [op[0].name for op in self.operations_called]
+        self.assertNotIn('DeleteObject', called)
+        self.assertIn('ann1', stderr)
+        self.assertIn('ann2', stderr)
+
+    def test_mp_copy_object_copies_annotations_with_source_version_id(self):
+        source_version_id = 'src-version-id'
+        cmdline = self.get_s3_cp_copy_command(copy_props='all')
+        self.parsed_responses = (
+            [
+                self.head_object_response(
+                    ContentLength=self.multipart_threshold,
+                    VersionId=source_version_id,
+                ),
+                self.get_object_tagging_response(tags=self.tags),
+                self.list_object_annotations_response(['ann1']),
+                self.get_object_annotation_response(
+                    StreamingBody(
+                        BytesIO(self.annotation_payload_bytes),
+                        len(self.annotation_payload_bytes)
+                    )
+                ),
+            ]
+            + self.mp_copy_responses_with_dest_identity()
+            + [
+                self.put_object_annotation_response(),
+            ]
+        )
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_in_operations_called(
+            self.list_object_annotations_request(
+                VersionId=source_version_id,
+            )
+        )
+        self.assert_in_operations_called(
+            self.get_object_annotation_request(
+                'ann1',
+                VersionId=source_version_id,
+            )
+        )
+        self.assert_in_operations_called(
+            self.put_object_annotation_request(
+                'ann1',
+                self.annotation_payload_bytes,
+                ObjectIfMatch=self.dest_etag,
+                VersionId=self.dest_version_id,
+            )
         )
 
 

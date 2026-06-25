@@ -2451,12 +2451,24 @@
       },
       "documentation":"<p>The full description of your connected cluster.</p>"
     },
+    "ControlPlaneEgressModeType":{
+      "type":"string",
+      "enum":[
+        "AWS_MANAGED",
+        "CUSTOMER_ROUTED",
+        "CUSTOMER_ISOLATED"
+      ]
+    },
     "ControlPlanePlacementRequest":{
       "type":"structure",
       "members":{
         "groupName":{
           "shape":"String",
           "documentation":"<p>The name of the placement group for the Kubernetes control plane instances. This setting can't be changed after cluster creation. </p>"
+        },
+        "spreadLevel":{
+          "shape":"SpreadLevel",
+          "documentation":"<p>Optional parameter to specify the placement group spread level for control plane instances. If not provided, Amazon EKS will deploy control plane instances without a placement group.</p>"
         }
       },
       "documentation":"<p>The placement configuration for all the control plane instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p>"
@@ -2467,6 +2479,10 @@
         "groupName":{
           "shape":"String",
           "documentation":"<p>The name of the placement group for the Kubernetes control plane instances.</p>"
+        },
+        "spreadLevel":{
+          "shape":"SpreadLevel",
+          "documentation":"<p>The spread level used with the placement group for control plane instances on your local Amazon EKS cluster on Amazon Web Services Outposts.</p>"
         }
       },
       "documentation":"<p>The placement configuration for all the control plane instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p>"
@@ -4056,6 +4072,26 @@
     "ErrorDetails":{
       "type":"list",
       "member":{"shape":"ErrorDetail"}
+    },
+    "EtcdPlacementRequest":{
+      "type":"structure",
+      "members":{
+        "spreadLevel":{
+          "shape":"SpreadLevel",
+          "documentation":"<p>Optional parameter to specify the placement group spread level for etcd instances. If not provided, Amazon EKS will deploy etcd instances without a placement group.</p>"
+        }
+      },
+      "documentation":"<p>The placement configuration for the etcd instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p>"
+    },
+    "EtcdPlacementResponse":{
+      "type":"structure",
+      "members":{
+        "spreadLevel":{
+          "shape":"SpreadLevel",
+          "documentation":"<p>The spread level used with the placement group for etcd instances on your local Amazon EKS cluster on Amazon Web Services Outposts.</p>"
+        }
+      },
+      "documentation":"<p>The placement configuration for the etcd instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p>"
     },
     "FargateProfile":{
       "type":"structure",
@@ -5686,11 +5722,19 @@
         },
         "controlPlaneInstanceType":{
           "shape":"String",
-          "documentation":"<p>The Amazon EC2 instance type that you want to use for your local Amazon EKS cluster on Outposts. Choose an instance type based on the number of nodes that your cluster will have. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p> <p>The instance type that you specify is used for all Kubernetes control plane instances. The instance type can't be changed after cluster creation. The control plane is not automatically scaled by Amazon EKS.</p> <p> </p>"
+          "documentation":"<p>The Amazon EC2 instance type for the Kubernetes control plane instances of your local Amazon EKS cluster on Amazon Web Services Outposts. This instance type applies to all control plane instances and cannot be changed after cluster creation.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p> <p> </p>"
         },
         "controlPlanePlacement":{
           "shape":"ControlPlanePlacementRequest",
           "documentation":"<p>An object representing the placement configuration for all the control plane instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p>"
+        },
+        "etcdInstanceType":{
+          "shape":"String",
+          "documentation":"<p>The Amazon EC2 instance type for etcd instances of your local Amazon EKS cluster on Amazon Web Services Outposts. This instance type applies to all etcd instances and cannot be changed after cluster creation.</p>"
+        },
+        "etcdPlacement":{
+          "shape":"EtcdPlacementRequest",
+          "documentation":"<p>An object representing the placement configuration for the etcd instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p>"
         }
       },
       "documentation":"<p>The configuration of your local Amazon EKS cluster on an Amazon Web Services Outpost. Before creating a cluster on an Outpost, review <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-local-cluster-create.html\">Creating a local cluster on an Outpost</a> in the <i>Amazon EKS User Guide</i>. This API isn't available for Amazon EKS clusters on the Amazon Web Services cloud.</p>"
@@ -5708,11 +5752,19 @@
         },
         "controlPlaneInstanceType":{
           "shape":"String",
-          "documentation":"<p>The Amazon EC2 instance type used for the control plane. The instance type is the same for all control plane instances.</p>"
+          "documentation":"<p>The Amazon EC2 instance type for the Kubernetes control plane instances of your local Amazon EKS cluster on Amazon Web Services Outposts. The instance type is the same for all control plane instances.</p>"
         },
         "controlPlanePlacement":{
           "shape":"ControlPlanePlacementResponse",
           "documentation":"<p>An object representing the placement configuration for all the control plane instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p>"
+        },
+        "etcdInstanceType":{
+          "shape":"String",
+          "documentation":"<p>The Amazon EC2 instance type for etcd instances of your local Amazon EKS cluster on Amazon Web Services Outposts. The instance type is the same for all etcd instances.</p>"
+        },
+        "etcdPlacement":{
+          "shape":"EtcdPlacementResponse",
+          "documentation":"<p>An object representing the placement configuration for the etcd instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p>"
         }
       },
       "documentation":"<p>An object representing the configuration of your local Amazon EKS cluster on an Amazon Web Services Outpost. This API isn't available for Amazon EKS clusters on the Amazon Web Services cloud.</p>"
@@ -6097,6 +6149,13 @@
       "error":{"httpStatusCode":503},
       "exception":true,
       "fault":true
+    },
+    "SpreadLevel":{
+      "type":"string",
+      "enum":[
+        "host",
+        "rack"
+      ]
     },
     "SsoIdentity":{
       "type":"structure",
@@ -6534,7 +6593,10 @@
           "location":"uri",
           "locationName":"name"
         },
-        "resourcesVpcConfig":{"shape":"VpcConfigRequest"},
+        "resourcesVpcConfig":{
+          "shape":"VpcConfigRequest",
+          "documentation":"<p>An object representing the VPC configuration to use for the cluster update. You can use this parameter to update the control plane egress mode, the subnets used by the cluster, the security groups, and the endpoint access settings.</p>"
+        },
         "logging":{
           "shape":"Logging",
           "documentation":"<p>Enable or disable exporting the Kubernetes control plane logs for your cluster to CloudWatch Logs . By default, cluster control plane logs aren't exported to CloudWatch Logs . For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html\">Amazon EKS cluster control plane logs</a> in the <i> <i>Amazon EKS User Guide</i> </i>.</p> <note> <p>CloudWatch Logs ingestion, archive storage, and data scanning rates apply to exported control plane logs. For more information, see <a href=\"http://aws.amazon.com/cloudwatch/pricing/\">CloudWatch Pricing</a>.</p> </note>"
@@ -6825,6 +6887,10 @@
         "RemoteNetworkConfig",
         "DeletionProtection",
         "NodeRepairConfig",
+        "RoleArn",
+        "RoleMappingsToAddOrUpdate",
+        "RoleMappingsToRemove",
+        "NetworkAccess",
         "VendedLogs",
         "UpdatedTier",
         "PreviousTier",
@@ -6832,7 +6898,8 @@
         "WarmPoolMaxGroupPreparedCapacity",
         "WarmPoolMinSize",
         "WarmPoolState",
-        "WarmPoolReuseOnScaleIn"
+        "WarmPoolReuseOnScaleIn",
+        "ControlPlaneEgressMode"
       ]
     },
     "UpdateParams":{
@@ -6945,8 +7012,10 @@
         "AutoModeUpdate",
         "RemoteNetworkConfigUpdate",
         "DeletionProtectionUpdate",
+        "CapabilityUpdate",
         "ControlPlaneScalingConfigUpdate",
-        "VendedLogsUpdate"
+        "VendedLogsUpdate",
+        "ControlPlaneEgressUpdate"
       ]
     },
     "UpgradePolicyRequest":{
@@ -6999,6 +7068,10 @@
         "publicAccessCidrs":{
           "shape":"StringList",
           "documentation":"<p>The CIDR blocks that are allowed access to your cluster's public Kubernetes API server endpoint. Communication to the endpoint from addresses outside of the CIDR blocks that you specify is denied. The default value is <code>0.0.0.0/0</code> and additionally <code>::/0</code> for dual-stack `IPv6` clusters. If you've disabled private endpoint access, make sure that you specify the necessary CIDR blocks for every node and Fargate <code>Pod</code> in the cluster. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html\">Cluster API server endpoint</a> in the <i> <i>Amazon EKS User Guide</i> </i>.</p> <p>Note that the public endpoints are dual-stack for only <code>IPv6</code> clusters that are made after October 2024. You can't add <code>IPv6</code> CIDR blocks to <code>IPv4</code> clusters or <code>IPv6</code> clusters that were made before October 2024.</p>"
+        },
+        "controlPlaneEgressMode":{
+          "shape":"ControlPlaneEgressModeType",
+          "documentation":"<p>Specifies the control plane egress routing mode for the cluster. If the cluster is set to <code>AWS_MANAGED</code>, Amazon EKS manages the egress path from the control plane and you don't need to configure NAT gateways or other routing infrastructure for control plane traffic. If the cluster is set to <code>CUSTOMER_ROUTED</code>, you manage the egress path from the control plane in your VPC subnets. You are responsible for ensuring that the control plane can reach required endpoints such as webhook servers and OIDC providers. The default value is <code>AWS_MANAGED</code>. Once set to <code>CUSTOMER_ROUTED</code>, this setting cannot be changed back to <code>AWS_MANAGED</code> on the same cluster.</p> <p> <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/control-plane-egress.html\">Learn more about control plane egress routing in the <i>Amazon EKS User Guide</i>.</a> </p>"
         }
       },
       "documentation":"<p>An object representing the VPC configuration to use for an Amazon EKS cluster.</p>"
@@ -7033,6 +7106,10 @@
         "publicAccessCidrs":{
           "shape":"StringList",
           "documentation":"<p>The CIDR blocks that are allowed access to your cluster's public Kubernetes API server endpoint. Communication to the endpoint from addresses outside of the CIDR blocks that you specify is denied. The default value is <code>0.0.0.0/0</code> and additionally <code>::/0</code> for dual-stack `IPv6` clusters. If you've disabled private endpoint access, make sure that you specify the necessary CIDR blocks for every node and Fargate <code>Pod</code> in the cluster. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html\">Cluster API server endpoint</a> in the <i> <i>Amazon EKS User Guide</i> </i>.</p> <p>Note that the public endpoints are dual-stack for only <code>IPv6</code> clusters that are made after October 2024. You can't add <code>IPv6</code> CIDR blocks to <code>IPv4</code> clusters or <code>IPv6</code> clusters that were made before October 2024.</p>"
+        },
+        "controlPlaneEgressMode":{
+          "shape":"ControlPlaneEgressModeType",
+          "documentation":"<p>The current control plane egress routing mode for the cluster. If the cluster is set to <code>AWS_MANAGED</code>, Amazon EKS manages the egress path from the control plane. If the cluster is set to <code>CUSTOMER_ROUTED</code>, you manage the egress path from the control plane in your VPC subnets.</p> <p> <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/control-plane-egress.html\">Learn more about control plane egress routing in the <i>Amazon EKS User Guide</i>.</a> </p>"
         }
       },
       "documentation":"<p>An object representing an Amazon EKS cluster VPC configuration response.</p>"

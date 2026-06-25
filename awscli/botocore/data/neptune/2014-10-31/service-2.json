@@ -162,7 +162,8 @@
         {"shape":"DBInstanceNotFoundFault"},
         {"shape":"DBSubnetGroupDoesNotCoverEnoughAZs"},
         {"shape":"GlobalClusterNotFoundFault"},
-        {"shape":"InvalidGlobalClusterStateFault"}
+        {"shape":"InvalidGlobalClusterStateFault"},
+        {"shape":"NetworkTypeNotSupportedFault"}
       ],
       "documentation":"<p>Creates a new Amazon Neptune DB cluster.</p> <p>You can use the <code>ReplicationSourceIdentifier</code> parameter to create the DB cluster as a Read Replica of another DB cluster or Amazon Neptune DB instance.</p> <p>Note that when you create a new cluster using <code>CreateDBCluster</code> directly, deletion protection is disabled by default (when you create a new production cluster in the console, deletion protection is enabled by default). You can only delete a DB cluster if its <code>DeletionProtection</code> field is set to <code>false</code>.</p>"
     },
@@ -865,7 +866,8 @@
         {"shape":"InvalidDBSecurityGroupStateFault"},
         {"shape":"InvalidDBInstanceStateFault"},
         {"shape":"DBClusterAlreadyExistsFault"},
-        {"shape":"StorageTypeNotSupportedFault"}
+        {"shape":"StorageTypeNotSupportedFault"},
+        {"shape":"NetworkTypeNotSupportedFault"}
       ],
       "documentation":"<p>Modify a setting for a DB cluster. You can change one or more database configuration parameters by specifying these parameters and the new values in the request.</p>"
     },
@@ -1193,7 +1195,8 @@
         {"shape":"InvalidSubnet"},
         {"shape":"OptionGroupNotFoundFault"},
         {"shape":"KMSKeyNotAccessibleFault"},
-        {"shape":"DBClusterParameterGroupNotFoundFault"}
+        {"shape":"DBClusterParameterGroupNotFoundFault"},
+        {"shape":"NetworkTypeNotSupportedFault"}
       ],
       "documentation":"<p>Creates a new DB cluster from a DB snapshot or DB cluster snapshot.</p> <p>If a DB snapshot is specified, the target DB cluster is created from the source DB snapshot with a default configuration and default security group.</p> <p>If a DB cluster snapshot is specified, the target DB cluster is created from the source DB cluster restore point with the same configuration as the original source DB cluster, except that the new DB cluster is created with the default security group.</p>"
     },
@@ -1225,7 +1228,8 @@
         {"shape":"KMSKeyNotAccessibleFault"},
         {"shape":"OptionGroupNotFoundFault"},
         {"shape":"StorageQuotaExceededFault"},
-        {"shape":"DBClusterParameterGroupNotFoundFault"}
+        {"shape":"DBClusterParameterGroupNotFoundFault"},
+        {"shape":"NetworkTypeNotSupportedFault"}
       ],
       "documentation":"<p>Restores a DB cluster to an arbitrary point in time. Users can restore to any point in time before <code>LatestRestorableTime</code> for up to <code>BackupRetentionPeriod</code> days. The target DB cluster is created from the source DB cluster with the same configuration as the original DB cluster, except that the new DB cluster is created with the default DB security group.</p> <note> <p>This action only restores the DB cluster, not the DB instances for that DB cluster. You must invoke the <a>CreateDBInstance</a> action to create DB instances for the restored DB cluster, specifying the identifier of the restored DB cluster in <code>DBClusterIdentifier</code>. You can create DB instances only after the <code>RestoreDBClusterToPointInTime</code> action has completed and the DB cluster is available.</p> </note>"
     },
@@ -1500,6 +1504,10 @@
         "Iops":{
           "shape":"IntegerOptional",
           "documentation":"<p>The Provisioned IOPS (I/O operations per second) value. This setting is only for Multi-AZ DB clusters.</p>"
+        },
+        "NetworkType":{
+          "shape":"String",
+          "documentation":"<p>The pending change in network type for the DB cluster.</p> <p>Valid Values: <code>IPV4</code>, <code>DUAL</code> </p>"
         }
       },
       "documentation":"<p>This data type is used as a response element in the <code>ModifyDBCluster</code> operation and contains changes that will be applied during the next maintenance window.</p>"
@@ -1514,7 +1522,7 @@
       "members":{
         "SourceDBClusterParameterGroupIdentifier":{
           "shape":"String",
-          "documentation":"<p>The identifier or Amazon Resource Name (ARN) for the source DB cluster parameter group. For information about creating an ARN, see <a href=\"https://docs.aws.amazon.com/neptune/latest/UserGuide/tagging.ARN.html#tagging.ARN.Constructing\"> Constructing an Amazon Resource Name (ARN)</a>.</p> <p>Constraints:</p> <ul> <li> <p>Must specify a valid DB cluster parameter group.</p> </li> <li> <p>If the source DB cluster parameter group is in the same Amazon Region as the copy, specify a valid DB parameter group identifier, for example <code>my-db-cluster-param-group</code>, or a valid ARN.</p> </li> <li> <p>If the source DB parameter group is in a different Amazon Region than the copy, specify a valid DB cluster parameter group ARN, for example <code>arn:aws:rds:us-east-1:123456789012:cluster-pg:custom-cluster-group1</code>.</p> </li> </ul>"
+          "documentation":"<p>The identifier or Amazon Resource Name (ARN) for the source DB cluster parameter group. For information about creating an ARN, see <a href=\"https://docs.aws.amazon.com/neptune/latest/UserGuide/tagging.ARN.html#tagging.ARN.Constructing\"> Constructing an Amazon Resource Name (ARN)</a>.</p> <p>Constraints:</p> <ul> <li> <p>Must specify a valid DB cluster parameter group.</p> </li> <li> <p>Must specify a valid DB cluster parameter group identifier, for example <code>my-db-cluster-param-group</code>, or a valid ARN.</p> </li> <li> <p>The source DB cluster parameter group must be in the same Amazon Region as the copy. Neptune does not support cross-Region copying of parameter groups.</p> </li> </ul>"
         },
         "TargetDBClusterParameterGroupIdentifier":{
           "shape":"String",
@@ -1585,7 +1593,7 @@
       "members":{
         "SourceDBParameterGroupIdentifier":{
           "shape":"String",
-          "documentation":"<p>The identifier or ARN for the source DB parameter group. For information about creating an ARN, see <a href=\"https://docs.aws.amazon.com/neptune/latest/UserGuide/tagging.ARN.html#tagging.ARN.Constructing\"> Constructing an Amazon Resource Name (ARN)</a>.</p> <p>Constraints:</p> <ul> <li> <p>Must specify a valid DB parameter group.</p> </li> <li> <p>Must specify a valid DB parameter group identifier, for example <code>my-db-param-group</code>, or a valid ARN.</p> </li> </ul>"
+          "documentation":"<p>The identifier or ARN for the source DB parameter group. For information about creating an ARN, see <a href=\"https://docs.aws.amazon.com/neptune/latest/UserGuide/tagging.ARN.html#tagging.ARN.Constructing\"> Constructing an Amazon Resource Name (ARN)</a>.</p> <p>Constraints:</p> <ul> <li> <p>Must specify a valid DB parameter group.</p> </li> <li> <p>Must specify a valid DB parameter group identifier, for example <code>my-db-param-group</code>, or a valid ARN.</p> </li> <li> <p>The source DB parameter group must be in the same Amazon Region as the copy. Neptune does not support cross-Region copying of parameter groups.</p> </li> </ul>"
         },
         "TargetDBParameterGroupIdentifier":{
           "shape":"String",
@@ -1712,7 +1720,7 @@
         },
         "DatabaseName":{
           "shape":"String",
-          "documentation":"<p>The name for your database of up to 64 alpha-numeric characters. If you do not provide a name, Amazon Neptune will not create a database in the DB cluster you are creating.</p>"
+          "documentation":"<p>Not supported by Neptune.</p>"
         },
         "DBClusterIdentifier":{
           "shape":"String",
@@ -1805,6 +1813,10 @@
         "StorageType":{
           "shape":"String",
           "documentation":"<p>The storage type for the new DB cluster.</p> <p>Valid Values:</p> <ul> <li> <p> <b> <code>standard</code> </b>   –   ( <i>the default</i> ) Configures cost-effective database storage for applications with moderate to small I/O usage. When set to <code>standard</code>, the storage type is not returned in the response.</p> </li> <li> <p> <b> <code>iopt1</code> </b>   –   Enables <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/storage-types.html#provisioned-iops-storage\">I/O-Optimized storage</a> that's designed to meet the needs of I/O-intensive graph workloads that require predictable pricing with low I/O latency and consistent I/O throughput.</p> <p>Neptune I/O-Optimized storage is only available starting with engine release 1.3.0.0.</p> </li> </ul>"
+        },
+        "NetworkType":{
+          "shape":"String",
+          "documentation":"<p>The network type of the DB cluster.</p> <p>Valid Values:</p> <ul> <li> <p> <b> <code>IPV4</code> </b>   –   ( <i>the default</i> ) The DB cluster uses only IPv4 addresses for communication.</p> </li> <li> <p> <b> <code>DUAL</code> </b>   –   The DB cluster uses both IPv4 and IPv6 addresses for communication. The DB subnet group associated with the cluster must support IPv6.</p> </li> </ul>"
         }
       }
     },
@@ -2395,6 +2407,10 @@
         "StorageType":{
           "shape":"String",
           "documentation":"<p>The storage type used by the DB cluster.</p> <p>Valid Values:</p> <ul> <li> <p> <b> <code>standard</code> </b>   –   ( <i>the default</i> ) Provides cost-effective database storage for applications with moderate to small I/O usage.</p> </li> <li> <p> <b> <code>iopt1</code> </b>   –   Enables <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/storage-types.html#provisioned-iops-storage\">I/O-Optimized storage</a> that's designed to meet the needs of I/O-intensive graph workloads that require predictable pricing with low I/O latency and consistent I/O throughput.</p> <p>Neptune I/O-Optimized storage is only available starting with engine release 1.3.0.0.</p> </li> </ul>"
+        },
+        "NetworkType":{
+          "shape":"String",
+          "documentation":"<p>The network type of the DB cluster.</p> <p>Valid Values:</p> <ul> <li> <p> <b> <code>IPV4</code> </b>   –   The DB cluster uses only IPv4 addresses for communication.</p> </li> <li> <p> <b> <code>DUAL</code> </b>   –   The DB cluster uses both IPv4 and IPv6 addresses for communication.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Contains the details of an Amazon Neptune DB cluster.</p> <p>This data type is used as a response element in the <a>DescribeDBClusters</a>.</p>",
@@ -3198,6 +3214,10 @@
         "DeletionProtection":{
           "shape":"BooleanOptional",
           "documentation":"<p>Indicates whether or not the DB instance has deletion protection enabled. The instance can't be deleted when deletion protection is enabled. See <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/manage-console-instances-delete.html\">Deleting a DB Instance</a>.</p>"
+        },
+        "NetworkType":{
+          "shape":"String",
+          "documentation":"<p>The network type of the DB instance. Inherited from the DB cluster.</p> <p>Valid Values: <code>IPV4</code>, <code>DUAL</code> </p>"
         }
       },
       "documentation":"<p>Contains the details of an Amazon Neptune DB instance.</p> <p>This data type is used as a response element in the <a>DescribeDBInstances</a> action.</p>",
@@ -3480,6 +3500,10 @@
         "DBSubnetGroupArn":{
           "shape":"String",
           "documentation":"<p>The Amazon Resource Name (ARN) for the DB subnet group.</p>"
+        },
+        "SupportedNetworkTypes":{
+          "shape":"StringList",
+          "documentation":"<p>The network types supported by the DB subnet group.</p> <p>Valid network types include <code>IPV4</code> and <code>DUAL</code>. A DB subnet group supports <code>DUAL</code> if all subnets in the group have both IPv4 and IPv6 CIDRs.</p>"
         }
       },
       "documentation":"<p>Contains the details of an Amazon Neptune DB subnet group.</p> <p>This data type is used as a response element in the <a>DescribeDBSubnetGroups</a> action.</p>",
@@ -5155,6 +5179,10 @@
         "StorageType":{
           "shape":"String",
           "documentation":"<p>The storage type to associate with the DB cluster.</p> <p>Valid Values:</p> <ul> <li> <p> <b> <code>standard</code> </b>   –   ( <i>the default</i> ) Configures cost-effective database storage for applications with moderate to small I/O usage.</p> </li> <li> <p> <b> <code>iopt1</code> </b>   –   Enables <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/storage-types.html#provisioned-iops-storage\">I/O-Optimized storage</a> that's designed to meet the needs of I/O-intensive graph workloads that require predictable pricing with low I/O latency and consistent I/O throughput.</p> <p>Neptune I/O-Optimized storage is only available starting with engine release 1.3.0.0.</p> </li> </ul>"
+        },
+        "NetworkType":{
+          "shape":"String",
+          "documentation":"<p>The network type of the DB cluster.</p> <p>Valid Values:</p> <ul> <li> <p> <b> <code>IPV4</code> </b>   –   The DB cluster uses only IPv4 addresses for communication.</p> </li> <li> <p> <b> <code>DUAL</code> </b>   –   The DB cluster uses both IPv4 and IPv6 addresses for communication. The DB subnet group associated with the cluster must support IPv6.</p> </li> </ul>"
         }
       }
     },
@@ -5480,6 +5508,17 @@
         "GlobalCluster":{"shape":"GlobalCluster"}
       }
     },
+    "NetworkTypeNotSupportedFault":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The specified <i>NetworkType</i> is not supported for the DB cluster, DB subnet group, or orderable DB instance option.</p>",
+      "error":{
+        "code":"NetworkTypeNotSupported",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "OptionGroupMembership":{
       "type":"structure",
       "members":{
@@ -5598,6 +5637,10 @@
         "SupportsGlobalDatabases":{
           "shape":"Boolean",
           "documentation":"<p>A value that indicates whether you can use Neptune global databases with a specific combination of other DB engine attributes.</p>"
+        },
+        "SupportedNetworkTypes":{
+          "shape":"StringList",
+          "documentation":"<p>The network types supported by the orderable DB instance option.</p>"
         }
       },
       "documentation":"<p>Contains a list of available options for a DB instance.</p> <p> This data type is used as a response element in the <a>DescribeOrderableDBInstanceOptions</a> action.</p>",
@@ -6135,6 +6178,10 @@
         "StorageType":{
           "shape":"String",
           "documentation":"<p>Specifies the storage type to be associated with the DB cluster.</p> <p>Valid values: <code>standard</code>, <code>iopt1</code> </p> <p>Default: <code>standard</code> </p>"
+        },
+        "NetworkType":{
+          "shape":"String",
+          "documentation":"<p>The network type of the DB cluster.</p> <p>Valid Values:</p> <ul> <li> <p> <b> <code>IPV4</code> </b>   –   ( <i>the default</i> ) The DB cluster uses only IPv4 addresses for communication.</p> </li> <li> <p> <b> <code>DUAL</code> </b>   –   The DB cluster uses both IPv4 and IPv6 addresses for communication. The DB subnet group associated with the cluster must support IPv6.</p> </li> </ul>"
         }
       }
     },
@@ -6218,6 +6265,10 @@
         "StorageType":{
           "shape":"String",
           "documentation":"<p>Specifies the storage type to be associated with the DB cluster.</p> <p>Valid values: <code>standard</code>, <code>iopt1</code> </p> <p>Default: <code>standard</code> </p>"
+        },
+        "NetworkType":{
+          "shape":"String",
+          "documentation":"<p>The network type of the DB cluster.</p> <p>Valid Values:</p> <ul> <li> <p> <b> <code>IPV4</code> </b>   –   ( <i>the default</i> ) The DB cluster uses only IPv4 addresses for communication.</p> </li> <li> <p> <b> <code>DUAL</code> </b>   –   The DB cluster uses both IPv4 and IPv6 addresses for communication. The DB subnet group associated with the cluster must support IPv6.</p> </li> </ul>"
         }
       }
     },

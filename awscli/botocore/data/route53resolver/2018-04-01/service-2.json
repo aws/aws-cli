@@ -32,7 +32,7 @@
         {"shape":"InternalServiceErrorException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Associates a <a>FirewallRuleGroup</a> with a VPC, to provide DNS filtering for the VPC. </p>"
+      "documentation":"<p>Associates a <a>FirewallRuleGroup</a> with a VPC, to provide DNS filtering for the VPC.</p> <p>If the rule group contains any rule configured with the <code>PartnerThreatProtection</code> rule type, the calling account must hold an active AWS Marketplace subscription to the named partner. If the subscription is missing, the association request is rejected.</p>"
     },
     "AssociateResolverEndpointIpAddress":{
       "name":"AssociateResolverEndpointIpAddress",
@@ -177,7 +177,7 @@
         {"shape":"InternalServiceErrorException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Creates a single DNS Firewall rule in the specified rule group, using the specified domain list.</p>"
+      "documentation":"<p>Creates a single DNS Firewall rule in the specified rule group. The rule can use any one of the following match sources, and the chosen source must be supplied through the matching request field — they are mutually exclusive:</p> <ul> <li> <p> <code>FirewallDomainListId</code> — match a customer-managed or AWS-managed domain list.</p> </li> <li> <p> <code>DnsThreatProtection</code> — match a built-in DNS Firewall Advanced threat detector (<code>DGA</code>, <code>DNS_TUNNELING</code>, or <code>DICTIONARY_DGA</code>).</p> </li> <li> <p> <code>FirewallRuleType</code> — match one of the rule-type variants returned by <a>ListFirewallRuleTypes</a>: <code>FirewallAdvancedContentCategory</code>, <code>FirewallAdvancedThreatCategory</code>, <code>DnsThreatProtection</code>, or <code>PartnerThreatProtection</code>. The <code>PartnerThreatProtection</code> variant requires an active AWS Marketplace subscription to the named partner product.</p> </li> </ul> <p>For rules that require asynchronous provisioning (today, the <code>PartnerThreatProtection</code> rule type), the rule's <code>Status</code> begins at <code>CREATING</code> and transitions to <code>COMPLETE</code> once the rule is provisioned and the marketplace entitlement is verified. If provisioning fails, <code>Status</code> becomes <code>CREATION_FAILED</code> and <code>StatusMessage</code> contains a human-readable reason; the rule is then immutable and must be removed with <a>DeleteFirewallRule</a>.</p>"
     },
     "CreateFirewallRuleGroup":{
       "name":"CreateFirewallRuleGroup",
@@ -307,7 +307,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Deletes the specified firewall rule.</p>"
+      "documentation":"<p>Deletes the specified firewall rule. Identify the rule using either <code>FirewallDomainListId</code> (for domain-list and DNS Firewall Advanced rules) or <code>FirewallThreatProtectionId</code> (for partner-managed and DNS Firewall Advanced rules) — together with <code>FirewallRuleGroupId</code>.</p> <p> <code>DeleteFirewallRule</code> is the only operation that succeeds against a rule whose <code>Status</code> is <code>CREATION_FAILED</code>.</p>"
     },
     "DeleteFirewallRuleGroup":{
       "name":"DeleteFirewallRuleGroup",
@@ -835,7 +835,7 @@
         {"shape":"InternalServiceErrorException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Retrieves the available rule types that can be used in DNS Firewall rules.</p>"
+      "documentation":"<p>Retrieves the rule-type variants that can be used in the <code>FirewallRuleType</code> field of <a>CreateFirewallRule</a> and <a>UpdateFirewallRule</a>. Each returned <a>FirewallRuleTypeDefinition</a> identifies one variant + value combination — for example, <code>FirewallAdvancedContentCategory</code> + <code>VIOLENCE_AND_HATE_SPEECH</code>, or <code>PartnerThreatProtection</code> + a partner-managed feed.</p> <p>The supported <code>RuleType</code> filter values are <code>FirewallAdvancedContentCategory</code>, <code>FirewallAdvancedThreatCategory</code>, <code>DnsThreatProtection</code>, and <code>PartnerThreatProtection</code>. When a returned definition's variant requires an external subscription (currently only <code>PartnerThreatProtection</code>), the response also includes a <a>SubscriptionInfo</a> identifying the AWS Marketplace product that backs it; absence of <code>SubscriptionInfo</code> means the variant is fully managed by AWS and requires no separate subscription.</p>"
     },
     "ListFirewallRules":{
       "name":"ListFirewallRules",
@@ -852,7 +852,7 @@
         {"shape":"InternalServiceErrorException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Retrieves the firewall rules that you have defined for the specified firewall rule group. DNS Firewall uses the rules in a rule group to filter DNS network traffic for a VPC. </p> <p>A single call might return only a partial list of the rules. For information, see <code>MaxResults</code>. </p>"
+      "documentation":"<p>Retrieves the firewall rules that you have defined for the specified firewall rule group. DNS Firewall uses the rules in a rule group to filter DNS network traffic for a VPC.</p> <p>A single call might return only a partial list of the rules. For information, see <code>MaxResults</code>.</p> <p>For rules that require asynchronous provisioning, the response includes <code>Status</code> (see <a>FirewallRuleStatus</a>) and, on failure, <code>StatusMessage</code> with the reason.</p>"
     },
     "ListOutpostResolvers":{
       "name":"ListOutpostResolvers",
@@ -1170,7 +1170,7 @@
         {"shape":"InternalServiceErrorException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Updates the specified firewall rule. </p>"
+      "documentation":"<p>Updates the specified firewall rule. The rule's <code>FirewallRuleType</code>, <code>FirewallDomainListId</code>, and top-level <code>DnsThreatProtection</code> match source cannot be changed after creation. Rules whose <code>Status</code> is <code>CREATING</code> or <code>CREATION_FAILED</code> cannot be updated; remove a failed rule with <a>DeleteFirewallRule</a>.</p>"
     },
     "UpdateFirewallRuleGroupAssociation":{
       "name":"UpdateFirewallRuleGroupAssociation",
@@ -1620,6 +1620,7 @@
     },
     "ConfidenceThreshold":{
       "type":"string",
+      "documentation":"<p>The confidence threshold for a DNS Firewall Advanced rule. One of:</p> <ul> <li> <p> <code>LOW</code> — Provides the highest detection rate for threats, but also increases false positives.</p> </li> <li> <p> <code>MEDIUM</code> — Provides a balance between detecting threats and false positives.</p> </li> <li> <p> <code>HIGH</code> — Detects only the most well-corroborated threats with a low rate of false positives.</p> </li> </ul>",
       "enum":[
         "LOW",
         "MEDIUM",
@@ -1738,7 +1739,7 @@
         },
         "DnsThreatProtection":{
           "shape":"DnsThreatProtection",
-          "documentation":"<p>The type of the DNS Firewall Advanced rule. This setting is mutually exclusive with <code>FirewallDomainListId</code> and <code>FirewallRuleType</code>. Valid values are:</p> <ul> <li> <p> <code>DGA</code>: Domain generation algorithms detection. DGAs are used by attackers to generate a large number of domains to launch malware attacks.</p> </li> <li> <p> <code>DNS_TUNNELING</code>: DNS tunneling detection. DNS tunneling is used by attackers to exfiltrate data from the client by using the DNS tunnel without making a network connection to the client.</p> </li> <li> <p> <code>DICT_DGA</code>: Dictionary-based domain generation algorithms detection. Dictionary DGAs use wordlists to generate domains that appear more legitimate, making them harder to detect than traditional DGAs.</p> </li> </ul>",
+          "documentation":"<p>The type of the DNS Firewall Advanced rule. This setting is mutually exclusive with <code>FirewallDomainListId</code> and <code>FirewallRuleType</code>. Valid values are:</p> <ul> <li> <p> <code>DGA</code>: Domain generation algorithms detection. DGAs are used by attackers to generate a large number of domains to launch malware attacks.</p> </li> <li> <p> <code>DNS_TUNNELING</code>: DNS tunneling detection. DNS tunneling is used by attackers to exfiltrate data from the client by using the DNS tunnel without making a network connection to the client.</p> </li> <li> <p> <code>DICTIONARY_DGA</code>: Dictionary-based domain generation algorithms detection. Dictionary DGAs use wordlists to generate domains that appear more legitimate, making them harder to detect than traditional DGAs.</p> </li> </ul>",
           "box":true
         },
         "ConfidenceThreshold":{
@@ -1748,7 +1749,7 @@
         },
         "FirewallRuleType":{
           "shape":"FirewallRuleType",
-          "documentation":"<p>The rule type configuration for the firewall rule. This setting is mutually exclusive with the top-level <code>FirewallDomainListId</code> and <code>DnsThreatProtection</code> fields.</p>",
+          "documentation":"<p>The rule type configuration for the firewall rule. This is a tagged union — set exactly one of its members. This setting is mutually exclusive with the top-level <code>FirewallDomainListId</code> and <code>DnsThreatProtection</code> fields. Use one of:</p> <ul> <li> <p> <code>FirewallAdvancedContentCategory</code> — match an AWS-managed content category (for example, <code>VIOLENCE_AND_HATE_SPEECH</code>).</p> </li> <li> <p> <code>FirewallAdvancedThreatCategory</code> — match an AWS-managed advanced threat category (for example, <code>PHISHING</code>).</p> </li> <li> <p> <code>DnsThreatProtection</code> — match a built-in DNS Firewall Advanced threat detector (<code>DGA</code>, <code>DNS_TUNNELING</code>, or <code>DICTIONARY_DGA</code>).</p> </li> <li> <p> <code>PartnerThreatProtection</code> — match a third-party threat feed delivered through AWS Marketplace. The selected partner must be an active subscription on the calling account.</p> </li> </ul> <p>To enumerate the values supported in your account, call <a>ListFirewallRuleTypes</a>.</p>",
           "box":true
         }
       },
@@ -1854,7 +1855,7 @@
         },
         "DnsThreatProtection":{
           "shape":"DnsThreatProtection",
-          "documentation":"<p> Use to create a DNS Firewall Advanced rule. </p>",
+          "documentation":"<p> The type of the DNS Firewall Advanced rule. This setting is mutually exclusive with <code>FirewallDomainListId</code> and <code>FirewallRuleType</code>. Valid values are: </p> <ul> <li> <p> <code>DGA</code>: Domain generation algorithms detection. DGAs are used by attackers to generate a large number of domains to launch malware attacks.</p> </li> <li> <p> <code>DNS_TUNNELING</code>: DNS tunneling detection. DNS tunneling is used by attackers to exfiltrate data from the client by using the DNS tunnel without making a network connection to the client.</p> </li> <li> <p> <code>DICTIONARY_DGA</code>: Dictionary-based domain generation algorithms detection. Dictionary DGAs use wordlists to generate domains that appear more legitimate, making them harder to detect than traditional DGAs.</p> </li> </ul>",
           "box":true
         },
         "ConfidenceThreshold":{
@@ -1864,7 +1865,7 @@
         },
         "FirewallRuleType":{
           "shape":"FirewallRuleType",
-          "documentation":"<p>The rule type configuration for the firewall rule. This setting is mutually exclusive with the top-level <code>FirewallDomainListId</code> and <code>DnsThreatProtection</code> fields.</p>",
+          "documentation":"<p>The rule type configuration for the firewall rule. This is a tagged union — set exactly one of its members. This setting is mutually exclusive with the top-level <code>FirewallDomainListId</code> and <code>DnsThreatProtection</code> fields. Use one of:</p> <ul> <li> <p> <code>FirewallAdvancedContentCategory</code> — match an AWS-managed content category (for example, <code>VIOLENCE_AND_HATE_SPEECH</code>).</p> </li> <li> <p> <code>FirewallAdvancedThreatCategory</code> — match an AWS-managed advanced threat category (for example, <code>PHISHING</code>).</p> </li> <li> <p> <code>DnsThreatProtection</code> — match a built-in DNS Firewall Advanced threat detector (<code>DGA</code>, <code>DNS_TUNNELING</code>, or <code>DICTIONARY_DGA</code>).</p> </li> <li> <p> <code>PartnerThreatProtection</code> — match a third-party threat feed delivered through AWS Marketplace. The selected partner must be an active subscription on the calling account.</p> </li> </ul> <p>To enumerate the values supported in your account, call <a>ListFirewallRuleTypes</a>.</p>",
           "box":true
         }
       }
@@ -2412,7 +2413,7 @@
       "members":{
         "Value":{
           "shape":"DnsThreatProtectionRuleTypeValue",
-          "documentation":"<p>The type of DNS threat protection. Valid values are:</p> <ul> <li> <p> <code>DGA</code>: Domain generation algorithms detection. DGAs are used by attackers to generate a large number of domains to launch malware attacks.</p> </li> <li> <p> <code>DNS_TUNNELING</code>: DNS tunneling detection. DNS tunneling is used by attackers to exfiltrate data from the client by using the DNS tunnel without making a network connection to the client.</p> </li> <li> <p> <code>DICT_DGA</code>: Dictionary-based domain generation algorithms detection. Dictionary DGAs use wordlists to generate domains that appear more legitimate, making them harder to detect than traditional DGAs.</p> </li> </ul>"
+          "documentation":"<p>The type of DNS threat protection. Valid values are:</p> <ul> <li> <p> <code>DGA</code>: Domain generation algorithms detection. DGAs are used by attackers to generate a large number of domains to launch malware attacks.</p> </li> <li> <p> <code>DNS_TUNNELING</code>: DNS tunneling detection. DNS tunneling is used by attackers to exfiltrate data from the client by using the DNS tunnel without making a network connection to the client.</p> </li> <li> <p> <code>DICTIONARY_DGA</code>: Dictionary-based domain generation algorithms detection. Dictionary DGAs use wordlists to generate domains that appear more legitimate, making them harder to detect than traditional DGAs.</p> </li> </ul>"
         },
         "ConfidenceThreshold":{
           "shape":"ConfidenceThreshold",
@@ -2423,6 +2424,7 @@
     },
     "DnsThreatProtectionRuleTypeValue":{
       "type":"string",
+      "documentation":"<p>The identifier of a built-in DNS Firewall Advanced threat detector. Known values are <code>DGA</code>, <code>DNS_TUNNELING</code>, and <code>DICTIONARY_DGA</code>. Returned in the <code>Value</code> field of a <a>FirewallRuleTypeDefinition</a> for the <code>DnsThreatProtection</code> rule type, and used as <code>DnsThreatProtectionRuleTypeConfig.Value</code> when creating a DNS threat protection firewall rule.</p>",
       "max":128,
       "min":1
     },
@@ -2489,6 +2491,7 @@
     },
     "FirewallAdvancedContentCategoryValue":{
       "type":"string",
+      "documentation":"<p>The identifier of an AWS-managed content category (for example, <code>VIOLENCE_AND_HATE_SPEECH</code>), returned in the <code>Value</code> field of a <a>FirewallRuleTypeDefinition</a> for the <code>FirewallAdvancedContentCategory</code> rule type. Pass this string as <code>FirewallAdvancedContentCategoryConfig.Category</code> when creating a content-category firewall rule.</p>",
       "max":128,
       "min":1
     },
@@ -2505,6 +2508,7 @@
     },
     "FirewallAdvancedThreatCategoryValue":{
       "type":"string",
+      "documentation":"<p>The identifier of an AWS-managed advanced threat category (for example, <code>PHISHING</code>), returned in the <code>Value</code> field of a <a>FirewallRuleTypeDefinition</a> for the <code>FirewallAdvancedThreatCategory</code> rule type. Pass this string as <code>FirewallAdvancedThreatCategoryConfig.Category</code> when creating a threat-category firewall rule.</p>",
       "max":128,
       "min":1
     },
@@ -2737,7 +2741,7 @@
         },
         "DnsThreatProtection":{
           "shape":"DnsThreatProtection",
-          "documentation":"<p> The type of the DNS Firewall Advanced rule. Valid values are: </p> <ul> <li> <p> <code>DGA</code>: Domain generation algorithms detection. DGAs are used by attackers to generate a large number of domains to to launch malware attacks.</p> </li> <li> <p> <code>DNS_TUNNELING</code>: DNS tunneling detection. DNS tunneling is used by attackers to exfiltrate data from the client by using the DNS tunnel without making a network connection to the client.</p> </li> </ul>"
+          "documentation":"<p> The type of the DNS Firewall Advanced rule. Valid values are: </p> <ul> <li> <p> <code>DGA</code>: Domain generation algorithms detection. DGAs are used by attackers to generate a large number of domains to launch malware attacks.</p> </li> <li> <p> <code>DNS_TUNNELING</code>: DNS tunneling detection. DNS tunneling is used by attackers to exfiltrate data from the client by using the DNS tunnel without making a network connection to the client.</p> </li> <li> <p> <code>DICTIONARY_DGA</code>: Dictionary-based domain generation algorithms detection. Dictionary DGAs use wordlists to generate domains that appear more legitimate, making them harder to detect than traditional DGAs.</p> </li> </ul>"
         },
         "ConfidenceThreshold":{
           "shape":"ConfidenceThreshold",
@@ -2745,7 +2749,15 @@
         },
         "FirewallRuleType":{
           "shape":"FirewallRuleType",
-          "documentation":"<p>The rule type configuration for the firewall rule. Exactly one member of this union should be set.</p>"
+          "documentation":"<p>The rule type configuration for the firewall rule. This is a tagged union — exactly one of its members will be populated. Possible members are:</p> <ul> <li> <p> <code>FirewallAdvancedContentCategory</code> — an AWS-managed content category (for example, <code>VIOLENCE_AND_HATE_SPEECH</code>).</p> </li> <li> <p> <code>FirewallAdvancedThreatCategory</code> — an AWS-managed advanced threat category (for example, <code>PHISHING</code>).</p> </li> <li> <p> <code>DnsThreatProtection</code> — a built-in DNS Firewall Advanced threat detector (<code>DGA</code>, <code>DNS_TUNNELING</code>, or <code>DICTIONARY_DGA</code>).</p> </li> <li> <p> <code>PartnerThreatProtection</code> — a third-party threat feed delivered through AWS Marketplace.</p> </li> </ul> <p>To enumerate the values supported in your account, call <a>ListFirewallRuleTypes</a>.</p>"
+        },
+        "Status":{
+          "shape":"FirewallRuleStatus",
+          "documentation":"<p>The lifecycle state of the firewall rule. Possible values:</p> <ul> <li> <p> <code>CREATING</code> — DNS Firewall is provisioning the rule. Rules created with the <code>PartnerThreatProtection</code> rule type begin in this state while DNS Firewall verifies the calling account's AWS Marketplace entitlement.</p> </li> <li> <p> <code>COMPLETE</code> — The rule is provisioned and enforcing matches.</p> </li> <li> <p> <code>CREATION_FAILED</code> — Provisioning failed. <code>StatusMessage</code> contains a human-readable reason. A rule in this state is immutable: <a>UpdateFirewallRule</a> rejects the request, and the rule must be removed with <a>DeleteFirewallRule</a>.</p> </li> </ul> <p>For rules that do not require asynchronous provisioning, this field may be absent.</p>"
+        },
+        "StatusMessage":{
+          "shape":"FirewallRuleStatusMessage",
+          "documentation":"<p>An additional message about the rule's lifecycle state. Populated when <code>Status</code> is <code>CREATION_FAILED</code> to describe why provisioning failed.</p>"
         }
       },
       "documentation":"<p>A single firewall rule in a rule group.</p>"
@@ -2916,26 +2928,41 @@
         "UPDATING"
       ]
     },
+    "FirewallRuleStatus":{
+      "type":"string",
+      "documentation":"<p>The lifecycle state of a DNS Firewall rule. Known values:</p> <ul> <li> <p> <code>CREATING</code> — DNS Firewall is provisioning the rule. Rules created with the <code>PartnerThreatProtection</code> rule type begin in this state while DNS Firewall verifies the calling account's AWS Marketplace entitlement.</p> </li> <li> <p> <code>COMPLETE</code> — The rule is provisioned and enforcing matches.</p> </li> <li> <p> <code>CREATION_FAILED</code> — Provisioning failed. <a>UpdateFirewallRule</a> rejects updates to a rule in this state; the rule must be removed with <a>DeleteFirewallRule</a>.</p> </li> </ul>",
+      "max":32
+    },
+    "FirewallRuleStatusMessage":{
+      "type":"string",
+      "documentation":"<p>A human-readable description of why a firewall rule is in <code>CREATION_FAILED</code> state.</p>",
+      "max":1024
+    },
     "FirewallRuleType":{
       "type":"structure",
       "members":{
+        "PartnerThreatProtection":{
+          "shape":"PartnerThreatProtectionConfig",
+          "documentation":"<p>Configures the rule to match a third-party threat feed delivered through AWS Marketplace. The calling account must hold an active subscription to the partner product named in <code>Partner</code>; if the subscription is missing or revoked, the rule is created with <code>Status</code> <code>CREATION_FAILED</code> and cannot be modified — only deleted. See <a>PartnerThreatProtectionConfig</a>.</p>",
+          "box":true
+        },
         "FirewallAdvancedContentCategory":{
           "shape":"FirewallAdvancedContentCategoryConfig",
-          "documentation":"<p>The configuration for a content category-based filtering rule.</p>",
+          "documentation":"<p>Configures the rule to match an AWS-managed content category (for example, <code>VIOLENCE_AND_HATE_SPEECH</code>). See <a>FirewallAdvancedContentCategoryConfig</a>.</p>",
           "box":true
         },
         "FirewallAdvancedThreatCategory":{
           "shape":"FirewallAdvancedThreatCategoryConfig",
-          "documentation":"<p>The configuration for a threat category-based filtering rule.</p>",
+          "documentation":"<p>Configures the rule to match an AWS-managed advanced threat category (for example, <code>PHISHING</code>). See <a>FirewallAdvancedThreatCategoryConfig</a>.</p>",
           "box":true
         },
         "DnsThreatProtection":{
           "shape":"DnsThreatProtectionRuleTypeConfig",
-          "documentation":"<p>The configuration for a DNS threat protection rule type, such as DGA or DNS tunneling detection.</p>",
+          "documentation":"<p>Configures the rule to match a built-in DNS Firewall Advanced threat detector — <code>DGA</code>, <code>DNS_TUNNELING</code>, or <code>DICTIONARY_DGA</code>. See <a>DnsThreatProtectionRuleTypeConfig</a>.</p>",
           "box":true
         }
       },
-      "documentation":"<p>The configuration for a rule type in a DNS Firewall rule. This is a union type — exactly one member should be set.</p>"
+      "documentation":"<p>The rule-type configuration for a DNS Firewall rule. <code>FirewallRuleType</code> is a tagged union — exactly one member must be set per rule, and the member determines what the rule matches against. This shape is mutually exclusive with the top-level <code>FirewallDomainListId</code> and <code>DnsThreatProtection</code> fields on <a>CreateFirewallRule</a> and <a>UpdateFirewallRule</a>.</p> <p>Call <a>ListFirewallRuleTypes</a> to discover which rule-type variants and which values within each variant are available in your account and Region.</p>"
     },
     "FirewallRuleTypeDefinition":{
       "type":"structure",
@@ -2955,6 +2982,11 @@
         "Description":{
           "shape":"RuleTypeDescription",
           "documentation":"<p>A description of the rule type.</p>"
+        },
+        "SubscriptionInfo":{
+          "shape":"SubscriptionInfo",
+          "documentation":"<p>For rule types that require an external subscription (today, only the <code>PartnerThreatProtection</code> variant), describes the AWS Marketplace product that backs the rule type. Absent for rule types that are managed by AWS and do not require a separate subscription. See <a>SubscriptionInfo</a>.</p>",
+          "box":true
         }
       },
       "documentation":"<p>The definition of an available rule type that can be used in DNS Firewall rules. This is returned by <a>ListFirewallRuleTypes</a>.</p>"
@@ -3419,6 +3451,7 @@
       "enum":[
         "CREATING",
         "FAILED_CREATION",
+        "FAILED_CREATION_INSUFFICIENT_EC2_CAPACITY_IN_OUTPOST",
         "ATTACHING",
         "ATTACHED",
         "REMAP_DETACHING",
@@ -3666,7 +3699,7 @@
       "members":{
         "RuleType":{
           "shape":"RuleTypeName",
-          "documentation":"<p>The rule type to filter by. If specified, only rule types matching this value are returned.</p>",
+          "documentation":"<p>An optional filter that restricts the response to a single <a>FirewallRuleType</a> variant. Supported values: <code>FirewallAdvancedContentCategory</code>, <code>FirewallAdvancedThreatCategory</code>, <code>DnsThreatProtection</code>, and <code>PartnerThreatProtection</code>. If omitted, definitions across all variants are returned.</p>",
           "box":true
         },
         "MaxResults":{
@@ -4216,12 +4249,33 @@
       "type":"string",
       "max":4096
     },
+    "PartnerThreatProtectionConfig":{
+      "type":"structure",
+      "required":["Partner"],
+      "members":{
+        "Partner":{
+          "shape":"PartnerValue",
+          "documentation":"<p>The identifier of the partner threat-protection product, exactly as returned in the <code>Value</code> field of a <a>FirewallRuleTypeDefinition</a> with <code>RuleType</code> set to <code>PartnerThreatProtection</code>. The calling account must hold an active AWS Marketplace subscription to this product.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a partner threat-protection rule. To enumerate the partners available in your account, call <a>ListFirewallRuleTypes</a> with <code>RuleType</code> set to <code>PartnerThreatProtection</code> — each returned <a>FirewallRuleTypeDefinition</a> includes a <a>SubscriptionInfo</a> identifying the AWS Marketplace product that backs it.</p>"
+    },
+    "PartnerValue":{
+      "type":"string",
+      "documentation":"<p>The identifier of a partner threat-protection product, returned in the <code>Value</code> field of a <a>FirewallRuleTypeDefinition</a> for the <code>PartnerThreatProtection</code> rule type. Pass this string as <code>PartnerThreatProtectionConfig.Partner</code> when creating a partner-managed firewall rule.</p>",
+      "max":128,
+      "min":1
+    },
     "Port":{
       "type":"integer",
       "max":65535,
       "min":0
     },
     "Priority":{"type":"integer"},
+    "ProductId":{
+      "type":"string",
+      "max":256
+    },
     "Protocol":{
       "type":"string",
       "enum":[
@@ -4845,10 +4899,12 @@
     "RniEnhancedMetricsEnabled":{"type":"boolean"},
     "RuleTypeDescription":{
       "type":"string",
+      "documentation":"<p>A human-readable description of a rule-type definition returned by <a>ListFirewallRuleTypes</a>.</p>",
       "max":1024
     },
     "RuleTypeName":{
       "type":"string",
+      "documentation":"<p>The variant name of a rule type. Known values are <code>FirewallAdvancedContentCategory</code>, <code>FirewallAdvancedThreatCategory</code>, <code>DnsThreatProtection</code>, and <code>PartnerThreatProtection</code>. Returned in the <code>RuleType</code> field of a <a>FirewallRuleTypeDefinition</a>.</p>",
       "max":128
     },
     "RuleTypeOption":{
@@ -4862,6 +4918,7 @@
     },
     "RuleTypeValue":{
       "type":"string",
+      "documentation":"<p>The variant-specific value of a rule type, returned in the <code>Value</code> field of a <a>FirewallRuleTypeDefinition</a>. The interpretation of this string depends on <code>RuleType</code>; see <a>FirewallAdvancedContentCategoryValue</a>, <a>FirewallAdvancedThreatCategoryValue</a>, <a>DnsThreatProtectionRuleTypeValue</a>, or <a>PartnerValue</a>.</p>",
       "max":128
     },
     "SecurityGroupIds":{
@@ -4915,6 +4972,20 @@
       "type":"string",
       "max":32,
       "min":1
+    },
+    "SubscriptionInfo":{
+      "type":"structure",
+      "members":{
+        "VendorName":{
+          "shape":"VendorName",
+          "documentation":"<p>The name of the AWS Marketplace seller (vendor) that publishes the partner threat-protection product (for example, <code>Palo Alto Networks</code>).</p>"
+        },
+        "ProductId":{
+          "shape":"ProductId",
+          "documentation":"<p>The AWS Marketplace product identifier of the partner threat-protection product. Use this value to verify or manage the calling account's subscription in AWS Marketplace.</p>"
+        }
+      },
+      "documentation":"<p>Identifies the AWS Marketplace product that backs a partner-managed rule type. Returned as part of <a>FirewallRuleTypeDefinition</a> when the rule type variant requires an active customer subscription to the named product.</p>"
     },
     "Tag":{
       "type":"structure",
@@ -5187,7 +5258,7 @@
         },
         "DnsThreatProtection":{
           "shape":"DnsThreatProtection",
-          "documentation":"<p>The type of the DNS Firewall Advanced rule. This setting is mutually exclusive with <code>FirewallDomainListId</code> and <code>FirewallRuleType</code>. Valid values are:</p> <ul> <li> <p> <code>DGA</code>: Domain generation algorithms detection. DGAs are used by attackers to generate a large number of domains to launch malware attacks.</p> </li> <li> <p> <code>DNS_TUNNELING</code>: DNS tunneling detection. DNS tunneling is used by attackers to exfiltrate data from the client by using the DNS tunnel without making a network connection to the client.</p> </li> <li> <p> <code>DICT_DGA</code>: Dictionary-based domain generation algorithms detection. Dictionary DGAs use wordlists to generate domains that appear more legitimate, making them harder to detect than traditional DGAs.</p> </li> </ul>",
+          "documentation":"<p>The type of the DNS Firewall Advanced rule. This setting is mutually exclusive with <code>FirewallDomainListId</code> and <code>FirewallRuleType</code>. Valid values are:</p> <ul> <li> <p> <code>DGA</code>: Domain generation algorithms detection. DGAs are used by attackers to generate a large number of domains to launch malware attacks.</p> </li> <li> <p> <code>DNS_TUNNELING</code>: DNS tunneling detection. DNS tunneling is used by attackers to exfiltrate data from the client by using the DNS tunnel without making a network connection to the client.</p> </li> <li> <p> <code>DICTIONARY_DGA</code>: Dictionary-based domain generation algorithms detection. Dictionary DGAs use wordlists to generate domains that appear more legitimate, making them harder to detect than traditional DGAs.</p> </li> </ul>",
           "box":true
         },
         "ConfidenceThreshold":{
@@ -5197,7 +5268,7 @@
         },
         "FirewallRuleType":{
           "shape":"FirewallRuleType",
-          "documentation":"<p>The rule type configuration for the firewall rule. This setting is mutually exclusive with the top-level <code>FirewallDomainListId</code> and <code>DnsThreatProtection</code> fields.</p>",
+          "documentation":"<p>The rule type configuration for the firewall rule. This is a tagged union — set exactly one of its members. This setting is mutually exclusive with the top-level <code>FirewallDomainListId</code> and <code>DnsThreatProtection</code> fields. Use one of:</p> <ul> <li> <p> <code>FirewallAdvancedContentCategory</code> — match an AWS-managed content category (for example, <code>VIOLENCE_AND_HATE_SPEECH</code>).</p> </li> <li> <p> <code>FirewallAdvancedThreatCategory</code> — match an AWS-managed advanced threat category (for example, <code>PHISHING</code>).</p> </li> <li> <p> <code>DnsThreatProtection</code> — match a built-in DNS Firewall Advanced threat detector (<code>DGA</code>, <code>DNS_TUNNELING</code>, or <code>DICTIONARY_DGA</code>).</p> </li> <li> <p> <code>PartnerThreatProtection</code> — match a third-party threat feed delivered through AWS Marketplace. The selected partner must be an active subscription on the calling account.</p> </li> </ul> <p>To enumerate the values supported in your account, call <a>ListFirewallRuleTypes</a>.</p>",
           "box":true
         }
       },
@@ -5301,7 +5372,7 @@
         },
         "DnsThreatProtection":{
           "shape":"DnsThreatProtection",
-          "documentation":"<p> The type of the DNS Firewall Advanced rule. Valid values are: </p> <ul> <li> <p> <code>DGA</code>: Domain generation algorithms detection. DGAs are used by attackers to generate a large number of domains to to launch malware attacks.</p> </li> <li> <p> <code>DNS_TUNNELING</code>: DNS tunneling detection. DNS tunneling is used by attackers to exfiltrate data from the client by using the DNS tunnel without making a network connection to the client.</p> </li> </ul>",
+          "documentation":"<p> The type of the DNS Firewall Advanced rule. This setting is mutually exclusive with <code>FirewallDomainListId</code> and <code>FirewallRuleType</code>. Valid values are: </p> <ul> <li> <p> <code>DGA</code>: Domain generation algorithms detection. DGAs are used by attackers to generate a large number of domains to launch malware attacks.</p> </li> <li> <p> <code>DNS_TUNNELING</code>: DNS tunneling detection. DNS tunneling is used by attackers to exfiltrate data from the client by using the DNS tunnel without making a network connection to the client.</p> </li> <li> <p> <code>DICTIONARY_DGA</code>: Dictionary-based domain generation algorithms detection. Dictionary DGAs use wordlists to generate domains that appear more legitimate, making them harder to detect than traditional DGAs.</p> </li> </ul>",
           "box":true
         },
         "ConfidenceThreshold":{
@@ -5311,7 +5382,7 @@
         },
         "FirewallRuleType":{
           "shape":"FirewallRuleType",
-          "documentation":"<p>The rule type configuration for the firewall rule. This setting is mutually exclusive with the top-level <code>FirewallDomainListId</code> and <code>DnsThreatProtection</code> fields.</p>",
+          "documentation":"<p>The rule type configuration for the firewall rule. This is a tagged union — set exactly one of its members. This setting is mutually exclusive with the top-level <code>FirewallDomainListId</code> and <code>DnsThreatProtection</code> fields. Use one of:</p> <ul> <li> <p> <code>FirewallAdvancedContentCategory</code> — match an AWS-managed content category (for example, <code>VIOLENCE_AND_HATE_SPEECH</code>).</p> </li> <li> <p> <code>FirewallAdvancedThreatCategory</code> — match an AWS-managed advanced threat category (for example, <code>PHISHING</code>).</p> </li> <li> <p> <code>DnsThreatProtection</code> — match a built-in DNS Firewall Advanced threat detector (<code>DGA</code>, <code>DNS_TUNNELING</code>, or <code>DICTIONARY_DGA</code>).</p> </li> <li> <p> <code>PartnerThreatProtection</code> — match a third-party threat feed delivered through AWS Marketplace. The selected partner must be an active subscription on the calling account.</p> </li> </ul> <p>To enumerate the values supported in your account, call <a>ListFirewallRuleTypes</a>.</p>",
           "box":true
         }
       }
@@ -5535,6 +5606,10 @@
       },
       "documentation":"<p>You have provided an invalid command. If you ran the <code>UpdateFirewallDomains</code> request. supported values are <code>ADD</code>, <code>REMOVE</code>, or <code>REPLACE</code> a domain.</p>",
       "exception":true
+    },
+    "VendorName":{
+      "type":"string",
+      "max":256
     }
   },
   "documentation":"<p>When you create a VPC using Amazon VPC, you automatically get DNS resolution within the VPC from Route 53 Resolver. By default, Resolver answers DNS queries for VPC domain names such as domain names for EC2 instances or Elastic Load Balancing load balancers. Resolver performs recursive lookups against public name servers for all other domain names.</p> <p>You can also configure DNS resolution between your VPC and your network over a Direct Connect or VPN connection:</p> <p> <b>Forward DNS queries from resolvers on your network to Route 53 Resolver</b> </p> <p>DNS resolvers on your network can forward DNS queries to Resolver in a specified VPC. This allows your DNS resolvers to easily resolve domain names for Amazon Web Services resources such as EC2 instances or records in a Route 53 private hosted zone. For more information, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver.html#resolver-overview-forward-network-to-vpc\">How DNS Resolvers on Your Network Forward DNS Queries to Route 53 Resolver</a> in the <i>Amazon Route 53 Developer Guide</i>.</p> <p> <b>Conditionally forward queries from a VPC to resolvers on your network</b> </p> <p>You can configure Resolver to forward queries that it receives from EC2 instances in your VPCs to DNS resolvers on your network. To forward selected queries, you create Resolver rules that specify the domain names for the DNS queries that you want to forward (such as example.com), and the IP addresses of the DNS resolvers on your network that you want to forward the queries to. If a query matches multiple rules (example.com, acme.example.com), Resolver chooses the rule with the most specific match (acme.example.com) and forwards the query to the IP addresses that you specified in that rule. For more information, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver.html#resolver-overview-forward-vpc-to-network\">How Route 53 Resolver Forwards DNS Queries from Your VPCs to Your Network</a> in the <i>Amazon Route 53 Developer Guide</i>.</p> <p>Like Amazon VPC, Resolver is Regional. In each Region where you have VPCs, you can choose whether to forward queries from your VPCs to your network (outbound queries), from your network to your VPCs (inbound queries), or both.</p>"

@@ -200,7 +200,9 @@ class BaseSSOTest(BaseAWSCommandParamsTest):
         )
         return content
 
-    def get_sso_session_config(self, session_name, include_profile=True):
+    def get_sso_session_config(
+        self, session_name, include_profile=True, redirect_port=None
+    ):
         content = ''
         if include_profile:
             content += (
@@ -216,7 +218,9 @@ class BaseSSOTest(BaseAWSCommandParamsTest):
         )
         if self.registration_scopes:
             scopes = ', '.join(self.registration_scopes)
-            content += f'sso_registration_scopes={scopes}'
+            content += f'sso_registration_scopes={scopes}\n'
+        if redirect_port is not None:
+            content += f'sso_redirect_port={redirect_port}\n'
         return content
 
     def set_config_file_content(self, content=None):

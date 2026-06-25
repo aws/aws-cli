@@ -321,6 +321,38 @@ class TestLoginCommand(BaseSSOTest):
             expected_redirect_port=34535,
         )
 
+    def test_login_auth_sso_session_with_configured_redirect_port(self):
+        content = self.get_sso_session_config(
+            'test-session', redirect_port=34535
+        )
+        self.set_config_file_content(content=content)
+        self.fetcher_mock.return_value.redirect_uri_with_port.return_value = (
+            'http://127.0.0.1:34535/oauth/callback'
+        )
+        self.add_oidc_auth_code_responses(self.access_token)
+        self.run_cmd('sso login')
+        self.fetcher_mock.assert_called_once_with(redirect_port=34535)
+        self.assert_auth_browser_handler_called_with(
+            'sso%3Aaccount%3Aaccess',
+            expected_redirect_port=34535,
+        )
+
+    def test_login_redirect_port_arg_overrides_configured_redirect_port(self):
+        content = self.get_sso_session_config(
+            'test-session', redirect_port=34535
+        )
+        self.set_config_file_content(content=content)
+        self.fetcher_mock.return_value.redirect_uri_with_port.return_value = (
+            'http://127.0.0.1:45678/oauth/callback'
+        )
+        self.add_oidc_auth_code_responses(self.access_token)
+        self.run_cmd('sso login --redirect-port 45678')
+        self.fetcher_mock.assert_called_once_with(redirect_port=45678)
+        self.assert_auth_browser_handler_called_with(
+            'sso%3Aaccount%3Aaccess',
+            expected_redirect_port=45678,
+        )
+
     def test_login_invalid_redirect_port(self):
         for redirect_port in (0, 65536):
             with self.subTest(redirect_port=redirect_port):
@@ -329,6 +361,16 @@ class TestLoginCommand(BaseSSOTest):
                     expected_rc=252,
                 )
                 self.assertIn('Invalid value for --redirect-port', stderr)
+
+    def test_login_invalid_configured_redirect_port(self):
+        for redirect_port in ('0', '65536', 'invalid'):
+            with self.subTest(redirect_port=redirect_port):
+                content = self.get_sso_session_config(
+                    'test-session', redirect_port=redirect_port
+                )
+                self.set_config_file_content(content=content)
+                _, stderr, _ = self.run_cmd('sso login', expected_rc=253)
+                self.assertIn('Invalid value for sso_redirect_port', stderr)
 
     def test_login_device_sso_with_explicit_sso_session_arg(self):
         content = self.get_sso_session_config(

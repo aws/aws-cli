@@ -354,6 +354,10 @@ class BaseSSOCommand(BasicCommand):
             parsed_scopes = parse_sso_registration_scopes(raw_scopes)
             sso_config['registration_scopes'] = parsed_scopes
 
+        redirect_port_var = 'sso_redirect_port'
+        if redirect_port_var in session_config:
+            sso_config[redirect_port_var] = session_config[redirect_port_var]
+
         if missing:
             error_msg = f'Missing the following required SSO configuration values: {", ".join(missing)}. '
             raise InvalidSSOConfigError(error_msg)

@@ -13,7 +13,10 @@
 import os
 
 from awscli.customizations.configure.writer import ConfigFileWriter
-from awscli.customizations.exceptions import ParamValidationError
+from awscli.customizations.exceptions import (
+    ConfigurationError,
+    ParamValidationError,
+)
 from awscli.customizations.sso.resolve import resolve_start_url
 from awscli.customizations.sso.utils import (
     LOGIN_ARGS,
@@ -22,6 +25,8 @@ from awscli.customizations.sso.utils import (
     do_sso_login,
 )
 from awscli.customizations.utils import uni_print
+
+SSO_REDIRECT_PORT_CONFIG_VAR = 'sso_redirect_port'
 
 
 class LoginCommand(BaseSSOCommand):
@@ -58,8 +63,10 @@ class LoginCommand(BaseSSOCommand):
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
-        self._validate_redirect_port(parsed_args.redirect_port)
         sso_config = self._get_sso_config(sso_session=parsed_args.sso_session)
+        redirect_port = self._resolve_redirect_port(
+            parsed_args.redirect_port, sso_config
+        )
         start_url = sso_config['sso_start_url']
         configured_region = sso_config.get('sso_region')
 
@@ -88,7 +95,7 @@ class LoginCommand(BaseSSOCommand):
             session_name=sso_config.get('session_name'),
             registration_scopes=sso_config.get('registration_scopes'),
             use_device_code=parsed_args.use_device_code,
-            redirect_port=parsed_args.redirect_port,
+            redirect_port=redirect_port,
         )
 
         # Only rewrite sso_region after successful login.
@@ -116,11 +123,38 @@ class LoginCommand(BaseSSOCommand):
             config_path,
         )
 
-    def _validate_redirect_port(self, redirect_port):
+    def _resolve_redirect_port(self, redirect_port, sso_config):
+        if redirect_port is not None:
+            self._validate_redirect_port(
+                redirect_port, '--redirect-port', ParamValidationError
+            )
+            return redirect_port
+        if SSO_REDIRECT_PORT_CONFIG_VAR not in sso_config:
+            return None
+        return self._parse_redirect_port_config(
+            sso_config[SSO_REDIRECT_PORT_CONFIG_VAR]
+        )
+
+    def _parse_redirect_port_config(self, redirect_port):
+        try:
+            parsed_redirect_port = int(redirect_port)
+        except ValueError:
+            raise ConfigurationError(
+                f'Invalid value for {SSO_REDIRECT_PORT_CONFIG_VAR}. '
+                'Value must be an integer between 1 and 65535.'
+            )
+        self._validate_redirect_port(
+            parsed_redirect_port,
+            SSO_REDIRECT_PORT_CONFIG_VAR,
+            ConfigurationError,
+        )
+        return parsed_redirect_port
+
+    def _validate_redirect_port(self, redirect_port, name, error_cls):
         if redirect_port is None:
             return
         if redirect_port < 1 or redirect_port > 65535:
-            raise ParamValidationError(
-                'Invalid value for --redirect-port. '
+            raise error_cls(
+                f'Invalid value for {name}. '
                 'Value must be between 1 and 65535.'
             )

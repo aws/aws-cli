@@ -336,7 +336,7 @@ def args():
 
 @pytest.fixture
 def parsed_globals():
-    return argparse.Namespace()
+    return argparse.Namespace(verify_ssl=None)
 
 
 @pytest.fixture

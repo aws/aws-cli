@@ -11,7 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import logging
+import os
 import re
+import ssl
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -77,26 +79,50 @@ def _extract_region_from_hostname(hostname):
     return None
 
 
-def _follow_redirect(url, timeout=_DEFAULT_TIMEOUT):
+def _follow_redirect(url, timeout=_DEFAULT_TIMEOUT, verify=None):
     class _NoRedirectHandler(urllib.request.HTTPRedirectHandler):
         def redirect_request(self, req, fp, code, msg, headers, newurl):
             return None
 
-    opener = urllib.request.build_opener(_NoRedirectHandler)
+    ssl_context = ssl.create_default_context()
+    if verify is False:
+        ssl_context.check_hostname = False
+        ssl_context.verify_mode = ssl.CERT_NONE
+    elif verify and verify is not True:
+        if os.path.isdir(verify):
+            ssl_context.load_verify_locations(capath=verify)
+        else:
+            ssl_context.load_verify_locations(cafile=verify)
+    https_handler = urllib.request.HTTPSHandler(context=ssl_context)
+    opener = urllib.request.build_opener(_NoRedirectHandler, https_handler)
     redirect_codes = (301, 302, 303, 307, 308)
 
     for _ in range(_MAX_REDIRECTS):
         try:
+            LOG.debug("Issuing HEAD request to '%s'", url)
             req = urllib.request.Request(url, method='HEAD')
             resp = opener.open(req, timeout=timeout)
             resp.close()
+            LOG.debug(
+                "HEAD request to '%s' returned %s (no redirect)",
+                url,
+                resp.status,
+            )
             return url
         except urllib.error.HTTPError as e:
             if e.code in (405, 501):
+                LOG.debug(
+                    "HEAD request returned %s, falling back to GET", e.code
+                )
                 try:
                     req = urllib.request.Request(url, method='GET')
                     resp = opener.open(req, timeout=timeout)
                     resp.close()
+                    LOG.debug(
+                        "GET request to '%s' returned %s (no redirect)",
+                        url,
+                        resp.status,
+                    )
                     return url
                 except urllib.error.HTTPError as e2:
                     if e2.code in redirect_codes:
@@ -105,6 +131,11 @@ def _follow_redirect(url, timeout=_DEFAULT_TIMEOUT):
                             raise ConfigurationError(
                                 "Redirect response missing Location header."
                             )
+                        LOG.debug(
+                            "GET request returned %s, redirecting to '%s'",
+                            e2.code,
+                            location,
+                        )
                         url = urllib.parse.urljoin(url, location)
                     else:
                         raise ConfigurationError(
@@ -120,6 +151,11 @@ def _follow_redirect(url, timeout=_DEFAULT_TIMEOUT):
                     raise ConfigurationError(
                         "Redirect response missing Location header."
                     )
+                LOG.debug(
+                    "HEAD request returned %s, redirecting to '%s'",
+                    e.code,
+                    location,
+                )
                 url = urllib.parse.urljoin(url, location)
             else:
                 raise ConfigurationError(
@@ -134,7 +170,11 @@ def _follow_redirect(url, timeout=_DEFAULT_TIMEOUT):
 
 
 def resolve_start_url(
-    start_url, session, configured_region=None, timeout=None
+    start_url,
+    session,
+    configured_region=None,
+    timeout=None,
+    verify=None,
 ):
     parsed = urllib.parse.urlparse(start_url)
 
@@ -160,7 +200,11 @@ def resolve_start_url(
     )
     effective_timeout = timeout if timeout is not None else _DEFAULT_TIMEOUT
     resolved_url = _normalize_url(
-        _follow_redirect(start_url, timeout=effective_timeout)
+        _follow_redirect(
+            start_url,
+            timeout=effective_timeout,
+            verify=verify,
+        )
     )
 
     resolved_hostname = urllib.parse.urlparse(resolved_url).hostname

@@ -22,7 +22,13 @@ $ErrorActionPreference = 'Stop'
 $DownloadBaseUrl    = 'https://awscli.amazonaws.com'
 $LatestVersionUrl   = "$DownloadBaseUrl/v2/version.txt"
 
-$SystemInstallDir   = Join-Path $env:ProgramFiles 'Amazon\AWSCLIV2'
+# The system MSI always installs to the 64-bit Program Files. Use
+# ProgramW6432, which points there even from a 32-bit PowerShell host;
+# $env:ProgramFiles would resolve to "Program Files (x86)" under 32-bit
+# and make the post-install check look in the wrong place.
+$SystemProgramFiles = $env:ProgramW6432
+if (-not $SystemProgramFiles) { $SystemProgramFiles = $env:ProgramFiles }
+$SystemInstallDir   = Join-Path $SystemProgramFiles 'Amazon\AWSCLIV2'
 $UserInstallDir     = Join-Path $env:LOCALAPPDATA 'Programs\Amazon\AWSCLIV2'
 
 $DistributionSource = 'script-exe'

@@ -414,3 +414,22 @@ class TestFollowRedirect:
             mock_ctx.load_verify_locations.assert_called_once_with(
                 cafile=str(ca_file)
             )
+
+    def test_verify_none_uses_bundled_ca(self):
+        with mock.patch('ssl.create_default_context') as mock_ctx_factory:
+            mock_ctx = mock.Mock()
+            mock_ctx_factory.return_value = mock_ctx
+            with mock.patch('urllib.request.build_opener'):
+                with mock.patch('urllib.request.HTTPSHandler'):
+                    with mock.patch(
+                        'awscli.customizations.sso.resolve.get_cert_path',
+                        return_value='/bundled/cacert.pem',
+                    ) as mock_get_cert_path:
+                        try:
+                            _follow_redirect('https://aws.mycompany.com')
+                        except Exception:
+                            pass
+            mock_get_cert_path.assert_called_once_with(True)
+            mock_ctx.load_verify_locations.assert_called_once_with(
+                cafile='/bundled/cacert.pem'
+            )

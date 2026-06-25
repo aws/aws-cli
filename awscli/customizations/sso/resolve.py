@@ -18,6 +18,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
+from awscli.botocore.httpsession import get_cert_path
 from awscli.customizations.exceptions import ConfigurationError
 
 LOG = logging.getLogger(__name__)
@@ -93,6 +94,8 @@ def _follow_redirect(url, timeout=_DEFAULT_TIMEOUT, verify=None):
             ssl_context.load_verify_locations(capath=verify)
         else:
             ssl_context.load_verify_locations(cafile=verify)
+    else:
+        ssl_context.load_verify_locations(cafile=get_cert_path(True))
     https_handler = urllib.request.HTTPSHandler(context=ssl_context)
     opener = urllib.request.build_opener(_NoRedirectHandler, https_handler)
     redirect_codes = (301, 302, 303, 307, 308)

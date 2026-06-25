@@ -82,18 +82,24 @@ function Write-Warn {
     }
 }
 
-# Red error on stderr, record the exit code, then throw to unwind. We never
-# call `exit` here: under `irm | iex` the script runs in the caller's session,
-# so `exit` would close the user's PowerShell. The top-level handler turns the
-# recorded code into a process exit status only when run as a file.
-$Script:ExitCode = 0
-function Throw-Error {
-    param([int] $Code, [string] $Message)
+# Red error on stderr; never silenced.
+function Write-Err {
+    param([string] $Message)
     if (Use-Color $true) {
         [Console]::Error.WriteLine("${EscRed}aws-cli installer: error:${EscReset} $Message")
     } else {
         [Console]::Error.WriteLine("aws-cli installer: error: $Message")
     }
+}
+
+# Record the exit code and throw to unwind. We never call `exit` here: under
+# `irm | iex` the script runs in the caller's session, so `exit` would close
+# the user's PowerShell. The error is printed by the top-level handler (which
+# also reports any other exception), so nothing is silently swallowed; the
+# recorded code becomes a process exit status only when run as a file.
+$Script:ExitCode = 0
+function Throw-Error {
+    param([int] $Code, [string] $Message)
     $Script:ExitCode = $Code
     throw $Message
 }
@@ -379,7 +385,8 @@ function Write-InstallJson {
             quiet            = [bool]$Quiet
         }
     }
-    $obj | ConvertTo-Json -Depth 3 | Set-Content -Path $installJson -Encoding UTF8
+    $json = $obj | ConvertTo-Json -Depth 3
+    [IO.File]::WriteAllText($installJson, $json, (New-Object Text.UTF8Encoding $false))
 }
 
 function Invoke-PostInstallChecks {
@@ -417,12 +424,15 @@ function Invoke-Main {
 
 # Run the body inside a scriptblock and catch errors here rather than calling
 # `exit` from deep in the script. Under `irm | iex` the script shares the
-# caller's session, so `exit` would close the user's PowerShell window. Errors
-# are already written to stderr by Throw-Error; we just record the failure.
+# caller's session, so `exit` would close the user's PowerShell window. All
+# errors are printed here -- both Throw-Error (which sets $Script:ExitCode)
+# and any other exception raised under $ErrorActionPreference = 'Stop' -- so
+# nothing is silently swallowed.
 & {
     try {
         Invoke-Main
     } catch {
+        Write-Err $_.Exception.Message
         if ($Script:ExitCode -eq 0) { $Script:ExitCode = 1 }
     }
 }

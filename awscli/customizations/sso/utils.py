@@ -86,6 +86,7 @@ def do_sso_login(
     session_name=None,
     use_device_code=False,
     resolved_start_url=None,
+    redirect_port=None,
 ):
     if token_cache is None:
         token_cache = JSONFileCache(SSO_TOKEN_DIR, dumps_func=_sso_json_dumps)
@@ -101,7 +102,7 @@ def do_sso_login(
             sso_region=sso_region,
             client_creator=session.create_client,
             parsed_globals=parsed_globals,
-            auth_code_fetcher=AuthCodeFetcher(),
+            auth_code_fetcher=AuthCodeFetcher(redirect_port=redirect_port),
             cache=token_cache,
             on_pending_authorization=on_pending_authorization,
         )
@@ -230,7 +231,7 @@ class AuthCodeFetcher:
     # How long we wait overall for the callback
     _OVERALL_TIMEOUT = 60 * 10
 
-    def __init__(self):
+    def __init__(self, redirect_port=None):
         self._auth_code = None
         self._state = None
         self._is_done = False
@@ -239,7 +240,8 @@ class AuthCodeFetcher:
         # AuthCodeFetcher so that it can pass back the state and auth code
         try:
             handler = partial(OAuthCallbackHandler, self)
-            self.http_server = HTTPServer(('', 0), handler)
+            server_port = 0 if redirect_port is None else redirect_port
+            self.http_server = HTTPServer(('', server_port), handler)
             self.http_server.timeout = self._REQUEST_TIMEOUT
         except OSError as e:
             raise AuthCodeFetcherError(error_msg=e)

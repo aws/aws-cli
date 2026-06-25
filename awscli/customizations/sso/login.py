@@ -13,6 +13,7 @@
 import os
 
 from awscli.customizations.configure.writer import ConfigFileWriter
+from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.sso.resolve import resolve_start_url
 from awscli.customizations.sso.utils import (
     LOGIN_ARGS,
@@ -36,6 +37,16 @@ class LoginCommand(BaseSSOCommand):
     )
     ARG_TABLE = LOGIN_ARGS + [
         {
+            'name': 'redirect-port',
+            'cli_type_name': 'integer',
+            'help_text': (
+                'The localhost port to use for the Authorization Code '
+                'callback server. When omitted, a random available port is '
+                'selected.'
+            ),
+            'required': False,
+        },
+        {
             'name': 'sso-session',
             'help_text': (
                 'An explicit SSO session to use to login. By default, this '
@@ -43,10 +54,11 @@ class LoginCommand(BaseSSOCommand):
                 'of the requested profile and generally does not require this '
                 'argument to be set.'
             ),
-        }
+        },
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
+        self._validate_redirect_port(parsed_args.redirect_port)
         sso_config = self._get_sso_config(sso_session=parsed_args.sso_session)
         start_url = sso_config['sso_start_url']
         configured_region = sso_config.get('sso_region')
@@ -76,6 +88,7 @@ class LoginCommand(BaseSSOCommand):
             session_name=sso_config.get('session_name'),
             registration_scopes=sso_config.get('registration_scopes'),
             use_device_code=parsed_args.use_device_code,
+            redirect_port=parsed_args.redirect_port,
         )
 
         # Only rewrite sso_region after successful login.
@@ -102,3 +115,12 @@ class LoginCommand(BaseSSOCommand):
             {'__section__': section, 'sso_region': new_region},
             config_path,
         )
+
+    def _validate_redirect_port(self, redirect_port):
+        if redirect_port is None:
+            return
+        if redirect_port < 1 or redirect_port > 65535:
+            raise ParamValidationError(
+                'Invalid value for --redirect-port. '
+                'Value must be between 1 and 65535.'
+            )

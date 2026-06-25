@@ -18,3 +18,5 @@ Output::
         "ProvisionedProductName": "test-pp",
         "ProvisioningArtifactId": "pa-7wz4cu5cxxxxx"
     }
+
+For more information, see `Creating a launch plan <https://docs.aws.amazon.com/servicecatalog/latest/userguide/launch-plan.html>`__ in the *AWS Service Catalog User Guide*.

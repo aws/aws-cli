@@ -265,10 +265,13 @@ check_libc() {
 }
 
 check_system_privilege() {
-  [ "$ARG_SYSTEM" -eq 1 ] || return 0
-  if [ "$(id -u)" -ne 0 ]; then
-    error 1 "--system requires root. Re-run with sudo, or omit --system for a user-local install."
+  if [ "$ARG_SYSTEM" -eq 1 ]; then
+    if [ "$(id -u)" -ne 0 ]; then
+      error 1 "--system requires root. Re-run with sudo, or omit --system for a user-local install."
+    fi
+    return 0
   fi
+
 }
 
 # ============================================================================
@@ -541,8 +544,7 @@ resolve_target_and_announce() {
   fi
 
   if [ "$(lower_version "$PRE_INSTALL_VERSION" "$TARGET_VERSION")" = "$TARGET_VERSION" ]; then
-    info "AWS CLI $PRE_INSTALL_VERSION is already installed at $INSTALL_DIR. To install $TARGET_VERSION, uninstall the existing AWS CLI at $INSTALL_DIR and try again."
-    exit 0
+    error 2 "AWS CLI $PRE_INSTALL_VERSION is already installed at $INSTALL_DIR. To install $TARGET_VERSION, uninstall the existing AWS CLI at $INSTALL_DIR and try again. See https://docs.aws.amazon.com/cli/latest/userguide/uninstall.html"
   fi
 
   info "Installing AWS CLI $PRE_INSTALL_VERSION → $TARGET_VERSION"
@@ -683,7 +685,12 @@ post_install_checks() {
   verify_install_runs
   write_install_json
   success "AWS CLI $POST_INSTALL_VERSION installed to $INSTALL_DIR"
-  info "Ensure $BIN_DIR is on your PATH. When multiple installs exist, PATH order determines which 'aws' runs."
+  # The PATH hint references BIN_DIR. Callers that have no real bin dir (e.g.
+  # `aws update` passing a throwaway location) set AWS_CLI_NO_BIN_DIR=1 so we
+  # don't point users at a meaningless path.
+  if [ "${AWS_CLI_NO_BIN_DIR:-}" != "1" ]; then
+    info "Ensure $BIN_DIR is on your PATH. When multiple installs exist, PATH order determines which 'aws' runs."
+  fi
 }
 
 # ============================================================================

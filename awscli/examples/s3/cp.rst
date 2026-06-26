@@ -23,7 +23,7 @@ Output::
 
 **Example 3: Copying a file from S3 to S3**
 
-The following ``cp`` command copies a single s3 object to a specified bucket and key::
+The following ``cp`` command copies a single S3 object to a specified bucket and key::
 
     aws s3 cp s3://amzn-s3-demo-bucket/test.txt s3://amzn-s3-demo-bucket/test2.txt
 

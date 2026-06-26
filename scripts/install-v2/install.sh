@@ -652,7 +652,7 @@ json_escape() {
   printf '%s' "$1" | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g'
 }
 
-# Writes install-time metadata next to the bundled metadata.json. `aws update`
+# Writes install-time metadata to install.json. `aws update`
 # reads this back to learn where and how the CLI was installed.
 write_install_json() {
   local install_json

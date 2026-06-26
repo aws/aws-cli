@@ -557,9 +557,9 @@ resolve_target_and_announce() {
 run_linux_installer() {
   ( cd "$TEMP_DIR" && unzip -o -q "$INSTALLER_PATH" )
 
-  mkdir -p "$BIN_DIR" || error 7 "could not create $BIN_DIR"
+  mkdir -p "$BIN_DIR" || error 1 "could not create $BIN_DIR"
   if [ "$ARG_SYSTEM" -eq 0 ]; then
-    mkdir -p "$INSTALL_DIR" || error 7 "could not create $INSTALL_DIR"
+    mkdir -p "$INSTALL_DIR" || error 1 "could not create $INSTALL_DIR"
   fi
 
   local update_flag=""
@@ -569,27 +569,27 @@ run_linux_installer() {
 
   if [ "$ARG_SYSTEM" -eq 1 ]; then
     "$TEMP_DIR/aws/install" $update_flag \
-      || error 8 "AWS CLI installer failed"
+      || error 1 "AWS CLI installer failed"
   else
     "$TEMP_DIR/aws/install" \
       --install-dir "$INSTALL_DIR" \
       --bin-dir "$BIN_DIR" \
       $update_flag \
-      || error 8 "AWS CLI installer failed"
+      || error 1 "AWS CLI installer failed"
   fi
 }
 
 run_macos_installer() {
   if [ "$ARG_SYSTEM" -eq 1 ]; then
     installer -pkg "$INSTALLER_PATH" -target / \
-      || error 8 "AWS CLI installer failed"
+      || error 1 "AWS CLI installer failed"
     return
   fi
 
   local install_parent
   install_parent="$(dirname "$INSTALL_DIR")"
-  mkdir -p "$install_parent" || error 7 "could not create $install_parent"
-  mkdir -p "$BIN_DIR"        || error 7 "could not create $BIN_DIR"
+  mkdir -p "$install_parent" || error 1 "could not create $install_parent"
+  mkdir -p "$BIN_DIR"        || error 1 "could not create $BIN_DIR"
 
   # Reject paths with XML-special characters that would break choices.xml.
   case "$install_parent" in
@@ -619,7 +619,7 @@ EOF
   installer -pkg "$INSTALLER_PATH" \
             -target CurrentUserHomeDirectory \
             -applyChoiceChangesXML "$choices" \
-    || error 8 "AWS CLI installer failed"
+    || error 1 "AWS CLI installer failed"
 
   ln -sf "$INSTALL_DIR/aws"           "$BIN_DIR/aws"
   ln -sf "$INSTALL_DIR/aws_completer" "$BIN_DIR/aws_completer"
@@ -644,7 +644,7 @@ verify_install_runs() {
   aws_bin="$(candidate_aws_binary)"
   POST_INSTALL_VERSION="$(read_installed_version "$aws_bin" || true)"
   if [ -z "$POST_INSTALL_VERSION" ]; then
-    error 9 "post-install check failed: '$aws_bin --version' did not run successfully."
+    error 1 "post-install check failed: '$aws_bin --version' did not run successfully."
   fi
 }
 

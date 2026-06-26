@@ -352,7 +352,7 @@ function Run-Installer {
     $proc = Start-Process -FilePath 'msiexec' -ArgumentList $msiArgs `
                           -WorkingDirectory $msiDir -Wait -PassThru
     if ($MsiexecSuccessCodes -notcontains $proc.ExitCode) {
-        Throw-Error 8 "msiexec failed with exit code $($proc.ExitCode)"
+        Throw-Error 1 "msiexec failed with exit code $($proc.ExitCode)"
     }
 }
 
@@ -364,7 +364,7 @@ function Verify-InstallRuns {
     $awsExe = Get-CandidateAwsBinary
     $Script:PostInstallVersion = Read-InstalledVersion $awsExe
     if (-not $Script:PostInstallVersion) {
-        Throw-Error 9 "post-install check failed: '$awsExe --version' did not run successfully."
+        Throw-Error 1 "post-install check failed: '$awsExe --version' did not run successfully."
     }
 }
 

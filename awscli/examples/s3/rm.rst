@@ -1,6 +1,6 @@
 **Example 1: Delete an S3 object**
 
-The following ``rm`` command deletes a single s3 object::
+The following ``rm`` command deletes a single S3 object::
 
     aws s3 rm s3://amzn-s3-demo-bucket/test2.txt
 

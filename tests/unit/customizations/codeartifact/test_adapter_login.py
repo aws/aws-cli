@@ -1000,6 +1000,11 @@ class TestNpmLogin(unittest.TestCase):
         scope = self.test_subject.get_scope(self.namespace)
         self.assertEqual(scope, expected_value)
 
+    def test_get_scope_lowercase_no_warning(self):
+        with mock.patch('sys.stderr') as mock_stderr:
+            self.test_subject.get_scope(self.namespace)
+        mock_stderr.write.assert_not_called()
+
     def test_get_scope_none_namespace(self):
         expected_value = None
         scope = self.test_subject.get_scope(None)
@@ -1013,6 +1018,22 @@ class TestNpmLogin(unittest.TestCase):
         expected_value = '@{}'.format(self.namespace)
         scope = self.test_subject.get_scope('@{}'.format(self.namespace))
         self.assertEqual(scope, expected_value)
+
+    def test_get_scope_uppercase_warns(self):
+        with mock.patch('sys.stderr') as mock_stderr:
+            scope = self.test_subject.get_scope('MyNamespace')
+        self.assertEqual(scope, '@MyNamespace')
+        mock_stderr.write.assert_called_once()
+        warning = mock_stderr.write.call_args[0][0]
+        self.assertIn('capital letters', warning)
+
+    def test_get_scope_uppercase_with_prefix_warns(self):
+        with mock.patch('sys.stderr') as mock_stderr:
+            scope = self.test_subject.get_scope('@MyNamespace')
+        self.assertEqual(scope, '@MyNamespace')
+        mock_stderr.write.assert_called_once()
+        warning = mock_stderr.write.call_args[0][0]
+        self.assertIn('capital letters', warning)
 
     def test_get_commands(self):
         commands = self.test_subject.get_commands(

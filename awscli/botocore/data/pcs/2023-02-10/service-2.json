@@ -318,7 +318,7 @@
         {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Updates a cluster configuration. You can modify Slurm scheduler settings, accounting configuration, and security groups for an existing cluster. </p> <note> <p>You can only update clusters that are in <code>ACTIVE</code>, <code>UPDATE_FAILED</code>, or <code>SUSPENDED</code> state. All associated resources (queues and compute node groups) must be in <code>ACTIVE</code> state before you can update the cluster.</p> </note>",
+      "documentation":"<p>Updates a cluster configuration. You can upgrade the Slurm version, modify scheduler settings, and update accounting configuration for an existing cluster. For more information about upgrading the Slurm version, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/working-with_clusters_upgrade.html\">Upgrading the Slurm version on a cluster</a> in the <i>PCS User Guide</i>. </p> <note> <p>You can only update clusters that are in <code>ACTIVE</code>, <code>UPDATE_FAILED</code>, or <code>SUSPENDED</code> state. All associated resources (queues and compute node groups) must be in <code>ACTIVE</code> state before you can update the cluster.</p> </note>",
       "idempotent":true
     },
     "UpdateComputeNodeGroup":{
@@ -1783,7 +1783,7 @@
         },
         "version":{
           "shape":"String",
-          "documentation":"<p>The version of the specified scheduling software that PCS uses to manage cluster scaling and job scheduling. For more information, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/slurm-versions.html\">Slurm versions in PCS</a> in the <i>PCS User Guide</i>.</p> <p>Valid Values: <code>23.11 | 24.05 | 24.11 | 25.05 | 25.11</code> </p>"
+          "documentation":"<p>The version of the specified scheduling software that PCS uses to manage cluster scaling and job scheduling. You can upgrade this version using the <code>UpdateCluster</code> API action. For more information, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/working-with_clusters_upgrade.html\">Upgrading the Slurm version on a cluster</a> and <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/slurm-versions.html\">Slurm versions in PCS</a> in the <i>PCS User Guide</i>.</p> <p>Valid Values: <code>23.11 | 24.05 | 24.11 | 25.05 | 25.11</code> </p>"
         }
       },
       "documentation":"<p>The cluster management and job scheduling software associated with the cluster.</p>"
@@ -2093,6 +2093,10 @@
         "slurmConfiguration":{
           "shape":"UpdateClusterSlurmConfigurationRequest",
           "documentation":"<p>Additional options related to the Slurm scheduler.</p>"
+        },
+        "scheduler":{
+          "shape":"UpdateSchedulerRequest",
+          "documentation":"<p>The scheduler configuration to update for the cluster. Use this to upgrade the Slurm version. For more information, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/working-with_clusters_upgrade.html\">Upgrading the Slurm version on a cluster</a> in the <i>PCS User Guide</i>.</p>"
         }
       }
     },
@@ -2257,6 +2261,17 @@
         }
       },
       "documentation":"<p>Additional options related to the Slurm scheduler.</p>"
+    },
+    "UpdateSchedulerRequest":{
+      "type":"structure",
+      "required":["version"],
+      "members":{
+        "version":{
+          "shape":"String",
+          "documentation":"<p>The Slurm version to upgrade the cluster to. You can only upgrade to a newer version. For more information about supported versions and upgrade paths, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/working-with_clusters_upgrade.html\">Upgrading the Slurm version on a cluster</a> in the <i>PCS User Guide</i>.</p> <p>Valid Values: <code>24.05 | 24.11 | 25.05 | 25.11</code> </p>"
+        }
+      },
+      "documentation":"<p>The scheduler configuration for updating a cluster. Use this to specify the Slurm version to upgrade to.</p>"
     },
     "UpdateSlurmRestRequest":{
       "type":"structure",

@@ -716,6 +716,10 @@
       "type":"boolean",
       "box":true
     },
+    "CFNResourceTypeList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "ConflictException":{
       "type":"structure",
       "required":["Message"],
@@ -1766,6 +1770,14 @@
       "min":0,
       "sensitive":true
     },
+    "RecorderType":{
+      "type":"string",
+      "documentation":"<p>The type of a service-linked recorder.</p> <ul> <li> <p> <code>AWS</code> – Managed by an Amazon Web Services service.</p> </li> <li> <p> <code>THIRD_PARTY</code> – Managed by a third-party service.</p> </li> </ul>",
+      "enum":[
+        "AWS",
+        "THIRD_PARTY"
+      ]
+    },
     "RegionList":{
       "type":"list",
       "member":{"shape":"RegionListMemberString"}
@@ -1822,6 +1834,10 @@
         "Service":{
           "shape":"String",
           "documentation":"<p>The Amazon Web Services service that owns the resource and is responsible for creating and updating it.</p>"
+        },
+        "CfnResourceType":{
+          "shape":"String",
+          "documentation":"<p>The CloudFormation resource type identifier for the resource, such as <code>AWS::EC2::Instance</code> or <code>AWS::S3::Bucket</code>.</p>"
         },
         "LastReportedAt":{
           "shape":"SyntheticTimestamp_date_time",
@@ -1976,6 +1992,24 @@
       "max":1011,
       "min":1
     },
+    "ServiceLinkedRecorderInfo":{
+      "type":"structure",
+      "members":{
+        "ServicePrincipal":{
+          "shape":"String",
+          "documentation":"<p>The service principal of the Amazon Web Services service that owns the service-linked recorder, such as <code>observabilityadmin.amazonaws.com</code>.</p>"
+        },
+        "RecorderName":{
+          "shape":"String",
+          "documentation":"<p>The name of the service-linked recorder, such as <code>AWSConfigurationRecorderForObservabilityAdmin</code>.</p>"
+        },
+        "RecorderType":{
+          "shape":"RecorderType",
+          "documentation":"<p>The type of the recorder. Valid values are <code>AWS</code> and <code>THIRD_PARTY</code>.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the service-linked recorder paired with a service view.</p>"
+    },
     "ServiceQuotaExceededException":{
       "type":"structure",
       "required":[
@@ -2025,6 +2059,10 @@
         "ScopeType":{
           "shape":"String",
           "documentation":"<p>The scope type of the service view, which determines what resources are included.</p>"
+        },
+        "ServiceLinkedRecorder":{
+          "shape":"ServiceLinkedRecorderInfo",
+          "documentation":"<p>Information about the service-linked recorder associated with this service view. When a service view is paired with a service-linked recorder, Resource Explorer uses the recorder's resource type list to filter search results and streaming data.</p>"
         }
       },
       "documentation":"<p>Contains the configuration and properties of a Resource Explorer service view.</p>"
@@ -2075,6 +2113,10 @@
         "ResourceType":{
           "shape":"String",
           "documentation":"<p>The unique identifier of the resource type.</p>"
+        },
+        "CFNResourceTypes":{
+          "shape":"CFNResourceTypeList",
+          "documentation":"<p>The CloudFormation resource type identifiers for this resource type, such as <code>AWS::EC2::Instance</code>.</p>"
         }
       },
       "documentation":"<p>A structure that describes a resource type supported by Amazon Web Services Resource Explorer.</p>"

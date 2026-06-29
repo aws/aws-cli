@@ -4495,6 +4495,24 @@
       ],
       "documentation":"<p>Removes tags from a resource.</p>"
     },
+    "UpdateAsset":{
+      "name":"UpdateAsset",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateAssetRequest"},
+      "output":{"shape":"UpdateAssetResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Updates the name and description of an existing asset in Glue Data Catalog. Only the fields that you provide are updated.</p>"
+    },
     "UpdateBlueprint":{
       "name":"UpdateBlueprint",
       "http":{
@@ -22808,17 +22826,6 @@
       "max":2048,
       "min":1
     },
-    "MetadataFormContent":{
-      "type":"string",
-      "max":300000,
-      "min":0
-    },
-    "MetadataFormTypeIdentifier":{
-      "type":"string",
-      "max":256,
-      "min":1,
-      "pattern":"^(?![\\.:])([\\w.]+(::))?[A-Z]\\w*$"
-    },
     "MetadataInfo":{
       "type":"structure",
       "members":{
@@ -24494,11 +24501,11 @@
           "documentation":"<p>The name of the attachment.</p>"
         },
         "Content":{
-          "shape":"MetadataFormContent",
+          "shape":"FormContent",
           "documentation":"<p>The JSON content of the form, conforming to the schema of the specified form type.</p>"
         },
         "FormTypeId":{
-          "shape":"MetadataFormTypeIdentifier",
+          "shape":"FormTypeId",
           "documentation":"<p>The identifier of the form type for this attachment.</p>"
         },
         "ClientToken":{
@@ -24528,7 +24535,7 @@
           "documentation":"<p>The name of the attachment.</p>"
         },
         "FormTypeId":{
-          "shape":"MetadataFormTypeIdentifier",
+          "shape":"FormTypeId",
           "documentation":"<p>The identifier of the form type for this attachment.</p>"
         }
       }
@@ -30305,6 +30312,51 @@
     "UntagResourceResponse":{
       "type":"structure",
       "members":{}
+    },
+    "UpdateAssetRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the asset to update.</p>"
+        },
+        "Name":{
+          "shape":"AssetName",
+          "documentation":"<p>The new name of the asset.</p>"
+        },
+        "Description":{
+          "shape":"AssetDescription",
+          "documentation":"<p>The new description of the asset.</p>"
+        },
+        "ClientToken":{
+          "shape":"HashString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "UpdateAssetResponse":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the asset.</p>"
+        },
+        "Name":{
+          "shape":"AssetName",
+          "documentation":"<p>The name of the asset.</p>"
+        },
+        "Description":{
+          "shape":"AssetDescription",
+          "documentation":"<p>The description of the asset.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"UpdatedAt",
+          "documentation":"<p>The timestamp at which the asset was last updated.</p>"
+        }
+      }
     },
     "UpdateBehavior":{
       "type":"string",

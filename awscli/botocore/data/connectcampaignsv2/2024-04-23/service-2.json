@@ -792,6 +792,12 @@
       "type":"boolean",
       "box":true
     },
+    "BrowserId":{
+      "type":"string",
+      "documentation":"<p>Browser Id for web notification event trigger</p>",
+      "max":36,
+      "min":1
+    },
     "Campaign":{
       "type":"structure",
       "required":[
@@ -896,6 +902,13 @@
       "box":true,
       "max":1,
       "min":0.01
+    },
+    "ChannelContext":{
+      "type":"structure",
+      "members":{
+        "webNotificationContext":{"shape":"WebNotificationContext"}
+      },
+      "documentation":"<p>Additional metadata related to the event trigger context</p>"
     },
     "ChannelSubtype":{
       "type":"string",
@@ -1412,6 +1425,14 @@
       },
       "documentation":"<p>Event trigger of the campaign</p>"
     },
+    "EventTriggerContext":{
+      "type":"structure",
+      "members":{
+        "sourceEvent":{"shape":"SourceEvent"},
+        "channelContext":{"shape":"ChannelContext"}
+      },
+      "documentation":"<p>Event trigger context data</p>"
+    },
     "EventType":{
       "type":"string",
       "documentation":"<p>Enumeration of Customer Profiles event type</p>",
@@ -1420,7 +1441,8 @@
         "Campaign-SMS",
         "Campaign-Telephony",
         "Campaign-Orchestration",
-        "Campaign-WhatsApp"
+        "Campaign-WhatsApp",
+        "Campaign-WebNotification"
       ]
     },
     "ExternalCampaignType":{
@@ -2019,7 +2041,8 @@
       "members":{
         "clientToken":{"shape":"ClientToken"},
         "profileId":{"shape":"ProfileId"},
-        "expirationTime":{"shape":"TimeStamp"}
+        "expirationTime":{"shape":"TimeStamp"},
+        "eventTriggerContext":{"shape":"EventTriggerContext"}
       },
       "documentation":"<p>Information about a profile outbound request</p>"
     },
@@ -2272,6 +2295,12 @@
       },
       "exception":true
     },
+    "SessionId":{
+      "type":"string",
+      "documentation":"<p>Session Id for web notification event trigger</p>",
+      "max":36,
+      "min":1
+    },
     "SmsChannelSubtypeConfig":{
       "type":"structure",
       "required":[
@@ -2327,6 +2356,11 @@
       },
       "documentation":"<p>Source of the campaign</p>",
       "union":true
+    },
+    "SourceEvent":{
+      "type":"string",
+      "documentation":"<p>Source event object for event triggers</p>",
+      "min":1
     },
     "SourcePhoneNumber":{
       "type":"string",
@@ -2757,6 +2791,14 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "WebNotificationContext":{
+      "type":"structure",
+      "members":{
+        "sessionId":{"shape":"SessionId"},
+        "browserId":{"shape":"BrowserId"}
+      },
+      "documentation":"<p>Context metadata for the web notification type channel</p>"
     },
     "WhatsAppChannelSubtypeConfig":{
       "type":"structure",

@@ -4101,6 +4101,8 @@ CLIENT_NAME_TO_HYPHENIZED_SERVICE_ID_OVERRIDES = {
     'globalaccelerator': 'global-accelerator',
     'iot-data': 'iot-data-plane',
     'iot-jobs-data': 'iot-jobs-data-plane',
+    'iotevents-data': 'iot-events-data',
+    'iotevents': 'iot-events',
     'iotwireless': 'iot-wireless',
     'kinesisanalytics': 'kinesis-analytics',
     'kinesisanalyticsv2': 'kinesis-analytics-v2',

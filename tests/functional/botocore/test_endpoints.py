@@ -24,6 +24,8 @@ ENDPOINT_PREFIX_OVERRIDE = {
     # For neptune, we send requests to the RDS endpoint.
     'neptune': 'rds',
     'docdb': 'rds',
+    # iotevents data endpoints.json and service-2.json don't line up.
+    'ioteventsdata': 'data.iotevents',
     'iotsecuredtunneling': 'api.tunneling.iot',
     'iotwireless': 'api.iotwireless',
     'data.iot': 'data-ats.iot',

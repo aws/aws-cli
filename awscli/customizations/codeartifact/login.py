@@ -576,7 +576,8 @@ password: {auth_token}'''
         # room for rethinking and refactoring the interfaces of these adapter
         # helper classes in the future.
 
-        assert 'pypi_rc_path' in kwargs, 'pypi_rc_path must be provided.'
+        if 'pypi_rc_path' not in kwargs:
+            raise ValueError('pypi_rc_path must be provided.')
         pypi_rc_path = kwargs['pypi_rc_path']
 
         default_pypi_rc = cls.DEFAULT_PYPI_RC_FMT.format(

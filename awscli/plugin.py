@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import logging
 
+from typing import Dict, Optional
 from botocore.hooks import HierarchicalEmitter
 
 log = logging.getLogger('awscli.plugin')
@@ -19,7 +20,11 @@ log = logging.getLogger('awscli.plugin')
 BUILTIN_PLUGINS = {'__builtin__': 'awscli.handlers'}
 
 
-def load_plugins(plugin_mapping, event_hooks=None, include_builtins=True):
+def load_plugins(
+    plugin_mapping: Dict[str, str],
+    event_hooks: Optional[HierarchicalEmitter] = None,
+    include_builtins: bool = True
+) -> HierarchicalEmitter:
     """
 
     :type plugin_mapping: dict
@@ -40,24 +45,31 @@ def load_plugins(plugin_mapping, event_hooks=None, include_builtins=True):
 
     """
     if include_builtins:
-        plugin_mapping.update(BUILTIN_PLUGINS)
+        plugin_mapping = {**plugin_mapping, **BUILTIN_PLUGINS}  # Avoid mutating input
     modules = _import_plugins(plugin_mapping)
     if event_hooks is None:
         event_hooks = HierarchicalEmitter()
     for name, plugin in zip(plugin_mapping.keys(), modules):
         log.debug("Initializing plugin %s: %s", name, plugin)
+        if not hasattr(plugin, 'awscli_initialize'):
+            log.error("Plugin %s does not have an awscli_initialize method.", name)
+            continue
         plugin.awscli_initialize(event_hooks)
+    log.info("Successfully initialized %d plugins.", len(modules))
     return event_hooks
 
+def _import_module(path: str):
+    if '.' not in path:
+        return __import__(path)
+    package, module = path.rsplit('.', 1)
+    return __import__(path, fromlist=[module])
 
-def _import_plugins(plugin_names):
+def _import_plugins(plugin_names: Dict[str, str]):
     plugins = []
     for name, path in plugin_names.items():
         log.debug("Importing plugin %s: %s", name, path)
-        if '.' not in path:
-            plugins.append(__import__(path))
-        else:
-            package, module = path.rsplit('.', 1)
-            module = __import__(path, fromlist=[module])
-            plugins.append(module)
+        try:
+            plugins.append(_import_module(path))
+        except ImportError as e:
+            log.error("Failed to import plugin %s: %s", name, e)
     return plugins

@@ -28,8 +28,6 @@ COMMANDS = [
     'autoscaling describe-adjustment-types',
     'cloudformation describe-stacks',
     'cloudformation list-stacks',
-    'cloudsearch describe-domains',
-    'cloudsearch list-domain-names',
     'cloudtrail describe-trails',
     'cloudwatch list-metrics',
     'cognito-identity list-identity-pools --max-results 1',

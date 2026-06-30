@@ -11,12 +11,13 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import sqlite3
-from unittest.mock import MagicMock, PropertyMock, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 from botocore.exceptions import MD5UnavailableError
 from botocore.session import Session
 
+from awscli.clidriver import create_clidriver
 from awscli.telemetry import (
     CLISessionData,
     CLISessionDatabaseConnection,
@@ -25,7 +26,7 @@ from awscli.telemetry import (
     CLISessionDatabaseWriter,
     CLISessionGenerator,
     CLISessionOrchestrator,
-    add_session_id_component_to_user_agent_extra,
+    register_session_id_event,
 )
 from tests.markers import skip_if_windows
 
@@ -106,6 +107,20 @@ class TestCLISessionDatabaseConnection:
             """
         )
         assert cursor.fetchall() == [('session',), ('host_id',)]
+
+    def test_creates_database_when_cache_dir_does_not_exist(self, tmp_path):
+        # When the cache directory doesn't exist, the connection should still
+        # be established successfully.
+        nonexistent_dir = tmp_path / 'nonexistent' / 'nested' / 'cache'
+        assert not nonexistent_dir.exists()
+        conn = CLISessionDatabaseConnection(cache_dir=nonexistent_dir)
+        assert nonexistent_dir.exists()
+        assert (nonexistent_dir / 'session.db').exists()
+        # Verify the database is functional.
+        writer = CLISessionDatabaseWriter(conn)
+        reader = CLISessionDatabaseReader(conn)
+        writer.write(CLISessionData('key', 'sid', 1000000000))
+        assert reader.read('key').session_id == 'sid'
 
     def test_timeout_does_not_raise_exception(self, session_conn):
         test_query = """
@@ -308,17 +323,44 @@ class TestCLISessionOrchestrator:
         assert session_data_2.timestamp != session_data_1.timestamp
 
 
-def test_add_session_id_component_to_user_agent_extra():
+def test_register_session_id_event_injects_sid_on_before_create_client():
     session = MagicMock(Session)
-    session.user_agent_extra = ''
+    session.user_agent_extra = 'md/installer#source'
+    event_emitter = MagicMock()
+    session.get_component.return_value = event_emitter
     orchestrator = MagicMock(CLISessionOrchestrator)
     orchestrator.session_id = 'my-session-id'
-    add_session_id_component_to_user_agent_extra(session, orchestrator)
-    assert session.user_agent_extra == 'sid/my-session-id'
+
+    def fake_orchestrator_factory():
+        return orchestrator
+
+    register_session_id_event(
+        session, orchestrator_factory=fake_orchestrator_factory
+    )
+    handler = event_emitter.register.call_args[0][1]
+    handler()
+    assert session.user_agent_extra == 'md/installer#source sid/my-session-id'
+    event_emitter.unregister.assert_called_once_with(
+        'before-create-client', handler
+    )
 
 
-def test_entrypoint_catches_bare_exceptions():
-    mock_orchestrator = MagicMock(CLISessionOrchestrator)
-    type(mock_orchestrator).session_id = PropertyMock(side_effect=Exception)
+def test_register_session_id_event_catches_bare_exceptions():
     session = MagicMock(Session)
-    add_session_id_component_to_user_agent_extra(session, mock_orchestrator)
+    session.user_agent_extra = ''
+    event_emitter = MagicMock()
+    session.get_component.return_value = event_emitter
+    register_session_id_event(
+        session, orchestrator_factory=MagicMock(side_effect=Exception)
+    )
+    handler = event_emitter.register.call_args[0][1]
+    handler()
+    assert session.user_agent_extra == ''
+
+
+def test_user_agent_extra_contains_installer_component():
+    # register_session_id_event depends on md/installer being present
+    # in user_agent_extra to insert sid at the correct position. This
+    # test ensures that invariant holds after driver creation.
+    driver = create_clidriver()
+    assert 'md/installer#' in driver.session.user_agent_extra

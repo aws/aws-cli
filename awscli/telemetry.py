@@ -76,13 +76,14 @@ class CLISessionDatabaseConnection:
     """
     _ENABLE_WAL = 'PRAGMA journal_mode=WAL'
 
-    def __init__(self, connection=None):
+    def __init__(self, connection=None, cache_dir=None):
+        self._cache_dir = cache_dir or _CACHE_DIR
+        self._ensure_cache_dir()
         self._connection = connection or sqlite3.connect(
-            _CACHE_DIR / _DATABASE_FILENAME,
+            self._cache_dir / _DATABASE_FILENAME,
             check_same_thread=False,
             isolation_level=None,
         )
-        self._ensure_cache_dir()
         self._ensure_database_setup()
 
     def execute(self, query, *parameters):
@@ -95,7 +96,7 @@ class CLISessionDatabaseConnection:
             return sqlite3.Cursor(self._connection)
 
     def _ensure_cache_dir(self):
-        _CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        self._cache_dir.mkdir(parents=True, exist_ok=True)
 
     def _ensure_database_setup(self):
         self._create_session_table()
@@ -295,17 +296,32 @@ def _get_cli_session_orchestrator():
     )
 
 
-def add_session_id_component_to_user_agent_extra(session, orchestrator=None):
-    try:
-        cli_session_orchestrator = (
-            orchestrator or _get_cli_session_orchestrator()
-        )
-        add_component_to_user_agent_extra(
-            session,
-            UserAgentComponent("sid", cli_session_orchestrator.session_id),
-        )
-    except Exception:
-        # Ideally, the AWS CLI should never throw if the session id
-        # can't be generated since it's not critical for users. Issues
-        # with session data should instead be caught server-side.
-        pass
+def register_session_id_event(session, orchestrator_factory=None):
+    if orchestrator_factory is None:
+        orchestrator_factory = _get_cli_session_orchestrator
+    event_emitter = session.get_component('event_emitter')
+
+    def _inject_session_id(**kwargs):
+        try:
+            orchestrator = orchestrator_factory()
+            sid_component = UserAgentComponent(
+                "sid", orchestrator.session_id
+            ).to_string()
+            # Insert sid after md/installer to preserve original
+            # user-agent component ordering.
+            extra = session.user_agent_extra
+            idx = extra.find('md/installer')
+            end = extra.find(' ', idx)
+            if end == -1:
+                end = len(extra)
+            session.user_agent_extra = (
+                extra[:end] + f' {sid_component}' + extra[end:]
+            )
+        except Exception:
+            # Ideally, the AWS CLI should never throw if the session id
+            # can't be generated since it's not critical for users. Issues
+            # with session data should instead be caught server-side.
+            pass
+        event_emitter.unregister('before-create-client', _inject_session_id)
+
+    event_emitter.register('before-create-client', _inject_session_id)

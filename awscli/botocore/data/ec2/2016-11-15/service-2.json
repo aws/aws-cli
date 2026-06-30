@@ -6772,6 +6772,16 @@
       "output":{"shape":"ModifyVpcEndpointConnectionNotificationResult"},
       "documentation":"<p>Modifies a connection notification for VPC endpoint or VPC endpoint service. You can change the SNS topic for the notification, or the events for which to be notified. </p>"
     },
+    "ModifyVpcEndpointPayerResponsibility":{
+      "name":"ModifyVpcEndpointPayerResponsibility",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyVpcEndpointPayerResponsibilityRequest"},
+      "output":{"shape":"ModifyVpcEndpointPayerResponsibilityResult"},
+      "documentation":"<p>Modifies the billing account for VPC endpoint usage/charges.</p>"
+    },
     "ModifyVpcEndpointServiceConfiguration":{
       "name":"ModifyVpcEndpointServiceConfiguration",
       "http":{
@@ -56969,6 +56979,51 @@
         }
       }
     },
+    "ModifyVpcEndpointPayerResponsibilityRequest":{
+      "type":"structure",
+      "required":[
+        "VpcEndpointId",
+        "PayerResponsibility",
+        "Scope"
+      ],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "ServiceId":{
+          "shape":"VpcEndpointServiceId",
+          "documentation":"<p>The ID of the VPC endpoint service.</p>"
+        },
+        "VpcEndpointId":{
+          "shape":"VpcEndpointId",
+          "documentation":"<p>The ID of the VPC endpoint.</p>"
+        },
+        "PayerResponsibility":{
+          "shape":"PayerResponsibilityType",
+          "documentation":"<p>The Amazon Web Services account to which the usage of VPC endpoint is charged.</p>"
+        },
+        "Scope":{
+          "shape":"PayerResponsibilityScope",
+          "documentation":"<p>The scope of usage/charges for which the billing account is being modified.</p>"
+        }
+      }
+    },
+    "ModifyVpcEndpointPayerResponsibilityResult":{
+      "type":"structure",
+      "members":{
+        "VpcEndpointId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the VPC endpoint.</p>",
+          "locationName":"vpcEndpointId"
+        },
+        "PayerResponsibilities":{
+          "shape":"PayerResponsibilitySet",
+          "documentation":"<p>The payer responsibility settings for the VPC endpoint.</p>",
+          "locationName":"payerResponsibilitySet"
+        }
+      }
+    },
     "ModifyVpcEndpointRequest":{
       "type":"structure",
       "required":["VpcEndpointId"],
@@ -59940,6 +59995,40 @@
     "PayerResponsibility":{
       "type":"string",
       "enum":["ServiceOwner"]
+    },
+    "PayerResponsibilityEntry":{
+      "type":"structure",
+      "members":{
+        "Scope":{
+          "shape":"PayerResponsibilityScope",
+          "documentation":"<p>The scope of usage/charges.</p>",
+          "locationName":"scope"
+        },
+        "PayerResponsibilityType":{
+          "shape":"PayerResponsibilityType",
+          "documentation":"<p>The Amazon Web Services account to which the usage is charged.</p>",
+          "locationName":"payerResponsibilityType"
+        }
+      },
+      "documentation":"<p>Describes a payer responsibility setting for a VPC endpoint.</p>"
+    },
+    "PayerResponsibilityScope":{
+      "type":"string",
+      "enum":["vpc-endpoint-charges"]
+    },
+    "PayerResponsibilitySet":{
+      "type":"list",
+      "member":{
+        "shape":"PayerResponsibilityEntry",
+        "locationName":"item"
+      }
+    },
+    "PayerResponsibilityType":{
+      "type":"string",
+      "enum":[
+        "vpc-endpoint-account",
+        "vpc-endpoint-service-account"
+      ]
     },
     "PaymentOption":{
       "type":"string",
@@ -76846,6 +76935,11 @@
           "shape":"String",
           "documentation":"<p>The Region where the service is hosted.</p>",
           "locationName":"serviceRegion"
+        },
+        "PayerResponsibilities":{
+          "shape":"PayerResponsibilitySet",
+          "documentation":"<p>The payer responsibility settings for the endpoint.</p>",
+          "locationName":"payerResponsibilitySet"
         }
       },
       "documentation":"<p>Describes a VPC endpoint.</p>"
@@ -76985,6 +77079,11 @@
           "shape":"String",
           "documentation":"<p>The Region of the endpoint.</p>",
           "locationName":"vpcEndpointRegion"
+        },
+        "PayerResponsibilities":{
+          "shape":"PayerResponsibilitySet",
+          "documentation":"<p>The payer responsibility settings for the endpoint.</p>",
+          "locationName":"payerResponsibilitySet"
         }
       },
       "documentation":"<p>Describes a VPC endpoint connection to a service.</p>"

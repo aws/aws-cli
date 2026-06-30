@@ -2113,7 +2113,8 @@
         "USAGE_LOGS",
         "SECURITY_FINDING_LOGS",
         "ACCESS_LOGS",
-        "CONNECTION_LOGS"
+        "CONNECTION_LOGS",
+        "S3_SERVER_ACCESS_LOGS"
       ]
     },
     "LogTypes":{
@@ -2383,7 +2384,8 @@
         "AWS::CloudFront::Distribution",
         "AWS::SecurityHub::HubV2",
         "AWS::CloudWatch::OTelEnrichment",
-        "AWS::MSK::Cluster"
+        "AWS::MSK::Cluster",
+        "AWS::S3::Bucket"
       ]
     },
     "ResourceTypes":{
@@ -2457,6 +2459,13 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "SignalType":{
+      "type":"string",
+      "enum":[
+        "LOG",
+        "METRIC"
+      ]
     },
     "SingleHeader":{
       "type":"structure",
@@ -2980,6 +2989,10 @@
         "Configuration":{
           "shape":"TelemetryPipelineConfiguration",
           "documentation":"<p>The pipeline configuration to test with the provided sample records.</p>"
+        },
+        "SignalType":{
+          "shape":"SignalType",
+          "documentation":"<p>The type of telemetry signal to test. If not specified, defaults to log processing.</p>"
         }
       }
     },

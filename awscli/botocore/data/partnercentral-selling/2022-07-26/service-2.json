@@ -1245,6 +1245,32 @@
       "type":"list",
       "member":{"shape":"AwsMarketplaceOfferSetIdentifier"}
     },
+    "AwsMarketplaceProductArn":{
+      "type":"string",
+      "max":2048,
+      "min":4,
+      "pattern":"arn:.*"
+    },
+    "AwsMarketplaceProductIdentifiers":{
+      "type":"list",
+      "member":{"shape":"AwsMarketplaceProductArn"}
+    },
+    "AwsMarketplaceSolutionArn":{
+      "type":"string",
+      "max":2048,
+      "min":4,
+      "pattern":"arn:.*"
+    },
+    "AwsMarketplaceSolutionIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":4,
+      "pattern":"arn:.*"
+    },
+    "AwsMarketplaceSolutionIdentifiers":{
+      "type":"list",
+      "member":{"shape":"AwsMarketplaceSolutionIdentifier"}
+    },
     "AwsMaturity":{
       "type":"string",
       "pattern":"(?s).{1,20}"
@@ -1357,6 +1383,14 @@
         "Solutions":{
           "shape":"SolutionIdentifiers",
           "documentation":"<p>Specifies the partner solutions related to the opportunity. These solutions represent the partner's offerings that are being positioned as part of the overall AWS opportunity.</p>"
+        },
+        "AwsMarketplaceSolutions":{
+          "shape":"AwsMarketplaceSolutionIdentifiers",
+          "documentation":"<p>The AWS Marketplace solution ARNs associated with this opportunity.</p>"
+        },
+        "AwsMarketplaceProducts":{
+          "shape":"AwsMarketplaceProductIdentifiers",
+          "documentation":"<p>The AWS Marketplace product ARNs associated with this opportunity.</p>"
         }
       },
       "documentation":"<p>Represents other entities related to the AWS opportunity, such as AWS products, partner solutions, and marketplace offers. These associations help build a complete picture of the solution being sold.</p>"
@@ -5055,8 +5089,18 @@
         "Category":{
           "shape":"ListSolutionsRequestCategoryList",
           "documentation":"<p>Filters the solutions based on the category to which they belong. This allows partners to search for solutions within specific categories, such as <code>Software</code>, <code>Consulting</code>, or <code>Managed Services</code>.</p>"
+        },
+        "AwsMarketplaceSolutionArn":{
+          "shape":"ListSolutionsRequestAwsMarketplaceSolutionArnList",
+          "documentation":"<p>Filters results by AWS Marketplace solution ARN. You can provide up to 10 ARNs.</p>"
         }
       }
+    },
+    "ListSolutionsRequestAwsMarketplaceSolutionArnList":{
+      "type":"list",
+      "member":{"shape":"AwsMarketplaceSolutionArn"},
+      "max":10,
+      "min":0
     },
     "ListSolutionsRequestCategoryList":{
       "type":"list",
@@ -6057,11 +6101,15 @@
     "RecommendationAttributeMap":{
       "type":"map",
       "key":{"shape":"String"},
-      "value":{"shape":"String"}
+      "value":{"shape":"String"},
+      "max":25,
+      "min":0
     },
     "RecommendationList":{
       "type":"list",
-      "member":{"shape":"Recommendation"}
+      "member":{"shape":"Recommendation"},
+      "max":5,
+      "min":0
     },
     "RejectEngagementInvitationRequest":{
       "type":"structure",
@@ -6106,6 +6154,14 @@
         "AwsProducts":{
           "shape":"AwsProductIdentifiers",
           "documentation":"<p>Enables the association of specific Amazon Web Services products with the <code>Opportunity</code>. Partners can indicate the relevant Amazon Web Services products for the <code>Opportunity</code>'s solution and align with the customer's needs. Returns multiple values separated by commas. For example, <code>\"AWSProducts\" : [\"AmazonRedshift\", \"AWSAppFabric\", \"AWSCleanRooms\"]</code>.</p> <p>Use the file with the list of Amazon Web Services products hosted on GitHub: <a href=\"https://github.com/aws-samples/partner-crm-integration-samples/blob/main/resources/aws_products.json\"> Amazon Web Services products</a>.</p>"
+        },
+        "AwsMarketplaceSolutions":{
+          "shape":"AwsMarketplaceSolutionIdentifiers",
+          "documentation":"<p>Specifies the AWS Marketplace solutions to associate with the <code>Opportunity</code>. Each value is an Amazon Resource Name (ARN) that identifies a solution listing in AWS Marketplace.</p>"
+        },
+        "AwsMarketplaceProducts":{
+          "shape":"AwsMarketplaceProductIdentifiers",
+          "documentation":"<p>Specifies the AWS Marketplace products to associate with the <code>Opportunity</code>. Each value is an Amazon Resource Name (ARN) that identifies a product listing in AWS Marketplace.</p>"
         }
       },
       "documentation":"<p>This field provides the associations' information for other entities with the opportunity. These entities include identifiers for <code>AWSProducts</code>, <code>Partner Solutions</code>, and <code>AWSMarketplaceOffers</code>.</p>"
@@ -6116,7 +6172,9 @@
         "Solutions",
         "AwsProducts",
         "AwsMarketplaceOffers",
-        "AwsMarketplaceOfferSets"
+        "AwsMarketplaceOfferSets",
+        "AwsMarketplaceSolutions",
+        "AwsMarketplaceProducts"
       ]
     },
     "ResourceArn":{
@@ -6403,6 +6461,10 @@
         "CreatedDate":{
           "shape":"DateTime",
           "documentation":"<p>Indicates the solution creation date. This is useful to track and audit.</p>"
+        },
+        "AwsMarketplaceSolutionArn":{
+          "shape":"AwsMarketplaceSolutionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Marketplace solution associated with this partner solution.</p>"
         }
       },
       "documentation":"<p>Specifies minimal information for the solution offered to solve the customer's business problem.</p>"

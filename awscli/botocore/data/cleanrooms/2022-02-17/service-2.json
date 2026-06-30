@@ -270,6 +270,47 @@
       ],
       "documentation":"<p>Creates an ID namespace association.</p>"
     },
+    "CreateIntermediateTable":{
+      "name":"CreateIntermediateTable",
+      "http":{
+        "method":"POST",
+        "requestUri":"/memberships/{membershipIdentifier}/intermediateTables",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateIntermediateTableInput"},
+      "output":{"shape":"CreateIntermediateTableOutput"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates an intermediate table in a membership. An intermediate table stores a query definition that you can execute later using <code>PopulateIntermediateTable</code> to materialize cached results. The intermediate table is owned by the member with the CAN_QUERY ability. This operation does not execute the stored query.</p>"
+    },
+    "CreateIntermediateTableAnalysisRule":{
+      "name":"CreateIntermediateTableAnalysisRule",
+      "http":{
+        "method":"POST",
+        "requestUri":"/memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}/analysisRule",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateIntermediateTableAnalysisRuleInput"},
+      "output":{"shape":"CreateIntermediateTableAnalysisRuleOutput"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates an analysis rule for an intermediate table. Only the CUSTOM analysis rule type is supported. The service automatically determines whether the rule is first-party or multi-party restricted based on the intermediate table's inherited constraints. Only the intermediate table owner can call this operation.</p>",
+      "idempotent":true
+    },
     "CreateMembership":{
       "name":"CreateMembership",
       "http":{
@@ -484,6 +525,46 @@
       "documentation":"<p>Deletes an ID namespace association.</p>",
       "idempotent":true
     },
+    "DeleteIntermediateTable":{
+      "name":"DeleteIntermediateTable",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteIntermediateTableInput"},
+      "output":{"shape":"DeleteIntermediateTableOutput"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes an intermediate table. When you delete the table, the service marks it as DELETED, removes its analysis rule and schema, and triggers storage cleanup. This operation is idempotent. Only the intermediate table owner can call this operation.</p>",
+      "idempotent":true
+    },
+    "DeleteIntermediateTableAnalysisRule":{
+      "name":"DeleteIntermediateTableAnalysisRule",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}/analysisRule/{analysisRuleType}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteIntermediateTableAnalysisRuleInput"},
+      "output":{"shape":"DeleteIntermediateTableAnalysisRuleOutput"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes an analysis rule from an intermediate table. After the analysis rule is deleted, the intermediate table becomes unqueryable until a new analysis rule is attached. Only the intermediate table owner can call this operation.</p>",
+      "idempotent":true
+    },
     "DeleteMember":{
       "name":"DeleteMember",
       "http":{
@@ -541,6 +622,26 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Deletes a privacy budget template for a specified collaboration.</p>",
+      "idempotent":true
+    },
+    "DisallowIntermediateTable":{
+      "name":"DisallowIntermediateTable",
+      "http":{
+        "method":"POST",
+        "requestUri":"/memberships/{membershipIdentifier}/disallowIntermediateTable",
+        "responseCode":200
+      },
+      "input":{"shape":"DisallowIntermediateTableInput"},
+      "output":{"shape":"DisallowIntermediateTableOutput"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Invalidates a specific intermediate table that references the caller's base table. The data provider (base table owner) calls this operation, not the intermediate table owner. By default, invalidation cascades to descendant intermediate tables.</p>",
       "idempotent":true
     },
     "GetAnalysisTemplate":{
@@ -806,6 +907,44 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Retrieves an ID namespace association.</p>",
+      "readonly":true
+    },
+    "GetIntermediateTable":{
+      "name":"GetIntermediateTable",
+      "http":{
+        "method":"GET",
+        "requestUri":"/memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetIntermediateTableInput"},
+      "output":{"shape":"GetIntermediateTableOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves an intermediate table. Returns the full details of the intermediate table, including schema, table dependencies, inherited constraints, child resources, and status. Only the intermediate table owner can call this operation.</p>",
+      "readonly":true
+    },
+    "GetIntermediateTableAnalysisRule":{
+      "name":"GetIntermediateTableAnalysisRule",
+      "http":{
+        "method":"GET",
+        "requestUri":"/memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}/analysisRule/{analysisRuleType}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetIntermediateTableAnalysisRuleInput"},
+      "output":{"shape":"GetIntermediateTableAnalysisRuleOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves the analysis rule for an intermediate table.</p>",
       "readonly":true
     },
     "GetMembership":{
@@ -1167,6 +1306,44 @@
       "documentation":"<p>Returns a list of ID namespace associations.</p>",
       "readonly":true
     },
+    "ListIntermediateTableVersions":{
+      "name":"ListIntermediateTableVersions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}/versions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListIntermediateTableVersionsInput"},
+      "output":{"shape":"ListIntermediateTableVersionsOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists the version history of an intermediate table. Each call to <code>PopulateIntermediateTable</code> creates a new version. We recommend using pagination to ensure that the operation returns quickly and successfully.</p>",
+      "readonly":true
+    },
+    "ListIntermediateTables":{
+      "name":"ListIntermediateTables",
+      "http":{
+        "method":"GET",
+        "requestUri":"/memberships/{membershipIdentifier}/intermediateTables",
+        "responseCode":200
+      },
+      "input":{"shape":"ListIntermediateTablesInput"},
+      "output":{"shape":"ListIntermediateTablesOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists intermediate tables owned by the caller in a membership. We recommend using pagination to ensure that the operation returns quickly and successfully.</p>",
+      "readonly":true
+    },
     "ListMembers":{
       "name":"ListMembers",
       "http":{
@@ -1334,6 +1511,26 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Defines the information that's necessary to populate an ID mapping table.</p>"
+    },
+    "PopulateIntermediateTable":{
+      "name":"PopulateIntermediateTable",
+      "http":{
+        "method":"POST",
+        "requestUri":"/memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}/populate",
+        "responseCode":200
+      },
+      "input":{"shape":"PopulateIntermediateTableInput"},
+      "output":{"shape":"PopulateIntermediateTableOutput"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Executes the stored query of an intermediate table to materialize data into managed storage. With this operation, you can perform initial population and subsequent refreshes. Each call creates a new version. The returned analysis ID can be tracked using <code>GetProtectedQuery</code>. Only the intermediate table owner can call this operation.</p>"
     },
     "PreviewPrivacyImpact":{
       "name":"PreviewPrivacyImpact",
@@ -1606,6 +1803,43 @@
       ],
       "documentation":"<p>Provides the details that are necessary to update an ID namespace association.</p>"
     },
+    "UpdateIntermediateTable":{
+      "name":"UpdateIntermediateTable",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateIntermediateTableInput"},
+      "output":{"shape":"UpdateIntermediateTableOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates an intermediate table. You can update the description, KMS key ARN, and column types of existing columns. Only the intermediate table owner can call this operation.</p>"
+    },
+    "UpdateIntermediateTableAnalysisRule":{
+      "name":"UpdateIntermediateTableAnalysisRule",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}/analysisRule/{analysisRuleType}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateIntermediateTableAnalysisRuleInput"},
+      "output":{"shape":"UpdateIntermediateTableAnalysisRuleOutput"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates the analysis rule policy for an intermediate table. Only the intermediate table owner can call this operation.</p>"
+    },
     "UpdateMembership":{
       "name":"UpdateMembership",
       "http":{
@@ -1833,6 +2067,10 @@
       "min":12,
       "pattern":"\\d+"
     },
+    "AccountIdList":{
+      "type":"list",
+      "member":{"shape":"AccountId"}
+    },
     "AdditionalAnalyses":{
       "type":"string",
       "enum":[
@@ -1924,6 +2162,14 @@
       "max":25,
       "min":0
     },
+    "AllowedAnalysesList":{
+      "type":"list",
+      "member":{"shape":"AnalysisTemplateArnOrQueryWildcard"}
+    },
+    "AllowedAnalysisProviderList":{
+      "type":"list",
+      "member":{"shape":"AccountId"}
+    },
     "AllowedColumnList":{
       "type":"list",
       "member":{"shape":"ColumnName"},
@@ -1943,6 +2189,12 @@
         "SQL",
         "PYSPARK_1_0"
       ]
+    },
+    "AnalysisIdentifier":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
     },
     "AnalysisMethod":{
       "type":"string",
@@ -2084,6 +2336,10 @@
       "min":1,
       "pattern":"[a-z0-9_](([a-z0-9_ ]+-)*([a-z0-9_ ]+))?"
     },
+    "AnalysisRuleColumnNameList":{
+      "type":"list",
+      "member":{"shape":"AnalysisRuleColumnName"}
+    },
     "AnalysisRuleCustom":{
       "type":"structure",
       "required":["allowedAnalyses"],
@@ -2107,6 +2363,14 @@
         "differentialPrivacy":{
           "shape":"DifferentialPrivacyConfiguration",
           "documentation":"<p>The differential privacy configuration.</p>"
+        },
+        "allowedResultReceivers":{
+          "shape":"AllowedResultReceivers",
+          "documentation":"<p>The list of Amazon Web Services account IDs that are allowed to receive results from queries run on the configured table.</p>"
+        },
+        "allowedAdditionalAnalyses":{
+          "shape":"AllowedAdditionalAnalyses",
+          "documentation":"<p>The list of allowed additional analyses for the custom analysis rule.</p>"
         }
       },
       "documentation":"<p>A type of analysis rule that enables the table owner to approve custom SQL queries on their configured tables. It supports differential privacy.</p>"
@@ -2681,6 +2945,21 @@
         "DISABLED"
       ]
     },
+    "BaseTableDependencyType":{
+      "type":"string",
+      "enum":[
+        "TABLE",
+        "INTERMEDIATE_TABLE",
+        "ID_MAPPING_TABLE"
+      ]
+    },
+    "BaseTableParentType":{
+      "type":"string",
+      "enum":[
+        "DIRECT",
+        "INDIRECT"
+      ]
+    },
     "BatchGetCollaborationAnalysisTemplateError":{
       "type":"structure",
       "required":[
@@ -2945,7 +3224,7 @@
       "type":"string",
       "max":200,
       "min":0,
-      "pattern":"arn:aws:[\\w]+:[\\w]{2}-[\\w]{4,9}-[\\d]:[\\d]{12}:membership/[\\d\\w-]+/configuredtableassociation/[\\d\\w-]+"
+      "pattern":"arn:aws:[\\w]+:[\\w]{2}-[\\w]{4,9}-[\\d]:[\\d]{12}:membership/[\\d\\w-]+/(configuredtableassociation|intermediatetable)/[\\d\\w-]+"
     },
     "Change":{
       "type":"structure",
@@ -3060,6 +3339,45 @@
       "type":"list",
       "member":{"shape":"ChangeType"},
       "min":1
+    },
+    "ChildResource":{
+      "type":"structure",
+      "required":[
+        "resourceType",
+        "resourceName",
+        "ownerAccountId"
+      ],
+      "members":{
+        "resourceId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the child resource.</p>"
+        },
+        "resourceType":{
+          "shape":"ChildResourceType",
+          "documentation":"<p>The type of the child resource.</p>"
+        },
+        "resourceName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The name of the child resource.</p>"
+        },
+        "ownerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID of the member who owns the child resource.</p>"
+        },
+        "resourceStatus":{
+          "shape":"ResourceStatus",
+          "documentation":"<p>The current status of the child resource.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a child resource of a given resource in a collaboration.</p>"
+    },
+    "ChildResourceList":{
+      "type":"list",
+      "member":{"shape":"ChildResource"}
+    },
+    "ChildResourceType":{
+      "type":"string",
+      "enum":["INTERMEDIATE_TABLE"]
     },
     "CleanroomsArn":{
       "type":"string",
@@ -3544,8 +3862,8 @@
     "CollaborationDescription":{
       "type":"string",
       "max":255,
-      "min":1,
-      "pattern":"(?!\\s*$)[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDBFF-\\uDC00\\uDFFF\\t\\r\\n]*"
+      "min":0,
+      "pattern":"(?!\\s+$)[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDBFF-\\uDC00\\uDFFF\\t\\r\\n]*"
     },
     "CollaborationIdNamespaceAssociation":{
       "type":"structure",
@@ -3966,6 +4284,48 @@
         }
       },
       "documentation":"<p>Contains classification information for data columns, including mappings that specify how columns should be handled during synthetic data generation and privacy analysis.</p>"
+    },
+    "ColumnLineageEntry":{
+      "type":"structure",
+      "required":[
+        "column",
+        "sourceColumn",
+        "sourceName",
+        "sourceId",
+        "sourceType",
+        "sourceAccountId"
+      ],
+      "members":{
+        "column":{
+          "shape":"AnalysisRuleColumnName",
+          "documentation":"<p>The name of the column in the intermediate table.</p>"
+        },
+        "sourceColumn":{
+          "shape":"AnalysisRuleColumnName",
+          "documentation":"<p>The name of the column in the source table.</p>"
+        },
+        "sourceName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The name of the source table.</p>"
+        },
+        "sourceId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the source table.</p>"
+        },
+        "sourceType":{
+          "shape":"BaseTableDependencyType",
+          "documentation":"<p>The type of the source table.</p>"
+        },
+        "sourceAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID of the owner of the source table.</p>"
+        }
+      },
+      "documentation":"<p>Contains column lineage information that traces a disallowed output column back to its source in a base table.</p>"
+    },
+    "ColumnLineageList":{
+      "type":"list",
+      "member":{"shape":"ColumnLineageEntry"}
     },
     "ColumnList":{
       "type":"list",
@@ -4412,6 +4772,10 @@
         "updateTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time the configured table association was last updated.</p>"
+        },
+        "childResources":{
+          "shape":"ChildResourceList",
+          "documentation":"<p>The child resources that depend on this configured table association.</p>"
         }
       },
       "documentation":"<p>A configured table association links a configured table to a collaboration.</p>"
@@ -4554,6 +4918,17 @@
       "max":36,
       "min":36,
       "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
+    "ConfiguredTableAssociationSchemaTypeProperties":{
+      "type":"structure",
+      "required":["configuredTableAssociationId"],
+      "members":{
+        "configuredTableAssociationId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the configured table association.</p>"
+        }
+      },
+      "documentation":"<p>Contains the schema type properties for a configured table association.</p>"
     },
     "ConfiguredTableAssociationSummary":{
       "type":"structure",
@@ -4963,7 +5338,6 @@
       "required":[
         "members",
         "name",
-        "description",
         "creatorMemberAbilities",
         "creatorDisplayName",
         "queryLogStatus"
@@ -5351,6 +5725,103 @@
         }
       }
     },
+    "CreateIntermediateTableAnalysisRuleInput":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "intermediateTableIdentifier",
+        "analysisRuleType",
+        "analysisRulePolicy"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>The unique identifier of the membership that contains the intermediate table.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "intermediateTableIdentifier":{
+          "shape":"IntermediateTableIdentifier",
+          "documentation":"<p>The unique identifier of the intermediate table for which to create the analysis rule.</p>",
+          "location":"uri",
+          "locationName":"intermediateTableIdentifier"
+        },
+        "analysisRuleType":{
+          "shape":"IntermediateTableAnalysisRuleType",
+          "documentation":"<p>The type of analysis rule to create. Currently, only <code>CUSTOM</code> is supported.</p>"
+        },
+        "analysisRulePolicy":{
+          "shape":"IntermediateTableAnalysisRulePolicy",
+          "documentation":"<p>The analysis rule policy to apply to the intermediate table.</p>"
+        }
+      }
+    },
+    "CreateIntermediateTableAnalysisRuleOutput":{
+      "type":"structure",
+      "required":["analysisRule"],
+      "members":{
+        "analysisRule":{
+          "shape":"IntermediateTableAnalysisRule",
+          "documentation":"<p>The analysis rule that was created for the intermediate table.</p>"
+        }
+      }
+    },
+    "CreateIntermediateTableInput":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "name",
+        "populationAnalysisConfiguration"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>The unique identifier of the membership where the intermediate table is created.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "name":{
+          "shape":"DisplayName",
+          "documentation":"<p>The display name for the intermediate table.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>A description of the intermediate table.</p>"
+        },
+        "populationAnalysisConfiguration":{
+          "shape":"PopulationAnalysisConfiguration",
+          "documentation":"<p>The configuration that defines the analysis used to populate the intermediate table. This configuration contains the SQL query or analysis template reference.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KMSKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the customer-managed KMS key used to encrypt the intermediate table data.</p>"
+        },
+        "retentionInDays":{
+          "shape":"CreateIntermediateTableInputRetentionInDaysInteger",
+          "documentation":"<p>The number of days to retain populated data versions. Minimum value of 1, maximum value of 365.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>An optional label that you can assign to a resource when you create it. Each tag consists of a key and an optional value, both of which you define. When you use tagging, you can also use tag-based access control in IAM policies to control access to this resource.</p>"
+        }
+      }
+    },
+    "CreateIntermediateTableInputRetentionInDaysInteger":{
+      "type":"integer",
+      "box":true,
+      "max":365,
+      "min":1
+    },
+    "CreateIntermediateTableOutput":{
+      "type":"structure",
+      "required":["intermediateTable"],
+      "members":{
+        "intermediateTable":{
+          "shape":"IntermediateTable",
+          "documentation":"<p>The intermediate table that was created.</p>"
+        }
+      }
+    },
     "CreateMembershipInput":{
       "type":"structure",
       "required":[
@@ -5446,8 +5917,7 @@
     },
     "CustomMLMemberAbilities":{
       "type":"list",
-      "member":{"shape":"CustomMLMemberAbility"},
-      "min":1
+      "member":{"shape":"CustomMLMemberAbility"}
     },
     "CustomMLMemberAbility":{
       "type":"string",
@@ -5700,6 +6170,63 @@
       "type":"structure",
       "members":{}
     },
+    "DeleteIntermediateTableAnalysisRuleInput":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "intermediateTableIdentifier",
+        "analysisRuleType"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>The unique identifier of the membership that contains the intermediate table.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "intermediateTableIdentifier":{
+          "shape":"IntermediateTableIdentifier",
+          "documentation":"<p>The unique identifier of the intermediate table from which to delete the analysis rule.</p>",
+          "location":"uri",
+          "locationName":"intermediateTableIdentifier"
+        },
+        "analysisRuleType":{
+          "shape":"IntermediateTableAnalysisRuleType",
+          "documentation":"<p>The type of analysis rule to delete. Currently, only <code>CUSTOM</code> is supported.</p>",
+          "location":"uri",
+          "locationName":"analysisRuleType"
+        }
+      }
+    },
+    "DeleteIntermediateTableAnalysisRuleOutput":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteIntermediateTableInput":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "intermediateTableIdentifier"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>The unique identifier of the membership that contains the intermediate table.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "intermediateTableIdentifier":{
+          "shape":"IntermediateTableIdentifier",
+          "documentation":"<p>The unique identifier of the intermediate table to delete.</p>",
+          "location":"uri",
+          "locationName":"intermediateTableIdentifier"
+        }
+      }
+    },
+    "DeleteIntermediateTableOutput":{
+      "type":"structure",
+      "members":{}
+    },
     "DeleteMemberInput":{
       "type":"structure",
       "required":[
@@ -5765,6 +6292,10 @@
     "DeletePrivacyBudgetTemplateOutput":{
       "type":"structure",
       "members":{}
+    },
+    "DependencyList":{
+      "type":"list",
+      "member":{"shape":"IntermediateTableDependency"}
     },
     "DifferentialPrivacyAggregationExpression":{
       "type":"string",
@@ -6029,6 +6560,33 @@
         }
       },
       "documentation":"<p> The direct analysis configuration details.</p>"
+    },
+    "DisallowIntermediateTableInput":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "intermediateTableName"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>The unique identifier of the membership that contains the intermediate table to disallow.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "intermediateTableName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The name of the intermediate table to disallow.</p>"
+        },
+        "includeDescendants":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to cascade the disallow action to descendant intermediate tables. Default is <code>true</code>.</p>"
+        }
+      }
+    },
+    "DisallowIntermediateTableOutput":{
+      "type":"structure",
+      "members":{}
     },
     "DisplayName":{
       "type":"string",
@@ -6506,6 +7064,75 @@
         }
       }
     },
+    "GetIntermediateTableAnalysisRuleInput":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "intermediateTableIdentifier",
+        "analysisRuleType"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>The unique identifier of the membership that contains the intermediate table.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "intermediateTableIdentifier":{
+          "shape":"IntermediateTableIdentifier",
+          "documentation":"<p>The unique identifier of the intermediate table for which to retrieve the analysis rule.</p>",
+          "location":"uri",
+          "locationName":"intermediateTableIdentifier"
+        },
+        "analysisRuleType":{
+          "shape":"IntermediateTableAnalysisRuleType",
+          "documentation":"<p>The type of analysis rule to retrieve. Currently, only <code>CUSTOM</code> is supported.</p>",
+          "location":"uri",
+          "locationName":"analysisRuleType"
+        }
+      }
+    },
+    "GetIntermediateTableAnalysisRuleOutput":{
+      "type":"structure",
+      "required":["analysisRule"],
+      "members":{
+        "analysisRule":{
+          "shape":"IntermediateTableAnalysisRule",
+          "documentation":"<p>The analysis rule for the intermediate table.</p>"
+        }
+      }
+    },
+    "GetIntermediateTableInput":{
+      "type":"structure",
+      "required":[
+        "intermediateTableIdentifier",
+        "membershipIdentifier"
+      ],
+      "members":{
+        "intermediateTableIdentifier":{
+          "shape":"IntermediateTableIdentifier",
+          "documentation":"<p>The unique identifier of the intermediate table to retrieve.</p>",
+          "location":"uri",
+          "locationName":"intermediateTableIdentifier"
+        },
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>The unique identifier of the membership that contains the intermediate table.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        }
+      }
+    },
+    "GetIntermediateTableOutput":{
+      "type":"structure",
+      "required":["intermediateTable"],
+      "members":{
+        "intermediateTable":{
+          "shape":"IntermediateTable",
+          "documentation":"<p>The intermediate table retrieved.</p>"
+        }
+      }
+    },
     "GetMembershipInput":{
       "type":"structure",
       "required":["membershipIdentifier"],
@@ -6816,6 +7443,10 @@
         "kmsKeyArn":{
           "shape":"KMSKeyArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services KMS key.</p>"
+        },
+        "childResources":{
+          "shape":"ChildResourceList",
+          "documentation":"<p>The child resources that depend on this ID mapping table.</p>"
         }
       },
       "documentation":"<p>Describes information about the ID mapping table.</p>"
@@ -6892,6 +7523,10 @@
         "idMappingTableInputSource":{
           "shape":"IdMappingTableInputSourceList",
           "documentation":"<p>Defines which ID namespace associations are used to create the ID mapping table.</p>"
+        },
+        "idMappingTableId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the ID mapping table.</p>"
         }
       },
       "documentation":"<p>Additional properties that are specific to the type of the associated schema.</p>"
@@ -7180,6 +7815,724 @@
         "TARGET"
       ]
     },
+    "InheritedAdditionalAnalyses":{
+      "type":"structure",
+      "required":[
+        "value",
+        "sources"
+      ],
+      "members":{
+        "value":{
+          "shape":"AdditionalAnalyses",
+          "documentation":"<p>The effective additional analyses setting inherited from parent tables.</p>"
+        },
+        "sources":{
+          "shape":"InheritedAdditionalAnalysesSourceList",
+          "documentation":"<p>The list of parent tables that contribute to this inherited constraint.</p>"
+        }
+      },
+      "documentation":"<p>Contains the inherited additional analyses constraint and its sources from parent tables.</p>"
+    },
+    "InheritedAdditionalAnalysesSource":{
+      "type":"structure",
+      "required":[
+        "name",
+        "id",
+        "type",
+        "value",
+        "sourceAccountId"
+      ],
+      "members":{
+        "name":{
+          "shape":"DisplayName",
+          "documentation":"<p>The name of the parent table.</p>"
+        },
+        "id":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the parent table.</p>"
+        },
+        "type":{
+          "shape":"BaseTableDependencyType",
+          "documentation":"<p>The type of the parent table.</p>"
+        },
+        "value":{
+          "shape":"AdditionalAnalyses",
+          "documentation":"<p>The additional analyses setting defined on the parent table.</p>"
+        },
+        "sourceAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID of the member who owns the parent table.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a parent table that contributes an additional analyses constraint.</p>"
+    },
+    "InheritedAdditionalAnalysesSourceList":{
+      "type":"list",
+      "member":{"shape":"InheritedAdditionalAnalysesSource"}
+    },
+    "InheritedAllowedAdditionalAnalyses":{
+      "type":"structure",
+      "required":[
+        "value",
+        "sources"
+      ],
+      "members":{
+        "value":{
+          "shape":"AllowedAdditionalAnalyses",
+          "documentation":"<p>The effective list of allowed additional analyses inherited from parent tables.</p>"
+        },
+        "sources":{
+          "shape":"InheritedAllowedAdditionalAnalysesSourceList",
+          "documentation":"<p>The list of parent tables that contribute to this inherited constraint.</p>"
+        }
+      },
+      "documentation":"<p>Contains the inherited allowed additional analyses constraint and its sources from parent tables.</p>"
+    },
+    "InheritedAllowedAdditionalAnalysesSource":{
+      "type":"structure",
+      "required":[
+        "name",
+        "id",
+        "type",
+        "value",
+        "sourceAccountId"
+      ],
+      "members":{
+        "name":{
+          "shape":"DisplayName",
+          "documentation":"<p>The name of the parent table.</p>"
+        },
+        "id":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the parent table.</p>"
+        },
+        "type":{
+          "shape":"BaseTableDependencyType",
+          "documentation":"<p>The type of the parent table.</p>"
+        },
+        "value":{
+          "shape":"AllowedAdditionalAnalyses",
+          "documentation":"<p>The allowed additional analyses defined on the parent table.</p>"
+        },
+        "sourceAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID of the member who owns the parent table.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a parent table that contributes an allowed additional analyses constraint.</p>"
+    },
+    "InheritedAllowedAdditionalAnalysesSourceList":{
+      "type":"list",
+      "member":{"shape":"InheritedAllowedAdditionalAnalysesSource"}
+    },
+    "InheritedAllowedResultReceivers":{
+      "type":"structure",
+      "required":[
+        "value",
+        "sources"
+      ],
+      "members":{
+        "value":{
+          "shape":"AccountIdList",
+          "documentation":"<p>The effective list of Amazon Web Services account IDs allowed to receive results, inherited from parent tables.</p>"
+        },
+        "sources":{
+          "shape":"InheritedAllowedResultReceiversSourceList",
+          "documentation":"<p>The list of parent tables that contribute to this inherited constraint.</p>"
+        }
+      },
+      "documentation":"<p>Contains the inherited allowed result receivers constraint and its sources from parent tables.</p>"
+    },
+    "InheritedAllowedResultReceiversSource":{
+      "type":"structure",
+      "required":[
+        "name",
+        "id",
+        "type",
+        "value",
+        "sourceAccountId"
+      ],
+      "members":{
+        "name":{
+          "shape":"DisplayName",
+          "documentation":"<p>The name of the parent table.</p>"
+        },
+        "id":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the parent table.</p>"
+        },
+        "type":{
+          "shape":"BaseTableDependencyType",
+          "documentation":"<p>The type of the parent table.</p>"
+        },
+        "value":{
+          "shape":"AccountIdList",
+          "documentation":"<p>The allowed result receiver account IDs defined on the parent table.</p>"
+        },
+        "sourceAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID of the member who owns the parent table.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a parent table that contributes an allowed result receivers constraint.</p>"
+    },
+    "InheritedAllowedResultReceiversSourceList":{
+      "type":"list",
+      "member":{"shape":"InheritedAllowedResultReceiversSource"}
+    },
+    "InheritedDisallowedOutputColumns":{
+      "type":"structure",
+      "required":[
+        "value",
+        "columnLineage"
+      ],
+      "members":{
+        "value":{
+          "shape":"AnalysisRuleColumnNameList",
+          "documentation":"<p>The list of column names that are disallowed from appearing in query output, inherited from parent tables.</p>"
+        },
+        "columnLineage":{
+          "shape":"ColumnLineageList",
+          "documentation":"<p>The lineage information that traces each disallowed output column back to its source in a parent table.</p>"
+        }
+      },
+      "documentation":"<p>Contains the inherited disallowed output columns constraint and the column lineage tracing each column to its source.</p>"
+    },
+    "Integer":{
+      "type":"integer",
+      "box":true
+    },
+    "IntermediateTable":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "name",
+        "membershipArn",
+        "membershipId",
+        "collaborationArn",
+        "collaborationId",
+        "createTime",
+        "updateTime",
+        "status",
+        "populationAnalysisConfiguration"
+      ],
+      "members":{
+        "id":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the intermediate table.</p>"
+        },
+        "arn":{
+          "shape":"IntermediateTableArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the intermediate table.</p>"
+        },
+        "name":{
+          "shape":"DisplayName",
+          "documentation":"<p>The name of the intermediate table.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the intermediate table.</p>"
+        },
+        "membershipArn":{
+          "shape":"MembershipArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the membership that contains the intermediate table.</p>"
+        },
+        "membershipId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the membership that contains the intermediate table.</p>"
+        },
+        "collaborationArn":{
+          "shape":"CollaborationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the collaboration that contains the intermediate table.</p>"
+        },
+        "collaborationId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the collaboration that contains the intermediate table.</p>"
+        },
+        "childResources":{
+          "shape":"ChildResourceList",
+          "documentation":"<p>The child resources that depend on this intermediate table.</p>"
+        },
+        "createTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the intermediate table was created.</p>"
+        },
+        "updateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the intermediate table was last updated.</p>"
+        },
+        "status":{
+          "shape":"IntermediateTableStatus",
+          "documentation":"<p>The current status of the intermediate table.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current status of the intermediate table.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KMSKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the intermediate table data.</p>"
+        },
+        "populationAnalysisConfiguration":{
+          "shape":"PopulationAnalysisConfiguration",
+          "documentation":"<p>The analysis configuration that defines the query used to populate the intermediate table.</p>"
+        },
+        "retentionInDays":{
+          "shape":"Integer",
+          "documentation":"<p>The number of days that populated data is retained before expiring.</p>"
+        },
+        "tableDependencies":{
+          "shape":"DependencyList",
+          "documentation":"<p>The list of base tables that this intermediate table depends on.</p>"
+        },
+        "intermediateTableVersion":{
+          "shape":"IntermediateTableActiveVersion",
+          "documentation":"<p>The details of the currently active version of the intermediate table.</p>"
+        },
+        "analysisRuleTypes":{
+          "shape":"IntermediateTableAnalysisRuleTypeList",
+          "documentation":"<p>The types of analysis rules associated with the intermediate table.</p>"
+        },
+        "schema":{
+          "shape":"IntermediateTableSchema",
+          "documentation":"<p>The schema of the intermediate table, containing column definitions. Available after the table has been successfully populated.</p>"
+        }
+      },
+      "documentation":"<p>Contains the details of an intermediate table in Clean Rooms. An intermediate table stores a query definition and its materialized results within a collaboration.</p>"
+    },
+    "IntermediateTableActiveVersion":{
+      "type":"structure",
+      "required":[
+        "versionId",
+        "analysisId",
+        "analysisType",
+        "inheritedConstraints"
+      ],
+      "members":{
+        "versionId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the active version.</p>"
+        },
+        "analysisId":{
+          "shape":"AnalysisIdentifier",
+          "documentation":"<p>The identifier of the protected query that created this version.</p>"
+        },
+        "analysisType":{
+          "shape":"PopulateIntermediateTableAnalysisType",
+          "documentation":"<p>The type of analysis that created this version.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KMSKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt this version's data.</p>"
+        },
+        "parameters":{
+          "shape":"ParameterMap",
+          "documentation":"<p>The runtime parameters that were used when populating this version.</p>"
+        },
+        "inheritedConstraints":{
+          "shape":"IntermediateTableInheritedConstraints",
+          "documentation":"<p>The privacy constraints inherited from parent tables at the time this version was populated.</p>"
+        },
+        "expirationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when this version expires based on the retention period.</p>"
+        }
+      },
+      "documentation":"<p>Contains the details of the currently active version of an intermediate table.</p>"
+    },
+    "IntermediateTableAnalysisRule":{
+      "type":"structure",
+      "required":[
+        "intermediateTableIdentifier",
+        "intermediateTableArn",
+        "analysisRulePolicy",
+        "analysisRuleType",
+        "createTime",
+        "updateTime"
+      ],
+      "members":{
+        "intermediateTableIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the intermediate table associated with this analysis rule.</p>"
+        },
+        "intermediateTableArn":{
+          "shape":"IntermediateTableArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the intermediate table associated with this analysis rule.</p>"
+        },
+        "analysisRulePolicy":{
+          "shape":"IntermediateTableAnalysisRulePolicy",
+          "documentation":"<p>The policy of the analysis rule.</p>"
+        },
+        "analysisRuleType":{
+          "shape":"IntermediateTableAnalysisRuleType",
+          "documentation":"<p>The type of the analysis rule.</p>"
+        },
+        "createTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the analysis rule was created.</p>"
+        },
+        "updateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the analysis rule was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Contains the details of an analysis rule for an intermediate table.</p>"
+    },
+    "IntermediateTableAnalysisRuleCustom":{
+      "type":"structure",
+      "members":{
+        "allowedAnalyses":{
+          "shape":"AllowedAnalysesList",
+          "documentation":"<p>The list of allowed analyses that can be performed on the intermediate table.</p>"
+        },
+        "additionalAnalyses":{
+          "shape":"AdditionalAnalyses",
+          "documentation":"<p>The setting that controls whether additional analyses are allowed on the intermediate table.</p>"
+        },
+        "allowedAdditionalAnalyses":{
+          "shape":"AllowedAdditionalAnalyses",
+          "documentation":"<p>The list of allowed additional analyses for the intermediate table.</p>"
+        },
+        "allowedAnalysisProviders":{
+          "shape":"AllowedAnalysisProviderList",
+          "documentation":"<p>The list of Amazon Web Services account IDs for the allowed analysis providers.</p>"
+        },
+        "allowedResultReceivers":{
+          "shape":"AllowedResultReceivers",
+          "documentation":"<p>The list of Amazon Web Services account IDs that are allowed to receive results from queries run on the intermediate table.</p>"
+        },
+        "differentialPrivacy":{"shape":"DifferentialPrivacyConfiguration"},
+        "disallowedOutputColumns":{
+          "shape":"AnalysisRuleColumnList",
+          "documentation":"<p>The list of columns that are not allowed in the query output.</p>"
+        }
+      },
+      "documentation":"<p>Contains the custom analysis rule configuration for an intermediate table.</p>"
+    },
+    "IntermediateTableAnalysisRulePolicy":{
+      "type":"structure",
+      "members":{
+        "v1":{
+          "shape":"IntermediateTableAnalysisRulePolicyV1",
+          "documentation":"<p>The version 1 policy for the analysis rule.</p>"
+        }
+      },
+      "documentation":"<p>Contains the policy for an intermediate table analysis rule.</p>",
+      "union":true
+    },
+    "IntermediateTableAnalysisRulePolicyV1":{
+      "type":"structure",
+      "members":{
+        "custom":{
+          "shape":"IntermediateTableAnalysisRuleCustom",
+          "documentation":"<p>The custom analysis rule policy.</p>"
+        }
+      },
+      "documentation":"<p>Contains the version 1 policy for an intermediate table analysis rule.</p>",
+      "union":true
+    },
+    "IntermediateTableAnalysisRuleType":{
+      "type":"string",
+      "enum":["CUSTOM"]
+    },
+    "IntermediateTableAnalysisRuleTypeList":{
+      "type":"list",
+      "member":{"shape":"IntermediateTableAnalysisRuleType"}
+    },
+    "IntermediateTableArn":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"arn:aws:cleanrooms:[\\w]{2}-[\\w]{4,9}-[\\d]:[\\d]{12}:membership\\/[\\d\\w-]+\\/intermediatetable\\/[\\d\\w-]+"
+    },
+    "IntermediateTableColumn":{
+      "type":"structure",
+      "required":[
+        "name",
+        "type"
+      ],
+      "members":{
+        "name":{
+          "shape":"ColumnName",
+          "documentation":"<p>The name of the column.</p>"
+        },
+        "type":{
+          "shape":"IntermediateTableColumnTypeString",
+          "documentation":"<p>The data type of the column.</p>"
+        }
+      },
+      "documentation":"<p>Contains the name and type of a column in an intermediate table.</p>"
+    },
+    "IntermediateTableColumnList":{
+      "type":"list",
+      "member":{"shape":"IntermediateTableColumn"}
+    },
+    "IntermediateTableColumnTypeString":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDBFF-\\uDC00\\uDFFF\\t]*"
+    },
+    "IntermediateTableComputeConfiguration":{
+      "type":"structure",
+      "members":{
+        "queryComputeConfiguration":{"shape":"WorkerComputeConfiguration"}
+      },
+      "documentation":"<p>The compute configuration for an intermediate table population operation.</p>",
+      "union":true
+    },
+    "IntermediateTableDependency":{
+      "type":"structure",
+      "required":[
+        "id",
+        "name",
+        "type",
+        "parentType",
+        "creatorAccountId"
+      ],
+      "members":{
+        "id":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the dependency table.</p>"
+        },
+        "name":{
+          "shape":"DisplayName",
+          "documentation":"<p>The name of the dependency table.</p>"
+        },
+        "type":{
+          "shape":"BaseTableDependencyType",
+          "documentation":"<p>The type of the dependency table.</p>"
+        },
+        "parentType":{
+          "shape":"BaseTableParentType",
+          "documentation":"<p>Whether the dependency is direct or indirect. A direct dependency is a table explicitly referenced in the stored query, while an indirect dependency is referenced through another intermediate table.</p>"
+        },
+        "creatorAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID of the member who owns the dependency table.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a base table that an intermediate table depends on.</p>"
+    },
+    "IntermediateTableIdentifier":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
+    "IntermediateTableInheritedConstraints":{
+      "type":"structure",
+      "members":{
+        "additionalAnalyses":{
+          "shape":"InheritedAdditionalAnalyses",
+          "documentation":"<p>The inherited additional analyses constraint.</p>"
+        },
+        "allowedAdditionalAnalyses":{
+          "shape":"InheritedAllowedAdditionalAnalyses",
+          "documentation":"<p>The inherited allowed additional analyses constraint.</p>"
+        },
+        "allowedResultReceivers":{
+          "shape":"InheritedAllowedResultReceivers",
+          "documentation":"<p>The inherited allowed result receivers constraint.</p>"
+        },
+        "disallowedOutputColumns":{
+          "shape":"InheritedDisallowedOutputColumns",
+          "documentation":"<p>The inherited disallowed output columns constraint.</p>"
+        }
+      },
+      "documentation":"<p>Contains the privacy constraints inherited from parent tables for an intermediate table version.</p>"
+    },
+    "IntermediateTableOutputConfiguration":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "name"
+      ],
+      "members":{
+        "id":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the intermediate table.</p>"
+        },
+        "arn":{
+          "shape":"IntermediateTableArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the intermediate table.</p>"
+        },
+        "name":{
+          "shape":"DisplayName",
+          "documentation":"<p>The name of the intermediate table.</p>"
+        }
+      },
+      "documentation":"<p>Contains the output configuration of an intermediate table when a protected query populates it.</p>"
+    },
+    "IntermediateTableSchema":{
+      "type":"structure",
+      "required":["columns"],
+      "members":{
+        "columns":{
+          "shape":"ColumnList",
+          "documentation":"<p>The list of columns in the intermediate table schema.</p>"
+        }
+      },
+      "documentation":"<p>Contains the schema definition of an intermediate table.</p>"
+    },
+    "IntermediateTableSchemaTypeProperties":{
+      "type":"structure",
+      "required":["intermediateTableId"],
+      "members":{
+        "intermediateTableId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the intermediate table.</p>"
+        }
+      },
+      "documentation":"<p>Contains the schema type properties for an intermediate table.</p>"
+    },
+    "IntermediateTableStatus":{
+      "type":"string",
+      "enum":[
+        "CREATED",
+        "POPULATE_STARTED",
+        "POPULATE_SUCCESS",
+        "POPULATE_FAILED",
+        "DISALLOWED_BY_DATA_PROVIDER",
+        "BASE_TABLE_REMOVED",
+        "RETENTION_PERIOD_EXPIRED"
+      ]
+    },
+    "IntermediateTableSummary":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "name",
+        "membershipArn",
+        "membershipId",
+        "collaborationArn",
+        "collaborationId",
+        "createTime",
+        "updateTime",
+        "status"
+      ],
+      "members":{
+        "id":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the intermediate table.</p>"
+        },
+        "arn":{
+          "shape":"IntermediateTableArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the intermediate table.</p>"
+        },
+        "name":{
+          "shape":"DisplayName",
+          "documentation":"<p>The name of the intermediate table.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the intermediate table.</p>"
+        },
+        "membershipArn":{
+          "shape":"MembershipArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the membership that contains the intermediate table.</p>"
+        },
+        "membershipId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the membership that contains the intermediate table.</p>"
+        },
+        "collaborationArn":{
+          "shape":"CollaborationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the collaboration that contains the intermediate table.</p>"
+        },
+        "collaborationId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the collaboration that contains the intermediate table.</p>"
+        },
+        "createTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the intermediate table was created.</p>"
+        },
+        "updateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the intermediate table was last updated.</p>"
+        },
+        "status":{
+          "shape":"IntermediateTableStatus",
+          "documentation":"<p>The current status of the intermediate table.</p>"
+        },
+        "retentionInDays":{
+          "shape":"Integer",
+          "documentation":"<p>The number of days that populated data is retained before expiring.</p>"
+        },
+        "analysisRuleTypes":{
+          "shape":"IntermediateTableAnalysisRuleTypeList",
+          "documentation":"<p>The types of analysis rules associated with the intermediate table.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about an intermediate table.</p>"
+    },
+    "IntermediateTableSummaryList":{
+      "type":"list",
+      "member":{"shape":"IntermediateTableSummary"}
+    },
+    "IntermediateTableVersionStatus":{
+      "type":"string",
+      "enum":[
+        "POPULATE_STARTED",
+        "POPULATE_SUCCESS",
+        "POPULATE_FAILED",
+        "RETENTION_PERIOD_EXPIRED"
+      ]
+    },
+    "IntermediateTableVersionSummary":{
+      "type":"structure",
+      "required":[
+        "versionId",
+        "tableId",
+        "createTime",
+        "analysisId",
+        "status",
+        "analysisType"
+      ],
+      "members":{
+        "versionId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the version.</p>"
+        },
+        "tableId":{
+          "shape":"IntermediateTableIdentifier",
+          "documentation":"<p>The unique identifier of the intermediate table that this version belongs to.</p>"
+        },
+        "createTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the version was created.</p>"
+        },
+        "analysisId":{
+          "shape":"AnalysisIdentifier",
+          "documentation":"<p>The identifier of the protected query that created this version.</p>"
+        },
+        "status":{
+          "shape":"IntermediateTableVersionStatus",
+          "documentation":"<p>The status of the version.</p>"
+        },
+        "analysisType":{
+          "shape":"PopulateIntermediateTableAnalysisType",
+          "documentation":"<p>The type of analysis that created this version.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KMSKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt this version's data.</p>"
+        },
+        "expirationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when this version expires based on the retention period.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a version of an intermediate table.</p>"
+    },
+    "IntermediateTableVersionSummaryList":{
+      "type":"list",
+      "member":{"shape":"IntermediateTableVersionSummary"}
+    },
     "InternalServerException":{
       "type":"structure",
       "members":{
@@ -7196,7 +8549,7 @@
       "members":{
         "isResponsible":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the collaboration creator has configured the collaboration member to pay for query and job compute costs (<code>TRUE</code>) or has not configured the collaboration member to pay for query and job compute costs (<code>FALSE</code>).</p> <p>Exactly one member can be configured to pay for query and job compute costs. An error is returned if the collaboration creator sets a <code>TRUE</code> value for more than one member in the collaboration. </p> <p>An error is returned if the collaboration creator sets a <code>FALSE</code> value for the member who can run queries and jobs.</p>"
+          "documentation":"<p>Indicates whether the collaboration creator has configured the collaboration member to pay for query and job compute costs (<code>TRUE</code>) or has not configured the collaboration member to pay for query and job compute costs (<code>FALSE</code>).</p> <p>One or more members can be configured as payer candidates for query and job compute costs.</p> <p>An error is returned if the collaboration creator sets a <code>FALSE</code> value for the member who can run queries and jobs.</p>"
         }
       },
       "documentation":"<p>An object representing the collaboration member's payment responsibilities set by the collaboration creator for query and job compute costs.</p>"
@@ -7759,6 +9112,91 @@
         "idNamespaceAssociationSummaries":{
           "shape":"IdNamespaceAssociationSummaryList",
           "documentation":"<p>The summary information of the ID namespace associations that you requested.</p>"
+        }
+      }
+    },
+    "ListIntermediateTableVersionsInput":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "intermediateTableIdentifier"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>The unique identifier of the membership that contains the intermediate table.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "intermediateTableIdentifier":{
+          "shape":"IntermediateTableIdentifier",
+          "documentation":"<p>The unique identifier of the intermediate table for which to list versions.</p>",
+          "location":"uri",
+          "locationName":"intermediateTableIdentifier"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a <code>nextToken</code> even if the <code>maxResults</code> value has not been met.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListIntermediateTableVersionsOutput":{
+      "type":"structure",
+      "required":["intermediateTableVersionSummaries"],
+      "members":{
+        "intermediateTableVersionSummaries":{
+          "shape":"IntermediateTableVersionSummaryList",
+          "documentation":"<p>The list of intermediate table version summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
+        }
+      }
+    },
+    "ListIntermediateTablesInput":{
+      "type":"structure",
+      "required":["membershipIdentifier"],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>The unique identifier of the membership for which to list intermediate tables.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a <code>nextToken</code> even if the <code>maxResults</code> value has not been met.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListIntermediateTablesOutput":{
+      "type":"structure",
+      "required":["intermediateTableSummaries"],
+      "members":{
+        "intermediateTableSummaries":{
+          "shape":"IntermediateTableSummaryList",
+          "documentation":"<p>The list of intermediate table summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
         }
       }
     },
@@ -8407,7 +9845,7 @@
       "members":{
         "isResponsible":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the collaboration member has accepted to pay for job compute costs (<code>TRUE</code>) or has not accepted to pay for query and job compute costs (<code>FALSE</code>).</p> <p>There is only one member who pays for queries and jobs. </p> <p>An error message is returned for the following reasons: </p> <ul> <li> <p>If you set the value to <code>FALSE</code> but you are responsible to pay for query and job compute costs. </p> </li> <li> <p>If you set the value to <code>TRUE</code> but you are not responsible to pay for query and job compute costs. </p> </li> </ul>"
+          "documentation":"<p>Indicates whether the collaboration member has accepted to pay for job compute costs (<code>TRUE</code>) or has not accepted to pay for query and job compute costs (<code>FALSE</code>).</p> <p>There can be one or more members who are designated as payer candidates for queries and jobs. </p> <p>An error message is returned for the following reasons: </p> <ul> <li> <p>If you set the value to <code>FALSE</code> but you are responsible to pay for query and job compute costs. </p> </li> <li> <p>If you set the value to <code>TRUE</code> but you are not responsible to pay for query and job compute costs. </p> </li> </ul>"
         }
       },
       "documentation":"<p>An object representing the payment responsibilities accepted by the collaboration member for query and job compute costs.</p>"
@@ -8649,7 +10087,7 @@
       "members":{
         "isResponsible":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the collaboration creator has configured the collaboration member to pay for model inference costs (<code>TRUE</code>) or has not configured the collaboration member to pay for model inference costs (<code>FALSE</code>).</p> <p>Exactly one member can be configured to pay for model inference costs. An error is returned if the collaboration creator sets a <code>TRUE</code> value for more than one member in the collaboration. </p> <p>If the collaboration creator hasn't specified anyone as the member paying for model inference costs, then the member who can query is the default payer. An error is returned if the collaboration creator sets a <code>FALSE</code> value for the member who can query.</p>"
+          "documentation":"<p>Indicates whether the collaboration creator has configured the collaboration member to pay for model inference costs (<code>TRUE</code>) or has not configured the collaboration member to pay for model inference costs (<code>FALSE</code>).</p> <p>One or more members can be configured as payer candidates for model inference costs.</p> <p>If the collaboration creator hasn't specified anyone as the member paying for model inference costs, then the member who can query is the default payer.</p>"
         }
       },
       "documentation":"<p>An object representing the collaboration member's model inference payment responsibilities set by the collaboration creator.</p>"
@@ -8660,7 +10098,7 @@
       "members":{
         "isResponsible":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the collaboration creator has configured the collaboration member to pay for model training costs (<code>TRUE</code>) or has not configured the collaboration member to pay for model training costs (<code>FALSE</code>).</p> <p>Exactly one member can be configured to pay for model training costs. An error is returned if the collaboration creator sets a <code>TRUE</code> value for more than one member in the collaboration. </p> <p>If the collaboration creator hasn't specified anyone as the member paying for model training costs, then the member who can query is the default payer. An error is returned if the collaboration creator sets a <code>FALSE</code> value for the member who can query.</p>"
+          "documentation":"<p>Indicates whether the collaboration creator has configured the collaboration member to pay for model training costs (<code>TRUE</code>) or has not configured the collaboration member to pay for model training costs (<code>FALSE</code>).</p> <p>One or more members can be configured as payer candidates for model training costs.</p> <p>If the collaboration creator hasn't specified anyone as the member paying for model training costs, then the member who can query is the default payer.</p>"
         }
       },
       "documentation":"<p>An object representing the collaboration member's model training payment responsibilities set by the collaboration creator.</p>"
@@ -8673,7 +10111,8 @@
     "ParameterMap":{
       "type":"map",
       "key":{"shape":"ParameterName"},
-      "value":{"shape":"ParameterValue"}
+      "value":{"shape":"ParameterValue"},
+      "sensitive":true
     },
     "ParameterName":{
       "type":"string",
@@ -8772,6 +10211,96 @@
           "documentation":"<p>The unique identifier of the mapping job that will populate the ID mapping table.</p>"
         }
       }
+    },
+    "PopulateIntermediateTableAnalysisType":{
+      "type":"string",
+      "enum":["QUERY"]
+    },
+    "PopulateIntermediateTableInput":{
+      "type":"structure",
+      "required":[
+        "intermediateTableIdentifier",
+        "membershipIdentifier"
+      ],
+      "members":{
+        "intermediateTableIdentifier":{
+          "shape":"IntermediateTableIdentifier",
+          "documentation":"<p>The unique identifier of the intermediate table to populate.</p>",
+          "location":"uri",
+          "locationName":"intermediateTableIdentifier"
+        },
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>The unique identifier of the membership that contains the intermediate table.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "parameters":{
+          "shape":"ParameterMap",
+          "documentation":"<p>The runtime parameter values that override the defaults in the stored query.</p>"
+        },
+        "computeConfiguration":{
+          "shape":"IntermediateTableComputeConfiguration",
+          "documentation":"<p>The compute configuration for the population query execution.</p>"
+        },
+        "analysisPayerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID of the member that pays for the analysis compute costs.</p>"
+        }
+      }
+    },
+    "PopulateIntermediateTableOutput":{
+      "type":"structure",
+      "required":[
+        "analysisId",
+        "analysisType",
+        "versionId"
+      ],
+      "members":{
+        "analysisId":{
+          "shape":"AnalysisIdentifier",
+          "documentation":"<p>The identifier for the protected query execution. Use this value with <code>GetProtectedQuery</code> to track the population progress.</p>"
+        },
+        "analysisType":{
+          "shape":"PopulateIntermediateTableAnalysisType",
+          "documentation":"<p>The type of analysis performed to populate the intermediate table.</p>"
+        },
+        "versionId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the version created by this population operation.</p>"
+        }
+      }
+    },
+    "PopulationAnalysisConfiguration":{
+      "type":"structure",
+      "members":{
+        "sqlParameters":{
+          "shape":"PopulationAnalysisSqlParameters",
+          "documentation":"<p>The SQL parameters for the population analysis, including the query string or analysis template ARN.</p>"
+        }
+      },
+      "documentation":"<p>Contains the configuration that defines the analysis used to populate an intermediate table.</p>",
+      "union":true
+    },
+    "PopulationAnalysisSqlParameters":{
+      "type":"structure",
+      "members":{
+        "queryString":{
+          "shape":"PopulationAnalysisSqlParametersQueryStringString",
+          "documentation":"<p>The SQL query string used to populate the intermediate table. Maximum length of 500,000 characters.</p>"
+        },
+        "analysisTemplateArn":{
+          "shape":"AnalysisTemplateArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the analysis template to use for populating the intermediate table.</p>"
+        }
+      },
+      "documentation":"<p>Contains the SQL parameters used to populate an intermediate table.</p>",
+      "sensitive":true
+    },
+    "PopulationAnalysisSqlParametersQueryStringString":{
+      "type":"string",
+      "max":500000,
+      "min":0
     },
     "PreviewPrivacyImpactInput":{
       "type":"structure",
@@ -9703,6 +11232,10 @@
         "distribute":{
           "shape":"ProtectedQueryDistributeOutputConfiguration",
           "documentation":"<p> Required configuration for a protected query with a <code>distribute</code> output type.</p>"
+        },
+        "intermediateTable":{
+          "shape":"IntermediateTableOutputConfiguration",
+          "documentation":"<p>The intermediate table output configuration, present when the protected query was triggered by a populate operation.</p>"
         }
       },
       "documentation":"<p>Contains configuration details for protected query output.</p>",
@@ -9872,6 +11405,10 @@
         "queryComputePayerAccountId":{
           "shape":"AccountId",
           "documentation":"<p>The account ID of the member that pays for the query compute costs.</p>"
+        },
+        "intermediateTableConfiguration":{
+          "shape":"IntermediateTableOutputConfiguration",
+          "documentation":"<p>The intermediate table configuration, present when the protected query was triggered by a populate operation.</p>"
         }
       },
       "documentation":"<p>The protected query summary for the objects listed by the request.</p>"
@@ -9890,7 +11427,7 @@
       "members":{
         "isResponsible":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the collaboration creator has configured the collaboration member to pay for query compute costs (<code>TRUE</code>) or has not configured the collaboration member to pay for query compute costs (<code>FALSE</code>).</p> <p>Exactly one member can be configured to pay for query compute costs. An error is returned if the collaboration creator sets a <code>TRUE</code> value for more than one member in the collaboration. </p> <p>If the collaboration creator hasn't specified anyone as the member paying for query compute costs, then the member who can query is the default payer. An error is returned if the collaboration creator sets a <code>FALSE</code> value for the member who can query.</p>"
+          "documentation":"<p>Indicates whether the collaboration creator has configured the collaboration member to pay for query compute costs (<code>TRUE</code>) or has not configured the collaboration member to pay for query compute costs (<code>FALSE</code>).</p> <p>One or more members can be configured as payer candidates for query compute costs.</p> <p>If the collaboration creator hasn't specified anyone as the member paying for query compute costs, then the member who can query is the default payer.</p>"
         }
       },
       "documentation":"<p>An object representing the collaboration member's payment responsibilities set by the collaboration creator for query compute costs.</p>"
@@ -9990,6 +11527,18 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ResourceStatus":{
+      "type":"string",
+      "enum":[
+        "CREATED",
+        "POPULATE_STARTED",
+        "POPULATE_SUCCESS",
+        "POPULATE_FAILED",
+        "DISALLOWED_BY_DATA_PROVIDER",
+        "BASE_TABLE_REMOVED",
+        "RETENTION_PERIOD_EXPIRED"
+      ]
     },
     "ResourceType":{
       "type":"string",
@@ -10283,7 +11832,13 @@
         "RESULT_RECEIVERS_NOT_CONFIGURED",
         "ADDITIONAL_ANALYSES_NOT_ALLOWED",
         "RESULT_RECEIVERS_NOT_ALLOWED",
-        "ANALYSIS_RULE_TYPES_NOT_COMPATIBLE"
+        "ANALYSIS_RULE_TYPES_NOT_COMPATIBLE",
+        "INTERMEDIATE_TABLE_NOT_POPULATED",
+        "INTERMEDIATE_TABLE_ANALYSIS_RULE_MISSING",
+        "INTERMEDIATE_TABLE_BASE_TABLE_REMOVED",
+        "INTERMEDIATE_TABLE_INHERITED_CONSTRAINTS_VIOLATED",
+        "INTERMEDIATE_TABLE_DISALLOWED_BY_DATA_PROVIDER",
+        "INTERMEDIATE_TABLE_RETENTION_PERIOD_EXPIRED"
       ]
     },
     "SchemaStatusReasonList":{
@@ -10358,7 +11913,8 @@
       "type":"string",
       "enum":[
         "TABLE",
-        "ID_MAPPING_TABLE"
+        "ID_MAPPING_TABLE",
+        "INTERMEDIATE_TABLE"
       ]
     },
     "SchemaTypeProperties":{
@@ -10367,6 +11923,14 @@
         "idMappingTable":{
           "shape":"IdMappingTableSchemaTypeProperties",
           "documentation":"<p>The ID mapping table for the schema type properties.</p>"
+        },
+        "intermediateTable":{
+          "shape":"IntermediateTableSchemaTypeProperties",
+          "documentation":"<p>The schema type properties for an intermediate table.</p>"
+        },
+        "configuredTableAssociation":{
+          "shape":"ConfiguredTableAssociationSchemaTypeProperties",
+          "documentation":"<p>The schema type properties for a configured table association.</p>"
         }
       },
       "documentation":"<p>Information about the schema type properties.</p>",
@@ -11235,6 +12799,92 @@
         }
       }
     },
+    "UpdateIntermediateTableAnalysisRuleInput":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "intermediateTableIdentifier",
+        "analysisRuleType",
+        "analysisRulePolicy"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>The unique identifier of the membership that contains the intermediate table.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "intermediateTableIdentifier":{
+          "shape":"IntermediateTableIdentifier",
+          "documentation":"<p>The unique identifier of the intermediate table for which to update the analysis rule.</p>",
+          "location":"uri",
+          "locationName":"intermediateTableIdentifier"
+        },
+        "analysisRuleType":{
+          "shape":"IntermediateTableAnalysisRuleType",
+          "documentation":"<p>The type of analysis rule to update. Currently, only <code>CUSTOM</code> is supported.</p>",
+          "location":"uri",
+          "locationName":"analysisRuleType"
+        },
+        "analysisRulePolicy":{
+          "shape":"IntermediateTableAnalysisRulePolicy",
+          "documentation":"<p>The updated analysis rule policy for the intermediate table.</p>"
+        }
+      }
+    },
+    "UpdateIntermediateTableAnalysisRuleOutput":{
+      "type":"structure",
+      "required":["analysisRule"],
+      "members":{
+        "analysisRule":{
+          "shape":"IntermediateTableAnalysisRule",
+          "documentation":"<p>The updated analysis rule for the intermediate table.</p>"
+        }
+      }
+    },
+    "UpdateIntermediateTableInput":{
+      "type":"structure",
+      "required":[
+        "intermediateTableIdentifier",
+        "membershipIdentifier"
+      ],
+      "members":{
+        "intermediateTableIdentifier":{
+          "shape":"IntermediateTableIdentifier",
+          "documentation":"<p>The unique identifier of the intermediate table to update.</p>",
+          "location":"uri",
+          "locationName":"intermediateTableIdentifier"
+        },
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>The unique identifier of the membership that contains the intermediate table.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>A new description for the intermediate table.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KMSKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the customer-managed KMS key to use for encrypting future population data.</p>"
+        },
+        "columns":{
+          "shape":"IntermediateTableColumnList",
+          "documentation":"<p>The list of columns with updated type definitions. Only the type of existing columns can be updated.</p>"
+        }
+      }
+    },
+    "UpdateIntermediateTableOutput":{
+      "type":"structure",
+      "required":["intermediateTable"],
+      "members":{
+        "intermediateTable":{
+          "shape":"IntermediateTable",
+          "documentation":"<p>The updated intermediate table.</p>"
+        }
+      }
+    },
     "UpdateMembershipInput":{
       "type":"structure",
       "required":["membershipIdentifier"],
@@ -11474,7 +13124,7 @@
     "WorkerComputeConfigurationNumberInteger":{
       "type":"integer",
       "box":true,
-      "max":400,
+      "max":1024,
       "min":2
     },
     "WorkerComputeConfigurationProperties":{

@@ -62,6 +62,10 @@ class LoginCommand(BaseSSOCommand):
             verify=verify,
         )
 
+        feature_ids = []
+        if resolved_url != start_url:
+            feature_ids.append('SSO_LOGIN_VANITY_URL')
+
         on_pending_authorization = None
         if parsed_args.no_browser:
             on_pending_authorization = PrintOnlyHandler()
@@ -76,6 +80,7 @@ class LoginCommand(BaseSSOCommand):
             session_name=sso_config.get('session_name'),
             registration_scopes=sso_config.get('registration_scopes'),
             use_device_code=parsed_args.use_device_code,
+            feature_ids=feature_ids,
         )
 
         # Only rewrite sso_region after successful login.

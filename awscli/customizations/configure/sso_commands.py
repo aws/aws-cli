@@ -383,6 +383,7 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
         args = {'start_url': start_url, 'sso_region': sso_region}
         if resolved_url:
             args['resolved_start_url'] = resolved_url
+            args['feature_ids'] = ['SSO_LOGIN_VANITY_URL']
         return args
 
     def _get_sso_registration_args_from_sso_config(self, sso_session):
@@ -415,6 +416,7 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
         }
         if resolved_url:
             args['resolved_start_url'] = resolved_url
+            args['feature_ids'] = ['SSO_LOGIN_VANITY_URL']
         return args
 
     def _store_sso_session_prompter_answers_to_profile_config(self):

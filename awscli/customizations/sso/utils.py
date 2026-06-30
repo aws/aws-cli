@@ -86,6 +86,7 @@ def do_sso_login(
     session_name=None,
     use_device_code=False,
     resolved_start_url=None,
+    feature_ids=None,
 ):
     if token_cache is None:
         token_cache = JSONFileCache(SSO_TOKEN_DIR, dumps_func=_sso_json_dumps)
@@ -104,6 +105,7 @@ def do_sso_login(
             auth_code_fetcher=AuthCodeFetcher(),
             cache=token_cache,
             on_pending_authorization=on_pending_authorization,
+            feature_ids=feature_ids,
         )
     else:
         token_fetcher = SSOTokenFetcher(
@@ -112,6 +114,7 @@ def do_sso_login(
             parsed_globals=parsed_globals,
             cache=token_cache,
             on_pending_authorization=on_pending_authorization,
+            feature_ids=feature_ids,
         )
 
     return token_fetcher.fetch_token(

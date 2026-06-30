@@ -2,6 +2,31 @@
 CHANGELOG
 =========
 
+2.35.13
+=======
+
+* bugfix:User Agent: Ensure that session IDs are added to the User-Agent HTTP header even when the local AWS CLI cache does not exist.
+* api-change:``sso-admin``: AWS IAM Identity Center now returns PrimaryRegion and Regions in the ListInstances response, providing information about replicated instances.
+* api-change:clients: The following clients have been removed following the deprecation of the services - iotevents, iotevents-data, panorama, simspaceweaver
+* api-change:``codebuild``: Adds support for host kernel selection for on-demand builds.
+* api-change:``cloudformation``: AWS CloudFormation adds a DeploymentConfig parameter to enable Express mode, which completes stack operations as soon as resource configuration is applied. Also adds a DisableValidation parameter to skip pre-deployment validation, which now runs automatically on CreateStack and UpdateStak.
+* api-change:``ec2``: Adds ModifyVpcEndpointPayerResponsibility API, which enables VPC endpoint service owners to modify the billing account for VPC endpoint usage charges at the individual endpoint level
+* api-change:``network-firewall``: AWS Network Firewall now supports container associations for monitoring ECS and EKS workloads. You can create container associations to dynamically track the IP addresses of running containers in your Amazon ECS and Amazon EKS clusters.
+* api-change:``acm``: AWS Certificate Manager now supports the Automatic Certificate Management Environment (ACME) protocol to issue public certificates. ACME is an industry-standard protocol for automating certificate lifecycle on customer-managed infrastructure such as on-premises servers and Kubernetes clusters.
+* api-change:``partnercentral-selling``: This release adds AwsMarketplaceSolutions and AwsMarketplaceProducts entity types to the Associate and Disassociate APIs, returns them in GetOpportunity, and adds AwsMarketplaceSolutionArn to ListSolutions ,letting partners link Marketplace listings directly to opportunities.
+* enhancement:Installer: Break out single dual-purpose MSI to 2 separate MSIs (system-wide and user-local scopes)
+* api-change:``eks``: Adds Kubernetes version rollback support, including the CancelUpdate operation to cancel an in-progress VersionRollback update, the RollbackConfig structure with a timeoutMinutes field, and the Cancellation structure surfaced via the new cancellation field on the Update object.
+* api-change:``ecs``: Updated threshold configuration documentation.
+* enhancement:sso: Add support for vanity URLs as SSO start URLs. The CLI now follows redirects to discover the AWS-owned IAM Identity Center endpoint and derives the SSO region automatically.
+* api-change:``cleanrooms``: Adds support for intermediate tables in AWS Clean Rooms collaborations.
+* api-change:``cloudwatch``: Customers can configure alarms with wall-clock-aligned evaluation windows instead of sliding windows, with optional timezone support for daily or weekly periods
+* api-change:``datazone``: Amazon DataZone now supports SNOWFLAKE as a connection type in the CreateConnection API, enabling metadata and lineage retrieval from Snowflake databases. Specify snowflakeProperties with connection details, a Secrets Manager secret, an Athena spill bucket, and an identity mapping for Snowflake.
+* api-change:``observabilityadmin``: Organization and account level telemetry rule via Observability Admin and CloudWatch pipelines for metrics
+* api-change:``connect``: Amazon Connect - Added CreateAttachedFile and StartContactConversationalAnalyticsJob APIs to import call recordings and run conversational analytics.
+* api-change:``supportauthz``: New SDK release for SupportAuthZ.
+* api-change:``autoscaling``: This release adds support for a new reservations-then-balanced capacity distribution strategy, which first attempts to launch instances into your Capacity Reservations and then balances remaining capacity across healthy Availability Zones.
+
+
 2.35.12
 =======
 

@@ -3,7 +3,7 @@
 The following ``delete-constraint`` example deletes a constraint. ::
 
     aws servicecatalog delete-constraint \
-        --constraint-id cons-7tr6gei4bxxxx
+        --id cons-7tr6gei4bxxxx
 
 This command produces no output.
 

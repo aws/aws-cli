@@ -560,6 +560,11 @@ class TestLoginWithVanityUrl(BaseSSOTest):
             config_content = f.read()
         self.assertIn('sso_region=us-east-1', config_content)
 
+    def test_vanity_url_sets_feature_id_in_user_agent(self):
+        self.add_oidc_auth_code_responses(self.access_token)
+        self.run_cmd('sso login')
+        self.assertIn('AM', self.last_request_dict['headers']['User-Agent'])
+
 
 class TestLoginWithVanityUrlLegacy(BaseSSOTest):
     def setUp(self):
@@ -628,3 +633,9 @@ class TestLoginWithDirectUrl(BaseSSOTest):
         self.add_oidc_auth_code_responses(self.access_token)
         self.run_cmd('sso login')
         self.assert_used_expected_sso_region('us-west-2')
+
+    def test_direct_url_does_not_set_vanity_feature_id(self):
+        self.add_oidc_auth_code_responses(self.access_token)
+        self.run_cmd('sso login')
+        user_agent = self.last_request_dict['headers']['User-Agent']
+        self.assertNotIn('AM', user_agent.split('m/')[-1])

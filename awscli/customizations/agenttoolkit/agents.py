@@ -276,9 +276,6 @@ class InstalledSkill:
         self.path = path
 
 
-# TODO: Verify detection, skills, and MCP config paths against actual
-# installations before release. Currently only tested with Kiro and
-# simulated agent directories.
 AGENT_CONFIGS = [
     # https://docs.anthropic.com/en/docs/claude-code/mcp
     AgentConfig(

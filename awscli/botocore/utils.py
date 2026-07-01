@@ -78,6 +78,7 @@ from botocore.exceptions import (
     UnsupportedS3ControlArnError,
     UnsupportedS3ControlConfigurationError,
 )
+from botocore.useragent import register_feature_id
 from dateutil.tz import tzutc
 from urllib3.exceptions import LocationParseError
 
@@ -3221,11 +3222,13 @@ class BaseSSOTokenFetcher:
         cache=None,
         on_pending_authorization=None,
         time_fetcher=None,
+        feature_ids=None,
     ):
         self._sso_region = sso_region
         self._client_creator = client_creator
         self._parsed_globals = parsed_globals
         self._on_pending_authorization = on_pending_authorization
+        self._feature_ids = feature_ids or []
 
         if time_fetcher is None:
             time_fetcher = self._utc_now
@@ -3275,11 +3278,21 @@ class BaseSSOTokenFetcher:
             signature_version=botocore.UNSIGNED,
             user_agent_extra=self._USER_AGENT_EXTRA,
         )
-        return self._client_creator(
+        client = self._client_creator(
             'sso-oidc',
             config=config,
             verify=self._parsed_globals.verify_ssl,
         )
+        if self._feature_ids:
+            client.meta.events.register(
+                'before-parameter-build.sso-oidc.*',
+                self._register_feature_ids,
+            )
+        return client
+
+    def _register_feature_ids(self, **kwargs):
+        for feature_id in self._feature_ids:
+            register_feature_id(feature_id)
 
     def _generate_client_name(self, session_name):
         if session_name is None:
@@ -3330,6 +3343,7 @@ class SSOTokenFetcher(BaseSSOTokenFetcher):
         on_pending_authorization=None,
         time_fetcher=None,
         sleep=None,
+        feature_ids=None,
     ):
         super().__init__(
             sso_region,
@@ -3338,6 +3352,7 @@ class SSOTokenFetcher(BaseSSOTokenFetcher):
             cache,
             on_pending_authorization,
             time_fetcher,
+            feature_ids=feature_ids,
         )
 
         if sleep is None:
@@ -3553,6 +3568,7 @@ class SSOTokenFetcherAuth(BaseSSOTokenFetcher):
         cache=None,
         on_pending_authorization=None,
         time_fetcher=None,
+        feature_ids=None,
     ):
         super().__init__(
             sso_region,
@@ -3561,6 +3577,7 @@ class SSOTokenFetcherAuth(BaseSSOTokenFetcher):
             cache,
             on_pending_authorization,
             time_fetcher,
+            feature_ids=feature_ids,
         )
 
         self._auth_code_fetcher = auth_code_fetcher

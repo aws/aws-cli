@@ -2121,6 +2121,21 @@
         "EVALUATION_ERROR"
       ]
     },
+    "EvaluationWindow":{
+      "type":"structure",
+      "members":{
+        "WallClockWindow":{
+          "shape":"WallClockWindow",
+          "documentation":"<p>A wall clock window, which aligns the evaluated range to fixed clock boundaries that match the alarm's period, such as the top of the hour, midnight, or the start of the calendar week.</p>"
+        },
+        "SlidingWindow":{
+          "shape":"SlidingWindow",
+          "documentation":"<p>A sliding window, which advances each time the alarm is evaluated, forming a rolling time window. This is the default evaluation window.</p>"
+        }
+      },
+      "documentation":"<p>The evaluation window that an alarm uses to select the range of metric data that it evaluates each time it runs. This is a union type. Set exactly one of its members, <code>SlidingWindow</code> or <code>WallClockWindow</code>. If you don't set <code>EvaluationWindow</code>, the alarm uses a <code>SlidingWindow</code> by default.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/alarm-evaluation-window.html\">Alarm evaluation windows</a> in the <i>CloudWatch User Guide</i>.</p>",
+      "union":true
+    },
     "ExceptionType":{"type":"string"},
     "Expression":{
       "type":"string",
@@ -3462,6 +3477,10 @@
           "shape":"Timestamp",
           "documentation":"<p>The date and time that the alarm's <code>StateValue</code> most recently changed.</p>"
         },
+        "EvaluationWindow":{
+          "shape":"EvaluationWindow",
+          "documentation":"<p>The evaluation window that the alarm uses to select the range of metric data that it evaluates. This is either a sliding window or a wall clock window. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/alarm-evaluation-window.html\">Alarm evaluation windows</a> in the <i>CloudWatch User Guide</i>.</p>"
+        },
         "EvaluationCriteria":{
           "shape":"EvaluationCriteria",
           "documentation":"<p>The evaluation criteria for the alarm.</p>"
@@ -3502,6 +3521,7 @@
         "ThresholdMetricId",
         "EvaluationState",
         "StateTransitionedTimestamp",
+        "EvaluationWindow",
         "EvaluationCriteria",
         "EvaluationInterval"
       ]
@@ -4309,6 +4329,10 @@
           "shape":"MetricId",
           "documentation":"<p>If this is an alarm based on an anomaly detection model, make this value match the ID of the <code>ANOMALY_DETECTION_BAND</code> function.</p> <p>For an example of how to use this parameter, see the <b>Anomaly Detection Model Alarm</b> example on this page.</p> <p>If your alarm uses this parameter, it cannot have Auto Scaling actions.</p>"
         },
+        "EvaluationWindow":{
+          "shape":"EvaluationWindow",
+          "documentation":"<p>The evaluation window that the alarm uses to select the range of metric data that it evaluates. Specify either a sliding window or a wall clock window. If you omit this parameter, the alarm uses a sliding window.</p> <p>A sliding window advances each time the alarm is evaluated, forming a rolling time window. A wall clock window aligns the evaluated range to fixed clock boundaries, such as the top of the hour or the start of the day.</p> <p>You can use <code>EvaluationWindow</code> with any type of metric alarm except alarms that are based on a PromQL query.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/alarm-evaluation-window.html\">Alarm evaluation windows</a> in the <i>CloudWatch User Guide</i>.</p>"
+        },
         "EvaluationCriteria":{
           "shape":"EvaluationCriteria",
           "documentation":"<p>The evaluation criteria for the alarm. For each <code>PutMetricAlarm</code> operation, you must specify either <code>MetricName</code>, a <code>Metrics</code> array, or an <code>EvaluationCriteria</code>.</p> <p>If you use the <code>EvaluationCriteria</code> parameter, you cannot include the <code>Namespace</code>, <code>MetricName</code>, <code>Dimensions</code>, <code>Period</code>, <code>Unit</code>, <code>Statistic</code>, <code>ExtendedStatistic</code>, <code>Metrics</code>, <code>Threshold</code>, <code>ComparisonOperator</code>, <code>ThresholdMetricId</code>, <code>EvaluationPeriods</code>, or <code>DatapointsToAlarm</code> parameters of <code>PutMetricAlarm</code> in the same operation. Instead, all evaluation parameters are defined within this structure.</p> <p>For an example of how to use this parameter, see the <b>PromQL alarm</b> example on this page.</p>"
@@ -4660,6 +4684,11 @@
       "documentation":"<p>Designates the CloudWatch metric and statistic that provides the time series the anomaly detector uses as input. If you have enabled unified cross-account observability, and this account is a monitoring account, the metric can be in the same account or a source account.</p>"
     },
     "Size":{"type":"long"},
+    "SlidingWindow":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>An evaluation window that advances each time the alarm is evaluated, forming a rolling time window. This is the default evaluation window. A sliding window has no additional configuration options.</p> <p>Choose a sliding window when you need the fastest detection and the calendar boundaries of the data don't matter, such as for continuous performance, latency, or resource-exhaustion monitoring.</p>"
+    },
     "StandardUnit":{
       "type":"string",
       "enum":[
@@ -4919,6 +4948,16 @@
     "Values":{
       "type":"list",
       "member":{"shape":"DatapointValue"}
+    },
+    "WallClockWindow":{
+      "type":"structure",
+      "members":{
+        "Timezone":{
+          "shape":"Timezone",
+          "documentation":"<p>The time zone to use when the alarm aligns the evaluation window to clock boundaries. You can specify an IANA time zone name (for example, <code>America/New_York</code>), a fixed UTC offset (for example, <code>+05:30</code>), or an offset-prefixed identifier (for example, <code>UTC+05:30</code>). The offset must be aligned to a multiple of 5 minutes. If you don't specify a time zone, CloudWatch uses <code>UTC</code>.</p> <p>The time zone affects window alignment for all periods, including periods of one hour or shorter.</p>"
+        }
+      },
+      "documentation":"<p>An evaluation window that aligns the evaluated range to fixed clock boundaries that match the alarm's period, such as the top of the hour, midnight, or the start of the calendar week, optionally in a specific time zone.</p> <p>When you use a wall clock window, the alarm's period must be 1 minute (60 seconds), 5 minutes (300 seconds), 1 hour (3,600 seconds), 1 day (86,400 seconds), or 1 week (604,800 seconds). Other period values aren't supported with a wall clock window.</p> <p>Choose a wall clock window when your monitoring is tied to a business or calendar period, such as daily reports, batch jobs, or backups, or when you want alarm evaluations to match the periods shown on a metric dashboard.</p>"
     }
   },
   "documentation":"<p>Amazon CloudWatch enables you to publish, monitor, and manage various metrics, as well as configure alarm actions based on data from metrics. This guide provides detailed information about CloudWatch actions, data types, parameters, and errors. For more information about CloudWatch features, see <a href=\"https://aws.amazon.com/cloudwatch\">Amazon CloudWatch</a> and the <i>Amazon CloudWatch User Guide</i>.</p> <p>For information about the metrics that other Amazon Web Services products send to CloudWatch, see the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/aws-services-cloudwatch-metrics.html\">Amazon CloudWatch Metrics and Dimensions Reference</a> in the <i>Amazon CloudWatch User Guide</i>.</p> <p>Use the following links to get started using the CloudWatch Query API:</p> <p>: An alphabetical list of all CloudWatch actions.</p> <p>: An alphabetical list of all CloudWatch data types.</p> <p> <a>CommonParameters</a>: Parameters that all Query actions can use.</p> <p> <a>CommonErrors</a>: Client and server errors that all actions can return.</p> <p> <a href=\"https://docs.aws.amazon.com/general/latest/gr/rande.html#cw_region\">Regions and Endpoints</a>: Supported regions and endpoints for all Amazon Web Services products.</p> <p>Alternatively, you can use one of the <a href=\"https://aws.amazon.com/tools/#sdk\">Amazon Web Services SDKs</a> to access CloudWatch using an API tailored to your programming language or platform.</p> <p>Developers in the Amazon Web Services developer community also provide their own libraries, which you can find at the following Amazon Web Services developer centers:</p> <p> <a href=\"http://aws.amazon.com/java/\">Java Developer Center</a> </p> <p> <a href=\"http://aws.amazon.com/javascript/\">JavaScript Developer Center</a> </p> <p> <a href=\"http://aws.amazon.com/mobile/\">Amazon Web Services Mobile Services</a> </p> <p> <a href=\"http://aws.amazon.com/php/\">PHP Developer Center</a> </p> <p> <a href=\"http://aws.amazon.com/python/\">Python Developer Center</a> </p> <p> <a href=\"http://aws.amazon.com/ruby/\">Ruby Developer Center</a> </p> <p> <a href=\"http://aws.amazon.com/net/\">Windows and .NET Developer Center</a> </p>"

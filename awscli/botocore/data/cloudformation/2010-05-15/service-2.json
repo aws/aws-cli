@@ -2196,6 +2196,14 @@
         "DeploymentMode":{
           "shape":"DeploymentMode",
           "documentation":"<p>Determines how CloudFormation handles configuration drift during deployment.</p> <ul> <li> <p> <code>REVERT_DRIFT</code> – Creates a drift-aware change set that brings actual resource states in line with template definitions. Provides a three-way comparison between actual state, previous deployment state, and desired state.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/drift-aware-change-sets.html\">Using drift-aware change sets</a> in the <i>CloudFormation User Guide</i>.</p>"
+        },
+        "DeploymentConfig":{
+          "shape":"DeploymentConfig",
+          "documentation":"<p>The deployment configuration for this stack operation, including the deployment mode.</p>"
+        },
+        "DisableValidation":{
+          "shape":"DisableValidation",
+          "documentation":"<p> Set to <code>true</code> to disable pre-deployment validations in changeset or stack operations. </p> <p> Default: <code>false</code> </p>"
         }
       },
       "documentation":"<p>The input for the <a>CreateChangeSet</a> action.</p>"
@@ -2320,6 +2328,14 @@
         "RetainExceptOnCreate":{
           "shape":"RetainExceptOnCreate",
           "documentation":"<p>When set to <code>true</code>, newly created resources are deleted when the operation rolls back. This includes newly created resources marked with a deletion policy of <code>Retain</code>.</p> <p>Default: <code>false</code> </p>"
+        },
+        "DeploymentConfig":{
+          "shape":"DeploymentConfig",
+          "documentation":"<p>The deployment configuration for this stack operation, including the deployment mode.</p>"
+        },
+        "DisableValidation":{
+          "shape":"DisableValidation",
+          "documentation":"<p> Set to <code>true</code> to disable pre-deployment validations in changeset or stack operations. </p> <p> Default: <code>false</code> </p>"
         }
       },
       "documentation":"<p>The input for <a>CreateStack</a> action.</p>"
@@ -2591,6 +2607,10 @@
         "DeletionMode":{
           "shape":"DeletionMode",
           "documentation":"<p>Specifies the deletion mode for the stack. Possible values are:</p> <ul> <li> <p> <code>STANDARD</code> - Use the standard behavior. Specifying this value is the same as not specifying this parameter.</p> </li> <li> <p> <code>FORCE_DELETE_STACK</code> - Delete the stack if it's stuck in a <code>DELETE_FAILED</code> state due to resource deletion failure.</p> </li> </ul>"
+        },
+        "DeploymentConfig":{
+          "shape":"DeploymentConfig",
+          "documentation":"<p>The deployment configuration for this stack operation, including the deployment mode.</p>"
         }
       },
       "documentation":"<p>The input for <a>DeleteStack</a> action.</p>"
@@ -2673,6 +2693,27 @@
       ]
     },
     "DeletionTime":{"type":"timestamp"},
+    "DeploymentConfig":{
+      "type":"structure",
+      "members":{
+        "Mode":{
+          "shape":"DeploymentConfigMode",
+          "documentation":"<p>Specifies the deployment mode for the stack operation. Possible values are:</p> <ul> <li> <p> <code>STANDARD</code> - Use the standard deployment behavior, ensuring resources are ready to serve traffic before completing the operation. This is the default. You do not need to specify this value explicitly.</p> </li> <li> <p> <code>EXPRESS</code> - Complete the stack operation when resource configuration is applied, without waiting for resources to become ready to serve traffic. Resources continue becoming ready in the background.</p> </li> </ul>"
+        },
+        "DisableRollback":{
+          "shape":"DisableRollback",
+          "documentation":"<p>Specifies whether to disable rollback of the stack if the stack operation fails.</p> <p>Default: <code>false</code> </p>"
+        }
+      },
+      "documentation":"<p>The deployment configuration for a stack operation, including the deployment mode.</p>"
+    },
+    "DeploymentConfigMode":{
+      "type":"string",
+      "enum":[
+        "STANDARD",
+        "EXPRESS"
+      ]
+    },
     "DeploymentMode":{
       "type":"string",
       "enum":["REVERT_DRIFT"]
@@ -2927,6 +2968,10 @@
         "DeploymentMode":{
           "shape":"DeploymentMode",
           "documentation":"<p>The deployment mode specified when the change set was created. Valid value is <code>REVERT_DRIFT</code>. Only present for drift-aware change sets.</p>"
+        },
+        "DeploymentConfig":{
+          "shape":"DeploymentConfig",
+          "documentation":"<p>The deployment configuration specified when the change set was created.</p>"
         }
       },
       "documentation":"<p>The output for the <a>DescribeChangeSet</a> action.</p>"
@@ -2936,7 +2981,7 @@
       "members":{
         "StackName":{
           "shape":"StackNameOrId",
-          "documentation":"<p>The name or unique stack ID for which you want to retrieve events.</p>"
+          "documentation":"<p>The name or unique stack ID for which you want to retrieve events. If you specified the name of a change set, specify the stack name or ID (ARN) of the change set you want to describe.</p>"
         },
         "ChangeSetName":{
           "shape":"ChangeSetNameOrId",
@@ -3738,6 +3783,10 @@
       ]
     },
     "DisableRollback":{"type":"boolean"},
+    "DisableValidation":{
+      "type":"boolean",
+      "documentation":"<p>Boolean to enable or disable pre-deployment validations in changeset and stack operations:</p> <ul> <li> <p> <code>true</code>: disable pre-deployment validations.</p> </li> <li> <p> <code>false</code>: enable pre-deployment validations.</p> </li> </ul>"
+    },
     "DriftIgnoredReason":{
       "type":"string",
       "enum":[
@@ -6778,6 +6827,10 @@
         "RetainExceptOnCreate":{
           "shape":"RetainExceptOnCreate",
           "documentation":"<p>When set to <code>true</code>, newly created resources are deleted when the operation rolls back. This includes newly created resources marked with a deletion policy of <code>Retain</code>.</p> <p>Default: <code>false</code> </p>"
+        },
+        "DeploymentConfig":{
+          "shape":"DeploymentConfig",
+          "documentation":"<p>The deployment configuration for this stack operation, including the deployment mode.</p>"
         }
       }
     },
@@ -7061,6 +7114,10 @@
         "DisableRollback":{
           "shape":"DisableRollback",
           "documentation":"<p>Boolean to enable or disable rollback on stack creation failures:</p> <ul> <li> <p> <code>true</code>: disable rollback.</p> </li> <li> <p> <code>false</code>: enable rollback.</p> </li> </ul>"
+        },
+        "DeploymentConfig":{
+          "shape":"DeploymentConfig",
+          "documentation":"<p>The deployment configuration for the stack, including the deployment mode used for stack operations.</p>"
         },
         "NotificationARNs":{
           "shape":"NotificationARNs",
@@ -9273,6 +9330,14 @@
         "RetainExceptOnCreate":{
           "shape":"RetainExceptOnCreate",
           "documentation":"<p>When set to <code>true</code>, newly created resources are deleted when the operation rolls back. This includes newly created resources marked with a deletion policy of <code>Retain</code>.</p> <p>Default: <code>false</code> </p>"
+        },
+        "DeploymentConfig":{
+          "shape":"DeploymentConfig",
+          "documentation":"<p>The deployment configuration for this stack operation, including the deployment mode.</p>"
+        },
+        "DisableValidation":{
+          "shape":"DisableValidation",
+          "documentation":"<p> Set to <code>true</code> to disable pre-deployment validations in changeset or stack operations. </p> <p> Default: <code>false</code> </p>"
         }
       },
       "documentation":"<p>The input for an <a>UpdateStack</a> action.</p>"

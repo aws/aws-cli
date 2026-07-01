@@ -348,6 +348,10 @@ files to and from S3. Valid choices are:
     * ``p5.48xlarge``
     * ``trn1n.32xlarge``
     * ``trn1.32xlarge``
+    * ``p5e.48xlarge``
+    * ``p5en.48xlarge``
+    * ``p6-b200.48xlarge``
+    * ``p6-b300.48xlarge``
 
   * There are no other running processes of the AWS CLI using the CRT S3 transfer
     client. To force multiple concurrently running processes of the AWS CLI to use

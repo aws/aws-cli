@@ -14,7 +14,6 @@ import logging
 import os
 import sys
 
-from botocore.client import Config
 from botocore.useragent import register_feature_id
 from botocore.utils import ensure_boolean, is_s3express_bucket
 from dateutil.parser import parse
@@ -23,7 +22,11 @@ from dateutil.tz import tzlocal
 from awscli.compat import queue
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.exceptions import ParamValidationError
-from awscli.customizations.s3 import transferconfig
+from awscli.customizations.s3 import constants, transferconfig
+from awscli.customizations.s3.bucketlister import (
+    BucketLister,
+    ThreadedBucketLister,
+)
 from awscli.customizations.s3.comparator import Comparator
 from awscli.customizations.s3.factory import (
     ClientFactory,
@@ -56,6 +59,12 @@ from awscli.customizations.s3.utils import (
 from awscli.customizations.utils import uni_print
 
 LOGGER = logging.getLogger(__name__)
+
+
+_BUCKET_LISTERS = {
+    constants.SINGLE_BUCKET_LISTER: BucketLister,
+    constants.THREADED_BUCKET_LISTER: ThreadedBucketLister,
+}
 
 
 RECURSIVE = {
@@ -1069,11 +1078,18 @@ class S3TransferCommand(S3Command):
         register_feature_id('S3_TRANSFER')
         self._convert_path_args(parsed_args)
         params = self._get_params(parsed_args, parsed_globals, self._session)
-        source_client, transfer_client = self._get_source_and_transfer_clients(
-            params=params
-        )
+        (
+            source_client,
+            transfer_client,
+            source_listing_client,
+            destination_listing_client,
+        ) = self._get_source_and_transfer_clients(params=params)
+        runtime_config = self._get_runtime_config()
+        bucket_lister_cls = _BUCKET_LISTERS[runtime_config['bucket_lister']]
         transfer_manager = self._get_transfer_manager(
-            params=params, botocore_transfer_client=transfer_client
+            params=params,
+            botocore_transfer_client=transfer_client,
+            runtime_config=runtime_config,
         )
         cmd = CommandArchitecture(
             self._session,
@@ -1082,6 +1098,9 @@ class S3TransferCommand(S3Command):
             transfer_manager,
             source_client,
             transfer_client,
+            source_listing_client,
+            destination_listing_client,
+            bucket_lister_cls,
         )
         cmd.create_instructions()
         return cmd.run()
@@ -1115,10 +1134,22 @@ class S3TransferCommand(S3Command):
             params, is_source_client=True
         )
         transfer_client = client_factory.create_client(params)
-        return source_client, transfer_client
+        source_listing_client = client_factory.create_listing_client(
+            params, is_source_client=True
+        )
+        destination_listing_client = client_factory.create_listing_client(
+            params
+        )
+        return (
+            source_client,
+            transfer_client,
+            source_listing_client,
+            destination_listing_client,
+        )
 
-    def _get_transfer_manager(self, params, botocore_transfer_client):
-        runtime_config = self._get_runtime_config()
+    def _get_transfer_manager(
+        self, params, botocore_transfer_client, runtime_config
+    ):
         return TransferManagerFactory(self._session).create_transfer_manager(
             params=params,
             runtime_config=runtime_config,
@@ -1373,6 +1404,9 @@ class CommandArchitecture:
         transfer_manager,
         source_client,
         transfer_client,
+        source_listing_client,
+        destination_listing_client,
+        bucket_lister_cls,
     ):
         self.session = session
         self.cmd = cmd
@@ -1381,6 +1415,9 @@ class CommandArchitecture:
         self._transfer_manager = transfer_manager
         self._source_client = source_client
         self._client = transfer_client
+        self._source_listing_client = source_listing_client
+        self._destination_listing_client = destination_listing_client
+        self._bucket_lister_cls = bucket_lister_cls
 
     def create_instructions(self):
         """
@@ -1478,17 +1515,21 @@ class CommandArchitecture:
 
         fgen_kwargs = {
             'client': self._source_client,
+            'listing_client': self._source_listing_client,
             'operation_name': operation_name,
             'follow_symlinks': self.parameters['follow_symlinks'],
             'page_size': self.parameters['page_size'],
             'result_queue': result_queue,
+            'bucket_lister_cls': self._bucket_lister_cls,
         }
         rgen_kwargs = {
             'client': self._client,
+            'listing_client': self._destination_listing_client,
             'operation_name': '',
             'follow_symlinks': self.parameters['follow_symlinks'],
             'page_size': self.parameters['page_size'],
             'result_queue': result_queue,
+            'bucket_lister_cls': self._bucket_lister_cls,
         }
 
         fgen_request_parameters = (

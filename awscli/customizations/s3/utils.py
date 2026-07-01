@@ -19,7 +19,6 @@ import re
 from collections import deque, namedtuple
 from datetime import datetime
 
-from dateutil.parser import parse
 from dateutil.tz import tzlocal, tzutc
 
 from awscli.compat import bytes_print, queue
@@ -399,41 +398,6 @@ def set_file_utime(filename, desired_time):
 
 class SetFileUtimeError(Exception):
     pass
-
-
-def _date_parser(date_string):
-    return parse(date_string).astimezone(tzlocal())
-
-
-class BucketLister:
-    """List keys in a bucket."""
-
-    def __init__(self, client, date_parser=_date_parser):
-        self._client = client
-        self._date_parser = date_parser
-
-    def list_objects(
-        self, bucket, prefix=None, page_size=None, extra_args=None
-    ):
-        kwargs = {
-            'Bucket': bucket,
-            'PaginationConfig': {'PageSize': page_size},
-        }
-        if prefix is not None:
-            kwargs['Prefix'] = prefix
-        if extra_args is not None:
-            kwargs.update(extra_args)
-
-        paginator = self._client.get_paginator('list_objects_v2')
-        pages = paginator.paginate(**kwargs)
-        for page in pages:
-            contents = page.get('Contents', [])
-            for content in contents:
-                source_path = bucket + '/' + content['Key']
-                content['LastModified'] = self._date_parser(
-                    content['LastModified']
-                )
-                yield source_path, content
 
 
 class PrintTask(

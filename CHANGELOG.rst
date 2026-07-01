@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.45.39
+=======
+
+* api-change:``artifact``: Add support for Assurance Assistant APIs for managing compliance inquiries along with tagging features.
+* api-change:``cloud9``: Since Amazon Linux 2 (AL2) will reach its end-of-life (EOL) and stop receiving security updates on June 30, 2026, Cloud9 will remove AL2 from AMI options in public API create-environment-ec2.
+* api-change:``connect``: Adds a new Amazon Connect Service API, SendOutboundWebNotification, that delivers web notifications to end-customer chat widget sessions. Callable only by the Amazon Connect Outbound Campaigns service principal.
+* api-change:``ec2``: Use declarative policies to enable VPC Encryption Controls across your organization or select accounts. Added AMD SEV-SNP support for EC2 Dedicated Hosts. Managed resource visibility settings control whether AWS-provisioned resources in your account appear in console views and API list operations.
+* api-change:``gameliftstreams``: Added CreateStreamSessionAdminShell API operation to enable customers to establish secure terminal connections to the live runtime environment of streaming sessions for troubleshooting purposes.
+* api-change:``mediaconvert``: Adds support for integer-second duration normalization and the option to disable explicit weighted prediction.
+* api-change:``meteringmarketplace``: The usage reporting window for the BatchMeterUsage API has been extended from 6 hours to 24 hours. Sellers can now submit usage records for up to 24 hours after a metered event occurs.
+* api-change:``opensearch``: To create a Mustang domain via the AWS CLI, you must pass EngineMode OPTIMIZED (along with UseCase OBSERVABILITY or MIXED)  without it, the domain defaults to a regular (GENERAL) domain. Also this release includes Insights Feedback API which user can use to provide feedback for Insight API.
+* api-change:``quicksight``: Adding support for FileSource PhysicalTables.  This adds support for datasets with file sources.
+
+
 1.45.38
 =======
 

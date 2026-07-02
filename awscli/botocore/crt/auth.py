@@ -11,7 +11,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-import datetime
 from io import BytesIO
 
 import awscrt.auth
@@ -23,7 +22,13 @@ from botocore.auth import (
     _get_body_as_dict,
     _host_from_url,
 )
-from botocore.compat import HTTPHeaders, parse_qs, urlsplit, urlunsplit
+from botocore.compat import (
+    HTTPHeaders,
+    get_current_datetime,
+    parse_qs,
+    urlsplit,
+    urlunsplit,
+)
 from botocore.exceptions import NoCredentialsError
 from botocore.useragent import register_feature_id
 from botocore.utils import percent_encode_sequence
@@ -56,7 +61,7 @@ class CrtSigV4Auth(BaseSigner):
         if self.credentials is None:
             raise NoCredentialsError()
 
-        datetime_now = datetime.datetime.now(datetime.timezone.utc)
+        datetime_now = get_current_datetime(remove_tzinfo=False)
 
         # Use existing 'X-Amz-Content-SHA256' header if able
         existing_sha256 = self._get_existing_sha256(request)
@@ -250,7 +255,7 @@ class CrtSigV4AsymAuth(BaseSigner):
         if self.credentials is None:
             raise NoCredentialsError()
 
-        datetime_now = datetime.datetime.now(datetime.timezone.utc)
+        datetime_now = get_current_datetime(remove_tzinfo=False)
 
         # Use existing 'X-Amz-Content-SHA256' header if able
         existing_sha256 = self._get_existing_sha256(request)

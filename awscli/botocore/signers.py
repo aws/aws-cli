@@ -18,7 +18,7 @@ import weakref
 import botocore
 import botocore.auth
 from botocore.awsrequest import create_request_object, prepare_request_dict
-from botocore.compat import OrderedDict
+from botocore.compat import OrderedDict, get_current_datetime
 from botocore.exceptions import (
     ParamValidationError,
     UnknownClientMethodError,
@@ -717,7 +717,7 @@ class S3PostPresigner:
         policy = {}
 
         # Create an expiration date for the policy
-        datetime_now = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None)
+        datetime_now = get_current_datetime()
         expire_date = datetime_now + datetime.timedelta(seconds=expires_in)
         policy['expiration'] = expire_date.strftime(botocore.auth.ISO8601)
 

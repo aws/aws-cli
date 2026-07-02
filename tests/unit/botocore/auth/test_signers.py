@@ -28,7 +28,7 @@ from tests import mock, unittest
 
 class BaseTestWithFixedDate(unittest.TestCase):
     def setUp(self):
-        self.fixed_date = datetime.datetime(2014, 3, 10, 17, 2, 55, 0)
+        self.fixed_date = datetime.datetime(2014, 3, 10, 17, 2, 55, 0, tzinfo=datetime.timezone.utc)
         self.datetime_patch = mock.patch('botocore.auth.datetime.datetime')
         self.datetime_mock = self.datetime_patch.start()
         self.datetime_mock.now.return_value = self.fixed_date
@@ -409,7 +409,7 @@ class TestSigV4(unittest.TestCase):
             'datetime',
             mock.Mock(wraps=datetime.datetime),
         ) as mock_datetime:
-            original_now = datetime.datetime(2014, 1, 1, 0, 0)
+            original_now = datetime.datetime(2014, 1, 1, 0, 0, tzinfo=datetime.timezone.utc)
 
             mock_datetime.now.return_value = original_now
             # Go through the add_auth process once. This will attach
@@ -420,7 +420,7 @@ class TestSigV4(unittest.TestCase):
             self.assertIn('20140101', request.headers['Authorization'])
             # Now suppose the utc time becomes the next day all of a sudden
             mock_datetime.now.return_value = datetime.datetime(
-                2014, 1, 2, 0, 0
+                2014, 1, 2, 0, 0, tzinfo=datetime.timezone.utc
             )
             # Smaller methods like the canonical request and string_to_sign
             # should  have the timestamp attached to the request in their
@@ -594,7 +594,7 @@ class TestSigV4Presign(BasePresignTest):
         )
         mocked_datetime = self.datetime_patcher.start()
         mocked_datetime.now.return_value = datetime.datetime(
-            2014, 1, 1, 0, 0
+            2014, 1, 1, 0, 0, tzinfo=datetime.timezone.utc
         )
 
     def tearDown(self):
@@ -811,7 +811,7 @@ class TestS3SigV4Post(BaseS3PresignPostTest):
         )
         mocked_datetime = self.datetime_patcher.start()
         mocked_datetime.now.return_value = datetime.datetime(
-            2014, 1, 1, 0, 0
+            2014, 1, 1, 0, 0, tzinfo=datetime.timezone.utc
         )
 
     def tearDown(self):

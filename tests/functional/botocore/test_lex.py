@@ -10,7 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from datetime import datetime
+import datetime
 
 from tests import BaseSessionTest, ClientHTTPStubber, mock
 
@@ -31,7 +31,7 @@ class TestLex(BaseSessionTest):
             'inputStream': b'',
         }
 
-        timestamp = datetime(2017, 3, 22, 0, 0)
+        timestamp = datetime.datetime(2017, 3, 22, 0, 0, tzinfo=datetime.timezone.utc)
 
         with mock.patch('botocore.auth.datetime') as _datetime:
             _datetime.datetime.now.return_value = timestamp

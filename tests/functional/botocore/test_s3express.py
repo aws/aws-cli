@@ -36,7 +36,7 @@ ENDPOINT = "https://s3.us-west-2.amazonaws.com"
 S3EXPRESS_BUCKET = "mytestbucket--usw2-az5--x-s3"
 
 
-DATE = datetime.datetime(2023, 11, 26, 0, 0, 0, tzinfo=tzutc())
+DATE = datetime.datetime(2023, 11, 26, 0, 0, 0, tzinfo=datetime.timezone.utc)
 
 
 CREATE_SESSION_RESPONSE = (

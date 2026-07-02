@@ -99,7 +99,7 @@ class TestCopySnapshotCustomization(BaseSessionTest):
             mock.Mock(wraps=datetime.datetime),
         )
         self.mocked_datetime = self.datetime_patch.start()
-        self.mocked_datetime.utcnow.return_value = self.now
+        self.mocked_datetime.now.return_value = self.now
 
     def tearDown(self):
         super().tearDown()

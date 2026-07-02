@@ -56,11 +56,7 @@ class CrtSigV4Auth(BaseSigner):
         if self.credentials is None:
             raise NoCredentialsError()
 
-        # Use utcnow() because that's what gets mocked by tests, but set
-        # timezone because CRT assumes naive datetime is local time.
-        datetime_now = datetime.datetime.utcnow().replace(
-            tzinfo=datetime.timezone.utc
-        )
+        datetime_now = datetime.datetime.now(datetime.timezone.utc)
 
         # Use existing 'X-Amz-Content-SHA256' header if able
         existing_sha256 = self._get_existing_sha256(request)
@@ -254,11 +250,7 @@ class CrtSigV4AsymAuth(BaseSigner):
         if self.credentials is None:
             raise NoCredentialsError()
 
-        # Use utcnow() because that's what gets mocked by tests, but set
-        # timezone because CRT assumes naive datetime is local time.
-        datetime_now = datetime.datetime.utcnow().replace(
-            tzinfo=datetime.timezone.utc
-        )
+        datetime_now = datetime.datetime.now(datetime.timezone.utc)
 
         # Use existing 'X-Amz-Content-SHA256' header if able
         existing_sha256 = self._get_existing_sha256(request)

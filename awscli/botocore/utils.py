@@ -633,7 +633,7 @@ class InstanceMetadataFetcher(IMDSFetcher):
             refresh_interval_with_jitter = refresh_interval + random.randint(
                 120, 600
             )
-            current_time = datetime.datetime.utcnow()
+            current_time = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None)
             refresh_offset = datetime.timedelta(
                 seconds=refresh_interval_with_jitter
             )

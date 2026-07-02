@@ -31,7 +31,7 @@ class BaseTestWithFixedDate(unittest.TestCase):
         self.fixed_date = datetime.datetime(2014, 3, 10, 17, 2, 55, 0)
         self.datetime_patch = mock.patch('botocore.auth.datetime.datetime')
         self.datetime_mock = self.datetime_patch.start()
-        self.datetime_mock.utcnow.return_value = self.fixed_date
+        self.datetime_mock.now.return_value = self.fixed_date
         self.datetime_mock.strptime.return_value = self.fixed_date
 
     def tearDown(self):
@@ -409,9 +409,9 @@ class TestSigV4(unittest.TestCase):
             'datetime',
             mock.Mock(wraps=datetime.datetime),
         ) as mock_datetime:
-            original_utcnow = datetime.datetime(2014, 1, 1, 0, 0)
+            original_now = datetime.datetime(2014, 1, 1, 0, 0)
 
-            mock_datetime.utcnow.return_value = original_utcnow
+            mock_datetime.now.return_value = original_now
             # Go through the add_auth process once. This will attach
             # a timestamp to the request at the beginning of auth.
             auth.add_auth(request)
@@ -419,7 +419,7 @@ class TestSigV4(unittest.TestCase):
             # Ensure the date is in the Authorization header
             self.assertIn('20140101', request.headers['Authorization'])
             # Now suppose the utc time becomes the next day all of a sudden
-            mock_datetime.utcnow.return_value = datetime.datetime(
+            mock_datetime.now.return_value = datetime.datetime(
                 2014, 1, 2, 0, 0
             )
             # Smaller methods like the canonical request and string_to_sign
@@ -593,7 +593,7 @@ class TestSigV4Presign(BasePresignTest):
             mock.Mock(wraps=datetime.datetime),
         )
         mocked_datetime = self.datetime_patcher.start()
-        mocked_datetime.utcnow.return_value = datetime.datetime(
+        mocked_datetime.now.return_value = datetime.datetime(
             2014, 1, 1, 0, 0
         )
 
@@ -810,7 +810,7 @@ class TestS3SigV4Post(BaseS3PresignPostTest):
             mock.Mock(wraps=datetime.datetime),
         )
         mocked_datetime = self.datetime_patcher.start()
-        mocked_datetime.utcnow.return_value = datetime.datetime(
+        mocked_datetime.now.return_value = datetime.datetime(
             2014, 1, 1, 0, 0
         )
 

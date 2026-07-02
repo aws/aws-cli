@@ -688,7 +688,7 @@ class TestS3PostPresigner(BaseSignerTest):
         self.datetime_mock = self.datetime_patch.start()
         self.fixed_date = datetime.datetime(2014, 3, 10, 17, 2, 55, 0)
         self.fixed_delta = datetime.timedelta(seconds=3600)
-        self.datetime_mock.datetime.utcnow.return_value = self.fixed_date
+        self.datetime_mock.datetime.now.return_value = self.fixed_date
         self.datetime_mock.timedelta.return_value = self.fixed_delta
 
     def tearDown(self):
@@ -1141,7 +1141,7 @@ class TestGenerateDBAuthToken(BaseSignerTest):
         clock = datetime.datetime(2016, 11, 7, 17, 39, 33, tzinfo=tzutc())
 
         with mock.patch('datetime.datetime') as dt:
-            dt.utcnow.return_value = clock
+            dt.now.return_value = clock
             result = generate_db_auth_token(
                 self.client, hostname, port, username
             )

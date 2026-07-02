@@ -215,30 +215,37 @@ class ConfigFileWriter(object):
 
     def _update_subattributes(self, index, contents, values, starting_indent):
         index += 1
+        insert_at = index - 1
         for i in range(index, len(contents)):
             line = contents[i]
+            if self.SECTION_REGEX.search(line) is not None:
+                # We've arrived at a new section so we can just write out all
+                # the values now.
+                self._insert_new_values(i - 1, contents, values, '    ')
+                return i
             match = self.OPTION_REGEX.search(line)
-            if match is not None:
-                current_indent = len(
-                    match.group(1)) - len(match.group(1).lstrip())
-                key_name = match.group(1).strip()
-                if key_name in values:
-                    option_value = values[key_name]
-                    new_line = '%s%s = %s\n' % (' ' * current_indent,
-                                                key_name, option_value)
-                    contents[i] = new_line
-                    del values[key_name]
-            if starting_indent == current_indent or \
-                    self.SECTION_REGEX.search(line) is not None:
+            if match is None:
+                insert_at = i
+                continue
+            current_indent = len(
+                match.group(1)) - len(match.group(1).lstrip())
+            if starting_indent == current_indent:
                 # We've arrived at the starting indent level so we can just
                 # write out all the values now.
                 self._insert_new_values(i - 1, contents, values, '    ')
-                break
+                return i
+            insert_at = i
+            key_name = match.group(1).strip()
+            if key_name in values:
+                option_value = values[key_name]
+                new_line = '%s%s = %s\n' % (' ' * current_indent,
+                                            key_name, option_value)
+                contents[i] = new_line
+                del values[key_name]
         else:
-            if starting_indent != current_indent:
-                # The option is the last option in the file
-                self._insert_new_values(i, contents, values, '    ')
-        return i
+            # The option is the last option in the file.
+            self._insert_new_values(insert_at, contents, values, '    ')
+        return insert_at
 
     def _insert_new_values(self, line_number, contents, new_values, indent=''):
         new_contents = []

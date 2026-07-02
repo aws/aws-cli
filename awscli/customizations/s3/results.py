@@ -10,7 +10,6 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from __future__ import division
 import logging
 import sys
 import threading
@@ -20,7 +19,6 @@ from collections import defaultdict
 
 from s3transfer.exceptions import CancelledError
 from s3transfer.exceptions import FatalError
-from s3transfer.subscribers import BaseSubscriber
 
 from awscli.compat import queue, ensure_text_type
 from awscli.customizations.s3.utils import relative_path

@@ -13,7 +13,6 @@
 
 import os
 import yaml
-import logging
 import errno
 from botocore.compat import OrderedDict
 
@@ -123,7 +122,7 @@ class KubeconfigValidator(object):
         """
         for key, value in self._validation_content.items():
             if (key in config.content and
-                    type(config.content[key]) == list):
+                    isinstance(config.content[key], list)):
                 for element in config.content[key]:
                     if not isinstance(element, OrderedDict):
                         raise KubeconfigCorruptedError(

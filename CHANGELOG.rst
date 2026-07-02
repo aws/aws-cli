@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.35.15
+=======
+
+* api-change:``customer-profiles``: Amazon Connect Customer Profiles adds support for diversityConfig to recommenderConfig which can be used for diversifying the recommendations. This release also includes model versioning support which helps customer to rollback trained models.
+* api-change:``outposts``: Tighten Outpost site ContactPhoneNumber regex to perform phone number validation.
+* bugfix:``sso``: Fix SSO login failure for non-commercial partition URLs (China and EUSC)
+* api-change:``cognito-idp``: Add support for provisioned limit management, enabling customers to view and update their provisioned API rate limits for Amazon Cognito User Pools programmatically through the new GetProvisionedLimit and UpdateProvisionedLimit APIs.
+* api-change:``config``: AWS Config now supports tag-on-create for organization-managed Config rules and conformance packs through the PutOrganizationConfigRule and PutOrganizationConformancePack APIs.
+* api-change:``mediatailor``: Added dual-stack (IPv4 and IPv6) endpoint fields to SSAI and Channel Assembly API responses.
+* enhancement:awscrt: Update awscrt version requirement to ``0.35.0``. This adds support for direct IO on downloads (GET requests) when the ``direct_io`` S3 configuration value is enabled.
+
+
 2.35.14
 =======
 

@@ -44,6 +44,9 @@ class TestIsAwsOwnedDomain:
             'ssoins-abc123.cn-north-1.portal.amazonaws.com.cn',
             'ssoins-abc123.cn-northwest-1.portal.amazonaws.com.cn',
             'identitycenter.amazonaws.com.cn',
+            'ssoins-abc123.portal.cn-north-1.app.amazonwebservices.com.cn',
+            'ssoins-abc123.eusc-de-east-1.portal.amazonaws.eu',
+            'ssoins-abc123.portal.eusc-de-east-1.api.amazonwebservices.eu',
         ],
     )
     def test_aws_owned_returns_true(self, hostname):
@@ -84,6 +87,18 @@ class TestExtractRegionFromHostname:
             (
                 'ssoins-abc.cn-northwest-1.portal.amazonaws.com.cn',
                 'cn-northwest-1',
+            ),
+            (
+                'ssoins-abc.portal.cn-north-1.app.amazonwebservices.com.cn',
+                'cn-north-1',
+            ),
+            (
+                'ssoins-abc.eusc-de-east-1.portal.amazonaws.eu',
+                'eusc-de-east-1',
+            ),
+            (
+                'ssoins-abc.portal.eusc-de-east-1.api.amazonwebservices.eu',
+                'eusc-de-east-1',
             ),
         ],
     )

@@ -26,10 +26,15 @@ LOG = logging.getLogger(__name__)
 _AWS_OWNED_SUFFIXES = (
     '.app.aws',
     '.portal.amazonaws.com',
+    '.portal.amazonaws.com.cn',
     '.awsapps.com',
+    '.awsapps.cn',
 )
 
-_AWS_OWNED_EXACT = 'identitycenter.amazonaws.com'
+_AWS_OWNED_EXACT = (
+    'identitycenter.amazonaws.com',
+    'identitycenter.amazonaws.com.cn',
+)
 
 _REGION_PATTERNS = (
     # {idcInstanceId}.portal.{region}.app.aws
@@ -39,6 +44,11 @@ _REGION_PATTERNS = (
     # {idcInstanceId}.{region}.portal.amazonaws.com
     re.compile(
         r'^[^.]+\.(?P<region>[a-z0-9-]+)\.portal\.amazonaws\.com$',
+        re.IGNORECASE,
+    ),
+    # {idcInstanceId}.{region}.portal.amazonaws.com.cn
+    re.compile(
+        r'^[^.]+\.(?P<region>[a-z0-9-]+)\.portal\.amazonaws\.com\.cn$',
         re.IGNORECASE,
     ),
 )
@@ -61,7 +71,7 @@ def _normalize_url(url):
 
 def is_aws_owned_domain(hostname):
     hostname = hostname.lower().rstrip('.')
-    if hostname == _AWS_OWNED_EXACT:
+    if hostname in _AWS_OWNED_EXACT:
         return True
     for suffix in _AWS_OWNED_SUFFIXES:
         if hostname == suffix.lstrip('.'):

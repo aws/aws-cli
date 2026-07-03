@@ -208,8 +208,7 @@ class FileGenerator(object):
                         # means we need to recurse into this sub directory
                         # before yielding the rest of this directory's
                         # contents.
-                        for x in self.list_files(file_path, dir_op):
-                            yield x
+                        yield from self.list_files(file_path, dir_op)
                     else:
                         stats = self._safely_get_file_stats(file_path)
                         if stats:

@@ -941,6 +941,24 @@
       ],
       "documentation":"<p>Retrieves information about an OpenSearch index including its schema and semantic enrichment configuration. Use this operation to view the current index structure and semantic search settings.</p>"
     },
+    "GetMigration":{
+      "name":"GetMigration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2021-01-01/opensearch/app-migrations/{migrationId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetMigrationRequest"},
+      "output":{"shape":"GetMigrationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"DisabledOperationException"}
+      ],
+      "documentation":"<p>Retrieves the current status and progress of a migration job, including the number of exported and imported objects and error details if the migration failed.</p>"
+    },
     "GetPackageVersionHistory":{
       "name":"GetPackageVersionHistory",
       "http":{
@@ -1163,6 +1181,23 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Lists all instance types and available features for a given OpenSearch or Elasticsearch version.</p>"
+    },
+    "ListMigrations":{
+      "name":"ListMigrations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2021-01-01/opensearch/app-migrations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListMigrationsRequest"},
+      "output":{"shape":"ListMigrationsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalException"},
+        {"shape":"DisabledOperationException"}
+      ],
+      "documentation":"<p>Lists migration jobs for an Amazon OpenSearch Service application. You can filter results by migration status. Use pagination to ensure that the operation returns quickly and successfully.</p>"
     },
     "ListPackagesForDomain":{
       "name":"ListPackagesForDomain",
@@ -1410,6 +1445,25 @@
         {"shape":"DisabledOperationException"}
       ],
       "documentation":"<p>Starts the node maintenance process on the data node. These processes can include a node reboot, an Opensearch or Elasticsearch process restart, or a Dashboard or Kibana restart.</p>"
+    },
+    "StartMigration":{
+      "name":"StartMigration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2021-01-01/opensearch/app-migrations",
+        "responseCode":200
+      },
+      "input":{"shape":"StartMigrationRequest"},
+      "output":{"shape":"StartMigrationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"DisabledOperationException"}
+      ],
+      "documentation":"<p>Initiates a migration job to migrate saved objects from a data source to an Amazon OpenSearch Service application workspace. Saved objects include dashboards, visualizations, index patterns, and searches. You can specify export filters to control the scope of the migration and a conflict resolution strategy for handling existing objects in the target workspace.</p>"
     },
     "StartServiceSoftwareUpdate":{
       "name":"StartServiceSoftwareUpdate",
@@ -5407,6 +5461,24 @@
     },
     "ErrorMessage":{"type":"string"},
     "ErrorType":{"type":"string"},
+    "ExportOptions":{
+      "type":"structure",
+      "members":{
+        "types":{
+          "shape":"StringList",
+          "documentation":"<p>A list of saved object types to include in the migration. Valid values include <code>dashboard</code>, <code>visualization</code>, <code>index-pattern</code>, <code>search</code>, and <code>query</code>.</p>"
+        },
+        "objects":{
+          "shape":"SavedObjectIdentifierList",
+          "documentation":"<p>A list of specific saved objects to include in the migration, identified by type and ID.</p>"
+        },
+        "includeReferencesDeep":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to include all objects referenced by the exported objects, recursively.</p>"
+        }
+      },
+      "documentation":"<p>Options to filter the scope of saved objects to export during a migration.</p>"
+    },
     "Filter":{
       "type":"structure",
       "members":{
@@ -5737,6 +5809,59 @@
         "IndexSchema":{
           "shape":"IndexSchema",
           "documentation":"<p>The JSON schema of the index including mappings, settings, and semantic enrichment configuration.</p>"
+        }
+      }
+    },
+    "GetMigrationRequest":{
+      "type":"structure",
+      "required":["migrationId"],
+      "members":{
+        "migrationId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the migration job to retrieve.</p>",
+          "location":"uri",
+          "locationName":"migrationId"
+        }
+      }
+    },
+    "GetMigrationResponse":{
+      "type":"structure",
+      "members":{
+        "migrationId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the migration job.</p>"
+        },
+        "status":{
+          "shape":"String",
+          "documentation":"<p>The current status of the migration job. Valid values are <code>PENDING</code>, <code>IN_PROGRESS</code>, <code>SUCCEEDED</code>, and <code>FAILED</code>.</p>"
+        },
+        "applicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The unique identifier of the OpenSearch application associated with the migration.</p>"
+        },
+        "source":{
+          "shape":"MigrationSource",
+          "documentation":"<p>The source configuration for the migration, including the data source ARN.</p>"
+        },
+        "exportedCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of saved objects exported from the source data source.</p>"
+        },
+        "importedCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of saved objects successfully imported into the target workspace.</p>"
+        },
+        "error":{
+          "shape":"MigrationError",
+          "documentation":"<p>Error details if the migration failed or completed with errors.</p>"
+        },
+        "createdAt":{
+          "shape":"UpdateTimestamp",
+          "documentation":"<p>The date and time when the migration job was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"UpdateTimestamp",
+          "documentation":"<p>The date and time when the migration job was last updated.</p>"
         }
       }
     },
@@ -6561,7 +6686,7 @@
       "type":"string",
       "max":2048,
       "min":0,
-      "pattern":"^$|^https://(?!(?:10|127|169\\.254|192\\.168|172\\.(?:1[6-9]|2[0-9]|3[01]))\\.)[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\\.[a-zA-Z]{2,}(?::[0-9]{1,5})?(?:/[a-zA-Z0-9\\-._~%!$&'()*+,;=:']*)?$"
+      "pattern":"^$|^https://(?!(?:10|127|169\\.254|192\\.168|172\\.(?:1[6-9]|2[0-9]|3[01]))\\.)[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\\.[a-zA-Z]{2,}(?::[0-9]{1,5})?(?:/[a-zA-Z0-9\\-._~%!$&'()*+,;=:'@]*(?:/[a-zA-Z0-9\\-._~%!$&'()*+,;=:'@]*)*)?(?:\\?[a-zA-Z0-9\\-._~%!$&'()*+,;=:'/@?]+)?$"
     },
     "KeyStoreAccessOption":{
       "type":"structure",
@@ -6948,6 +7073,49 @@
         }
       }
     },
+    "ListMigrationsRequest":{
+      "type":"structure",
+      "required":["applicationId"],
+      "members":{
+        "applicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The unique identifier of the OpenSearch application to list migrations for.</p>",
+          "location":"querystring",
+          "locationName":"applicationId"
+        },
+        "status":{
+          "shape":"String",
+          "documentation":"<p>Filters the results by migration status. Valid values are <code>PENDING</code>, <code>IN_PROGRESS</code>, <code>SUCCEEDED</code>, and <code>FAILED</code>.</p>",
+          "location":"querystring",
+          "locationName":"status"
+        },
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token from a previous call to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListMigrationsResponse":{
+      "type":"structure",
+      "members":{
+        "migrations":{
+          "shape":"MigrationSummaryList",
+          "documentation":"<p>A list of migration job summaries for the specified application.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token to use in a subsequent call to retrieve the next set of results.</p>"
+        }
+      }
+    },
     "ListPackagesForDomainRequest":{
       "type":"structure",
       "required":["DomainName"],
@@ -7283,6 +7451,125 @@
       "type":"string",
       "max":1024,
       "min":0
+    },
+    "MigrationError":{
+      "type":"structure",
+      "members":{
+        "code":{
+          "shape":"String",
+          "documentation":"<p>The error code identifying the type of failure.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A human-readable description of the error.</p>"
+        }
+      },
+      "documentation":"<p>Contains error details for a migration that failed or completed with errors.</p>"
+    },
+    "MigrationOptions":{
+      "type":"structure",
+      "required":[
+        "source",
+        "workspace"
+      ],
+      "members":{
+        "source":{
+          "shape":"MigrationSource",
+          "documentation":"<p>The data source from which to export saved objects.</p>"
+        },
+        "workspace":{
+          "shape":"MigrationWorkspace",
+          "documentation":"<p>The target workspace configuration for importing saved objects. You can specify an existing workspace or request creation of a new workspace.</p>"
+        },
+        "exportOptions":{
+          "shape":"ExportOptions",
+          "documentation":"<p>Options to filter the scope of saved objects to export from the source.</p>"
+        },
+        "conflictResolution":{
+          "shape":"String",
+          "documentation":"<p>The strategy for resolving conflicts when saved objects already exist in the target workspace. Valid values are <code>CREATE_NEW_COPIES</code>, which creates new objects with unique IDs, and <code>overwrite</code>, which replaces existing objects.</p>"
+        }
+      },
+      "documentation":"<p>The configuration options for a saved objects migration job.</p>"
+    },
+    "MigrationSource":{
+      "type":"structure",
+      "required":["datasourceArn"],
+      "members":{
+        "datasourceArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the data source to migrate saved objects from.</p>"
+        }
+      },
+      "documentation":"<p>The source configuration for a migration, specifying the data source from which to export saved objects.</p>"
+    },
+    "MigrationSummary":{
+      "type":"structure",
+      "members":{
+        "migrationId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the migration job.</p>"
+        },
+        "status":{
+          "shape":"String",
+          "documentation":"<p>The current status of the migration job.</p>"
+        },
+        "applicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The unique identifier of the OpenSearch application associated with the migration.</p>"
+        },
+        "source":{
+          "shape":"MigrationSource",
+          "documentation":"<p>The source configuration for the migration.</p>"
+        },
+        "exportedCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of saved objects exported from the source data source.</p>"
+        },
+        "importedCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of saved objects successfully imported into the target workspace.</p>"
+        },
+        "error":{
+          "shape":"MigrationError",
+          "documentation":"<p>Error details if the migration failed or completed with errors.</p>"
+        },
+        "createdAt":{
+          "shape":"UpdateTimestamp",
+          "documentation":"<p>The date and time when the migration job was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"UpdateTimestamp",
+          "documentation":"<p>The date and time when the migration job was last updated.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a migration job, including its status and progress.</p>"
+    },
+    "MigrationSummaryList":{
+      "type":"list",
+      "member":{"shape":"MigrationSummary"}
+    },
+    "MigrationWorkspace":{
+      "type":"structure",
+      "members":{
+        "workspaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of an existing workspace to use as the migration target. Specify either this parameter or <code>createWorkspace</code>.</p>"
+        },
+        "createWorkspace":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to create a new workspace as the migration target. If <code>true</code>, you must also specify <code>name</code>.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the new workspace to create. Required when <code>createWorkspace</code> is <code>true</code>.</p>"
+        },
+        "type":{
+          "shape":"String",
+          "documentation":"<p>The type of the new workspace to create.</p>"
+        }
+      },
+      "documentation":"<p>The target workspace configuration for a migration. You can specify an existing workspace by ID or request creation of a new workspace.</p>"
     },
     "MinimumInstanceCount":{
       "type":"integer",
@@ -8649,6 +8936,28 @@
       },
       "documentation":"<p>Describes the SAML application configured for the domain.</p>"
     },
+    "SavedObjectIdentifier":{
+      "type":"structure",
+      "required":[
+        "type",
+        "id"
+      ],
+      "members":{
+        "type":{
+          "shape":"String",
+          "documentation":"<p>The type of the saved object, such as <code>dashboard</code>, <code>visualization</code>, <code>index-pattern</code>, <code>search</code>, or <code>query</code>.</p>"
+        },
+        "id":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the saved object.</p>"
+        }
+      },
+      "documentation":"<p>Identifies a specific saved object by its type and unique identifier.</p>"
+    },
+    "SavedObjectIdentifierList":{
+      "type":"list",
+      "member":{"shape":"SavedObjectIdentifier"}
+    },
     "ScheduleAt":{
       "type":"string",
       "enum":[
@@ -8953,6 +9262,40 @@
         }
       },
       "documentation":"<p>The result of a <code>StartDomainMaintenance</code> request that information about the requested action. </p>"
+    },
+    "StartMigrationRequest":{
+      "type":"structure",
+      "required":[
+        "applicationId",
+        "migrationOptions"
+      ],
+      "members":{
+        "applicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The unique identifier of the OpenSearch application to migrate saved objects into.</p>"
+        },
+        "migrationOptions":{
+          "shape":"MigrationOptions",
+          "documentation":"<p>The configuration options for the migration, including the source data source, target workspace, export filters, and conflict resolution strategy.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, Amazon OpenSearch Service ignores the request but does not return an error.</p>"
+        }
+      }
+    },
+    "StartMigrationResponse":{
+      "type":"structure",
+      "members":{
+        "migrationId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the migration job.</p>"
+        },
+        "status":{
+          "shape":"String",
+          "documentation":"<p>The initial status of the migration job. The status is <code>PENDING</code> when a migration is first created.</p>"
+        }
+      }
     },
     "StartServiceSoftwareUpdateRequest":{
       "type":"structure",

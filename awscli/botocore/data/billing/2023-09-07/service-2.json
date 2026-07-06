@@ -95,6 +95,22 @@
       "documentation":"<p> Removes the association between one or more source billing views and an existing billing view. This allows modifying the composition of aggregate billing views. </p>",
       "idempotent":true
     },
+    "GetBillingPreferences":{
+      "name":"GetBillingPreferences",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetBillingPreferencesRequest"},
+      "output":{"shape":"GetBillingPreferencesResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves billing preferences for the specified feature. Each feature controls a distinct billing capability: which accounts can share Reserved Instances or credits, whether billing alerts are enabled, the historical record of sharing changes, and per-credit options.</p>"
+    },
     "GetBillingView":{
       "name":"GetBillingView",
       "http":{
@@ -112,6 +128,38 @@
       ],
       "documentation":"<p>Returns the metadata associated to the specified billing view ARN. </p>",
       "readonly":true
+    },
+    "GetCreditAllocationHistory":{
+      "name":"GetCreditAllocationHistory",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetCreditAllocationHistoryRequest"},
+      "output":{"shape":"GetCreditAllocationHistoryResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns the per-billing-month allocation history for credits applied to an Amazon Web Services account's bills. Traverses the consolidated billing family to capture cross-account credit applications. Supports pagination and optional filtering to a single credit.</p>"
+    },
+    "GetCredits":{
+      "name":"GetCredits",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetCreditsRequest"},
+      "output":{"shape":"GetCreditsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns the list of Amazon Web Services account credits for the specified account. Each credit includes its identifier, type, monetary amounts, applicable products, expiration, sharing configuration, and current enabled status.</p> <p>When the caller is the management account of a consolidated billing family and <code>payerAccountFlag</code> is <code>true</code>, the response aggregates credits across the entire family. Otherwise, the response includes only credits owned by the account specified in <code>accountId</code>.</p>"
     },
     "GetResourcePolicy":{
       "name":"GetResourcePolicy",
@@ -184,6 +232,22 @@
       "documentation":"<p>Lists tags associated with the billing view resource. </p>",
       "readonly":true
     },
+    "RedeemCredits":{
+      "name":"RedeemCredits",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RedeemCreditsRequest"},
+      "output":{"shape":"RedeemCreditsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Redeems an Amazon Web Services promotional credit code on behalf of the calling account. On success, a new credit is added to the account's credit ledger with the amount, validity period, and applicable products defined by the promotion. The credit is then automatically applied to subsequent bills according to the standard credit application order.</p>"
+    },
     "TagResource":{
       "name":"TagResource",
       "http":{
@@ -217,6 +281,22 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p> Removes one or more tags from a resource. Specify only tag keys in your request. Don't specify the value. </p>"
+    },
+    "UpdateBillingPreferences":{
+      "name":"UpdateBillingPreferences",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateBillingPreferencesRequest"},
+      "output":{"shape":"UpdateBillingPreferencesResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates billing preferences for the specified feature. Each feature targets a distinct billing capability and has its own set of supported keys. The action sets the value for each provided key; keys not present in the request are unchanged.</p> <p>Sharing keys (<code>RI_SHARING</code>, <code>CREDIT_SHARING</code>, <code>CREDIT_LEVEL_SHARING</code>, and sharing keys under <code>CREDIT_PREFERENCE_OPTIONS</code>) may only be set by the management account of a consolidated billing family. The <code>credit/{creditId}/status</code> key may be set by member accounts for credits they own, or by the management account for any credit in the family.</p>"
     },
     "UpdateBillingView":{
       "name":"UpdateBillingView",
@@ -254,6 +334,11 @@
       "type":"string",
       "pattern":"[0-9]{12}"
     },
+    "AccountName":{
+      "type":"string",
+      "max":50,
+      "min":1
+    },
     "ActiveTimeRange":{
       "type":"structure",
       "required":[
@@ -271,6 +356,31 @@
         }
       },
       "documentation":"<p>A time range with a start and end time.</p>"
+    },
+    "Amount":{
+      "type":"structure",
+      "required":[
+        "currencyCode",
+        "currencyAmount"
+      ],
+      "members":{
+        "currencyCode":{
+          "shape":"CurrencyCode",
+          "documentation":"<p>The ISO 4217 currency code for the amount (for example, <code>USD</code>).</p>"
+        },
+        "currencyAmount":{
+          "shape":"CurrencyAmount",
+          "documentation":"<p>The amount as a decimal string (for example, <code>\"743.21\"</code>). Negative values represent credits that reduce a bill.</p>"
+        }
+      },
+      "documentation":"<p>A monetary amount with a currency code. Used throughout the Billing API to represent credit balances, allocations, and adjustments.</p>"
+    },
+    "ApplicationType":{
+      "type":"string",
+      "enum":[
+        "BEFORE_CROSS_SERVICE_DISCOUNTS",
+        "AFTER_DISCOUNTS"
+      ]
     },
     "AssociateSourceViewsRequest":{
       "type":"structure",
@@ -298,6 +408,133 @@
           "documentation":"<p> The ARN of the billing view that the source views were associated with. </p>"
         }
       }
+    },
+    "BillingFeature":{
+      "type":"string",
+      "enum":[
+        "RI_SHARING",
+        "RI_SHARING_HISTORY",
+        "CREDIT_SHARING",
+        "CREDIT_SHARING_HISTORY",
+        "CREDIT_LEVEL_SHARING",
+        "BILLING_ALERTS",
+        "CREDIT_PREFERENCE_OPTIONS"
+      ]
+    },
+    "BillingFeatureFilter":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"BillingFeatureFilterName",
+          "documentation":"<p>The filter name. Currently the only supported value is <code>PREFERENCE_KEY</code>.</p>"
+        },
+        "value":{
+          "shape":"BillingFeatureFilterValues",
+          "documentation":"<p>The filter values to match. For <code>PREFERENCE_KEY</code>, supply 1 to 10 preference key values to match.</p>"
+        }
+      },
+      "documentation":"<p>A filter that narrows the set of preferences returned by <code>GetBillingPreferences</code>.</p>"
+    },
+    "BillingFeatureFilterName":{
+      "type":"string",
+      "enum":["PREFERENCE_KEY"]
+    },
+    "BillingFeatureFilterValue":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"[a-zA-Z0-9-/]+"
+    },
+    "BillingFeatureFilterValues":{
+      "type":"list",
+      "member":{"shape":"BillingFeatureFilterValue"},
+      "max":10,
+      "min":1
+    },
+    "BillingMonth":{
+      "type":"string",
+      "max":7,
+      "min":1
+    },
+    "BillingPeriod":{
+      "type":"structure",
+      "required":[
+        "year",
+        "month"
+      ],
+      "members":{
+        "year":{
+          "shape":"BillingYear",
+          "documentation":"<p>The four-digit year of the billing period.</p>"
+        },
+        "month":{
+          "shape":"Month",
+          "documentation":"<p>The month of the billing period as an integer between 1 and 12.</p>"
+        }
+      },
+      "documentation":"<p>A specific billing period identified by year and month.</p>"
+    },
+    "BillingPreferenceForKey":{
+      "type":"structure",
+      "required":[
+        "key",
+        "value"
+      ],
+      "members":{
+        "key":{
+          "shape":"PreferenceKey",
+          "documentation":"<p>The preference key. Format depends on the feature being updated.</p>"
+        },
+        "value":{
+          "shape":"PreferenceValue",
+          "documentation":"<p>The preference value. Valid values: <code>ENABLED</code> or <code>DISABLED</code>.</p>"
+        }
+      },
+      "documentation":"<p>A single key/value entry used to update a billing preference.</p>"
+    },
+    "BillingPreferenceSummary":{
+      "type":"structure",
+      "required":[
+        "feature",
+        "key",
+        "value"
+      ],
+      "members":{
+        "feature":{
+          "shape":"BillingFeature",
+          "documentation":"<p>The feature this preference belongs to.</p>"
+        },
+        "key":{
+          "shape":"PreferenceKey",
+          "documentation":"<p>The preference key. Format depends on the feature.</p>"
+        },
+        "value":{
+          "shape":"PreferenceValue",
+          "documentation":"<p>The preference value. Valid values: <code>ENABLED</code> or <code>DISABLED</code>.</p>"
+        },
+        "accountName":{
+          "shape":"AccountName",
+          "documentation":"<p>The display name of the account. Populated together with <code>accountId</code>; <code>null</code> otherwise.</p>"
+        },
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The associated Amazon Web Services account ID. Populated for account-list keys; <code>null</code> otherwise.</p>"
+        },
+        "billingPeriod":{
+          "shape":"BillingPeriod",
+          "documentation":"<p>The billing period associated with the preference change. Populated only for the history features <code>RI_SHARING_HISTORY</code> and <code>CREDIT_SHARING_HISTORY</code>.</p>"
+        }
+      },
+      "documentation":"<p>A single billing preference entry returned by <code>GetBillingPreferences</code>.</p>"
+    },
+    "BillingPreferences":{
+      "type":"list",
+      "member":{"shape":"BillingPreferenceSummary"}
+    },
+    "BillingPreferencesPerKey":{
+      "type":"list",
+      "member":{"shape":"BillingPreferenceForKey"},
+      "min":1
     },
     "BillingViewArn":{
       "type":"string",
@@ -494,6 +731,12 @@
       "max":100,
       "min":1
     },
+    "BillingYear":{
+      "type":"integer",
+      "box":true,
+      "max":2120,
+      "min":2005
+    },
     "Boolean":{
       "type":"boolean",
       "box":true
@@ -595,6 +838,181 @@
         }
       }
     },
+    "CreditAllocationHistoryEntry":{
+      "type":"structure",
+      "required":[
+        "creditId",
+        "creditAmount",
+        "accountId",
+        "appliedServiceName",
+        "billingMonth",
+        "isEstimatedBill"
+      ],
+      "members":{
+        "creditId":{
+          "shape":"CreditId",
+          "documentation":"<p>The identifier of the credit that was applied.</p>"
+        },
+        "creditAmount":{
+          "shape":"Amount",
+          "documentation":"<p>The amount of credit applied. Negative values represent credits that reduced the bill.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A human-readable description of the credit allocation.</p>"
+        },
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account the credit was applied to.</p>"
+        },
+        "appliedServiceName":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services service the credit was applied to.</p>"
+        },
+        "billingMonth":{
+          "shape":"BillingMonth",
+          "documentation":"<p>The billing month of the application in <code>YYYY-MM</code> format.</p>"
+        },
+        "isEstimatedBill":{
+          "shape":"Boolean",
+          "documentation":"<p> <code>true</code> when the entry was applied to an in-flight bill that has not yet been finalized.</p>"
+        }
+      },
+      "documentation":"<p>A single entry in the credit allocation history, representing how a credit was applied to a specific service during a billing month.</p>"
+    },
+    "CreditAllocationHistoryList":{
+      "type":"list",
+      "member":{"shape":"CreditAllocationHistoryEntry"}
+    },
+    "CreditData":{
+      "type":"structure",
+      "required":[
+        "creditId",
+        "accountId",
+        "creditType",
+        "initialAmount",
+        "remainingAmount",
+        "description",
+        "startDate"
+      ],
+      "members":{
+        "creditId":{
+          "shape":"CreditId",
+          "documentation":"<p>The unique identifier for the credit.</p>"
+        },
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID that owns the credit.</p>"
+        },
+        "creditType":{
+          "shape":"String",
+          "documentation":"<p>The type of credit. Examples: <code>Promotion</code>, <code>Refund</code>, <code>TrueUp</code>.</p>"
+        },
+        "initialAmount":{
+          "shape":"Amount",
+          "documentation":"<p>The initial amount of the credit when it was issued.</p>"
+        },
+        "remainingAmount":{
+          "shape":"Amount",
+          "documentation":"<p>The unused balance of the credit.</p>"
+        },
+        "estimatedAmount":{
+          "shape":"Amount",
+          "documentation":"<p>The estimated remaining balance, including in-flight (open) bills that have not yet been finalized.</p>"
+        },
+        "applicableProductNames":{
+          "shape":"ProductNames",
+          "documentation":"<p>The names of Amazon Web Services services this credit applies to.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A human-readable description of the credit.</p>"
+        },
+        "startDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date the credit becomes valid, as Unix epoch seconds.</p>"
+        },
+        "endDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date the credit expires, as Unix epoch seconds.</p>"
+        },
+        "exhaustDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date the credit balance reached zero, as Unix epoch seconds.</p>"
+        },
+        "applicationType":{
+          "shape":"ApplicationType",
+          "documentation":"<p>When the credit is applied during bill computation. Valid values: <code>BEFORE_CROSS_SERVICE_DISCOUNTS</code>, <code>AFTER_DISCOUNTS</code>.</p>"
+        },
+        "shareableAccounts":{
+          "shape":"ShareableAccountIds",
+          "documentation":"<p>The Amazon Web Services account IDs entitled to apply this credit.</p>"
+        },
+        "accountHasCreditSharingEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the owning account has account-level credit sharing turned on.</p>"
+        },
+        "creditConsoleVisibility":{
+          "shape":"String",
+          "documentation":"<p>The display configuration for the credit in the Amazon Web Services Billing console.</p>"
+        },
+        "creditSharingType":{
+          "shape":"CreditSharingType",
+          "documentation":"<p>The sharing configuration for the credit. Valid values: <code>DEFAULT</code>, <code>DISABLED</code>, <code>CUSTOM</code>, <code>COST_CATEGORY_RULE</code>.</p>"
+        },
+        "costCategoryArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Cost Category controlling the credit's sharing scope. Present only when <code>creditSharingType</code> is <code>COST_CATEGORY_RULE</code>.</p>"
+        },
+        "ruleName":{
+          "shape":"String",
+          "documentation":"<p>The rule name within the Cost Category. Present only when <code>creditSharingType</code> is <code>COST_CATEGORY_RULE</code>.</p>"
+        },
+        "creditStatus":{
+          "shape":"CreditStatus",
+          "documentation":"<p>Whether the credit participates in billing runs. Valid values: <code>ENABLED</code>, <code>DISABLED</code>.</p>"
+        },
+        "purchaseTypeApplications":{
+          "shape":"PurchaseTypeApplications",
+          "documentation":"<p>Restricts which purchase types this credit applies to. When <code>null</code> or omitted, the credit applies to all purchase types.</p>"
+        }
+      },
+      "documentation":"<p>Detailed information about an Amazon Web Services credit, including its identifier, type, monetary amounts, applicable products, sharing configuration, and current enabled status.</p>"
+    },
+    "CreditDataList":{
+      "type":"list",
+      "member":{"shape":"CreditData"}
+    },
+    "CreditId":{
+      "type":"string",
+      "max":32,
+      "min":1,
+      "pattern":"[0-9]+"
+    },
+    "CreditSharingType":{
+      "type":"string",
+      "enum":[
+        "DEFAULT",
+        "DISABLED",
+        "CUSTOM",
+        "COST_CATEGORY_RULE"
+      ]
+    },
+    "CreditStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "CurrencyAmount":{
+      "type":"string",
+      "pattern":"[0-9]+(.[0-9]+)"
+    },
+    "CurrencyCode":{
+      "type":"string",
+      "pattern":"[A-Z]{3}"
+    },
     "DeleteBillingViewRequest":{
       "type":"structure",
       "required":["arn"],
@@ -695,10 +1113,68 @@
       },
       "documentation":"<p> See <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_billing_Expression.html\">Expression</a>. Billing view only supports <code>LINKED_ACCOUNT</code>, <code>Tags</code>, and <code>CostCategories</code>. </p>"
     },
+    "FailedMonthsList":{
+      "type":"list",
+      "member":{"shape":"BillingMonth"}
+    },
     "FieldName":{
       "type":"string",
       "max":100,
       "min":0
+    },
+    "GetBillingPreferencesRequest":{
+      "type":"structure",
+      "required":["features"],
+      "members":{
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p>Pagination token from a previous response. Pass the value returned in <code>nextToken</code> to retrieve the next page of results.</p>"
+        },
+        "maxResults":{
+          "shape":"GetBillingPreferencesRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of records to return per page. Range: 1 to 50. Default: 50.</p>"
+        },
+        "features":{
+          "shape":"GetBillingPreferencesRequestFeaturesList",
+          "documentation":"<p>The feature to retrieve. Specify exactly one value. Valid values: <code>BILLING_ALERTS</code>, <code>RI_SHARING</code>, <code>RI_SHARING_HISTORY</code>, <code>CREDIT_SHARING</code>, <code>CREDIT_SHARING_HISTORY</code>, <code>CREDIT_LEVEL_SHARING</code>, <code>CREDIT_PREFERENCE_OPTIONS</code>.</p>"
+        },
+        "filters":{
+          "shape":"GetBillingPreferencesRequestFiltersList",
+          "documentation":"<p>Filters to narrow results. Specify exactly one filter when supplied. The supported filter name is <code>PREFERENCE_KEY</code>, which accepts 1 to 10 values to match preference keys.</p>"
+        }
+      }
+    },
+    "GetBillingPreferencesRequestFeaturesList":{
+      "type":"list",
+      "member":{"shape":"BillingFeature"},
+      "max":1,
+      "min":1
+    },
+    "GetBillingPreferencesRequestFiltersList":{
+      "type":"list",
+      "member":{"shape":"BillingFeatureFilter"},
+      "max":1,
+      "min":1
+    },
+    "GetBillingPreferencesRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":50,
+      "min":1
+    },
+    "GetBillingPreferencesResponse":{
+      "type":"structure",
+      "required":["billingPreferences"],
+      "members":{
+        "billingPreferences":{
+          "shape":"BillingPreferences",
+          "documentation":"<p>The list of preference entries matching the request.</p>"
+        },
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p>Pagination token. Present when more pages are available; <code>null</code> when there are no more results.</p>"
+        }
+      }
     },
     "GetBillingViewRequest":{
       "type":"structure",
@@ -717,6 +1193,102 @@
         "billingView":{
           "shape":"BillingViewElement",
           "documentation":"<p>The billing view element associated with the specified ARN. </p>"
+        }
+      }
+    },
+    "GetCreditAllocationHistoryRequest":{
+      "type":"structure",
+      "required":[
+        "accountId",
+        "startDate",
+        "endDate"
+      ],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID whose allocation history to retrieve. Must be a 12-digit numeric string.</p>"
+        },
+        "creditId":{
+          "shape":"Long",
+          "documentation":"<p>Filters the result to a single credit. When omitted, returns allocation entries for all credits.</p>"
+        },
+        "startDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>Inclusive start date as Unix epoch seconds. Must be on or before <code>endDate</code>. The range from <code>startDate</code> to <code>endDate</code> cannot exceed 24 billing months.</p>"
+        },
+        "endDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>Inclusive end date as Unix epoch seconds.</p>"
+        },
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p>Pagination token from a previous response. Pass the value returned in <code>nextToken</code> to retrieve the next page of results.</p>"
+        },
+        "maxResults":{
+          "shape":"GetCreditAllocationHistoryRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of records to return per page. Range: 1 to 1000. Default: 100.</p>"
+        }
+      }
+    },
+    "GetCreditAllocationHistoryRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "GetCreditAllocationHistoryResponse":{
+      "type":"structure",
+      "required":["partialResults"],
+      "members":{
+        "creditAllocationHistoryList":{
+          "shape":"CreditAllocationHistoryList",
+          "documentation":"<p>Allocation entries sorted by <code>billingMonth</code> in descending order.</p>"
+        },
+        "partialResults":{
+          "shape":"Boolean",
+          "documentation":"<p> <code>true</code> when data could not be retrieved for one or more billing months. The <code>failedMonths</code> field lists which months are missing.</p>"
+        },
+        "failedMonths":{
+          "shape":"FailedMonthsList",
+          "documentation":"<p>Billing months in <code>YYYY-MM</code> format that failed to return data. Non-empty only when <code>partialResults</code> is <code>true</code>.</p>"
+        },
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p>Pagination token. Present when more pages are available; <code>null</code> when there are no more results.</p>"
+        }
+      }
+    },
+    "GetCreditsRequest":{
+      "type":"structure",
+      "required":[
+        "accountId",
+        "startDate"
+      ],
+      "members":{
+        "accountId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services account ID. Must be a 12-digit numeric string.</p>"
+        },
+        "startDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start date for the credit period as Unix epoch seconds. Must be a past date that is not more than one year before the current date.</p>"
+        },
+        "endDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end date for the credit period as Unix epoch seconds. Must not be a future date and must be on or after <code>startDate</code>. Defaults to the current date when omitted.</p>"
+        },
+        "payerAccountFlag":{
+          "shape":"Boolean",
+          "documentation":"<p>When <code>true</code> and the caller is the management account, the response aggregates credits across the entire consolidated billing family. When <code>false</code> or omitted, returns only credits for the specified <code>accountId</code>.</p>"
+        }
+      }
+    },
+    "GetCreditsResponse":{
+      "type":"structure",
+      "members":{
+        "credits":{
+          "shape":"CreditDataList",
+          "documentation":"<p>The list of credits matching the request. Returns an empty list when no credits exist.</p>"
         }
       }
     },
@@ -860,16 +1432,82 @@
         }
       }
     },
-    "PageToken":{
-      "type":"string",
-      "max":2047,
+    "Long":{
+      "type":"long",
+      "box":true
+    },
+    "Month":{
+      "type":"integer",
+      "box":true,
+      "max":12,
       "min":1
     },
+    "PageToken":{
+      "type":"string",
+      "max":4095,
+      "min":1,
+      "pattern":"[-a-zA-Z0-9+=/_]+"
+    },
     "PolicyDocument":{"type":"string"},
+    "PreferenceKey":{
+      "type":"string",
+      "max":2148,
+      "min":1,
+      "pattern":"[a-zA-Z0-9-\\/\\*: ]+"
+    },
+    "PreferenceValue":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "ProductName":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "ProductNames":{
+      "type":"list",
+      "member":{"shape":"ProductName"},
+      "max":1000,
+      "min":0
+    },
+    "PromoCode":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":".*[^<>\"&\\%|'  ]*.*"
+    },
+    "PurchaseType":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "PurchaseTypeApplications":{
+      "type":"list",
+      "member":{"shape":"PurchaseType"},
+      "max":50,
+      "min":0
+    },
     "QuotaCode":{
       "type":"string",
       "max":1024,
       "min":1
+    },
+    "RedeemCreditsRequest":{
+      "type":"structure",
+      "required":["promoCode"],
+      "members":{
+        "promoCode":{
+          "shape":"PromoCode",
+          "documentation":"<p>The promotional credit code to redeem.</p>"
+        }
+      }
+    },
+    "RedeemCreditsResponse":{
+      "type":"structure",
+      "members":{}
     },
     "ResourceArn":{
       "type":"string",
@@ -989,6 +1627,11 @@
       "documentation":"<p> You've reached the limit of resources you can create, or exceeded the size of an individual resource. </p>",
       "exception":true
     },
+    "ShareableAccountIds":{
+      "type":"list",
+      "member":{"shape":"AccountId"}
+    },
+    "String":{"type":"string"},
     "StringSearch":{
       "type":"structure",
       "required":[
@@ -1100,6 +1743,27 @@
       }
     },
     "UntagResourceResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "UpdateBillingPreferencesRequest":{
+      "type":"structure",
+      "required":[
+        "feature",
+        "billingPreferencesPerKey"
+      ],
+      "members":{
+        "feature":{
+          "shape":"BillingFeature",
+          "documentation":"<p>The feature to update. Valid values: <code>BILLING_ALERTS</code>, <code>RI_SHARING</code>, <code>CREDIT_SHARING</code>, <code>CREDIT_LEVEL_SHARING</code>, <code>CREDIT_PREFERENCE_OPTIONS</code>. The history features (<code>RI_SHARING_HISTORY</code> and <code>CREDIT_SHARING_HISTORY</code>) are read-only and cannot be updated.</p>"
+        },
+        "billingPreferencesPerKey":{
+          "shape":"BillingPreferencesPerKey",
+          "documentation":"<p>Key/value pairs to apply. All keys in a single request must be valid for the specified <code>feature</code> and must not be duplicated. For <code>CREDIT_PREFERENCE_OPTIONS</code>, all keys must reference the same <code>creditId</code>.</p>"
+        }
+      }
+    },
+    "UpdateBillingPreferencesResponse":{
       "type":"structure",
       "members":{}
     },

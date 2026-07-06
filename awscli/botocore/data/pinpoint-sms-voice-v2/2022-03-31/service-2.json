@@ -552,6 +552,22 @@
       ],
       "documentation":"<p>Deletes an existing RCS agent. If deletion protection is enabled, an error is returned.</p>"
     },
+    "DeleteRcsMessageSpendLimitOverride":{
+      "name":"DeleteRcsMessageSpendLimitOverride",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteRcsMessageSpendLimitOverrideRequest"},
+      "output":{"shape":"DeleteRcsMessageSpendLimitOverrideResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes an account-level monthly spending limit override for sending RCS messages. Deleting a spend limit override sets the <code>EnforcedLimit</code> to equal the <code>MaxLimit</code>, which is set by Amazon Web Services.</p>"
+    },
     "DeleteRegistration":{
       "name":"DeleteRegistration",
       "http":{
@@ -1486,6 +1502,25 @@
       ],
       "documentation":"<p>Sends a templated voice message through a notify configuration to a recipient's phone number.</p>"
     },
+    "SendRcsMessage":{
+      "name":"SendRcsMessage",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"SendRcsMessageRequest"},
+      "output":{"shape":"SendRcsMessageResult"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a new RCS message and sends it to a recipient's phone number. RCS messages support rich content including text, files, rich cards, and carousels with interactive suggested actions.</p>"
+    },
     "SendTextMessage":{
       "name":"SendTextMessage",
       "http":{
@@ -1623,6 +1658,22 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Sets an account level monthly spend limit override for sending notify messages. The requested spend limit must be less than or equal to the <code>MaxLimit</code>, which is set by Amazon Web Services. </p>"
+    },
+    "SetRcsMessageSpendLimitOverride":{
+      "name":"SetRcsMessageSpendLimitOverride",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"SetRcsMessageSpendLimitOverrideRequest"},
+      "output":{"shape":"SetRcsMessageSpendLimitOverrideResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Sets an account level monthly spend limit override for sending RCS messages. The requested spend limit must be less than or equal to the <code>MaxLimit</code>, which is set by Amazon Web Services.</p>"
     },
     "SetTextMessageSpendLimitOverride":{
       "name":"SetTextMessageSpendLimitOverride",
@@ -2940,6 +2991,22 @@
           "shape":"PrimitiveBoolean",
           "documentation":"<p>By default this is set to false. When set to true you can receive incoming text messages from your end recipients.</p>"
         },
+        "TwoWayMediaS3BucketName":{
+          "shape":"TwoWayMediaS3BucketName",
+          "documentation":"<p>The name of the S3 bucket where inbound RCS media files are stored.</p>"
+        },
+        "TwoWayMediaS3KeyPrefix":{
+          "shape":"TwoWayMediaS3KeyPrefix",
+          "documentation":"<p>The key prefix used for inbound RCS media objects in the S3 bucket.</p>"
+        },
+        "TwoWayMediaS3Role":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The ARN of the IAM role used to write inbound RCS media files to the S3 bucket. The role must have <code>s3:PutObject</code> permission on the bucket and a trust policy allowing <code>sms-voice.amazonaws.com</code> to assume it.</p>"
+        },
+        "TwoWayRcsEventsEnabled":{
+          "shape":"RcsEventTypeList",
+          "documentation":"<p>The list of RCS event types enabled for two-way messaging on the agent.</p>"
+        },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>An array of tags (key and value pairs) associated with the RCS agent.</p>"
@@ -3821,6 +3888,23 @@
         "TwoWayEnabled":{
           "shape":"PrimitiveBoolean",
           "documentation":"<p>By default this is set to false. When set to true you can receive incoming text messages from your end recipients.</p>"
+        },
+        "TwoWayRcsEventsEnabled":{
+          "shape":"RcsEventTypeList",
+          "documentation":"<p>The list of RCS event types that were enabled for two-way messaging on the deleted agent.</p>"
+        }
+      }
+    },
+    "DeleteRcsMessageSpendLimitOverrideRequest":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteRcsMessageSpendLimitOverrideResult":{
+      "type":"structure",
+      "members":{
+        "MonthlyLimit":{
+          "shape":"MonthlyLimit",
+          "documentation":"<p>The current monthly limit to enforce on RCS message spending.</p>"
         }
       }
     },
@@ -5233,13 +5317,22 @@
         "MEDIA_TTL_EXPIRED",
         "MEDIA_FILE_INACCESSIBLE",
         "MEDIA_FILE_TYPE_UNSUPPORTED",
-        "MEDIA_FILE_SIZE_EXCEEDED"
+        "MEDIA_FILE_SIZE_EXCEEDED",
+        "RCS_ALL",
+        "RCS_QUEUED",
+        "RCS_SENT",
+        "RCS_DELIVERED",
+        "RCS_READ",
+        "RCS_FAILED",
+        "RCS_TTL_EXPIRED",
+        "RCS_PROTECT_BLOCKED",
+        "RCS_FALLEN_BACK_TO_SMS"
       ]
     },
     "EventTypeList":{
       "type":"list",
       "member":{"shape":"EventType"},
-      "max":43,
+      "max":52,
       "min":1
     },
     "FieldPath":{
@@ -5358,6 +5451,13 @@
       "max":2048,
       "min":20,
       "pattern":"arn:\\S+"
+    },
+    "IamRoleArnOrUnset":{
+      "type":"string",
+      "documentation":"<p>IAM role ARN or UNSET_RCS_MEDIA_CONFIGURATION to clear media config. Pass UNSET_RCS_MEDIA_CONFIGURATION to clear the media configuration from an RCS agent.</p>",
+      "max":2048,
+      "min":20,
+      "pattern":"(arn:\\S+|UNSET_RCS_MEDIA_CONFIGURATION)"
     },
     "Integer":{
       "type":"integer",
@@ -7317,6 +7417,22 @@
           "shape":"String",
           "documentation":"<p>The unique identifier of the pool associated with the RCS agent.</p>"
         },
+        "TwoWayMediaS3BucketName":{
+          "shape":"TwoWayMediaS3BucketName",
+          "documentation":"<p>The name of the S3 bucket where inbound RCS media files are stored.</p>"
+        },
+        "TwoWayMediaS3KeyPrefix":{
+          "shape":"TwoWayMediaS3KeyPrefix",
+          "documentation":"<p>The key prefix used for inbound RCS media objects in the S3 bucket.</p>"
+        },
+        "TwoWayMediaS3Role":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The ARN of the IAM role used to write inbound RCS media files to the S3 bucket.</p>"
+        },
+        "TwoWayRcsEventsEnabled":{
+          "shape":"RcsEventTypeList",
+          "documentation":"<p>The list of RCS event types enabled for two-way messaging on the agent.</p>"
+        },
         "TestingAgent":{
           "shape":"TestingAgentInformation",
           "documentation":"<p>The testing agent information associated with the RCS agent.</p>"
@@ -7339,6 +7455,579 @@
         "ACTIVE",
         "DELETED"
       ]
+    },
+    "RcsCalendarEventDescription":{
+      "type":"string",
+      "max":500,
+      "min":1
+    },
+    "RcsCalendarEventTitle":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "RcsCardContent":{
+      "type":"structure",
+      "members":{
+        "Title":{
+          "shape":"RcsCardTitle",
+          "documentation":"<p>The title of the card. Maximum 200 characters.</p>"
+        },
+        "Description":{
+          "shape":"RcsCardDescription",
+          "documentation":"<p>The description text of the card. Maximum 2000 characters.</p>"
+        },
+        "Media":{
+          "shape":"RcsCardMedia",
+          "documentation":"<p>The media content of the card, including the file URL, optional thumbnail, and display height.</p>"
+        },
+        "Suggestions":{
+          "shape":"RcsCardSuggestedActionList",
+          "documentation":"<p>Card-level suggested actions. Maximum 4 suggestions per card.</p>"
+        }
+      },
+      "documentation":"<p>The content of a rich card, including title, description, media, and card-level suggested actions.</p>"
+    },
+    "RcsCardDescription":{
+      "type":"string",
+      "max":2000,
+      "min":1
+    },
+    "RcsCardMedia":{
+      "type":"structure",
+      "required":["FileUrl"],
+      "members":{
+        "FileUrl":{
+          "shape":"RcsMediaUrl",
+          "documentation":"<p>The S3 URI of the media file for the card, in the format <code>s3://bucket-name/key</code>. Maximum 2000 characters.</p>"
+        },
+        "ThumbnailUrl":{
+          "shape":"RcsMediaUrl",
+          "documentation":"<p>The S3 URI of an optional thumbnail image for the card media. Maximum 2000 characters.</p>"
+        },
+        "Height":{
+          "shape":"RcsCardMediaHeightString",
+          "documentation":"<p>The display height of the media in the card. Valid values are SHORT, MEDIUM, and TALL.</p>"
+        }
+      },
+      "documentation":"<p>The media content of a rich card, including the file URL, optional thumbnail, and display height.</p>"
+    },
+    "RcsCardMediaHeightString":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"[A-Z_]+"
+    },
+    "RcsCardSuggestedActionList":{
+      "type":"list",
+      "member":{"shape":"RcsSuggestedAction"},
+      "max":4,
+      "min":0
+    },
+    "RcsCardTitle":{
+      "type":"string",
+      "max":200,
+      "min":1
+    },
+    "RcsCarousel":{
+      "type":"structure",
+      "required":[
+        "CardWidth",
+        "CardContents"
+      ],
+      "members":{
+        "CardWidth":{
+          "shape":"RcsCarouselCardWidthString",
+          "documentation":"<p>The width of cards in the carousel. Valid values are SMALL and MEDIUM.</p>"
+        },
+        "CardContents":{
+          "shape":"RcsCarouselCardContentList",
+          "documentation":"<p>The list of cards in the carousel. Minimum 2, maximum 10 cards.</p>"
+        }
+      },
+      "documentation":"<p>A carousel of 2 to 10 scrollable rich cards.</p>"
+    },
+    "RcsCarouselCardContent":{
+      "type":"structure",
+      "members":{
+        "Title":{
+          "shape":"RcsCardTitle",
+          "documentation":"<p>The title of the carousel card. Maximum 200 characters.</p>"
+        },
+        "Description":{
+          "shape":"RcsCardDescription",
+          "documentation":"<p>The description text of the carousel card. Maximum 2000 characters.</p>"
+        },
+        "Media":{
+          "shape":"RcsCarouselCardMedia",
+          "documentation":"<p>The media content of the carousel card. Media height is restricted to SHORT or MEDIUM (TALL is not supported in carousels).</p>"
+        },
+        "Suggestions":{
+          "shape":"RcsCardSuggestedActionList",
+          "documentation":"<p>Card-level suggested actions for this carousel card. Maximum 4 suggestions per card.</p>"
+        }
+      },
+      "documentation":"<p>The content of a carousel card, including title, description, media, and card-level suggested actions. Media height is restricted to SHORT or MEDIUM.</p>"
+    },
+    "RcsCarouselCardContentList":{
+      "type":"list",
+      "member":{"shape":"RcsCarouselCardContent"},
+      "max":10,
+      "min":2
+    },
+    "RcsCarouselCardMedia":{
+      "type":"structure",
+      "required":["FileUrl"],
+      "members":{
+        "FileUrl":{
+          "shape":"RcsMediaUrl",
+          "documentation":"<p>The S3 URI of the media file for the carousel card. Maximum 2000 characters.</p>"
+        },
+        "ThumbnailUrl":{
+          "shape":"RcsMediaUrl",
+          "documentation":"<p>The S3 URI of an optional thumbnail image for the carousel card media. Maximum 2000 characters.</p>"
+        },
+        "Height":{
+          "shape":"RcsCarouselCardMediaHeightString",
+          "documentation":"<p>The display height of the media in the carousel card. Valid values are SHORT and MEDIUM.</p>"
+        }
+      },
+      "documentation":"<p>The media content of a carousel card. Display height is restricted to SHORT or MEDIUM (TALL is not supported in carousels).</p>"
+    },
+    "RcsCarouselCardMediaHeightString":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"[A-Z_]+"
+    },
+    "RcsCarouselCardWidthString":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"[A-Z_]+"
+    },
+    "RcsContent":{
+      "type":"structure",
+      "members":{
+        "TextMessage":{
+          "shape":"RcsTextMessage",
+          "documentation":"<p>A plain text RCS message.</p>"
+        },
+        "FileMessage":{
+          "shape":"RcsFileMessage",
+          "documentation":"<p>A file message containing a media file (image, video, audio, or PDF) with an optional thumbnail.</p>"
+        },
+        "RichCard":{
+          "shape":"RcsStandaloneCard",
+          "documentation":"<p>A standalone rich card with media, title, description, and suggested actions.</p>"
+        },
+        "Carousel":{
+          "shape":"RcsCarousel",
+          "documentation":"<p>A carousel of 2 to 10 scrollable cards, each with media, title, description, and suggested actions.</p>"
+        }
+      },
+      "documentation":"<p>The message body of an RCS message. Exactly one content type must be specified.</p>",
+      "union":true
+    },
+    "RcsCreateCalendarEventAction":{
+      "type":"structure",
+      "required":[
+        "Text",
+        "PostbackData",
+        "Title",
+        "StartTime",
+        "EndTime"
+      ],
+      "members":{
+        "Text":{
+          "shape":"RcsSuggestedActionText",
+          "documentation":"<p>The display text of the action. Maximum 25 characters.</p>"
+        },
+        "PostbackData":{
+          "shape":"RcsPostbackData",
+          "documentation":"<p>The postback data sent to your webhook when the user taps this action. Maximum 2048 characters.</p>"
+        },
+        "Title":{
+          "shape":"RcsCalendarEventTitle",
+          "documentation":"<p>The title of the calendar event. Maximum 100 characters.</p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start time of the calendar event in ISO 8601 format.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end time of the calendar event in ISO 8601 format.</p>"
+        },
+        "Description":{
+          "shape":"RcsCalendarEventDescription",
+          "documentation":"<p>An optional description for the calendar event. Maximum 500 characters.</p>"
+        }
+      },
+      "documentation":"<p>A suggested action that creates a calendar event on the recipient's device.</p>"
+    },
+    "RcsDialPhoneAction":{
+      "type":"structure",
+      "required":[
+        "Text",
+        "PostbackData",
+        "PhoneNumber"
+      ],
+      "members":{
+        "Text":{
+          "shape":"RcsSuggestedActionText",
+          "documentation":"<p>The display text of the action. Maximum 25 characters.</p>"
+        },
+        "PostbackData":{
+          "shape":"RcsPostbackData",
+          "documentation":"<p>The postback data sent to your webhook when the user taps this action. Maximum 2048 characters.</p>"
+        },
+        "PhoneNumber":{
+          "shape":"PhoneNumber",
+          "documentation":"<p>The phone number to dial in E.164 format.</p>"
+        }
+      },
+      "documentation":"<p>A suggested action that initiates a phone call to a specified number when tapped by the recipient.</p>"
+    },
+    "RcsEventType":{
+      "type":"string",
+      "documentation":"<p>RCS event type identifier. Validated at the service layer.</p>",
+      "max":50,
+      "min":1
+    },
+    "RcsEventTypeList":{
+      "type":"list",
+      "member":{"shape":"RcsEventType"},
+      "max":100,
+      "min":0
+    },
+    "RcsFallbackChannel":{
+      "type":"string",
+      "enum":[
+        "SMS",
+        "MMS"
+      ]
+    },
+    "RcsFallbackConfiguration":{
+      "type":"structure",
+      "required":["Channel"],
+      "members":{
+        "Channel":{
+          "shape":"RcsFallbackChannel",
+          "documentation":"<p>The fallback channel to use when RCS delivery fails. Valid values are SMS and MMS. SMS and MMS are mutually exclusive.</p>"
+        },
+        "MessageBody":{
+          "shape":"RcsFallbackMessageBody",
+          "documentation":"<p>The text body of the fallback message. Required for SMS fallback. For MMS fallback, at least one of MessageBody or MediaUrls must be provided.</p>"
+        },
+        "MediaUrls":{
+          "shape":"MediaUrlList",
+          "documentation":"<p>An array of S3 URIs to media files for MMS fallback. Only valid when Channel is MMS.</p>"
+        },
+        "OriginationIdentity":{
+          "shape":"RcsFallbackOriginationIdentity",
+          "documentation":"<p>The origination identity to use for the fallback message. This can be a PhoneNumber, PhoneNumberId, PhoneNumberArn, SenderId, or SenderIdArn. Pool IDs and pool ARNs are not accepted. If not specified and the original message was sent via a pool, the service selects a suitable number from the pool.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for SMS or MMS fallback when RCS delivery fails or the TimeToLive expires without delivery confirmation.</p>"
+    },
+    "RcsFallbackMessageBody":{
+      "type":"string",
+      "max":1600,
+      "min":1,
+      "pattern":"(?!\\s*$)[\\s\\S]+"
+    },
+    "RcsFallbackOriginationIdentity":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[A-Za-z0-9_:/\\+-]+"
+    },
+    "RcsFileMessage":{
+      "type":"structure",
+      "required":["FileUrl"],
+      "members":{
+        "FileUrl":{
+          "shape":"RcsMediaUrl",
+          "documentation":"<p>The S3 URI of the media file to send, in the format <code>s3://bucket-name/key</code>. The service downloads the file from your S3 bucket, rehosts it, and generates a presigned URL for the aggregator. Maximum 2000 characters.</p>"
+        },
+        "ThumbnailUrl":{
+          "shape":"RcsMediaUrl",
+          "documentation":"<p>The S3 URI of an optional thumbnail image for the media file, in the format <code>s3://bucket-name/key</code>. Maximum 2000 characters.</p>"
+        }
+      },
+      "documentation":"<p>A file message containing a media file (image, video, audio, or PDF) with an optional thumbnail.</p>"
+    },
+    "RcsLocationLabel":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "RcsMediaUrl":{
+      "type":"string",
+      "max":2000,
+      "min":1,
+      "pattern":"(https://|s3://).+"
+    },
+    "RcsMessageContent":{
+      "type":"structure",
+      "required":["Content"],
+      "members":{
+        "Content":{
+          "shape":"RcsContent",
+          "documentation":"<p>The content of the RCS message. Exactly one content type must be specified: TextMessage, FileMessage, RichCard, or Carousel.</p>"
+        },
+        "Suggestions":{
+          "shape":"RcsSuggestedActionList",
+          "documentation":"<p>Message-level suggested actions displayed to the recipient. Maximum 11 suggestions per message.</p>"
+        }
+      },
+      "documentation":"<p>The content of an RCS message, containing the message body (text, file, rich card, or carousel) and optional message-level suggested actions.</p>"
+    },
+    "RcsMessageOriginationIdentity":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[A-Za-z0-9_:/\\+-]+"
+    },
+    "RcsMessageTrafficType":{
+      "type":"string",
+      "documentation":"<p>RCS message traffic type. Validated at the service layer.</p>",
+      "max":50,
+      "min":1
+    },
+    "RcsOpenUrlAction":{
+      "type":"structure",
+      "required":[
+        "Text",
+        "PostbackData",
+        "Url"
+      ],
+      "members":{
+        "Text":{
+          "shape":"RcsSuggestedActionText",
+          "documentation":"<p>The display text of the action. Maximum 25 characters.</p>"
+        },
+        "PostbackData":{
+          "shape":"RcsPostbackData",
+          "documentation":"<p>The postback data sent to your webhook when the user taps this action. Maximum 2048 characters.</p>"
+        },
+        "Url":{
+          "shape":"RcsOpenUrlValue",
+          "documentation":"<p>The URL to open. Must start with https://. Maximum 2048 characters.</p>"
+        },
+        "Application":{
+          "shape":"RcsOpenUrlActionApplicationString",
+          "documentation":"<p>How to open the URL. BROWSER opens in the device's default browser. WEBVIEW opens in an in-app webview.</p>"
+        },
+        "WebviewViewMode":{
+          "shape":"RcsOpenUrlActionWebviewViewModeString",
+          "documentation":"<p>The display mode of the webview. Valid values are FULL, HALF, and TALL. Only applicable when Application is WEBVIEW.</p>"
+        }
+      },
+      "documentation":"<p>A suggested action that opens a URL in the recipient's browser or an in-app webview.</p>"
+    },
+    "RcsOpenUrlActionApplicationString":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"[A-Z_]+"
+    },
+    "RcsOpenUrlActionWebviewViewModeString":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"[A-Z_]+"
+    },
+    "RcsOpenUrlValue":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"https://\\S+"
+    },
+    "RcsPostbackData":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "RcsReplyAction":{
+      "type":"structure",
+      "required":[
+        "Text",
+        "PostbackData"
+      ],
+      "members":{
+        "Text":{
+          "shape":"RcsSuggestedActionText",
+          "documentation":"<p>The display text of the suggested reply. Maximum 25 characters.</p>"
+        },
+        "PostbackData":{
+          "shape":"RcsPostbackData",
+          "documentation":"<p>The postback data sent to your webhook when the user taps this reply. Maximum 2048 characters.</p>"
+        }
+      },
+      "documentation":"<p>A suggested reply action that sends predefined text and postback data when tapped by the recipient.</p>"
+    },
+    "RcsRequestLocationAction":{
+      "type":"structure",
+      "required":[
+        "Text",
+        "PostbackData"
+      ],
+      "members":{
+        "Text":{
+          "shape":"RcsSuggestedActionText",
+          "documentation":"<p>The display text of the action. Maximum 25 characters.</p>"
+        },
+        "PostbackData":{
+          "shape":"RcsPostbackData",
+          "documentation":"<p>The postback data sent to your webhook when the user taps this action. Maximum 2048 characters.</p>"
+        }
+      },
+      "documentation":"<p>A suggested action that requests the recipient's current location.</p>"
+    },
+    "RcsShowLocationAction":{
+      "type":"structure",
+      "required":[
+        "Text",
+        "PostbackData",
+        "Latitude",
+        "Longitude"
+      ],
+      "members":{
+        "Text":{
+          "shape":"RcsSuggestedActionText",
+          "documentation":"<p>The display text of the action. Maximum 25 characters.</p>"
+        },
+        "PostbackData":{
+          "shape":"RcsPostbackData",
+          "documentation":"<p>The postback data sent to your webhook when the user taps this action. Maximum 2048 characters.</p>"
+        },
+        "Latitude":{
+          "shape":"RcsShowLocationActionLatitudeDouble",
+          "documentation":"<p>The latitude of the location. Valid values are -90 to 90.</p>"
+        },
+        "Longitude":{
+          "shape":"RcsShowLocationActionLongitudeDouble",
+          "documentation":"<p>The longitude of the location. Valid values are -180 to 180.</p>"
+        },
+        "Label":{
+          "shape":"RcsLocationLabel",
+          "documentation":"<p>An optional label for the location pin. Maximum 100 characters.</p>"
+        }
+      },
+      "documentation":"<p>A suggested action that shows a location on a map when tapped by the recipient.</p>"
+    },
+    "RcsShowLocationActionLatitudeDouble":{
+      "type":"double",
+      "box":true,
+      "max":90,
+      "min":-90
+    },
+    "RcsShowLocationActionLongitudeDouble":{
+      "type":"double",
+      "box":true,
+      "max":180,
+      "min":-180
+    },
+    "RcsStandaloneCard":{
+      "type":"structure",
+      "required":[
+        "CardOrientation",
+        "CardContent"
+      ],
+      "members":{
+        "CardOrientation":{
+          "shape":"RcsStandaloneCardCardOrientationString",
+          "documentation":"<p>The orientation of the rich card. Valid values are HORIZONTAL and VERTICAL.</p>"
+        },
+        "ThumbnailImageAlignment":{
+          "shape":"RcsStandaloneCardThumbnailImageAlignmentString",
+          "documentation":"<p>The alignment of the thumbnail image in a horizontal card. Valid values are LEFT and RIGHT. Only applicable when CardOrientation is HORIZONTAL.</p>"
+        },
+        "CardContent":{
+          "shape":"RcsCardContent",
+          "documentation":"<p>The content of the rich card, including title, description, media, and card-level suggested actions.</p>"
+        }
+      },
+      "documentation":"<p>A standalone rich card with media, title, description, and suggested actions.</p>"
+    },
+    "RcsStandaloneCardCardOrientationString":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"[A-Z_]+"
+    },
+    "RcsStandaloneCardThumbnailImageAlignmentString":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"[A-Z_]+"
+    },
+    "RcsSuggestedAction":{
+      "type":"structure",
+      "members":{
+        "Reply":{
+          "shape":"RcsReplyAction",
+          "documentation":"<p>A suggested reply that sends predefined text and postback data when tapped.</p>"
+        },
+        "OpenUrl":{
+          "shape":"RcsOpenUrlAction",
+          "documentation":"<p>A suggested action that opens a URL in the user's browser or a webview.</p>"
+        },
+        "DialPhone":{
+          "shape":"RcsDialPhoneAction",
+          "documentation":"<p>A suggested action that initiates a phone call to the specified number.</p>"
+        },
+        "ShowLocation":{
+          "shape":"RcsShowLocationAction",
+          "documentation":"<p>A suggested action that shows a location on a map.</p>"
+        },
+        "RequestLocation":{
+          "shape":"RcsRequestLocationAction",
+          "documentation":"<p>A suggested action that requests the user's current location.</p>"
+        },
+        "CreateCalendarEvent":{
+          "shape":"RcsCreateCalendarEventAction",
+          "documentation":"<p>A suggested action that creates a calendar event on the user's device.</p>"
+        }
+      },
+      "documentation":"<p>A suggested action displayed to the RCS message recipient. Can be a reply, open URL, dial phone, show location, request location, or create calendar event.</p>",
+      "union":true
+    },
+    "RcsSuggestedActionList":{
+      "type":"list",
+      "member":{"shape":"RcsSuggestedAction"},
+      "max":11,
+      "min":0
+    },
+    "RcsSuggestedActionText":{
+      "type":"string",
+      "max":25,
+      "min":1
+    },
+    "RcsTextBody":{
+      "type":"string",
+      "max":3072,
+      "min":1,
+      "pattern":"(?!\\s*$)[\\s\\S]+"
+    },
+    "RcsTextMessage":{
+      "type":"structure",
+      "required":["Body"],
+      "members":{
+        "Body":{
+          "shape":"RcsTextBody",
+          "documentation":"<p>The text body of the RCS message. Maximum 3072 characters.</p>"
+        }
+      },
+      "documentation":"<p>A plain text RCS message body.</p>"
+    },
+    "RcsTimeToLive":{
+      "type":"integer",
+      "box":true,
+      "max":172800,
+      "min":1
     },
     "RegistrationAssociationBehavior":{
       "type":"string",
@@ -8343,7 +9032,7 @@
       "members":{
         "SenderId":{
           "shape":"SenderId",
-          "documentation":"<p>The sender ID string to request.</p>"
+          "documentation":"<p>The sender ID string to request. The sender ID can be 1-11 alphanumeric characters including letters (A-Z, a-z), numbers (0-9), or hyphens (-). The sender ID must contain at least one letter and cannot start or end with a hyphen.</p>"
         },
         "IsoCountryCode":{
           "shape":"IsoCountryCode",
@@ -8783,6 +9472,72 @@
         }
       }
     },
+    "SendRcsMessageRequest":{
+      "type":"structure",
+      "required":[
+        "DestinationPhoneNumber",
+        "OriginationIdentity"
+      ],
+      "members":{
+        "DestinationPhoneNumber":{
+          "shape":"PhoneNumber",
+          "documentation":"<p>The destination phone number in E.164 format.</p>"
+        },
+        "OriginationIdentity":{
+          "shape":"RcsMessageOriginationIdentity",
+          "documentation":"<p>The origination identity of the message. This can be either the RcsAgentId, RcsAgentArn, PoolId, or PoolArn.</p>"
+        },
+        "RcsMessageContent":{
+          "shape":"RcsMessageContent",
+          "documentation":"<p>The content of the RCS message. Contains the message content (text, file, rich card, or carousel) and optional message-level suggested actions.</p>"
+        },
+        "TimeToLive":{
+          "shape":"RcsTimeToLive",
+          "documentation":"<p>The duration in seconds that the RCS message is valid for delivery. If the message cannot be delivered within this duration, it is considered expired. Valid values are 1 to 172800 (48 hours). If a FallbackConfiguration is provided, the fallback is triggered when the duration expires without delivery confirmation.</p>"
+        },
+        "MessageTrafficType":{
+          "shape":"RcsMessageTrafficType",
+          "documentation":"<p>The traffic type of the RCS message. Valid values are AUTHENTICATION, TRANSACTION, PROMOTION, SERVICE_REQUEST, and ACKNOWLEDGEMENT. This field is reserved for future use.</p>"
+        },
+        "FallbackConfiguration":{
+          "shape":"RcsFallbackConfiguration",
+          "documentation":"<p>Configuration for SMS or MMS fallback when RCS delivery fails. If provided, the service sends a fallback message via the specified channel when the RCS message fails or the TimeToLive expires.</p>"
+        },
+        "ProtectConfigurationId":{
+          "shape":"ProtectConfigurationIdOrArn",
+          "documentation":"<p>The unique identifier of the protect configuration to use.</p>"
+        },
+        "ConfigurationSetName":{
+          "shape":"ConfigurationSetNameOrArn",
+          "documentation":"<p>The name of the configuration set to use. This can be either the ConfigurationSetName or ConfigurationSetArn.</p>"
+        },
+        "MaxPrice":{
+          "shape":"MaxPrice",
+          "documentation":"<p>The maximum amount that you want to spend, in US dollars, per each RCS message.</p>"
+        },
+        "DryRun":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>When set to true, the message is checked and validated, but isn't sent to the end recipient.</p>"
+        },
+        "Context":{
+          "shape":"ContextMap",
+          "documentation":"<p>You can specify custom data in this field. If you do, that data is logged to the event destination.</p>"
+        },
+        "MessageFeedbackEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Set to true to enable message feedback for the message. When a user receives the message you need to update the message status using <a>PutMessageFeedback</a>.</p>"
+        }
+      }
+    },
+    "SendRcsMessageResult":{
+      "type":"structure",
+      "members":{
+        "MessageId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the message.</p>"
+        }
+      }
+    },
     "SendTextMessageRequest":{
       "type":"structure",
       "required":["DestinationPhoneNumber"],
@@ -8793,7 +9548,7 @@
         },
         "OriginationIdentity":{
           "shape":"TextMessageOriginationIdentity",
-          "documentation":"<p>The origination identity of the message. This can be either the PhoneNumber, PhoneNumberId, PhoneNumberArn, SenderId, SenderIdArn, PoolId, or PoolArn.</p> <important> <p>If you are using a shared End User Messaging SMS resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
+          "documentation":"<p>The origination identity of the message. This can be either the PhoneNumber, PhoneNumberId, PhoneNumberArn, RcsAgentId, RcsAgentArn, SenderId, SenderIdArn, PoolId, or PoolArn.</p> <important> <p>If you are using a shared End User Messaging SMS resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "MessageBody":{
           "shape":"TextMessageBody",
@@ -9061,6 +9816,7 @@
         "KEYWORDS_PER_POOL",
         "MONTHLY_SPEND_LIMIT_REACHED_FOR_MEDIA",
         "MONTHLY_SPEND_LIMIT_REACHED_FOR_NOTIFY",
+        "MONTHLY_SPEND_LIMIT_REACHED_FOR_RCS",
         "MONTHLY_SPEND_LIMIT_REACHED_FOR_TEXT",
         "MONTHLY_SPEND_LIMIT_REACHED_FOR_VOICE",
         "NOTIFY_CONFIGURATIONS_PER_ACCOUNT",
@@ -9248,6 +10004,25 @@
         }
       }
     },
+    "SetRcsMessageSpendLimitOverrideRequest":{
+      "type":"structure",
+      "required":["MonthlyLimit"],
+      "members":{
+        "MonthlyLimit":{
+          "shape":"MonthlyLimit",
+          "documentation":"<p>The new monthly limit to enforce on RCS message spending.</p>"
+        }
+      }
+    },
+    "SetRcsMessageSpendLimitOverrideResult":{
+      "type":"structure",
+      "members":{
+        "MonthlyLimit":{
+          "shape":"MonthlyLimit",
+          "documentation":"<p>The current monthly limit to enforce on RCS message spending.</p>"
+        }
+      }
+    },
     "SetTextMessageSpendLimitOverrideRequest":{
       "type":"structure",
       "required":["MonthlyLimit"],
@@ -9341,7 +10116,8 @@
         "TEXT_MESSAGE_MONTHLY_SPEND_LIMIT",
         "VOICE_MESSAGE_MONTHLY_SPEND_LIMIT",
         "MEDIA_MESSAGE_MONTHLY_SPEND_LIMIT",
-        "NOTIFY_MESSAGE_MONTHLY_SPEND_LIMIT"
+        "NOTIFY_MESSAGE_MONTHLY_SPEND_LIMIT",
+        "RCS_MESSAGE_MONTHLY_SPEND_LIMIT"
       ]
     },
     "String":{"type":"string"},
@@ -9697,6 +10473,25 @@
       "min":20,
       "pattern":"\\S+"
     },
+    "TwoWayMediaS3BucketName":{
+      "type":"string",
+      "max":63,
+      "min":3,
+      "pattern":"[a-z0-9][a-z0-9.-]*[a-z0-9]"
+    },
+    "TwoWayMediaS3BucketNameOrUnset":{
+      "type":"string",
+      "documentation":"<p>S3 bucket name or UNSET_RCS_MEDIA_CONFIGURATION to clear media config. Pass UNSET_RCS_MEDIA_CONFIGURATION to clear the media configuration from an RCS agent.</p>",
+      "max":63,
+      "min":3,
+      "pattern":"([a-z0-9][a-z0-9.-]*[a-z0-9]|UNSET_RCS_MEDIA_CONFIGURATION)"
+    },
+    "TwoWayMediaS3KeyPrefix":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"[\\S]+"
+    },
     "UntagResourceRequest":{
       "type":"structure",
       "required":[
@@ -9782,11 +10577,11 @@
         },
         "DefaultTemplateId":{
           "shape":"NotifyTemplateId",
-          "documentation":"<p>The template ID to set as the default, or the special value UNSET_DEFAULT_TEMPLATE to clear the current default template.</p>"
+          "documentation":"<p>The default template identifier to associate with the notify configuration. If specified, this template is used when sending messages without an explicit template identifier. Pass the special value <code>UNSET_DEFAULT_TEMPLATE</code> to clear the current default template from the notify configuration.</p>"
         },
         "PoolId":{
           "shape":"NotifyPoolIdOrUnset",
-          "documentation":"<p>The pool ID or ARN to associate, or the special value UNSET_DEFAULT_POOL_FOR_NOTIFY to clear the current default pool.</p>"
+          "documentation":"<p>The pool identifier or Amazon Resource Name (ARN) to associate with the notify configuration. Pass the special value <code>UNSET_DEFAULT_POOL_FOR_NOTIFY</code> to clear the current default pool from the notify configuration.</p>"
         },
         "EnabledCountries":{
           "shape":"IsoCountryCodeList",
@@ -10207,6 +11002,22 @@
         "TwoWayEnabled":{
           "shape":"Boolean",
           "documentation":"<p>By default this is set to false. When set to true you can receive incoming text messages from your end recipients.</p>"
+        },
+        "TwoWayMediaS3BucketName":{
+          "shape":"TwoWayMediaS3BucketNameOrUnset",
+          "documentation":"<p>The name of the S3 bucket where inbound RCS media files are stored. Two-way messaging must be enabled on the agent. To remove the media configuration, pass the sentinel value <code>UNSET_RCS_MEDIA_CONFIGURATION</code> for both this field and TwoWayMediaS3Role.</p>"
+        },
+        "TwoWayMediaS3KeyPrefix":{
+          "shape":"TwoWayMediaS3KeyPrefix",
+          "documentation":"<p>The key prefix used for inbound RCS media objects in the S3 bucket.</p>"
+        },
+        "TwoWayMediaS3Role":{
+          "shape":"IamRoleArnOrUnset",
+          "documentation":"<p>The ARN of the IAM role used to write inbound RCS media files to the S3 bucket. The role must have <code>s3:PutObject</code> permission on the bucket and a trust policy allowing <code>sms-voice.amazonaws.com</code> to assume it. To remove the media configuration, pass the sentinel value <code>UNSET_RCS_MEDIA_CONFIGURATION</code> for both this field and TwoWayMediaS3BucketName.</p>"
+        },
+        "TwoWayRcsEventsEnabled":{
+          "shape":"RcsEventTypeList",
+          "documentation":"<p>The list of RCS event types to enable for two-way messaging. Pass an empty list to disable all event types. The special value <code>ALL</code> enables all current and future event types and must be the sole element if used.</p>"
         }
       }
     },
@@ -10261,6 +11072,22 @@
         "TwoWayEnabled":{
           "shape":"PrimitiveBoolean",
           "documentation":"<p>By default this is set to false. When set to true you can receive incoming text messages from your end recipients.</p>"
+        },
+        "TwoWayMediaS3BucketName":{
+          "shape":"TwoWayMediaS3BucketName",
+          "documentation":"<p>The name of the S3 bucket where inbound RCS media files are stored.</p>"
+        },
+        "TwoWayMediaS3KeyPrefix":{
+          "shape":"TwoWayMediaS3KeyPrefix",
+          "documentation":"<p>The key prefix used for inbound RCS media objects in the S3 bucket.</p>"
+        },
+        "TwoWayMediaS3Role":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The ARN of the IAM role used to write inbound RCS media files to the S3 bucket.</p>"
+        },
+        "TwoWayRcsEventsEnabled":{
+          "shape":"RcsEventTypeList",
+          "documentation":"<p>The list of RCS event types enabled for two-way messaging on the agent.</p>"
         }
       }
     },

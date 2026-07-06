@@ -607,6 +607,24 @@
       ],
       "documentation":"<p>Creates an agent status for the specified Connect Customer instance.</p>"
     },
+    "CreateAttachedFile":{
+      "name":"CreateAttachedFile",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/attached-files/{InstanceId}/files"
+      },
+      "input":{"shape":"CreateAttachedFileRequest"},
+      "output":{"shape":"CreateAttachedFileResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates an attached file for a completed voice contact by copying a recording from a source S3 URI into Connect Customer managed storage. Use this API to attach voice recordings to contacts for downstream processing such as conversational analytics.</p> <important> <p>The <code>AssociatedResourceArn</code> must be the ARN of a completed voice contact, <code>FileUseCaseType</code> must be set to <code>VOICE_RECORDING</code>, and <code>FileSourceUri</code> must be a valid S3 URI.</p> </important> <note> <p>For example, you can call <code>CreateContact</code>, then <code>CreateAttachedFile</code>, then <code>StartContactConversationalAnalyticsJob</code> to create a contact, attach a recording, and run post-call analytics.</p> </note>"
+    },
     "CreateContact":{
       "name":"CreateContact",
       "http":{
@@ -4956,6 +4974,23 @@
       ],
       "documentation":"<p>Send outbound email for outbound campaigns. For more information about outbound campaigns, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/enable-outbound-campaigns.html\">Set up Connect Customer outbound campaigns</a>.</p> <note> <p>Only the Connect Customer outbound campaigns service principal is allowed to assume a role in your account and call this API.</p> </note>"
     },
+    "SendOutboundWebNotification":{
+      "name":"SendOutboundWebNotification",
+      "http":{
+        "method":"POST",
+        "requestUri":"/instance/{InstanceId}/outbound-web-notification"
+      },
+      "input":{"shape":"SendOutboundWebNotificationRequest"},
+      "output":{"shape":"SendOutboundWebNotificationResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Sends an outbound web notification to a customer's web browser for outbound campaigns. For more information about outbound campaigns, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/enable-outbound-campaigns.html\">Set up Connect Customer outbound campaigns</a>.</p> <note> <p>Only the Connect Customer outbound campaigns service principal is allowed to assume a role in your account and call this API.</p> </note>"
+    },
     "StartAttachedFileUpload":{
       "name":"StartAttachedFileUpload",
       "http":{
@@ -4990,6 +5025,24 @@
         {"shape":"LimitExceededException"}
       ],
       "documentation":"<p>Initiates a flow to start a new chat for the customer. Response of this API provides a token required to obtain credentials from the <a href=\"https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_CreateParticipantConnection.html\">CreateParticipantConnection</a> API in the Connect Customer Participant Service.</p> <p>When a new chat contact is successfully created, clients must subscribe to the participant’s connection for the created chat within 5 minutes. This is achieved by invoking <a href=\"https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_CreateParticipantConnection.html\">CreateParticipantConnection</a> with WEBSOCKET and CONNECTION_CREDENTIALS. </p> <p>A 429 error occurs in the following situations:</p> <ul> <li> <p>API rate limit is exceeded. API TPS throttling returns a <code>TooManyRequests</code> exception.</p> </li> <li> <p>The <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html\">quota for concurrent active chats</a> is exceeded. Active chat throttling returns a <code>LimitExceededException</code>.</p> </li> </ul> <p>If you use the <code>ChatDurationInMinutes</code> parameter and receive a 400 error, your account may not support the ability to configure custom chat durations. For more information, contact Amazon Web Services Support. </p> <p>For more information about chat, see the following topics in the <i>Connect Customer Administrator Guide</i>: </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/web-and-mobile-chat.html\">Concepts: Web and mobile messaging capabilities in Connect Customer</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security-best-practices.html#bp-security-chat\">Connect Customer Chat security best practices</a> </p> </li> </ul>"
+    },
+    "StartContactConversationalAnalyticsJob":{
+      "name":"StartContactConversationalAnalyticsJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/contact/start-conversational-analytics-job/{InstanceId}/{ContactId}"
+      },
+      "input":{"shape":"StartContactConversationalAnalyticsJobRequest"},
+      "output":{"shape":"StartContactConversationalAnalyticsJobResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"IdempotencyException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Starts a Contact Lens post-call analytics job for the specified contact. This API runs Conversational Analytics post-contact analysis on a voice recording that is already attached to the contact, generating transcription, sentiment analysis, redaction, and summarization results based on the provided configuration.</p> <important> <p>A voice recording must already be attached to the contact before calling this API. Use <code>CreateAttachedFile</code> to attach a recording from an S3 source URI.</p> </important> <note> <p>For example, you can call <code>CreateContact</code>, then <code>CreateAttachedFile</code>, then <code>StartContactConversationalAnalyticsJob</code> to create a contact, attach a recording, and run post-call analytics.</p> </note>"
     },
     "StartContactEvaluation":{
       "name":"StartContactEvaluation",
@@ -7295,6 +7348,39 @@
       "type":"list",
       "member":{"shape":"AllowedUserAction"}
     },
+    "AnalyticsConfiguration":{
+      "type":"structure",
+      "required":[
+        "LanguageConfiguration",
+        "RedactionConfiguration",
+        "SentimentConfiguration",
+        "SummaryConfiguration",
+        "RulesConfiguration"
+      ],
+      "members":{
+        "LanguageConfiguration":{
+          "shape":"LanguageConfiguration",
+          "documentation":"<p>The language configuration for conversational analytics.</p>"
+        },
+        "RedactionConfiguration":{
+          "shape":"RedactionConfiguration",
+          "documentation":"<p>The redaction configuration for conversational analytics.</p>"
+        },
+        "SentimentConfiguration":{
+          "shape":"SentimentConfiguration",
+          "documentation":"<p>The sentiment configuration for conversational analytics.</p>"
+        },
+        "SummaryConfiguration":{
+          "shape":"SummaryConfiguration",
+          "documentation":"<p>The summary configuration for conversational analytics.</p>"
+        },
+        "RulesConfiguration":{
+          "shape":"RulesConfiguration",
+          "documentation":"<p>The rules configuration for conversational analytics.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for conversational analytics.</p>"
+    },
     "AnalyticsDataAssociationResult":{
       "type":"structure",
       "members":{
@@ -7342,6 +7428,19 @@
     "AnalyticsDataSetsResults":{
       "type":"list",
       "member":{"shape":"AnalyticsDataSetsResult"}
+    },
+    "AnalyticsMode":{
+      "type":"string",
+      "enum":[
+        "PostContact",
+        "RealTime",
+        "ContactLens",
+        "AutomatedInteraction"
+      ]
+    },
+    "AnalyticsModes":{
+      "type":"list",
+      "member":{"shape":"AnalyticsMode"}
     },
     "AnswerMachineDetectionConfig":{
       "type":"structure",
@@ -9247,6 +9346,13 @@
       "type":"list",
       "member":{"shape":"BatchUpdateDataTableValueSuccessResult"}
     },
+    "Behavior":{
+      "type":"string",
+      "enum":[
+        "Enable",
+        "Disable"
+      ]
+    },
     "BehaviorType":{
       "type":"string",
       "enum":[
@@ -11008,6 +11114,16 @@
       "max":1024,
       "min":1
     },
+    "ContentAttributes":{
+      "type":"structure",
+      "members":{
+        "RecommenderConfig":{
+          "shape":"RecommenderConfig",
+          "documentation":"<p>Configuration for the recommender used to generate personalized recommendations for the notification content.</p>"
+        }
+      },
+      "documentation":"<p>Optional attributes used to populate the content of an outbound web notification, such as recommender configuration for personalized content.</p>"
+    },
     "ContentType":{
       "type":"string",
       "max":255,
@@ -11112,6 +11228,68 @@
           "documentation":"<p>The identifier of the agent status.</p>"
         }
       }
+    },
+    "CreateAttachedFileRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "FileUseCaseType",
+        "FileSourceUri",
+        "AssociatedResourceArn"
+      ],
+      "members":{
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "idempotencyToken":true
+        },
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "FileUseCaseType":{
+          "shape":"FileUseCaseType",
+          "documentation":"<p>The use case for the file.</p> <important> <p>Only <code>VOICE_RECORDING</code> is supported.</p> </important>"
+        },
+        "FileSourceUri":{
+          "shape":"FileSourceUri",
+          "documentation":"<p>The S3 URI of the file to be attached. Only S3 source URIs are supported.</p>"
+        },
+        "AssociatedResourceArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the completed voice contact to attach the file to. Only voice contacts with Telephony subtype are supported.</p> <note> <p>This value must be a valid ARN.</p> </note>",
+          "location":"querystring",
+          "locationName":"associatedResourceArn"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, <code>{ \"Tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }</code>.</p>"
+        }
+      }
+    },
+    "CreateAttachedFileResponse":{
+      "type":"structure",
+      "members":{
+        "FileArn":{
+          "shape":"ARN",
+          "documentation":"<p>The unique identifier of the attached file resource (ARN).</p>"
+        },
+        "FileId":{
+          "shape":"FileId",
+          "documentation":"<p>The unique identifier of the attached file resource.</p>"
+        },
+        "CreationTime":{
+          "shape":"ISO8601Datetime",
+          "documentation":"<p>The time of Creation of the file resource as an ISO timestamp. It's specified in ISO 8601 format: <code>yyyy-MM-ddThh:mm:ss.SSSZ</code>. For example, <code>2024-05-03T02:41:28.172Z</code>.</p>"
+        },
+        "FileStatus":{
+          "shape":"FileStatusType",
+          "documentation":"<p>The current status of the attached file. Valid values: <code>PROCESSING</code> | <code>APPROVED</code> | <code>REJECTED</code> | <code>FAILED</code>.</p>"
+        }
+      },
+      "documentation":"Response from CreateAttachedFile API."
     },
     "CreateCaseActionDefinition":{
       "type":"structure",
@@ -13304,6 +13482,11 @@
       "sensitive":true
     },
     "CustomerProfileAttributesSerialized":{"type":"string"},
+    "CustomerProfileId":{
+      "type":"string",
+      "max":32,
+      "min":1
+    },
     "CustomerQualityMetrics":{
       "type":"structure",
       "members":{
@@ -17156,6 +17339,14 @@
         "EMAIL_ADDRESS"
       ]
     },
+    "Entities":{
+      "type":"list",
+      "member":{"shape":"Entity"}
+    },
+    "Entity":{
+      "type":"string",
+      "min":1
+    },
     "EntityArn":{
       "type":"string",
       "min":1
@@ -19638,6 +19829,11 @@
       "box":true,
       "min":1
     },
+    "FileSourceUri":{
+      "type":"string",
+      "max":2000,
+      "min":1
+    },
     "FileStatusType":{
       "type":"string",
       "enum":[
@@ -19655,7 +19851,8 @@
         "EMAIL_MESSAGE_PLAIN_TEXT",
         "EMAIL_MESSAGE_REDACTED",
         "EMAIL_MESSAGE_PLAIN_TEXT_REDACTED",
-        "ATTACHMENT"
+        "ATTACHMENT",
+        "VOICE_RECORDING"
       ]
     },
     "FilterV2":{
@@ -22097,6 +22294,17 @@
       },
       "documentation":"<p>Configuration information of a Kinesis video stream.</p>"
     },
+    "LanguageConfiguration":{
+      "type":"structure",
+      "members":{
+        "LanguageLocale":{
+          "shape":"LanguageLocale",
+          "documentation":"<p>The language locale setting for conversational analytics.</p>"
+        }
+      },
+      "documentation":"<p>The language configuration for conversational analytics.</p>"
+    },
+    "LanguageLocale":{"type":"string"},
     "LargeNextToken":{
       "type":"string",
       "max":100000,
@@ -25383,6 +25591,13 @@
       "min":0
     },
     "Long":{"type":"long"},
+    "MaskMode":{
+      "type":"string",
+      "enum":[
+        "PII",
+        "EntityType"
+      ]
+    },
     "MatchCriteria":{
       "type":"structure",
       "members":{
@@ -26127,6 +26342,13 @@
       "type":"list",
       "member":{"shape":"Notification"},
       "documentation":"<p>A list of notification summaries.</p>"
+    },
+    "NotificationType":{
+      "type":"string",
+      "enum":[
+        "WIDGET_VIEW",
+        "WIDGET_ACTION"
+      ]
     },
     "NullableBoolean":{"type":"boolean"},
     "NullableDouble":{"type":"double"},
@@ -26913,6 +27135,11 @@
       "member":{"shape":"PersistentConnectionConfig"},
       "documentation":"<p>The list of persistent connection configuration settings for each channel.</p>"
     },
+    "PersonalizeDomainName":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
     "PhoneNumber":{
       "type":"string",
       "pattern":"\\\\+[1-9]\\\\d{1,14}$"
@@ -27309,6 +27536,14 @@
       "type":"integer",
       "max":100,
       "min":0
+    },
+    "Policy":{
+      "type":"string",
+      "enum":[
+        "None",
+        "RedactedOnly",
+        "RedactedAndOriginal"
+      ]
     },
     "PositiveAndNegativeDouble":{"type":"double"},
     "PositiveDouble":{
@@ -28810,6 +29045,48 @@
       "documentation":"<p>A list of recipient Amazon Resource Names (ARNs). Maximum of 200 recipients.</p>",
       "max":200
     },
+    "RecommenderConfig":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "RecommenderName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"PersonalizeDomainName",
+          "documentation":"<p>The name of the Amazon Personalize domain that hosts the recommender.</p>"
+        },
+        "RecommenderName":{
+          "shape":"RecommenderName",
+          "documentation":"<p>The name of the recommender used to generate the recommendations.</p>"
+        },
+        "Context":{
+          "shape":"RecommenderContext",
+          "documentation":"<p>A map of contextual key-value pairs supplied to the recommender to influence the recommendations returned.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for the recommender used to generate personalized recommendations included in an outbound web notification.</p>"
+    },
+    "RecommenderContext":{
+      "type":"map",
+      "key":{"shape":"RecommenderContextKey"},
+      "value":{"shape":"RecommenderContextValue"}
+    },
+    "RecommenderContextKey":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "RecommenderContextValue":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "RecommenderName":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
     "RecordIds":{
       "type":"list",
       "member":{"shape":"DataTableId"}
@@ -28954,6 +29231,32 @@
         }
       },
       "documentation":"<p>Specifies the detailed pattern for event recurrence. Use this to define complex scheduling rules such as \"every 2nd Tuesday of the month\" or \"every 3 months on the 15th\".</p>"
+    },
+    "RedactionConfiguration":{
+      "type":"structure",
+      "required":[
+        "Behavior",
+        "Policy"
+      ],
+      "members":{
+        "Behavior":{
+          "shape":"Behavior",
+          "documentation":"<p>Controls whether redaction is applied to the analytics output. Valid values: <code>Enable</code> | <code>Disable</code>.</p>"
+        },
+        "Policy":{
+          "shape":"Policy",
+          "documentation":"<p>The redaction output policy that determines which versions of the transcript are stored. Valid values: <code>None</code> | <code>RedactedOnly</code> | <code>RedactedAndOriginal</code>.</p>"
+        },
+        "Entities":{
+          "shape":"Entities",
+          "documentation":"<p>The list of PII entity types to redact from the transcript (for example, <code>NAME</code>, <code>ADDRESS</code>, <code>CREDIT_DEBIT_NUMBER</code>).</p>"
+        },
+        "MaskMode":{
+          "shape":"MaskMode",
+          "documentation":"<p>The masking mode that determines how redacted content is replaced in the output. Valid values: <code>PII</code> (replaces with the literal string [PII]) | <code>EntityType</code> (replaces with the entity type name, for example [NAME]).</p>"
+        }
+      },
+      "documentation":"<p>The redaction configuration for conversational analytics.</p>"
     },
     "Reference":{
       "type":"structure",
@@ -29967,6 +30270,16 @@
         }
       },
       "documentation":"<p>The name of the event source. This field is required if <code>TriggerEventSource</code> is one of the following values: <code>OnZendeskTicketCreate</code> | <code>OnZendeskTicketStatusUpdate</code> | <code>OnSalesforceCaseCreate</code> | <code>OnContactEvaluationSubmit</code> | <code>OnMetricDataUpdate</code>.</p>"
+    },
+    "RulesConfiguration":{
+      "type":"structure",
+      "members":{
+        "Behavior":{
+          "shape":"Behavior",
+          "documentation":"<p>Controls whether Contact Lens rules are evaluated for the contact. Valid values: <code>Enable</code> | <code>Disable</code>.</p>"
+        }
+      },
+      "documentation":"<p>The rules configuration for conversational analytics. Controls whether Contact Lens rules are evaluated against the analytics output.</p>"
     },
     "S3Config":{
       "type":"structure",
@@ -31871,10 +32184,74 @@
       "type":"structure",
       "members":{}
     },
+    "SendOutboundWebNotificationRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "BrowserId",
+        "SessionId",
+        "ExpiresAt",
+        "Source",
+        "Destination",
+        "Content"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "idempotencyToken":true
+        },
+        "BrowserId":{
+          "shape":"WebBrowserId",
+          "documentation":"<p>A unique identifier for the customer's web browser instance to which the notification is being sent.</p>"
+        },
+        "SessionId":{
+          "shape":"WebSessionId",
+          "documentation":"<p>A unique identifier for the customer's web session to which the notification is being sent.</p>"
+        },
+        "ExpiresAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp, in Unix epoch time format, at which the web notification expires. After this time, the notification is no longer delivered to the customer's browser.</p>"
+        },
+        "Source":{
+          "shape":"WebNotificationSource",
+          "documentation":"<p>The source of the web notification. A <code>SourceCampaign</code> object identifies the campaign and outbound request that triggered this notification.</p>"
+        },
+        "Destination":{
+          "shape":"WidgetDestination",
+          "documentation":"<p>The destination for the web notification, specifying the communication widget that delivers the notification and the customer profile of the recipient.</p>"
+        },
+        "Content":{
+          "shape":"WebNotificationContent",
+          "documentation":"<p>The content of the web notification, including the notification type, the view to render, and any optional attributes used to populate it.</p>"
+        }
+      }
+    },
+    "SendOutboundWebNotificationResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "SensitivePhoneNumber":{
       "type":"string",
       "pattern":"\\+[1-9]\\d{1,14}$",
       "sensitive":true
+    },
+    "SentimentConfiguration":{
+      "type":"structure",
+      "required":["Behavior"],
+      "members":{
+        "Behavior":{
+          "shape":"Behavior",
+          "documentation":"<p>Controls whether sentiment analysis is applied to the analytics output. Valid values: <code>Enable</code> | <code>Disable</code>.</p>"
+        }
+      },
+      "documentation":"<p>The sentiment configuration for conversational analytics.</p>"
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
@@ -32230,6 +32607,54 @@
         "ContinuedFromContactId":{
           "shape":"ContactId",
           "documentation":"<p>The contactId from which a persistent chat session is started. This field is populated only for persistent chats.</p>"
+        }
+      }
+    },
+    "StartContactConversationalAnalyticsJobRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ContactId",
+        "AnalyticsModes",
+        "AnalyticsConfiguration"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ContactId":{
+          "shape":"ContactId",
+          "documentation":"<p>The identifier of the contact in this instance of Connect Customer. </p>",
+          "location":"uri",
+          "locationName":"ContactId"
+        },
+        "AnalyticsModes":{
+          "shape":"AnalyticsModes",
+          "documentation":"<p>The analytics modes to run for the contact. Valid values: <code>PostContact</code>.</p>"
+        },
+        "AnalyticsConfiguration":{
+          "shape":"AnalyticsConfiguration",
+          "documentation":"<p>The configuration for the conversational analytics job.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>"
+        }
+      }
+    },
+    "StartContactConversationalAnalyticsJobResponse":{
+      "type":"structure",
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance.</p>"
+        },
+        "ContactId":{
+          "shape":"ContactId",
+          "documentation":"<p>The identifier of the contact.</p>"
         }
       }
     },
@@ -33261,6 +33686,31 @@
     "SuccessfulRequestList":{
       "type":"list",
       "member":{"shape":"SuccessfulRequest"}
+    },
+    "SummaryConfiguration":{
+      "type":"structure",
+      "required":["SummaryModes"],
+      "members":{
+        "SummaryModes":{
+          "shape":"SummaryModes",
+          "documentation":"<p>The summary modes that determine what type of summarization is generated. Valid values: <code>PostContact</code> | <code>AutomatedInteraction</code> | <code>ContactChain</code>.</p>"
+        }
+      },
+      "documentation":"<p>The summary configuration for conversational analytics.</p>"
+    },
+    "SummaryMode":{
+      "type":"string",
+      "enum":[
+        "PostContact",
+        "AutomatedInteraction",
+        "ContactChain"
+      ]
+    },
+    "SummaryModes":{
+      "type":"list",
+      "member":{"shape":"SummaryMode"},
+      "max":2,
+      "min":0
     },
     "SupportedMessagingContentType":{
       "type":"string",
@@ -37618,6 +38068,11 @@
       "type":"list",
       "member":{"shape":"ViewAction"}
     },
+    "ViewArn":{
+      "type":"string",
+      "max":500,
+      "min":1
+    },
     "ViewContent":{
       "type":"structure",
       "members":{
@@ -38068,6 +38523,46 @@
         "ALL"
       ]
     },
+    "WebBrowserId":{
+      "type":"string",
+      "max":36,
+      "min":1
+    },
+    "WebNotificationContent":{
+      "type":"structure",
+      "required":["Type"],
+      "members":{
+        "Type":{
+          "shape":"NotificationType",
+          "documentation":"<p>The type of web notification to send.</p>"
+        },
+        "ViewArn":{
+          "shape":"ViewArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the view to render for the notification.</p>"
+        },
+        "Attributes":{
+          "shape":"ContentAttributes",
+          "documentation":"<p>Optional attributes used to populate the notification content, such as recommender configuration for personalized content.</p>"
+        }
+      },
+      "documentation":"<p>The content of an outbound web notification, including the notification type, the view to render, and any optional attributes used to populate the view.</p>"
+    },
+    "WebNotificationSource":{
+      "type":"structure",
+      "required":["SourceCampaign"],
+      "members":{
+        "SourceCampaign":{
+          "shape":"SourceCampaign",
+          "documentation":"<p>Information about the campaign that triggered the web notification, including the campaign identifier and outbound request identifier.</p>"
+        }
+      },
+      "documentation":"<p>The source of an outbound web notification. Identifies the campaign and outbound request that triggered the notification.</p>"
+    },
+    "WebSessionId":{
+      "type":"string",
+      "max":36,
+      "min":1
+    },
     "WeekdayOccurrenceInteger":{
       "type":"integer",
       "box":true,
@@ -38079,6 +38574,29 @@
       "member":{"shape":"WeekdayOccurrenceInteger"},
       "max":1,
       "min":0
+    },
+    "WidgetDestination":{
+      "type":"structure",
+      "required":[
+        "WidgetId",
+        "ProfileId"
+      ],
+      "members":{
+        "WidgetId":{
+          "shape":"WidgetId",
+          "documentation":"<p>The identifier of the communication widget that delivers the notification to the customer's browser.</p>"
+        },
+        "ProfileId":{
+          "shape":"CustomerProfileId",
+          "documentation":"<p>The identifier of the customer profile associated with the browser session that should receive the notification.</p>"
+        }
+      },
+      "documentation":"<p>The destination for an outbound web notification, specifying the communication widget that delivers the notification and the customer profile of the recipient.</p>"
+    },
+    "WidgetId":{
+      "type":"string",
+      "max":36,
+      "min":1
     },
     "WisdomInfo":{
       "type":"structure",

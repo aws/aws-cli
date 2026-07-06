@@ -336,7 +336,7 @@ def args():
 
 @pytest.fixture
 def parsed_globals():
-    return argparse.Namespace()
+    return argparse.Namespace(verify_ssl=None)
 
 
 @pytest.fixture
@@ -2288,3 +2288,140 @@ class TestDisplayAccount(unittest.TestCase):
         self.assertNotIn(self.account_name, account_str)
         self.assertNotIn(self.email_address, account_str)
         self.assertIn(self.account_id, account_str)
+
+
+class TestConfigureSSOWithVanityUrl:
+    def test_vanity_url_skips_region_prompt(
+        self,
+        sso_cmd,
+        ptk_stubber,
+        aws_config,
+        stub_sso_list_roles,
+        stub_sso_list_accounts,
+        mock_do_sso_login,
+        args,
+        parsed_globals,
+        account_id_select,
+        role_name_select,
+        region_prompt,
+        output_prompt,
+        profile_prompt,
+        scopes_prompt,
+    ):
+        selected_account_id = account_id_select.answer["accountId"]
+        inputs = UserInputs(
+            session_prompt=RecommendedSessionPrompt(answer="vanity-session"),
+            start_url_prompt=StartUrlPrompt(
+                answer="https://aws.mycompany.com", expected_default=None
+            ),
+            scopes_prompt=scopes_prompt,
+            account_id_select=account_id_select,
+            role_name_select=role_name_select,
+            region_prompt=region_prompt,
+            output_prompt=output_prompt,
+            profile_prompt=profile_prompt,
+        )
+        ptk_stubber.user_inputs = inputs
+        stub_sso_list_accounts(account_id_select.expected_choices)
+        stub_sso_list_roles(
+            role_name_select.expected_choices,
+            expected_account_id=selected_account_id,
+        )
+
+        with (
+            mock.patch(
+                'awscli.customizations.configure.sso_commands.resolve_start_url',
+                return_value=(
+                    'https://ssoins-abc.portal.us-east-1.app.aws',
+                    'us-east-1',
+                ),
+            ),
+            mock.patch(
+                'awscli.customizations.configure.sso_commands.is_aws_owned_domain',
+                return_value=False,
+            ),
+        ):
+            sso_cmd(args, parsed_globals)
+
+        assert_aws_config(
+            aws_config,
+            expected_lines=[
+                f"[profile {profile_prompt.answer}]",
+                "sso_session = vanity-session",
+                f"sso_account_id = {selected_account_id}",
+                f"sso_role_name = {role_name_select.answer}",
+                f"region = {region_prompt.answer}",
+                f"output = {output_prompt.answer}",
+                "[sso-session vanity-session]",
+                "sso_start_url = https://aws.mycompany.com",
+                "sso_region = us-east-1",
+                f"sso_registration_scopes = {scopes_prompt.answer}",
+            ],
+        )
+
+    def test_vanity_url_resolution_failure_prompts_for_region(
+        self,
+        sso_cmd,
+        ptk_stubber,
+        aws_config,
+        stub_sso_list_roles,
+        stub_sso_list_accounts,
+        mock_do_sso_login,
+        args,
+        parsed_globals,
+        sso_region_prompt,
+        account_id_select,
+        role_name_select,
+        region_prompt,
+        output_prompt,
+        profile_prompt,
+        scopes_prompt,
+    ):
+        selected_account_id = account_id_select.answer["accountId"]
+        inputs = UserInputs(
+            session_prompt=RecommendedSessionPrompt(answer="vanity-session"),
+            start_url_prompt=StartUrlPrompt(
+                answer="https://aws.mycompany.com", expected_default=None
+            ),
+            sso_region_prompt=sso_region_prompt,
+            scopes_prompt=scopes_prompt,
+            account_id_select=account_id_select,
+            role_name_select=role_name_select,
+            region_prompt=region_prompt,
+            output_prompt=output_prompt,
+            profile_prompt=profile_prompt,
+        )
+        ptk_stubber.user_inputs = inputs
+        stub_sso_list_accounts(account_id_select.expected_choices)
+        stub_sso_list_roles(
+            role_name_select.expected_choices,
+            expected_account_id=selected_account_id,
+        )
+
+        with (
+            mock.patch(
+                'awscli.customizations.configure.sso_commands.resolve_start_url',
+                side_effect=Exception("Network error"),
+            ),
+            mock.patch(
+                'awscli.customizations.configure.sso_commands.is_aws_owned_domain',
+                return_value=False,
+            ),
+        ):
+            sso_cmd(args, parsed_globals)
+
+        assert_aws_config(
+            aws_config,
+            expected_lines=[
+                f"[profile {profile_prompt.answer}]",
+                "sso_session = vanity-session",
+                f"sso_account_id = {selected_account_id}",
+                f"sso_role_name = {role_name_select.answer}",
+                f"region = {region_prompt.answer}",
+                f"output = {output_prompt.answer}",
+                "[sso-session vanity-session]",
+                "sso_start_url = https://aws.mycompany.com",
+                f"sso_region = {sso_region_prompt.answer}",
+                f"sso_registration_scopes = {scopes_prompt.answer}",
+            ],
+        )

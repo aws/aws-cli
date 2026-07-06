@@ -6008,6 +6008,10 @@
           "shape":"S3PropertiesInput",
           "documentation":"<p>The Amazon S3 properties of a connection.</p>"
         },
+        "snowflakeProperties":{
+          "shape":"SnowflakePropertiesInput",
+          "documentation":"<p>The Snowflake-specific connection properties to use when creating the connection.</p>"
+        },
         "amazonQProperties":{
           "shape":"AmazonQPropertiesInput",
           "documentation":"<p>The Amazon Q properties of the connection.</p>"
@@ -6071,6 +6075,10 @@
           "shape":"S3PropertiesOutput",
           "documentation":"<p>The Amazon S3 properties of a connection.</p>"
         },
+        "snowflakeProperties":{
+          "shape":"SnowflakePropertiesOutput",
+          "documentation":"<p>The Snowflake-specific connection properties for an existing connection.</p>"
+        },
         "amazonQProperties":{
           "shape":"AmazonQPropertiesOutput",
           "documentation":"<p>The Amazon Q properties of the connection.</p>"
@@ -6125,6 +6133,10 @@
         "s3Properties":{
           "shape":"S3PropertiesPatch",
           "documentation":"<p>The Amazon S3 properties of a connection properties patch.</p>"
+        },
+        "snowflakeProperties":{
+          "shape":"SnowflakePropertiesPatch",
+          "documentation":"<p>The Snowflake-specific connection properties to update.</p>"
         },
         "amazonQProperties":{
           "shape":"AmazonQPropertiesPatch",
@@ -6260,6 +6272,88 @@
         "MLFLOW",
         "VPC"
       ]
+    },
+    "ConnectivityProperties":{
+      "type":"structure",
+      "members":{
+        "connectionProperties":{
+          "shape":"ConnectionProperties",
+          "documentation":"<p>The connection properties for this configuration.</p>"
+        },
+        "physicalConnectionRequirements":{
+          "shape":"PhysicalConnectionRequirements",
+          "documentation":"<p>The physical network requirements for the connection, such as the subnet, security group, and VPC settings needed to reach the data source.</p>"
+        },
+        "name":{
+          "shape":"ConnectivityPropertiesNameString",
+          "documentation":"<p>The name of the connectivity configuration.</p>"
+        },
+        "description":{
+          "shape":"ConnectivityPropertiesDescriptionString",
+          "documentation":"<p>The description of the connectivity configuration.</p>"
+        },
+        "validateCredentials":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to validate credentials for the connectivity configuration. Defaults to true if not specified.</p>"
+        },
+        "validateForComputeEnvironments":{
+          "shape":"ComputeEnvironmentsList",
+          "documentation":"<p>The compute environments to use when validating connectivity. The service validates that the connection is reachable from each specified environment.</p>"
+        },
+        "sparkProperties":{
+          "shape":"PropertyMap",
+          "documentation":"<p>The Spark properties for this configuration.</p>"
+        },
+        "athenaProperties":{
+          "shape":"PropertyMap",
+          "documentation":"<p>The Athena properties for this configuration.</p>"
+        },
+        "pythonProperties":{
+          "shape":"PropertyMap",
+          "documentation":"<p>The Python properties for this configuration.</p>"
+        },
+        "authenticationConfiguration":{
+          "shape":"AuthenticationConfigurationInput",
+          "documentation":"<p>The authentication settings for this configuration.</p>"
+        }
+      },
+      "documentation":"<p>Contains the network and authentication settings for a connection, including connection credentials, physical network requirements, and compute-environment validation options.</p>"
+    },
+    "ConnectivityPropertiesDescriptionString":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFF\\r\\n\\t]*"
+    },
+    "ConnectivityPropertiesNameString":{
+      "type":"string",
+      "max":41,
+      "min":1,
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFF\\t]*"
+    },
+    "ConnectivityPropertiesPatch":{
+      "type":"structure",
+      "members":{
+        "description":{
+          "shape":"ConnectivityPropertiesPatchDescriptionString",
+          "documentation":"<p>A description of the connectivity properties update.</p>"
+        },
+        "connectionProperties":{
+          "shape":"ConnectionProperties",
+          "documentation":"<p>The connection properties to update.</p>"
+        },
+        "authenticationConfiguration":{
+          "shape":"AuthenticationConfigurationPatch",
+          "documentation":"<p>The authentication settings to update.</p>"
+        }
+      },
+      "documentation":"<p>Contains the connectivity settings to update on an existing connection. Include only the fields you want to change.</p>"
+    },
+    "ConnectivityPropertiesPatchDescriptionString":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"[\\S\\s]*"
     },
     "CreateAccountPoolInput":{
       "type":"structure",
@@ -7776,7 +7870,7 @@
         },
         "environmentBlueprintIdentifier":{
           "shape":"String",
-          "documentation":"<p>The ID of the blueprint with which the environment is being created.</p>"
+          "documentation":"<p>The ID of the blueprint with which the environment is being created.</p> <note> <p>This parameter is only valid for V1 domains. If provided for a V2 domain, the service returns a ValidationException.</p> </note>"
         },
         "deploymentOrder":{
           "shape":"Integer",
@@ -16644,6 +16738,21 @@
       },
       "documentation":"<p>The details of the IAM user profile.</p>"
     },
+    "IdentityMapping":{
+      "type":"structure",
+      "required":["usernameAttribute"],
+      "members":{
+        "usernameAttribute":{
+          "shape":"String",
+          "documentation":"<p>The username attribute used for the identity mapping.</p>"
+        },
+        "prefix":{
+          "shape":"String",
+          "documentation":"<p>The prefix used for the identity mapping.</p>"
+        }
+      },
+      "documentation":"<p>Contains the configuration for mapping user identities to Snowflake users, including the username attribute and optional prefix applied during the mapping.</p>"
+    },
     "Import":{
       "type":"structure",
       "required":[
@@ -17294,6 +17403,47 @@
       },
       "documentation":"<p>The SQL query run details of a data lineage run.</p>"
     },
+    "LineageSyncInput":{
+      "type":"structure",
+      "required":["enabled"],
+      "members":{
+        "timezone":{
+          "shape":"Timezone",
+          "documentation":"<p>The timezone of the lineage sync schedule.</p>"
+        },
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether lineage sync is enabled.</p>"
+        },
+        "schedule":{
+          "shape":"LineageSyncScheduleCronString",
+          "documentation":"<p>The schedule of the lineage sync.</p>"
+        }
+      },
+      "documentation":"<p>Contains the settings for configuring lineage sync on a Snowflake connection, including the schedule, timezone, and enabled state.</p>"
+    },
+    "LineageSyncOutput":{
+      "type":"structure",
+      "members":{
+        "lineageJobId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the lineage sync job.</p>"
+        },
+        "timezone":{
+          "shape":"Timezone",
+          "documentation":"<p>The timezone of the lineage sync schedule.</p>"
+        },
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether lineage sync is enabled.</p>"
+        },
+        "schedule":{
+          "shape":"LineageSyncScheduleCronString",
+          "documentation":"<p>The schedule of the lineage sync.</p>"
+        }
+      },
+      "documentation":"<p>Contains the current state of lineage sync for a Snowflake connection, including the schedule, timezone, enabled state, and the ID of the associated lineage job.</p>"
+    },
     "LineageSyncSchedule":{
       "type":"structure",
       "members":{
@@ -17303,6 +17453,13 @@
         }
       },
       "documentation":"<p>The lineage sync schedule.</p>"
+    },
+    "LineageSyncScheduleCronString":{
+      "type":"string",
+      "documentation":"<p>The cron expression for the lineage sync schedule.</p>",
+      "max":256,
+      "min":1,
+      "pattern":"cron\\((\\b[0-5]?[0-9]\\b) ([*]|\\b2[0-3]\\b|\\b[0-1]?[0-9]\\b) ([-?*,/\\dLW]){1,83} ([-*,/\\d]|[a-zA-Z]{3}){1,23} ([-?#*,/\\dL]|[a-zA-Z]{3}){1,13} ([^\\)]+)\\)"
     },
     "LineageSyncScheduleScheduleString":{
       "type":"string",
@@ -23643,6 +23800,89 @@
       "type":"string",
       "max":100000,
       "min":1
+    },
+    "SnowflakePropertiesInput":{
+      "type":"structure",
+      "required":[
+        "snowflakeRole",
+        "identityMapping"
+      ],
+      "members":{
+        "connectivityProperties":{
+          "shape":"ConnectivityProperties",
+          "documentation":"<p>The connectivity properties of the Snowflake connection.</p>"
+        },
+        "snowflakeRole":{
+          "shape":"SnowflakeRole",
+          "documentation":"<p>The Snowflake role used to access Snowflake resources.</p>"
+        },
+        "identityMapping":{
+          "shape":"IdentityMapping",
+          "documentation":"<p>The identity mapping configuration for the Snowflake connection.</p>"
+        },
+        "lineageSync":{
+          "shape":"LineageSyncInput",
+          "documentation":"<p>The lineage sync configuration for the Snowflake connection.</p>"
+        }
+      },
+      "documentation":"<p>Contains the Snowflake-specific settings required when creating or updating a connection, including the Snowflake role, identity mapping, and lineage sync configuration.</p>"
+    },
+    "SnowflakePropertiesOutput":{
+      "type":"structure",
+      "required":[
+        "snowflakeRole",
+        "identityMapping",
+        "lineageSync",
+        "status"
+      ],
+      "members":{
+        "snowflakeRole":{
+          "shape":"SnowflakeRole",
+          "documentation":"<p>The Snowflake role used to access Snowflake resources.</p>"
+        },
+        "identityMapping":{
+          "shape":"IdentityMapping",
+          "documentation":"<p>The identity mapping configuration for the Snowflake connection.</p>"
+        },
+        "lineageSync":{
+          "shape":"LineageSyncOutput",
+          "documentation":"<p>The lineage sync configuration for the Snowflake connection.</p>"
+        },
+        "status":{
+          "shape":"ConnectionStatus",
+          "documentation":"<p>The status of the Snowflake connection.</p>"
+        },
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>An error message returned if the Snowflake connection failed to establish or validate.</p>"
+        }
+      },
+      "documentation":"<p>Contains the Snowflake-specific settings returned for an existing connection, including the current role, identity mapping, lineage sync state, and connection status.</p>"
+    },
+    "SnowflakePropertiesPatch":{
+      "type":"structure",
+      "members":{
+        "connectivityPropertiesPatch":{
+          "shape":"ConnectivityPropertiesPatch",
+          "documentation":"<p>The connectivity properties patch of the Snowflake connection.</p>"
+        },
+        "snowflakeRole":{
+          "shape":"SnowflakeRole",
+          "documentation":"<p>The Snowflake role used to access Snowflake resources.</p>"
+        },
+        "lineageSync":{
+          "shape":"LineageSyncInput",
+          "documentation":"<p>The lineage sync configuration for the Snowflake connection.</p>"
+        }
+      },
+      "documentation":"<p>Contains the Snowflake-specific settings to update on an existing connection. Include only the fields you want to change.</p>"
+    },
+    "SnowflakeRole":{
+      "type":"string",
+      "documentation":"<p>The name of the Snowflake role to use for the connection.</p>",
+      "max":255,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_$]+"
     },
     "SortFieldAccountPool":{
       "type":"string",

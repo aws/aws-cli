@@ -69,6 +69,26 @@
       ],
       "documentation":"<p>Associates an identity provider configuration to a cluster.</p> <p>If you want to authenticate identities using an identity provider, you can create an identity provider configuration and associate it to your cluster. After configuring authentication to your cluster you can create Kubernetes <code>Role</code> and <code>ClusterRole</code> objects, assign permissions to them, and then bind them to the identities using Kubernetes <code>RoleBinding</code> and <code>ClusterRoleBinding</code> objects. For more information see <a href=\"https://kubernetes.io/docs/reference/access-authn-authz/rbac/\">Using RBAC Authorization</a> in the Kubernetes documentation.</p>"
     },
+    "CancelUpdate":{
+      "name":"CancelUpdate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/clusters/{name}/updates/{updateId}/cancel-update"
+      },
+      "input":{"shape":"CancelUpdateRequest"},
+      "output":{"shape":"CancelUpdateResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"ServerException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidStateException"}
+      ],
+      "documentation":"<p>Cancels an in-progress update to an Amazon EKS cluster on a best-effort basis. Cancellation is only performed if the update can be cancelled. Currently, this is supported for <code>VersionRollback</code> update types on EKS Auto Mode clusters when nodes are rolling back.</p> <p>A successful cancellation stops the node rollback. After cancellation, nodes converge to the current cluster version honoring configured disruption controls. If the control plane rollback has already begun, the cancellation request fails.</p>"
+    },
     "CreateAccessEntry":{
       "name":"CreateAccessEntry",
       "http":{
@@ -1830,6 +1850,63 @@
       "type":"integer",
       "box":true
     },
+    "CancelUpdateRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "updateId"
+      ],
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the Amazon EKS cluster associated with the update.</p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "updateId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the update to cancel.</p>",
+          "location":"uri",
+          "locationName":"updateId"
+        },
+        "clientRequestToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CancelUpdateResponse":{
+      "type":"structure",
+      "members":{
+        "update":{
+          "shape":"Update",
+          "documentation":"<p>The full description of the specified update.</p>"
+        }
+      }
+    },
+    "Cancellation":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"CancellationStatus",
+          "documentation":"<p>The current status of the cancellation. Valid values are <code>InProgress</code>, <code>Failed</code>, and <code>Successful</code>.</p>"
+        },
+        "reason":{
+          "shape":"String",
+          "documentation":"<p>A message providing additional details about the cancellation, such as the reason for the cancellation or failure details.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the latest cancellation of an update to an Amazon EKS cluster.</p>"
+    },
+    "CancellationStatus":{
+      "type":"string",
+      "enum":[
+        "InProgress",
+        "Failed",
+        "Successful"
+      ]
+    },
     "Capability":{
       "type":"structure",
       "members":{
@@ -2019,7 +2096,8 @@
       "type":"string",
       "enum":[
         "UPGRADE_READINESS",
-        "MISCONFIGURATION"
+        "MISCONFIGURATION",
+        "ROLLBACK_READINESS"
       ]
     },
     "CategoryList":{
@@ -6108,6 +6186,16 @@
       "max":255,
       "min":1
     },
+    "RollbackConfig":{
+      "type":"structure",
+      "members":{
+        "timeoutMinutes":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The length of time in minutes to wait before cancelling the update. Timeout is a minimum-bound property, meaning the timeout occurs no sooner than the time you specify, but can occur shortly thereafter. This value can be between 120 (2 hours) and 10080 (7 days). Default: <code>720</code> (12 hours) if not specified.</p>"
+        }
+      },
+      "documentation":"<p>The rollback configuration for the cluster version rollback.</p>"
+    },
     "ServerException":{
       "type":"structure",
       "members":{
@@ -6406,6 +6494,10 @@
         "errors":{
           "shape":"ErrorDetails",
           "documentation":"<p>Any errors associated with a <code>Failed</code> update.</p>"
+        },
+        "cancellation":{
+          "shape":"Cancellation",
+          "documentation":"<p>The latest cancellation information for the update. This field is present only if any cancellation is attempted for the update.</p>"
         }
       },
       "documentation":"<p>An object representing an asynchronous update.</p>"
@@ -6668,7 +6760,11 @@
         },
         "force":{
           "shape":"Boolean",
-          "documentation":"<p>Set this value to <code>true</code> to override upgrade-blocking readiness checks when updating a cluster.</p>"
+          "documentation":"<p>Set this value to <code>true</code> to override upgrade-blocking or rollback-blocking readiness checks when updating a cluster.</p>"
+        },
+        "rollbackConfig":{
+          "shape":"RollbackConfig",
+          "documentation":"<p>The rollback configuration for the cluster version rollback.</p>"
         }
       }
     },
@@ -7015,7 +7111,8 @@
         "CapabilityUpdate",
         "ControlPlaneScalingConfigUpdate",
         "VendedLogsUpdate",
-        "ControlPlaneEgressUpdate"
+        "ControlPlaneEgressUpdate",
+        "VersionRollback"
       ]
     },
     "UpgradePolicyRequest":{

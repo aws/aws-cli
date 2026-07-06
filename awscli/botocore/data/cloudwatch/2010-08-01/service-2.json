@@ -58,9 +58,10 @@
       },
       "input":{"shape":"DeleteAlarmsInput"},
       "errors":[
-        {"shape":"ResourceNotFound"}
+        {"shape":"ResourceNotFound"},
+        {"shape":"ResourceConflict"}
       ],
-      "documentation":"<p>Deletes the specified alarms. You can delete up to 100 alarms in one operation. However, this total can include no more than one composite alarm. For example, you could delete 99 metric alarms and one composite alarms with one operation, but you can't delete two composite alarms with one operation.</p> <p> If you specify any incorrect alarm names, the alarms you specify with correct names are still deleted. Other syntax errors might result in no alarms being deleted. To confirm that alarms were deleted successfully, you can use the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_DescribeAlarms.html\">DescribeAlarms</a> operation after using <code>DeleteAlarms</code>.</p> <note> <p>It is possible to create a loop or cycle of composite alarms, where composite alarm A depends on composite alarm B, and composite alarm B also depends on composite alarm A. In this scenario, you can't delete any composite alarm that is part of the cycle because there is always still a composite alarm that depends on that alarm that you want to delete.</p> <p>To get out of such a situation, you must break the cycle by changing the rule of one of the composite alarms in the cycle to remove a dependency that creates the cycle. The simplest change to make to break a cycle is to change the <code>AlarmRule</code> of one of the alarms to <code>false</code>. </p> <p>Additionally, the evaluation of composite alarms stops if CloudWatch detects a cycle in the evaluation path. </p> </note>"
+      "documentation":"<p>Deletes the specified alarms. You can delete up to 100 alarms in one operation. However, this total can include no more than one composite alarm. For example, you could delete 99 metric alarms and one composite alarms with one operation, but you can't delete two composite alarms with one operation. Log alarms cannot be batch deleted.</p> <p> If you specify any incorrect alarm names, the alarms you specify with correct names are still deleted. Other syntax errors might result in no alarms being deleted. To confirm that alarms were deleted successfully, you can use the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_DescribeAlarms.html\">DescribeAlarms</a> operation after using <code>DeleteAlarms</code>.</p> <note> <p>It is possible to create a loop or cycle of composite alarms, where composite alarm A depends on composite alarm B, and composite alarm B also depends on composite alarm A. In this scenario, you can't delete any composite alarm that is part of the cycle because there is always still a composite alarm that depends on that alarm that you want to delete.</p> <p>To get out of such a situation, you must break the cycle by changing the rule of one of the composite alarms in the cycle to remove a dependency that creates the cycle. The simplest change to make to break a cycle is to change the <code>AlarmRule</code> of one of the alarms to <code>false</code>. </p> <p>Additionally, the evaluation of composite alarms stops if CloudWatch detects a cycle in the evaluation path. </p> </note>"
     },
     "DeleteAnomalyDetector":{
       "name":"DeleteAnomalyDetector",
@@ -639,6 +640,19 @@
       ],
       "documentation":"<p>Creates a Contributor Insights rule. Rules evaluate log events in a CloudWatch Logs log group, enabling you to find contributor data for the log events in that log group. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContributorInsights.html\">Using Contributor Insights to Analyze High-Cardinality Data</a>.</p> <p>If you create a rule, delete it, and then re-create it with the same name, historical data from the first time the rule was created might not be available.</p>"
     },
+    "PutLogAlarm":{
+      "name":"PutLogAlarm",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutLogAlarmInput"},
+      "errors":[
+        {"shape":"LimitExceededFault"},
+        {"shape":"ResourceConflict"}
+      ],
+      "documentation":"<p>Creates or updates a log alarm. A log alarm evaluates the results of a CloudWatch Logs scheduled query against the configured threshold and comparison operator to determine its state.</p> <p>When you create a log alarm, the operation creates a service-managed CloudWatch Logs scheduled query that runs the query string you provide on the schedule you configure. Each scheduled query execution returns one or more aggregated values determined by the <code>AggregationExpression</code>, and each aggregated value is compared against the alarm <code>Threshold</code> to determine the alarm state. The alarm uses M-out-of-N evaluation: if <code>QueryResultsToAlarm</code> out of the most recent <code>QueryResultsToEvaluate</code> query results breach the threshold, the alarm transitions to <code>ALARM</code>.</p> <p>Log alarms support the alarm states (<code>OK</code>, <code>ALARM</code>, <code>INSUFFICIENT_DATA</code>). Configure transition actions using <code>OKActions</code>, <code>AlarmActions</code>, and <code>InsufficientDataActions</code>.</p> <p>If you call this operation with the name of an existing log alarm, the operation replaces the previous configuration of that alarm.</p> <p> <b>Permissions</b> </p> <p>To create or update a log alarm, you must have the <code>cloudwatch:PutLogAlarm</code> permission. The IAM role specified in <code>ScheduledQueryRoleARN</code> must grant the CloudWatch Alarms service permission to execute scheduled queries on the specified log groups. If you set <code>ActionLogLineCount</code>, the role specified in <code>ActionLogLineRoleArn</code> must grant permission to retrieve log events for inclusion in alarm notifications.</p>"
+    },
     "PutManagedInsightRules":{
       "name":"PutManagedInsightRules",
       "http":{
@@ -826,6 +840,8 @@
       "max":255,
       "min":1
     },
+    "ActionLogLineCount":{"type":"integer"},
+    "ActionLogLineRoleArn":{"type":"string"},
     "ActionPrefix":{
       "type":"string",
       "max":1024,
@@ -844,6 +860,11 @@
       "type":"string",
       "max":1024,
       "min":0
+    },
+    "AggregationExpression":{
+      "type":"string",
+      "max":256,
+      "min":1
     },
     "AlarmArn":{
       "type":"string",
@@ -1019,7 +1040,8 @@
       "type":"string",
       "enum":[
         "CompositeAlarm",
-        "MetricAlarm"
+        "MetricAlarm",
+        "LogAlarm"
       ]
     },
     "AlarmTypes":{
@@ -1643,7 +1665,7 @@
         },
         "AlarmTypes":{
           "shape":"AlarmTypes",
-          "documentation":"<p>Use this parameter to specify whether you want the operation to return metric alarms or composite alarms. If you omit this parameter, only metric alarms are returned.</p>"
+          "documentation":"<p>Use this parameter to specify whether you want the operation to return metric alarms, composite alarms, or log alarms. If you omit this parameter, only metric alarms are returned.</p>"
         },
         "HistoryItemType":{
           "shape":"HistoryItemType",
@@ -1743,7 +1765,7 @@
         },
         "AlarmTypes":{
           "shape":"AlarmTypes",
-          "documentation":"<p>Use this parameter to specify whether you want the operation to return metric alarms or composite alarms. If you omit this parameter, only metric alarms are returned, even if composite alarms exist in the account.</p> <p>For example, if you omit this parameter or specify <code>MetricAlarms</code>, the operation returns only a list of metric alarms. It does not return any composite alarms, even if composite alarms exist in the account.</p> <p>If you specify <code>CompositeAlarms</code>, the operation returns only a list of composite alarms, and does not return any metric alarms.</p>"
+          "documentation":"<p>Use this parameter to specify whether you want the operation to return metric alarms, composite alarms, or log alarms. If you omit this parameter, only metric alarms are returned, even if composite alarms or log alarms exist in the account.</p> <p>For example, if you omit this parameter or specify <code>MetricAlarms</code>, the operation returns only a list of metric alarms. It does not return any composite alarms or log alarms, even if they exist in the account.</p> <p>If you specify <code>CompositeAlarms</code>, the operation returns only a list of composite alarms, and does not return any metric alarms or log alarms.</p> <p>If you specify <code>LogAlarms</code>, the operation returns only a list of log alarms, and does not return any metric alarms or composite alarms.</p>"
         },
         "ChildrenOfAlarmName":{
           "shape":"AlarmName",
@@ -1781,6 +1803,10 @@
         "MetricAlarms":{
           "shape":"MetricAlarms",
           "documentation":"<p>The information about any metric alarms returned by the operation.</p>"
+        },
+        "LogAlarms":{
+          "shape":"LogAlarms",
+          "documentation":"<p>The information about any log alarms returned by the operation.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -1990,6 +2016,7 @@
         }
       }
     },
+    "EndTimeOffset":{"type":"long"},
     "Entity":{
       "type":"structure",
       "members":{
@@ -2094,6 +2121,21 @@
         "EVALUATION_ERROR"
       ]
     },
+    "EvaluationWindow":{
+      "type":"structure",
+      "members":{
+        "WallClockWindow":{
+          "shape":"WallClockWindow",
+          "documentation":"<p>A wall clock window, which aligns the evaluated range to fixed clock boundaries that match the alarm's period, such as the top of the hour, midnight, or the start of the calendar week.</p>"
+        },
+        "SlidingWindow":{
+          "shape":"SlidingWindow",
+          "documentation":"<p>A sliding window, which advances each time the alarm is evaluated, forming a rolling time window. This is the default evaluation window.</p>"
+        }
+      },
+      "documentation":"<p>The evaluation window that an alarm uses to select the range of metric data that it evaluates each time it runs. This is a union type. Set exactly one of its members, <code>SlidingWindow</code> or <code>WallClockWindow</code>. If you don't set <code>EvaluationWindow</code>, the alarm uses a <code>SlidingWindow</code> by default.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/alarm-evaluation-window.html\">Alarm evaluation windows</a> in the <i>CloudWatch User Guide</i>.</p>",
+      "union":true
+    },
     "ExceptionType":{"type":"string"},
     "Expression":{
       "type":"string",
@@ -2185,7 +2227,7 @@
         },
         "DashboardBody":{
           "shape":"DashboardBody",
-          "documentation":"<p>The detailed information about the dashboard, including what widgets are included and their location on the dashboard. For more information about the <code>DashboardBody</code> syntax, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/CloudWatch-Dashboard-Body-Structure.html\">Dashboard Body Structure and Syntax</a>. </p>"
+          "documentation":"<p>The detailed information about the dashboard, including what widgets are included and their location on the dashboard. For more information about the <code>DashboardBody</code> syntax, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Dashboard-Body-Structure.html\">Dashboard Body Structure and Syntax</a>. </p>"
         },
         "DashboardName":{
           "shape":"DashboardName",
@@ -2479,7 +2521,7 @@
       "members":{
         "MetricWidget":{
           "shape":"MetricWidget",
-          "documentation":"<p>A JSON string that defines the bitmap graph to be retrieved. The string includes the metrics to include in the graph, statistics, annotations, title, axis limits, and so on. You can include only one <code>MetricWidget</code> parameter in each <code>GetMetricWidgetImage</code> call.</p> <p>For more information about the syntax of <code>MetricWidget</code> see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/CloudWatch-Metric-Widget-Structure.html\">GetMetricWidgetImage: Metric Widget Structure and Syntax</a>.</p> <p>If any metric on the graph could not load all the requested data points, an orange triangle with an exclamation point appears next to the graph legend.</p>"
+          "documentation":"<p>A JSON string that defines the bitmap graph to be retrieved. The string includes the metrics to include in the graph, statistics, annotations, title, axis limits, and so on. You can include only one <code>MetricWidget</code> parameter in each <code>GetMetricWidgetImage</code> call.</p> <p>For more information about the syntax of <code>MetricWidget</code> see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Metric-Widget-Structure.html\">GetMetricWidgetImage: Metric Widget Structure and Syntax</a>.</p> <p>If any metric on the graph could not load all the requested data points, an orange triangle with an exclamation point appears next to the graph legend.</p>"
         },
         "OutputFormat":{
           "shape":"OutputFormat",
@@ -3073,6 +3115,134 @@
         }
       }
     },
+    "LogAlarm":{
+      "type":"structure",
+      "members":{
+        "AlarmName":{
+          "shape":"AlarmName",
+          "documentation":"<p>The name of the alarm.</p>"
+        },
+        "AlarmArn":{
+          "shape":"AlarmArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the alarm.</p>"
+        },
+        "AlarmDescription":{
+          "shape":"AlarmDescription",
+          "documentation":"<p>The description of the alarm.</p>"
+        },
+        "AlarmConfigurationUpdatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time stamp of the last update to the alarm configuration.</p>"
+        },
+        "ActionsEnabled":{
+          "shape":"ActionsEnabled",
+          "documentation":"<p>Indicates whether actions should be executed during any changes to the alarm state.</p>"
+        },
+        "OKActions":{
+          "shape":"ResourceList",
+          "documentation":"<p>The actions to execute when this alarm transitions to the <code>OK</code> state from any other state. Each action is specified as an Amazon Resource Name (ARN).</p>"
+        },
+        "AlarmActions":{
+          "shape":"ResourceList",
+          "documentation":"<p>The actions to execute when this alarm transitions to the <code>ALARM</code> state from any other state. Each action is specified as an Amazon Resource Name (ARN).</p>"
+        },
+        "InsufficientDataActions":{
+          "shape":"ResourceList",
+          "documentation":"<p>The actions to execute when this alarm transitions to the <code>INSUFFICIENT_DATA</code> state from any other state. Each action is specified as an Amazon Resource Name (ARN).</p>"
+        },
+        "StateValue":{
+          "shape":"StateValue",
+          "documentation":"<p>The state value for the alarm.</p>"
+        },
+        "StateReason":{
+          "shape":"StateReason",
+          "documentation":"<p>An explanation for the alarm state, in text format.</p>"
+        },
+        "StateReasonData":{
+          "shape":"StateReasonData",
+          "documentation":"<p>An explanation for the alarm state, in JSON format.</p>"
+        },
+        "StateUpdatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time stamp of the last update to the value of either the <code>StateValue</code> or <code>EvaluationState</code> parameters.</p>"
+        },
+        "ScheduledQueryConfiguration":{
+          "shape":"ScheduledQueryConfiguration",
+          "documentation":"<p>The configuration of the underlying CloudWatch Logs scheduled query, including the query string, log groups, schedule, aggregation expression, and the ARN of the managed scheduled query.</p>"
+        },
+        "QueryResultsToEvaluate":{
+          "shape":"QueryResultsToEvaluate",
+          "documentation":"<p>The number of most recent scheduled query results that the alarm evaluates against the threshold (the N in M-of-N evaluation).</p>"
+        },
+        "QueryResultsToAlarm":{
+          "shape":"QueryResultsToAlarm",
+          "documentation":"<p>The number of query results, out of the most recent <code>QueryResultsToEvaluate</code> results, that must breach the threshold to trigger the alarm to transition to <code>ALARM</code> (the M in M-of-N evaluation).</p>"
+        },
+        "Threshold":{
+          "shape":"Threshold",
+          "documentation":"<p>The value to compare with the aggregated query result.</p>"
+        },
+        "ComparisonOperator":{
+          "shape":"ComparisonOperator",
+          "documentation":"<p>The arithmetic operation to use when comparing the aggregated query result and the threshold. The aggregated query result is used as the first operand.</p>"
+        },
+        "TreatMissingData":{
+          "shape":"TreatMissingData",
+          "documentation":"<p>How this alarm handles missing data points. Valid values are <code>breaching</code>, <code>notBreaching</code>, <code>ignore</code>, and <code>missing</code>.</p>"
+        },
+        "StateTransitionedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the alarm's <code>StateValue</code> most recently changed.</p>"
+        },
+        "EvaluationState":{
+          "shape":"EvaluationState",
+          "documentation":"<p>If the value of this field is <code>EVALUATION_ERROR</code>, it indicates configuration errors in the alarm setup that require review and correction. Refer to the <code>StateReason</code> field of the alarm for more details.</p> <p>If the value of this field is <code>EVALUATION_FAILURE</code>, it indicates temporary CloudWatch issues. We recommend manual monitoring until the issue is resolved.</p> <p>If the value of this field is <code>PARTIAL_DATA</code>, it indicates that the query returned the maximum 500 contributor groups but more matched. The alarm evaluates the available contributors, but results might be incomplete.</p>"
+        },
+        "ActionLogLineCount":{
+          "shape":"ActionLogLineCount",
+          "documentation":"<p>The number of log lines from the most recent scheduled query execution that are included in alarm action notifications. Valid range is 0 through 50. A value of 0 means no log lines are included.</p>"
+        },
+        "ActionLogLineRoleArn":{
+          "shape":"ActionLogLineRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that CloudWatch assumes to retrieve log events for inclusion in alarm action notifications. Set when <code>ActionLogLineCount</code> is greater than 0.</p>"
+        }
+      },
+      "documentation":"<p>The details about a log alarm.</p>",
+      "xmlOrder":[
+        "AlarmName",
+        "AlarmArn",
+        "AlarmDescription",
+        "AlarmConfigurationUpdatedTimestamp",
+        "ActionsEnabled",
+        "OKActions",
+        "AlarmActions",
+        "InsufficientDataActions",
+        "StateValue",
+        "StateReason",
+        "StateReasonData",
+        "StateUpdatedTimestamp",
+        "StateTransitionedTimestamp",
+        "ScheduledQueryConfiguration",
+        "QueryResultsToEvaluate",
+        "QueryResultsToAlarm",
+        "Threshold",
+        "ComparisonOperator",
+        "TreatMissingData",
+        "EvaluationState",
+        "ActionLogLineCount",
+        "ActionLogLineRoleArn"
+      ]
+    },
+    "LogAlarms":{
+      "type":"list",
+      "member":{"shape":"LogAlarm"}
+    },
+    "LogGroupIdentifiers":{
+      "type":"list",
+      "member":{"shape":"AmazonResourceName"},
+      "max":50,
+      "min":1
+    },
     "ManagedRule":{
       "type":"structure",
       "required":[
@@ -3307,6 +3477,10 @@
           "shape":"Timestamp",
           "documentation":"<p>The date and time that the alarm's <code>StateValue</code> most recently changed.</p>"
         },
+        "EvaluationWindow":{
+          "shape":"EvaluationWindow",
+          "documentation":"<p>The evaluation window that the alarm uses to select the range of metric data that it evaluates. This is either a sliding window or a wall clock window. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/alarm-evaluation-window.html\">Alarm evaluation windows</a> in the <i>CloudWatch User Guide</i>.</p>"
+        },
         "EvaluationCriteria":{
           "shape":"EvaluationCriteria",
           "documentation":"<p>The evaluation criteria for the alarm.</p>"
@@ -3347,6 +3521,7 @@
         "ThresholdMetricId",
         "EvaluationState",
         "StateTransitionedTimestamp",
+        "EvaluationWindow",
         "EvaluationCriteria",
         "EvaluationInterval"
       ]
@@ -3920,7 +4095,7 @@
         },
         "DashboardBody":{
           "shape":"DashboardBody",
-          "documentation":"<p>The detailed information about the dashboard in JSON format, including the widgets to include and their location on the dashboard. This parameter is required.</p> <p>For more information about the syntax, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/CloudWatch-Dashboard-Body-Structure.html\">Dashboard Body Structure and Syntax</a>.</p>"
+          "documentation":"<p>The detailed information about the dashboard in JSON format, including the widgets to include and their location on the dashboard. This parameter is required.</p> <p>For more information about the syntax, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Dashboard-Body-Structure.html\">Dashboard Body Structure and Syntax</a>.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -3969,6 +4144,79 @@
     "PutInsightRuleOutput":{
       "type":"structure",
       "members":{}
+    },
+    "PutLogAlarmInput":{
+      "type":"structure",
+      "required":[
+        "AlarmName",
+        "ScheduledQueryConfiguration",
+        "QueryResultsToEvaluate",
+        "QueryResultsToAlarm",
+        "Threshold",
+        "ComparisonOperator"
+      ],
+      "members":{
+        "AlarmName":{
+          "shape":"AlarmName",
+          "documentation":"<p>The name for the alarm. This name must be unique within the Amazon Web Services account and Region.</p>"
+        },
+        "AlarmDescription":{
+          "shape":"AlarmDescription",
+          "documentation":"<p>The description for the alarm.</p>"
+        },
+        "ScheduledQueryConfiguration":{
+          "shape":"ScheduledQueryConfiguration",
+          "documentation":"<p>The configuration of the underlying CloudWatch Logs scheduled query that this alarm evaluates, including the query string, log groups, schedule, and aggregation expression.</p>"
+        },
+        "ActionLogLineCount":{
+          "shape":"ActionLogLineCount",
+          "documentation":"<p>The number of log lines from the most recent scheduled query execution to include in alarm action notifications. Valid range is 0 through 50. The default is 0, which means no log lines are included.</p>"
+        },
+        "ActionLogLineRoleArn":{
+          "shape":"ActionLogLineRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role that CloudWatch assumes to retrieve log events for inclusion in alarm action notifications. Required when <code>ActionLogLineCount</code> is greater than 0.</p>"
+        },
+        "ActionsEnabled":{
+          "shape":"ActionsEnabled",
+          "documentation":"<p>Indicates whether actions should be executed during any changes to the alarm state. The default is <code>true</code>.</p>"
+        },
+        "OKActions":{
+          "shape":"ResourceList",
+          "documentation":"<p>The actions to execute when this alarm transitions to the <code>OK</code> state from any other state. Each action is specified as an Amazon Resource Name (ARN).</p> <p>Valid Values:</p> <p> <b>Amazon SNS actions:</b> </p> <p> <code>arn:aws:sns:<i>region</i>:<i>account-id</i>:<i>sns-topic-name</i> </code> </p> <p> <b>Lambda actions:</b> </p> <ul> <li> <p>Invoke the latest version of a Lambda function: <code>arn:aws:lambda:<i>region</i>:<i>account-id</i>:function:<i>function-name</i> </code> </p> </li> <li> <p>Invoke a specific version of a Lambda function: <code>arn:aws:lambda:<i>region</i>:<i>account-id</i>:function:<i>function-name</i>:<i>version-number</i> </code> </p> </li> <li> <p>Invoke a function by using an alias Lambda function: <code>arn:aws:lambda:<i>region</i>:<i>account-id</i>:function:<i>function-name</i>:<i>alias-name</i> </code> </p> </li> </ul>"
+        },
+        "AlarmActions":{
+          "shape":"ResourceList",
+          "documentation":"<p>The actions to execute when this alarm transitions to the <code>ALARM</code> state from any other state. Each action is specified as an Amazon Resource Name (ARN).</p> <p>Valid Values:</p> <p> <b>Amazon SNS actions:</b> </p> <p> <code>arn:aws:sns:<i>region</i>:<i>account-id</i>:<i>sns-topic-name</i> </code> </p> <p> <b>Lambda actions:</b> </p> <ul> <li> <p>Invoke the latest version of a Lambda function: <code>arn:aws:lambda:<i>region</i>:<i>account-id</i>:function:<i>function-name</i> </code> </p> </li> <li> <p>Invoke a specific version of a Lambda function: <code>arn:aws:lambda:<i>region</i>:<i>account-id</i>:function:<i>function-name</i>:<i>version-number</i> </code> </p> </li> <li> <p>Invoke a function by using an alias Lambda function: <code>arn:aws:lambda:<i>region</i>:<i>account-id</i>:function:<i>function-name</i>:<i>alias-name</i> </code> </p> </li> </ul> <p> <b>Systems Manager actions:</b> </p> <p> <code>arn:aws:ssm:<i>region</i>:<i>account-id</i>:opsitem:<i>severity</i> </code> </p>"
+        },
+        "InsufficientDataActions":{
+          "shape":"ResourceList",
+          "documentation":"<p>The actions to execute when this alarm transitions to the <code>INSUFFICIENT_DATA</code> state from any other state. Each action is specified as an Amazon Resource Name (ARN).</p> <p>Valid Values:</p> <p> <b>Amazon SNS actions:</b> </p> <p> <code>arn:aws:sns:<i>region</i>:<i>account-id</i>:<i>sns-topic-name</i> </code> </p> <p> <b>Lambda actions:</b> </p> <ul> <li> <p>Invoke the latest version of a Lambda function: <code>arn:aws:lambda:<i>region</i>:<i>account-id</i>:function:<i>function-name</i> </code> </p> </li> <li> <p>Invoke a specific version of a Lambda function: <code>arn:aws:lambda:<i>region</i>:<i>account-id</i>:function:<i>function-name</i>:<i>version-number</i> </code> </p> </li> <li> <p>Invoke a function by using an alias Lambda function: <code>arn:aws:lambda:<i>region</i>:<i>account-id</i>:function:<i>function-name</i>:<i>alias-name</i> </code> </p> </li> </ul>"
+        },
+        "QueryResultsToEvaluate":{
+          "shape":"QueryResultsToEvaluate",
+          "documentation":"<p>The number of most recent scheduled query results to evaluate against the threshold (the N in M-of-N evaluation). Valid range is 1 through 100.</p>"
+        },
+        "QueryResultsToAlarm":{
+          "shape":"QueryResultsToAlarm",
+          "documentation":"<p>The number of query results, out of the most recent <code>QueryResultsToEvaluate</code> results, that must breach the threshold to trigger the alarm to transition to <code>ALARM</code> (the M in M-of-N evaluation). Must be less than or equal to <code>QueryResultsToEvaluate</code>.</p>"
+        },
+        "Threshold":{
+          "shape":"Threshold",
+          "documentation":"<p>The value to compare with the aggregated query result.</p>"
+        },
+        "ComparisonOperator":{
+          "shape":"ComparisonOperator",
+          "documentation":"<p>The arithmetic operation to use when comparing the aggregated query result and the threshold. The aggregated query result is used as the first operand. Valid values are <code>GreaterThanThreshold</code>, <code>GreaterThanOrEqualToThreshold</code>, <code>LessThanThreshold</code>, and <code>LessThanOrEqualToThreshold</code>.</p>"
+        },
+        "TreatMissingData":{
+          "shape":"TreatMissingData",
+          "documentation":"<p>Sets how this alarm is to handle missing data points. Valid values are <code>breaching</code>, <code>notBreaching</code>, <code>ignore</code>, and <code>missing</code>. If this parameter is omitted, the default behavior of <code>missing</code> is used.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of key-value pairs to associate with the alarm. You can use tags to categorize and manage your alarms.</p>"
+        }
+      }
     },
     "PutManagedInsightRulesInput":{
       "type":"structure",
@@ -4081,6 +4329,10 @@
           "shape":"MetricId",
           "documentation":"<p>If this is an alarm based on an anomaly detection model, make this value match the ID of the <code>ANOMALY_DETECTION_BAND</code> function.</p> <p>For an example of how to use this parameter, see the <b>Anomaly Detection Model Alarm</b> example on this page.</p> <p>If your alarm uses this parameter, it cannot have Auto Scaling actions.</p>"
         },
+        "EvaluationWindow":{
+          "shape":"EvaluationWindow",
+          "documentation":"<p>The evaluation window that the alarm uses to select the range of metric data that it evaluates. Specify either a sliding window or a wall clock window. If you omit this parameter, the alarm uses a sliding window.</p> <p>A sliding window advances each time the alarm is evaluated, forming a rolling time window. A wall clock window aligns the evaluated range to fixed clock boundaries, such as the top of the hour or the start of the day.</p> <p>You can use <code>EvaluationWindow</code> with any type of metric alarm except alarms that are based on a PromQL query.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/alarm-evaluation-window.html\">Alarm evaluation windows</a> in the <i>CloudWatch User Guide</i>.</p>"
+        },
         "EvaluationCriteria":{
           "shape":"EvaluationCriteria",
           "documentation":"<p>The evaluation criteria for the alarm. For each <code>PutMetricAlarm</code> operation, you must specify either <code>MetricName</code>, a <code>Metrics</code> array, or an <code>EvaluationCriteria</code>.</p> <p>If you use the <code>EvaluationCriteria</code> parameter, you cannot include the <code>Namespace</code>, <code>MetricName</code>, <code>Dimensions</code>, <code>Period</code>, <code>Unit</code>, <code>Statistic</code>, <code>ExtendedStatistic</code>, <code>Metrics</code>, <code>Threshold</code>, <code>ComparisonOperator</code>, <code>ThresholdMetricId</code>, <code>EvaluationPeriods</code>, or <code>DatapointsToAlarm</code> parameters of <code>PutMetricAlarm</code> in the same operation. Instead, all evaluation parameters are defined within this structure.</p> <p>For an example of how to use this parameter, see the <b>PromQL alarm</b> example on this page.</p>"
@@ -4175,6 +4427,19 @@
       "max":10000,
       "min":1
     },
+    "QueryResultsToAlarm":{
+      "type":"integer",
+      "min":1
+    },
+    "QueryResultsToEvaluate":{
+      "type":"integer",
+      "min":1
+    },
+    "QueryString":{
+      "type":"string",
+      "max":10000,
+      "min":0
+    },
     "Range":{
       "type":"structure",
       "required":[
@@ -4205,6 +4470,19 @@
       "type":"integer",
       "max":86400,
       "min":0
+    },
+    "ResourceConflict":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The operation could not be completed because the request conflicts with the current state of the alarm or its underlying scheduled query resource.</p>",
+      "error":{
+        "code":"ResourceConflict",
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
     },
     "ResourceId":{"type":"string"},
     "ResourceList":{
@@ -4289,6 +4567,70 @@
       },
       "documentation":"<p>Specifies when and how long an alarm mute rule is active.</p> <p>The schedule uses either a cron expression for recurring mute windows or an at expression for one-time mute windows. When the schedule activates, the mute rule mutes alarm actions for the specified duration.</p>"
     },
+    "ScheduleConfiguration":{
+      "type":"structure",
+      "required":["ScheduleExpression"],
+      "members":{
+        "ScheduleExpression":{
+          "shape":"ScheduleExpression",
+          "documentation":"<p>The schedule expression that defines how often the underlying CloudWatch Logs scheduled query runs. Specify a <code>rate()</code> expression, for example <code>rate(5 minutes)</code>.</p>"
+        },
+        "StartTimeOffset":{
+          "shape":"StartTimeOffset",
+          "documentation":"<p>The offset, in seconds, before the scheduled execution time at which the query time range begins. For example, an offset of 360 (6 minutes) on a query running at 12:05:00 starts the query time range at 11:59:00.</p>"
+        },
+        "EndTimeOffset":{
+          "shape":"EndTimeOffset",
+          "documentation":"<p>The offset, in seconds, before the scheduled execution time at which the query time range ends. Must be non-negative and less than <code>StartTimeOffset</code>. The default is 0.</p>"
+        }
+      },
+      "documentation":"<p>Contains the schedule expression and time-range offsets that define when a scheduled query runs and what time range each execution covers.</p>"
+    },
+    "ScheduleExpression":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "ScheduledQueryConfiguration":{
+      "type":"structure",
+      "required":[
+        "QueryString",
+        "ScheduledQueryRoleARN",
+        "ScheduleConfiguration",
+        "AggregationExpression"
+      ],
+      "members":{
+        "QueryString":{
+          "shape":"QueryString",
+          "documentation":"<p>The CloudWatch Logs query to execute on each scheduled run. Length constraints: maximum of 10,000 characters.</p>"
+        },
+        "LogGroupIdentifiers":{
+          "shape":"LogGroupIdentifiers",
+          "documentation":"<p>The log groups to query. Each entry can be a log group name or ARN. Use the ARN form when querying log groups in a different account (for example, when running cross-account queries from a monitoring account). The list must contain between 1 and 50 entries.</p>"
+        },
+        "QueryARN":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the CloudWatch Logs scheduled query that the alarm uses. This field is populated in <code>DescribeAlarms</code> responses.</p>"
+        },
+        "ScheduledQueryRoleARN":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that CloudWatch assumes when executing the scheduled query against the configured log groups.</p>"
+        },
+        "ScheduleConfiguration":{
+          "shape":"ScheduleConfiguration",
+          "documentation":"<p>The schedule and time-range offset configuration for the underlying scheduled query.</p>"
+        },
+        "AggregationExpression":{
+          "shape":"AggregationExpression",
+          "documentation":"<p>The expression that defines how to aggregate query results into one or more scalar values for alarm evaluation. For example, <code>count(*)</code> or <code>avg(latency) by host | sort desc</code>. Length constraints: minimum 1 character, maximum 2048 characters.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of key-value pairs to associate with the underlying scheduled query resource.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of the CloudWatch Logs scheduled query that backs a log alarm.</p>"
+    },
     "SetAlarmStateInput":{
       "type":"structure",
       "required":[
@@ -4342,6 +4684,11 @@
       "documentation":"<p>Designates the CloudWatch metric and statistic that provides the time series the anomaly detector uses as input. If you have enabled unified cross-account observability, and this account is a monitoring account, the metric can be in the same account or a source account.</p>"
     },
     "Size":{"type":"long"},
+    "SlidingWindow":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>An evaluation window that advances each time the alarm is evaluated, forming a rolling time window. This is the default evaluation window. A sliding window has no additional configuration options.</p> <p>Choose a sliding window when you need the fastest detection and the calendar boundaries of the data don't matter, such as for continuous performance, latency, or resource-exhaustion monitoring.</p>"
+    },
     "StandardUnit":{
       "type":"string",
       "enum":[
@@ -4396,6 +4743,7 @@
       "type":"structure",
       "members":{}
     },
+    "StartTimeOffset":{"type":"long"},
     "Stat":{"type":"string"},
     "StateReason":{
       "type":"string",
@@ -4600,7 +4948,17 @@
     "Values":{
       "type":"list",
       "member":{"shape":"DatapointValue"}
+    },
+    "WallClockWindow":{
+      "type":"structure",
+      "members":{
+        "Timezone":{
+          "shape":"Timezone",
+          "documentation":"<p>The time zone to use when the alarm aligns the evaluation window to clock boundaries. You can specify an IANA time zone name (for example, <code>America/New_York</code>), a fixed UTC offset (for example, <code>+05:30</code>), or an offset-prefixed identifier (for example, <code>UTC+05:30</code>). The offset must be aligned to a multiple of 5 minutes. If you don't specify a time zone, CloudWatch uses <code>UTC</code>.</p> <p>The time zone affects window alignment for all periods, including periods of one hour or shorter.</p>"
+        }
+      },
+      "documentation":"<p>An evaluation window that aligns the evaluated range to fixed clock boundaries that match the alarm's period, such as the top of the hour, midnight, or the start of the calendar week, optionally in a specific time zone.</p> <p>When you use a wall clock window, the alarm's period must be 1 minute (60 seconds), 5 minutes (300 seconds), 1 hour (3,600 seconds), 1 day (86,400 seconds), or 1 week (604,800 seconds). Other period values aren't supported with a wall clock window.</p> <p>Choose a wall clock window when your monitoring is tied to a business or calendar period, such as daily reports, batch jobs, or backups, or when you want alarm evaluations to match the periods shown on a metric dashboard.</p>"
     }
   },
-  "documentation":"<p>Amazon CloudWatch monitors your Amazon Web Services (Amazon Web Services) resources and the applications you run on Amazon Web Services in real time. You can use CloudWatch to collect and track metrics, which are the variables you want to measure for your resources and applications.</p> <p>CloudWatch alarms send notifications or automatically change the resources you are monitoring based on rules that you define. For example, you can monitor the CPU usage and disk reads and writes of your Amazon EC2 instances. Then, use this data to determine whether you should launch additional instances to handle increased load. You can also use this data to stop under-used instances to save money.</p> <p>In addition to monitoring the built-in metrics that come with Amazon Web Services, you can monitor your own custom metrics. With CloudWatch, you gain system-wide visibility into resource utilization, application performance, and operational health.</p>"
+  "documentation":"<p>Amazon CloudWatch enables you to publish, monitor, and manage various metrics, as well as configure alarm actions based on data from metrics. This guide provides detailed information about CloudWatch actions, data types, parameters, and errors. For more information about CloudWatch features, see <a href=\"https://aws.amazon.com/cloudwatch\">Amazon CloudWatch</a> and the <i>Amazon CloudWatch User Guide</i>.</p> <p>For information about the metrics that other Amazon Web Services products send to CloudWatch, see the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/aws-services-cloudwatch-metrics.html\">Amazon CloudWatch Metrics and Dimensions Reference</a> in the <i>Amazon CloudWatch User Guide</i>.</p> <p>Use the following links to get started using the CloudWatch Query API:</p> <p>: An alphabetical list of all CloudWatch actions.</p> <p>: An alphabetical list of all CloudWatch data types.</p> <p> <a>CommonParameters</a>: Parameters that all Query actions can use.</p> <p> <a>CommonErrors</a>: Client and server errors that all actions can return.</p> <p> <a href=\"https://docs.aws.amazon.com/general/latest/gr/rande.html#cw_region\">Regions and Endpoints</a>: Supported regions and endpoints for all Amazon Web Services products.</p> <p>Alternatively, you can use one of the <a href=\"https://aws.amazon.com/tools/#sdk\">Amazon Web Services SDKs</a> to access CloudWatch using an API tailored to your programming language or platform.</p> <p>Developers in the Amazon Web Services developer community also provide their own libraries, which you can find at the following Amazon Web Services developer centers:</p> <p> <a href=\"http://aws.amazon.com/java/\">Java Developer Center</a> </p> <p> <a href=\"http://aws.amazon.com/javascript/\">JavaScript Developer Center</a> </p> <p> <a href=\"http://aws.amazon.com/mobile/\">Amazon Web Services Mobile Services</a> </p> <p> <a href=\"http://aws.amazon.com/php/\">PHP Developer Center</a> </p> <p> <a href=\"http://aws.amazon.com/python/\">Python Developer Center</a> </p> <p> <a href=\"http://aws.amazon.com/ruby/\">Ruby Developer Center</a> </p> <p> <a href=\"http://aws.amazon.com/net/\">Windows and .NET Developer Center</a> </p>"
 }

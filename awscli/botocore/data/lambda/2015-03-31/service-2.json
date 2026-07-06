@@ -4386,6 +4386,10 @@
           "shape":"S3ObjectVersion",
           "documentation":"<p>For versioned objects, the version of the deployment package object to use.</p>"
         },
+        "S3ObjectStorageMode":{
+          "shape":"S3ObjectStorageMode",
+          "documentation":"<p>Specifies how the deployment package is stored. Use <code>COPY</code> (default) to upload a copy of your deployment package to Lambda. Use <code>REFERENCE</code> to have Lambda reference the deployment package from the specified Amazon S3 bucket.</p>"
+        },
         "ImageUri":{
           "shape":"String",
           "documentation":"<p>URI of a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-images.html\">container image</a> in the Amazon ECR registry.</p>"
@@ -4416,12 +4420,34 @@
           "shape":"String",
           "documentation":"<p>The resolved URI for the image.</p>"
         },
+        "ResolvedS3Object":{
+          "shape":"ResolvedS3Object",
+          "documentation":"<p>The resolved Amazon S3 object that contains the deployment package.</p>"
+        },
         "SourceKMSKeyArn":{
           "shape":"KMSKeyArn",
           "documentation":"<p>The ARN of the Key Management Service (KMS) customer managed key that's used to encrypt your function's .zip deployment package. If you don't provide a customer managed key, Lambda uses an <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-owned-cmk\">Amazon Web Services owned key</a>.</p>"
+        },
+        "Error":{
+          "shape":"FunctionCodeLocationError",
+          "documentation":"<p>An object that contains details about an error related to function deployment package retrieval.</p>"
         }
       },
       "documentation":"<p>Details about a function's deployment package.</p>"
+    },
+    "FunctionCodeLocationError":{
+      "type":"structure",
+      "members":{
+        "ErrorCode":{
+          "shape":"String",
+          "documentation":"<p>The error code for the failed retrieval.</p>"
+        },
+        "Message":{
+          "shape":"SensitiveString",
+          "documentation":"<p>A description of the error.</p>"
+        }
+      },
+      "documentation":"<p>Details about an error related to retrieving a function's deployment package.</p>"
     },
     "FunctionConfiguration":{
       "type":"structure",
@@ -6268,6 +6294,7 @@
           "shape":"S3ObjectVersion",
           "documentation":"<p>For versioned objects, the version of the layer archive object to use.</p>"
         },
+        "S3ObjectStorageMode":{"shape":"S3ObjectStorageMode"},
         "ZipFile":{
           "shape":"Blob",
           "documentation":"<p>The base64-encoded contents of the layer archive. Amazon Web Services SDK and Amazon Web Services CLI clients handle the encoding for you.</p>"
@@ -6297,7 +6324,8 @@
         "SigningJobArn":{
           "shape":"Arn",
           "documentation":"<p>The Amazon Resource Name (ARN) of a signing job.</p>"
-        }
+        },
+        "ResolvedS3Object":{"shape":"ResolvedS3Object"}
       },
       "documentation":"<p>Details about a version of an <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html\">Lambda layer</a>.</p>"
     },
@@ -8137,6 +8165,24 @@
       "box":true,
       "min":0
     },
+    "ResolvedS3Object":{
+      "type":"structure",
+      "members":{
+        "S3Bucket":{
+          "shape":"S3Bucket",
+          "documentation":"<p>The Amazon S3 bucket that contains the deployment package.</p>"
+        },
+        "S3Key":{
+          "shape":"S3Key",
+          "documentation":"<p>The Amazon S3 key of the deployment package.</p>"
+        },
+        "S3ObjectVersion":{
+          "shape":"S3ObjectVersion",
+          "documentation":"<p>The version of the deployment package object.</p>"
+        }
+      },
+      "documentation":"<p>Details about the resolved Amazon S3 object that contains a function's deployment package.</p>"
+    },
     "ResourceArn":{
       "type":"string",
       "max":10000,
@@ -8395,6 +8441,14 @@
       "max":1024,
       "min":1,
       "pattern":".*"
+    },
+    "S3ObjectStorageMode":{
+      "type":"string",
+      "documentation":"<p>The storage mode for a function's deployment package.</p>",
+      "enum":[
+        "COPY",
+        "REFERENCE"
+      ]
     },
     "S3ObjectVersion":{
       "type":"string",
@@ -9414,6 +9468,10 @@
         "S3ObjectVersion":{
           "shape":"S3ObjectVersion",
           "documentation":"<p>For versioned objects, the version of the deployment package object to use.</p>"
+        },
+        "S3ObjectStorageMode":{
+          "shape":"S3ObjectStorageMode",
+          "documentation":"<p>Specifies how the deployment package is stored. Use <code>COPY</code> (default) to upload a copy of your deployment package to Lambda. Use <code>REFERENCE</code> to have Lambda reference the deployment package from the specified Amazon S3 bucket.</p>"
         },
         "ImageUri":{
           "shape":"String",

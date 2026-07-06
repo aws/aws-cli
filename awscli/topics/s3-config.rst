@@ -348,6 +348,10 @@ files to and from S3. Valid choices are:
     * ``p5.48xlarge``
     * ``trn1n.32xlarge``
     * ``trn1.32xlarge``
+    * ``p5e.48xlarge``
+    * ``p5en.48xlarge``
+    * ``p6-b200.48xlarge``
+    * ``p6-b300.48xlarge``
 
   * There are no other running processes of the AWS CLI using the CRT S3 transfer
     client. To force multiple concurrently running processes of the AWS CLI to use
@@ -456,8 +460,13 @@ direct_io
 **Default** - ``false``
 
 If set to ``true``, the CRT client will enable direct IO to bypass the OS
-cache when sending PUT requests. Enabling direct IO may be useful in cases
-where the disk IO outperforms the kernel cache.
+cache for both uploads (PUT requests) and downloads (GET requests). Enabling
+direct IO may be useful in cases where the disk IO outperforms the kernel
+cache.
+
+Direct IO is a best-effort optimization. When its preconditions are not met
+(for example, when a part is not page-aligned), the CRT client transparently
+falls back to buffered IO and logs a warning rather than failing the transfer.
 
 Experimental Configuration Values
 =================================
@@ -469,3 +478,44 @@ Experimental Configuration Values
    guaranteed between versions of the AWS CLI.
 
 There are currently no experimental configuration values.
+
+CRT Environment Variables
+=========================
+
+When the ``preferred_transfer_client`` configuration value is set to or
+resolves to ``crt``, the following environment variables can be used to tune
+the behavior of the underlying CRT S3 client. These variables are provided by
+the CRT itself and are only applied when the ``crt`` transfer client is in use;
+the ``classic`` transfer client ignores them.
+
+AWS_CRT_S3_MEMORY_LIMIT_IN_GIB
+------------------------------
+Sets a memory cap, in gigabytes (GiB), for the CRT client's buffer pool, which
+manages memory for concurrent transfers. The value must be a positive integer
+representing GiB. An invalid value will raise ``AWS_ERROR_INVALID_ARGUMENT``.
+
+When this variable is unset, the CRT client selects a default memory limit
+based on the target throughput.
+
+For example, to cap the CRT client's buffer pool at 8 GiB before running a
+transfer::
+
+    $ export AWS_CRT_S3_MEMORY_LIMIT_IN_GIB=8
+    $ aws s3 cp large-file s3://amzn-s3-demo-bucket/large-file
+
+AWS_CRT_S3_MAX_PARTS_PENDING_READ
+---------------------------------
+**Default** - ``5``
+
+Controls the maximum number of parts that can be pending read from the input
+stream during an individual multipart upload. Increasing this value may improve
+throughput for large files when disk read speed benefits from reading more
+parts in parallel. The value must be a positive integer;
+a zero or otherwise invalid value is ignored with a warning and the default is
+used. This only affects multipart uploads.
+
+For example, to allow up to 20 parts to be pending read during a multipart
+upload::
+
+    $ export AWS_CRT_S3_MAX_PARTS_PENDING_READ=20
+    $ aws s3 cp large-file s3://amzn-s3-demo-bucket/large-file

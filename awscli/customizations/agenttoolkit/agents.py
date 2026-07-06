@@ -259,7 +259,7 @@ class DetectedAgent:
         os.makedirs(os.path.dirname(path), exist_ok=True)
         is_new = not os.path.exists(path)
         with open(path, 'w', encoding='utf-8') as f:
-            json.dump(config, f, indent=2)
+            json.dump(config, f, indent=2, ensure_ascii=False)
             f.write('\n')
         # If we created the MCP config file, set permissions to 600, otherwise
         # the open call above preserves permissions for existing files

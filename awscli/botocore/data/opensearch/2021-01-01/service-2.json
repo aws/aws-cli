@@ -992,6 +992,24 @@
       ],
       "documentation":"<p>Returns the most recent status of the last upgrade or upgrade eligibility check performed on an Amazon OpenSearch Service domain.</p>"
     },
+    "InsightFeedback":{
+      "name":"InsightFeedback",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2021-01-01/opensearch/insight-feedback"
+      },
+      "input":{"shape":"InsightFeedbackRequest"},
+      "output":{"shape":"InsightFeedbackResponse"},
+      "errors":[
+        {"shape":"BaseException"},
+        {"shape":"InternalException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"DisabledOperationException"},
+        {"shape":"LimitExceededException"}
+      ],
+      "documentation":"<p>Submits feedback for an existing insight in an Amazon OpenSearch Service domain. Allows users to provide a thumbs up or thumbs down rating and optional text feedback for a specific insight.</p>"
+    },
     "ListApplications":{
       "name":"ListApplications",
       "http":{
@@ -3203,6 +3221,14 @@
         "AutomatedSnapshotPauseOptions":{
           "shape":"AutomatedSnapshotPauseRequestOptions",
           "documentation":"<p>Specifies the automated snapshot pause options for the domain.</p> <important> <p>Suspending snapshots reduces data protection. You cannot restore your domain to points in time when snapshots are suspended. Use this feature only for short-term operational needs such as migrations or maintenance windows.</p> </important> <p>Maximum suspension duration: 3 days.</p>"
+        },
+        "UseCase":{
+          "shape":"DomainUseCase",
+          "documentation":"<p>The primary use case for the domain. For valid values, see <code>DomainUseCase</code>.</p>"
+        },
+        "EngineMode":{
+          "shape":"EngineMode",
+          "documentation":"<p>The engine mode for the domain. For valid values and requirements, see <code>EngineMode</code>.</p>"
         }
       }
     },
@@ -4688,6 +4714,14 @@
         "AutomatedSnapshotPauseOptions":{
           "shape":"AutomatedSnapshotPauseOptionsStatus",
           "documentation":"<p>Specifies <code>AutomatedSnapshotPauseOptions</code> for the domain.</p>"
+        },
+        "UseCase":{
+          "shape":"UseCaseStatus",
+          "documentation":"<p>The use case configured for the domain.</p>"
+        },
+        "EngineMode":{
+          "shape":"EngineModeStatus",
+          "documentation":"<p>The engine mode configured for the domain.</p>"
         }
       },
       "documentation":"<p>Container for the configuration of an OpenSearch Service domain.</p>"
@@ -5119,6 +5153,14 @@
         "AutomatedSnapshotPauseOptions":{
           "shape":"AutomatedSnapshotPauseOptions",
           "documentation":"<p>The current status of the domain's automated snapshot pause options.</p>"
+        },
+        "UseCase":{
+          "shape":"DomainUseCase",
+          "documentation":"<p>The primary use case for the domain.</p>"
+        },
+        "EngineMode":{
+          "shape":"EngineMode",
+          "documentation":"<p>The engine mode for the domain.</p>"
         }
       },
       "documentation":"<p>The current status of an OpenSearch Service domain.</p>"
@@ -5127,6 +5169,16 @@
       "type":"list",
       "member":{"shape":"DomainStatus"},
       "documentation":"<p>List that contains the status of each specified OpenSearch Service domain.</p>"
+    },
+    "DomainUseCase":{
+      "type":"string",
+      "documentation":"<p>The primary use case for the domain, which determines the default configuration and the engine modes that are available. Valid values are <code>SEARCH</code> (full-text search, e-commerce, content discovery, and hybrid and semantic search), <code>VECTOR</code> (k-NN and semantic search, and retrieval-augmented generation), <code>OBSERVABILITY</code> (logs, metrics, traces, and dashboards), and <code>MIXED</code> (a combination of search and analytics). If you don't specify a use case, <code>MIXED</code> is used.</p>",
+      "enum":[
+        "SEARCH",
+        "VECTOR",
+        "OBSERVABILITY",
+        "MIXED"
+      ]
     },
     "Double":{"type":"double"},
     "DryRun":{"type":"boolean"},
@@ -5287,6 +5339,32 @@
       "type":"map",
       "key":{"shape":"String"},
       "value":{"shape":"ServiceUrl"}
+    },
+    "EngineMode":{
+      "type":"string",
+      "documentation":"<p>The engine mode for the domain. Valid values are <code>GENERAL</code> (the standard OpenSearch engine) and <code>OPTIMIZED</code>. If you don't specify an engine mode, <code>GENERAL</code> is used. <code>OPTIMIZED</code> requires OpenSearch 3.5 or later, OpenSearch Optimized instance types (OR1, OR2, OM2, or OI2) for the data tier, and is available only for the <code>OBSERVABILITY</code> use cases. The engine mode can't be changed after the domain is created.</p>",
+      "enum":[
+        "GENERAL",
+        "OPTIMIZED"
+      ]
+    },
+    "EngineModeStatus":{
+      "type":"structure",
+      "required":[
+        "Options",
+        "Status"
+      ],
+      "members":{
+        "Options":{
+          "shape":"EngineMode",
+          "documentation":"<p>The engine mode configured for the domain.</p>"
+        },
+        "Status":{
+          "shape":"OptionStatus",
+          "documentation":"<p>The current status of the engine mode for the domain.</p>"
+        }
+      },
+      "documentation":"<p>The status of the engine mode for the domain.</p>"
     },
     "EngineType":{
       "type":"string",
@@ -6135,6 +6213,80 @@
       "min":3,
       "pattern":"([a-z][a-z0-9\\-]+|\\d{12})"
     },
+    "InsightFeedbackEntity":{
+      "type":"structure",
+      "required":[
+        "Type",
+        "Value"
+      ],
+      "members":{
+        "Type":{
+          "shape":"InsightFeedbackEntityType",
+          "documentation":"<p>The type of the entity. Possible values are <code>DomainName</code>.</p>"
+        },
+        "Value":{
+          "shape":"InsightEntityValue",
+          "documentation":"<p>The value of the entity, such as a domain name.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the entity for which to submit insight feedback. An entity represents an Amazon OpenSearch Service domain.</p>"
+    },
+    "InsightFeedbackEntityType":{
+      "type":"string",
+      "documentation":"<p>The type of entity for which to submit insight feedback. Possible values are <code>DomainName</code>.</p>",
+      "enum":["DomainName"]
+    },
+    "InsightFeedbackRequest":{
+      "type":"structure",
+      "required":[
+        "Entity",
+        "InsightId",
+        "Thumbs"
+      ],
+      "members":{
+        "Entity":{
+          "shape":"InsightFeedbackEntity",
+          "documentation":"<p>The entity for which to submit insight feedback. Specifies the type and value of the entity, such as a domain name.</p>"
+        },
+        "InsightId":{
+          "shape":"GUID",
+          "documentation":"<p>The unique identifier of the insight for which to submit feedback.</p>"
+        },
+        "Thumbs":{
+          "shape":"InsightFeedbackThumbs",
+          "documentation":"<p>The thumbs up or thumbs down feedback for the insight. Possible values are <code>Up</code> and <code>Down</code>.</p>"
+        },
+        "FeedbackText":{
+          "shape":"InsightFeedbackText",
+          "documentation":"<p>Optional text feedback providing additional details about the insight. Maximum length is 1000 characters.</p>"
+        }
+      },
+      "documentation":"<p>Container for the parameters to the <code>InsightFeedback</code> operation.</p>"
+    },
+    "InsightFeedbackResponse":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"InsightResponseStatus",
+          "documentation":"<p>The status of the feedback submission. Possible values are <code>SUCCESS</code> and <code>ERROR</code>.</p>"
+        }
+      },
+      "documentation":"<p>The result of an <code>InsightFeedback</code> request. Contains the status of the feedback submission.</p>"
+    },
+    "InsightFeedbackText":{
+      "type":"string",
+      "documentation":"<p>Optional text feedback providing additional details about an insight. Maximum length is 1000 characters.</p>",
+      "max":1000,
+      "min":0
+    },
+    "InsightFeedbackThumbs":{
+      "type":"string",
+      "documentation":"<p>The thumbs up or thumbs down feedback for an insight. Possible values are <code>Up</code> and <code>Down</code>.</p>",
+      "enum":[
+        "Up",
+        "Down"
+      ]
+    },
     "InsightField":{
       "type":"structure",
       "required":[
@@ -6190,6 +6342,14 @@
         "HIGH",
         "MEDIUM",
         "LOW"
+      ]
+    },
+    "InsightResponseStatus":{
+      "type":"string",
+      "documentation":"<p>The status of an insight response. Possible values are <code>SUCCESS</code> and <code>ERROR</code>.</p>",
+      "enum":[
+        "SUCCESS",
+        "ERROR"
       ]
     },
     "InsightSortOrder":{
@@ -9202,6 +9362,14 @@
         "AutomatedSnapshotPauseOptions":{
           "shape":"AutomatedSnapshotPauseRequestOptions",
           "documentation":"<p>Specifies the automated snapshot pause options for the domain.</p> <important> <p>Suspending snapshots reduces data protection. You cannot restore your domain to points in time when snapshots are suspended. Use this feature only for short-term operational needs such as migrations or maintenance windows.</p> </important> <p>Maximum suspension duration: 3 days.</p>"
+        },
+        "UseCase":{
+          "shape":"DomainUseCase",
+          "documentation":"<p>The primary use case for the domain. For valid values, see <code>DomainUseCase</code>.</p>"
+        },
+        "EngineMode":{
+          "shape":"EngineMode",
+          "documentation":"<p>The engine mode for the domain. The engine mode can't be changed after the domain is created. For valid values, see <code>EngineMode</code>.</p>"
         }
       },
       "documentation":"<p>Container for the request parameters to the <code>UpdateDomain</code> operation.</p>"
@@ -9538,6 +9706,24 @@
     "UpgradeStepsList":{
       "type":"list",
       "member":{"shape":"UpgradeStepItem"}
+    },
+    "UseCaseStatus":{
+      "type":"structure",
+      "required":[
+        "Options",
+        "Status"
+      ],
+      "members":{
+        "Options":{
+          "shape":"DomainUseCase",
+          "documentation":"<p>The use case configured for the domain.</p>"
+        },
+        "Status":{
+          "shape":"OptionStatus",
+          "documentation":"<p>The current status of the use case for the domain.</p>"
+        }
+      },
+      "documentation":"<p>The status of the use case for the domain.</p>"
     },
     "UserPoolId":{
       "type":"string",

@@ -23278,6 +23278,33 @@
         "JSON"
       ]
     },
+    "FileSource":{
+      "type":"structure",
+      "required":[
+        "DataSourceArn",
+        "SheetIndex",
+        "InputColumns"
+      ],
+      "members":{
+        "DataSourceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the data source.</p>"
+        },
+        "UploadSettings":{
+          "shape":"UploadSettings",
+          "documentation":"<p>Information about the format for the source file.</p>"
+        },
+        "SheetIndex":{
+          "shape":"Integer",
+          "documentation":"<p>The zero-based index of the sheet to use within the file. For files that contain multiple sheets, this identifies which sheet to read. Files that contain a single sheet, or that have no concept of sheets, use sheet 0.</p>"
+        },
+        "InputColumns":{
+          "shape":"InputColumnList",
+          "documentation":"<p>The column schema of the file.</p>"
+        }
+      },
+      "documentation":"<p>A physical table type that contains the schema and upload settings for a file-based data source.</p>"
+    },
     "FilledMapAggregatedFieldWells":{
       "type":"structure",
       "members":{
@@ -33954,11 +33981,15 @@
         },
         "S3Source":{
           "shape":"S3Source",
-          "documentation":"<p>A physical table type for as S3 data source.</p>"
+          "documentation":"<p>A physical table type for an S3 data source.</p>"
         },
         "SaaSTable":{
           "shape":"SaaSTable",
           "documentation":"<p>A physical table type for Software-as-a-Service (SaaS) sources.</p>"
+        },
+        "FileSource":{
+          "shape":"FileSource",
+          "documentation":"<p>A physical table type for a file data source.</p>"
         }
       },
       "documentation":"<p>A view of a data source that contains information about the shape of the data in the underlying source. This is a variant type structure. For this structure to be valid, only one of the attributes can be non-null.</p>"

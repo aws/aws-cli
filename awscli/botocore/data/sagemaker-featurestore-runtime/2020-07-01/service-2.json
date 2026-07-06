@@ -30,6 +30,23 @@
       ],
       "documentation":"<p>Retrieves a batch of <code>Records</code> from a <code>FeatureGroup</code>.</p>"
     },
+    "BatchWriteRecord":{
+      "name":"BatchWriteRecord",
+      "http":{
+        "method":"POST",
+        "requestUri":"/BatchWriteRecord"
+      },
+      "input":{"shape":"BatchWriteRecordRequest"},
+      "output":{"shape":"BatchWriteRecordResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"ResourceNotFound"},
+        {"shape":"InternalFailure"},
+        {"shape":"ServiceUnavailable"},
+        {"shape":"AccessForbidden"}
+      ],
+      "documentation":"<p>Writes a batch of <code>Records</code> to one or more <code>FeatureGroup</code>s. Use this API for bulk ingestion of records into the <code>OnlineStore</code> and <code>OfflineStore</code>.</p> <p>You can set the ingested records to expire at a given time to live (TTL) duration after the record's event time by specifying the <code>TtlDuration</code> parameter. A request level <code>TtlDuration</code> applies to all entries that do not specify their own <code>TtlDuration</code>.</p>"
+    },
     "DeleteRecord":{
       "name":"DeleteRecord",
       "http":{
@@ -43,7 +60,7 @@
         {"shape":"ServiceUnavailable"},
         {"shape":"AccessForbidden"}
       ],
-      "documentation":"<p>Deletes a <code>Record</code> from a <code>FeatureGroup</code> in the <code>OnlineStore</code>. Feature Store supports both <code>SoftDelete</code> and <code>HardDelete</code>. For <code>SoftDelete</code> (default), feature columns are set to <code>null</code> and the record is no longer retrievable by <code>GetRecord</code> or <code>BatchGetRecord</code>. For <code>HardDelete</code>, the complete <code>Record</code> is removed from the <code>OnlineStore</code>. In both cases, Feature Store appends the deleted record marker to the <code>OfflineStore</code>. The deleted record marker is a record with the same <code>RecordIdentifer</code> as the original, but with <code>is_deleted</code> value set to <code>True</code>, <code>EventTime</code> set to the delete input <code>EventTime</code>, and other feature values set to <code>null</code>.</p> <p>Note that the <code>EventTime</code> specified in <code>DeleteRecord</code> should be set later than the <code>EventTime</code> of the existing record in the <code>OnlineStore</code> for that <code>RecordIdentifer</code>. If it is not, the deletion does not occur:</p> <ul> <li> <p>For <code>SoftDelete</code>, the existing (not deleted) record remains in the <code>OnlineStore</code>, though the delete record marker is still written to the <code>OfflineStore</code>.</p> </li> <li> <p> <code>HardDelete</code> returns <code>EventTime</code>: <code>400 ValidationException</code> to indicate that the delete operation failed. No delete record marker is written to the <code>OfflineStore</code>.</p> </li> </ul> <p>When a record is deleted from the <code>OnlineStore</code>, the deleted record marker is appended to the <code>OfflineStore</code>. If you have the Iceberg table format enabled for your <code>OfflineStore</code>, you can remove all history of a record from the <code>OfflineStore</code> using Amazon Athena or Apache Spark. For information on how to hard delete a record from the <code>OfflineStore</code> with the Iceberg table format enabled, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/feature-store-delete-records-offline-store.html#feature-store-delete-records-offline-store\">Delete records from the offline store</a>.</p>"
+      "documentation":"<p>Deletes a <code>Record</code> from a <code>FeatureGroup</code> in the <code>OnlineStore</code>. Feature Store supports both <code>SoftDelete</code> and <code>HardDelete</code>. For <code>SoftDelete</code> (default), feature columns are set to <code>null</code> and the record is no longer retrievable by <code>GetRecord</code> or <code>BatchGetRecord</code>. For <code>HardDelete</code>, the complete <code>Record</code> is removed from the <code>OnlineStore</code>. In both cases, Feature Store appends the deleted record marker to the <code>OfflineStore</code>. The deleted record marker is a record with the same <code>RecordIdentifer</code> as the original, but with <code>is_deleted</code> value set to <code>True</code>, <code>EventTime</code> set to the delete input <code>EventTime</code>, and other feature values set to <code>null</code>.</p> <p>Note that the <code>EventTime</code> specified in <code>DeleteRecord</code> should be set later than the <code>EventTime</code> of the existing record in the <code>OnlineStore</code> for that <code>RecordIdentifer</code>. If it is not, the deletion does not occur:</p> <ul> <li> <p>For <code>SoftDelete</code>, the existing (not deleted) record remains in the <code>OnlineStore</code>, though the delete record marker is still written to the <code>OfflineStore</code>.</p> </li> <li> <p> <code>HardDelete</code> returns <code>EventTime</code>: <code>400 ValidationException</code> to indicate that the delete operation failed. No delete record marker is written to the <code>OfflineStore</code>.</p> </li> </ul> <p>When a record is deleted from the <code>OnlineStore</code>, the deleted record marker is appended to the <code>OfflineStore</code>. If you have the Iceberg table format enabled for your <code>OfflineStore</code>, you can remove all history of a record from the <code>OfflineStore</code> using Amazon Athena or Apache Spark. For information on how to hard delete a record from the <code>OfflineStore</code> with the Iceberg table format enabled, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/feature-store-delete-records.html#feature-store-delete-records-offline-store\">Delete records from the offline store</a>.</p>"
     },
     "GetRecord":{
       "name":"GetRecord",
@@ -61,6 +78,24 @@
         {"shape":"AccessForbidden"}
       ],
       "documentation":"<p>Use for <code>OnlineStore</code> serving from a <code>FeatureStore</code>. Only the latest records stored in the <code>OnlineStore</code> can be retrieved. If no Record with <code>RecordIdentifierValue</code> is found, then an empty result is returned. </p>"
+    },
+    "ListRecords":{
+      "name":"ListRecords",
+      "http":{
+        "method":"POST",
+        "requestUri":"/FeatureGroup/{FeatureGroupName}/ListRecords"
+      },
+      "input":{"shape":"ListRecordsRequest"},
+      "output":{"shape":"ListRecordsResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"ResourceNotFound"},
+        {"shape":"InternalFailure"},
+        {"shape":"ServiceUnavailable"},
+        {"shape":"AccessForbidden"}
+      ],
+      "documentation":"<p>Lists the <code>RecordIdentifier</code> values of all records stored in a <code>FeatureGroup</code>'s <code>OnlineStore</code>. This enables you to discover which records exist without retrieving the full record data.</p>",
+      "readonly":true
     },
     "PutRecord":{
       "name":"PutRecord",
@@ -218,6 +253,98 @@
       "member":{"shape":"BatchGetRecordResultDetail"},
       "min":0
     },
+    "BatchWriteRecordEntries":{
+      "type":"list",
+      "member":{"shape":"BatchWriteRecordEntry"},
+      "max":25,
+      "min":1
+    },
+    "BatchWriteRecordEntry":{
+      "type":"structure",
+      "required":[
+        "FeatureGroupName",
+        "Record"
+      ],
+      "members":{
+        "FeatureGroupName":{
+          "shape":"FeatureGroupNameOrArn",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the <code>FeatureGroup</code> to write the record to.</p>"
+        },
+        "Record":{
+          "shape":"Record",
+          "documentation":"<p>List of FeatureValues to be inserted. This will be a full over-write.</p>"
+        },
+        "TargetStores":{
+          "shape":"TargetStores",
+          "documentation":"<p>A list of stores to which you're adding the record. By default, Feature Store adds the record to all of the stores that you're using for the <code>FeatureGroup</code>.</p>"
+        },
+        "TtlDuration":{
+          "shape":"TtlDuration",
+          "documentation":"<p>Time to live duration for this entry, where the record is hard deleted after the expiration time is reached; <code>ExpiresAt</code> = <code>EventTime</code> + <code>TtlDuration</code>. This overrides the request level <code>TtlDuration</code>.</p>"
+        }
+      },
+      "documentation":"<p>An entry to write as part of a <code>BatchWriteRecord</code> request.</p>"
+    },
+    "BatchWriteRecordError":{
+      "type":"structure",
+      "required":[
+        "Entry",
+        "ErrorCode",
+        "ErrorMessage"
+      ],
+      "members":{
+        "Entry":{
+          "shape":"BatchWriteRecordEntry",
+          "documentation":"<p>The entry that failed to be written.</p>"
+        },
+        "ErrorCode":{
+          "shape":"ValueAsString",
+          "documentation":"<p>The error code for the failed record write.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"Message",
+          "documentation":"<p>The error message for the failed record write.</p>"
+        }
+      },
+      "documentation":"<p>The error that has occurred when attempting to write a record in a batch.</p>"
+    },
+    "BatchWriteRecordErrors":{
+      "type":"list",
+      "member":{"shape":"BatchWriteRecordError"},
+      "min":0
+    },
+    "BatchWriteRecordRequest":{
+      "type":"structure",
+      "required":["Entries"],
+      "members":{
+        "Entries":{
+          "shape":"BatchWriteRecordEntries",
+          "documentation":"<p>A list of records to write. Each entry specifies the <code>FeatureGroup</code>, the record data, and optionally target stores and a TTL duration.</p>"
+        },
+        "TtlDuration":{
+          "shape":"TtlDuration",
+          "documentation":"<p>Time to live duration applied to all entries in the batch that do not specify their own <code>TtlDuration</code>; <code>ExpiresAt</code> = <code>EventTime</code> + <code>TtlDuration</code>. For information on HardDelete, see the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_feature_store_DeleteRecord.html\">DeleteRecord</a> API in the Amazon SageMaker API Reference guide.</p>"
+        }
+      }
+    },
+    "BatchWriteRecordResponse":{
+      "type":"structure",
+      "required":[
+        "Errors",
+        "UnprocessedEntries"
+      ],
+      "members":{
+        "Errors":{
+          "shape":"BatchWriteRecordErrors",
+          "documentation":"<p>A list of errors that occurred when writing records in the batch.</p>"
+        },
+        "UnprocessedEntries":{
+          "shape":"UnprocessedBatchWriteRecordEntries",
+          "documentation":"<p>A list of entries that were not processed. These entries can be retried.</p>"
+        }
+      }
+    },
+    "Boolean":{"type":"boolean"},
     "DeleteRecordRequest":{
       "type":"structure",
       "required":[
@@ -366,6 +493,54 @@
       "fault":true,
       "synthetic":true
     },
+    "ListRecordsMaxResults":{
+      "type":"integer",
+      "max":100,
+      "min":1
+    },
+    "ListRecordsNextToken":{
+      "type":"string",
+      "max":8192,
+      "min":1
+    },
+    "ListRecordsRequest":{
+      "type":"structure",
+      "required":["FeatureGroupName"],
+      "members":{
+        "FeatureGroupName":{
+          "shape":"FeatureGroupNameOrArn",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the feature group to list records from.</p>",
+          "location":"uri",
+          "locationName":"FeatureGroupName"
+        },
+        "MaxResults":{
+          "shape":"ListRecordsMaxResults",
+          "documentation":"<p>The maximum number of record identifiers to return in a single page of results. For the <code>InMemory</code> tier, this value is a hint and not a strict requirement. The response may contain more or fewer results than the specified <code>MaxResults</code>.</p>"
+        },
+        "NextToken":{
+          "shape":"ListRecordsNextToken",
+          "documentation":"<p>A token to resume pagination of <code>ListRecords</code> results.</p>"
+        },
+        "IncludeSoftDeletedRecords":{
+          "shape":"Boolean",
+          "documentation":"<p>If set to <code>true</code>, the result includes records that have been soft deleted.</p>"
+        }
+      }
+    },
+    "ListRecordsResponse":{
+      "type":"structure",
+      "required":["RecordIdentifiers"],
+      "members":{
+        "RecordIdentifiers":{
+          "shape":"RecordIdentifierList",
+          "documentation":"<p>A list of record identifier values for the records stored in the <code>OnlineStore</code>.</p>"
+        },
+        "NextToken":{
+          "shape":"ListRecordsNextToken",
+          "documentation":"<p>A token to resume pagination if the response includes more record identifiers than <code>MaxResults</code>.</p>"
+        }
+      }
+    },
     "Message":{
       "type":"string",
       "max":2048
@@ -401,6 +576,10 @@
       "type":"list",
       "member":{"shape":"FeatureValue"},
       "min":1
+    },
+    "RecordIdentifierList":{
+      "type":"list",
+      "member":{"shape":"ValueAsString"}
     },
     "RecordIdentifiers":{
       "type":"list",
@@ -472,6 +651,11 @@
     "TtlDurationValue":{
       "type":"integer",
       "min":1
+    },
+    "UnprocessedBatchWriteRecordEntries":{
+      "type":"list",
+      "member":{"shape":"BatchWriteRecordEntry"},
+      "min":0
     },
     "UnprocessedIdentifiers":{
       "type":"list",

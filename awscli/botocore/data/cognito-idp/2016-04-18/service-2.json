@@ -1556,6 +1556,23 @@
       ],
       "documentation":"<p>Given a user pool ID, returns the logging configuration. User pools can export message-delivery error and threat-protection activity logs to external Amazon Web Services services. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/exporting-quotas-and-usage.html\">Exporting user pool logs</a>.</p> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
     },
+    "GetProvisionedLimit":{
+      "name":"GetProvisionedLimit",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetProvisionedLimitRequest"},
+      "output":{"shape":"GetProvisionedLimitResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"NotAuthorizedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InternalErrorException"}
+      ],
+      "documentation":"<p>Returns the current provisioned limit for a specific API category.</p> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
+    },
     "GetSigningCertificate":{
       "name":"GetSigningCertificate",
       "http":{
@@ -2473,6 +2490,24 @@
         {"shape":"InternalErrorException"}
       ],
       "documentation":"<p>Configures the branding settings for a user pool style. This operation is the programmatic option for the configuration of a style in the branding editor.</p> <p>Provides values for UI customization in a <code>Settings</code> JSON object and image files in an <code>Assets</code> array.</p> <p> This operation has a 2-megabyte request-size limit and include the CSS settings and image assets for your app client. Your branding settings might exceed 2MB in size. Amazon Cognito doesn't require that you pass all parameters in one request and preserves existing style settings that you don't specify. If your request is larger than 2MB, separate it into multiple requests, each with a size smaller than the limit.</p> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
+    },
+    "UpdateProvisionedLimit":{
+      "name":"UpdateProvisionedLimit",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateProvisionedLimitRequest"},
+      "output":{"shape":"UpdateProvisionedLimitResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"NotAuthorizedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InternalErrorException"}
+      ],
+      "documentation":"<p>Sets the provisioned limit for a specific API category. The value must be between the default limit and your account-level maximum limit in Service Quotas.</p> <p>Managed login user pools don't support adjustments to the <code>UserAuthentication</code> or <code>UserFederation</code> categories. To increase these limits, submit a Service Quotas increase request.</p> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
     },
     "UpdateResourceServer":{
       "name":"UpdateResourceServer",
@@ -6419,6 +6454,26 @@
         }
       }
     },
+    "GetProvisionedLimitRequest":{
+      "type":"structure",
+      "required":["LimitDefinition"],
+      "members":{
+        "LimitDefinition":{
+          "shape":"LimitDefinitionType",
+          "documentation":"<p>The limit to retrieve. Specify the limit class and the attributes that identify the limit.</p>"
+        }
+      }
+    },
+    "GetProvisionedLimitResponse":{
+      "type":"structure",
+      "required":["Limit"],
+      "members":{
+        "Limit":{
+          "shape":"LimitType",
+          "documentation":"<p>The provisioned and default limit values for the requested limit.</p>"
+        }
+      }
+    },
     "GetSigningCertificateRequest":{
       "type":"structure",
       "required":["UserPoolId"],
@@ -7104,6 +7159,28 @@
       "type":"string",
       "pattern":"^cognito:(default|dutch|english|french|spanish|german|bahasa-indonesia|italian|japanese|korean|portuguese-brazil|chinese-(simplified|traditional))$"
     },
+    "LimitClass":{
+      "type":"string",
+      "enum":["API_CATEGORY"]
+    },
+    "LimitDefinitionType":{
+      "type":"structure",
+      "required":[
+        "LimitClass",
+        "Attributes"
+      ],
+      "members":{
+        "LimitClass":{
+          "shape":"LimitClass",
+          "documentation":"<p>The class of the limit. For API rate limits, this is <code>API_CATEGORY</code>.</p>"
+        },
+        "Attributes":{
+          "shape":"StringToStringMapType",
+          "documentation":"<p>The attributes that identify the specific limit. For API rate limits, specify the <code>Category</code> key with a value like <code>UserAuthentication</code> or <code>UserCreation</code>.</p>"
+        }
+      },
+      "documentation":"<p>The class and attributes that identify a specific limit at the account level.</p>"
+    },
     "LimitExceededException":{
       "type":"structure",
       "members":{
@@ -7114,6 +7191,29 @@
       },
       "documentation":"<p>This exception is thrown when a user exceeds the limit for a requested Amazon Web Services resource.</p>",
       "exception":true
+    },
+    "LimitType":{
+      "type":"structure",
+      "required":[
+        "LimitDefinition",
+        "ProvisionedLimitValue",
+        "FreeLimitValue"
+      ],
+      "members":{
+        "LimitDefinition":{
+          "shape":"LimitDefinitionType",
+          "documentation":"<p>The definition that identifies this limit, including the class and attributes.</p>"
+        },
+        "ProvisionedLimitValue":{
+          "shape":"IntegerType",
+          "documentation":"<p>The provisioned limit value, in requests per second (RPS). This is the rate that Amazon Cognito currently enforces for your account.</p>"
+        },
+        "FreeLimitValue":{
+          "shape":"IntegerType",
+          "documentation":"<p>The default (free) limit value, in requests per second (RPS). This is the rate included at no additional cost.</p>"
+        }
+      },
+      "documentation":"<p>The limit definition and current limit values for a provisioned limit.</p>"
     },
     "LinkUrlType":{
       "type":"string",
@@ -8622,6 +8722,14 @@
         "TLS_V1_3_2025"
       ]
     },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"MessageType"}
+      },
+      "documentation":"<p>The request exceeded your account's service quota. To increase your limit, use or submit a Service Quotas increase request.</p>",
+      "exception":true
+    },
     "SessionType":{
       "type":"string",
       "max":2048,
@@ -9097,6 +9205,11 @@
         }
       },
       "documentation":"<p>The minimum and maximum length values of an attribute that is of the string type, for example <code>custom:department</code>.</p>"
+    },
+    "StringToStringMapType":{
+      "type":"map",
+      "key":{"shape":"StringType"},
+      "value":{"shape":"StringType"}
     },
     "StringType":{
       "type":"string",
@@ -9599,6 +9712,33 @@
         "ManagedLoginBranding":{
           "shape":"ManagedLoginBrandingType",
           "documentation":"<p>The details of the branding style that you updated.</p>"
+        }
+      }
+    },
+    "UpdateProvisionedLimitRequest":{
+      "type":"structure",
+      "required":[
+        "LimitDefinition",
+        "RequestedLimitValue"
+      ],
+      "members":{
+        "LimitDefinition":{
+          "shape":"LimitDefinitionType",
+          "documentation":"<p>The limit to update. Specify the limit class and the attributes that identify the limit.</p>"
+        },
+        "RequestedLimitValue":{
+          "shape":"IntegerType",
+          "documentation":"<p>The provisioned rate to set, in requests per second (RPS).</p>"
+        }
+      }
+    },
+    "UpdateProvisionedLimitResponse":{
+      "type":"structure",
+      "required":["Limit"],
+      "members":{
+        "Limit":{
+          "shape":"LimitType",
+          "documentation":"<p>The updated provisioned and default limit values.</p>"
         }
       }
     },
